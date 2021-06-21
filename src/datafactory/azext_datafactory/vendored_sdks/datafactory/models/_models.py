@@ -634,6 +634,9 @@ class CopySource(msrest.serialization.Model):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     """
 
     _validation = {
@@ -646,6 +649,7 @@ class CopySource(msrest.serialization.Model):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
     }
 
     _subtype_map = {
@@ -662,6 +666,7 @@ class CopySource(msrest.serialization.Model):
         self.source_retry_count = kwargs.get('source_retry_count', None)
         self.source_retry_wait = kwargs.get('source_retry_wait', None)
         self.max_concurrent_connections = kwargs.get('max_concurrent_connections', None)
+        self.disable_metrics_collection = kwargs.get('disable_metrics_collection', None)
 
 
 class TabularSource(CopySource):
@@ -686,6 +691,9 @@ class TabularSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -704,6 +712,7 @@ class TabularSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
     }
@@ -741,6 +750,9 @@ class AmazonMwsSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -762,6 +774,7 @@ class AmazonMwsSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -868,6 +881,9 @@ class AmazonRedshiftSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -892,6 +908,7 @@ class AmazonRedshiftSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -1156,6 +1173,9 @@ class StoreReadSettings(msrest.serialization.Model):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     """
 
     _validation = {
@@ -1166,6 +1186,7 @@ class StoreReadSettings(msrest.serialization.Model):
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
     }
 
     _subtype_map = {
@@ -1180,6 +1201,7 @@ class StoreReadSettings(msrest.serialization.Model):
         self.additional_properties = kwargs.get('additional_properties', None)
         self.type = 'StoreReadSettings'  # type: str
         self.max_concurrent_connections = kwargs.get('max_concurrent_connections', None)
+        self.disable_metrics_collection = kwargs.get('disable_metrics_collection', None)
 
 
 class AmazonS3CompatibleReadSettings(StoreReadSettings):
@@ -1195,6 +1217,9 @@ class AmazonS3CompatibleReadSettings(StoreReadSettings):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param recursive: If true, files under the folder path will be read recursively. Default is
      true. Type: boolean (or Expression with resultType boolean).
     :type recursive: object
@@ -1235,6 +1260,7 @@ class AmazonS3CompatibleReadSettings(StoreReadSettings):
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'recursive': {'key': 'recursive', 'type': 'object'},
         'wildcard_folder_path': {'key': 'wildcardFolderPath', 'type': 'object'},
         'wildcard_file_name': {'key': 'wildcardFileName', 'type': 'object'},
@@ -1490,6 +1516,9 @@ class AmazonS3ReadSettings(StoreReadSettings):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param recursive: If true, files under the folder path will be read recursively. Default is
      true. Type: boolean (or Expression with resultType boolean).
     :type recursive: object
@@ -1530,6 +1559,7 @@ class AmazonS3ReadSettings(StoreReadSettings):
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'recursive': {'key': 'recursive', 'type': 'object'},
         'wildcard_folder_path': {'key': 'wildcardFolderPath', 'type': 'object'},
         'wildcard_file_name': {'key': 'wildcardFileName', 'type': 'object'},
@@ -1664,10 +1694,9 @@ class AvroDataset(Dataset):
     :type folder: ~data_factory_management_client.models.DatasetFolder
     :param location: The location of the avro storage.
     :type location: ~data_factory_management_client.models.DatasetLocation
-    :param avro_compression_codec:  Possible values include: "none", "deflate", "snappy", "xz",
-     "bzip2".
-    :type avro_compression_codec: str or
-     ~data_factory_management_client.models.AvroCompressionCodec
+    :param avro_compression_codec: The data avroCompressionCodec. Type: string (or Expression with
+     resultType string).
+    :type avro_compression_codec: object
     :param avro_compression_level:
     :type avro_compression_level: int
     """
@@ -1689,7 +1718,7 @@ class AvroDataset(Dataset):
         'annotations': {'key': 'annotations', 'type': '[object]'},
         'folder': {'key': 'folder', 'type': 'DatasetFolder'},
         'location': {'key': 'typeProperties.location', 'type': 'DatasetLocation'},
-        'avro_compression_codec': {'key': 'typeProperties.avroCompressionCodec', 'type': 'str'},
+        'avro_compression_codec': {'key': 'typeProperties.avroCompressionCodec', 'type': 'object'},
         'avro_compression_level': {'key': 'typeProperties.avroCompressionLevel', 'type': 'int'},
     }
 
@@ -1788,7 +1817,7 @@ class CopySink(msrest.serialization.Model):
     """A copy activity sink.
 
     You probably want to use the sub-classes and not this class directly. Known
-    sub-classes are: AvroSink, AzureBlobFsSink, AzureDataExplorerSink, AzureDataLakeStoreSink, AzureDatabricksDeltaLakeSink, AzureMySqlSink, AzurePostgreSqlSink, AzureQueueSink, AzureSearchIndexSink, AzureSqlSink, AzureTableSink, BinarySink, BlobSink, CommonDataServiceForAppsSink, CosmosDbMongoDbApiSink, CosmosDbSqlApiSink, DelimitedTextSink, DocumentDbCollectionSink, DynamicsCrmSink, DynamicsSink, FileSystemSink, InformixSink, JsonSink, MicrosoftAccessSink, OdbcSink, OracleSink, OrcSink, ParquetSink, RestSink, SalesforceServiceCloudSink, SalesforceSink, SapCloudForCustomerSink, SnowflakeSink, SqlDwSink, SqlMiSink, SqlServerSink, SqlSink.
+    sub-classes are: AvroSink, AzureBlobFsSink, AzureDataExplorerSink, AzureDataLakeStoreSink, AzureDatabricksDeltaLakeSink, AzureMySqlSink, AzurePostgreSqlSink, AzureQueueSink, AzureSearchIndexSink, AzureSqlSink, AzureTableSink, BinarySink, BlobSink, CommonDataServiceForAppsSink, CosmosDbMongoDbApiSink, CosmosDbSqlApiSink, DelimitedTextSink, DocumentDbCollectionSink, DynamicsCrmSink, DynamicsSink, FileSystemSink, InformixSink, JsonSink, MicrosoftAccessSink, MongoDbAtlasSink, MongoDbV2Sink, OdbcSink, OracleSink, OrcSink, ParquetSink, RestSink, SalesforceServiceCloudSink, SalesforceSink, SapCloudForCustomerSink, SnowflakeSink, SqlDwSink, SqlMiSink, SqlServerSink, SqlSink.
 
     All required parameters must be populated in order to send to Azure.
 
@@ -1812,6 +1841,9 @@ class CopySink(msrest.serialization.Model):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     """
 
     _validation = {
@@ -1826,10 +1858,11 @@ class CopySink(msrest.serialization.Model):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
     }
 
     _subtype_map = {
-        'type': {'AvroSink': 'AvroSink', 'AzureBlobFSSink': 'AzureBlobFsSink', 'AzureDataExplorerSink': 'AzureDataExplorerSink', 'AzureDataLakeStoreSink': 'AzureDataLakeStoreSink', 'AzureDatabricksDeltaLakeSink': 'AzureDatabricksDeltaLakeSink', 'AzureMySqlSink': 'AzureMySqlSink', 'AzurePostgreSqlSink': 'AzurePostgreSqlSink', 'AzureQueueSink': 'AzureQueueSink', 'AzureSearchIndexSink': 'AzureSearchIndexSink', 'AzureSqlSink': 'AzureSqlSink', 'AzureTableSink': 'AzureTableSink', 'BinarySink': 'BinarySink', 'BlobSink': 'BlobSink', 'CommonDataServiceForAppsSink': 'CommonDataServiceForAppsSink', 'CosmosDbMongoDbApiSink': 'CosmosDbMongoDbApiSink', 'CosmosDbSqlApiSink': 'CosmosDbSqlApiSink', 'DelimitedTextSink': 'DelimitedTextSink', 'DocumentDbCollectionSink': 'DocumentDbCollectionSink', 'DynamicsCrmSink': 'DynamicsCrmSink', 'DynamicsSink': 'DynamicsSink', 'FileSystemSink': 'FileSystemSink', 'InformixSink': 'InformixSink', 'JsonSink': 'JsonSink', 'MicrosoftAccessSink': 'MicrosoftAccessSink', 'OdbcSink': 'OdbcSink', 'OracleSink': 'OracleSink', 'OrcSink': 'OrcSink', 'ParquetSink': 'ParquetSink', 'RestSink': 'RestSink', 'SalesforceServiceCloudSink': 'SalesforceServiceCloudSink', 'SalesforceSink': 'SalesforceSink', 'SapCloudForCustomerSink': 'SapCloudForCustomerSink', 'SnowflakeSink': 'SnowflakeSink', 'SqlDWSink': 'SqlDwSink', 'SqlMISink': 'SqlMiSink', 'SqlServerSink': 'SqlServerSink', 'SqlSink': 'SqlSink'}
+        'type': {'AvroSink': 'AvroSink', 'AzureBlobFSSink': 'AzureBlobFsSink', 'AzureDataExplorerSink': 'AzureDataExplorerSink', 'AzureDataLakeStoreSink': 'AzureDataLakeStoreSink', 'AzureDatabricksDeltaLakeSink': 'AzureDatabricksDeltaLakeSink', 'AzureMySqlSink': 'AzureMySqlSink', 'AzurePostgreSqlSink': 'AzurePostgreSqlSink', 'AzureQueueSink': 'AzureQueueSink', 'AzureSearchIndexSink': 'AzureSearchIndexSink', 'AzureSqlSink': 'AzureSqlSink', 'AzureTableSink': 'AzureTableSink', 'BinarySink': 'BinarySink', 'BlobSink': 'BlobSink', 'CommonDataServiceForAppsSink': 'CommonDataServiceForAppsSink', 'CosmosDbMongoDbApiSink': 'CosmosDbMongoDbApiSink', 'CosmosDbSqlApiSink': 'CosmosDbSqlApiSink', 'DelimitedTextSink': 'DelimitedTextSink', 'DocumentDbCollectionSink': 'DocumentDbCollectionSink', 'DynamicsCrmSink': 'DynamicsCrmSink', 'DynamicsSink': 'DynamicsSink', 'FileSystemSink': 'FileSystemSink', 'InformixSink': 'InformixSink', 'JsonSink': 'JsonSink', 'MicrosoftAccessSink': 'MicrosoftAccessSink', 'MongoDbAtlasSink': 'MongoDbAtlasSink', 'MongoDbV2Sink': 'MongoDbV2Sink', 'OdbcSink': 'OdbcSink', 'OracleSink': 'OracleSink', 'OrcSink': 'OrcSink', 'ParquetSink': 'ParquetSink', 'RestSink': 'RestSink', 'SalesforceServiceCloudSink': 'SalesforceServiceCloudSink', 'SalesforceSink': 'SalesforceSink', 'SapCloudForCustomerSink': 'SapCloudForCustomerSink', 'SnowflakeSink': 'SnowflakeSink', 'SqlDWSink': 'SqlDwSink', 'SqlMISink': 'SqlMiSink', 'SqlServerSink': 'SqlServerSink', 'SqlSink': 'SqlSink'}
     }
 
     def __init__(
@@ -1844,6 +1877,7 @@ class CopySink(msrest.serialization.Model):
         self.sink_retry_count = kwargs.get('sink_retry_count', None)
         self.sink_retry_wait = kwargs.get('sink_retry_wait', None)
         self.max_concurrent_connections = kwargs.get('max_concurrent_connections', None)
+        self.disable_metrics_collection = kwargs.get('disable_metrics_collection', None)
 
 
 class AvroSink(CopySink):
@@ -1871,6 +1905,9 @@ class AvroSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param store_settings: Avro store settings.
     :type store_settings: ~data_factory_management_client.models.StoreWriteSettings
     :param format_settings: Avro format settings.
@@ -1889,6 +1926,7 @@ class AvroSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'store_settings': {'key': 'storeSettings', 'type': 'StoreWriteSettings'},
         'format_settings': {'key': 'formatSettings', 'type': 'AvroWriteSettings'},
     }
@@ -1922,6 +1960,9 @@ class AvroSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param store_settings: Avro store settings.
     :type store_settings: ~data_factory_management_client.models.StoreReadSettings
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
@@ -1939,6 +1980,7 @@ class AvroSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'store_settings': {'key': 'storeSettings', 'type': 'StoreReadSettings'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
     }
@@ -2467,6 +2509,9 @@ class AzureBlobFsReadSettings(StoreReadSettings):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param recursive: If true, files under the folder path will be read recursively. Default is
      true. Type: boolean (or Expression with resultType boolean).
     :type recursive: object
@@ -2504,6 +2549,7 @@ class AzureBlobFsReadSettings(StoreReadSettings):
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'recursive': {'key': 'recursive', 'type': 'object'},
         'wildcard_folder_path': {'key': 'wildcardFolderPath', 'type': 'object'},
         'wildcard_file_name': {'key': 'wildcardFileName', 'type': 'object'},
@@ -2557,8 +2603,14 @@ class AzureBlobFsSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param copy_behavior: The type of copy behavior for copy sink.
     :type copy_behavior: object
+    :param metadata: Specify the custom metadata to be added to sink data. Type: array of objects
+     (or Expression with resultType array of objects).
+    :type metadata: list[~data_factory_management_client.models.MetadataItem]
     """
 
     _validation = {
@@ -2573,7 +2625,9 @@ class AzureBlobFsSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'copy_behavior': {'key': 'copyBehavior', 'type': 'object'},
+        'metadata': {'key': 'metadata', 'type': '[MetadataItem]'},
     }
 
     def __init__(
@@ -2583,6 +2637,7 @@ class AzureBlobFsSink(CopySink):
         super(AzureBlobFsSink, self).__init__(**kwargs)
         self.type = 'AzureBlobFSSink'  # type: str
         self.copy_behavior = kwargs.get('copy_behavior', None)
+        self.metadata = kwargs.get('metadata', None)
 
 
 class AzureBlobFsSource(CopySource):
@@ -2604,6 +2659,9 @@ class AzureBlobFsSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param treat_empty_as_null: Treat empty as null. Type: boolean (or Expression with resultType
      boolean).
     :type treat_empty_as_null: object
@@ -2625,6 +2683,7 @@ class AzureBlobFsSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'treat_empty_as_null': {'key': 'treatEmptyAsNull', 'type': 'object'},
         'skip_header_line_count': {'key': 'skipHeaderLineCount', 'type': 'object'},
         'recursive': {'key': 'recursive', 'type': 'object'},
@@ -2657,6 +2716,9 @@ class StoreWriteSettings(msrest.serialization.Model):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param copy_behavior: The type of copy behavior for copy sink.
     :type copy_behavior: object
     """
@@ -2669,6 +2731,7 @@ class StoreWriteSettings(msrest.serialization.Model):
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'copy_behavior': {'key': 'copyBehavior', 'type': 'object'},
     }
 
@@ -2684,6 +2747,7 @@ class StoreWriteSettings(msrest.serialization.Model):
         self.additional_properties = kwargs.get('additional_properties', None)
         self.type = 'StoreWriteSettings'  # type: str
         self.max_concurrent_connections = kwargs.get('max_concurrent_connections', None)
+        self.disable_metrics_collection = kwargs.get('disable_metrics_collection', None)
         self.copy_behavior = kwargs.get('copy_behavior', None)
 
 
@@ -2700,6 +2764,9 @@ class AzureBlobFsWriteSettings(StoreWriteSettings):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param copy_behavior: The type of copy behavior for copy sink.
     :type copy_behavior: object
     :param block_size_in_mb: Indicates the block size(MB) when writing data to blob. Type: integer
@@ -2715,6 +2782,7 @@ class AzureBlobFsWriteSettings(StoreWriteSettings):
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'copy_behavior': {'key': 'copyBehavior', 'type': 'object'},
         'block_size_in_mb': {'key': 'blockSizeInMB', 'type': 'object'},
     }
@@ -2881,6 +2949,9 @@ class AzureBlobStorageReadSettings(StoreReadSettings):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param recursive: If true, files under the folder path will be read recursively. Default is
      true. Type: boolean (or Expression with resultType boolean).
     :type recursive: object
@@ -2921,6 +2992,7 @@ class AzureBlobStorageReadSettings(StoreReadSettings):
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'recursive': {'key': 'recursive', 'type': 'object'},
         'wildcard_folder_path': {'key': 'wildcardFolderPath', 'type': 'object'},
         'wildcard_file_name': {'key': 'wildcardFileName', 'type': 'object'},
@@ -2964,6 +3036,9 @@ class AzureBlobStorageWriteSettings(StoreWriteSettings):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param copy_behavior: The type of copy behavior for copy sink.
     :type copy_behavior: object
     :param block_size_in_mb: Indicates the block size(MB) when writing data to blob. Type: integer
@@ -2979,6 +3054,7 @@ class AzureBlobStorageWriteSettings(StoreWriteSettings):
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'copy_behavior': {'key': 'copyBehavior', 'type': 'object'},
         'block_size_in_mb': {'key': 'blockSizeInMB', 'type': 'object'},
     }
@@ -3296,6 +3372,9 @@ class AzureDatabricksDeltaLakeSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param pre_copy_script: SQL pre-copy script. Type: string (or Expression with resultType
      string).
     :type pre_copy_script: object
@@ -3316,6 +3395,7 @@ class AzureDatabricksDeltaLakeSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'pre_copy_script': {'key': 'preCopyScript', 'type': 'object'},
         'import_settings': {'key': 'importSettings', 'type': 'AzureDatabricksDeltaLakeImportCommand'},
     }
@@ -3349,6 +3429,9 @@ class AzureDatabricksDeltaLakeSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query: Azure Databricks Delta Lake Sql query. Type: string (or Expression with
      resultType string).
     :type query: object
@@ -3367,6 +3450,7 @@ class AzureDatabricksDeltaLakeSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
         'export_settings': {'key': 'exportSettings', 'type': 'AzureDatabricksDeltaLakeExportCommand'},
     }
@@ -3734,6 +3818,9 @@ class AzureDataExplorerSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param ingestion_mapping_name: A name of a pre-created csv mapping that was defined on the
      target Kusto table. Type: string.
     :type ingestion_mapping_name: object
@@ -3757,6 +3844,7 @@ class AzureDataExplorerSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'ingestion_mapping_name': {'key': 'ingestionMappingName', 'type': 'object'},
         'ingestion_mapping_as_json': {'key': 'ingestionMappingAsJson', 'type': 'object'},
         'flush_immediately': {'key': 'flushImmediately', 'type': 'object'},
@@ -3792,6 +3880,9 @@ class AzureDataExplorerSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query: Required. Database query. Should be a Kusto Query Language (KQL) query. Type:
      string (or Expression with resultType string).
     :type query: object
@@ -3817,6 +3908,7 @@ class AzureDataExplorerSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
         'no_truncation': {'key': 'noTruncation', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
@@ -4190,6 +4282,9 @@ class AzureDataLakeStoreReadSettings(StoreReadSettings):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param recursive: If true, files under the folder path will be read recursively. Default is
      true. Type: boolean (or Expression with resultType boolean).
     :type recursive: object
@@ -4235,6 +4330,7 @@ class AzureDataLakeStoreReadSettings(StoreReadSettings):
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'recursive': {'key': 'recursive', 'type': 'object'},
         'wildcard_folder_path': {'key': 'wildcardFolderPath', 'type': 'object'},
         'wildcard_file_name': {'key': 'wildcardFileName', 'type': 'object'},
@@ -4292,6 +4388,9 @@ class AzureDataLakeStoreSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param copy_behavior: The type of copy behavior for copy sink.
     :type copy_behavior: object
     :param enable_adls_single_file_parallel: Single File Parallel.
@@ -4310,6 +4409,7 @@ class AzureDataLakeStoreSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'copy_behavior': {'key': 'copyBehavior', 'type': 'object'},
         'enable_adls_single_file_parallel': {'key': 'enableAdlsSingleFileParallel', 'type': 'object'},
     }
@@ -4343,6 +4443,9 @@ class AzureDataLakeStoreSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param recursive: If true, files under the folder path will be read recursively. Default is
      true. Type: boolean (or Expression with resultType boolean).
     :type recursive: object
@@ -4358,6 +4461,7 @@ class AzureDataLakeStoreSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'recursive': {'key': 'recursive', 'type': 'object'},
     }
 
@@ -4383,6 +4487,9 @@ class AzureDataLakeStoreWriteSettings(StoreWriteSettings):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param copy_behavior: The type of copy behavior for copy sink.
     :type copy_behavior: object
     :param expiry_date_time: Specifies the expiry time of the written files. The time is applied to
@@ -4399,6 +4506,7 @@ class AzureDataLakeStoreWriteSettings(StoreWriteSettings):
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'copy_behavior': {'key': 'copyBehavior', 'type': 'object'},
         'expiry_date_time': {'key': 'expiryDateTime', 'type': 'object'},
     }
@@ -4550,6 +4658,9 @@ class AzureFileStorageReadSettings(StoreReadSettings):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param recursive: If true, files under the folder path will be read recursively. Default is
      true. Type: boolean (or Expression with resultType boolean).
     :type recursive: object
@@ -4590,6 +4701,7 @@ class AzureFileStorageReadSettings(StoreReadSettings):
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'recursive': {'key': 'recursive', 'type': 'object'},
         'wildcard_folder_path': {'key': 'wildcardFolderPath', 'type': 'object'},
         'wildcard_file_name': {'key': 'wildcardFileName', 'type': 'object'},
@@ -4633,6 +4745,9 @@ class AzureFileStorageWriteSettings(StoreWriteSettings):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param copy_behavior: The type of copy behavior for copy sink.
     :type copy_behavior: object
     """
@@ -4645,6 +4760,7 @@ class AzureFileStorageWriteSettings(StoreWriteSettings):
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'copy_behavior': {'key': 'copyBehavior', 'type': 'object'},
     }
 
@@ -4979,6 +5095,9 @@ class AzureMariaDbSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -5000,6 +5119,7 @@ class AzureMariaDbSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -5580,6 +5700,9 @@ class AzureMySqlSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param pre_copy_script: A query to execute before starting the copy. Type: string (or
      Expression with resultType string).
     :type pre_copy_script: object
@@ -5597,6 +5720,7 @@ class AzureMySqlSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'pre_copy_script': {'key': 'preCopyScript', 'type': 'object'},
     }
 
@@ -5628,6 +5752,9 @@ class AzureMySqlSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -5648,6 +5775,7 @@ class AzureMySqlSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -5807,6 +5935,9 @@ class AzurePostgreSqlSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param pre_copy_script: A query to execute before starting the copy. Type: string (or
      Expression with resultType string).
     :type pre_copy_script: object
@@ -5824,6 +5955,7 @@ class AzurePostgreSqlSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'pre_copy_script': {'key': 'preCopyScript', 'type': 'object'},
     }
 
@@ -5855,6 +5987,9 @@ class AzurePostgreSqlSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -5876,6 +6011,7 @@ class AzurePostgreSqlSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -5984,6 +6120,9 @@ class AzureQueueSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     """
 
     _validation = {
@@ -5998,6 +6137,7 @@ class AzureQueueSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
     }
 
     def __init__(
@@ -6093,6 +6233,9 @@ class AzureSearchIndexSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param write_behavior: Specify the write behavior when upserting documents into Azure Search
      Index. Possible values include: "Merge", "Upload".
     :type write_behavior: str or
@@ -6111,6 +6254,7 @@ class AzureSearchIndexSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'write_behavior': {'key': 'writeBehavior', 'type': 'str'},
     }
 
@@ -6587,6 +6731,9 @@ class AzureSqlSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param sql_writer_stored_procedure_name: SQL writer stored procedure name. Type: string (or
      Expression with resultType string).
     :type sql_writer_stored_procedure_name: object
@@ -6619,6 +6766,7 @@ class AzureSqlSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'sql_writer_stored_procedure_name': {'key': 'sqlWriterStoredProcedureName', 'type': 'object'},
         'sql_writer_table_type': {'key': 'sqlWriterTableType', 'type': 'object'},
         'pre_copy_script': {'key': 'preCopyScript', 'type': 'object'},
@@ -6660,6 +6808,9 @@ class AzureSqlSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -6695,6 +6846,7 @@ class AzureSqlSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'sql_reader_query': {'key': 'sqlReaderQuery', 'type': 'object'},
@@ -6938,6 +7090,9 @@ class AzureTableSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param azure_table_default_partition_key_value: Azure Table default partition key value. Type:
      string (or Expression with resultType string).
     :type azure_table_default_partition_key_value: object
@@ -6964,6 +7119,7 @@ class AzureTableSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'azure_table_default_partition_key_value': {'key': 'azureTableDefaultPartitionKeyValue', 'type': 'object'},
         'azure_table_partition_key_name': {'key': 'azureTablePartitionKeyName', 'type': 'object'},
         'azure_table_row_key_name': {'key': 'azureTableRowKeyName', 'type': 'object'},
@@ -7001,6 +7157,9 @@ class AzureTableSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -7025,6 +7184,7 @@ class AzureTableSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'azure_table_source_query': {'key': 'azureTableSourceQuery', 'type': 'object'},
@@ -7263,6 +7423,9 @@ class BinarySink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param store_settings: Binary store settings.
     :type store_settings: ~data_factory_management_client.models.StoreWriteSettings
     """
@@ -7279,6 +7442,7 @@ class BinarySink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'store_settings': {'key': 'storeSettings', 'type': 'StoreWriteSettings'},
     }
 
@@ -7310,6 +7474,9 @@ class BinarySource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param store_settings: Binary store settings.
     :type store_settings: ~data_factory_management_client.models.StoreReadSettings
     :param format_settings: Binary format settings.
@@ -7326,6 +7493,7 @@ class BinarySource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'store_settings': {'key': 'storeSettings', 'type': 'StoreReadSettings'},
         'format_settings': {'key': 'formatSettings', 'type': 'BinaryReadSettings'},
     }
@@ -7543,6 +7711,9 @@ class BlobSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param blob_writer_overwrite_files: Blob writer overwrite files. Type: boolean (or Expression
      with resultType boolean).
     :type blob_writer_overwrite_files: object
@@ -7554,6 +7725,9 @@ class BlobSink(CopySink):
     :type blob_writer_add_header: object
     :param copy_behavior: The type of copy behavior for copy sink.
     :type copy_behavior: object
+    :param metadata: Specify the custom metadata to be added to sink data. Type: array of objects
+     (or Expression with resultType array of objects).
+    :type metadata: list[~data_factory_management_client.models.MetadataItem]
     """
 
     _validation = {
@@ -7568,10 +7742,12 @@ class BlobSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'blob_writer_overwrite_files': {'key': 'blobWriterOverwriteFiles', 'type': 'object'},
         'blob_writer_date_time_format': {'key': 'blobWriterDateTimeFormat', 'type': 'object'},
         'blob_writer_add_header': {'key': 'blobWriterAddHeader', 'type': 'object'},
         'copy_behavior': {'key': 'copyBehavior', 'type': 'object'},
+        'metadata': {'key': 'metadata', 'type': '[MetadataItem]'},
     }
 
     def __init__(
@@ -7584,6 +7760,7 @@ class BlobSink(CopySink):
         self.blob_writer_date_time_format = kwargs.get('blob_writer_date_time_format', None)
         self.blob_writer_add_header = kwargs.get('blob_writer_add_header', None)
         self.copy_behavior = kwargs.get('copy_behavior', None)
+        self.metadata = kwargs.get('metadata', None)
 
 
 class BlobSource(CopySource):
@@ -7605,6 +7782,9 @@ class BlobSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param treat_empty_as_null: Treat empty as null. Type: boolean (or Expression with resultType
      boolean).
     :type treat_empty_as_null: object
@@ -7626,6 +7806,7 @@ class BlobSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'treat_empty_as_null': {'key': 'treatEmptyAsNull', 'type': 'object'},
         'skip_header_line_count': {'key': 'skipHeaderLineCount', 'type': 'object'},
         'recursive': {'key': 'recursive', 'type': 'object'},
@@ -7794,6 +7975,9 @@ class CassandraSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -7823,6 +8007,7 @@ class CassandraSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -8140,8 +8325,8 @@ class CommonDataServiceForAppsLinkedService(LinkedService):
     :param deployment_type: Required. The deployment type of the Common Data Service for Apps
      instance. 'Online' for Common Data Service for Apps Online and 'OnPremisesWithIfd' for Common
      Data Service for Apps on-premises with Ifd. Type: string (or Expression with resultType
-     string). Possible values include: "Online", "OnPremisesWithIfd".
-    :type deployment_type: str or ~data_factory_management_client.models.DynamicsDeploymentType
+     string).
+    :type deployment_type: object
     :param host_name: The host name of the on-premises Common Data Service for Apps server. The
      property is required for on-prem and not allowed for online. Type: string (or Expression with
      resultType string).
@@ -8162,10 +8347,8 @@ class CommonDataServiceForAppsLinkedService(LinkedService):
     :param authentication_type: Required. The authentication type to connect to Common Data Service
      for Apps server. 'Office365' for online scenario, 'Ifd' for on-premises with Ifd scenario.
      'AADServicePrincipal' for Server-To-Server authentication in online scenario. Type: string (or
-     Expression with resultType string). Possible values include: "Office365", "Ifd",
-     "AADServicePrincipal".
-    :type authentication_type: str or
-     ~data_factory_management_client.models.DynamicsAuthenticationType
+     Expression with resultType string).
+    :type authentication_type: object
     :param username: User name to access the Common Data Service for Apps instance. Type: string
      (or Expression with resultType string).
     :type username: object
@@ -8176,10 +8359,8 @@ class CommonDataServiceForAppsLinkedService(LinkedService):
     :type service_principal_id: object
     :param service_principal_credential_type: The service principal credential type to use in
      Server-To-Server authentication. 'ServicePrincipalKey' for key/secret, 'ServicePrincipalCert'
-     for certificate. Type: string (or Expression with resultType string). Possible values include:
-     "ServicePrincipalKey", "ServicePrincipalCert".
-    :type service_principal_credential_type: str or
-     ~data_factory_management_client.models.DynamicsServicePrincipalCredentialType
+     for certificate. Type: string (or Expression with resultType string).
+    :type service_principal_credential_type: object
     :param service_principal_credential: The credential of the service principal object in Azure
      Active Directory. If servicePrincipalCredentialType is 'ServicePrincipalKey',
      servicePrincipalCredential can be SecureString or AzureKeyVaultSecretReference. If
@@ -8205,16 +8386,16 @@ class CommonDataServiceForAppsLinkedService(LinkedService):
         'description': {'key': 'description', 'type': 'str'},
         'parameters': {'key': 'parameters', 'type': '{ParameterSpecification}'},
         'annotations': {'key': 'annotations', 'type': '[object]'},
-        'deployment_type': {'key': 'typeProperties.deploymentType', 'type': 'str'},
+        'deployment_type': {'key': 'typeProperties.deploymentType', 'type': 'object'},
         'host_name': {'key': 'typeProperties.hostName', 'type': 'object'},
         'port': {'key': 'typeProperties.port', 'type': 'object'},
         'service_uri': {'key': 'typeProperties.serviceUri', 'type': 'object'},
         'organization_name': {'key': 'typeProperties.organizationName', 'type': 'object'},
-        'authentication_type': {'key': 'typeProperties.authenticationType', 'type': 'str'},
+        'authentication_type': {'key': 'typeProperties.authenticationType', 'type': 'object'},
         'username': {'key': 'typeProperties.username', 'type': 'object'},
         'password': {'key': 'typeProperties.password', 'type': 'SecretBase'},
         'service_principal_id': {'key': 'typeProperties.servicePrincipalId', 'type': 'object'},
-        'service_principal_credential_type': {'key': 'typeProperties.servicePrincipalCredentialType', 'type': 'str'},
+        'service_principal_credential_type': {'key': 'typeProperties.servicePrincipalCredentialType', 'type': 'object'},
         'service_principal_credential': {'key': 'typeProperties.servicePrincipalCredential', 'type': 'SecretBase'},
         'encrypted_credential': {'key': 'typeProperties.encryptedCredential', 'type': 'object'},
     }
@@ -8264,6 +8445,9 @@ class CommonDataServiceForAppsSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param write_behavior: Required. The write behavior for the operation. Possible values include:
      "Upsert".
     :type write_behavior: str or ~data_factory_management_client.models.DynamicsSinkWriteBehavior
@@ -8289,6 +8473,7 @@ class CommonDataServiceForAppsSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'write_behavior': {'key': 'writeBehavior', 'type': 'str'},
         'ignore_null_values': {'key': 'ignoreNullValues', 'type': 'object'},
         'alternate_key_name': {'key': 'alternateKeyName', 'type': 'object'},
@@ -8324,6 +8509,9 @@ class CommonDataServiceForAppsSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query: FetchXML is a proprietary query language that is used in Microsoft Common Data
      Service for Apps (online & on-premises). Type: string (or Expression with resultType string).
     :type query: object
@@ -8342,6 +8530,7 @@ class CommonDataServiceForAppsSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
     }
@@ -8587,6 +8776,9 @@ class ConcurSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -8608,6 +8800,7 @@ class ConcurSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -9130,6 +9323,9 @@ class CosmosDbMongoDbApiSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param write_behavior: Specifies whether the document with same key to be overwritten (upsert)
      rather than throw exception (insert). The default value is "insert". Type: string (or
      Expression with resultType string). Type: string (or Expression with resultType string).
@@ -9148,6 +9344,7 @@ class CosmosDbMongoDbApiSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'write_behavior': {'key': 'writeBehavior', 'type': 'object'},
     }
 
@@ -9179,6 +9376,9 @@ class CosmosDbMongoDbApiSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param filter: Specifies selection filter using query operators. To return all documents in a
      collection, omit this parameter or pass an empty document ({}). Type: string (or Expression
      with resultType string).
@@ -9208,6 +9408,7 @@ class CosmosDbMongoDbApiSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'filter': {'key': 'filter', 'type': 'object'},
         'cursor_methods': {'key': 'cursorMethods', 'type': 'MongoDbCursorMethodsProperties'},
         'batch_size': {'key': 'batchSize', 'type': 'object'},
@@ -9313,6 +9514,9 @@ class CosmosDbSqlApiSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param write_behavior: Describes how to write data to Azure Cosmos DB. Type: string (or
      Expression with resultType string). Allowed values: insert and upsert.
     :type write_behavior: object
@@ -9330,6 +9534,7 @@ class CosmosDbSqlApiSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'write_behavior': {'key': 'writeBehavior', 'type': 'object'},
     }
 
@@ -9361,6 +9566,9 @@ class CosmosDbSqlApiSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query: SQL API query. Type: string (or Expression with resultType string).
     :type query: object
     :param page_size: Page size of the result. Type: integer (or Expression with resultType
@@ -9387,6 +9595,7 @@ class CosmosDbSqlApiSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
         'page_size': {'key': 'pageSize', 'type': 'object'},
         'preferred_regions': {'key': 'preferredRegions', 'type': 'object'},
@@ -9482,6 +9691,9 @@ class CouchbaseSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -9503,6 +9715,7 @@ class CouchbaseSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -10999,8 +11212,8 @@ class DatasetDeflateCompression(DatasetCompression):
     :type additional_properties: dict[str, object]
     :param type: Required. Type of dataset compression.Constant filled by server.
     :type type: str
-    :param level: The Deflate compression level. Possible values include: "Optimal", "Fastest".
-    :type level: str or ~data_factory_management_client.models.DatasetCompressionLevel
+    :param level: The Deflate compression level.
+    :type level: object
     """
 
     _validation = {
@@ -11010,7 +11223,7 @@ class DatasetDeflateCompression(DatasetCompression):
     _attribute_map = {
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
-        'level': {'key': 'level', 'type': 'str'},
+        'level': {'key': 'level', 'type': 'object'},
     }
 
     def __init__(
@@ -11051,8 +11264,8 @@ class DatasetGZipCompression(DatasetCompression):
     :type additional_properties: dict[str, object]
     :param type: Required. Type of dataset compression.Constant filled by server.
     :type type: str
-    :param level: The GZip compression level. Possible values include: "Optimal", "Fastest".
-    :type level: str or ~data_factory_management_client.models.DatasetCompressionLevel
+    :param level: The GZip compression level.
+    :type level: object
     """
 
     _validation = {
@@ -11062,7 +11275,7 @@ class DatasetGZipCompression(DatasetCompression):
     _attribute_map = {
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
-        'level': {'key': 'level', 'type': 'str'},
+        'level': {'key': 'level', 'type': 'object'},
     }
 
     def __init__(
@@ -11250,8 +11463,8 @@ class DatasetTarGZipCompression(DatasetCompression):
     :type additional_properties: dict[str, object]
     :param type: Required. Type of dataset compression.Constant filled by server.
     :type type: str
-    :param level: The TarGZip compression level. Possible values include: "Optimal", "Fastest".
-    :type level: str or ~data_factory_management_client.models.DatasetCompressionLevel
+    :param level: The TarGZip compression level.
+    :type level: object
     """
 
     _validation = {
@@ -11261,7 +11474,7 @@ class DatasetTarGZipCompression(DatasetCompression):
     _attribute_map = {
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
-        'level': {'key': 'level', 'type': 'str'},
+        'level': {'key': 'level', 'type': 'object'},
     }
 
     def __init__(
@@ -11283,8 +11496,8 @@ class DatasetZipDeflateCompression(DatasetCompression):
     :type additional_properties: dict[str, object]
     :param type: Required. Type of dataset compression.Constant filled by server.
     :type type: str
-    :param level: The ZipDeflate compression level. Possible values include: "Optimal", "Fastest".
-    :type level: str or ~data_factory_management_client.models.DatasetCompressionLevel
+    :param level: The ZipDeflate compression level.
+    :type level: object
     """
 
     _validation = {
@@ -11294,7 +11507,7 @@ class DatasetZipDeflateCompression(DatasetCompression):
     _attribute_map = {
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
-        'level': {'key': 'level', 'type': 'str'},
+        'level': {'key': 'level', 'type': 'object'},
     }
 
     def __init__(
@@ -11413,6 +11626,9 @@ class Db2Source(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -11433,6 +11649,7 @@ class Db2Source(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -11652,12 +11869,11 @@ class DelimitedTextDataset(Dataset):
      https://msdn.microsoft.com/library/system.text.encoding.aspx. Type: string (or Expression with
      resultType string).
     :type encoding_name: object
-    :param compression_codec:  Possible values include: "none", "gzip", "snappy", "lzo", "bzip2",
-     "deflate", "zipDeflate", "lz4", "tar", "tarGZip".
-    :type compression_codec: str or ~data_factory_management_client.models.CompressionCodec
-    :param compression_level: The data compression method used for DelimitedText. Possible values
-     include: "Optimal", "Fastest".
-    :type compression_level: str or ~data_factory_management_client.models.DatasetCompressionLevel
+    :param compression_codec: The data compressionCodec. Type: string (or Expression with
+     resultType string).
+    :type compression_codec: object
+    :param compression_level: The data compression method used for DelimitedText.
+    :type compression_level: object
     :param quote_char: The quote character. Type: string (or Expression with resultType string).
     :type quote_char: object
     :param escape_char: The escape character. Type: string (or Expression with resultType string).
@@ -11689,8 +11905,8 @@ class DelimitedTextDataset(Dataset):
         'column_delimiter': {'key': 'typeProperties.columnDelimiter', 'type': 'object'},
         'row_delimiter': {'key': 'typeProperties.rowDelimiter', 'type': 'object'},
         'encoding_name': {'key': 'typeProperties.encodingName', 'type': 'object'},
-        'compression_codec': {'key': 'typeProperties.compressionCodec', 'type': 'str'},
-        'compression_level': {'key': 'typeProperties.compressionLevel', 'type': 'str'},
+        'compression_codec': {'key': 'typeProperties.compressionCodec', 'type': 'object'},
+        'compression_level': {'key': 'typeProperties.compressionLevel', 'type': 'object'},
         'quote_char': {'key': 'typeProperties.quoteChar', 'type': 'object'},
         'escape_char': {'key': 'typeProperties.escapeChar', 'type': 'object'},
         'first_row_as_header': {'key': 'typeProperties.firstRowAsHeader', 'type': 'object'},
@@ -11778,6 +11994,9 @@ class DelimitedTextSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param store_settings: DelimitedText store settings.
     :type store_settings: ~data_factory_management_client.models.StoreWriteSettings
     :param format_settings: DelimitedText format settings.
@@ -11796,6 +12015,7 @@ class DelimitedTextSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'store_settings': {'key': 'storeSettings', 'type': 'StoreWriteSettings'},
         'format_settings': {'key': 'formatSettings', 'type': 'DelimitedTextWriteSettings'},
     }
@@ -11829,6 +12049,9 @@ class DelimitedTextSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param store_settings: DelimitedText store settings.
     :type store_settings: ~data_factory_management_client.models.StoreReadSettings
     :param format_settings: DelimitedText format settings.
@@ -11848,6 +12071,7 @@ class DelimitedTextSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'store_settings': {'key': 'storeSettings', 'type': 'StoreReadSettings'},
         'format_settings': {'key': 'formatSettings', 'type': 'DelimitedTextReadSettings'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
@@ -12070,6 +12294,9 @@ class DocumentDbCollectionSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param nesting_separator: Nested properties separator. Default is . (dot). Type: string (or
      Expression with resultType string).
     :type nesting_separator: object
@@ -12090,6 +12317,7 @@ class DocumentDbCollectionSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'nesting_separator': {'key': 'nestingSeparator', 'type': 'object'},
         'write_behavior': {'key': 'writeBehavior', 'type': 'object'},
     }
@@ -12123,6 +12351,9 @@ class DocumentDbCollectionSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query: Documents query. Type: string (or Expression with resultType string).
     :type query: object
     :param nesting_separator: Nested properties separator. Type: string (or Expression with
@@ -12146,6 +12377,7 @@ class DocumentDbCollectionSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
         'nesting_separator': {'key': 'nestingSeparator', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
@@ -12239,6 +12471,9 @@ class DrillSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -12260,6 +12495,7 @@ class DrillSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -12552,6 +12788,9 @@ class DynamicsAxSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -12578,6 +12817,7 @@ class DynamicsAxSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -12673,9 +12913,8 @@ class DynamicsCrmLinkedService(LinkedService):
     :type annotations: list[object]
     :param deployment_type: Required. The deployment type of the Dynamics CRM instance. 'Online'
      for Dynamics CRM Online and 'OnPremisesWithIfd' for Dynamics CRM on-premises with Ifd. Type:
-     string (or Expression with resultType string). Possible values include: "Online",
-     "OnPremisesWithIfd".
-    :type deployment_type: str or ~data_factory_management_client.models.DynamicsDeploymentType
+     string (or Expression with resultType string).
+    :type deployment_type: object
     :param host_name: The host name of the on-premises Dynamics CRM server. The property is
      required for on-prem and not allowed for online. Type: string (or Expression with resultType
      string).
@@ -12694,10 +12933,8 @@ class DynamicsCrmLinkedService(LinkedService):
     :param authentication_type: Required. The authentication type to connect to Dynamics CRM
      server. 'Office365' for online scenario, 'Ifd' for on-premises with Ifd scenario,
      'AADServicePrincipal' for Server-To-Server authentication in online scenario. Type: string (or
-     Expression with resultType string). Possible values include: "Office365", "Ifd",
-     "AADServicePrincipal".
-    :type authentication_type: str or
-     ~data_factory_management_client.models.DynamicsAuthenticationType
+     Expression with resultType string).
+    :type authentication_type: object
     :param username: User name to access the Dynamics CRM instance. Type: string (or Expression
      with resultType string).
     :type username: object
@@ -12708,10 +12945,8 @@ class DynamicsCrmLinkedService(LinkedService):
     :type service_principal_id: object
     :param service_principal_credential_type: The service principal credential type to use in
      Server-To-Server authentication. 'ServicePrincipalKey' for key/secret, 'ServicePrincipalCert'
-     for certificate. Type: string (or Expression with resultType string). Possible values include:
-     "ServicePrincipalKey", "ServicePrincipalCert".
-    :type service_principal_credential_type: str or
-     ~data_factory_management_client.models.DynamicsServicePrincipalCredentialType
+     for certificate. Type: string (or Expression with resultType string).
+    :type service_principal_credential_type: object
     :param service_principal_credential: The credential of the service principal object in Azure
      Active Directory. If servicePrincipalCredentialType is 'ServicePrincipalKey',
      servicePrincipalCredential can be SecureString or AzureKeyVaultSecretReference. If
@@ -12737,16 +12972,16 @@ class DynamicsCrmLinkedService(LinkedService):
         'description': {'key': 'description', 'type': 'str'},
         'parameters': {'key': 'parameters', 'type': '{ParameterSpecification}'},
         'annotations': {'key': 'annotations', 'type': '[object]'},
-        'deployment_type': {'key': 'typeProperties.deploymentType', 'type': 'str'},
+        'deployment_type': {'key': 'typeProperties.deploymentType', 'type': 'object'},
         'host_name': {'key': 'typeProperties.hostName', 'type': 'object'},
         'port': {'key': 'typeProperties.port', 'type': 'object'},
         'service_uri': {'key': 'typeProperties.serviceUri', 'type': 'object'},
         'organization_name': {'key': 'typeProperties.organizationName', 'type': 'object'},
-        'authentication_type': {'key': 'typeProperties.authenticationType', 'type': 'str'},
+        'authentication_type': {'key': 'typeProperties.authenticationType', 'type': 'object'},
         'username': {'key': 'typeProperties.username', 'type': 'object'},
         'password': {'key': 'typeProperties.password', 'type': 'SecretBase'},
         'service_principal_id': {'key': 'typeProperties.servicePrincipalId', 'type': 'object'},
-        'service_principal_credential_type': {'key': 'typeProperties.servicePrincipalCredentialType', 'type': 'str'},
+        'service_principal_credential_type': {'key': 'typeProperties.servicePrincipalCredentialType', 'type': 'object'},
         'service_principal_credential': {'key': 'typeProperties.servicePrincipalCredential', 'type': 'SecretBase'},
         'encrypted_credential': {'key': 'typeProperties.encryptedCredential', 'type': 'object'},
     }
@@ -12796,6 +13031,9 @@ class DynamicsCrmSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param write_behavior: Required. The write behavior for the operation. Possible values include:
      "Upsert".
     :type write_behavior: str or ~data_factory_management_client.models.DynamicsSinkWriteBehavior
@@ -12821,6 +13059,7 @@ class DynamicsCrmSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'write_behavior': {'key': 'writeBehavior', 'type': 'str'},
         'ignore_null_values': {'key': 'ignoreNullValues', 'type': 'object'},
         'alternate_key_name': {'key': 'alternateKeyName', 'type': 'object'},
@@ -12856,6 +13095,9 @@ class DynamicsCrmSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query: FetchXML is a proprietary query language that is used in Microsoft Dynamics CRM
      (online & on-premises). Type: string (or Expression with resultType string).
     :type query: object
@@ -12874,6 +13116,7 @@ class DynamicsCrmSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
     }
@@ -12967,8 +13210,8 @@ class DynamicsLinkedService(LinkedService):
     :type annotations: list[object]
     :param deployment_type: Required. The deployment type of the Dynamics instance. 'Online' for
      Dynamics Online and 'OnPremisesWithIfd' for Dynamics on-premises with Ifd. Type: string (or
-     Expression with resultType string). Possible values include: "Online", "OnPremisesWithIfd".
-    :type deployment_type: str or ~data_factory_management_client.models.DynamicsDeploymentType
+     Expression with resultType string).
+    :type deployment_type: object
     :param host_name: The host name of the on-premises Dynamics server. The property is required
      for on-prem and not allowed for online. Type: string (or Expression with resultType string).
     :type host_name: object
@@ -12986,9 +13229,8 @@ class DynamicsLinkedService(LinkedService):
     :param authentication_type: Required. The authentication type to connect to Dynamics server.
      'Office365' for online scenario, 'Ifd' for on-premises with Ifd scenario, 'AADServicePrincipal'
      for Server-To-Server authentication in online scenario. Type: string (or Expression with
-     resultType string). Possible values include: "Office365", "Ifd", "AADServicePrincipal".
-    :type authentication_type: str or
-     ~data_factory_management_client.models.DynamicsAuthenticationType
+     resultType string).
+    :type authentication_type: object
     :param username: User name to access the Dynamics instance. Type: string (or Expression with
      resultType string).
     :type username: object
@@ -12999,10 +13241,8 @@ class DynamicsLinkedService(LinkedService):
     :type service_principal_id: object
     :param service_principal_credential_type: The service principal credential type to use in
      Server-To-Server authentication. 'ServicePrincipalKey' for key/secret, 'ServicePrincipalCert'
-     for certificate. Type: string (or Expression with resultType string). Possible values include:
-     "ServicePrincipalKey", "ServicePrincipalCert".
-    :type service_principal_credential_type: str or
-     ~data_factory_management_client.models.DynamicsServicePrincipalCredentialType
+     for certificate. Type: string (or Expression with resultType string).
+    :type service_principal_credential_type: str
     :param service_principal_credential: The credential of the service principal object in Azure
      Active Directory. If servicePrincipalCredentialType is 'ServicePrincipalKey',
      servicePrincipalCredential can be SecureString or AzureKeyVaultSecretReference. If
@@ -13028,12 +13268,12 @@ class DynamicsLinkedService(LinkedService):
         'description': {'key': 'description', 'type': 'str'},
         'parameters': {'key': 'parameters', 'type': '{ParameterSpecification}'},
         'annotations': {'key': 'annotations', 'type': '[object]'},
-        'deployment_type': {'key': 'typeProperties.deploymentType', 'type': 'str'},
+        'deployment_type': {'key': 'typeProperties.deploymentType', 'type': 'object'},
         'host_name': {'key': 'typeProperties.hostName', 'type': 'object'},
         'port': {'key': 'typeProperties.port', 'type': 'object'},
         'service_uri': {'key': 'typeProperties.serviceUri', 'type': 'object'},
         'organization_name': {'key': 'typeProperties.organizationName', 'type': 'object'},
-        'authentication_type': {'key': 'typeProperties.authenticationType', 'type': 'str'},
+        'authentication_type': {'key': 'typeProperties.authenticationType', 'type': 'object'},
         'username': {'key': 'typeProperties.username', 'type': 'object'},
         'password': {'key': 'typeProperties.password', 'type': 'SecretBase'},
         'service_principal_id': {'key': 'typeProperties.servicePrincipalId', 'type': 'object'},
@@ -13087,6 +13327,9 @@ class DynamicsSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param write_behavior: Required. The write behavior for the operation. Possible values include:
      "Upsert".
     :type write_behavior: str or ~data_factory_management_client.models.DynamicsSinkWriteBehavior
@@ -13112,6 +13355,7 @@ class DynamicsSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'write_behavior': {'key': 'writeBehavior', 'type': 'str'},
         'ignore_null_values': {'key': 'ignoreNullValues', 'type': 'object'},
         'alternate_key_name': {'key': 'alternateKeyName', 'type': 'object'},
@@ -13147,6 +13391,9 @@ class DynamicsSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query: FetchXML is a proprietary query language that is used in Microsoft Dynamics
      (online & on-premises). Type: string (or Expression with resultType string).
     :type query: object
@@ -13165,6 +13412,7 @@ class DynamicsSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
     }
@@ -13334,6 +13582,9 @@ class EloquaSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -13355,6 +13606,7 @@ class EloquaSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -13414,7 +13666,7 @@ class EntityReference(msrest.serialization.Model):
     """The entity reference.
 
     :param type: The type of this referenced entity. Possible values include:
-     "IntegrationRuntimeReference", "LinkedServiceReference".
+     "IntegrationRuntimeReference", "LinkedServiceReference", "CredentialReference".
     :type type: str or ~data_factory_management_client.models.IntegrationRuntimeEntityReferenceType
     :param reference_name: The name of this referenced entity.
     :type reference_name: str
@@ -13498,9 +13750,12 @@ class ExcelDataset(Dataset):
     :type folder: ~data_factory_management_client.models.DatasetFolder
     :param location: The location of the excel storage.
     :type location: ~data_factory_management_client.models.DatasetLocation
-    :param sheet_name: The sheet of excel file. Type: string (or Expression with resultType
+    :param sheet_name: The sheet name of excel file. Type: string (or Expression with resultType
      string).
     :type sheet_name: object
+    :param sheet_index: The sheet index of excel file and default value is 0. Type: integer (or
+     Expression with resultType integer).
+    :type sheet_index: object
     :param range: The partial data of one sheet. Type: string (or Expression with resultType
      string).
     :type range: object
@@ -13531,6 +13786,7 @@ class ExcelDataset(Dataset):
         'folder': {'key': 'folder', 'type': 'DatasetFolder'},
         'location': {'key': 'typeProperties.location', 'type': 'DatasetLocation'},
         'sheet_name': {'key': 'typeProperties.sheetName', 'type': 'object'},
+        'sheet_index': {'key': 'typeProperties.sheetIndex', 'type': 'object'},
         'range': {'key': 'typeProperties.range', 'type': 'object'},
         'first_row_as_header': {'key': 'typeProperties.firstRowAsHeader', 'type': 'object'},
         'compression': {'key': 'typeProperties.compression', 'type': 'DatasetCompression'},
@@ -13545,6 +13801,7 @@ class ExcelDataset(Dataset):
         self.type = 'Excel'  # type: str
         self.location = kwargs.get('location', None)
         self.sheet_name = kwargs.get('sheet_name', None)
+        self.sheet_index = kwargs.get('sheet_index', None)
         self.range = kwargs.get('range', None)
         self.first_row_as_header = kwargs.get('first_row_as_header', None)
         self.compression = kwargs.get('compression', None)
@@ -13570,6 +13827,9 @@ class ExcelSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param store_settings: Excel store settings.
     :type store_settings: ~data_factory_management_client.models.StoreReadSettings
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
@@ -13587,6 +13847,7 @@ class ExcelSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'store_settings': {'key': 'storeSettings', 'type': 'StoreReadSettings'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
     }
@@ -14527,6 +14788,9 @@ class FileServerReadSettings(StoreReadSettings):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param recursive: If true, files under the folder path will be read recursively. Default is
      true. Type: boolean (or Expression with resultType boolean).
     :type recursive: object
@@ -14567,6 +14831,7 @@ class FileServerReadSettings(StoreReadSettings):
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'recursive': {'key': 'recursive', 'type': 'object'},
         'wildcard_folder_path': {'key': 'wildcardFolderPath', 'type': 'object'},
         'wildcard_file_name': {'key': 'wildcardFileName', 'type': 'object'},
@@ -14610,6 +14875,9 @@ class FileServerWriteSettings(StoreWriteSettings):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param copy_behavior: The type of copy behavior for copy sink.
     :type copy_behavior: object
     """
@@ -14622,6 +14890,7 @@ class FileServerWriteSettings(StoreWriteSettings):
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'copy_behavior': {'key': 'copyBehavior', 'type': 'object'},
     }
 
@@ -14745,6 +15014,9 @@ class FileSystemSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param copy_behavior: The type of copy behavior for copy sink.
     :type copy_behavior: object
     """
@@ -14761,6 +15033,7 @@ class FileSystemSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'copy_behavior': {'key': 'copyBehavior', 'type': 'object'},
     }
 
@@ -14792,6 +15065,9 @@ class FileSystemSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param recursive: If true, files under the folder path will be read recursively. Default is
      true. Type: boolean (or Expression with resultType boolean).
     :type recursive: object
@@ -14810,6 +15086,7 @@ class FileSystemSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'recursive': {'key': 'recursive', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
     }
@@ -14951,6 +15228,9 @@ class FtpReadSettings(StoreReadSettings):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param recursive: If true, files under the folder path will be read recursively. Default is
      true. Type: boolean (or Expression with resultType boolean).
     :type recursive: object
@@ -14984,6 +15264,7 @@ class FtpReadSettings(StoreReadSettings):
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'recursive': {'key': 'recursive', 'type': 'object'},
         'wildcard_folder_path': {'key': 'wildcardFolderPath', 'type': 'object'},
         'wildcard_file_name': {'key': 'wildcardFileName', 'type': 'object'},
@@ -15502,6 +15783,9 @@ class GoogleAdWordsSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -15523,6 +15807,7 @@ class GoogleAdWordsSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -15731,6 +16016,9 @@ class GoogleBigQuerySource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -15752,6 +16040,7 @@ class GoogleBigQuerySource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -15890,6 +16179,9 @@ class GoogleCloudStorageReadSettings(StoreReadSettings):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param recursive: If true, files under the folder path will be read recursively. Default is
      true. Type: boolean (or Expression with resultType boolean).
     :type recursive: object
@@ -15930,6 +16222,7 @@ class GoogleCloudStorageReadSettings(StoreReadSettings):
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'recursive': {'key': 'recursive', 'type': 'object'},
         'wildcard_folder_path': {'key': 'wildcardFolderPath', 'type': 'object'},
         'wildcard_file_name': {'key': 'wildcardFileName', 'type': 'object'},
@@ -16035,6 +16328,9 @@ class GreenplumSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -16056,6 +16352,7 @@ class GreenplumSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -16313,6 +16610,9 @@ class HBaseSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -16334,6 +16634,7 @@ class HBaseSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -16465,6 +16766,9 @@ class HdfsReadSettings(StoreReadSettings):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param recursive: If true, files under the folder path will be read recursively. Default is
      true. Type: boolean (or Expression with resultType boolean).
     :type recursive: object
@@ -16504,6 +16808,7 @@ class HdfsReadSettings(StoreReadSettings):
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'recursive': {'key': 'recursive', 'type': 'object'},
         'wildcard_folder_path': {'key': 'wildcardFolderPath', 'type': 'object'},
         'wildcard_file_name': {'key': 'wildcardFileName', 'type': 'object'},
@@ -16553,6 +16858,9 @@ class HdfsSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param recursive: If true, files under the folder path will be read recursively. Default is
      true. Type: boolean (or Expression with resultType boolean).
     :type recursive: object
@@ -16570,6 +16878,7 @@ class HdfsSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'recursive': {'key': 'recursive', 'type': 'object'},
         'distcp_settings': {'key': 'distcpSettings', 'type': 'DistcpSettings'},
     }
@@ -17530,6 +17839,9 @@ class HiveSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -17551,6 +17863,7 @@ class HiveSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -17755,6 +18068,9 @@ class HttpReadSettings(StoreReadSettings):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param request_method: The HTTP method used to call the RESTful API. The default is GET. Type:
      string (or Expression with resultType string).
     :type request_method: object
@@ -17782,6 +18098,7 @@ class HttpReadSettings(StoreReadSettings):
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'request_method': {'key': 'requestMethod', 'type': 'object'},
         'request_body': {'key': 'requestBody', 'type': 'object'},
         'additional_headers': {'key': 'additionalHeaders', 'type': 'object'},
@@ -17865,6 +18182,9 @@ class HttpSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param http_request_timeout: Specifies the timeout for a HTTP client to get HTTP response from
      HTTP server. The default value is equivalent to System.Net.HttpWebRequest.Timeout. Type: string
      (or Expression with resultType string), pattern:
@@ -17882,6 +18202,7 @@ class HttpSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'http_request_timeout': {'key': 'httpRequestTimeout', 'type': 'object'},
     }
 
@@ -18053,6 +18374,9 @@ class HubspotSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -18074,6 +18398,7 @@ class HubspotSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -18335,6 +18660,9 @@ class ImpalaSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -18356,6 +18684,7 @@ class ImpalaSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -18469,6 +18798,9 @@ class InformixSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param pre_copy_script: A query to execute before starting the copy. Type: string (or
      Expression with resultType string).
     :type pre_copy_script: object
@@ -18486,6 +18818,7 @@ class InformixSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'pre_copy_script': {'key': 'preCopyScript', 'type': 'object'},
     }
 
@@ -18517,6 +18850,9 @@ class InformixSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -18537,6 +18873,7 @@ class InformixSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -19225,6 +19562,8 @@ class IntegrationRuntimeSsisProperties(msrest.serialization.Model):
      list[~data_factory_management_client.models.CustomSetupBase]
     :param package_stores: Package stores for the SSIS Integration Runtime.
     :type package_stores: list[~data_factory_management_client.models.PackageStore]
+    :param managed_credential: The user-assigned managed identity reference.
+    :type managed_credential: ~data_factory_management_client.models.EntityReference
     """
 
     _attribute_map = {
@@ -19236,6 +19575,7 @@ class IntegrationRuntimeSsisProperties(msrest.serialization.Model):
         'edition': {'key': 'edition', 'type': 'str'},
         'express_custom_setup_properties': {'key': 'expressCustomSetupProperties', 'type': '[CustomSetupBase]'},
         'package_stores': {'key': 'packageStores', 'type': '[PackageStore]'},
+        'managed_credential': {'key': 'managedCredential', 'type': 'EntityReference'},
     }
 
     def __init__(
@@ -19251,6 +19591,7 @@ class IntegrationRuntimeSsisProperties(msrest.serialization.Model):
         self.edition = kwargs.get('edition', None)
         self.express_custom_setup_properties = kwargs.get('express_custom_setup_properties', None)
         self.package_stores = kwargs.get('package_stores', None)
+        self.managed_credential = kwargs.get('managed_credential', None)
 
 
 class IntegrationRuntimeStatus(msrest.serialization.Model):
@@ -19560,6 +19901,9 @@ class JiraSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -19581,6 +19925,7 @@ class JiraSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -19680,9 +20025,8 @@ class JsonFormat(DatasetStorageFormat):
     :param deserializer: Deserializer. Type: string (or Expression with resultType string).
     :type deserializer: object
     :param file_pattern: File pattern of JSON. To be more specific, the way of separating a
-     collection of JSON objects. The default value is 'setOfObjects'. It is case-sensitive. Possible
-     values include: "setOfObjects", "arrayOfObjects".
-    :type file_pattern: str or ~data_factory_management_client.models.JsonFormatFilePattern
+     collection of JSON objects. The default value is 'setOfObjects'. It is case-sensitive.
+    :type file_pattern: object
     :param nesting_separator: The character used to separate nesting levels. Default value is '.'
      (dot). Type: string (or Expression with resultType string).
     :type nesting_separator: object
@@ -19712,7 +20056,7 @@ class JsonFormat(DatasetStorageFormat):
         'type': {'key': 'type', 'type': 'str'},
         'serializer': {'key': 'serializer', 'type': 'object'},
         'deserializer': {'key': 'deserializer', 'type': 'object'},
-        'file_pattern': {'key': 'filePattern', 'type': 'str'},
+        'file_pattern': {'key': 'filePattern', 'type': 'object'},
         'nesting_separator': {'key': 'nestingSeparator', 'type': 'object'},
         'encoding_name': {'key': 'encodingName', 'type': 'object'},
         'json_node_reference': {'key': 'jsonNodeReference', 'type': 'object'},
@@ -19790,6 +20134,9 @@ class JsonSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param store_settings: Json store settings.
     :type store_settings: ~data_factory_management_client.models.StoreWriteSettings
     :param format_settings: Json format settings.
@@ -19808,6 +20155,7 @@ class JsonSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'store_settings': {'key': 'storeSettings', 'type': 'StoreWriteSettings'},
         'format_settings': {'key': 'formatSettings', 'type': 'JsonWriteSettings'},
     }
@@ -19841,6 +20189,9 @@ class JsonSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param store_settings: Json store settings.
     :type store_settings: ~data_factory_management_client.models.StoreReadSettings
     :param format_settings: Json format settings.
@@ -19860,6 +20211,7 @@ class JsonSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'store_settings': {'key': 'storeSettings', 'type': 'StoreReadSettings'},
         'format_settings': {'key': 'formatSettings', 'type': 'JsonReadSettings'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
@@ -19887,9 +20239,8 @@ class JsonWriteSettings(FormatWriteSettings):
     :param type: Required. The write setting type.Constant filled by server.
     :type type: str
     :param file_pattern: File pattern of JSON. This setting controls the way a collection of JSON
-     objects will be treated. The default value is 'setOfObjects'. It is case-sensitive. Possible
-     values include: "setOfObjects", "arrayOfObjects".
-    :type file_pattern: str or ~data_factory_management_client.models.JsonWriteFilePattern
+     objects will be treated. The default value is 'setOfObjects'. It is case-sensitive.
+    :type file_pattern: object
     """
 
     _validation = {
@@ -19899,7 +20250,7 @@ class JsonWriteSettings(FormatWriteSettings):
     _attribute_map = {
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
-        'file_pattern': {'key': 'filePattern', 'type': 'str'},
+        'file_pattern': {'key': 'filePattern', 'type': 'object'},
     }
 
     def __init__(
@@ -20538,6 +20889,9 @@ class MagentoSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -20559,6 +20913,7 @@ class MagentoSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -21219,6 +21574,9 @@ class MariaDbSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -21240,6 +21598,7 @@ class MariaDbSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -21466,6 +21825,9 @@ class MarketoSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -21487,6 +21849,7 @@ class MarketoSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -21499,6 +21862,29 @@ class MarketoSource(TabularSource):
         super(MarketoSource, self).__init__(**kwargs)
         self.type = 'MarketoSource'  # type: str
         self.query = kwargs.get('query', None)
+
+
+class MetadataItem(msrest.serialization.Model):
+    """Specify the name and value of custom metadata item.
+
+    :param name: Metadata item key name. Type: string (or Expression with resultType string).
+    :type name: object
+    :param value: Metadata item value. Type: string (or Expression with resultType string).
+    :type value: object
+    """
+
+    _attribute_map = {
+        'name': {'key': 'name', 'type': 'object'},
+        'value': {'key': 'value', 'type': 'object'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(MetadataItem, self).__init__(**kwargs)
+        self.name = kwargs.get('name', None)
+        self.value = kwargs.get('value', None)
 
 
 class MicrosoftAccessLinkedService(LinkedService):
@@ -21600,6 +21986,9 @@ class MicrosoftAccessSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param pre_copy_script: A query to execute before starting the copy. Type: string (or
      Expression with resultType string).
     :type pre_copy_script: object
@@ -21617,6 +22006,7 @@ class MicrosoftAccessSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'pre_copy_script': {'key': 'preCopyScript', 'type': 'object'},
     }
 
@@ -21648,6 +22038,9 @@ class MicrosoftAccessSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query: Database query. Type: string (or Expression with resultType string).
     :type query: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
@@ -21665,6 +22058,7 @@ class MicrosoftAccessSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
     }
@@ -21852,6 +22246,65 @@ class MongoDbAtlasLinkedService(LinkedService):
         self.database = kwargs['database']
 
 
+class MongoDbAtlasSink(CopySink):
+    """A copy activity MongoDB Atlas sink.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param additional_properties: Unmatched properties from the message are deserialized to this
+     collection.
+    :type additional_properties: dict[str, object]
+    :param type: Required. Copy sink type.Constant filled by server.
+    :type type: str
+    :param write_batch_size: Write batch size. Type: integer (or Expression with resultType
+     integer), minimum: 0.
+    :type write_batch_size: object
+    :param write_batch_timeout: Write batch timeout. Type: string (or Expression with resultType
+     string), pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
+    :type write_batch_timeout: object
+    :param sink_retry_count: Sink retry count. Type: integer (or Expression with resultType
+     integer).
+    :type sink_retry_count: object
+    :param sink_retry_wait: Sink retry wait. Type: string (or Expression with resultType string),
+     pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
+    :type sink_retry_wait: object
+    :param max_concurrent_connections: The maximum concurrent connection count for the sink data
+     store. Type: integer (or Expression with resultType integer).
+    :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
+    :param write_behavior: Specifies whether the document with same key to be overwritten (upsert)
+     rather than throw exception (insert). The default value is "insert". Type: string (or
+     Expression with resultType string). Type: string (or Expression with resultType string).
+    :type write_behavior: object
+    """
+
+    _validation = {
+        'type': {'required': True},
+    }
+
+    _attribute_map = {
+        'additional_properties': {'key': '', 'type': '{object}'},
+        'type': {'key': 'type', 'type': 'str'},
+        'write_batch_size': {'key': 'writeBatchSize', 'type': 'object'},
+        'write_batch_timeout': {'key': 'writeBatchTimeout', 'type': 'object'},
+        'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
+        'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
+        'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
+        'write_behavior': {'key': 'writeBehavior', 'type': 'object'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(MongoDbAtlasSink, self).__init__(**kwargs)
+        self.type = 'MongoDbAtlasSink'  # type: str
+        self.write_behavior = kwargs.get('write_behavior', None)
+
+
 class MongoDbAtlasSource(CopySource):
     """A copy activity source for a MongoDB Atlas database.
 
@@ -21871,6 +22324,9 @@ class MongoDbAtlasSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param filter: Specifies selection filter using query operators. To return all documents in a
      collection, omit this parameter or pass an empty document ({}). Type: string (or Expression
      with resultType string).
@@ -21900,6 +22356,7 @@ class MongoDbAtlasSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'filter': {'key': 'filter', 'type': 'object'},
         'cursor_methods': {'key': 'cursorMethods', 'type': 'MongoDbCursorMethodsProperties'},
         'batch_size': {'key': 'batchSize', 'type': 'object'},
@@ -22136,6 +22593,9 @@ class MongoDbSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query: Database query. Should be a SQL-92 query expression. Type: string (or Expression
      with resultType string).
     :type query: object
@@ -22154,6 +22614,7 @@ class MongoDbSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
     }
@@ -22281,6 +22742,65 @@ class MongoDbV2LinkedService(LinkedService):
         self.database = kwargs['database']
 
 
+class MongoDbV2Sink(CopySink):
+    """A copy activity MongoDB sink.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param additional_properties: Unmatched properties from the message are deserialized to this
+     collection.
+    :type additional_properties: dict[str, object]
+    :param type: Required. Copy sink type.Constant filled by server.
+    :type type: str
+    :param write_batch_size: Write batch size. Type: integer (or Expression with resultType
+     integer), minimum: 0.
+    :type write_batch_size: object
+    :param write_batch_timeout: Write batch timeout. Type: string (or Expression with resultType
+     string), pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
+    :type write_batch_timeout: object
+    :param sink_retry_count: Sink retry count. Type: integer (or Expression with resultType
+     integer).
+    :type sink_retry_count: object
+    :param sink_retry_wait: Sink retry wait. Type: string (or Expression with resultType string),
+     pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
+    :type sink_retry_wait: object
+    :param max_concurrent_connections: The maximum concurrent connection count for the sink data
+     store. Type: integer (or Expression with resultType integer).
+    :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
+    :param write_behavior: Specifies whether the document with same key to be overwritten (upsert)
+     rather than throw exception (insert). The default value is "insert". Type: string (or
+     Expression with resultType string). Type: string (or Expression with resultType string).
+    :type write_behavior: object
+    """
+
+    _validation = {
+        'type': {'required': True},
+    }
+
+    _attribute_map = {
+        'additional_properties': {'key': '', 'type': '{object}'},
+        'type': {'key': 'type', 'type': 'str'},
+        'write_batch_size': {'key': 'writeBatchSize', 'type': 'object'},
+        'write_batch_timeout': {'key': 'writeBatchTimeout', 'type': 'object'},
+        'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
+        'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
+        'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
+        'write_behavior': {'key': 'writeBehavior', 'type': 'object'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(MongoDbV2Sink, self).__init__(**kwargs)
+        self.type = 'MongoDbV2Sink'  # type: str
+        self.write_behavior = kwargs.get('write_behavior', None)
+
+
 class MongoDbV2Source(CopySource):
     """A copy activity source for a MongoDB database.
 
@@ -22300,6 +22820,9 @@ class MongoDbV2Source(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param filter: Specifies selection filter using query operators. To return all documents in a
      collection, omit this parameter or pass an empty document ({}). Type: string (or Expression
      with resultType string).
@@ -22329,6 +22852,7 @@ class MongoDbV2Source(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'filter': {'key': 'filter', 'type': 'object'},
         'cursor_methods': {'key': 'cursorMethods', 'type': 'MongoDbCursorMethodsProperties'},
         'batch_size': {'key': 'batchSize', 'type': 'object'},
@@ -22424,6 +22948,9 @@ class MySqlSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -22444,6 +22971,7 @@ class MySqlSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -22623,6 +23151,9 @@ class NetezzaSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -22649,6 +23180,7 @@ class NetezzaSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -22932,6 +23464,9 @@ class ODataSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query: OData query. For example, "$top=1". Type: string (or Expression with resultType
      string).
     :type query: object
@@ -22955,6 +23490,7 @@ class ODataSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
         'http_request_timeout': {'key': 'httpRequestTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
@@ -23069,6 +23605,9 @@ class OdbcSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param pre_copy_script: A query to execute before starting the copy. Type: string (or
      Expression with resultType string).
     :type pre_copy_script: object
@@ -23086,6 +23625,7 @@ class OdbcSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'pre_copy_script': {'key': 'preCopyScript', 'type': 'object'},
     }
 
@@ -23117,6 +23657,9 @@ class OdbcSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -23137,6 +23680,7 @@ class OdbcSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -23363,6 +23907,9 @@ class Office365Source(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param allowed_groups: The groups containing all the users. Type: array of strings (or
      Expression with resultType array of strings).
     :type allowed_groups: object
@@ -23394,6 +23941,7 @@ class Office365Source(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'allowed_groups': {'key': 'allowedGroups', 'type': 'object'},
         'user_scope_filter_uri': {'key': 'userScopeFilterUri', 'type': 'object'},
         'date_filter_column': {'key': 'dateFilterColumn', 'type': 'object'},
@@ -23783,6 +24331,9 @@ class OracleCloudStorageReadSettings(StoreReadSettings):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param recursive: If true, files under the folder path will be read recursively. Default is
      true. Type: boolean (or Expression with resultType boolean).
     :type recursive: object
@@ -23823,6 +24374,7 @@ class OracleCloudStorageReadSettings(StoreReadSettings):
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'recursive': {'key': 'recursive', 'type': 'object'},
         'wildcard_folder_path': {'key': 'wildcardFolderPath', 'type': 'object'},
         'wildcard_file_name': {'key': 'wildcardFileName', 'type': 'object'},
@@ -24103,6 +24655,9 @@ class OracleServiceCloudSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -24124,6 +24679,7 @@ class OracleServiceCloudSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -24163,6 +24719,9 @@ class OracleSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param pre_copy_script: SQL pre-copy script. Type: string (or Expression with resultType
      string).
     :type pre_copy_script: object
@@ -24180,6 +24739,7 @@ class OracleSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'pre_copy_script': {'key': 'preCopyScript', 'type': 'object'},
     }
 
@@ -24211,6 +24771,9 @@ class OracleSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param oracle_reader_query: Oracle reader query. Type: string (or Expression with resultType
      string).
     :type oracle_reader_query: object
@@ -24237,6 +24800,7 @@ class OracleSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'oracle_reader_query': {'key': 'oracleReaderQuery', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'partition_option': {'key': 'partitionOption', 'type': 'object'},
@@ -24355,8 +24919,9 @@ class OrcDataset(Dataset):
     :type folder: ~data_factory_management_client.models.DatasetFolder
     :param location: The location of the ORC data storage.
     :type location: ~data_factory_management_client.models.DatasetLocation
-    :param orc_compression_codec:  Possible values include: "none", "zlib", "snappy", "lzo".
-    :type orc_compression_codec: str or ~data_factory_management_client.models.OrcCompressionCodec
+    :param orc_compression_codec: The data orcCompressionCodec. Type: string (or Expression with
+     resultType string).
+    :type orc_compression_codec: object
     """
 
     _validation = {
@@ -24375,7 +24940,7 @@ class OrcDataset(Dataset):
         'annotations': {'key': 'annotations', 'type': '[object]'},
         'folder': {'key': 'folder', 'type': 'DatasetFolder'},
         'location': {'key': 'typeProperties.location', 'type': 'DatasetLocation'},
-        'orc_compression_codec': {'key': 'typeProperties.orcCompressionCodec', 'type': 'str'},
+        'orc_compression_codec': {'key': 'typeProperties.orcCompressionCodec', 'type': 'object'},
     }
 
     def __init__(
@@ -24448,6 +25013,9 @@ class OrcSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param store_settings: ORC store settings.
     :type store_settings: ~data_factory_management_client.models.StoreWriteSettings
     :param format_settings: ORC format settings.
@@ -24466,6 +25034,7 @@ class OrcSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'store_settings': {'key': 'storeSettings', 'type': 'StoreWriteSettings'},
         'format_settings': {'key': 'formatSettings', 'type': 'OrcWriteSettings'},
     }
@@ -24499,6 +25068,9 @@ class OrcSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param store_settings: ORC store settings.
     :type store_settings: ~data_factory_management_client.models.StoreReadSettings
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
@@ -24516,6 +25088,7 @@ class OrcSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'store_settings': {'key': 'storeSettings', 'type': 'StoreReadSettings'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
     }
@@ -24659,9 +25232,9 @@ class ParquetDataset(Dataset):
     :type folder: ~data_factory_management_client.models.DatasetFolder
     :param location: The location of the parquet storage.
     :type location: ~data_factory_management_client.models.DatasetLocation
-    :param compression_codec:  Possible values include: "none", "gzip", "snappy", "lzo", "bzip2",
-     "deflate", "zipDeflate", "lz4", "tar", "tarGZip".
-    :type compression_codec: str or ~data_factory_management_client.models.CompressionCodec
+    :param compression_codec: The data compressionCodec. Type: string (or Expression with
+     resultType string).
+    :type compression_codec: object
     """
 
     _validation = {
@@ -24680,7 +25253,7 @@ class ParquetDataset(Dataset):
         'annotations': {'key': 'annotations', 'type': '[object]'},
         'folder': {'key': 'folder', 'type': 'DatasetFolder'},
         'location': {'key': 'typeProperties.location', 'type': 'DatasetLocation'},
-        'compression_codec': {'key': 'typeProperties.compressionCodec', 'type': 'str'},
+        'compression_codec': {'key': 'typeProperties.compressionCodec', 'type': 'object'},
     }
 
     def __init__(
@@ -24753,6 +25326,9 @@ class ParquetSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param store_settings: Parquet store settings.
     :type store_settings: ~data_factory_management_client.models.StoreWriteSettings
     :param format_settings: Parquet format settings.
@@ -24771,6 +25347,7 @@ class ParquetSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'store_settings': {'key': 'storeSettings', 'type': 'StoreWriteSettings'},
         'format_settings': {'key': 'formatSettings', 'type': 'ParquetWriteSettings'},
     }
@@ -24804,6 +25381,9 @@ class ParquetSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param store_settings: Parquet store settings.
     :type store_settings: ~data_factory_management_client.models.StoreReadSettings
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
@@ -24821,6 +25401,7 @@ class ParquetSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'store_settings': {'key': 'storeSettings', 'type': 'StoreReadSettings'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
     }
@@ -25029,6 +25610,9 @@ class PaypalSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -25050,6 +25634,7 @@ class PaypalSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -25258,6 +25843,9 @@ class PhoenixSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -25279,6 +25867,7 @@ class PhoenixSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -25768,6 +26357,9 @@ class PostgreSqlSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -25788,6 +26380,7 @@ class PostgreSqlSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -26072,6 +26665,9 @@ class PrestoSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -26093,6 +26689,7 @@ class PrestoSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -26544,6 +27141,9 @@ class QuickBooksSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -26565,6 +27165,7 @@ class QuickBooksSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -26739,6 +27340,9 @@ class RelationalSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query: Database query. Type: string (or Expression with resultType string).
     :type query: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
@@ -26756,6 +27360,7 @@ class RelationalSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
     }
@@ -27085,6 +27690,9 @@ class ResponsysSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -27106,6 +27714,7 @@ class ResponsysSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -27328,6 +27937,9 @@ class RestSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param request_method: The HTTP method used to call the RESTful API. The default is POST. Type:
      string (or Expression with resultType string).
     :type request_method: object
@@ -27358,6 +27970,7 @@ class RestSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'request_method': {'key': 'requestMethod', 'type': 'object'},
         'additional_headers': {'key': 'additionalHeaders', 'type': 'object'},
         'http_request_timeout': {'key': 'httpRequestTimeout', 'type': 'object'},
@@ -27397,6 +28010,9 @@ class RestSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param request_method: The HTTP method used to call the RESTful API. The default is GET. Type:
      string (or Expression with resultType string).
     :type request_method: object
@@ -27431,6 +28047,7 @@ class RestSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'request_method': {'key': 'requestMethod', 'type': 'object'},
         'request_body': {'key': 'requestBody', 'type': 'object'},
         'additional_headers': {'key': 'additionalHeaders', 'type': 'object'},
@@ -27832,6 +28449,9 @@ class SalesforceMarketingCloudSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -27853,6 +28473,7 @@ class SalesforceMarketingCloudSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -28087,6 +28708,9 @@ class SalesforceServiceCloudSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param write_behavior: The write behavior for the operation. Default is Insert. Possible values
      include: "Insert", "Upsert".
     :type write_behavior: str or ~data_factory_management_client.models.SalesforceSinkWriteBehavior
@@ -28114,6 +28738,7 @@ class SalesforceServiceCloudSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'write_behavior': {'key': 'writeBehavior', 'type': 'str'},
         'external_id_field_name': {'key': 'externalIdFieldName', 'type': 'object'},
         'ignore_null_values': {'key': 'ignoreNullValues', 'type': 'object'},
@@ -28149,6 +28774,9 @@ class SalesforceServiceCloudSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query: Database query. Type: string (or Expression with resultType string).
     :type query: object
     :param read_behavior: The read behavior for the operation. Default is Query. Possible values
@@ -28169,6 +28797,7 @@ class SalesforceServiceCloudSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
         'read_behavior': {'key': 'readBehavior', 'type': 'str'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
@@ -28210,6 +28839,9 @@ class SalesforceSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param write_behavior: The write behavior for the operation. Default is Insert. Possible values
      include: "Insert", "Upsert".
     :type write_behavior: str or ~data_factory_management_client.models.SalesforceSinkWriteBehavior
@@ -28237,6 +28869,7 @@ class SalesforceSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'write_behavior': {'key': 'writeBehavior', 'type': 'str'},
         'external_id_field_name': {'key': 'externalIdFieldName', 'type': 'object'},
         'ignore_null_values': {'key': 'ignoreNullValues', 'type': 'object'},
@@ -28272,6 +28905,9 @@ class SalesforceSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -28295,6 +28931,7 @@ class SalesforceSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -28458,6 +29095,9 @@ class SapBwSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -28478,6 +29118,7 @@ class SapBwSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -28640,6 +29281,9 @@ class SapCloudForCustomerSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param write_behavior: The write behavior for the operation. Default is 'Insert'. Possible
      values include: "Insert", "Update".
     :type write_behavior: str or
@@ -28663,6 +29307,7 @@ class SapCloudForCustomerSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'write_behavior': {'key': 'writeBehavior', 'type': 'str'},
         'http_request_timeout': {'key': 'httpRequestTimeout', 'type': 'object'},
     }
@@ -28696,6 +29341,9 @@ class SapCloudForCustomerSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -28722,6 +29370,7 @@ class SapCloudForCustomerSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -28880,6 +29529,9 @@ class SapEccSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -28906,6 +29558,7 @@ class SapEccSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -29033,6 +29686,9 @@ class SapHanaSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -29062,6 +29718,7 @@ class SapHanaSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -29263,6 +29920,9 @@ class SapOpenHubSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -29295,6 +29955,7 @@ class SapOpenHubSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'exclude_last_request': {'key': 'excludeLastRequest', 'type': 'object'},
@@ -29625,6 +30286,9 @@ class SapTableSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -29672,6 +30336,7 @@ class SapTableSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'row_count': {'key': 'rowCount', 'type': 'object'},
@@ -29806,9 +30471,8 @@ class ScriptAction(msrest.serialization.Model):
     :type name: str
     :param uri: Required. The URI for the script action.
     :type uri: str
-    :param roles: Required. The node types on which the script action should be executed. Possible
-     values include: "Headnode", "Workernode", "Zookeeper".
-    :type roles: str or ~data_factory_management_client.models.HdiNodeTypes
+    :param roles: Required. The node types on which the script action should be executed.
+    :type roles: str
     :param parameters: The parameters for the script action.
     :type parameters: str
     """
@@ -30364,6 +31028,9 @@ class ServiceNowSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -30385,6 +31052,7 @@ class ServiceNowSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -30499,6 +31167,9 @@ class SftpReadSettings(StoreReadSettings):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param recursive: If true, files under the folder path will be read recursively. Default is
      true. Type: boolean (or Expression with resultType boolean).
     :type recursive: object
@@ -30536,6 +31207,7 @@ class SftpReadSettings(StoreReadSettings):
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'recursive': {'key': 'recursive', 'type': 'object'},
         'wildcard_folder_path': {'key': 'wildcardFolderPath', 'type': 'object'},
         'wildcard_file_name': {'key': 'wildcardFileName', 'type': 'object'},
@@ -30678,6 +31350,9 @@ class SftpWriteSettings(StoreWriteSettings):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param copy_behavior: The type of copy behavior for copy sink.
     :type copy_behavior: object
     :param operation_timeout: Specifies the timeout for writing each chunk to SFTP server. Default
@@ -30697,6 +31372,7 @@ class SftpWriteSettings(StoreWriteSettings):
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'copy_behavior': {'key': 'copyBehavior', 'type': 'object'},
         'operation_timeout': {'key': 'operationTimeout', 'type': 'object'},
         'use_temp_file_rename': {'key': 'useTempFileRename', 'type': 'object'},
@@ -30864,6 +31540,9 @@ class SharePointOnlineListSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query: The OData query to filter the data in SharePoint Online list. For example,
      "$top=1". Type: string (or Expression with resultType string).
     :type query: object
@@ -30883,6 +31562,7 @@ class SharePointOnlineListSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
         'http_request_timeout': {'key': 'httpRequestTimeout', 'type': 'object'},
     }
@@ -31047,6 +31727,9 @@ class ShopifySource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -31068,6 +31751,7 @@ class ShopifySource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -31339,6 +32023,9 @@ class SnowflakeSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param pre_copy_script: SQL pre-copy script. Type: string (or Expression with resultType
      string).
     :type pre_copy_script: object
@@ -31358,6 +32045,7 @@ class SnowflakeSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'pre_copy_script': {'key': 'preCopyScript', 'type': 'object'},
         'import_settings': {'key': 'importSettings', 'type': 'SnowflakeImportCopyCommand'},
     }
@@ -31391,6 +32079,9 @@ class SnowflakeSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query: Snowflake Sql query. Type: string (or Expression with resultType string).
     :type query: object
     :param export_settings: Snowflake export settings.
@@ -31407,6 +32098,7 @@ class SnowflakeSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
         'export_settings': {'key': 'exportSettings', 'type': 'SnowflakeExportCopyCommand'},
     }
@@ -31624,6 +32316,9 @@ class SparkSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -31645,6 +32340,7 @@ class SparkSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -31722,6 +32418,9 @@ class SqlDwSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param pre_copy_script: SQL pre-copy script. Type: string (or Expression with resultType
      string).
     :type pre_copy_script: object
@@ -31753,6 +32452,7 @@ class SqlDwSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'pre_copy_script': {'key': 'preCopyScript', 'type': 'object'},
         'allow_poly_base': {'key': 'allowPolyBase', 'type': 'object'},
         'poly_base_settings': {'key': 'polyBaseSettings', 'type': 'PolybaseSettings'},
@@ -31794,6 +32494,9 @@ class SqlDwSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -31828,6 +32531,7 @@ class SqlDwSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'sql_reader_query': {'key': 'sqlReaderQuery', 'type': 'object'},
@@ -31875,6 +32579,9 @@ class SqlMiSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param sql_writer_stored_procedure_name: SQL writer stored procedure name. Type: string (or
      Expression with resultType string).
     :type sql_writer_stored_procedure_name: object
@@ -31907,6 +32614,7 @@ class SqlMiSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'sql_writer_stored_procedure_name': {'key': 'sqlWriterStoredProcedureName', 'type': 'object'},
         'sql_writer_table_type': {'key': 'sqlWriterTableType', 'type': 'object'},
         'pre_copy_script': {'key': 'preCopyScript', 'type': 'object'},
@@ -31948,6 +32656,9 @@ class SqlMiSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -31983,6 +32694,7 @@ class SqlMiSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'sql_reader_query': {'key': 'sqlReaderQuery', 'type': 'object'},
@@ -32134,6 +32846,9 @@ class SqlServerSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param sql_writer_stored_procedure_name: SQL writer stored procedure name. Type: string (or
      Expression with resultType string).
     :type sql_writer_stored_procedure_name: object
@@ -32166,6 +32881,7 @@ class SqlServerSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'sql_writer_stored_procedure_name': {'key': 'sqlWriterStoredProcedureName', 'type': 'object'},
         'sql_writer_table_type': {'key': 'sqlWriterTableType', 'type': 'object'},
         'pre_copy_script': {'key': 'preCopyScript', 'type': 'object'},
@@ -32207,6 +32923,9 @@ class SqlServerSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -32242,6 +32961,7 @@ class SqlServerSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'sql_reader_query': {'key': 'sqlReaderQuery', 'type': 'object'},
@@ -32420,6 +33140,9 @@ class SqlSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param sql_writer_stored_procedure_name: SQL writer stored procedure name. Type: string (or
      Expression with resultType string).
     :type sql_writer_stored_procedure_name: object
@@ -32452,6 +33175,7 @@ class SqlSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'sql_writer_stored_procedure_name': {'key': 'sqlWriterStoredProcedureName', 'type': 'object'},
         'sql_writer_table_type': {'key': 'sqlWriterTableType', 'type': 'object'},
         'pre_copy_script': {'key': 'preCopyScript', 'type': 'object'},
@@ -32493,6 +33217,9 @@ class SqlSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -32530,6 +33257,7 @@ class SqlSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'sql_reader_query': {'key': 'sqlReaderQuery', 'type': 'object'},
@@ -32716,6 +33444,9 @@ class SquareSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -32737,6 +33468,7 @@ class SquareSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -33679,6 +34411,9 @@ class SybaseSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -33699,6 +34434,7 @@ class SybaseSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -34030,6 +34766,9 @@ class TeradataSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -34056,6 +34795,7 @@ class TeradataSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -35107,6 +35847,9 @@ class VerticaSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -35128,6 +35871,7 @@ class VerticaSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -35699,6 +36443,9 @@ class WebSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
      array of objects (or Expression with resultType array of objects).
     :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
@@ -35714,6 +36461,7 @@ class WebSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
     }
 
@@ -35950,6 +36698,9 @@ class XeroSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -35971,6 +36722,7 @@ class XeroSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -36133,6 +36885,9 @@ class XmlSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param store_settings: Xml store settings.
     :type store_settings: ~data_factory_management_client.models.StoreReadSettings
     :param format_settings: Xml format settings.
@@ -36152,6 +36907,7 @@ class XmlSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'store_settings': {'key': 'storeSettings', 'type': 'StoreReadSettings'},
         'format_settings': {'key': 'formatSettings', 'type': 'XmlReadSettings'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
@@ -36355,6 +37111,9 @@ class ZohoSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -36376,6 +37135,7 @@ class ZohoSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},

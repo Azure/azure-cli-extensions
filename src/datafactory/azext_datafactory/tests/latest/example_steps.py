@@ -581,7 +581,7 @@ def step_pipeline_update(test, rg, checks=None):
              'ipeline().parameters.OutputBlobNameList\\"}}}}}}]" '
              '--parameters "{{\\"OutputBlobNameList\\":{{\\"type\\":\\"Array\\"}}}}" '
              '--duration "0.00:10:00" '
-             '--name "{myPipeline}" '
+             '--pipeline-name "{myPipeline}" '
              '--resource-group "{rg}"',
              checks=checks)
 
@@ -630,6 +630,66 @@ def step_pipeline_delete(test, rg, checks=None):
     test.cmd('az datafactory pipeline delete -y '
              '--factory-name "{myFactory}" '
              '--name "{myPipeline}" '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+
+# EXAMPLE: /privateEndPointConnections/get/privateEndPointConnections_ListByFactory
+@try_manual
+def step_private_end_point_connection_list(test, rg, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az datafactory private-end-point-connection list '
+             '--factory-name "{myFactory}" '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+
+# EXAMPLE: /PrivateEndpointConnection/put/Approves or rejects a private endpoint connection for a factory.
+@try_manual
+def step_private_endpoint_connection_create(test, rg, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az datafactory private-endpoint-connection create '
+             '--factory-name "{myFactory}" '
+             '--name "{myPrivateEndPointConnection}" '
+             '--private-link-service-connection-state description="Approved by admin." actions-required="" '
+             'status="Approved" '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+
+# EXAMPLE: /PrivateEndpointConnection/get/Get a private endpoint connection for a datafactory.
+@try_manual
+def step_private_endpoint_connection_show(test, rg, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az datafactory private-endpoint-connection show '
+             '--factory-name "{myFactory}" '
+             '--name "{myPrivateEndPointConnection}" '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+
+# EXAMPLE: /PrivateEndpointConnection/delete/Delete a private endpoint connection for a datafactory.
+@try_manual
+def step_private_endpoint_connection_delete(test, rg, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az datafactory private-endpoint-connection delete -y '
+             '--factory-name "{myFactory}" '
+             '--name "{myPrivateEndPointConnection}" '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+
+# EXAMPLE: /privateLinkResources/get/Get private link resources of a site
+@try_manual
+def step_private_link_resource_show(test, rg, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az datafactory private-link-resource show '
+             '--factory-name "{myFactory}" '
              '--resource-group "{rg}"',
              checks=checks)
 

@@ -39,7 +39,14 @@ def datafactory_create(client,
                        tags=None,
                        factory_vsts_configuration=None,
                        factory_git_hub_configuration=None,
-                       global_parameters=None):
+                       global_parameters=None,
+                       public_network_access=None,
+                       key_name=None,
+                       vault_base_url=None,
+                       key_version=None,
+                       identity=None,
+                       type_=None,
+                       user_assigned_identities=None):
     all_repo_configuration = []
     if factory_vsts_configuration is not None:
         all_repo_configuration.append(factory_vsts_configuration)
@@ -54,8 +61,15 @@ def datafactory_create(client,
     factory['tags'] = tags
     factory['repo_configuration'] = repo_configuration
     factory['global_parameters'] = global_parameters
+    factory['public_network_access'] = public_network_access
     factory['encryption'] = {}
+    factory['encryption']['key_name'] = key_name
+    factory['encryption']['vault_base_url'] = vault_base_url
+    factory['encryption']['key_version'] = key_version
+    factory['encryption']['identity'] = identity
     factory['identity'] = {}
+    factory['identity']['type'] = type_
+    factory['identity']['user_assigned_identities'] = user_assigned_identities
     return client.create_or_update(resource_group_name=resource_group_name,
                                    factory_name=factory_name,
                                    if_match=if_match,
@@ -65,10 +79,14 @@ def datafactory_create(client,
 def datafactory_update(client,
                        resource_group_name,
                        factory_name,
-                       tags=None):
+                       tags=None,
+                       type_=None,
+                       user_assigned_identities=None):
     factory_update_parameters = {}
     factory_update_parameters['tags'] = tags
     factory_update_parameters['identity'] = {}
+    factory_update_parameters['identity']['type'] = type_
+    factory_update_parameters['identity']['user_assigned_identities'] = user_assigned_identities
     return client.update(resource_group_name=resource_group_name,
                          factory_name=factory_name,
                          factory_update_parameters=factory_update_parameters)
@@ -179,12 +197,14 @@ def datafactory_integration_runtime_managed_create(client,
                                                    integration_runtime_name,
                                                    if_match=None,
                                                    description=None,
+                                                   managed_virtual_network=None,
                                                    compute_properties=None,
                                                    ssis_properties=None):
     integration_runtime = {}
     integration_runtime['properties'] = {}
     integration_runtime['properties']['type'] = 'Managed'
     integration_runtime['properties']['description'] = description
+    integration_runtime['properties']['managed_virtual_network'] = managed_virtual_network
     integration_runtime['properties']['compute_properties'] = compute_properties
     integration_runtime['properties']['ssis_properties'] = ssis_properties
     return client.create_or_update(resource_group_name=resource_group_name,
@@ -566,7 +586,7 @@ def datafactory_pipeline_update(instance,
                                 annotations=None,
                                 run_dimensions=None,
                                 duration=None,
-                                folder_name=None):
+                                name=None):
     if description is not None:
         instance.description = description
     if activities is not None:
@@ -583,8 +603,8 @@ def datafactory_pipeline_update(instance,
         instance.run_dimensions = run_dimensions
     if duration is not None:
         instance.elapsed_time_metric.duration = duration
-    if folder_name is not None:
-        instance.folder.name = folder_name
+    if name is not None:
+        instance.folder.name = name
     return instance
 
 
@@ -841,3 +861,69 @@ def datafactory_trigger_run_rerun(client,
                         factory_name=factory_name,
                         trigger_name=trigger_name,
                         run_id=run_id)
+
+
+def datafactory_private_end_point_connection_list(client,
+                                                  resource_group_name,
+                                                  factory_name):
+    return client.list_by_factory(resource_group_name=resource_group_name,
+                                  factory_name=factory_name)
+
+
+def datafactory_private_endpoint_connection_show(client,
+                                                 resource_group_name,
+                                                 factory_name,
+                                                 private_endpoint_connection_name,
+                                                 if_none_match=None):
+    return client.get(resource_group_name=resource_group_name,
+                      factory_name=factory_name,
+                      private_endpoint_connection_name=private_endpoint_connection_name,
+                      if_none_match=if_none_match)
+
+
+def datafactory_private_endpoint_connection_create(client,
+                                                   resource_group_name,
+                                                   factory_name,
+                                                   private_endpoint_connection_name,
+                                                   if_match=None,
+                                                   private_link_service_connection_state=None):
+    private_endpoint_wrapper = {}
+    private_endpoint_wrapper['properties'] = {}
+    private_endpoint_wrapper['properties']['private_link_service_connection_state'] = private_link_service_connection_state
+    return client.create_or_update(resource_group_name=resource_group_name,
+                                   factory_name=factory_name,
+                                   private_endpoint_connection_name=private_endpoint_connection_name,
+                                   if_match=if_match,
+                                   private_endpoint_wrapper=private_endpoint_wrapper)
+
+
+def datafactory_private_endpoint_connection_update(client,
+                                                   resource_group_name,
+                                                   factory_name,
+                                                   private_endpoint_connection_name,
+                                                   if_match=None,
+                                                   private_link_service_connection_state=None):
+    private_endpoint_wrapper = {}
+    private_endpoint_wrapper['properties'] = {}
+    private_endpoint_wrapper['properties']['private_link_service_connection_state'] = private_link_service_connection_state
+    return client.create_or_update(resource_group_name=resource_group_name,
+                                   factory_name=factory_name,
+                                   private_endpoint_connection_name=private_endpoint_connection_name,
+                                   if_match=if_match,
+                                   private_endpoint_wrapper=private_endpoint_wrapper)
+
+
+def datafactory_private_endpoint_connection_delete(client,
+                                                   resource_group_name,
+                                                   factory_name,
+                                                   private_endpoint_connection_name):
+    return client.delete(resource_group_name=resource_group_name,
+                         factory_name=factory_name,
+                         private_endpoint_connection_name=private_endpoint_connection_name)
+
+
+def datafactory_private_link_resource_show(client,
+                                           resource_group_name,
+                                           factory_name):
+    return client.get(resource_group_name=resource_group_name,
+                      factory_name=factory_name)

@@ -711,6 +711,9 @@ class CopySource(msrest.serialization.Model):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     """
 
     _validation = {
@@ -723,6 +726,7 @@ class CopySource(msrest.serialization.Model):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
     }
 
     _subtype_map = {
@@ -736,6 +740,7 @@ class CopySource(msrest.serialization.Model):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         **kwargs
     ):
         super(CopySource, self).__init__(**kwargs)
@@ -744,6 +749,7 @@ class CopySource(msrest.serialization.Model):
         self.source_retry_count = source_retry_count
         self.source_retry_wait = source_retry_wait
         self.max_concurrent_connections = max_concurrent_connections
+        self.disable_metrics_collection = disable_metrics_collection
 
 
 class TabularSource(CopySource):
@@ -768,6 +774,9 @@ class TabularSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -786,6 +795,7 @@ class TabularSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
     }
@@ -801,11 +811,12 @@ class TabularSource(CopySource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query_timeout: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         **kwargs
     ):
-        super(TabularSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(TabularSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'TabularSource'  # type: str
         self.query_timeout = query_timeout
         self.additional_columns = additional_columns
@@ -830,6 +841,9 @@ class AmazonMwsSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -851,6 +865,7 @@ class AmazonMwsSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -863,12 +878,13 @@ class AmazonMwsSource(TabularSource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query_timeout: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         query: Optional[object] = None,
         **kwargs
     ):
-        super(AmazonMwsSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
+        super(AmazonMwsSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
         self.type = 'AmazonMWSSource'  # type: str
         self.query = query
 
@@ -977,6 +993,9 @@ class AmazonRedshiftSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -1001,6 +1020,7 @@ class AmazonRedshiftSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -1014,13 +1034,14 @@ class AmazonRedshiftSource(TabularSource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query_timeout: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         query: Optional[object] = None,
         redshift_unload_settings: Optional["RedshiftUnloadSettings"] = None,
         **kwargs
     ):
-        super(AmazonRedshiftSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
+        super(AmazonRedshiftSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
         self.type = 'AmazonRedshiftSource'  # type: str
         self.query = query
         self.redshift_unload_settings = redshift_unload_settings
@@ -1307,6 +1328,9 @@ class StoreReadSettings(msrest.serialization.Model):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     """
 
     _validation = {
@@ -1317,6 +1341,7 @@ class StoreReadSettings(msrest.serialization.Model):
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
     }
 
     _subtype_map = {
@@ -1328,12 +1353,14 @@ class StoreReadSettings(msrest.serialization.Model):
         *,
         additional_properties: Optional[Dict[str, object]] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         **kwargs
     ):
         super(StoreReadSettings, self).__init__(**kwargs)
         self.additional_properties = additional_properties
         self.type = 'StoreReadSettings'  # type: str
         self.max_concurrent_connections = max_concurrent_connections
+        self.disable_metrics_collection = disable_metrics_collection
 
 
 class AmazonS3CompatibleReadSettings(StoreReadSettings):
@@ -1349,6 +1376,9 @@ class AmazonS3CompatibleReadSettings(StoreReadSettings):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param recursive: If true, files under the folder path will be read recursively. Default is
      true. Type: boolean (or Expression with resultType boolean).
     :type recursive: object
@@ -1389,6 +1419,7 @@ class AmazonS3CompatibleReadSettings(StoreReadSettings):
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'recursive': {'key': 'recursive', 'type': 'object'},
         'wildcard_folder_path': {'key': 'wildcardFolderPath', 'type': 'object'},
         'wildcard_file_name': {'key': 'wildcardFileName', 'type': 'object'},
@@ -1406,6 +1437,7 @@ class AmazonS3CompatibleReadSettings(StoreReadSettings):
         *,
         additional_properties: Optional[Dict[str, object]] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         recursive: Optional[object] = None,
         wildcard_folder_path: Optional[object] = None,
         wildcard_file_name: Optional[object] = None,
@@ -1418,7 +1450,7 @@ class AmazonS3CompatibleReadSettings(StoreReadSettings):
         modified_datetime_end: Optional[object] = None,
         **kwargs
     ):
-        super(AmazonS3CompatibleReadSettings, self).__init__(additional_properties=additional_properties, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(AmazonS3CompatibleReadSettings, self).__init__(additional_properties=additional_properties, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'AmazonS3CompatibleReadSettings'  # type: str
         self.recursive = recursive
         self.wildcard_folder_path = wildcard_folder_path
@@ -1692,6 +1724,9 @@ class AmazonS3ReadSettings(StoreReadSettings):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param recursive: If true, files under the folder path will be read recursively. Default is
      true. Type: boolean (or Expression with resultType boolean).
     :type recursive: object
@@ -1732,6 +1767,7 @@ class AmazonS3ReadSettings(StoreReadSettings):
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'recursive': {'key': 'recursive', 'type': 'object'},
         'wildcard_folder_path': {'key': 'wildcardFolderPath', 'type': 'object'},
         'wildcard_file_name': {'key': 'wildcardFileName', 'type': 'object'},
@@ -1749,6 +1785,7 @@ class AmazonS3ReadSettings(StoreReadSettings):
         *,
         additional_properties: Optional[Dict[str, object]] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         recursive: Optional[object] = None,
         wildcard_folder_path: Optional[object] = None,
         wildcard_file_name: Optional[object] = None,
@@ -1761,7 +1798,7 @@ class AmazonS3ReadSettings(StoreReadSettings):
         modified_datetime_end: Optional[object] = None,
         **kwargs
     ):
-        super(AmazonS3ReadSettings, self).__init__(additional_properties=additional_properties, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(AmazonS3ReadSettings, self).__init__(additional_properties=additional_properties, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'AmazonS3ReadSettings'  # type: str
         self.recursive = recursive
         self.wildcard_folder_path = wildcard_folder_path
@@ -1887,10 +1924,9 @@ class AvroDataset(Dataset):
     :type folder: ~data_factory_management_client.models.DatasetFolder
     :param location: The location of the avro storage.
     :type location: ~data_factory_management_client.models.DatasetLocation
-    :param avro_compression_codec:  Possible values include: "none", "deflate", "snappy", "xz",
-     "bzip2".
-    :type avro_compression_codec: str or
-     ~data_factory_management_client.models.AvroCompressionCodec
+    :param avro_compression_codec: The data avroCompressionCodec. Type: string (or Expression with
+     resultType string).
+    :type avro_compression_codec: object
     :param avro_compression_level:
     :type avro_compression_level: int
     """
@@ -1912,7 +1948,7 @@ class AvroDataset(Dataset):
         'annotations': {'key': 'annotations', 'type': '[object]'},
         'folder': {'key': 'folder', 'type': 'DatasetFolder'},
         'location': {'key': 'typeProperties.location', 'type': 'DatasetLocation'},
-        'avro_compression_codec': {'key': 'typeProperties.avroCompressionCodec', 'type': 'str'},
+        'avro_compression_codec': {'key': 'typeProperties.avroCompressionCodec', 'type': 'object'},
         'avro_compression_level': {'key': 'typeProperties.avroCompressionLevel', 'type': 'int'},
     }
 
@@ -1928,7 +1964,7 @@ class AvroDataset(Dataset):
         annotations: Optional[List[object]] = None,
         folder: Optional["DatasetFolder"] = None,
         location: Optional["DatasetLocation"] = None,
-        avro_compression_codec: Optional[Union[str, "AvroCompressionCodec"]] = None,
+        avro_compression_codec: Optional[object] = None,
         avro_compression_level: Optional[int] = None,
         **kwargs
     ):
@@ -2031,7 +2067,7 @@ class CopySink(msrest.serialization.Model):
     """A copy activity sink.
 
     You probably want to use the sub-classes and not this class directly. Known
-    sub-classes are: AvroSink, AzureBlobFsSink, AzureDataExplorerSink, AzureDataLakeStoreSink, AzureDatabricksDeltaLakeSink, AzureMySqlSink, AzurePostgreSqlSink, AzureQueueSink, AzureSearchIndexSink, AzureSqlSink, AzureTableSink, BinarySink, BlobSink, CommonDataServiceForAppsSink, CosmosDbMongoDbApiSink, CosmosDbSqlApiSink, DelimitedTextSink, DocumentDbCollectionSink, DynamicsCrmSink, DynamicsSink, FileSystemSink, InformixSink, JsonSink, MicrosoftAccessSink, OdbcSink, OracleSink, OrcSink, ParquetSink, RestSink, SalesforceServiceCloudSink, SalesforceSink, SapCloudForCustomerSink, SnowflakeSink, SqlDwSink, SqlMiSink, SqlServerSink, SqlSink.
+    sub-classes are: AvroSink, AzureBlobFsSink, AzureDataExplorerSink, AzureDataLakeStoreSink, AzureDatabricksDeltaLakeSink, AzureMySqlSink, AzurePostgreSqlSink, AzureQueueSink, AzureSearchIndexSink, AzureSqlSink, AzureTableSink, BinarySink, BlobSink, CommonDataServiceForAppsSink, CosmosDbMongoDbApiSink, CosmosDbSqlApiSink, DelimitedTextSink, DocumentDbCollectionSink, DynamicsCrmSink, DynamicsSink, FileSystemSink, InformixSink, JsonSink, MicrosoftAccessSink, MongoDbAtlasSink, MongoDbV2Sink, OdbcSink, OracleSink, OrcSink, ParquetSink, RestSink, SalesforceServiceCloudSink, SalesforceSink, SapCloudForCustomerSink, SnowflakeSink, SqlDwSink, SqlMiSink, SqlServerSink, SqlSink.
 
     All required parameters must be populated in order to send to Azure.
 
@@ -2055,6 +2091,9 @@ class CopySink(msrest.serialization.Model):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     """
 
     _validation = {
@@ -2069,10 +2108,11 @@ class CopySink(msrest.serialization.Model):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
     }
 
     _subtype_map = {
-        'type': {'AvroSink': 'AvroSink', 'AzureBlobFSSink': 'AzureBlobFsSink', 'AzureDataExplorerSink': 'AzureDataExplorerSink', 'AzureDataLakeStoreSink': 'AzureDataLakeStoreSink', 'AzureDatabricksDeltaLakeSink': 'AzureDatabricksDeltaLakeSink', 'AzureMySqlSink': 'AzureMySqlSink', 'AzurePostgreSqlSink': 'AzurePostgreSqlSink', 'AzureQueueSink': 'AzureQueueSink', 'AzureSearchIndexSink': 'AzureSearchIndexSink', 'AzureSqlSink': 'AzureSqlSink', 'AzureTableSink': 'AzureTableSink', 'BinarySink': 'BinarySink', 'BlobSink': 'BlobSink', 'CommonDataServiceForAppsSink': 'CommonDataServiceForAppsSink', 'CosmosDbMongoDbApiSink': 'CosmosDbMongoDbApiSink', 'CosmosDbSqlApiSink': 'CosmosDbSqlApiSink', 'DelimitedTextSink': 'DelimitedTextSink', 'DocumentDbCollectionSink': 'DocumentDbCollectionSink', 'DynamicsCrmSink': 'DynamicsCrmSink', 'DynamicsSink': 'DynamicsSink', 'FileSystemSink': 'FileSystemSink', 'InformixSink': 'InformixSink', 'JsonSink': 'JsonSink', 'MicrosoftAccessSink': 'MicrosoftAccessSink', 'OdbcSink': 'OdbcSink', 'OracleSink': 'OracleSink', 'OrcSink': 'OrcSink', 'ParquetSink': 'ParquetSink', 'RestSink': 'RestSink', 'SalesforceServiceCloudSink': 'SalesforceServiceCloudSink', 'SalesforceSink': 'SalesforceSink', 'SapCloudForCustomerSink': 'SapCloudForCustomerSink', 'SnowflakeSink': 'SnowflakeSink', 'SqlDWSink': 'SqlDwSink', 'SqlMISink': 'SqlMiSink', 'SqlServerSink': 'SqlServerSink', 'SqlSink': 'SqlSink'}
+        'type': {'AvroSink': 'AvroSink', 'AzureBlobFSSink': 'AzureBlobFsSink', 'AzureDataExplorerSink': 'AzureDataExplorerSink', 'AzureDataLakeStoreSink': 'AzureDataLakeStoreSink', 'AzureDatabricksDeltaLakeSink': 'AzureDatabricksDeltaLakeSink', 'AzureMySqlSink': 'AzureMySqlSink', 'AzurePostgreSqlSink': 'AzurePostgreSqlSink', 'AzureQueueSink': 'AzureQueueSink', 'AzureSearchIndexSink': 'AzureSearchIndexSink', 'AzureSqlSink': 'AzureSqlSink', 'AzureTableSink': 'AzureTableSink', 'BinarySink': 'BinarySink', 'BlobSink': 'BlobSink', 'CommonDataServiceForAppsSink': 'CommonDataServiceForAppsSink', 'CosmosDbMongoDbApiSink': 'CosmosDbMongoDbApiSink', 'CosmosDbSqlApiSink': 'CosmosDbSqlApiSink', 'DelimitedTextSink': 'DelimitedTextSink', 'DocumentDbCollectionSink': 'DocumentDbCollectionSink', 'DynamicsCrmSink': 'DynamicsCrmSink', 'DynamicsSink': 'DynamicsSink', 'FileSystemSink': 'FileSystemSink', 'InformixSink': 'InformixSink', 'JsonSink': 'JsonSink', 'MicrosoftAccessSink': 'MicrosoftAccessSink', 'MongoDbAtlasSink': 'MongoDbAtlasSink', 'MongoDbV2Sink': 'MongoDbV2Sink', 'OdbcSink': 'OdbcSink', 'OracleSink': 'OracleSink', 'OrcSink': 'OrcSink', 'ParquetSink': 'ParquetSink', 'RestSink': 'RestSink', 'SalesforceServiceCloudSink': 'SalesforceServiceCloudSink', 'SalesforceSink': 'SalesforceSink', 'SapCloudForCustomerSink': 'SapCloudForCustomerSink', 'SnowflakeSink': 'SnowflakeSink', 'SqlDWSink': 'SqlDwSink', 'SqlMISink': 'SqlMiSink', 'SqlServerSink': 'SqlServerSink', 'SqlSink': 'SqlSink'}
     }
 
     def __init__(
@@ -2084,6 +2124,7 @@ class CopySink(msrest.serialization.Model):
         sink_retry_count: Optional[object] = None,
         sink_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         **kwargs
     ):
         super(CopySink, self).__init__(**kwargs)
@@ -2094,6 +2135,7 @@ class CopySink(msrest.serialization.Model):
         self.sink_retry_count = sink_retry_count
         self.sink_retry_wait = sink_retry_wait
         self.max_concurrent_connections = max_concurrent_connections
+        self.disable_metrics_collection = disable_metrics_collection
 
 
 class AvroSink(CopySink):
@@ -2121,6 +2163,9 @@ class AvroSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param store_settings: Avro store settings.
     :type store_settings: ~data_factory_management_client.models.StoreWriteSettings
     :param format_settings: Avro format settings.
@@ -2139,6 +2184,7 @@ class AvroSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'store_settings': {'key': 'storeSettings', 'type': 'StoreWriteSettings'},
         'format_settings': {'key': 'formatSettings', 'type': 'AvroWriteSettings'},
     }
@@ -2152,11 +2198,12 @@ class AvroSink(CopySink):
         sink_retry_count: Optional[object] = None,
         sink_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         store_settings: Optional["StoreWriteSettings"] = None,
         format_settings: Optional["AvroWriteSettings"] = None,
         **kwargs
     ):
-        super(AvroSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(AvroSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'AvroSink'  # type: str
         self.store_settings = store_settings
         self.format_settings = format_settings
@@ -2181,6 +2228,9 @@ class AvroSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param store_settings: Avro store settings.
     :type store_settings: ~data_factory_management_client.models.StoreReadSettings
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
@@ -2198,6 +2248,7 @@ class AvroSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'store_settings': {'key': 'storeSettings', 'type': 'StoreReadSettings'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
     }
@@ -2209,11 +2260,12 @@ class AvroSource(CopySource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         store_settings: Optional["StoreReadSettings"] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         **kwargs
     ):
-        super(AvroSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(AvroSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'AvroSource'  # type: str
         self.store_settings = store_settings
         self.additional_columns = additional_columns
@@ -2802,6 +2854,9 @@ class AzureBlobFsReadSettings(StoreReadSettings):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param recursive: If true, files under the folder path will be read recursively. Default is
      true. Type: boolean (or Expression with resultType boolean).
     :type recursive: object
@@ -2839,6 +2894,7 @@ class AzureBlobFsReadSettings(StoreReadSettings):
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'recursive': {'key': 'recursive', 'type': 'object'},
         'wildcard_folder_path': {'key': 'wildcardFolderPath', 'type': 'object'},
         'wildcard_file_name': {'key': 'wildcardFileName', 'type': 'object'},
@@ -2855,6 +2911,7 @@ class AzureBlobFsReadSettings(StoreReadSettings):
         *,
         additional_properties: Optional[Dict[str, object]] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         recursive: Optional[object] = None,
         wildcard_folder_path: Optional[object] = None,
         wildcard_file_name: Optional[object] = None,
@@ -2866,7 +2923,7 @@ class AzureBlobFsReadSettings(StoreReadSettings):
         modified_datetime_end: Optional[object] = None,
         **kwargs
     ):
-        super(AzureBlobFsReadSettings, self).__init__(additional_properties=additional_properties, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(AzureBlobFsReadSettings, self).__init__(additional_properties=additional_properties, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'AzureBlobFSReadSettings'  # type: str
         self.recursive = recursive
         self.wildcard_folder_path = wildcard_folder_path
@@ -2904,8 +2961,14 @@ class AzureBlobFsSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param copy_behavior: The type of copy behavior for copy sink.
     :type copy_behavior: object
+    :param metadata: Specify the custom metadata to be added to sink data. Type: array of objects
+     (or Expression with resultType array of objects).
+    :type metadata: list[~data_factory_management_client.models.MetadataItem]
     """
 
     _validation = {
@@ -2920,7 +2983,9 @@ class AzureBlobFsSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'copy_behavior': {'key': 'copyBehavior', 'type': 'object'},
+        'metadata': {'key': 'metadata', 'type': '[MetadataItem]'},
     }
 
     def __init__(
@@ -2932,12 +2997,15 @@ class AzureBlobFsSink(CopySink):
         sink_retry_count: Optional[object] = None,
         sink_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         copy_behavior: Optional[object] = None,
+        metadata: Optional[List["MetadataItem"]] = None,
         **kwargs
     ):
-        super(AzureBlobFsSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(AzureBlobFsSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'AzureBlobFSSink'  # type: str
         self.copy_behavior = copy_behavior
+        self.metadata = metadata
 
 
 class AzureBlobFsSource(CopySource):
@@ -2959,6 +3027,9 @@ class AzureBlobFsSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param treat_empty_as_null: Treat empty as null. Type: boolean (or Expression with resultType
      boolean).
     :type treat_empty_as_null: object
@@ -2980,6 +3051,7 @@ class AzureBlobFsSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'treat_empty_as_null': {'key': 'treatEmptyAsNull', 'type': 'object'},
         'skip_header_line_count': {'key': 'skipHeaderLineCount', 'type': 'object'},
         'recursive': {'key': 'recursive', 'type': 'object'},
@@ -2992,12 +3064,13 @@ class AzureBlobFsSource(CopySource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         treat_empty_as_null: Optional[object] = None,
         skip_header_line_count: Optional[object] = None,
         recursive: Optional[object] = None,
         **kwargs
     ):
-        super(AzureBlobFsSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(AzureBlobFsSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'AzureBlobFSSource'  # type: str
         self.treat_empty_as_null = treat_empty_as_null
         self.skip_header_line_count = skip_header_line_count
@@ -3020,6 +3093,9 @@ class StoreWriteSettings(msrest.serialization.Model):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param copy_behavior: The type of copy behavior for copy sink.
     :type copy_behavior: object
     """
@@ -3032,6 +3108,7 @@ class StoreWriteSettings(msrest.serialization.Model):
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'copy_behavior': {'key': 'copyBehavior', 'type': 'object'},
     }
 
@@ -3044,6 +3121,7 @@ class StoreWriteSettings(msrest.serialization.Model):
         *,
         additional_properties: Optional[Dict[str, object]] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         copy_behavior: Optional[object] = None,
         **kwargs
     ):
@@ -3051,6 +3129,7 @@ class StoreWriteSettings(msrest.serialization.Model):
         self.additional_properties = additional_properties
         self.type = 'StoreWriteSettings'  # type: str
         self.max_concurrent_connections = max_concurrent_connections
+        self.disable_metrics_collection = disable_metrics_collection
         self.copy_behavior = copy_behavior
 
 
@@ -3067,6 +3146,9 @@ class AzureBlobFsWriteSettings(StoreWriteSettings):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param copy_behavior: The type of copy behavior for copy sink.
     :type copy_behavior: object
     :param block_size_in_mb: Indicates the block size(MB) when writing data to blob. Type: integer
@@ -3082,6 +3164,7 @@ class AzureBlobFsWriteSettings(StoreWriteSettings):
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'copy_behavior': {'key': 'copyBehavior', 'type': 'object'},
         'block_size_in_mb': {'key': 'blockSizeInMB', 'type': 'object'},
     }
@@ -3091,11 +3174,12 @@ class AzureBlobFsWriteSettings(StoreWriteSettings):
         *,
         additional_properties: Optional[Dict[str, object]] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         copy_behavior: Optional[object] = None,
         block_size_in_mb: Optional[object] = None,
         **kwargs
     ):
-        super(AzureBlobFsWriteSettings, self).__init__(additional_properties=additional_properties, max_concurrent_connections=max_concurrent_connections, copy_behavior=copy_behavior, **kwargs)
+        super(AzureBlobFsWriteSettings, self).__init__(additional_properties=additional_properties, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, copy_behavior=copy_behavior, **kwargs)
         self.type = 'AzureBlobFSWriteSettings'  # type: str
         self.block_size_in_mb = block_size_in_mb
 
@@ -3275,6 +3359,9 @@ class AzureBlobStorageReadSettings(StoreReadSettings):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param recursive: If true, files under the folder path will be read recursively. Default is
      true. Type: boolean (or Expression with resultType boolean).
     :type recursive: object
@@ -3315,6 +3402,7 @@ class AzureBlobStorageReadSettings(StoreReadSettings):
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'recursive': {'key': 'recursive', 'type': 'object'},
         'wildcard_folder_path': {'key': 'wildcardFolderPath', 'type': 'object'},
         'wildcard_file_name': {'key': 'wildcardFileName', 'type': 'object'},
@@ -3332,6 +3420,7 @@ class AzureBlobStorageReadSettings(StoreReadSettings):
         *,
         additional_properties: Optional[Dict[str, object]] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         recursive: Optional[object] = None,
         wildcard_folder_path: Optional[object] = None,
         wildcard_file_name: Optional[object] = None,
@@ -3344,7 +3433,7 @@ class AzureBlobStorageReadSettings(StoreReadSettings):
         modified_datetime_end: Optional[object] = None,
         **kwargs
     ):
-        super(AzureBlobStorageReadSettings, self).__init__(additional_properties=additional_properties, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(AzureBlobStorageReadSettings, self).__init__(additional_properties=additional_properties, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'AzureBlobStorageReadSettings'  # type: str
         self.recursive = recursive
         self.wildcard_folder_path = wildcard_folder_path
@@ -3371,6 +3460,9 @@ class AzureBlobStorageWriteSettings(StoreWriteSettings):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param copy_behavior: The type of copy behavior for copy sink.
     :type copy_behavior: object
     :param block_size_in_mb: Indicates the block size(MB) when writing data to blob. Type: integer
@@ -3386,6 +3478,7 @@ class AzureBlobStorageWriteSettings(StoreWriteSettings):
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'copy_behavior': {'key': 'copyBehavior', 'type': 'object'},
         'block_size_in_mb': {'key': 'blockSizeInMB', 'type': 'object'},
     }
@@ -3395,11 +3488,12 @@ class AzureBlobStorageWriteSettings(StoreWriteSettings):
         *,
         additional_properties: Optional[Dict[str, object]] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         copy_behavior: Optional[object] = None,
         block_size_in_mb: Optional[object] = None,
         **kwargs
     ):
-        super(AzureBlobStorageWriteSettings, self).__init__(additional_properties=additional_properties, max_concurrent_connections=max_concurrent_connections, copy_behavior=copy_behavior, **kwargs)
+        super(AzureBlobStorageWriteSettings, self).__init__(additional_properties=additional_properties, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, copy_behavior=copy_behavior, **kwargs)
         self.type = 'AzureBlobStorageWriteSettings'  # type: str
         self.block_size_in_mb = block_size_in_mb
 
@@ -3741,6 +3835,9 @@ class AzureDatabricksDeltaLakeSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param pre_copy_script: SQL pre-copy script. Type: string (or Expression with resultType
      string).
     :type pre_copy_script: object
@@ -3761,6 +3858,7 @@ class AzureDatabricksDeltaLakeSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'pre_copy_script': {'key': 'preCopyScript', 'type': 'object'},
         'import_settings': {'key': 'importSettings', 'type': 'AzureDatabricksDeltaLakeImportCommand'},
     }
@@ -3774,11 +3872,12 @@ class AzureDatabricksDeltaLakeSink(CopySink):
         sink_retry_count: Optional[object] = None,
         sink_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         pre_copy_script: Optional[object] = None,
         import_settings: Optional["AzureDatabricksDeltaLakeImportCommand"] = None,
         **kwargs
     ):
-        super(AzureDatabricksDeltaLakeSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(AzureDatabricksDeltaLakeSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'AzureDatabricksDeltaLakeSink'  # type: str
         self.pre_copy_script = pre_copy_script
         self.import_settings = import_settings
@@ -3803,6 +3902,9 @@ class AzureDatabricksDeltaLakeSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query: Azure Databricks Delta Lake Sql query. Type: string (or Expression with
      resultType string).
     :type query: object
@@ -3821,6 +3923,7 @@ class AzureDatabricksDeltaLakeSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
         'export_settings': {'key': 'exportSettings', 'type': 'AzureDatabricksDeltaLakeExportCommand'},
     }
@@ -3832,11 +3935,12 @@ class AzureDatabricksDeltaLakeSource(CopySource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query: Optional[object] = None,
         export_settings: Optional["AzureDatabricksDeltaLakeExportCommand"] = None,
         **kwargs
     ):
-        super(AzureDatabricksDeltaLakeSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(AzureDatabricksDeltaLakeSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'AzureDatabricksDeltaLakeSource'  # type: str
         self.query = query
         self.export_settings = export_settings
@@ -4248,6 +4352,9 @@ class AzureDataExplorerSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param ingestion_mapping_name: A name of a pre-created csv mapping that was defined on the
      target Kusto table. Type: string.
     :type ingestion_mapping_name: object
@@ -4271,6 +4378,7 @@ class AzureDataExplorerSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'ingestion_mapping_name': {'key': 'ingestionMappingName', 'type': 'object'},
         'ingestion_mapping_as_json': {'key': 'ingestionMappingAsJson', 'type': 'object'},
         'flush_immediately': {'key': 'flushImmediately', 'type': 'object'},
@@ -4285,12 +4393,13 @@ class AzureDataExplorerSink(CopySink):
         sink_retry_count: Optional[object] = None,
         sink_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         ingestion_mapping_name: Optional[object] = None,
         ingestion_mapping_as_json: Optional[object] = None,
         flush_immediately: Optional[object] = None,
         **kwargs
     ):
-        super(AzureDataExplorerSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(AzureDataExplorerSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'AzureDataExplorerSink'  # type: str
         self.ingestion_mapping_name = ingestion_mapping_name
         self.ingestion_mapping_as_json = ingestion_mapping_as_json
@@ -4316,6 +4425,9 @@ class AzureDataExplorerSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query: Required. Database query. Should be a Kusto Query Language (KQL) query. Type:
      string (or Expression with resultType string).
     :type query: object
@@ -4341,6 +4453,7 @@ class AzureDataExplorerSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
         'no_truncation': {'key': 'noTruncation', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
@@ -4355,12 +4468,13 @@ class AzureDataExplorerSource(CopySource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         no_truncation: Optional[object] = None,
         query_timeout: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         **kwargs
     ):
-        super(AzureDataExplorerSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(AzureDataExplorerSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'AzureDataExplorerSource'  # type: str
         self.query = query
         self.no_truncation = no_truncation
@@ -4779,6 +4893,9 @@ class AzureDataLakeStoreReadSettings(StoreReadSettings):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param recursive: If true, files under the folder path will be read recursively. Default is
      true. Type: boolean (or Expression with resultType boolean).
     :type recursive: object
@@ -4824,6 +4941,7 @@ class AzureDataLakeStoreReadSettings(StoreReadSettings):
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'recursive': {'key': 'recursive', 'type': 'object'},
         'wildcard_folder_path': {'key': 'wildcardFolderPath', 'type': 'object'},
         'wildcard_file_name': {'key': 'wildcardFileName', 'type': 'object'},
@@ -4842,6 +4960,7 @@ class AzureDataLakeStoreReadSettings(StoreReadSettings):
         *,
         additional_properties: Optional[Dict[str, object]] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         recursive: Optional[object] = None,
         wildcard_folder_path: Optional[object] = None,
         wildcard_file_name: Optional[object] = None,
@@ -4855,7 +4974,7 @@ class AzureDataLakeStoreReadSettings(StoreReadSettings):
         modified_datetime_end: Optional[object] = None,
         **kwargs
     ):
-        super(AzureDataLakeStoreReadSettings, self).__init__(additional_properties=additional_properties, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(AzureDataLakeStoreReadSettings, self).__init__(additional_properties=additional_properties, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'AzureDataLakeStoreReadSettings'  # type: str
         self.recursive = recursive
         self.wildcard_folder_path = wildcard_folder_path
@@ -4895,6 +5014,9 @@ class AzureDataLakeStoreSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param copy_behavior: The type of copy behavior for copy sink.
     :type copy_behavior: object
     :param enable_adls_single_file_parallel: Single File Parallel.
@@ -4913,6 +5035,7 @@ class AzureDataLakeStoreSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'copy_behavior': {'key': 'copyBehavior', 'type': 'object'},
         'enable_adls_single_file_parallel': {'key': 'enableAdlsSingleFileParallel', 'type': 'object'},
     }
@@ -4926,11 +5049,12 @@ class AzureDataLakeStoreSink(CopySink):
         sink_retry_count: Optional[object] = None,
         sink_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         copy_behavior: Optional[object] = None,
         enable_adls_single_file_parallel: Optional[object] = None,
         **kwargs
     ):
-        super(AzureDataLakeStoreSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(AzureDataLakeStoreSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'AzureDataLakeStoreSink'  # type: str
         self.copy_behavior = copy_behavior
         self.enable_adls_single_file_parallel = enable_adls_single_file_parallel
@@ -4955,6 +5079,9 @@ class AzureDataLakeStoreSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param recursive: If true, files under the folder path will be read recursively. Default is
      true. Type: boolean (or Expression with resultType boolean).
     :type recursive: object
@@ -4970,6 +5097,7 @@ class AzureDataLakeStoreSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'recursive': {'key': 'recursive', 'type': 'object'},
     }
 
@@ -4980,10 +5108,11 @@ class AzureDataLakeStoreSource(CopySource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         recursive: Optional[object] = None,
         **kwargs
     ):
-        super(AzureDataLakeStoreSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(AzureDataLakeStoreSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'AzureDataLakeStoreSource'  # type: str
         self.recursive = recursive
 
@@ -5001,6 +5130,9 @@ class AzureDataLakeStoreWriteSettings(StoreWriteSettings):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param copy_behavior: The type of copy behavior for copy sink.
     :type copy_behavior: object
     :param expiry_date_time: Specifies the expiry time of the written files. The time is applied to
@@ -5017,6 +5149,7 @@ class AzureDataLakeStoreWriteSettings(StoreWriteSettings):
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'copy_behavior': {'key': 'copyBehavior', 'type': 'object'},
         'expiry_date_time': {'key': 'expiryDateTime', 'type': 'object'},
     }
@@ -5026,11 +5159,12 @@ class AzureDataLakeStoreWriteSettings(StoreWriteSettings):
         *,
         additional_properties: Optional[Dict[str, object]] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         copy_behavior: Optional[object] = None,
         expiry_date_time: Optional[object] = None,
         **kwargs
     ):
-        super(AzureDataLakeStoreWriteSettings, self).__init__(additional_properties=additional_properties, max_concurrent_connections=max_concurrent_connections, copy_behavior=copy_behavior, **kwargs)
+        super(AzureDataLakeStoreWriteSettings, self).__init__(additional_properties=additional_properties, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, copy_behavior=copy_behavior, **kwargs)
         self.type = 'AzureDataLakeStoreWriteSettings'  # type: str
         self.expiry_date_time = expiry_date_time
 
@@ -5193,6 +5327,9 @@ class AzureFileStorageReadSettings(StoreReadSettings):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param recursive: If true, files under the folder path will be read recursively. Default is
      true. Type: boolean (or Expression with resultType boolean).
     :type recursive: object
@@ -5233,6 +5370,7 @@ class AzureFileStorageReadSettings(StoreReadSettings):
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'recursive': {'key': 'recursive', 'type': 'object'},
         'wildcard_folder_path': {'key': 'wildcardFolderPath', 'type': 'object'},
         'wildcard_file_name': {'key': 'wildcardFileName', 'type': 'object'},
@@ -5250,6 +5388,7 @@ class AzureFileStorageReadSettings(StoreReadSettings):
         *,
         additional_properties: Optional[Dict[str, object]] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         recursive: Optional[object] = None,
         wildcard_folder_path: Optional[object] = None,
         wildcard_file_name: Optional[object] = None,
@@ -5262,7 +5401,7 @@ class AzureFileStorageReadSettings(StoreReadSettings):
         modified_datetime_end: Optional[object] = None,
         **kwargs
     ):
-        super(AzureFileStorageReadSettings, self).__init__(additional_properties=additional_properties, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(AzureFileStorageReadSettings, self).__init__(additional_properties=additional_properties, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'AzureFileStorageReadSettings'  # type: str
         self.recursive = recursive
         self.wildcard_folder_path = wildcard_folder_path
@@ -5289,6 +5428,9 @@ class AzureFileStorageWriteSettings(StoreWriteSettings):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param copy_behavior: The type of copy behavior for copy sink.
     :type copy_behavior: object
     """
@@ -5301,6 +5443,7 @@ class AzureFileStorageWriteSettings(StoreWriteSettings):
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'copy_behavior': {'key': 'copyBehavior', 'type': 'object'},
     }
 
@@ -5309,10 +5452,11 @@ class AzureFileStorageWriteSettings(StoreWriteSettings):
         *,
         additional_properties: Optional[Dict[str, object]] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         copy_behavior: Optional[object] = None,
         **kwargs
     ):
-        super(AzureFileStorageWriteSettings, self).__init__(additional_properties=additional_properties, max_concurrent_connections=max_concurrent_connections, copy_behavior=copy_behavior, **kwargs)
+        super(AzureFileStorageWriteSettings, self).__init__(additional_properties=additional_properties, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, copy_behavior=copy_behavior, **kwargs)
         self.type = 'AzureFileStorageWriteSettings'  # type: str
 
 
@@ -5680,6 +5824,9 @@ class AzureMariaDbSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -5701,6 +5848,7 @@ class AzureMariaDbSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -5713,12 +5861,13 @@ class AzureMariaDbSource(TabularSource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query_timeout: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         query: Optional[object] = None,
         **kwargs
     ):
-        super(AzureMariaDbSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
+        super(AzureMariaDbSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
         self.type = 'AzureMariaDBSource'  # type: str
         self.query = query
 
@@ -6375,6 +6524,9 @@ class AzureMySqlSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param pre_copy_script: A query to execute before starting the copy. Type: string (or
      Expression with resultType string).
     :type pre_copy_script: object
@@ -6392,6 +6544,7 @@ class AzureMySqlSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'pre_copy_script': {'key': 'preCopyScript', 'type': 'object'},
     }
 
@@ -6404,10 +6557,11 @@ class AzureMySqlSink(CopySink):
         sink_retry_count: Optional[object] = None,
         sink_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         pre_copy_script: Optional[object] = None,
         **kwargs
     ):
-        super(AzureMySqlSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(AzureMySqlSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'AzureMySqlSink'  # type: str
         self.pre_copy_script = pre_copy_script
 
@@ -6431,6 +6585,9 @@ class AzureMySqlSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -6451,6 +6608,7 @@ class AzureMySqlSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -6463,12 +6621,13 @@ class AzureMySqlSource(TabularSource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query_timeout: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         query: Optional[object] = None,
         **kwargs
     ):
-        super(AzureMySqlSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
+        super(AzureMySqlSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
         self.type = 'AzureMySqlSource'  # type: str
         self.query = query
 
@@ -6638,6 +6797,9 @@ class AzurePostgreSqlSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param pre_copy_script: A query to execute before starting the copy. Type: string (or
      Expression with resultType string).
     :type pre_copy_script: object
@@ -6655,6 +6817,7 @@ class AzurePostgreSqlSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'pre_copy_script': {'key': 'preCopyScript', 'type': 'object'},
     }
 
@@ -6667,10 +6830,11 @@ class AzurePostgreSqlSink(CopySink):
         sink_retry_count: Optional[object] = None,
         sink_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         pre_copy_script: Optional[object] = None,
         **kwargs
     ):
-        super(AzurePostgreSqlSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(AzurePostgreSqlSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'AzurePostgreSqlSink'  # type: str
         self.pre_copy_script = pre_copy_script
 
@@ -6694,6 +6858,9 @@ class AzurePostgreSqlSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -6715,6 +6882,7 @@ class AzurePostgreSqlSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -6727,12 +6895,13 @@ class AzurePostgreSqlSource(TabularSource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query_timeout: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         query: Optional[object] = None,
         **kwargs
     ):
-        super(AzurePostgreSqlSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
+        super(AzurePostgreSqlSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
         self.type = 'AzurePostgreSqlSource'  # type: str
         self.query = query
 
@@ -6843,6 +7012,9 @@ class AzureQueueSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     """
 
     _validation = {
@@ -6857,6 +7029,7 @@ class AzureQueueSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
     }
 
     def __init__(
@@ -6868,9 +7041,10 @@ class AzureQueueSink(CopySink):
         sink_retry_count: Optional[object] = None,
         sink_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         **kwargs
     ):
-        super(AzureQueueSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(AzureQueueSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'AzureQueueSink'  # type: str
 
 
@@ -6969,6 +7143,9 @@ class AzureSearchIndexSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param write_behavior: Specify the write behavior when upserting documents into Azure Search
      Index. Possible values include: "Merge", "Upload".
     :type write_behavior: str or
@@ -6987,6 +7164,7 @@ class AzureSearchIndexSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'write_behavior': {'key': 'writeBehavior', 'type': 'str'},
     }
 
@@ -6999,10 +7177,11 @@ class AzureSearchIndexSink(CopySink):
         sink_retry_count: Optional[object] = None,
         sink_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         write_behavior: Optional[Union[str, "AzureSearchIndexWriteBehaviorType"]] = None,
         **kwargs
     ):
-        super(AzureSearchIndexSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(AzureSearchIndexSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'AzureSearchIndexSink'  # type: str
         self.write_behavior = write_behavior
 
@@ -7545,6 +7724,9 @@ class AzureSqlSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param sql_writer_stored_procedure_name: SQL writer stored procedure name. Type: string (or
      Expression with resultType string).
     :type sql_writer_stored_procedure_name: object
@@ -7577,6 +7759,7 @@ class AzureSqlSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'sql_writer_stored_procedure_name': {'key': 'sqlWriterStoredProcedureName', 'type': 'object'},
         'sql_writer_table_type': {'key': 'sqlWriterTableType', 'type': 'object'},
         'pre_copy_script': {'key': 'preCopyScript', 'type': 'object'},
@@ -7594,6 +7777,7 @@ class AzureSqlSink(CopySink):
         sink_retry_count: Optional[object] = None,
         sink_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         sql_writer_stored_procedure_name: Optional[object] = None,
         sql_writer_table_type: Optional[object] = None,
         pre_copy_script: Optional[object] = None,
@@ -7602,7 +7786,7 @@ class AzureSqlSink(CopySink):
         table_option: Optional[object] = None,
         **kwargs
     ):
-        super(AzureSqlSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(AzureSqlSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'AzureSqlSink'  # type: str
         self.sql_writer_stored_procedure_name = sql_writer_stored_procedure_name
         self.sql_writer_table_type = sql_writer_table_type
@@ -7631,6 +7815,9 @@ class AzureSqlSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -7666,6 +7853,7 @@ class AzureSqlSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'sql_reader_query': {'key': 'sqlReaderQuery', 'type': 'object'},
@@ -7683,6 +7871,7 @@ class AzureSqlSource(TabularSource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query_timeout: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         sql_reader_query: Optional[object] = None,
@@ -7693,7 +7882,7 @@ class AzureSqlSource(TabularSource):
         partition_settings: Optional["SqlPartitionSettings"] = None,
         **kwargs
     ):
-        super(AzureSqlSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
+        super(AzureSqlSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
         self.type = 'AzureSqlSource'  # type: str
         self.sql_reader_query = sql_reader_query
         self.sql_reader_stored_procedure_name = sql_reader_stored_procedure_name
@@ -7955,6 +8144,9 @@ class AzureTableSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param azure_table_default_partition_key_value: Azure Table default partition key value. Type:
      string (or Expression with resultType string).
     :type azure_table_default_partition_key_value: object
@@ -7981,6 +8173,7 @@ class AzureTableSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'azure_table_default_partition_key_value': {'key': 'azureTableDefaultPartitionKeyValue', 'type': 'object'},
         'azure_table_partition_key_name': {'key': 'azureTablePartitionKeyName', 'type': 'object'},
         'azure_table_row_key_name': {'key': 'azureTableRowKeyName', 'type': 'object'},
@@ -7996,13 +8189,14 @@ class AzureTableSink(CopySink):
         sink_retry_count: Optional[object] = None,
         sink_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         azure_table_default_partition_key_value: Optional[object] = None,
         azure_table_partition_key_name: Optional[object] = None,
         azure_table_row_key_name: Optional[object] = None,
         azure_table_insert_type: Optional[object] = None,
         **kwargs
     ):
-        super(AzureTableSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(AzureTableSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'AzureTableSink'  # type: str
         self.azure_table_default_partition_key_value = azure_table_default_partition_key_value
         self.azure_table_partition_key_name = azure_table_partition_key_name
@@ -8029,6 +8223,9 @@ class AzureTableSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -8053,6 +8250,7 @@ class AzureTableSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'azure_table_source_query': {'key': 'azureTableSourceQuery', 'type': 'object'},
@@ -8066,13 +8264,14 @@ class AzureTableSource(TabularSource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query_timeout: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         azure_table_source_query: Optional[object] = None,
         azure_table_source_ignore_table_not_found: Optional[object] = None,
         **kwargs
     ):
-        super(AzureTableSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
+        super(AzureTableSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
         self.type = 'AzureTableSource'  # type: str
         self.azure_table_source_query = azure_table_source_query
         self.azure_table_source_ignore_table_not_found = azure_table_source_ignore_table_not_found
@@ -8327,6 +8526,9 @@ class BinarySink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param store_settings: Binary store settings.
     :type store_settings: ~data_factory_management_client.models.StoreWriteSettings
     """
@@ -8343,6 +8545,7 @@ class BinarySink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'store_settings': {'key': 'storeSettings', 'type': 'StoreWriteSettings'},
     }
 
@@ -8355,10 +8558,11 @@ class BinarySink(CopySink):
         sink_retry_count: Optional[object] = None,
         sink_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         store_settings: Optional["StoreWriteSettings"] = None,
         **kwargs
     ):
-        super(BinarySink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(BinarySink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'BinarySink'  # type: str
         self.store_settings = store_settings
 
@@ -8382,6 +8586,9 @@ class BinarySource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param store_settings: Binary store settings.
     :type store_settings: ~data_factory_management_client.models.StoreReadSettings
     :param format_settings: Binary format settings.
@@ -8398,6 +8605,7 @@ class BinarySource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'store_settings': {'key': 'storeSettings', 'type': 'StoreReadSettings'},
         'format_settings': {'key': 'formatSettings', 'type': 'BinaryReadSettings'},
     }
@@ -8409,11 +8617,12 @@ class BinarySource(CopySource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         store_settings: Optional["StoreReadSettings"] = None,
         format_settings: Optional["BinaryReadSettings"] = None,
         **kwargs
     ):
-        super(BinarySource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(BinarySource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'BinarySource'  # type: str
         self.store_settings = store_settings
         self.format_settings = format_settings
@@ -8641,6 +8850,9 @@ class BlobSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param blob_writer_overwrite_files: Blob writer overwrite files. Type: boolean (or Expression
      with resultType boolean).
     :type blob_writer_overwrite_files: object
@@ -8652,6 +8864,9 @@ class BlobSink(CopySink):
     :type blob_writer_add_header: object
     :param copy_behavior: The type of copy behavior for copy sink.
     :type copy_behavior: object
+    :param metadata: Specify the custom metadata to be added to sink data. Type: array of objects
+     (or Expression with resultType array of objects).
+    :type metadata: list[~data_factory_management_client.models.MetadataItem]
     """
 
     _validation = {
@@ -8666,10 +8881,12 @@ class BlobSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'blob_writer_overwrite_files': {'key': 'blobWriterOverwriteFiles', 'type': 'object'},
         'blob_writer_date_time_format': {'key': 'blobWriterDateTimeFormat', 'type': 'object'},
         'blob_writer_add_header': {'key': 'blobWriterAddHeader', 'type': 'object'},
         'copy_behavior': {'key': 'copyBehavior', 'type': 'object'},
+        'metadata': {'key': 'metadata', 'type': '[MetadataItem]'},
     }
 
     def __init__(
@@ -8681,18 +8898,21 @@ class BlobSink(CopySink):
         sink_retry_count: Optional[object] = None,
         sink_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         blob_writer_overwrite_files: Optional[object] = None,
         blob_writer_date_time_format: Optional[object] = None,
         blob_writer_add_header: Optional[object] = None,
         copy_behavior: Optional[object] = None,
+        metadata: Optional[List["MetadataItem"]] = None,
         **kwargs
     ):
-        super(BlobSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(BlobSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'BlobSink'  # type: str
         self.blob_writer_overwrite_files = blob_writer_overwrite_files
         self.blob_writer_date_time_format = blob_writer_date_time_format
         self.blob_writer_add_header = blob_writer_add_header
         self.copy_behavior = copy_behavior
+        self.metadata = metadata
 
 
 class BlobSource(CopySource):
@@ -8714,6 +8934,9 @@ class BlobSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param treat_empty_as_null: Treat empty as null. Type: boolean (or Expression with resultType
      boolean).
     :type treat_empty_as_null: object
@@ -8735,6 +8958,7 @@ class BlobSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'treat_empty_as_null': {'key': 'treatEmptyAsNull', 'type': 'object'},
         'skip_header_line_count': {'key': 'skipHeaderLineCount', 'type': 'object'},
         'recursive': {'key': 'recursive', 'type': 'object'},
@@ -8747,12 +8971,13 @@ class BlobSource(CopySource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         treat_empty_as_null: Optional[object] = None,
         skip_header_line_count: Optional[object] = None,
         recursive: Optional[object] = None,
         **kwargs
     ):
-        super(BlobSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(BlobSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'BlobSource'  # type: str
         self.treat_empty_as_null = treat_empty_as_null
         self.skip_header_line_count = skip_header_line_count
@@ -8931,6 +9156,9 @@ class CassandraSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -8960,6 +9188,7 @@ class CassandraSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -8973,13 +9202,14 @@ class CassandraSource(TabularSource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query_timeout: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         query: Optional[object] = None,
         consistency_level: Optional[Union[str, "CassandraSourceReadConsistencyLevels"]] = None,
         **kwargs
     ):
-        super(CassandraSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
+        super(CassandraSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
         self.type = 'CassandraSource'  # type: str
         self.query = query
         self.consistency_level = consistency_level
@@ -9325,8 +9555,8 @@ class CommonDataServiceForAppsLinkedService(LinkedService):
     :param deployment_type: Required. The deployment type of the Common Data Service for Apps
      instance. 'Online' for Common Data Service for Apps Online and 'OnPremisesWithIfd' for Common
      Data Service for Apps on-premises with Ifd. Type: string (or Expression with resultType
-     string). Possible values include: "Online", "OnPremisesWithIfd".
-    :type deployment_type: str or ~data_factory_management_client.models.DynamicsDeploymentType
+     string).
+    :type deployment_type: object
     :param host_name: The host name of the on-premises Common Data Service for Apps server. The
      property is required for on-prem and not allowed for online. Type: string (or Expression with
      resultType string).
@@ -9347,10 +9577,8 @@ class CommonDataServiceForAppsLinkedService(LinkedService):
     :param authentication_type: Required. The authentication type to connect to Common Data Service
      for Apps server. 'Office365' for online scenario, 'Ifd' for on-premises with Ifd scenario.
      'AADServicePrincipal' for Server-To-Server authentication in online scenario. Type: string (or
-     Expression with resultType string). Possible values include: "Office365", "Ifd",
-     "AADServicePrincipal".
-    :type authentication_type: str or
-     ~data_factory_management_client.models.DynamicsAuthenticationType
+     Expression with resultType string).
+    :type authentication_type: object
     :param username: User name to access the Common Data Service for Apps instance. Type: string
      (or Expression with resultType string).
     :type username: object
@@ -9361,10 +9589,8 @@ class CommonDataServiceForAppsLinkedService(LinkedService):
     :type service_principal_id: object
     :param service_principal_credential_type: The service principal credential type to use in
      Server-To-Server authentication. 'ServicePrincipalKey' for key/secret, 'ServicePrincipalCert'
-     for certificate. Type: string (or Expression with resultType string). Possible values include:
-     "ServicePrincipalKey", "ServicePrincipalCert".
-    :type service_principal_credential_type: str or
-     ~data_factory_management_client.models.DynamicsServicePrincipalCredentialType
+     for certificate. Type: string (or Expression with resultType string).
+    :type service_principal_credential_type: object
     :param service_principal_credential: The credential of the service principal object in Azure
      Active Directory. If servicePrincipalCredentialType is 'ServicePrincipalKey',
      servicePrincipalCredential can be SecureString or AzureKeyVaultSecretReference. If
@@ -9390,16 +9616,16 @@ class CommonDataServiceForAppsLinkedService(LinkedService):
         'description': {'key': 'description', 'type': 'str'},
         'parameters': {'key': 'parameters', 'type': '{ParameterSpecification}'},
         'annotations': {'key': 'annotations', 'type': '[object]'},
-        'deployment_type': {'key': 'typeProperties.deploymentType', 'type': 'str'},
+        'deployment_type': {'key': 'typeProperties.deploymentType', 'type': 'object'},
         'host_name': {'key': 'typeProperties.hostName', 'type': 'object'},
         'port': {'key': 'typeProperties.port', 'type': 'object'},
         'service_uri': {'key': 'typeProperties.serviceUri', 'type': 'object'},
         'organization_name': {'key': 'typeProperties.organizationName', 'type': 'object'},
-        'authentication_type': {'key': 'typeProperties.authenticationType', 'type': 'str'},
+        'authentication_type': {'key': 'typeProperties.authenticationType', 'type': 'object'},
         'username': {'key': 'typeProperties.username', 'type': 'object'},
         'password': {'key': 'typeProperties.password', 'type': 'SecretBase'},
         'service_principal_id': {'key': 'typeProperties.servicePrincipalId', 'type': 'object'},
-        'service_principal_credential_type': {'key': 'typeProperties.servicePrincipalCredentialType', 'type': 'str'},
+        'service_principal_credential_type': {'key': 'typeProperties.servicePrincipalCredentialType', 'type': 'object'},
         'service_principal_credential': {'key': 'typeProperties.servicePrincipalCredential', 'type': 'SecretBase'},
         'encrypted_credential': {'key': 'typeProperties.encryptedCredential', 'type': 'object'},
     }
@@ -9407,8 +9633,8 @@ class CommonDataServiceForAppsLinkedService(LinkedService):
     def __init__(
         self,
         *,
-        deployment_type: Union[str, "DynamicsDeploymentType"],
-        authentication_type: Union[str, "DynamicsAuthenticationType"],
+        deployment_type: object,
+        authentication_type: object,
         additional_properties: Optional[Dict[str, object]] = None,
         connect_via: Optional["IntegrationRuntimeReference"] = None,
         description: Optional[str] = None,
@@ -9421,7 +9647,7 @@ class CommonDataServiceForAppsLinkedService(LinkedService):
         username: Optional[object] = None,
         password: Optional["SecretBase"] = None,
         service_principal_id: Optional[object] = None,
-        service_principal_credential_type: Optional[Union[str, "DynamicsServicePrincipalCredentialType"]] = None,
+        service_principal_credential_type: Optional[object] = None,
         service_principal_credential: Optional["SecretBase"] = None,
         encrypted_credential: Optional[object] = None,
         **kwargs
@@ -9467,6 +9693,9 @@ class CommonDataServiceForAppsSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param write_behavior: Required. The write behavior for the operation. Possible values include:
      "Upsert".
     :type write_behavior: str or ~data_factory_management_client.models.DynamicsSinkWriteBehavior
@@ -9492,6 +9721,7 @@ class CommonDataServiceForAppsSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'write_behavior': {'key': 'writeBehavior', 'type': 'str'},
         'ignore_null_values': {'key': 'ignoreNullValues', 'type': 'object'},
         'alternate_key_name': {'key': 'alternateKeyName', 'type': 'object'},
@@ -9507,11 +9737,12 @@ class CommonDataServiceForAppsSink(CopySink):
         sink_retry_count: Optional[object] = None,
         sink_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         ignore_null_values: Optional[object] = None,
         alternate_key_name: Optional[object] = None,
         **kwargs
     ):
-        super(CommonDataServiceForAppsSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(CommonDataServiceForAppsSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'CommonDataServiceForAppsSink'  # type: str
         self.write_behavior = write_behavior
         self.ignore_null_values = ignore_null_values
@@ -9537,6 +9768,9 @@ class CommonDataServiceForAppsSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query: FetchXML is a proprietary query language that is used in Microsoft Common Data
      Service for Apps (online & on-premises). Type: string (or Expression with resultType string).
     :type query: object
@@ -9555,6 +9789,7 @@ class CommonDataServiceForAppsSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
     }
@@ -9566,11 +9801,12 @@ class CommonDataServiceForAppsSource(CopySource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         **kwargs
     ):
-        super(CommonDataServiceForAppsSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(CommonDataServiceForAppsSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'CommonDataServiceForAppsSource'  # type: str
         self.query = query
         self.additional_columns = additional_columns
@@ -9836,6 +10072,9 @@ class ConcurSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -9857,6 +10096,7 @@ class ConcurSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -9869,12 +10109,13 @@ class ConcurSource(TabularSource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query_timeout: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         query: Optional[object] = None,
         **kwargs
     ):
-        super(ConcurSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
+        super(ConcurSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
         self.type = 'ConcurSource'  # type: str
         self.query = query
 
@@ -10458,6 +10699,9 @@ class CosmosDbMongoDbApiSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param write_behavior: Specifies whether the document with same key to be overwritten (upsert)
      rather than throw exception (insert). The default value is "insert". Type: string (or
      Expression with resultType string). Type: string (or Expression with resultType string).
@@ -10476,6 +10720,7 @@ class CosmosDbMongoDbApiSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'write_behavior': {'key': 'writeBehavior', 'type': 'object'},
     }
 
@@ -10488,10 +10733,11 @@ class CosmosDbMongoDbApiSink(CopySink):
         sink_retry_count: Optional[object] = None,
         sink_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         write_behavior: Optional[object] = None,
         **kwargs
     ):
-        super(CosmosDbMongoDbApiSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(CosmosDbMongoDbApiSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'CosmosDbMongoDbApiSink'  # type: str
         self.write_behavior = write_behavior
 
@@ -10515,6 +10761,9 @@ class CosmosDbMongoDbApiSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param filter: Specifies selection filter using query operators. To return all documents in a
      collection, omit this parameter or pass an empty document ({}). Type: string (or Expression
      with resultType string).
@@ -10544,6 +10793,7 @@ class CosmosDbMongoDbApiSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'filter': {'key': 'filter', 'type': 'object'},
         'cursor_methods': {'key': 'cursorMethods', 'type': 'MongoDbCursorMethodsProperties'},
         'batch_size': {'key': 'batchSize', 'type': 'object'},
@@ -10558,6 +10808,7 @@ class CosmosDbMongoDbApiSource(CopySource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         filter: Optional[object] = None,
         cursor_methods: Optional["MongoDbCursorMethodsProperties"] = None,
         batch_size: Optional[object] = None,
@@ -10565,7 +10816,7 @@ class CosmosDbMongoDbApiSource(CopySource):
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         **kwargs
     ):
-        super(CosmosDbMongoDbApiSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(CosmosDbMongoDbApiSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'CosmosDbMongoDbApiSource'  # type: str
         self.filter = filter
         self.cursor_methods = cursor_methods
@@ -10669,6 +10920,9 @@ class CosmosDbSqlApiSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param write_behavior: Describes how to write data to Azure Cosmos DB. Type: string (or
      Expression with resultType string). Allowed values: insert and upsert.
     :type write_behavior: object
@@ -10686,6 +10940,7 @@ class CosmosDbSqlApiSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'write_behavior': {'key': 'writeBehavior', 'type': 'object'},
     }
 
@@ -10698,10 +10953,11 @@ class CosmosDbSqlApiSink(CopySink):
         sink_retry_count: Optional[object] = None,
         sink_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         write_behavior: Optional[object] = None,
         **kwargs
     ):
-        super(CosmosDbSqlApiSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(CosmosDbSqlApiSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'CosmosDbSqlApiSink'  # type: str
         self.write_behavior = write_behavior
 
@@ -10725,6 +10981,9 @@ class CosmosDbSqlApiSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query: SQL API query. Type: string (or Expression with resultType string).
     :type query: object
     :param page_size: Page size of the result. Type: integer (or Expression with resultType
@@ -10751,6 +11010,7 @@ class CosmosDbSqlApiSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
         'page_size': {'key': 'pageSize', 'type': 'object'},
         'preferred_regions': {'key': 'preferredRegions', 'type': 'object'},
@@ -10765,6 +11025,7 @@ class CosmosDbSqlApiSource(CopySource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query: Optional[object] = None,
         page_size: Optional[object] = None,
         preferred_regions: Optional[object] = None,
@@ -10772,7 +11033,7 @@ class CosmosDbSqlApiSource(CopySource):
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         **kwargs
     ):
-        super(CosmosDbSqlApiSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(CosmosDbSqlApiSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'CosmosDbSqlApiSource'  # type: str
         self.query = query
         self.page_size = page_size
@@ -10865,6 +11126,9 @@ class CouchbaseSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -10886,6 +11150,7 @@ class CouchbaseSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -10898,12 +11163,13 @@ class CouchbaseSource(TabularSource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query_timeout: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         query: Optional[object] = None,
         **kwargs
     ):
-        super(CouchbaseSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
+        super(CouchbaseSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
         self.type = 'CouchbaseSource'  # type: str
         self.query = query
 
@@ -12594,8 +12860,8 @@ class DatasetDeflateCompression(DatasetCompression):
     :type additional_properties: dict[str, object]
     :param type: Required. Type of dataset compression.Constant filled by server.
     :type type: str
-    :param level: The Deflate compression level. Possible values include: "Optimal", "Fastest".
-    :type level: str or ~data_factory_management_client.models.DatasetCompressionLevel
+    :param level: The Deflate compression level.
+    :type level: object
     """
 
     _validation = {
@@ -12605,14 +12871,14 @@ class DatasetDeflateCompression(DatasetCompression):
     _attribute_map = {
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
-        'level': {'key': 'level', 'type': 'str'},
+        'level': {'key': 'level', 'type': 'object'},
     }
 
     def __init__(
         self,
         *,
         additional_properties: Optional[Dict[str, object]] = None,
-        level: Optional[Union[str, "DatasetCompressionLevel"]] = None,
+        level: Optional[object] = None,
         **kwargs
     ):
         super(DatasetDeflateCompression, self).__init__(additional_properties=additional_properties, **kwargs)
@@ -12651,8 +12917,8 @@ class DatasetGZipCompression(DatasetCompression):
     :type additional_properties: dict[str, object]
     :param type: Required. Type of dataset compression.Constant filled by server.
     :type type: str
-    :param level: The GZip compression level. Possible values include: "Optimal", "Fastest".
-    :type level: str or ~data_factory_management_client.models.DatasetCompressionLevel
+    :param level: The GZip compression level.
+    :type level: object
     """
 
     _validation = {
@@ -12662,14 +12928,14 @@ class DatasetGZipCompression(DatasetCompression):
     _attribute_map = {
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
-        'level': {'key': 'level', 'type': 'str'},
+        'level': {'key': 'level', 'type': 'object'},
     }
 
     def __init__(
         self,
         *,
         additional_properties: Optional[Dict[str, object]] = None,
-        level: Optional[Union[str, "DatasetCompressionLevel"]] = None,
+        level: Optional[object] = None,
         **kwargs
     ):
         super(DatasetGZipCompression, self).__init__(additional_properties=additional_properties, **kwargs)
@@ -12867,8 +13133,8 @@ class DatasetTarGZipCompression(DatasetCompression):
     :type additional_properties: dict[str, object]
     :param type: Required. Type of dataset compression.Constant filled by server.
     :type type: str
-    :param level: The TarGZip compression level. Possible values include: "Optimal", "Fastest".
-    :type level: str or ~data_factory_management_client.models.DatasetCompressionLevel
+    :param level: The TarGZip compression level.
+    :type level: object
     """
 
     _validation = {
@@ -12878,14 +13144,14 @@ class DatasetTarGZipCompression(DatasetCompression):
     _attribute_map = {
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
-        'level': {'key': 'level', 'type': 'str'},
+        'level': {'key': 'level', 'type': 'object'},
     }
 
     def __init__(
         self,
         *,
         additional_properties: Optional[Dict[str, object]] = None,
-        level: Optional[Union[str, "DatasetCompressionLevel"]] = None,
+        level: Optional[object] = None,
         **kwargs
     ):
         super(DatasetTarGZipCompression, self).__init__(additional_properties=additional_properties, **kwargs)
@@ -12903,8 +13169,8 @@ class DatasetZipDeflateCompression(DatasetCompression):
     :type additional_properties: dict[str, object]
     :param type: Required. Type of dataset compression.Constant filled by server.
     :type type: str
-    :param level: The ZipDeflate compression level. Possible values include: "Optimal", "Fastest".
-    :type level: str or ~data_factory_management_client.models.DatasetCompressionLevel
+    :param level: The ZipDeflate compression level.
+    :type level: object
     """
 
     _validation = {
@@ -12914,14 +13180,14 @@ class DatasetZipDeflateCompression(DatasetCompression):
     _attribute_map = {
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
-        'level': {'key': 'level', 'type': 'str'},
+        'level': {'key': 'level', 'type': 'object'},
     }
 
     def __init__(
         self,
         *,
         additional_properties: Optional[Dict[str, object]] = None,
-        level: Optional[Union[str, "DatasetCompressionLevel"]] = None,
+        level: Optional[object] = None,
         **kwargs
     ):
         super(DatasetZipDeflateCompression, self).__init__(additional_properties=additional_properties, **kwargs)
@@ -13051,6 +13317,9 @@ class Db2Source(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -13071,6 +13340,7 @@ class Db2Source(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -13083,12 +13353,13 @@ class Db2Source(TabularSource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query_timeout: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         query: Optional[object] = None,
         **kwargs
     ):
-        super(Db2Source, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
+        super(Db2Source, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
         self.type = 'Db2Source'  # type: str
         self.query = query
 
@@ -13326,12 +13597,11 @@ class DelimitedTextDataset(Dataset):
      https://msdn.microsoft.com/library/system.text.encoding.aspx. Type: string (or Expression with
      resultType string).
     :type encoding_name: object
-    :param compression_codec:  Possible values include: "none", "gzip", "snappy", "lzo", "bzip2",
-     "deflate", "zipDeflate", "lz4", "tar", "tarGZip".
-    :type compression_codec: str or ~data_factory_management_client.models.CompressionCodec
-    :param compression_level: The data compression method used for DelimitedText. Possible values
-     include: "Optimal", "Fastest".
-    :type compression_level: str or ~data_factory_management_client.models.DatasetCompressionLevel
+    :param compression_codec: The data compressionCodec. Type: string (or Expression with
+     resultType string).
+    :type compression_codec: object
+    :param compression_level: The data compression method used for DelimitedText.
+    :type compression_level: object
     :param quote_char: The quote character. Type: string (or Expression with resultType string).
     :type quote_char: object
     :param escape_char: The escape character. Type: string (or Expression with resultType string).
@@ -13363,8 +13633,8 @@ class DelimitedTextDataset(Dataset):
         'column_delimiter': {'key': 'typeProperties.columnDelimiter', 'type': 'object'},
         'row_delimiter': {'key': 'typeProperties.rowDelimiter', 'type': 'object'},
         'encoding_name': {'key': 'typeProperties.encodingName', 'type': 'object'},
-        'compression_codec': {'key': 'typeProperties.compressionCodec', 'type': 'str'},
-        'compression_level': {'key': 'typeProperties.compressionLevel', 'type': 'str'},
+        'compression_codec': {'key': 'typeProperties.compressionCodec', 'type': 'object'},
+        'compression_level': {'key': 'typeProperties.compressionLevel', 'type': 'object'},
         'quote_char': {'key': 'typeProperties.quoteChar', 'type': 'object'},
         'escape_char': {'key': 'typeProperties.escapeChar', 'type': 'object'},
         'first_row_as_header': {'key': 'typeProperties.firstRowAsHeader', 'type': 'object'},
@@ -13386,8 +13656,8 @@ class DelimitedTextDataset(Dataset):
         column_delimiter: Optional[object] = None,
         row_delimiter: Optional[object] = None,
         encoding_name: Optional[object] = None,
-        compression_codec: Optional[Union[str, "CompressionCodec"]] = None,
-        compression_level: Optional[Union[str, "DatasetCompressionLevel"]] = None,
+        compression_codec: Optional[object] = None,
+        compression_level: Optional[object] = None,
         quote_char: Optional[object] = None,
         escape_char: Optional[object] = None,
         first_row_as_header: Optional[object] = None,
@@ -13475,6 +13745,9 @@ class DelimitedTextSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param store_settings: DelimitedText store settings.
     :type store_settings: ~data_factory_management_client.models.StoreWriteSettings
     :param format_settings: DelimitedText format settings.
@@ -13493,6 +13766,7 @@ class DelimitedTextSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'store_settings': {'key': 'storeSettings', 'type': 'StoreWriteSettings'},
         'format_settings': {'key': 'formatSettings', 'type': 'DelimitedTextWriteSettings'},
     }
@@ -13506,11 +13780,12 @@ class DelimitedTextSink(CopySink):
         sink_retry_count: Optional[object] = None,
         sink_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         store_settings: Optional["StoreWriteSettings"] = None,
         format_settings: Optional["DelimitedTextWriteSettings"] = None,
         **kwargs
     ):
-        super(DelimitedTextSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(DelimitedTextSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'DelimitedTextSink'  # type: str
         self.store_settings = store_settings
         self.format_settings = format_settings
@@ -13535,6 +13810,9 @@ class DelimitedTextSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param store_settings: DelimitedText store settings.
     :type store_settings: ~data_factory_management_client.models.StoreReadSettings
     :param format_settings: DelimitedText format settings.
@@ -13554,6 +13832,7 @@ class DelimitedTextSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'store_settings': {'key': 'storeSettings', 'type': 'StoreReadSettings'},
         'format_settings': {'key': 'formatSettings', 'type': 'DelimitedTextReadSettings'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
@@ -13566,12 +13845,13 @@ class DelimitedTextSource(CopySource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         store_settings: Optional["StoreReadSettings"] = None,
         format_settings: Optional["DelimitedTextReadSettings"] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         **kwargs
     ):
-        super(DelimitedTextSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(DelimitedTextSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'DelimitedTextSource'  # type: str
         self.store_settings = store_settings
         self.format_settings = format_settings
@@ -13804,6 +14084,9 @@ class DocumentDbCollectionSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param nesting_separator: Nested properties separator. Default is . (dot). Type: string (or
      Expression with resultType string).
     :type nesting_separator: object
@@ -13824,6 +14107,7 @@ class DocumentDbCollectionSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'nesting_separator': {'key': 'nestingSeparator', 'type': 'object'},
         'write_behavior': {'key': 'writeBehavior', 'type': 'object'},
     }
@@ -13837,11 +14121,12 @@ class DocumentDbCollectionSink(CopySink):
         sink_retry_count: Optional[object] = None,
         sink_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         nesting_separator: Optional[object] = None,
         write_behavior: Optional[object] = None,
         **kwargs
     ):
-        super(DocumentDbCollectionSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(DocumentDbCollectionSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'DocumentDbCollectionSink'  # type: str
         self.nesting_separator = nesting_separator
         self.write_behavior = write_behavior
@@ -13866,6 +14151,9 @@ class DocumentDbCollectionSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query: Documents query. Type: string (or Expression with resultType string).
     :type query: object
     :param nesting_separator: Nested properties separator. Type: string (or Expression with
@@ -13889,6 +14177,7 @@ class DocumentDbCollectionSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
         'nesting_separator': {'key': 'nestingSeparator', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
@@ -13902,13 +14191,14 @@ class DocumentDbCollectionSource(CopySource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query: Optional[object] = None,
         nesting_separator: Optional[object] = None,
         query_timeout: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         **kwargs
     ):
-        super(DocumentDbCollectionSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(DocumentDbCollectionSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'DocumentDbCollectionSource'  # type: str
         self.query = query
         self.nesting_separator = nesting_separator
@@ -14000,6 +14290,9 @@ class DrillSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -14021,6 +14314,7 @@ class DrillSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -14033,12 +14327,13 @@ class DrillSource(TabularSource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query_timeout: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         query: Optional[object] = None,
         **kwargs
     ):
-        super(DrillSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
+        super(DrillSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
         self.type = 'DrillSource'  # type: str
         self.query = query
 
@@ -14361,6 +14656,9 @@ class DynamicsAxSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -14387,6 +14685,7 @@ class DynamicsAxSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -14400,13 +14699,14 @@ class DynamicsAxSource(TabularSource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query_timeout: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         query: Optional[object] = None,
         http_request_timeout: Optional[object] = None,
         **kwargs
     ):
-        super(DynamicsAxSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
+        super(DynamicsAxSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
         self.type = 'DynamicsAXSource'  # type: str
         self.query = query
         self.http_request_timeout = http_request_timeout
@@ -14501,9 +14801,8 @@ class DynamicsCrmLinkedService(LinkedService):
     :type annotations: list[object]
     :param deployment_type: Required. The deployment type of the Dynamics CRM instance. 'Online'
      for Dynamics CRM Online and 'OnPremisesWithIfd' for Dynamics CRM on-premises with Ifd. Type:
-     string (or Expression with resultType string). Possible values include: "Online",
-     "OnPremisesWithIfd".
-    :type deployment_type: str or ~data_factory_management_client.models.DynamicsDeploymentType
+     string (or Expression with resultType string).
+    :type deployment_type: object
     :param host_name: The host name of the on-premises Dynamics CRM server. The property is
      required for on-prem and not allowed for online. Type: string (or Expression with resultType
      string).
@@ -14522,10 +14821,8 @@ class DynamicsCrmLinkedService(LinkedService):
     :param authentication_type: Required. The authentication type to connect to Dynamics CRM
      server. 'Office365' for online scenario, 'Ifd' for on-premises with Ifd scenario,
      'AADServicePrincipal' for Server-To-Server authentication in online scenario. Type: string (or
-     Expression with resultType string). Possible values include: "Office365", "Ifd",
-     "AADServicePrincipal".
-    :type authentication_type: str or
-     ~data_factory_management_client.models.DynamicsAuthenticationType
+     Expression with resultType string).
+    :type authentication_type: object
     :param username: User name to access the Dynamics CRM instance. Type: string (or Expression
      with resultType string).
     :type username: object
@@ -14536,10 +14833,8 @@ class DynamicsCrmLinkedService(LinkedService):
     :type service_principal_id: object
     :param service_principal_credential_type: The service principal credential type to use in
      Server-To-Server authentication. 'ServicePrincipalKey' for key/secret, 'ServicePrincipalCert'
-     for certificate. Type: string (or Expression with resultType string). Possible values include:
-     "ServicePrincipalKey", "ServicePrincipalCert".
-    :type service_principal_credential_type: str or
-     ~data_factory_management_client.models.DynamicsServicePrincipalCredentialType
+     for certificate. Type: string (or Expression with resultType string).
+    :type service_principal_credential_type: object
     :param service_principal_credential: The credential of the service principal object in Azure
      Active Directory. If servicePrincipalCredentialType is 'ServicePrincipalKey',
      servicePrincipalCredential can be SecureString or AzureKeyVaultSecretReference. If
@@ -14565,16 +14860,16 @@ class DynamicsCrmLinkedService(LinkedService):
         'description': {'key': 'description', 'type': 'str'},
         'parameters': {'key': 'parameters', 'type': '{ParameterSpecification}'},
         'annotations': {'key': 'annotations', 'type': '[object]'},
-        'deployment_type': {'key': 'typeProperties.deploymentType', 'type': 'str'},
+        'deployment_type': {'key': 'typeProperties.deploymentType', 'type': 'object'},
         'host_name': {'key': 'typeProperties.hostName', 'type': 'object'},
         'port': {'key': 'typeProperties.port', 'type': 'object'},
         'service_uri': {'key': 'typeProperties.serviceUri', 'type': 'object'},
         'organization_name': {'key': 'typeProperties.organizationName', 'type': 'object'},
-        'authentication_type': {'key': 'typeProperties.authenticationType', 'type': 'str'},
+        'authentication_type': {'key': 'typeProperties.authenticationType', 'type': 'object'},
         'username': {'key': 'typeProperties.username', 'type': 'object'},
         'password': {'key': 'typeProperties.password', 'type': 'SecretBase'},
         'service_principal_id': {'key': 'typeProperties.servicePrincipalId', 'type': 'object'},
-        'service_principal_credential_type': {'key': 'typeProperties.servicePrincipalCredentialType', 'type': 'str'},
+        'service_principal_credential_type': {'key': 'typeProperties.servicePrincipalCredentialType', 'type': 'object'},
         'service_principal_credential': {'key': 'typeProperties.servicePrincipalCredential', 'type': 'SecretBase'},
         'encrypted_credential': {'key': 'typeProperties.encryptedCredential', 'type': 'object'},
     }
@@ -14582,8 +14877,8 @@ class DynamicsCrmLinkedService(LinkedService):
     def __init__(
         self,
         *,
-        deployment_type: Union[str, "DynamicsDeploymentType"],
-        authentication_type: Union[str, "DynamicsAuthenticationType"],
+        deployment_type: object,
+        authentication_type: object,
         additional_properties: Optional[Dict[str, object]] = None,
         connect_via: Optional["IntegrationRuntimeReference"] = None,
         description: Optional[str] = None,
@@ -14596,7 +14891,7 @@ class DynamicsCrmLinkedService(LinkedService):
         username: Optional[object] = None,
         password: Optional["SecretBase"] = None,
         service_principal_id: Optional[object] = None,
-        service_principal_credential_type: Optional[Union[str, "DynamicsServicePrincipalCredentialType"]] = None,
+        service_principal_credential_type: Optional[object] = None,
         service_principal_credential: Optional["SecretBase"] = None,
         encrypted_credential: Optional[object] = None,
         **kwargs
@@ -14642,6 +14937,9 @@ class DynamicsCrmSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param write_behavior: Required. The write behavior for the operation. Possible values include:
      "Upsert".
     :type write_behavior: str or ~data_factory_management_client.models.DynamicsSinkWriteBehavior
@@ -14667,6 +14965,7 @@ class DynamicsCrmSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'write_behavior': {'key': 'writeBehavior', 'type': 'str'},
         'ignore_null_values': {'key': 'ignoreNullValues', 'type': 'object'},
         'alternate_key_name': {'key': 'alternateKeyName', 'type': 'object'},
@@ -14682,11 +14981,12 @@ class DynamicsCrmSink(CopySink):
         sink_retry_count: Optional[object] = None,
         sink_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         ignore_null_values: Optional[object] = None,
         alternate_key_name: Optional[object] = None,
         **kwargs
     ):
-        super(DynamicsCrmSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(DynamicsCrmSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'DynamicsCrmSink'  # type: str
         self.write_behavior = write_behavior
         self.ignore_null_values = ignore_null_values
@@ -14712,6 +15012,9 @@ class DynamicsCrmSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query: FetchXML is a proprietary query language that is used in Microsoft Dynamics CRM
      (online & on-premises). Type: string (or Expression with resultType string).
     :type query: object
@@ -14730,6 +15033,7 @@ class DynamicsCrmSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
     }
@@ -14741,11 +15045,12 @@ class DynamicsCrmSource(CopySource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         **kwargs
     ):
-        super(DynamicsCrmSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(DynamicsCrmSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'DynamicsCrmSource'  # type: str
         self.query = query
         self.additional_columns = additional_columns
@@ -14840,8 +15145,8 @@ class DynamicsLinkedService(LinkedService):
     :type annotations: list[object]
     :param deployment_type: Required. The deployment type of the Dynamics instance. 'Online' for
      Dynamics Online and 'OnPremisesWithIfd' for Dynamics on-premises with Ifd. Type: string (or
-     Expression with resultType string). Possible values include: "Online", "OnPremisesWithIfd".
-    :type deployment_type: str or ~data_factory_management_client.models.DynamicsDeploymentType
+     Expression with resultType string).
+    :type deployment_type: object
     :param host_name: The host name of the on-premises Dynamics server. The property is required
      for on-prem and not allowed for online. Type: string (or Expression with resultType string).
     :type host_name: object
@@ -14859,9 +15164,8 @@ class DynamicsLinkedService(LinkedService):
     :param authentication_type: Required. The authentication type to connect to Dynamics server.
      'Office365' for online scenario, 'Ifd' for on-premises with Ifd scenario, 'AADServicePrincipal'
      for Server-To-Server authentication in online scenario. Type: string (or Expression with
-     resultType string). Possible values include: "Office365", "Ifd", "AADServicePrincipal".
-    :type authentication_type: str or
-     ~data_factory_management_client.models.DynamicsAuthenticationType
+     resultType string).
+    :type authentication_type: object
     :param username: User name to access the Dynamics instance. Type: string (or Expression with
      resultType string).
     :type username: object
@@ -14872,10 +15176,8 @@ class DynamicsLinkedService(LinkedService):
     :type service_principal_id: object
     :param service_principal_credential_type: The service principal credential type to use in
      Server-To-Server authentication. 'ServicePrincipalKey' for key/secret, 'ServicePrincipalCert'
-     for certificate. Type: string (or Expression with resultType string). Possible values include:
-     "ServicePrincipalKey", "ServicePrincipalCert".
-    :type service_principal_credential_type: str or
-     ~data_factory_management_client.models.DynamicsServicePrincipalCredentialType
+     for certificate. Type: string (or Expression with resultType string).
+    :type service_principal_credential_type: str
     :param service_principal_credential: The credential of the service principal object in Azure
      Active Directory. If servicePrincipalCredentialType is 'ServicePrincipalKey',
      servicePrincipalCredential can be SecureString or AzureKeyVaultSecretReference. If
@@ -14901,12 +15203,12 @@ class DynamicsLinkedService(LinkedService):
         'description': {'key': 'description', 'type': 'str'},
         'parameters': {'key': 'parameters', 'type': '{ParameterSpecification}'},
         'annotations': {'key': 'annotations', 'type': '[object]'},
-        'deployment_type': {'key': 'typeProperties.deploymentType', 'type': 'str'},
+        'deployment_type': {'key': 'typeProperties.deploymentType', 'type': 'object'},
         'host_name': {'key': 'typeProperties.hostName', 'type': 'object'},
         'port': {'key': 'typeProperties.port', 'type': 'object'},
         'service_uri': {'key': 'typeProperties.serviceUri', 'type': 'object'},
         'organization_name': {'key': 'typeProperties.organizationName', 'type': 'object'},
-        'authentication_type': {'key': 'typeProperties.authenticationType', 'type': 'str'},
+        'authentication_type': {'key': 'typeProperties.authenticationType', 'type': 'object'},
         'username': {'key': 'typeProperties.username', 'type': 'object'},
         'password': {'key': 'typeProperties.password', 'type': 'SecretBase'},
         'service_principal_id': {'key': 'typeProperties.servicePrincipalId', 'type': 'object'},
@@ -14918,8 +15220,8 @@ class DynamicsLinkedService(LinkedService):
     def __init__(
         self,
         *,
-        deployment_type: Union[str, "DynamicsDeploymentType"],
-        authentication_type: Union[str, "DynamicsAuthenticationType"],
+        deployment_type: object,
+        authentication_type: object,
         additional_properties: Optional[Dict[str, object]] = None,
         connect_via: Optional["IntegrationRuntimeReference"] = None,
         description: Optional[str] = None,
@@ -14932,7 +15234,7 @@ class DynamicsLinkedService(LinkedService):
         username: Optional[object] = None,
         password: Optional["SecretBase"] = None,
         service_principal_id: Optional[object] = None,
-        service_principal_credential_type: Optional[Union[str, "DynamicsServicePrincipalCredentialType"]] = None,
+        service_principal_credential_type: Optional[str] = None,
         service_principal_credential: Optional["SecretBase"] = None,
         encrypted_credential: Optional[object] = None,
         **kwargs
@@ -14978,6 +15280,9 @@ class DynamicsSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param write_behavior: Required. The write behavior for the operation. Possible values include:
      "Upsert".
     :type write_behavior: str or ~data_factory_management_client.models.DynamicsSinkWriteBehavior
@@ -15003,6 +15308,7 @@ class DynamicsSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'write_behavior': {'key': 'writeBehavior', 'type': 'str'},
         'ignore_null_values': {'key': 'ignoreNullValues', 'type': 'object'},
         'alternate_key_name': {'key': 'alternateKeyName', 'type': 'object'},
@@ -15018,11 +15324,12 @@ class DynamicsSink(CopySink):
         sink_retry_count: Optional[object] = None,
         sink_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         ignore_null_values: Optional[object] = None,
         alternate_key_name: Optional[object] = None,
         **kwargs
     ):
-        super(DynamicsSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(DynamicsSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'DynamicsSink'  # type: str
         self.write_behavior = write_behavior
         self.ignore_null_values = ignore_null_values
@@ -15048,6 +15355,9 @@ class DynamicsSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query: FetchXML is a proprietary query language that is used in Microsoft Dynamics
      (online & on-premises). Type: string (or Expression with resultType string).
     :type query: object
@@ -15066,6 +15376,7 @@ class DynamicsSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
     }
@@ -15077,11 +15388,12 @@ class DynamicsSource(CopySource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         **kwargs
     ):
-        super(DynamicsSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(DynamicsSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'DynamicsSource'  # type: str
         self.query = query
         self.additional_columns = additional_columns
@@ -15265,6 +15577,9 @@ class EloquaSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -15286,6 +15601,7 @@ class EloquaSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -15298,12 +15614,13 @@ class EloquaSource(TabularSource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query_timeout: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         query: Optional[object] = None,
         **kwargs
     ):
-        super(EloquaSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
+        super(EloquaSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
         self.type = 'EloquaSource'  # type: str
         self.query = query
 
@@ -15358,7 +15675,7 @@ class EntityReference(msrest.serialization.Model):
     """The entity reference.
 
     :param type: The type of this referenced entity. Possible values include:
-     "IntegrationRuntimeReference", "LinkedServiceReference".
+     "IntegrationRuntimeReference", "LinkedServiceReference", "CredentialReference".
     :type type: str or ~data_factory_management_client.models.IntegrationRuntimeEntityReferenceType
     :param reference_name: The name of this referenced entity.
     :type reference_name: str
@@ -15448,9 +15765,12 @@ class ExcelDataset(Dataset):
     :type folder: ~data_factory_management_client.models.DatasetFolder
     :param location: The location of the excel storage.
     :type location: ~data_factory_management_client.models.DatasetLocation
-    :param sheet_name: The sheet of excel file. Type: string (or Expression with resultType
+    :param sheet_name: The sheet name of excel file. Type: string (or Expression with resultType
      string).
     :type sheet_name: object
+    :param sheet_index: The sheet index of excel file and default value is 0. Type: integer (or
+     Expression with resultType integer).
+    :type sheet_index: object
     :param range: The partial data of one sheet. Type: string (or Expression with resultType
      string).
     :type range: object
@@ -15481,6 +15801,7 @@ class ExcelDataset(Dataset):
         'folder': {'key': 'folder', 'type': 'DatasetFolder'},
         'location': {'key': 'typeProperties.location', 'type': 'DatasetLocation'},
         'sheet_name': {'key': 'typeProperties.sheetName', 'type': 'object'},
+        'sheet_index': {'key': 'typeProperties.sheetIndex', 'type': 'object'},
         'range': {'key': 'typeProperties.range', 'type': 'object'},
         'first_row_as_header': {'key': 'typeProperties.firstRowAsHeader', 'type': 'object'},
         'compression': {'key': 'typeProperties.compression', 'type': 'DatasetCompression'},
@@ -15500,6 +15821,7 @@ class ExcelDataset(Dataset):
         folder: Optional["DatasetFolder"] = None,
         location: Optional["DatasetLocation"] = None,
         sheet_name: Optional[object] = None,
+        sheet_index: Optional[object] = None,
         range: Optional[object] = None,
         first_row_as_header: Optional[object] = None,
         compression: Optional["DatasetCompression"] = None,
@@ -15510,6 +15832,7 @@ class ExcelDataset(Dataset):
         self.type = 'Excel'  # type: str
         self.location = location
         self.sheet_name = sheet_name
+        self.sheet_index = sheet_index
         self.range = range
         self.first_row_as_header = first_row_as_header
         self.compression = compression
@@ -15535,6 +15858,9 @@ class ExcelSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param store_settings: Excel store settings.
     :type store_settings: ~data_factory_management_client.models.StoreReadSettings
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
@@ -15552,6 +15878,7 @@ class ExcelSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'store_settings': {'key': 'storeSettings', 'type': 'StoreReadSettings'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
     }
@@ -15563,11 +15890,12 @@ class ExcelSource(CopySource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         store_settings: Optional["StoreReadSettings"] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         **kwargs
     ):
-        super(ExcelSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(ExcelSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'ExcelSource'  # type: str
         self.store_settings = store_settings
         self.additional_columns = additional_columns
@@ -16614,6 +16942,9 @@ class FileServerReadSettings(StoreReadSettings):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param recursive: If true, files under the folder path will be read recursively. Default is
      true. Type: boolean (or Expression with resultType boolean).
     :type recursive: object
@@ -16654,6 +16985,7 @@ class FileServerReadSettings(StoreReadSettings):
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'recursive': {'key': 'recursive', 'type': 'object'},
         'wildcard_folder_path': {'key': 'wildcardFolderPath', 'type': 'object'},
         'wildcard_file_name': {'key': 'wildcardFileName', 'type': 'object'},
@@ -16671,6 +17003,7 @@ class FileServerReadSettings(StoreReadSettings):
         *,
         additional_properties: Optional[Dict[str, object]] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         recursive: Optional[object] = None,
         wildcard_folder_path: Optional[object] = None,
         wildcard_file_name: Optional[object] = None,
@@ -16683,7 +17016,7 @@ class FileServerReadSettings(StoreReadSettings):
         file_filter: Optional[object] = None,
         **kwargs
     ):
-        super(FileServerReadSettings, self).__init__(additional_properties=additional_properties, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(FileServerReadSettings, self).__init__(additional_properties=additional_properties, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'FileServerReadSettings'  # type: str
         self.recursive = recursive
         self.wildcard_folder_path = wildcard_folder_path
@@ -16710,6 +17043,9 @@ class FileServerWriteSettings(StoreWriteSettings):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param copy_behavior: The type of copy behavior for copy sink.
     :type copy_behavior: object
     """
@@ -16722,6 +17058,7 @@ class FileServerWriteSettings(StoreWriteSettings):
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'copy_behavior': {'key': 'copyBehavior', 'type': 'object'},
     }
 
@@ -16730,10 +17067,11 @@ class FileServerWriteSettings(StoreWriteSettings):
         *,
         additional_properties: Optional[Dict[str, object]] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         copy_behavior: Optional[object] = None,
         **kwargs
     ):
-        super(FileServerWriteSettings, self).__init__(additional_properties=additional_properties, max_concurrent_connections=max_concurrent_connections, copy_behavior=copy_behavior, **kwargs)
+        super(FileServerWriteSettings, self).__init__(additional_properties=additional_properties, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, copy_behavior=copy_behavior, **kwargs)
         self.type = 'FileServerWriteSettings'  # type: str
 
 
@@ -16865,6 +17203,9 @@ class FileSystemSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param copy_behavior: The type of copy behavior for copy sink.
     :type copy_behavior: object
     """
@@ -16881,6 +17222,7 @@ class FileSystemSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'copy_behavior': {'key': 'copyBehavior', 'type': 'object'},
     }
 
@@ -16893,10 +17235,11 @@ class FileSystemSink(CopySink):
         sink_retry_count: Optional[object] = None,
         sink_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         copy_behavior: Optional[object] = None,
         **kwargs
     ):
-        super(FileSystemSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(FileSystemSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'FileSystemSink'  # type: str
         self.copy_behavior = copy_behavior
 
@@ -16920,6 +17263,9 @@ class FileSystemSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param recursive: If true, files under the folder path will be read recursively. Default is
      true. Type: boolean (or Expression with resultType boolean).
     :type recursive: object
@@ -16938,6 +17284,7 @@ class FileSystemSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'recursive': {'key': 'recursive', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
     }
@@ -16949,11 +17296,12 @@ class FileSystemSource(CopySource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         recursive: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         **kwargs
     ):
-        super(FileSystemSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(FileSystemSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'FileSystemSource'  # type: str
         self.recursive = recursive
         self.additional_columns = additional_columns
@@ -17104,6 +17452,9 @@ class FtpReadSettings(StoreReadSettings):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param recursive: If true, files under the folder path will be read recursively. Default is
      true. Type: boolean (or Expression with resultType boolean).
     :type recursive: object
@@ -17137,6 +17488,7 @@ class FtpReadSettings(StoreReadSettings):
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'recursive': {'key': 'recursive', 'type': 'object'},
         'wildcard_folder_path': {'key': 'wildcardFolderPath', 'type': 'object'},
         'wildcard_file_name': {'key': 'wildcardFileName', 'type': 'object'},
@@ -17152,6 +17504,7 @@ class FtpReadSettings(StoreReadSettings):
         *,
         additional_properties: Optional[Dict[str, object]] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         recursive: Optional[object] = None,
         wildcard_folder_path: Optional[object] = None,
         wildcard_file_name: Optional[object] = None,
@@ -17162,7 +17515,7 @@ class FtpReadSettings(StoreReadSettings):
         use_binary_transfer: Optional[bool] = None,
         **kwargs
     ):
-        super(FtpReadSettings, self).__init__(additional_properties=additional_properties, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(FtpReadSettings, self).__init__(additional_properties=additional_properties, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'FtpReadSettings'  # type: str
         self.recursive = recursive
         self.wildcard_folder_path = wildcard_folder_path
@@ -17737,6 +18090,9 @@ class GoogleAdWordsSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -17758,6 +18114,7 @@ class GoogleAdWordsSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -17770,12 +18127,13 @@ class GoogleAdWordsSource(TabularSource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query_timeout: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         query: Optional[object] = None,
         **kwargs
     ):
-        super(GoogleAdWordsSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
+        super(GoogleAdWordsSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
         self.type = 'GoogleAdWordsSource'  # type: str
         self.query = query
 
@@ -18004,6 +18362,9 @@ class GoogleBigQuerySource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -18025,6 +18386,7 @@ class GoogleBigQuerySource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -18037,12 +18399,13 @@ class GoogleBigQuerySource(TabularSource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query_timeout: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         query: Optional[object] = None,
         **kwargs
     ):
-        super(GoogleBigQuerySource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
+        super(GoogleBigQuerySource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
         self.type = 'GoogleBigQuerySource'  # type: str
         self.query = query
 
@@ -18187,6 +18550,9 @@ class GoogleCloudStorageReadSettings(StoreReadSettings):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param recursive: If true, files under the folder path will be read recursively. Default is
      true. Type: boolean (or Expression with resultType boolean).
     :type recursive: object
@@ -18227,6 +18593,7 @@ class GoogleCloudStorageReadSettings(StoreReadSettings):
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'recursive': {'key': 'recursive', 'type': 'object'},
         'wildcard_folder_path': {'key': 'wildcardFolderPath', 'type': 'object'},
         'wildcard_file_name': {'key': 'wildcardFileName', 'type': 'object'},
@@ -18244,6 +18611,7 @@ class GoogleCloudStorageReadSettings(StoreReadSettings):
         *,
         additional_properties: Optional[Dict[str, object]] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         recursive: Optional[object] = None,
         wildcard_folder_path: Optional[object] = None,
         wildcard_file_name: Optional[object] = None,
@@ -18256,7 +18624,7 @@ class GoogleCloudStorageReadSettings(StoreReadSettings):
         modified_datetime_end: Optional[object] = None,
         **kwargs
     ):
-        super(GoogleCloudStorageReadSettings, self).__init__(additional_properties=additional_properties, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(GoogleCloudStorageReadSettings, self).__init__(additional_properties=additional_properties, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'GoogleCloudStorageReadSettings'  # type: str
         self.recursive = recursive
         self.wildcard_folder_path = wildcard_folder_path
@@ -18354,6 +18722,9 @@ class GreenplumSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -18375,6 +18746,7 @@ class GreenplumSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -18387,12 +18759,13 @@ class GreenplumSource(TabularSource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query_timeout: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         query: Optional[object] = None,
         **kwargs
     ):
-        super(GreenplumSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
+        super(GreenplumSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
         self.type = 'GreenplumSource'  # type: str
         self.query = query
 
@@ -18679,6 +19052,9 @@ class HBaseSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -18700,6 +19076,7 @@ class HBaseSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -18712,12 +19089,13 @@ class HBaseSource(TabularSource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query_timeout: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         query: Optional[object] = None,
         **kwargs
     ):
-        super(HBaseSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
+        super(HBaseSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
         self.type = 'HBaseSource'  # type: str
         self.query = query
 
@@ -18854,6 +19232,9 @@ class HdfsReadSettings(StoreReadSettings):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param recursive: If true, files under the folder path will be read recursively. Default is
      true. Type: boolean (or Expression with resultType boolean).
     :type recursive: object
@@ -18893,6 +19274,7 @@ class HdfsReadSettings(StoreReadSettings):
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'recursive': {'key': 'recursive', 'type': 'object'},
         'wildcard_folder_path': {'key': 'wildcardFolderPath', 'type': 'object'},
         'wildcard_file_name': {'key': 'wildcardFileName', 'type': 'object'},
@@ -18910,6 +19292,7 @@ class HdfsReadSettings(StoreReadSettings):
         *,
         additional_properties: Optional[Dict[str, object]] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         recursive: Optional[object] = None,
         wildcard_folder_path: Optional[object] = None,
         wildcard_file_name: Optional[object] = None,
@@ -18922,7 +19305,7 @@ class HdfsReadSettings(StoreReadSettings):
         delete_files_after_completion: Optional[object] = None,
         **kwargs
     ):
-        super(HdfsReadSettings, self).__init__(additional_properties=additional_properties, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(HdfsReadSettings, self).__init__(additional_properties=additional_properties, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'HdfsReadSettings'  # type: str
         self.recursive = recursive
         self.wildcard_folder_path = wildcard_folder_path
@@ -18955,6 +19338,9 @@ class HdfsSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param recursive: If true, files under the folder path will be read recursively. Default is
      true. Type: boolean (or Expression with resultType boolean).
     :type recursive: object
@@ -18972,6 +19358,7 @@ class HdfsSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'recursive': {'key': 'recursive', 'type': 'object'},
         'distcp_settings': {'key': 'distcpSettings', 'type': 'DistcpSettings'},
     }
@@ -18983,11 +19370,12 @@ class HdfsSource(CopySource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         recursive: Optional[object] = None,
         distcp_settings: Optional["DistcpSettings"] = None,
         **kwargs
     ):
-        super(HdfsSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(HdfsSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'HdfsSource'  # type: str
         self.recursive = recursive
         self.distcp_settings = distcp_settings
@@ -20109,6 +20497,9 @@ class HiveSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -20130,6 +20521,7 @@ class HiveSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -20142,12 +20534,13 @@ class HiveSource(TabularSource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query_timeout: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         query: Optional[object] = None,
         **kwargs
     ):
-        super(HiveSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
+        super(HiveSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
         self.type = 'HiveSource'  # type: str
         self.query = query
 
@@ -20372,6 +20765,9 @@ class HttpReadSettings(StoreReadSettings):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param request_method: The HTTP method used to call the RESTful API. The default is GET. Type:
      string (or Expression with resultType string).
     :type request_method: object
@@ -20399,6 +20795,7 @@ class HttpReadSettings(StoreReadSettings):
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'request_method': {'key': 'requestMethod', 'type': 'object'},
         'request_body': {'key': 'requestBody', 'type': 'object'},
         'additional_headers': {'key': 'additionalHeaders', 'type': 'object'},
@@ -20412,6 +20809,7 @@ class HttpReadSettings(StoreReadSettings):
         *,
         additional_properties: Optional[Dict[str, object]] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         request_method: Optional[object] = None,
         request_body: Optional[object] = None,
         additional_headers: Optional[object] = None,
@@ -20420,7 +20818,7 @@ class HttpReadSettings(StoreReadSettings):
         partition_root_path: Optional[object] = None,
         **kwargs
     ):
-        super(HttpReadSettings, self).__init__(additional_properties=additional_properties, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(HttpReadSettings, self).__init__(additional_properties=additional_properties, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'HttpReadSettings'  # type: str
         self.request_method = request_method
         self.request_body = request_body
@@ -20496,6 +20894,9 @@ class HttpSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param http_request_timeout: Specifies the timeout for a HTTP client to get HTTP response from
      HTTP server. The default value is equivalent to System.Net.HttpWebRequest.Timeout. Type: string
      (or Expression with resultType string), pattern:
@@ -20513,6 +20914,7 @@ class HttpSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'http_request_timeout': {'key': 'httpRequestTimeout', 'type': 'object'},
     }
 
@@ -20523,10 +20925,11 @@ class HttpSource(CopySource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         http_request_timeout: Optional[object] = None,
         **kwargs
     ):
-        super(HttpSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(HttpSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'HttpSource'  # type: str
         self.http_request_timeout = http_request_timeout
 
@@ -20714,6 +21117,9 @@ class HubspotSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -20735,6 +21141,7 @@ class HubspotSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -20747,12 +21154,13 @@ class HubspotSource(TabularSource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query_timeout: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         query: Optional[object] = None,
         **kwargs
     ):
-        super(HubspotSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
+        super(HubspotSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
         self.type = 'HubspotSource'  # type: str
         self.query = query
 
@@ -21042,6 +21450,9 @@ class ImpalaSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -21063,6 +21474,7 @@ class ImpalaSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -21075,12 +21487,13 @@ class ImpalaSource(TabularSource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query_timeout: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         query: Optional[object] = None,
         **kwargs
     ):
-        super(ImpalaSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
+        super(ImpalaSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
         self.type = 'ImpalaSource'  # type: str
         self.query = query
 
@@ -21196,6 +21609,9 @@ class InformixSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param pre_copy_script: A query to execute before starting the copy. Type: string (or
      Expression with resultType string).
     :type pre_copy_script: object
@@ -21213,6 +21629,7 @@ class InformixSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'pre_copy_script': {'key': 'preCopyScript', 'type': 'object'},
     }
 
@@ -21225,10 +21642,11 @@ class InformixSink(CopySink):
         sink_retry_count: Optional[object] = None,
         sink_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         pre_copy_script: Optional[object] = None,
         **kwargs
     ):
-        super(InformixSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(InformixSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'InformixSink'  # type: str
         self.pre_copy_script = pre_copy_script
 
@@ -21252,6 +21670,9 @@ class InformixSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -21272,6 +21693,7 @@ class InformixSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -21284,12 +21706,13 @@ class InformixSource(TabularSource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query_timeout: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         query: Optional[object] = None,
         **kwargs
     ):
-        super(InformixSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
+        super(InformixSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
         self.type = 'InformixSource'  # type: str
         self.query = query
 
@@ -22031,6 +22454,8 @@ class IntegrationRuntimeSsisProperties(msrest.serialization.Model):
      list[~data_factory_management_client.models.CustomSetupBase]
     :param package_stores: Package stores for the SSIS Integration Runtime.
     :type package_stores: list[~data_factory_management_client.models.PackageStore]
+    :param managed_credential: The user-assigned managed identity reference.
+    :type managed_credential: ~data_factory_management_client.models.EntityReference
     """
 
     _attribute_map = {
@@ -22042,6 +22467,7 @@ class IntegrationRuntimeSsisProperties(msrest.serialization.Model):
         'edition': {'key': 'edition', 'type': 'str'},
         'express_custom_setup_properties': {'key': 'expressCustomSetupProperties', 'type': '[CustomSetupBase]'},
         'package_stores': {'key': 'packageStores', 'type': '[PackageStore]'},
+        'managed_credential': {'key': 'managedCredential', 'type': 'EntityReference'},
     }
 
     def __init__(
@@ -22055,6 +22481,7 @@ class IntegrationRuntimeSsisProperties(msrest.serialization.Model):
         edition: Optional[Union[str, "IntegrationRuntimeEdition"]] = None,
         express_custom_setup_properties: Optional[List["CustomSetupBase"]] = None,
         package_stores: Optional[List["PackageStore"]] = None,
+        managed_credential: Optional["EntityReference"] = None,
         **kwargs
     ):
         super(IntegrationRuntimeSsisProperties, self).__init__(**kwargs)
@@ -22066,6 +22493,7 @@ class IntegrationRuntimeSsisProperties(msrest.serialization.Model):
         self.edition = edition
         self.express_custom_setup_properties = express_custom_setup_properties
         self.package_stores = package_stores
+        self.managed_credential = managed_credential
 
 
 class IntegrationRuntimeStatus(msrest.serialization.Model):
@@ -22411,6 +22839,9 @@ class JiraSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -22432,6 +22863,7 @@ class JiraSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -22444,12 +22876,13 @@ class JiraSource(TabularSource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query_timeout: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         query: Optional[object] = None,
         **kwargs
     ):
-        super(JiraSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
+        super(JiraSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
         self.type = 'JiraSource'  # type: str
         self.query = query
 
@@ -22551,9 +22984,8 @@ class JsonFormat(DatasetStorageFormat):
     :param deserializer: Deserializer. Type: string (or Expression with resultType string).
     :type deserializer: object
     :param file_pattern: File pattern of JSON. To be more specific, the way of separating a
-     collection of JSON objects. The default value is 'setOfObjects'. It is case-sensitive. Possible
-     values include: "setOfObjects", "arrayOfObjects".
-    :type file_pattern: str or ~data_factory_management_client.models.JsonFormatFilePattern
+     collection of JSON objects. The default value is 'setOfObjects'. It is case-sensitive.
+    :type file_pattern: object
     :param nesting_separator: The character used to separate nesting levels. Default value is '.'
      (dot). Type: string (or Expression with resultType string).
     :type nesting_separator: object
@@ -22583,7 +23015,7 @@ class JsonFormat(DatasetStorageFormat):
         'type': {'key': 'type', 'type': 'str'},
         'serializer': {'key': 'serializer', 'type': 'object'},
         'deserializer': {'key': 'deserializer', 'type': 'object'},
-        'file_pattern': {'key': 'filePattern', 'type': 'str'},
+        'file_pattern': {'key': 'filePattern', 'type': 'object'},
         'nesting_separator': {'key': 'nestingSeparator', 'type': 'object'},
         'encoding_name': {'key': 'encodingName', 'type': 'object'},
         'json_node_reference': {'key': 'jsonNodeReference', 'type': 'object'},
@@ -22596,7 +23028,7 @@ class JsonFormat(DatasetStorageFormat):
         additional_properties: Optional[Dict[str, object]] = None,
         serializer: Optional[object] = None,
         deserializer: Optional[object] = None,
-        file_pattern: Optional[Union[str, "JsonFormatFilePattern"]] = None,
+        file_pattern: Optional[object] = None,
         nesting_separator: Optional[object] = None,
         encoding_name: Optional[object] = None,
         json_node_reference: Optional[object] = None,
@@ -22673,6 +23105,9 @@ class JsonSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param store_settings: Json store settings.
     :type store_settings: ~data_factory_management_client.models.StoreWriteSettings
     :param format_settings: Json format settings.
@@ -22691,6 +23126,7 @@ class JsonSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'store_settings': {'key': 'storeSettings', 'type': 'StoreWriteSettings'},
         'format_settings': {'key': 'formatSettings', 'type': 'JsonWriteSettings'},
     }
@@ -22704,11 +23140,12 @@ class JsonSink(CopySink):
         sink_retry_count: Optional[object] = None,
         sink_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         store_settings: Optional["StoreWriteSettings"] = None,
         format_settings: Optional["JsonWriteSettings"] = None,
         **kwargs
     ):
-        super(JsonSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(JsonSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'JsonSink'  # type: str
         self.store_settings = store_settings
         self.format_settings = format_settings
@@ -22733,6 +23170,9 @@ class JsonSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param store_settings: Json store settings.
     :type store_settings: ~data_factory_management_client.models.StoreReadSettings
     :param format_settings: Json format settings.
@@ -22752,6 +23192,7 @@ class JsonSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'store_settings': {'key': 'storeSettings', 'type': 'StoreReadSettings'},
         'format_settings': {'key': 'formatSettings', 'type': 'JsonReadSettings'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
@@ -22764,12 +23205,13 @@ class JsonSource(CopySource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         store_settings: Optional["StoreReadSettings"] = None,
         format_settings: Optional["JsonReadSettings"] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         **kwargs
     ):
-        super(JsonSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(JsonSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'JsonSource'  # type: str
         self.store_settings = store_settings
         self.format_settings = format_settings
@@ -22787,9 +23229,8 @@ class JsonWriteSettings(FormatWriteSettings):
     :param type: Required. The write setting type.Constant filled by server.
     :type type: str
     :param file_pattern: File pattern of JSON. This setting controls the way a collection of JSON
-     objects will be treated. The default value is 'setOfObjects'. It is case-sensitive. Possible
-     values include: "setOfObjects", "arrayOfObjects".
-    :type file_pattern: str or ~data_factory_management_client.models.JsonWriteFilePattern
+     objects will be treated. The default value is 'setOfObjects'. It is case-sensitive.
+    :type file_pattern: object
     """
 
     _validation = {
@@ -22799,14 +23240,14 @@ class JsonWriteSettings(FormatWriteSettings):
     _attribute_map = {
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
-        'file_pattern': {'key': 'filePattern', 'type': 'str'},
+        'file_pattern': {'key': 'filePattern', 'type': 'object'},
     }
 
     def __init__(
         self,
         *,
         additional_properties: Optional[Dict[str, object]] = None,
-        file_pattern: Optional[Union[str, "JsonWriteFilePattern"]] = None,
+        file_pattern: Optional[object] = None,
         **kwargs
     ):
         super(JsonWriteSettings, self).__init__(additional_properties=additional_properties, **kwargs)
@@ -23504,6 +23945,9 @@ class MagentoSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -23525,6 +23969,7 @@ class MagentoSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -23537,12 +23982,13 @@ class MagentoSource(TabularSource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query_timeout: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         query: Optional[object] = None,
         **kwargs
     ):
-        super(MagentoSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
+        super(MagentoSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
         self.type = 'MagentoSource'  # type: str
         self.query = query
 
@@ -24245,6 +24691,9 @@ class MariaDbSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -24266,6 +24715,7 @@ class MariaDbSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -24278,12 +24728,13 @@ class MariaDbSource(TabularSource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query_timeout: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         query: Optional[object] = None,
         **kwargs
     ):
-        super(MariaDbSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
+        super(MariaDbSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
         self.type = 'MariaDBSource'  # type: str
         self.query = query
 
@@ -24533,6 +24984,9 @@ class MarketoSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -24554,6 +25008,7 @@ class MarketoSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -24566,14 +25021,41 @@ class MarketoSource(TabularSource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query_timeout: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         query: Optional[object] = None,
         **kwargs
     ):
-        super(MarketoSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
+        super(MarketoSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
         self.type = 'MarketoSource'  # type: str
         self.query = query
+
+
+class MetadataItem(msrest.serialization.Model):
+    """Specify the name and value of custom metadata item.
+
+    :param name: Metadata item key name. Type: string (or Expression with resultType string).
+    :type name: object
+    :param value: Metadata item value. Type: string (or Expression with resultType string).
+    :type value: object
+    """
+
+    _attribute_map = {
+        'name': {'key': 'name', 'type': 'object'},
+        'value': {'key': 'value', 'type': 'object'},
+    }
+
+    def __init__(
+        self,
+        *,
+        name: Optional[object] = None,
+        value: Optional[object] = None,
+        **kwargs
+    ):
+        super(MetadataItem, self).__init__(**kwargs)
+        self.name = name
+        self.value = value
 
 
 class MicrosoftAccessLinkedService(LinkedService):
@@ -24687,6 +25169,9 @@ class MicrosoftAccessSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param pre_copy_script: A query to execute before starting the copy. Type: string (or
      Expression with resultType string).
     :type pre_copy_script: object
@@ -24704,6 +25189,7 @@ class MicrosoftAccessSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'pre_copy_script': {'key': 'preCopyScript', 'type': 'object'},
     }
 
@@ -24716,10 +25202,11 @@ class MicrosoftAccessSink(CopySink):
         sink_retry_count: Optional[object] = None,
         sink_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         pre_copy_script: Optional[object] = None,
         **kwargs
     ):
-        super(MicrosoftAccessSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(MicrosoftAccessSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'MicrosoftAccessSink'  # type: str
         self.pre_copy_script = pre_copy_script
 
@@ -24743,6 +25230,9 @@ class MicrosoftAccessSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query: Database query. Type: string (or Expression with resultType string).
     :type query: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
@@ -24760,6 +25250,7 @@ class MicrosoftAccessSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
     }
@@ -24771,11 +25262,12 @@ class MicrosoftAccessSource(CopySource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         **kwargs
     ):
-        super(MicrosoftAccessSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(MicrosoftAccessSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'MicrosoftAccessSource'  # type: str
         self.query = query
         self.additional_columns = additional_columns
@@ -24982,6 +25474,74 @@ class MongoDbAtlasLinkedService(LinkedService):
         self.database = database
 
 
+class MongoDbAtlasSink(CopySink):
+    """A copy activity MongoDB Atlas sink.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param additional_properties: Unmatched properties from the message are deserialized to this
+     collection.
+    :type additional_properties: dict[str, object]
+    :param type: Required. Copy sink type.Constant filled by server.
+    :type type: str
+    :param write_batch_size: Write batch size. Type: integer (or Expression with resultType
+     integer), minimum: 0.
+    :type write_batch_size: object
+    :param write_batch_timeout: Write batch timeout. Type: string (or Expression with resultType
+     string), pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
+    :type write_batch_timeout: object
+    :param sink_retry_count: Sink retry count. Type: integer (or Expression with resultType
+     integer).
+    :type sink_retry_count: object
+    :param sink_retry_wait: Sink retry wait. Type: string (or Expression with resultType string),
+     pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
+    :type sink_retry_wait: object
+    :param max_concurrent_connections: The maximum concurrent connection count for the sink data
+     store. Type: integer (or Expression with resultType integer).
+    :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
+    :param write_behavior: Specifies whether the document with same key to be overwritten (upsert)
+     rather than throw exception (insert). The default value is "insert". Type: string (or
+     Expression with resultType string). Type: string (or Expression with resultType string).
+    :type write_behavior: object
+    """
+
+    _validation = {
+        'type': {'required': True},
+    }
+
+    _attribute_map = {
+        'additional_properties': {'key': '', 'type': '{object}'},
+        'type': {'key': 'type', 'type': 'str'},
+        'write_batch_size': {'key': 'writeBatchSize', 'type': 'object'},
+        'write_batch_timeout': {'key': 'writeBatchTimeout', 'type': 'object'},
+        'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
+        'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
+        'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
+        'write_behavior': {'key': 'writeBehavior', 'type': 'object'},
+    }
+
+    def __init__(
+        self,
+        *,
+        additional_properties: Optional[Dict[str, object]] = None,
+        write_batch_size: Optional[object] = None,
+        write_batch_timeout: Optional[object] = None,
+        sink_retry_count: Optional[object] = None,
+        sink_retry_wait: Optional[object] = None,
+        max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
+        write_behavior: Optional[object] = None,
+        **kwargs
+    ):
+        super(MongoDbAtlasSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
+        self.type = 'MongoDbAtlasSink'  # type: str
+        self.write_behavior = write_behavior
+
+
 class MongoDbAtlasSource(CopySource):
     """A copy activity source for a MongoDB Atlas database.
 
@@ -25001,6 +25561,9 @@ class MongoDbAtlasSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param filter: Specifies selection filter using query operators. To return all documents in a
      collection, omit this parameter or pass an empty document ({}). Type: string (or Expression
      with resultType string).
@@ -25030,6 +25593,7 @@ class MongoDbAtlasSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'filter': {'key': 'filter', 'type': 'object'},
         'cursor_methods': {'key': 'cursorMethods', 'type': 'MongoDbCursorMethodsProperties'},
         'batch_size': {'key': 'batchSize', 'type': 'object'},
@@ -25044,6 +25608,7 @@ class MongoDbAtlasSource(CopySource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         filter: Optional[object] = None,
         cursor_methods: Optional["MongoDbCursorMethodsProperties"] = None,
         batch_size: Optional[object] = None,
@@ -25051,7 +25616,7 @@ class MongoDbAtlasSource(CopySource):
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         **kwargs
     ):
-        super(MongoDbAtlasSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(MongoDbAtlasSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'MongoDbAtlasSource'  # type: str
         self.filter = filter
         self.cursor_methods = cursor_methods
@@ -25308,6 +25873,9 @@ class MongoDbSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query: Database query. Should be a SQL-92 query expression. Type: string (or Expression
      with resultType string).
     :type query: object
@@ -25326,6 +25894,7 @@ class MongoDbSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
     }
@@ -25337,11 +25906,12 @@ class MongoDbSource(CopySource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         **kwargs
     ):
-        super(MongoDbSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(MongoDbSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'MongoDbSource'  # type: str
         self.query = query
         self.additional_columns = additional_columns
@@ -25478,6 +26048,74 @@ class MongoDbV2LinkedService(LinkedService):
         self.database = database
 
 
+class MongoDbV2Sink(CopySink):
+    """A copy activity MongoDB sink.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param additional_properties: Unmatched properties from the message are deserialized to this
+     collection.
+    :type additional_properties: dict[str, object]
+    :param type: Required. Copy sink type.Constant filled by server.
+    :type type: str
+    :param write_batch_size: Write batch size. Type: integer (or Expression with resultType
+     integer), minimum: 0.
+    :type write_batch_size: object
+    :param write_batch_timeout: Write batch timeout. Type: string (or Expression with resultType
+     string), pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
+    :type write_batch_timeout: object
+    :param sink_retry_count: Sink retry count. Type: integer (or Expression with resultType
+     integer).
+    :type sink_retry_count: object
+    :param sink_retry_wait: Sink retry wait. Type: string (or Expression with resultType string),
+     pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
+    :type sink_retry_wait: object
+    :param max_concurrent_connections: The maximum concurrent connection count for the sink data
+     store. Type: integer (or Expression with resultType integer).
+    :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
+    :param write_behavior: Specifies whether the document with same key to be overwritten (upsert)
+     rather than throw exception (insert). The default value is "insert". Type: string (or
+     Expression with resultType string). Type: string (or Expression with resultType string).
+    :type write_behavior: object
+    """
+
+    _validation = {
+        'type': {'required': True},
+    }
+
+    _attribute_map = {
+        'additional_properties': {'key': '', 'type': '{object}'},
+        'type': {'key': 'type', 'type': 'str'},
+        'write_batch_size': {'key': 'writeBatchSize', 'type': 'object'},
+        'write_batch_timeout': {'key': 'writeBatchTimeout', 'type': 'object'},
+        'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
+        'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
+        'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
+        'write_behavior': {'key': 'writeBehavior', 'type': 'object'},
+    }
+
+    def __init__(
+        self,
+        *,
+        additional_properties: Optional[Dict[str, object]] = None,
+        write_batch_size: Optional[object] = None,
+        write_batch_timeout: Optional[object] = None,
+        sink_retry_count: Optional[object] = None,
+        sink_retry_wait: Optional[object] = None,
+        max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
+        write_behavior: Optional[object] = None,
+        **kwargs
+    ):
+        super(MongoDbV2Sink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
+        self.type = 'MongoDbV2Sink'  # type: str
+        self.write_behavior = write_behavior
+
+
 class MongoDbV2Source(CopySource):
     """A copy activity source for a MongoDB database.
 
@@ -25497,6 +26135,9 @@ class MongoDbV2Source(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param filter: Specifies selection filter using query operators. To return all documents in a
      collection, omit this parameter or pass an empty document ({}). Type: string (or Expression
      with resultType string).
@@ -25526,6 +26167,7 @@ class MongoDbV2Source(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'filter': {'key': 'filter', 'type': 'object'},
         'cursor_methods': {'key': 'cursorMethods', 'type': 'MongoDbCursorMethodsProperties'},
         'batch_size': {'key': 'batchSize', 'type': 'object'},
@@ -25540,6 +26182,7 @@ class MongoDbV2Source(CopySource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         filter: Optional[object] = None,
         cursor_methods: Optional["MongoDbCursorMethodsProperties"] = None,
         batch_size: Optional[object] = None,
@@ -25547,7 +26190,7 @@ class MongoDbV2Source(CopySource):
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         **kwargs
     ):
-        super(MongoDbV2Source, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(MongoDbV2Source, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'MongoDbV2Source'  # type: str
         self.filter = filter
         self.cursor_methods = cursor_methods
@@ -25640,6 +26283,9 @@ class MySqlSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -25660,6 +26306,7 @@ class MySqlSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -25672,12 +26319,13 @@ class MySqlSource(TabularSource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query_timeout: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         query: Optional[object] = None,
         **kwargs
     ):
-        super(MySqlSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
+        super(MySqlSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
         self.type = 'MySqlSource'  # type: str
         self.query = query
 
@@ -25870,6 +26518,9 @@ class NetezzaSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -25896,6 +26547,7 @@ class NetezzaSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -25910,6 +26562,7 @@ class NetezzaSource(TabularSource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query_timeout: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         query: Optional[object] = None,
@@ -25917,7 +26570,7 @@ class NetezzaSource(TabularSource):
         partition_settings: Optional["NetezzaPartitionSettings"] = None,
         **kwargs
     ):
-        super(NetezzaSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
+        super(NetezzaSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
         self.type = 'NetezzaSource'  # type: str
         self.query = query
         self.partition_option = partition_option
@@ -26231,6 +26884,9 @@ class ODataSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query: OData query. For example, "$top=1". Type: string (or Expression with resultType
      string).
     :type query: object
@@ -26254,6 +26910,7 @@ class ODataSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
         'http_request_timeout': {'key': 'httpRequestTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
@@ -26266,12 +26923,13 @@ class ODataSource(CopySource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query: Optional[object] = None,
         http_request_timeout: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         **kwargs
     ):
-        super(ODataSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(ODataSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'ODataSource'  # type: str
         self.query = query
         self.http_request_timeout = http_request_timeout
@@ -26388,6 +27046,9 @@ class OdbcSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param pre_copy_script: A query to execute before starting the copy. Type: string (or
      Expression with resultType string).
     :type pre_copy_script: object
@@ -26405,6 +27066,7 @@ class OdbcSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'pre_copy_script': {'key': 'preCopyScript', 'type': 'object'},
     }
 
@@ -26417,10 +27079,11 @@ class OdbcSink(CopySink):
         sink_retry_count: Optional[object] = None,
         sink_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         pre_copy_script: Optional[object] = None,
         **kwargs
     ):
-        super(OdbcSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(OdbcSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'OdbcSink'  # type: str
         self.pre_copy_script = pre_copy_script
 
@@ -26444,6 +27107,9 @@ class OdbcSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -26464,6 +27130,7 @@ class OdbcSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -26476,12 +27143,13 @@ class OdbcSource(TabularSource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query_timeout: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         query: Optional[object] = None,
         **kwargs
     ):
-        super(OdbcSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
+        super(OdbcSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
         self.type = 'OdbcSource'  # type: str
         self.query = query
 
@@ -26730,6 +27398,9 @@ class Office365Source(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param allowed_groups: The groups containing all the users. Type: array of strings (or
      Expression with resultType array of strings).
     :type allowed_groups: object
@@ -26761,6 +27432,7 @@ class Office365Source(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'allowed_groups': {'key': 'allowedGroups', 'type': 'object'},
         'user_scope_filter_uri': {'key': 'userScopeFilterUri', 'type': 'object'},
         'date_filter_column': {'key': 'dateFilterColumn', 'type': 'object'},
@@ -26776,6 +27448,7 @@ class Office365Source(CopySource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         allowed_groups: Optional[object] = None,
         user_scope_filter_uri: Optional[object] = None,
         date_filter_column: Optional[object] = None,
@@ -26784,7 +27457,7 @@ class Office365Source(CopySource):
         output_columns: Optional[object] = None,
         **kwargs
     ):
-        super(Office365Source, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(Office365Source, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'Office365Source'  # type: str
         self.allowed_groups = allowed_groups
         self.user_scope_filter_uri = user_scope_filter_uri
@@ -27215,6 +27888,9 @@ class OracleCloudStorageReadSettings(StoreReadSettings):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param recursive: If true, files under the folder path will be read recursively. Default is
      true. Type: boolean (or Expression with resultType boolean).
     :type recursive: object
@@ -27255,6 +27931,7 @@ class OracleCloudStorageReadSettings(StoreReadSettings):
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'recursive': {'key': 'recursive', 'type': 'object'},
         'wildcard_folder_path': {'key': 'wildcardFolderPath', 'type': 'object'},
         'wildcard_file_name': {'key': 'wildcardFileName', 'type': 'object'},
@@ -27272,6 +27949,7 @@ class OracleCloudStorageReadSettings(StoreReadSettings):
         *,
         additional_properties: Optional[Dict[str, object]] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         recursive: Optional[object] = None,
         wildcard_folder_path: Optional[object] = None,
         wildcard_file_name: Optional[object] = None,
@@ -27284,7 +27962,7 @@ class OracleCloudStorageReadSettings(StoreReadSettings):
         modified_datetime_end: Optional[object] = None,
         **kwargs
     ):
-        super(OracleCloudStorageReadSettings, self).__init__(additional_properties=additional_properties, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(OracleCloudStorageReadSettings, self).__init__(additional_properties=additional_properties, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'OracleCloudStorageReadSettings'  # type: str
         self.recursive = recursive
         self.wildcard_folder_path = wildcard_folder_path
@@ -27585,6 +28263,9 @@ class OracleServiceCloudSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -27606,6 +28287,7 @@ class OracleServiceCloudSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -27618,12 +28300,13 @@ class OracleServiceCloudSource(TabularSource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query_timeout: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         query: Optional[object] = None,
         **kwargs
     ):
-        super(OracleServiceCloudSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
+        super(OracleServiceCloudSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
         self.type = 'OracleServiceCloudSource'  # type: str
         self.query = query
 
@@ -27653,6 +28336,9 @@ class OracleSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param pre_copy_script: SQL pre-copy script. Type: string (or Expression with resultType
      string).
     :type pre_copy_script: object
@@ -27670,6 +28356,7 @@ class OracleSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'pre_copy_script': {'key': 'preCopyScript', 'type': 'object'},
     }
 
@@ -27682,10 +28369,11 @@ class OracleSink(CopySink):
         sink_retry_count: Optional[object] = None,
         sink_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         pre_copy_script: Optional[object] = None,
         **kwargs
     ):
-        super(OracleSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(OracleSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'OracleSink'  # type: str
         self.pre_copy_script = pre_copy_script
 
@@ -27709,6 +28397,9 @@ class OracleSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param oracle_reader_query: Oracle reader query. Type: string (or Expression with resultType
      string).
     :type oracle_reader_query: object
@@ -27735,6 +28426,7 @@ class OracleSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'oracle_reader_query': {'key': 'oracleReaderQuery', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'partition_option': {'key': 'partitionOption', 'type': 'object'},
@@ -27749,6 +28441,7 @@ class OracleSource(CopySource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         oracle_reader_query: Optional[object] = None,
         query_timeout: Optional[object] = None,
         partition_option: Optional[object] = None,
@@ -27756,7 +28449,7 @@ class OracleSource(CopySource):
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         **kwargs
     ):
-        super(OracleSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(OracleSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'OracleSource'  # type: str
         self.oracle_reader_query = oracle_reader_query
         self.query_timeout = query_timeout
@@ -27875,8 +28568,9 @@ class OrcDataset(Dataset):
     :type folder: ~data_factory_management_client.models.DatasetFolder
     :param location: The location of the ORC data storage.
     :type location: ~data_factory_management_client.models.DatasetLocation
-    :param orc_compression_codec:  Possible values include: "none", "zlib", "snappy", "lzo".
-    :type orc_compression_codec: str or ~data_factory_management_client.models.OrcCompressionCodec
+    :param orc_compression_codec: The data orcCompressionCodec. Type: string (or Expression with
+     resultType string).
+    :type orc_compression_codec: object
     """
 
     _validation = {
@@ -27895,7 +28589,7 @@ class OrcDataset(Dataset):
         'annotations': {'key': 'annotations', 'type': '[object]'},
         'folder': {'key': 'folder', 'type': 'DatasetFolder'},
         'location': {'key': 'typeProperties.location', 'type': 'DatasetLocation'},
-        'orc_compression_codec': {'key': 'typeProperties.orcCompressionCodec', 'type': 'str'},
+        'orc_compression_codec': {'key': 'typeProperties.orcCompressionCodec', 'type': 'object'},
     }
 
     def __init__(
@@ -27910,7 +28604,7 @@ class OrcDataset(Dataset):
         annotations: Optional[List[object]] = None,
         folder: Optional["DatasetFolder"] = None,
         location: Optional["DatasetLocation"] = None,
-        orc_compression_codec: Optional[Union[str, "OrcCompressionCodec"]] = None,
+        orc_compression_codec: Optional[object] = None,
         **kwargs
     ):
         super(OrcDataset, self).__init__(additional_properties=additional_properties, description=description, structure=structure, schema=schema, linked_service_name=linked_service_name, parameters=parameters, annotations=annotations, folder=folder, **kwargs)
@@ -27983,6 +28677,9 @@ class OrcSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param store_settings: ORC store settings.
     :type store_settings: ~data_factory_management_client.models.StoreWriteSettings
     :param format_settings: ORC format settings.
@@ -28001,6 +28698,7 @@ class OrcSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'store_settings': {'key': 'storeSettings', 'type': 'StoreWriteSettings'},
         'format_settings': {'key': 'formatSettings', 'type': 'OrcWriteSettings'},
     }
@@ -28014,11 +28712,12 @@ class OrcSink(CopySink):
         sink_retry_count: Optional[object] = None,
         sink_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         store_settings: Optional["StoreWriteSettings"] = None,
         format_settings: Optional["OrcWriteSettings"] = None,
         **kwargs
     ):
-        super(OrcSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(OrcSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'OrcSink'  # type: str
         self.store_settings = store_settings
         self.format_settings = format_settings
@@ -28043,6 +28742,9 @@ class OrcSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param store_settings: ORC store settings.
     :type store_settings: ~data_factory_management_client.models.StoreReadSettings
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
@@ -28060,6 +28762,7 @@ class OrcSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'store_settings': {'key': 'storeSettings', 'type': 'StoreReadSettings'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
     }
@@ -28071,11 +28774,12 @@ class OrcSource(CopySource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         store_settings: Optional["StoreReadSettings"] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         **kwargs
     ):
-        super(OrcSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(OrcSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'OrcSource'  # type: str
         self.store_settings = store_settings
         self.additional_columns = additional_columns
@@ -28220,9 +28924,9 @@ class ParquetDataset(Dataset):
     :type folder: ~data_factory_management_client.models.DatasetFolder
     :param location: The location of the parquet storage.
     :type location: ~data_factory_management_client.models.DatasetLocation
-    :param compression_codec:  Possible values include: "none", "gzip", "snappy", "lzo", "bzip2",
-     "deflate", "zipDeflate", "lz4", "tar", "tarGZip".
-    :type compression_codec: str or ~data_factory_management_client.models.CompressionCodec
+    :param compression_codec: The data compressionCodec. Type: string (or Expression with
+     resultType string).
+    :type compression_codec: object
     """
 
     _validation = {
@@ -28241,7 +28945,7 @@ class ParquetDataset(Dataset):
         'annotations': {'key': 'annotations', 'type': '[object]'},
         'folder': {'key': 'folder', 'type': 'DatasetFolder'},
         'location': {'key': 'typeProperties.location', 'type': 'DatasetLocation'},
-        'compression_codec': {'key': 'typeProperties.compressionCodec', 'type': 'str'},
+        'compression_codec': {'key': 'typeProperties.compressionCodec', 'type': 'object'},
     }
 
     def __init__(
@@ -28256,7 +28960,7 @@ class ParquetDataset(Dataset):
         annotations: Optional[List[object]] = None,
         folder: Optional["DatasetFolder"] = None,
         location: Optional["DatasetLocation"] = None,
-        compression_codec: Optional[Union[str, "CompressionCodec"]] = None,
+        compression_codec: Optional[object] = None,
         **kwargs
     ):
         super(ParquetDataset, self).__init__(additional_properties=additional_properties, description=description, structure=structure, schema=schema, linked_service_name=linked_service_name, parameters=parameters, annotations=annotations, folder=folder, **kwargs)
@@ -28329,6 +29033,9 @@ class ParquetSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param store_settings: Parquet store settings.
     :type store_settings: ~data_factory_management_client.models.StoreWriteSettings
     :param format_settings: Parquet format settings.
@@ -28347,6 +29054,7 @@ class ParquetSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'store_settings': {'key': 'storeSettings', 'type': 'StoreWriteSettings'},
         'format_settings': {'key': 'formatSettings', 'type': 'ParquetWriteSettings'},
     }
@@ -28360,11 +29068,12 @@ class ParquetSink(CopySink):
         sink_retry_count: Optional[object] = None,
         sink_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         store_settings: Optional["StoreWriteSettings"] = None,
         format_settings: Optional["ParquetWriteSettings"] = None,
         **kwargs
     ):
-        super(ParquetSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(ParquetSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'ParquetSink'  # type: str
         self.store_settings = store_settings
         self.format_settings = format_settings
@@ -28389,6 +29098,9 @@ class ParquetSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param store_settings: Parquet store settings.
     :type store_settings: ~data_factory_management_client.models.StoreReadSettings
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
@@ -28406,6 +29118,7 @@ class ParquetSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'store_settings': {'key': 'storeSettings', 'type': 'StoreReadSettings'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
     }
@@ -28417,11 +29130,12 @@ class ParquetSource(CopySource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         store_settings: Optional["StoreReadSettings"] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         **kwargs
     ):
-        super(ParquetSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(ParquetSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'ParquetSource'  # type: str
         self.store_settings = store_settings
         self.additional_columns = additional_columns
@@ -28648,6 +29362,9 @@ class PaypalSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -28669,6 +29386,7 @@ class PaypalSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -28681,12 +29399,13 @@ class PaypalSource(TabularSource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query_timeout: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         query: Optional[object] = None,
         **kwargs
     ):
-        super(PaypalSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
+        super(PaypalSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
         self.type = 'PaypalSource'  # type: str
         self.query = query
 
@@ -28915,6 +29634,9 @@ class PhoenixSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -28936,6 +29658,7 @@ class PhoenixSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -28948,12 +29671,13 @@ class PhoenixSource(TabularSource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query_timeout: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         query: Optional[object] = None,
         **kwargs
     ):
-        super(PhoenixSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
+        super(PhoenixSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
         self.type = 'PhoenixSource'  # type: str
         self.query = query
 
@@ -29476,6 +30200,9 @@ class PostgreSqlSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -29496,6 +30223,7 @@ class PostgreSqlSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -29508,12 +30236,13 @@ class PostgreSqlSource(TabularSource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query_timeout: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         query: Optional[object] = None,
         **kwargs
     ):
-        super(PostgreSqlSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
+        super(PostgreSqlSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
         self.type = 'PostgreSqlSource'  # type: str
         self.query = query
 
@@ -29832,6 +30561,9 @@ class PrestoSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -29853,6 +30585,7 @@ class PrestoSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -29865,12 +30598,13 @@ class PrestoSource(TabularSource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query_timeout: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         query: Optional[object] = None,
         **kwargs
     ):
-        super(PrestoSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
+        super(PrestoSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
         self.type = 'PrestoSource'  # type: str
         self.query = query
 
@@ -30357,6 +31091,9 @@ class QuickBooksSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -30378,6 +31115,7 @@ class QuickBooksSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -30390,12 +31128,13 @@ class QuickBooksSource(TabularSource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query_timeout: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         query: Optional[object] = None,
         **kwargs
     ):
-        super(QuickBooksSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
+        super(QuickBooksSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
         self.type = 'QuickBooksSource'  # type: str
         self.query = query
 
@@ -30578,6 +31317,9 @@ class RelationalSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query: Database query. Type: string (or Expression with resultType string).
     :type query: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
@@ -30595,6 +31337,7 @@ class RelationalSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
     }
@@ -30606,11 +31349,12 @@ class RelationalSource(CopySource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         **kwargs
     ):
-        super(RelationalSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(RelationalSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'RelationalSource'  # type: str
         self.query = query
         self.additional_columns = additional_columns
@@ -30975,6 +31719,9 @@ class ResponsysSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -30996,6 +31743,7 @@ class ResponsysSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -31008,12 +31756,13 @@ class ResponsysSource(TabularSource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query_timeout: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         query: Optional[object] = None,
         **kwargs
     ):
-        super(ResponsysSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
+        super(ResponsysSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
         self.type = 'ResponsysSource'  # type: str
         self.query = query
 
@@ -31258,6 +32007,9 @@ class RestSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param request_method: The HTTP method used to call the RESTful API. The default is POST. Type:
      string (or Expression with resultType string).
     :type request_method: object
@@ -31288,6 +32040,7 @@ class RestSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'request_method': {'key': 'requestMethod', 'type': 'object'},
         'additional_headers': {'key': 'additionalHeaders', 'type': 'object'},
         'http_request_timeout': {'key': 'httpRequestTimeout', 'type': 'object'},
@@ -31304,6 +32057,7 @@ class RestSink(CopySink):
         sink_retry_count: Optional[object] = None,
         sink_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         request_method: Optional[object] = None,
         additional_headers: Optional[object] = None,
         http_request_timeout: Optional[object] = None,
@@ -31311,7 +32065,7 @@ class RestSink(CopySink):
         http_compression_type: Optional[object] = None,
         **kwargs
     ):
-        super(RestSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(RestSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'RestSink'  # type: str
         self.request_method = request_method
         self.additional_headers = additional_headers
@@ -31339,6 +32093,9 @@ class RestSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param request_method: The HTTP method used to call the RESTful API. The default is GET. Type:
      string (or Expression with resultType string).
     :type request_method: object
@@ -31373,6 +32130,7 @@ class RestSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'request_method': {'key': 'requestMethod', 'type': 'object'},
         'request_body': {'key': 'requestBody', 'type': 'object'},
         'additional_headers': {'key': 'additionalHeaders', 'type': 'object'},
@@ -31389,6 +32147,7 @@ class RestSource(CopySource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         request_method: Optional[object] = None,
         request_body: Optional[object] = None,
         additional_headers: Optional[object] = None,
@@ -31398,7 +32157,7 @@ class RestSource(CopySource):
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         **kwargs
     ):
-        super(RestSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(RestSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'RestSource'  # type: str
         self.request_method = request_method
         self.request_body = request_body
@@ -31837,6 +32596,9 @@ class SalesforceMarketingCloudSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -31858,6 +32620,7 @@ class SalesforceMarketingCloudSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -31870,12 +32633,13 @@ class SalesforceMarketingCloudSource(TabularSource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query_timeout: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         query: Optional[object] = None,
         **kwargs
     ):
-        super(SalesforceMarketingCloudSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
+        super(SalesforceMarketingCloudSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
         self.type = 'SalesforceMarketingCloudSource'  # type: str
         self.query = query
 
@@ -32133,6 +32897,9 @@ class SalesforceServiceCloudSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param write_behavior: The write behavior for the operation. Default is Insert. Possible values
      include: "Insert", "Upsert".
     :type write_behavior: str or ~data_factory_management_client.models.SalesforceSinkWriteBehavior
@@ -32160,6 +32927,7 @@ class SalesforceServiceCloudSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'write_behavior': {'key': 'writeBehavior', 'type': 'str'},
         'external_id_field_name': {'key': 'externalIdFieldName', 'type': 'object'},
         'ignore_null_values': {'key': 'ignoreNullValues', 'type': 'object'},
@@ -32174,12 +32942,13 @@ class SalesforceServiceCloudSink(CopySink):
         sink_retry_count: Optional[object] = None,
         sink_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         write_behavior: Optional[Union[str, "SalesforceSinkWriteBehavior"]] = None,
         external_id_field_name: Optional[object] = None,
         ignore_null_values: Optional[object] = None,
         **kwargs
     ):
-        super(SalesforceServiceCloudSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(SalesforceServiceCloudSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'SalesforceServiceCloudSink'  # type: str
         self.write_behavior = write_behavior
         self.external_id_field_name = external_id_field_name
@@ -32205,6 +32974,9 @@ class SalesforceServiceCloudSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query: Database query. Type: string (or Expression with resultType string).
     :type query: object
     :param read_behavior: The read behavior for the operation. Default is Query. Possible values
@@ -32225,6 +32997,7 @@ class SalesforceServiceCloudSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
         'read_behavior': {'key': 'readBehavior', 'type': 'str'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
@@ -32237,12 +33010,13 @@ class SalesforceServiceCloudSource(CopySource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query: Optional[object] = None,
         read_behavior: Optional[Union[str, "SalesforceSourceReadBehavior"]] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         **kwargs
     ):
-        super(SalesforceServiceCloudSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(SalesforceServiceCloudSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'SalesforceServiceCloudSource'  # type: str
         self.query = query
         self.read_behavior = read_behavior
@@ -32274,6 +33048,9 @@ class SalesforceSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param write_behavior: The write behavior for the operation. Default is Insert. Possible values
      include: "Insert", "Upsert".
     :type write_behavior: str or ~data_factory_management_client.models.SalesforceSinkWriteBehavior
@@ -32301,6 +33078,7 @@ class SalesforceSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'write_behavior': {'key': 'writeBehavior', 'type': 'str'},
         'external_id_field_name': {'key': 'externalIdFieldName', 'type': 'object'},
         'ignore_null_values': {'key': 'ignoreNullValues', 'type': 'object'},
@@ -32315,12 +33093,13 @@ class SalesforceSink(CopySink):
         sink_retry_count: Optional[object] = None,
         sink_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         write_behavior: Optional[Union[str, "SalesforceSinkWriteBehavior"]] = None,
         external_id_field_name: Optional[object] = None,
         ignore_null_values: Optional[object] = None,
         **kwargs
     ):
-        super(SalesforceSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(SalesforceSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'SalesforceSink'  # type: str
         self.write_behavior = write_behavior
         self.external_id_field_name = external_id_field_name
@@ -32346,6 +33125,9 @@ class SalesforceSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -32369,6 +33151,7 @@ class SalesforceSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -32382,13 +33165,14 @@ class SalesforceSource(TabularSource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query_timeout: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         query: Optional[object] = None,
         read_behavior: Optional[Union[str, "SalesforceSourceReadBehavior"]] = None,
         **kwargs
     ):
-        super(SalesforceSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
+        super(SalesforceSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
         self.type = 'SalesforceSource'  # type: str
         self.query = query
         self.read_behavior = read_behavior
@@ -32562,6 +33346,9 @@ class SapBwSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -32582,6 +33369,7 @@ class SapBwSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -32594,12 +33382,13 @@ class SapBwSource(TabularSource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query_timeout: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         query: Optional[object] = None,
         **kwargs
     ):
-        super(SapBwSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
+        super(SapBwSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
         self.type = 'SapBwSource'  # type: str
         self.query = query
 
@@ -32772,6 +33561,9 @@ class SapCloudForCustomerSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param write_behavior: The write behavior for the operation. Default is 'Insert'. Possible
      values include: "Insert", "Update".
     :type write_behavior: str or
@@ -32795,6 +33587,7 @@ class SapCloudForCustomerSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'write_behavior': {'key': 'writeBehavior', 'type': 'str'},
         'http_request_timeout': {'key': 'httpRequestTimeout', 'type': 'object'},
     }
@@ -32808,11 +33601,12 @@ class SapCloudForCustomerSink(CopySink):
         sink_retry_count: Optional[object] = None,
         sink_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         write_behavior: Optional[Union[str, "SapCloudForCustomerSinkWriteBehavior"]] = None,
         http_request_timeout: Optional[object] = None,
         **kwargs
     ):
-        super(SapCloudForCustomerSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(SapCloudForCustomerSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'SapCloudForCustomerSink'  # type: str
         self.write_behavior = write_behavior
         self.http_request_timeout = http_request_timeout
@@ -32837,6 +33631,9 @@ class SapCloudForCustomerSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -32863,6 +33660,7 @@ class SapCloudForCustomerSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -32876,13 +33674,14 @@ class SapCloudForCustomerSource(TabularSource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query_timeout: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         query: Optional[object] = None,
         http_request_timeout: Optional[object] = None,
         **kwargs
     ):
-        super(SapCloudForCustomerSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
+        super(SapCloudForCustomerSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
         self.type = 'SapCloudForCustomerSource'  # type: str
         self.query = query
         self.http_request_timeout = http_request_timeout
@@ -33050,6 +33849,9 @@ class SapEccSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -33076,6 +33878,7 @@ class SapEccSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -33089,13 +33892,14 @@ class SapEccSource(TabularSource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query_timeout: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         query: Optional[object] = None,
         http_request_timeout: Optional[object] = None,
         **kwargs
     ):
-        super(SapEccSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
+        super(SapEccSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
         self.type = 'SapEccSource'  # type: str
         self.query = query
         self.http_request_timeout = http_request_timeout
@@ -33226,6 +34030,9 @@ class SapHanaSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -33255,6 +34062,7 @@ class SapHanaSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -33270,6 +34078,7 @@ class SapHanaSource(TabularSource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query_timeout: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         query: Optional[object] = None,
@@ -33278,7 +34087,7 @@ class SapHanaSource(TabularSource):
         partition_settings: Optional["SapHanaPartitionSettings"] = None,
         **kwargs
     ):
-        super(SapHanaSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
+        super(SapHanaSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
         self.type = 'SapHanaSource'  # type: str
         self.query = query
         self.packet_size = packet_size
@@ -33495,6 +34304,9 @@ class SapOpenHubSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -33527,6 +34339,7 @@ class SapOpenHubSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'exclude_last_request': {'key': 'excludeLastRequest', 'type': 'object'},
@@ -33542,6 +34355,7 @@ class SapOpenHubSource(TabularSource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query_timeout: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         exclude_last_request: Optional[object] = None,
@@ -33550,7 +34364,7 @@ class SapOpenHubSource(TabularSource):
         sap_data_column_delimiter: Optional[object] = None,
         **kwargs
     ):
-        super(SapOpenHubSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
+        super(SapOpenHubSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
         self.type = 'SapOpenHubSource'  # type: str
         self.exclude_last_request = exclude_last_request
         self.base_request_id = base_request_id
@@ -33917,6 +34731,9 @@ class SapTableSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -33964,6 +34781,7 @@ class SapTableSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'row_count': {'key': 'rowCount', 'type': 'object'},
@@ -33984,6 +34802,7 @@ class SapTableSource(TabularSource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query_timeout: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         row_count: Optional[object] = None,
@@ -33997,7 +34816,7 @@ class SapTableSource(TabularSource):
         partition_settings: Optional["SapTablePartitionSettings"] = None,
         **kwargs
     ):
-        super(SapTableSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
+        super(SapTableSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
         self.type = 'SapTableSource'  # type: str
         self.row_count = row_count
         self.row_skips = row_skips
@@ -34128,9 +34947,8 @@ class ScriptAction(msrest.serialization.Model):
     :type name: str
     :param uri: Required. The URI for the script action.
     :type uri: str
-    :param roles: Required. The node types on which the script action should be executed. Possible
-     values include: "Headnode", "Workernode", "Zookeeper".
-    :type roles: str or ~data_factory_management_client.models.HdiNodeTypes
+    :param roles: Required. The node types on which the script action should be executed.
+    :type roles: str
     :param parameters: The parameters for the script action.
     :type parameters: str
     """
@@ -34153,7 +34971,7 @@ class ScriptAction(msrest.serialization.Model):
         *,
         name: str,
         uri: str,
-        roles: Union[str, "HdiNodeTypes"],
+        roles: str,
         parameters: Optional[str] = None,
         **kwargs
     ):
@@ -34732,6 +35550,9 @@ class ServiceNowSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -34753,6 +35574,7 @@ class ServiceNowSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -34765,12 +35587,13 @@ class ServiceNowSource(TabularSource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query_timeout: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         query: Optional[object] = None,
         **kwargs
     ):
-        super(ServiceNowSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
+        super(ServiceNowSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
         self.type = 'ServiceNowSource'  # type: str
         self.query = query
 
@@ -34887,6 +35710,9 @@ class SftpReadSettings(StoreReadSettings):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param recursive: If true, files under the folder path will be read recursively. Default is
      true. Type: boolean (or Expression with resultType boolean).
     :type recursive: object
@@ -34924,6 +35750,7 @@ class SftpReadSettings(StoreReadSettings):
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'recursive': {'key': 'recursive', 'type': 'object'},
         'wildcard_folder_path': {'key': 'wildcardFolderPath', 'type': 'object'},
         'wildcard_file_name': {'key': 'wildcardFileName', 'type': 'object'},
@@ -34940,6 +35767,7 @@ class SftpReadSettings(StoreReadSettings):
         *,
         additional_properties: Optional[Dict[str, object]] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         recursive: Optional[object] = None,
         wildcard_folder_path: Optional[object] = None,
         wildcard_file_name: Optional[object] = None,
@@ -34951,7 +35779,7 @@ class SftpReadSettings(StoreReadSettings):
         modified_datetime_end: Optional[object] = None,
         **kwargs
     ):
-        super(SftpReadSettings, self).__init__(additional_properties=additional_properties, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(SftpReadSettings, self).__init__(additional_properties=additional_properties, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'SftpReadSettings'  # type: str
         self.recursive = recursive
         self.wildcard_folder_path = wildcard_folder_path
@@ -35095,6 +35923,9 @@ class SftpWriteSettings(StoreWriteSettings):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param copy_behavior: The type of copy behavior for copy sink.
     :type copy_behavior: object
     :param operation_timeout: Specifies the timeout for writing each chunk to SFTP server. Default
@@ -35114,6 +35945,7 @@ class SftpWriteSettings(StoreWriteSettings):
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'copy_behavior': {'key': 'copyBehavior', 'type': 'object'},
         'operation_timeout': {'key': 'operationTimeout', 'type': 'object'},
         'use_temp_file_rename': {'key': 'useTempFileRename', 'type': 'object'},
@@ -35124,12 +35956,13 @@ class SftpWriteSettings(StoreWriteSettings):
         *,
         additional_properties: Optional[Dict[str, object]] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         copy_behavior: Optional[object] = None,
         operation_timeout: Optional[object] = None,
         use_temp_file_rename: Optional[object] = None,
         **kwargs
     ):
-        super(SftpWriteSettings, self).__init__(additional_properties=additional_properties, max_concurrent_connections=max_concurrent_connections, copy_behavior=copy_behavior, **kwargs)
+        super(SftpWriteSettings, self).__init__(additional_properties=additional_properties, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, copy_behavior=copy_behavior, **kwargs)
         self.type = 'SftpWriteSettings'  # type: str
         self.operation_timeout = operation_timeout
         self.use_temp_file_rename = use_temp_file_rename
@@ -35308,6 +36141,9 @@ class SharePointOnlineListSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query: The OData query to filter the data in SharePoint Online list. For example,
      "$top=1". Type: string (or Expression with resultType string).
     :type query: object
@@ -35327,6 +36163,7 @@ class SharePointOnlineListSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
         'http_request_timeout': {'key': 'httpRequestTimeout', 'type': 'object'},
     }
@@ -35338,11 +36175,12 @@ class SharePointOnlineListSource(CopySource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query: Optional[object] = None,
         http_request_timeout: Optional[object] = None,
         **kwargs
     ):
-        super(SharePointOnlineListSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(SharePointOnlineListSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'SharePointOnlineListSource'  # type: str
         self.query = query
         self.http_request_timeout = http_request_timeout
@@ -35520,6 +36358,9 @@ class ShopifySource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -35541,6 +36382,7 @@ class ShopifySource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -35553,12 +36395,13 @@ class ShopifySource(TabularSource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query_timeout: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         query: Optional[object] = None,
         **kwargs
     ):
-        super(ShopifySource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
+        super(ShopifySource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
         self.type = 'ShopifySource'  # type: str
         self.query = query
 
@@ -35851,6 +36694,9 @@ class SnowflakeSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param pre_copy_script: SQL pre-copy script. Type: string (or Expression with resultType
      string).
     :type pre_copy_script: object
@@ -35870,6 +36716,7 @@ class SnowflakeSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'pre_copy_script': {'key': 'preCopyScript', 'type': 'object'},
         'import_settings': {'key': 'importSettings', 'type': 'SnowflakeImportCopyCommand'},
     }
@@ -35883,11 +36730,12 @@ class SnowflakeSink(CopySink):
         sink_retry_count: Optional[object] = None,
         sink_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         pre_copy_script: Optional[object] = None,
         import_settings: Optional["SnowflakeImportCopyCommand"] = None,
         **kwargs
     ):
-        super(SnowflakeSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(SnowflakeSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'SnowflakeSink'  # type: str
         self.pre_copy_script = pre_copy_script
         self.import_settings = import_settings
@@ -35912,6 +36760,9 @@ class SnowflakeSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query: Snowflake Sql query. Type: string (or Expression with resultType string).
     :type query: object
     :param export_settings: Snowflake export settings.
@@ -35928,6 +36779,7 @@ class SnowflakeSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
         'export_settings': {'key': 'exportSettings', 'type': 'SnowflakeExportCopyCommand'},
     }
@@ -35939,11 +36791,12 @@ class SnowflakeSource(CopySource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query: Optional[object] = None,
         export_settings: Optional["SnowflakeExportCopyCommand"] = None,
         **kwargs
     ):
-        super(SnowflakeSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(SnowflakeSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'SnowflakeSource'  # type: str
         self.query = query
         self.export_settings = export_settings
@@ -36184,6 +37037,9 @@ class SparkSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -36205,6 +37061,7 @@ class SparkSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -36217,12 +37074,13 @@ class SparkSource(TabularSource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query_timeout: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         query: Optional[object] = None,
         **kwargs
     ):
-        super(SparkSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
+        super(SparkSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
         self.type = 'SparkSource'  # type: str
         self.query = query
 
@@ -36294,6 +37152,9 @@ class SqlDwSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param pre_copy_script: SQL pre-copy script. Type: string (or Expression with resultType
      string).
     :type pre_copy_script: object
@@ -36325,6 +37186,7 @@ class SqlDwSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'pre_copy_script': {'key': 'preCopyScript', 'type': 'object'},
         'allow_poly_base': {'key': 'allowPolyBase', 'type': 'object'},
         'poly_base_settings': {'key': 'polyBaseSettings', 'type': 'PolybaseSettings'},
@@ -36342,6 +37204,7 @@ class SqlDwSink(CopySink):
         sink_retry_count: Optional[object] = None,
         sink_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         pre_copy_script: Optional[object] = None,
         allow_poly_base: Optional[object] = None,
         poly_base_settings: Optional["PolybaseSettings"] = None,
@@ -36350,7 +37213,7 @@ class SqlDwSink(CopySink):
         table_option: Optional[object] = None,
         **kwargs
     ):
-        super(SqlDwSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(SqlDwSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'SqlDWSink'  # type: str
         self.pre_copy_script = pre_copy_script
         self.allow_poly_base = allow_poly_base
@@ -36379,6 +37242,9 @@ class SqlDwSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -36413,6 +37279,7 @@ class SqlDwSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'sql_reader_query': {'key': 'sqlReaderQuery', 'type': 'object'},
@@ -36429,6 +37296,7 @@ class SqlDwSource(TabularSource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query_timeout: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         sql_reader_query: Optional[object] = None,
@@ -36438,7 +37306,7 @@ class SqlDwSource(TabularSource):
         partition_settings: Optional["SqlPartitionSettings"] = None,
         **kwargs
     ):
-        super(SqlDwSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
+        super(SqlDwSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
         self.type = 'SqlDWSource'  # type: str
         self.sql_reader_query = sql_reader_query
         self.sql_reader_stored_procedure_name = sql_reader_stored_procedure_name
@@ -36472,6 +37340,9 @@ class SqlMiSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param sql_writer_stored_procedure_name: SQL writer stored procedure name. Type: string (or
      Expression with resultType string).
     :type sql_writer_stored_procedure_name: object
@@ -36504,6 +37375,7 @@ class SqlMiSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'sql_writer_stored_procedure_name': {'key': 'sqlWriterStoredProcedureName', 'type': 'object'},
         'sql_writer_table_type': {'key': 'sqlWriterTableType', 'type': 'object'},
         'pre_copy_script': {'key': 'preCopyScript', 'type': 'object'},
@@ -36521,6 +37393,7 @@ class SqlMiSink(CopySink):
         sink_retry_count: Optional[object] = None,
         sink_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         sql_writer_stored_procedure_name: Optional[object] = None,
         sql_writer_table_type: Optional[object] = None,
         pre_copy_script: Optional[object] = None,
@@ -36529,7 +37402,7 @@ class SqlMiSink(CopySink):
         table_option: Optional[object] = None,
         **kwargs
     ):
-        super(SqlMiSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(SqlMiSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'SqlMISink'  # type: str
         self.sql_writer_stored_procedure_name = sql_writer_stored_procedure_name
         self.sql_writer_table_type = sql_writer_table_type
@@ -36558,6 +37431,9 @@ class SqlMiSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -36593,6 +37469,7 @@ class SqlMiSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'sql_reader_query': {'key': 'sqlReaderQuery', 'type': 'object'},
@@ -36610,6 +37487,7 @@ class SqlMiSource(TabularSource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query_timeout: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         sql_reader_query: Optional[object] = None,
@@ -36620,7 +37498,7 @@ class SqlMiSource(TabularSource):
         partition_settings: Optional["SqlPartitionSettings"] = None,
         **kwargs
     ):
-        super(SqlMiSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
+        super(SqlMiSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
         self.type = 'SqlMISource'  # type: str
         self.sql_reader_query = sql_reader_query
         self.sql_reader_stored_procedure_name = sql_reader_stored_procedure_name
@@ -36772,6 +37650,9 @@ class SqlServerSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param sql_writer_stored_procedure_name: SQL writer stored procedure name. Type: string (or
      Expression with resultType string).
     :type sql_writer_stored_procedure_name: object
@@ -36804,6 +37685,7 @@ class SqlServerSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'sql_writer_stored_procedure_name': {'key': 'sqlWriterStoredProcedureName', 'type': 'object'},
         'sql_writer_table_type': {'key': 'sqlWriterTableType', 'type': 'object'},
         'pre_copy_script': {'key': 'preCopyScript', 'type': 'object'},
@@ -36821,6 +37703,7 @@ class SqlServerSink(CopySink):
         sink_retry_count: Optional[object] = None,
         sink_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         sql_writer_stored_procedure_name: Optional[object] = None,
         sql_writer_table_type: Optional[object] = None,
         pre_copy_script: Optional[object] = None,
@@ -36829,7 +37712,7 @@ class SqlServerSink(CopySink):
         table_option: Optional[object] = None,
         **kwargs
     ):
-        super(SqlServerSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(SqlServerSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'SqlServerSink'  # type: str
         self.sql_writer_stored_procedure_name = sql_writer_stored_procedure_name
         self.sql_writer_table_type = sql_writer_table_type
@@ -36858,6 +37741,9 @@ class SqlServerSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -36893,6 +37779,7 @@ class SqlServerSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'sql_reader_query': {'key': 'sqlReaderQuery', 'type': 'object'},
@@ -36910,6 +37797,7 @@ class SqlServerSource(TabularSource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query_timeout: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         sql_reader_query: Optional[object] = None,
@@ -36920,7 +37808,7 @@ class SqlServerSource(TabularSource):
         partition_settings: Optional["SqlPartitionSettings"] = None,
         **kwargs
     ):
-        super(SqlServerSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
+        super(SqlServerSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
         self.type = 'SqlServerSource'  # type: str
         self.sql_reader_query = sql_reader_query
         self.sql_reader_stored_procedure_name = sql_reader_stored_procedure_name
@@ -37106,6 +37994,9 @@ class SqlSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param sql_writer_stored_procedure_name: SQL writer stored procedure name. Type: string (or
      Expression with resultType string).
     :type sql_writer_stored_procedure_name: object
@@ -37138,6 +38029,7 @@ class SqlSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'sql_writer_stored_procedure_name': {'key': 'sqlWriterStoredProcedureName', 'type': 'object'},
         'sql_writer_table_type': {'key': 'sqlWriterTableType', 'type': 'object'},
         'pre_copy_script': {'key': 'preCopyScript', 'type': 'object'},
@@ -37155,6 +38047,7 @@ class SqlSink(CopySink):
         sink_retry_count: Optional[object] = None,
         sink_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         sql_writer_stored_procedure_name: Optional[object] = None,
         sql_writer_table_type: Optional[object] = None,
         pre_copy_script: Optional[object] = None,
@@ -37163,7 +38056,7 @@ class SqlSink(CopySink):
         table_option: Optional[object] = None,
         **kwargs
     ):
-        super(SqlSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(SqlSink, self).__init__(additional_properties=additional_properties, write_batch_size=write_batch_size, write_batch_timeout=write_batch_timeout, sink_retry_count=sink_retry_count, sink_retry_wait=sink_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'SqlSink'  # type: str
         self.sql_writer_stored_procedure_name = sql_writer_stored_procedure_name
         self.sql_writer_table_type = sql_writer_table_type
@@ -37192,6 +38085,9 @@ class SqlSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -37229,6 +38125,7 @@ class SqlSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'sql_reader_query': {'key': 'sqlReaderQuery', 'type': 'object'},
@@ -37246,6 +38143,7 @@ class SqlSource(TabularSource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query_timeout: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         sql_reader_query: Optional[object] = None,
@@ -37256,7 +38154,7 @@ class SqlSource(TabularSource):
         partition_settings: Optional["SqlPartitionSettings"] = None,
         **kwargs
     ):
-        super(SqlSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
+        super(SqlSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
         self.type = 'SqlSource'  # type: str
         self.sql_reader_query = sql_reader_query
         self.sql_reader_stored_procedure_name = sql_reader_stored_procedure_name
@@ -37453,6 +38351,9 @@ class SquareSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -37474,6 +38375,7 @@ class SquareSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -37486,12 +38388,13 @@ class SquareSource(TabularSource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query_timeout: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         query: Optional[object] = None,
         **kwargs
     ):
-        super(SquareSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
+        super(SquareSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
         self.type = 'SquareSource'  # type: str
         self.query = query
 
@@ -38555,6 +39458,9 @@ class SybaseSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -38575,6 +39481,7 @@ class SybaseSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -38587,12 +39494,13 @@ class SybaseSource(TabularSource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query_timeout: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         query: Optional[object] = None,
         **kwargs
     ):
-        super(SybaseSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
+        super(SybaseSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
         self.type = 'SybaseSource'  # type: str
         self.query = query
 
@@ -38955,6 +39863,9 @@ class TeradataSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -38981,6 +39892,7 @@ class TeradataSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -38995,6 +39907,7 @@ class TeradataSource(TabularSource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query_timeout: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         query: Optional[object] = None,
@@ -39002,7 +39915,7 @@ class TeradataSource(TabularSource):
         partition_settings: Optional["TeradataPartitionSettings"] = None,
         **kwargs
     ):
-        super(TeradataSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
+        super(TeradataSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
         self.type = 'TeradataSource'  # type: str
         self.query = query
         self.partition_option = partition_option
@@ -40159,6 +41072,9 @@ class VerticaSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -40180,6 +41096,7 @@ class VerticaSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -40192,12 +41109,13 @@ class VerticaSource(TabularSource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query_timeout: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         query: Optional[object] = None,
         **kwargs
     ):
-        super(VerticaSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
+        super(VerticaSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
         self.type = 'VerticaSource'  # type: str
         self.query = query
 
@@ -40833,6 +41751,9 @@ class WebSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
      array of objects (or Expression with resultType array of objects).
     :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
@@ -40848,6 +41769,7 @@ class WebSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
     }
 
@@ -40858,10 +41780,11 @@ class WebSource(CopySource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         **kwargs
     ):
-        super(WebSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(WebSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'WebSource'  # type: str
         self.additional_columns = additional_columns
 
@@ -41125,6 +42048,9 @@ class XeroSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -41146,6 +42072,7 @@ class XeroSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -41158,12 +42085,13 @@ class XeroSource(TabularSource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query_timeout: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         query: Optional[object] = None,
         **kwargs
     ):
-        super(XeroSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
+        super(XeroSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
         self.type = 'XeroSource'  # type: str
         self.query = query
 
@@ -41336,6 +42264,9 @@ class XmlSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param store_settings: Xml store settings.
     :type store_settings: ~data_factory_management_client.models.StoreReadSettings
     :param format_settings: Xml format settings.
@@ -41355,6 +42286,7 @@ class XmlSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'store_settings': {'key': 'storeSettings', 'type': 'StoreReadSettings'},
         'format_settings': {'key': 'formatSettings', 'type': 'XmlReadSettings'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
@@ -41367,12 +42299,13 @@ class XmlSource(CopySource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         store_settings: Optional["StoreReadSettings"] = None,
         format_settings: Optional["XmlReadSettings"] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         **kwargs
     ):
-        super(XmlSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, **kwargs)
+        super(XmlSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, **kwargs)
         self.type = 'XmlSource'  # type: str
         self.store_settings = store_settings
         self.format_settings = format_settings
@@ -41592,6 +42525,9 @@ class ZohoSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
@@ -41613,6 +42549,7 @@ class ZohoSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'query': {'key': 'query', 'type': 'object'},
@@ -41625,11 +42562,12 @@ class ZohoSource(TabularSource):
         source_retry_count: Optional[object] = None,
         source_retry_wait: Optional[object] = None,
         max_concurrent_connections: Optional[object] = None,
+        disable_metrics_collection: Optional[object] = None,
         query_timeout: Optional[object] = None,
         additional_columns: Optional[List["AdditionalColumns"]] = None,
         query: Optional[object] = None,
         **kwargs
     ):
-        super(ZohoSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
+        super(ZohoSource, self).__init__(additional_properties=additional_properties, source_retry_count=source_retry_count, source_retry_wait=source_retry_wait, max_concurrent_connections=max_concurrent_connections, disable_metrics_collection=disable_metrics_collection, query_timeout=query_timeout, additional_columns=additional_columns, **kwargs)
         self.type = 'ZohoSource'  # type: str
         self.query = query

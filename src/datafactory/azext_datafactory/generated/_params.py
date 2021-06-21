@@ -24,9 +24,12 @@ from azure.cli.core.commands.validators import (
 from azext_datafactory.action import (
     AddFactoryVstsConfiguration,
     AddFactoryGitHubConfiguration,
+    AddIdentity,
+    AddManagedVirtualNetwork,
     AddFolder,
     AddFilters,
-    AddOrderBy
+    AddOrderBy,
+    AddPrivateLinkServiceConnectionState
 )
 
 
@@ -57,12 +60,33 @@ def load_arguments(self, _):
                    'GitHub repo information.', arg_group='RepoConfiguration')
         c.argument('global_parameters', type=validate_file_or_dict, help='List of parameters for factory. Expected '
                    'value: json-string/@json-file.')
+        c.argument('public_network_access', arg_type=get_enum_type(['Enabled', 'Disabled']), help='Whether or not '
+                   'public network access is allowed for the data factory.')
+        c.argument('key_name', type=str, help='The name of the key in Azure Key Vault to use as Customer Managed Key.',
+                   arg_group='Encryption')
+        c.argument('vault_base_url', type=str, help='The url of the Azure Key Vault used for CMK.',
+                   arg_group='Encryption')
+        c.argument('key_version', type=str, help='The version of the key used for CMK. If not provided, latest version '
+                   'will be used.', arg_group='Encryption')
+        c.argument('identity', action=AddIdentity, nargs='+', help='User assigned identity to use to authenticate to '
+                   'customer\'s key vault. If not provided Managed Service Identity will be used.',
+                   arg_group='Encryption')
+        c.argument('type_', options_list=['--type'], arg_type=get_enum_type(['SystemAssigned', 'UserAssigned',
+                                                                             'SystemAssigned,UserAssigned']),
+                   help='The identity type.', arg_group='Identity')
+        c.argument('user_assigned_identities', type=validate_file_or_dict, help='List of user assigned identities for '
+                   'the factory. Expected value: json-string/@json-file.', arg_group='Identity')
 
     with self.argument_context('datafactory update') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', options_list=['--name', '-n', '--factory-name'], type=str, help='The factory name.',
                    id_part='name')
         c.argument('tags', tags_type)
+        c.argument('type_', options_list=['--type'], arg_type=get_enum_type(['SystemAssigned', 'UserAssigned',
+                                                                             'SystemAssigned,UserAssigned']),
+                   help='The identity type.', arg_group='Identity')
+        c.argument('user_assigned_identities', type=validate_file_or_dict, help='List of user assigned identities for '
+                   'the factory. Expected value: json-string/@json-file.', arg_group='Identity')
 
     with self.argument_context('datafactory delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -133,6 +157,8 @@ def load_arguments(self, _):
         c.argument('if_match', type=str, help='ETag of the integration runtime entity. Should only be specified for '
                    'update, for which it should match existing entity or can be * for unconditional update.')
         c.argument('description', type=str, help='Integration runtime description.')
+        c.argument('managed_virtual_network', action=AddManagedVirtualNetwork, nargs='+', help='Managed Virtual '
+                   'Network reference.')
         c.argument('compute_properties', type=validate_file_or_dict, help='The compute resource for managed '
                    'integration runtime. Expected value: json-string/@json-file.', arg_group='Type Properties')
         c.argument('ssis_properties', type=validate_file_or_dict, help='SSIS properties for managed integration '
@@ -386,8 +412,7 @@ def load_arguments(self, _):
     with self.argument_context('datafactory pipeline update') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', type=str, help='The factory name.', id_part='name')
-        c.argument('pipeline_name', options_list=['--name', '-n', '--pipeline-name'], type=str, help='The pipeline '
-                   'name.', id_part='child_name_1')
+        c.argument('pipeline_name', type=str, help='The pipeline name.', id_part='child_name_1')
         c.argument('if_match', type=str, help='ETag of the pipeline entity.  Should only be specified for update, for '
                    'which it should match existing entity or can be * for unconditional update.')
         c.argument('description', type=str, help='The description of the pipeline.')
@@ -404,8 +429,7 @@ def load_arguments(self, _):
                    'json-string/@json-file.')
         c.argument('duration', type=validate_file_or_dict, help='TimeSpan value, after which an Azure Monitoring '
                    'Metric is fired. Expected value: json-string/@json-file.', arg_group='Policy Elapsed Time Metric')
-        c.argument('folder_name', type=str, help='The name of the folder that this Pipeline is in.',
-                   arg_group='Folder')
+        c.argument('name', type=str, help='The name of the folder that this Pipeline is in.', arg_group='Folder')
         c.ignore('pipeline')
 
     with self.argument_context('datafactory pipeline delete') as c:
@@ -578,3 +602,52 @@ def load_arguments(self, _):
         c.argument('factory_name', type=str, help='The factory name.', id_part='name')
         c.argument('trigger_name', type=str, help='The trigger name.', id_part='child_name_1')
         c.argument('run_id', type=str, help='The pipeline run identifier.', id_part='child_name_2')
+
+    with self.argument_context('datafactory private-end-point-connection list') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('factory_name', type=str, help='The factory name.')
+
+    with self.argument_context('datafactory private-endpoint-connection show') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('factory_name', type=str, help='The factory name.', id_part='name')
+        c.argument('private_endpoint_connection_name', options_list=['--name', '-n', '--private-endpoint-connection-nam'
+                                                                     'e'], type=str, help='The private endpoint '
+                   'connection name.', id_part='child_name_1')
+        c.argument('if_none_match', type=str, help='ETag of the private endpoint connection entity. Should only be '
+                   'specified for get. If the ETag matches the existing entity tag, or if * was provided, then no '
+                   'content will be returned.')
+
+    with self.argument_context('datafactory private-endpoint-connection create') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('factory_name', type=str, help='The factory name.')
+        c.argument('private_endpoint_connection_name', options_list=['--name', '-n', '--private-endpoint-connection-nam'
+                                                                     'e'], type=str, help='The private endpoint '
+                   'connection name.')
+        c.argument('if_match', type=str, help='ETag of the private endpoint connection entity.  Should only be '
+                   'specified for update, for which it should match existing entity or can be * for unconditional '
+                   'update.')
+        c.argument('private_link_service_connection_state', action=AddPrivateLinkServiceConnectionState, nargs='+',
+                   help='The state of a private link connection')
+
+    with self.argument_context('datafactory private-endpoint-connection update') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('factory_name', type=str, help='The factory name.', id_part='name')
+        c.argument('private_endpoint_connection_name', options_list=['--name', '-n', '--private-endpoint-connection-nam'
+                                                                     'e'], type=str, help='The private endpoint '
+                   'connection name.', id_part='child_name_1')
+        c.argument('if_match', type=str, help='ETag of the private endpoint connection entity.  Should only be '
+                   'specified for update, for which it should match existing entity or can be * for unconditional '
+                   'update.')
+        c.argument('private_link_service_connection_state', action=AddPrivateLinkServiceConnectionState, nargs='+',
+                   help='The state of a private link connection')
+
+    with self.argument_context('datafactory private-endpoint-connection delete') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('factory_name', type=str, help='The factory name.', id_part='name')
+        c.argument('private_endpoint_connection_name', options_list=['--name', '-n', '--private-endpoint-connection-nam'
+                                                                     'e'], type=str, help='The private endpoint '
+                   'connection name.', id_part='child_name_1')
+
+    with self.argument_context('datafactory private-link-resource show') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('factory_name', type=str, help='The factory name.', id_part='name')

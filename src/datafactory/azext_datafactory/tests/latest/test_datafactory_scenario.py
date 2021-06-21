@@ -174,6 +174,7 @@ class DatafactoryScenarioTest(ScenarioTest):
             'myDataset': self.create_random_name(prefix='exampleDataset'[:7], length=14),
             'myPipeline': self.create_random_name(prefix='examplePipeline'[:7], length=15),
             'myTrigger': self.create_random_name(prefix='exampleTrigger'[:7], length=14),
+            'myPrivateEndPointConnection': 'connection',
         })
 
     @ResourceGroupPreparer(name_prefix='clitestdatafactory_exampleResourceGroup'[:7], key='rg', parameter_name='rg')

@@ -54,3 +54,15 @@ def cf_trigger(cli_ctx, *_):
 
 def cf_trigger_run(cli_ctx, *_):
     return cf_datafactory_cl(cli_ctx).trigger_runs
+
+
+def cf_private_end_point_connection(cli_ctx, *_):
+    return cf_datafactory_cl(cli_ctx).private_end_point_connections
+
+
+def cf_private_endpoint_connection(cli_ctx, *_):
+    return cf_datafactory_cl(cli_ctx).private_endpoint_connection
+
+
+def cf_private_link_resource(cli_ctx, *_):
+    return cf_datafactory_cl(cli_ctx).private_link_resources

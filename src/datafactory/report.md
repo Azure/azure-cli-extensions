@@ -19,6 +19,9 @@
 |az datafactory activity-run|ActivityRuns|[commands](#CommandsInActivityRuns)|
 |az datafactory trigger|Triggers|[commands](#CommandsInTriggers)|
 |az datafactory trigger-run|TriggerRuns|[commands](#CommandsInTriggerRuns)|
+|az datafactory private-end-point-connection|privateEndPointConnections|[commands](#CommandsInprivateEndPointConnections)|
+|az datafactory private-endpoint-connection|PrivateEndpointConnection|[commands](#CommandsInPrivateEndpointConnection)|
+|az datafactory private-link-resource|privateLinkResources|[commands](#CommandsInprivateLinkResources)|
 
 ## COMMANDS
 ### <a name="CommandsInFactories">Commands in `az datafactory` group</a>
@@ -103,6 +106,24 @@
 |[az datafactory pipeline-run cancel](#PipelineRunsCancel)|Cancel|[Parameters](#ParametersPipelineRunsCancel)|[Example](#ExamplesPipelineRunsCancel)|
 |[az datafactory pipeline-run query-by-factory](#PipelineRunsQueryByFactory)|QueryByFactory|[Parameters](#ParametersPipelineRunsQueryByFactory)|[Example](#ExamplesPipelineRunsQueryByFactory)|
 
+### <a name="CommandsInprivateEndPointConnections">Commands in `az datafactory private-end-point-connection` group</a>
+|CLI Command|Operation Swagger name|Parameters|Examples|
+|---------|------------|--------|-----------|
+|[az datafactory private-end-point-connection list](#privateEndPointConnectionsListByFactory)|ListByFactory|[Parameters](#ParametersprivateEndPointConnectionsListByFactory)|[Example](#ExamplesprivateEndPointConnectionsListByFactory)|
+
+### <a name="CommandsInPrivateEndpointConnection">Commands in `az datafactory private-endpoint-connection` group</a>
+|CLI Command|Operation Swagger name|Parameters|Examples|
+|---------|------------|--------|-----------|
+|[az datafactory private-endpoint-connection show](#PrivateEndpointConnectionGet)|Get|[Parameters](#ParametersPrivateEndpointConnectionGet)|[Example](#ExamplesPrivateEndpointConnectionGet)|
+|[az datafactory private-endpoint-connection create](#PrivateEndpointConnectionCreateOrUpdate#Create)|CreateOrUpdate#Create|[Parameters](#ParametersPrivateEndpointConnectionCreateOrUpdate#Create)|[Example](#ExamplesPrivateEndpointConnectionCreateOrUpdate#Create)|
+|[az datafactory private-endpoint-connection update](#PrivateEndpointConnectionCreateOrUpdate#Update)|CreateOrUpdate#Update|[Parameters](#ParametersPrivateEndpointConnectionCreateOrUpdate#Update)|Not Found|
+|[az datafactory private-endpoint-connection delete](#PrivateEndpointConnectionDelete)|Delete|[Parameters](#ParametersPrivateEndpointConnectionDelete)|[Example](#ExamplesPrivateEndpointConnectionDelete)|
+
+### <a name="CommandsInprivateLinkResources">Commands in `az datafactory private-link-resource` group</a>
+|CLI Command|Operation Swagger name|Parameters|Examples|
+|---------|------------|--------|-----------|
+|[az datafactory private-link-resource show](#privateLinkResourcesGet)|Get|[Parameters](#ParametersprivateLinkResourcesGet)|[Example](#ExamplesprivateLinkResourcesGet)|
+
 ### <a name="CommandsInTriggers">Commands in `az datafactory trigger` group</a>
 |CLI Command|Operation Swagger name|Parameters|Examples|
 |---------|------------|--------|-----------|
@@ -179,6 +200,13 @@ az datafactory create --location "East US" --name "exampleFactoryName" --resourc
 |**--factory-vsts-configuration**|object|Factory's VSTS repo information.|factory_vsts_configuration|FactoryVSTSConfiguration|
 |**--factory-git-hub-configuration**|object|Factory's GitHub repo information.|factory_git_hub_configuration|FactoryGitHubConfiguration|
 |**--global-parameters**|dictionary|List of parameters for factory.|global_parameters|globalParameters|
+|**--public-network-access**|choice|Whether or not public network access is allowed for the data factory.|public_network_access|publicNetworkAccess|
+|**--key-name**|string|The name of the key in Azure Key Vault to use as Customer Managed Key.|key_name|keyName|
+|**--vault-base-url**|string|The url of the Azure Key Vault used for CMK.|vault_base_url|vaultBaseUrl|
+|**--key-version**|string|The version of the key used for CMK. If not provided, latest version will be used.|key_version|keyVersion|
+|**--identity**|object|User assigned identity to use to authenticate to customer's key vault. If not provided Managed Service Identity will be used.|identity|identity|
+|**--type**|choice|The identity type.|type|type|
+|**--user-assigned-identities**|dictionary|List of user assigned identities for the factory.|user_assigned_identities|userAssignedIdentities|
 
 #### <a name="FactoriesUpdate">Command `az datafactory update`</a>
 
@@ -193,6 +221,8 @@ az datafactory update --name "exampleFactoryName" --tags exampleTag="exampleValu
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resourceGroupName|
 |**--factory-name**|string|The factory name.|factory_name|factoryName|
 |**--tags**|dictionary|The resource tags.|tags|tags|
+|**--type**|choice|The identity type.|type|type|
+|**--user-assigned-identities**|dictionary|List of user assigned identities for the factory.|user_assigned_identities|userAssignedIdentities|
 
 #### <a name="FactoriesDelete">Command `az datafactory delete`</a>
 
@@ -423,6 +453,7 @@ az datafactory integration-runtime linked-integration-runtime create --name "bfa
 |**--integration-runtime-name**|string|The integration runtime name.|integration_runtime_name|integrationRuntimeName|
 |**--if-match**|string|ETag of the integration runtime entity. Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|If-Match|
 |**--description**|string|Integration runtime description.|managed_description|description|
+|**--managed-virtual-network**|object|Managed Virtual Network reference.|managed_managed_virtual_network|managedVirtualNetwork|
 |**--compute-properties**|object|The compute resource for managed integration runtime.|managed_compute_properties|computeProperties|
 |**--ssis-properties**|object|SSIS properties for managed integration runtime.|managed_ssis_properties|ssisProperties|
 
@@ -823,7 +854,7 @@ et\\"}],\\"outputs\\":[{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{\\"M
 "typeProperties\\":{\\"dataIntegrationUnits\\":32,\\"sink\\":{\\"type\\":\\"BlobSink\\"},\\"source\\":{\\"type\\":\\"Bl\
 obSource\\"}}}],\\"isSequential\\":true,\\"items\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@pipeline().parameters.\
 OutputBlobNameList\\"}}}]" --parameters "{\\"OutputBlobNameList\\":{\\"type\\":\\"Array\\"}}" --duration "0.00:10:00" \
---name "examplePipeline" --resource-group "exampleResourceGroup"
+--pipeline-name "examplePipeline" --resource-group "exampleResourceGroup"
 ```
 ##### <a name="ParametersPipelinesCreateOrUpdate#Update">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -840,7 +871,7 @@ OutputBlobNameList\\"}}}]" --parameters "{\\"OutputBlobNameList\\":{\\"type\\":\
 |**--annotations**|array|List of tags that can be used for describing the Pipeline.|annotations|annotations|
 |**--run-dimensions**|dictionary|Dimensions emitted by Pipeline.|run_dimensions|runDimensions|
 |**--duration**|any|TimeSpan value, after which an Azure Monitoring Metric is fired.|duration|duration|
-|**--folder-name**|string|The name of the folder that this Pipeline is in.|folder_name|name|
+|**--name**|string|The name of the folder that this Pipeline is in.|name|name|
 
 #### <a name="PipelinesDelete">Command `az datafactory pipeline delete`</a>
 
@@ -923,6 +954,91 @@ operator="Equals" values="examplePipeline" --last-updated-after "2018-06-16T00:3
 |**--continuation-token**|string|The continuation token for getting the next page of results. Null for first page.|continuation_token|continuationToken|
 |**--filters**|array|List of filters.|filters|filters|
 |**--order-by**|array|List of OrderBy option.|order_by|orderBy|
+
+### group `az datafactory private-end-point-connection`
+#### <a name="privateEndPointConnectionsListByFactory">Command `az datafactory private-end-point-connection list`</a>
+
+##### <a name="ExamplesprivateEndPointConnectionsListByFactory">Example</a>
+```
+az datafactory private-end-point-connection list --factory-name "exampleFactoryName" --resource-group \
+"exampleResourceGroup"
+```
+##### <a name="ParametersprivateEndPointConnectionsListByFactory">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The resource group name.|resource_group_name|resourceGroupName|
+|**--factory-name**|string|The factory name.|factory_name|factoryName|
+
+### group `az datafactory private-endpoint-connection`
+#### <a name="PrivateEndpointConnectionGet">Command `az datafactory private-endpoint-connection show`</a>
+
+##### <a name="ExamplesPrivateEndpointConnectionGet">Example</a>
+```
+az datafactory private-endpoint-connection show --factory-name "exampleFactoryName" --name "connection" \
+--resource-group "exampleResourceGroup"
+```
+##### <a name="ParametersPrivateEndpointConnectionGet">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The resource group name.|resource_group_name|resourceGroupName|
+|**--factory-name**|string|The factory name.|factory_name|factoryName|
+|**--private-endpoint-connection-name**|string|The private endpoint connection name.|private_endpoint_connection_name|privateEndpointConnectionName|
+|**--if-none-match**|string|ETag of the private endpoint connection entity. Should only be specified for get. If the ETag matches the existing entity tag, or if * was provided, then no content will be returned.|if_none_match|If-None-Match|
+
+#### <a name="PrivateEndpointConnectionCreateOrUpdate#Create">Command `az datafactory private-endpoint-connection create`</a>
+
+##### <a name="ExamplesPrivateEndpointConnectionCreateOrUpdate#Create">Example</a>
+```
+az datafactory private-endpoint-connection create --factory-name "exampleFactoryName" --name "connection" \
+--private-link-service-connection-state description="Approved by admin." actions-required="" status="Approved" \
+--resource-group "exampleResourceGroup"
+```
+##### <a name="ParametersPrivateEndpointConnectionCreateOrUpdate#Create">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The resource group name.|resource_group_name|resourceGroupName|
+|**--factory-name**|string|The factory name.|factory_name|factoryName|
+|**--private-endpoint-connection-name**|string|The private endpoint connection name.|private_endpoint_connection_name|privateEndpointConnectionName|
+|**--if-match**|string|ETag of the private endpoint connection entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|If-Match|
+|**--private-link-service-connection-state**|object|The state of a private link connection|private_link_service_connection_state|privateLinkServiceConnectionState|
+
+#### <a name="PrivateEndpointConnectionCreateOrUpdate#Update">Command `az datafactory private-endpoint-connection update`</a>
+
+##### <a name="ParametersPrivateEndpointConnectionCreateOrUpdate#Update">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The resource group name.|resource_group_name|resourceGroupName|
+|**--factory-name**|string|The factory name.|factory_name|factoryName|
+|**--private-endpoint-connection-name**|string|The private endpoint connection name.|private_endpoint_connection_name|privateEndpointConnectionName|
+|**--if-match**|string|ETag of the private endpoint connection entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|If-Match|
+|**--private-link-service-connection-state**|object|The state of a private link connection|private_link_service_connection_state|privateLinkServiceConnectionState|
+
+#### <a name="PrivateEndpointConnectionDelete">Command `az datafactory private-endpoint-connection delete`</a>
+
+##### <a name="ExamplesPrivateEndpointConnectionDelete">Example</a>
+```
+az datafactory private-endpoint-connection delete --factory-name "exampleFactoryName" --name "connection" \
+--resource-group "exampleResourceGroup"
+```
+##### <a name="ParametersPrivateEndpointConnectionDelete">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The resource group name.|resource_group_name|resourceGroupName|
+|**--factory-name**|string|The factory name.|factory_name|factoryName|
+|**--private-endpoint-connection-name**|string|The private endpoint connection name.|private_endpoint_connection_name|privateEndpointConnectionName|
+
+### group `az datafactory private-link-resource`
+#### <a name="privateLinkResourcesGet">Command `az datafactory private-link-resource show`</a>
+
+##### <a name="ExamplesprivateLinkResourcesGet">Example</a>
+```
+az datafactory private-link-resource show --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
+```
+##### <a name="ParametersprivateLinkResourcesGet">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The resource group name.|resource_group_name|resourceGroupName|
+|**--factory-name**|string|The factory name.|factory_name|factoryName|
 
 ### group `az datafactory trigger`
 #### <a name="TriggersListByFactory">Command `az datafactory trigger list`</a>

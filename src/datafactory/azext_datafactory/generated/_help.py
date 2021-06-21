@@ -69,6 +69,14 @@ collaboration-branch=XX root-folder=XX last-commit-id=XX
             collaboration-branch: Required. Collaboration branch.
             root-folder: Required. Root folder.
             last-commit-id: Last commit id.
+      - name: --identity
+        short-summary: "User assigned identity to use to authenticate to customer's key vault. If not provided Managed \
+Service Identity will be used."
+        long-summary: |
+            Usage: --identity user-assigned-identity=XX
+
+            user-assigned-identity: The resource id of the user assigned identity to authenticate to customer's key \
+vault.
     examples:
       - name: Factories_CreateOrUpdate
         text: |-
@@ -206,6 +214,13 @@ helps['datafactory integration-runtime managed'] = """
 helps['datafactory integration-runtime managed create'] = """
     type: command
     short-summary: "Create an integration runtime."
+    parameters:
+      - name: --managed-virtual-network
+        short-summary: "Managed Virtual Network reference."
+        long-summary: |
+            Usage: --managed-virtual-network reference-name=XX
+
+            reference-name: Required. Reference ManagedVirtualNetwork name.
 """
 
 helps['datafactory integration-runtime self-hosted'] = """
@@ -591,7 +606,7 @@ eters\\":{\\"MyFileName\\":\\"examplecontainer.csv\\",\\"MyFolderPath\\":\\"exam
 taset\\"}],\\"typeProperties\\":{\\"dataIntegrationUnits\\":32,\\"sink\\":{\\"type\\":\\"BlobSink\\"},\\"source\\":{\\"\
 type\\":\\"BlobSource\\"}}}],\\"isSequential\\":true,\\"items\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@pipeline(\
 ).parameters.OutputBlobNameList\\"}}}]" --parameters "{\\"OutputBlobNameList\\":{\\"type\\":\\"Array\\"}}" --duration \
-"0.00:10:00" --name "examplePipeline" --resource-group "exampleResourceGroup"
+"0.00:10:00" --pipeline-name "examplePipeline" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory pipeline delete'] = """
@@ -901,4 +916,93 @@ helps['datafactory trigger-run rerun'] = """
         text: |-
                az datafactory trigger-run rerun --factory-name "exampleFactoryName" --resource-group \
 "exampleResourceGroup" --run-id "2f7fdb90-5df1-4b8e-ac2f-064cfa58202b" --trigger-name "exampleTrigger"
+"""
+
+helps['datafactory private-end-point-connection'] = """
+    type: group
+    short-summary: Manage private end point connection with datafactory
+"""
+
+helps['datafactory private-end-point-connection list'] = """
+    type: command
+    short-summary: "Lists Private endpoint connections."
+    examples:
+      - name: privateEndPointConnections_ListByFactory
+        text: |-
+               az datafactory private-end-point-connection list --factory-name "exampleFactoryName" --resource-group \
+"exampleResourceGroup"
+"""
+
+helps['datafactory private-endpoint-connection'] = """
+    type: group
+    short-summary: Manage private endpoint connection with datafactory
+"""
+
+helps['datafactory private-endpoint-connection show'] = """
+    type: command
+    short-summary: "Gets a private endpoint connection."
+    examples:
+      - name: Get a private endpoint connection for a datafactory.
+        text: |-
+               az datafactory private-endpoint-connection show --factory-name "exampleFactoryName" --name "connection" \
+--resource-group "exampleResourceGroup"
+"""
+
+helps['datafactory private-endpoint-connection create'] = """
+    type: command
+    short-summary: "Approves or rejects a private endpoint connection."
+    parameters:
+      - name: --private-link-service-connection-state
+        short-summary: "The state of a private link connection"
+        long-summary: |
+            Usage: --private-link-service-connection-state status=XX description=XX actions-required=XX
+
+            status: Status of a private link connection
+            description: Description of a private link connection
+            actions-required: ActionsRequired for a private link connection
+    examples:
+      - name: Approves or rejects a private endpoint connection for a factory.
+        text: |-
+               az datafactory private-endpoint-connection create --factory-name "exampleFactoryName" --name \
+"connection" --private-link-service-connection-state description="Approved by admin." actions-required="" \
+status="Approved" --resource-group "exampleResourceGroup"
+"""
+
+helps['datafactory private-endpoint-connection update'] = """
+    type: command
+    short-summary: "Approves or rejects a private endpoint connection."
+    parameters:
+      - name: --private-link-service-connection-state
+        short-summary: "The state of a private link connection"
+        long-summary: |
+            Usage: --private-link-service-connection-state status=XX description=XX actions-required=XX
+
+            status: Status of a private link connection
+            description: Description of a private link connection
+            actions-required: ActionsRequired for a private link connection
+"""
+
+helps['datafactory private-endpoint-connection delete'] = """
+    type: command
+    short-summary: "Deletes a private endpoint connection."
+    examples:
+      - name: Delete a private endpoint connection for a datafactory.
+        text: |-
+               az datafactory private-endpoint-connection delete --factory-name "exampleFactoryName" --name \
+"connection" --resource-group "exampleResourceGroup"
+"""
+
+helps['datafactory private-link-resource'] = """
+    type: group
+    short-summary: Manage private link resource with datafactory
+"""
+
+helps['datafactory private-link-resource show'] = """
+    type: command
+    short-summary: "Gets the private link resources."
+    examples:
+      - name: Get private link resources of a site
+        text: |-
+               az datafactory private-link-resource show --factory-name "exampleFactoryName" --resource-group \
+"exampleResourceGroup"
 """
