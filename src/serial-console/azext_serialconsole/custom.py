@@ -3,8 +3,6 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# from knack.util import CLIError
-# from requests.api import get
 import json
 import threading
 import sys
