@@ -27,6 +27,15 @@ az cosmosdb create \
     --backup-policy-type "Continuous"
 ```
 
+#### Convert a periodic backup policy CosmosDB account to continuous backup Account ####
+
+```sh
+az cosmosdb update \
+    --resource-group "my-rg" \
+    --name "my-continuous-backup-account" \
+    --backup-policy-type "Continuous"
+```
+
 #### List all the CosmosDB accounts that can be restored (live and deleted) ####
 
 This command returns all the continuous mode backup accounts that can be restored.
