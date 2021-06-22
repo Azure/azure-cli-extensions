@@ -5,7 +5,7 @@ trigger: none
 pr:
   branches:
     include:
-    - master
+    - main
   paths:
     include:
     - src/aks-preview/
@@ -13,7 +13,7 @@ pr:
 jobs:
 - job: UnitTest
   pool:
-    vmImage: 'ubuntu-16.04'
+    vmImage: 'ubuntu-latest'
   timeoutInMinutes: 360
   displayName: "Unit Test with Python"
   steps:
