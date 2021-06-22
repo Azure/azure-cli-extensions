@@ -117,7 +117,7 @@ def confluent_offer_detail_show(cmd, publisher_id=None, offer_id=None):
                       'termDescription': item['termDescription'],
                       'termUnits': item['termUnits']
                   } for a in plan['availabilities'] for item in a['terms']]
-                } for plan in plans]
+                 } for plan in plans]
     except KeyError as ex:
         raise ArgumentUsageError('Not able to get offer details for the provided publisher id and offer id.') from ex
 
