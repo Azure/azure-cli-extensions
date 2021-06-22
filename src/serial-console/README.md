@@ -2,13 +2,13 @@
 This is a extension for Serial Console Connections
 
 ### How to use ###
-Install this extension using the below CLI command
+Install this extension using the CLI command below
 ```
 az extension add --name serial-console
 ```
 
 ### Included Features ###
-#### Connect to text-based Serial Console VM or VMSS Instance ####
+#### Connect to the text-based Serial Console of a VM or VMSS Instance ####
 ```
 az serial-console connect -n MyVM -g MyResourceGroup
 ```
