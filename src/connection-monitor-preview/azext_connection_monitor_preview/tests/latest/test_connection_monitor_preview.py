@@ -2,7 +2,6 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-import unittest
 from knack.util import CLIError
 
 from azure_devtools.scenario_tests import AllowLargeResponse
@@ -14,6 +13,9 @@ class ConnectionMonitorPreviewScenarioTest(ScenarioTest):
     def _prepare_vm(self, resource_group, vm):
         vm_create_cmd_tpl = 'vm create -g {rg} --name {vm} ' \
                             '--image UbuntuLTS ' \
+                            '--authentication-type password ' \
+                            '--admin-username deploy ' \
+                            '--admin-password PassPass10!) ' \
                             '--nsg {vm} '
         vm_info = self.cmd(vm_create_cmd_tpl.format(rg=resource_group, vm=vm)).get_output_in_json()
 
@@ -53,7 +55,7 @@ class ConnectionMonitorPreviewScenarioTest(ScenarioTest):
                  '--protocol Tcp '
                  '--tcp-port 2048 ')
 
-    @ResourceGroupPreparer(name_prefix='cli_test_nw_connection_monitor', location='eastus')
+    @ResourceGroupPreparer(name_prefix='cli_test_nw_connection_monitor', location='westcentralus')
     @AllowLargeResponse()
     def test_nw_connection_monitor_v1(self, resource_group, resource_group_location):
         """
@@ -71,6 +73,9 @@ class ConnectionMonitorPreviewScenarioTest(ScenarioTest):
 
         self.cmd('vm create -g {rg} -n {vm2} '
                  '--image UbuntuLTS '
+                 '--authentication-type password '
+                 '--admin-username deploy '
+                 '--admin-password PassPass10!) '
                  '--nsg {vm2} ')
         self.cmd('vm extension set -g {rg} '
                  '--vm-name {vm2} '
@@ -78,6 +83,9 @@ class ConnectionMonitorPreviewScenarioTest(ScenarioTest):
                  '--publisher Microsoft.Azure.NetworkWatcher')
         self.cmd('vm create -g {rg} -n {vm3} '
                  '--image UbuntuLTS '
+                 '--authentication-type password '
+                 '--admin-username deploy '
+                 '--admin-password PassPass10!) '
                  '--nsg {vm3}')
         self.cmd('vm extension set -g {rg} '
                  '--vm-name {vm3} '
@@ -101,7 +109,7 @@ class ConnectionMonitorPreviewScenarioTest(ScenarioTest):
         self.cmd('network watcher connection-monitor query -l {loc} -n {cm}')
         self.cmd('network watcher connection-monitor delete -l {loc} -n {cm}')
 
-    @ResourceGroupPreparer(name_prefix='connection_monitor_v2_test_', location='eastus')
+    @ResourceGroupPreparer(name_prefix='connection_monitor_v2_test_', location='westcentralus')
     @AllowLargeResponse()
     def test_nw_connection_monitor_v2_creation(self, resource_group, resource_group_location):
         # create a V2 connection monitor with --location and TCP configuration
@@ -121,7 +129,7 @@ class ConnectionMonitorPreviewScenarioTest(ScenarioTest):
         self.cmd('network watcher connection-monitor show -l {location} -n {cmv2}')
         self.cmd('network watcher connection-monitor show -l {location} -n cmv2-01')
 
-    @ResourceGroupPreparer(name_prefix='connection_monitor_v2_test_', location='eastus')
+    @ResourceGroupPreparer(name_prefix='connection_monitor_v2_test_', location='westcentralus')
     @AllowLargeResponse()
     def test_nw_connection_monitor_v2_endpoint(self, resource_group, resource_group_location):
         self._prepare_connection_monitor_v2_env(resource_group, resource_group_location)
@@ -161,7 +169,7 @@ class ConnectionMonitorPreviewScenarioTest(ScenarioTest):
         self.cmd('network watcher connection-monitor endpoint list --connection-monitor {cmv2} --location {location}',
                  checks=self.check('length(@)', 3))
 
-    @ResourceGroupPreparer(name_prefix='connection_monitor_v2_test_', location='eastus')
+    @ResourceGroupPreparer(name_prefix='connection_monitor_v2_test_', location='westcentralus')
     @AllowLargeResponse()
     def test_nw_connection_monitor_v2_test_configuration(self, resource_group, resource_group_location):
         self._prepare_connection_monitor_v2_env(resource_group, resource_group_location)
@@ -213,7 +221,7 @@ class ConnectionMonitorPreviewScenarioTest(ScenarioTest):
                  '--location {location} ',
                  checks=self.check('length(@)', 2))
 
-    @ResourceGroupPreparer(name_prefix='connection_monitor_v2_test_', location='eastus')
+    @ResourceGroupPreparer(name_prefix='connection_monitor_v2_test_', location='westcentralus')
     @AllowLargeResponse()
     def test_connection_monitor_v2_test_group(self, resource_group, resource_group_location):
         self._prepare_connection_monitor_v2_env(resource_group, resource_group_location)
