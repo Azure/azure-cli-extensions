@@ -9,10 +9,19 @@
 ### <a name="CommandGroups">Command groups in `az monitor-control-service` extension </a>
 |CLI Command Group|Group Swagger name|Commands|
 |---------|------------|--------|
-|az monitor data-collection rule association|DataCollectionRuleAssociations|[commands](#CommandsInDataCollectionRuleAssociations)|
+|az monitor data-collection endpoint|DataCollectionEndpoints|[commands](#CommandsInDataCollectionEndpoints)|
 |az monitor data-collection rule|DataCollectionRules|[commands](#CommandsInDataCollectionRules)|
+|az monitor data-collection rule association|DataCollectionRuleAssociations|[commands](#CommandsInDataCollectionRuleAssociations)|
 
 ## COMMANDS
+### <a name="CommandsInDataCollectionEndpoints">Commands in `az monitor data-collection endpoint` group</a>
+|CLI Command|Operation Swagger name|Parameters|Examples|
+|---------|------------|--------|-----------|
+|[az monitor data-collection endpoint list](#DataCollectionEndpointsListByResourceGroup)|ListByResourceGroup|[Parameters](#ParametersDataCollectionEndpointsListByResourceGroup)|[Example](#ExamplesDataCollectionEndpointsListByResourceGroup)|
+|[az monitor data-collection endpoint list](#DataCollectionEndpointsListBySubscription)|ListBySubscription|[Parameters](#ParametersDataCollectionEndpointsListBySubscription)|[Example](#ExamplesDataCollectionEndpointsListBySubscription)|
+|[az monitor data-collection endpoint show](#DataCollectionEndpointsGet)|Get|[Parameters](#ParametersDataCollectionEndpointsGet)|[Example](#ExamplesDataCollectionEndpointsGet)|
+|[az monitor data-collection endpoint delete](#DataCollectionEndpointsDelete)|Delete|[Parameters](#ParametersDataCollectionEndpointsDelete)|[Example](#ExamplesDataCollectionEndpointsDelete)|
+
 ### <a name="CommandsInDataCollectionRules">Commands in `az monitor data-collection rule` group</a>
 |CLI Command|Operation Swagger name|Parameters|Examples|
 |---------|------------|--------|-----------|
@@ -31,6 +40,51 @@
 
 
 ## COMMAND DETAILS
+### group `az monitor data-collection endpoint`
+#### <a name="DataCollectionEndpointsListByResourceGroup">Command `az monitor data-collection endpoint list`</a>
+
+##### <a name="ExamplesDataCollectionEndpointsListByResourceGroup">Example</a>
+```
+az monitor data-collection endpoint list --resource-group "myResourceGroup"
+```
+##### <a name="ParametersDataCollectionEndpointsListByResourceGroup">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
+
+#### <a name="DataCollectionEndpointsListBySubscription">Command `az monitor data-collection endpoint list`</a>
+
+##### <a name="ExamplesDataCollectionEndpointsListBySubscription">Example</a>
+```
+az monitor data-collection endpoint list
+```
+##### <a name="ParametersDataCollectionEndpointsListBySubscription">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+
+#### <a name="DataCollectionEndpointsGet">Command `az monitor data-collection endpoint show`</a>
+
+##### <a name="ExamplesDataCollectionEndpointsGet">Example</a>
+```
+az monitor data-collection endpoint show --name "myCollectionEndpoint" --resource-group "myResourceGroup"
+```
+##### <a name="ParametersDataCollectionEndpointsGet">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
+|**--data-collection-endpoint-name**|string|The name of the data collection endpoint. The name is case insensitive.|data_collection_endpoint_name|dataCollectionEndpointName|
+
+#### <a name="DataCollectionEndpointsDelete">Command `az monitor data-collection endpoint delete`</a>
+
+##### <a name="ExamplesDataCollectionEndpointsDelete">Example</a>
+```
+az monitor data-collection endpoint delete --name "myCollectionEndpoint" --resource-group "myResourceGroup"
+```
+##### <a name="ParametersDataCollectionEndpointsDelete">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
+|**--data-collection-endpoint-name**|string|The name of the data collection endpoint. The name is case insensitive.|data_collection_endpoint_name|dataCollectionEndpointName|
 
 ### group `az monitor data-collection rule`
 #### <a name="DataCollectionRulesListByResourceGroup">Command `az monitor data-collection rule list`</a>
@@ -53,6 +107,7 @@ az monitor data-collection rule list
 ##### <a name="ParametersDataCollectionRulesListBySubscription">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
+
 #### <a name="DataCollectionRulesGet">Command `az monitor data-collection rule show`</a>
 
 ##### <a name="ExamplesDataCollectionRulesGet">Example</a>
@@ -113,7 +168,7 @@ az monitor data-collection rule association show --name "myAssociation" --resour
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
 |**--resource-uri**|string|The identifier of the resource.|resource_uri|resourceUri|
-|**--association-name**|string|The name of the association.|association_name|associationName|
+|**--association-name**|string|The name of the association. The name is case insensitive.|association_name|associationName|
 
 #### <a name="DataCollectionRuleAssociationsDelete">Command `az monitor data-collection rule association delete`</a>
 
@@ -126,4 +181,4 @@ az monitor data-collection rule association delete --name "myAssociation" --reso
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
 |**--resource-uri**|string|The identifier of the resource.|resource_uri|resourceUri|
-|**--association-name**|string|The name of the association.|association_name|associationName|
+|**--association-name**|string|The name of the association. The name is case insensitive.|association_name|associationName|

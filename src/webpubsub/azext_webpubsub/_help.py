@@ -32,6 +32,36 @@ helps['webpubsub network-rule'] = """
     short-summary: Commands to manage Webpubsub network rules.
 """
 
+helps['webpubsub client'] = """
+    type: group
+    short-summary: Commands to manage client connections.
+"""
+
+helps['webpubsub service'] = """
+    type: group
+    short-summary: Commands to manage Webpubsub service.
+"""
+
+helps['webpubsub service connection'] = """
+    type: group
+    short-summary: Commands to manage Webpubsub service connections.
+"""
+
+helps['webpubsub service user'] = """
+    type: group
+    short-summary: Commands to manage Webpubsub service users.
+"""
+
+helps['webpubsub service group'] = """
+    type: group
+    short-summary: Commands to manage Webpubsub service groups.
+"""
+
+helps['webpubsub service permission'] = """
+    type: group
+    short-summary: Commands to manage Webpubsub service permissions.
+"""
+
 helps['webpubsub create'] = """
     type: command
     short-summary: Create a Webpubsub.
@@ -152,4 +182,83 @@ helps['webpubsub event-handler hub update'] = """
       - name: Update two event handler settings in a hub
         text: >
             az webpubsub event-handler hub update -n MyWebPubSub -g MyResourceGroup --hub-name MyHub --template url-template='http://host.com user-event-pattern="MyEvent" --template url-template="http://host2.com" system-event-pattern="connect"'
+"""
+
+helps['webpubsub client start'] = """
+    type: command
+    short-summary: Start a interactive client connection.
+"""
+
+helps['webpubsub service broadcast'] = """
+    type: command
+    short-summary: Broadcast messages to hub.
+    examples:
+      - name: Send a message to hub
+        text: >
+            az webpubsub service broadcast -n MyWebPubSub -g MyResourceGroup --hub-name MyHub --payload MyPayload
+"""
+
+helps['webpubsub service connection exist'] = """
+    type: command
+    short-summary: Check whether client connection exists
+"""
+
+helps['webpubsub service connection close'] = """
+    type: command
+    short-summary: Close a specific client connection
+"""
+
+helps['webpubsub service connection send'] = """
+    type: command
+    short-summary: Send a message to connection
+"""
+
+helps['webpubsub service group add-connection'] = """
+    type: command
+    short-summary: Add a connection to group
+"""
+
+helps['webpubsub service group remove-connection'] = """
+    type: command
+    short-summary: Remove a connection from group
+"""
+
+helps['webpubsub service group add-user'] = """
+    type: command
+    short-summary: Add a user to group
+"""
+
+helps['webpubsub service group remove-user'] = """
+    type: command
+    short-summary: Remove a user from group
+"""
+
+helps['webpubsub service group send'] = """
+    type: command
+    short-summary: Send a message to group
+"""
+
+helps['webpubsub service user send'] = """
+    type: command
+    short-summary: Send a message to user
+"""
+
+helps['webpubsub service user exist'] = """
+    type: command
+    short-summary: Check if there are any client connections connected for the given user
+"""
+
+helps['webpubsub service permission grant'] = """
+    type: command
+    short-summary: Grant a group permission to the connection.
+"""
+
+helps['webpubsub service permission revoke'] = """
+    type: command
+    short-summary: Revoke a group permission from the connection.
+"""
+
+helps['webpubsub service permission check'] = """
+    type: command
+    short-summary: Check if a connection has permission to the specified group
 """

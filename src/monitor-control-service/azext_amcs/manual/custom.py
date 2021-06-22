@@ -5,6 +5,52 @@
 # --------------------------------------------------------------------------------------------
 
 
+def data_collection_endpoint_create(client,
+                                    resource_group_name,
+                                    data_collection_endpoint_name,
+                                    location,
+                                    public_network_access,
+                                    tags=None,
+                                    kind=None,
+                                    description=None):
+    body = {}
+    body['location'] = location
+    body['tags'] = tags
+    body['kind'] = kind
+    body['description'] = description
+    body['network_acls'] = {}
+    body['network_acls']['public_network_access'] = public_network_access
+    return client.create(resource_group_name=resource_group_name,
+                         data_collection_endpoint_name=data_collection_endpoint_name,
+                         body=body)
+
+
+def data_collection_endpoint_update(client,
+                                    resource_group_name,
+                                    data_collection_endpoint_name,
+                                    tags=None,
+                                    kind=None,
+                                    description=None,
+                                    public_network_access=None):
+    from ..custom import monitor_data_collection_endpoint_show
+    instance = monitor_data_collection_endpoint_show(client, resource_group_name=resource_group_name,
+                                                     data_collection_endpoint_name=data_collection_endpoint_name)
+    body = instance.as_dict(keep_readonly=False)
+
+    if description is not None:
+        body['description'] = description
+    if tags is not None:
+        body['tags'] = tags
+    if kind is not None:
+        body['kind'] = kind
+    if public_network_access is not None:
+        body['network_acls'] = {}
+        body['network_acls']['public_network_access'] = public_network_access
+    return client.create(resource_group_name=resource_group_name,
+                         data_collection_endpoint_name=data_collection_endpoint_name,
+                         body=body)
+
+
 def data_collection_rule_associations_create(client,
                                              resource_uri,
                                              association_name,
@@ -296,7 +342,6 @@ def data_collection_rules_performance_counters_add(client,
                                                    data_collection_rule_name,
                                                    name,
                                                    streams,
-                                                   scheduled_transfer_period,
                                                    sampling_frequency_in_seconds,
                                                    counter_specifiers):
     from ..custom import monitor_data_collection_rule_show
@@ -316,7 +361,6 @@ def data_collection_rules_performance_counters_add(client,
     item = {
         'name': name,
         'streams': streams,
-        'scheduled_transfer_period': scheduled_transfer_period,
         'sampling_frequency_in_seconds': sampling_frequency_in_seconds,
         'counter_specifiers': counter_specifiers
     }
@@ -356,7 +400,6 @@ def data_collection_rules_performance_counters_update(client,
                                                       data_collection_rule_name,
                                                       name,
                                                       streams=None,
-                                                      scheduled_transfer_period=None,
                                                       sampling_frequency_in_seconds=None,
                                                       counter_specifiers=None):
     from ..custom import monitor_data_collection_rule_show
@@ -372,8 +415,6 @@ def data_collection_rules_performance_counters_update(client,
         if item['name'] == name:
             if streams is not None:
                 item['streams'] = streams
-            if scheduled_transfer_period is not None:
-                item['scheduled_transfer_period'] = scheduled_transfer_period
             if sampling_frequency_in_seconds is not None:
                 item['sampling_frequency_in_seconds'] = sampling_frequency_in_seconds
             if counter_specifiers is not None:
@@ -412,7 +453,6 @@ def data_collection_rules_windows_event_logs_add(client,
                                                  data_collection_rule_name,
                                                  name,
                                                  streams,
-                                                 scheduled_transfer_period,
                                                  x_path_queries):
     from ..custom import monitor_data_collection_rule_show
     instance = monitor_data_collection_rule_show(client, resource_group_name, data_collection_rule_name)
@@ -431,7 +471,6 @@ def data_collection_rules_windows_event_logs_add(client,
     item = {
         'name': name,
         'streams': streams,
-        'scheduled_transfer_period': scheduled_transfer_period,
         'x_path_queries': x_path_queries
     }
 
@@ -470,7 +509,6 @@ def data_collection_rules_windows_event_logs_update(client,
                                                     data_collection_rule_name,
                                                     name,
                                                     streams=None,
-                                                    scheduled_transfer_period=None,
                                                     x_path_queries=None):
     from ..custom import monitor_data_collection_rule_show
     instance = monitor_data_collection_rule_show(client, resource_group_name, data_collection_rule_name)
@@ -485,8 +523,6 @@ def data_collection_rules_windows_event_logs_update(client,
         if item['name'] == name:
             if streams is not None:
                 item['streams'] = streams
-            if scheduled_transfer_period is not None:
-                item['scheduled_transfer_period'] = scheduled_transfer_period
             if x_path_queries is not None:
                 item['x_path_queries'] = x_path_queries
             break

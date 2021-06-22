@@ -102,8 +102,8 @@ def _generate_submit_args(program_args, ws, target, token, project, job_name, sh
     args.append("--aad-token")
     args.append(token)
 
-    args.append("--base-uri")
-    args.append(base_url(ws.location))
+    args.append("--location")
+    args.append(ws.location)
 
     args.extend(program_args)
 
@@ -111,6 +111,18 @@ def _generate_submit_args(program_args, ws, target, token, project, job_name, sh
     logger.debug(args)
 
     return args
+
+
+def _set_cli_version():
+    # This is a temporary approach for runtime compatibility between a runtime version
+    # before support for the --user-agent parameter is added. We'll rely on the environment
+    # variable before the stand alone executable submits to the service.
+    try:
+        import os
+        from .._client_factory import get_appid
+        os.environ["USER_AGENT"] = get_appid()
+    except:
+        logger.warning("User Agent environment variable could not be set.")
 
 
 def submit(cmd, program_args, resource_group_name=None, workspace_name=None, location=None,
@@ -132,6 +144,7 @@ def submit(cmd, program_args, resource_group_name=None, workspace_name=None, loc
     token = _get_data_credentials(cmd.cli_ctx, ws.subscription).get_token().token
 
     args = _generate_submit_args(program_args, ws, target, token, project, job_name, shots, storage)
+    _set_cli_version()
 
     import subprocess
     result = subprocess.run(args, stdout=subprocess.PIPE, check=False)

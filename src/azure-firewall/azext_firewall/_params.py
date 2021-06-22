@@ -27,10 +27,10 @@ def load_arguments(self, _):
 
     (AzureFirewallNetworkRuleProtocol, AzureFirewallRCActionType,
      AzureFirewallNatRCActionType, FirewallPolicySkuTier, FirewallPolicyIntrusionDetectionStateType,
-     FirewallPolicyIntrusionDetectionProtocol) = \
+     FirewallPolicyIntrusionDetectionProtocol, AzureFirewallSkuTier) = \
         self.get_models('AzureFirewallNetworkRuleProtocol', 'AzureFirewallRCActionType',
                         'AzureFirewallNatRCActionType', 'FirewallPolicySkuTier', 'FirewallPolicyIntrusionDetectionStateType',
-                        'FirewallPolicyIntrusionDetectionProtocol')
+                        'FirewallPolicyIntrusionDetectionProtocol', 'AzureFirewallSkuTier')
 
     firewall_name_type = CLIArgumentType(options_list=['--firewall-name', '-f'], metavar='NAME', help='Azure Firewall name.', id_part='name', completer=get_resource_name_completion_list('Microsoft.Network/azureFirewalls'))
     collection_name_type = CLIArgumentType(options_list=['--collection-name', '-c'], help='Name of the rule collection.', id_part='child_name_1')
@@ -58,6 +58,7 @@ def load_arguments(self, _):
         c.argument('virtual_hub', options_list=['--virtual-hub', '--vhub'],
                    help='Name or ID of the virtualHub to which the firewall belongs.',
                    validator=validate_virtual_hub)
+        c.argument('tier', arg_type=get_enum_type(AzureFirewallSkuTier, AzureFirewallSkuTier.standard), help='Tier of an azure firewall. --tier will take effect only when --sku is set')
         c.argument('sku', arg_type=get_enum_type(['AZFW_VNet', 'AZFW_Hub']), help='SKU of Azure firewall. This field cannot be updated after the creation. '
                                                                                   'The default sku in server end is AZFW_VNet. '
                                                                                   'If you want to attach azure firewall to vhub, you should set sku to AZFW_Hub.')
