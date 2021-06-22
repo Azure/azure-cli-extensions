@@ -92,14 +92,23 @@ def datadog_monitor_create(cmd,
 def datadog_monitor_update(client,
                            resource_group_name,
                            monitor_name,
-                           tags=None):
+                           tags=None,
+                           monitoring_status=None,
+                           sku_name=None,
+                           no_wait=False):
     body = {}
     body['tags'] = tags
-    body['properties'] = {}
-    body['properties']['monitoring_status'] = "Enabled"
-    return client.update(resource_group_name=resource_group_name,
-                         monitor_name=monitor_name,
-                         body=body)
+    if monitoring_status is not None:
+        body['properties'] = {}
+        body['properties']['monitoring_status'] = monitoring_status
+    if sku_name is not None:
+        body['sku'] = {}
+        body['sku']['name'] = sku_name
+    return sdk_no_wait(no_wait,
+                       client.begin_update,
+                       resource_group_name=resource_group_name,
+                       monitor_name=monitor_name,
+                       body=body)
 
 
 def datadog_monitor_delete(cmd,

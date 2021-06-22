@@ -11,15 +11,19 @@ import yaml   # pylint: disable=import-error
 from time import sleep
 from ._stream_utils import stream_logs
 from msrestazure.azure_exceptions import CloudError
+from azure.core.exceptions import ResourceNotFoundError
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
 from ._utils import _get_upload_local_file, _get_persistent_disk_size, get_portal_uri, get_azure_files_info
 from knack.util import CLIError
 from .vendored_sdks.appplatform.v2020_07_01 import models
 from .vendored_sdks.appplatform.v2020_11_01_preview import models as models_20201101preview
 from .vendored_sdks.appplatform.v2020_07_01.models import _app_platform_management_client_enums as AppPlatformEnums
-from .vendored_sdks.appplatform.v2020_11_01_preview import AppPlatformManagementClient as AppPlatformManagementClient_20201101preview
+from .vendored_sdks.appplatform.v2020_11_01_preview import (
+    AppPlatformManagementClient as AppPlatformManagementClient_20201101preview
+)
 from knack.log import get_logger
 from .azure_storage_file import FileService
+from azure.cli.core.azclierror import InvalidArgumentValueError
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.util import sdk_no_wait
 from azure.cli.core.profiles import ResourceType, get_sdk
@@ -32,6 +36,8 @@ from six.moves.urllib import parse
 from threading import Thread
 from threading import Timer
 import sys
+import json
+from collections import defaultdict
 
 logger = get_logger(__name__)
 DEFAULT_DEPLOYMENT_NAME = "default"
@@ -530,7 +536,8 @@ def app_get_build_log(cmd, client, resource_group, service, name, deployment=Non
     return stream_logs(client.deployments, resource_group, service, name, deployment)
 
 
-def app_tail_log(cmd, client, resource_group, service, name, deployment=None, instance=None, follow=False, lines=50, since=None, limit=2048):
+def app_tail_log(cmd, client, resource_group, service, name,
+                 deployment=None, instance=None, follow=False, lines=50, since=None, limit=2048, format_json=None):
     if not instance:
         if deployment is None:
             deployment = client.apps.get(
@@ -574,7 +581,7 @@ def app_tail_log(cmd, client, resource_group, service, name, deployment=None, in
     exceptions = []
     streaming_url += "?{}".format(parse.urlencode(params)) if params else ""
     t = Thread(target=_get_app_log, args=(
-        streaming_url, "primary", primary_key, exceptions))
+        streaming_url, "primary", primary_key, format_json, exceptions))
     t.daemon = True
     t.start()
 
@@ -1344,18 +1351,124 @@ def _app_deploy(client, resource_group, service, app, name, version, path, runti
                        resource_group, service, app, name, properties=properties, sku=sku)
 
 
-def _get_app_log(url, user_name, password, exceptions):
+# pylint: disable=bare-except, too-many-statements
+def _get_app_log(url, user_name, password, format_json, exceptions):
+    logger_seg_regex = re.compile(r'([^\.])[^\.]+\.')
+
+    def build_log_shortener(length):
+        if length <= 0:
+            raise InvalidArgumentValueError('Logger length in `logger{length}` should be positive')
+
+        def shortener(record):
+            '''
+            Try shorten the logger property to the specified length before feeding it to the formatter.
+            '''
+            logger_name = record.get('logger', None)
+            if logger_name is None:
+                return record
+
+            # first, try to shorten the package name to one letter, e.g.,
+            #     org.springframework.cloud.netflix.eureka.config.DiscoveryClientOptionalArgsConfiguration
+            # to: o.s.c.n.e.c.DiscoveryClientOptionalArgsConfiguration
+            while len(logger_name) > length:
+                logger_name, count = logger_seg_regex.subn(r'\1.', logger_name, 1)
+                if count < 1:
+                    break
+
+            # then, cut off the leading packages if necessary
+            logger_name = logger_name[-length:]
+            record['logger'] = logger_name
+            return record
+
+        return shortener
+
+    def build_formatter():
+        '''
+        Build the log line formatter based on the format_json argument.
+        '''
+        nonlocal format_json
+
+        def identity(o):
+            return o
+
+        if format_json is None or len(format_json) == 0:
+            return identity
+
+        logger_regex = re.compile(r'\blogger\{(\d+)\}')
+        match = logger_regex.search(format_json)
+        pre_processor = identity
+        if match:
+            length = int(match[1])
+            pre_processor = build_log_shortener(length)
+            format_json = logger_regex.sub('logger', format_json, 1)
+
+        first_exception = True
+
+        def format_line(line):
+            nonlocal first_exception
+            try:
+                log_record = json.loads(line)
+                # Add n=\n so that in Windows CMD it's easy to specify customized format with line ending
+                # e.g., "{timestamp} {message}{n}"
+                # (Windows CMD does not escape \n in string literal.)
+                return format_json.format_map(pre_processor(defaultdict(str, n="\n", **log_record)))
+            except:
+                if first_exception:
+                    # enable this format error logging only with --verbose
+                    logger.info("Failed to format log line '{}'".format(line), exc_info=sys.exc_info())
+                    first_exception = False
+                return line
+
+        return format_line
+
+    def iter_lines(response, limit=2**20):
+        '''
+        Returns a line iterator from the response content. If no line ending was found and the buffered content size is
+        larger than the limit, the buffer will be yielded directly.
+        '''
+        buffer = []
+        total = 0
+        for content in response.iter_content(chunk_size=None):
+            if not content:
+                if len(buffer) > 0:
+                    yield b''.join(buffer)
+                break
+
+            start = 0
+            while start < len(content):
+                line_end = content.find(b'\n', start)
+                should_print = False
+                if line_end < 0:
+                    next = (content if start == 0 else content[start:])
+                    buffer.append(next)
+                    total += len(next)
+                    start = len(content)
+                    should_print = total >= limit
+                else:
+                    buffer.append(content[start:line_end + 1])
+                    start = line_end + 1
+                    should_print = True
+
+                if should_print:
+                    yield b''.join(buffer)
+                    buffer.clear()
+                    total = 0
+
     with requests.get(url, stream=True, auth=HTTPBasicAuth(user_name, password)) as response:
         try:
             if response.status_code != 200:
                 raise CLIError("Failed to connect to the server with status code '{}' and reason '{}'".format(
                     response.status_code, response.reason))
             std_encoding = sys.stdout.encoding
-            for content in response.iter_content():
-                if content:
-                    sys.stdout.write(content.decode(encoding='utf-8', errors='replace')
-                                     .encode(std_encoding, errors='replace')
-                                     .decode(std_encoding, errors='replace'))
+
+            formatter = build_formatter()
+
+            for line in iter_lines(response):
+                decoded = (line.decode(encoding='utf-8', errors='replace')
+                           .encode(std_encoding, errors='replace')
+                           .decode(std_encoding, errors='replace'))
+                print(formatter(decoded), end='')
+
         except CLIError as e:
             exceptions.append(e)
 
@@ -1448,12 +1561,26 @@ def domain_unbind(cmd, client, resource_group, service, app, domain_name):
     return client.custom_domains.delete(resource_group, service, app, domain_name)
 
 
-def get_app_insights_key(cli_ctx, resource_group, name):
+def get_connection_string_or_instrumentation_key(appinsights):
+    credential = None
+    if appinsights:
+        if hasattr(appinsights, "connection_string") and appinsights.connection_string:
+            credential = appinsights.connection_string
+        elif hasattr(appinsights, "instrumentation_key") and appinsights.instrumentation_key:
+            credential = appinsights.instrumentation_key
+    return credential
+
+
+def get_app_insights_credential(cli_ctx, resource_group, name):
+    """
+    Application Insights is migrating from instrumentation_key to connection_key.
+    Get connection_string first, if not exist, fall back to instrumentation_key.
+    """
     appinsights_client = get_mgmt_service_client(cli_ctx, ApplicationInsightsManagementClient)
     appinsights = appinsights_client.components.get(resource_group, name)
-    if appinsights is None or appinsights.instrumentation_key is None:
-        raise CLIError("App Insights {} under resource group {} was not found.".format(name, resource_group))
-    return appinsights.instrumentation_key
+    if appinsights is None or (appinsights.connection_string is None and appinsights.instrumentation_key is None):
+        raise ResourceNotFoundError("App Insights {} under resource group {} was not found.".format(name, resource_group))
+    return get_connection_string_or_instrumentation_key(appinsights)
 
 
 def update_tracing_config(cmd, resource_group, service_name, location, app_insights_key,
@@ -1466,12 +1593,12 @@ def update_tracing_config(cmd, resource_group, service_name, location, app_insig
     elif app_insights:
         if is_valid_resource_id(app_insights):
             resource_id_dict = parse_resource_id(app_insights)
-            instrumentation_key = get_app_insights_key(cmd.cli_ctx, resource_id_dict['resource_group'],
-                                                       resource_id_dict['resource_name'])
+            instrumentation_key = get_app_insights_credential(cmd.cli_ctx, resource_id_dict['resource_group'],
+                                                              resource_id_dict['resource_name'])
             trace_properties = models.MonitoringSettingProperties(
                 trace_enabled=True, app_insights_instrumentation_key=instrumentation_key)
         else:
-            instrumentation_key = get_app_insights_key(cmd.cli_ctx, resource_group, app_insights)
+            instrumentation_key = get_app_insights_credential(cmd.cli_ctx, resource_group, app_insights)
             trace_properties = models.MonitoringSettingProperties(
                 trace_enabled=True, app_insights_instrumentation_key=instrumentation_key)
     elif disable_app_insights is not True:
@@ -1502,12 +1629,12 @@ def update_java_agent_config(cmd, resource_group, service_name, location, app_in
     elif app_insights:
         if is_valid_resource_id(app_insights):
             resource_id_dict = parse_resource_id(app_insights)
-            instrumentation_key = get_app_insights_key(cmd.cli_ctx, resource_id_dict['resource_group'],
-                                                       resource_id_dict['resource_name'])
+            instrumentation_key = get_app_insights_credential(cmd.cli_ctx, resource_id_dict['resource_group'],
+                                                              resource_id_dict['resource_name'])
             trace_properties = models_20201101preview.MonitoringSettingProperties(
                 trace_enabled=True, app_insights_instrumentation_key=instrumentation_key)
         else:
-            instrumentation_key = get_app_insights_key(cmd.cli_ctx, resource_group, app_insights)
+            instrumentation_key = get_app_insights_credential(cmd.cli_ctx, resource_group, app_insights)
             trace_properties = models_20201101preview.MonitoringSettingProperties(
                 trace_enabled=True, app_insights_instrumentation_key=instrumentation_key)
     elif enable_java_agent is True:
@@ -1546,7 +1673,7 @@ def try_create_application_insights(cmd, resource_group, name, location):
         }
     }
     appinsights = app_insights_client.components.create_or_update(ai_resource_group_name, ai_name, ai_properties)
-    if appinsights is None or appinsights.instrumentation_key is None:
+    if appinsights is None or (appinsights.connection_string is None and appinsights.instrumentation_key is None):
         logger.warning(creation_failed_warn)
         return None
 
@@ -1555,8 +1682,7 @@ def try_create_application_insights(cmd, resource_group, name, location):
     logger.warning('Application Insights \"%s\" was created for this Azure Spring Cloud. '
                    'You can visit %s/#resource%s/overview to view your '
                    'Application Insights component', appinsights.name, portal_url, appinsights.id)
-
-    return appinsights.instrumentation_key
+    return get_connection_string_or_instrumentation_key(appinsights)
 
 
 def app_insights_update(cmd, client, resource_group, name, app_insights_key=None, app_insights=None, sampling_rate=None, disable=None, no_wait=False):
@@ -1571,10 +1697,10 @@ def app_insights_update(cmd, client, resource_group, name, app_insights_key=None
         elif app_insights:
             if is_valid_resource_id(app_insights):
                 resource_id_dict = parse_resource_id(app_insights)
-                instrumentation_key = get_app_insights_key(cmd.cli_ctx, resource_id_dict['resource_group'],
-                                                           resource_id_dict['resource_name'])
+                instrumentation_key = get_app_insights_credential(cmd.cli_ctx, resource_id_dict['resource_group'],
+                                                                  resource_id_dict['resource_name'])
             else:
-                instrumentation_key = get_app_insights_key(cmd.cli_ctx, resource_group, app_insights)
+                instrumentation_key = get_app_insights_credential(cmd.cli_ctx, resource_group, app_insights)
         else:
             instrumentation_key = trace_properties.app_insights_instrumentation_key
         if sampling_rate:

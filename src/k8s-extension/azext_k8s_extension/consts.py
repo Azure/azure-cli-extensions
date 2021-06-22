@@ -7,3 +7,4 @@
 EXTENSION_NAME = 'k8s-extension'
 EXTENSION_PACKAGE_NAME = "azext_k8s_extension"
 PROVIDER_NAMESPACE = 'Microsoft.KubernetesConfiguration'
+REGISTERED = "Registered"

@@ -8,7 +8,7 @@
 from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "0.7.2"
+VERSION = "0.7.3"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -24,7 +24,7 @@ CLASSIFIERS = [
     'License :: OSI Approved :: MIT License',
 ]
 
-DEPENDENCIES = []
+DEPENDENCIES = ['azure-core']
 
 setup(
     name='storage-preview',
