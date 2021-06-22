@@ -45,7 +45,7 @@ source azEnv/bin/activate
 az aks fake-command --debug || true
 
 # prepare run flags
-run_flags="-e -em ext_matrix_default.json --no-exitfirst --report-path ./reports --reruns 3 --capture=sys"
+run_flags="-e --no-exitfirst --report-path ./reports --reruns 3 --capture=sys"
 # parallel
 if [ ${PARALLELISM} -ge 2 ]; then
     run_flags+=" -j ${PARALLELISM}"
@@ -58,7 +58,7 @@ if [[ -n ${TEST_CASES} ]]; then
 fi
 # ext matrix
 if [[ -n ${EXT_TEST_MATRIX} ]]; then
-    run_flags+=" -em ${EXT_TEST_MATRIX}"
+    run_flags+=" -em ./configs/${EXT_TEST_MATRIX}"
 fi
 # ext extra filter
 if [[ -n ${EXT_TEST_FILTER} ]]; then
@@ -75,7 +75,7 @@ if [[ ${TEST_MODE} == "record" || ${TEST_MODE} == "all" ]]; then
     run_flags+=" --json-report-file=ext_report.json"
     run_flags+=" --xml-file=ext_result.xml"
     echo "run flags: ${run_flags}"
-    echo "${run_flags}" | xargs python -u az_aks_tool/main.py
+    azaks ${run_flags}
 fi
 
 # live test
@@ -87,5 +87,5 @@ if [[ ${TEST_MODE} == "live" || ${TEST_MODE} == "all" ]]; then
     run_flags+=" -l --json-report-file=ext_live_report.json"
     run_flags+=" --xml-file=ext_live_result.xml"
     echo "run flags: ${run_flags}"
-    echo "${run_flags}" | xargs python -u az_aks_tool/main.py 
+    azaks ${run_flags}
 fi

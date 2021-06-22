@@ -10,7 +10,6 @@ set -o xtrace
 # take the first arg as container name
 container_name=${1:-"azcli-aks-live-test-container"}
 [[ -z "${MAPPED_AZCLI_ALT_CLIENT_SECRET}" ]] && (echo "MAPPED_AZCLI_ALT_CLIENT_SECRET is empty"; exit 1)
-[[ -z "${MAPPED_AZCLI_ALT_CLIENT_SECRET}" ]] && (echo "MAPPED_AZCLI_ALT_CLIENT_SECRET is empty"; exit 1)
 [[ -z "${IMAGE_NAME}" ]] && (echo "IMAGE_NAME is empty"; exit 1)
 [[ -z "${IMAGE_TAG}" ]] && (echo "IMAGE_TAG is empty"; exit 1)
 
@@ -19,7 +18,7 @@ pwd
 ls -alh
 
 # transcribe environment variables into file 'env.list'
-./transcribe_env.sh
+./scripts/transcribe_env.sh
 
 # start container in backgroud with tty
 # mount current directory ($(Agent.BuildDirectory)/s) to /opt in container
