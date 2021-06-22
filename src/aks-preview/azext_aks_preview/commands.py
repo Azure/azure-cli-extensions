@@ -120,3 +120,7 @@ def load_command_table(self, _):
         g.custom_command('update', 'aks_pod_identity_exception_update')
         g.custom_command('list', 'aks_pod_identity_exception_list',
                          table_transformer=aks_pod_identity_exceptions_table_format)
+
+    # AKS egress commands
+    with self.command_group('aks egress-endpoints', managed_clusters_sdk, client_factory=cf_managed_clusters) as g:
+        g.custom_command('list', 'aks_egress_endpoints_list')

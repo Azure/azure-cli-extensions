@@ -1,3 +1,13 @@
+0.14.0
+++++++++++++++++++
+
+* Resolving issue from rest response exception.
+
+0.13.0
+++++++++++++++++++
+
+* Removing Oracle scenario due to it being deprecated.
+
 0.12.0
 ++++++++++++++++++
 

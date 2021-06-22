@@ -113,6 +113,7 @@ def load_arguments(self, _):
         c.argument('enable_private_cluster', action='store_true')
         c.argument('private_dns_zone')
         c.argument('fqdn_subdomain')
+        c.argument('enable_public_fqdn', action='store_true', is_preview=True)
         c.argument('enable_managed_identity', action='store_true')
         c.argument('assign_identity', type=str, validator=validate_assign_identity)
         c.argument('enable_sgxquotehelper', action='store_true')
@@ -128,6 +129,7 @@ def load_arguments(self, _):
         c.argument('appgw_watch_namespace', options_list=['--appgw-watch-namespace'], arg_group='Application Gateway')
         c.argument('aci_subnet_name', type=str)
         c.argument('enable_encryption_at_host', arg_type=get_three_state_flag(), help='Enable EncryptionAtHost.')
+        c.argument('enable_ultra_ssd', action='store_true')
         c.argument('enable_secret_rotation', action='store_true')
         c.argument('assign_kubelet_identity', type=str, validator=validate_assign_kubelet_identity)
         c.argument('disable_local_accounts', action='store_true')
@@ -150,6 +152,8 @@ def load_arguments(self, _):
         c.argument('api_server_authorized_ip_ranges', type=str, validator=validate_ip_ranges)
         c.argument('enable_pod_security_policy', action='store_true')
         c.argument('disable_pod_security_policy', action='store_true')
+        c.argument('enable_public_fqdn', action='store_true', is_preview=True)
+        c.argument('disable_public_fqdn', action='store_true', is_preview=True)
         c.argument('attach_acr', acr_arg_type, validator=validate_acr)
         c.argument('detach_acr', acr_arg_type, validator=validate_acr)
         c.argument('aks_custom_headers')
@@ -225,6 +229,7 @@ def load_arguments(self, _):
             c.argument('kubelet_config', type=str)
             c.argument('linux_os_config', type=str)
             c.argument('enable_encryption_at_host', options_list=['--enable-encryption-at-host'], action='store_true')
+            c.argument('enable_ultra_ssd', action='store_true')
 
     for scope in ['aks nodepool show', 'aks nodepool delete', 'aks nodepool scale', 'aks nodepool upgrade', 'aks nodepool update']:
         with self.argument_context(scope) as c:
@@ -264,6 +269,7 @@ def load_arguments(self, _):
         c.argument('user', options_list=['--user', '-u'], default='clusterUser', validator=validate_user)
         c.argument('path', options_list=['--file', '-f'], type=file_type, completer=FilesCompleter(),
                    default=os.path.join(os.path.expanduser('~'), '.kube', 'config'))
+        c.argument('public_fqdn', default=False, action='store_true', is_preview=True)
 
     with self.argument_context('aks pod-identity') as c:
         c.argument('cluster_name', type=str, help='The cluster name.')
