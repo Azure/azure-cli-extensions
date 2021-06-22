@@ -162,6 +162,9 @@ class AzureMLKubernetes(PartnerExtensionModel):
             version=version
         )
 
+    def Delete(self, client, resource_group_name, cluster_name, name, cluster_type):
+        pass
+
     def __validate_config(self, configuration_settings, configuration_protected_settings):
         # perform basic validation of the input config
         config_keys = configuration_settings.keys()
@@ -226,7 +229,7 @@ class AzureMLKubernetes(PartnerExtensionModel):
         if feIsNodePort and feIsInternalLoadBalancer:
             raise MutuallyExclusiveArgumentError(
                 "Specify either privateEndpointNodeport=true or privateEndpointILB=true, but not both.")
-        elif feIsNodePort:
+        if feIsNodePort:
             configuration_settings['scoringFe.serviceType.nodePort'] = feIsNodePort
         elif feIsInternalLoadBalancer:
             configuration_settings['scoringFe.serviceType.internalLoadBalancer'] = feIsInternalLoadBalancer
