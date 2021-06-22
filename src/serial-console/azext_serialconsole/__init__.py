@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core import AzCommandsLoader
+from azext_serialconsole._help import helps  # pylint: disable=unused-import
 
 
 class SerialconsoleCommandsLoader(AzCommandsLoader):
