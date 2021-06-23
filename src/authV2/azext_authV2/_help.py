@@ -27,18 +27,18 @@ examples:
   - name: Update the client ID of the AAD provider already configured
     text: >
         az webapp auth update  -g myResourceGroup -n myUniqueApp --set identityProviders.azureActiveDirectory.registration.clientId=ecbacb08-df8b-450d-82b3-3fced03f2b27
-  - name: Enable authentication on the app
-    text: >
-        az webapp auth update -g myResourceGroup -n myUniqueApp --enabled true
   - name: Pin the runtime version of the app to 1.4.7
     text: >
         az webapp auth update -g myResourceGroup -n myUniqueApp --runtime-version 1.4.7
   - name: Configure the app with file based authentication by setting the config file path
     text: >
         az webapp auth update -g myResourceGroup -n myUniqueApp --config-file-path auth.json
-  - name: Configure the app to redirect to AzureActiveDirectory's login page for unauthenticated requests
+  - name: Configure the app to allow unauthenticated requests to hit the app.
     text: >
-        az webapp auth update -g myResourceGroup -n myUniqueApp --unauthenticated-client-action RedirectToLoginPage --redirect-provider AzureActiveDirectory
+        az webapp auth update -g myResourceGroup -n myUniqueApp --unauthenticated-client-action AllowAnonymous
+  - name: Configure the app to redirect unauthenticated requests to the Facebook provider
+    text: >
+        az webapp auth update -g myResourceGroup -n myUniqueApp --redirect-provider Facebook
   - name: Configure the app to listen to the forward headers X-FORWARDED-HOST and X-FORWARDED-PROTO
     text: >
         az webapp auth update -g myResourceGroup -n myUniqueApp --proxy-convention Standard
@@ -46,9 +46,9 @@ examples:
 
 helps['webapp auth set'] = """
 type: command
-short-summary: Sets the authentication settings for the webapp in the v2 format.
+short-summary: Sets the authentication settings for the webapp in the v2 format, overwriting any existing settings.
 examples:
-  - name: Set the json saved in file auth.json as the auth settings for the web app.
+  - name: Set the json saved in file auth.json as the auth settings for the web app, overwriting any existing settings.
     text: >
         az webapp auth set -g myResourceGroup -n myUniqueApp --body @auth.json
 """
