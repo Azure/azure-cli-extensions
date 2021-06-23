@@ -26,6 +26,9 @@ set -o xtrace
 [[ -z "${TEST_MODE}" ]] && (echo "TEST_MODE is empty"; exit 1)
 [[ -z "${PARALLELISM}" ]] && (echo "PARALLELISM is empty"; exit 1)
 [[ -z "${TEST_CASES}" ]] && (echo "TEST_CASES is empty")
+[[ -z "${CLI_TEST_MATRIX}" ]] && (echo "CLI_TEST_MATRIX is empty")
+[[ -z "${CLI_TEST_FILTER}" ]] && (echo "CLI_TEST_FILTER is empty")
+[[ -z "${CLI_TEST_COVERAGE}" ]] && (echo "CLI_TEST_COVERAGE is empty")
 [[ -z "${EXT_TEST_MATRIX}" ]] && (echo "EXT_TEST_MATRIX is empty")
 [[ -z "${EXT_TEST_FILTER}" ]] && (echo "EXT_TEST_FILTER is empty")
 [[ -z "${EXT_TEST_COVERAGE}" ]] && (echo "EXT_TEST_COVERAGE is empty")
@@ -33,7 +36,6 @@ set -o xtrace
 [[ -z "${CLI_BRANCH}" ]] && (echo "CLI_BRANCH is empty"; exit 1)
 [[ -z "${EXT_REPO}" ]] && (echo "EXT_REPO is empty"; exit 1)
 [[ -z "${EXT_BRANCH}" ]] && (echo "EXT_BRANCH is empty"; exit 1)
-[[ -z "${MANUAL_EXT}" ]] && (echo "MANUAL_EXT is empty"; exit 1)
 
 # clear
 cat /dev/null > env.list
@@ -64,6 +66,9 @@ echo "COVERAGE=${COVERAGE}" >> env.list
 echo "TEST_MODE=${TEST_MODE}" >> env.list
 echo "PARALLELISM=${PARALLELISM}" >> env.list
 echo "TEST_CASES=${TEST_CASES}" >> env.list
+echo "CLI_TEST_MATRIX=${CLI_TEST_MATRIX}" >> env.list
+echo "CLI_TEST_FILTER=${CLI_TEST_FILTER}" >> env.list
+echo "CLI_TEST_COVERAGE=${CLI_TEST_COVERAGE}" >> env.list
 echo "EXT_TEST_MATRIX=${EXT_TEST_MATRIX}" >> env.list
 echo "EXT_TEST_FILTER=${EXT_TEST_FILTER}" >> env.list
 echo "EXT_TEST_COVERAGE=${EXT_TEST_COVERAGE}" >> env.list
@@ -73,4 +78,3 @@ echo "CLI_REPO=${CLI_REPO}" >> env.list
 echo "CLI_BRANCH=${CLI_BRANCH}" >> env.list
 echo "EXT_REPO=${EXT_REPO}" >> env.list
 echo "EXT_BRANCH=${EXT_BRANCH}" >> env.list
-echo "MANUAL_EXT=${MANUAL_EXT}" >> env.list
