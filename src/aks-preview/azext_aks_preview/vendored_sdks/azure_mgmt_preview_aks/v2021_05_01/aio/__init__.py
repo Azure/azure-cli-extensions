@@ -8,9 +8,3 @@
 
 from ._container_service_client import ContainerServiceClient
 __all__ = ['ContainerServiceClient']
-
-try:
-    from ._patch import patch_sdk  # type: ignore
-    patch_sdk()
-except ImportError:
-    pass

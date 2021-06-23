@@ -25,14 +25,14 @@ if TYPE_CHECKING:
     T = TypeVar('T')
     ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
 
-class AgentPoolsOperations(object):
-    """AgentPoolsOperations operations.
+class OpenShiftManagedClustersOperations(object):
+    """OpenShiftManagedClustersOperations operations.
 
     You should not instantiate this class directly. Instead, you should create a Client instance that
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.containerservice.v2021_05_01.models
+    :type models: ~azure.mgmt.containerservice.v2019_04_30.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -49,31 +49,25 @@ class AgentPoolsOperations(object):
 
     def list(
         self,
-        resource_group_name,  # type: str
-        resource_name,  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> Iterable["_models.AgentPoolListResult"]
-        """Gets a list of agent pools in the specified managed cluster.
+        # type: (...) -> Iterable["_models.OpenShiftManagedClusterListResult"]
+        """Gets a list of OpenShift managed clusters in the specified subscription.
 
-        Gets a list of agent pools in the specified managed cluster. The operation returns properties
-        of each agent pool.
+        Gets a list of OpenShift managed clusters in the specified subscription. The operation returns
+        properties of each OpenShift managed cluster.
 
-        :param resource_group_name: The name of the resource group.
-        :type resource_group_name: str
-        :param resource_name: The name of the managed cluster resource.
-        :type resource_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either AgentPoolListResult or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.containerservice.v2021_05_01.models.AgentPoolListResult]
+        :return: An iterator like instance of either OpenShiftManagedClusterListResult or the result of cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.containerservice.v2019_04_30.models.OpenShiftManagedClusterListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.AgentPoolListResult"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.OpenShiftManagedClusterListResult"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-05-01"
+        api_version = "2019-04-30"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -86,8 +80,6 @@ class AgentPoolsOperations(object):
                 url = self.list.metadata['url']  # type: ignore
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', min_length=1),
-                    'resourceName': self._serialize.url("resource_name", resource_name, 'str', max_length=63, min_length=1, pattern=r'^[a-zA-Z0-9]$|^[a-zA-Z0-9][-_a-zA-Z0-9]{0,61}[a-zA-Z0-9]$'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
@@ -102,7 +94,7 @@ class AgentPoolsOperations(object):
             return request
 
         def extract_data(pipeline_response):
-            deserialized = self._deserialize('AgentPoolListResult', pipeline_response)
+            deserialized = self._deserialize('OpenShiftManagedClusterListResult', pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
@@ -123,37 +115,108 @@ class AgentPoolsOperations(object):
         return ItemPaged(
             get_next, extract_data
         )
-    list.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/agentPools'}  # type: ignore
+    list.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ContainerService/openShiftManagedClusters'}  # type: ignore
+
+    def list_by_resource_group(
+        self,
+        resource_group_name,  # type: str
+        **kwargs  # type: Any
+    ):
+        # type: (...) -> Iterable["_models.OpenShiftManagedClusterListResult"]
+        """Lists OpenShift managed clusters in the specified subscription and resource group.
+
+        Lists OpenShift managed clusters in the specified subscription and resource group. The
+        operation returns properties of each OpenShift managed cluster.
+
+        :param resource_group_name: The name of the resource group.
+        :type resource_group_name: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :return: An iterator like instance of either OpenShiftManagedClusterListResult or the result of cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.containerservice.v2019_04_30.models.OpenShiftManagedClusterListResult]
+        :raises: ~azure.core.exceptions.HttpResponseError
+        """
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.OpenShiftManagedClusterListResult"]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
+        api_version = "2019-04-30"
+        accept = "application/json"
+
+        def prepare_request(next_link=None):
+            # Construct headers
+            header_parameters = {}  # type: Dict[str, Any]
+            header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+
+            if not next_link:
+                # Construct URL
+                url = self.list_by_resource_group.metadata['url']  # type: ignore
+                path_format_arguments = {
+                    'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', min_length=1),
+                }
+                url = self._client.format_url(url, **path_format_arguments)
+                # Construct parameters
+                query_parameters = {}  # type: Dict[str, Any]
+                query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+
+                request = self._client.get(url, query_parameters, header_parameters)
+            else:
+                url = next_link
+                query_parameters = {}  # type: Dict[str, Any]
+                request = self._client.get(url, query_parameters, header_parameters)
+            return request
+
+        def extract_data(pipeline_response):
+            deserialized = self._deserialize('OpenShiftManagedClusterListResult', pipeline_response)
+            list_of_elem = deserialized.value
+            if cls:
+                list_of_elem = cls(list_of_elem)
+            return deserialized.next_link or None, iter(list_of_elem)
+
+        def get_next(next_link=None):
+            request = prepare_request(next_link)
+
+            pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+            response = pipeline_response.http_response
+
+            if response.status_code not in [200]:
+                map_error(status_code=response.status_code, response=response, error_map=error_map)
+                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+
+            return pipeline_response
+
+        return ItemPaged(
+            get_next, extract_data
+        )
+    list_by_resource_group.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/openShiftManagedClusters'}  # type: ignore
 
     def get(
         self,
         resource_group_name,  # type: str
         resource_name,  # type: str
-        agent_pool_name,  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> "_models.AgentPool"
-        """Gets the agent pool.
+        # type: (...) -> "_models.OpenShiftManagedCluster"
+        """Gets a OpenShift managed cluster.
 
-        Gets the details of the agent pool by managed cluster and resource group.
+        Gets the details of the managed OpenShift cluster with a specified resource group and name.
 
         :param resource_group_name: The name of the resource group.
         :type resource_group_name: str
-        :param resource_name: The name of the managed cluster resource.
+        :param resource_name: The name of the OpenShift managed cluster resource.
         :type resource_name: str
-        :param agent_pool_name: The name of the agent pool.
-        :type agent_pool_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: AgentPool, or the result of cls(response)
-        :rtype: ~azure.mgmt.containerservice.v2021_05_01.models.AgentPool
+        :return: OpenShiftManagedCluster, or the result of cls(response)
+        :rtype: ~azure.mgmt.containerservice.v2019_04_30.models.OpenShiftManagedCluster
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.AgentPool"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.OpenShiftManagedCluster"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-05-01"
+        api_version = "2019-04-30"
         accept = "application/json"
 
         # Construct URL
@@ -161,8 +224,7 @@ class AgentPoolsOperations(object):
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', min_length=1),
-            'resourceName': self._serialize.url("resource_name", resource_name, 'str', max_length=63, min_length=1, pattern=r'^[a-zA-Z0-9]$|^[a-zA-Z0-9][-_a-zA-Z0-9]{0,61}[a-zA-Z0-9]$'),
-            'agentPoolName': self._serialize.url("agent_pool_name", agent_pool_name, 'str'),
+            'resourceName': self._serialize.url("resource_name", resource_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -182,29 +244,28 @@ class AgentPoolsOperations(object):
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('AgentPool', pipeline_response)
+        deserialized = self._deserialize('OpenShiftManagedCluster', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/agentPools/{agentPoolName}'}  # type: ignore
+    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/openShiftManagedClusters/{resourceName}'}  # type: ignore
 
     def _create_or_update_initial(
         self,
         resource_group_name,  # type: str
         resource_name,  # type: str
-        agent_pool_name,  # type: str
-        parameters,  # type: "_models.AgentPool"
+        parameters,  # type: "_models.OpenShiftManagedCluster"
         **kwargs  # type: Any
     ):
-        # type: (...) -> "_models.AgentPool"
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.AgentPool"]
+        # type: (...) -> "_models.OpenShiftManagedCluster"
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.OpenShiftManagedCluster"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-05-01"
+        api_version = "2019-04-30"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -213,8 +274,7 @@ class AgentPoolsOperations(object):
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', min_length=1),
-            'resourceName': self._serialize.url("resource_name", resource_name, 'str', max_length=63, min_length=1, pattern=r'^[a-zA-Z0-9]$|^[a-zA-Z0-9][-_a-zA-Z0-9]{0,61}[a-zA-Z0-9]$'),
-            'agentPoolName': self._serialize.url("agent_pool_name", agent_pool_name, 'str'),
+            'resourceName': self._serialize.url("resource_name", resource_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -228,7 +288,7 @@ class AgentPoolsOperations(object):
         header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(parameters, 'AgentPool')
+        body_content = self._serialize.body(parameters, 'OpenShiftManagedCluster')
         body_content_kwargs['content'] = body_content
         request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
@@ -239,50 +299,49 @@ class AgentPoolsOperations(object):
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         if response.status_code == 200:
-            deserialized = self._deserialize('AgentPool', pipeline_response)
+            deserialized = self._deserialize('OpenShiftManagedCluster', pipeline_response)
 
         if response.status_code == 201:
-            deserialized = self._deserialize('AgentPool', pipeline_response)
+            deserialized = self._deserialize('OpenShiftManagedCluster', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    _create_or_update_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/agentPools/{agentPoolName}'}  # type: ignore
+    _create_or_update_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/openShiftManagedClusters/{resourceName}'}  # type: ignore
 
     def begin_create_or_update(
         self,
         resource_group_name,  # type: str
         resource_name,  # type: str
-        agent_pool_name,  # type: str
-        parameters,  # type: "_models.AgentPool"
+        parameters,  # type: "_models.OpenShiftManagedCluster"
         **kwargs  # type: Any
     ):
-        # type: (...) -> LROPoller["_models.AgentPool"]
-        """Creates or updates an agent pool.
+        # type: (...) -> LROPoller["_models.OpenShiftManagedCluster"]
+        """Creates or updates an OpenShift managed cluster.
 
-        Creates or updates an agent pool in the specified managed cluster.
+        Creates or updates a OpenShift managed cluster with the specified configuration for agents and
+        OpenShift version.
 
         :param resource_group_name: The name of the resource group.
         :type resource_group_name: str
-        :param resource_name: The name of the managed cluster resource.
+        :param resource_name: The name of the OpenShift managed cluster resource.
         :type resource_name: str
-        :param agent_pool_name: The name of the agent pool.
-        :type agent_pool_name: str
-        :param parameters: Parameters supplied to the Create or Update an agent pool operation.
-        :type parameters: ~azure.mgmt.containerservice.v2021_05_01.models.AgentPool
+        :param parameters: Parameters supplied to the Create or Update an OpenShift Managed Cluster
+         operation.
+        :type parameters: ~azure.mgmt.containerservice.v2019_04_30.models.OpenShiftManagedCluster
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling.
          Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
-        :return: An instance of LROPoller that returns either AgentPool or the result of cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.containerservice.v2021_05_01.models.AgentPool]
+        :return: An instance of LROPoller that returns either OpenShiftManagedCluster or the result of cls(response)
+        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.containerservice.v2019_04_30.models.OpenShiftManagedCluster]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.AgentPool"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.OpenShiftManagedCluster"]
         lro_delay = kwargs.pop(
             'polling_interval',
             self._config.polling_interval
@@ -292,7 +351,6 @@ class AgentPoolsOperations(object):
             raw_result = self._create_or_update_initial(
                 resource_group_name=resource_group_name,
                 resource_name=resource_name,
-                agent_pool_name=agent_pool_name,
                 parameters=parameters,
                 cls=lambda x,y,z: x,
                 **kwargs
@@ -302,7 +360,7 @@ class AgentPoolsOperations(object):
         kwargs.pop('content_type', None)
 
         def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize('AgentPool', pipeline_response)
+            deserialized = self._deserialize('OpenShiftManagedCluster', pipeline_response)
 
             if cls:
                 return cls(pipeline_response, deserialized, {})
@@ -311,8 +369,7 @@ class AgentPoolsOperations(object):
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', min_length=1),
-            'resourceName': self._serialize.url("resource_name", resource_name, 'str', max_length=63, min_length=1, pattern=r'^[a-zA-Z0-9]$|^[a-zA-Z0-9][-_a-zA-Z0-9]{0,61}[a-zA-Z0-9]$'),
-            'agentPoolName': self._serialize.url("agent_pool_name", agent_pool_name, 'str'),
+            'resourceName': self._serialize.url("resource_name", resource_name, 'str'),
         }
 
         if polling is True: polling_method = ARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
@@ -327,13 +384,140 @@ class AgentPoolsOperations(object):
             )
         else:
             return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    begin_create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/agentPools/{agentPoolName}'}  # type: ignore
+    begin_create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/openShiftManagedClusters/{resourceName}'}  # type: ignore
+
+    def _update_tags_initial(
+        self,
+        resource_group_name,  # type: str
+        resource_name,  # type: str
+        parameters,  # type: "_models.TagsObject"
+        **kwargs  # type: Any
+    ):
+        # type: (...) -> "_models.OpenShiftManagedCluster"
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.OpenShiftManagedCluster"]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
+        api_version = "2019-04-30"
+        content_type = kwargs.pop("content_type", "application/json")
+        accept = "application/json"
+
+        # Construct URL
+        url = self._update_tags_initial.metadata['url']  # type: ignore
+        path_format_arguments = {
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', min_length=1),
+            'resourceName': self._serialize.url("resource_name", resource_name, 'str'),
+        }
+        url = self._client.format_url(url, **path_format_arguments)
+
+        # Construct parameters
+        query_parameters = {}  # type: Dict[str, Any]
+        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+
+        # Construct headers
+        header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+
+        body_content_kwargs = {}  # type: Dict[str, Any]
+        body_content = self._serialize.body(parameters, 'TagsObject')
+        body_content_kwargs['content'] = body_content
+        request = self._client.patch(url, query_parameters, header_parameters, **body_content_kwargs)
+        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+
+        deserialized = self._deserialize('OpenShiftManagedCluster', pipeline_response)
+
+        if cls:
+            return cls(pipeline_response, deserialized, {})
+
+        return deserialized
+    _update_tags_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/openShiftManagedClusters/{resourceName}'}  # type: ignore
+
+    def begin_update_tags(
+        self,
+        resource_group_name,  # type: str
+        resource_name,  # type: str
+        parameters,  # type: "_models.TagsObject"
+        **kwargs  # type: Any
+    ):
+        # type: (...) -> LROPoller["_models.OpenShiftManagedCluster"]
+        """Updates tags on an OpenShift managed cluster.
+
+        Updates an OpenShift managed cluster with the specified tags.
+
+        :param resource_group_name: The name of the resource group.
+        :type resource_group_name: str
+        :param resource_name: The name of the OpenShift managed cluster resource.
+        :type resource_name: str
+        :param parameters: Parameters supplied to the Update OpenShift Managed Cluster Tags operation.
+        :type parameters: ~azure.mgmt.containerservice.v2019_04_30.models.TagsObject
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
+        :keyword polling: By default, your polling method will be ARMPolling.
+         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
+        :paramtype polling: bool or ~azure.core.polling.PollingMethod
+        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
+        :return: An instance of LROPoller that returns either OpenShiftManagedCluster or the result of cls(response)
+        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.containerservice.v2019_04_30.models.OpenShiftManagedCluster]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.OpenShiftManagedCluster"]
+        lro_delay = kwargs.pop(
+            'polling_interval',
+            self._config.polling_interval
+        )
+        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        if cont_token is None:
+            raw_result = self._update_tags_initial(
+                resource_group_name=resource_group_name,
+                resource_name=resource_name,
+                parameters=parameters,
+                cls=lambda x,y,z: x,
+                **kwargs
+            )
+
+        kwargs.pop('error_map', None)
+        kwargs.pop('content_type', None)
+
+        def get_long_running_output(pipeline_response):
+            deserialized = self._deserialize('OpenShiftManagedCluster', pipeline_response)
+
+            if cls:
+                return cls(pipeline_response, deserialized, {})
+            return deserialized
+
+        path_format_arguments = {
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', min_length=1),
+            'resourceName': self._serialize.url("resource_name", resource_name, 'str'),
+        }
+
+        if polling is True: polling_method = ARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
+        elif polling is False: polling_method = NoPolling()
+        else: polling_method = polling
+        if cont_token:
+            return LROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output
+            )
+        else:
+            return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
+    begin_update_tags.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/openShiftManagedClusters/{resourceName}'}  # type: ignore
 
     def _delete_initial(
         self,
         resource_group_name,  # type: str
         resource_name,  # type: str
-        agent_pool_name,  # type: str
         **kwargs  # type: Any
     ):
         # type: (...) -> None
@@ -342,7 +526,7 @@ class AgentPoolsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-05-01"
+        api_version = "2019-04-30"
         accept = "application/json"
 
         # Construct URL
@@ -350,8 +534,7 @@ class AgentPoolsOperations(object):
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', min_length=1),
-            'resourceName': self._serialize.url("resource_name", resource_name, 'str', max_length=63, min_length=1, pattern=r'^[a-zA-Z0-9]$|^[a-zA-Z0-9][-_a-zA-Z0-9]{0,61}[a-zA-Z0-9]$'),
-            'agentPoolName': self._serialize.url("agent_pool_name", agent_pool_name, 'str'),
+            'resourceName': self._serialize.url("resource_name", resource_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -374,26 +557,23 @@ class AgentPoolsOperations(object):
         if cls:
             return cls(pipeline_response, None, {})
 
-    _delete_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/agentPools/{agentPoolName}'}  # type: ignore
+    _delete_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/openShiftManagedClusters/{resourceName}'}  # type: ignore
 
     def begin_delete(
         self,
         resource_group_name,  # type: str
         resource_name,  # type: str
-        agent_pool_name,  # type: str
         **kwargs  # type: Any
     ):
         # type: (...) -> LROPoller[None]
-        """Deletes an agent pool.
+        """Deletes an OpenShift managed cluster.
 
-        Deletes the agent pool in the specified managed cluster.
+        Deletes the OpenShift managed cluster with a specified resource group and name.
 
         :param resource_group_name: The name of the resource group.
         :type resource_group_name: str
-        :param resource_name: The name of the managed cluster resource.
+        :param resource_name: The name of the OpenShift managed cluster resource.
         :type resource_name: str
-        :param agent_pool_name: The name of the agent pool.
-        :type agent_pool_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling.
@@ -415,7 +595,6 @@ class AgentPoolsOperations(object):
             raw_result = self._delete_initial(
                 resource_group_name=resource_group_name,
                 resource_name=resource_name,
-                agent_pool_name=agent_pool_name,
                 cls=lambda x,y,z: x,
                 **kwargs
             )
@@ -430,8 +609,7 @@ class AgentPoolsOperations(object):
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', min_length=1),
-            'resourceName': self._serialize.url("resource_name", resource_name, 'str', max_length=63, min_length=1, pattern=r'^[a-zA-Z0-9]$|^[a-zA-Z0-9][-_a-zA-Z0-9]{0,61}[a-zA-Z0-9]$'),
-            'agentPoolName': self._serialize.url("agent_pool_name", agent_pool_name, 'str'),
+            'resourceName': self._serialize.url("resource_name", resource_name, 'str'),
         }
 
         if polling is True: polling_method = ARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
@@ -446,258 +624,4 @@ class AgentPoolsOperations(object):
             )
         else:
             return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    begin_delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/agentPools/{agentPoolName}'}  # type: ignore
-
-    def get_upgrade_profile(
-        self,
-        resource_group_name,  # type: str
-        resource_name,  # type: str
-        agent_pool_name,  # type: str
-        **kwargs  # type: Any
-    ):
-        # type: (...) -> "_models.AgentPoolUpgradeProfile"
-        """Gets upgrade profile for an agent pool.
-
-        Gets the details of the upgrade profile for an agent pool with a specified resource group and
-        managed cluster name.
-
-        :param resource_group_name: The name of the resource group.
-        :type resource_group_name: str
-        :param resource_name: The name of the managed cluster resource.
-        :type resource_name: str
-        :param agent_pool_name: The name of the agent pool.
-        :type agent_pool_name: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: AgentPoolUpgradeProfile, or the result of cls(response)
-        :rtype: ~azure.mgmt.containerservice.v2021_05_01.models.AgentPoolUpgradeProfile
-        :raises: ~azure.core.exceptions.HttpResponseError
-        """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.AgentPoolUpgradeProfile"]
-        error_map = {
-            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
-        }
-        error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-05-01"
-        accept = "application/json"
-
-        # Construct URL
-        url = self.get_upgrade_profile.metadata['url']  # type: ignore
-        path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', min_length=1),
-            'resourceName': self._serialize.url("resource_name", resource_name, 'str', max_length=63, min_length=1, pattern=r'^[a-zA-Z0-9]$|^[a-zA-Z0-9][-_a-zA-Z0-9]{0,61}[a-zA-Z0-9]$'),
-            'agentPoolName': self._serialize.url("agent_pool_name", agent_pool_name, 'str'),
-        }
-        url = self._client.format_url(url, **path_format_arguments)
-
-        # Construct parameters
-        query_parameters = {}  # type: Dict[str, Any]
-        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
-
-        # Construct headers
-        header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
-
-        request = self._client.get(url, query_parameters, header_parameters)
-        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
-        response = pipeline_response.http_response
-
-        if response.status_code not in [200]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
-
-        deserialized = self._deserialize('AgentPoolUpgradeProfile', pipeline_response)
-
-        if cls:
-            return cls(pipeline_response, deserialized, {})
-
-        return deserialized
-    get_upgrade_profile.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/agentPools/{agentPoolName}/upgradeProfiles/default'}  # type: ignore
-
-    def get_available_agent_pool_versions(
-        self,
-        resource_group_name,  # type: str
-        resource_name,  # type: str
-        **kwargs  # type: Any
-    ):
-        # type: (...) -> "_models.AgentPoolAvailableVersions"
-        """Gets a list of supported versions for the specified agent pool.
-
-        Gets a list of supported versions for the specified agent pool.
-
-        :param resource_group_name: The name of the resource group.
-        :type resource_group_name: str
-        :param resource_name: The name of the managed cluster resource.
-        :type resource_name: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: AgentPoolAvailableVersions, or the result of cls(response)
-        :rtype: ~azure.mgmt.containerservice.v2021_05_01.models.AgentPoolAvailableVersions
-        :raises: ~azure.core.exceptions.HttpResponseError
-        """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.AgentPoolAvailableVersions"]
-        error_map = {
-            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
-        }
-        error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-05-01"
-        accept = "application/json"
-
-        # Construct URL
-        url = self.get_available_agent_pool_versions.metadata['url']  # type: ignore
-        path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', min_length=1),
-            'resourceName': self._serialize.url("resource_name", resource_name, 'str', max_length=63, min_length=1, pattern=r'^[a-zA-Z0-9]$|^[a-zA-Z0-9][-_a-zA-Z0-9]{0,61}[a-zA-Z0-9]$'),
-        }
-        url = self._client.format_url(url, **path_format_arguments)
-
-        # Construct parameters
-        query_parameters = {}  # type: Dict[str, Any]
-        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
-
-        # Construct headers
-        header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
-
-        request = self._client.get(url, query_parameters, header_parameters)
-        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
-        response = pipeline_response.http_response
-
-        if response.status_code not in [200]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
-
-        deserialized = self._deserialize('AgentPoolAvailableVersions', pipeline_response)
-
-        if cls:
-            return cls(pipeline_response, deserialized, {})
-
-        return deserialized
-    get_available_agent_pool_versions.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/availableAgentPoolVersions'}  # type: ignore
-
-    def _upgrade_node_image_version_initial(
-        self,
-        resource_group_name,  # type: str
-        resource_name,  # type: str
-        agent_pool_name,  # type: str
-        **kwargs  # type: Any
-    ):
-        # type: (...) -> Optional["_models.AgentPool"]
-        cls = kwargs.pop('cls', None)  # type: ClsType[Optional["_models.AgentPool"]]
-        error_map = {
-            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
-        }
-        error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-05-01"
-        accept = "application/json"
-
-        # Construct URL
-        url = self._upgrade_node_image_version_initial.metadata['url']  # type: ignore
-        path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', min_length=1),
-            'resourceName': self._serialize.url("resource_name", resource_name, 'str', max_length=63, min_length=1, pattern=r'^[a-zA-Z0-9]$|^[a-zA-Z0-9][-_a-zA-Z0-9]{0,61}[a-zA-Z0-9]$'),
-            'agentPoolName': self._serialize.url("agent_pool_name", agent_pool_name, 'str'),
-        }
-        url = self._client.format_url(url, **path_format_arguments)
-
-        # Construct parameters
-        query_parameters = {}  # type: Dict[str, Any]
-        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
-
-        # Construct headers
-        header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
-
-        request = self._client.post(url, query_parameters, header_parameters)
-        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
-        response = pipeline_response.http_response
-
-        if response.status_code not in [200, 202]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
-
-        deserialized = None
-        if response.status_code == 202:
-            deserialized = self._deserialize('AgentPool', pipeline_response)
-
-        if cls:
-            return cls(pipeline_response, deserialized, {})
-
-        return deserialized
-    _upgrade_node_image_version_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/agentPools/{agentPoolName}/upgradeNodeImageVersion'}  # type: ignore
-
-    def begin_upgrade_node_image_version(
-        self,
-        resource_group_name,  # type: str
-        resource_name,  # type: str
-        agent_pool_name,  # type: str
-        **kwargs  # type: Any
-    ):
-        # type: (...) -> LROPoller["_models.AgentPool"]
-        """Upgrade node image version of an agent pool to the latest.
-
-        Upgrade node image version of an agent pool to the latest.
-
-        :param resource_group_name: The name of the resource group.
-        :type resource_group_name: str
-        :param resource_name: The name of the managed cluster resource.
-        :type resource_name: str
-        :param agent_pool_name: The name of the agent pool.
-        :type agent_pool_name: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be ARMPolling.
-         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.PollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
-        :return: An instance of LROPoller that returns either None or the result of cls(response)
-        :rtype: ~azure.core.polling.LROPoller[None]
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-        polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.AgentPool"]
-        lro_delay = kwargs.pop(
-            'polling_interval',
-            self._config.polling_interval
-        )
-        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
-        if cont_token is None:
-            raw_result = self._upgrade_node_image_version_initial(
-                resource_group_name=resource_group_name,
-                resource_name=resource_name,
-                agent_pool_name=agent_pool_name,
-                cls=lambda x,y,z: x,
-                **kwargs
-            )
-
-        kwargs.pop('error_map', None)
-        kwargs.pop('content_type', None)
-
-        def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize('AgentPool', pipeline_response)
-
-            if cls:
-                return cls(pipeline_response, deserialized, {})
-            return deserialized
-
-        path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', min_length=1),
-            'resourceName': self._serialize.url("resource_name", resource_name, 'str', max_length=63, min_length=1, pattern=r'^[a-zA-Z0-9]$|^[a-zA-Z0-9][-_a-zA-Z0-9]{0,61}[a-zA-Z0-9]$'),
-            'agentPoolName': self._serialize.url("agent_pool_name", agent_pool_name, 'str'),
-        }
-
-        if polling is True: polling_method = ARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
-        elif polling is False: polling_method = NoPolling()
-        else: polling_method = polling
-        if cont_token:
-            return LROPoller.from_continuation_token(
-                polling_method=polling_method,
-                continuation_token=cont_token,
-                client=self._client,
-                deserialization_callback=get_long_running_output
-            )
-        else:
-            return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    begin_upgrade_node_image_version.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/agentPools/{agentPoolName}/upgradeNodeImageVersion'}  # type: ignore
+    begin_delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/openShiftManagedClusters/{resourceName}'}  # type: ignore

@@ -26,35 +26,16 @@ class _CaseInsensitiveEnumMeta(EnumMeta):
             raise AttributeError(name)
 
 
-class AgentPoolMode(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """AgentPoolMode represents mode of an agent pool.
+class ContainerServiceOrchestratorTypes(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """The orchestrator to use to manage container service cluster resources. Valid values are
+    Kubernetes, Swarm, DCOS, DockerCE and Custom.
     """
 
-    SYSTEM = "System"
-    USER = "User"
-
-class AgentPoolType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """AgentPoolType represents types of an agent pool.
-    """
-
-    VIRTUAL_MACHINE_SCALE_SETS = "VirtualMachineScaleSets"
-    AVAILABILITY_SET = "AvailabilitySet"
-
-class Code(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """Tells whether the cluster is Running or Stopped
-    """
-
-    RUNNING = "Running"
-    STOPPED = "Stopped"
-
-class ConnectionStatus(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """The private link service connection status.
-    """
-
-    PENDING = "Pending"
-    APPROVED = "Approved"
-    REJECTED = "Rejected"
-    DISCONNECTED = "Disconnected"
+    KUBERNETES = "Kubernetes"
+    SWARM = "Swarm"
+    DCOS = "DCOS"
+    DOCKER_CE = "DockerCE"
+    CUSTOM = "Custom"
 
 class ContainerServiceStorageProfileTypes(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Storage profile specifies what kind of storage used. Choose from StorageAccount and
@@ -252,187 +233,9 @@ class Count(with_metaclass(_CaseInsensitiveEnumMeta, int, Enum)):
     THREE = 3
     FIVE = 5
 
-class CreatedByType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """The type of identity that created the resource.
-    """
-
-    USER = "User"
-    APPLICATION = "Application"
-    MANAGED_IDENTITY = "ManagedIdentity"
-    KEY = "Key"
-
-class Expander(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-
-    LEAST_WASTE = "least-waste"
-    MOST_PODS = "most-pods"
-    PRIORITY = "priority"
-    RANDOM = "random"
-
-class ExtendedLocationTypes(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """The type of extendedLocation.
-    """
-
-    EDGE_ZONE = "EdgeZone"
-
-class GPUInstanceProfile(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """GPUInstanceProfile to be used to specify GPU MIG instance profile for supported GPU VM SKU.
-    Supported values are MIG1g, MIG2g, MIG3g, MIG4g and MIG7g.
-    """
-
-    MIG1_G = "MIG1g"
-    MIG2_G = "MIG2g"
-    MIG3_G = "MIG3g"
-    MIG4_G = "MIG4g"
-    MIG7_G = "MIG7g"
-
-class KubeletDiskType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """KubeletDiskType determines the placement of emptyDir volumes, container runtime data root, and
-    Kubelet ephemeral storage. Allowed values: 'OS', 'Temporary' (preview).
-    """
-
-    OS = "OS"
-    TEMPORARY = "Temporary"
-
-class LicenseType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """The licenseType to use for Windows VMs. Windows_Server is used to enable Azure Hybrid User
-    Benefits for Windows VMs.
-    """
-
-    NONE = "None"
-    WINDOWS_SERVER = "Windows_Server"
-
-class LoadBalancerSku(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """The load balancer sku for the managed cluster.
-    """
-
-    STANDARD = "standard"
-    BASIC = "basic"
-
-class ManagedClusterPodIdentityProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """The current provisioning state of the pod identity.
-    """
-
-    ASSIGNED = "Assigned"
-    UPDATING = "Updating"
-    DELETING = "Deleting"
-    FAILED = "Failed"
-
-class ManagedClusterSKUName(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """Name of a managed cluster SKU.
-    """
-
-    BASIC = "Basic"
-
-class ManagedClusterSKUTier(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """Tier of a managed cluster SKU.
-    """
-
-    PAID = "Paid"
-    FREE = "Free"
-
-class NetworkMode(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """Network mode used for building Kubernetes network.
-    """
-
-    TRANSPARENT = "transparent"
-    BRIDGE = "bridge"
-
-class NetworkPlugin(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """Network plugin used for building Kubernetes network.
-    """
-
-    AZURE = "azure"
-    KUBENET = "kubenet"
-
-class NetworkPolicy(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """Network policy used for building Kubernetes network.
-    """
-
-    CALICO = "calico"
-    AZURE = "azure"
-
-class OSDiskType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """OSDiskType represents the type of an OS disk on an agent pool.
-    """
-
-    MANAGED = "Managed"
-    EPHEMERAL = "Ephemeral"
-
-class OSSKU(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """OsSKU to be used to specify os sku. Choose from Ubuntu(default) and CBLMariner for Linux
-    OSType. Not applicable to Windows OSType.
-    """
-
-    UBUNTU = "Ubuntu"
-    CBL_MARINER = "CBLMariner"
-
 class OSType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """OsType to be used to specify os type. Choose from Linux and Windows. Default to Linux.
     """
 
     LINUX = "Linux"
     WINDOWS = "Windows"
-
-class OutboundType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """The outbound (egress) routing method.
-    """
-
-    LOAD_BALANCER = "loadBalancer"
-    USER_DEFINED_ROUTING = "userDefinedRouting"
-
-class PrivateEndpointConnectionProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """The current provisioning state.
-    """
-
-    SUCCEEDED = "Succeeded"
-    CREATING = "Creating"
-    DELETING = "Deleting"
-    FAILED = "Failed"
-
-class ResourceIdentityType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """The type of identity used for the managed cluster. Type 'SystemAssigned' will use an implicitly
-    created identity in master components and an auto-created user assigned identity in MC_
-    resource group in agent nodes. Type 'None' will not use MSI for the managed cluster, service
-    principal will be used instead.
-    """
-
-    SYSTEM_ASSIGNED = "SystemAssigned"
-    USER_ASSIGNED = "UserAssigned"
-    NONE = "None"
-
-class ScaleSetEvictionPolicy(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """ScaleSetEvictionPolicy to be used to specify eviction policy for Spot virtual machine scale
-    set. Default to Delete.
-    """
-
-    DELETE = "Delete"
-    DEALLOCATE = "Deallocate"
-
-class ScaleSetPriority(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """ScaleSetPriority to be used to specify virtual machine scale set priority. Default to regular.
-    """
-
-    SPOT = "Spot"
-    REGULAR = "Regular"
-
-class UpgradeChannel(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """upgrade channel for auto upgrade.
-    """
-
-    RAPID = "rapid"
-    STABLE = "stable"
-    PATCH = "patch"
-    NODE_IMAGE = "node-image"
-    NONE = "none"
-
-class WeekDay(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """The weekday enum.
-    """
-
-    SUNDAY = "Sunday"
-    MONDAY = "Monday"
-    TUESDAY = "Tuesday"
-    WEDNESDAY = "Wednesday"
-    THURSDAY = "Thursday"
-    FRIDAY = "Friday"
-    SATURDAY = "Saturday"

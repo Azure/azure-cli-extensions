@@ -19,33 +19,15 @@ if TYPE_CHECKING:
     from azure.core.pipeline.transport import HttpRequest, HttpResponse
 
 from ._configuration import ContainerServiceClientConfiguration
-from .operations import Operations
-from .operations import ManagedClustersOperations
-from .operations import MaintenanceConfigurationsOperations
-from .operations import AgentPoolsOperations
-from .operations import PrivateEndpointConnectionsOperations
-from .operations import PrivateLinkResourcesOperations
-from .operations import ResolvePrivateLinkServiceIdOperations
+from .operations import OpenShiftManagedClustersOperations
 from . import models
 
 
 class ContainerServiceClient(object):
     """The Container Service Client.
 
-    :ivar operations: Operations operations
-    :vartype operations: azure.mgmt.containerservice.v2021_05_01.operations.Operations
-    :ivar managed_clusters: ManagedClustersOperations operations
-    :vartype managed_clusters: azure.mgmt.containerservice.v2021_05_01.operations.ManagedClustersOperations
-    :ivar maintenance_configurations: MaintenanceConfigurationsOperations operations
-    :vartype maintenance_configurations: azure.mgmt.containerservice.v2021_05_01.operations.MaintenanceConfigurationsOperations
-    :ivar agent_pools: AgentPoolsOperations operations
-    :vartype agent_pools: azure.mgmt.containerservice.v2021_05_01.operations.AgentPoolsOperations
-    :ivar private_endpoint_connections: PrivateEndpointConnectionsOperations operations
-    :vartype private_endpoint_connections: azure.mgmt.containerservice.v2021_05_01.operations.PrivateEndpointConnectionsOperations
-    :ivar private_link_resources: PrivateLinkResourcesOperations operations
-    :vartype private_link_resources: azure.mgmt.containerservice.v2021_05_01.operations.PrivateLinkResourcesOperations
-    :ivar resolve_private_link_service_id: ResolvePrivateLinkServiceIdOperations operations
-    :vartype resolve_private_link_service_id: azure.mgmt.containerservice.v2021_05_01.operations.ResolvePrivateLinkServiceIdOperations
+    :ivar open_shift_managed_clusters: OpenShiftManagedClustersOperations operations
+    :vartype open_shift_managed_clusters: azure.mgmt.containerservice.v2019_04_30.operations.OpenShiftManagedClustersOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials.TokenCredential
     :param subscription_id: Subscription credentials which uniquely identify Microsoft Azure subscription. The subscription ID forms part of the URI for every service call.
@@ -72,19 +54,7 @@ class ContainerServiceClient(object):
         self._serialize.client_side_validation = False
         self._deserialize = Deserializer(client_models)
 
-        self.operations = Operations(
-            self._client, self._config, self._serialize, self._deserialize)
-        self.managed_clusters = ManagedClustersOperations(
-            self._client, self._config, self._serialize, self._deserialize)
-        self.maintenance_configurations = MaintenanceConfigurationsOperations(
-            self._client, self._config, self._serialize, self._deserialize)
-        self.agent_pools = AgentPoolsOperations(
-            self._client, self._config, self._serialize, self._deserialize)
-        self.private_endpoint_connections = PrivateEndpointConnectionsOperations(
-            self._client, self._config, self._serialize, self._deserialize)
-        self.private_link_resources = PrivateLinkResourcesOperations(
-            self._client, self._config, self._serialize, self._deserialize)
-        self.resolve_private_link_service_id = ResolvePrivateLinkServiceIdOperations(
+        self.open_shift_managed_clusters = OpenShiftManagedClustersOperations(
             self._client, self._config, self._serialize, self._deserialize)
 
     def _send_request(self, http_request, **kwargs):
