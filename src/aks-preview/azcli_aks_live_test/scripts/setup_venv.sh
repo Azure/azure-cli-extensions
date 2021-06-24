@@ -119,10 +119,12 @@ if [[ -n ${1} ]]; then
     patchImageTools
 
     # create new venv if second arg is not "n"
-    new_venv=${2:-"y"}
-    if [[ ! ${new_venv} == "n" ]]; then
+    new_venv=${2:-"n"}
+    if [[ ${new_venv} == "y" ]]; then
         echo "Create new venv!"
         setupVenv
+    else
+        source azEnv/bin/activate
     fi
 
     if [[ ${1} == "build" ]]; then
