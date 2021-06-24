@@ -31,7 +31,7 @@ __logger = get_logger(__name__)
 
 
 def execute_query(client, graph_query, first, skip, subscriptions, management_groups, allow_partial_scopes, skip_token):
-    # type: (ResourceGraphClient, str, int, int, list[str], str) -> object
+    # type: (ResourceGraphClient, str, int, int, list[str], list[str], bool, str) -> object
     mgs_list = management_groups
     if mgs_list is not None and len(mgs_list) > __MANAGEMENT_GROUP_LIMIT:
         mgs_list = mgs_list[:__MANAGEMENT_GROUP_LIMIT]
@@ -94,6 +94,19 @@ def execute_query(client, graph_query, first, skip, subscriptions, management_gr
     result_dict['skip_token'] = response.skip_token
 
     return result_dict
+
+
+def create_shared_query(client, resource_group_name,
+                        resource_name, description,
+                        graph_query, location='global', tags=None):
+    from azext_resourcegraph.vendored_sdks.resourcegraph.models import GraphQueryResource
+    graph_shared_query = GraphQueryResource(description=description,
+                                            query=graph_query,
+                                            tags=tags,
+                                            location=location)
+    return client.graph_query.create_or_update(resource_group_name=resource_group_name,
+                                               resource_name=resource_name,
+                                               properties=graph_shared_query)
 
 
 def _get_cached_subscriptions():

@@ -389,7 +389,7 @@ class ManagedClustersOperations(object):
     get_access_profile.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/accessProfiles/{roleName}/listCredential'}
 
     def list_cluster_admin_credentials(
-            self, resource_group_name, resource_name, custom_headers=None, raw=False, **operation_config):
+            self, resource_group_name, resource_name, server_fqdn=None, custom_headers=None, raw=False, **operation_config):
         """Gets cluster admin credential of a managed cluster.
 
         Gets cluster admin credential of the managed cluster with a specified
@@ -399,6 +399,8 @@ class ManagedClustersOperations(object):
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource.
         :type resource_name: str
+        :param server_fqdn: server fqdn type for credentials to be returned
+        :type server_fqdn: str
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
@@ -422,6 +424,8 @@ class ManagedClustersOperations(object):
         # Construct parameters
         query_parameters = {}
         query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
+        if server_fqdn is not None:
+            query_parameters['server-fqdn'] = self._serialize.query("server_fqdn", server_fqdn, 'str')
 
         # Construct headers
         header_parameters = {}
@@ -454,7 +458,7 @@ class ManagedClustersOperations(object):
     list_cluster_admin_credentials.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/listClusterAdminCredential'}
 
     def list_cluster_user_credentials(
-            self, resource_group_name, resource_name, custom_headers=None, raw=False, **operation_config):
+            self, resource_group_name, resource_name, server_fqdn=None, custom_headers=None, raw=False, **operation_config):
         """Gets cluster user credential of a managed cluster.
 
         Gets cluster user credential of the managed cluster with a specified
@@ -464,6 +468,8 @@ class ManagedClustersOperations(object):
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource.
         :type resource_name: str
+        :param server_fqdn: server fqdn type for credentials to be returned
+        :type server_fqdn: str
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
@@ -487,6 +493,8 @@ class ManagedClustersOperations(object):
         # Construct parameters
         query_parameters = {}
         query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
+        if server_fqdn is not None:
+            query_parameters['server-fqdn'] = self._serialize.query("server_fqdn", server_fqdn, 'str')
 
         # Construct headers
         header_parameters = {}
@@ -519,7 +527,7 @@ class ManagedClustersOperations(object):
     list_cluster_user_credentials.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/{resourceName}/listClusterUserCredential'}
 
     def list_cluster_monitoring_user_credentials(
-            self, resource_group_name, resource_name, custom_headers=None, raw=False, **operation_config):
+            self, resource_group_name, resource_name, server_fqdn=None, custom_headers=None, raw=False, **operation_config):
         """Gets cluster monitoring user credential of a managed cluster.
 
         Gets cluster monitoring user credential of the managed cluster with a
@@ -529,6 +537,8 @@ class ManagedClustersOperations(object):
         :type resource_group_name: str
         :param resource_name: The name of the managed cluster resource.
         :type resource_name: str
+        :param server_fqdn: server fqdn type for credentials to be returned
+        :type server_fqdn: str
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
@@ -552,6 +562,8 @@ class ManagedClustersOperations(object):
         # Construct parameters
         query_parameters = {}
         query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
+        if server_fqdn is not None:
+            query_parameters['server-fqdn'] = self._serialize.query("server_fqdn", server_fqdn, 'str')
 
         # Construct headers
         header_parameters = {}
