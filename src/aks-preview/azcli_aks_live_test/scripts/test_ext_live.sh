@@ -18,31 +18,11 @@ set -o xtrace
 [[ -z "${EXT_TEST_FILTER}" ]] && (echo "EXT_TEST_FILTER is empty")
 [[ -z "${EXT_TEST_COVERAGE}" ]] && (echo "EXT_TEST_COVERAGE is empty")
 
-# dir
-pwd
-ls -alh
-
 # activate virtualenv
 source azEnv/bin/activate
 
-# remove extension
-echo "Remove existing aks-preview extension (if any)"
-if az extension remove --name aks-preview || azdev extension remove aks-preview; then
-    deactivate
-    source azEnv/bin/activate
-fi
-
-# install latest extension
-echo "Install the latest aks-preview extension and re-activate the virtualenv"
-azdev extension add aks-preview
-az extension list
-azdev extension list | grep "aks-preview" -C 5
-deactivate
-source azEnv/bin/activate
-
-# use a fake command to force trigger the command index update of azure-cli, in order to load aks-preview commands
-# otherwise, cold boot execution of azdev test / pytest would only use commands in the acs module
-az aks fake-command --debug || true
+# setup aks-preview
+./scripts/setup_venv.sh setup-akspreview
 
 # prepare run flags
 run_flags="-e --no-exitfirst --report-path ./reports --reruns 3 --capture=sys"

@@ -14,11 +14,13 @@ setupVenv(){
     python -m pip install -U pip
 }
 
+# need to be executed in a venv
 installBuildTools(){
-    pip install tox
+    pip install tox coverage
     pip install -U build
 }
 
+# need to be executed in a venv
 setupAZ(){
     cli_repo=${1:-"."}
     ext_repo=${2:-""}
@@ -40,6 +42,7 @@ setupAZ(){
     which az && az version
 }
 
+# need to be executed in a venv
 installTestPackages(){
     # install pytest plugins
     pip install pytest-json-report pytest-rerunfailures --upgrade
@@ -48,11 +51,13 @@ installTestPackages(){
     pip install coverage
 }
 
+# need to be executed in a venv
 installAZAKSTOOLFromLocal(){
     wheel_file=${1}
     pip install ${wheel_file}
 }
 
+# need to be executed in a venv
 installAZAKSTOOL(){
     wheel_file="az_aks_tool-latest-py3-none-any.whl"
     wheel_url="https://akspreview.blob.core.windows.net/azakstool/${wheel_file}"
@@ -60,11 +65,43 @@ installAZAKSTOOL(){
     installAZAKSTOOLFromLocal ${wheel_file}
 }
 
+# need to be executed in a venv with kusto related modules installed
 removeKustoPTHFile(){
     pushd azEnv/lib/python${PYTHON_VERSION}/site-packages
     rm azure_kusto_data*nspkg.pth
     rm azure_kusto_ingest*nspkg.pth
     popd
+}
+
+# need to be executed in a venv after 'setupAZ'
+igniteAKSPreview(){
+    # use a fake command to force trigger the command index update of azure-cli, in order to load aks-preview commands
+    # otherwise, cold boot execution of azdev test / pytest would only use commands in the acs module
+    az aks fake-command --debug || true
+}
+
+# need to be executed in a venv
+removeAKSPreview(){
+    # remove extension
+    echo "Remove existing aks-preview extension (if any)"
+    if az extension remove --name aks-preview || azdev extension remove aks-preview; then
+        deactivate
+        source azEnv/bin/activate
+    fi
+}
+
+# need to be executed in a venv after 'setupAZ'
+setupAKSPreview(){
+    # remove extension
+    removeAKSPreview
+
+    # install latest extension
+    echo "Install the latest aks-preview extension and re-activate the virtualenv"
+    azdev extension add aks-preview
+    az extension list
+    azdev extension list | grep "aks-preview" -C 5
+    deactivate
+    source azEnv/bin/activate
 }
 
 if [[ -n ${1} ]]; then
@@ -84,7 +121,7 @@ if [[ -n ${1} ]]; then
     if [[ ${1} == "build" ]]; then
         echo "Start to build az-aks-tool!"
         installBuildTools
-    elif [[ ${1} == "setuptool" ]]; then
+    elif [[ ${1} == "setup-tool" ]]; then
         echo "Start to setup az-aks-tool!"
         local_setup=${3:-"n"}
         if [[ ${local_setup} == "y" ]]; then
@@ -94,12 +131,16 @@ if [[ -n ${1} ]]; then
             installAZAKSTOOL
         fi
         removeKustoPTHFile
-    elif [[ ${1} == "setupaz" ]]; then
+    elif [[ ${1} == "setup-az" ]]; then
         echo "Start to setup azure-cli!"
         cli_repo=${3:-"azure-cli/"}
         ext_repo=${4:-""}
         setupAZ ${cli_repo} ${ext_repo}
         installTestPackages
+    elif [[ ${1} == "setup-akspreview" ]]; then
+        echo "Start to setup aks-preview!"
+        setupAKSPreview
+        igniteAKSPreview
     else
         echo "Unknown arg '${1}'!"
     fi

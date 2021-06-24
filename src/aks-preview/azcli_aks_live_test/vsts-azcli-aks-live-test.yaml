@@ -34,7 +34,7 @@ jobs:
         ls -alh
       displayName: "Move All Checkout Files to the Newly Created 'azure-cli-extensions' Directory"
     - bash: |
-        $(LIVE_TEST_BASE_DIR)/clone_repo.sh
+        $(LIVE_TEST_BASE_DIR)/scripts/clone_repo.sh
       condition: succeeded()
       displayName: "Clone GitHub Repo and Move Test Related Files"
     - bash: |
@@ -50,8 +50,8 @@ jobs:
       condition: succeeded()
       displayName: "Start Container"
     - bash: |
-        docker exec $(ContainerName) /opt/scripts/setup_venv.sh setuptool y
-        docker exec $(ContainerName) /opt/scripts/setup_venv.sh setupaz n azure-cli/ azure-cli-extensions/
+        docker exec $(ContainerName) /opt/scripts/setup_venv.sh setup-tool y
+        docker exec $(ContainerName) /opt/scripts/setup_venv.sh setup-az n azure-cli/ azure-cli-extensions/
       condition: succeeded()
       displayName: "Set up Virtual Environment"
     - bash: |
