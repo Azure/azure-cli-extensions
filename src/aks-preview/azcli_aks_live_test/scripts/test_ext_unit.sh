@@ -27,10 +27,11 @@ if ! coverage run --source=. --omit=*/vendored_sdks/*,*/tests/* -p -m unittest d
     azext_aks_preview_unit_test_failed="true"
 fi
 # generate & copy coverage report
-coverage combine && coverage json -o coverage_azext_aks_preview.json
+coverage combine
 coverage report -m
+coverage json -o coverage_azext_aks_preview.json
 popd
-cp ${aks_preview_base_dir}/coverage_azext_aks_preview.json reports/
+mkdir -p reports/ && cp ${aks_preview_base_dir}/coverage_azext_aks_preview.json reports/
 
 if [[ ${azext_aks_preview_unit_test_failed} == "true" ]]; then
     echo "Unit test failed!"

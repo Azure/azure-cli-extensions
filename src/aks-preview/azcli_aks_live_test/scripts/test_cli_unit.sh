@@ -28,10 +28,11 @@ if ! coverage run --source=. --omit=*/tests/* -p -m unittest discover; then
     acs_unit_test_failed="true"
 fi
 # generate & copy coverage report
-coverage combine && coverage json -o coverage_acs.json
+coverage combine
 coverage report -m
+coverage json -o coverage_acs.json
 popd
-cp ${acs_base_dir}/coverage_acs.json reports/
+mkdir -p reports/ && cp ${acs_base_dir}/coverage_acs.json reports/
 
 if [[ ${acs_unit_test_failed} == "true" ]]; then
     echo "Unit test failed!"
