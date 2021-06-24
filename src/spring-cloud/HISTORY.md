@@ -1,8 +1,5 @@
 Release History
 ===============
-2.5.0
------
-* Migration from `instrumentation_key` to `connection_string` when update java agent configurations.
 
 2.4.0
 -----
