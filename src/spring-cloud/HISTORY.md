@@ -1,5 +1,13 @@
 Release History
 ===============
+2.5.1
+-----
+* Revert `2.5.0` as a quick fix for incompatibility with old api-version. 
+
+~~2.5.0~~
+-----
+* Deprecated
+* ~~Migration from `instrumentation_key` to `connection_string` when update java agent configurations.~~
 
 2.4.0
 -----
