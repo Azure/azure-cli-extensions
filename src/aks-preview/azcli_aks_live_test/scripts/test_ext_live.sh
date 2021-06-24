@@ -13,7 +13,6 @@ set -o xtrace
 [[ -z "${AZCLI_ALT_CLIENT_SECRET}" ]] && (echo "AZCLI_ALT_CLIENT_SECRET is empty"; exit 1)
 [[ -z "${TEST_MODE}" ]] && (echo "TEST_MODE is empty"; exit 1)
 [[ -z "${PARALLELISM}" ]] && (echo "PARALLELISM is empty"; exit 1)
-[[ -z "${TEST_CASES}" ]] && (echo "TEST_CASES is empty")
 [[ -z "${EXT_TEST_MATRIX}" ]] && (echo "EXT_TEST_MATRIX is empty")
 [[ -z "${EXT_TEST_FILTER}" ]] && (echo "EXT_TEST_FILTER is empty")
 [[ -z "${EXT_TEST_COVERAGE}" ]] && (echo "EXT_TEST_COVERAGE is empty")

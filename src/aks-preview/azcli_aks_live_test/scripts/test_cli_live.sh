@@ -13,6 +13,9 @@ set -o xtrace
 [[ -z "${AZCLI_ALT_CLIENT_SECRET}" ]] && (echo "AZCLI_ALT_CLIENT_SECRET is empty"; exit 1)
 [[ -z "${TEST_MODE}" ]] && (echo "TEST_MODE is empty"; exit 1)
 [[ -z "${PARALLELISM}" ]] && (echo "PARALLELISM is empty"; exit 1)
+[[ -z "${CLI_TEST_MATRIX}" ]] && (echo "CLI_TEST_MATRIX is empty")
+[[ -z "${CLI_TEST_FILTER}" ]] && (echo "CLI_TEST_FILTER is empty")
+[[ -z "${CLI_TEST_COVERAGE}" ]] && (echo "CLI_TEST_COVERAGE is empty")
 
 # activate virtualenv
 source azEnv/bin/activate
