@@ -8,8 +8,10 @@
 
 from ._resource_graph_client_operations import ResourceGraphClientOperationsMixin
 from ._operations import Operations
+from ._graph_query_operations import GraphQueryOperations
 
 __all__ = [
     'ResourceGraphClientOperationsMixin',
     'Operations',
+    'GraphQueryOperations',
 ]

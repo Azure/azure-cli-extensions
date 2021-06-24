@@ -19,6 +19,7 @@ DEFAULT_MYSQL_DB_NAME = ''  # no default database required
 DEFAULT_PG_DB_NAME = 'postgres'
 
 
+# pylint: disable=raise-missing-from
 def connect_to_flexible_server_mysql(cmd, server_name, administrator_login, administrator_login_password=None,
                                      database_name=None, interactive_mode=None, querytext=None):
     if querytext:

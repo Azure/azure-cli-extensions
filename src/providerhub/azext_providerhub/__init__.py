@@ -11,31 +11,29 @@
 # pylint: disable=unused-import
 # pylint: disable=reimported
 # pylint: disable=import-outside-toplevel
+# pylint: disable=super-with-arguments
 
 from azure.cli.core import AzCommandsLoader
-from azure.cli.core.commands import CliCommandType
-from azext_providerhub.generated._help import helps
-from azext_providerhub.generated._client_factory import cf_providerhub_cl
-from azext_providerhub.generated.commands import load_command_table
-from azext_providerhub.generated._params import load_arguments
-
+from azext_providerhub.generated._help import helps  # pylint: disable=unused-import
 try:
-    from azext_providerhub.manual._help import helps
+    from azext_providerhub.manual._help import helps  # pylint: disable=reimported
 except ImportError:
     pass
 
 
-class ProviderhubCommandsLoader(AzCommandsLoader):
+class ProviderHubCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
+        from azure.cli.core.commands import CliCommandType
+        from azext_providerhub.generated._client_factory import cf_providerhub_cl
         providerhub_custom = CliCommandType(
             operations_tmpl='azext_providerhub.custom#{}',
             client_factory=cf_providerhub_cl)
-        parent = super()
-        parent.__init__(cli_ctx=cli_ctx,
-                        custom_command_type=providerhub_custom)
+        parent = super(ProviderHubCommandsLoader, self)
+        parent.__init__(cli_ctx=cli_ctx, custom_command_type=providerhub_custom)
 
     def load_command_table(self, args):
+        from azext_providerhub.generated.commands import load_command_table
         load_command_table(self, args)
         try:
             from azext_providerhub.manual.commands import load_command_table as load_command_table_manual
@@ -45,6 +43,7 @@ class ProviderhubCommandsLoader(AzCommandsLoader):
         return self.command_table
 
     def load_arguments(self, command):
+        from azext_providerhub.generated._params import load_arguments
         load_arguments(self, command)
         try:
             from azext_providerhub.manual._params import load_arguments as load_arguments_manual
@@ -53,4 +52,4 @@ class ProviderhubCommandsLoader(AzCommandsLoader):
             pass
 
 
-COMMAND_LOADER_CLS = ProviderhubCommandsLoader
+COMMAND_LOADER_CLS = ProviderHubCommandsLoader
