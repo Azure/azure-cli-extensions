@@ -1293,7 +1293,8 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         aad_profile = ManagedClusterAADProfile(
             managed=True,
             enable_azure_rbac=enable_azure_rbac,
-            admin_group_object_ids=_parse_comma_separated_list(
+            # ids -> i_ds due to track 2 naming issue
+            admin_group_object_i_ds=_parse_comma_separated_list(
                 aad_admin_group_object_ids),
             tenant_id=aad_tenant_id
         )
@@ -1733,7 +1734,8 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
         if aad_tenant_id is not None:
             instance.aad_profile.tenant_id = aad_tenant_id
         if aad_admin_group_object_ids is not None:
-            instance.aad_profile.admin_group_object_ids = _parse_comma_separated_list(
+            # ids -> i_ds due to track 2 naming issue
+            instance.aad_profile.admin_group_object_i_ds = _parse_comma_separated_list(
                 aad_admin_group_object_ids)
         if enable_azure_rbac and disable_azure_rbac:
             raise CLIError(
@@ -2263,7 +2265,7 @@ def aks_upgrade(cmd,    # pylint: disable=unused-argument, too-many-return-state
 
     headers = get_aks_custom_headers(aks_custom_headers)
 
-    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, name, instance, custom_headers=headers)
+    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, name, instance, headers=headers)
 
 
 def aks_runcommand(cmd, client, resource_group_name, name, command_string="", command_files=None):
@@ -2280,8 +2282,8 @@ def aks_runcommand(cmd, client, resource_group_name, name, command_string="", co
         request_payload.cluster_token = _get_dataplane_aad_token(
             cmd.cli_ctx, "6dae42f8-4368-4678-94ff-3960e28e3630")
 
-    commandResultFuture = client.run_command(
-        resource_group_name, name, request_payload, long_running_operation_timeout=5, retry_total=0)
+    commandResultFuture = client.begin_run_command(
+        resource_group_name, name, request_payload, polling_interval=5, retry_total=0)
 
     return _print_command_result(cmd.cli_ctx, commandResultFuture.result(300))
 
@@ -2376,7 +2378,7 @@ def _get_dataplane_aad_token(cli_ctx, serverAppId):
 
 
 def _upgrade_single_nodepool_image_version(no_wait, client, resource_group_name, cluster_name, nodepool_name):
-    return sdk_no_wait(no_wait, client.upgrade_node_image_version, resource_group_name, cluster_name, nodepool_name)
+    return sdk_no_wait(no_wait, client.begin_upgrade_node_image_version, resource_group_name, cluster_name, nodepool_name)
 
 
 def _handle_addons_args(cmd,  # pylint: disable=too-many-statements
@@ -3098,7 +3100,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
         agent_pool.linux_os_config = _get_linux_os_config(linux_os_config)
 
     headers = get_aks_custom_headers(aks_custom_headers)
-    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, cluster_name, nodepool_name, agent_pool, custom_headers=headers)
+    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, cluster_name, nodepool_name, agent_pool, headers=headers)
 
 
 def aks_agentpool_scale(cmd,    # pylint: disable=unused-argument
@@ -3250,7 +3252,7 @@ def aks_agentpool_delete(cmd,   # pylint: disable=unused-argument
         raise CLIError("Node pool {} doesnt exist, "
                        "use 'aks nodepool list' to get current node pool list".format(nodepool_name))
 
-    return sdk_no_wait(no_wait, client.delete, resource_group_name, cluster_name, nodepool_name)
+    return sdk_no_wait(no_wait, client.begin_delete, resource_group_name, cluster_name, nodepool_name)
 
 
 def aks_disable_addons(cmd, client, resource_group_name, name, addons, no_wait=False):
@@ -3331,7 +3333,7 @@ def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_
 
 
 def aks_rotate_certs(cmd, client, resource_group_name, name, no_wait=True):     # pylint: disable=unused-argument
-    return sdk_no_wait(no_wait, client.rotate_cluster_certificates, resource_group_name, name)
+    return sdk_no_wait(no_wait, client.begin_rotate_cluster_certificates, resource_group_name, name)
 
 
 def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
@@ -3801,7 +3803,7 @@ def _put_managed_cluster_ensuring_permission(
             resource_group_name=resource_group_name,
             resource_name=name,
             parameters=managed_cluster,
-            custom_headers=headers))
+            headers=headers))
         cloud_name = cmd.cli_ctx.cloud.name
         # add cluster spn/msi Monitoring Metrics Publisher role assignment to publish metrics to MDM
         # mdm metrics is supported only in azure public cloud, so add the role assignment only in this cloud
@@ -3844,7 +3846,7 @@ def _put_managed_cluster_ensuring_permission(
                               resource_group_name=resource_group_name,
                               resource_name=name,
                               parameters=managed_cluster,
-                              custom_headers=headers)
+                              headers=headers)
 
     return cluster
 

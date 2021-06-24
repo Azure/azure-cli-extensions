@@ -62,7 +62,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('provisioningState', 'Succeeded'),
             self.check('aadProfile.managed', True),
             self.check(
-                'aadProfile.adminGroupObjectIds[0]', '00000000-0000-0000-0000-000000000001')
+                'aadProfile.adminGroupObjectIDs[0]', '00000000-0000-0000-0000-000000000001')
         ])
 
         update_cmd = 'aks update --resource-group={resource_group} --name={name} ' \
@@ -72,7 +72,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('provisioningState', 'Succeeded'),
             self.check('aadProfile.managed', True),
             self.check(
-                'aadProfile.adminGroupObjectIds[0]', '00000000-0000-0000-0000-000000000002'),
+                'aadProfile.adminGroupObjectIDs[0]', '00000000-0000-0000-0000-000000000002'),
             self.check('aadProfile.tenantId',
                        '00000000-0000-0000-0000-000000000003')
         ])
@@ -114,7 +114,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('provisioningState', 'Succeeded'),
             self.check('aadProfile.managed', True),
             self.check(
-                'aadProfile.adminGroupObjectIds[0]', '00000000-0000-0000-0000-000000000003'),
+                'aadProfile.adminGroupObjectIDs[0]', '00000000-0000-0000-0000-000000000003'),
             self.check('aadProfile.tenantId',
                        '00000000-0000-0000-0000-000000000004')
         ])
@@ -146,7 +146,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('provisioningState', 'Succeeded'),
             self.check('aadProfile.managed', True),
             self.check(
-                'aadProfile.adminGroupObjectIds[0]', '00000000-0000-0000-0000-000000000001'),
+                'aadProfile.adminGroupObjectIDs[0]', '00000000-0000-0000-0000-000000000001'),
             self.check('aadProfile.tenantId',
                        '00000000-0000-0000-0000-000000000002')
         ])
@@ -169,7 +169,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('provisioningState', 'Succeeded'),
             self.check('aadProfile.managed', True),
             self.check(
-                'aadProfile.adminGroupObjectIds[0]', '00000000-0000-0000-0000-000000000001')
+                'aadProfile.adminGroupObjectIDs[0]', '00000000-0000-0000-0000-000000000001')
         ])
 
         update_cmd = 'aks update --resource-group={resource_group} --name={name} ' \
