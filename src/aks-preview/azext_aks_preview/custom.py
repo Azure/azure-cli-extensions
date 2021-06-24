@@ -73,7 +73,7 @@ from .vendored_sdks.azure_mgmt_preview_aks.v2021_05_01.models import (ContainerS
                                                                       ManagedClusterIdentity,
                                                                       ManagedClusterAPIServerAccessProfile,
                                                                       ManagedClusterSKU,
-                                                                      ManagedClusterIdentityUserAssignedIdentitiesValue,
+                                                                      Components1Umhcm8SchemasManagedclusteridentityPropertiesUserassignedidentitiesAdditionalproperties,
                                                                       ManagedClusterAutoUpgradeProfile,
                                                                       KubeletConfig,
                                                                       LinuxOSConfig,
@@ -83,7 +83,7 @@ from .vendored_sdks.azure_mgmt_preview_aks.v2021_05_01.models import (ContainerS
                                                                       ManagedClusterPodIdentityException,
                                                                       UserAssignedIdentity,
                                                                       RunCommandRequest,
-                                                                      ManagedClusterPropertiesIdentityProfileValue)
+                                                                      ComponentsQit0EtSchemasManagedclusterpropertiesPropertiesIdentityprofileAdditionalproperties)
 from ._client_factory import cf_resource_groups
 from ._client_factory import get_auth_management_client
 from ._client_factory import get_graph_rbac_management_client
@@ -1334,7 +1334,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         )
     elif enable_managed_identity and assign_identity:
         user_assigned_identity = {
-            assign_identity: ManagedClusterIdentityUserAssignedIdentitiesValue()
+            assign_identity: Components1Umhcm8SchemasManagedclusteridentityPropertiesUserassignedidentitiesAdditionalproperties()
         }
         identity = ManagedClusterIdentity(
             type="UserAssigned",
@@ -1347,7 +1347,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
             raise CLIError('--assign-kubelet-identity can only be specified when --assign-identity is specified')
         kubelet_identity = _get_user_assigned_identity(cmd.cli_ctx, assign_kubelet_identity)
         identity_profile = {
-            'kubeletidentity': ManagedClusterPropertiesIdentityProfileValue(
+            'kubeletidentity': ComponentsQit0EtSchemasManagedclusterpropertiesPropertiesIdentityprofileAdditionalproperties(
                 resource_id=assign_kubelet_identity,
                 client_id=kubelet_identity.client_id,
                 object_id=kubelet_identity.principal_id
@@ -1807,7 +1807,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
             )
         elif goal_identity_type == "userassigned":
             user_assigned_identity = {
-                assign_identity: ManagedClusterIdentityUserAssignedIdentitiesValue()
+                assign_identity: Components1Umhcm8SchemasManagedclusteridentityPropertiesUserassignedidentitiesAdditionalproperties()
             }
             instance.identity = ManagedClusterIdentity(
                 type="UserAssigned",
@@ -2171,7 +2171,7 @@ def aks_scale(cmd,  # pylint: disable=unused-argument
             # null out the SP and AAD profile because otherwise validation complains
             instance.service_principal_profile = None
             instance.aad_profile = None
-            return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, name, instance)
+            return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, name, instance)
     raise CLIError('The nodepool "{}" was not found.'.format(nodepool_name))
 
 
@@ -2263,7 +2263,7 @@ def aks_upgrade(cmd,    # pylint: disable=unused-argument, too-many-return-state
 
     headers = get_aks_custom_headers(aks_custom_headers)
 
-    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, name, instance, custom_headers=headers)
+    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, name, instance, custom_headers=headers)
 
 
 def aks_runcommand(cmd, client, resource_group_name, name, command_string="", command_files=None):
@@ -3098,7 +3098,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
         agent_pool.linux_os_config = _get_linux_os_config(linux_os_config)
 
     headers = get_aks_custom_headers(aks_custom_headers)
-    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, cluster_name, nodepool_name, agent_pool, custom_headers=headers)
+    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, cluster_name, nodepool_name, agent_pool, custom_headers=headers)
 
 
 def aks_agentpool_scale(cmd,    # pylint: disable=unused-argument
@@ -3116,7 +3116,7 @@ def aks_agentpool_scale(cmd,    # pylint: disable=unused-argument
         raise CLIError(
             "The new node count is the same as the current node count.")
     instance.count = new_node_count  # pylint: disable=no-member
-    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, cluster_name, nodepool_name, instance)
+    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, cluster_name, nodepool_name, instance)
 
 
 def aks_agentpool_upgrade(cmd,  # pylint: disable=unused-argument
@@ -3148,7 +3148,7 @@ def aks_agentpool_upgrade(cmd,  # pylint: disable=unused-argument
     if max_surge:
         instance.upgrade_settings.max_surge = max_surge
 
-    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, cluster_name, nodepool_name, instance)
+    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, cluster_name, nodepool_name, instance)
 
 
 def aks_agentpool_get_upgrade_profile(cmd,   # pylint: disable=unused-argument
@@ -3230,7 +3230,7 @@ def aks_agentpool_update(cmd,   # pylint: disable=unused-argument
     if mode is not None:
         instance.mode = mode
 
-    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, cluster_name, nodepool_name, instance)
+    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, cluster_name, nodepool_name, instance)
 
 
 def aks_agentpool_delete(cmd,   # pylint: disable=unused-argument
@@ -3269,7 +3269,7 @@ def aks_disable_addons(cmd, client, resource_group_name, name, addons, no_wait=F
     )
 
     # send the managed cluster representation to update the addon profiles
-    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, name, instance)
+    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, name, instance)
 
 
 def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_resource_id=None,
@@ -3300,7 +3300,7 @@ def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_
     if need_post_creation_role_assignment:
         # adding a wait here since we rely on the result for role assignment
         result = LongRunningOperation(cmd.cli_ctx)(
-            client.create_or_update(resource_group_name, name, instance))
+            client.begin_create_or_update(resource_group_name, name, instance))
         cloud_name = cmd.cli_ctx.cloud.name
         # mdm metrics supported only in Azure Public cloud so add the role assignment only in this cloud
         if monitoring and cloud_name.lower() == 'azurecloud':
@@ -3325,7 +3325,7 @@ def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_
             # we don't need to handle it in client side in this case.
 
     else:
-        result = sdk_no_wait(no_wait, client.create_or_update,
+        result = sdk_no_wait(no_wait, client.begin_create_or_update,
                              resource_group_name, name, instance)
     return result
 
@@ -3797,7 +3797,7 @@ def _put_managed_cluster_ensuring_permission(
                                           need_grant_vnet_permission_to_cluster_identity)
     if need_post_creation_role_assignment:
         # adding a wait here since we rely on the result for role assignment
-        cluster = LongRunningOperation(cmd.cli_ctx)(client.create_or_update(
+        cluster = LongRunningOperation(cmd.cli_ctx)(client.begin_create_or_update(
             resource_group_name=resource_group_name,
             resource_name=name,
             parameters=managed_cluster,
@@ -3840,7 +3840,7 @@ def _put_managed_cluster_ensuring_permission(
                                 acr_name_or_id=attach_acr,
                                 subscription_id=subscription_id)
     else:
-        cluster = sdk_no_wait(no_wait, client.create_or_update,
+        cluster = sdk_no_wait(no_wait, client.begin_create_or_update,
                               resource_group_name=resource_group_name,
                               resource_name=name,
                               parameters=managed_cluster,
@@ -4083,7 +4083,7 @@ def aks_pod_identity_add(cmd, client, resource_group_name, cluster_name,
     )
 
     # send the managed cluster represeentation to update the pod identity addon
-    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, cluster_name, instance)
+    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, cluster_name, instance)
 
 
 def aks_pod_identity_delete(cmd, client, resource_group_name, cluster_name,
@@ -4107,7 +4107,7 @@ def aks_pod_identity_delete(cmd, client, resource_group_name, cluster_name,
     )
 
     # send the managed cluster represeentation to update the pod identity addon
-    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, cluster_name, instance)
+    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, cluster_name, instance)
 
 
 def aks_pod_identity_list(cmd, client, resource_group_name, cluster_name):  # pylint: disable=unused-argument
@@ -4134,7 +4134,7 @@ def aks_pod_identity_exception_add(cmd, client, resource_group_name, cluster_nam
     )
 
     # send the managed cluster represeentation to update the pod identity addon
-    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, cluster_name, instance)
+    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, cluster_name, instance)
 
 
 def aks_pod_identity_exception_delete(cmd, client, resource_group_name, cluster_name,
@@ -4157,7 +4157,7 @@ def aks_pod_identity_exception_delete(cmd, client, resource_group_name, cluster_
     )
 
     # send the managed cluster represeentation to update the pod identity addon
-    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, cluster_name, instance)
+    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, cluster_name, instance)
 
 
 def aks_pod_identity_exception_update(cmd, client, resource_group_name, cluster_name,
@@ -4188,7 +4188,7 @@ def aks_pod_identity_exception_update(cmd, client, resource_group_name, cluster_
     )
 
     # send the managed cluster represeentation to update the pod identity addon
-    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, cluster_name, instance)
+    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, cluster_name, instance)
 
 
 def aks_pod_identity_exception_list(cmd, client, resource_group_name, cluster_name):
