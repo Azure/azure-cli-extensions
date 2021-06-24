@@ -32,10 +32,6 @@ if [ ${PARALLELISM} -ge 2 ]; then
 else
     run_flags+=" -s"
 fi
-# test cases
-if [[ -n ${TEST_CASES} ]]; then
-    run_flags+=" -t ${TEST_CASES}"
-fi
 # ext matrix
 if [[ -n ${EXT_TEST_MATRIX} ]]; then
     run_flags+=" -em ./configs/${EXT_TEST_MATRIX}"

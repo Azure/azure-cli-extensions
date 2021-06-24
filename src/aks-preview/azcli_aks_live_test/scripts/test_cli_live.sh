@@ -14,32 +14,51 @@ set -o xtrace
 [[ -z "${TEST_MODE}" ]] && (echo "TEST_MODE is empty"; exit 1)
 [[ -z "${PARALLELISM}" ]] && (echo "PARALLELISM is empty"; exit 1)
 
-# dir
-pwd
-ls -alh
-
 # activate virtualenv
 source azEnv/bin/activate
 
-# remove extension
-echo "Remove existing aks-preview extension (if any)"
-if az extension remove --name aks-preview || azdev extension remove aks-preview; then
-    deactivate
-    source azEnv/bin/activate
+# remove aks-preview
+source ./scripts/setup_venv.sh
+removeAKSPreview
+
+# prepare run flags
+run_flags="-c --no-exitfirst --report-path ./reports --reruns 3 --capture=sys"
+# parallel
+if [ ${PARALLELISM} -ge 2 ]; then
+    run_flags+=" -j ${PARALLELISM}"
+else
+    run_flags+=" -s"
+fi
+# cli matrix
+if [[ -n ${CLI_TEST_MATRIX} ]]; then
+    run_flags+=" -cm ./configs/${CLI_TEST_MATRIX}"
+fi
+# cli extra filter
+if [[ -n ${CLI_TEST_FILTER} ]]; then
+    run_flags+=" -cf ${CLI_TEST_FILTER}"
+fi
+# cli extra coverage
+if [[ -n ${CLI_TEST_COVERAGE} ]]; then
+    run_flags+=" -cc ${CLI_TEST_COVERAGE}"
 fi
 
-# test cli
+# recording test
 if [[ ${TEST_MODE} == "record" || ${TEST_MODE} == "all" ]]; then
     echo "Test in record mode!"
-    azdev test acs --no-exitfirst --xml-path cli_result.xml --discover -a "-n ${PARALLELISM} --json-report --json-report-file=cli_report.json --reruns 3 --capture=sys"
-    cp *cli_report.json *cli_result.xml reports/
+    run_flags+=" --json-report-file=cli_report.json"
+    run_flags+=" --xml-file=cli_result.xml"
+    echo "run flags: ${run_flags}"
+    azaks ${run_flags}
 fi
 
+# live test
 if [[ ${TEST_MODE} == "live" || ${TEST_MODE} == "all" ]]; then
     echo "Test in live mode!"
     az login --service-principal -u ${AZCLI_ALT_CLIENT_ID} -p ${AZCLI_ALT_CLIENT_SECRET} -t ${TENANT_ID}
     az account set -s ${AZCLI_ALT_SUBSCRIPTION_ID}
     az account show
-    azdev test acs --live --no-exitfirst --xml-path cli_live_result.xml --discover -a "-n ${PARALLELISM} --json-report --json-report-file=cli_live_report.json --reruns 3 --capture=sys"
-    cp *cli_live_report.json *cli_live_result.xml reports/
+    run_flags+=" -l --json-report-file=cli_live_report.json"
+    run_flags+=" --xml-file=cli_live_result.xml"
+    echo "run flags: ${run_flags}"
+    azaks ${run_flags}
 fi

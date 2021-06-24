@@ -3,6 +3,10 @@
 # check var
 [[ -z "${PYTHON_VERSION}" ]] && (echo "PYTHON_VERSION is empty"; exit 1)
 
+patchImageTools(){
+    apt install -y curl
+}
+
 setupVenv(){
     # delete existing venv
     deactivate || true
@@ -110,6 +114,9 @@ if [[ -n ${1} ]]; then
     set -o nounset
     set -o pipefail
     set -o xtrace
+
+    # install missing tools in the image
+    patchImageTools
 
     # create new venv if second arg is not "n"
     new_venv=${2:-"y"}
