@@ -68,6 +68,8 @@ try:
     from ._models_py3 import ExpressionRoot
     from ._models_py3 import ExpressionTraces
     from ._models_py3 import ExtendedErrorInfo
+    from ._models_py3 import FlowAccessControlConfiguration
+    from ._models_py3 import FlowAccessControlConfigurationPolicy
     from ._models_py3 import FlowEndpoints
     from ._models_py3 import FlowEndpointsConfiguration
     from ._models_py3 import GenerateUpgradedDefinitionParameters
@@ -93,6 +95,8 @@ try:
     from ._models_py3 import IntegrationAccountSessionFilter
     from ._models_py3 import IntegrationAccountSessionListResult
     from ._models_py3 import IntegrationAccountSku
+    from ._models_py3 import IntegrationServiceEnvironmenEncryptionConfiguration
+    from ._models_py3 import IntegrationServiceEnvironmenEncryptionKeyReference
     from ._models_py3 import IntegrationServiceEnvironment
     from ._models_py3 import IntegrationServiceEnvironmentAccessEndpoint
     from ._models_py3 import IntegrationServiceEnvironmentListResult
@@ -107,6 +111,7 @@ try:
     from ._models_py3 import IntegrationServiceEnvironmentSkuList
     from ._models_py3 import IntegrationServiceEnvironmentSubnetNetworkHealth
     from ._models_py3 import IpAddress
+    from ._models_py3 import IpAddressRange
     from ._models_py3 import JsonSchema
     from ._models_py3 import KeyVaultKey
     from ._models_py3 import KeyVaultKeyAttributes
@@ -118,6 +123,9 @@ try:
     from ._models_py3 import ManagedApi
     from ._models_py3 import ManagedApiListResult
     from ._models_py3 import NetworkConfiguration
+    from ._models_py3 import OpenAuthenticationAccessPolicies
+    from ._models_py3 import OpenAuthenticationAccessPolicy
+    from ._models_py3 import OpenAuthenticationPolicyClaim
     from ._models_py3 import Operation
     from ._models_py3 import OperationDisplay
     from ._models_py3 import OperationListResult
@@ -159,6 +167,7 @@ try:
     from ._models_py3 import WorkflowListResult
     from ._models_py3 import WorkflowOutputParameter
     from ._models_py3 import WorkflowParameter
+    from ._models_py3 import WorkflowReference
     from ._models_py3 import WorkflowRun
     from ._models_py3 import WorkflowRunAction
     from ._models_py3 import WorkflowRunActionFilter
@@ -178,6 +187,7 @@ try:
     from ._models_py3 import WorkflowTriggerListCallbackUrlQueries
     from ._models_py3 import WorkflowTriggerListResult
     from ._models_py3 import WorkflowTriggerRecurrence
+    from ._models_py3 import WorkflowTriggerReference
     from ._models_py3 import WorkflowVersion
     from ._models_py3 import WorkflowVersionListResult
     from ._models_py3 import WsdlService
@@ -258,6 +268,8 @@ except (SyntaxError, ImportError):
     from ._models import ExpressionRoot  # type: ignore
     from ._models import ExpressionTraces  # type: ignore
     from ._models import ExtendedErrorInfo  # type: ignore
+    from ._models import FlowAccessControlConfiguration  # type: ignore
+    from ._models import FlowAccessControlConfigurationPolicy  # type: ignore
     from ._models import FlowEndpoints  # type: ignore
     from ._models import FlowEndpointsConfiguration  # type: ignore
     from ._models import GenerateUpgradedDefinitionParameters  # type: ignore
@@ -283,6 +295,8 @@ except (SyntaxError, ImportError):
     from ._models import IntegrationAccountSessionFilter  # type: ignore
     from ._models import IntegrationAccountSessionListResult  # type: ignore
     from ._models import IntegrationAccountSku  # type: ignore
+    from ._models import IntegrationServiceEnvironmenEncryptionConfiguration  # type: ignore
+    from ._models import IntegrationServiceEnvironmenEncryptionKeyReference  # type: ignore
     from ._models import IntegrationServiceEnvironment  # type: ignore
     from ._models import IntegrationServiceEnvironmentAccessEndpoint  # type: ignore
     from ._models import IntegrationServiceEnvironmentListResult  # type: ignore
@@ -297,6 +311,7 @@ except (SyntaxError, ImportError):
     from ._models import IntegrationServiceEnvironmentSkuList  # type: ignore
     from ._models import IntegrationServiceEnvironmentSubnetNetworkHealth  # type: ignore
     from ._models import IpAddress  # type: ignore
+    from ._models import IpAddressRange  # type: ignore
     from ._models import JsonSchema  # type: ignore
     from ._models import KeyVaultKey  # type: ignore
     from ._models import KeyVaultKeyAttributes  # type: ignore
@@ -308,6 +323,9 @@ except (SyntaxError, ImportError):
     from ._models import ManagedApi  # type: ignore
     from ._models import ManagedApiListResult  # type: ignore
     from ._models import NetworkConfiguration  # type: ignore
+    from ._models import OpenAuthenticationAccessPolicies  # type: ignore
+    from ._models import OpenAuthenticationAccessPolicy  # type: ignore
+    from ._models import OpenAuthenticationPolicyClaim  # type: ignore
     from ._models import Operation  # type: ignore
     from ._models import OperationDisplay  # type: ignore
     from ._models import OperationListResult  # type: ignore
@@ -349,6 +367,7 @@ except (SyntaxError, ImportError):
     from ._models import WorkflowListResult  # type: ignore
     from ._models import WorkflowOutputParameter  # type: ignore
     from ._models import WorkflowParameter  # type: ignore
+    from ._models import WorkflowReference  # type: ignore
     from ._models import WorkflowRun  # type: ignore
     from ._models import WorkflowRunAction  # type: ignore
     from ._models import WorkflowRunActionFilter  # type: ignore
@@ -368,6 +387,7 @@ except (SyntaxError, ImportError):
     from ._models import WorkflowTriggerListCallbackUrlQueries  # type: ignore
     from ._models import WorkflowTriggerListResult  # type: ignore
     from ._models import WorkflowTriggerRecurrence  # type: ignore
+    from ._models import WorkflowTriggerReference  # type: ignore
     from ._models import WorkflowVersion  # type: ignore
     from ._models import WorkflowVersionListResult  # type: ignore
     from ._models import WsdlService  # type: ignore
@@ -411,6 +431,7 @@ from ._logic_management_client_enums import (
     KeyType,
     MapType,
     MessageFilterType,
+    OpenAuthenticationProviderType,
     ParameterType,
     PartnerType,
     RecurrenceFrequency,
@@ -496,6 +517,8 @@ __all__ = [
     'ExpressionRoot',
     'ExpressionTraces',
     'ExtendedErrorInfo',
+    'FlowAccessControlConfiguration',
+    'FlowAccessControlConfigurationPolicy',
     'FlowEndpoints',
     'FlowEndpointsConfiguration',
     'GenerateUpgradedDefinitionParameters',
@@ -521,6 +544,8 @@ __all__ = [
     'IntegrationAccountSessionFilter',
     'IntegrationAccountSessionListResult',
     'IntegrationAccountSku',
+    'IntegrationServiceEnvironmenEncryptionConfiguration',
+    'IntegrationServiceEnvironmenEncryptionKeyReference',
     'IntegrationServiceEnvironment',
     'IntegrationServiceEnvironmentAccessEndpoint',
     'IntegrationServiceEnvironmentListResult',
@@ -535,6 +560,7 @@ __all__ = [
     'IntegrationServiceEnvironmentSkuList',
     'IntegrationServiceEnvironmentSubnetNetworkHealth',
     'IpAddress',
+    'IpAddressRange',
     'JsonSchema',
     'KeyVaultKey',
     'KeyVaultKeyAttributes',
@@ -546,6 +572,9 @@ __all__ = [
     'ManagedApi',
     'ManagedApiListResult',
     'NetworkConfiguration',
+    'OpenAuthenticationAccessPolicies',
+    'OpenAuthenticationAccessPolicy',
+    'OpenAuthenticationPolicyClaim',
     'Operation',
     'OperationDisplay',
     'OperationListResult',
@@ -587,6 +616,7 @@ __all__ = [
     'WorkflowListResult',
     'WorkflowOutputParameter',
     'WorkflowParameter',
+    'WorkflowReference',
     'WorkflowRun',
     'WorkflowRunAction',
     'WorkflowRunActionFilter',
@@ -606,6 +636,7 @@ __all__ = [
     'WorkflowTriggerListCallbackUrlQueries',
     'WorkflowTriggerListResult',
     'WorkflowTriggerRecurrence',
+    'WorkflowTriggerReference',
     'WorkflowVersion',
     'WorkflowVersionListResult',
     'WsdlService',
@@ -647,6 +678,7 @@ __all__ = [
     'KeyType',
     'MapType',
     'MessageFilterType',
+    'OpenAuthenticationProviderType',
     'ParameterType',
     'PartnerType',
     'RecurrenceFrequency',
