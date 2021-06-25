@@ -5,8 +5,7 @@
 
 # pylint: disable=unused-argument
 
-from ..vendored_sdks.models import ExtensionInstance
-from ..vendored_sdks.models import ExtensionInstanceUpdate
+from ..vendored_sdks.models import Extension
 from ..vendored_sdks.models import ScopeCluster
 from ..vendored_sdks.models import ScopeNamespace
 from ..vendored_sdks.models import Scope
@@ -21,7 +20,7 @@ class DefaultExtension(PartnerExtensionModel):
                configuration_settings_file, configuration_protected_settings_file):
 
         """Default validations & defaults for Create
-           Must create and return a valid 'ExtensionInstance' object.
+           Must create and return a valid 'Extension' object.
 
         """
         ext_scope = None
@@ -34,7 +33,7 @@ class DefaultExtension(PartnerExtensionModel):
                 ext_scope = Scope(namespace=scope_namespace, cluster=None)
 
         create_identity = False
-        extension_instance = ExtensionInstance(
+        extension_instance = Extension(
             extension_type=extension_type,
             auto_upgrade_minor_version=auto_upgrade_minor_version,
             release_train=release_train,
@@ -47,10 +46,10 @@ class DefaultExtension(PartnerExtensionModel):
 
     def Update(self, extension, auto_upgrade_minor_version, release_train, version):
         """Default validations & defaults for Update
-           Must create and return a valid 'ExtensionInstanceUpdate' object.
+           Must create and return a valid 'Extension' object.
 
         """
-        return ExtensionInstanceUpdate(
+        return Extension(
             auto_upgrade_minor_version=auto_upgrade_minor_version,
             release_train=release_train,
             version=version

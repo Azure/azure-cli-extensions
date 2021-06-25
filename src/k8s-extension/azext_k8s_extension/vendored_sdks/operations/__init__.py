@@ -9,12 +9,14 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
+from ._extensions_operations import ExtensionsOperations
+from ._operation_status_operations import OperationStatusOperations
 from ._source_control_configurations_operations import SourceControlConfigurationsOperations
 from ._operations import Operations
-from ._extensions_operations import ExtensionsOperations
 
 __all__ = [
+    'ExtensionsOperations',
+    'OperationStatusOperations',
     'SourceControlConfigurationsOperations',
     'Operations',
-    'ExtensionsOperations',
 ]

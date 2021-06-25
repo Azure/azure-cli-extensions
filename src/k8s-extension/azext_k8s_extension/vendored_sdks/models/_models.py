@@ -13,6 +13,84 @@ from msrest.serialization import Model
 from msrest.exceptions import HttpOperationError
 
 
+class Resource(Model):
+    """Resource.
+
+    Common fields that are returned in the response for all Azure Resource
+    Manager resources.
+
+    Variables are only populated by the server, and will be ignored when
+    sending a request.
+
+    :ivar id: Fully qualified resource ID for the resource. Ex -
+     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}
+    :vartype id: str
+    :ivar name: The name of the resource
+    :vartype name: str
+    :ivar type: The type of the resource. E.g.
+     "Microsoft.Compute/virtualMachines" or "Microsoft.Storage/storageAccounts"
+    :vartype type: str
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+    }
+
+    def __init__(self, **kwargs):
+        super(Resource, self).__init__(**kwargs)
+        self.id = None
+        self.name = None
+        self.type = None
+
+
+class AzureEntityResource(Resource):
+    """Entity Resource.
+
+    The resource model definition for an Azure Resource Manager resource with
+    an etag.
+
+    Variables are only populated by the server, and will be ignored when
+    sending a request.
+
+    :ivar id: Fully qualified resource ID for the resource. Ex -
+     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}
+    :vartype id: str
+    :ivar name: The name of the resource
+    :vartype name: str
+    :ivar type: The type of the resource. E.g.
+     "Microsoft.Compute/virtualMachines" or "Microsoft.Storage/storageAccounts"
+    :vartype type: str
+    :ivar etag: Resource Etag.
+    :vartype etag: str
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+        'etag': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'etag': {'key': 'etag', 'type': 'str'},
+    }
+
+    def __init__(self, **kwargs):
+        super(AzureEntityResource, self).__init__(**kwargs)
+        self.etag = None
+
+
 class CloudError(Model):
     """CloudError.
     """
@@ -61,81 +139,92 @@ class ComplianceStatus(Model):
         self.message_level = kwargs.get('message_level', None)
 
 
-class ConfigurationIdentity(Model):
-    """Identity for the managed cluster.
+class ErrorAdditionalInfo(Model):
+    """The resource management error additional info.
 
     Variables are only populated by the server, and will be ignored when
     sending a request.
 
-    :ivar principal_id: The principal id of the system assigned identity which
-     is used by the configuration.
-    :vartype principal_id: str
-    :ivar tenant_id: The tenant id of the system assigned identity which is
-     used by the configuration.
-    :vartype tenant_id: str
-    :param type: The type of identity used for the configuration. Type
-     'SystemAssigned' will use an implicitly created identity. Type 'None' will
-     not use Managed Identity for the configuration. Possible values include:
-     'SystemAssigned', 'None'
-    :type type: str or
-     ~azure.mgmt.kubernetesconfiguration.models.ResourceIdentityType
+    :ivar type: The additional info type.
+    :vartype type: str
+    :ivar info: The additional info.
+    :vartype info: object
     """
 
     _validation = {
-        'principal_id': {'readonly': True},
-        'tenant_id': {'readonly': True},
+        'type': {'readonly': True},
+        'info': {'readonly': True},
     }
 
     _attribute_map = {
-        'principal_id': {'key': 'principalId', 'type': 'str'},
-        'tenant_id': {'key': 'tenantId', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'ResourceIdentityType'},
+        'type': {'key': 'type', 'type': 'str'},
+        'info': {'key': 'info', 'type': 'object'},
     }
 
     def __init__(self, **kwargs):
-        super(ConfigurationIdentity, self).__init__(**kwargs)
-        self.principal_id = None
-        self.tenant_id = None
-        self.type = kwargs.get('type', None)
+        super(ErrorAdditionalInfo, self).__init__(**kwargs)
+        self.type = None
+        self.info = None
 
 
-class ErrorDefinition(Model):
-    """Error definition.
+class ErrorDetail(Model):
+    """The error detail.
 
-    All required parameters must be populated in order to send to Azure.
+    Variables are only populated by the server, and will be ignored when
+    sending a request.
 
-    :param code: Required. Service specific error code which serves as the
-     substatus for the HTTP error code.
-    :type code: str
-    :param message: Required. Description of the error.
-    :type message: str
+    :ivar code: The error code.
+    :vartype code: str
+    :ivar message: The error message.
+    :vartype message: str
+    :ivar target: The error target.
+    :vartype target: str
+    :ivar details: The error details.
+    :vartype details:
+     list[~azure.mgmt.kubernetesconfiguration.models.ErrorDetail]
+    :ivar additional_info: The error additional info.
+    :vartype additional_info:
+     list[~azure.mgmt.kubernetesconfiguration.models.ErrorAdditionalInfo]
     """
 
     _validation = {
-        'code': {'required': True},
-        'message': {'required': True},
+        'code': {'readonly': True},
+        'message': {'readonly': True},
+        'target': {'readonly': True},
+        'details': {'readonly': True},
+        'additional_info': {'readonly': True},
     }
 
     _attribute_map = {
         'code': {'key': 'code', 'type': 'str'},
         'message': {'key': 'message', 'type': 'str'},
+        'target': {'key': 'target', 'type': 'str'},
+        'details': {'key': 'details', 'type': '[ErrorDetail]'},
+        'additional_info': {'key': 'additionalInfo', 'type': '[ErrorAdditionalInfo]'},
     }
 
     def __init__(self, **kwargs):
-        super(ErrorDefinition, self).__init__(**kwargs)
-        self.code = kwargs.get('code', None)
-        self.message = kwargs.get('message', None)
+        super(ErrorDetail, self).__init__(**kwargs)
+        self.code = None
+        self.message = None
+        self.target = None
+        self.details = None
+        self.additional_info = None
 
 
 class ErrorResponse(Model):
     """Error response.
 
-    :param error: Error definition.
-    :type error: ~azure.mgmt.kubernetesconfiguration.models.ErrorDefinition
+    Common error response for all Azure Resource Manager APIs to return error
+    details for failed operations. (This also follows the OData error response
+    format.).
+
+    :param error: The error object.
+    :type error: ~azure.mgmt.kubernetesconfiguration.models.ErrorDetail
     """
 
     _attribute_map = {
-        'error': {'key': 'error', 'type': 'ErrorDefinition'},
+        'error': {'key': 'error', 'type': 'ErrorDetail'},
     }
 
     def __init__(self, **kwargs):
@@ -155,59 +244,23 @@ class ErrorResponseException(HttpOperationError):
         super(ErrorResponseException, self).__init__(deserialize, response, 'ErrorResponse', *args)
 
 
-class Resource(Model):
-    """The Resource model definition.
-
-    Variables are only populated by the server, and will be ignored when
-    sending a request.
-
-    :ivar id: Resource Id
-    :vartype id: str
-    :ivar name: Resource name
-    :vartype name: str
-    :ivar type: Resource type
-    :vartype type: str
-    :param system_data: Top level metadata
-     https://github.com/Azure/azure-resource-manager-rpc/blob/master/v1.0/common-api-contracts.md#system-metadata-for-all-azure-resources
-    :type system_data: ~azure.mgmt.kubernetesconfiguration.models.SystemData
-    """
-
-    _validation = {
-        'id': {'readonly': True},
-        'name': {'readonly': True},
-        'type': {'readonly': True},
-    }
-
-    _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'str'},
-        'system_data': {'key': 'systemData', 'type': 'SystemData'},
-    }
-
-    def __init__(self, **kwargs):
-        super(Resource, self).__init__(**kwargs)
-        self.id = None
-        self.name = None
-        self.type = None
-        self.system_data = kwargs.get('system_data', None)
-
-
 class ProxyResource(Resource):
-    """ARM proxy resource.
+    """Proxy Resource.
+
+    The resource model definition for a Azure Resource Manager proxy resource.
+    It will not have tags and a location.
 
     Variables are only populated by the server, and will be ignored when
     sending a request.
 
-    :ivar id: Resource Id
+    :ivar id: Fully qualified resource ID for the resource. Ex -
+     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}
     :vartype id: str
-    :ivar name: Resource name
+    :ivar name: The name of the resource
     :vartype name: str
-    :ivar type: Resource type
+    :ivar type: The type of the resource. E.g.
+     "Microsoft.Compute/virtualMachines" or "Microsoft.Storage/storageAccounts"
     :vartype type: str
-    :param system_data: Top level metadata
-     https://github.com/Azure/azure-resource-manager-rpc/blob/master/v1.0/common-api-contracts.md#system-metadata-for-all-azure-resources
-    :type system_data: ~azure.mgmt.kubernetesconfiguration.models.SystemData
     """
 
     _validation = {
@@ -220,96 +273,86 @@ class ProxyResource(Resource):
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
-        'system_data': {'key': 'systemData', 'type': 'SystemData'},
     }
 
     def __init__(self, **kwargs):
         super(ProxyResource, self).__init__(**kwargs)
 
 
-class ExtensionInstance(ProxyResource):
-    """The Extension Instance object.
+class Extension(ProxyResource):
+    """The Extension object.
 
     Variables are only populated by the server, and will be ignored when
     sending a request.
 
-    :ivar id: Resource Id
+    :ivar id: Fully qualified resource ID for the resource. Ex -
+     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}
     :vartype id: str
-    :ivar name: Resource name
+    :ivar name: The name of the resource
     :vartype name: str
-    :ivar type: Resource type
+    :ivar type: The type of the resource. E.g.
+     "Microsoft.Compute/virtualMachines" or "Microsoft.Storage/storageAccounts"
     :vartype type: str
-    :param location: Location of resource type
-    :type location: str
-    :param system_data: Top level metadata
-     https://github.com/Azure/azure-resource-manager-rpc/blob/master/v1.0/common-api-contracts.md#system-metadata-for-all-azure-resources
-    :type system_data: ~azure.mgmt.kubernetesconfiguration.models.SystemData
     :param extension_type: Type of the Extension, of which this resource is an
      instance of.  It must be one of the Extension Types registered with
      Microsoft.KubernetesConfiguration by the Extension publisher.
     :type extension_type: str
-    :param auto_upgrade_minor_version: Flag to note if this instance
-     participates in auto upgrade of minor version, or not.
+    :param auto_upgrade_minor_version: Flag to note if this extension
+     participates in auto upgrade of minor version, or not. Default value: True
+     .
     :type auto_upgrade_minor_version: bool
-    :param release_train: ReleaseTrain this extension instance participates in
-     for auto-upgrade (e.g. Stable, Preview, etc.) - only if
-     autoUpgradeMinorVersion is 'true'.
+    :param release_train: ReleaseTrain this extension participates in for
+     auto-upgrade (e.g. Stable, Preview, etc.) - only if
+     autoUpgradeMinorVersion is 'true'. Default value: "Stable" .
     :type release_train: str
-    :param version: Version of the extension for this extension instance, if
-     it is 'pinned' to a specific version. autoUpgradeMinorVersion must be
-     'false'.
+    :param version: Version of the extension for this extension, if it is
+     'pinned' to a specific version. autoUpgradeMinorVersion must be 'false'.
     :type version: str
-    :param scope: Scope at which the extension instance is installed.
+    :param scope: Scope at which the extension is installed.
     :type scope: ~azure.mgmt.kubernetesconfiguration.models.Scope
     :param configuration_settings: Configuration settings, as name-value pairs
-     for configuring this instance of the extension.
+     for configuring this extension.
     :type configuration_settings: dict[str, str]
     :param configuration_protected_settings: Configuration settings that are
-     sensitive, as name-value pairs for configuring this instance of the
-     extension.
+     sensitive, as name-value pairs for configuring this extension.
     :type configuration_protected_settings: dict[str, str]
-    :param install_state: Status of installation of this instance of the
-     extension. Possible values include: 'Pending', 'Installed', 'Failed'
-    :type install_state: str or
-     ~azure.mgmt.kubernetesconfiguration.models.InstallStateType
-    :param statuses: Status from this instance of the extension.
+    :ivar provisioning_state: Status of installation of this extension.
+     Possible values include: 'Succeeded', 'Failed', 'Canceled', 'Creating',
+     'Updating', 'Deleting'
+    :vartype provisioning_state: str or
+     ~azure.mgmt.kubernetesconfiguration.models.ProvisioningState
+    :param statuses: Status from this extension.
     :type statuses:
      list[~azure.mgmt.kubernetesconfiguration.models.ExtensionStatus]
-    :ivar creation_time: DateLiteral (per ISO8601) noting the time the
-     resource was created by the client (user).
-    :vartype creation_time: str
-    :ivar last_modified_time: DateLiteral (per ISO8601) noting the time the
-     resource was modified by the client (user).
-    :vartype last_modified_time: str
-    :ivar last_status_time: DateLiteral (per ISO8601) noting the time of last
-     status from the agent.
-    :vartype last_status_time: str
     :ivar error_info: Error information from the Agent - e.g. errors during
      installation.
     :vartype error_info:
-     ~azure.mgmt.kubernetesconfiguration.models.ErrorDefinition
-    :param identity: The identity of the configuration.
-    :type identity:
-     ~azure.mgmt.kubernetesconfiguration.models.ConfigurationIdentity
+     ~azure.mgmt.kubernetesconfiguration.models.ErrorDetail
+    :ivar custom_location_settings: Custom Location settings properties.
+    :vartype custom_location_settings: dict[str, str]
+    :ivar package_uri: Uri of the Helm package
+    :vartype package_uri: str
+    :param identity: Identity of the Extension resource
+    :type identity: ~azure.mgmt.kubernetesconfiguration.models.Identity
+    :param system_data: Top level metadata
+     https://github.com/Azure/azure-resource-manager-rpc/blob/master/v1.0/common-api-contracts.md#system-metadata-for-all-azure-resources
+    :type system_data: ~azure.mgmt.kubernetesconfiguration.models.SystemData
     """
 
     _validation = {
         'id': {'readonly': True},
         'name': {'readonly': True},
         'type': {'readonly': True},
-        'creation_time': {'readonly': True},
-        'last_modified_time': {'readonly': True},
-        'last_status_time': {'readonly': True},
+        'provisioning_state': {'readonly': True},
         'error_info': {'readonly': True},
+        'custom_location_settings': {'readonly': True},
+        'package_uri': {'readonly': True},
     }
 
     _attribute_map = {
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
-        'location': {'key': 'location', 'type': 'str'},
-        'system_data': {'key': 'systemData', 'type': 'SystemData'},
-        'identity': {'key': 'identity', 'type': 'ConfigurationIdentity'},
         'extension_type': {'key': 'properties.extensionType', 'type': 'str'},
         'auto_upgrade_minor_version': {'key': 'properties.autoUpgradeMinorVersion', 'type': 'bool'},
         'release_train': {'key': 'properties.releaseTrain', 'type': 'str'},
@@ -317,74 +360,44 @@ class ExtensionInstance(ProxyResource):
         'scope': {'key': 'properties.scope', 'type': 'Scope'},
         'configuration_settings': {'key': 'properties.configurationSettings', 'type': '{str}'},
         'configuration_protected_settings': {'key': 'properties.configurationProtectedSettings', 'type': '{str}'},
-        'install_state': {'key': 'properties.installState', 'type': 'str'},
+        'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
         'statuses': {'key': 'properties.statuses', 'type': '[ExtensionStatus]'},
-        'creation_time': {'key': 'properties.creationTime', 'type': 'str'},
-        'last_modified_time': {'key': 'properties.lastModifiedTime', 'type': 'str'},
-        'last_status_time': {'key': 'properties.lastStatusTime', 'type': 'str'},
-        'error_info': {'key': 'properties.errorInfo', 'type': 'ErrorDefinition'},
+        'error_info': {'key': 'properties.errorInfo', 'type': 'ErrorDetail'},
+        'custom_location_settings': {'key': 'properties.customLocationSettings', 'type': '{str}'},
+        'package_uri': {'key': 'properties.packageUri', 'type': 'str'},
+        'identity': {'key': 'identity', 'type': 'Identity'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
     }
 
     def __init__(self, **kwargs):
-        super(ExtensionInstance, self).__init__(**kwargs)
-        self.location = kwargs.get('location', None)
+        super(Extension, self).__init__(**kwargs)
         self.extension_type = kwargs.get('extension_type', None)
-        self.auto_upgrade_minor_version = kwargs.get('auto_upgrade_minor_version', None)
-        self.release_train = kwargs.get('release_train', None)
+        self.auto_upgrade_minor_version = kwargs.get('auto_upgrade_minor_version', True)
+        self.release_train = kwargs.get('release_train', "Stable")
         self.version = kwargs.get('version', None)
         self.scope = kwargs.get('scope', None)
         self.configuration_settings = kwargs.get('configuration_settings', None)
         self.configuration_protected_settings = kwargs.get('configuration_protected_settings', None)
-        self.install_state = kwargs.get('install_state', None)
+        self.provisioning_state = None
         self.statuses = kwargs.get('statuses', None)
-        self.creation_time = None
-        self.last_modified_time = None
-        self.last_status_time = None
         self.error_info = None
+        self.custom_location_settings = None
+        self.package_uri = None
         self.identity = kwargs.get('identity', None)
-
-
-class ExtensionInstanceUpdate(Model):
-    """Update Extension Instance request object.
-
-    :param auto_upgrade_minor_version: Flag to note if this instance
-     participates in Extension Lifecycle Management or not.
-    :type auto_upgrade_minor_version: bool
-    :param release_train: ReleaseTrain this extension instance participates in
-     for auto-upgrade (e.g. Stable, Preview, etc.) - only if
-     autoUpgradeMinorVersion is 'true'.
-    :type release_train: str
-    :param version: Version number of extension, to 'pin' to a specific
-     version.  autoUpgradeMinorVersion must be 'false'.
-    :type version: str
-    """
-
-    _attribute_map = {
-        'auto_upgrade_minor_version': {'key': 'properties.autoUpgradeMinorVersion', 'type': 'bool'},
-        'release_train': {'key': 'properties.releaseTrain', 'type': 'str'},
-        'version': {'key': 'properties.version', 'type': 'str'},
-    }
-
-    def __init__(self, **kwargs):
-        super(ExtensionInstanceUpdate, self).__init__(**kwargs)
-        self.auto_upgrade_minor_version = kwargs.get('auto_upgrade_minor_version', None)
-        self.release_train = kwargs.get('release_train', None)
-        self.version = kwargs.get('version', None)
+        self.system_data = kwargs.get('system_data', None)
 
 
 class ExtensionStatus(Model):
-    """Status from this instance of the extension.
+    """Status from the extension.
 
     :param code: Status code provided by the Extension
     :type code: str
-    :param display_status: Short description of status of this instance of the
-     extension.
+    :param display_status: Short description of status of the extension.
     :type display_status: str
     :param level: Level of the status. Possible values include: 'Error',
      'Warning', 'Information'. Default value: "Information" .
     :type level: str or ~azure.mgmt.kubernetesconfiguration.models.LevelType
-    :param message: Detailed message of the status from the Extension
-     instance.
+    :param message: Detailed message of the status from the Extension.
     :type message: str
     :param time: DateLiteral (per ISO8601) noting the time of installation
      status.
@@ -426,6 +439,367 @@ class HelmOperatorProperties(Model):
         super(HelmOperatorProperties, self).__init__(**kwargs)
         self.chart_version = kwargs.get('chart_version', None)
         self.chart_values = kwargs.get('chart_values', None)
+
+
+class Identity(Model):
+    """Identity for the resource.
+
+    Variables are only populated by the server, and will be ignored when
+    sending a request.
+
+    :ivar principal_id: The principal ID of resource identity.
+    :vartype principal_id: str
+    :ivar tenant_id: The tenant ID of resource.
+    :vartype tenant_id: str
+    :param type: The identity type. Possible values include: 'SystemAssigned'
+    :type type: str or
+     ~azure.mgmt.kubernetesconfiguration.models.ResourceIdentityType
+    """
+
+    _validation = {
+        'principal_id': {'readonly': True},
+        'tenant_id': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'principal_id': {'key': 'principalId', 'type': 'str'},
+        'tenant_id': {'key': 'tenantId', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'ResourceIdentityType'},
+    }
+
+    def __init__(self, **kwargs):
+        super(Identity, self).__init__(**kwargs)
+        self.principal_id = None
+        self.tenant_id = None
+        self.type = kwargs.get('type', None)
+
+
+class OperationStatusResult(Model):
+    """The current status of an async operation.
+
+    Variables are only populated by the server, and will be ignored when
+    sending a request.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param id: Fully qualified ID for the async operation.
+    :type id: str
+    :param name: Name of the async operation.
+    :type name: str
+    :param status: Required. Operation status.
+    :type status: str
+    :param properties: Additional information, if available.
+    :type properties: dict[str, str]
+    :ivar error: If present, details of the operation error.
+    :vartype error: ~azure.mgmt.kubernetesconfiguration.models.ErrorDetail
+    """
+
+    _validation = {
+        'status': {'required': True},
+        'error': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'status': {'key': 'status', 'type': 'str'},
+        'properties': {'key': 'properties', 'type': '{str}'},
+        'error': {'key': 'error', 'type': 'ErrorDetail'},
+    }
+
+    def __init__(self, **kwargs):
+        super(OperationStatusResult, self).__init__(**kwargs)
+        self.id = kwargs.get('id', None)
+        self.name = kwargs.get('name', None)
+        self.status = kwargs.get('status', None)
+        self.properties = kwargs.get('properties', None)
+        self.error = None
+
+
+class Plan(Model):
+    """Plan for the resource.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param name: Required. A user defined name of the 3rd Party Artifact that
+     is being procured.
+    :type name: str
+    :param publisher: Required. The publisher of the 3rd Party Artifact that
+     is being bought. E.g. NewRelic
+    :type publisher: str
+    :param product: Required. The 3rd Party artifact that is being procured.
+     E.g. NewRelic. Product maps to the OfferID specified for the artifact at
+     the time of Data Market onboarding.
+    :type product: str
+    :param promotion_code: A publisher provided promotion code as provisioned
+     in Data Market for the said product/artifact.
+    :type promotion_code: str
+    :param version: The version of the desired product/artifact.
+    :type version: str
+    """
+
+    _validation = {
+        'name': {'required': True},
+        'publisher': {'required': True},
+        'product': {'required': True},
+    }
+
+    _attribute_map = {
+        'name': {'key': 'name', 'type': 'str'},
+        'publisher': {'key': 'publisher', 'type': 'str'},
+        'product': {'key': 'product', 'type': 'str'},
+        'promotion_code': {'key': 'promotionCode', 'type': 'str'},
+        'version': {'key': 'version', 'type': 'str'},
+    }
+
+    def __init__(self, **kwargs):
+        super(Plan, self).__init__(**kwargs)
+        self.name = kwargs.get('name', None)
+        self.publisher = kwargs.get('publisher', None)
+        self.product = kwargs.get('product', None)
+        self.promotion_code = kwargs.get('promotion_code', None)
+        self.version = kwargs.get('version', None)
+
+
+class ResourceModelWithAllowedPropertySet(Model):
+    """The resource model definition containing the full set of allowed properties
+    for a resource. Except properties bag, there cannot be a top level property
+    outside of this set.
+
+    Variables are only populated by the server, and will be ignored when
+    sending a request.
+
+    :ivar id: Fully qualified resource ID for the resource. Ex -
+     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}
+    :vartype id: str
+    :ivar name: The name of the resource
+    :vartype name: str
+    :ivar type: The type of the resource. E.g.
+     "Microsoft.Compute/virtualMachines" or "Microsoft.Storage/storageAccounts"
+    :vartype type: str
+    :param location: The geo-location where the resource lives
+    :type location: str
+    :param managed_by: The fully qualified resource ID of the resource that
+     manages this resource. Indicates if this resource is managed by another
+     Azure resource. If this is present, complete mode deployment will not
+     delete the resource if it is removed from the template since it is managed
+     by another resource.
+    :type managed_by: str
+    :param kind: Metadata used by portal/tooling/etc to render different UX
+     experiences for resources of the same type; e.g. ApiApps are a kind of
+     Microsoft.Web/sites type.  If supported, the resource provider must
+     validate and persist this value.
+    :type kind: str
+    :ivar etag: The etag field is *not* required. If it is provided in the
+     response body, it must also be provided as a header per the normal etag
+     convention.  Entity tags are used for comparing two or more entities from
+     the same requested resource. HTTP/1.1 uses entity tags in the etag
+     (section 14.19), If-Match (section 14.24), If-None-Match (section 14.26),
+     and If-Range (section 14.27) header fields.
+    :vartype etag: str
+    :param tags: Resource tags.
+    :type tags: dict[str, str]
+    :param identity:
+    :type identity:
+     ~azure.mgmt.kubernetesconfiguration.models.ResourceModelWithAllowedPropertySetIdentity
+    :param sku:
+    :type sku:
+     ~azure.mgmt.kubernetesconfiguration.models.ResourceModelWithAllowedPropertySetSku
+    :param plan:
+    :type plan:
+     ~azure.mgmt.kubernetesconfiguration.models.ResourceModelWithAllowedPropertySetPlan
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+        'kind': {'pattern': r'^[-\w\._,\(\)]+$'},
+        'etag': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'location': {'key': 'location', 'type': 'str'},
+        'managed_by': {'key': 'managedBy', 'type': 'str'},
+        'kind': {'key': 'kind', 'type': 'str'},
+        'etag': {'key': 'etag', 'type': 'str'},
+        'tags': {'key': 'tags', 'type': '{str}'},
+        'identity': {'key': 'identity', 'type': 'ResourceModelWithAllowedPropertySetIdentity'},
+        'sku': {'key': 'sku', 'type': 'ResourceModelWithAllowedPropertySetSku'},
+        'plan': {'key': 'plan', 'type': 'ResourceModelWithAllowedPropertySetPlan'},
+    }
+
+    def __init__(self, **kwargs):
+        super(ResourceModelWithAllowedPropertySet, self).__init__(**kwargs)
+        self.id = None
+        self.name = None
+        self.type = None
+        self.location = kwargs.get('location', None)
+        self.managed_by = kwargs.get('managed_by', None)
+        self.kind = kwargs.get('kind', None)
+        self.etag = None
+        self.tags = kwargs.get('tags', None)
+        self.identity = kwargs.get('identity', None)
+        self.sku = kwargs.get('sku', None)
+        self.plan = kwargs.get('plan', None)
+
+
+class ResourceModelWithAllowedPropertySetIdentity(Identity):
+    """ResourceModelWithAllowedPropertySetIdentity.
+
+    Variables are only populated by the server, and will be ignored when
+    sending a request.
+
+    :ivar principal_id: The principal ID of resource identity.
+    :vartype principal_id: str
+    :ivar tenant_id: The tenant ID of resource.
+    :vartype tenant_id: str
+    :param type: The identity type. Possible values include: 'SystemAssigned'
+    :type type: str or
+     ~azure.mgmt.kubernetesconfiguration.models.ResourceIdentityType
+    """
+
+    _validation = {
+        'principal_id': {'readonly': True},
+        'tenant_id': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'principal_id': {'key': 'principalId', 'type': 'str'},
+        'tenant_id': {'key': 'tenantId', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'ResourceIdentityType'},
+    }
+
+    def __init__(self, **kwargs):
+        super(ResourceModelWithAllowedPropertySetIdentity, self).__init__(**kwargs)
+
+
+class ResourceModelWithAllowedPropertySetPlan(Plan):
+    """ResourceModelWithAllowedPropertySetPlan.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param name: Required. A user defined name of the 3rd Party Artifact that
+     is being procured.
+    :type name: str
+    :param publisher: Required. The publisher of the 3rd Party Artifact that
+     is being bought. E.g. NewRelic
+    :type publisher: str
+    :param product: Required. The 3rd Party artifact that is being procured.
+     E.g. NewRelic. Product maps to the OfferID specified for the artifact at
+     the time of Data Market onboarding.
+    :type product: str
+    :param promotion_code: A publisher provided promotion code as provisioned
+     in Data Market for the said product/artifact.
+    :type promotion_code: str
+    :param version: The version of the desired product/artifact.
+    :type version: str
+    """
+
+    _validation = {
+        'name': {'required': True},
+        'publisher': {'required': True},
+        'product': {'required': True},
+    }
+
+    _attribute_map = {
+        'name': {'key': 'name', 'type': 'str'},
+        'publisher': {'key': 'publisher', 'type': 'str'},
+        'product': {'key': 'product', 'type': 'str'},
+        'promotion_code': {'key': 'promotionCode', 'type': 'str'},
+        'version': {'key': 'version', 'type': 'str'},
+    }
+
+    def __init__(self, **kwargs):
+        super(ResourceModelWithAllowedPropertySetPlan, self).__init__(**kwargs)
+
+
+class Sku(Model):
+    """The resource model definition representing SKU.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param name: Required. The name of the SKU. Ex - P3. It is typically a
+     letter+number code
+    :type name: str
+    :param tier: This field is required to be implemented by the Resource
+     Provider if the service has more than one tier, but is not required on a
+     PUT. Possible values include: 'Free', 'Basic', 'Standard', 'Premium'
+    :type tier: str or ~azure.mgmt.kubernetesconfiguration.models.SkuTier
+    :param size: The SKU size. When the name field is the combination of tier
+     and some other value, this would be the standalone code.
+    :type size: str
+    :param family: If the service has different generations of hardware, for
+     the same SKU, then that can be captured here.
+    :type family: str
+    :param capacity: If the SKU supports scale out/in then the capacity
+     integer should be included. If scale out/in is not possible for the
+     resource this may be omitted.
+    :type capacity: int
+    """
+
+    _validation = {
+        'name': {'required': True},
+    }
+
+    _attribute_map = {
+        'name': {'key': 'name', 'type': 'str'},
+        'tier': {'key': 'tier', 'type': 'SkuTier'},
+        'size': {'key': 'size', 'type': 'str'},
+        'family': {'key': 'family', 'type': 'str'},
+        'capacity': {'key': 'capacity', 'type': 'int'},
+    }
+
+    def __init__(self, **kwargs):
+        super(Sku, self).__init__(**kwargs)
+        self.name = kwargs.get('name', None)
+        self.tier = kwargs.get('tier', None)
+        self.size = kwargs.get('size', None)
+        self.family = kwargs.get('family', None)
+        self.capacity = kwargs.get('capacity', None)
+
+
+class ResourceModelWithAllowedPropertySetSku(Sku):
+    """ResourceModelWithAllowedPropertySetSku.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param name: Required. The name of the SKU. Ex - P3. It is typically a
+     letter+number code
+    :type name: str
+    :param tier: This field is required to be implemented by the Resource
+     Provider if the service has more than one tier, but is not required on a
+     PUT. Possible values include: 'Free', 'Basic', 'Standard', 'Premium'
+    :type tier: str or ~azure.mgmt.kubernetesconfiguration.models.SkuTier
+    :param size: The SKU size. When the name field is the combination of tier
+     and some other value, this would be the standalone code.
+    :type size: str
+    :param family: If the service has different generations of hardware, for
+     the same SKU, then that can be captured here.
+    :type family: str
+    :param capacity: If the SKU supports scale out/in then the capacity
+     integer should be included. If scale out/in is not possible for the
+     resource this may be omitted.
+    :type capacity: int
+    """
+
+    _validation = {
+        'name': {'required': True},
+    }
+
+    _attribute_map = {
+        'name': {'key': 'name', 'type': 'str'},
+        'tier': {'key': 'tier', 'type': 'SkuTier'},
+        'size': {'key': 'size', 'type': 'str'},
+        'family': {'key': 'family', 'type': 'str'},
+        'capacity': {'key': 'capacity', 'type': 'int'},
+    }
+
+    def __init__(self, **kwargs):
+        super(ResourceModelWithAllowedPropertySetSku, self).__init__(**kwargs)
 
 
 class ResourceProviderOperation(Model):
@@ -490,31 +864,13 @@ class ResourceProviderOperationDisplay(Model):
         self.description = kwargs.get('description', None)
 
 
-class Result(Model):
-    """Sample result definition.
-
-    :param sample_property: Sample property of type string
-    :type sample_property: str
-    """
-
-    _attribute_map = {
-        'sample_property': {'key': 'sampleProperty', 'type': 'str'},
-    }
-
-    def __init__(self, **kwargs):
-        super(Result, self).__init__(**kwargs)
-        self.sample_property = kwargs.get('sample_property', None)
-
-
 class Scope(Model):
-    """Scope of the extensionInstance. It can be either Cluster or Namespace; but
-    not both.
+    """Scope of the extension. It can be either Cluster or Namespace; but not
+    both.
 
-    :param cluster: Specifies that the scope of the extensionInstance is
-     Cluster
+    :param cluster: Specifies that the scope of the extension is Cluster
     :type cluster: ~azure.mgmt.kubernetesconfiguration.models.ScopeCluster
-    :param namespace: Specifies that the scope of the extensionInstance is
-     Namespace
+    :param namespace: Specifies that the scope of the extension is Namespace
     :type namespace: ~azure.mgmt.kubernetesconfiguration.models.ScopeNamespace
     """
 
@@ -530,11 +886,11 @@ class Scope(Model):
 
 
 class ScopeCluster(Model):
-    """Specifies that the scope of the extensionInstance is Cluster.
+    """Specifies that the scope of the extension is Cluster.
 
     :param release_namespace: Namespace where the extension Release must be
-     placed, for a Cluster scoped extensionInstance.  If this namespace does
-     not exist, it will be created
+     placed, for a Cluster scoped extension.  If this namespace does not exist,
+     it will be created
     :type release_namespace: str
     """
 
@@ -548,11 +904,11 @@ class ScopeCluster(Model):
 
 
 class ScopeNamespace(Model):
-    """Specifies that the scope of the extensionInstance is Namespace.
+    """Specifies that the scope of the extension is Namespace.
 
-    :param target_namespace: Namespace where the extensionInstance will be
-     created for an Namespace scoped extensionInstance.  If this namespace does
-     not exist, it will be created
+    :param target_namespace: Namespace where the extension will be created for
+     an Namespace scoped extension.  If this namespace does not exist, it will
+     be created
     :type target_namespace: str
     """
 
@@ -571,15 +927,14 @@ class SourceControlConfiguration(ProxyResource):
     Variables are only populated by the server, and will be ignored when
     sending a request.
 
-    :ivar id: Resource Id
+    :ivar id: Fully qualified resource ID for the resource. Ex -
+     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}
     :vartype id: str
-    :ivar name: Resource name
+    :ivar name: The name of the resource
     :vartype name: str
-    :ivar type: Resource type
+    :ivar type: The type of the resource. E.g.
+     "Microsoft.Compute/virtualMachines" or "Microsoft.Storage/storageAccounts"
     :vartype type: str
-    :param system_data: Top level metadata
-     https://github.com/Azure/azure-resource-manager-rpc/blob/master/v1.0/common-api-contracts.md#system-metadata-for-all-azure-resources
-    :type system_data: ~azure.mgmt.kubernetesconfiguration.models.SystemData
     :param repository_url: Url of the SourceControl Repository.
     :type repository_url: str
     :param operator_namespace: The namespace to which this operator is
@@ -625,6 +980,9 @@ class SourceControlConfiguration(ProxyResource):
     :ivar compliance_status: Compliance Status of the Configuration
     :vartype compliance_status:
      ~azure.mgmt.kubernetesconfiguration.models.ComplianceStatus
+    :param system_data: Top level metadata
+     https://github.com/Azure/azure-resource-manager-rpc/blob/master/v1.0/common-api-contracts.md#system-metadata-for-all-azure-resources
+    :type system_data: ~azure.mgmt.kubernetesconfiguration.models.SystemData
     """
 
     _validation = {
@@ -640,7 +998,6 @@ class SourceControlConfiguration(ProxyResource):
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
-        'system_data': {'key': 'systemData', 'type': 'SystemData'},
         'repository_url': {'key': 'properties.repositoryUrl', 'type': 'str'},
         'operator_namespace': {'key': 'properties.operatorNamespace', 'type': 'str'},
         'operator_instance_name': {'key': 'properties.operatorInstanceName', 'type': 'str'},
@@ -654,6 +1011,7 @@ class SourceControlConfiguration(ProxyResource):
         'helm_operator_properties': {'key': 'properties.helmOperatorProperties', 'type': 'HelmOperatorProperties'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
         'compliance_status': {'key': 'properties.complianceStatus', 'type': 'ComplianceStatus'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
     }
 
     def __init__(self, **kwargs):
@@ -671,41 +1029,30 @@ class SourceControlConfiguration(ProxyResource):
         self.helm_operator_properties = kwargs.get('helm_operator_properties', None)
         self.provisioning_state = None
         self.compliance_status = None
+        self.system_data = kwargs.get('system_data', None)
 
 
 class SystemData(Model):
-    """Top level metadata
-    https://github.com/Azure/azure-resource-manager-rpc/blob/master/v1.0/common-api-contracts.md#system-metadata-for-all-azure-resources.
+    """Metadata pertaining to creation and last modification of the resource.
 
-    Variables are only populated by the server, and will be ignored when
-    sending a request.
-
-    :ivar created_by: A string identifier for the identity that created the
-     resource
-    :vartype created_by: str
-    :ivar created_by_type: The type of identity that created the resource:
-     user, application, managedIdentity, key
-    :vartype created_by_type: str
-    :ivar created_at: The timestamp of resource creation (UTC)
-    :vartype created_at: datetime
-    :ivar last_modified_by: A string identifier for the identity that last
-     modified the resource
-    :vartype last_modified_by: str
-    :ivar last_modified_by_type: The type of identity that last modified the
-     resource: user, application, managedIdentity, key
-    :vartype last_modified_by_type: str
-    :ivar last_modified_at: The timestamp of resource last modification (UTC)
-    :vartype last_modified_at: datetime
+    :param created_by: The identity that created the resource.
+    :type created_by: str
+    :param created_by_type: The type of identity that created the resource.
+     Possible values include: 'User', 'Application', 'ManagedIdentity', 'Key'
+    :type created_by_type: str or
+     ~azure.mgmt.kubernetesconfiguration.models.CreatedByType
+    :param created_at: The timestamp of resource creation (UTC).
+    :type created_at: datetime
+    :param last_modified_by: The identity that last modified the resource.
+    :type last_modified_by: str
+    :param last_modified_by_type: The type of identity that last modified the
+     resource. Possible values include: 'User', 'Application',
+     'ManagedIdentity', 'Key'
+    :type last_modified_by_type: str or
+     ~azure.mgmt.kubernetesconfiguration.models.CreatedByType
+    :param last_modified_at: The timestamp of resource last modification (UTC)
+    :type last_modified_at: datetime
     """
-
-    _validation = {
-        'created_by': {'readonly': True},
-        'created_by_type': {'readonly': True},
-        'created_at': {'readonly': True},
-        'last_modified_by': {'readonly': True},
-        'last_modified_by_type': {'readonly': True},
-        'last_modified_at': {'readonly': True},
-    }
 
     _attribute_map = {
         'created_by': {'key': 'createdBy', 'type': 'str'},
@@ -718,9 +1065,55 @@ class SystemData(Model):
 
     def __init__(self, **kwargs):
         super(SystemData, self).__init__(**kwargs)
-        self.created_by = None
-        self.created_by_type = None
-        self.created_at = None
-        self.last_modified_by = None
-        self.last_modified_by_type = None
-        self.last_modified_at = None
+        self.created_by = kwargs.get('created_by', None)
+        self.created_by_type = kwargs.get('created_by_type', None)
+        self.created_at = kwargs.get('created_at', None)
+        self.last_modified_by = kwargs.get('last_modified_by', None)
+        self.last_modified_by_type = kwargs.get('last_modified_by_type', None)
+        self.last_modified_at = kwargs.get('last_modified_at', None)
+
+
+class TrackedResource(Resource):
+    """Tracked Resource.
+
+    The resource model definition for an Azure Resource Manager tracked top
+    level resource which has 'tags' and a 'location'.
+
+    Variables are only populated by the server, and will be ignored when
+    sending a request.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :ivar id: Fully qualified resource ID for the resource. Ex -
+     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}
+    :vartype id: str
+    :ivar name: The name of the resource
+    :vartype name: str
+    :ivar type: The type of the resource. E.g.
+     "Microsoft.Compute/virtualMachines" or "Microsoft.Storage/storageAccounts"
+    :vartype type: str
+    :param tags: Resource tags.
+    :type tags: dict[str, str]
+    :param location: Required. The geo-location where the resource lives
+    :type location: str
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+        'location': {'required': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'tags': {'key': 'tags', 'type': '{str}'},
+        'location': {'key': 'location', 'type': 'str'},
+    }
+
+    def __init__(self, **kwargs):
+        super(TrackedResource, self).__init__(**kwargs)
+        self.tags = kwargs.get('tags', None)
+        self.location = kwargs.get('location', None)

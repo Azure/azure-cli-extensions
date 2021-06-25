@@ -29,8 +29,7 @@ from msrestazure.azure_exceptions import CloudError
 from .._client_factory import cf_resources
 from .PartnerExtensionModel import PartnerExtensionModel
 from ..vendored_sdks.models import (
-    ExtensionInstance,
-    ExtensionInstanceUpdate,
+    Extension,
     Scope,
     ScopeCluster
 )
@@ -142,7 +141,7 @@ class AzureMLKubernetes(PartnerExtensionModel):
             release_train = 'stable'
 
         create_identity = True
-        extension_instance = ExtensionInstance(
+        extension_instance = Extension(
             extension_type=extension_type,
             auto_upgrade_minor_version=auto_upgrade_minor_version,
             release_train=release_train,
@@ -156,7 +155,7 @@ class AzureMLKubernetes(PartnerExtensionModel):
         return extension_instance, name, create_identity
 
     def Update(self, extension, auto_upgrade_minor_version, release_train, version):
-        return ExtensionInstanceUpdate(
+        return Extension(
             auto_upgrade_minor_version=auto_upgrade_minor_version,
             release_train=release_train,
             version=version

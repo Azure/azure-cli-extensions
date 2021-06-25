@@ -21,8 +21,7 @@ class SourceControlConfigurationClientConfiguration(AzureConfiguration):
     :param credentials: Credentials needed for the client to connect to Azure.
     :type credentials: :mod:`A msrestazure Credentials
      object<msrestazure.azure_active_directory>`
-    :param subscription_id: The Azure subscription ID. This is a
-     GUID-formatted string (e.g. 00000000-0000-0000-0000-000000000000)
+    :param subscription_id: The ID of the target subscription.
     :type subscription_id: str
     :param str base_url: Service URL
     """

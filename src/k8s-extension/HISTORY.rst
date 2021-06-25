@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.6.0
+++++++++++++++++++
+* Switch to api-version 2021-05-01-preview
+
 0.5.0
 ++++++++++++++++++
 * Add microsoft.openservicemesh customization to check distros

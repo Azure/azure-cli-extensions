@@ -12,6 +12,32 @@
 from msrest.paging import Paged
 
 
+class ExtensionPaged(Paged):
+    """
+    A paging container for iterating over a list of :class:`Extension <azure.mgmt.kubernetesconfiguration.models.Extension>` object
+    """
+
+    _attribute_map = {
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+        'current_page': {'key': 'value', 'type': '[Extension]'}
+    }
+
+    def __init__(self, *args, **kwargs):
+
+        super(ExtensionPaged, self).__init__(*args, **kwargs)
+class OperationStatusResultPaged(Paged):
+    """
+    A paging container for iterating over a list of :class:`OperationStatusResult <azure.mgmt.kubernetesconfiguration.models.OperationStatusResult>` object
+    """
+
+    _attribute_map = {
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+        'current_page': {'key': 'value', 'type': '[OperationStatusResult]'}
+    }
+
+    def __init__(self, *args, **kwargs):
+
+        super(OperationStatusResultPaged, self).__init__(*args, **kwargs)
 class SourceControlConfigurationPaged(Paged):
     """
     A paging container for iterating over a list of :class:`SourceControlConfiguration <azure.mgmt.kubernetesconfiguration.models.SourceControlConfiguration>` object
@@ -38,16 +64,3 @@ class ResourceProviderOperationPaged(Paged):
     def __init__(self, *args, **kwargs):
 
         super(ResourceProviderOperationPaged, self).__init__(*args, **kwargs)
-class ExtensionInstancePaged(Paged):
-    """
-    A paging container for iterating over a list of :class:`ExtensionInstance <azure.mgmt.kubernetesconfiguration.models.ExtensionInstance>` object
-    """
-
-    _attribute_map = {
-        'next_link': {'key': 'nextLink', 'type': 'str'},
-        'current_page': {'key': 'value', 'type': '[ExtensionInstance]'}
-    }
-
-    def __init__(self, *args, **kwargs):
-
-        super(ExtensionInstancePaged, self).__init__(*args, **kwargs)

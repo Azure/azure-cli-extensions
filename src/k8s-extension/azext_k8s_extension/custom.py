@@ -11,7 +11,7 @@ from knack.log import get_logger
 from azure.cli.core.azclierror import ResourceNotFoundError, MutuallyExclusiveArgumentError, \
     InvalidArgumentValueError, CommandNotFoundError, RequiredArgumentMissingError
 from azure.cli.core.commands.client_factory import get_subscription_id
-from .vendored_sdks.models import ConfigurationIdentity, ErrorResponseException, Scope
+from .vendored_sdks.models import Identity, ErrorResponseException, Scope
 from ._validators import validate_cc_registration
 
 from .partner_extensions.ContainerInsights import ContainerInsights
@@ -183,7 +183,7 @@ def update_k8s_extension(client, resource_group_name, cluster_type, cluster_name
 
     # __validate_version_and_auto_upgrade(version, auto_upgrade_minor_version)
 
-    # upd_extension = ExtensionInstanceUpdate(auto_upgrade_minor_version=auto_upgrade_minor_version,
+    # upd_extension = Extension(auto_upgrade_minor_version=auto_upgrade_minor_version,
     #                                         release_train=release_train, version=version)
 
     # return client.update(resource_group_name, cluster_rp, cluster_type, cluster_name, name, upd_extension)
@@ -238,7 +238,7 @@ def __create_identity(cmd, resource_group_name, cluster_name, cluster_type, clus
         raise ex
     identity_type = "SystemAssigned"
 
-    return ConfigurationIdentity(type=identity_type), location
+    return Identity(type=identity_type), location
 
 
 def __get_cluster_rp(cluster_type):

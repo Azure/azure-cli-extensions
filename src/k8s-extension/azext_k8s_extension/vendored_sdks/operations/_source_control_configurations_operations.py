@@ -26,7 +26,7 @@ class SourceControlConfigurationsOperations(object):
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
     :param deserializer: An object model deserializer.
-    :ivar api_version: The API version to be used with the HTTP request. Constant value: "2020-07-01-preview".
+    :ivar api_version: The API version to use for this operation. Constant value: "2021-05-01-preview".
     """
 
     models = models
@@ -36,7 +36,7 @@ class SourceControlConfigurationsOperations(object):
         self._client = client
         self._serialize = serializer
         self._deserialize = deserializer
-        self.api_version = "2020-07-01-preview"
+        self.api_version = "2021-05-01-preview"
 
         self.config = config
 
@@ -44,7 +44,8 @@ class SourceControlConfigurationsOperations(object):
             self, resource_group_name, cluster_rp, cluster_resource_name, cluster_name, source_control_configuration_name, custom_headers=None, raw=False, **operation_config):
         """Gets details of the Source Control Configuration.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name
+         is case insensitive.
         :type resource_group_name: str
         :param cluster_rp: The Kubernetes cluster RP - either
          Microsoft.ContainerService (for AKS clusters) or Microsoft.Kubernetes
@@ -76,8 +77,8 @@ class SourceControlConfigurationsOperations(object):
         # Construct URL
         url = self.get.metadata['url']
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str', min_length=1),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
             'clusterRp': self._serialize.url("cluster_rp", cluster_rp, 'str'),
             'clusterResourceName': self._serialize.url("cluster_resource_name", cluster_resource_name, 'str'),
             'clusterName': self._serialize.url("cluster_name", cluster_name, 'str'),
@@ -87,7 +88,7 @@ class SourceControlConfigurationsOperations(object):
 
         # Construct parameters
         query_parameters = {}
-        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str', min_length=1)
 
         # Construct headers
         header_parameters = {}
@@ -121,7 +122,8 @@ class SourceControlConfigurationsOperations(object):
             self, resource_group_name, cluster_rp, cluster_resource_name, cluster_name, source_control_configuration_name, source_control_configuration, custom_headers=None, raw=False, **operation_config):
         """Create a new Kubernetes Source Control Configuration.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name
+         is case insensitive.
         :type resource_group_name: str
         :param cluster_rp: The Kubernetes cluster RP - either
          Microsoft.ContainerService (for AKS clusters) or Microsoft.Kubernetes
@@ -157,8 +159,8 @@ class SourceControlConfigurationsOperations(object):
         # Construct URL
         url = self.create_or_update.metadata['url']
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str', min_length=1),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
             'clusterRp': self._serialize.url("cluster_rp", cluster_rp, 'str'),
             'clusterResourceName': self._serialize.url("cluster_resource_name", cluster_resource_name, 'str'),
             'clusterName': self._serialize.url("cluster_name", cluster_name, 'str'),
@@ -168,7 +170,7 @@ class SourceControlConfigurationsOperations(object):
 
         # Construct parameters
         query_parameters = {}
-        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str', min_length=1)
 
         # Construct headers
         header_parameters = {}
@@ -210,8 +212,8 @@ class SourceControlConfigurationsOperations(object):
         # Construct URL
         url = self.delete.metadata['url']
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str', min_length=1),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
             'clusterRp': self._serialize.url("cluster_rp", cluster_rp, 'str'),
             'clusterResourceName': self._serialize.url("cluster_resource_name", cluster_resource_name, 'str'),
             'clusterName': self._serialize.url("cluster_name", cluster_name, 'str'),
@@ -221,7 +223,7 @@ class SourceControlConfigurationsOperations(object):
 
         # Construct parameters
         query_parameters = {}
-        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str', min_length=1)
 
         # Construct headers
         header_parameters = {}
@@ -248,7 +250,8 @@ class SourceControlConfigurationsOperations(object):
         """This will delete the YAML file used to set up the Source control
         configuration, thus stopping future sync from the source repo.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name
+         is case insensitive.
         :type resource_group_name: str
         :param cluster_rp: The Kubernetes cluster RP - either
          Microsoft.ContainerService (for AKS clusters) or Microsoft.Kubernetes
@@ -306,7 +309,8 @@ class SourceControlConfigurationsOperations(object):
             self, resource_group_name, cluster_rp, cluster_resource_name, cluster_name, custom_headers=None, raw=False, **operation_config):
         """List all Source Control Configurations.
 
-        :param resource_group_name: The name of the resource group.
+        :param resource_group_name: The name of the resource group. The name
+         is case insensitive.
         :type resource_group_name: str
         :param cluster_rp: The Kubernetes cluster RP - either
          Microsoft.ContainerService (for AKS clusters) or Microsoft.Kubernetes
@@ -336,8 +340,8 @@ class SourceControlConfigurationsOperations(object):
                 # Construct URL
                 url = self.list.metadata['url']
                 path_format_arguments = {
-                    'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
-                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+                    'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str', min_length=1),
+                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
                     'clusterRp': self._serialize.url("cluster_rp", cluster_rp, 'str'),
                     'clusterResourceName': self._serialize.url("cluster_resource_name", cluster_resource_name, 'str'),
                     'clusterName': self._serialize.url("cluster_name", cluster_name, 'str')
@@ -346,7 +350,7 @@ class SourceControlConfigurationsOperations(object):
 
                 # Construct parameters
                 query_parameters = {}
-                query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
+                query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str', min_length=1)
 
             else:
                 url = next_link

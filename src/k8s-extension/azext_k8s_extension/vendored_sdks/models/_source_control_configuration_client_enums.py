@@ -12,6 +12,44 @@
 from enum import Enum
 
 
+class ProvisioningState(str, Enum):
+
+    succeeded = "Succeeded"
+    failed = "Failed"
+    canceled = "Canceled"
+    creating = "Creating"
+    updating = "Updating"
+    deleting = "Deleting"
+
+
+class LevelType(str, Enum):
+
+    error = "Error"
+    warning = "Warning"
+    information = "Information"
+
+
+class ResourceIdentityType(str, Enum):
+
+    system_assigned = "SystemAssigned"
+
+
+class CreatedByType(str, Enum):
+
+    user = "User"
+    application = "Application"
+    managed_identity = "ManagedIdentity"
+    key = "Key"
+
+
+class SkuTier(str, Enum):
+
+    free = "Free"
+    basic = "Basic"
+    standard = "Standard"
+    premium = "Premium"
+
+
 class ComplianceStateType(str, Enum):
 
     pending = "Pending"
@@ -46,23 +84,3 @@ class ProvisioningStateType(str, Enum):
     running = "Running"
     succeeded = "Succeeded"
     failed = "Failed"
-
-
-class InstallStateType(str, Enum):
-
-    pending = "Pending"
-    installed = "Installed"
-    failed = "Failed"
-
-
-class LevelType(str, Enum):
-
-    error = "Error"
-    warning = "Warning"
-    information = "Information"
-
-
-class ResourceIdentityType(str, Enum):
-
-    system_assigned = "SystemAssigned"
-    none = "None"

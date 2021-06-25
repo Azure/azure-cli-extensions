@@ -22,8 +22,7 @@ from ..partner_extensions import PartnerExtensionModel
 from .PartnerExtensionModel import PartnerExtensionModel
 
 from ..vendored_sdks.models import (
-    ExtensionInstance,
-    ExtensionInstanceUpdate,
+    Extension,
     ScopeCluster,
     Scope
 )
@@ -43,7 +42,7 @@ class OpenServiceMesh(PartnerExtensionModel):
                configuration_settings_file, configuration_protected_settings_file):
 
         """ExtensionType 'microsoft.openservicemesh' specific validations & defaults for Create
-           Must create and return a valid 'ExtensionInstance' object.
+           Must create and return a valid 'Extension' object.
 
         """
         # NOTE-1: Replace default scope creation with your customization, if required
@@ -66,12 +65,12 @@ class OpenServiceMesh(PartnerExtensionModel):
             auto_upgrade_minor_version = False
             logger.warning("Setting auto-upgrade-minor-version to False since release-train is '%s'", release_train)
 
-        # NOTE-2: Return a valid ExtensionInstance object, Instance name and flag for Identity
+        # NOTE-2: Return a valid Extension object, Instance name and flag for Identity
         create_identity = False
 
         _validate_tested_distro(cmd, resource_group_name, cluster_name, version)
 
-        extension_instance = ExtensionInstance(
+        extension_instance = Extension(
             extension_type=extension_type,
             auto_upgrade_minor_version=auto_upgrade_minor_version,
             release_train=release_train,
@@ -86,7 +85,7 @@ class OpenServiceMesh(PartnerExtensionModel):
 
     def Update(self, extension, auto_upgrade_minor_version, release_train, version):
         """ExtensionType 'microsoft.openservicemesh' specific validations & defaults for Update
-           Must create and return a valid 'ExtensionInstanceUpdate' object.
+           Must create and return a valid 'Extension' object.
 
         """
         #  auto-upgrade-minor-version MUST be set to False if release_train is staging or pilot
@@ -97,7 +96,7 @@ class OpenServiceMesh(PartnerExtensionModel):
                 version = None
                 logger.warning("Setting auto-upgrade-minor-version to False since release-train is '%s'", release_train)
 
-        return ExtensionInstanceUpdate(
+        return Extension(
             auto_upgrade_minor_version=auto_upgrade_minor_version,
             release_train=release_train,
             version=version
