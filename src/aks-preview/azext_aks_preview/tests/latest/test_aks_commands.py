@@ -823,7 +823,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                  checks=[
                      # if rerun the recording, please update latestNodeImageVersion to the latest value
                      self.check('latestNodeImageVersion',
-                                'AKSUbuntu-1804gen2containerd-2021.06.02'),
+                                'AKSUbuntu-1804gen2containerd-2021.06.09'),
                      self.check(
                          'type', "Microsoft.ContainerService/managedClusters/agentPools/upgradeProfiles")
                  ])
@@ -1286,10 +1286,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'name': aks_name,
             'identity_name': identity_name,
             'subdomain_name': subdomain_name,
+            'location': resource_group_location
         })
 
         # create private dns zone
-        create_private_dns_zone = 'network private-dns zone create --resource-group={resource_group} --name="privatelink.westus2.azmk8s.io"'
+        create_private_dns_zone = 'network private-dns zone create --resource-group={resource_group} --name="privatelink.{location}.azmk8s.io"'
         zone = self.cmd(create_private_dns_zone, checks=[
             self.check('provisioningState', 'Succeeded')
         ]).get_output_in_json()

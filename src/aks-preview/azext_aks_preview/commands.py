@@ -24,12 +24,14 @@ def load_command_table(self, _):
     managed_clusters_sdk = CliCommandType(
         operations_tmpl='azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks.'
                         'operations._managed_clusters_operations#ManagedClustersOperations.{}',
+        operation_group='managed_clusters',
         client_factory=cf_managed_clusters
     )
 
     container_services_sdk = CliCommandType(
         operations_tmpl='azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks.'
                         'operations.container_service_operations#ContainerServicesOperations.{}',
+        operation_group='container_services',
         client_factory=cf_container_services
     )
 
