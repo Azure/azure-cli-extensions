@@ -441,7 +441,7 @@ class SerialConsole:
                     PC.print(message, color=PrintClass.RED)
                 else:
                     PC.print(
-                        "\r\nConnection Closed: Press Enter to reconnect...", color=PrintClass.RED)
+                        "\r\nConnection Closed: Press \"Enter\" to reconnect...", color=PrintClass.RED)
                 GV.webSocket = None
 
         def connectThread():
@@ -454,8 +454,8 @@ class SerialConsole:
                 GV.webSocket.run_forever(skip_utf8_validation=True)
             else:
                 GV.loading = False
-                message = ("\r\nCould not establish connection to VM or VMSS. "
-                           "Make sure that input parameters are correct or press \"Enter\" to try again...")
+                message = ("\r\nAn unexpected error occured. Could not establish connection to VM or VMSS. "
+                           "Check network connection and press \"Enter\" to try again...")
                 PC.print(message, color=PrintClass.RED)
 
         GV.loading = True
@@ -566,7 +566,35 @@ class SerialConsole:
                 error_message, recommendation=recommendation)
 
 
+def checkSerialConsoleEnabled(cli_ctx):
+    from azure.cli.core.commands.client_factory import get_subscription_id
+    from azure.cli.core._profile import Profile
+    armEndpoint = "https://management.azure.com"
+    RP_PROVIDER = "Microsoft.SerialConsole"
+    subscriptionId = get_subscription_id(cli_ctx)
+    connectionUrl = (f"{armEndpoint}/subscriptions/{subscriptionId}"
+                     f"/providers/{RP_PROVIDER}/consoleServices/"
+                     f"/default?api-version=2018-05-01")
+    tokenInfo, _, _ = Profile().get_raw_token()
+    accessToken = tokenInfo[1]
+    applicationJsonFormat = "application/json"
+    headers = {'authorization': "Bearer " + accessToken,
+               'accept': applicationJsonFormat,
+               'content-type': applicationJsonFormat}
+    result = requests.get(connectionUrl, headers=headers)
+    jsonResults = json.loads(result.text)
+    if result.status_code == 404:
+        raise ResourceNotFoundError(f"The subscription {subscriptionId} could not be found.")
+    if result.status_code == 200 and "properties" in jsonResults and "disabled" in jsonResults["properties"]:
+        if not jsonResults["properties"]["disabled"]:
+            return
+    error_message = "Azure Serial Console is not enabled for this subscription."
+    recommendation = 'Enable Serial Console with "az serial-console enable"'
+    raise ForbiddenError(error_message, recommendation=recommendation)
+
+
 def checkResource(cli_ctx, resource_group_name, vm_vmss_name, vmss_instanceid):
+    checkSerialConsoleEnabled(cli_ctx)
     client = _compute_client_factory(cli_ctx)
     if vmss_instanceid:
         result = client.virtual_machine_scale_set_vms.get_instance_view(
@@ -672,3 +700,31 @@ def send_sysrq_serialconsole(cmd, resource_group_name, vm_vmss_name, sysrqinput,
         cmd, resource_group_name, vm_vmss_name, vmss_instanceid)
     GV.serialConsoleInstance.connectAndSendAdminCommand(
         "sysrq", arg_characters=sysrqinput)
+
+
+def update_serialconsole(cmd, enable):
+    from azure.cli.core.commands.client_factory import get_subscription_id
+    from azure.cli.core._profile import Profile
+    armEndpoint = "https://management.azure.com"
+    RP_PROVIDER = "Microsoft.SerialConsole"
+    operation = "enableConsole" if enable else "disableConsole"
+    subscriptionId = get_subscription_id(cmd.cli_ctx)
+    connectionUrl = (f"{armEndpoint}/subscriptions/{subscriptionId}"
+                     f"/providers/{RP_PROVIDER}/consoleServices/default"
+                     f"/{operation}?api-version=2018-05-01")
+    tokenInfo, _, _ = Profile().get_raw_token()
+    accessToken = tokenInfo[1]
+    applicationJsonFormat = "application/json"
+    headers = {'authorization': "Bearer " + accessToken,
+               'accept': applicationJsonFormat,
+               'content-type': applicationJsonFormat}
+    result = requests.post(connectionUrl, headers=headers)
+    return json.loads(result.text)
+
+
+def enable_serialconsole(cmd):
+    return update_serialconsole(cmd, enable=True)
+
+
+def disable_serialconsole(cmd):
+    return update_serialconsole(cmd, enable=False)

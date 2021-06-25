@@ -40,6 +40,30 @@ helps['serial-console connect'] = """
             az serial-console connect -n MyVMSS -g MyResourceGroup --instance-id 2
 """
 
+helps['serial-console enable'] = """
+    type: command
+    short-summary: Enable the serial console service for an entire subscription.
+    parameters:
+      - name: --subscription
+        short-summary: Name or ID of subscription. You can configure the default subscription using az account set -s NAME_OR_ID.
+    examples:
+      - name: Enable Serial Console for a subscription
+        text: >
+            az serial-console enable
+"""
+
+helps['serial-console disable'] = """
+    type: command
+    short-summary: Disable the serial console service for an entire subscription.
+    parameters:
+      - name: --subscription
+        short-summary: Name or ID of subscription. You can configure the default subscription using az account set -s NAME_OR_ID.
+    examples:
+      - name: Disable Serial Console for a subscription
+        text: >
+            az serial-console disable
+"""
+
 helps['serial-console send nmi'] = """
     type: command
     short-summary: Send a Non-Maskable Interrupt (NMI) to a VM or VMSS Instance

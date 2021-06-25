@@ -16,6 +16,7 @@ from azure.cli.testsdk import (
 from azure.cli.testsdk.exceptions import JMESPathCheckAssertionError
 from azure.cli.core.azclierror import ResourceNotFoundError
 from azure.cli.core.azclierror import AzureConnectionError
+from azure.cli.core.azclierror import ForbiddenError
 from azure.core.exceptions import ResourceNotFoundError as ComputeClientResourceNotFoundError
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
@@ -68,6 +69,15 @@ class CheckResourceTest(ScenarioTest):
             checkResource(self.cli_ctx, resource_group, name, idd)
 
         self.cmd('az vmss update-instances -g {rg} -n {name} --instance-ids {id}')
+
+        checkResource(self.cli_ctx, resource_group, name, idd)
+
+        self.cmd('az serial-console disable')
+
+        with self.assertRaises(ForbiddenError):
+            checkResource(self.cli_ctx, resource_group, name, idd)
+
+        self.cmd('az serial-console enable')
 
         checkResource(self.cli_ctx, resource_group, name, idd)
 
@@ -137,10 +147,30 @@ class CheckResourceTest(ScenarioTest):
 
         checkResource(self.cli_ctx, resource_group, name, None)
 
+        self.cmd('az serial-console disable')
+
+        with self.assertRaises(ForbiddenError):
+            checkResource(self.cli_ctx, resource_group, name, None)
+
+        self.cmd('az serial-console enable')
+
+        checkResource(self.cli_ctx, resource_group, name, None)
+
         self.cmd('az vm deallocate -g {rg} -n {name}')
 
         with self.assertRaises(AzureConnectionError):
             checkResource(self.cli_ctx, resource_group, name, None)
+
+
+class SerialConsoleEnableDisableTest(ScenarioTest):
+
+    def test_enable_disable(self):
+        self.cmd('az serial-console disable', checks=[
+            self.check('properties.disabled', 'True')
+        ])
+        self.cmd('az serial-console enable', checks=[
+            self.check('properties.disabled', 'False')
+        ])
 
 
 class SerialconsoleAdminCommandsTest(LiveScenarioTest):
@@ -250,7 +280,6 @@ class SerialconsoleAdminCommandsTest(LiveScenarioTest):
         self.check_result(resource_group, name,
                           vmss_instanceid=result[1], message="NMI received")
 
-    @pytest.mark.donow
     @ResourceGroupPreparer(name_prefix='cli_test_serialconsole', location='westus2')
     @StorageAccountPreparer(name_prefix='cli', location="westus2")
     def test_send_reset_VMSS(self, resource_group, storage_account):
@@ -339,7 +368,6 @@ class SerialconsoleAdminCommandsTest(LiveScenarioTest):
         self.cmd('serial-console send sysrq -g {rg} -n {name} --input h')
         self.check_result(resource_group, name, message="sysrq: HELP")
 
-    @pytest.mark.donow
     @ResourceGroupPreparer(name_prefix='cli_test_serialconsole', location='westus2')
     @StorageAccountPreparer(name_prefix='cli', location="westus2")
     def test_send_reset_VM(self, resource_group, storage_account):

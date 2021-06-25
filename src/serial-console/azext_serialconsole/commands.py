@@ -8,6 +8,8 @@ def load_command_table(self, _):
 
     with self.command_group('serial-console') as g:
         g.custom_command('connect', 'connect_serialconsole')
+        g.custom_command('enable', 'enable_serialconsole')
+        g.custom_command('disable', 'disable_serialconsole')
 
     with self.command_group('serial-console send') as g:
         g.custom_command('nmi', 'send_nmi_serialconsole')

@@ -9,8 +9,17 @@ az extension add --name serial-console
 
 ### Included Features ###
 #### Connect to the text-based Serial Console of a VM or VMSS Instance ####
+To exit serial console type Ctrl + ] and then q. To send an NMI/SysRq/Reset type Ctrl + ] and then n/s/r respectively.
 ```
 az serial-console connect -n MyVM -g MyResourceGroup
+```
+#### Enable the serial console service for an entire subscription ####
+```
+az serial-console enable
+```
+#### Disable the serial console service for an entire subscription ####
+```
+az serial-console disable
 ```
 #### Send a Non-Maskable Interrupt (NMI) to a VM or VMSS Instance ####
 ```
