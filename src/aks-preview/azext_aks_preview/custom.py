@@ -3452,6 +3452,8 @@ def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_
                       appgw_watch_namespace=None, enable_sgxquotehelper=False, enable_secret_rotation=False, no_wait=False, enable_msi_auth_for_monitoring=False):
 
     instance = client.get(resource_group_name, name)
+    msi_auth = True if instance.service_principal_profile.client_id == "msi" else False
+
     subscription_id = get_subscription_id(cmd.cli_ctx)
     instance = _update_addons(cmd, instance, subscription_id, resource_group_name, name, addons, enable=True,
                               workspace_resource_id=workspace_resource_id, enable_msi_auth_for_monitoring=enable_msi_auth_for_monitoring, subnet_name=subnet_name,
@@ -3459,16 +3461,14 @@ def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_
                               enable_sgxquotehelper=enable_sgxquotehelper, enable_secret_rotation=enable_secret_rotation, no_wait=no_wait)
 
     if CONST_MONITORING_ADDON_NAME in instance.addon_profiles and instance.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled:
+
+
         if instance.addon_profiles[CONST_MONITORING_ADDON_NAME].config[CONST_MONITORING_USING_AAD_MSI_AUTH]:
-            # Ensure the cluster does not use service principal auth
-            try:
-                if instance.servicePrincipalProfile.clientId != "":  # just checking if this field exists
-                    pass
+            if msi_auth:
                 raise ArgumentUsageError("--enable-msi-auth-for-monitoring can not be used on clusters with service principal auth.")
-            except AttributeError:
-                pass
-            # create a Data Collection Rule (DCR) and associate it with the cluster
-            _ensure_container_insights_for_monitoring(cmd, instance.addon_profiles[CONST_MONITORING_ADDON_NAME], subscription_id, resource_group_name, name, instance.location, aad_route=True, create_dcr=True, create_dcra=True)
+            else:
+                # create a Data Collection Rule (DCR) and associate it with the cluster
+                _ensure_container_insights_for_monitoring(cmd, instance.addon_profiles[CONST_MONITORING_ADDON_NAME], subscription_id, resource_group_name, name, instance.location, aad_route=True, create_dcr=True, create_dcra=True)
         else:
             # monitoring addon will use legacy path
             _ensure_container_insights_for_monitoring(cmd, instance.addon_profiles[CONST_MONITORING_ADDON_NAME], subscription_id, resource_group_name, name, instance.location, aad_route=False)
