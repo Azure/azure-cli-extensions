@@ -12,20 +12,20 @@ from typing import Dict, List, Optional, Union
 from azure.core.exceptions import HttpResponseError
 import msrest.serialization
 
+from ._data_share_management_client_enums import *
 
-class DefaultDto(msrest.serialization.Model):
-    """Base data transfer object implementation for default resources.
+
+class ProxyDto(msrest.serialization.Model):
+    """Base data transfer object implementation for proxy resources.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar id: The resource id of the azure resource.
     :vartype id: str
-    :param location: Location of the azure resource.
-    :type location: str
     :ivar name: Name of the azure resource.
     :vartype name: str
-    :param tags: A set of tags. Tags on the azure resource.
-    :type tags: dict[str, str]
+    :ivar system_data: System Data of the Azure resource.
+    :vartype system_data: ~data_share_management_client.models.SystemData
     :ivar type: Type of the azure resource.
     :vartype type: str
     """
@@ -33,15 +33,61 @@ class DefaultDto(msrest.serialization.Model):
     _validation = {
         'id': {'readonly': True},
         'name': {'readonly': True},
+        'system_data': {'readonly': True},
         'type': {'readonly': True},
     }
 
     _attribute_map = {
         'id': {'key': 'id', 'type': 'str'},
-        'location': {'key': 'location', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
-        'tags': {'key': 'tags', 'type': '{str}'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
         'type': {'key': 'type', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(ProxyDto, self).__init__(**kwargs)
+        self.id = None
+        self.name = None
+        self.system_data = None
+        self.type = None
+
+
+class DefaultDto(ProxyDto):
+    """Base data transfer object implementation for default resources.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: The resource id of the azure resource.
+    :vartype id: str
+    :ivar name: Name of the azure resource.
+    :vartype name: str
+    :ivar system_data: System Data of the Azure resource.
+    :vartype system_data: ~data_share_management_client.models.SystemData
+    :ivar type: Type of the azure resource.
+    :vartype type: str
+    :param location: Location of the azure resource.
+    :type location: str
+    :param tags: A set of tags. Tags on the azure resource.
+    :type tags: dict[str, str]
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'system_data': {'readonly': True},
+        'type': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
+        'type': {'key': 'type', 'type': 'str'},
+        'location': {'key': 'location', 'type': 'str'},
+        'tags': {'key': 'tags', 'type': '{str}'},
     }
 
     def __init__(
@@ -52,11 +98,8 @@ class DefaultDto(msrest.serialization.Model):
         **kwargs
     ):
         super(DefaultDto, self).__init__(**kwargs)
-        self.id = None
         self.location = location
-        self.name = None
         self.tags = tags
-        self.type = None
 
 
 class Account(DefaultDto):
@@ -68,20 +111,22 @@ class Account(DefaultDto):
 
     :ivar id: The resource id of the azure resource.
     :vartype id: str
-    :param location: Location of the azure resource.
-    :type location: str
     :ivar name: Name of the azure resource.
     :vartype name: str
-    :param tags: A set of tags. Tags on the azure resource.
-    :type tags: dict[str, str]
+    :ivar system_data: System Data of the Azure resource.
+    :vartype system_data: ~data_share_management_client.models.SystemData
     :ivar type: Type of the azure resource.
     :vartype type: str
+    :param location: Location of the azure resource.
+    :type location: str
+    :param tags: A set of tags. Tags on the azure resource.
+    :type tags: dict[str, str]
     :param identity: Required. Identity Info on the Account.
     :type identity: ~data_share_management_client.models.Identity
     :ivar created_at: Time at which the account was created.
     :vartype created_at: ~datetime.datetime
     :ivar provisioning_state: Provisioning state of the Account. Possible values include:
-     'Succeeded', 'Creating', 'Deleting', 'Moving', 'Failed'.
+     "Succeeded", "Creating", "Deleting", "Moving", "Failed".
     :vartype provisioning_state: str or ~data_share_management_client.models.ProvisioningState
     :ivar user_email: Email of the user who created the resource.
     :vartype user_email: str
@@ -92,6 +137,7 @@ class Account(DefaultDto):
     _validation = {
         'id': {'readonly': True},
         'name': {'readonly': True},
+        'system_data': {'readonly': True},
         'type': {'readonly': True},
         'identity': {'required': True},
         'created_at': {'readonly': True},
@@ -102,10 +148,11 @@ class Account(DefaultDto):
 
     _attribute_map = {
         'id': {'key': 'id', 'type': 'str'},
-        'location': {'key': 'location', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
-        'tags': {'key': 'tags', 'type': '{str}'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
         'type': {'key': 'type', 'type': 'str'},
+        'location': {'key': 'location', 'type': 'str'},
+        'tags': {'key': 'tags', 'type': '{str}'},
         'identity': {'key': 'identity', 'type': 'Identity'},
         'created_at': {'key': 'properties.createdAt', 'type': 'iso-8601'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
@@ -182,46 +229,11 @@ class AccountUpdateParameters(msrest.serialization.Model):
         self.tags = tags
 
 
-class ProxyDto(msrest.serialization.Model):
-    """Base data transfer object implementation for proxy resources.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    :ivar id: The resource id of the azure resource.
-    :vartype id: str
-    :ivar name: Name of the azure resource.
-    :vartype name: str
-    :ivar type: Type of the azure resource.
-    :vartype type: str
-    """
-
-    _validation = {
-        'id': {'readonly': True},
-        'name': {'readonly': True},
-        'type': {'readonly': True},
-    }
-
-    _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'str'},
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        super(ProxyDto, self).__init__(**kwargs)
-        self.id = None
-        self.name = None
-        self.type = None
-
-
 class DataSet(ProxyDto):
     """A DataSet data transfer object.
 
     You probably want to use the sub-classes and not this class directly. Known
-    sub-classes are: AdlsGen1FileDataSet, AdlsGen1FolderDataSet, AdlsGen2FileDataSet, AdlsGen2FileSystemDataSet, AdlsGen2FolderDataSet, BlobDataSet, BlobFolderDataSet, BlobContainerDataSet, KustoClusterDataSet, KustoDatabaseDataSet, SqlDBTableDataSet, SqlDwTableDataSet.
+    sub-classes are: AdlsGen1FileDataSet, AdlsGen1FolderDataSet, AdlsGen2FileDataSet, AdlsGen2FileSystemDataSet, AdlsGen2FolderDataSet, BlobDataSet, BlobFolderDataSet, BlobContainerDataSet, KustoClusterDataSet, KustoDatabaseDataSet, SqlDbTableDataSet, SqlDwTableDataSet, SynapseWorkspaceSqlPoolTableDataSet.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
@@ -231,18 +243,21 @@ class DataSet(ProxyDto):
     :vartype id: str
     :ivar name: Name of the azure resource.
     :vartype name: str
+    :ivar system_data: System Data of the Azure resource.
+    :vartype system_data: ~data_share_management_client.models.SystemData
     :ivar type: Type of the azure resource.
     :vartype type: str
     :param kind: Required. Kind of data set.Constant filled by server.  Possible values include:
-     'Blob', 'Container', 'BlobFolder', 'AdlsGen2FileSystem', 'AdlsGen2Folder', 'AdlsGen2File',
-     'AdlsGen1Folder', 'AdlsGen1File', 'KustoCluster', 'KustoDatabase', 'SqlDBTable', 'SqlDWTable',
-     'ScheduleBased'.
-    :type kind: str or ~data_share_management_client.models.Kind
+     "Blob", "Container", "BlobFolder", "AdlsGen2FileSystem", "AdlsGen2Folder", "AdlsGen2File",
+     "AdlsGen1Folder", "AdlsGen1File", "KustoCluster", "KustoDatabase", "SqlDBTable", "SqlDWTable",
+     "SynapseWorkspaceSqlPoolTable".
+    :type kind: str or ~data_share_management_client.models.DataSetKind
     """
 
     _validation = {
         'id': {'readonly': True},
         'name': {'readonly': True},
+        'system_data': {'readonly': True},
         'type': {'readonly': True},
         'kind': {'required': True},
     }
@@ -250,12 +265,13 @@ class DataSet(ProxyDto):
     _attribute_map = {
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
         'type': {'key': 'type', 'type': 'str'},
         'kind': {'key': 'kind', 'type': 'str'},
     }
 
     _subtype_map = {
-        'kind': {'AdlsGen1File': 'AdlsGen1FileDataSet', 'AdlsGen1Folder': 'AdlsGen1FolderDataSet', 'AdlsGen2File': 'AdlsGen2FileDataSet', 'AdlsGen2FileSystem': 'AdlsGen2FileSystemDataSet', 'AdlsGen2Folder': 'AdlsGen2FolderDataSet', 'Blob': 'BlobDataSet', 'BlobFolder': 'BlobFolderDataSet', 'Container': 'BlobContainerDataSet', 'KustoCluster': 'KustoClusterDataSet', 'KustoDatabase': 'KustoDatabaseDataSet', 'SqlDBTable': 'SqlDBTableDataSet', 'SqlDWTable': 'SqlDwTableDataSet'}
+        'kind': {'AdlsGen1File': 'AdlsGen1FileDataSet', 'AdlsGen1Folder': 'AdlsGen1FolderDataSet', 'AdlsGen2File': 'AdlsGen2FileDataSet', 'AdlsGen2FileSystem': 'AdlsGen2FileSystemDataSet', 'AdlsGen2Folder': 'AdlsGen2FolderDataSet', 'Blob': 'BlobDataSet', 'BlobFolder': 'BlobFolderDataSet', 'Container': 'BlobContainerDataSet', 'KustoCluster': 'KustoClusterDataSet', 'KustoDatabase': 'KustoDatabaseDataSet', 'SqlDBTable': 'SqlDbTableDataSet', 'SqlDWTable': 'SqlDwTableDataSet', 'SynapseWorkspaceSqlPoolTable': 'SynapseWorkspaceSqlPoolTableDataSet'}
     }
 
     def __init__(
@@ -263,7 +279,7 @@ class DataSet(ProxyDto):
         **kwargs
     ):
         super(DataSet, self).__init__(**kwargs)
-        self.kind = 'DataSet'
+        self.kind = 'DataSet'  # type: str
 
 
 class AdlsGen1FileDataSet(DataSet):
@@ -277,13 +293,15 @@ class AdlsGen1FileDataSet(DataSet):
     :vartype id: str
     :ivar name: Name of the azure resource.
     :vartype name: str
+    :ivar system_data: System Data of the Azure resource.
+    :vartype system_data: ~data_share_management_client.models.SystemData
     :ivar type: Type of the azure resource.
     :vartype type: str
     :param kind: Required. Kind of data set.Constant filled by server.  Possible values include:
-     'Blob', 'Container', 'BlobFolder', 'AdlsGen2FileSystem', 'AdlsGen2Folder', 'AdlsGen2File',
-     'AdlsGen1Folder', 'AdlsGen1File', 'KustoCluster', 'KustoDatabase', 'SqlDBTable', 'SqlDWTable',
-     'ScheduleBased'.
-    :type kind: str or ~data_share_management_client.models.Kind
+     "Blob", "Container", "BlobFolder", "AdlsGen2FileSystem", "AdlsGen2Folder", "AdlsGen2File",
+     "AdlsGen1Folder", "AdlsGen1File", "KustoCluster", "KustoDatabase", "SqlDBTable", "SqlDWTable",
+     "SynapseWorkspaceSqlPoolTable".
+    :type kind: str or ~data_share_management_client.models.DataSetKind
     :param account_name: Required. The ADLS account name.
     :type account_name: str
     :ivar data_set_id: Unique id for identifying a data set resource.
@@ -301,6 +319,7 @@ class AdlsGen1FileDataSet(DataSet):
     _validation = {
         'id': {'readonly': True},
         'name': {'readonly': True},
+        'system_data': {'readonly': True},
         'type': {'readonly': True},
         'kind': {'required': True},
         'account_name': {'required': True},
@@ -314,6 +333,7 @@ class AdlsGen1FileDataSet(DataSet):
     _attribute_map = {
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
         'type': {'key': 'type', 'type': 'str'},
         'kind': {'key': 'kind', 'type': 'str'},
         'account_name': {'key': 'properties.accountName', 'type': 'str'},
@@ -335,7 +355,7 @@ class AdlsGen1FileDataSet(DataSet):
         **kwargs
     ):
         super(AdlsGen1FileDataSet, self).__init__(**kwargs)
-        self.kind = 'AdlsGen1File'
+        self.kind = 'AdlsGen1File'  # type: str
         self.account_name = account_name
         self.data_set_id = None
         self.file_name = file_name
@@ -355,13 +375,15 @@ class AdlsGen1FolderDataSet(DataSet):
     :vartype id: str
     :ivar name: Name of the azure resource.
     :vartype name: str
+    :ivar system_data: System Data of the Azure resource.
+    :vartype system_data: ~data_share_management_client.models.SystemData
     :ivar type: Type of the azure resource.
     :vartype type: str
     :param kind: Required. Kind of data set.Constant filled by server.  Possible values include:
-     'Blob', 'Container', 'BlobFolder', 'AdlsGen2FileSystem', 'AdlsGen2Folder', 'AdlsGen2File',
-     'AdlsGen1Folder', 'AdlsGen1File', 'KustoCluster', 'KustoDatabase', 'SqlDBTable', 'SqlDWTable',
-     'ScheduleBased'.
-    :type kind: str or ~data_share_management_client.models.Kind
+     "Blob", "Container", "BlobFolder", "AdlsGen2FileSystem", "AdlsGen2Folder", "AdlsGen2File",
+     "AdlsGen1Folder", "AdlsGen1File", "KustoCluster", "KustoDatabase", "SqlDBTable", "SqlDWTable",
+     "SynapseWorkspaceSqlPoolTable".
+    :type kind: str or ~data_share_management_client.models.DataSetKind
     :param account_name: Required. The ADLS account name.
     :type account_name: str
     :ivar data_set_id: Unique id for identifying a data set resource.
@@ -377,6 +399,7 @@ class AdlsGen1FolderDataSet(DataSet):
     _validation = {
         'id': {'readonly': True},
         'name': {'readonly': True},
+        'system_data': {'readonly': True},
         'type': {'readonly': True},
         'kind': {'required': True},
         'account_name': {'required': True},
@@ -389,6 +412,7 @@ class AdlsGen1FolderDataSet(DataSet):
     _attribute_map = {
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
         'type': {'key': 'type', 'type': 'str'},
         'kind': {'key': 'kind', 'type': 'str'},
         'account_name': {'key': 'properties.accountName', 'type': 'str'},
@@ -408,7 +432,7 @@ class AdlsGen1FolderDataSet(DataSet):
         **kwargs
     ):
         super(AdlsGen1FolderDataSet, self).__init__(**kwargs)
-        self.kind = 'AdlsGen1Folder'
+        self.kind = 'AdlsGen1Folder'  # type: str
         self.account_name = account_name
         self.data_set_id = None
         self.folder_path = folder_path
@@ -427,13 +451,15 @@ class AdlsGen2FileDataSet(DataSet):
     :vartype id: str
     :ivar name: Name of the azure resource.
     :vartype name: str
+    :ivar system_data: System Data of the Azure resource.
+    :vartype system_data: ~data_share_management_client.models.SystemData
     :ivar type: Type of the azure resource.
     :vartype type: str
     :param kind: Required. Kind of data set.Constant filled by server.  Possible values include:
-     'Blob', 'Container', 'BlobFolder', 'AdlsGen2FileSystem', 'AdlsGen2Folder', 'AdlsGen2File',
-     'AdlsGen1Folder', 'AdlsGen1File', 'KustoCluster', 'KustoDatabase', 'SqlDBTable', 'SqlDWTable',
-     'ScheduleBased'.
-    :type kind: str or ~data_share_management_client.models.Kind
+     "Blob", "Container", "BlobFolder", "AdlsGen2FileSystem", "AdlsGen2Folder", "AdlsGen2File",
+     "AdlsGen1Folder", "AdlsGen1File", "KustoCluster", "KustoDatabase", "SqlDBTable", "SqlDWTable",
+     "SynapseWorkspaceSqlPoolTable".
+    :type kind: str or ~data_share_management_client.models.DataSetKind
     :ivar data_set_id: Unique id for identifying a data set resource.
     :vartype data_set_id: str
     :param file_path: Required. File path within the file system.
@@ -451,6 +477,7 @@ class AdlsGen2FileDataSet(DataSet):
     _validation = {
         'id': {'readonly': True},
         'name': {'readonly': True},
+        'system_data': {'readonly': True},
         'type': {'readonly': True},
         'kind': {'required': True},
         'data_set_id': {'readonly': True},
@@ -464,6 +491,7 @@ class AdlsGen2FileDataSet(DataSet):
     _attribute_map = {
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
         'type': {'key': 'type', 'type': 'str'},
         'kind': {'key': 'kind', 'type': 'str'},
         'data_set_id': {'key': 'properties.dataSetId', 'type': 'str'},
@@ -485,7 +513,7 @@ class AdlsGen2FileDataSet(DataSet):
         **kwargs
     ):
         super(AdlsGen2FileDataSet, self).__init__(**kwargs)
-        self.kind = 'AdlsGen2File'
+        self.kind = 'AdlsGen2File'  # type: str
         self.data_set_id = None
         self.file_path = file_path
         self.file_system = file_system
@@ -498,7 +526,7 @@ class DataSetMapping(ProxyDto):
     """A data set mapping data transfer object.
 
     You probably want to use the sub-classes and not this class directly. Known
-    sub-classes are: AdlsGen2FileDataSetMapping, AdlsGen2FileSystemDataSetMapping, AdlsGen2FolderDataSetMapping, BlobDataSetMapping, BlobFolderDataSetMapping, BlobContainerDataSetMapping, KustoClusterDataSetMapping, KustoDatabaseDataSetMapping, SqlDBTableDataSetMapping, SqlDwTableDataSetMapping.
+    sub-classes are: AdlsGen2FileDataSetMapping, AdlsGen2FileSystemDataSetMapping, AdlsGen2FolderDataSetMapping, BlobDataSetMapping, BlobFolderDataSetMapping, BlobContainerDataSetMapping, KustoClusterDataSetMapping, KustoDatabaseDataSetMapping, SqlDbTableDataSetMapping, SqlDwTableDataSetMapping, SynapseWorkspaceSqlPoolTableDataSetMapping.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
@@ -508,18 +536,21 @@ class DataSetMapping(ProxyDto):
     :vartype id: str
     :ivar name: Name of the azure resource.
     :vartype name: str
+    :ivar system_data: System Data of the Azure resource.
+    :vartype system_data: ~data_share_management_client.models.SystemData
     :ivar type: Type of the azure resource.
     :vartype type: str
     :param kind: Required. Kind of data set mapping.Constant filled by server.  Possible values
-     include: 'Blob', 'Container', 'BlobFolder', 'AdlsGen2FileSystem', 'AdlsGen2Folder',
-     'AdlsGen2File', 'AdlsGen1Folder', 'AdlsGen1File', 'KustoCluster', 'KustoDatabase',
-     'SqlDBTable', 'SqlDWTable', 'ScheduleBased'.
-    :type kind: str or ~data_share_management_client.models.Kind
+     include: "Blob", "Container", "BlobFolder", "AdlsGen2FileSystem", "AdlsGen2Folder",
+     "AdlsGen2File", "KustoCluster", "KustoDatabase", "SqlDBTable", "SqlDWTable",
+     "SynapseWorkspaceSqlPoolTable".
+    :type kind: str or ~data_share_management_client.models.DataSetMappingKind
     """
 
     _validation = {
         'id': {'readonly': True},
         'name': {'readonly': True},
+        'system_data': {'readonly': True},
         'type': {'readonly': True},
         'kind': {'required': True},
     }
@@ -527,12 +558,13 @@ class DataSetMapping(ProxyDto):
     _attribute_map = {
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
         'type': {'key': 'type', 'type': 'str'},
         'kind': {'key': 'kind', 'type': 'str'},
     }
 
     _subtype_map = {
-        'kind': {'AdlsGen2File': 'AdlsGen2FileDataSetMapping', 'AdlsGen2FileSystem': 'AdlsGen2FileSystemDataSetMapping', 'AdlsGen2Folder': 'AdlsGen2FolderDataSetMapping', 'Blob': 'BlobDataSetMapping', 'BlobFolder': 'BlobFolderDataSetMapping', 'Container': 'BlobContainerDataSetMapping', 'KustoCluster': 'KustoClusterDataSetMapping', 'KustoDatabase': 'KustoDatabaseDataSetMapping', 'SqlDBTable': 'SqlDBTableDataSetMapping', 'SqlDWTable': 'SqlDwTableDataSetMapping'}
+        'kind': {'AdlsGen2File': 'AdlsGen2FileDataSetMapping', 'AdlsGen2FileSystem': 'AdlsGen2FileSystemDataSetMapping', 'AdlsGen2Folder': 'AdlsGen2FolderDataSetMapping', 'Blob': 'BlobDataSetMapping', 'BlobFolder': 'BlobFolderDataSetMapping', 'Container': 'BlobContainerDataSetMapping', 'KustoCluster': 'KustoClusterDataSetMapping', 'KustoDatabase': 'KustoDatabaseDataSetMapping', 'SqlDBTable': 'SqlDbTableDataSetMapping', 'SqlDWTable': 'SqlDwTableDataSetMapping', 'SynapseWorkspaceSqlPoolTable': 'SynapseWorkspaceSqlPoolTableDataSetMapping'}
     }
 
     def __init__(
@@ -540,7 +572,7 @@ class DataSetMapping(ProxyDto):
         **kwargs
     ):
         super(DataSetMapping, self).__init__(**kwargs)
-        self.kind = 'DataSetMapping'
+        self.kind = 'DataSetMapping'  # type: str
 
 
 class AdlsGen2FileDataSetMapping(DataSetMapping):
@@ -554,27 +586,29 @@ class AdlsGen2FileDataSetMapping(DataSetMapping):
     :vartype id: str
     :ivar name: Name of the azure resource.
     :vartype name: str
+    :ivar system_data: System Data of the Azure resource.
+    :vartype system_data: ~data_share_management_client.models.SystemData
     :ivar type: Type of the azure resource.
     :vartype type: str
     :param kind: Required. Kind of data set mapping.Constant filled by server.  Possible values
-     include: 'Blob', 'Container', 'BlobFolder', 'AdlsGen2FileSystem', 'AdlsGen2Folder',
-     'AdlsGen2File', 'AdlsGen1Folder', 'AdlsGen1File', 'KustoCluster', 'KustoDatabase',
-     'SqlDBTable', 'SqlDWTable', 'ScheduleBased'.
-    :type kind: str or ~data_share_management_client.models.Kind
+     include: "Blob", "Container", "BlobFolder", "AdlsGen2FileSystem", "AdlsGen2Folder",
+     "AdlsGen2File", "KustoCluster", "KustoDatabase", "SqlDBTable", "SqlDWTable",
+     "SynapseWorkspaceSqlPoolTable".
+    :type kind: str or ~data_share_management_client.models.DataSetMappingKind
     :param data_set_id: Required. The id of the source data set.
     :type data_set_id: str
     :ivar data_set_mapping_status: Gets the status of the data set mapping. Possible values
-     include: 'Ok', 'Broken'.
+     include: "Ok", "Broken".
     :vartype data_set_mapping_status: str or
      ~data_share_management_client.models.DataSetMappingStatus
     :param file_path: Required. File path within the file system.
     :type file_path: str
     :param file_system: Required. File system to which the file belongs.
     :type file_system: str
-    :param output_type: Type of output file. Possible values include: 'Csv', 'Parquet'.
+    :param output_type: Type of output file. Possible values include: "Csv", "Parquet".
     :type output_type: str or ~data_share_management_client.models.OutputType
     :ivar provisioning_state: Provisioning state of the data set mapping. Possible values include:
-     'Succeeded', 'Creating', 'Deleting', 'Moving', 'Failed'.
+     "Succeeded", "Creating", "Deleting", "Moving", "Failed".
     :vartype provisioning_state: str or ~data_share_management_client.models.ProvisioningState
     :param resource_group: Required. Resource group of storage account.
     :type resource_group: str
@@ -587,6 +621,7 @@ class AdlsGen2FileDataSetMapping(DataSetMapping):
     _validation = {
         'id': {'readonly': True},
         'name': {'readonly': True},
+        'system_data': {'readonly': True},
         'type': {'readonly': True},
         'kind': {'required': True},
         'data_set_id': {'required': True},
@@ -602,6 +637,7 @@ class AdlsGen2FileDataSetMapping(DataSetMapping):
     _attribute_map = {
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
         'type': {'key': 'type', 'type': 'str'},
         'kind': {'key': 'kind', 'type': 'str'},
         'data_set_id': {'key': 'properties.dataSetId', 'type': 'str'},
@@ -628,7 +664,7 @@ class AdlsGen2FileDataSetMapping(DataSetMapping):
         **kwargs
     ):
         super(AdlsGen2FileDataSetMapping, self).__init__(**kwargs)
-        self.kind = 'AdlsGen2File'
+        self.kind = 'AdlsGen2File'  # type: str
         self.data_set_id = data_set_id
         self.data_set_mapping_status = None
         self.file_path = file_path
@@ -651,13 +687,15 @@ class AdlsGen2FileSystemDataSet(DataSet):
     :vartype id: str
     :ivar name: Name of the azure resource.
     :vartype name: str
+    :ivar system_data: System Data of the Azure resource.
+    :vartype system_data: ~data_share_management_client.models.SystemData
     :ivar type: Type of the azure resource.
     :vartype type: str
     :param kind: Required. Kind of data set.Constant filled by server.  Possible values include:
-     'Blob', 'Container', 'BlobFolder', 'AdlsGen2FileSystem', 'AdlsGen2Folder', 'AdlsGen2File',
-     'AdlsGen1Folder', 'AdlsGen1File', 'KustoCluster', 'KustoDatabase', 'SqlDBTable', 'SqlDWTable',
-     'ScheduleBased'.
-    :type kind: str or ~data_share_management_client.models.Kind
+     "Blob", "Container", "BlobFolder", "AdlsGen2FileSystem", "AdlsGen2Folder", "AdlsGen2File",
+     "AdlsGen1Folder", "AdlsGen1File", "KustoCluster", "KustoDatabase", "SqlDBTable", "SqlDWTable",
+     "SynapseWorkspaceSqlPoolTable".
+    :type kind: str or ~data_share_management_client.models.DataSetKind
     :ivar data_set_id: Unique id for identifying a data set resource.
     :vartype data_set_id: str
     :param file_system: Required. The file system name.
@@ -673,6 +711,7 @@ class AdlsGen2FileSystemDataSet(DataSet):
     _validation = {
         'id': {'readonly': True},
         'name': {'readonly': True},
+        'system_data': {'readonly': True},
         'type': {'readonly': True},
         'kind': {'required': True},
         'data_set_id': {'readonly': True},
@@ -685,6 +724,7 @@ class AdlsGen2FileSystemDataSet(DataSet):
     _attribute_map = {
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
         'type': {'key': 'type', 'type': 'str'},
         'kind': {'key': 'kind', 'type': 'str'},
         'data_set_id': {'key': 'properties.dataSetId', 'type': 'str'},
@@ -704,7 +744,7 @@ class AdlsGen2FileSystemDataSet(DataSet):
         **kwargs
     ):
         super(AdlsGen2FileSystemDataSet, self).__init__(**kwargs)
-        self.kind = 'AdlsGen2FileSystem'
+        self.kind = 'AdlsGen2FileSystem'  # type: str
         self.data_set_id = None
         self.file_system = file_system
         self.resource_group = resource_group
@@ -723,23 +763,25 @@ class AdlsGen2FileSystemDataSetMapping(DataSetMapping):
     :vartype id: str
     :ivar name: Name of the azure resource.
     :vartype name: str
+    :ivar system_data: System Data of the Azure resource.
+    :vartype system_data: ~data_share_management_client.models.SystemData
     :ivar type: Type of the azure resource.
     :vartype type: str
     :param kind: Required. Kind of data set mapping.Constant filled by server.  Possible values
-     include: 'Blob', 'Container', 'BlobFolder', 'AdlsGen2FileSystem', 'AdlsGen2Folder',
-     'AdlsGen2File', 'AdlsGen1Folder', 'AdlsGen1File', 'KustoCluster', 'KustoDatabase',
-     'SqlDBTable', 'SqlDWTable', 'ScheduleBased'.
-    :type kind: str or ~data_share_management_client.models.Kind
+     include: "Blob", "Container", "BlobFolder", "AdlsGen2FileSystem", "AdlsGen2Folder",
+     "AdlsGen2File", "KustoCluster", "KustoDatabase", "SqlDBTable", "SqlDWTable",
+     "SynapseWorkspaceSqlPoolTable".
+    :type kind: str or ~data_share_management_client.models.DataSetMappingKind
     :param data_set_id: Required. The id of the source data set.
     :type data_set_id: str
     :ivar data_set_mapping_status: Gets the status of the data set mapping. Possible values
-     include: 'Ok', 'Broken'.
+     include: "Ok", "Broken".
     :vartype data_set_mapping_status: str or
      ~data_share_management_client.models.DataSetMappingStatus
     :param file_system: Required. The file system name.
     :type file_system: str
     :ivar provisioning_state: Provisioning state of the data set mapping. Possible values include:
-     'Succeeded', 'Creating', 'Deleting', 'Moving', 'Failed'.
+     "Succeeded", "Creating", "Deleting", "Moving", "Failed".
     :vartype provisioning_state: str or ~data_share_management_client.models.ProvisioningState
     :param resource_group: Required. Resource group of storage account.
     :type resource_group: str
@@ -752,6 +794,7 @@ class AdlsGen2FileSystemDataSetMapping(DataSetMapping):
     _validation = {
         'id': {'readonly': True},
         'name': {'readonly': True},
+        'system_data': {'readonly': True},
         'type': {'readonly': True},
         'kind': {'required': True},
         'data_set_id': {'required': True},
@@ -766,6 +809,7 @@ class AdlsGen2FileSystemDataSetMapping(DataSetMapping):
     _attribute_map = {
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
         'type': {'key': 'type', 'type': 'str'},
         'kind': {'key': 'kind', 'type': 'str'},
         'data_set_id': {'key': 'properties.dataSetId', 'type': 'str'},
@@ -788,7 +832,7 @@ class AdlsGen2FileSystemDataSetMapping(DataSetMapping):
         **kwargs
     ):
         super(AdlsGen2FileSystemDataSetMapping, self).__init__(**kwargs)
-        self.kind = 'AdlsGen2FileSystem'
+        self.kind = 'AdlsGen2FileSystem'  # type: str
         self.data_set_id = data_set_id
         self.data_set_mapping_status = None
         self.file_system = file_system
@@ -809,13 +853,15 @@ class AdlsGen2FolderDataSet(DataSet):
     :vartype id: str
     :ivar name: Name of the azure resource.
     :vartype name: str
+    :ivar system_data: System Data of the Azure resource.
+    :vartype system_data: ~data_share_management_client.models.SystemData
     :ivar type: Type of the azure resource.
     :vartype type: str
     :param kind: Required. Kind of data set.Constant filled by server.  Possible values include:
-     'Blob', 'Container', 'BlobFolder', 'AdlsGen2FileSystem', 'AdlsGen2Folder', 'AdlsGen2File',
-     'AdlsGen1Folder', 'AdlsGen1File', 'KustoCluster', 'KustoDatabase', 'SqlDBTable', 'SqlDWTable',
-     'ScheduleBased'.
-    :type kind: str or ~data_share_management_client.models.Kind
+     "Blob", "Container", "BlobFolder", "AdlsGen2FileSystem", "AdlsGen2Folder", "AdlsGen2File",
+     "AdlsGen1Folder", "AdlsGen1File", "KustoCluster", "KustoDatabase", "SqlDBTable", "SqlDWTable",
+     "SynapseWorkspaceSqlPoolTable".
+    :type kind: str or ~data_share_management_client.models.DataSetKind
     :ivar data_set_id: Unique id for identifying a data set resource.
     :vartype data_set_id: str
     :param file_system: Required. File system to which the folder belongs.
@@ -833,6 +879,7 @@ class AdlsGen2FolderDataSet(DataSet):
     _validation = {
         'id': {'readonly': True},
         'name': {'readonly': True},
+        'system_data': {'readonly': True},
         'type': {'readonly': True},
         'kind': {'required': True},
         'data_set_id': {'readonly': True},
@@ -846,6 +893,7 @@ class AdlsGen2FolderDataSet(DataSet):
     _attribute_map = {
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
         'type': {'key': 'type', 'type': 'str'},
         'kind': {'key': 'kind', 'type': 'str'},
         'data_set_id': {'key': 'properties.dataSetId', 'type': 'str'},
@@ -867,7 +915,7 @@ class AdlsGen2FolderDataSet(DataSet):
         **kwargs
     ):
         super(AdlsGen2FolderDataSet, self).__init__(**kwargs)
-        self.kind = 'AdlsGen2Folder'
+        self.kind = 'AdlsGen2Folder'  # type: str
         self.data_set_id = None
         self.file_system = file_system
         self.folder_path = folder_path
@@ -887,17 +935,19 @@ class AdlsGen2FolderDataSetMapping(DataSetMapping):
     :vartype id: str
     :ivar name: Name of the azure resource.
     :vartype name: str
+    :ivar system_data: System Data of the Azure resource.
+    :vartype system_data: ~data_share_management_client.models.SystemData
     :ivar type: Type of the azure resource.
     :vartype type: str
     :param kind: Required. Kind of data set mapping.Constant filled by server.  Possible values
-     include: 'Blob', 'Container', 'BlobFolder', 'AdlsGen2FileSystem', 'AdlsGen2Folder',
-     'AdlsGen2File', 'AdlsGen1Folder', 'AdlsGen1File', 'KustoCluster', 'KustoDatabase',
-     'SqlDBTable', 'SqlDWTable', 'ScheduleBased'.
-    :type kind: str or ~data_share_management_client.models.Kind
+     include: "Blob", "Container", "BlobFolder", "AdlsGen2FileSystem", "AdlsGen2Folder",
+     "AdlsGen2File", "KustoCluster", "KustoDatabase", "SqlDBTable", "SqlDWTable",
+     "SynapseWorkspaceSqlPoolTable".
+    :type kind: str or ~data_share_management_client.models.DataSetMappingKind
     :param data_set_id: Required. The id of the source data set.
     :type data_set_id: str
     :ivar data_set_mapping_status: Gets the status of the data set mapping. Possible values
-     include: 'Ok', 'Broken'.
+     include: "Ok", "Broken".
     :vartype data_set_mapping_status: str or
      ~data_share_management_client.models.DataSetMappingStatus
     :param file_system: Required. File system to which the folder belongs.
@@ -905,7 +955,7 @@ class AdlsGen2FolderDataSetMapping(DataSetMapping):
     :param folder_path: Required. Folder path within the file system.
     :type folder_path: str
     :ivar provisioning_state: Provisioning state of the data set mapping. Possible values include:
-     'Succeeded', 'Creating', 'Deleting', 'Moving', 'Failed'.
+     "Succeeded", "Creating", "Deleting", "Moving", "Failed".
     :vartype provisioning_state: str or ~data_share_management_client.models.ProvisioningState
     :param resource_group: Required. Resource group of storage account.
     :type resource_group: str
@@ -918,6 +968,7 @@ class AdlsGen2FolderDataSetMapping(DataSetMapping):
     _validation = {
         'id': {'readonly': True},
         'name': {'readonly': True},
+        'system_data': {'readonly': True},
         'type': {'readonly': True},
         'kind': {'required': True},
         'data_set_id': {'required': True},
@@ -933,6 +984,7 @@ class AdlsGen2FolderDataSetMapping(DataSetMapping):
     _attribute_map = {
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
         'type': {'key': 'type', 'type': 'str'},
         'kind': {'key': 'kind', 'type': 'str'},
         'data_set_id': {'key': 'properties.dataSetId', 'type': 'str'},
@@ -957,7 +1009,7 @@ class AdlsGen2FolderDataSetMapping(DataSetMapping):
         **kwargs
     ):
         super(AdlsGen2FolderDataSetMapping, self).__init__(**kwargs)
-        self.kind = 'AdlsGen2Folder'
+        self.kind = 'AdlsGen2Folder'  # type: str
         self.data_set_id = data_set_id
         self.data_set_mapping_status = None
         self.file_system = file_system
@@ -979,13 +1031,15 @@ class BlobContainerDataSet(DataSet):
     :vartype id: str
     :ivar name: Name of the azure resource.
     :vartype name: str
+    :ivar system_data: System Data of the Azure resource.
+    :vartype system_data: ~data_share_management_client.models.SystemData
     :ivar type: Type of the azure resource.
     :vartype type: str
     :param kind: Required. Kind of data set.Constant filled by server.  Possible values include:
-     'Blob', 'Container', 'BlobFolder', 'AdlsGen2FileSystem', 'AdlsGen2Folder', 'AdlsGen2File',
-     'AdlsGen1Folder', 'AdlsGen1File', 'KustoCluster', 'KustoDatabase', 'SqlDBTable', 'SqlDWTable',
-     'ScheduleBased'.
-    :type kind: str or ~data_share_management_client.models.Kind
+     "Blob", "Container", "BlobFolder", "AdlsGen2FileSystem", "AdlsGen2Folder", "AdlsGen2File",
+     "AdlsGen1Folder", "AdlsGen1File", "KustoCluster", "KustoDatabase", "SqlDBTable", "SqlDWTable",
+     "SynapseWorkspaceSqlPoolTable".
+    :type kind: str or ~data_share_management_client.models.DataSetKind
     :param container_name: Required. BLOB Container name.
     :type container_name: str
     :ivar data_set_id: Unique id for identifying a data set resource.
@@ -1001,6 +1055,7 @@ class BlobContainerDataSet(DataSet):
     _validation = {
         'id': {'readonly': True},
         'name': {'readonly': True},
+        'system_data': {'readonly': True},
         'type': {'readonly': True},
         'kind': {'required': True},
         'container_name': {'required': True},
@@ -1013,6 +1068,7 @@ class BlobContainerDataSet(DataSet):
     _attribute_map = {
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
         'type': {'key': 'type', 'type': 'str'},
         'kind': {'key': 'kind', 'type': 'str'},
         'container_name': {'key': 'properties.containerName', 'type': 'str'},
@@ -1032,7 +1088,7 @@ class BlobContainerDataSet(DataSet):
         **kwargs
     ):
         super(BlobContainerDataSet, self).__init__(**kwargs)
-        self.kind = 'Container'
+        self.kind = 'Container'  # type: str
         self.container_name = container_name
         self.data_set_id = None
         self.resource_group = resource_group
@@ -1051,23 +1107,25 @@ class BlobContainerDataSetMapping(DataSetMapping):
     :vartype id: str
     :ivar name: Name of the azure resource.
     :vartype name: str
+    :ivar system_data: System Data of the Azure resource.
+    :vartype system_data: ~data_share_management_client.models.SystemData
     :ivar type: Type of the azure resource.
     :vartype type: str
     :param kind: Required. Kind of data set mapping.Constant filled by server.  Possible values
-     include: 'Blob', 'Container', 'BlobFolder', 'AdlsGen2FileSystem', 'AdlsGen2Folder',
-     'AdlsGen2File', 'AdlsGen1Folder', 'AdlsGen1File', 'KustoCluster', 'KustoDatabase',
-     'SqlDBTable', 'SqlDWTable', 'ScheduleBased'.
-    :type kind: str or ~data_share_management_client.models.Kind
+     include: "Blob", "Container", "BlobFolder", "AdlsGen2FileSystem", "AdlsGen2Folder",
+     "AdlsGen2File", "KustoCluster", "KustoDatabase", "SqlDBTable", "SqlDWTable",
+     "SynapseWorkspaceSqlPoolTable".
+    :type kind: str or ~data_share_management_client.models.DataSetMappingKind
     :param container_name: Required. BLOB Container name.
     :type container_name: str
     :param data_set_id: Required. The id of the source data set.
     :type data_set_id: str
     :ivar data_set_mapping_status: Gets the status of the data set mapping. Possible values
-     include: 'Ok', 'Broken'.
+     include: "Ok", "Broken".
     :vartype data_set_mapping_status: str or
      ~data_share_management_client.models.DataSetMappingStatus
     :ivar provisioning_state: Provisioning state of the data set mapping. Possible values include:
-     'Succeeded', 'Creating', 'Deleting', 'Moving', 'Failed'.
+     "Succeeded", "Creating", "Deleting", "Moving", "Failed".
     :vartype provisioning_state: str or ~data_share_management_client.models.ProvisioningState
     :param resource_group: Required. Resource group of storage account.
     :type resource_group: str
@@ -1080,6 +1138,7 @@ class BlobContainerDataSetMapping(DataSetMapping):
     _validation = {
         'id': {'readonly': True},
         'name': {'readonly': True},
+        'system_data': {'readonly': True},
         'type': {'readonly': True},
         'kind': {'required': True},
         'container_name': {'required': True},
@@ -1094,6 +1153,7 @@ class BlobContainerDataSetMapping(DataSetMapping):
     _attribute_map = {
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
         'type': {'key': 'type', 'type': 'str'},
         'kind': {'key': 'kind', 'type': 'str'},
         'container_name': {'key': 'properties.containerName', 'type': 'str'},
@@ -1116,7 +1176,7 @@ class BlobContainerDataSetMapping(DataSetMapping):
         **kwargs
     ):
         super(BlobContainerDataSetMapping, self).__init__(**kwargs)
-        self.kind = 'Container'
+        self.kind = 'Container'  # type: str
         self.container_name = container_name
         self.data_set_id = data_set_id
         self.data_set_mapping_status = None
@@ -1137,13 +1197,15 @@ class BlobDataSet(DataSet):
     :vartype id: str
     :ivar name: Name of the azure resource.
     :vartype name: str
+    :ivar system_data: System Data of the Azure resource.
+    :vartype system_data: ~data_share_management_client.models.SystemData
     :ivar type: Type of the azure resource.
     :vartype type: str
     :param kind: Required. Kind of data set.Constant filled by server.  Possible values include:
-     'Blob', 'Container', 'BlobFolder', 'AdlsGen2FileSystem', 'AdlsGen2Folder', 'AdlsGen2File',
-     'AdlsGen1Folder', 'AdlsGen1File', 'KustoCluster', 'KustoDatabase', 'SqlDBTable', 'SqlDWTable',
-     'ScheduleBased'.
-    :type kind: str or ~data_share_management_client.models.Kind
+     "Blob", "Container", "BlobFolder", "AdlsGen2FileSystem", "AdlsGen2Folder", "AdlsGen2File",
+     "AdlsGen1Folder", "AdlsGen1File", "KustoCluster", "KustoDatabase", "SqlDBTable", "SqlDWTable",
+     "SynapseWorkspaceSqlPoolTable".
+    :type kind: str or ~data_share_management_client.models.DataSetKind
     :param container_name: Required. Container that has the file path.
     :type container_name: str
     :ivar data_set_id: Unique id for identifying a data set resource.
@@ -1161,6 +1223,7 @@ class BlobDataSet(DataSet):
     _validation = {
         'id': {'readonly': True},
         'name': {'readonly': True},
+        'system_data': {'readonly': True},
         'type': {'readonly': True},
         'kind': {'required': True},
         'container_name': {'required': True},
@@ -1174,6 +1237,7 @@ class BlobDataSet(DataSet):
     _attribute_map = {
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
         'type': {'key': 'type', 'type': 'str'},
         'kind': {'key': 'kind', 'type': 'str'},
         'container_name': {'key': 'properties.containerName', 'type': 'str'},
@@ -1195,7 +1259,7 @@ class BlobDataSet(DataSet):
         **kwargs
     ):
         super(BlobDataSet, self).__init__(**kwargs)
-        self.kind = 'Blob'
+        self.kind = 'Blob'  # type: str
         self.container_name = container_name
         self.data_set_id = None
         self.file_path = file_path
@@ -1215,27 +1279,29 @@ class BlobDataSetMapping(DataSetMapping):
     :vartype id: str
     :ivar name: Name of the azure resource.
     :vartype name: str
+    :ivar system_data: System Data of the Azure resource.
+    :vartype system_data: ~data_share_management_client.models.SystemData
     :ivar type: Type of the azure resource.
     :vartype type: str
     :param kind: Required. Kind of data set mapping.Constant filled by server.  Possible values
-     include: 'Blob', 'Container', 'BlobFolder', 'AdlsGen2FileSystem', 'AdlsGen2Folder',
-     'AdlsGen2File', 'AdlsGen1Folder', 'AdlsGen1File', 'KustoCluster', 'KustoDatabase',
-     'SqlDBTable', 'SqlDWTable', 'ScheduleBased'.
-    :type kind: str or ~data_share_management_client.models.Kind
+     include: "Blob", "Container", "BlobFolder", "AdlsGen2FileSystem", "AdlsGen2Folder",
+     "AdlsGen2File", "KustoCluster", "KustoDatabase", "SqlDBTable", "SqlDWTable",
+     "SynapseWorkspaceSqlPoolTable".
+    :type kind: str or ~data_share_management_client.models.DataSetMappingKind
     :param container_name: Required. Container that has the file path.
     :type container_name: str
     :param data_set_id: Required. The id of the source data set.
     :type data_set_id: str
     :ivar data_set_mapping_status: Gets the status of the data set mapping. Possible values
-     include: 'Ok', 'Broken'.
+     include: "Ok", "Broken".
     :vartype data_set_mapping_status: str or
      ~data_share_management_client.models.DataSetMappingStatus
     :param file_path: Required. File path within the source data set.
     :type file_path: str
-    :param output_type: File output type. Possible values include: 'Csv', 'Parquet'.
+    :param output_type: File output type. Possible values include: "Csv", "Parquet".
     :type output_type: str or ~data_share_management_client.models.OutputType
     :ivar provisioning_state: Provisioning state of the data set mapping. Possible values include:
-     'Succeeded', 'Creating', 'Deleting', 'Moving', 'Failed'.
+     "Succeeded", "Creating", "Deleting", "Moving", "Failed".
     :vartype provisioning_state: str or ~data_share_management_client.models.ProvisioningState
     :param resource_group: Required. Resource group of storage account.
     :type resource_group: str
@@ -1248,6 +1314,7 @@ class BlobDataSetMapping(DataSetMapping):
     _validation = {
         'id': {'readonly': True},
         'name': {'readonly': True},
+        'system_data': {'readonly': True},
         'type': {'readonly': True},
         'kind': {'required': True},
         'container_name': {'required': True},
@@ -1263,6 +1330,7 @@ class BlobDataSetMapping(DataSetMapping):
     _attribute_map = {
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
         'type': {'key': 'type', 'type': 'str'},
         'kind': {'key': 'kind', 'type': 'str'},
         'container_name': {'key': 'properties.containerName', 'type': 'str'},
@@ -1289,7 +1357,7 @@ class BlobDataSetMapping(DataSetMapping):
         **kwargs
     ):
         super(BlobDataSetMapping, self).__init__(**kwargs)
-        self.kind = 'Blob'
+        self.kind = 'Blob'  # type: str
         self.container_name = container_name
         self.data_set_id = data_set_id
         self.data_set_mapping_status = None
@@ -1312,13 +1380,15 @@ class BlobFolderDataSet(DataSet):
     :vartype id: str
     :ivar name: Name of the azure resource.
     :vartype name: str
+    :ivar system_data: System Data of the Azure resource.
+    :vartype system_data: ~data_share_management_client.models.SystemData
     :ivar type: Type of the azure resource.
     :vartype type: str
     :param kind: Required. Kind of data set.Constant filled by server.  Possible values include:
-     'Blob', 'Container', 'BlobFolder', 'AdlsGen2FileSystem', 'AdlsGen2Folder', 'AdlsGen2File',
-     'AdlsGen1Folder', 'AdlsGen1File', 'KustoCluster', 'KustoDatabase', 'SqlDBTable', 'SqlDWTable',
-     'ScheduleBased'.
-    :type kind: str or ~data_share_management_client.models.Kind
+     "Blob", "Container", "BlobFolder", "AdlsGen2FileSystem", "AdlsGen2Folder", "AdlsGen2File",
+     "AdlsGen1Folder", "AdlsGen1File", "KustoCluster", "KustoDatabase", "SqlDBTable", "SqlDWTable",
+     "SynapseWorkspaceSqlPoolTable".
+    :type kind: str or ~data_share_management_client.models.DataSetKind
     :param container_name: Required. Container that has the file path.
     :type container_name: str
     :ivar data_set_id: Unique id for identifying a data set resource.
@@ -1336,6 +1406,7 @@ class BlobFolderDataSet(DataSet):
     _validation = {
         'id': {'readonly': True},
         'name': {'readonly': True},
+        'system_data': {'readonly': True},
         'type': {'readonly': True},
         'kind': {'required': True},
         'container_name': {'required': True},
@@ -1349,6 +1420,7 @@ class BlobFolderDataSet(DataSet):
     _attribute_map = {
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
         'type': {'key': 'type', 'type': 'str'},
         'kind': {'key': 'kind', 'type': 'str'},
         'container_name': {'key': 'properties.containerName', 'type': 'str'},
@@ -1370,7 +1442,7 @@ class BlobFolderDataSet(DataSet):
         **kwargs
     ):
         super(BlobFolderDataSet, self).__init__(**kwargs)
-        self.kind = 'BlobFolder'
+        self.kind = 'BlobFolder'  # type: str
         self.container_name = container_name
         self.data_set_id = None
         self.prefix = prefix
@@ -1390,25 +1462,27 @@ class BlobFolderDataSetMapping(DataSetMapping):
     :vartype id: str
     :ivar name: Name of the azure resource.
     :vartype name: str
+    :ivar system_data: System Data of the Azure resource.
+    :vartype system_data: ~data_share_management_client.models.SystemData
     :ivar type: Type of the azure resource.
     :vartype type: str
     :param kind: Required. Kind of data set mapping.Constant filled by server.  Possible values
-     include: 'Blob', 'Container', 'BlobFolder', 'AdlsGen2FileSystem', 'AdlsGen2Folder',
-     'AdlsGen2File', 'AdlsGen1Folder', 'AdlsGen1File', 'KustoCluster', 'KustoDatabase',
-     'SqlDBTable', 'SqlDWTable', 'ScheduleBased'.
-    :type kind: str or ~data_share_management_client.models.Kind
+     include: "Blob", "Container", "BlobFolder", "AdlsGen2FileSystem", "AdlsGen2Folder",
+     "AdlsGen2File", "KustoCluster", "KustoDatabase", "SqlDBTable", "SqlDWTable",
+     "SynapseWorkspaceSqlPoolTable".
+    :type kind: str or ~data_share_management_client.models.DataSetMappingKind
     :param container_name: Required. Container that has the file path.
     :type container_name: str
     :param data_set_id: Required. The id of the source data set.
     :type data_set_id: str
     :ivar data_set_mapping_status: Gets the status of the data set mapping. Possible values
-     include: 'Ok', 'Broken'.
+     include: "Ok", "Broken".
     :vartype data_set_mapping_status: str or
      ~data_share_management_client.models.DataSetMappingStatus
     :param prefix: Required. Prefix for blob folder.
     :type prefix: str
     :ivar provisioning_state: Provisioning state of the data set mapping. Possible values include:
-     'Succeeded', 'Creating', 'Deleting', 'Moving', 'Failed'.
+     "Succeeded", "Creating", "Deleting", "Moving", "Failed".
     :vartype provisioning_state: str or ~data_share_management_client.models.ProvisioningState
     :param resource_group: Required. Resource group of storage account.
     :type resource_group: str
@@ -1421,6 +1495,7 @@ class BlobFolderDataSetMapping(DataSetMapping):
     _validation = {
         'id': {'readonly': True},
         'name': {'readonly': True},
+        'system_data': {'readonly': True},
         'type': {'readonly': True},
         'kind': {'required': True},
         'container_name': {'required': True},
@@ -1436,6 +1511,7 @@ class BlobFolderDataSetMapping(DataSetMapping):
     _attribute_map = {
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
         'type': {'key': 'type', 'type': 'str'},
         'kind': {'key': 'kind', 'type': 'str'},
         'container_name': {'key': 'properties.containerName', 'type': 'str'},
@@ -1460,7 +1536,7 @@ class BlobFolderDataSetMapping(DataSetMapping):
         **kwargs
     ):
         super(BlobFolderDataSetMapping, self).__init__(**kwargs)
-        self.kind = 'BlobFolder'
+        self.kind = 'BlobFolder'  # type: str
         self.container_name = container_name
         self.data_set_id = data_set_id
         self.data_set_mapping_status = None
@@ -1482,16 +1558,21 @@ class ConsumerInvitation(ProxyDto):
     :vartype id: str
     :ivar name: Name of the azure resource.
     :vartype name: str
+    :ivar system_data: System Data of the Azure resource.
+    :vartype system_data: ~data_share_management_client.models.SystemData
     :ivar type: Type of the azure resource.
     :vartype type: str
     :ivar data_set_count: Number of data sets in a share.
     :vartype data_set_count: int
     :ivar description: Description shared when the invitation was created.
     :vartype description: str
+    :ivar expiration_date: The expiration date for the share subscription created by accepting the
+     invitation.
+    :vartype expiration_date: ~datetime.datetime
     :param invitation_id: Required. Unique id of the invitation.
     :type invitation_id: str
-    :ivar invitation_status: The status of the invitation. Possible values include: 'Pending',
-     'Accepted', 'Rejected', 'Withdrawn'.
+    :ivar invitation_status: The status of the invitation. Possible values include: "Pending",
+     "Accepted", "Rejected", "Withdrawn".
     :vartype invitation_status: str or ~data_share_management_client.models.InvitationStatus
     :ivar location: invitation location.
     :vartype location: str
@@ -1518,9 +1599,11 @@ class ConsumerInvitation(ProxyDto):
     _validation = {
         'id': {'readonly': True},
         'name': {'readonly': True},
+        'system_data': {'readonly': True},
         'type': {'readonly': True},
         'data_set_count': {'readonly': True},
         'description': {'readonly': True},
+        'expiration_date': {'readonly': True},
         'invitation_id': {'required': True},
         'invitation_status': {'readonly': True},
         'location': {'readonly': True},
@@ -1538,9 +1621,11 @@ class ConsumerInvitation(ProxyDto):
     _attribute_map = {
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
         'type': {'key': 'type', 'type': 'str'},
         'data_set_count': {'key': 'properties.dataSetCount', 'type': 'int'},
         'description': {'key': 'properties.description', 'type': 'str'},
+        'expiration_date': {'key': 'properties.expirationDate', 'type': 'iso-8601'},
         'invitation_id': {'key': 'properties.invitationId', 'type': 'str'},
         'invitation_status': {'key': 'properties.invitationStatus', 'type': 'str'},
         'location': {'key': 'properties.location', 'type': 'str'},
@@ -1564,6 +1649,7 @@ class ConsumerInvitation(ProxyDto):
         super(ConsumerInvitation, self).__init__(**kwargs)
         self.data_set_count = None
         self.description = None
+        self.expiration_date = None
         self.invitation_id = invitation_id
         self.invitation_status = None
         self.location = None
@@ -1619,6 +1705,8 @@ class ConsumerSourceDataSet(ProxyDto):
     :vartype id: str
     :ivar name: Name of the azure resource.
     :vartype name: str
+    :ivar system_data: System Data of the Azure resource.
+    :vartype system_data: ~data_share_management_client.models.SystemData
     :ivar type: Type of the azure resource.
     :vartype type: str
     :ivar data_set_id: DataSet Id.
@@ -1629,15 +1717,17 @@ class ConsumerSourceDataSet(ProxyDto):
     :vartype data_set_name: str
     :ivar data_set_path: DataSet path.
     :vartype data_set_path: str
-    :ivar data_set_type: Type of data set. Possible values include: 'Blob', 'Container',
-     'BlobFolder', 'AdlsGen2FileSystem', 'AdlsGen2Folder', 'AdlsGen2File', 'AdlsGen1Folder',
-     'AdlsGen1File', 'KustoCluster', 'KustoDatabase', 'SqlDBTable', 'SqlDWTable'.
+    :ivar data_set_type: Type of data set. Possible values include: "Blob", "Container",
+     "BlobFolder", "AdlsGen2FileSystem", "AdlsGen2Folder", "AdlsGen2File", "AdlsGen1Folder",
+     "AdlsGen1File", "KustoCluster", "KustoDatabase", "SqlDBTable", "SqlDWTable",
+     "SynapseWorkspaceSqlPoolTable".
     :vartype data_set_type: str or ~data_share_management_client.models.DataSetType
     """
 
     _validation = {
         'id': {'readonly': True},
         'name': {'readonly': True},
+        'system_data': {'readonly': True},
         'type': {'readonly': True},
         'data_set_id': {'readonly': True},
         'data_set_location': {'readonly': True},
@@ -1649,6 +1739,7 @@ class ConsumerSourceDataSet(ProxyDto):
     _attribute_map = {
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
         'type': {'key': 'type', 'type': 'str'},
         'data_set_id': {'key': 'properties.dataSetId', 'type': 'str'},
         'data_set_location': {'key': 'properties.dataSetLocation', 'type': 'str'},
@@ -1870,14 +1961,13 @@ class Identity(msrest.serialization.Model):
     :vartype principal_id: str
     :ivar tenant_id: Tenant Id.
     :vartype tenant_id: str
-    :ivar type: Identity Type. Default value: "SystemAssigned".
-    :vartype type: str
+    :param type: Identity Type. Possible values include: "SystemAssigned".
+    :type type: str or ~data_share_management_client.models.Type
     """
 
     _validation = {
         'principal_id': {'readonly': True},
         'tenant_id': {'readonly': True},
-        'type': {'constant': True},
     }
 
     _attribute_map = {
@@ -1886,15 +1976,16 @@ class Identity(msrest.serialization.Model):
         'type': {'key': 'type', 'type': 'str'},
     }
 
-    type = "SystemAssigned"
-
     def __init__(
         self,
+        *,
+        type: Optional[Union[str, "Type"]] = None,
         **kwargs
     ):
         super(Identity, self).__init__(**kwargs)
         self.principal_id = None
         self.tenant_id = None
+        self.type = type
 
 
 class Invitation(ProxyDto):
@@ -1906,12 +1997,16 @@ class Invitation(ProxyDto):
     :vartype id: str
     :ivar name: Name of the azure resource.
     :vartype name: str
+    :ivar system_data: System Data of the Azure resource.
+    :vartype system_data: ~data_share_management_client.models.SystemData
     :ivar type: Type of the azure resource.
     :vartype type: str
+    :param expiration_date: The expiration date for the invitation and share subscription.
+    :type expiration_date: ~datetime.datetime
     :ivar invitation_id: unique invitation id.
     :vartype invitation_id: str
-    :ivar invitation_status: The status of the invitation. Possible values include: 'Pending',
-     'Accepted', 'Rejected', 'Withdrawn'.
+    :ivar invitation_status: The status of the invitation. Possible values include: "Pending",
+     "Accepted", "Rejected", "Withdrawn".
     :vartype invitation_status: str or ~data_share_management_client.models.InvitationStatus
     :ivar responded_at: The time the recipient responded to the invitation.
     :vartype responded_at: ~datetime.datetime
@@ -1934,6 +2029,7 @@ class Invitation(ProxyDto):
     _validation = {
         'id': {'readonly': True},
         'name': {'readonly': True},
+        'system_data': {'readonly': True},
         'type': {'readonly': True},
         'invitation_id': {'readonly': True},
         'invitation_status': {'readonly': True},
@@ -1946,7 +2042,9 @@ class Invitation(ProxyDto):
     _attribute_map = {
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
         'type': {'key': 'type', 'type': 'str'},
+        'expiration_date': {'key': 'properties.expirationDate', 'type': 'iso-8601'},
         'invitation_id': {'key': 'properties.invitationId', 'type': 'str'},
         'invitation_status': {'key': 'properties.invitationStatus', 'type': 'str'},
         'responded_at': {'key': 'properties.respondedAt', 'type': 'iso-8601'},
@@ -1961,12 +2059,14 @@ class Invitation(ProxyDto):
     def __init__(
         self,
         *,
+        expiration_date: Optional[datetime.datetime] = None,
         target_active_directory_id: Optional[str] = None,
         target_email: Optional[str] = None,
         target_object_id: Optional[str] = None,
         **kwargs
     ):
         super(Invitation, self).__init__(**kwargs)
+        self.expiration_date = expiration_date
         self.invitation_id = None
         self.invitation_status = None
         self.responded_at = None
@@ -2021,13 +2121,15 @@ class KustoClusterDataSet(DataSet):
     :vartype id: str
     :ivar name: Name of the azure resource.
     :vartype name: str
+    :ivar system_data: System Data of the Azure resource.
+    :vartype system_data: ~data_share_management_client.models.SystemData
     :ivar type: Type of the azure resource.
     :vartype type: str
     :param kind: Required. Kind of data set.Constant filled by server.  Possible values include:
-     'Blob', 'Container', 'BlobFolder', 'AdlsGen2FileSystem', 'AdlsGen2Folder', 'AdlsGen2File',
-     'AdlsGen1Folder', 'AdlsGen1File', 'KustoCluster', 'KustoDatabase', 'SqlDBTable', 'SqlDWTable',
-     'ScheduleBased'.
-    :type kind: str or ~data_share_management_client.models.Kind
+     "Blob", "Container", "BlobFolder", "AdlsGen2FileSystem", "AdlsGen2Folder", "AdlsGen2File",
+     "AdlsGen1Folder", "AdlsGen1File", "KustoCluster", "KustoDatabase", "SqlDBTable", "SqlDWTable",
+     "SynapseWorkspaceSqlPoolTable".
+    :type kind: str or ~data_share_management_client.models.DataSetKind
     :ivar data_set_id: Unique id for identifying a data set resource.
     :vartype data_set_id: str
     :param kusto_cluster_resource_id: Required. Resource id of the kusto cluster.
@@ -2035,13 +2137,14 @@ class KustoClusterDataSet(DataSet):
     :ivar location: Location of the kusto cluster.
     :vartype location: str
     :ivar provisioning_state: Provisioning state of the kusto cluster data set. Possible values
-     include: 'Succeeded', 'Creating', 'Deleting', 'Moving', 'Failed'.
+     include: "Succeeded", "Creating", "Deleting", "Moving", "Failed".
     :vartype provisioning_state: str or ~data_share_management_client.models.ProvisioningState
     """
 
     _validation = {
         'id': {'readonly': True},
         'name': {'readonly': True},
+        'system_data': {'readonly': True},
         'type': {'readonly': True},
         'kind': {'required': True},
         'data_set_id': {'readonly': True},
@@ -2053,6 +2156,7 @@ class KustoClusterDataSet(DataSet):
     _attribute_map = {
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
         'type': {'key': 'type', 'type': 'str'},
         'kind': {'key': 'kind', 'type': 'str'},
         'data_set_id': {'key': 'properties.dataSetId', 'type': 'str'},
@@ -2068,7 +2172,7 @@ class KustoClusterDataSet(DataSet):
         **kwargs
     ):
         super(KustoClusterDataSet, self).__init__(**kwargs)
-        self.kind = 'KustoCluster'
+        self.kind = 'KustoCluster'  # type: str
         self.data_set_id = None
         self.kusto_cluster_resource_id = kusto_cluster_resource_id
         self.location = None
@@ -2086,17 +2190,19 @@ class KustoClusterDataSetMapping(DataSetMapping):
     :vartype id: str
     :ivar name: Name of the azure resource.
     :vartype name: str
+    :ivar system_data: System Data of the Azure resource.
+    :vartype system_data: ~data_share_management_client.models.SystemData
     :ivar type: Type of the azure resource.
     :vartype type: str
     :param kind: Required. Kind of data set mapping.Constant filled by server.  Possible values
-     include: 'Blob', 'Container', 'BlobFolder', 'AdlsGen2FileSystem', 'AdlsGen2Folder',
-     'AdlsGen2File', 'AdlsGen1Folder', 'AdlsGen1File', 'KustoCluster', 'KustoDatabase',
-     'SqlDBTable', 'SqlDWTable', 'ScheduleBased'.
-    :type kind: str or ~data_share_management_client.models.Kind
+     include: "Blob", "Container", "BlobFolder", "AdlsGen2FileSystem", "AdlsGen2Folder",
+     "AdlsGen2File", "KustoCluster", "KustoDatabase", "SqlDBTable", "SqlDWTable",
+     "SynapseWorkspaceSqlPoolTable".
+    :type kind: str or ~data_share_management_client.models.DataSetMappingKind
     :param data_set_id: Required. The id of the source data set.
     :type data_set_id: str
     :ivar data_set_mapping_status: Gets the status of the data set mapping. Possible values
-     include: 'Ok', 'Broken'.
+     include: "Ok", "Broken".
     :vartype data_set_mapping_status: str or
      ~data_share_management_client.models.DataSetMappingStatus
     :param kusto_cluster_resource_id: Required. Resource id of the sink kusto cluster.
@@ -2104,13 +2210,14 @@ class KustoClusterDataSetMapping(DataSetMapping):
     :ivar location: Location of the sink kusto cluster.
     :vartype location: str
     :ivar provisioning_state: Provisioning state of the data set mapping. Possible values include:
-     'Succeeded', 'Creating', 'Deleting', 'Moving', 'Failed'.
+     "Succeeded", "Creating", "Deleting", "Moving", "Failed".
     :vartype provisioning_state: str or ~data_share_management_client.models.ProvisioningState
     """
 
     _validation = {
         'id': {'readonly': True},
         'name': {'readonly': True},
+        'system_data': {'readonly': True},
         'type': {'readonly': True},
         'kind': {'required': True},
         'data_set_id': {'required': True},
@@ -2123,6 +2230,7 @@ class KustoClusterDataSetMapping(DataSetMapping):
     _attribute_map = {
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
         'type': {'key': 'type', 'type': 'str'},
         'kind': {'key': 'kind', 'type': 'str'},
         'data_set_id': {'key': 'properties.dataSetId', 'type': 'str'},
@@ -2140,7 +2248,7 @@ class KustoClusterDataSetMapping(DataSetMapping):
         **kwargs
     ):
         super(KustoClusterDataSetMapping, self).__init__(**kwargs)
-        self.kind = 'KustoCluster'
+        self.kind = 'KustoCluster'  # type: str
         self.data_set_id = data_set_id
         self.data_set_mapping_status = None
         self.kusto_cluster_resource_id = kusto_cluster_resource_id
@@ -2159,13 +2267,15 @@ class KustoDatabaseDataSet(DataSet):
     :vartype id: str
     :ivar name: Name of the azure resource.
     :vartype name: str
+    :ivar system_data: System Data of the Azure resource.
+    :vartype system_data: ~data_share_management_client.models.SystemData
     :ivar type: Type of the azure resource.
     :vartype type: str
     :param kind: Required. Kind of data set.Constant filled by server.  Possible values include:
-     'Blob', 'Container', 'BlobFolder', 'AdlsGen2FileSystem', 'AdlsGen2Folder', 'AdlsGen2File',
-     'AdlsGen1Folder', 'AdlsGen1File', 'KustoCluster', 'KustoDatabase', 'SqlDBTable', 'SqlDWTable',
-     'ScheduleBased'.
-    :type kind: str or ~data_share_management_client.models.Kind
+     "Blob", "Container", "BlobFolder", "AdlsGen2FileSystem", "AdlsGen2Folder", "AdlsGen2File",
+     "AdlsGen1Folder", "AdlsGen1File", "KustoCluster", "KustoDatabase", "SqlDBTable", "SqlDWTable",
+     "SynapseWorkspaceSqlPoolTable".
+    :type kind: str or ~data_share_management_client.models.DataSetKind
     :ivar data_set_id: Unique id for identifying a data set resource.
     :vartype data_set_id: str
     :param kusto_database_resource_id: Required. Resource id of the kusto database.
@@ -2173,13 +2283,14 @@ class KustoDatabaseDataSet(DataSet):
     :ivar location: Location of the kusto cluster.
     :vartype location: str
     :ivar provisioning_state: Provisioning state of the kusto database data set. Possible values
-     include: 'Succeeded', 'Creating', 'Deleting', 'Moving', 'Failed'.
+     include: "Succeeded", "Creating", "Deleting", "Moving", "Failed".
     :vartype provisioning_state: str or ~data_share_management_client.models.ProvisioningState
     """
 
     _validation = {
         'id': {'readonly': True},
         'name': {'readonly': True},
+        'system_data': {'readonly': True},
         'type': {'readonly': True},
         'kind': {'required': True},
         'data_set_id': {'readonly': True},
@@ -2191,6 +2302,7 @@ class KustoDatabaseDataSet(DataSet):
     _attribute_map = {
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
         'type': {'key': 'type', 'type': 'str'},
         'kind': {'key': 'kind', 'type': 'str'},
         'data_set_id': {'key': 'properties.dataSetId', 'type': 'str'},
@@ -2206,7 +2318,7 @@ class KustoDatabaseDataSet(DataSet):
         **kwargs
     ):
         super(KustoDatabaseDataSet, self).__init__(**kwargs)
-        self.kind = 'KustoDatabase'
+        self.kind = 'KustoDatabase'  # type: str
         self.data_set_id = None
         self.kusto_database_resource_id = kusto_database_resource_id
         self.location = None
@@ -2224,17 +2336,19 @@ class KustoDatabaseDataSetMapping(DataSetMapping):
     :vartype id: str
     :ivar name: Name of the azure resource.
     :vartype name: str
+    :ivar system_data: System Data of the Azure resource.
+    :vartype system_data: ~data_share_management_client.models.SystemData
     :ivar type: Type of the azure resource.
     :vartype type: str
     :param kind: Required. Kind of data set mapping.Constant filled by server.  Possible values
-     include: 'Blob', 'Container', 'BlobFolder', 'AdlsGen2FileSystem', 'AdlsGen2Folder',
-     'AdlsGen2File', 'AdlsGen1Folder', 'AdlsGen1File', 'KustoCluster', 'KustoDatabase',
-     'SqlDBTable', 'SqlDWTable', 'ScheduleBased'.
-    :type kind: str or ~data_share_management_client.models.Kind
+     include: "Blob", "Container", "BlobFolder", "AdlsGen2FileSystem", "AdlsGen2Folder",
+     "AdlsGen2File", "KustoCluster", "KustoDatabase", "SqlDBTable", "SqlDWTable",
+     "SynapseWorkspaceSqlPoolTable".
+    :type kind: str or ~data_share_management_client.models.DataSetMappingKind
     :param data_set_id: Required. The id of the source data set.
     :type data_set_id: str
     :ivar data_set_mapping_status: Gets the status of the data set mapping. Possible values
-     include: 'Ok', 'Broken'.
+     include: "Ok", "Broken".
     :vartype data_set_mapping_status: str or
      ~data_share_management_client.models.DataSetMappingStatus
     :param kusto_cluster_resource_id: Required. Resource id of the sink kusto cluster.
@@ -2242,13 +2356,14 @@ class KustoDatabaseDataSetMapping(DataSetMapping):
     :ivar location: Location of the sink kusto cluster.
     :vartype location: str
     :ivar provisioning_state: Provisioning state of the data set mapping. Possible values include:
-     'Succeeded', 'Creating', 'Deleting', 'Moving', 'Failed'.
+     "Succeeded", "Creating", "Deleting", "Moving", "Failed".
     :vartype provisioning_state: str or ~data_share_management_client.models.ProvisioningState
     """
 
     _validation = {
         'id': {'readonly': True},
         'name': {'readonly': True},
+        'system_data': {'readonly': True},
         'type': {'readonly': True},
         'kind': {'required': True},
         'data_set_id': {'required': True},
@@ -2261,6 +2376,7 @@ class KustoDatabaseDataSetMapping(DataSetMapping):
     _attribute_map = {
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
         'type': {'key': 'type', 'type': 'str'},
         'kind': {'key': 'kind', 'type': 'str'},
         'data_set_id': {'key': 'properties.dataSetId', 'type': 'str'},
@@ -2278,7 +2394,7 @@ class KustoDatabaseDataSetMapping(DataSetMapping):
         **kwargs
     ):
         super(KustoDatabaseDataSetMapping, self).__init__(**kwargs)
-        self.kind = 'KustoDatabase'
+        self.kind = 'KustoDatabase'  # type: str
         self.data_set_id = data_set_id
         self.data_set_mapping_status = None
         self.kusto_cluster_resource_id = kusto_cluster_resource_id
@@ -2362,6 +2478,8 @@ class OperationMetaMetricSpecification(msrest.serialization.Model):
     :type display_name: str
     :param enable_regional_mdm_account: enable regional mdm account.
     :type enable_regional_mdm_account: str
+    :param fill_gap_with_zero: fill gap with zero.
+    :type fill_gap_with_zero: bool
     :param internal_metric_name: internal metric name.
     :type internal_metric_name: str
     :param name: name of the metric.
@@ -2383,6 +2501,7 @@ class OperationMetaMetricSpecification(msrest.serialization.Model):
         'display_description': {'key': 'displayDescription', 'type': 'str'},
         'display_name': {'key': 'displayName', 'type': 'str'},
         'enable_regional_mdm_account': {'key': 'enableRegionalMdmAccount', 'type': 'str'},
+        'fill_gap_with_zero': {'key': 'fillGapWithZero', 'type': 'bool'},
         'internal_metric_name': {'key': 'internalMetricName', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
         'resource_id_dimension_name_override': {'key': 'resourceIdDimensionNameOverride', 'type': 'str'},
@@ -2399,6 +2518,7 @@ class OperationMetaMetricSpecification(msrest.serialization.Model):
         display_description: Optional[str] = None,
         display_name: Optional[str] = None,
         enable_regional_mdm_account: Optional[str] = None,
+        fill_gap_with_zero: Optional[bool] = None,
         internal_metric_name: Optional[str] = None,
         name: Optional[str] = None,
         resource_id_dimension_name_override: Optional[str] = None,
@@ -2413,6 +2533,7 @@ class OperationMetaMetricSpecification(msrest.serialization.Model):
         self.display_description = display_description
         self.display_name = display_name
         self.enable_regional_mdm_account = enable_regional_mdm_account
+        self.fill_gap_with_zero = fill_gap_with_zero
         self.internal_metric_name = internal_metric_name
         self.name = name
         self.resource_id_dimension_name_override = resource_id_dimension_name_override
@@ -2534,7 +2655,7 @@ class OperationResponse(msrest.serialization.Model):
     :param start_time: start time.
     :type start_time: ~datetime.datetime
     :param status: Required. Operation state of the long running operation. Possible values
-     include: 'Accepted', 'InProgress', 'TransientFailure', 'Succeeded', 'Failed', 'Canceled'.
+     include: "Accepted", "InProgress", "TransientFailure", "Succeeded", "Failed", "Canceled".
     :type status: str or ~data_share_management_client.models.Status
     """
 
@@ -2574,6 +2695,8 @@ class ProviderShareSubscription(ProxyDto):
     :vartype id: str
     :ivar name: Name of the azure resource.
     :vartype name: str
+    :ivar system_data: System Data of the Azure resource.
+    :vartype system_data: ~data_share_management_client.models.SystemData
     :ivar type: Type of the azure resource.
     :vartype type: str
     :ivar consumer_email: Email of the consumer who created the share subscription.
@@ -2584,6 +2707,8 @@ class ProviderShareSubscription(ProxyDto):
     :vartype consumer_tenant_name: str
     :ivar created_at: created at.
     :vartype created_at: ~datetime.datetime
+    :param expiration_date: Expiration date of the share subscription in UTC format.
+    :type expiration_date: ~datetime.datetime
     :ivar provider_email: Email of the provider who created the share.
     :vartype provider_email: str
     :ivar provider_name: Name of the provider who created the share.
@@ -2593,7 +2718,7 @@ class ProviderShareSubscription(ProxyDto):
     :ivar share_subscription_object_id: share Subscription Object Id.
     :vartype share_subscription_object_id: str
     :ivar share_subscription_status: Gets the status of share subscription. Possible values
-     include: 'Active', 'Revoked', 'SourceDeleted', 'Revoking'.
+     include: "Active", "Revoked", "SourceDeleted", "Revoking".
     :vartype share_subscription_status: str or
      ~data_share_management_client.models.ShareSubscriptionStatus
     """
@@ -2601,6 +2726,7 @@ class ProviderShareSubscription(ProxyDto):
     _validation = {
         'id': {'readonly': True},
         'name': {'readonly': True},
+        'system_data': {'readonly': True},
         'type': {'readonly': True},
         'consumer_email': {'readonly': True},
         'consumer_name': {'readonly': True},
@@ -2616,11 +2742,13 @@ class ProviderShareSubscription(ProxyDto):
     _attribute_map = {
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
         'type': {'key': 'type', 'type': 'str'},
         'consumer_email': {'key': 'properties.consumerEmail', 'type': 'str'},
         'consumer_name': {'key': 'properties.consumerName', 'type': 'str'},
         'consumer_tenant_name': {'key': 'properties.consumerTenantName', 'type': 'str'},
         'created_at': {'key': 'properties.createdAt', 'type': 'iso-8601'},
+        'expiration_date': {'key': 'properties.expirationDate', 'type': 'iso-8601'},
         'provider_email': {'key': 'properties.providerEmail', 'type': 'str'},
         'provider_name': {'key': 'properties.providerName', 'type': 'str'},
         'shared_at': {'key': 'properties.sharedAt', 'type': 'iso-8601'},
@@ -2630,6 +2758,8 @@ class ProviderShareSubscription(ProxyDto):
 
     def __init__(
         self,
+        *,
+        expiration_date: Optional[datetime.datetime] = None,
         **kwargs
     ):
         super(ProviderShareSubscription, self).__init__(**kwargs)
@@ -2637,6 +2767,7 @@ class ProviderShareSubscription(ProxyDto):
         self.consumer_name = None
         self.consumer_tenant_name = None
         self.created_at = None
+        self.expiration_date = expiration_date
         self.provider_email = None
         self.provider_name = None
         self.shared_at = None
@@ -2684,11 +2815,9 @@ class SourceShareSynchronizationSetting(msrest.serialization.Model):
 
     All required parameters must be populated in order to send to Azure.
 
-    :param kind: Required. Kind of synchronization.Constant filled by server.  Possible values
-     include: 'Blob', 'Container', 'BlobFolder', 'AdlsGen2FileSystem', 'AdlsGen2Folder',
-     'AdlsGen2File', 'AdlsGen1Folder', 'AdlsGen1File', 'KustoCluster', 'KustoDatabase',
-     'SqlDBTable', 'SqlDWTable', 'ScheduleBased'.
-    :type kind: str or ~data_share_management_client.models.Kind
+    :param kind: Required. Kind of synchronization setting on share.Constant filled by server.
+     Possible values include: "ScheduleBased".
+    :type kind: str or ~data_share_management_client.models.SourceShareSynchronizationSettingKind
     """
 
     _validation = {
@@ -2708,7 +2837,7 @@ class SourceShareSynchronizationSetting(msrest.serialization.Model):
         **kwargs
     ):
         super(SourceShareSynchronizationSetting, self).__init__(**kwargs)
-        self.kind = None
+        self.kind = None  # type: Optional[str]
 
 
 class ScheduledSourceSynchronizationSetting(SourceShareSynchronizationSetting):
@@ -2716,12 +2845,10 @@ class ScheduledSourceSynchronizationSetting(SourceShareSynchronizationSetting):
 
     All required parameters must be populated in order to send to Azure.
 
-    :param kind: Required. Kind of synchronization.Constant filled by server.  Possible values
-     include: 'Blob', 'Container', 'BlobFolder', 'AdlsGen2FileSystem', 'AdlsGen2Folder',
-     'AdlsGen2File', 'AdlsGen1Folder', 'AdlsGen1File', 'KustoCluster', 'KustoDatabase',
-     'SqlDBTable', 'SqlDWTable', 'ScheduleBased'.
-    :type kind: str or ~data_share_management_client.models.Kind
-    :param recurrence_interval: Recurrence Interval. Possible values include: 'Hour', 'Day'.
+    :param kind: Required. Kind of synchronization setting on share.Constant filled by server.
+     Possible values include: "ScheduleBased".
+    :type kind: str or ~data_share_management_client.models.SourceShareSynchronizationSettingKind
+    :param recurrence_interval: Recurrence Interval. Possible values include: "Hour", "Day".
     :type recurrence_interval: str or ~data_share_management_client.models.RecurrenceInterval
     :param synchronization_time: Synchronization time.
     :type synchronization_time: ~datetime.datetime
@@ -2745,7 +2872,7 @@ class ScheduledSourceSynchronizationSetting(SourceShareSynchronizationSetting):
         **kwargs
     ):
         super(ScheduledSourceSynchronizationSetting, self).__init__(**kwargs)
-        self.kind = 'ScheduleBased'
+        self.kind = 'ScheduleBased'  # type: str
         self.recurrence_interval = recurrence_interval
         self.synchronization_time = synchronization_time
 
@@ -2764,18 +2891,19 @@ class SynchronizationSetting(ProxyDto):
     :vartype id: str
     :ivar name: Name of the azure resource.
     :vartype name: str
+    :ivar system_data: System Data of the Azure resource.
+    :vartype system_data: ~data_share_management_client.models.SystemData
     :ivar type: Type of the azure resource.
     :vartype type: str
-    :param kind: Required. Kind of synchronization.Constant filled by server.  Possible values
-     include: 'Blob', 'Container', 'BlobFolder', 'AdlsGen2FileSystem', 'AdlsGen2Folder',
-     'AdlsGen2File', 'AdlsGen1Folder', 'AdlsGen1File', 'KustoCluster', 'KustoDatabase',
-     'SqlDBTable', 'SqlDWTable', 'ScheduleBased'.
-    :type kind: str or ~data_share_management_client.models.Kind
+    :param kind: Required. Kind of synchronization setting.Constant filled by server.  Possible
+     values include: "ScheduleBased".
+    :type kind: str or ~data_share_management_client.models.SynchronizationSettingKind
     """
 
     _validation = {
         'id': {'readonly': True},
         'name': {'readonly': True},
+        'system_data': {'readonly': True},
         'type': {'readonly': True},
         'kind': {'required': True},
     }
@@ -2783,6 +2911,7 @@ class SynchronizationSetting(ProxyDto):
     _attribute_map = {
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
         'type': {'key': 'type', 'type': 'str'},
         'kind': {'key': 'kind', 'type': 'str'},
     }
@@ -2796,7 +2925,7 @@ class SynchronizationSetting(ProxyDto):
         **kwargs
     ):
         super(SynchronizationSetting, self).__init__(**kwargs)
-        self.kind = 'SynchronizationSetting'
+        self.kind = 'SynchronizationSetting'  # type: str
 
 
 class ScheduledSynchronizationSetting(SynchronizationSetting):
@@ -2810,20 +2939,20 @@ class ScheduledSynchronizationSetting(SynchronizationSetting):
     :vartype id: str
     :ivar name: Name of the azure resource.
     :vartype name: str
+    :ivar system_data: System Data of the Azure resource.
+    :vartype system_data: ~data_share_management_client.models.SystemData
     :ivar type: Type of the azure resource.
     :vartype type: str
-    :param kind: Required. Kind of synchronization.Constant filled by server.  Possible values
-     include: 'Blob', 'Container', 'BlobFolder', 'AdlsGen2FileSystem', 'AdlsGen2Folder',
-     'AdlsGen2File', 'AdlsGen1Folder', 'AdlsGen1File', 'KustoCluster', 'KustoDatabase',
-     'SqlDBTable', 'SqlDWTable', 'ScheduleBased'.
-    :type kind: str or ~data_share_management_client.models.Kind
+    :param kind: Required. Kind of synchronization setting.Constant filled by server.  Possible
+     values include: "ScheduleBased".
+    :type kind: str or ~data_share_management_client.models.SynchronizationSettingKind
     :ivar created_at: Time at which the synchronization setting was created.
     :vartype created_at: ~datetime.datetime
     :ivar provisioning_state: Gets or sets the provisioning state. Possible values include:
-     'Succeeded', 'Creating', 'Deleting', 'Moving', 'Failed'.
+     "Succeeded", "Creating", "Deleting", "Moving", "Failed".
     :vartype provisioning_state: str or ~data_share_management_client.models.ProvisioningState
-    :param recurrence_interval: Required. Recurrence Interval. Possible values include: 'Hour',
-     'Day'.
+    :param recurrence_interval: Required. Recurrence Interval. Possible values include: "Hour",
+     "Day".
     :type recurrence_interval: str or ~data_share_management_client.models.RecurrenceInterval
     :param synchronization_time: Required. Synchronization time.
     :type synchronization_time: ~datetime.datetime
@@ -2834,6 +2963,7 @@ class ScheduledSynchronizationSetting(SynchronizationSetting):
     _validation = {
         'id': {'readonly': True},
         'name': {'readonly': True},
+        'system_data': {'readonly': True},
         'type': {'readonly': True},
         'kind': {'required': True},
         'created_at': {'readonly': True},
@@ -2846,6 +2976,7 @@ class ScheduledSynchronizationSetting(SynchronizationSetting):
     _attribute_map = {
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
         'type': {'key': 'type', 'type': 'str'},
         'kind': {'key': 'kind', 'type': 'str'},
         'created_at': {'key': 'properties.createdAt', 'type': 'iso-8601'},
@@ -2863,7 +2994,7 @@ class ScheduledSynchronizationSetting(SynchronizationSetting):
         **kwargs
     ):
         super(ScheduledSynchronizationSetting, self).__init__(**kwargs)
-        self.kind = 'ScheduleBased'
+        self.kind = 'ScheduleBased'  # type: str
         self.created_at = None
         self.provisioning_state = None
         self.recurrence_interval = recurrence_interval
@@ -2885,18 +3016,19 @@ class Trigger(ProxyDto):
     :vartype id: str
     :ivar name: Name of the azure resource.
     :vartype name: str
+    :ivar system_data: System Data of the Azure resource.
+    :vartype system_data: ~data_share_management_client.models.SystemData
     :ivar type: Type of the azure resource.
     :vartype type: str
-    :param kind: Required. Kind of synchronization.Constant filled by server.  Possible values
-     include: 'Blob', 'Container', 'BlobFolder', 'AdlsGen2FileSystem', 'AdlsGen2Folder',
-     'AdlsGen2File', 'AdlsGen1Folder', 'AdlsGen1File', 'KustoCluster', 'KustoDatabase',
-     'SqlDBTable', 'SqlDWTable', 'ScheduleBased'.
-    :type kind: str or ~data_share_management_client.models.Kind
+    :param kind: Required. Kind of synchronization on trigger.Constant filled by server.  Possible
+     values include: "ScheduleBased".
+    :type kind: str or ~data_share_management_client.models.TriggerKind
     """
 
     _validation = {
         'id': {'readonly': True},
         'name': {'readonly': True},
+        'system_data': {'readonly': True},
         'type': {'readonly': True},
         'kind': {'required': True},
     }
@@ -2904,6 +3036,7 @@ class Trigger(ProxyDto):
     _attribute_map = {
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
         'type': {'key': 'type', 'type': 'str'},
         'kind': {'key': 'kind', 'type': 'str'},
     }
@@ -2917,7 +3050,7 @@ class Trigger(ProxyDto):
         **kwargs
     ):
         super(Trigger, self).__init__(**kwargs)
-        self.kind = 'Trigger'
+        self.kind = 'Trigger'  # type: str
 
 
 class ScheduledTrigger(Trigger):
@@ -2931,28 +3064,28 @@ class ScheduledTrigger(Trigger):
     :vartype id: str
     :ivar name: Name of the azure resource.
     :vartype name: str
+    :ivar system_data: System Data of the Azure resource.
+    :vartype system_data: ~data_share_management_client.models.SystemData
     :ivar type: Type of the azure resource.
     :vartype type: str
-    :param kind: Required. Kind of synchronization.Constant filled by server.  Possible values
-     include: 'Blob', 'Container', 'BlobFolder', 'AdlsGen2FileSystem', 'AdlsGen2Folder',
-     'AdlsGen2File', 'AdlsGen1Folder', 'AdlsGen1File', 'KustoCluster', 'KustoDatabase',
-     'SqlDBTable', 'SqlDWTable', 'ScheduleBased'.
-    :type kind: str or ~data_share_management_client.models.Kind
+    :param kind: Required. Kind of synchronization on trigger.Constant filled by server.  Possible
+     values include: "ScheduleBased".
+    :type kind: str or ~data_share_management_client.models.TriggerKind
     :ivar created_at: Time at which the trigger was created.
     :vartype created_at: ~datetime.datetime
-    :ivar provisioning_state: Gets the provisioning state. Possible values include: 'Succeeded',
-     'Creating', 'Deleting', 'Moving', 'Failed'.
+    :ivar provisioning_state: Gets the provisioning state. Possible values include: "Succeeded",
+     "Creating", "Deleting", "Moving", "Failed".
     :vartype provisioning_state: str or ~data_share_management_client.models.ProvisioningState
-    :param recurrence_interval: Required. Recurrence Interval. Possible values include: 'Hour',
-     'Day'.
+    :param recurrence_interval: Required. Recurrence Interval. Possible values include: "Hour",
+     "Day".
     :type recurrence_interval: str or ~data_share_management_client.models.RecurrenceInterval
-    :param synchronization_mode: Synchronization mode. Possible values include: 'Incremental',
-     'FullSync'.
+    :param synchronization_mode: Synchronization mode. Possible values include: "Incremental",
+     "FullSync".
     :type synchronization_mode: str or ~data_share_management_client.models.SynchronizationMode
     :param synchronization_time: Required. Synchronization time.
     :type synchronization_time: ~datetime.datetime
-    :ivar trigger_status: Gets the trigger state. Possible values include: 'Active', 'Inactive',
-     'SourceSynchronizationSettingDeleted'.
+    :ivar trigger_status: Gets the trigger state. Possible values include: "Active", "Inactive",
+     "SourceSynchronizationSettingDeleted".
     :vartype trigger_status: str or ~data_share_management_client.models.TriggerStatus
     :ivar user_name: Name of the user who created the trigger.
     :vartype user_name: str
@@ -2961,6 +3094,7 @@ class ScheduledTrigger(Trigger):
     _validation = {
         'id': {'readonly': True},
         'name': {'readonly': True},
+        'system_data': {'readonly': True},
         'type': {'readonly': True},
         'kind': {'required': True},
         'created_at': {'readonly': True},
@@ -2974,6 +3108,7 @@ class ScheduledTrigger(Trigger):
     _attribute_map = {
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
         'type': {'key': 'type', 'type': 'str'},
         'kind': {'key': 'kind', 'type': 'str'},
         'created_at': {'key': 'properties.createdAt', 'type': 'iso-8601'},
@@ -2994,7 +3129,7 @@ class ScheduledTrigger(Trigger):
         **kwargs
     ):
         super(ScheduledTrigger, self).__init__(**kwargs)
-        self.kind = 'ScheduleBased'
+        self.kind = 'ScheduleBased'  # type: str
         self.created_at = None
         self.provisioning_state = None
         self.recurrence_interval = recurrence_interval
@@ -3013,6 +3148,8 @@ class Share(ProxyDto):
     :vartype id: str
     :ivar name: Name of the azure resource.
     :vartype name: str
+    :ivar system_data: System Data of the Azure resource.
+    :vartype system_data: ~data_share_management_client.models.SystemData
     :ivar type: Type of the azure resource.
     :vartype type: str
     :ivar created_at: Time at which the share was created.
@@ -3020,9 +3157,9 @@ class Share(ProxyDto):
     :param description: Share description.
     :type description: str
     :ivar provisioning_state: Gets or sets the provisioning state. Possible values include:
-     'Succeeded', 'Creating', 'Deleting', 'Moving', 'Failed'.
+     "Succeeded", "Creating", "Deleting", "Moving", "Failed".
     :vartype provisioning_state: str or ~data_share_management_client.models.ProvisioningState
-    :param share_kind: Share kind. Possible values include: 'CopyBased', 'InPlace'.
+    :param share_kind: Share kind. Possible values include: "CopyBased", "InPlace".
     :type share_kind: str or ~data_share_management_client.models.ShareKind
     :param terms: Share terms.
     :type terms: str
@@ -3035,6 +3172,7 @@ class Share(ProxyDto):
     _validation = {
         'id': {'readonly': True},
         'name': {'readonly': True},
+        'system_data': {'readonly': True},
         'type': {'readonly': True},
         'created_at': {'readonly': True},
         'provisioning_state': {'readonly': True},
@@ -3045,6 +3183,7 @@ class Share(ProxyDto):
     _attribute_map = {
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
         'type': {'key': 'type', 'type': 'str'},
         'created_at': {'key': 'properties.createdAt', 'type': 'iso-8601'},
         'description': {'key': 'properties.description', 'type': 'str'},
@@ -3116,10 +3255,14 @@ class ShareSubscription(ProxyDto):
     :vartype id: str
     :ivar name: Name of the azure resource.
     :vartype name: str
+    :ivar system_data: System Data of the Azure resource.
+    :vartype system_data: ~data_share_management_client.models.SystemData
     :ivar type: Type of the azure resource.
     :vartype type: str
     :ivar created_at: Time at which the share subscription was created.
     :vartype created_at: ~datetime.datetime
+    :param expiration_date: The expiration date of the share subscription.
+    :type expiration_date: ~datetime.datetime
     :param invitation_id: Required. The invitation id.
     :type invitation_id: str
     :ivar provider_email: Email of the provider who created the resource.
@@ -3129,16 +3272,16 @@ class ShareSubscription(ProxyDto):
     :ivar provider_tenant_name: Tenant name of the provider who created the resource.
     :vartype provider_tenant_name: str
     :ivar provisioning_state: Provisioning state of the share subscription. Possible values
-     include: 'Succeeded', 'Creating', 'Deleting', 'Moving', 'Failed'.
+     include: "Succeeded", "Creating", "Deleting", "Moving", "Failed".
     :vartype provisioning_state: str or ~data_share_management_client.models.ProvisioningState
     :ivar share_description: Description of share.
     :vartype share_description: str
-    :ivar share_kind: Kind of share. Possible values include: 'CopyBased', 'InPlace'.
+    :ivar share_kind: Kind of share. Possible values include: "CopyBased", "InPlace".
     :vartype share_kind: str or ~data_share_management_client.models.ShareKind
     :ivar share_name: Name of the share.
     :vartype share_name: str
     :ivar share_subscription_status: Gets the current status of share subscription. Possible values
-     include: 'Active', 'Revoked', 'SourceDeleted', 'Revoking'.
+     include: "Active", "Revoked", "SourceDeleted", "Revoking".
     :vartype share_subscription_status: str or
      ~data_share_management_client.models.ShareSubscriptionStatus
     :ivar share_terms: Terms of a share.
@@ -3154,6 +3297,7 @@ class ShareSubscription(ProxyDto):
     _validation = {
         'id': {'readonly': True},
         'name': {'readonly': True},
+        'system_data': {'readonly': True},
         'type': {'readonly': True},
         'created_at': {'readonly': True},
         'invitation_id': {'required': True},
@@ -3174,8 +3318,10 @@ class ShareSubscription(ProxyDto):
     _attribute_map = {
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
         'type': {'key': 'type', 'type': 'str'},
         'created_at': {'key': 'properties.createdAt', 'type': 'iso-8601'},
+        'expiration_date': {'key': 'properties.expirationDate', 'type': 'iso-8601'},
         'invitation_id': {'key': 'properties.invitationId', 'type': 'str'},
         'provider_email': {'key': 'properties.providerEmail', 'type': 'str'},
         'provider_name': {'key': 'properties.providerName', 'type': 'str'},
@@ -3196,10 +3342,12 @@ class ShareSubscription(ProxyDto):
         *,
         invitation_id: str,
         source_share_location: str,
+        expiration_date: Optional[datetime.datetime] = None,
         **kwargs
     ):
         super(ShareSubscription, self).__init__(**kwargs)
         self.created_at = None
+        self.expiration_date = expiration_date
         self.invitation_id = invitation_id
         self.provider_email = None
         self.provider_name = None
@@ -3266,8 +3414,8 @@ class ShareSubscriptionSynchronization(msrest.serialization.Model):
     :vartype status: str
     :param synchronization_id: Required. Synchronization id.
     :type synchronization_id: str
-    :ivar synchronization_mode: Synchronization Mode. Possible values include: 'Incremental',
-     'FullSync'.
+    :ivar synchronization_mode: Synchronization Mode. Possible values include: "Incremental",
+     "FullSync".
     :vartype synchronization_mode: str or ~data_share_management_client.models.SynchronizationMode
     """
 
@@ -3362,8 +3510,8 @@ class ShareSynchronization(msrest.serialization.Model):
     :type status: str
     :param synchronization_id: Synchronization id.
     :type synchronization_id: str
-    :ivar synchronization_mode: Synchronization mode. Possible values include: 'Incremental',
-     'FullSync'.
+    :ivar synchronization_mode: Synchronization mode. Possible values include: "Incremental",
+     "FullSync".
     :vartype synchronization_mode: str or ~data_share_management_client.models.SynchronizationMode
     """
 
@@ -3475,7 +3623,7 @@ class SourceShareSynchronizationSettingList(msrest.serialization.Model):
         self.value = value
 
 
-class SqlDBTableDataSet(DataSet):
+class SqlDbTableDataSet(DataSet):
     """A SQL DB table data set.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -3486,13 +3634,15 @@ class SqlDBTableDataSet(DataSet):
     :vartype id: str
     :ivar name: Name of the azure resource.
     :vartype name: str
+    :ivar system_data: System Data of the Azure resource.
+    :vartype system_data: ~data_share_management_client.models.SystemData
     :ivar type: Type of the azure resource.
     :vartype type: str
     :param kind: Required. Kind of data set.Constant filled by server.  Possible values include:
-     'Blob', 'Container', 'BlobFolder', 'AdlsGen2FileSystem', 'AdlsGen2Folder', 'AdlsGen2File',
-     'AdlsGen1Folder', 'AdlsGen1File', 'KustoCluster', 'KustoDatabase', 'SqlDBTable', 'SqlDWTable',
-     'ScheduleBased'.
-    :type kind: str or ~data_share_management_client.models.Kind
+     "Blob", "Container", "BlobFolder", "AdlsGen2FileSystem", "AdlsGen2Folder", "AdlsGen2File",
+     "AdlsGen1Folder", "AdlsGen1File", "KustoCluster", "KustoDatabase", "SqlDBTable", "SqlDWTable",
+     "SynapseWorkspaceSqlPoolTable".
+    :type kind: str or ~data_share_management_client.models.DataSetKind
     :param database_name: Database name of the source data set.
     :type database_name: str
     :ivar data_set_id: Unique id for identifying a data set resource.
@@ -3508,6 +3658,7 @@ class SqlDBTableDataSet(DataSet):
     _validation = {
         'id': {'readonly': True},
         'name': {'readonly': True},
+        'system_data': {'readonly': True},
         'type': {'readonly': True},
         'kind': {'required': True},
         'data_set_id': {'readonly': True},
@@ -3516,6 +3667,7 @@ class SqlDBTableDataSet(DataSet):
     _attribute_map = {
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
         'type': {'key': 'type', 'type': 'str'},
         'kind': {'key': 'kind', 'type': 'str'},
         'database_name': {'key': 'properties.databaseName', 'type': 'str'},
@@ -3534,8 +3686,8 @@ class SqlDBTableDataSet(DataSet):
         table_name: Optional[str] = None,
         **kwargs
     ):
-        super(SqlDBTableDataSet, self).__init__(**kwargs)
-        self.kind = 'SqlDBTable'
+        super(SqlDbTableDataSet, self).__init__(**kwargs)
+        self.kind = 'SqlDBTable'  # type: str
         self.database_name = database_name
         self.data_set_id = None
         self.schema_name = schema_name
@@ -3543,7 +3695,7 @@ class SqlDBTableDataSet(DataSet):
         self.table_name = table_name
 
 
-class SqlDBTableDataSetMapping(DataSetMapping):
+class SqlDbTableDataSetMapping(DataSetMapping):
     """A SQL DB Table data set mapping.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -3554,23 +3706,25 @@ class SqlDBTableDataSetMapping(DataSetMapping):
     :vartype id: str
     :ivar name: Name of the azure resource.
     :vartype name: str
+    :ivar system_data: System Data of the Azure resource.
+    :vartype system_data: ~data_share_management_client.models.SystemData
     :ivar type: Type of the azure resource.
     :vartype type: str
     :param kind: Required. Kind of data set mapping.Constant filled by server.  Possible values
-     include: 'Blob', 'Container', 'BlobFolder', 'AdlsGen2FileSystem', 'AdlsGen2Folder',
-     'AdlsGen2File', 'AdlsGen1Folder', 'AdlsGen1File', 'KustoCluster', 'KustoDatabase',
-     'SqlDBTable', 'SqlDWTable', 'ScheduleBased'.
-    :type kind: str or ~data_share_management_client.models.Kind
+     include: "Blob", "Container", "BlobFolder", "AdlsGen2FileSystem", "AdlsGen2Folder",
+     "AdlsGen2File", "KustoCluster", "KustoDatabase", "SqlDBTable", "SqlDWTable",
+     "SynapseWorkspaceSqlPoolTable".
+    :type kind: str or ~data_share_management_client.models.DataSetMappingKind
     :param database_name: Required. DatabaseName name of the sink data set.
     :type database_name: str
     :param data_set_id: Required. The id of the source data set.
     :type data_set_id: str
     :ivar data_set_mapping_status: Gets the status of the data set mapping. Possible values
-     include: 'Ok', 'Broken'.
+     include: "Ok", "Broken".
     :vartype data_set_mapping_status: str or
      ~data_share_management_client.models.DataSetMappingStatus
     :ivar provisioning_state: Provisioning state of the data set mapping. Possible values include:
-     'Succeeded', 'Creating', 'Deleting', 'Moving', 'Failed'.
+     "Succeeded", "Creating", "Deleting", "Moving", "Failed".
     :vartype provisioning_state: str or ~data_share_management_client.models.ProvisioningState
     :param schema_name: Required. Schema of the table. Default value is dbo.
     :type schema_name: str
@@ -3583,6 +3737,7 @@ class SqlDBTableDataSetMapping(DataSetMapping):
     _validation = {
         'id': {'readonly': True},
         'name': {'readonly': True},
+        'system_data': {'readonly': True},
         'type': {'readonly': True},
         'kind': {'required': True},
         'database_name': {'required': True},
@@ -3597,6 +3752,7 @@ class SqlDBTableDataSetMapping(DataSetMapping):
     _attribute_map = {
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
         'type': {'key': 'type', 'type': 'str'},
         'kind': {'key': 'kind', 'type': 'str'},
         'database_name': {'key': 'properties.databaseName', 'type': 'str'},
@@ -3618,8 +3774,8 @@ class SqlDBTableDataSetMapping(DataSetMapping):
         table_name: str,
         **kwargs
     ):
-        super(SqlDBTableDataSetMapping, self).__init__(**kwargs)
-        self.kind = 'SqlDBTable'
+        super(SqlDbTableDataSetMapping, self).__init__(**kwargs)
+        self.kind = 'SqlDBTable'  # type: str
         self.database_name = database_name
         self.data_set_id = data_set_id
         self.data_set_mapping_status = None
@@ -3640,13 +3796,15 @@ class SqlDwTableDataSet(DataSet):
     :vartype id: str
     :ivar name: Name of the azure resource.
     :vartype name: str
+    :ivar system_data: System Data of the Azure resource.
+    :vartype system_data: ~data_share_management_client.models.SystemData
     :ivar type: Type of the azure resource.
     :vartype type: str
     :param kind: Required. Kind of data set.Constant filled by server.  Possible values include:
-     'Blob', 'Container', 'BlobFolder', 'AdlsGen2FileSystem', 'AdlsGen2Folder', 'AdlsGen2File',
-     'AdlsGen1Folder', 'AdlsGen1File', 'KustoCluster', 'KustoDatabase', 'SqlDBTable', 'SqlDWTable',
-     'ScheduleBased'.
-    :type kind: str or ~data_share_management_client.models.Kind
+     "Blob", "Container", "BlobFolder", "AdlsGen2FileSystem", "AdlsGen2Folder", "AdlsGen2File",
+     "AdlsGen1Folder", "AdlsGen1File", "KustoCluster", "KustoDatabase", "SqlDBTable", "SqlDWTable",
+     "SynapseWorkspaceSqlPoolTable".
+    :type kind: str or ~data_share_management_client.models.DataSetKind
     :ivar data_set_id: Unique id for identifying a data set resource.
     :vartype data_set_id: str
     :param data_warehouse_name: DataWarehouse name of the source data set.
@@ -3662,6 +3820,7 @@ class SqlDwTableDataSet(DataSet):
     _validation = {
         'id': {'readonly': True},
         'name': {'readonly': True},
+        'system_data': {'readonly': True},
         'type': {'readonly': True},
         'kind': {'required': True},
         'data_set_id': {'readonly': True},
@@ -3670,6 +3829,7 @@ class SqlDwTableDataSet(DataSet):
     _attribute_map = {
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
         'type': {'key': 'type', 'type': 'str'},
         'kind': {'key': 'kind', 'type': 'str'},
         'data_set_id': {'key': 'properties.dataSetId', 'type': 'str'},
@@ -3689,7 +3849,7 @@ class SqlDwTableDataSet(DataSet):
         **kwargs
     ):
         super(SqlDwTableDataSet, self).__init__(**kwargs)
-        self.kind = 'SqlDWTable'
+        self.kind = 'SqlDWTable'  # type: str
         self.data_set_id = None
         self.data_warehouse_name = data_warehouse_name
         self.schema_name = schema_name
@@ -3708,23 +3868,25 @@ class SqlDwTableDataSetMapping(DataSetMapping):
     :vartype id: str
     :ivar name: Name of the azure resource.
     :vartype name: str
+    :ivar system_data: System Data of the Azure resource.
+    :vartype system_data: ~data_share_management_client.models.SystemData
     :ivar type: Type of the azure resource.
     :vartype type: str
     :param kind: Required. Kind of data set mapping.Constant filled by server.  Possible values
-     include: 'Blob', 'Container', 'BlobFolder', 'AdlsGen2FileSystem', 'AdlsGen2Folder',
-     'AdlsGen2File', 'AdlsGen1Folder', 'AdlsGen1File', 'KustoCluster', 'KustoDatabase',
-     'SqlDBTable', 'SqlDWTable', 'ScheduleBased'.
-    :type kind: str or ~data_share_management_client.models.Kind
+     include: "Blob", "Container", "BlobFolder", "AdlsGen2FileSystem", "AdlsGen2Folder",
+     "AdlsGen2File", "KustoCluster", "KustoDatabase", "SqlDBTable", "SqlDWTable",
+     "SynapseWorkspaceSqlPoolTable".
+    :type kind: str or ~data_share_management_client.models.DataSetMappingKind
     :param data_set_id: Required. The id of the source data set.
     :type data_set_id: str
     :ivar data_set_mapping_status: Gets the status of the data set mapping. Possible values
-     include: 'Ok', 'Broken'.
+     include: "Ok", "Broken".
     :vartype data_set_mapping_status: str or
      ~data_share_management_client.models.DataSetMappingStatus
     :param data_warehouse_name: Required. DataWarehouse name of the source data set.
     :type data_warehouse_name: str
     :ivar provisioning_state: Provisioning state of the data set mapping. Possible values include:
-     'Succeeded', 'Creating', 'Deleting', 'Moving', 'Failed'.
+     "Succeeded", "Creating", "Deleting", "Moving", "Failed".
     :vartype provisioning_state: str or ~data_share_management_client.models.ProvisioningState
     :param schema_name: Required. Schema of the table. Default value is dbo.
     :type schema_name: str
@@ -3737,6 +3899,7 @@ class SqlDwTableDataSetMapping(DataSetMapping):
     _validation = {
         'id': {'readonly': True},
         'name': {'readonly': True},
+        'system_data': {'readonly': True},
         'type': {'readonly': True},
         'kind': {'required': True},
         'data_set_id': {'required': True},
@@ -3751,6 +3914,7 @@ class SqlDwTableDataSetMapping(DataSetMapping):
     _attribute_map = {
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
         'type': {'key': 'type', 'type': 'str'},
         'kind': {'key': 'kind', 'type': 'str'},
         'data_set_id': {'key': 'properties.dataSetId', 'type': 'str'},
@@ -3773,7 +3937,7 @@ class SqlDwTableDataSetMapping(DataSetMapping):
         **kwargs
     ):
         super(SqlDwTableDataSetMapping, self).__init__(**kwargs)
-        self.kind = 'SqlDWTable'
+        self.kind = 'SqlDWTable'  # type: str
         self.data_set_id = data_set_id
         self.data_set_mapping_status = None
         self.data_warehouse_name = data_warehouse_name
@@ -3783,6 +3947,138 @@ class SqlDwTableDataSetMapping(DataSetMapping):
         self.table_name = table_name
 
 
+class SynapseWorkspaceSqlPoolTableDataSet(DataSet):
+    """A Synapse Workspace Sql Pool Table data set.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :ivar id: The resource id of the azure resource.
+    :vartype id: str
+    :ivar name: Name of the azure resource.
+    :vartype name: str
+    :ivar system_data: System Data of the Azure resource.
+    :vartype system_data: ~data_share_management_client.models.SystemData
+    :ivar type: Type of the azure resource.
+    :vartype type: str
+    :param kind: Required. Kind of data set.Constant filled by server.  Possible values include:
+     "Blob", "Container", "BlobFolder", "AdlsGen2FileSystem", "AdlsGen2Folder", "AdlsGen2File",
+     "AdlsGen1Folder", "AdlsGen1File", "KustoCluster", "KustoDatabase", "SqlDBTable", "SqlDWTable",
+     "SynapseWorkspaceSqlPoolTable".
+    :type kind: str or ~data_share_management_client.models.DataSetKind
+    :ivar data_set_id: Unique id for identifying a data set resource.
+    :vartype data_set_id: str
+    :param synapse_workspace_sql_pool_table_resource_id: Required. Resource id of the Synapse
+     Workspace SQL Pool Table.
+    :type synapse_workspace_sql_pool_table_resource_id: str
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'system_data': {'readonly': True},
+        'type': {'readonly': True},
+        'kind': {'required': True},
+        'data_set_id': {'readonly': True},
+        'synapse_workspace_sql_pool_table_resource_id': {'required': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
+        'type': {'key': 'type', 'type': 'str'},
+        'kind': {'key': 'kind', 'type': 'str'},
+        'data_set_id': {'key': 'properties.dataSetId', 'type': 'str'},
+        'synapse_workspace_sql_pool_table_resource_id': {'key': 'properties.synapseWorkspaceSqlPoolTableResourceId', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        synapse_workspace_sql_pool_table_resource_id: str,
+        **kwargs
+    ):
+        super(SynapseWorkspaceSqlPoolTableDataSet, self).__init__(**kwargs)
+        self.kind = 'SynapseWorkspaceSqlPoolTable'  # type: str
+        self.data_set_id = None
+        self.synapse_workspace_sql_pool_table_resource_id = synapse_workspace_sql_pool_table_resource_id
+
+
+class SynapseWorkspaceSqlPoolTableDataSetMapping(DataSetMapping):
+    """A Synapse Workspace Sql Pool Table data set mapping.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :ivar id: The resource id of the azure resource.
+    :vartype id: str
+    :ivar name: Name of the azure resource.
+    :vartype name: str
+    :ivar system_data: System Data of the Azure resource.
+    :vartype system_data: ~data_share_management_client.models.SystemData
+    :ivar type: Type of the azure resource.
+    :vartype type: str
+    :param kind: Required. Kind of data set mapping.Constant filled by server.  Possible values
+     include: "Blob", "Container", "BlobFolder", "AdlsGen2FileSystem", "AdlsGen2Folder",
+     "AdlsGen2File", "KustoCluster", "KustoDatabase", "SqlDBTable", "SqlDWTable",
+     "SynapseWorkspaceSqlPoolTable".
+    :type kind: str or ~data_share_management_client.models.DataSetMappingKind
+    :param data_set_id: Required. The id of the source data set.
+    :type data_set_id: str
+    :ivar data_set_mapping_status: Gets the status of the data set mapping. Possible values
+     include: "Ok", "Broken".
+    :vartype data_set_mapping_status: str or
+     ~data_share_management_client.models.DataSetMappingStatus
+    :ivar provisioning_state: Provisioning state of the data set mapping. Possible values include:
+     "Succeeded", "Creating", "Deleting", "Moving", "Failed".
+    :vartype provisioning_state: str or ~data_share_management_client.models.ProvisioningState
+    :param synapse_workspace_sql_pool_table_resource_id: Required. Resource id of the Synapse
+     Workspace SQL Pool Table.
+    :type synapse_workspace_sql_pool_table_resource_id: str
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'system_data': {'readonly': True},
+        'type': {'readonly': True},
+        'kind': {'required': True},
+        'data_set_id': {'required': True},
+        'data_set_mapping_status': {'readonly': True},
+        'provisioning_state': {'readonly': True},
+        'synapse_workspace_sql_pool_table_resource_id': {'required': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
+        'type': {'key': 'type', 'type': 'str'},
+        'kind': {'key': 'kind', 'type': 'str'},
+        'data_set_id': {'key': 'properties.dataSetId', 'type': 'str'},
+        'data_set_mapping_status': {'key': 'properties.dataSetMappingStatus', 'type': 'str'},
+        'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
+        'synapse_workspace_sql_pool_table_resource_id': {'key': 'properties.synapseWorkspaceSqlPoolTableResourceId', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        data_set_id: str,
+        synapse_workspace_sql_pool_table_resource_id: str,
+        **kwargs
+    ):
+        super(SynapseWorkspaceSqlPoolTableDataSetMapping, self).__init__(**kwargs)
+        self.kind = 'SynapseWorkspaceSqlPoolTable'  # type: str
+        self.data_set_id = data_set_id
+        self.data_set_mapping_status = None
+        self.provisioning_state = None
+        self.synapse_workspace_sql_pool_table_resource_id = synapse_workspace_sql_pool_table_resource_id
+
+
 class SynchronizationDetails(msrest.serialization.Model):
     """Synchronization details at data set level.
 
@@ -3790,9 +4086,10 @@ class SynchronizationDetails(msrest.serialization.Model):
 
     :ivar data_set_id: Id of data set.
     :vartype data_set_id: str
-    :ivar data_set_type: Type of the data set. Possible values include: 'Blob', 'Container',
-     'BlobFolder', 'AdlsGen2FileSystem', 'AdlsGen2Folder', 'AdlsGen2File', 'AdlsGen1Folder',
-     'AdlsGen1File', 'KustoCluster', 'KustoDatabase', 'SqlDBTable', 'SqlDWTable'.
+    :ivar data_set_type: Type of the data set. Possible values include: "Blob", "Container",
+     "BlobFolder", "AdlsGen2FileSystem", "AdlsGen2Folder", "AdlsGen2File", "AdlsGen1Folder",
+     "AdlsGen1File", "KustoCluster", "KustoDatabase", "SqlDBTable", "SqlDWTable",
+     "SynapseWorkspaceSqlPoolTable".
     :vartype data_set_type: str or ~data_share_management_client.models.DataSetType
     :ivar duration_ms: Duration of data set level copy.
     :vartype duration_ms: int
@@ -3948,7 +4245,7 @@ class Synchronize(msrest.serialization.Model):
     """Payload for the synchronizing the data.
 
     :param synchronization_mode: Mode of synchronization used in triggers and snapshot sync.
-     Incremental by default. Possible values include: 'Incremental', 'FullSync'.
+     Incremental by default. Possible values include: "Incremental", "FullSync".
     :type synchronization_mode: str or ~data_share_management_client.models.SynchronizationMode
     """
 
@@ -3964,6 +4261,54 @@ class Synchronize(msrest.serialization.Model):
     ):
         super(Synchronize, self).__init__(**kwargs)
         self.synchronization_mode = synchronization_mode
+
+
+class SystemData(msrest.serialization.Model):
+    """Metadata pertaining to creation and last modification of the resource.
+
+    :param created_at: The timestamp of resource creation (UTC).
+    :type created_at: ~datetime.datetime
+    :param created_by: The identity that created the resource.
+    :type created_by: str
+    :param created_by_type: The type of identity that created the resource. Possible values
+     include: "User", "Application", "ManagedIdentity", "Key".
+    :type created_by_type: str or ~data_share_management_client.models.CreatedByType
+    :param last_modified_at: The type of identity that last modified the resource.
+    :type last_modified_at: ~datetime.datetime
+    :param last_modified_by: The identity that last modified the resource.
+    :type last_modified_by: str
+    :param last_modified_by_type: The type of identity that last modified the resource. Possible
+     values include: "User", "Application", "ManagedIdentity", "Key".
+    :type last_modified_by_type: str or ~data_share_management_client.models.LastModifiedByType
+    """
+
+    _attribute_map = {
+        'created_at': {'key': 'createdAt', 'type': 'iso-8601'},
+        'created_by': {'key': 'createdBy', 'type': 'str'},
+        'created_by_type': {'key': 'createdByType', 'type': 'str'},
+        'last_modified_at': {'key': 'lastModifiedAt', 'type': 'iso-8601'},
+        'last_modified_by': {'key': 'lastModifiedBy', 'type': 'str'},
+        'last_modified_by_type': {'key': 'lastModifiedByType', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        created_at: Optional[datetime.datetime] = None,
+        created_by: Optional[str] = None,
+        created_by_type: Optional[Union[str, "CreatedByType"]] = None,
+        last_modified_at: Optional[datetime.datetime] = None,
+        last_modified_by: Optional[str] = None,
+        last_modified_by_type: Optional[Union[str, "LastModifiedByType"]] = None,
+        **kwargs
+    ):
+        super(SystemData, self).__init__(**kwargs)
+        self.created_at = created_at
+        self.created_by = created_by
+        self.created_by_type = created_by_type
+        self.last_modified_at = last_modified_at
+        self.last_modified_by = last_modified_by
+        self.last_modified_by_type = last_modified_by_type
 
 
 class TriggerList(msrest.serialization.Model):
