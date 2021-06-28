@@ -156,7 +156,7 @@ class SettingKind(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     UEBA_SETTINGS = "UebaSettings"
     TOGGLE_SETTINGS = "ToggleSettings"
 
-class StatusInMCAS(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+class StatusInMcas(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Determines whether User and Entity Behavior Analytics is enabled from MCAS (Microsoft Cloud App
     Security).
     """

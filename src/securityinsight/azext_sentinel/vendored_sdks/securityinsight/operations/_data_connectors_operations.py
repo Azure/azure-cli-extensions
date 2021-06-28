@@ -23,8 +23,8 @@ if TYPE_CHECKING:
     T = TypeVar('T')
     ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
 
-class DataConnectorOperations(object):
-    """DataConnectorOperations operations.
+class DataConnectorsOperations(object):
+    """DataConnectorsOperations operations.
 
     You should not instantiate this class directly. Instead, you should create a Client instance that
     instantiates it for you and attaches it as an attribute.
@@ -228,7 +228,6 @@ class DataConnectorOperations(object):
             'dataConnectorId': self._serialize.url("data_connector_id", data_connector_id, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
-        print(url)
 
         # Construct parameters
         query_parameters = {}  # type: Dict[str, Any]

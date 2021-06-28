@@ -33,10 +33,6 @@ def sentinel_alert_rule_create(client,
                                resource_group_name,
                                workspace_name,
                                rule_id,
-                               action_id=None,
-                               etag=None,
-                               logic_app_resource_id=None,
-                               trigger_uri=None,
                                fusion_alert_rule=None,
                                microsoft_security_incident_creation_alert_rule=None,
                                scheduled_alert_rule=None):
@@ -50,55 +46,50 @@ def sentinel_alert_rule_create(client,
     if len(all_alert_rule) > 1:
         raise CLIError('at most one of  fusion_alert_rule, microsoft_security_incident_creation_alert_rule, '
                        'scheduled_alert_rule is needed for alert_rule!')
+    if len(all_alert_rule) != 1:
+        raise CLIError('alert_rule is required. but none of fusion_alert_rule, microsoft_security_incident_creation_ale'
+                       'rt_rule, scheduled_alert_rule is provided!')
     alert_rule = all_alert_rule[0] if len(all_alert_rule) == 1 else None
-    if resource_group_name and workspace_name is not None and rule_id is not None and action_id is not None:
-        return client.create_or_update_action(resource_group_name=resource_group_name,
-                                              workspace_name=workspace_name,
-                                              rule_id=rule_id,
-                                              action_id=action_id,
-                                              etag=etag,
-                                              logic_app_resource_id=logic_app_resource_id,
-                                              trigger_uri=trigger_uri)
     return client.create_or_update(resource_group_name=resource_group_name,
                                    workspace_name=workspace_name,
                                    rule_id=rule_id,
                                    alert_rule=alert_rule)
 
 
-def sentinel_alert_rule_update(instance,
+def sentinel_alert_rule_update(client,
                                resource_group_name,
                                workspace_name,
                                rule_id,
                                fusion_alert_rule=None,
                                microsoft_security_incident_creation_alert_rule=None,
                                scheduled_alert_rule=None):
-    return instance
+    all_alert_rule = []
+    if fusion_alert_rule is not None:
+        all_alert_rule.append(fusion_alert_rule)
+    if microsoft_security_incident_creation_alert_rule is not None:
+        all_alert_rule.append(microsoft_security_incident_creation_alert_rule)
+    if scheduled_alert_rule is not None:
+        all_alert_rule.append(scheduled_alert_rule)
+    if len(all_alert_rule) > 1:
+        raise CLIError('at most one of  fusion_alert_rule, microsoft_security_incident_creation_alert_rule, '
+                       'scheduled_alert_rule is needed for alert_rule!')
+    if len(all_alert_rule) != 1:
+        raise CLIError('alert_rule is required. but none of fusion_alert_rule, microsoft_security_incident_creation_ale'
+                       'rt_rule, scheduled_alert_rule is provided!')
+    alert_rule = all_alert_rule[0] if len(all_alert_rule) == 1 else None
+    return client.create_or_update(resource_group_name=resource_group_name,
+                                   workspace_name=workspace_name,
+                                   rule_id=rule_id,
+                                   alert_rule=alert_rule)
 
 
 def sentinel_alert_rule_delete(client,
                                resource_group_name,
                                workspace_name,
-                               rule_id,
-                               action_id=None):
-    if resource_group_name and workspace_name is not None and rule_id is not None and action_id is not None:
-        return client.delete_action(resource_group_name=resource_group_name,
-                                    workspace_name=workspace_name,
-                                    rule_id=rule_id,
-                                    action_id=action_id)
+                               rule_id):
     return client.delete(resource_group_name=resource_group_name,
                          workspace_name=workspace_name,
                          rule_id=rule_id)
-
-
-def sentinel_alert_rule_get_action(client,
-                                   resource_group_name,
-                                   workspace_name,
-                                   rule_id,
-                                   action_id):
-    return client.get_action(resource_group_name=resource_group_name,
-                             workspace_name=workspace_name,
-                             rule_id=rule_id,
-                             action_id=action_id)
 
 
 def sentinel_action_list(client,
@@ -108,6 +99,66 @@ def sentinel_action_list(client,
     return client.list_by_alert_rule(resource_group_name=resource_group_name,
                                      workspace_name=workspace_name,
                                      rule_id=rule_id)
+
+
+def sentinel_action_show(client,
+                         resource_group_name,
+                         workspace_name,
+                         rule_id,
+                         action_id):
+    return client.get(resource_group_name=resource_group_name,
+                      workspace_name=workspace_name,
+                      rule_id=rule_id,
+                      action_id=action_id)
+
+
+def sentinel_action_create(client,
+                           resource_group_name,
+                           workspace_name,
+                           rule_id,
+                           action_id,
+                           etag=None,
+                           logic_app_resource_id=None,
+                           trigger_uri=None):
+    action = {}
+    action['etag'] = etag
+    action['logic_app_resource_id'] = logic_app_resource_id
+    action['trigger_uri'] = trigger_uri
+    return client.create_or_update(resource_group_name=resource_group_name,
+                                   workspace_name=workspace_name,
+                                   rule_id=rule_id,
+                                   action_id=action_id,
+                                   action=action)
+
+
+def sentinel_action_update(client,
+                           resource_group_name,
+                           workspace_name,
+                           rule_id,
+                           action_id,
+                           etag=None,
+                           logic_app_resource_id=None,
+                           trigger_uri=None):
+    action = {}
+    action['etag'] = etag
+    action['logic_app_resource_id'] = logic_app_resource_id
+    action['trigger_uri'] = trigger_uri
+    return client.create_or_update(resource_group_name=resource_group_name,
+                                   workspace_name=workspace_name,
+                                   rule_id=rule_id,
+                                   action_id=action_id,
+                                   action=action)
+
+
+def sentinel_action_delete(client,
+                           resource_group_name,
+                           workspace_name,
+                           rule_id,
+                           action_id):
+    return client.delete(resource_group_name=resource_group_name,
+                         workspace_name=workspace_name,
+                         rule_id=rule_id,
+                         action_id=action_id)
 
 
 def sentinel_alert_rule_template_list(client,
@@ -151,27 +202,39 @@ def sentinel_bookmark_create(client,
                              display_name=None,
                              labels=None,
                              notes=None,
-                             query_content=None,
+                             query=None,
                              query_result=None,
                              updated=None,
+                             event_time=None,
+                             query_start_time=None,
+                             query_end_time=None,
                              incident_info=None,
-                             updated_by_object_id=None):
+                             object_id=None,
+                             user_info_object_id=None):
+    bookmark = {}
+    bookmark['etag'] = etag
+    bookmark['created'] = created
+    bookmark['display_name'] = display_name
+    bookmark['labels'] = labels
+    bookmark['notes'] = notes
+    bookmark['query'] = query
+    bookmark['query_result'] = query_result
+    bookmark['updated'] = updated
+    bookmark['event_time'] = event_time
+    bookmark['query_start_time'] = query_start_time
+    bookmark['query_end_time'] = query_end_time
+    bookmark['incident_info'] = incident_info
+    bookmark['updated_by'] = {}
+    bookmark['updated_by']['object_id'] = object_id
+    bookmark['created_by'] = {}
+    bookmark['created_by']['object_id'] = user_info_object_id
     return client.create_or_update(resource_group_name=resource_group_name,
                                    workspace_name=workspace_name,
                                    bookmark_id=bookmark_id,
-                                   etag=etag,
-                                   created=created,
-                                   display_name=display_name,
-                                   labels=labels,
-                                   notes=notes,
-                                   query=query_content,
-                                   query_result=query_result,
-                                   updated=updated,
-                                   incident_info=incident_info,
-                                   object_id=updated_by_object_id)
+                                   bookmark=bookmark)
 
 
-def sentinel_bookmark_update(client,
+def sentinel_bookmark_update(instance,
                              resource_group_name,
                              workspace_name,
                              bookmark_id,
@@ -180,24 +243,44 @@ def sentinel_bookmark_update(client,
                              display_name=None,
                              labels=None,
                              notes=None,
-                             query_content=None,
+                             query=None,
                              query_result=None,
                              updated=None,
+                             event_time=None,
+                             query_start_time=None,
+                             query_end_time=None,
                              incident_info=None,
-                             updated_by_object_id=None):
-    return client.create_or_update(resource_group_name=resource_group_name,
-                                   workspace_name=workspace_name,
-                                   bookmark_id=bookmark_id,
-                                   etag=etag,
-                                   created=created,
-                                   display_name=display_name,
-                                   labels=labels,
-                                   notes=notes,
-                                   query=query_content,
-                                   query_result=query_result,
-                                   updated=updated,
-                                   incident_info=incident_info,
-                                   object_id=updated_by_object_id)
+                             object_id=None,
+                             user_info_object_id=None):
+    if etag is not None:
+        instance.etag = etag
+    if created is not None:
+        instance.created = created
+    if display_name is not None:
+        instance.display_name = display_name
+    if labels is not None:
+        instance.labels = labels
+    if notes is not None:
+        instance.notes = notes
+    if query is not None:
+        instance.query = query
+    if query_result is not None:
+        instance.query_result = query_result
+    if updated is not None:
+        instance.updated = updated
+    if event_time is not None:
+        instance.event_time = event_time
+    if query_start_time is not None:
+        instance.query_start_time = query_start_time
+    if query_end_time is not None:
+        instance.query_end_time = query_end_time
+    if incident_info is not None:
+        instance.incident_info = incident_info
+    if object_id is not None:
+        instance.updated_by.object_id = object_id
+    if user_info_object_id is not None:
+        instance.created_by.object_id = user_info_object_id
+    return instance
 
 
 def sentinel_bookmark_delete(client,
@@ -269,7 +352,7 @@ def sentinel_data_connector_create(client,
                                    data_connector=data_connector)
 
 
-def sentinel_data_connector_update(instance,
+def sentinel_data_connector_update(client,
                                    resource_group_name,
                                    workspace_name,
                                    data_connector_id,
@@ -281,7 +364,36 @@ def sentinel_data_connector_update(instance,
                                    mdatp_data_connector=None,
                                    office_data_connector=None,
                                    ti_data_connector=None):
-    return instance
+    all_data_connector = []
+    if aad_data_connector is not None:
+        all_data_connector.append(aad_data_connector)
+    if aatp_data_connector is not None:
+        all_data_connector.append(aatp_data_connector)
+    if asc_data_connector is not None:
+        all_data_connector.append(asc_data_connector)
+    if aws_cloud_trail_data_connector is not None:
+        all_data_connector.append(aws_cloud_trail_data_connector)
+    if mcas_data_connector is not None:
+        all_data_connector.append(mcas_data_connector)
+    if mdatp_data_connector is not None:
+        all_data_connector.append(mdatp_data_connector)
+    if office_data_connector is not None:
+        all_data_connector.append(office_data_connector)
+    if ti_data_connector is not None:
+        all_data_connector.append(ti_data_connector)
+    if len(all_data_connector) > 1:
+        raise CLIError('at most one of  aad_data_connector, aatp_data_connector, asc_data_connector, '
+                       'aws_cloud_trail_data_connector, mcas_data_connector, mdatp_data_connector, '
+                       'office_data_connector, ti_data_connector is needed for data_connector!')
+    if len(all_data_connector) != 1:
+        raise CLIError('data_connector is required. but none of aad_data_connector, aatp_data_connector, '
+                       'asc_data_connector, aws_cloud_trail_data_connector, mcas_data_connector, mdatp_data_connector, '
+                       'office_data_connector, ti_data_connector is provided!')
+    data_connector = all_data_connector[0] if len(all_data_connector) == 1 else None
+    return client.create_or_update(resource_group_name=resource_group_name,
+                                   workspace_name=workspace_name,
+                                   data_connector_id=data_connector_id,
+                                   data_connector=data_connector)
 
 
 def sentinel_data_connector_delete(client,
@@ -333,24 +445,26 @@ def sentinel_incident_create(client,
                              severity=None,
                              status=None,
                              title=None):
+    incident = {}
+    incident['etag'] = etag
+    incident['classification'] = classification
+    incident['classification_comment'] = classification_comment
+    incident['classification_reason'] = classification_reason
+    incident['description'] = description
+    incident['first_activity_time_utc'] = first_activity_time_utc
+    incident['labels'] = labels
+    incident['last_activity_time_utc'] = last_activity_time_utc
+    incident['owner'] = owner
+    incident['severity'] = severity
+    incident['status'] = status
+    incident['title'] = title
     return client.create_or_update(resource_group_name=resource_group_name,
                                    workspace_name=workspace_name,
                                    incident_id=incident_id,
-                                   etag=etag,
-                                   classification=classification,
-                                   classification_comment=classification_comment,
-                                   classification_reason=classification_reason,
-                                   description=description,
-                                   first_activity_time_utc=first_activity_time_utc,
-                                   labels=labels,
-                                   last_activity_time_utc=last_activity_time_utc,
-                                   owner=owner,
-                                   severity=severity,
-                                   status=status,
-                                   title=title)
+                                   incident=incident)
 
 
-def sentinel_incident_update(client,
+def sentinel_incident_update(instance,
                              resource_group_name,
                              workspace_name,
                              incident_id,
@@ -366,21 +480,31 @@ def sentinel_incident_update(client,
                              severity=None,
                              status=None,
                              title=None):
-    return client.create_or_update(resource_group_name=resource_group_name,
-                                   workspace_name=workspace_name,
-                                   incident_id=incident_id,
-                                   etag=etag,
-                                   classification=classification,
-                                   classification_comment=classification_comment,
-                                   classification_reason=classification_reason,
-                                   description=description,
-                                   first_activity_time_utc=first_activity_time_utc,
-                                   labels=labels,
-                                   last_activity_time_utc=last_activity_time_utc,
-                                   owner=owner,
-                                   severity=severity,
-                                   status=status,
-                                   title=title)
+    if etag is not None:
+        instance.etag = etag
+    if classification is not None:
+        instance.classification = classification
+    if classification_comment is not None:
+        instance.classification_comment = classification_comment
+    if classification_reason is not None:
+        instance.classification_reason = classification_reason
+    if description is not None:
+        instance.description = description
+    if first_activity_time_utc is not None:
+        instance.first_activity_time_utc = first_activity_time_utc
+    if labels is not None:
+        instance.labels = labels
+    if last_activity_time_utc is not None:
+        instance.last_activity_time_utc = last_activity_time_utc
+    if owner is not None:
+        instance.owner = owner
+    if severity is not None:
+        instance.severity = severity
+    if status is not None:
+        instance.status = status
+    if title is not None:
+        instance.title = title
+    return instance
 
 
 def sentinel_incident_delete(client,
@@ -426,8 +550,10 @@ def sentinel_incident_comment_create(client,
                                      incident_id,
                                      incident_comment_id,
                                      message=None):
+    incident_comment = {}
+    incident_comment['message'] = message
     return client.create_comment(resource_group_name=resource_group_name,
                                  workspace_name=workspace_name,
                                  incident_id=incident_id,
                                  incident_comment_id=incident_comment_id,
-                                 message=message)
+                                 incident_comment=incident_comment)

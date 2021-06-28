@@ -22,18 +22,19 @@
 |CLI Command|Operation Swagger name|Parameters|Examples|
 |---------|------------|--------|-----------|
 |[az sentinel action list](#ActionsListByAlertRule)|ListByAlertRule|[Parameters](#ParametersActionsListByAlertRule)|[Example](#ExamplesActionsListByAlertRule)|
+|[az sentinel action show](#ActionsGet)|Get|[Parameters](#ParametersActionsGet)|[Example](#ExamplesActionsGet)|
+|[az sentinel action create](#ActionsCreateOrUpdate#Create)|CreateOrUpdate#Create|[Parameters](#ParametersActionsCreateOrUpdate#Create)|[Example](#ExamplesActionsCreateOrUpdate#Create)|
+|[az sentinel action update](#ActionsCreateOrUpdate#Update)|CreateOrUpdate#Update|[Parameters](#ParametersActionsCreateOrUpdate#Update)|Not Found|
+|[az sentinel action delete](#ActionsDelete)|Delete|[Parameters](#ParametersActionsDelete)|[Example](#ExamplesActionsDelete)|
 
 ### <a name="CommandsInAlertRules">Commands in `az sentinel alert-rule` group</a>
 |CLI Command|Operation Swagger name|Parameters|Examples|
 |---------|------------|--------|-----------|
 |[az sentinel alert-rule list](#AlertRulesList)|List|[Parameters](#ParametersAlertRulesList)|[Example](#ExamplesAlertRulesList)|
 |[az sentinel alert-rule show](#AlertRulesGet)|Get|[Parameters](#ParametersAlertRulesGet)|[Example](#ExamplesAlertRulesGet)|
-|[az sentinel alert-rule create](#AlertRulesCreateOrUpdateAction)|CreateOrUpdateAction|[Parameters](#ParametersAlertRulesCreateOrUpdateAction)|[Example](#ExamplesAlertRulesCreateOrUpdateAction)|
 |[az sentinel alert-rule create](#AlertRulesCreateOrUpdate#Create)|CreateOrUpdate#Create|[Parameters](#ParametersAlertRulesCreateOrUpdate#Create)|[Example](#ExamplesAlertRulesCreateOrUpdate#Create)|
 |[az sentinel alert-rule update](#AlertRulesCreateOrUpdate#Update)|CreateOrUpdate#Update|[Parameters](#ParametersAlertRulesCreateOrUpdate#Update)|Not Found|
-|[az sentinel alert-rule delete](#AlertRulesDeleteAction)|DeleteAction|[Parameters](#ParametersAlertRulesDeleteAction)|[Example](#ExamplesAlertRulesDeleteAction)|
 |[az sentinel alert-rule delete](#AlertRulesDelete)|Delete|[Parameters](#ParametersAlertRulesDelete)|[Example](#ExamplesAlertRulesDelete)|
-|[az sentinel alert-rule get-action](#AlertRulesGetAction)|GetAction|[Parameters](#ParametersAlertRulesGetAction)|[Example](#ExamplesAlertRulesGetAction)|
 
 ### <a name="CommandsInAlertRuleTemplates">Commands in `az sentinel alert-rule-template` group</a>
 |CLI Command|Operation Swagger name|Parameters|Examples|
@@ -93,6 +94,71 @@ az sentinel action list --resource-group "myRg" --rule-id "73e01a99-5cd7-4139-a1
 |**--workspace-name**|string|The name of the workspace.|workspace_name|workspaceName|
 |**--rule-id**|string|Alert rule ID|rule_id|ruleId|
 
+#### <a name="ActionsGet">Command `az sentinel action show`</a>
+
+##### <a name="ExamplesActionsGet">Example</a>
+```
+az sentinel action show --action-id "912bec42-cb66-4c03-ac63-1761b6898c3e" --resource-group "myRg" --rule-id \
+"73e01a99-5cd7-4139-a149-9f2736ff2ab5" --workspace-name "myWorkspace"
+```
+##### <a name="ParametersActionsGet">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The name of the resource group within the user's subscription. The name is case insensitive.|resource_group_name|resourceGroupName|
+|**--workspace-name**|string|The name of the workspace.|workspace_name|workspaceName|
+|**--rule-id**|string|Alert rule ID|rule_id|ruleId|
+|**--action-id**|string|Action ID|action_id|actionId|
+
+#### <a name="ActionsCreateOrUpdate#Create">Command `az sentinel action create`</a>
+
+##### <a name="ExamplesActionsCreateOrUpdate#Create">Example</a>
+```
+az sentinel action create --etag "\\"0300bf09-0000-0000-0000-5c37296e0000\\"" --logic-app-resource-id \
+"/subscriptions/d0cfe6b2-9ac0-4464-9919-dccaee2e48c0/resourceGroups/myRg/providers/Microsoft.Logic/workflows/MyAlerts" \
+--trigger-uri "https://prod-31.northcentralus.logic.azure.com:443/workflows/cd3765391efd48549fd7681ded1d48d7/triggers/m\
+anual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=signature" --action-id \
+"912bec42-cb66-4c03-ac63-1761b6898c3e" --resource-group "myRg" --rule-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" \
+--workspace-name "myWorkspace"
+```
+##### <a name="ParametersActionsCreateOrUpdate#Create">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The name of the resource group within the user's subscription. The name is case insensitive.|resource_group_name|resourceGroupName|
+|**--workspace-name**|string|The name of the workspace.|workspace_name|workspaceName|
+|**--rule-id**|string|Alert rule ID|rule_id|ruleId|
+|**--action-id**|string|Action ID|action_id|actionId|
+|**--etag**|string|Etag of the azure resource|etag|etag|
+|**--logic-app-resource-id**|string|Logic App Resource Id, /subscriptions/{my-subscription}/resourceGroups/{my-resource-group}/providers/Microsoft.Logic/workflows/{my-workflow-id}.|logic_app_resource_id|logicAppResourceId|
+|**--trigger-uri**|string|Logic App Callback URL for this specific workflow.|trigger_uri|triggerUri|
+
+#### <a name="ActionsCreateOrUpdate#Update">Command `az sentinel action update`</a>
+
+##### <a name="ParametersActionsCreateOrUpdate#Update">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The name of the resource group within the user's subscription. The name is case insensitive.|resource_group_name|resourceGroupName|
+|**--workspace-name**|string|The name of the workspace.|workspace_name|workspaceName|
+|**--rule-id**|string|Alert rule ID|rule_id|ruleId|
+|**--action-id**|string|Action ID|action_id|actionId|
+|**--etag**|string|Etag of the azure resource|etag|etag|
+|**--logic-app-resource-id**|string|Logic App Resource Id, /subscriptions/{my-subscription}/resourceGroups/{my-resource-group}/providers/Microsoft.Logic/workflows/{my-workflow-id}.|logic_app_resource_id|logicAppResourceId|
+|**--trigger-uri**|string|Logic App Callback URL for this specific workflow.|trigger_uri|triggerUri|
+
+#### <a name="ActionsDelete">Command `az sentinel action delete`</a>
+
+##### <a name="ExamplesActionsDelete">Example</a>
+```
+az sentinel action delete --action-id "912bec42-cb66-4c03-ac63-1761b6898c3e" --resource-group "myRg" --rule-id \
+"73e01a99-5cd7-4139-a149-9f2736ff2ab5" --workspace-name "myWorkspace"
+```
+##### <a name="ParametersActionsDelete">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The name of the resource group within the user's subscription. The name is case insensitive.|resource_group_name|resourceGroupName|
+|**--workspace-name**|string|The name of the workspace.|workspace_name|workspaceName|
+|**--rule-id**|string|Alert rule ID|rule_id|ruleId|
+|**--action-id**|string|Action ID|action_id|actionId|
+
 ### group `az sentinel alert-rule`
 #### <a name="AlertRulesList">Command `az sentinel alert-rule list`</a>
 
@@ -129,28 +195,6 @@ az sentinel alert-rule show --resource-group "myRg" --rule-id "73e01a99-5cd7-413
 |**--workspace-name**|string|The name of the workspace.|workspace_name|workspaceName|
 |**--rule-id**|string|Alert rule ID|rule_id|ruleId|
 
-#### <a name="AlertRulesCreateOrUpdateAction">Command `az sentinel alert-rule create`</a>
-
-##### <a name="ExamplesAlertRulesCreateOrUpdateAction">Example</a>
-```
-az sentinel alert-rule create --etag "\\"0300bf09-0000-0000-0000-5c37296e0000\\"" --logic-app-resource-id \
-"/subscriptions/d0cfe6b2-9ac0-4464-9919-dccaee2e48c0/resourceGroups/myRg/providers/Microsoft.Logic/workflows/MyAlerts" \
---trigger-uri "https://prod-31.northcentralus.logic.azure.com:443/workflows/cd3765391efd48549fd7681ded1d48d7/triggers/m\
-anual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=signature" --action-id \
-"912bec42-cb66-4c03-ac63-1761b6898c3e" --resource-group "myRg" --rule-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" \
---workspace-name "myWorkspace"
-```
-##### <a name="ParametersAlertRulesCreateOrUpdateAction">Parameters</a> 
-|Option|Type|Description|Path (SDK)|Swagger name|
-|------|----|-----------|----------|------------|
-|**--resource-group-name**|string|The name of the resource group within the user's subscription. The name is case insensitive.|resource_group_name|resourceGroupName|
-|**--workspace-name**|string|The name of the workspace.|workspace_name|workspaceName|
-|**--rule-id**|string|Alert rule ID|rule_id|ruleId|
-|**--action-id**|string|Action ID|action_id|actionId|
-|**--etag**|string|Etag of the azure resource|etag|etag|
-|**--logic-app-resource-id**|string|Logic App Resource Id, /subscriptions/{my-subscription}/resourceGroups/{my-resource-group}/providers/Microsoft.Logic/workflows/{my-workflow-id}.|logic_app_resource_id|logicAppResourceId|
-|**--trigger-uri**|string|Logic App Callback URL for this specific workflow.|trigger_uri|triggerUri|
-
 #### <a name="AlertRulesCreateOrUpdate#Create">Command `az sentinel alert-rule create`</a>
 
 ##### <a name="ExamplesAlertRulesCreateOrUpdate#Create">Example</a>
@@ -177,6 +221,9 @@ tactics="Persistence" tactics="LateralMovement" --resource-group "myRg" --rule-i
 ##### <a name="ParametersAlertRulesCreateOrUpdate#Create">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The name of the resource group within the user's subscription. The name is case insensitive.|resource_group_name|resourceGroupName|
+|**--workspace-name**|string|The name of the workspace.|workspace_name|workspaceName|
+|**--rule-id**|string|Alert rule ID|rule_id|ruleId|
 |**--fusion-alert-rule**|object|Represents Fusion alert rule.|fusion_alert_rule|FusionAlertRule|
 |**--microsoft-security-incident-creation-alert-rule**|object|Represents MicrosoftSecurityIncidentCreation rule.|microsoft_security_incident_creation_alert_rule|MicrosoftSecurityIncidentCreationAlertRule|
 |**--scheduled-alert-rule**|object|Represents scheduled alert rule.|scheduled_alert_rule|ScheduledAlertRule|
@@ -193,21 +240,6 @@ tactics="Persistence" tactics="LateralMovement" --resource-group "myRg" --rule-i
 |**--microsoft-security-incident-creation-alert-rule**|object|Represents MicrosoftSecurityIncidentCreation rule.|microsoft_security_incident_creation_alert_rule|MicrosoftSecurityIncidentCreationAlertRule|
 |**--scheduled-alert-rule**|object|Represents scheduled alert rule.|scheduled_alert_rule|ScheduledAlertRule|
 
-#### <a name="AlertRulesDeleteAction">Command `az sentinel alert-rule delete`</a>
-
-##### <a name="ExamplesAlertRulesDeleteAction">Example</a>
-```
-az sentinel alert-rule delete --action-id "912bec42-cb66-4c03-ac63-1761b6898c3e" --resource-group "myRg" --rule-id \
-"73e01a99-5cd7-4139-a149-9f2736ff2ab5" --workspace-name "myWorkspace"
-```
-##### <a name="ParametersAlertRulesDeleteAction">Parameters</a> 
-|Option|Type|Description|Path (SDK)|Swagger name|
-|------|----|-----------|----------|------------|
-|**--resource-group-name**|string|The name of the resource group within the user's subscription. The name is case insensitive.|resource_group_name|resourceGroupName|
-|**--workspace-name**|string|The name of the workspace.|workspace_name|workspaceName|
-|**--rule-id**|string|Alert rule ID|rule_id|ruleId|
-|**--action-id**|string|Action ID|action_id|actionId|
-
 #### <a name="AlertRulesDelete">Command `az sentinel alert-rule delete`</a>
 
 ##### <a name="ExamplesAlertRulesDelete">Example</a>
@@ -218,20 +250,9 @@ az sentinel alert-rule delete --resource-group "myRg" --rule-id "73e01a99-5cd7-4
 ##### <a name="ParametersAlertRulesDelete">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-#### <a name="AlertRulesGetAction">Command `az sentinel alert-rule get-action`</a>
-
-##### <a name="ExamplesAlertRulesGetAction">Example</a>
-```
-az sentinel alert-rule get-action --action-id "912bec42-cb66-4c03-ac63-1761b6898c3e" --resource-group "myRg" --rule-id \
-"73e01a99-5cd7-4139-a149-9f2736ff2ab5" --workspace-name "myWorkspace"
-```
-##### <a name="ParametersAlertRulesGetAction">Parameters</a> 
-|Option|Type|Description|Path (SDK)|Swagger name|
-|------|----|-----------|----------|------------|
 |**--resource-group-name**|string|The name of the resource group within the user's subscription. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--workspace-name**|string|The name of the workspace.|workspace_name|workspaceName|
 |**--rule-id**|string|Alert rule ID|rule_id|ruleId|
-|**--action-id**|string|Action ID|action_id|actionId|
 
 ### group `az sentinel alert-rule-template`
 #### <a name="AlertRuleTemplatesList">Command `az sentinel alert-rule-template list`</a>
@@ -292,9 +313,10 @@ az sentinel bookmark show --bookmark-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" -
 ##### <a name="ExamplesBookmarksCreateOrUpdate#Create">Example</a>
 ```
 az sentinel bookmark create --etag "\\"0300bf09-0000-0000-0000-5c37296e0000\\"" --created "2019-01-01T13:15:30Z" \
---display-name "My bookmark" --labels "Tag1" --labels "Tag2" --notes "Found a suspicious activity" --query \
-"SecurityEvent | where TimeGenerated > ago(1d) and TimeGenerated < ago(2d)" --query-result "Security Event query \
-result" --updated "2019-01-01T13:15:30Z" --bookmark-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" --resource-group "myRg" \
+--user-info-object-id "2046feea-040d-4a46-9e2b-91c2941bfa70" --display-name "My bookmark" --labels "Tag1" "Tag2" \
+--notes "Found a suspicious activity" --query "SecurityEvent | where TimeGenerated > ago(1d) and TimeGenerated < \
+ago(2d)" --query-result "Security Event query result" --updated "2019-01-01T13:15:30Z" --object-id \
+"2046feea-040d-4a46-9e2b-91c2941bfa70" --bookmark-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" --resource-group "myRg" \
 --workspace-name "myWorkspace"
 ```
 ##### <a name="ParametersBookmarksCreateOrUpdate#Create">Parameters</a> 
@@ -311,8 +333,12 @@ result" --updated "2019-01-01T13:15:30Z" --bookmark-id "73e01a99-5cd7-4139-a149-
 |**--query**|string|The query of the bookmark.|query|query|
 |**--query-result**|string|The query result of the bookmark.|query_result|queryResult|
 |**--updated**|date-time|The last time the bookmark was updated|updated|updated|
+|**--event-time**|date-time|The bookmark event time|event_time|eventTime|
+|**--query-start-time**|date-time|The start time for the query|query_start_time|queryStartTime|
+|**--query-end-time**|date-time|The end time for the query|query_end_time|queryEndTime|
 |**--incident-info**|object|Describes an incident that relates to bookmark|incident_info|incidentInfo|
-|**--updated-by-object-id**|uuid|The object id of the user.|object_id|objectId|
+|**--object-id**|uuid|The object id of the user.|object_id|objectId|
+|**--user-info-object-id**|uuid|The object id of the user.|user_info_object_id|objectId|
 
 #### <a name="BookmarksCreateOrUpdate#Update">Command `az sentinel bookmark update`</a>
 
@@ -330,8 +356,12 @@ result" --updated "2019-01-01T13:15:30Z" --bookmark-id "73e01a99-5cd7-4139-a149-
 |**--query**|string|The query of the bookmark.|query|query|
 |**--query-result**|string|The query result of the bookmark.|query_result|queryResult|
 |**--updated**|date-time|The last time the bookmark was updated|updated|updated|
+|**--event-time**|date-time|The bookmark event time|event_time|eventTime|
+|**--query-start-time**|date-time|The start time for the query|query_start_time|queryStartTime|
+|**--query-end-time**|date-time|The end time for the query|query_end_time|queryEndTime|
 |**--incident-info**|object|Describes an incident that relates to bookmark|incident_info|incidentInfo|
-|**--updated-by-object-id**|uuid|The object id of the user.|object_id|objectId|
+|**--object-id**|uuid|The object id of the user.|object_id|objectId|
+|**--user-info-object-id**|uuid|The object id of the user.|user_info_object_id|objectId|
 
 #### <a name="BookmarksDelete">Command `az sentinel bookmark delete`</a>
 
@@ -414,8 +444,14 @@ az sentinel data-connector show --data-connector-id "73e01a99-5cd7-4139-a149-9f2
 ##### <a name="ExamplesDataConnectorsCreateOrUpdate#Create">Example</a>
 ```
 az sentinel data-connector create --office-data-connector etag="\\"0300bf09-0000-0000-0000-5c37296e0000\\"" \
-tenant-id="2070ecc9-b4d5-4ae4-adaa-936fa1954fa8" --data-connector-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" \
---resource-group "myRg" --workspace-name "myWorkspace"
+tenant-id="2070ecc9-b4d5-4ae4-adaa-936fa1954fa8" state-properties-data-types-exchange-state="Enabled" \
+--data-connector-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" --resource-group "myRg" --workspace-name "myWorkspace"
+```
+##### <a name="ExamplesDataConnectorsCreateOrUpdate#Create">Example</a>
+```
+az sentinel data-connector create --ti-data-connector tenant-id="06b3ccb8-1384-4bcc-aec7-852f6d57161b" \
+tip-lookback-period="2020-01-01T13:00:30.123Z" state="Enabled" --data-connector-id "73e01a99-5cd7-4139-a149-9f2736ff2ab\
+5" --resource-group "myRg" --workspace-name "myWorkspace"
 ```
 ##### <a name="ParametersDataConnectorsCreateOrUpdate#Create">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|

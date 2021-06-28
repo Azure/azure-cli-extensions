@@ -10,9 +10,52 @@
 
 import os
 from azure.cli.testsdk import ScenarioTest
-from .. import try_manual, raise_if, calc_coverage
 from azure.cli.testsdk import ResourceGroupPreparer
 from azure_devtools.scenario_tests import AllowLargeResponse
+
+
+from .example_steps import step_action_create
+from .example_steps import step_action_list
+from .example_steps import step_action_show
+from .example_steps import step_action_delete
+from .example_steps import step_alert_rule_create
+from .example_steps import step_alert_rule_create2
+from .example_steps import step_alert_rule_create3
+from .example_steps import step_alert_rule_show
+from .example_steps import step_alert_rule_show2
+from .example_steps import step_alert_rule_show3
+from .example_steps import step_alert_rule_list
+from .example_steps import step_alert_rule_delete
+from .example_steps import step_alert_rule_template_show
+from .example_steps import step_alert_rule_template_list
+from .example_steps import step_bookmark_create
+from .example_steps import step_bookmark_show
+from .example_steps import step_bookmark_list
+from .example_steps import step_bookmark_delete
+from .example_steps import step_data_connector_create
+from .example_steps import step_data_connector_create2
+from .example_steps import step_data_connector_show
+from .example_steps import step_data_connector_show2
+from .example_steps import step_data_connector_show3
+from .example_steps import step_data_connector_show4
+from .example_steps import step_data_connector_list
+from .example_steps import step_data_connector_show5
+from .example_steps import step_data_connector_show6
+from .example_steps import step_data_connector_show7
+from .example_steps import step_data_connector_show8
+from .example_steps import step_data_connector_delete
+from .example_steps import step_incident_comment_create
+from .example_steps import step_incident_comment_list
+from .example_steps import step_incident_comment_show
+from .example_steps import step_incident_create
+from .example_steps import step_incident_list
+from .example_steps import step_incident_show
+from .example_steps import step_incident_delete
+from .. import (
+    try_manual,
+    raise_if,
+    calc_coverage
+)
 
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
@@ -253,3 +296,77 @@ class SecurityInsightsScenarioTest(ScenarioTest):
 
         calc_coverage(__file__)
         raise_if()
+# Env setup_scenario
+@try_manual
+def setup_scenario(test, rg):
+    pass
+
+
+# Env cleanup_scenario
+@try_manual
+def cleanup_scenario(test, rg):
+    pass
+
+
+# Testcase: Scenario
+@try_manual
+def call_scenario(test, rg):
+    setup_scenario(test, rg)
+    step_action_create(test, rg, checks=[])
+    step_action_list(test, rg, checks=[])
+    step_action_show(test, rg, checks=[])
+    step_action_delete(test, rg, checks=[])
+    step_alert_rule_create(test, rg, checks=[])
+    step_alert_rule_create2(test, rg, checks=[])
+    step_alert_rule_create3(test, rg, checks=[])
+    step_alert_rule_show(test, rg, checks=[])
+    step_alert_rule_show2(test, rg, checks=[])
+    step_alert_rule_show3(test, rg, checks=[])
+    step_alert_rule_list(test, rg, checks=[])
+    step_alert_rule_delete(test, rg, checks=[])
+    step_alert_rule_template_show(test, rg, checks=[])
+    step_alert_rule_template_list(test, rg, checks=[])
+    step_bookmark_create(test, rg, checks=[])
+    step_bookmark_show(test, rg, checks=[])
+    step_bookmark_list(test, rg, checks=[])
+    step_bookmark_delete(test, rg, checks=[])
+    step_data_connector_create(test, rg, checks=[])
+    step_data_connector_create2(test, rg, checks=[])
+    step_data_connector_show(test, rg, checks=[])
+    step_data_connector_show2(test, rg, checks=[])
+    step_data_connector_show3(test, rg, checks=[])
+    step_data_connector_show4(test, rg, checks=[])
+    step_data_connector_list(test, rg, checks=[])
+    step_data_connector_show5(test, rg, checks=[])
+    step_data_connector_show6(test, rg, checks=[])
+    step_data_connector_show7(test, rg, checks=[])
+    step_data_connector_show8(test, rg, checks=[])
+    step_data_connector_delete(test, rg, checks=[])
+    step_incident_comment_create(test, rg, checks=[])
+    step_incident_comment_list(test, rg, checks=[])
+    step_incident_comment_show(test, rg, checks=[])
+    step_incident_create(test, rg, checks=[])
+    step_incident_list(test, rg, checks=[])
+    step_incident_show(test, rg, checks=[])
+    step_incident_delete(test, rg, checks=[])
+    cleanup_scenario(test, rg)
+
+
+# Test class for Scenario
+@try_manual
+class SentinelScenarioTest(ScenarioTest):
+
+    def __init__(self, *args, **kwargs):
+        super(SentinelScenarioTest, self).__init__(*args, **kwargs)
+        self.kwargs.update({
+            'subscription_id': self.get_subscription_id()
+        })
+
+
+
+    @ResourceGroupPreparer(name_prefix='clitestsentinel_myRg'[:7], key='rg', parameter_name='rg')
+    def test_sentinel_Scenario(self, rg):
+        call_scenario(self, rg)
+        calc_coverage(__file__)
+        raise_if()
+

@@ -37,6 +37,9 @@ class AddFusionAlertRule(argparse.Action):
                 d['enabled'] = v[0]
             elif kl == 'etag':
                 d['etag'] = v[0]
+            else:
+                raise CLIError('Unsupported Key {} is provided for parameter fusion_alert_rule. All possible keys are: '
+                               'alert-rule-template-name, enabled, etag'.format(k))
         d['kind'] = 'Fusion'
         return d
 
@@ -76,6 +79,11 @@ class AddMicrosoftSecurityIncidentCreationAlertRule(argparse.Action):
                 d['enabled'] = v[0]
             elif kl == 'etag':
                 d['etag'] = v[0]
+            else:
+                raise CLIError('Unsupported Key {} is provided for parameter microsoft_security_incident_creation_alert'
+                               '_rule. All possible keys are: display-names-filter, display-names-exclude-filter, '
+                               'product-filter, severities-filter, alert-rule-template-name, description, '
+                               'display-name, enabled, etag'.format(k))
         d['kind'] = 'MicrosoftSecurityIncidentCreation'
         return d
 
@@ -125,6 +133,11 @@ class AddScheduledAlertRule(argparse.Action):
                 d['tactics'] = v
             elif kl == 'etag':
                 d['etag'] = v[0]
+            else:
+                raise CLIError('Unsupported Key {} is provided for parameter scheduled_alert_rule. All possible keys '
+                               'are: query, query-frequency, query-period, severity, trigger-operator, '
+                               'trigger-threshold, alert-rule-template-name, description, display-name, enabled, '
+                               'suppression-duration, suppression-enabled, tactics, etag'.format(k))
         d['kind'] = 'Scheduled'
         return d
 
@@ -154,6 +167,9 @@ class AddIncidentInfo(argparse.Action):
                 d['title'] = v[0]
             elif kl == 'relation-name':
                 d['relation_name'] = v[0]
+            else:
+                raise CLIError('Unsupported Key {} is provided for parameter incident_info. All possible keys are: '
+                               'incident-id, severity, title, relation-name'.format(k))
         return d
 
 
@@ -180,6 +196,9 @@ class AddAadDataConnector(argparse.Action):
                 d['state'] = v[0]
             elif kl == 'etag':
                 d['etag'] = v[0]
+            else:
+                raise CLIError('Unsupported Key {} is provided for parameter aad_data_connector. All possible keys '
+                               'are: tenant-id, state, etag'.format(k))
         d['kind'] = 'AzureActiveDirectory'
         return d
 
@@ -207,6 +226,9 @@ class AddAatpDataConnector(argparse.Action):
                 d['state'] = v[0]
             elif kl == 'etag':
                 d['etag'] = v[0]
+            else:
+                raise CLIError('Unsupported Key {} is provided for parameter aatp_data_connector. All possible keys '
+                               'are: tenant-id, state, etag'.format(k))
         d['kind'] = 'AzureAdvancedThreatProtection'
         return d
 
@@ -234,6 +256,9 @@ class AddAscDataConnector(argparse.Action):
                 d['state'] = v[0]
             elif kl == 'etag':
                 d['etag'] = v[0]
+            else:
+                raise CLIError('Unsupported Key {} is provided for parameter asc_data_connector. All possible keys '
+                               'are: subscription-id, state, etag'.format(k))
         d['kind'] = 'AzureSecurityCenter'
         return d
 
@@ -261,6 +286,9 @@ class AddAwsCloudTrailDataConnector(argparse.Action):
                 d['state'] = v[0]
             elif kl == 'etag':
                 d['etag'] = v[0]
+            else:
+                raise CLIError('Unsupported Key {} is provided for parameter aws_cloud_trail_data_connector. All '
+                               'possible keys are: aws-role-arn, state, etag'.format(k))
         d['kind'] = 'AmazonWebServicesCloudTrail'
         return d
 
@@ -284,12 +312,16 @@ class AddMcasDataConnector(argparse.Action):
             v = properties[k]
             if kl == 'tenant-id':
                 d['tenant_id'] = v[0]
-            elif kl == 'state-data-types-alerts-state':
-                d['state_data_types_alerts_state'] = v[0]
-            elif kl == 'state-data-types-discovery-logs-state':
-                d['state_data_types_discovery_logs_state'] = v[0]
+            elif kl == 'state-properties-data-types-alerts-state':
+                d['undefined'] = v[0]
+            elif kl == 'state-properties-data-types-discovery-logs-state':
+                d['state'] = v[0]
             elif kl == 'etag':
                 d['etag'] = v[0]
+            else:
+                raise CLIError('Unsupported Key {} is provided for parameter mcas_data_connector. All possible keys '
+                               'are: tenant-id, state-properties-data-types-alerts-state, '
+                               'state-properties-data-types-discovery-logs-state, etag'.format(k))
         d['kind'] = 'MicrosoftCloudAppSecurity'
         return d
 
@@ -317,6 +349,9 @@ class AddMdatpDataConnector(argparse.Action):
                 d['state'] = v[0]
             elif kl == 'etag':
                 d['etag'] = v[0]
+            else:
+                raise CLIError('Unsupported Key {} is provided for parameter mdatp_data_connector. All possible keys '
+                               'are: tenant-id, state, etag'.format(k))
         d['kind'] = 'MicrosoftDefenderAdvancedThreatProtection'
         return d
 
@@ -334,25 +369,26 @@ class AddOfficeDataConnector(argparse.Action):
             properties = dict(properties)
         except ValueError:
             raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
-        d = {
-            'dataTypes': {
-                'sharePoint': {'state': 'Disabled'},
-                'exchange': {'state': 'Disabled'}
-            }
-        }
+        d = {}
         for k in properties:
             kl = k.lower()
             v = properties[k]
             if kl == 'tenant-id':
-                d['tenantId'] = v[0]
-            elif kl == 'sharepoint-enabled':
-                d['dataTypes']['sharePoint']['state'] = 'Enabled'
-            elif kl == 'exchange-enabled':
-                d['dataTypes']['exchange']['state'] = 'Enabled'
+                d['tenant_id'] = v[0]
+            elif kl == 'state-properties-data-types-teams-state':
+                d['state'] = v[0]
+            elif kl == 'state-properties-data-types-share-point-state':
+                d['state'] = v[0]
+            elif kl == 'state-properties-data-types-exchange-state':
+                d['state'] = v[0]
             elif kl == 'etag':
                 d['etag'] = v[0]
+            else:
+                raise CLIError('Unsupported Key {} is provided for parameter office_data_connector. All possible keys '
+                               'are: tenant-id, state-properties-data-types-teams-state, '
+                               'state-properties-data-types-share-point-state, state-properties-data-types-exchange-sta'
+                               'te, etag'.format(k))
         d['kind'] = 'Office365'
-        print(d)
         return d
 
 
@@ -375,10 +411,15 @@ class AddTiDataConnector(argparse.Action):
             v = properties[k]
             if kl == 'tenant-id':
                 d['tenant_id'] = v[0]
+            elif kl == 'tip-lookback-period':
+                d['tip_lookback_period'] = v[0]
             elif kl == 'state':
                 d['state'] = v[0]
             elif kl == 'etag':
                 d['etag'] = v[0]
+            else:
+                raise CLIError('Unsupported Key {} is provided for parameter ti_data_connector. All possible keys are: '
+                               'tenant-id, tip-lookback-period, state, etag'.format(k))
         d['kind'] = 'ThreatIntelligence'
         return d
 
@@ -402,6 +443,9 @@ class AddLabels(argparse._AppendAction):
             v = properties[k]
             if kl == 'label-name':
                 d['label_name'] = v[0]
+            else:
+                raise CLIError('Unsupported Key {} is provided for parameter labels. All possible keys are: label-name'
+                .format(k))
         return d
 
 
@@ -430,4 +474,7 @@ class AddOwner(argparse.Action):
                 d['object_id'] = v[0]
             elif kl == 'user-principal-name':
                 d['user_principal_name'] = v[0]
+            else:
+                raise CLIError('Unsupported Key {} is provided for parameter owner. All possible keys are: email, '
+                               'assigned-to, object-id, user-principal-name'.format(k))
         return d

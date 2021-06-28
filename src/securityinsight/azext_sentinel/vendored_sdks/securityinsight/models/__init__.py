@@ -7,10 +7,8 @@
 # --------------------------------------------------------------------------
 
 try:
-    from ._models_py3 import AADDataConnector
-    from ._models_py3 import AATPDataConnector
-    from ._models_py3 import ASCDataConnector
-    from ._models_py3 import ASCDataConnectorProperties
+    from ._models_py3 import AadDataConnector
+    from ._models_py3 import AatpDataConnector
     from ._models_py3 import ActionPropertiesBase
     from ._models_py3 import ActionRequest
     from ._models_py3 import ActionRequestProperties
@@ -23,7 +21,10 @@ try:
     from ._models_py3 import AlertRuleTemplatesList
     from ._models_py3 import AlertRulesList
     from ._models_py3 import AlertsDataTypeOfDataConnector
+    from ._models_py3 import AscDataConnector
+    from ._models_py3 import AscDataConnectorProperties
     from ._models_py3 import AwsCloudTrailDataConnector
+    from ._models_py3 import AwsCloudTrailDataConnectorDataTypes
     from ._models_py3 import AwsCloudTrailDataConnectorDataTypesLogs
     from ._models_py3 import Bookmark
     from ._models_py3 import BookmarkList
@@ -45,9 +46,9 @@ try:
     from ._models_py3 import IncidentLabel
     from ._models_py3 import IncidentList
     from ._models_py3 import IncidentOwnerInfo
-    from ._models_py3 import MCASDataConnector
-    from ._models_py3 import MCASDataConnectorDataTypes
-    from ._models_py3 import MDATPDataConnector
+    from ._models_py3 import McasDataConnector
+    from ._models_py3 import McasDataConnectorDataTypes
+    from ._models_py3 import MdatpDataConnector
     from ._models_py3 import MicrosoftSecurityIncidentCreationAlertRule
     from ._models_py3 import MicrosoftSecurityIncidentCreationAlertRuleCommonProperties
     from ._models_py3 import MicrosoftSecurityIncidentCreationAlertRuleProperties
@@ -55,8 +56,10 @@ try:
     from ._models_py3 import OfficeConsent
     from ._models_py3 import OfficeConsentList
     from ._models_py3 import OfficeDataConnector
+    from ._models_py3 import OfficeDataConnectorDataTypes
     from ._models_py3 import OfficeDataConnectorDataTypesExchange
     from ._models_py3 import OfficeDataConnectorDataTypesSharePoint
+    from ._models_py3 import OfficeDataConnectorDataTypesTeams
     from ._models_py3 import Operation
     from ._models_py3 import OperationDisplay
     from ._models_py3 import OperationsList
@@ -67,16 +70,16 @@ try:
     from ._models_py3 import ScheduledAlertRuleProperties
     from ._models_py3 import ScheduledAlertRuleTemplate
     from ._models_py3 import Settings
-    from ._models_py3 import TIDataConnector
-    from ._models_py3 import TIDataConnectorDataTypesIndicators
     from ._models_py3 import ThreatIntelligence
+    from ._models_py3 import TiDataConnector
+    from ._models_py3 import TiDataConnectorDataTypes
+    from ._models_py3 import TiDataConnectorDataTypesIndicators
     from ._models_py3 import ToggleSettings
     from ._models_py3 import UebaSettings
+    from ._models_py3 import UserInfo
 except (SyntaxError, ImportError):
-    from ._models import AADDataConnector  # type: ignore
-    from ._models import AATPDataConnector  # type: ignore
-    from ._models import ASCDataConnector  # type: ignore
-    from ._models import ASCDataConnectorProperties  # type: ignore
+    from ._models import AadDataConnector  # type: ignore
+    from ._models import AatpDataConnector  # type: ignore
     from ._models import ActionPropertiesBase  # type: ignore
     from ._models import ActionRequest  # type: ignore
     from ._models import ActionRequestProperties  # type: ignore
@@ -89,7 +92,10 @@ except (SyntaxError, ImportError):
     from ._models import AlertRuleTemplatesList  # type: ignore
     from ._models import AlertRulesList  # type: ignore
     from ._models import AlertsDataTypeOfDataConnector  # type: ignore
+    from ._models import AscDataConnector  # type: ignore
+    from ._models import AscDataConnectorProperties  # type: ignore
     from ._models import AwsCloudTrailDataConnector  # type: ignore
+    from ._models import AwsCloudTrailDataConnectorDataTypes  # type: ignore
     from ._models import AwsCloudTrailDataConnectorDataTypesLogs  # type: ignore
     from ._models import Bookmark  # type: ignore
     from ._models import BookmarkList  # type: ignore
@@ -111,9 +117,9 @@ except (SyntaxError, ImportError):
     from ._models import IncidentLabel  # type: ignore
     from ._models import IncidentList  # type: ignore
     from ._models import IncidentOwnerInfo  # type: ignore
-    from ._models import MCASDataConnector  # type: ignore
-    from ._models import MCASDataConnectorDataTypes  # type: ignore
-    from ._models import MDATPDataConnector  # type: ignore
+    from ._models import McasDataConnector  # type: ignore
+    from ._models import McasDataConnectorDataTypes  # type: ignore
+    from ._models import MdatpDataConnector  # type: ignore
     from ._models import MicrosoftSecurityIncidentCreationAlertRule  # type: ignore
     from ._models import MicrosoftSecurityIncidentCreationAlertRuleCommonProperties  # type: ignore
     from ._models import MicrosoftSecurityIncidentCreationAlertRuleProperties  # type: ignore
@@ -121,8 +127,10 @@ except (SyntaxError, ImportError):
     from ._models import OfficeConsent  # type: ignore
     from ._models import OfficeConsentList  # type: ignore
     from ._models import OfficeDataConnector  # type: ignore
+    from ._models import OfficeDataConnectorDataTypes  # type: ignore
     from ._models import OfficeDataConnectorDataTypesExchange  # type: ignore
     from ._models import OfficeDataConnectorDataTypesSharePoint  # type: ignore
+    from ._models import OfficeDataConnectorDataTypesTeams  # type: ignore
     from ._models import Operation  # type: ignore
     from ._models import OperationDisplay  # type: ignore
     from ._models import OperationsList  # type: ignore
@@ -133,11 +141,13 @@ except (SyntaxError, ImportError):
     from ._models import ScheduledAlertRuleProperties  # type: ignore
     from ._models import ScheduledAlertRuleTemplate  # type: ignore
     from ._models import Settings  # type: ignore
-    from ._models import TIDataConnector  # type: ignore
-    from ._models import TIDataConnectorDataTypesIndicators  # type: ignore
     from ._models import ThreatIntelligence  # type: ignore
+    from ._models import TiDataConnector  # type: ignore
+    from ._models import TiDataConnectorDataTypes  # type: ignore
+    from ._models import TiDataConnectorDataTypesIndicators  # type: ignore
     from ._models import ToggleSettings  # type: ignore
     from ._models import UebaSettings  # type: ignore
+    from ._models import UserInfo  # type: ignore
 
 from ._security_insights_enums import (
     AlertRuleKind,
@@ -154,16 +164,14 @@ from ._security_insights_enums import (
     LicenseStatus,
     MicrosoftSecurityProductName,
     SettingKind,
-    StatusInMCAS,
+    StatusInMcas,
     TemplateStatus,
     TriggerOperator,
 )
 
 __all__ = [
-    'AADDataConnector',
-    'AATPDataConnector',
-    'ASCDataConnector',
-    'ASCDataConnectorProperties',
+    'AadDataConnector',
+    'AatpDataConnector',
     'ActionPropertiesBase',
     'ActionRequest',
     'ActionRequestProperties',
@@ -176,7 +184,10 @@ __all__ = [
     'AlertRuleTemplatesList',
     'AlertRulesList',
     'AlertsDataTypeOfDataConnector',
+    'AscDataConnector',
+    'AscDataConnectorProperties',
     'AwsCloudTrailDataConnector',
+    'AwsCloudTrailDataConnectorDataTypes',
     'AwsCloudTrailDataConnectorDataTypesLogs',
     'Bookmark',
     'BookmarkList',
@@ -198,9 +209,9 @@ __all__ = [
     'IncidentLabel',
     'IncidentList',
     'IncidentOwnerInfo',
-    'MCASDataConnector',
-    'MCASDataConnectorDataTypes',
-    'MDATPDataConnector',
+    'McasDataConnector',
+    'McasDataConnectorDataTypes',
+    'MdatpDataConnector',
     'MicrosoftSecurityIncidentCreationAlertRule',
     'MicrosoftSecurityIncidentCreationAlertRuleCommonProperties',
     'MicrosoftSecurityIncidentCreationAlertRuleProperties',
@@ -208,8 +219,10 @@ __all__ = [
     'OfficeConsent',
     'OfficeConsentList',
     'OfficeDataConnector',
+    'OfficeDataConnectorDataTypes',
     'OfficeDataConnectorDataTypesExchange',
     'OfficeDataConnectorDataTypesSharePoint',
+    'OfficeDataConnectorDataTypesTeams',
     'Operation',
     'OperationDisplay',
     'OperationsList',
@@ -220,11 +233,13 @@ __all__ = [
     'ScheduledAlertRuleProperties',
     'ScheduledAlertRuleTemplate',
     'Settings',
-    'TIDataConnector',
-    'TIDataConnectorDataTypesIndicators',
     'ThreatIntelligence',
+    'TiDataConnector',
+    'TiDataConnectorDataTypes',
+    'TiDataConnectorDataTypesIndicators',
     'ToggleSettings',
     'UebaSettings',
+    'UserInfo',
     'AlertRuleKind',
     'AlertSeverity',
     'AttackTactic',
@@ -239,7 +254,7 @@ __all__ = [
     'LicenseStatus',
     'MicrosoftSecurityProductName',
     'SettingKind',
-    'StatusInMCAS',
+    'StatusInMcas',
     'TemplateStatus',
     'TriggerOperator',
 ]

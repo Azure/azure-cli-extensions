@@ -6,22 +6,22 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from ._operation_operations import OperationOperations
-from ._alert_rule_operations import AlertRuleOperations
-from ._action_operations import ActionOperations
-from ._alert_rule_template_operations import AlertRuleTemplateOperations
-from ._bookmark_operations import BookmarkOperations
-from ._data_connector_operations import DataConnectorOperations
-from ._incident_operations import IncidentOperations
-from ._incident_comment_operations import IncidentCommentOperations
+from ._operations import Operations
+from ._alert_rules_operations import AlertRulesOperations
+from ._actions_operations import ActionsOperations
+from ._alert_rule_templates_operations import AlertRuleTemplatesOperations
+from ._bookmarks_operations import BookmarksOperations
+from ._data_connectors_operations import DataConnectorsOperations
+from ._incidents_operations import IncidentsOperations
+from ._incident_comments_operations import IncidentCommentsOperations
 
 __all__ = [
-    'OperationOperations',
-    'AlertRuleOperations',
-    'ActionOperations',
-    'AlertRuleTemplateOperations',
-    'BookmarkOperations',
-    'DataConnectorOperations',
-    'IncidentOperations',
-    'IncidentCommentOperations',
+    'Operations',
+    'AlertRulesOperations',
+    'ActionsOperations',
+    'AlertRuleTemplatesOperations',
+    'BookmarksOperations',
+    'DataConnectorsOperations',
+    'IncidentsOperations',
+    'IncidentCommentsOperations',
 ]

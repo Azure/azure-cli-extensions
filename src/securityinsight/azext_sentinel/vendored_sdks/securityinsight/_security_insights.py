@@ -18,36 +18,36 @@ if TYPE_CHECKING:
     from azure.core.credentials import TokenCredential
 
 from ._configuration import SecurityInsightsConfiguration
-from .operations import OperationOperations
-from .operations import AlertRuleOperations
-from .operations import ActionOperations
-from .operations import AlertRuleTemplateOperations
-from .operations import BookmarkOperations
-from .operations import DataConnectorOperations
-from .operations import IncidentOperations
-from .operations import IncidentCommentOperations
+from .operations import Operations
+from .operations import AlertRulesOperations
+from .operations import ActionsOperations
+from .operations import AlertRuleTemplatesOperations
+from .operations import BookmarksOperations
+from .operations import DataConnectorsOperations
+from .operations import IncidentsOperations
+from .operations import IncidentCommentsOperations
 from . import models
 
 
 class SecurityInsights(object):
     """API spec for Microsoft.SecurityInsights (Azure Security Insights) resource provider.
 
-    :ivar operation: OperationOperations operations
-    :vartype operation: security_insights.operations.OperationOperations
-    :ivar alert_rule: AlertRuleOperations operations
-    :vartype alert_rule: security_insights.operations.AlertRuleOperations
-    :ivar action: ActionOperations operations
-    :vartype action: security_insights.operations.ActionOperations
-    :ivar alert_rule_template: AlertRuleTemplateOperations operations
-    :vartype alert_rule_template: security_insights.operations.AlertRuleTemplateOperations
-    :ivar bookmark: BookmarkOperations operations
-    :vartype bookmark: security_insights.operations.BookmarkOperations
-    :ivar data_connector: DataConnectorOperations operations
-    :vartype data_connector: security_insights.operations.DataConnectorOperations
-    :ivar incident: IncidentOperations operations
-    :vartype incident: security_insights.operations.IncidentOperations
-    :ivar incident_comment: IncidentCommentOperations operations
-    :vartype incident_comment: security_insights.operations.IncidentCommentOperations
+    :ivar operations: Operations operations
+    :vartype operations: security_insights.operations.Operations
+    :ivar alert_rules: AlertRulesOperations operations
+    :vartype alert_rules: security_insights.operations.AlertRulesOperations
+    :ivar actions: ActionsOperations operations
+    :vartype actions: security_insights.operations.ActionsOperations
+    :ivar alert_rule_templates: AlertRuleTemplatesOperations operations
+    :vartype alert_rule_templates: security_insights.operations.AlertRuleTemplatesOperations
+    :ivar bookmarks: BookmarksOperations operations
+    :vartype bookmarks: security_insights.operations.BookmarksOperations
+    :ivar data_connectors: DataConnectorsOperations operations
+    :vartype data_connectors: security_insights.operations.DataConnectorsOperations
+    :ivar incidents: IncidentsOperations operations
+    :vartype incidents: security_insights.operations.IncidentsOperations
+    :ivar incident_comments: IncidentCommentsOperations operations
+    :vartype incident_comments: security_insights.operations.IncidentCommentsOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials.TokenCredential
     :param subscription_id: Azure subscription ID.
@@ -72,21 +72,21 @@ class SecurityInsights(object):
         self._serialize = Serializer(client_models)
         self._deserialize = Deserializer(client_models)
 
-        self.operation = OperationOperations(
+        self.operations = Operations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.alert_rule = AlertRuleOperations(
+        self.alert_rules = AlertRulesOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.action = ActionOperations(
+        self.actions = ActionsOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.alert_rule_template = AlertRuleTemplateOperations(
+        self.alert_rule_templates = AlertRuleTemplatesOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.bookmark = BookmarkOperations(
+        self.bookmarks = BookmarksOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.data_connector = DataConnectorOperations(
+        self.data_connectors = DataConnectorsOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.incident = IncidentOperations(
+        self.incidents = IncidentsOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.incident_comment = IncidentCommentOperations(
+        self.incident_comments = IncidentCommentsOperations(
             self._client, self._config, self._serialize, self._deserialize)
 
     def close(self):

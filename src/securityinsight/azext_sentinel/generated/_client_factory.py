@@ -11,34 +11,34 @@
 
 def cf_sentinel_cl(cli_ctx, *_):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
-    from ..vendored_sdks.securityinsight import SecurityInsights
+    from azext_sentinel.vendored_sdks.securityinsight import SecurityInsights
     return get_mgmt_service_client(cli_ctx,
                                    SecurityInsights)
 
 
 def cf_alert_rule(cli_ctx, *_):
-    return cf_sentinel_cl(cli_ctx).alert_rule
+    return cf_sentinel_cl(cli_ctx).alert_rules
 
 
 def cf_action(cli_ctx, *_):
-    return cf_sentinel_cl(cli_ctx).action
+    return cf_sentinel_cl(cli_ctx).actions
 
 
 def cf_alert_rule_template(cli_ctx, *_):
-    return cf_sentinel_cl(cli_ctx).alert_rule_template
+    return cf_sentinel_cl(cli_ctx).alert_rule_templates
 
 
 def cf_bookmark(cli_ctx, *_):
-    return cf_sentinel_cl(cli_ctx).bookmark
+    return cf_sentinel_cl(cli_ctx).bookmarks
 
 
 def cf_data_connector(cli_ctx, *_):
-    return cf_sentinel_cl(cli_ctx).data_connector
+    return cf_sentinel_cl(cli_ctx).data_connectors
 
 
 def cf_incident(cli_ctx, *_):
-    return cf_sentinel_cl(cli_ctx).incident
+    return cf_sentinel_cl(cli_ctx).incidents
 
 
 def cf_incident_comment(cli_ctx, *_):
-    return cf_sentinel_cl(cli_ctx).incident_comment
+    return cf_sentinel_cl(cli_ctx).incident_comments

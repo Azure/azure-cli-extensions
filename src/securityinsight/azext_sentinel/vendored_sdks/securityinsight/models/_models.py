@@ -52,7 +52,7 @@ class DataConnector(ResourceWithEtag):
     """Data connector.
 
     You probably want to use the sub-classes and not this class directly. Known
-    sub-classes are: AwsCloudTrailDataConnector, AADDataConnector, AATPDataConnector, ASCDataConnector, MCASDataConnector, MDATPDataConnector, OfficeDataConnector, TIDataConnector.
+    sub-classes are: AwsCloudTrailDataConnector, AadDataConnector, AatpDataConnector, AscDataConnector, McasDataConnector, MdatpDataConnector, OfficeDataConnector, TiDataConnector.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
@@ -89,7 +89,7 @@ class DataConnector(ResourceWithEtag):
     }
 
     _subtype_map = {
-        'kind': {'AmazonWebServicesCloudTrail': 'AwsCloudTrailDataConnector', 'AzureActiveDirectory': 'AADDataConnector', 'AzureAdvancedThreatProtection': 'AATPDataConnector', 'AzureSecurityCenter': 'ASCDataConnector', 'MicrosoftCloudAppSecurity': 'MCASDataConnector', 'MicrosoftDefenderAdvancedThreatProtection': 'MDATPDataConnector', 'Office365': 'OfficeDataConnector', 'ThreatIntelligence': 'TIDataConnector'}
+        'kind': {'AmazonWebServicesCloudTrail': 'AwsCloudTrailDataConnector', 'AzureActiveDirectory': 'AadDataConnector', 'AzureAdvancedThreatProtection': 'AatpDataConnector', 'AzureSecurityCenter': 'AscDataConnector', 'MicrosoftCloudAppSecurity': 'McasDataConnector', 'MicrosoftDefenderAdvancedThreatProtection': 'MdatpDataConnector', 'Office365': 'OfficeDataConnector', 'ThreatIntelligence': 'TiDataConnector'}
     }
 
     def __init__(
@@ -100,7 +100,7 @@ class DataConnector(ResourceWithEtag):
         self.kind = 'DataConnector'  # type: str
 
 
-class AADDataConnector(DataConnector):
+class AadDataConnector(DataConnector):
     """Represents AAD (Azure Active Directory) data connector.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -122,9 +122,8 @@ class AADDataConnector(DataConnector):
     :type kind: str or ~security_insights.models.DataConnectorKind
     :param tenant_id: The tenant id to connect to, and get the data from.
     :type tenant_id: str
-    :param state: Describe whether this data type connection is enabled or not. Possible values
-     include: "Enabled", "Disabled".
-    :type state: str or ~security_insights.models.DataTypeState
+    :param data_types: The available data types for the connector.
+    :type data_types: ~security_insights.models.AlertsDataTypeOfDataConnector
     """
 
     _validation = {
@@ -141,20 +140,20 @@ class AADDataConnector(DataConnector):
         'etag': {'key': 'etag', 'type': 'str'},
         'kind': {'key': 'kind', 'type': 'str'},
         'tenant_id': {'key': 'properties.tenantId', 'type': 'str'},
-        'state': {'key': 'dataTypes.alerts.state', 'type': 'str'},
+        'data_types': {'key': 'properties.dataTypes', 'type': 'AlertsDataTypeOfDataConnector'},
     }
 
     def __init__(
         self,
         **kwargs
     ):
-        super(AADDataConnector, self).__init__(**kwargs)
+        super(AadDataConnector, self).__init__(**kwargs)
         self.kind = 'AzureActiveDirectory'  # type: str
         self.tenant_id = kwargs.get('tenant_id', None)
-        self.state = kwargs.get('state', None)
+        self.data_types = kwargs.get('data_types', None)
 
 
-class AATPDataConnector(DataConnector):
+class AatpDataConnector(DataConnector):
     """Represents AATP (Azure Advanced Threat Protection) data connector.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -176,9 +175,8 @@ class AATPDataConnector(DataConnector):
     :type kind: str or ~security_insights.models.DataConnectorKind
     :param tenant_id: The tenant id to connect to, and get the data from.
     :type tenant_id: str
-    :param state: Describe whether this data type connection is enabled or not. Possible values
-     include: "Enabled", "Disabled".
-    :type state: str or ~security_insights.models.DataTypeState
+    :param data_types: The available data types for the connector.
+    :type data_types: ~security_insights.models.AlertsDataTypeOfDataConnector
     """
 
     _validation = {
@@ -195,17 +193,17 @@ class AATPDataConnector(DataConnector):
         'etag': {'key': 'etag', 'type': 'str'},
         'kind': {'key': 'kind', 'type': 'str'},
         'tenant_id': {'key': 'properties.tenantId', 'type': 'str'},
-        'state': {'key': 'dataTypes.alerts.state', 'type': 'str'},
+        'data_types': {'key': 'properties.dataTypes', 'type': 'AlertsDataTypeOfDataConnector'},
     }
 
     def __init__(
         self,
         **kwargs
     ):
-        super(AATPDataConnector, self).__init__(**kwargs)
+        super(AatpDataConnector, self).__init__(**kwargs)
         self.kind = 'AzureAdvancedThreatProtection'  # type: str
         self.tenant_id = kwargs.get('tenant_id', None)
-        self.state = kwargs.get('state', None)
+        self.data_types = kwargs.get('data_types', None)
 
 
 class ActionPropertiesBase(msrest.serialization.Model):
@@ -289,12 +287,13 @@ class ActionRequestProperties(ActionPropertiesBase):
      subscription}/resourceGroups/{my-resource-group}/providers/Microsoft.Logic/workflows/{my-
      workflow-id}.
     :type logic_app_resource_id: str
-    :param trigger_uri: Logic App Callback URL for this specific workflow.
+    :param trigger_uri: Required. Logic App Callback URL for this specific workflow.
     :type trigger_uri: str
     """
 
     _validation = {
         'logic_app_resource_id': {'required': True},
+        'trigger_uri': {'required': True},
     }
 
     _attribute_map = {
@@ -307,7 +306,7 @@ class ActionRequestProperties(ActionPropertiesBase):
         **kwargs
     ):
         super(ActionRequestProperties, self).__init__(**kwargs)
-        self.trigger_uri = kwargs.get('trigger_uri', None)
+        self.trigger_uri = kwargs['trigger_uri']
 
 
 class Resource(msrest.serialization.Model):
@@ -640,13 +639,12 @@ class AlertRuleTemplatesList(msrest.serialization.Model):
 class AlertsDataTypeOfDataConnector(msrest.serialization.Model):
     """Alerts data type for data connectors.
 
-    :param state: Describe whether this data type connection is enabled or not. Possible values
-     include: "Enabled", "Disabled".
-    :type state: str or ~security_insights.models.DataTypeState
+    :param alerts: Alerts data type connection.
+    :type alerts: ~security_insights.models.DataConnectorDataTypeCommon
     """
 
     _attribute_map = {
-        'state': {'key': 'alerts.state', 'type': 'str'},
+        'alerts': {'key': 'alerts', 'type': 'DataConnectorDataTypeCommon'},
     }
 
     def __init__(
@@ -654,10 +652,10 @@ class AlertsDataTypeOfDataConnector(msrest.serialization.Model):
         **kwargs
     ):
         super(AlertsDataTypeOfDataConnector, self).__init__(**kwargs)
-        self.state = kwargs.get('state', None)
+        self.alerts = kwargs.get('alerts', None)
 
 
-class ASCDataConnector(DataConnector):
+class AscDataConnector(DataConnector):
     """Represents ASC (Azure Security Center) data connector.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -677,11 +675,10 @@ class ASCDataConnector(DataConnector):
      "ThreatIntelligence", "Office365", "AmazonWebServicesCloudTrail",
      "AzureAdvancedThreatProtection", "MicrosoftDefenderAdvancedThreatProtection".
     :type kind: str or ~security_insights.models.DataConnectorKind
+    :param data_types: The available data types for the connector.
+    :type data_types: ~security_insights.models.AlertsDataTypeOfDataConnector
     :param subscription_id: The subscription id to connect to, and get the data from.
     :type subscription_id: str
-    :param state: Describe whether this data type connection is enabled or not. Possible values
-     include: "Enabled", "Disabled".
-    :type state: str or ~security_insights.models.DataTypeState
     """
 
     _validation = {
@@ -697,18 +694,18 @@ class ASCDataConnector(DataConnector):
         'type': {'key': 'type', 'type': 'str'},
         'etag': {'key': 'etag', 'type': 'str'},
         'kind': {'key': 'kind', 'type': 'str'},
+        'data_types': {'key': 'properties.dataTypes', 'type': 'AlertsDataTypeOfDataConnector'},
         'subscription_id': {'key': 'properties.subscriptionId', 'type': 'str'},
-        'state': {'key': 'dataTypes.alerts.state', 'type': 'str'},
     }
 
     def __init__(
         self,
         **kwargs
     ):
-        super(ASCDataConnector, self).__init__(**kwargs)
+        super(AscDataConnector, self).__init__(**kwargs)
         self.kind = 'AzureSecurityCenter'  # type: str
+        self.data_types = kwargs.get('data_types', None)
         self.subscription_id = kwargs.get('subscription_id', None)
-        self.state = kwargs.get('state', None)
 
 
 class DataConnectorWithAlertsProperties(msrest.serialization.Model):
@@ -730,7 +727,7 @@ class DataConnectorWithAlertsProperties(msrest.serialization.Model):
         self.data_types = kwargs.get('data_types', None)
 
 
-class ASCDataConnectorProperties(DataConnectorWithAlertsProperties):
+class AscDataConnectorProperties(DataConnectorWithAlertsProperties):
     """ASC (Azure Security Center) data connector properties.
 
     :param data_types: The available data types for the connector.
@@ -748,7 +745,7 @@ class ASCDataConnectorProperties(DataConnectorWithAlertsProperties):
         self,
         **kwargs
     ):
-        super(ASCDataConnectorProperties, self).__init__(**kwargs)
+        super(AscDataConnectorProperties, self).__init__(**kwargs)
         self.subscription_id = kwargs.get('subscription_id', None)
 
 
@@ -775,9 +772,8 @@ class AwsCloudTrailDataConnector(DataConnector):
     :param aws_role_arn: The Aws Role Arn (with CloudTrailReadOnly policy) that is used to access
      the Aws account.
     :type aws_role_arn: str
-    :param state: Describe whether this data type connection is enabled or not. Possible values
-     include: "Enabled", "Disabled".
-    :type state: str or ~security_insights.models.DataTypeState
+    :param data_types: The available data types for the connector.
+    :type data_types: ~security_insights.models.AwsCloudTrailDataConnectorDataTypes
     """
 
     _validation = {
@@ -794,7 +790,7 @@ class AwsCloudTrailDataConnector(DataConnector):
         'etag': {'key': 'etag', 'type': 'str'},
         'kind': {'key': 'kind', 'type': 'str'},
         'aws_role_arn': {'key': 'properties.awsRoleArn', 'type': 'str'},
-        'state': {'key': 'dataTypes.logs.state', 'type': 'str'},
+        'data_types': {'key': 'properties.dataTypes', 'type': 'AwsCloudTrailDataConnectorDataTypes'},
     }
 
     def __init__(
@@ -804,7 +800,26 @@ class AwsCloudTrailDataConnector(DataConnector):
         super(AwsCloudTrailDataConnector, self).__init__(**kwargs)
         self.kind = 'AmazonWebServicesCloudTrail'  # type: str
         self.aws_role_arn = kwargs.get('aws_role_arn', None)
-        self.state = kwargs.get('state', None)
+        self.data_types = kwargs.get('data_types', None)
+
+
+class AwsCloudTrailDataConnectorDataTypes(msrest.serialization.Model):
+    """The available data types for Amazon Web Services CloudTrail data connector.
+
+    :param logs: Logs data type.
+    :type logs: ~security_insights.models.DataConnectorDataTypeCommon
+    """
+
+    _attribute_map = {
+        'logs': {'key': 'logs', 'type': 'DataConnectorDataTypeCommon'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(AwsCloudTrailDataConnectorDataTypes, self).__init__(**kwargs)
+        self.logs = kwargs.get('logs', None)
 
 
 class DataConnectorDataTypeCommon(msrest.serialization.Model):
@@ -861,6 +876,8 @@ class Bookmark(ResourceWithEtag):
     :type etag: str
     :param created: The time the bookmark was created.
     :type created: ~datetime.datetime
+    :param created_by: Describes a user that created the bookmark.
+    :type created_by: ~security_insights.models.UserInfo
     :param display_name: The display name of the bookmark.
     :type display_name: str
     :param labels: List of labels relevant to this bookmark.
@@ -873,30 +890,22 @@ class Bookmark(ResourceWithEtag):
     :type query_result: str
     :param updated: The last time the bookmark was updated.
     :type updated: ~datetime.datetime
+    :param updated_by: Describes a user that updated the bookmark.
+    :type updated_by: ~security_insights.models.UserInfo
+    :param event_time: The bookmark event time.
+    :type event_time: ~datetime.datetime
+    :param query_start_time: The start time for the query.
+    :type query_start_time: ~datetime.datetime
+    :param query_end_time: The end time for the query.
+    :type query_end_time: ~datetime.datetime
     :param incident_info: Describes an incident that relates to bookmark.
     :type incident_info: ~security_insights.models.IncidentInfo
-    :ivar email_updated_by_email: The email of the user.
-    :vartype email_updated_by_email: str
-    :ivar name_updated_by_name: The name of the user.
-    :vartype name_updated_by_name: str
-    :param object_id_updated_by_object_id: The object id of the user.
-    :type object_id_updated_by_object_id: str
-    :ivar email_created_by_email: The email of the user.
-    :vartype email_created_by_email: str
-    :ivar name_created_by_name: The name of the user.
-    :vartype name_created_by_name: str
-    :param object_id_created_by_object_id: The object id of the user.
-    :type object_id_created_by_object_id: str
     """
 
     _validation = {
         'id': {'readonly': True},
         'name': {'readonly': True},
         'type': {'readonly': True},
-        'email_updated_by_email': {'readonly': True},
-        'name_updated_by_name': {'readonly': True},
-        'email_created_by_email': {'readonly': True},
-        'name_created_by_name': {'readonly': True},
     }
 
     _attribute_map = {
@@ -905,19 +914,18 @@ class Bookmark(ResourceWithEtag):
         'type': {'key': 'type', 'type': 'str'},
         'etag': {'key': 'etag', 'type': 'str'},
         'created': {'key': 'properties.created', 'type': 'iso-8601'},
+        'created_by': {'key': 'properties.createdBy', 'type': 'UserInfo'},
         'display_name': {'key': 'properties.displayName', 'type': 'str'},
         'labels': {'key': 'properties.labels', 'type': '[str]'},
         'notes': {'key': 'properties.notes', 'type': 'str'},
         'query': {'key': 'properties.query', 'type': 'str'},
         'query_result': {'key': 'properties.queryResult', 'type': 'str'},
         'updated': {'key': 'properties.updated', 'type': 'iso-8601'},
+        'updated_by': {'key': 'properties.updatedBy', 'type': 'UserInfo'},
+        'event_time': {'key': 'properties.eventTime', 'type': 'iso-8601'},
+        'query_start_time': {'key': 'properties.queryStartTime', 'type': 'iso-8601'},
+        'query_end_time': {'key': 'properties.queryEndTime', 'type': 'iso-8601'},
         'incident_info': {'key': 'properties.incidentInfo', 'type': 'IncidentInfo'},
-        'email_updated_by_email': {'key': 'updatedBy.email', 'type': 'str'},
-        'name_updated_by_name': {'key': 'updatedBy.name', 'type': 'str'},
-        'object_id_updated_by_object_id': {'key': 'updatedBy.objectId', 'type': 'str'},
-        'email_created_by_email': {'key': 'createdBy.email', 'type': 'str'},
-        'name_created_by_name': {'key': 'createdBy.name', 'type': 'str'},
-        'object_id_created_by_object_id': {'key': 'createdBy.objectId', 'type': 'str'},
     }
 
     def __init__(
@@ -926,19 +934,18 @@ class Bookmark(ResourceWithEtag):
     ):
         super(Bookmark, self).__init__(**kwargs)
         self.created = kwargs.get('created', None)
+        self.created_by = kwargs.get('created_by', None)
         self.display_name = kwargs.get('display_name', None)
         self.labels = kwargs.get('labels', None)
         self.notes = kwargs.get('notes', None)
         self.query = kwargs.get('query', None)
         self.query_result = kwargs.get('query_result', None)
         self.updated = kwargs.get('updated', None)
+        self.updated_by = kwargs.get('updated_by', None)
+        self.event_time = kwargs.get('event_time', None)
+        self.query_start_time = kwargs.get('query_start_time', None)
+        self.query_end_time = kwargs.get('query_end_time', None)
         self.incident_info = kwargs.get('incident_info', None)
-        self.email_updated_by_email = None
-        self.name_updated_by_name = None
-        self.object_id_updated_by_object_id = kwargs.get('object_id_updated_by_object_id', None)
-        self.email_created_by_email = None
-        self.name_created_by_name = None
-        self.object_id_created_by_object_id = kwargs.get('object_id_created_by_object_id', None)
 
 
 class BookmarkList(msrest.serialization.Model):
@@ -1086,7 +1093,7 @@ class ErrorAdditionalInfo(msrest.serialization.Model):
 
 
 class ErrorResponse(msrest.serialization.Model):
-    """The resource management error response.
+    """Common error response for all Azure Resource Manager APIs to return error details for failed operations. (This also follows the OData error response format.).
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
@@ -1523,25 +1530,16 @@ class IncidentCommentList(msrest.serialization.Model):
 class IncidentInfo(msrest.serialization.Model):
     """Describes related incident information for the bookmark.
 
-    All required parameters must be populated in order to send to Azure.
-
-    :param incident_id: Required. Incident Id.
+    :param incident_id: Incident Id.
     :type incident_id: str
-    :param severity: Required. The severity of the incident. Possible values include: "Critical",
-     "High", "Medium", "Low", "Informational".
+    :param severity: The severity of the incident. Possible values include: "Critical", "High",
+     "Medium", "Low", "Informational".
     :type severity: str or ~security_insights.models.CaseSeverity
-    :param title: Required. The title of the incident.
+    :param title: The title of the incident.
     :type title: str
-    :param relation_name: Required. Relation Name.
+    :param relation_name: Relation Name.
     :type relation_name: str
     """
-
-    _validation = {
-        'incident_id': {'required': True},
-        'severity': {'required': True},
-        'title': {'required': True},
-        'relation_name': {'required': True},
-    }
 
     _attribute_map = {
         'incident_id': {'key': 'incidentId', 'type': 'str'},
@@ -1555,10 +1553,10 @@ class IncidentInfo(msrest.serialization.Model):
         **kwargs
     ):
         super(IncidentInfo, self).__init__(**kwargs)
-        self.incident_id = kwargs['incident_id']
-        self.severity = kwargs['severity']
-        self.title = kwargs['title']
-        self.relation_name = kwargs['relation_name']
+        self.incident_id = kwargs.get('incident_id', None)
+        self.severity = kwargs.get('severity', None)
+        self.title = kwargs.get('title', None)
+        self.relation_name = kwargs.get('relation_name', None)
 
 
 class IncidentLabel(msrest.serialization.Model):
@@ -1656,7 +1654,7 @@ class IncidentOwnerInfo(msrest.serialization.Model):
         self.user_principal_name = kwargs.get('user_principal_name', None)
 
 
-class MCASDataConnector(DataConnector):
+class McasDataConnector(DataConnector):
     """Represents MCAS (Microsoft Cloud App Security) data connector.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -1678,12 +1676,8 @@ class MCASDataConnector(DataConnector):
     :type kind: str or ~security_insights.models.DataConnectorKind
     :param tenant_id: The tenant id to connect to, and get the data from.
     :type tenant_id: str
-    :param state_data_types_alerts_state: Describe whether this data type connection is enabled or
-     not. Possible values include: "Enabled", "Disabled".
-    :type state_data_types_alerts_state: str or ~security_insights.models.DataTypeState
-    :param state_data_types_discovery_logs_state: Describe whether this data type connection is
-     enabled or not. Possible values include: "Enabled", "Disabled".
-    :type state_data_types_discovery_logs_state: str or ~security_insights.models.DataTypeState
+    :param data_types: The available data types for the connector.
+    :type data_types: ~security_insights.models.McasDataConnectorDataTypes
     """
 
     _validation = {
@@ -1700,46 +1694,42 @@ class MCASDataConnector(DataConnector):
         'etag': {'key': 'etag', 'type': 'str'},
         'kind': {'key': 'kind', 'type': 'str'},
         'tenant_id': {'key': 'properties.tenantId', 'type': 'str'},
-        'state_data_types_alerts_state': {'key': 'dataTypes.alerts.state', 'type': 'str'},
-        'state_data_types_discovery_logs_state': {'key': 'dataTypes.discoveryLogs.state', 'type': 'str'},
+        'data_types': {'key': 'properties.dataTypes', 'type': 'McasDataConnectorDataTypes'},
     }
 
     def __init__(
         self,
         **kwargs
     ):
-        super(MCASDataConnector, self).__init__(**kwargs)
+        super(McasDataConnector, self).__init__(**kwargs)
         self.kind = 'MicrosoftCloudAppSecurity'  # type: str
         self.tenant_id = kwargs.get('tenant_id', None)
-        self.state_data_types_alerts_state = kwargs.get('state_data_types_alerts_state', None)
-        self.state_data_types_discovery_logs_state = kwargs.get('state_data_types_discovery_logs_state', None)
+        self.data_types = kwargs.get('data_types', None)
 
 
-class MCASDataConnectorDataTypes(AlertsDataTypeOfDataConnector):
+class McasDataConnectorDataTypes(AlertsDataTypeOfDataConnector):
     """The available data types for MCAS (Microsoft Cloud App Security) data connector.
 
-    :param state: Describe whether this data type connection is enabled or not. Possible values
-     include: "Enabled", "Disabled".
-    :type state: str or ~security_insights.models.DataTypeState
-    :param state_discovery_logs_state: Describe whether this data type connection is enabled or
-     not. Possible values include: "Enabled", "Disabled".
-    :type state_discovery_logs_state: str or ~security_insights.models.DataTypeState
+    :param alerts: Alerts data type connection.
+    :type alerts: ~security_insights.models.DataConnectorDataTypeCommon
+    :param discovery_logs: Discovery log data type connection.
+    :type discovery_logs: ~security_insights.models.DataConnectorDataTypeCommon
     """
 
     _attribute_map = {
-        'state': {'key': 'alerts.state', 'type': 'str'},
-        'state_discovery_logs_state': {'key': 'discoveryLogs.state', 'type': 'str'},
+        'alerts': {'key': 'alerts', 'type': 'DataConnectorDataTypeCommon'},
+        'discovery_logs': {'key': 'discoveryLogs', 'type': 'DataConnectorDataTypeCommon'},
     }
 
     def __init__(
         self,
         **kwargs
     ):
-        super(MCASDataConnectorDataTypes, self).__init__(**kwargs)
-        self.state_discovery_logs_state = kwargs.get('state_discovery_logs_state', None)
+        super(McasDataConnectorDataTypes, self).__init__(**kwargs)
+        self.discovery_logs = kwargs.get('discovery_logs', None)
 
 
-class MDATPDataConnector(DataConnector):
+class MdatpDataConnector(DataConnector):
     """Represents MDATP (Microsoft Defender Advanced Threat Protection) data connector.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -1761,9 +1751,8 @@ class MDATPDataConnector(DataConnector):
     :type kind: str or ~security_insights.models.DataConnectorKind
     :param tenant_id: The tenant id to connect to, and get the data from.
     :type tenant_id: str
-    :param state: Describe whether this data type connection is enabled or not. Possible values
-     include: "Enabled", "Disabled".
-    :type state: str or ~security_insights.models.DataTypeState
+    :param data_types: The available data types for the connector.
+    :type data_types: ~security_insights.models.AlertsDataTypeOfDataConnector
     """
 
     _validation = {
@@ -1780,17 +1769,17 @@ class MDATPDataConnector(DataConnector):
         'etag': {'key': 'etag', 'type': 'str'},
         'kind': {'key': 'kind', 'type': 'str'},
         'tenant_id': {'key': 'properties.tenantId', 'type': 'str'},
-        'state': {'key': 'dataTypes.alerts.state', 'type': 'str'},
+        'data_types': {'key': 'properties.dataTypes', 'type': 'AlertsDataTypeOfDataConnector'},
     }
 
     def __init__(
         self,
         **kwargs
     ):
-        super(MDATPDataConnector, self).__init__(**kwargs)
+        super(MdatpDataConnector, self).__init__(**kwargs)
         self.kind = 'MicrosoftDefenderAdvancedThreatProtection'  # type: str
         self.tenant_id = kwargs.get('tenant_id', None)
-        self.state = kwargs.get('state', None)
+        self.data_types = kwargs.get('data_types', None)
 
 
 class MicrosoftSecurityIncidentCreationAlertRule(AlertRule):
@@ -2160,12 +2149,8 @@ class OfficeDataConnector(DataConnector):
     :type kind: str or ~security_insights.models.DataConnectorKind
     :param tenant_id: The tenant id to connect to, and get the data from.
     :type tenant_id: str
-    :param state_data_types_share_point_state: Describe whether this data type connection is
-     enabled or not. Possible values include: "Enabled", "Disabled".
-    :type state_data_types_share_point_state: str or ~security_insights.models.DataTypeState
-    :param state_data_types_exchange_state: Describe whether this data type connection is enabled
-     or not. Possible values include: "Enabled", "Disabled".
-    :type state_data_types_exchange_state: str or ~security_insights.models.DataTypeState
+    :param data_types: The available data types for the connector.
+    :type data_types: ~security_insights.models.OfficeDataConnectorDataTypes
     """
 
     _validation = {
@@ -2182,8 +2167,7 @@ class OfficeDataConnector(DataConnector):
         'etag': {'key': 'etag', 'type': 'str'},
         'kind': {'key': 'kind', 'type': 'str'},
         'tenant_id': {'key': 'properties.tenantId', 'type': 'str'},
-        'state_data_types_share_point_state': {'key': 'dataTypes.sharePoint.state', 'type': 'str'},
-        'state_data_types_exchange_state': {'key': 'dataTypes.exchange.state', 'type': 'str'},
+        'data_types': {'key': 'properties.dataTypes', 'type': 'OfficeDataConnectorDataTypes'},
     }
 
     def __init__(
@@ -2193,8 +2177,34 @@ class OfficeDataConnector(DataConnector):
         super(OfficeDataConnector, self).__init__(**kwargs)
         self.kind = 'Office365'  # type: str
         self.tenant_id = kwargs.get('tenant_id', None)
-        self.state_data_types_share_point_state = kwargs.get('state_data_types_share_point_state', None)
-        self.state_data_types_exchange_state = kwargs.get('state_data_types_exchange_state', None)
+        self.data_types = kwargs.get('data_types', None)
+
+
+class OfficeDataConnectorDataTypes(msrest.serialization.Model):
+    """The available data types for office data connector.
+
+    :param exchange: Exchange data type connection.
+    :type exchange: ~security_insights.models.DataConnectorDataTypeCommon
+    :param share_point: SharePoint data type connection.
+    :type share_point: ~security_insights.models.DataConnectorDataTypeCommon
+    :param teams: Teams data type connection.
+    :type teams: ~security_insights.models.DataConnectorDataTypeCommon
+    """
+
+    _attribute_map = {
+        'exchange': {'key': 'exchange', 'type': 'DataConnectorDataTypeCommon'},
+        'share_point': {'key': 'sharePoint', 'type': 'DataConnectorDataTypeCommon'},
+        'teams': {'key': 'teams', 'type': 'DataConnectorDataTypeCommon'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(OfficeDataConnectorDataTypes, self).__init__(**kwargs)
+        self.exchange = kwargs.get('exchange', None)
+        self.share_point = kwargs.get('share_point', None)
+        self.teams = kwargs.get('teams', None)
 
 
 class OfficeDataConnectorDataTypesExchange(DataConnectorDataTypeCommon):
@@ -2235,6 +2245,25 @@ class OfficeDataConnectorDataTypesSharePoint(DataConnectorDataTypeCommon):
         super(OfficeDataConnectorDataTypesSharePoint, self).__init__(**kwargs)
 
 
+class OfficeDataConnectorDataTypesTeams(DataConnectorDataTypeCommon):
+    """Teams data type connection.
+
+    :param state: Describe whether this data type connection is enabled or not. Possible values
+     include: "Enabled", "Disabled".
+    :type state: str or ~security_insights.models.DataTypeState
+    """
+
+    _attribute_map = {
+        'state': {'key': 'state', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(OfficeDataConnectorDataTypesTeams, self).__init__(**kwargs)
+
+
 class Operation(msrest.serialization.Model):
     """Operation provided by provider.
 
@@ -2242,11 +2271,14 @@ class Operation(msrest.serialization.Model):
     :type display: ~security_insights.models.OperationDisplay
     :param name: Name of the operation.
     :type name: str
+    :param origin: The origin of the operation.
+    :type origin: str
     """
 
     _attribute_map = {
         'display': {'key': 'display', 'type': 'OperationDisplay'},
         'name': {'key': 'name', 'type': 'str'},
+        'origin': {'key': 'origin', 'type': 'str'},
     }
 
     def __init__(
@@ -2256,6 +2288,7 @@ class Operation(msrest.serialization.Model):
         super(Operation, self).__init__(**kwargs)
         self.display = kwargs.get('display', None)
         self.name = kwargs.get('name', None)
+        self.origin = kwargs.get('origin', None)
 
 
 class OperationDisplay(msrest.serialization.Model):
@@ -2742,7 +2775,7 @@ class ThreatIntelligence(msrest.serialization.Model):
         self.threat_type = None
 
 
-class TIDataConnector(DataConnector):
+class TiDataConnector(DataConnector):
     """Represents threat intelligence data connector.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -2764,9 +2797,10 @@ class TIDataConnector(DataConnector):
     :type kind: str or ~security_insights.models.DataConnectorKind
     :param tenant_id: The tenant id to connect to, and get the data from.
     :type tenant_id: str
-    :param state: Describe whether this data type connection is enabled or not. Possible values
-     include: "Enabled", "Disabled".
-    :type state: str or ~security_insights.models.DataTypeState
+    :param tip_lookback_period: The lookback period for the feed to be imported.
+    :type tip_lookback_period: ~datetime.datetime
+    :param data_types: The available data types for the connector.
+    :type data_types: ~security_insights.models.TiDataConnectorDataTypes
     """
 
     _validation = {
@@ -2783,20 +2817,41 @@ class TIDataConnector(DataConnector):
         'etag': {'key': 'etag', 'type': 'str'},
         'kind': {'key': 'kind', 'type': 'str'},
         'tenant_id': {'key': 'properties.tenantId', 'type': 'str'},
-        'state': {'key': 'dataTypes.indicators.state', 'type': 'str'},
+        'tip_lookback_period': {'key': 'properties.tipLookbackPeriod', 'type': 'iso-8601'},
+        'data_types': {'key': 'properties.dataTypes', 'type': 'TiDataConnectorDataTypes'},
     }
 
     def __init__(
         self,
         **kwargs
     ):
-        super(TIDataConnector, self).__init__(**kwargs)
+        super(TiDataConnector, self).__init__(**kwargs)
         self.kind = 'ThreatIntelligence'  # type: str
         self.tenant_id = kwargs.get('tenant_id', None)
-        self.state = kwargs.get('state', None)
+        self.tip_lookback_period = kwargs.get('tip_lookback_period', None)
+        self.data_types = kwargs.get('data_types', None)
 
 
-class TIDataConnectorDataTypesIndicators(DataConnectorDataTypeCommon):
+class TiDataConnectorDataTypes(msrest.serialization.Model):
+    """The available data types for TI (Threat Intelligence) data connector.
+
+    :param indicators: Data type for indicators connection.
+    :type indicators: ~security_insights.models.DataConnectorDataTypeCommon
+    """
+
+    _attribute_map = {
+        'indicators': {'key': 'indicators', 'type': 'DataConnectorDataTypeCommon'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(TiDataConnectorDataTypes, self).__init__(**kwargs)
+        self.indicators = kwargs.get('indicators', None)
+
+
+class TiDataConnectorDataTypesIndicators(DataConnectorDataTypeCommon):
     """Data type for indicators connection.
 
     :param state: Describe whether this data type connection is enabled or not. Possible values
@@ -2812,7 +2867,7 @@ class TIDataConnectorDataTypesIndicators(DataConnectorDataTypeCommon):
         self,
         **kwargs
     ):
-        super(TIDataConnectorDataTypesIndicators, self).__init__(**kwargs)
+        super(TiDataConnectorDataTypesIndicators, self).__init__(**kwargs)
 
 
 class ToggleSettings(Settings):
@@ -2888,7 +2943,7 @@ class UebaSettings(Settings):
     :type is_enabled: bool
     :ivar status_in_mcas: Determines whether User and Entity Behavior Analytics is enabled from
      MCAS (Microsoft Cloud App Security). Possible values include: "Enabled", "Disabled".
-    :vartype status_in_mcas: str or ~security_insights.models.StatusInMCAS
+    :vartype status_in_mcas: str or ~security_insights.models.StatusInMcas
     """
 
     _validation = {
@@ -2920,3 +2975,40 @@ class UebaSettings(Settings):
         self.atp_license_status = None
         self.is_enabled = kwargs.get('is_enabled', None)
         self.status_in_mcas = None
+
+
+class UserInfo(msrest.serialization.Model):
+    """User information that made some action.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :ivar email: The email of the user.
+    :vartype email: str
+    :ivar name: The name of the user.
+    :vartype name: str
+    :param object_id: Required. The object id of the user.
+    :type object_id: str
+    """
+
+    _validation = {
+        'email': {'readonly': True},
+        'name': {'readonly': True},
+        'object_id': {'required': True},
+    }
+
+    _attribute_map = {
+        'email': {'key': 'email', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'object_id': {'key': 'objectId', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(UserInfo, self).__init__(**kwargs)
+        self.email = None
+        self.name = None
+        self.object_id = kwargs['object_id']

@@ -19,8 +19,8 @@ from ... import models
 T = TypeVar('T')
 ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
 
-class ActionOperations:
-    """ActionOperations async operations.
+class Operations:
+    """Operations async operations.
 
     You should not instantiate this class directly. Instead, you should create a Client instance that
     instantiates it for you and attaches it as an attribute.
@@ -41,28 +41,18 @@ class ActionOperations:
         self._deserialize = deserializer
         self._config = config
 
-    def list_by_alert_rule(
+    def list(
         self,
-        resource_group_name: str,
-        workspace_name: str,
-        rule_id: str,
         **kwargs
-    ) -> AsyncIterable["models.ActionsList"]:
-        """Gets all actions of alert rule.
+    ) -> AsyncIterable["models.OperationsList"]:
+        """Lists all operations available Azure Security Insights Resource Provider.
 
-        :param resource_group_name: The name of the resource group within the user's subscription. The
-         name is case insensitive.
-        :type resource_group_name: str
-        :param workspace_name: The name of the workspace.
-        :type workspace_name: str
-        :param rule_id: Alert rule ID.
-        :type rule_id: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either ActionsList or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~security_insights.models.ActionsList]
+        :return: An iterator like instance of either OperationsList or the result of cls(response)
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~security_insights.models.OperationsList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.ActionsList"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.OperationsList"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -77,14 +67,7 @@ class ActionOperations:
 
             if not next_link:
                 # Construct URL
-                url = self.list_by_alert_rule.metadata['url']  # type: ignore
-                path_format_arguments = {
-                    'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', pattern=r'^[0-9A-Fa-f]{8}-([0-9A-Fa-f]{4}-){3}[0-9A-Fa-f]{12}$'),
-                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
-                    'workspaceName': self._serialize.url("workspace_name", workspace_name, 'str', max_length=90, min_length=1),
-                    'ruleId': self._serialize.url("rule_id", rule_id, 'str'),
-                }
-                url = self._client.format_url(url, **path_format_arguments)
+                url = self.list.metadata['url']  # type: ignore
                 # Construct parameters
                 query_parameters = {}  # type: Dict[str, Any]
                 query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
@@ -97,7 +80,7 @@ class ActionOperations:
             return request
 
         async def extract_data(pipeline_response):
-            deserialized = self._deserialize('ActionsList', pipeline_response)
+            deserialized = self._deserialize('OperationsList', pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
@@ -118,4 +101,4 @@ class ActionOperations:
         return AsyncItemPaged(
             get_next, extract_data
         )
-    list_by_alert_rule.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.OperationalInsights/workspaces/{workspaceName}/providers/Microsoft.SecurityInsights/alertRules/{ruleId}/actions'}  # type: ignore
+    list.metadata = {'url': '/providers/Microsoft.SecurityInsights/operations'}  # type: ignore
