@@ -1,8 +1,13 @@
 Release History
 ===============
+
+2.6.0
+-----
+* Add support for 0.5 core, 512 Mi resource requests in app deployment
+
 2.5.1
 -----
-* Revert `2.5.0` as a quick fix for incompatibility with old api-version. 
+* Revert `2.5.0` as a quick fix for incompatibility with old api-version.
 
 ~~2.5.0~~
 -----

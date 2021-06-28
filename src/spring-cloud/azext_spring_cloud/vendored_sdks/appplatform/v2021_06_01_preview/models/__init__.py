@@ -10,6 +10,7 @@
 # --------------------------------------------------------------------------
 
 try:
+    from ._models_py3 import ApplicationInsightsAgentVersions
     from ._models_py3 import AppResource
     from ._models_py3 import AppResourceProperties
     from ._models_py3 import AvailableRuntimeVersions
@@ -53,6 +54,7 @@ try:
     from ._models_py3 import RegenerateTestKeyRequestPayload
     from ._models_py3 import RequiredTraffic
     from ._models_py3 import Resource
+    from ._models_py3 import ResourceRequests
     from ._models_py3 import ResourceSku
     from ._models_py3 import ResourceSkuCapabilities
     from ._models_py3 import ResourceSkuLocationInfo
@@ -70,6 +72,7 @@ try:
     from ._models_py3 import TrackedResource
     from ._models_py3 import UserSourceInfo
 except (SyntaxError, ImportError):
+    from ._models import ApplicationInsightsAgentVersions
     from ._models import AppResource
     from ._models import AppResourceProperties
     from ._models import AvailableRuntimeVersions
@@ -113,6 +116,7 @@ except (SyntaxError, ImportError):
     from ._models import RegenerateTestKeyRequestPayload
     from ._models import RequiredTraffic
     from ._models import Resource
+    from ._models import ResourceRequests
     from ._models import ResourceSku
     from ._models import ResourceSkuCapabilities
     from ._models import ResourceSkuLocationInfo
@@ -157,6 +161,7 @@ from ._app_platform_management_client_enums import (
 )
 
 __all__ = [
+    'ApplicationInsightsAgentVersions',
     'AppResource',
     'AppResourceProperties',
     'AvailableRuntimeVersions',
@@ -200,6 +205,7 @@ __all__ = [
     'RegenerateTestKeyRequestPayload',
     'RequiredTraffic',
     'Resource',
+    'ResourceRequests',
     'ResourceSku',
     'ResourceSkuCapabilities',
     'ResourceSkuLocationInfo',
