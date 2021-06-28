@@ -10,8 +10,43 @@
 # pylint: disable=protected-access
 
 import argparse
-from knack.util import CLIError
 from collections import defaultdict
+from knack.util import CLIError
+
+
+class AddCache(argparse._AppendAction):
+    def __call__(self, parser, namespace, values, option_string=None):
+        action = self.get_action(values, option_string)
+        super(AddCache, self).__call__(parser, namespace, action, option_string)
+
+    def get_action(self, values, option_string):  # pylint: disable=no-self-use
+        try:
+            properties = defaultdict(list)
+            for (k, v) in (x.split('=', 1) for x in values):
+                properties[k].append(v)
+            properties = dict(properties)
+        except ValueError:
+            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+        d = {}
+        for k in properties:
+            kl = k.lower()
+            v = properties[k]
+            if kl == 'id':
+                d['id'] = v[0]
+            elif kl == 'name':
+                d['name'] = v[0]
+            elif kl == 'channel':
+                d['channel'] = v[0]
+            elif kl == 'subchannel':
+                d['subchannel'] = v[0]
+            elif kl == 'parent':
+                d['parent'] = v[0]
+            elif kl == 'status':
+                d['status'] = v[0]
+            else:
+                raise CLIError('Unsupported Key {} is provided for parameter cache. All possible keys are: id, name, '
+                               'channel, subchannel, parent, status'.format(k))
+        return d
 
 
 class AddKpis(argparse._AppendAction):
@@ -37,6 +72,9 @@ class AddKpis(argparse._AppendAction):
                 d['id'] = v[0]
             elif kl == 'enabled':
                 d['enabled'] = v[0]
+            else:
+                raise CLIError('Unsupported Key {} is provided for parameter kpis. All possible keys are: type, id, '
+                               'enabled'.format(k))
         return d
 
 
@@ -61,13 +99,16 @@ class AddPivots(argparse._AppendAction):
                 d['type'] = v[0]
             elif kl == 'name':
                 d['name'] = v[0]
+            else:
+                raise CLIError('Unsupported Key {} is provided for parameter pivots. All possible keys are: type, name'
+                .format(k))
         return d
 
 
-class AddQueryTimePeriod(argparse.Action):
+class AddViewsTimePeriod(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
-        namespace.query_time_period = action
+        namespace.time_period = action
 
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
@@ -85,43 +126,16 @@ class AddQueryTimePeriod(argparse.Action):
                 d['from_property'] = v[0]
             elif kl == 'to':
                 d['to'] = v[0]
+            else:
+                raise CLIError('Unsupported Key {} is provided for parameter time_period. All possible keys are: from, '
+                               'to'.format(k))
         return d
 
 
-class AddTimePeriod(argparse.Action):
+class AddViewsConfiguration(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
-        if hasattr(namespace, 'definition_time_period'):
-            namespace.definition_time_period = action
-        if hasattr(namespace, 'time_period'):
-            namespace.time_period = action
-
-    def get_action(self, values, option_string):  # pylint: disable=no-self-use
-        try:
-            properties = defaultdict(list)
-            for (k, v) in (x.split('=', 1) for x in values):
-                properties[k].append(v)
-            properties = dict(properties)
-        except ValueError:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
-        d = {}
-        for k in properties:
-            kl = k.lower()
-            v = properties[k]
-            if kl == 'from':
-                d['from_property'] = v[0]
-            elif kl == 'to':
-                d['to'] = v[0]
-        return d
-
-
-class AddDatasetConfiguration(argparse.Action):
-    def __call__(self, parser, namespace, values, option_string=None):
-        action = self.get_action(values, option_string)
-        if hasattr(namespace, 'dataset_configuration'):
-            namespace.dataset_configuration = action
-        if hasattr(namespace, 'definition_dataset_configuration'):
-            namespace.definition_dataset_configuration = action
+        namespace.configuration = action
 
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
@@ -137,13 +151,16 @@ class AddDatasetConfiguration(argparse.Action):
             v = properties[k]
             if kl == 'columns':
                 d['columns'] = v
+            else:
+                raise CLIError('Unsupported Key {} is provided for parameter configuration. All possible keys are: '
+                               'columns'.format(k))
         return d
 
 
-class AddDatasetGrouping(argparse._AppendAction):
+class AddViewsGrouping(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
-        super(AddDatasetGrouping, self).__call__(parser, namespace, action, option_string)
+        super(AddViewsGrouping, self).__call__(parser, namespace, action, option_string)
 
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
@@ -161,13 +178,178 @@ class AddDatasetGrouping(argparse._AppendAction):
                 d['type'] = v[0]
             elif kl == 'name':
                 d['name'] = v[0]
+            else:
+                raise CLIError('Unsupported Key {} is provided for parameter grouping. All possible keys are: type, '
+                               'name'.format(k))
         return d
 
 
-class AddDeliveryInfoDestination(argparse.Action):
+class AddSorting(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
-        namespace.delivery_info_destination = action
+        super(AddSorting, self).__call__(parser, namespace, action, option_string)
+
+    def get_action(self, values, option_string):  # pylint: disable=no-self-use
+        try:
+            properties = defaultdict(list)
+            for (k, v) in (x.split('=', 1) for x in values):
+                properties[k].append(v)
+            properties = dict(properties)
+        except ValueError:
+            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+        d = {}
+        for k in properties:
+            kl = k.lower()
+            v = properties[k]
+            if kl == 'direction':
+                d['direction'] = v[0]
+            elif kl == 'name':
+                d['name'] = v[0]
+            else:
+                raise CLIError('Unsupported Key {} is provided for parameter sorting. All possible keys are: '
+                               'direction, name'.format(k))
+        return d
+
+
+class AddDefinition(argparse.Action):
+    def __call__(self, parser, namespace, values, option_string=None):
+        action = self.get_action(values, option_string)
+        namespace.definition = action
+
+    def get_action(self, values, option_string):  # pylint: disable=no-self-use
+        try:
+            properties = defaultdict(list)
+            for (k, v) in (x.split('=', 1) for x in values):
+                properties[k].append(v)
+            properties = dict(properties)
+        except ValueError:
+            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+        d = {}
+        for k in properties:
+            kl = k.lower()
+            v = properties[k]
+            if kl == 'type':
+                d['type'] = v[0]
+            elif kl == 'category':
+                d['category'] = v[0]
+            elif kl == 'criteria':
+                d['criteria'] = v[0]
+            else:
+                raise CLIError('Unsupported Key {} is provided for parameter definition. All possible keys are: type, '
+                               'category, criteria'.format(k))
+        return d
+
+
+class AddForecastTimePeriod(argparse.Action):
+    def __call__(self, parser, namespace, values, option_string=None):
+        action = self.get_action(values, option_string)
+        namespace.time_period = action
+
+    def get_action(self, values, option_string):  # pylint: disable=no-self-use
+        try:
+            properties = defaultdict(list)
+            for (k, v) in (x.split('=', 1) for x in values):
+                properties[k].append(v)
+            properties = dict(properties)
+        except ValueError:
+            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+        d = {}
+        for k in properties:
+            kl = k.lower()
+            v = properties[k]
+            if kl == 'from':
+                d['from_property'] = v[0]
+            elif kl == 'to':
+                d['to'] = v[0]
+            else:
+                raise CLIError('Unsupported Key {} is provided for parameter time_period. All possible keys are: from, '
+                               'to'.format(k))
+        return d
+
+
+class AddForecastConfiguration(argparse.Action):
+    def __call__(self, parser, namespace, values, option_string=None):
+        action = self.get_action(values, option_string)
+        namespace.configuration = action
+
+    def get_action(self, values, option_string):  # pylint: disable=no-self-use
+        try:
+            properties = defaultdict(list)
+            for (k, v) in (x.split('=', 1) for x in values):
+                properties[k].append(v)
+            properties = dict(properties)
+        except ValueError:
+            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+        d = {}
+        for k in properties:
+            kl = k.lower()
+            v = properties[k]
+            if kl == 'columns':
+                d['columns'] = v
+            else:
+                raise CLIError('Unsupported Key {} is provided for parameter configuration. All possible keys are: '
+                               'columns'.format(k))
+        return d
+
+
+class AddForecastGrouping(argparse._AppendAction):
+    def __call__(self, parser, namespace, values, option_string=None):
+        action = self.get_action(values, option_string)
+        super(AddForecastGrouping, self).__call__(parser, namespace, action, option_string)
+
+    def get_action(self, values, option_string):  # pylint: disable=no-self-use
+        try:
+            properties = defaultdict(list)
+            for (k, v) in (x.split('=', 1) for x in values):
+                properties[k].append(v)
+            properties = dict(properties)
+        except ValueError:
+            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+        d = {}
+        for k in properties:
+            kl = k.lower()
+            v = properties[k]
+            if kl == 'type':
+                d['type'] = v[0]
+            elif kl == 'name':
+                d['name'] = v[0]
+            else:
+                raise CLIError('Unsupported Key {} is provided for parameter grouping. All possible keys are: type, '
+                               'name'.format(k))
+        return d
+
+
+class AddRecurrencePeriod(argparse.Action):
+    def __call__(self, parser, namespace, values, option_string=None):
+        action = self.get_action(values, option_string)
+        namespace.recurrence_period = action
+
+    def get_action(self, values, option_string):  # pylint: disable=no-self-use
+        try:
+            properties = defaultdict(list)
+            for (k, v) in (x.split('=', 1) for x in values):
+                properties[k].append(v)
+            properties = dict(properties)
+        except ValueError:
+            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+        d = {}
+        for k in properties:
+            kl = k.lower()
+            v = properties[k]
+            if kl == 'from':
+                d['from_property'] = v[0]
+            elif kl == 'to':
+                d['to'] = v[0]
+            else:
+                raise CLIError('Unsupported Key {} is provided for parameter recurrence_period. All possible keys are: '
+                               'from, to'.format(k))
+        return d
+
+
+class AddDestination(argparse.Action):
+    def __call__(self, parser, namespace, values, option_string=None):
+        action = self.get_action(values, option_string)
+        namespace.destination = action
 
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
@@ -187,28 +369,7 @@ class AddDeliveryInfoDestination(argparse.Action):
                 d['container'] = v[0]
             elif kl == 'root-folder-path':
                 d['root_folder_path'] = v[0]
-        return d
-
-
-class AddScheduleRecurrencePeriod(argparse.Action):
-    def __call__(self, parser, namespace, values, option_string=None):
-        action = self.get_action(values, option_string)
-        namespace.schedule_recurrence_period = action
-
-    def get_action(self, values, option_string):  # pylint: disable=no-self-use
-        try:
-            properties = defaultdict(list)
-            for (k, v) in (x.split('=', 1) for x in values):
-                properties[k].append(v)
-            properties = dict(properties)
-        except ValueError:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
-        d = {}
-        for k in properties:
-            kl = k.lower()
-            v = properties[k]
-            if kl == 'from':
-                d['from_property'] = v[0]
-            elif kl == 'to':
-                d['to'] = v[0]
+            else:
+                raise CLIError('Unsupported Key {} is provided for parameter destination. All possible keys are: '
+                               'resource-id, container, root-folder-path'.format(k))
         return d

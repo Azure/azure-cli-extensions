@@ -15,37 +15,46 @@ if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
     from typing import Any, Optional
 
+    from azure.core.credentials import TokenCredential
+
 from ._configuration import CostManagementClientConfiguration
-from .operations import ViewOperations
-from .operations import AlertOperations
+from .operations import SettingsOperations
+from .operations import ViewsOperations
+from .operations import AlertsOperations
 from .operations import ForecastOperations
-from .operations import DimensionOperations
+from .operations import DimensionsOperations
 from .operations import QueryOperations
-from .operations import ExportOperations
-from .operations import OperationOperations
+from .operations import GenerateReservationDetailsReportOperations
+from .operations import Operations
+from .operations import ExportsOperations
 from . import models
 
 
 class CostManagementClient(object):
     """CostManagementClient.
 
-    :ivar view: ViewOperations operations
-    :vartype view: azure.mgmt.costmanagement.operations.ViewOperations
-    :ivar alert: AlertOperations operations
-    :vartype alert: azure.mgmt.costmanagement.operations.AlertOperations
+    :ivar settings: SettingsOperations operations
+    :vartype settings: cost_management_client.operations.SettingsOperations
+    :ivar views: ViewsOperations operations
+    :vartype views: cost_management_client.operations.ViewsOperations
+    :ivar alerts: AlertsOperations operations
+    :vartype alerts: cost_management_client.operations.AlertsOperations
     :ivar forecast: ForecastOperations operations
-    :vartype forecast: azure.mgmt.costmanagement.operations.ForecastOperations
-    :ivar dimension: DimensionOperations operations
-    :vartype dimension: azure.mgmt.costmanagement.operations.DimensionOperations
+    :vartype forecast: cost_management_client.operations.ForecastOperations
+    :ivar dimensions: DimensionsOperations operations
+    :vartype dimensions: cost_management_client.operations.DimensionsOperations
     :ivar query: QueryOperations operations
-    :vartype query: azure.mgmt.costmanagement.operations.QueryOperations
-    :ivar export: ExportOperations operations
-    :vartype export: azure.mgmt.costmanagement.operations.ExportOperations
-    :ivar operation: OperationOperations operations
-    :vartype operation: azure.mgmt.costmanagement.operations.OperationOperations
+    :vartype query: cost_management_client.operations.QueryOperations
+    :ivar generate_reservation_details_report: GenerateReservationDetailsReportOperations operations
+    :vartype generate_reservation_details_report: cost_management_client.operations.GenerateReservationDetailsReportOperations
+    :ivar operations: Operations operations
+    :vartype operations: cost_management_client.operations.Operations
+    :ivar exports: ExportsOperations operations
+    :vartype exports: cost_management_client.operations.ExportsOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials.TokenCredential
     :param str base_url: Service URL
+    :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
     """
 
     def __init__(
@@ -64,19 +73,23 @@ class CostManagementClient(object):
         self._serialize = Serializer(client_models)
         self._deserialize = Deserializer(client_models)
 
-        self.view = ViewOperations(
+        self.settings = SettingsOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.alert = AlertOperations(
+        self.views = ViewsOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.alerts = AlertsOperations(
             self._client, self._config, self._serialize, self._deserialize)
         self.forecast = ForecastOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.dimension = DimensionOperations(
+        self.dimensions = DimensionsOperations(
             self._client, self._config, self._serialize, self._deserialize)
         self.query = QueryOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.export = ExportOperations(
+        self.generate_reservation_details_report = GenerateReservationDetailsReportOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.operation = OperationOperations(
+        self.operations = Operations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.exports = ExportsOperations(
             self._client, self._config, self._serialize, self._deserialize)
 
     def close(self):

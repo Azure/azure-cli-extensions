@@ -7,77 +7,104 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
+# pylint: disable=too-many-statements
+# pylint: disable=too-many-locals
 
-# from azure.cli.core.commands import CliCommandType
+from azure.cli.core.commands import CliCommandType
 
 
 def load_command_table(self, _):
-    pass
 
-#     from azext_costmanagement.generated._client_factory import cf_view
-#     costmanagement_view = CliCommandType(
-#         operations_tmpl='azext_costmanagement.vendored_sdks.costmanagement.operations._view_operations#ViewOperations.{'
-#         '}',
-#         client_factory=cf_view)
-#     with self.command_group('costmanagement view', costmanagement_view, client_factory=cf_view,
-#                             is_experimental=True) as g:
-#         g.custom_command('list', 'costmanagement_view_list')
-#         g.custom_show_command('show', 'costmanagement_view_show')
-#         g.custom_command('create', 'costmanagement_view_create')
-#         g.custom_command('delete', 'costmanagement_view_delete')
+    from azext_costmanagement.generated._client_factory import cf_setting
+    costmanagement_setting = CliCommandType(
+        operations_tmpl='azext_costmanagement.vendored_sdks.costmanagement.operations._settings_operations#SettingsOper'
+        'ations.{}',
+        client_factory=cf_setting)
+    with self.command_group('costmanagement setting', costmanagement_setting, client_factory=cf_setting) as g:
+        g.custom_command('list', 'costmanagement_setting_list')
+        g.custom_show_command('show', 'costmanagement_setting_show')
+        g.custom_command('create', 'costmanagement_setting_create')
+        g.generic_update_command('update', custom_func_name='costmanagement_setting_update')
+        g.custom_command('delete', 'costmanagement_setting_delete', confirmation=True)
 
-#     from azext_costmanagement.generated._client_factory import cf_alert
-#     costmanagement_alert = CliCommandType(
-#         operations_tmpl='azext_costmanagement.vendored_sdks.costmanagement.operations._alert_operations#AlertOperations'
-#         '.{}',
-#         client_factory=cf_alert)
-#     with self.command_group('costmanagement alert', costmanagement_alert, client_factory=cf_alert,
-#                             is_experimental=True) as g:
-#         g.custom_command('list', 'costmanagement_alert_list')
-#         g.custom_command('list-external', 'costmanagement_alert_list_external')
+    from azext_costmanagement.generated._client_factory import cf_view
+    costmanagement_view = CliCommandType(
+        operations_tmpl='azext_costmanagement.vendored_sdks.costmanagement.operations._views_operations#ViewsOperations'
+        '.{}',
+        client_factory=cf_view)
+    with self.command_group('costmanagement view', costmanagement_view, client_factory=cf_view) as g:
+        g.custom_command('list', 'costmanagement_view_list')
+        g.custom_show_command('show', 'costmanagement_view_show')
+        g.custom_command('create', 'costmanagement_view_create')
+        g.generic_update_command('update', custom_func_name='costmanagement_view_update')
+        g.custom_command('delete', 'costmanagement_view_delete', confirmation=True)
 
-#     from azext_costmanagement.generated._client_factory import cf_forecast
-#     costmanagement_forecast = CliCommandType(
-#         operations_tmpl='azext_costmanagement.vendored_sdks.costmanagement.operations._forecast_operations#ForecastOper'
-#         'ations.{}',
-#         client_factory=cf_forecast)
-#     with self.command_group('costmanagement forecast', costmanagement_forecast, client_factory=cf_forecast,
-#                             is_experimental=True) as g:
-#         g.custom_command('external-cloud-provider-usage', 'costmanagement_forecast_external_cloud_provider_usage')
-#         g.custom_command('usage', 'costmanagement_forecast_usage')
+    from azext_costmanagement.generated._client_factory import cf_alert
+    costmanagement_alert = CliCommandType(
+        operations_tmpl='azext_costmanagement.vendored_sdks.costmanagement.operations._alerts_operations#AlertsOperatio'
+        'ns.{}',
+        client_factory=cf_alert)
+    with self.command_group('costmanagement alert', costmanagement_alert, client_factory=cf_alert) as g:
+        g.custom_command('list', 'costmanagement_alert_list')
+        g.custom_show_command('show', 'costmanagement_alert_show')
+        g.custom_command('dismiss', 'costmanagement_alert_dismiss')
+        g.custom_command('list-external', 'costmanagement_alert_list_external')
 
-#     from azext_costmanagement.generated._client_factory import cf_dimension
-#     costmanagement_dimension = CliCommandType(
-#         operations_tmpl='azext_costmanagement.vendored_sdks.costmanagement.operations._dimension_operations#DimensionOp'
-#         'erations.{}',
-#         client_factory=cf_dimension)
-#     with self.command_group('costmanagement dimension', costmanagement_dimension, client_factory=cf_dimension,
-#                             is_experimental=True) as g:
-#         g.custom_command('list', 'costmanagement_dimension_list')
-#         g.custom_command('by-external-cloud-provider-type',
-#                          'costmanagement_dimension_by_external_cloud_provider_type')
+    from azext_costmanagement.generated._client_factory import cf_forecast
+    costmanagement_forecast = CliCommandType(
+        operations_tmpl='azext_costmanagement.vendored_sdks.costmanagement.operations._forecast_operations#ForecastOper'
+        'ations.{}',
+        client_factory=cf_forecast)
+    with self.command_group('costmanagement forecast', costmanagement_forecast, client_factory=cf_forecast) as g:
+        g.custom_command('external-cloud-provider-usage', 'costmanagement_forecast_external_cloud_provider_usage')
+        g.custom_command('usage', 'costmanagement_forecast_usage')
 
-#     from azext_costmanagement.generated._client_factory import cf_query
-#     costmanagement_query = CliCommandType(
-#         operations_tmpl='azext_costmanagement.vendored_sdks.costmanagement.operations._query_operations#QueryOperations'
-#         '.{}',
-#         client_factory=cf_query)
-#     with self.command_group('costmanagement query', costmanagement_query, client_factory=cf_query,
-#                             is_experimental=True) as g:
-#         g.custom_command('usage', 'costmanagement_query_usage')
-#         g.custom_command('usage-by-external-cloud-provider-type', 'costmanagement_query_usage_by_external_cloud_provide'
-#                          'r_type')
+    from azext_costmanagement.generated._client_factory import cf_dimension
+    costmanagement_dimension = CliCommandType(
+        operations_tmpl='azext_costmanagement.vendored_sdks.costmanagement.operations._dimensions_operations#Dimensions'
+        'Operations.{}',
+        client_factory=cf_dimension)
+    with self.command_group('costmanagement dimension', costmanagement_dimension, client_factory=cf_dimension) as g:
+        g.custom_command('list', 'costmanagement_dimension_list')
+        g.custom_command('by-external-cloud-provider-type',
+                         'costmanagement_dimension_by_external_cloud_provider_type')
 
-    # from azext_costmanagement.generated._client_factory import cf_export
-    # costmanagement_export = CliCommandType(
-    #     operations_tmpl='azext_costmanagement.vendored_sdks.costmanagement.operations._export_operations#ExportOperatio'
-    #     'ns.{}',
-    #     client_factory=cf_export)
-    # with self.command_group('costmanagement export', costmanagement_export, client_factory=cf_export,
-    #                         is_experimental=True) as g:
-    #     g.custom_command('list', 'costmanagement_export_list')
-    #     g.custom_show_command('show', 'costmanagement_export_show')
-    #     g.custom_command('create', 'costmanagement_export_create')
-    #     g.custom_command('update', 'costmanagement_export_update')
-    #     g.custom_command('delete', 'costmanagement_export_delete')
-    #     g.custom_command('execute', 'costmanagement_export_execute')
+    from azext_costmanagement.generated._client_factory import cf_query
+    costmanagement_query = CliCommandType(
+        operations_tmpl='azext_costmanagement.vendored_sdks.costmanagement.operations._query_operations#QueryOperations'
+        '.{}',
+        client_factory=cf_query)
+    with self.command_group('costmanagement query', costmanagement_query, client_factory=cf_query) as g:
+        g.custom_command('usage', 'costmanagement_query_usage')
+        g.custom_command('usage-by-external-cloud-provider-type', 'costmanagement_query_usage_by_external_cloud_provide'
+                         'r_type')
+
+    from azext_costmanagement.generated._client_factory import cf_generate_reservation_detail_report
+    costmanagement_generate_reservation_detail_report = CliCommandType(
+        operations_tmpl='azext_costmanagement.vendored_sdks.costmanagement.operations._generate_reservation_details_rep'
+        'ort_operations#GenerateReservationDetailsReportOperations.{}',
+        client_factory=cf_generate_reservation_detail_report)
+    with self.command_group('costmanagement generate-reservation-detail-report',
+                            costmanagement_generate_reservation_detail_report,
+                            client_factory=cf_generate_reservation_detail_report) as g:
+        g.custom_command('by-billing-account-id', 'costmanagement_generate_reservation_detail_report_by_billing_account'
+                         '_id')
+        g.custom_command('by-billing-profile-id', 'costmanagement_generate_reservation_detail_report_by_billing_profile'
+                         '_id')
+
+    from azext_costmanagement.generated._client_factory import cf_export
+    costmanagement_export = CliCommandType(
+        operations_tmpl='azext_costmanagement.vendored_sdks.costmanagement.operations._exports_operations#ExportsOperat'
+        'ions.{}',
+        client_factory=cf_export)
+    with self.command_group('costmanagement export', costmanagement_export, client_factory=cf_export) as g:
+        g.custom_command('list', 'costmanagement_export_list')
+        g.custom_show_command('show', 'costmanagement_export_show')
+        g.custom_command('create', 'costmanagement_export_create')
+        g.generic_update_command('update', custom_func_name='costmanagement_export_update')
+        g.custom_command('delete', 'costmanagement_export_delete', confirmation=True)
+        g.custom_command('execute', 'costmanagement_export_execute')
+        g.custom_command('show-execution-history', 'costmanagement_export_show_execution_history')
+
+    with self.command_group('costmanagement', is_experimental=True):
+        pass
