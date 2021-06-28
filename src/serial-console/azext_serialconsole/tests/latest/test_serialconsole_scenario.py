@@ -6,11 +6,11 @@
 import os
 import json
 import time
-from azure.cli.testsdk.base import ScenarioTest
 import requests
 import websocket
 import pytest
-from azext_serialconsole.custom import checkResource
+from azext_serialconsole.custom import check_resource
+from azure.cli.testsdk.base import ScenarioTest
 from azure.cli.testsdk import (
     LiveScenarioTest, StorageAccountPreparer, ResourceGroupPreparer)
 from azure.cli.testsdk.exceptions import JMESPathCheckAssertionError
@@ -36,67 +36,67 @@ class CheckResourceTest(ScenarioTest):
         })
 
         with self.assertRaises(ComputeClientResourceNotFoundError):
-            checkResource(self.cli_ctx, resource_group, name, None)
+            check_resource(self.cli_ctx, resource_group, name, None)
         with self.assertRaises(ComputeClientResourceNotFoundError):
-            checkResource(self.cli_ctx, resource_group, name, "0")
+            check_resource(self.cli_ctx, resource_group, name, "0")
 
         self.cmd('az vmss create -g {rg} -n {name} --image {urn} --instance-count 2 -l {loc}')
 
         with self.assertRaises(ResourceNotFoundError):
-            checkResource(self.cli_ctx, resource_group, name, None)
+            check_resource(self.cli_ctx, resource_group, name, None)
 
         idd = self.cmd('vmss list-instances --resource-group {rg} --name {name} --query "[].instanceId"').get_output_in_json()[1]
         self.kwargs.update({'id': idd})
 
         with self.assertRaises(AzureConnectionError):
-            checkResource(self.cli_ctx, resource_group, name, idd)
+            check_resource(self.cli_ctx, resource_group, name, idd)
 
         self.cmd('az vmss deallocate -g {rg} -n {name} --instance-ids {id}')
 
         with self.assertRaises(AzureConnectionError):
-            checkResource(self.cli_ctx, resource_group, name, idd)
+            check_resource(self.cli_ctx, resource_group, name, idd)
 
         self.cmd('az vmss start -g {rg} -n {name} --instance-ids {id}')
         self.cmd('az vmss stop -g {rg} -n {name} --instance-ids {id}')
 
         with self.assertRaises(AzureConnectionError):
-            checkResource(self.cli_ctx, resource_group, name, idd)
+            check_resource(self.cli_ctx, resource_group, name, idd)
 
         self.cmd('az vmss start -g {rg} -n {name} --instance-ids {id}')
         self.cmd('az vmss update --name {name} --resource-group {rg} --set virtualMachineProfile.diagnosticsProfile="{{\\"bootDiagnostics\\": {{\\"Enabled\\" : \\"True\\",\\"StorageUri\\":\\"https://{sa}.blob.core.windows.net/\\"}}}}"')
 
         with self.assertRaises(AzureConnectionError):
-            checkResource(self.cli_ctx, resource_group, name, idd)
+            check_resource(self.cli_ctx, resource_group, name, idd)
 
         self.cmd('az vmss update-instances -g {rg} -n {name} --instance-ids {id}')
 
-        checkResource(self.cli_ctx, resource_group, name, idd)
+        check_resource(self.cli_ctx, resource_group, name, idd)
 
         self.cmd('az serial-console disable')
 
         with self.assertRaises(ForbiddenError):
-            checkResource(self.cli_ctx, resource_group, name, idd)
+            check_resource(self.cli_ctx, resource_group, name, idd)
 
         self.cmd('az serial-console enable')
 
-        checkResource(self.cli_ctx, resource_group, name, idd)
+        check_resource(self.cli_ctx, resource_group, name, idd)
 
         self.cmd('az vmss deallocate -g {rg} -n {name} --instance-ids {id}')
 
         with self.assertRaises(AzureConnectionError):
-            checkResource(self.cli_ctx, resource_group, name, idd)
+            check_resource(self.cli_ctx, resource_group, name, idd)
 
         self.cmd('az vmss start -g {rg} -n {name} --instance-ids {id}')
         self.cmd('az vmss update --name {name} --resource-group {rg} --set virtualMachineProfile.diagnosticsProfile="{{\\"bootDiagnostics\\": {{\\"Enabled\\" : \\"True\\",\\"StorageUri\\" : null}}}}"')
         self.cmd('az vmss update-instances -g {rg} -n {name} --instance-ids {id}')
 
         with self.assertRaises(AzureConnectionError):
-            checkResource(self.cli_ctx, resource_group, name, idd)
+            check_resource(self.cli_ctx, resource_group, name, idd)
 
         self.cmd('az vmss stop -g {rg} -n {name} --instance-ids {id}')
 
         with self.assertRaises(AzureConnectionError):
-            checkResource(self.cli_ctx, resource_group, name, idd)
+            check_resource(self.cli_ctx, resource_group, name, idd)
 
         self.cmd('az vmss start -g {rg} -n {name} --instance-ids {id}')
 
@@ -113,53 +113,53 @@ class CheckResourceTest(ScenarioTest):
         })
 
         with self.assertRaises(ComputeClientResourceNotFoundError):
-            checkResource(self.cli_ctx, resource_group, name, None)
+            check_resource(self.cli_ctx, resource_group, name, None)
         with self.assertRaises(ComputeClientResourceNotFoundError):
-            checkResource(self.cli_ctx, resource_group, name, "0")
+            check_resource(self.cli_ctx, resource_group, name, "0")
 
         self.cmd('az vm create -g {rg} -n {name} --image {urn} -l {loc} --generate-ssh-keys')
 
         with self.assertRaises(AzureConnectionError):
-            checkResource(self.cli_ctx, resource_group, name, None)
+            check_resource(self.cli_ctx, resource_group, name, None)
 
         self.cmd('az vm deallocate -g {rg} -n {name}')
 
         with self.assertRaises(AzureConnectionError):
-            checkResource(self.cli_ctx, resource_group, name, None)
+            check_resource(self.cli_ctx, resource_group, name, None)
 
         self.cmd('az vm start -g {rg} -n {name}')
         self.cmd('az vm stop -g {rg} -n {name}')
 
         with self.assertRaises(AzureConnectionError):
-            checkResource(self.cli_ctx, resource_group, name, None)
+            check_resource(self.cli_ctx, resource_group, name, None)
 
         self.cmd('az vm boot-diagnostics disable -g {rg} -n {name}')
 
         with self.assertRaises(AzureConnectionError):
-            checkResource(self.cli_ctx, resource_group, name, None)
+            check_resource(self.cli_ctx, resource_group, name, None)
 
         self.cmd('az vm start -g {rg} -n {name}')
 
         with self.assertRaises(AzureConnectionError):
-            checkResource(self.cli_ctx, resource_group, name, None)
+            check_resource(self.cli_ctx, resource_group, name, None)
 
         self.cmd('az vm boot-diagnostics enable -g {rg} -n {name} --storage {sa}')
 
-        checkResource(self.cli_ctx, resource_group, name, None)
+        check_resource(self.cli_ctx, resource_group, name, None)
 
         self.cmd('az serial-console disable')
 
         with self.assertRaises(ForbiddenError):
-            checkResource(self.cli_ctx, resource_group, name, None)
+            check_resource(self.cli_ctx, resource_group, name, None)
 
         self.cmd('az serial-console enable')
 
-        checkResource(self.cli_ctx, resource_group, name, None)
+        check_resource(self.cli_ctx, resource_group, name, None)
 
         self.cmd('az vm deallocate -g {rg} -n {name}')
 
         with self.assertRaises(AzureConnectionError):
-            checkResource(self.cli_ctx, resource_group, name, None)
+            check_resource(self.cli_ctx, resource_group, name, None)
 
 
 class SerialConsoleEnableDisableTest(ScenarioTest):
@@ -176,31 +176,31 @@ class SerialConsoleEnableDisableTest(ScenarioTest):
 class SerialconsoleAdminCommandsTest(LiveScenarioTest):
 
     def check_result(self, resource_group_name, vm_vmss_name, vmss_instanceid=None, message=""):
-        armEndpoint = "https://management.azure.com"
+        ARM_ENDPOINT = "https://management.azure.com"
         RP_PROVIDER = "Microsoft.SerialConsole"
-        subscriptionId = self.get_subscription_id()
-        vmPath = f"virtualMachineScaleSets/{vm_vmss_name}/virtualMachines/{vmss_instanceid}" \
+        subscription_id = self.get_subscription_id()
+        vm_path = f"virtualMachineScaleSets/{vm_vmss_name}/virtualMachines/{vmss_instanceid}" \
             if vmss_instanceid else f"virtualMachines/{vm_vmss_name}"
-        connectionUrl = (f"{armEndpoint}/subscriptions/{subscriptionId}/resourcegroups/{resource_group_name}"
-                         f"/providers/Microsoft.Compute/{vmPath}"
+        connection_url = (f"{ARM_ENDPOINT}/subscriptions/{subscription_id}/resourcegroups/{resource_group_name}"
+                         f"/providers/Microsoft.Compute/{vm_path}"
                          f"/providers/{RP_PROVIDER}/serialPorts/0"
                          f"/connect?api-version=2018-05-01")
 
         from azure.cli.core._profile import Profile
-        tokenInfo, _, _ = Profile().get_raw_token()
-        accessToken = tokenInfo[1]
-        applicationJsonFormat = "application/json"
-        headers = {'authorization': "Bearer " + accessToken,
-                   'accept': applicationJsonFormat,
-                   'content-type': applicationJsonFormat}
-        result = requests.post(connectionUrl, headers=headers)
-        jsonResults = json.loads(result.text)
+        token_info, _, _ = Profile().get_raw_token()
+        access_token = token_info[1]
+        application_json_format = "application/json"
+        headers = {'authorization': "Bearer " + access_token,
+                   'accept': application_json_format,
+                   'content-type': application_json_format}
+        result = requests.post(connection_url, headers=headers)
+        json_results = json.loads(result.text)
         self.assertTrue(result.status_code ==
-                        200 and "connectionString" in jsonResults)
-        websocketURL = jsonResults["connectionString"]
+                        200 and "connectionString" in json_results)
+        websocket_url = json_results["connectionString"]
 
         ws = websocket.WebSocket()
-        ws.connect(websocketURL + "?authorization=" + accessToken, timeout=30)
+        ws.connect(websocket_url + "?authorization=" + access_token, timeout=30)
         buffer = ""
         while True:
             try:
