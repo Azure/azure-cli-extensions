@@ -8,19 +8,17 @@
 import json
 from knack.log import get_logger
 
-from msrestazure.azure_exceptions import CloudError
-
 from azure.cli.core.azclierror import ResourceNotFoundError, MutuallyExclusiveArgumentError, \
     InvalidArgumentValueError, CommandNotFoundError, RequiredArgumentMissingError
 from azure.cli.core.commands.client_factory import get_subscription_id
-from .vendored_sdks.models import ConfigurationIdentity
-from .vendored_sdks.models import ErrorResponseException
-from .vendored_sdks.models import Scope
+from .vendored_sdks.models import ConfigurationIdentity, ErrorResponseException, Scope
+from ._validators import validate_cc_registration
 
 from .partner_extensions.ContainerInsights import ContainerInsights
 from .partner_extensions.AzureDefender import AzureDefender
 from .partner_extensions.Cassandra import Cassandra
 from .partner_extensions.AzureMLKubernetes import AzureMLKubernetes
+from .partner_extensions.OpenServiceMesh import OpenServiceMesh
 from .partner_extensions.DefaultExtension import DefaultExtension
 from . import consts
 
@@ -34,6 +32,7 @@ def ExtensionFactory(extension_name):
     extension_map = {
         'microsoft.azuremonitor.containers': ContainerInsights,
         'microsoft.azuredefender.kubernetes': AzureDefender,
+        'microsoft.openservicemesh': OpenServiceMesh,
         'microsoft.azureml.kubernetes': AzureMLKubernetes,
         'cassandradatacentersoperator': Cassandra,
     }
@@ -78,9 +77,8 @@ def create_k8s_extension(cmd, client, resource_group_name, cluster_name, name, c
     """Create a new Extension Instance.
 
     """
-    extension_type_lower = extension_type.lower()
 
-    # Determine ClusterRP
+    extension_type_lower = extension_type.lower()
     cluster_rp = __get_cluster_rp(cluster_type)
 
     # Configuration Settings & Configuration Protected Settings
@@ -134,6 +132,9 @@ def create_k8s_extension(cmd, client, resource_group_name, cluster_name, name, c
     # Common validations
     __validate_version_and_auto_upgrade(extension_instance.version, extension_instance.auto_upgrade_minor_version)
     __validate_scope_after_customization(extension_instance.scope)
+
+    # Check that registration has been done on Microsoft.KubernetesConfiguration for the subscription
+    validate_cc_registration(cmd)
 
     # Create identity, if required
     if create_identity:
@@ -218,10 +219,11 @@ def __create_identity(cmd, resource_group_name, cluster_name, cluster_type, clus
             "Error! Cluster type '{}' is not supported for extension identity".format(cluster_type)
         )
 
+    from azure.core.exceptions import HttpResponseError
     try:
         resource = resources.get_by_id(cluster_resource_id, parent_api_version)
         location = str(resource.location.lower())
-    except CloudError as ex:
+    except HttpResponseError as ex:
         raise ex
     identity_type = "SystemAssigned"
 

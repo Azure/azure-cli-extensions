@@ -16,6 +16,10 @@ def cf_monitor_control_service_cl(cli_ctx, *_):
                                    MonitorClient)
 
 
+def cf_data_collection_endpoint(cli_ctx, *_):
+    return cf_monitor_control_service_cl(cli_ctx).data_collection_endpoints
+
+
 def cf_data_collection_rule_association(cli_ctx, *_):
     return cf_monitor_control_service_cl(cli_ctx).data_collection_rule_associations
 

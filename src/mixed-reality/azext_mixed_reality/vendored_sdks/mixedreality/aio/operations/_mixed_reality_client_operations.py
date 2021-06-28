@@ -13,7 +13,7 @@ from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import AsyncHttpResponse, HttpRequest
 from azure.mgmt.core.exceptions import ARMErrorFormat
 
-from ... import models
+from ... import models as _models
 
 T = TypeVar('T')
 ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
@@ -23,9 +23,9 @@ class MixedRealityClientOperationsMixin:
     async def check_name_availability_local(
         self,
         location: str,
-        check_name_availability: "models.CheckNameAvailabilityRequest",
+        check_name_availability: "_models.CheckNameAvailabilityRequest",
         **kwargs
-    ) -> "models.CheckNameAvailabilityResponse":
+    ) -> "_models.CheckNameAvailabilityResponse":
         """Check Name Availability for local uniqueness.
 
         :param location: The location in which uniqueness will be verified.
@@ -37,7 +37,7 @@ class MixedRealityClientOperationsMixin:
         :rtype: ~azure.mgmt.mixedreality.models.CheckNameAvailabilityResponse
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.CheckNameAvailabilityResponse"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.CheckNameAvailabilityResponse"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }

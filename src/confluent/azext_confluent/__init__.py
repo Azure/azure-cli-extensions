@@ -7,6 +7,7 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
+# pylint: disable=import-outside-toplevel
 
 from azure.cli.core import AzCommandsLoader
 from azext_confluent.generated._help import helps  # pylint: disable=unused-import
@@ -24,7 +25,7 @@ class ConfluentManagementClientCommandsLoader(AzCommandsLoader):
         confluent_custom = CliCommandType(
             operations_tmpl='azext_confluent.custom#{}',
             client_factory=cf_confluent_cl)
-        parent = super(ConfluentManagementClientCommandsLoader, self)
+        parent = super()
         parent.__init__(cli_ctx=cli_ctx, custom_command_type=confluent_custom)
 
     def load_command_table(self, args):

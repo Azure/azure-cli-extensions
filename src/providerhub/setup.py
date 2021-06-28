@@ -45,7 +45,7 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
 setup(
     name='providerhub',
     version=VERSION,
-    description='Microsoft Azure Command-Line Tools Providerhub Extension',
+    description='Microsoft Azure Command-Line Tools ProviderHub Extension',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
     url='https://github.com/Azure/azure-cli-extensions/tree/master/src/providerhub',

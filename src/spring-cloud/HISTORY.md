@@ -1,5 +1,23 @@
 Release History
 ===============
+
+2.6.0
+-----
+* Add support for 0.5 core, 512 Mi resource requests in app deployment
+
+2.5.1
+-----
+* Revert `2.5.0` as a quick fix for incompatibility with old api-version.
+
+~~2.5.0~~
+-----
+* Deprecated
+* ~~Migration from `instrumentation_key` to `connection_string` when update java agent configurations.~~
+
+2.4.0
+-----
+* Add support to format log streaming of structured JSON output
+
 2.3.1
 -----
 * Fix disable-ssl in redis binding.

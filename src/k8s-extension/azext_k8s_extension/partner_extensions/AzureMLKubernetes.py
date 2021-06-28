@@ -4,6 +4,9 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=unused-argument
+# pylint: disable=line-too-long
+# pylint: disable=too-many-locals
+
 import copy
 from hashlib import md5
 from typing import Any, Dict, List, Tuple
@@ -17,9 +20,7 @@ import azure.mgmt.storage
 import azure.mgmt.storage.models
 import azure.mgmt.loganalytics
 import azure.mgmt.loganalytics.models
-from ..vendored_sdks.models import (
-    ExtensionInstance, ExtensionInstanceUpdate, Scope, ScopeCluster)
-from azure.cli.core.azclierror import InvalidArgumentValueError
+from azure.cli.core.azclierror import InvalidArgumentValueError, MutuallyExclusiveArgumentError
 from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id
 from azure.mgmt.resource.locks.models import ManagementLockObject
 from knack.log import get_logger
@@ -27,12 +28,19 @@ from msrestazure.azure_exceptions import CloudError
 
 from .._client_factory import cf_resources
 from .PartnerExtensionModel import PartnerExtensionModel
+from ..vendored_sdks.models import (
+    ExtensionInstance,
+    ExtensionInstanceUpdate,
+    Scope,
+    ScopeCluster
+)
 
 logger = get_logger(__name__)
 
-resource_tag = {'created_by': 'amlk8s-extension'}
+resource_tag = {'created_by': 'Azure Arc-enabled ML'}
 
 
+# pylint: disable=too-many-instance-attributes
 class AzureMLKubernetes(PartnerExtensionModel):
     def __init__(self):
         # constants for configuration settings.
@@ -65,6 +73,14 @@ class AzureMLKubernetes(PartnerExtensionModel):
         self.SERVICE_BUS_COMPUTE_STATE_SUB = 'compute-scheduler-computestate'
         self.SERVICE_BUS_JOB_STATE_TOPIC = 'jobstate-updatedby-computeprovider'
         self.SERVICE_BUS_JOB_STATE_SUB = 'compute-scheduler-jobstate'
+
+        # constants for enabling SSL in inference
+        self.sslKeyPemFile = 'sslKeyPemFile'
+        self.sslCertPemFile = 'sslCertPemFile'
+        self.allowInsecureConnections = 'allowInsecureConnections'
+        self.privateEndpointILB = 'privateEndpointILB'
+        self.privateEndpointNodeport = 'privateEndpointNodeport'
+        self.inferenceLoadBalancerHA = 'inferenceLoadBalancerHA'
 
         # reference mapping
         self.reference_mapping = {
@@ -151,7 +167,7 @@ class AzureMLKubernetes(PartnerExtensionModel):
         config_keys = configuration_settings.keys()
         config_protected_keys = configuration_protected_settings.keys()
         dup_keys = set(config_keys) & set(config_protected_keys)
-        if len(dup_keys) > 0:
+        if dup_keys:
             for key in dup_keys:
                 logger.warning(
                     'Duplicate keys found in both configuration settings and configuration protected setttings: %s', key)
@@ -167,13 +183,13 @@ class AzureMLKubernetes(PartnerExtensionModel):
 
         if enable_inference:
             logger.warning("The installed AzureML extension for AML inference is experimental and not covered by customer support. Please use with discretion.")
+            self.__validate_scoring_fe_settings(configuration_settings, configuration_protected_settings)
+            self.__set_up_inference_ssl(configuration_settings, configuration_protected_settings)
         elif not (enable_training or enable_inference):
             raise InvalidArgumentValueError(
                 "Please create Microsoft.AzureML.Kubernetes extension instance either "
                 "for Machine Learning training or inference by specifying "
                 f"'--configuration-settings {self.ENABLE_TRAINING}=true' or '--configuration-settings {self.ENABLE_INFERENCE}=true'")
-
-        self.__validate_scoring_fe_settings(configuration_settings, configuration_protected_settings)
 
         configuration_settings[self.ENABLE_TRAINING] = configuration_settings.get(self.ENABLE_TRAINING, enable_training)
         configuration_settings[self.ENABLE_INFERENCE] = configuration_settings.get(
@@ -182,32 +198,62 @@ class AzureMLKubernetes(PartnerExtensionModel):
         configuration_protected_settings.pop(self.ENABLE_INFERENCE, None)
 
     def __validate_scoring_fe_settings(self, configuration_settings, configuration_protected_settings):
-        clusterPurpose = _get_value_from_config_protected_config(
-            'clusterPurpose', configuration_settings, configuration_protected_settings)
-        if clusterPurpose and clusterPurpose not in ["DevTest", "FastProd"]:
-            raise InvalidArgumentValueError(
-                "Accepted values for '--configuration-settings clusterPurpose' "
-                "are 'DevTest' and 'FastProd'")
-
-        feSslCert = _get_value_from_config_protected_config(
-            'scoringFe.sslCert', configuration_settings, configuration_protected_settings)
-        sslKey = _get_value_from_config_protected_config(
-            'scoringFe.sslKey', configuration_settings, configuration_protected_settings)
+        isTestCluster = _get_value_from_config_protected_config(
+            self.inferenceLoadBalancerHA, configuration_settings, configuration_protected_settings)
+        isTestCluster = str(isTestCluster).lower() == 'false'
+        if isTestCluster:
+            configuration_settings['clusterPurpose'] = 'DevTest'
+        else:
+            configuration_settings['clusterPurpose'] = 'FastProd'
+        feSslCertFile = configuration_protected_settings.get(self.sslCertPemFile)
+        feSslKeyFile = configuration_protected_settings.get(self.sslKeyPemFile)
         allowInsecureConnections = _get_value_from_config_protected_config(
-            'allowInsecureConnections', configuration_settings, configuration_protected_settings)
+            self.allowInsecureConnections, configuration_settings, configuration_protected_settings)
         allowInsecureConnections = str(allowInsecureConnections).lower() == 'true'
-        if (not feSslCert or not sslKey) and not allowInsecureConnections:
+        if (not feSslCertFile or not feSslKeyFile) and not allowInsecureConnections:
             raise InvalidArgumentValueError(
                 "Provide ssl certificate and key. "
                 "Otherwise explicitly allow insecure connection by specifying "
                 "'--configuration-settings allowInsecureConnections=true'")
 
+        feIsNodePort = _get_value_from_config_protected_config(
+            self.privateEndpointNodeport, configuration_settings, configuration_protected_settings)
+        feIsNodePort = str(feIsNodePort).lower() == 'true'
         feIsInternalLoadBalancer = _get_value_from_config_protected_config(
-            'scoringFe.serviceType.internalLoadBalancer', configuration_settings, configuration_protected_settings)
+            self.privateEndpointILB, configuration_settings, configuration_protected_settings)
         feIsInternalLoadBalancer = str(feIsInternalLoadBalancer).lower() == 'true'
-        if feIsInternalLoadBalancer:
+
+        if feIsNodePort and feIsInternalLoadBalancer:
+            raise MutuallyExclusiveArgumentError(
+                "Specify either privateEndpointNodeport=true or privateEndpointILB=true, but not both.")
+        elif feIsNodePort:
+            configuration_settings['scoringFe.serviceType.nodePort'] = feIsNodePort
+        elif feIsInternalLoadBalancer:
+            configuration_settings['scoringFe.serviceType.internalLoadBalancer'] = feIsInternalLoadBalancer
             logger.warning(
                 'Internal load balancer only supported on AKS and AKS Engine Clusters.')
+
+    def __set_up_inference_ssl(self, configuration_settings, configuration_protected_settings):
+        allowInsecureConnections = _get_value_from_config_protected_config(
+            self.allowInsecureConnections, configuration_settings, configuration_protected_settings)
+        allowInsecureConnections = str(allowInsecureConnections).lower() == 'true'
+        if not allowInsecureConnections:
+            import base64
+            feSslCertFile = configuration_protected_settings.get(self.sslCertPemFile)
+            feSslKeyFile = configuration_protected_settings.get(self.sslKeyPemFile)
+            with open(feSslCertFile) as f:
+                cert_data = f.read()
+                cert_data_bytes = cert_data.encode("ascii")
+                ssl_cert = base64.b64encode(cert_data_bytes).decode()
+                configuration_protected_settings['scoringFe.sslCert'] = ssl_cert
+            with open(feSslKeyFile) as f:
+                key_data = f.read()
+                key_data_bytes = key_data.encode("ascii")
+                ssl_key = base64.b64encode(key_data_bytes).decode()
+                configuration_protected_settings['scoringFe.sslKey'] = ssl_key
+        else:
+            logger.warning(
+                'SSL is not enabled. Allowing insecure connections to the deployed services.')
 
     def __create_required_resource(
             self, cmd, configuration_settings, configuration_protected_settings, subscription_id, resource_group_name,
@@ -223,9 +269,8 @@ class AzureMLKubernetes(PartnerExtensionModel):
             configuration_settings[self.AZURE_LOG_ANALYTICS_CUSTOMER_ID_KEY] = ws_costumer_id
             configuration_protected_settings[self.AZURE_LOG_ANALYTICS_CONNECTION_STRING] = shared_key
 
-        if not configuration_settings.get(
-                self.RELAY_SERVER_CONNECTION_STRING) and not configuration_protected_settings.get(
-                self.RELAY_SERVER_CONNECTION_STRING):
+        if not configuration_settings.get(self.RELAY_SERVER_CONNECTION_STRING) and \
+                not configuration_protected_settings.get(self.RELAY_SERVER_CONNECTION_STRING):
             logger.info('==== BEGIN RELAY CREATION ====')
             relay_connection_string, hc_resource_id, hc_name = _get_relay_connection_str(
                 cmd, subscription_id, resource_group_name, cluster_name, cluster_location, self.RELAY_HC_AUTH_NAME)
@@ -234,9 +279,8 @@ class AzureMLKubernetes(PartnerExtensionModel):
             configuration_settings[self.HC_RESOURCE_ID_KEY] = hc_resource_id
             configuration_settings[self.RELAY_HC_NAME_KEY] = hc_name
 
-        if not configuration_settings.get(
-                self.SERVICE_BUS_CONNECTION_STRING) and not configuration_protected_settings.get(
-                self.SERVICE_BUS_CONNECTION_STRING):
+        if not configuration_settings.get(self.SERVICE_BUS_CONNECTION_STRING) and \
+                not configuration_protected_settings.get(self.SERVICE_BUS_CONNECTION_STRING):
             logger.info('==== BEGIN SERVICE BUS CREATION ====')
             topic_sub_mapping = {
                 self.SERVICE_BUS_COMPUTE_STATE_TOPIC: self.SERVICE_BUS_COMPUTE_STATE_SUB,
@@ -253,7 +297,7 @@ class AzureMLKubernetes(PartnerExtensionModel):
 
 def _get_valid_name(input_name: str, suffix_len: int, max_len: int) -> str:
     normalized_str = ''.join(filter(str.isalnum, input_name))
-    assert len(normalized_str) > 0, "normalized name empty"
+    assert normalized_str, "normalized name empty"
 
     if len(normalized_str) <= max_len:
         return normalized_str
@@ -268,22 +312,22 @@ def _get_valid_name(input_name: str, suffix_len: int, max_len: int) -> str:
     return new_name
 
 
+# pylint: disable=broad-except
 def _lock_resource(cmd, lock_scope, lock_level='CanNotDelete'):
     lock_client: azure.mgmt.resource.locks.ManagementLockClient = get_mgmt_service_client(
         cmd.cli_ctx, azure.mgmt.resource.locks.ManagementLockClient)
     # put lock on relay resource
-    lock_object = ManagementLockObject(level=lock_level, notes='locked by amlk8s.')
+    lock_object = ManagementLockObject(level=lock_level, notes='locked by amlarc.')
     try:
         lock_client.management_locks.create_or_update_by_scope(
-            scope=lock_scope, lock_name='amlk8s-resource-lock', parameters=lock_object)
-    except:
+            scope=lock_scope, lock_name='amlarc-resource-lock', parameters=lock_object)
+    except Exception:
         # try to lock the resource if user has the owner privilege
         pass
 
 
 def _get_relay_connection_str(
-        cmd, subscription_id, resource_group_name, cluster_name, cluster_location, auth_rule_name) -> Tuple[
-        str, str, str]:
+        cmd, subscription_id, resource_group_name, cluster_name, cluster_location, auth_rule_name) -> Tuple[str, str, str]:
     relay_client: azure.mgmt.relay.RelayManagementClient = get_mgmt_service_client(
         cmd.cli_ctx, azure.mgmt.relay.RelayManagementClient)
 
@@ -338,7 +382,7 @@ def _get_service_bus_connection_string(cmd, subscription_id, resource_group_name
         location=cluster_location,
         sku=service_bus_sku,
         tags=resource_tag)
-    async_poller = service_bus_client.namespaces.create_or_update(
+    async_poller = service_bus_client.namespaces.begin_create_or_update(
         resource_group_name, service_bus_namespace_name, service_bus_namespace)
     while True:
         async_poller.result(15)
@@ -371,8 +415,7 @@ def _get_service_bus_connection_string(cmd, subscription_id, resource_group_name
 
 
 def _get_log_analytics_ws_connection_string(
-        cmd, subscription_id, resource_group_name, cluster_name, cluster_location) -> Tuple[
-        str, str]:
+        cmd, subscription_id, resource_group_name, cluster_name, cluster_location) -> Tuple[str, str]:
     log_analytics_ws_client: azure.mgmt.loganalytics.LogAnalyticsManagementClient = get_mgmt_service_client(
         cmd.cli_ctx, azure.mgmt.loganalytics.LogAnalyticsManagementClient)
 

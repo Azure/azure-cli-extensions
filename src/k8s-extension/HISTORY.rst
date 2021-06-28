@@ -3,6 +3,33 @@
 Release History
 ===============
 
+0.4.3
+++++++++++++++++++
+* Add SSL support for AzureML
+
+
+0.4.2
+++++++++++++++++++
+
+* Hotfix servicebus namespace creation for Track 2 changes
+* Change resource tag from 'amlk8s' to 'Azure Arc-enabled ML' in microsoft.azureml.kubernetes
+
+0.4.1
+++++++++++++++++++
+
+* Add compatible logic for the track 2 migration of resource dependence
+
+0.4.0
+++++++++++++++++++
+
+* Release customization for microsoft.openservicemesh
+
+0.3.1
+++++++++++++++++++
+
+* Add provider registration to check to validations
+* Only validate scoring fe settings when inference is enabled in microsoft.azureml.kubernetes
+
 0.3.0
 ++++++++++++++++++
 

@@ -2,6 +2,11 @@
 
 Release History
 ===============
+0.3.1
+++++++
+* Support query placeholder for `--condition` parameter.
+* Add `--condition-query` parameter to support query placeholder.
+
 0.2.2
 ++++++
 * Fix parse bug for `--condition` parameter.

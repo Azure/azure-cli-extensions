@@ -43,6 +43,7 @@ from msrestazure.azure_exceptions import CloudError
 import colorama  # pylint: disable=import-error
 from tabulate import tabulate  # pylint: disable=import-error
 from azure.cli.core.api import get_config_dir
+from azure.cli.core.azclierror import ManualInterrupt, InvalidArgumentValueError, UnclassifiedUserFault, CLIInternalError, FileOperationError, ClientRequestError, DeploymentError, ValidationError, ArgumentUsageError, MutuallyExclusiveArgumentError, RequiredArgumentMissingError, ResourceNotFoundError
 from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id
 from azure.cli.core.keys import is_valid_ssh_rsa_public_key
 from azure.cli.core.util import get_file_json, in_cloud_console, shell_safe_json_parse, truncate_text, sdk_no_wait
@@ -53,7 +54,7 @@ from azure.graphrbac.models import (ApplicationCreateParameters,
                                     KeyCredential,
                                     ServicePrincipalCreateParameters,
                                     GetObjectsParameters)
-from .vendored_sdks.azure_mgmt_preview_aks.v2021_03_01.models import (ContainerServiceLinuxProfile,
+from .vendored_sdks.azure_mgmt_preview_aks.v2021_05_01.models import (ContainerServiceLinuxProfile,
                                                                       ManagedClusterWindowsProfile,
                                                                       ContainerServiceNetworkProfile,
                                                                       ManagedClusterServicePrincipalProfile,
@@ -316,20 +317,16 @@ def _invoke_deployment(cmd, resource_group_name, deployment_name, template, para
         logger.info(json.dumps(template, indent=2))
         logger.info('==== END TEMPLATE ====')
 
-    if cmd.supported_api_version(min_api='2019-10-01', resource_type=ResourceType.MGMT_RESOURCE_RESOURCES):
-        Deployment = cmd.get_models(
-            'Deployment', resource_type=ResourceType.MGMT_RESOURCE_RESOURCES)
-        deployment = Deployment(properties=properties)
-
-        if validate:
-            validation_poller = smc.validate(
-                resource_group_name, deployment_name, deployment)
-            return LongRunningOperation(cmd.cli_ctx)(validation_poller)
-        return sdk_no_wait(no_wait, smc.create_or_update, resource_group_name, deployment_name, deployment)
-
+    Deployment = cmd.get_models('Deployment', resource_type=ResourceType.MGMT_RESOURCE_RESOURCES)
+    deployment = Deployment(properties=properties)
     if validate:
-        return smc.validate(resource_group_name, deployment_name, properties)
-    return sdk_no_wait(no_wait, smc.create_or_update, resource_group_name, deployment_name, properties)
+        if cmd.supported_api_version(min_api='2019-10-01', resource_type=ResourceType.MGMT_RESOURCE_RESOURCES):
+            validation_poller = smc.begin_validate(resource_group_name, deployment_name, deployment)
+            return LongRunningOperation(cmd.cli_ctx)(validation_poller)
+        else:
+            return smc.validate(resource_group_name, deployment_name, deployment)
+
+    return sdk_no_wait(no_wait, smc.begin_create_or_update, resource_group_name, deployment_name, deployment)
 
 
 def create_application(client, display_name, homepage, identifier_uris,
@@ -971,6 +968,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                enable_vmss=None,
                vm_set_type=None,
                skip_subnet_role_assignment=False,
+               os_sku=None,
                enable_fips_image=False,
                enable_cluster_autoscaler=False,
                cluster_autoscaler_profile=None,
@@ -1012,6 +1010,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                private_dns_zone=None,
                enable_managed_identity=True,
                fqdn_subdomain=None,
+               enable_public_fqdn=False,
                api_server_authorized_ip_ranges=None,
                aks_custom_headers=None,
                appgw_name=None,
@@ -1032,7 +1031,9 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                enable_pod_identity=False,
                enable_pod_identity_with_kubenet=False,
                enable_encryption_at_host=False,
+               enable_ultra_ssd=False,
                enable_secret_rotation=False,
+               disable_local_accounts=False,
                no_wait=False,
                assign_kubelet_identity=None,
                yes=False):
@@ -1082,6 +1083,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         count=int(node_count),
         vm_size=node_vm_size,
         os_type="Linux",
+        os_sku=os_sku,
         mode="System",
         vnet_subnet_id=vnet_subnet_id,
         pod_subnet_id=pod_subnet_id,
@@ -1091,6 +1093,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         enable_fips=enable_fips_image,
         node_public_ip_prefix_id=node_public_ip_prefix_id,
         enable_encryption_at_host=enable_encryption_at_host,
+        enable_ultra_ssd=enable_ultra_ssd,
         max_pods=int(max_pods) if max_pods else None,
         type=vm_set_type
     )
@@ -1284,7 +1287,9 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         if any([aad_client_app_id, aad_server_app_id, aad_server_app_secret]):
             raise CLIError('"--enable-aad" cannot be used together with '
                            '"--aad-client-app-id/--aad-server-app-id/--aad-server-app-secret"')
-
+        if disable_rbac and enable_azure_rbac:
+            raise CLIError(
+                '"--enable-azure-rbac" can not be used together with "--disable-rbac"')
         aad_profile = ManagedClusterAADProfile(
             managed=True,
             enable_azure_rbac=enable_azure_rbac,
@@ -1389,23 +1394,28 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         api_server_access_profile=api_server_access_profile,
         auto_upgrade_profile=auto_upgrade_profile,
         pod_identity_profile=pod_identity_profile,
-        identity_profile=identity_profile)
+        identity_profile=identity_profile,
+        disable_local_accounts=bool(disable_local_accounts))
 
     if node_resource_group:
         mc.node_resource_group = node_resource_group
 
     use_custom_private_dns_zone = False
+    if not enable_private_cluster and enable_public_fqdn:
+        raise ArgumentUsageError("--enable-public-fqdn should only be used with --enable-private-cluster")
     if enable_private_cluster:
         if load_balancer_sku.lower() != "standard":
-            raise CLIError(
+            raise ArgumentUsageError(
                 "Please use standard load balancer for private cluster")
         mc.api_server_access_profile = ManagedClusterAPIServerAccessProfile(
             enable_private_cluster=True
         )
+        if enable_public_fqdn:
+            mc.api_server_access_profile.enable_private_cluster_public_fqdn = True
 
     if private_dns_zone:
         if not enable_private_cluster:
-            raise CLIError(
+            raise ArgumentUsageError(
                 "Invalid private dns zone for public cluster. It should always be empty for public cluster")
         mc.api_server_access_profile.private_dns_zone = private_dns_zone
         from msrestazure.tools import is_valid_resource_id
@@ -1413,12 +1423,11 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
             if is_valid_resource_id(private_dns_zone):
                 use_custom_private_dns_zone = True
             else:
-                raise CLIError(private_dns_zone +
-                               " is not a valid Azure resource ID.")
+                raise ResourceNotFoundError(private_dns_zone + " is not a valid Azure resource ID.")
 
     if fqdn_subdomain:
         if not use_custom_private_dns_zone:
-            raise CLIError(
+            raise ArgumentUsageError(
                 "--fqdn-subdomain should only be used for private cluster with custom private dns zone")
         mc.fqdn_subdomain = fqdn_subdomain
 
@@ -1496,9 +1505,15 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                disable_pod_identity=False,
                enable_secret_rotation=False,
                disable_secret_rotation=False,
+               disable_local_accounts=False,
+               enable_local_accounts=False,
+               enable_public_fqdn=False,
+               disable_public_fqdn=False,
                yes=False,
                tags=None,
-               windows_admin_password=None):
+               windows_admin_password=None,
+               enable_azure_rbac=False,
+               disable_azure_rbac=False):
     update_autoscaler = enable_cluster_autoscaler or disable_cluster_autoscaler or update_cluster_autoscaler
     update_acr = attach_acr is not None or detach_acr is not None
     update_pod_security = enable_pod_security_policy or disable_pod_security_policy
@@ -1508,7 +1523,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                                                           load_balancer_outbound_ports,
                                                           load_balancer_idle_timeout)
     update_aad_profile = not (
-        aad_tenant_id is None and aad_admin_group_object_ids is None)
+        aad_tenant_id is None and aad_admin_group_object_ids is None and not enable_azure_rbac and not disable_azure_rbac)
     # pylint: disable=too-many-boolean-expressions
     if not update_autoscaler and \
        cluster_autoscaler_profile is None and \
@@ -1531,7 +1546,11 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
        not enable_secret_rotation and \
        not disable_secret_rotation and \
        not tags and \
-       not windows_admin_password:
+       not windows_admin_password and \
+       not enable_local_accounts and \
+       not disable_local_accounts and \
+       not enable_public_fqdn and \
+       not disable_public_fqdn:
         raise CLIError('Please specify "--enable-cluster-autoscaler" or '
                        '"--disable-cluster-autoscaler" or '
                        '"--update-cluster-autoscaler" or '
@@ -1558,8 +1577,13 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                        '"--enable-secret-rotation" or '
                        '"--disable-secret-rotation" or '
                        '"--tags" or '
-                       '"--windows-admin-password"')
-
+                       '"--windows-admin-password" or '
+                       '"--enable-azure-rbac" or '
+                       '"--disable-azure-rbac" or '
+                       '"--enable-local-accounts" or '
+                       '"--disable-local-accounts" or '
+                       '"--enable-public-fqdn" or '
+                       '"--disable-public-fqdn"')
     instance = client.get(resource_group_name, name)
 
     if update_autoscaler and len(instance.agent_pool_profiles) > 1:
@@ -1622,6 +1646,16 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
 
     if disable_pod_security_policy:
         instance.enable_pod_security_policy = False
+
+    if disable_local_accounts and enable_local_accounts:
+        raise CLIError('Cannot specify --disable-local-accounts and --enable-local-accounts '
+                       'at the same time.')
+
+    if disable_local_accounts:
+        instance.disable_local_accounts = True
+
+    if enable_local_accounts:
+        instance.disable_local_accounts = False
 
     if update_lb_profile:
         instance.network_profile.load_balancer_profile = update_load_balancer_profile(
@@ -1694,13 +1728,20 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
         )
     if update_aad_profile:
         if instance.aad_profile is None or not instance.aad_profile.managed:
-            raise CLIError('Cannot specify "--aad-tenant-id/--aad-admin-group-object-ids"'
+            raise CLIError('Cannot specify "--aad-tenant-id/--aad-admin-group-object-ids/--enable-azure-rbac/--disable-azure-rbac"'
                            ' if managed AAD is not enabled')
         if aad_tenant_id is not None:
             instance.aad_profile.tenant_id = aad_tenant_id
         if aad_admin_group_object_ids is not None:
             instance.aad_profile.admin_group_object_ids = _parse_comma_separated_list(
                 aad_admin_group_object_ids)
+        if enable_azure_rbac and disable_azure_rbac:
+            raise CLIError(
+                'Cannot specify "--enable-azure-rbac" and "--disable-azure-rbac" at the same time')
+        if enable_azure_rbac:
+            instance.aad_profile.enable_azure_rbac = True
+        if disable_azure_rbac:
+            instance.aad_profile.enable_azure_rbac = False
 
     if enable_ahub and disable_ahub:
         raise CLIError(
@@ -1710,6 +1751,21 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
         instance.windows_profile.license_type = 'Windows_Server'
     if disable_ahub:
         instance.windows_profile.license_type = 'None'
+
+    if enable_public_fqdn and disable_public_fqdn:
+        raise MutuallyExclusiveArgumentError(
+            'Cannot specify "--enable-public-fqdn" and "--disable-public-fqdn" at the same time')
+    is_private_cluster = instance.api_server_access_profile is not None and instance.api_server_access_profile.enable_private_cluster
+    if enable_public_fqdn:
+        if not is_private_cluster:
+            raise ArgumentUsageError('--enable-public-fqdn can only be used for private cluster')
+        instance.api_server_access_profile.enable_private_cluster_public_fqdn = True
+    if disable_public_fqdn:
+        if not is_private_cluster:
+            raise ArgumentUsageError('--disable-public-fqdn can only be used for private cluster')
+        if instance.api_server_access_profile.private_dns_zone.lower() == CONST_PRIVATE_DNS_ZONE_NONE:
+            raise ArgumentUsageError('--disable-public-fqdn cannot be applied for none mode private dns zone cluster')
+        instance.api_server_access_profile.enable_private_cluster_public_fqdn = False
 
     if instance.auto_upgrade_profile is None:
         instance.auto_upgrade_profile = ManagedClusterAutoUpgradeProfile()
@@ -1759,8 +1815,12 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
             )
 
     if enable_pod_identity:
-        _update_addon_pod_identity(
-            instance, enable=True, allow_kubenet_consent=enable_pod_identity_with_kubenet)
+        if not _is_pod_identity_addon_enabled(instance):
+            # we only rebuild the pod identity profile if it's disabled before
+            _update_addon_pod_identity(
+                instance, enable=True,
+                allow_kubenet_consent=enable_pod_identity_with_kubenet,
+            )
 
     if disable_pod_identity:
         _update_addon_pod_identity(instance, enable=False)
@@ -1858,18 +1918,22 @@ def aks_get_credentials(cmd,    # pylint: disable=unused-argument
                         path=os.path.join(os.path.expanduser(
                             '~'), '.kube', 'config'),
                         overwrite_existing=False,
-                        context_name=None):
+                        context_name=None,
+                        public_fqdn=False):
     credentialResults = None
+    serverType = None
+    if public_fqdn:
+        serverType = 'public'
     if admin:
         credentialResults = client.list_cluster_admin_credentials(
-            resource_group_name, name)
+            resource_group_name, name, serverType)
     else:
         if user.lower() == 'clusteruser':
             credentialResults = client.list_cluster_user_credentials(
-                resource_group_name, name)
+                resource_group_name, name, serverType)
         elif user.lower() == 'clustermonitoringuser':
             credentialResults = client.list_cluster_monitoring_user_credentials(
-                resource_group_name, name)
+                resource_group_name, name, serverType)
         else:
             raise CLIError("The user is invalid.")
     if not credentialResults:
@@ -2349,14 +2413,11 @@ def _handle_addons_args(cmd,  # pylint: disable=too-many-statements
             workspace_resource_id = _ensure_default_log_analytics_workspace_for_monitoring(
                 cmd, subscription_id, resource_group_name)
 
-        workspace_resource_id = workspace_resource_id.strip()
-        if not workspace_resource_id.startswith('/'):
-            workspace_resource_id = '/' + workspace_resource_id
-        if workspace_resource_id.endswith('/'):
-            workspace_resource_id = workspace_resource_id.rstrip('/')
-        addon_profiles[CONST_MONITORING_ADDON_NAME] = ManagedClusterAddonProfile(
-            enabled=True, config={CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID: workspace_resource_id})
+        workspace_resource_id = _sanitize_loganalytics_ws_resource_id(workspace_resource_id)
+
+        addon_profiles[CONST_MONITORING_ADDON_NAME] = ManagedClusterAddonProfile(enabled=True, config={CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID: workspace_resource_id})
         addons.remove('monitoring')
+
     # error out if '--enable-addons=monitoring' isn't set but workspace_resource_id is
     elif workspace_resource_id:
         raise CLIError(
@@ -2563,29 +2624,27 @@ def _ensure_default_log_analytics_workspace_for_monitoring(cmd, subscription_id,
     resource_groups = cf_resource_groups(cmd.cli_ctx, subscription_id)
     resources = cf_resources(cmd.cli_ctx, subscription_id)
 
+    from azure.cli.core.profiles import ResourceType
     # check if default RG exists
     if resource_groups.check_existence(default_workspace_resource_group):
+        from azure.core.exceptions import HttpResponseError
         try:
             resource = resources.get_by_id(
                 default_workspace_resource_id, '2015-11-01-preview')
             return resource.id
-        except CloudError as ex:
+        except HttpResponseError as ex:
             if ex.status_code != 404:
                 raise ex
     else:
-        resource_groups.create_or_update(default_workspace_resource_group, {
-                                         'location': workspace_region})
+        ResourceGroup = cmd.get_models('ResourceGroup', resource_type=ResourceType.MGMT_RESOURCE_RESOURCES)
+        resource_group = ResourceGroup(location=workspace_region)
+        resource_groups.create_or_update(default_workspace_resource_group, resource_group)
 
-    default_workspace_params = {
-        'location': workspace_region,
-        'properties': {
-            'sku': {
-                'name': 'standalone'
-            }
-        }
-    }
-    async_poller = resources.create_or_update_by_id(default_workspace_resource_id, '2015-11-01-preview',
-                                                    default_workspace_params)
+    GenericResource = cmd.get_models('GenericResource', resource_type=ResourceType.MGMT_RESOURCE_RESOURCES)
+    generic_resource = GenericResource(location=workspace_region, properties={'sku': {'name': 'standalone'}})
+
+    async_poller = resources.begin_create_or_update_by_id(default_workspace_resource_id, '2015-11-01-preview',
+                                                          generic_resource)
 
     ws_resource_id = ''
     while True:
@@ -2595,6 +2654,15 @@ def _ensure_default_log_analytics_workspace_for_monitoring(cmd, subscription_id,
             break
 
     return ws_resource_id
+
+
+def _sanitize_loganalytics_ws_resource_id(workspace_resource_id):
+    workspace_resource_id = workspace_resource_id.strip()
+    if not workspace_resource_id.startswith('/'):
+        workspace_resource_id = '/' + workspace_resource_id
+    if workspace_resource_id.endswith('/'):
+        workspace_resource_id = workspace_resource_id.rstrip('/')
+    return workspace_resource_id
 
 
 def _ensure_container_insights_for_monitoring(cmd, addon):
@@ -2625,11 +2693,12 @@ def _ensure_container_insights_for_monitoring(cmd, addon):
 
     # region of workspace can be different from region of RG so find the location of the workspace_resource_id
     resources = cf_resources(cmd.cli_ctx, subscription_id)
+    from azure.core.exceptions import HttpResponseError
     try:
         resource = resources.get_by_id(
             workspace_resource_id, '2015-11-01-preview')
         location = resource.location
-    except CloudError as ex:
+    except HttpResponseError as ex:
         raise ex
 
     unix_time_in_millis = int(
@@ -2935,6 +3004,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
                       ppg=None,
                       max_pods=0,
                       os_type="Linux",
+                      os_sku=None,
                       enable_fips_image=False,
                       min_count=None,
                       max_count=None,
@@ -2950,6 +3020,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
                       kubelet_config=None,
                       linux_os_config=None,
                       enable_encryption_at_host=False,
+                      enable_ultra_ssd=False,
                       no_wait=False):
     instances = client.list(resource_group_name, cluster_name)
     for agentpool_profile in instances:
@@ -2985,6 +3056,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
         count=int(node_count),
         vm_size=node_vm_size,
         os_type=os_type,
+        os_sku=os_sku,
         enable_fips=enable_fips_image,
         storage_profile=ContainerServiceStorageProfileTypes.managed_disks,
         vnet_subnet_id=vnet_subnet_id,
@@ -3000,6 +3072,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
         scale_set_priority=priority,
         upgrade_settings=upgradeSettings,
         enable_encryption_at_host=enable_encryption_at_host,
+        enable_ultra_ssd=enable_ultra_ssd,
         mode=mode
     )
 
@@ -3307,6 +3380,7 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                 addon, ManagedClusterAddonProfile(enabled=False))
             # special config handling for certain addons
             if addon == CONST_MONITORING_ADDON_NAME:
+                logAnalyticsConstName = CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID
                 if addon_profile.enabled:
                     raise CLIError('The monitoring addon is already enabled for this managed cluster.\n'
                                    'To change monitoring configuration, run "az aks disable-addons -a monitoring"'
@@ -3316,13 +3390,10 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                         cmd,
                         subscription_id,
                         resource_group_name)
-                workspace_resource_id = workspace_resource_id.strip()
-                if not workspace_resource_id.startswith('/'):
-                    workspace_resource_id = '/' + workspace_resource_id
-                if workspace_resource_id.endswith('/'):
-                    workspace_resource_id = workspace_resource_id.rstrip('/')
+                workspace_resource_id = _sanitize_loganalytics_ws_resource_id(workspace_resource_id)
+
                 addon_profile.config = {
-                    CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID: workspace_resource_id}
+                    logAnalyticsConstName: workspace_resource_id}
             elif addon == (CONST_VIRTUAL_NODE_ADDON_NAME + os_type):
                 if addon_profile.enabled:
                     raise CLIError('The virtual-node addon is already enabled for this managed cluster.\n'
@@ -3803,6 +3874,10 @@ def _get_kubelet_config(file_path):
     config_object.allowed_unsafe_sysctls = kubelet_config.get(
         "allowedUnsafeSysctls", None)
     config_object.fail_swap_on = kubelet_config.get("failSwapOn", None)
+    config_object.container_log_max_files = kubelet_config.get(
+        "containerLogMaxFiles", None)
+    config_object.container_log_max_size_mb = kubelet_config.get(
+        "containerLogMaxSizeMb", None)
 
     return config_object
 
@@ -3879,11 +3954,16 @@ def _get_linux_os_config(file_path):
     return config_object
 
 
+def _is_pod_identity_addon_enabled(instance):
+    if not instance:
+        return False
+    if not instance.pod_identity_profile:
+        return False
+    return bool(instance.pod_identity_profile.enabled)
+
+
 def _ensure_pod_identity_addon_is_enabled(instance):
-    addon_enabled = False
-    if instance and instance.pod_identity_profile:
-        addon_enabled = instance.pod_identity_profile.enabled
-    if not addon_enabled:
+    if not _is_pod_identity_addon_enabled(instance):
         raise CLIError('The pod identity addon is not enabled for this managed cluster yet.\n'
                        'To enable, run "az aks update --enable-pod-identity')
 
@@ -4133,3 +4213,7 @@ def _ensure_cluster_identity_permission_on_kubelet_identity(cli_ctx, cluster_ide
     if not _add_role_assignment(cli_ctx, CONST_MANAGED_IDENTITY_OPERATOR_ROLE, cluster_identity_object_id,
                                 is_service_principal=False, scope=scope):
         raise CLIError('Could not grant Managed Identity Operator permission to cluster identity at scope {}'.format(scope))
+
+
+def aks_egress_endpoints_list(cmd, client, resource_group_name, name):   # pylint: disable=unused-argument
+    return client.list_outbound_network_dependencies_endpoints(resource_group_name, name)

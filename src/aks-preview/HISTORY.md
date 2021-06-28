@@ -2,6 +2,46 @@
 
 Release History
 ===============
+0.5.19
++++++
+* Remove azure-defender from list of available addons to install via `az aks enable-addons` command
+
+0.5.18
++++++
+* Fix issue with node config not consuming logging settings
+
+0.5.17
++++++
+* Add parameter '--enable-ultra-ssd' to enable UltraSSD on agent node pool
+
+0.5.16
++++++
+* Vendor SDK using latest swagger with optional query parameter added
+* Support private cluster public fqdn feature
+
+0.5.15
++++++
+* Update to use 2021-05-01 api-version
+
+0.5.14
++++++
+* Add os-sku argument for cluster and nodepool creation
+
+0.5.13
++++++
+* Add compatible logic for the track 2 migration of resource dependence
+
+0.5.12
++++++
+* Add --enable-azure-rbac and --disable-azure-rbac in aks update
+* Support disabling local accounts
+* Add addon `azure-defender` to list of available addons under `az aks enable-addons` command
+
+0.5.11
++++++
+* Add get OS options support
+* Fix wrong behavior when enabling pod identity addon for cluster with addon enabled
+
 0.5.10
 +++++
 * Add `--binding-selector` to AAD pod identity add sub command

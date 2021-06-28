@@ -29,3 +29,8 @@ def cf_resources(cli_ctx, subscription_id=None):
 def cf_log_analytics(cli_ctx, subscription_id=None):
     from azure.mgmt.loganalytics import LogAnalyticsManagementClient  # pylint: disable=no-name-in-module
     return get_mgmt_service_client(cli_ctx, LogAnalyticsManagementClient, subscription_id=subscription_id)
+
+
+def _resource_providers_client(cli_ctx):
+    from azure.mgmt.resource import ResourceManagementClient
+    return get_mgmt_service_client(cli_ctx, ResourceManagementClient).providers

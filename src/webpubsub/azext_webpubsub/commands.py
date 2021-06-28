@@ -31,6 +31,16 @@ def load_command_table(self, _):
         client_factory=cf_webpubsub
     )
 
+    webpubsub_client_utils = CliCommandType(
+        operations_tmpl='azext_webpubsub.client#{}',
+        client_factory=cf_webpubsub
+    )
+
+    webpubsub_service_utils = CliCommandType(
+        operations_tmpl='azext_webpubsub.service#{}',
+        client_factory=cf_webpubsub
+    )
+
     with self.command_group('webpubsub', webpubsub_general_utils, is_preview=True) as g:
         g.command('create', 'webpubsub_create')
         g.command('delete', 'webpubsub_delete')
@@ -57,3 +67,30 @@ def load_command_table(self, _):
     with self.command_group('webpubsub event-handler hub', webpubsub_eventhandler_utils) as g:
         g.command('remove', 'event_handler_hub_remove')
         g.command('update', 'event_handler_hub_update')
+
+    with self.command_group('webpubsub client', webpubsub_client_utils) as g:
+        g.command('start', 'start_client')
+
+    with self.command_group('webpubsub service', webpubsub_service_utils) as g:
+        g.command('broadcast', 'broadcast')
+
+    with self.command_group('webpubsub service connection', webpubsub_service_utils) as g:
+        g.command('exist', 'check_connection_exists')
+        g.command('close', 'close_connection')
+        g.command('send', 'send_connection')
+
+    with self.command_group('webpubsub service group', webpubsub_service_utils) as g:
+        g.command('add-connection', 'add_connection_to_group')
+        g.command('remove-connection', 'remove_connection_from_group')
+        g.command('send', 'send_group')
+        g.command('add-user', 'add_user_to_group')
+        g.command('remove-user', 'remove_user_from_group')
+
+    with self.command_group('webpubsub service user', webpubsub_service_utils) as g:
+        g.command('send', 'send_user')
+        g.command('exist', 'check_user_exists')
+
+    with self.command_group('webpubsub service permission', webpubsub_service_utils) as g:
+        g.command('grant', 'grant_permission')
+        g.command('revoke', 'revoke_permission')
+        g.command('check', 'check_permission')
