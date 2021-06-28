@@ -4,7 +4,6 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long, too-many-statements
 
-from enum import Enum
 
 from azure.cli.core.commands.parameters import (
     get_resource_name_completion_list, name_type, get_enum_type, get_three_state_flag, get_location_type)
@@ -19,12 +18,7 @@ from azext_cosmosdb_preview._validators import (
 from azext_cosmosdb_preview.actions import (
     CreateLocation, CreateDatabaseRestoreResource, UtcDatetimeAction)
 
-from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import DefaultConsistencyLevel, DatabaseAccountKind, ServerVersion
-
-
-class BackupPolicyTypes(str, Enum):
-    periodic = "Periodic"
-    continuous = "Continuous"
+from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import DefaultConsistencyLevel, DatabaseAccountKind, ServerVersion, BackupPolicyType
 
 
 def load_arguments(self, _):
@@ -43,7 +37,6 @@ def load_arguments(self, _):
         c.argument('restore_source', help="The restorable-database-account Id of the source account from which the account has to be restored. Required if --is-restore-request is set to true.", is_preview=True, arg_group='Restore')
         c.argument('restore_timestamp', action=UtcDatetimeAction, help="The timestamp to which the account has to be restored to. Required if --is-restore-request is set to true.", is_preview=True, arg_group='Restore')
         c.argument('databases_to_restore', nargs='+', action=CreateDatabaseRestoreResource, is_preview=True, arg_group='Restore')
-        c.argument('backup_policy_type', arg_type=get_enum_type(BackupPolicyTypes), help="The type of backup policy of the account to create", arg_group='Backup Policy')
 
     for scope in ['cosmosdb create', 'cosmosdb update']:
         with self.argument_context(scope) as c:
@@ -65,6 +58,7 @@ def load_arguments(self, _):
             c.argument('enable_analytical_storage', arg_type=get_three_state_flag(), help="Flag to enable log storage on the account.", is_preview=True)
             c.argument('backup_interval', type=int, help="the frequency(in minutes) with which backups are taken (only for accounts with periodic mode backups)", arg_group='Backup Policy')
             c.argument('backup_retention', type=int, help="the time(in hours) for which each backup is retained (only for accounts with periodic mode backups)", arg_group='Backup Policy')
+            c.argument('backup_policy_type', arg_type=get_enum_type(BackupPolicyType), help="The type of backup policy of the account to create", arg_group='Backup Policy')
 
     with self.argument_context('cosmosdb restore') as c:
         c.argument('target_database_account_name', options_list=['--target-database-account-name', '-n'], help='Name of the new target Cosmos DB database account after the restore')

@@ -22,6 +22,7 @@
 |[az disk-pool create](#DiskPoolsCreateOrUpdate#Create)|CreateOrUpdate#Create|[Parameters](#ParametersDiskPoolsCreateOrUpdate#Create)|[Example](#ExamplesDiskPoolsCreateOrUpdate#Create)|
 |[az disk-pool update](#DiskPoolsUpdate)|Update|[Parameters](#ParametersDiskPoolsUpdate)|[Example](#ExamplesDiskPoolsUpdate)|
 |[az disk-pool delete](#DiskPoolsDelete)|Delete|[Parameters](#ParametersDiskPoolsDelete)|[Example](#ExamplesDiskPoolsDelete)|
+|[az disk-pool list-outbound-network-dependency-endpoint](#DiskPoolsListOutboundNetworkDependenciesEndpoints)|ListOutboundNetworkDependenciesEndpoints|[Parameters](#ParametersDiskPoolsListOutboundNetworkDependenciesEndpoints)|[Example](#ExamplesDiskPoolsListOutboundNetworkDependenciesEndpoints)|
 |[az disk-pool list-skus](#DiskPoolsList)|List|[Parameters](#ParametersDiskPoolsList)|[Example](#ExamplesDiskPoolsList)|
 |[az disk-pool start](#DiskPoolsStart)|Start|[Parameters](#ParametersDiskPoolsStart)|[Example](#ExamplesDiskPoolsStart)|
 |[az disk-pool stop](#DiskPoolsDeallocate)|Deallocate|[Parameters](#ParametersDiskPoolsDeallocate)|[Example](#ExamplesDiskPoolsDeallocate)|
@@ -37,6 +38,7 @@
 
 
 ## COMMAND DETAILS
+
 ### group `az disk-pool`
 #### <a name="DiskPoolsListByResourceGroup">Command `az disk-pool list`</a>
 
@@ -58,7 +60,6 @@ az disk-pool list
 ##### <a name="ParametersDiskPoolsListBySubscription">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-
 #### <a name="DiskPoolsGet">Command `az disk-pool show`</a>
 
 ##### <a name="ExamplesDiskPoolsGet">Example</a>
@@ -119,6 +120,19 @@ esourceGroup/providers/Microsoft.Compute/disks/vm-name_DataDisk_0" --disks "/sub
 az disk-pool delete --name "myDiskPool" --resource-group "myResourceGroup"
 ```
 ##### <a name="ParametersDiskPoolsDelete">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
+|**--disk-pool-name**|string|The name of the Disk Pool.|disk_pool_name|diskPoolName|
+
+#### <a name="DiskPoolsListOutboundNetworkDependenciesEndpoints">Command `az disk-pool list-outbound-network-dependency-endpoint`</a>
+
+##### <a name="ExamplesDiskPoolsListOutboundNetworkDependenciesEndpoints">Example</a>
+```
+az disk-pool list-outbound-network-dependency-endpoint --name "SampleAse" --resource-group \
+"Sample-WestUSResourceGroup"
+```
+##### <a name="ParametersDiskPoolsListOutboundNetworkDependenciesEndpoints">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
 |**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|

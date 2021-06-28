@@ -78,6 +78,13 @@ def disk_pool_delete(client,
                        disk_pool_name=disk_pool_name)
 
 
+def disk_pool_list_outbound_network_dependency_endpoint(client,
+                                                        resource_group_name,
+                                                        disk_pool_name):
+    return client.list_outbound_network_dependencies_endpoints(resource_group_name=resource_group_name,
+                                                               disk_pool_name=disk_pool_name)
+
+
 def disk_pool_list_skus(client,
                         location):
     return client.list(location=location)

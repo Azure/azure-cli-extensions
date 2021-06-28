@@ -8,8 +8,6 @@
 import json
 from knack.log import get_logger
 
-from msrestazure.azure_exceptions import CloudError
-
 from azure.cli.core.azclierror import ResourceNotFoundError, MutuallyExclusiveArgumentError, \
     InvalidArgumentValueError, CommandNotFoundError, RequiredArgumentMissingError
 from azure.cli.core.commands.client_factory import get_subscription_id
