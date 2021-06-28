@@ -1146,7 +1146,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
 
     service_principal_profile = None
     principal_obj = None
-    # If customer explicitly provide a service principal, disable managed identity.
+    # If customer explicitly provides a service principal, disable managed identity.
     if service_principal and client_secret:
         enable_managed_identity = False
     if not enable_managed_identity:
@@ -3452,7 +3452,7 @@ def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_
                       appgw_watch_namespace=None, enable_sgxquotehelper=False, enable_secret_rotation=False, no_wait=False, enable_msi_auth_for_monitoring=False):
 
     instance = client.get(resource_group_name, name)
-    msi_auth = True if instance.service_principal_profile.client_id == "msi" else False
+    msi_auth = True if instance.service_principal_profile.client_id == "msi" else False  # this is overwritten by _update_addons(), so the value needs to be recorded here
 
     subscription_id = get_subscription_id(cmd.cli_ctx)
     instance = _update_addons(cmd, instance, subscription_id, resource_group_name, name, addons, enable=True,
@@ -3461,10 +3461,8 @@ def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_
                               enable_sgxquotehelper=enable_sgxquotehelper, enable_secret_rotation=enable_secret_rotation, no_wait=no_wait)
 
     if CONST_MONITORING_ADDON_NAME in instance.addon_profiles and instance.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled:
-
-
         if instance.addon_profiles[CONST_MONITORING_ADDON_NAME].config[CONST_MONITORING_USING_AAD_MSI_AUTH]:
-            if msi_auth:
+            if not msi_auth:
                 raise ArgumentUsageError("--enable-msi-auth-for-monitoring can not be used on clusters with service principal auth.")
             else:
                 # create a Data Collection Rule (DCR) and associate it with the cluster
