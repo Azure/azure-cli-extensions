@@ -55,6 +55,11 @@ Describe 'Basic Source Control Configuration Testing' {
         $n | Should -BeLessOrEqual $MAX_RETRY_ATTEMPTS
     }
 
+    It "Performs a re-PUT of the configuration on the cluster, with HTTPS in caps" {
+        az k8s-configuration create -c $ENVCONFIG.arcClusterName -g $ENVCONFIG.resourceGroup --cluster-type "connectedClusters" -u "HTTPS://github.com/Azure/arc-k8s-demo" -n $configurationName --scope cluster --enable-helm-operator=false --operator-namespace $configurationName
+        $? | Should -BeTrue
+    }
+
     It "Lists the configurations on the cluster" {
         $output = az k8s-configuration list -c $ENVCONFIG.arcClusterName -g $ENVCONFIG.resourceGroup --cluster-type connectedClusters
         $? | Should -BeTrue
