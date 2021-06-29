@@ -4,7 +4,7 @@ Release History
 ===============
 0.5.1
 ++++++
-* Apply v2020-02-10 api version for blob operations
+* Apply v2020-06-12 api version for blob operations
 * Add `az storage blob download-batch/upload-batch/delete-batch/copy start-batch` commands
 
 0.5.0
