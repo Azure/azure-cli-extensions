@@ -26,7 +26,7 @@ source azEnv/bin/activate
 # prepare run flags
 run_flags="-e --no-exitfirst --report-path ./reports --reruns 3 --capture=sys"
 # parallel
-if [ ${PARALLELISM} -ge 2 ]; then
+if [[ ${PARALLELISM} -ge 2 ]]; then
     run_flags+=" -j ${PARALLELISM}"
 else
     run_flags+=" -s"
@@ -50,17 +50,17 @@ if [[ ${TEST_MODE} == "record" || ${TEST_MODE} == "all" ]]; then
     run_flags+=" --json-report-file=ext_report.json"
     run_flags+=" --xml-file=ext_result.xml"
     echo "run flags: ${run_flags}"
-    azaks ${run_flags}
+    azaks "${run_flags}"
 fi
 
 # live test
 if [[ ${TEST_MODE} == "live" || ${TEST_MODE} == "all" ]]; then
     echo "Test in live mode!"
-    az login --service-principal -u ${AZCLI_ALT_CLIENT_ID} -p ${AZCLI_ALT_CLIENT_SECRET} -t ${TENANT_ID}
-    az account set -s ${AZCLI_ALT_SUBSCRIPTION_ID}
+    az login --service-principal -u "${AZCLI_ALT_CLIENT_ID}" -p "${AZCLI_ALT_CLIENT_SECRET}" -t "${TENANT_ID}"
+    az account set -s "${AZCLI_ALT_SUBSCRIPTION_ID}"
     az account show
     run_flags+=" -l --json-report-file=ext_live_report.json"
     run_flags+=" --xml-file=ext_live_result.xml"
     echo "run flags: ${run_flags}"
-    azaks ${run_flags}
+    azaks "${run_flags}"
 fi

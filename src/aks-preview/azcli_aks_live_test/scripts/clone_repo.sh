@@ -15,22 +15,22 @@ set -o xtrace
 [[ -z "${LIVE_TEST_BASE_DIR}" ]] && (echo "LIVE_TEST_BASE_DIR is empty"; exit 1)
 
 # clone azure-cli (default is the official repo)
-git clone ${CLI_REPO}
+git clone "${CLI_REPO}"
 
 # ckeckout to a specific azure-cli branch (default is the dev branch)
 pushd azure-cli/
 git branch -a
-git checkout ${CLI_BRANCH}
+git checkout "${CLI_BRANCH}"
 popd
 
 # clone azure-cli-extensions when manually trigger the pipeline
 if [[ ${BUILD_REASON} == "Manual" ]]; then
     echo "Manually trigger the pipeline, delete the current 'azure-cli-extensions' directory!"
     rm -rf azure-cli-extensions/
-    git clone ${EXT_REPO}
+    git clone "${EXT_REPO}"
     pushd azure-cli-extensions/
     git branch -a
-    git checkout ${EXT_BRANCH}
+    git checkout "${EXT_BRANCH}"
     popd
 fi
 
@@ -41,5 +41,5 @@ git log -10
 popd
 
 # copy live test related files to the same level as the checkout directory ($(Agent.BuildDirectory)/s)
-cp -rT ${LIVE_TEST_BASE_DIR} ./
+cp -rT "${LIVE_TEST_BASE_DIR}" ./
 ls -alh
