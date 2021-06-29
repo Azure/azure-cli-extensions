@@ -74,20 +74,24 @@ def load_arguments(self, _):
         c.argument('name', name_type, help='Name of app.')
 
     with self.argument_context('spring-cloud app create') as c:
-        c.argument(
-            'is_public', arg_type=get_three_state_flag(), help='If true, assign public domain', default=False)
+        c.argument('assign_endpoint', arg_type=get_three_state_flag(),
+                   help='If true, assign endpoint URL for direct access.', default=False,
+                   options_list=['--assign-endpoint', c.deprecate(target='--is-public', redirect='--assign-endpoint', hide=True)])
         c.argument('assign_identity', arg_type=get_three_state_flag(),
                    help='If true, assign managed service identity.')
-        c.argument('cpu', type=int, default=1,
-                   help='Number of virtual cpu cores per instance.')
-        c.argument('memory', type=int, default=1,
-                   help='Number of GB of memory per instance.')
+        c.argument('cpu', type=str, default="1",
+                   help='CPU resource quantity. Should be 500m or number of CPU cores.')
+        c.argument('memory', type=str, default="1Gi",
+                   help='Memory resource quantity. Should be 512Mi or #Gi, e.g., 1Gi, 3Gi.')
         c.argument('instance_count', type=int,
                    default=1, help='Number of instance.', validator=validate_instance_count)
 
     with self.argument_context('spring-cloud app update') as c:
-        c.argument('is_public', arg_type=get_three_state_flag(), help='If true, assign endpoint')
+        c.argument('assign_endpoint', arg_type=get_three_state_flag(),
+                   help='If true, assign endpoint URL for direct access.',
+                   options_list=['--assign-endpoint', c.deprecate(target='--is-public', redirect='--assign-endpoint', hide=True)])
         c.argument('https_only', arg_type=get_three_state_flag(), help='If true, access app via https', default=False)
+        c.argument('enable_end_to_end_tls', arg_type=get_three_state_flag(), help='If true, enable end to end tls')
 
     for scope in ['spring-cloud app update', 'spring-cloud app start', 'spring-cloud app stop', 'spring-cloud app restart', 'spring-cloud app deploy', 'spring-cloud app scale', 'spring-cloud app set-deployment', 'spring-cloud app show-deploy-log']:
         with self.argument_context(scope) as c:
@@ -100,7 +104,8 @@ def load_arguments(self, _):
         c.argument('scope', help="The scope the managed identity has access to")
         c.argument('role', help="Role name or id the managed identity will be assigned")
 
-    with self.argument_context('spring-cloud app logs') as c:
+    def prepare_logs_argument(c):
+        '''`app log tail` is deprecated. `app logs` is the new choice. They share the same command processor.'''
         c.argument('instance', options_list=['--instance', '-i'], help='Name of an existing instance of the deployment.')
         c.argument('lines', type=int, help='Number of lines to show. Maximum is 10000', validator=validate_log_lines)
         c.argument('follow', options_list=['--follow ', '-f'], help='Specify if the logs should be streamed.', action='store_true')
@@ -108,15 +113,14 @@ def load_arguments(self, _):
         c.argument('limit', type=int, help='Maximum kilobytes of logs to return. Ceiling number is 2048.', validator=validate_log_limit)
         c.argument('deployment', options_list=[
             '--deployment', '-d'], help='Name of an existing deployment of the app. Default to the production deployment if not specified.', validator=validate_deployment_name)
+        c.argument('format_json', nargs='?', const='{timestamp} {level:>5} [{thread:>15.15}] {logger{39}:<40.40}: {message}\n{stackTrace}',
+                   help='Format JSON logs if structured log is enabled')
+
+    with self.argument_context('spring-cloud app logs') as c:
+        prepare_logs_argument(c)
 
     with self.argument_context('spring-cloud app log tail') as c:
-        c.argument('instance', options_list=['--instance', '-i'], help='Name of an existing instance of the deployment.')
-        c.argument('lines', type=int, help='Number of lines to show. Maximum is 10000', validator=validate_log_lines)
-        c.argument('follow', options_list=['--follow ', '-f'], help='Specify if the logs should be streamed.', action='store_true')
-        c.argument('since', help='Only return logs newer than a relative duration like 5s, 2m, or 1h. Maximum is 1h', validator=validate_log_since)
-        c.argument('limit', type=int, help='Maximum kilobytes of logs to return. Ceiling number is 2048.', validator=validate_log_limit)
-        c.argument('deployment', options_list=[
-            '--deployment', '-d'], help='Name of an existing deployment of the app. Default to the production deployment if not specified.', validator=validate_deployment_name)
+        prepare_logs_argument(c)
 
     with self.argument_context('spring-cloud app set-deployment') as c:
         c.argument('deployment', options_list=[
@@ -136,8 +140,8 @@ def load_arguments(self, _):
             c.argument('env', env_type)
 
     with self.argument_context('spring-cloud app scale') as c:
-        c.argument('cpu', type=int, help='Number of virtual cpu cores per instance.')
-        c.argument('memory', type=int, help='Number of GB of memory per instance.')
+        c.argument('cpu', type=str, help='CPU resource quantity. Should be 500m or number of CPU cores.')
+        c.argument('memory', type=str, help='Memory resource quantity. Should be 512Mi or #Gi, e.g., 1Gi, 3Gi.')
         c.argument('instance_count', type=int, help='Number of instance.', validator=validate_instance_count)
 
     for scope in ['spring-cloud app deploy', 'spring-cloud app deployment create']:
@@ -156,8 +160,8 @@ def load_arguments(self, _):
     with self.argument_context('spring-cloud app deployment create') as c:
         c.argument('skip_clone_settings', help='Create staging deployment will automatically copy settings from production deployment.',
                    action='store_true')
-        c.argument('cpu', type=int, help='Number of virtual cpu cores per instance.')
-        c.argument('memory', type=int, help='Number of GB of memory per instance.')
+        c.argument('cpu', type=str, help='CPU resource quantity. Should be 500m or number of CPU cores.')
+        c.argument('memory', type=str, help='Memory resource quantity. Should be 512Mi or #Gi, e.g., 1Gi, 3Gi.')
         c.argument('instance_count', type=int, help='Number of instance.', validator=validate_instance_count)
 
     with self.argument_context('spring-cloud app deployment') as c:
@@ -197,8 +201,7 @@ def load_arguments(self, _):
     for scope in ['spring-cloud app binding redis add', 'spring-cloud app binding redis update']:
         with self.argument_context(scope) as c:
             c.argument('key', help='Api key of the service.')
-            c.argument('disable_ssl', action='store_true',
-                       help='Disable SSL.')
+            c.argument('disable_ssl', arg_type=get_three_state_flag(), help='If true, disable SSL. If false, enable SSL.', default=False)
 
     with self.argument_context('spring-cloud config-server set') as c:
         c.argument('config_file',
@@ -249,9 +252,11 @@ def load_arguments(self, _):
 
     with self.argument_context('spring-cloud app custom-domain bind') as c:
         c.argument('certificate', type=str, help='Certificate name in Azure Spring Cloud.')
+        c.argument('enable_end_to_end_tls', arg_type=get_three_state_flag(), help='If true, enable end to end tls')
 
     with self.argument_context('spring-cloud app custom-domain update') as c:
         c.argument('certificate', help='Certificate name in Azure Spring Cloud.')
+        c.argument('enable_end_to_end_tls', arg_type=get_three_state_flag(), help='If true, enable end to end tls')
 
     with self.argument_context('spring-cloud app-insights update') as c:
         c.argument('app_insights_key',

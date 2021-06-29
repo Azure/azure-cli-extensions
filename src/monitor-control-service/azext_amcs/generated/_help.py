@@ -12,6 +12,49 @@
 from knack.help_files import helps
 
 
+helps['monitor data-collection'] = '''
+    type: group
+    short-summary: Manage Monitor
+'''
+
+helps['monitor data-collection endpoint'] = """
+    type: group
+    short-summary: Manage data collection endpoint with monitor control service
+"""
+
+helps['monitor data-collection endpoint list'] = """
+    type: command
+    short-summary: "Lists all data collection endpoints in the specified resource group. And Lists all data collection \
+endpoints in the specified subscription."
+    examples:
+      - name: List data collection endpoints by resource group
+        text: |-
+               az monitor data-collection endpoint list --resource-group "myResourceGroup"
+      - name: List data collection endpoints by subscription
+        text: |-
+               az monitor data-collection endpoint list
+"""
+
+helps['monitor data-collection endpoint show'] = """
+    type: command
+    short-summary: "Returns the specified data collection endpoint."
+    examples:
+      - name: Get data collection endpoint
+        text: |-
+               az monitor data-collection endpoint show --name "myCollectionEndpoint" --resource-group \
+"myResourceGroup"
+"""
+
+helps['monitor data-collection endpoint delete'] = """
+    type: command
+    short-summary: "Deletes a data collection endpoint."
+    examples:
+      - name: Delete data collection endpoint
+        text: |-
+               az monitor data-collection endpoint delete --name "myCollectionEndpoint" --resource-group \
+"myResourceGroup"
+"""
+
 helps['monitor data-collection rule association'] = """
     type: group
     short-summary: Manage data collection rule association with monitor control service

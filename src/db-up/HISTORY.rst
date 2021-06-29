@@ -3,6 +3,14 @@
  Release History
 ===============
 
+0.2.3 (2021-05-10)
+++++++++++++++++++
+* Add compatible logic for the track 2 migration of resource dependence
+
+0.2.2 (2021-03-22)
+++++++++++++++++++
+* Configure for custom cloud settings
+
 0.2.1 (2021-01-11)
 ++++++++++++++++++
 * Bump mysql-connector-python to 8.0.14 to fix CVE-2019-2435

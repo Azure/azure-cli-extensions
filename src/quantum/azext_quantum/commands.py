@@ -7,7 +7,7 @@
 
 from collections import OrderedDict
 from azure.cli.core.commands import CliCommandType
-from ._validators import validate_workspace_info, validate_target_info, validate_workspace_and_target_info, validate_workspace_info_no_location
+from ._validators import validate_workspace_info, validate_target_info, validate_workspace_and_target_info, validate_workspace_info_no_location, validate_provider_and_sku_info
 
 
 def transform_targets(providers):
@@ -16,7 +16,7 @@ def transform_targets(providers):
             ('Provider', provider),
             ('Target-id', target['id']),
             ('Current Availability', target['currentAvailability']),
-            ('Average Queue Time', target['averageQueueTime'])
+            ('Average Queue Time (seconds)', target['averageQueueTime'])
         ])
 
     return [
@@ -43,6 +43,18 @@ def transform_jobs(results):
         return job['creationTime']
 
     return [transform_job(job) for job in sorted(results, key=creation, reverse=True)]
+
+
+def transform_offerings(offerings):
+    def one(offering):
+        return OrderedDict([
+            ('Provider Id', offering['id']),
+            ('SKUs', ', '.join([s['id'] for s in offering['properties']['skus']])),
+            ('Publisher ID', offering['properties']['managedApplication']['publisherId']),
+            ('Offer ID', offering['properties']['managedApplication']['offerId'])
+        ])
+
+    return [one(offering) for offering in offerings]
 
 
 def transform_output(results):
@@ -80,6 +92,7 @@ def load_command_table(self, _):
     workspace_ops = CliCommandType(operations_tmpl='azext_quantum.operations.workspace#{}')
     job_ops = CliCommandType(operations_tmpl='azext_quantum.operations.job#{}')
     target_ops = CliCommandType(operations_tmpl='azext_quantum.operations.target#{}')
+    offerings_ops = CliCommandType(operations_tmpl='azext_quantum.operations.offerings#{}')
 
     with self.command_group('quantum workspace', workspace_ops) as w:
         w.command('create', 'create')
@@ -106,3 +119,8 @@ def load_command_table(self, _):
     with self.command_group('quantum', job_ops, is_preview=True) as q:
         q.command('run', 'run', validator=validate_workspace_and_target_info, table_transformer=transform_output)
         q.command('execute', 'run', validator=validate_workspace_and_target_info, table_transformer=transform_output)
+
+    with self.command_group('quantum offerings', offerings_ops) as o:
+        o.command('list', 'list_offerings', table_transformer=transform_offerings)
+        o.command('accept-terms', 'accept_terms', validator=validate_provider_and_sku_info)
+        o.command('show-terms', 'show_terms', validator=validate_provider_and_sku_info)

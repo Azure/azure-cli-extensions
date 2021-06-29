@@ -6,7 +6,6 @@
 import os
 import unittest
 
-from azure.cli.testsdk import live_only
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 
 
@@ -15,7 +14,6 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 class Scheduled_queryScenarioTest(ScenarioTest):
 
-    @live_only()
     @ResourceGroupPreparer(name_prefix='cli_test_scheduled_query', location='eastus')
     def test_scheduled_query(self, resource_group):
         from azure.mgmt.core.tools import resource_id
@@ -38,7 +36,7 @@ class Scheduled_queryScenarioTest(ScenarioTest):
                                   resource_group=resource_group),
         })
         time.sleep(180)
-        self.cmd('monitor scheduled-query create -g {rg} -n {name1} --scopes {vm_id} --condition "count \'union Event, Syslog | where TimeGenerated > ago(1h)\' > 360" --description "Test rule"',
+        self.cmd('monitor scheduled-query create -g {rg} -n {name1} --scopes {vm_id} --condition "count \'placeholder_1\' > 360" --condition-query placeholder_1="union Event, Syslog | where TimeGenerated > ago(1h)" --description "Test rule"',
                  checks=[
                      self.check('name', '{name1}'),
                      self.check('scopes[0]', '{vm_id}'),
@@ -56,7 +54,7 @@ class Scheduled_queryScenarioTest(ScenarioTest):
                      self.check('scopes[0]', '{rg_id}'),
                      self.check('severity', 2)
                  ])
-        self.cmd('monitor scheduled-query update -g {rg} -n {name1} --condition "count \'union Event | where TimeGenerated > ago(2h)\' < 260 resource id _ResourceId at least 2 violations out of 3 aggregated points" --description "Test rule 2" --severity 4 --disabled --evaluation-frequency 10m --window-size 10m',
+        self.cmd('monitor scheduled-query update -g {rg} -n {name1} --condition "count \'placeholder_1\' < 260 resource id _ResourceId at least 2 violations out of 3 aggregated points" --condition-query placeholder_1="union Event | where TimeGenerated > ago(2h)" --description "Test rule 2" --severity 4 --disabled --evaluation-frequency 10m --window-size 10m',
                  checks=[
                      self.check('name', '{name1}'),
                      self.check('scopes[0]', '{vm_id}'),
@@ -121,27 +119,25 @@ class ScheduledQueryCondtionTest(unittest.TestCase):
 
     def test_monitor_scheduled_query_condition_action(self):
 
-        from knack.util import CLIError
-
         ns = self._build_namespace()
         self.call_condition(ns, 'avg "Perf" > 90')
         self.check_condition(ns, 'Average', 'Perf', 'GreaterThan', '90')
 
         ns = self._build_namespace()
         self.call_condition(ns, 'avg "% Processor Time" from "Perf | where ObjectName == \\\"Processor\\\"" > 70 resource id resourceId')
-        self.check_condition(ns, 'Average', 'Perf | where ObjectName == \\\"Processor\\\"', 'GreaterThan', '70', '% Processor Time', 'resourceId')
+        self.check_condition(ns, 'Average', 'Perf | where ObjectName == \"Processor\"', 'GreaterThan', '70', '% Processor Time', 'resourceId')
 
         ns = self._build_namespace()
         self.call_condition(ns, 'count "diagnostics | where Category == \\\"A\\\"| where SubscriptionId contains \\\"111\\\" | summarize count() by bin(TimeGenerated, 1m)" > 1')
-        self.check_condition(ns, 'Count', 'diagnostics | where Category == \\\"A\\\"| where SubscriptionId contains \\\"111\\\" | summarize count() by bin(TimeGenerated, 1m)', 'GreaterThan', '1')
+        self.check_condition(ns, 'Count', 'diagnostics | where Category == \"A\"| where SubscriptionId contains \"111\" | summarize count() by bin(TimeGenerated, 1m)', 'GreaterThan', '1')
 
         ns = self._build_namespace()
         self.call_condition(ns, 'count "diagnostics | where Time > ago(3h) | where Category == \\\"manager\\\" | where not (log_s hasprefix \\\"I11\\\") | where log_s contains \\\"Code=1\\\" | summarize count(log_s) by bin(TimeGenerated, 1m)" > 10')
-        self.check_condition(ns, 'Count', 'diagnostics | where Time > ago(3h) | where Category == \\\"manager\\\" | where not (log_s hasprefix \\\"I11\\\") | where log_s contains \\\"Code=1\\\" | summarize count(log_s) by bin(TimeGenerated, 1m)', 'GreaterThan', '10')
+        self.check_condition(ns, 'Count', 'diagnostics | where Time > ago(3h) | where Category == \"manager\" | where not (log_s hasprefix \"I11\") | where log_s contains \"Code=1\" | summarize count(log_s) by bin(TimeGenerated, 1m)', 'GreaterThan', '10')
 
         ns = self._build_namespace()
         self.call_condition(ns, 'avg "% Processor Time" from "Perf | where ObjectName == \\\"Processor\\\" and C>=D && E<<F" > 70 resource id resourceId where ApiName includes GetBlob or PutBlob and DpiName excludes CCC at least 1.1 violations out of 10.1 aggregated points')
-        self.check_condition(ns, 'Average', 'Perf | where ObjectName == \\\"Processor\\\" and C>=D && E<<F', 'GreaterThan', '70', '% Processor Time', 'resourceId')
+        self.check_condition(ns, 'Average', 'Perf | where ObjectName == \"Processor\" and C>=D && E<<F', 'GreaterThan', '70', '% Processor Time', 'resourceId')
         self.check_dimension(ns, 0, 'ApiName', 'Include', ['GetBlob', 'PutBlob'])
         self.check_dimension(ns, 1, 'DpiName', 'Exclude', ['CCC'])
         self.check_falling_period(ns, 1, 10)

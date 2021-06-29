@@ -12,8 +12,6 @@ from knack.util import CLIError
 
 CUSTOM_MGMT_AKS_PREVIEW = CustomResourceType('azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks',
                                              'ContainerServiceClient')
-CUSTOM_MGMT_AKS = CustomResourceType('azext_aks_preview.vendored_sdks.azure_mgmt_aks',
-                                     'ContainerServiceClient')
 
 
 def cf_storage(cli_ctx, subscription_id=None):
@@ -38,6 +36,10 @@ def cf_managed_clusters(cli_ctx, *_):
 
 def cf_agent_pools(cli_ctx, *_):
     return get_mgmt_service_client(cli_ctx, CUSTOM_MGMT_AKS_PREVIEW).agent_pools
+
+
+def cf_maintenance_configurations(cli_ctx, *_):
+    return get_mgmt_service_client(cli_ctx, CUSTOM_MGMT_AKS_PREVIEW).maintenance_configurations
 
 
 def cf_resource_groups(cli_ctx, subscription_id=None):
@@ -114,5 +116,6 @@ def get_resource_by_name(cli_ctx, resource_name, resource_type):
                 resource_type, resource_name))
 
 
-def get_msi_client(cli_ctx, **_):
-    return get_mgmt_service_client(cli_ctx, ManagedServiceIdentityClient)
+def get_msi_client(cli_ctx, subscription_id=None):
+    return get_mgmt_service_client(cli_ctx, ManagedServiceIdentityClient,
+                                   subscription_id=subscription_id)
