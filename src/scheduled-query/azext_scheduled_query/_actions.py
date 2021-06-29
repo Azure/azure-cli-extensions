@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import argparse
-from knack.util import CLIError
+from azure.cli.core.azclierror import InvalidArgumentValueError
 
 
 # pylint: disable=protected-access, too-few-public-methods
@@ -19,7 +19,7 @@ class ScheduleQueryConditionAction(argparse._AppendAction):
             ScheduleQueryConditionLexer, ScheduleQueryConditionParser, ScheduleQueryConditionValidator)
 
         usage = 'usage error: --condition {avg,min,max,total,count} ["METRIC COLUMN" from]\n' \
-                '                         "QUERY" {=,!=,>,>=,<,<=} THRESHOLD\n' \
+                '                         "QUERY_PLACEHOLDER" {=,!=,>,>=,<,<=} THRESHOLD\n' \
                 '                         [resource id RESOURCEID]\n' \
                 '                         [where DIMENSION {includes,excludes} VALUE [or VALUE ...]\n' \
                 '                         [and   DIMENSION {includes,excludes} VALUE [or VALUE ...] ...]]\n' \
@@ -38,13 +38,27 @@ class ScheduleQueryConditionAction(argparse._AppendAction):
             scheduled_query_condition = validator.result()
             for item in ['time_aggregation', 'threshold', 'operator']:
                 if not getattr(scheduled_query_condition, item, None):
-                    raise CLIError(usage)
+                    raise InvalidArgumentValueError(usage)
         except (AttributeError, TypeError, KeyError):
-            raise CLIError(usage)
+            raise InvalidArgumentValueError(usage)
         super(ScheduleQueryConditionAction, self).__call__(parser,
                                                            namespace,
                                                            scheduled_query_condition,
                                                            option_string)
+
+
+class ScheduleQueryConditionQueryAction(argparse.Action):
+
+    def __call__(self, parser, namespace, values, option_string=None):
+        condition_query = getattr(namespace, self.dest, None)
+        if condition_query is None:
+            condition_query = dict()
+        for x in values:
+            k, v = x.split('=', 1)
+            if k in condition_query:
+                raise InvalidArgumentValueError('Repeated definition of query placeholder "{}"'.format(k))
+            condition_query[k] = v
+        setattr(namespace, self.dest, condition_query)
 
 
 # pylint: disable=protected-access, too-few-public-methods

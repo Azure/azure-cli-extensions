@@ -6,24 +6,42 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from enum import Enum
+from enum import Enum, EnumMeta
+from six import with_metaclass
 
-class ProvisioningState(str, Enum):
+class _CaseInsensitiveEnumMeta(EnumMeta):
+    def __getitem__(self, name):
+        return super().__getitem__(name.upper())
+
+    def __getattr__(cls, name):
+        """Return the enum member matching `name`
+        We use __getattr__ instead of descriptors or inserting into the enum
+        class' __dict__ in order to support `name` and `value` being both
+        properties for enum members (which live in the class' __dict__) and
+        enum members themselves.
+        """
+        try:
+            return cls._member_map_[name.upper()]
+        except KeyError:
+            raise AttributeError(name)
+
+
+class ProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Provisioning state.
     """
 
-    succeeded = "Succeeded"
-    failed = "Failed"
-    canceled = "Canceled"
-    accepted = "Accepted"
-    provisioning = "Provisioning"
+    SUCCEEDED = "Succeeded"
+    FAILED = "Failed"
+    CANCELED = "Canceled"
+    ACCEPTED = "Accepted"
+    PROVISIONING = "Provisioning"
 
-class Status(str, Enum):
+class Status(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Status of the cluster agent.
     """
 
-    never_connected = "NeverConnected"
-    connected_recently = "ConnectedRecently"
-    not_connected_recently = "NotConnectedRecently"
-    expired = "Expired"
-    error = "Error"
+    NOT_YET_REGISTERED = "NotYetRegistered"
+    CONNECTED_RECENTLY = "ConnectedRecently"
+    NOT_CONNECTED_RECENTLY = "NotConnectedRecently"
+    DISCONNECTED = "Disconnected"
+    ERROR = "Error"

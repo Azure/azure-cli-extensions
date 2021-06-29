@@ -10,7 +10,7 @@ from ._kusto_management_client import KustoManagementClient
 __all__ = ['KustoManagementClient']
 
 try:
-    from ._patch import patch_sdk
+    from ._patch import patch_sdk  # type: ignore
     patch_sdk()
 except ImportError:
     pass

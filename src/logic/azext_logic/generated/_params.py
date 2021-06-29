@@ -14,7 +14,7 @@ from azure.cli.core.commands.parameters import (
     resource_group_name_type,
     get_location_type
 )
-from azext_logic.action import AddIntegrationAccount
+from azext_logic.action import AddIntegrationAccount, AddIntegrationServiceEnvironment
 
 
 def load_arguments(self, _):
@@ -44,8 +44,8 @@ def load_arguments(self, _):
             self.cli_ctx), validator=get_default_location_from_resource_group)
         c.argument('integration_account', action=AddIntegrationAccount,
                    nargs='+', help='The integration account.')
-        c.argument('integration_service_environment', action=AddIntegrationAccount, nargs='+', help='The integration se'
-                   'rvice environment. See README.md For more information')
+        c.argument('integration_service_environment', action=AddIntegrationServiceEnvironment,
+                   nargs='+', help='The integration service environment.')
         c.argument('endpoints_configuration', arg_type=CLIArgumentType(options_list=['--endpoints-configuration'],
                                                                        help='The endpoints configuration.'))
         c.argument('access_control', arg_type=CLIArgumentType(options_list=['--access-control'], help='The access contr'

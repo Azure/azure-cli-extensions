@@ -227,7 +227,7 @@ def load_command_table(self, _):  # pylint: disable=too-many-statements
 
     with self.command_group('mesh app', cmd_util) as g:
         g.custom_command('list', 'list_application', client_factory=cf_mesh_application, table_transformer=transform_application_list, exception_handler=resource_exception_handler)
-        g.custom_command('show', 'show_application', client_factory=cf_mesh_application, table_transformer=transform_application, exception_handler=resource_exception_handler)
+        g.custom_show_command('show', 'show_application', client_factory=cf_mesh_application, table_transformer=transform_application, exception_handler=resource_exception_handler)
         g.custom_command('delete', 'delete_application', client_factory=cf_mesh_application, confirmation=True)
 
     with self.command_group('mesh service', mesh_service_util, client_factory=cf_mesh_service) as g:
@@ -251,7 +251,7 @@ def load_command_table(self, _):  # pylint: disable=too-many-statements
     with self.command_group('mesh volume', cmd_util) as g:
         g.custom_command('create', 'create_volume', client_factory=cf_mesh_volume, table_transformer=transform_volume_list)
         g.custom_command('list', 'list_volumes', client_factory=cf_mesh_volume, table_transformer=transform_volume_list)
-        g.custom_command('show', 'show_volume', client_factory=cf_mesh_volume, exception_handler=resource_exception_handler, table_transformer=transform_volume)
+        g.custom_show_command('show', 'show_volume', client_factory=cf_mesh_volume, exception_handler=resource_exception_handler, table_transformer=transform_volume)
         g.custom_command('delete', 'delete_volume', client_factory=cf_mesh_volume, confirmation=True)
 
     with self.command_group('mesh secret', mesh_secret_util, client_factory=cf_mesh_secret) as g:

@@ -1,0 +1,554 @@
+interactions:
+- request:
+    body: '{"location": "Global", "properties": {"dataLocation": "United States"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - communication create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '71'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --location --data-location --resource-group
+      User-Agent:
+      - AZURECLI/2.15.0 azsdk-python-communicationservicemanagementclient/unknown
+        Python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_service_create_and_update_000001/providers/Microsoft.Communication/communicationServices/comm-100001?api-version=2020-08-20-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_service_create_and_update_000001/providers/Microsoft.Communication/communicationServices/comm-100001","name":"comm-100001","type":"Microsoft.Communication/communicationServices","location":"Global","properties":{"provisioningState":"Accepted","hostName":"comm-100001.communication.azure.com","immutableResourceId":"12373ed5-45b2-45e9-a36b-03658846b02c","dataLocation":"United
+        States"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/ac960592-8f9c-479b-93a5-41cf07c0f597?api-version=2020-08-20-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '502'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 18 Nov 2020 05:11:41 GMT
+      etag:
+      - '"47031021-0000-0700-0000-5fb4ad0c0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - communication create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --data-location --resource-group
+      User-Agent:
+      - AZURECLI/2.15.0 azsdk-python-communicationservicemanagementclient/unknown
+        Python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/ac960592-8f9c-479b-93a5-41cf07c0f597?api-version=2020-08-20-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/ac960592-8f9c-479b-93a5-41cf07c0f597","name":"ac960592-8f9c-479b-93a5-41cf07c0f597","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_service_create_and_update_000001/providers/Microsoft.Communication/communicationServices/comm-100001","status":"Succeeded","startTime":"2020-11-18T05:11:38.6137767Z","endTime":"2020-11-18T05:11:40.8154319Z","percentComplete":100.0,"properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '535'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 18 Nov 2020 05:12:12 GMT
+      etag:
+      - '"020033e0-0000-0800-0000-5fb4ad0c0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - communication create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --data-location --resource-group
+      User-Agent:
+      - AZURECLI/2.15.0 azsdk-python-communicationservicemanagementclient/unknown
+        Python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_service_create_and_update_000001/providers/Microsoft.Communication/communicationServices/comm-100001?api-version=2020-08-20-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_service_create_and_update_000001/providers/Microsoft.Communication/communicationServices/comm-100001","name":"comm-100001","type":"Microsoft.Communication/communicationServices","location":"Global","properties":{"provisioningState":"Succeeded","hostName":"comm-100001.communication.azure.com","immutableResourceId":"12373ed5-45b2-45e9-a36b-03658846b02c","dataLocation":"United
+        States"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '503'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 18 Nov 2020 05:12:12 GMT
+      etag:
+      - '"47031121-0000-0700-0000-5fb4ad0c0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - communication wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --created --name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.0 azsdk-python-communicationservicemanagementclient/unknown
+        Python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_service_create_and_update_000001/providers/Microsoft.Communication/communicationServices/comm-100001?api-version=2020-08-20-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_service_create_and_update_000001/providers/Microsoft.Communication/communicationServices/comm-100001","name":"comm-100001","type":"Microsoft.Communication/communicationServices","location":"Global","properties":{"provisioningState":"Succeeded","hostName":"comm-100001.communication.azure.com","immutableResourceId":"12373ed5-45b2-45e9-a36b-03658846b02c","dataLocation":"United
+        States"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '503'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 18 Nov 2020 05:12:14 GMT
+      etag:
+      - '"47031121-0000-0700-0000-5fb4ad0c0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - communication show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.0 azsdk-python-communicationservicemanagementclient/unknown
+        Python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_service_create_and_update_000001/providers/Microsoft.Communication/communicationServices/comm-100001?api-version=2020-08-20-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_service_create_and_update_000001/providers/Microsoft.Communication/communicationServices/comm-100001","name":"comm-100001","type":"Microsoft.Communication/communicationServices","location":"Global","properties":{"provisioningState":"Succeeded","hostName":"comm-100001.communication.azure.com","immutableResourceId":"12373ed5-45b2-45e9-a36b-03658846b02c","dataLocation":"United
+        States"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '503'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 18 Nov 2020 05:12:15 GMT
+      etag:
+      - '"47031121-0000-0700-0000-5fb4ad0c0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - communication list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group
+      User-Agent:
+      - AZURECLI/2.15.0 azsdk-python-communicationservicemanagementclient/unknown
+        Python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_service_create_and_update_000001/providers/Microsoft.Communication/communicationServices?api-version=2020-08-20-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_service_create_and_update_000001/providers/Microsoft.Communication/communicationServices/comm-100001","name":"comm-100001","type":"Microsoft.Communication/communicationServices","location":"Global","properties":{"provisioningState":"Succeeded","hostName":"comm-100001.communication.azure.com","immutableResourceId":"12373ed5-45b2-45e9-a36b-03658846b02c","dataLocation":"United
+        States"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '515'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 18 Nov 2020 05:12:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"tags": {"newTag": "newVal"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - communication update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '30'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --tags --resource-group
+      User-Agent:
+      - AZURECLI/2.15.0 azsdk-python-communicationservicemanagementclient/unknown
+        Python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_service_create_and_update_000001/providers/Microsoft.Communication/communicationServices/comm-100001?api-version=2020-08-20-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_service_create_and_update_000001/providers/Microsoft.Communication/communicationServices/comm-100001","name":"comm-100001","type":"Microsoft.Communication/communicationServices","location":"Global","tags":{"newTag":"newVal"},"properties":{"provisioningState":"Succeeded","hostName":"comm-100001.communication.azure.com","immutableResourceId":"12373ed5-45b2-45e9-a36b-03658846b02c","dataLocation":"United
+        States"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '530'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 18 Nov 2020 05:12:22 GMT
+      etag:
+      - '"47038c22-0000-0700-0000-5fb4ad340000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - communication show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.0 azsdk-python-communicationservicemanagementclient/unknown
+        Python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_service_create_and_update_000001/providers/Microsoft.Communication/communicationServices/comm-100001?api-version=2020-08-20-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_service_create_and_update_000001/providers/Microsoft.Communication/communicationServices/comm-100001","name":"comm-100001","type":"Microsoft.Communication/communicationServices","location":"Global","tags":{"newTag":"newVal"},"properties":{"provisioningState":"Succeeded","hostName":"comm-100001.communication.azure.com","immutableResourceId":"12373ed5-45b2-45e9-a36b-03658846b02c","dataLocation":"United
+        States"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '530'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 18 Nov 2020 05:12:23 GMT
+      etag:
+      - '"47038c22-0000-0700-0000-5fb4ad340000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - communication delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -y --name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.0 azsdk-python-communicationservicemanagementclient/unknown
+        Python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_service_create_and_update_000001/providers/Microsoft.Communication/communicationServices/comm-100001?api-version=2020-08-20-preview
+  response:
+    body:
+      string: 'null'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 18 Nov 2020 05:12:26 GMT
+      etag:
+      - '"4703ab22-0000-0700-0000-5fb4ad3a0000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/cd1a735b-e9b4-4bab-a3a9-19635243e6f9?api-version=2020-08-20-preview
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - communication delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -y --name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.0 azsdk-python-communicationservicemanagementclient/unknown
+        Python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/cd1a735b-e9b4-4bab-a3a9-19635243e6f9?api-version=2020-08-20-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/cd1a735b-e9b4-4bab-a3a9-19635243e6f9","name":"cd1a735b-e9b4-4bab-a3a9-19635243e6f9","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_service_create_and_update_000001/providers/Microsoft.Communication/communicationServices/comm-100001","status":"Deleted","startTime":"2020-11-18T05:12:25.7559804Z","endTime":"2020-11-18T05:12:27.7518745Z","percentComplete":100.0}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '515'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 18 Nov 2020 05:12:57 GMT
+      etag:
+      - '"02005ae0-0000-0800-0000-5fb4ad3b0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - communication show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group
+      User-Agent:
+      - AZURECLI/2.15.0 azsdk-python-communicationservicemanagementclient/unknown
+        Python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_service_create_and_update_000001/providers/Microsoft.Communication/communicationServices/comm-100001?api-version=2020-08-20-preview
+  response:
+    body:
+      string: '{"error":{"code":"ResourceNotFound","message":"The Resource ''Microsoft.Communication/CommunicationServices/comm-100001''
+        under resource group ''test_service_create_and_update_000001'' was not found.
+        For more details please go to https://aka.ms/ARMResourceNotFoundFix"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '304'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 18 Nov 2020 05:12:58 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+    status:
+      code: 404
+      message: Not Found
+version: 1

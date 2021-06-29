@@ -1,0 +1,34 @@
+|Scenario|Result|ErrorMessage|ErrorStack|ErrorNormalized|StartDt|EndDt|
+|step_manifest_generate|successed||||2021-06-08 02:53:57.810834|2021-06-08 02:53:59.072465|
+|step_manifest_checkin|successed||||2021-06-08 02:53:59.072465|2021-06-08 02:54:02.180973|
+|step_custom_rollout_create|successed||||2021-06-08 02:54:02.180973|2021-06-08 02:54:08.818632|
+|step_custom_rollout_show|successed||||2021-06-08 02:54:08.818632|2021-06-08 02:54:09.268460|
+|step_custom_rollout_list|successed||||2021-06-08 02:54:09.269461|2021-06-08 02:54:09.712838|
+|step_default_rollout_show|successed||||2021-06-08 02:54:14.427425|2021-06-08 02:54:14.724710|
+|step_default_rollout_list|successed||||2021-06-08 02:54:14.724710|2021-06-08 02:54:15.179839|
+|step_default_rollout_stop|successed||||2021-06-08 02:54:15.179839|2021-06-08 02:54:15.704376|
+|step_resource_type_registration_create|successed||||2021-06-08 02:54:15.705372|2021-06-08 02:54:21.207524|
+|step_resource_type_registration_show|successed||||2021-06-08 02:54:21.207524|2021-06-08 02:54:21.615440|
+|step_resource_type_registration_list|successed||||2021-06-08 02:54:21.615505|2021-06-08 02:54:22.148684|
+|step_nested_resource_type_registration_create|successed||||2021-06-08 02:54:22.148684|2021-06-08 02:54:24.434808|
+|step_nested_resource_type_registration_extensions_create|successed||||2021-06-08 02:54:24.434808|2021-06-08 02:54:25.285812|
+|step_nested_resource_type_registration_show|successed||||2021-06-08 02:54:25.285812|2021-06-08 02:54:25.684807|
+|step_nested_resource_type_registration_delete|successed||||2021-06-08 02:54:25.685829|2021-06-08 02:54:26.246285|
+|step_default_rollout_delete|successed||||2021-06-08 02:54:26.246810|2021-06-08 02:54:26.615305|
+|step_provider_registration_create|successed||||2021-06-08 02:54:28.918144|2021-06-08 02:54:29.870022|
+|step_provider_registration_show|successed||||2021-06-08 02:54:27.277876|2021-06-08 02:54:27.657873|
+|step_provider_registration_list|successed||||2021-06-08 02:54:27.657873|2021-06-08 02:54:28.276591|
+|step_provider_registration_delete|successed||||2021-06-08 02:54:28.277591|2021-06-08 02:54:28.918144|
+|step_provider_registration_generate_operation|successed||||2021-06-08 02:54:29.871024|2021-06-08 02:54:30.352592|
+|step_notification_registration_create|successed||||2021-06-08 02:54:30.352592|2021-06-08 02:54:31.009540|
+|step_notification_registration_show|successed||||2021-06-08 02:54:31.010543|2021-06-08 02:54:31.550092|
+|step_notification_registration_list|successed||||2021-06-08 02:54:31.550092|2021-06-08 02:54:31.941707|
+|step_notification_registration_delete|successed||||2021-06-08 02:54:31.941707|2021-06-08 02:54:32.400663|
+|step_operation_list|successed||||2021-06-08 02:54:32.401663|2021-06-08 02:54:32.882290|
+|step_operation_create|successed||||2021-06-08 02:54:32.883291|2021-06-08 02:54:33.803226|
+|step_operation_delete|successed||||2021-06-08 02:54:33.803226|2021-06-08 02:54:34.192666|
+|step_sku_create|successed||||2021-06-08 02:54:34.192666|2021-06-08 02:54:34.743965|
+|step_sku_show|successed||||2021-06-08 02:54:34.744958|2021-06-08 02:54:35.194421|
+|step_sku_list|successed||||2021-06-08 02:54:35.195421|2021-06-08 02:54:35.625073|
+|step_sku_delete|successed||||2021-06-08 02:54:35.625073|2021-06-08 02:54:36.184739|
+Coverage: 32/32

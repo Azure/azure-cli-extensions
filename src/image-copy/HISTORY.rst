@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.2.8
+++++++
+* Remove unused --subscription parameter
+
 0.2.7
 ++++++
 * Fix copying failure when location of source resource group and source image are different.

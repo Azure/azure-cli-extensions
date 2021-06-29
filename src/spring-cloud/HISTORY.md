@@ -1,5 +1,66 @@
 Release History
 ===============
+
+2.6.0
+-----
+* Add support for 0.5 core, 512 Mi resource requests in app deployment
+
+2.5.1
+-----
+* Revert `2.5.0` as a quick fix for incompatibility with old api-version.
+
+~~2.5.0~~
+-----
+* Deprecated
+* ~~Migration from `instrumentation_key` to `connection_string` when update java agent configurations.~~
+
+2.4.0
+-----
+* Add support to format log streaming of structured JSON output
+
+2.3.1
+-----
+* Fix disable-ssl in redis binding.
+
+2.3.0
+-----
+* Support End-to-end TLS.
+
+2.2.1
+-----
+* Fix exception in app service binding
+
+2.2.0
+-----
+* Add bring your own route tables support
+
+2.1.2
+-----
+* Add optional '--deployment' to 'az spring-cloud app logs' command
+* Add a parameter '--assign-endpoint' into 'az spring-cloud app create' and 'az spring-cloud app update'
+* Deprecate the parameter '--is-public' in 'az spring-cloud app create' and 'az spring-cloud app update'
+
+2.1.1
+-----
+* Remove preview parameter '--enable-java-agent' from 'az spring-cloud update'.
+* Fix warning message of '--disable-distributed-tracing'.
+
+2.1.0
+-----
+* Support Java In-Process Agent.
+
+2.0.1
+-----
+* Fix 'az spring-cloud app list' command issues.
+
+2.0.0
+-----
+* Switch api-version from 2019-05-01-preview to 2020-07-01
+
+1.2.0
+-----
+* Add support for sovereign cloud.
+
 1.1.1
 -----
 * Reimport the updated version of Python SDK.

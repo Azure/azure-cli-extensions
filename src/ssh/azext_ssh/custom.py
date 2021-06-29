@@ -16,15 +16,16 @@ from . import rsa_parser
 from . import ssh_utils
 
 
-def ssh_vm(cmd, resource_group_name=None, vm_name=None, ssh_ip=None, public_key_file=None, private_key_file=None):
+def ssh_vm(cmd, resource_group_name=None, vm_name=None, ssh_ip=None, public_key_file=None,
+           private_key_file=None, use_private_ip=False):
     _do_ssh_op(cmd, resource_group_name, vm_name, ssh_ip,
-               public_key_file, private_key_file, ssh_utils.start_ssh_connection)
+               public_key_file, private_key_file, use_private_ip, ssh_utils.start_ssh_connection)
 
 
 def ssh_config(cmd, config_path, resource_group_name=None, vm_name=None, ssh_ip=None,
-               public_key_file=None, private_key_file=None):
-    op_call = functools.partial(ssh_utils.write_ssh_config, config_path, resource_group_name, vm_name)
-    _do_ssh_op(cmd, resource_group_name, vm_name, ssh_ip, public_key_file, private_key_file, op_call)
+               public_key_file=None, private_key_file=None, overwrite=False, use_private_ip=False):
+    op_call = functools.partial(ssh_utils.write_ssh_config, config_path, resource_group_name, vm_name, overwrite)
+    _do_ssh_op(cmd, resource_group_name, vm_name, ssh_ip, public_key_file, private_key_file, use_private_ip, op_call)
 
 
 def ssh_cert(cmd, cert_path=None, public_key_file=None):
@@ -33,27 +34,34 @@ def ssh_cert(cmd, cert_path=None, public_key_file=None):
     print(cert_file + "\n")
 
 
-def _do_ssh_op(cmd, resource_group, vm_name, ssh_ip, public_key_file, private_key_file, op_call):
+def _do_ssh_op(cmd, resource_group, vm_name, ssh_ip, public_key_file, private_key_file, use_private_ip, op_call):
     _assert_args(resource_group, vm_name, ssh_ip)
     public_key_file, private_key_file = _check_or_create_public_private_files(public_key_file, private_key_file)
-    ssh_ip = ssh_ip or ip_utils.get_ssh_ip(cmd, resource_group, vm_name)
+    ssh_ip = ssh_ip or ip_utils.get_ssh_ip(cmd, resource_group, vm_name, use_private_ip)
 
     if not ssh_ip:
-        raise util.CLIError(f"VM '{vm_name}' does not have a public IP address to SSH to")
+        if not use_private_ip:
+            raise util.CLIError(f"VM '{vm_name}' does not have a public IP address to SSH to")
+
+        raise util.CLIError(f"VM '{vm_name}' does not have a public or private IP address to SSH to")
 
     cert_file, username = _get_and_write_certificate(cmd, public_key_file, None)
     op_call(ssh_ip, username, cert_file, private_key_file)
 
 
 def _get_and_write_certificate(cmd, public_key_file, cert_file):
-    scopes = ["https://pas.windows.net/CheckMyAccess/Linux/user_impersonation"]
+    scopes = ["https://pas.windows.net/CheckMyAccess/Linux/.default"]
     data = _prepare_jwk_data(public_key_file)
     from azure.cli.core._profile import Profile
     profile = Profile(cli_ctx=cmd.cli_ctx)
-    username, certificate = profile.get_msal_token(scopes, data)
+    # we used to use the username from the token but now we throw it away
+    _, certificate = profile.get_msal_token(scopes, data)
     if not cert_file:
         cert_file = public_key_file + "-aadcert.pub"
-    return _write_cert_file(certificate, cert_file), username
+    _write_cert_file(certificate, cert_file)
+    # instead we use the validprincipals from the cert due to mismatched upn and email in guest scenarios
+    username = ssh_utils.get_ssh_cert_principals(cert_file)[0]
+    return cert_file, username.lower()
 
 
 def _prepare_jwk_data(public_key_file):
@@ -79,13 +87,13 @@ def _prepare_jwk_data(public_key_file):
 
 def _assert_args(resource_group, vm_name, ssh_ip):
     if not (resource_group or vm_name or ssh_ip):
-        raise util.CLIError("The VM must be specified by --ip or --resource-group and --name")
+        raise util.CLIError("The VM must be specified by --ip or --resource-group and --vm-name/--name")
 
     if resource_group and not vm_name or vm_name and not resource_group:
-        raise util.CLIError("--resource-group and --name must be provided together")
+        raise util.CLIError("--resource-group and --vm-name/--name must be provided together")
 
     if ssh_ip and (vm_name or resource_group):
-        raise util.CLIError("--ip cannot be used with --resource-group or --name")
+        raise util.CLIError("--ip cannot be used with --resource-group or --vm-name/--name")
 
 
 def _check_or_create_public_private_files(public_key_file, private_key_file):
@@ -95,6 +103,9 @@ def _check_or_create_public_private_files(public_key_file, private_key_file):
         public_key_file = os.path.join(temp_dir, "id_rsa.pub")
         private_key_file = os.path.join(temp_dir, "id_rsa")
         ssh_utils.create_ssh_keyfile(private_key_file)
+
+    if not public_key_file:
+        raise util.CLIError(f"Public key file not specified")
 
     if not os.path.isfile(public_key_file):
         raise util.CLIError(f"Public key file {public_key_file} not found")

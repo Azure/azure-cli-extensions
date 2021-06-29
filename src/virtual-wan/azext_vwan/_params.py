@@ -18,9 +18,9 @@ from .action import RadiusServerAddAction
 def load_arguments(self, _):
 
     (IpsecEncryption, IpsecIntegrity, IkeEncryption, IkeIntegrity, DhGroup, PfsGroup,
-     VirtualNetworkGatewayConnectionProtocol) = self.get_models(
+     VirtualNetworkGatewayConnectionProtocol, AuthenticationMethod) = self.get_models(
          'IpsecEncryption', 'IpsecIntegrity', 'IkeEncryption', 'IkeIntegrity', 'DhGroup', 'PfsGroup',
-         'VirtualNetworkGatewayConnectionProtocol')
+         'VirtualNetworkGatewayConnectionProtocol', 'AuthenticationMethod')
 
     (VpnGatewayTunnelingProtocol, VpnAuthenticationType) = self.get_models('VpnGatewayTunnelingProtocol', 'VpnAuthenticationType')
 
@@ -61,7 +61,8 @@ def load_arguments(self, _):
         c.argument('vpn_gateway', help='Name or ID of a VPN gateway.', validator=get_network_resource_name_or_id('vpn_gateway', 'vpnGateways'))
 
     with self.argument_context('network vhub get-effective-routes') as c:
-        c.argument('virtual_wan_resource_type', options_list='--resource-type')
+        c.argument('virtual_wan_resource_type', options_list='--resource-type', help='The type of the specified resource like RouteTable, ExpressRouteConnection, HubVirtualNetworkConnection, VpnConnection and P2SConnection.')
+        c.argument('resource_id', options_list='--resource-id', help='The resource whose effective routes are being requested')
 
     with self.argument_context('network vhub connection') as c:
         c.argument('virtual_hub_name', vhub_name_type)
@@ -88,11 +89,11 @@ def load_arguments(self, _):
     with self.argument_context('network vhub route-table') as c:
         c.argument('virtual_hub_name', vhub_name_type, id_part=None)
         c.argument('route_table_name', options_list=['--name', '-n'], help='Name of the virtual hub route table.')
-        c.argument('attached_connections', options_list='--connections', nargs='+', arg_type=get_enum_type(['All_Vnets', 'All_Branches']), help='List of all connections attached to this route table', arg_group="route table v2")
+        c.argument('attached_connections', options_list='--connections', nargs='+', arg_type=get_enum_type(['All_Vnets', 'All_Branches']), help='List of all connections attached to this route table', arg_group="route table v2", deprecate_info=c.deprecate(hide=False))
         c.argument('destination_type', arg_type=get_enum_type(['Service', 'CIDR', 'ResourceId']), help='The type of destinations')
         c.argument('destinations', nargs='+', help='Space-separated list of all destinations.')
         c.argument('next_hop_type', arg_type=get_enum_type(['IPAddress', 'ResourceId']), help='The type of next hop. If --next-hops (v2) is provided, it should be IPAddress; if --next-hop (v3) is provided, it should be ResourceId.')
-        c.argument('next_hops', nargs='+', help='Space-separated list of IP address of the next hop. Currently only one next hop is allowed for every route.', arg_group="route table v2")
+        c.argument('next_hops', nargs='+', help='Space-separated list of IP address of the next hop. Currently only one next hop is allowed for every route.', arg_group="route table v2", deprecate_info=c.deprecate(hide=False))
         c.argument('index', type=int, help='List index of the item (starting with 1).')
         c.argument('next_hop', help='The resource ID of the next hop.', arg_group="route table v3", min_api='2020-04-01')
         c.argument('route_name', help='The name of the route.', arg_group="route table v3", min_api='2020-04-01')
@@ -121,7 +122,9 @@ def load_arguments(self, _):
         c.argument('shared_key', help='Shared key.')
 
     with self.argument_context('network vpn-gateway connection list') as c:
+        # List commands cannot use --ids flag
         c.argument('resource_name', vpn_gateway_name_type, id_part=None)
+        c.argument('gateway_name', id_part=None)
 
     with self.argument_context('network vpn-gateway connection', arg_group='IP Security') as c:
         c.argument('sa_life_time_seconds', options_list='--sa-lifetime', help='IPSec Security Association (also called Quick Mode or Phase 2 SA) lifetime in seconds for a site-to-site VPN tunnel.', type=int)
@@ -168,7 +171,7 @@ def load_arguments(self, _):
     # region VpnServerConfigurations
     with self.argument_context('network vpn-server-config') as c:
         c.argument('vpn_protocols', nargs='+', options_list=['--protocols'], arg_type=get_enum_type(VpnGatewayTunnelingProtocol), help='VPN protocols for the VpnServerConfiguration.')
-        c.argument('vpn_auth_types', nargs='+', options_list=['--auth-types'], arg_type=get_enum_type(VpnAuthenticationType), help='VPN authentication types for the VpnServerConfiguration.')
+        c.argument('vpn_auth_types', nargs='+', options_list=['--auth-types'], arg_type=get_enum_type(VpnAuthenticationType), help='List of VPN authentication types for the VpnServerConfiguration.')
         c.argument('location', get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group)
         c.argument('vpn_server_configuration_name', options_list=['--name', '-n'], help='Name of the Vpn server configuration.')
     with self.argument_context('network vpn-server-config', arg_group='AAD Auth') as c:
@@ -212,6 +215,9 @@ def load_arguments(self, _):
 
     with self.argument_context('network p2s-vpn-gateway connection list') as c:
         c.argument('resource_name', p2s_vpn_gateway_name_type, id_part=None)
+
+    with self.argument_context('network p2s-vpn-gateway vpn-client') as c:
+        c.argument('authentication_method', arg_type=get_enum_type(AuthenticationMethod), help='VPN client authentication method.')
     # endregion
 
     # region Routing Configuration
