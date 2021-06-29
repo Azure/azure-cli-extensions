@@ -128,7 +128,15 @@ def create_kube_environment(cmd, client, name, resource_group_name, custom_locat
         static_ip=static_ip,
         arc_configuration=arc_configuration)
 
-    return sdk_no_wait(no_wait, client.create, resource_group_name=resource_group_name, name=name, kube_environment_envelope=kube_environment)
+    try:
+        return sdk_no_wait(no_wait, client.create, resource_group_name=resource_group_name, name=name, kube_environment_envelope=kube_environment, polling=False)
+    except Exception as e:
+        try:
+            import json
+            msg = json.loads(e.response._content)['Message']
+        except Exception as err:
+            raise e
+    raise ValidationError(msg)
 
 
 def list_kube_environments(client, resource_group_name=None):
