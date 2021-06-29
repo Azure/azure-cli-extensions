@@ -60,6 +60,7 @@ installTestPackages(){
 installAZAKSTOOLFromLocal(){
     wheel_file=${1}
     pip install "${wheel_file}"
+    pip show az-aks-tool
 }
 
 # need to be executed in a venv
