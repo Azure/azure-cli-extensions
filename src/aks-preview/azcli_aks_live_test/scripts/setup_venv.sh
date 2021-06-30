@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 # check var
+# specify the version of python3, e.g. 3.6
 [[ -z "${PYTHON_VERSION}" ]] && (echo "PYTHON_VERSION is empty"; exit 1)
 
 patchImageTools(){
@@ -13,7 +14,7 @@ setupVenv(){
     rm -rf azEnv || true
 
     # create new venv
-    python${PYTHON_VERSION} -m venv azEnv
+    python"${PYTHON_VERSION}" -m venv azEnv
     source azEnv/bin/activate
     python -m pip install -U pip
 }
@@ -37,9 +38,9 @@ setupAZ(){
 
     # install-az: from cloned repos with azdev
     if [[ -z ${ext_repo} ]]; then
-        azdev setup -c ${cli_repo}
+        azdev setup -c "${cli_repo}"
     else
-        azdev setup -c ${cli_repo} -r ${ext_repo}
+        azdev setup -c "${cli_repo}" -r "${ext_repo}"
     fi
 
     # post-install-az: check installation result
@@ -58,7 +59,8 @@ installTestPackages(){
 # need to be executed in a venv
 installAZAKSTOOLFromLocal(){
     wheel_file=${1}
-    pip install ${wheel_file}
+    pip install "${wheel_file}"
+    pip show az-aks-tool
 }
 
 # need to be executed in a venv
@@ -71,7 +73,7 @@ installAZAKSTOOL(){
 
 # need to be executed in a venv with kusto related modules installed
 removeKustoPTHFile(){
-    pushd azEnv/lib/python${PYTHON_VERSION}/site-packages
+    pushd azEnv/lib/python"${PYTHON_VERSION}"/site-packages
     rm azure_kusto_data*nspkg.pth
     rm azure_kusto_ingest*nspkg.pth
     popd
@@ -108,7 +110,8 @@ setupAKSPreview(){
     source azEnv/bin/activate
 }
 
-if [[ -n ${1} ]]; then
+setup_option=${1:-""}
+if [[ -n ${setup_option} ]]; then
     # bash options
     set -o errexit
     set -o nounset
@@ -127,31 +130,31 @@ if [[ -n ${1} ]]; then
         source azEnv/bin/activate
     fi
 
-    if [[ ${1} == "build" ]]; then
+    if [[ ${setup_option} == "build" ]]; then
         echo "Start to build az-aks-tool!"
         installBuildTools
-    elif [[ ${1} == "setup-tool" ]]; then
+    elif [[ ${setup_option} == "setup-tool" ]]; then
         echo "Start to setup az-aks-tool!"
         local_setup=${3:-"n"}
         if [[ ${local_setup} == "y" ]]; then
             wheel_file=${4}
-            installAZAKSTOOLFromLocal ${wheel_file}
+            installAZAKSTOOLFromLocal "${wheel_file}"
         else
             installAZAKSTOOL
         fi
         removeKustoPTHFile
-    elif [[ ${1} == "setup-az" ]]; then
+    elif [[ ${setup_option} == "setup-az" ]]; then
         echo "Start to setup azure-cli!"
         cli_repo=${3:-"azure-cli/"}
         ext_repo=${4:-""}
-        setupAZ ${cli_repo} ${ext_repo}
+        setupAZ "${cli_repo}" "${ext_repo}"
         installTestPackages
-    elif [[ ${1} == "setup-akspreview" ]]; then
+    elif [[ ${setup_option} == "setup-akspreview" ]]; then
         echo "Start to setup aks-preview!"
         setupAKSPreview
         igniteAKSPreview
     else
-        echo "Unknown arg '${1}'!"
+        echo "Unsupported setup option '${setup_option}'!"
     fi
     echo "All Done!"
 fi

@@ -27,7 +27,7 @@ removeAKSPreview
 # prepare run flags
 run_flags="-c --no-exitfirst --report-path ./reports --reruns 3 --capture=sys"
 # parallel
-if [ ${PARALLELISM} -ge 2 ]; then
+if [[ ${PARALLELISM} -ge 2 ]]; then
     run_flags+=" -j ${PARALLELISM}"
 else
     run_flags+=" -s"
@@ -57,8 +57,8 @@ fi
 # live test
 if [[ ${TEST_MODE} == "live" || ${TEST_MODE} == "all" ]]; then
     echo "Test in live mode!"
-    az login --service-principal -u ${AZCLI_ALT_CLIENT_ID} -p ${AZCLI_ALT_CLIENT_SECRET} -t ${TENANT_ID}
-    az account set -s ${AZCLI_ALT_SUBSCRIPTION_ID}
+    az login --service-principal -u "${AZCLI_ALT_CLIENT_ID}" -p "${AZCLI_ALT_CLIENT_SECRET}" -t "${TENANT_ID}"
+    az account set -s "${AZCLI_ALT_SUBSCRIPTION_ID}"
     az account show
     run_flags+=" -l --json-report-file=cli_live_report.json"
     run_flags+=" --xml-file=cli_live_result.xml"
