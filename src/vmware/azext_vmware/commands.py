@@ -2,6 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+# pylint: disable=line-too-long,too-many-statements
 
 from azure.cli.core.commands import CliCommandType
 from azext_vmware._client_factory import cf_vmware
@@ -80,3 +81,9 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'addon_srm_show')
         g.custom_command('update', 'addon_srm_update')
         g.custom_command('delete', 'addon_srm_delete')
+
+    with self.command_group('vmware global-reach-connection', vmware_sdk, client_factory=cf_vmware) as g:
+        g.custom_command('create', 'globalreachconnection_create')
+        g.custom_command('list', 'globalreachconnection_list')
+        g.custom_command('delete', 'globalreachconnection_delete')
+        g.custom_show_command('show', 'globalreachconnection_show')

@@ -2,7 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-# pylint: disable=line-too-long
+# pylint: disable=line-too-long,too-many-statements
 
 
 def load_arguments(self, _):
@@ -100,3 +100,10 @@ def load_arguments(self, _):
 
     with self.argument_context('vmware addon srm') as c:
         c.argument('license_key', help='The Site Recovery Manager (SRM) license.')
+
+    with self.argument_context('vmware global-reach-connection') as c:
+        c.argument('name', options_list=['--name', '-n'], help='Name of the global reach connection.')
+
+    with self.argument_context('vmware global-reach-connection create') as c:
+        c.argument('peer_express_route_circuit', help='Identifier of the ExpressRoute Circuit to peer with.')
+        c.argument('authorization_key', help='Authorization key from the peer express route.')
