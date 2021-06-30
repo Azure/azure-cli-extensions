@@ -2762,13 +2762,13 @@ def _ensure_container_insights_for_monitoring(cmd,
 
                     # this is required to fool the static analyzer. The else statement will only run if an exception
                     # is thrown, but flake8 will complain that e is undefined if we don't also define it here.
-                    e = None
+                    error = None
                     break
                 except CLIError as e:
-                    pass
+                    error = e
             else:
                 # This will run if the above for loop was not broken out of. This means all three requests failed
-                raise e
+                raise error
             json_response = json.loads(r.text)
             for region_data in json_response["value"]:
                 region_names_to_id[region_data["displayName"]] = region_data["name"]
@@ -2778,12 +2778,12 @@ def _ensure_container_insights_for_monitoring(cmd,
                 try:
                     feature_check_url = f"https://management.azure.com/subscriptions/{subscription_id}/providers/Microsoft.Insights?api-version=2020-10-01"
                     r = send_raw_request(cmd.cli_ctx, "GET", feature_check_url)
-                    e = None
+                    error = None
                     break
                 except CLIError as e:
-                    pass
+                    error = e
             else:
-                raise e
+                raise error
             json_response = json.loads(r.text)
             for resource in json_response["resourceTypes"]:
                 region_ids = map(lambda x: region_names_to_id[x], resource["locations"])  # map is lazy, so doing this for every region isn't slow
@@ -3415,6 +3415,7 @@ def aks_disable_addons(cmd, client, resource_group_name, name, addons, no_wait=F
     try:
         if addons == "monitoring" and CONST_MONITORING_ADDON_NAME in instance.addon_profiles and \
                 instance.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled and \
+                CONST_MONITORING_USING_AAD_MSI_AUTH in instance.addon_profiles[CONST_MONITORING_ADDON_NAME].config and \
                 instance.addon_profiles[CONST_MONITORING_ADDON_NAME].config[CONST_MONITORING_USING_AAD_MSI_AUTH]:
             # remove the DCR association because otherwise the DCR can't be deleted
             _ensure_container_insights_for_monitoring(
@@ -3461,7 +3462,8 @@ def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_
                               enable_sgxquotehelper=enable_sgxquotehelper, enable_secret_rotation=enable_secret_rotation, no_wait=no_wait)
 
     if CONST_MONITORING_ADDON_NAME in instance.addon_profiles and instance.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled:
-        if instance.addon_profiles[CONST_MONITORING_ADDON_NAME].config[CONST_MONITORING_USING_AAD_MSI_AUTH]:
+        if CONST_MONITORING_USING_AAD_MSI_AUTH in instance.addon_profiles[CONST_MONITORING_ADDON_NAME].config and \
+                instance.addon_profiles[CONST_MONITORING_ADDON_NAME].config[CONST_MONITORING_USING_AAD_MSI_AUTH]:
             if not msi_auth:
                 raise ArgumentUsageError("--enable-msi-auth-for-monitoring can not be used on clusters with service principal auth.")
             else:
