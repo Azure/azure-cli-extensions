@@ -204,10 +204,15 @@ def output(cmd, job_id, resource_group_name=None, workspace_name=None, location=
 
     with open(path) as json_file:
         if job.target.startswith("microsoft.simulator"):
+            print("getting job output for simulator")
             lines = [line.strip() for line in json_file.readlines()]
-            print('\n'.join(lines[:-1]))
-            print("_" * len(lines[-1]) + "\n")
-            json_string = "{ \"histogram\" : { \"" + lines[-1] + "\" : 1 } }"
+            result_start_line = len(lines) - 1
+            if lines[-1].endswith('"'):
+                while not lines[result_start_line].startswith('"'): result_start_line -= 1
+            print('\n'.join(lines[:result_start_line]))
+            result = ' '.join(lines[result_start_line:])[1:-1] # seems the cleanest version to display
+            print("_" * len(result) + "\n")
+            json_string = "{ \"histogram\" : { \"" + result + "\" : 1 } }"
             data = json.loads(json_string)
         else:
             data = json.load(json_file)
