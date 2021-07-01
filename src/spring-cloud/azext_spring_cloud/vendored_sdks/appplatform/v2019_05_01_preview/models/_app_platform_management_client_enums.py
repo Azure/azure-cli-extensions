@@ -42,6 +42,12 @@ class TraceProxyState(str, Enum):
     updating = "Updating"
 
 
+class TrafficDirection(str, Enum):
+
+    inbound = "Inbound"
+    outbound = "Outbound"
+
+
 class ManagedIdentityType(str, Enum):
 
     none = "None"

@@ -4,9 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-import unittest
 
-from azure_devtools.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 
 
@@ -16,7 +14,7 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 class Cosmosdb_previewScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='cli_update_backup_policy_database_account')
-    def test_update_backup_policy_database_account(self, resource_group):
+    def test_update_backup_policy_database_account(self):
 
         self.kwargs.update({
             'acc': self.create_random_name(prefix='cli', length=40)
@@ -33,8 +31,25 @@ class Cosmosdb_previewScenarioTest(ScenarioTest):
             self.check('backupPolicy.type', 'Periodic'),
         ])
 
+    @ResourceGroupPreparer(name_prefix='cli_update_pitrmigrate_database_account')
+    def test_update_pitrmigrate_database_account(self):
+
+        self.kwargs.update({
+            'acc': self.create_random_name(prefix='cli', length=40)
+        })
+
+        self.cmd('az cosmosdb create -n {acc} -g {rg}')
+        self.cmd('az cosmosdb show -n {acc} -g {rg}', checks=[
+            self.check('backupPolicy.type', 'Periodic')
+        ])
+
+        self.cmd('az cosmosdb update -n {acc} -g {rg} --backup-policy-type continuous', checks=[
+            self.check('backupPolicy.type', 'Continuous'),
+        ])
+
+    # pylint: disable=line-too-long
     @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_restore_using_create', parameter_name_for_location='location')
-    def test_cosmosdb_restore_using_create(self, resource_group, location):
+    def test_cosmosdb_restore_using_create(self, location):
         col = self.create_random_name(prefix='cli', length=15)
 
         self.kwargs.update({
@@ -51,7 +66,8 @@ class Cosmosdb_previewScenarioTest(ScenarioTest):
         self.cmd('az cosmosdb sql container create -g {rg} -a {acc} -d {db_name} -n {col} -p /pk ').get_output_in_json()
 
         restorable_accounts_list = self.cmd('az cosmosdb restorable-database-account list').get_output_in_json()
-        restorable_database_account = next(acc for acc in restorable_accounts_list if acc['name'] == account['instanceId'])
+        restorable_database_account = next(
+            acc for acc in restorable_accounts_list if acc['name'] == account['instanceId'])
 
         account_creation_time = restorable_database_account['creationTime']
         import dateutil
@@ -75,7 +91,7 @@ class Cosmosdb_previewScenarioTest(ScenarioTest):
         assert restored_account['restoreParameters']['restoreTimestampInUtc'] == restore_ts_string
 
     @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_restore_command', parameter_name_for_location='location')
-    def test_cosmosdb_restore_command(self, resource_group, location):
+    def test_cosmosdb_restore_command(self, location):
         col = self.create_random_name(prefix='cli', length=15)
 
         self.kwargs.update({
@@ -94,7 +110,8 @@ class Cosmosdb_previewScenarioTest(ScenarioTest):
 
         self.cmd('az cosmosdb sql database create -g {rg} -a {acc} -n {db_name}')
         self.cmd('az cosmosdb sql container create -g {rg} -a {acc} -d {db_name} -n {col} -p /pk ').get_output_in_json()
-        restorable_database_account = self.cmd('az cosmosdb restorable-database-account show --location {loc} --instance-id {ins_id}').get_output_in_json()
+        restorable_database_account = self.cmd(
+            'az cosmosdb restorable-database-account show --location {loc} --instance-id {ins_id}').get_output_in_json()
 
         account_creation_time = restorable_database_account['creationTime']
         import dateutil
@@ -116,8 +133,9 @@ class Cosmosdb_previewScenarioTest(ScenarioTest):
         assert restored_account['restoreParameters']['restoreSource'] == restorable_database_account['id']
         assert restored_account['restoreParameters']['restoreTimestampInUtc'] == restore_ts_string
 
+    # pylint: disable=line-too-long
     @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_sql_restorable_commands', parameter_name_for_location='location')
-    def test_cosmosdb_sql_restorable_commands(self, resource_group, location):
+    def test_cosmosdb_sql_restorable_commands(self, location):
         col = self.create_random_name(prefix='cli', length=15)
         db_name = self.create_random_name(prefix='cli', length=15)
 
@@ -137,11 +155,11 @@ class Cosmosdb_previewScenarioTest(ScenarioTest):
 
         self.cmd('az cosmosdb sql database create -g {rg} -a {acc} -n {db_name}')
         self.cmd('az cosmosdb sql container create -g {rg} -a {acc} -d {db_name} -n {col} -p /pk ').get_output_in_json()
-        restorable_database_account = self.cmd('az cosmosdb restorable-database-account show --location {loc} --instance-id {ins_id}').get_output_in_json()
+        restorable_database_account = self.cmd(
+            'az cosmosdb restorable-database-account show --location {loc} --instance-id {ins_id}').get_output_in_json()
 
         restorable_databases = self.cmd('az cosmosdb sql restorable-database list --location {loc} --instance-id {ins_id}').get_output_in_json()
         assert len(restorable_databases) == 1
-        restorable_databases[0]['resource']['ownerId'] == db_name
 
         self.kwargs.update({
             'db_rid': restorable_databases[0]['resource']['ownerResourceId']
@@ -170,7 +188,7 @@ class Cosmosdb_previewScenarioTest(ScenarioTest):
         assert restorable_resources[0]['collectionNames'][0] == col
 
     @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_mongodb_restorable_commands', parameter_name_for_location='location')
-    def test_cosmosdb_mongodb_restorable_commands(self, resource_group, location):
+    def test_cosmosdb_mongodb_restorable_commands(self, location):
         col = self.create_random_name(prefix='cli', length=15)
         db_name = self.create_random_name(prefix='cli', length=15)
         print(col)
@@ -198,7 +216,6 @@ class Cosmosdb_previewScenarioTest(ScenarioTest):
 
         restorable_databases = self.cmd('az cosmosdb mongodb restorable-database list --location {loc} --instance-id {ins_id}').get_output_in_json()
         assert len(restorable_databases) == 1
-        restorable_databases[0]['resource']['ownerId'] == db_name
 
         self.kwargs.update({
             'db_rid': restorable_databases[0]['resource']['ownerResourceId']
