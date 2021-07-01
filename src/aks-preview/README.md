@@ -192,3 +192,5 @@ az aks update \
     -n MyManagedCluster \
     --tags "foo=bar" "baz=qux"
 ```
+
+## Trigger Test Pipelines
