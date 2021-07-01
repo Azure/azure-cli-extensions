@@ -1,6 +1,6 @@
 # Release History
 
-## 3.0.0 (2021-06)
+## 3.0.0 (2021-07)
 - [BREAKING CHANGE] `az vmware datastore create` has been removed. Please use `az vmware datastore netapp-volume create` or `az vmware datastore disk-pool-volume create` instead.
 
 Other changes:
