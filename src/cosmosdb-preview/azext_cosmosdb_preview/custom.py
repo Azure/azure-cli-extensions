@@ -555,7 +555,10 @@ def cli_cosmosdb_managed_cassandra_datacenter_create(client,
                                                      data_center_location,
                                                      delegated_subnet_id,
                                                      node_count,
-                                                     base64_encoded_cassandra_yaml_fragment=None):
+                                                     base64_encoded_cassandra_yaml_fragment=None,
+                                                     sku=None,
+                                                     disk_sku=None,
+                                                     disk_capacity=None):
 
     """Creates an Azure Managed Cassandra Datacenter"""
 
@@ -563,8 +566,10 @@ def cli_cosmosdb_managed_cassandra_datacenter_create(client,
         data_center_location=data_center_location,
         delegated_subnet_id=delegated_subnet_id,
         node_count=node_count,
-        base64_encoded_cassandra_yaml_fragment=base64_encoded_cassandra_yaml_fragment
-    )
+        base64_encoded_cassandra_yaml_fragment=base64_encoded_cassandra_yaml_fragment,
+        sku=sku,
+        disk_sku=disk_sku,
+        disk_capacity=disk_capacity)
 
     return client.begin_create_update(resource_group_name, cluster_name, data_center_name, data_center_properties)
 
