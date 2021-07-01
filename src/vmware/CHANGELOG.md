@@ -11,6 +11,7 @@ Other changes:
 - Add `az vmware addon hcx` command group to manage a HCX addon
 - Add `az vmware addon srm` command group to manage a Site Recovery Manager (SRM) addon
 - Add `az vmware addon vr` command group to manage a vSphere Replication (VR) addon
+- Add `az vmware global-reach-connection` command group to manage Global Reach Connections
 
 ## 2.0.1 (2021-02)
 - Update the minimum az cli version to 2.11.0 [#3045](https://github.com/Azure/azure-cli-extensions/issues/3045)
