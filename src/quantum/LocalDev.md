@@ -1,6 +1,6 @@
 Initial conda installation:
 - need to run `conda init` after installation to make the command prompt work
-- needed to run `python .\pywin32_postinstall.py -install` in C:\Users\beheim\Anaconda3\Scripts
+- needed to run `python .\pywin32_postinstall.py -install` in C:\Users\beheim\Anaconda3\Scripts to fix "DLL load failed while importing win32file: The specified module could not be found."
 
 Local conda environment: azdevenv
 Commands for new creation: 
