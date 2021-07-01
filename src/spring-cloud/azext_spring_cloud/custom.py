@@ -31,7 +31,6 @@ from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.util import sdk_no_wait
 from azure.cli.core.profiles import ResourceType, get_sdk
 from azure.mgmt.applicationinsights import ApplicationInsightsManagementClient
-from ast import literal_eval
 from azure.cli.core.commands import cached_put
 from ._utils import _get_rg_location
 from ._utils import _get_sku_name
@@ -60,9 +59,8 @@ def spring_cloud_create(cmd, client, resource_group, name, location=None, app_in
                         service_runtime_network_resource_group=None, app_network_resource_group=None,
                         disable_distributed_tracing=None, disable_app_insights=None, enable_java_agent=None,
                         sku='Standard', tags=None, no_wait=False):
-    rg_location = _get_rg_location(cmd.cli_ctx, resource_group)
     if location is None:
-        location = rg_location
+        location = _get_rg_location(cmd.cli_ctx, resource_group)
     properties = models.ClusterResourceProperties()
 
     if service_runtime_subnet or app_subnet or reserved_cidr_range:
