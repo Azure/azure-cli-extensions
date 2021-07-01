@@ -3,6 +3,11 @@
 Release History
 ===============
 
+1.0.15
+++++++
+* Add az network front-door backend-pool backend update command: Update a backend to Front Door backend pool.
+* Fix backend related bugs
+
 1.0.14
 ++++++
 * Migrate to Track2 SDK.
