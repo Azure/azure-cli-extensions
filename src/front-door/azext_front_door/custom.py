@@ -483,7 +483,10 @@ def update_fd_backend(cmd, resource_group_name, front_door_name, backend_pool_na
         c.update_param('private_link_resource_id', private_link_resource_id, None)
         c.update_param('private_link_location', private_link_location, None)
         c.update_param('private_link_approval_message', private_link_approval_message, None)
-    client.begin_create_or_update(resource_group_name, front_door_name, frontdoor).result()
+    frontdoor = client.begin_create_or_update(resource_group_name, front_door_name, frontdoor).result()
+
+    backend_pool = next((x for x in frontdoor.backend_pools if x.name == backend_pool_name), None)
+    backend = backend_pool.backends[index - 1]
     return backend
 
 
