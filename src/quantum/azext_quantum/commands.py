@@ -64,7 +64,7 @@ def transform_output(results):
         return OrderedDict([
             ('Result', key),
             ('Frequency', f"{value:10.8f}"),
-            ('', f"\u007C{barra:^20}\u007C") # f"\u23B9{barra:^22}\u23B8")
+            ('', f"\u007C{barra:^20}\u007C")  # f"\u23B9{barra:^22}\u23B8")
         ])
 
     if 'Histogram' in results:

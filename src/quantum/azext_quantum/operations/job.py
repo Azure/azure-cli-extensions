@@ -208,12 +208,13 @@ def output(cmd, job_id, resource_group_name=None, workspace_name=None, location=
             lines = [line.strip() for line in json_file.readlines()]
             result_start_line = len(lines) - 1
             if lines[-1].endswith('"'):
-                while not lines[result_start_line].startswith('"'): result_start_line -= 1
+                while not lines[result_start_line].startswith('"'):
+                    result_start_line -= 1
 
             print('\n'.join(lines[:result_start_line]))
-            result = ' '.join(lines[result_start_line:])[1:-1] # seems the cleanest version to display
+            result = ' '.join(lines[result_start_line:])[1:-1]  # seems the cleanest version to display
             print("_" * len(result) + "\n")
-            
+
             json_string = "{ \"histogram\" : { \"" + result + "\" : 1 } }"
             data = json.loads(json_string)
         else:
