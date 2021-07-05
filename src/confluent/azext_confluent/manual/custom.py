@@ -113,7 +113,10 @@ def confluent_offer_detail_show(cmd, publisher_id=None, offer_id=None):
                   'offerId': offer_id,
                   'publisherId': publisher_id,
                   'termUnits':[{
-                      'price': item['price'],
+                      'price': {
+                          'currencyCode': item['price']['currencyCode'],
+                          'listPrice': item['price']['listPrice']
+                      },
                       'termDescription': item['termDescription'],
                       'termUnits': item['termUnits']
                   } for a in plan['availabilities'] for item in a['terms']]
