@@ -7,13 +7,13 @@
 import requests
 import re
 
+from azure.core.exceptions import HttpResponseError
 from azure.mgmt.cosmosdb import CosmosDBManagementClient
 from azure.mgmt.redis import RedisManagementClient
 from requests.auth import HTTPBasicAuth
 import yaml   # pylint: disable=import-error
 from time import sleep
 from ._stream_utils import stream_logs
-from msrestazure.azure_exceptions import CloudError
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
 from ._utils import _get_upload_local_file, _get_persistent_disk_size, get_portal_uri, get_azure_files_info
 from knack.util import CLIError
@@ -635,7 +635,7 @@ def app_identity_assign(cmd, client, resource_group, service, name, role=None, s
                 assignments_client.create(scope=scope, role_assignment_name=assignment_name,
                                           parameters=parameters)
                 break
-            except CloudError as ex:
+            except HttpResponseError as ex:
                 if 'role assignment already exists' in ex.message:
                     logger.info('Role assignment already exists')
                     break
@@ -1283,7 +1283,7 @@ def _app_deploy(client, resource_group, service, app, name, version, path, runti
         response = client.apps.get_resource_upload_url(resource_group, service, app)
         upload_url = response.upload_url
         relative_path = response.relative_path
-    except (AttributeError, CloudError) as e:
+    except (AttributeError, HttpResponseError) as e:
         raise CLIError(
             "Failed to get a SAS URL to upload context. Error: {}".format(e.message))
 
@@ -1328,7 +1328,7 @@ def _app_deploy(client, resource_group, service, app, name, version, path, runti
                 if not log_file_url_response:
                     return None
                 return log_file_url_response.url
-            except CloudError:
+            except HttpResponseError:
                 return None
 
         def get_logs_loop():
