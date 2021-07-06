@@ -2,18 +2,21 @@ interactions:
 - request:
     body: null
     headers:
+      Accept:
+      - application/json
       Accept-Encoding:
       - gzip, deflate
+      CommandName:
+      - serial-console disable
       Connection:
       - keep-alive
       Content-Length:
       - '0'
+      Content-Type:
+      - application/json
       User-Agent:
-      - python-requests/2.25.1
-      accept:
-      - application/json
-      content-type:
-      - application/json
+      - AZURECLI/2.25.0 azsdk-python-microsoftserialconsoleclient/unknown Python/3.8.10
+        (Windows-10-10.0.19042-SP0)
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.SerialConsole/consoleServices/default/disableConsole?api-version=2018-05-01
   response:
@@ -27,7 +30,7 @@ interactions:
       content-type:
       - application/json; charset=UTF-8
       date:
-      - Mon, 28 Jun 2021 15:52:16 GMT
+      - Tue, 06 Jul 2021 20:35:37 GMT
       expires:
       - '-1'
       pragma:
@@ -52,18 +55,21 @@ interactions:
 - request:
     body: null
     headers:
+      Accept:
+      - application/json
       Accept-Encoding:
       - gzip, deflate
+      CommandName:
+      - serial-console enable
       Connection:
       - keep-alive
       Content-Length:
       - '0'
+      Content-Type:
+      - application/json
       User-Agent:
-      - python-requests/2.25.1
-      accept:
-      - application/json
-      content-type:
-      - application/json
+      - AZURECLI/2.25.0 azsdk-python-microsoftserialconsoleclient/unknown Python/3.8.10
+        (Windows-10-10.0.19042-SP0)
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.SerialConsole/consoleServices/default/enableConsole?api-version=2018-05-01
   response:
@@ -77,7 +83,7 @@ interactions:
       content-type:
       - application/json; charset=UTF-8
       date:
-      - Mon, 28 Jun 2021 15:52:17 GMT
+      - Tue, 06 Jul 2021 20:35:38 GMT
       expires:
       - '-1'
       pragma:

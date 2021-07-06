@@ -17,14 +17,11 @@ from azure.cli.core.azclierror import UnclassifiedUserFault
 from azure.cli.core.azclierror import ResourceNotFoundError
 from azure.cli.core.azclierror import AzureConnectionError
 from azure.cli.core.azclierror import ForbiddenError
-from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core._profile import Profile
 from azure.core.exceptions import ResourceNotFoundError as ComputeClientResourceNotFoundError
 from azext_serialconsole._client_factory import _compute_client_factory
-
-
-ARM_ENDPOINT = "https://management.azure.com"
-RP_PROVIDER = "Microsoft.SerialConsole"
+from azext_serialconsole._client_factory import cf_serialconsole
+from azext_serialconsole._client_factory import cf_serial_port
 
 
 # pylint: disable=too-few-public-methods
@@ -278,13 +275,22 @@ class Terminal:
 
 class SerialConsole:
     def __init__(self, cmd, resource_group_name, vm_vmss_name, vmss_instanceid):
-        subscription_id = get_subscription_id(cmd.cli_ctx)
-        vm_path = f"virtualMachineScaleSets/{vm_vmss_name}/virtualMachines/{vmss_instanceid}" \
-            if vmss_instanceid else f"virtualMachines/{vm_vmss_name}"
-        self.connection_url = (f"{ARM_ENDPOINT}/subscriptions/{subscription_id}/resourcegroups/{resource_group_name}"
-                               f"/providers/Microsoft.Compute/{vm_path}"
-                               f"/providers/{RP_PROVIDER}/serialPorts/0"
-                               f"/connect?api-version=2018-05-01")
+        client = cf_serial_port(cmd.cli_ctx)
+        if vmss_instanceid is None:
+            self.connect_func = lambda: client.connect(
+                resource_group_name=resource_group_name,
+                resource_provider_namespace="Microsoft.Compute",
+                parent_resource_type="virtualMachines",
+                parent_resource=vm_vmss_name,
+                serial_port="0").connection_string
+        else:
+            self.connect_func = lambda: client.connect(
+                resource_group_name=resource_group_name,
+                resource_provider_namespace="Microsoft.Compute",
+                parent_resource_type="virtualMachineScaleSets",
+                parent_resource=f"{vm_vmss_name}/virtualMachines/{vmss_instanceid}",
+                serial_port="0").connection_string
+
         self.websocket_url = None
         self.access_token = None
 
@@ -406,17 +412,11 @@ class SerialConsole:
     def load_websocket_url(self):
         token_info, _, _ = Profile().get_raw_token()
         self.access_token = token_info[1]
-        application_json_format = "application/json"
-        headers = {'authorization': "Bearer " + self.access_token,
-                   'accept': application_json_format,
-                   'content-type': application_json_format}
-        result = requests.post(self.connection_url, headers=headers)
-        json_results = json.loads(result.text)
-        if result.status_code == 200 and "connectionString" in json_results:
-            self.websocket_url = json_results["connectionString"]
-            return True
-
-        return False
+        try:
+            self.websocket_url = self.connect_func()
+        except:  # pylint: disable=bare-except
+            return False
+        return True
 
     def connect(self):
         def on_open(_):
@@ -561,30 +561,18 @@ class SerialConsole:
                     error_message, recommendation=recommendation)
         else:
             GV.loading = False
-            error_message = "Could not establish connection to VM or VMSS."
-            recommendation = "Make sure the parameters name/resource-group/vmss-instance are correct."
+            error_message = "An unexpected error occured. Could not establish connection to VM or VMSS."
+            recommendation = "Check network connection and try again."
             raise ResourceNotFoundError(
                 error_message, recommendation=recommendation)
 
 
 def check_serial_console_enabled(cli_ctx):
-    subscription_id = get_subscription_id(cli_ctx)
-    connection_url = (f"{ARM_ENDPOINT}/subscriptions/{subscription_id}"
-                      f"/providers/{RP_PROVIDER}/consoleServices/"
-                      f"/default?api-version=2018-05-01")
-    token_info, _, _ = Profile().get_raw_token()
-    access_token = token_info[1]
-    application_json_format = "application/json"
-    headers = {'authorization': "Bearer " + access_token,
-               'accept': application_json_format,
-               'content-type': application_json_format}
-    result = requests.get(connection_url, headers=headers)
-    json_results = json.loads(result.text)
-    if result.status_code == 404:
-        raise ResourceNotFoundError(f"The subscription {subscription_id} could not be found.")
-    if result.status_code == 200 and "properties" in json_results and "disabled" in json_results["properties"]:
-        if not json_results["properties"]["disabled"]:
-            return
+    client = cf_serialconsole(cli_ctx)
+    result = client.get_console_status().additional_properties
+    if ("properties" in result and "disabled" in result["properties"] and
+            not result["properties"]["disabled"]):
+        return
     error_message = "Azure Serial Console is not enabled for this subscription."
     recommendation = 'Enable Serial Console with "az serial-console enable"'
     raise ForbiddenError(error_message, recommendation=recommendation)
@@ -699,25 +687,11 @@ def send_sysrq_serialconsole(cmd, resource_group_name, vm_vmss_name, sysrqinput,
         "sysrq", arg_characters=sysrqinput)
 
 
-def update_serialconsole(cmd, enable):
-    operation = "enableConsole" if enable else "disableConsole"
-    subscription_id = get_subscription_id(cmd.cli_ctx)
-    connection_url = (f"{ARM_ENDPOINT}/subscriptions/{subscription_id}"
-                      f"/providers/{RP_PROVIDER}/consoleServices/default"
-                      f"/{operation}?api-version=2018-05-01")
-    token_info, _, _ = Profile().get_raw_token()
-    access_token = token_info[1]
-    application_json_format = "application/json"
-    headers = {'authorization': "Bearer " + access_token,
-               'accept': application_json_format,
-               'content-type': application_json_format}
-    result = requests.post(connection_url, headers=headers)
-    return json.loads(result.text)
-
-
 def enable_serialconsole(cmd):
-    return update_serialconsole(cmd, enable=True)
+    client = cf_serialconsole(cmd.cli_ctx)
+    return client.enable_console()
 
 
 def disable_serialconsole(cmd):
-    return update_serialconsole(cmd, enable=False)
+    client = cf_serialconsole(cmd.cli_ctx)
+    return client.disable_console()
