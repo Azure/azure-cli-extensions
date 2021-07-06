@@ -2,7 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-
+import json
 from enum import Enum
 import os
 import codecs
@@ -229,3 +229,14 @@ def get_portal_uri(cli_ctx):
     except Exception as e:
         logger.debug("Could not get Azure Portal endpoint. Exception: %s", str(e))
         return 'https://portal.azure.com'
+
+
+def handle_asc_exception(ex):
+    try:
+        raise CLIError(ex.inner_exception.error.message)
+    except AttributeError:
+        if hasattr(ex, 'response'):
+            response_dict = json.loads(ex.response.internal_response.text)
+            raise CLIError(response_dict["error"]["message"])
+        else:
+            raise CLIError(ex)
