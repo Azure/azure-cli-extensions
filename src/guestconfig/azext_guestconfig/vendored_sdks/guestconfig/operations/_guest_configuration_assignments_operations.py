@@ -8,25 +8,23 @@
 from typing import TYPE_CHECKING
 import warnings
 
-from azure.core.exceptions import HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
+from azure.core.exceptions import ClientAuthenticationError, HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
 from azure.core.paging import ItemPaged
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import HttpRequest, HttpResponse
-from azure.core.polling import LROPoller, NoPolling, PollingMethod
 from azure.mgmt.core.exceptions import ARMErrorFormat
-from azure.mgmt.core.polling.arm_polling import ARMPolling
 
 from .. import models
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
-    from typing import Any, Callable, Dict, Generic, Iterable, List, Optional, TypeVar, Union
+    from typing import Any, Callable, Dict, Generic, Iterable, Optional, TypeVar, Union
 
     T = TypeVar('T')
     ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
 
-class GuestConfigurationAssignmentOperations(object):
-    """GuestConfigurationAssignmentOperations operations.
+class GuestConfigurationAssignmentsOperations(object):
+    """GuestConfigurationAssignmentsOperations operations.
 
     You should not instantiate this class directly. Instead, you should create a Client instance that
     instantiates it for you and attaches it as an attribute.
@@ -47,34 +45,41 @@ class GuestConfigurationAssignmentOperations(object):
         self._deserialize = deserializer
         self._config = config
 
-    def _create_or_update_initial(
+    def create_or_update(
         self,
         guest_configuration_assignment_name,  # type: str
         resource_group_name,  # type: str
         vm_name,  # type: str
-        name=None,  # type: Optional[str]
-        location=None,  # type: Optional[str]
-        context=None,  # type: Optional[str]
-        assignment=None,  # type: Optional["models.AssignmentInfo"]
-        vm=None,  # type: Optional["models.VmInfo"]
-        resources=None,  # type: Optional[List["models.AssignmentReportResource"]]
-        guest_configuration_navigation_name=None,  # type: Optional[str]
-        version=None,  # type: Optional[str]
-        configuration_parameter=None,  # type: Optional[List["models.ConfigurationParameter"]]
-        configuration_setting=None,  # type: Optional["models.ConfigurationSetting"]
+        parameters,  # type: "models.GuestConfigurationAssignment"
         **kwargs  # type: Any
     ):
         # type: (...) -> "models.GuestConfigurationAssignment"
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.GuestConfigurationAssignment"]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
-        error_map.update(kwargs.pop('error_map', {}))
+        """Creates an association between a VM and guest configuration.
 
-        _parameters = models.GuestConfigurationAssignment(name=name, location=location, context=context, assignment=assignment, vm=vm, resources=resources, name_properties_guest_configuration_name=guest_configuration_navigation_name, version=version, configuration_parameter=configuration_parameter, configuration_setting=configuration_setting)
+        :param guest_configuration_assignment_name: Name of the guest configuration assignment.
+        :type guest_configuration_assignment_name: str
+        :param resource_group_name: The resource group name.
+        :type resource_group_name: str
+        :param vm_name: The name of the virtual machine.
+        :type vm_name: str
+        :param parameters: Parameters supplied to the create or update guest configuration assignment.
+        :type parameters: ~guest_configuration_client.models.GuestConfigurationAssignment
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :return: GuestConfigurationAssignment, or the result of cls(response)
+        :rtype: ~guest_configuration_client.models.GuestConfigurationAssignment
+        :raises: ~azure.core.exceptions.HttpResponseError
+        """
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.GuestConfigurationAssignment"]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
         api_version = "2020-06-25"
         content_type = kwargs.pop("content_type", "application/json")
+        accept = "application/json"
 
         # Construct URL
-        url = self._create_or_update_initial.metadata['url']  # type: ignore
+        url = self.create_or_update.metadata['url']  # type: ignore
         path_format_arguments = {
             'guestConfigurationAssignmentName': self._serialize.url("guest_configuration_assignment_name", guest_configuration_assignment_name, 'str'),
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
@@ -90,14 +95,12 @@ class GuestConfigurationAssignmentOperations(object):
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
-        header_parameters['Accept'] = 'application/json'
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
-        # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_parameters, 'GuestConfigurationAssignment')
+        body_content = self._serialize.body(parameters, 'GuestConfigurationAssignment')
         body_content_kwargs['content'] = body_content
         request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
-
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
@@ -106,7 +109,6 @@ class GuestConfigurationAssignmentOperations(object):
             error = self._deserialize(models.ErrorResponse, response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = None
         if response.status_code == 200:
             deserialized = self._deserialize('GuestConfigurationAssignment', pipeline_response)
 
@@ -117,104 +119,7 @@ class GuestConfigurationAssignmentOperations(object):
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    _create_or_update_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachines/{vmName}/providers/Microsoft.GuestConfiguration/guestConfigurationAssignments/{guestConfigurationAssignmentName}'}  # type: ignore
-
-    def begin_create_or_update(
-        self,
-        guest_configuration_assignment_name,  # type: str
-        resource_group_name,  # type: str
-        vm_name,  # type: str
-        name=None,  # type: Optional[str]
-        location=None,  # type: Optional[str]
-        context=None,  # type: Optional[str]
-        assignment=None,  # type: Optional["models.AssignmentInfo"]
-        vm=None,  # type: Optional["models.VmInfo"]
-        resources=None,  # type: Optional[List["models.AssignmentReportResource"]]
-        guest_configuration_navigation_name=None,  # type: Optional[str]
-        version=None,  # type: Optional[str]
-        configuration_parameter=None,  # type: Optional[List["models.ConfigurationParameter"]]
-        configuration_setting=None,  # type: Optional["models.ConfigurationSetting"]
-        **kwargs  # type: Any
-    ):
-        # type: (...) -> LROPoller
-        """Creates an association between a VM and guest configuration.
-
-        :param guest_configuration_assignment_name: Name of the guest configuration assignment.
-        :type guest_configuration_assignment_name: str
-        :param resource_group_name: The resource group name.
-        :type resource_group_name: str
-        :param vm_name: The name of the virtual machine.
-        :type vm_name: str
-        :param name: Name of the guest configuration assignment.
-        :type name: str
-        :param location: Region where the VM is located.
-        :type location: str
-        :param context: The source which initiated the guest configuration assignment. Ex: Azure
-     Policy.
-        :type context: str
-        :param assignment: Configuration details of the guest configuration assignment.
-        :type assignment: ~guest_configuration_client.models.AssignmentInfo
-        :param vm: Information about the VM.
-        :type vm: ~guest_configuration_client.models.VmInfo
-        :param resources: The list of resources for which guest configuration assignment compliance is
-     checked.
-        :type resources: list[~guest_configuration_client.models.AssignmentReportResource]
-        :param guest_configuration_navigation_name: Name of the guest configuration.
-        :type guest_configuration_navigation_name: str
-        :param version: Version of the guest configuration.
-        :type version: str
-        :param configuration_parameter: The configuration parameters for the guest configuration.
-        :type configuration_parameter: list[~guest_configuration_client.models.ConfigurationParameter]
-        :param configuration_setting: The configuration setting for the guest configuration.
-        :type configuration_setting: ~guest_configuration_client.models.ConfigurationSetting
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :keyword polling: True for ARMPolling, False for no polling, or a
-         polling object for personal polling strategy
-        :paramtype polling: bool or ~azure.core.polling.PollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
-        :return: An instance of LROPoller that returns either GuestConfigurationAssignment or the result of cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~guest_configuration_client.models.GuestConfigurationAssignment]
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-        polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.GuestConfigurationAssignment"]
-        lro_delay = kwargs.pop(
-            'polling_interval',
-            self._config.polling_interval
-        )
-        raw_result = self._create_or_update_initial(
-            guest_configuration_assignment_name=guest_configuration_assignment_name,
-            resource_group_name=resource_group_name,
-            vm_name=vm_name,
-            name=name,
-            location=location,
-            context=context,
-            assignment=assignment,
-            vm=vm,
-            resources=resources,
-            guest_configuration_navigation_name=guest_configuration_navigation_name,
-            version=version,
-            configuration_parameter=configuration_parameter,
-            configuration_setting=configuration_setting,
-            cls=lambda x,y,z: x,
-            **kwargs
-        )
-
-        kwargs.pop('error_map', None)
-        kwargs.pop('content_type', None)
-
-        def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize('GuestConfigurationAssignment', pipeline_response)
-
-            if cls:
-                return cls(pipeline_response, deserialized, {})
-            return deserialized
-
-        if polling is True: polling_method = ARMPolling(lro_delay,  **kwargs)
-        elif polling is False: polling_method = NoPolling()
-        else: polling_method = polling
-        return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    begin_create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachines/{vmName}/providers/Microsoft.GuestConfiguration/guestConfigurationAssignments/{guestConfigurationAssignmentName}'}  # type: ignore
+    create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachines/{vmName}/providers/Microsoft.GuestConfiguration/guestConfigurationAssignments/{guestConfigurationAssignmentName}'}  # type: ignore
 
     def get(
         self,
@@ -238,9 +143,12 @@ class GuestConfigurationAssignmentOperations(object):
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.GuestConfigurationAssignment"]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2020-06-25"
+        accept = "application/json"
 
         # Construct URL
         url = self.get.metadata['url']  # type: ignore
@@ -258,9 +166,8 @@ class GuestConfigurationAssignmentOperations(object):
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Accept'] = 'application/json'
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
-        # Construct and send request
         request = self._client.get(url, query_parameters, header_parameters)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -278,7 +185,7 @@ class GuestConfigurationAssignmentOperations(object):
         return deserialized
     get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachines/{vmName}/providers/Microsoft.GuestConfiguration/guestConfigurationAssignments/{guestConfigurationAssignmentName}'}  # type: ignore
 
-    def _delete_initial(
+    def delete(
         self,
         resource_group_name,  # type: str
         guest_configuration_assignment_name,  # type: str
@@ -286,13 +193,29 @@ class GuestConfigurationAssignmentOperations(object):
         **kwargs  # type: Any
     ):
         # type: (...) -> None
+        """Delete a guest configuration assignment.
+
+        :param resource_group_name: The resource group name.
+        :type resource_group_name: str
+        :param guest_configuration_assignment_name: Name of the guest configuration assignment.
+        :type guest_configuration_assignment_name: str
+        :param vm_name: The name of the virtual machine.
+        :type vm_name: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :return: None, or the result of cls(response)
+        :rtype: None
+        :raises: ~azure.core.exceptions.HttpResponseError
+        """
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2020-06-25"
+        accept = "application/json"
 
         # Construct URL
-        url = self._delete_initial.metadata['url']  # type: ignore
+        url = self.delete.metadata['url']  # type: ignore
         path_format_arguments = {
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', pattern=r'^[-\w\._]+$'),
             'guestConfigurationAssignmentName': self._serialize.url("guest_configuration_assignment_name", guest_configuration_assignment_name, 'str'),
@@ -307,8 +230,8 @@ class GuestConfigurationAssignmentOperations(object):
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
-        # Construct and send request
         request = self._client.delete(url, query_parameters, header_parameters)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -321,59 +244,7 @@ class GuestConfigurationAssignmentOperations(object):
         if cls:
             return cls(pipeline_response, None, {})
 
-    _delete_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachines/{vmName}/providers/Microsoft.GuestConfiguration/guestConfigurationAssignments/{guestConfigurationAssignmentName}'}  # type: ignore
-
-    def begin_delete(
-        self,
-        resource_group_name,  # type: str
-        guest_configuration_assignment_name,  # type: str
-        vm_name,  # type: str
-        **kwargs  # type: Any
-    ):
-        # type: (...) -> LROPoller
-        """Delete a guest configuration assignment.
-
-        :param resource_group_name: The resource group name.
-        :type resource_group_name: str
-        :param guest_configuration_assignment_name: Name of the guest configuration assignment.
-        :type guest_configuration_assignment_name: str
-        :param vm_name: The name of the virtual machine.
-        :type vm_name: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :keyword polling: True for ARMPolling, False for no polling, or a
-         polling object for personal polling strategy
-        :paramtype polling: bool or ~azure.core.polling.PollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
-        :return: An instance of LROPoller that returns either None or the result of cls(response)
-        :rtype: ~azure.core.polling.LROPoller[None]
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-        polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
-        cls = kwargs.pop('cls', None)  # type: ClsType[None]
-        lro_delay = kwargs.pop(
-            'polling_interval',
-            self._config.polling_interval
-        )
-        raw_result = self._delete_initial(
-            resource_group_name=resource_group_name,
-            guest_configuration_assignment_name=guest_configuration_assignment_name,
-            vm_name=vm_name,
-            cls=lambda x,y,z: x,
-            **kwargs
-        )
-
-        kwargs.pop('error_map', None)
-        kwargs.pop('content_type', None)
-
-        def get_long_running_output(pipeline_response):
-            if cls:
-                return cls(pipeline_response, None, {})
-
-        if polling is True: polling_method = ARMPolling(lro_delay,  **kwargs)
-        elif polling is False: polling_method = NoPolling()
-        else: polling_method = polling
-        return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    begin_delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachines/{vmName}/providers/Microsoft.GuestConfiguration/guestConfigurationAssignments/{guestConfigurationAssignmentName}'}  # type: ignore
+    delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachines/{vmName}/providers/Microsoft.GuestConfiguration/guestConfigurationAssignments/{guestConfigurationAssignmentName}'}  # type: ignore
 
     def list(
         self,
@@ -394,11 +265,18 @@ class GuestConfigurationAssignmentOperations(object):
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.GuestConfigurationAssignmentList"]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2020-06-25"
+        accept = "application/json"
 
         def prepare_request(next_link=None):
+            # Construct headers
+            header_parameters = {}  # type: Dict[str, Any]
+            header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+
             if not next_link:
                 # Construct URL
                 url = self.list.metadata['url']  # type: ignore
@@ -412,15 +290,11 @@ class GuestConfigurationAssignmentOperations(object):
                 query_parameters = {}  # type: Dict[str, Any]
                 query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
+                request = self._client.get(url, query_parameters, header_parameters)
             else:
                 url = next_link
                 query_parameters = {}  # type: Dict[str, Any]
-            # Construct headers
-            header_parameters = {}  # type: Dict[str, Any]
-            header_parameters['Accept'] = 'application/json'
-
-            # Construct and send request
-            request = self._client.get(url, query_parameters, header_parameters)
+                request = self._client.get(url, query_parameters, header_parameters)
             return request
 
         def extract_data(pipeline_response):

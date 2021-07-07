@@ -39,6 +39,74 @@ class AssignmentInfo(msrest.serialization.Model):
         self.configuration = kwargs.get('configuration', None)
 
 
+class AssignmentReport(msrest.serialization.Model):
+    """AssignmentReport.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: ARM resource id of the report for the guest configuration assignment.
+    :vartype id: str
+    :ivar report_id: GUID that identifies the guest configuration assignment report under a
+     subscription, resource group.
+    :vartype report_id: str
+    :param assignment: Configuration details of the guest configuration assignment.
+    :type assignment: ~guest_configuration_client.models.AssignmentInfo
+    :param vm: Information about the VM.
+    :type vm: ~guest_configuration_client.models.VmInfo
+    :ivar start_time: Start date and time of the guest configuration assignment compliance status
+     check.
+    :vartype start_time: ~datetime.datetime
+    :ivar end_time: End date and time of the guest configuration assignment compliance status
+     check.
+    :vartype end_time: ~datetime.datetime
+    :ivar compliance_status: A value indicating compliance status of the machine for the assigned
+     guest configuration. Possible values include: "Compliant", "NonCompliant", "Pending".
+    :vartype compliance_status: str or ~guest_configuration_client.models.ComplianceStatus
+    :ivar operation_type: Type of report, Consistency or Initial. Possible values include:
+     "Consistency", "Initial".
+    :vartype operation_type: str or ~guest_configuration_client.models.Type
+    :param resources: The list of resources for which guest configuration assignment compliance is
+     checked.
+    :type resources: list[~guest_configuration_client.models.AssignmentReportResource]
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'report_id': {'readonly': True},
+        'start_time': {'readonly': True},
+        'end_time': {'readonly': True},
+        'compliance_status': {'readonly': True},
+        'operation_type': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'report_id': {'key': 'reportId', 'type': 'str'},
+        'assignment': {'key': 'assignment', 'type': 'AssignmentInfo'},
+        'vm': {'key': 'vm', 'type': 'VmInfo'},
+        'start_time': {'key': 'startTime', 'type': 'iso-8601'},
+        'end_time': {'key': 'endTime', 'type': 'iso-8601'},
+        'compliance_status': {'key': 'complianceStatus', 'type': 'str'},
+        'operation_type': {'key': 'operationType', 'type': 'str'},
+        'resources': {'key': 'resources', 'type': '[AssignmentReportResource]'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(AssignmentReport, self).__init__(**kwargs)
+        self.id = None
+        self.report_id = None
+        self.assignment = kwargs.get('assignment', None)
+        self.vm = kwargs.get('vm', None)
+        self.start_time = None
+        self.end_time = None
+        self.compliance_status = None
+        self.operation_type = None
+        self.resources = kwargs.get('resources', None)
+
+
 class AssignmentReportDetails(msrest.serialization.Model):
     """Details of the guest configuration assignment report.
 
@@ -101,6 +169,8 @@ class AssignmentReportResource(msrest.serialization.Model):
     :ivar compliance_status: A value indicating compliance status of the machine for the assigned
      guest configuration. Possible values include: "Compliant", "NonCompliant", "Pending".
     :vartype compliance_status: str or ~guest_configuration_client.models.ComplianceStatus
+    :ivar resource_id: Name of the guest configuration assignment resource setting.
+    :vartype resource_id: str
     :param reasons: Compliance reason and reason code for a resource.
     :type reasons:
      list[~guest_configuration_client.models.AssignmentReportResourceComplianceReason]
@@ -110,11 +180,13 @@ class AssignmentReportResource(msrest.serialization.Model):
 
     _validation = {
         'compliance_status': {'readonly': True},
+        'resource_id': {'readonly': True},
         'properties': {'readonly': True},
     }
 
     _attribute_map = {
         'compliance_status': {'key': 'complianceStatus', 'type': 'str'},
+        'resource_id': {'key': 'resourceId', 'type': 'str'},
         'reasons': {'key': 'reasons', 'type': '[AssignmentReportResourceComplianceReason]'},
         'properties': {'key': 'properties', 'type': 'object'},
     }
@@ -125,6 +197,7 @@ class AssignmentReportResource(msrest.serialization.Model):
     ):
         super(AssignmentReportResource, self).__init__(**kwargs)
         self.compliance_status = None
+        self.resource_id = None
         self.reasons = kwargs.get('reasons', None)
         self.properties = None
 
@@ -221,9 +294,8 @@ class ConfigurationSetting(msrest.serialization.Model):
      "ApplyAndAutoCorrect".
     :type configuration_mode: str or ~guest_configuration_client.models.ConfigurationMode
     :param allow_module_overwrite: If true - new configurations downloaded from the pull service
-     are allowed to overwrite the old ones on the target node. Otherwise, false. Possible values
-     include: "True", "False".
-    :type allow_module_overwrite: str or ~guest_configuration_client.models.AllowModuleOverwrite
+     are allowed to overwrite the old ones on the target node. Otherwise, false.
+    :type allow_module_overwrite: bool
     :param action_after_reboot: Specifies what happens after a reboot during the application of a
      configuration. The possible values are ContinueConfiguration and StopConfiguration. Possible
      values include: "ContinueConfiguration", "StopConfiguration".
@@ -236,9 +308,8 @@ class ConfigurationSetting(msrest.serialization.Model):
      configuration that requires reboot is applied. Otherwise, you will have to manually reboot the
      node for any configuration that requires it. The default value is false. To use this setting
      when a reboot condition is enacted by something other than DSC (such as Windows Installer),
-     combine this setting with the xPendingReboot module. Possible values include: "True", "False".
-     Default value: "False".
-    :type reboot_if_needed: str or ~guest_configuration_client.models.RebootIfNeeded
+     combine this setting with the xPendingReboot module.
+    :type reboot_if_needed: bool
     :param configuration_mode_frequency_mins: How often, in minutes, the current configuration is
      checked and applied. This property is ignored if the ConfigurationMode property is set to
      ApplyOnly. The default value is 15.
@@ -247,10 +318,10 @@ class ConfigurationSetting(msrest.serialization.Model):
 
     _attribute_map = {
         'configuration_mode': {'key': 'configurationMode', 'type': 'str'},
-        'allow_module_overwrite': {'key': 'allowModuleOverwrite', 'type': 'str'},
+        'allow_module_overwrite': {'key': 'allowModuleOverwrite', 'type': 'bool'},
         'action_after_reboot': {'key': 'actionAfterReboot', 'type': 'str'},
         'refresh_frequency_mins': {'key': 'refreshFrequencyMins', 'type': 'float'},
-        'reboot_if_needed': {'key': 'rebootIfNeeded', 'type': 'str'},
+        'reboot_if_needed': {'key': 'rebootIfNeeded', 'type': 'bool'},
         'configuration_mode_frequency_mins': {'key': 'configurationModeFrequencyMins', 'type': 'float'},
     }
 
@@ -263,7 +334,7 @@ class ConfigurationSetting(msrest.serialization.Model):
         self.allow_module_overwrite = kwargs.get('allow_module_overwrite', None)
         self.action_after_reboot = kwargs.get('action_after_reboot', None)
         self.refresh_frequency_mins = kwargs.get('refresh_frequency_mins', 30)
-        self.reboot_if_needed = kwargs.get('reboot_if_needed', "False")
+        self.reboot_if_needed = kwargs.get('reboot_if_needed', None)
         self.configuration_mode_frequency_mins = kwargs.get('configuration_mode_frequency_mins', 15)
 
 
@@ -360,87 +431,13 @@ class GuestConfigurationAssignment(Resource):
     :type location: str
     :ivar type: The type of the resource.
     :vartype type: str
-    :ivar target_resource_id: VM resource Id.
-    :vartype target_resource_id: str
-    :ivar compliance_status_properties_compliance_status: A value indicating compliance status of
-     the machine for the assigned guest configuration. Possible values include: "Compliant",
-     "NonCompliant", "Pending".
-    :vartype compliance_status_properties_compliance_status: str or
-     ~guest_configuration_client.models.ComplianceStatus
-    :ivar last_compliance_status_checked: Date and time when last compliance status was checked.
-    :vartype last_compliance_status_checked: ~datetime.datetime
-    :ivar latest_report_id: Id of the latest report for the guest configuration assignment.
-    :vartype latest_report_id: str
-    :param context: The source which initiated the guest configuration assignment. Ex: Azure
-     Policy.
-    :type context: str
-    :ivar assignment_hash: Combined hash of the configuration package and parameters.
-    :vartype assignment_hash: str
-    :ivar provisioning_state: The provisioning state, which only appears in the response. Possible
-     values include: "Succeeded", "Failed", "Canceled", "Created".
-    :vartype provisioning_state: str or ~guest_configuration_client.models.ProvisioningState
-    :ivar id_properties_latest_assignment_report_id: ARM resource id of the report for the guest
-     configuration assignment.
-    :vartype id_properties_latest_assignment_report_id: str
-    :ivar report_id: GUID that identifies the guest configuration assignment report under a
-     subscription, resource group.
-    :vartype report_id: str
-    :param assignment: Configuration details of the guest configuration assignment.
-    :type assignment: ~guest_configuration_client.models.AssignmentInfo
-    :param vm: Information about the VM.
-    :type vm: ~guest_configuration_client.models.VmInfo
-    :ivar start_time: Start date and time of the guest configuration assignment compliance status
-     check.
-    :vartype start_time: ~datetime.datetime
-    :ivar end_time: End date and time of the guest configuration assignment compliance status
-     check.
-    :vartype end_time: ~datetime.datetime
-    :ivar compliance_status_properties_latest_assignment_report_compliance_status: A value
-     indicating compliance status of the machine for the assigned guest configuration. Possible
-     values include: "Compliant", "NonCompliant", "Pending".
-    :vartype compliance_status_properties_latest_assignment_report_compliance_status: str or
-     ~guest_configuration_client.models.ComplianceStatus
-    :ivar operation_type: Type of report, Consistency or Initial. Possible values include:
-     "Consistency", "Initial".
-    :vartype operation_type: str or ~guest_configuration_client.models.Type
-    :param resources: The list of resources for which guest configuration assignment compliance is
-     checked.
-    :type resources: list[~guest_configuration_client.models.AssignmentReportResource]
-    :ivar kind: Kind of the guest configuration. For example:DSC. Default value: "DSC".
-    :vartype kind: str
-    :param name_properties_guest_configuration_name: Name of the guest configuration.
-    :type name_properties_guest_configuration_name: str
-    :param version: Version of the guest configuration.
-    :type version: str
-    :ivar content_uri: Uri of the storage where guest configuration package is uploaded.
-    :vartype content_uri: str
-    :ivar content_hash: Combined hash of the guest configuration package and configuration
-     parameters.
-    :vartype content_hash: str
-    :param configuration_parameter: The configuration parameters for the guest configuration.
-    :type configuration_parameter: list[~guest_configuration_client.models.ConfigurationParameter]
-    :param configuration_setting: The configuration setting for the guest configuration.
-    :type configuration_setting: ~guest_configuration_client.models.ConfigurationSetting
+    :param properties: Properties of the Guest configuration assignment.
+    :type properties: ~guest_configuration_client.models.GuestConfigurationAssignmentProperties
     """
 
     _validation = {
         'id': {'readonly': True},
         'type': {'readonly': True},
-        'target_resource_id': {'readonly': True},
-        'compliance_status_properties_compliance_status': {'readonly': True},
-        'last_compliance_status_checked': {'readonly': True},
-        'latest_report_id': {'readonly': True},
-        'assignment_hash': {'readonly': True},
-        'provisioning_state': {'readonly': True},
-        'id_properties_latest_assignment_report_id': {'readonly': True},
-        'report_id': {'readonly': True},
-        'start_time': {'readonly': True},
-        'end_time': {'readonly': True},
-        'compliance_status_properties_latest_assignment_report_compliance_status': {'readonly': True},
-        'operation_type': {'readonly': True},
-        'kind': {'constant': True},
-        'content_uri': {'readonly': True},
-        'content_hash': {'readonly': True},
     }
 
     _attribute_map = {
@@ -448,60 +445,15 @@ class GuestConfigurationAssignment(Resource):
         'name': {'key': 'name', 'type': 'str'},
         'location': {'key': 'location', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
-        'target_resource_id': {'key': 'properties.targetResourceId', 'type': 'str'},
-        'compliance_status_properties_compliance_status': {'key': 'properties.complianceStatus', 'type': 'str'},
-        'last_compliance_status_checked': {'key': 'properties.lastComplianceStatusChecked', 'type': 'iso-8601'},
-        'latest_report_id': {'key': 'properties.latestReportId', 'type': 'str'},
-        'context': {'key': 'properties.context', 'type': 'str'},
-        'assignment_hash': {'key': 'properties.assignmentHash', 'type': 'str'},
-        'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
-        'id_properties_latest_assignment_report_id': {'key': 'properties.latestAssignmentReport.id', 'type': 'str'},
-        'report_id': {'key': 'properties.latestAssignmentReport.reportId', 'type': 'str'},
-        'assignment': {'key': 'properties.latestAssignmentReport.assignment', 'type': 'AssignmentInfo'},
-        'vm': {'key': 'properties.latestAssignmentReport.vm', 'type': 'VmInfo'},
-        'start_time': {'key': 'properties.latestAssignmentReport.startTime', 'type': 'iso-8601'},
-        'end_time': {'key': 'properties.latestAssignmentReport.endTime', 'type': 'iso-8601'},
-        'compliance_status_properties_latest_assignment_report_compliance_status': {'key': 'properties.latestAssignmentReport.complianceStatus', 'type': 'str'},
-        'operation_type': {'key': 'properties.latestAssignmentReport.operationType', 'type': 'str'},
-        'resources': {'key': 'properties.latestAssignmentReport.resources', 'type': '[AssignmentReportResource]'},
-        'kind': {'key': 'properties.guestConfiguration.kind', 'type': 'str'},
-        'name_properties_guest_configuration_name': {'key': 'properties.guestConfiguration.name', 'type': 'str'},
-        'version': {'key': 'properties.guestConfiguration.version', 'type': 'str'},
-        'content_uri': {'key': 'properties.guestConfiguration.contentUri', 'type': 'str'},
-        'content_hash': {'key': 'properties.guestConfiguration.contentHash', 'type': 'str'},
-        'configuration_parameter': {'key': 'properties.guestConfiguration.configurationParameter', 'type': '[ConfigurationParameter]'},
-        'configuration_setting': {'key': 'properties.guestConfiguration.configurationSetting', 'type': 'ConfigurationSetting'},
+        'properties': {'key': 'properties', 'type': 'GuestConfigurationAssignmentProperties'},
     }
-
-    kind = "DSC"
 
     def __init__(
         self,
         **kwargs
     ):
         super(GuestConfigurationAssignment, self).__init__(**kwargs)
-        self.target_resource_id = None
-        self.compliance_status_properties_compliance_status = None
-        self.last_compliance_status_checked = None
-        self.latest_report_id = None
-        self.context = kwargs.get('context', None)
-        self.assignment_hash = None
-        self.provisioning_state = None
-        self.id_properties_latest_assignment_report_id = None
-        self.report_id = None
-        self.assignment = kwargs.get('assignment', None)
-        self.vm = kwargs.get('vm', None)
-        self.start_time = None
-        self.end_time = None
-        self.compliance_status_properties_latest_assignment_report_compliance_status = None
-        self.operation_type = None
-        self.resources = kwargs.get('resources', None)
-        self.name_properties_guest_configuration_name = kwargs.get('name_properties_guest_configuration_name', None)
-        self.version = kwargs.get('version', None)
-        self.content_uri = None
-        self.content_hash = None
-        self.configuration_parameter = kwargs.get('configuration_parameter', None)
-        self.configuration_setting = kwargs.get('configuration_setting', None)
+        self.properties = kwargs.get('properties', None)
 
 
 class GuestConfigurationAssignmentList(msrest.serialization.Model):
@@ -521,6 +473,71 @@ class GuestConfigurationAssignmentList(msrest.serialization.Model):
     ):
         super(GuestConfigurationAssignmentList, self).__init__(**kwargs)
         self.value = kwargs.get('value', None)
+
+
+class GuestConfigurationAssignmentProperties(msrest.serialization.Model):
+    """Guest configuration assignment properties.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar target_resource_id: VM resource Id.
+    :vartype target_resource_id: str
+    :param guest_configuration: The guest configuration to assign.
+    :type guest_configuration: ~guest_configuration_client.models.GuestConfigurationNavigation
+    :ivar compliance_status: A value indicating compliance status of the machine for the assigned
+     guest configuration. Possible values include: "Compliant", "NonCompliant", "Pending".
+    :vartype compliance_status: str or ~guest_configuration_client.models.ComplianceStatus
+    :ivar last_compliance_status_checked: Date and time when last compliance status was checked.
+    :vartype last_compliance_status_checked: ~datetime.datetime
+    :ivar latest_report_id: Id of the latest report for the guest configuration assignment.
+    :vartype latest_report_id: str
+    :param latest_assignment_report: Last reported guest configuration assignment report.
+    :type latest_assignment_report: ~guest_configuration_client.models.AssignmentReport
+    :param context: The source which initiated the guest configuration assignment. Ex: Azure
+     Policy.
+    :type context: str
+    :ivar assignment_hash: Combined hash of the configuration package and parameters.
+    :vartype assignment_hash: str
+    :ivar provisioning_state: The provisioning state, which only appears in the response. Possible
+     values include: "Succeeded", "Failed", "Canceled", "Created".
+    :vartype provisioning_state: str or ~guest_configuration_client.models.ProvisioningState
+    """
+
+    _validation = {
+        'target_resource_id': {'readonly': True},
+        'compliance_status': {'readonly': True},
+        'last_compliance_status_checked': {'readonly': True},
+        'latest_report_id': {'readonly': True},
+        'assignment_hash': {'readonly': True},
+        'provisioning_state': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'target_resource_id': {'key': 'targetResourceId', 'type': 'str'},
+        'guest_configuration': {'key': 'guestConfiguration', 'type': 'GuestConfigurationNavigation'},
+        'compliance_status': {'key': 'complianceStatus', 'type': 'str'},
+        'last_compliance_status_checked': {'key': 'lastComplianceStatusChecked', 'type': 'iso-8601'},
+        'latest_report_id': {'key': 'latestReportId', 'type': 'str'},
+        'latest_assignment_report': {'key': 'latestAssignmentReport', 'type': 'AssignmentReport'},
+        'context': {'key': 'context', 'type': 'str'},
+        'assignment_hash': {'key': 'assignmentHash', 'type': 'str'},
+        'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(GuestConfigurationAssignmentProperties, self).__init__(**kwargs)
+        self.target_resource_id = None
+        self.guest_configuration = kwargs.get('guest_configuration', None)
+        self.compliance_status = None
+        self.last_compliance_status_checked = None
+        self.latest_report_id = None
+        self.latest_assignment_report = kwargs.get('latest_assignment_report', None)
+        self.context = kwargs.get('context', None)
+        self.assignment_hash = None
+        self.provisioning_state = None
 
 
 class GuestConfigurationAssignmentReport(msrest.serialization.Model):
@@ -633,6 +650,57 @@ class GuestConfigurationAssignmentReportProperties(msrest.serialization.Model):
         self.start_time = None
         self.end_time = None
         self.details = kwargs.get('details', None)
+
+
+class GuestConfigurationNavigation(msrest.serialization.Model):
+    """Guest configuration is an artifact that encapsulates DSC configuration and its dependencies. The artifact is a zip file containing DSC configuration (as MOF) and dependent resources and other dependencies like modules.
+
+    :param kind: Kind of the guest configuration. For example:DSC. Possible values include: "DSC".
+    :type kind: str or ~guest_configuration_client.models.Kind
+    :param name: Name of the guest configuration.
+    :type name: str
+    :param version: Version of the guest configuration.
+    :type version: str
+    :param content_uri: Uri of the storage where guest configuration package is uploaded.
+    :type content_uri: str
+    :param content_hash: Combined hash of the guest configuration package and configuration
+     parameters.
+    :type content_hash: str
+    :param assignment_type: Specifies the assignment type and execution of the configuration.
+     Possible values are Audit, DeployAndAutoCorrect, ApplyAndAutoCorrect and ApplyAndMonitor.
+     Possible values include: "Audit", "DeployAndAutoCorrect", "ApplyAndAutoCorrect",
+     "ApplyAndMonitor".
+    :type assignment_type: str or ~guest_configuration_client.models.AssignmentType
+    :param configuration_parameter: The configuration parameters for the guest configuration.
+    :type configuration_parameter: list[~guest_configuration_client.models.ConfigurationParameter]
+    :param configuration_setting: The configuration setting for the guest configuration.
+    :type configuration_setting: ~guest_configuration_client.models.ConfigurationSetting
+    """
+
+    _attribute_map = {
+        'kind': {'key': 'kind', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'version': {'key': 'version', 'type': 'str'},
+        'content_uri': {'key': 'contentUri', 'type': 'str'},
+        'content_hash': {'key': 'contentHash', 'type': 'str'},
+        'assignment_type': {'key': 'assignmentType', 'type': 'str'},
+        'configuration_parameter': {'key': 'configurationParameter', 'type': '[ConfigurationParameter]'},
+        'configuration_setting': {'key': 'configurationSetting', 'type': 'ConfigurationSetting'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(GuestConfigurationNavigation, self).__init__(**kwargs)
+        self.kind = kwargs.get('kind', None)
+        self.name = kwargs.get('name', None)
+        self.version = kwargs.get('version', None)
+        self.content_uri = kwargs.get('content_uri', None)
+        self.content_hash = kwargs.get('content_hash', None)
+        self.assignment_type = kwargs.get('assignment_type', None)
+        self.configuration_parameter = kwargs.get('configuration_parameter', None)
+        self.configuration_setting = kwargs.get('configuration_setting', None)
 
 
 class Operation(msrest.serialization.Model):

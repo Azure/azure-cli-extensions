@@ -7,6 +7,8 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
+# pylint: disable=too-many-statements
+# pylint: disable=too-many-locals
 
 from azure.cli.core.commands import CliCommandType
 
@@ -15,51 +17,46 @@ def load_command_table(self, _):
 
     from azext_guestconfig.generated._client_factory import cf_guest_configuration_assignment
     guestconfig_guest_configuration_assignment = CliCommandType(
-        operations_tmpl='azext_guestconfig.vendored_sdks.guestconfig.operations._guest_configuration_assignment_operati'
-        'ons#GuestConfigurationAssignmentOperations.{}',
+        operations_tmpl='azext_guestconfig.vendored_sdks.guestconfig.operations._guest_configuration_assignments_operat'
+        'ions#GuestConfigurationAssignmentsOperations.{}',
         client_factory=cf_guest_configuration_assignment)
     with self.command_group('guestconfig guest-configuration-assignment', guestconfig_guest_configuration_assignment,
-                            client_factory=cf_guest_configuration_assignment, is_experimental=True) as g:
+                            client_factory=cf_guest_configuration_assignment) as g:
         g.custom_command('list', 'guestconfig_guest_configuration_assignment_list')
         g.custom_show_command('show', 'guestconfig_guest_configuration_assignment_show')
-        g.custom_command('create', 'guestconfig_guest_configuration_assignment_create', supports_no_wait=True)
-        g.custom_command('update', 'guestconfig_guest_configuration_assignment_update', supports_no_wait=True)
-        g.custom_command('delete', 'guestconfig_guest_configuration_assignment_delete', supports_no_wait=True)
-        g.custom_wait_command('wait', 'guestconfig_guest_configuration_assignment_show')
 
     from azext_guestconfig.generated._client_factory import cf_guest_configuration_assignment_report
     guestconfig_guest_configuration_assignment_report = CliCommandType(
-        operations_tmpl='azext_guestconfig.vendored_sdks.guestconfig.operations._guest_configuration_assignment_report_'
-        'operations#GuestConfigurationAssignmentReportOperations.{}',
+        operations_tmpl='azext_guestconfig.vendored_sdks.guestconfig.operations._guest_configuration_assignment_reports'
+        '_operations#GuestConfigurationAssignmentReportsOperations.{}',
         client_factory=cf_guest_configuration_assignment_report)
     with self.command_group('guestconfig guest-configuration-assignment-report',
                             guestconfig_guest_configuration_assignment_report,
-                            client_factory=cf_guest_configuration_assignment_report, is_experimental=True) as g:
+                            client_factory=cf_guest_configuration_assignment_report) as g:
         g.custom_command('list', 'guestconfig_guest_configuration_assignment_report_list')
         g.custom_show_command('show', 'guestconfig_guest_configuration_assignment_report_show')
 
     from azext_guestconfig.generated._client_factory import cf_guest_configuration_hcrp_assignment
     guestconfig_guest_configuration_hcrp_assignment = CliCommandType(
-        operations_tmpl='azext_guestconfig.vendored_sdks.guestconfig.operations._guest_configuration_hcrp_assignment_op'
-        'erations#GuestConfigurationHcrpAssignmentOperations.{}',
+        operations_tmpl='azext_guestconfig.vendored_sdks.guestconfig.operations._guest_configuration_hcrp_assignments_o'
+        'perations#GuestConfigurationHcrpAssignmentsOperations.{}',
         client_factory=cf_guest_configuration_hcrp_assignment)
     with self.command_group('guestconfig guest-configuration-hcrp-assignment',
                             guestconfig_guest_configuration_hcrp_assignment,
-                            client_factory=cf_guest_configuration_hcrp_assignment, is_experimental=True) as g:
+                            client_factory=cf_guest_configuration_hcrp_assignment) as g:
         g.custom_command('list', 'guestconfig_guest_configuration_hcrp_assignment_list')
         g.custom_show_command('show', 'guestconfig_guest_configuration_hcrp_assignment_show')
-        g.custom_command('create', 'guestconfig_guest_configuration_hcrp_assignment_create', supports_no_wait=True)
-        g.custom_command('update', 'guestconfig_guest_configuration_hcrp_assignment_update', supports_no_wait=True)
-        g.custom_command('delete', 'guestconfig_guest_configuration_hcrp_assignment_delete', supports_no_wait=True)
-        g.custom_wait_command('wait', 'guestconfig_guest_configuration_hcrp_assignment_show')
 
     from azext_guestconfig.generated._client_factory import cf_guest_configuration_hcrp_assignment_report
     guestconfig_guest_configuration_hcrp_assignment_report = CliCommandType(
         operations_tmpl='azext_guestconfig.vendored_sdks.guestconfig.operations._guest_configuration_hcrp_assignment_re'
-        'port_operations#GuestConfigurationHcrpAssignmentReportOperations.{}',
+        'ports_operations#GuestConfigurationHcrpAssignmentReportsOperations.{}',
         client_factory=cf_guest_configuration_hcrp_assignment_report)
     with self.command_group('guestconfig guest-configuration-hcrp-assignment-report',
                             guestconfig_guest_configuration_hcrp_assignment_report,
-                            client_factory=cf_guest_configuration_hcrp_assignment_report, is_experimental=True) as g:
+                            client_factory=cf_guest_configuration_hcrp_assignment_report) as g:
         g.custom_command('list', 'guestconfig_guest_configuration_hcrp_assignment_report_list')
         g.custom_show_command('show', 'guestconfig_guest_configuration_hcrp_assignment_report_show')
+
+    with self.command_group('guestconfig', is_experimental=True):
+        pass

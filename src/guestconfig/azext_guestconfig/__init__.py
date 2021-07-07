@@ -10,16 +10,20 @@
 
 from azure.cli.core import AzCommandsLoader
 from azext_guestconfig.generated._help import helps  # pylint: disable=unused-import
+try:
+    from azext_guestconfig.manual._help import helps  # pylint: disable=reimported
+except ImportError:
+    pass
 
 
 class GuestConfigurationClientCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        from azext_guestconfig.generated._client_factory import cf_guestconfig
+        from azext_guestconfig.generated._client_factory import cf_guestconfig_cl
         guestconfig_custom = CliCommandType(
             operations_tmpl='azext_guestconfig.custom#{}',
-            client_factory=cf_guestconfig)
+            client_factory=cf_guestconfig_cl)
         parent = super(GuestConfigurationClientCommandsLoader, self)
         parent.__init__(cli_ctx=cli_ctx, custom_command_type=guestconfig_custom)
 

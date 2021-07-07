@@ -8,6 +8,7 @@
 
 try:
     from ._models_py3 import AssignmentInfo
+    from ._models_py3 import AssignmentReport
     from ._models_py3 import AssignmentReportDetails
     from ._models_py3 import AssignmentReportResource
     from ._models_py3 import AssignmentReportResourceComplianceReason
@@ -18,9 +19,11 @@ try:
     from ._models_py3 import ErrorResponseError
     from ._models_py3 import GuestConfigurationAssignment
     from ._models_py3 import GuestConfigurationAssignmentList
+    from ._models_py3 import GuestConfigurationAssignmentProperties
     from ._models_py3 import GuestConfigurationAssignmentReport
     from ._models_py3 import GuestConfigurationAssignmentReportList
     from ._models_py3 import GuestConfigurationAssignmentReportProperties
+    from ._models_py3 import GuestConfigurationNavigation
     from ._models_py3 import Operation
     from ._models_py3 import OperationDisplay
     from ._models_py3 import OperationList
@@ -29,6 +32,7 @@ try:
     from ._models_py3 import VmInfo
 except (SyntaxError, ImportError):
     from ._models import AssignmentInfo  # type: ignore
+    from ._models import AssignmentReport  # type: ignore
     from ._models import AssignmentReportDetails  # type: ignore
     from ._models import AssignmentReportResource  # type: ignore
     from ._models import AssignmentReportResourceComplianceReason  # type: ignore
@@ -39,9 +43,11 @@ except (SyntaxError, ImportError):
     from ._models import ErrorResponseError  # type: ignore
     from ._models import GuestConfigurationAssignment  # type: ignore
     from ._models import GuestConfigurationAssignmentList  # type: ignore
+    from ._models import GuestConfigurationAssignmentProperties  # type: ignore
     from ._models import GuestConfigurationAssignmentReport  # type: ignore
     from ._models import GuestConfigurationAssignmentReportList  # type: ignore
     from ._models import GuestConfigurationAssignmentReportProperties  # type: ignore
+    from ._models import GuestConfigurationNavigation  # type: ignore
     from ._models import Operation  # type: ignore
     from ._models import OperationDisplay  # type: ignore
     from ._models import OperationList  # type: ignore
@@ -51,16 +57,17 @@ except (SyntaxError, ImportError):
 
 from ._guest_configuration_client_enums import (
     ActionAfterReboot,
-    AllowModuleOverwrite,
+    AssignmentType,
     ComplianceStatus,
     ConfigurationMode,
+    Kind,
     ProvisioningState,
-    RebootIfNeeded,
     Type,
 )
 
 __all__ = [
     'AssignmentInfo',
+    'AssignmentReport',
     'AssignmentReportDetails',
     'AssignmentReportResource',
     'AssignmentReportResourceComplianceReason',
@@ -71,9 +78,11 @@ __all__ = [
     'ErrorResponseError',
     'GuestConfigurationAssignment',
     'GuestConfigurationAssignmentList',
+    'GuestConfigurationAssignmentProperties',
     'GuestConfigurationAssignmentReport',
     'GuestConfigurationAssignmentReportList',
     'GuestConfigurationAssignmentReportProperties',
+    'GuestConfigurationNavigation',
     'Operation',
     'OperationDisplay',
     'OperationList',
@@ -81,10 +90,10 @@ __all__ = [
     'Resource',
     'VmInfo',
     'ActionAfterReboot',
-    'AllowModuleOverwrite',
+    'AssignmentType',
     'ComplianceStatus',
     'ConfigurationMode',
+    'Kind',
     'ProvisioningState',
-    'RebootIfNeeded',
     'Type',
 ]

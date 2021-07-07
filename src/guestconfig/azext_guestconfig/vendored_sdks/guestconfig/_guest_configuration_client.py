@@ -18,33 +18,32 @@ if TYPE_CHECKING:
     from azure.core.credentials import TokenCredential
 
 from ._configuration import GuestConfigurationClientConfiguration
-from .operations import GuestConfigurationAssignmentOperations
-from .operations import GuestConfigurationAssignmentReportOperations
-from .operations import GuestConfigurationHcrpAssignmentOperations
-from .operations import GuestConfigurationHcrpAssignmentReportOperations
-from .operations import OperationOperations
+from .operations import GuestConfigurationAssignmentsOperations
+from .operations import GuestConfigurationAssignmentReportsOperations
+from .operations import GuestConfigurationHcrpAssignmentsOperations
+from .operations import GuestConfigurationHcrpAssignmentReportsOperations
+from .operations import Operations
 from . import models
 
 
 class GuestConfigurationClient(object):
     """Guest Configuration Client.
 
-    :ivar guest_configuration_assignment: GuestConfigurationAssignmentOperations operations
-    :vartype guest_configuration_assignment: guest_configuration_client.operations.GuestConfigurationAssignmentOperations
-    :ivar guest_configuration_assignment_report: GuestConfigurationAssignmentReportOperations operations
-    :vartype guest_configuration_assignment_report: guest_configuration_client.operations.GuestConfigurationAssignmentReportOperations
-    :ivar guest_configuration_hcrp_assignment: GuestConfigurationHcrpAssignmentOperations operations
-    :vartype guest_configuration_hcrp_assignment: guest_configuration_client.operations.GuestConfigurationHcrpAssignmentOperations
-    :ivar guest_configuration_hcrp_assignment_report: GuestConfigurationHcrpAssignmentReportOperations operations
-    :vartype guest_configuration_hcrp_assignment_report: guest_configuration_client.operations.GuestConfigurationHcrpAssignmentReportOperations
-    :ivar operation: OperationOperations operations
-    :vartype operation: guest_configuration_client.operations.OperationOperations
+    :ivar guest_configuration_assignments: GuestConfigurationAssignmentsOperations operations
+    :vartype guest_configuration_assignments: guest_configuration_client.operations.GuestConfigurationAssignmentsOperations
+    :ivar guest_configuration_assignment_reports: GuestConfigurationAssignmentReportsOperations operations
+    :vartype guest_configuration_assignment_reports: guest_configuration_client.operations.GuestConfigurationAssignmentReportsOperations
+    :ivar guest_configuration_hcrp_assignments: GuestConfigurationHcrpAssignmentsOperations operations
+    :vartype guest_configuration_hcrp_assignments: guest_configuration_client.operations.GuestConfigurationHcrpAssignmentsOperations
+    :ivar guest_configuration_hcrp_assignment_reports: GuestConfigurationHcrpAssignmentReportsOperations operations
+    :vartype guest_configuration_hcrp_assignment_reports: guest_configuration_client.operations.GuestConfigurationHcrpAssignmentReportsOperations
+    :ivar operations: Operations operations
+    :vartype operations: guest_configuration_client.operations.Operations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials.TokenCredential
     :param subscription_id: Subscription ID which uniquely identify Microsoft Azure subscription. The subscription ID forms part of the URI for every service call.
     :type subscription_id: str
     :param str base_url: Service URL
-    :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
     """
 
     def __init__(
@@ -64,15 +63,15 @@ class GuestConfigurationClient(object):
         self._serialize = Serializer(client_models)
         self._deserialize = Deserializer(client_models)
 
-        self.guest_configuration_assignment = GuestConfigurationAssignmentOperations(
+        self.guest_configuration_assignments = GuestConfigurationAssignmentsOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.guest_configuration_assignment_report = GuestConfigurationAssignmentReportOperations(
+        self.guest_configuration_assignment_reports = GuestConfigurationAssignmentReportsOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.guest_configuration_hcrp_assignment = GuestConfigurationHcrpAssignmentOperations(
+        self.guest_configuration_hcrp_assignments = GuestConfigurationHcrpAssignmentsOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.guest_configuration_hcrp_assignment_report = GuestConfigurationHcrpAssignmentReportOperations(
+        self.guest_configuration_hcrp_assignment_reports = GuestConfigurationHcrpAssignmentReportsOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.operation = OperationOperations(
+        self.operations = Operations(
             self._client, self._config, self._serialize, self._deserialize)
 
     def close(self):

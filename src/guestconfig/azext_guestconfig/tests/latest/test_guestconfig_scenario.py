@@ -7,138 +7,70 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
-# pylint: disable=line-too-long
 
 import os
 from azure.cli.testsdk import ScenarioTest
-from .. import try_manual, raise_if
 from azure.cli.testsdk import ResourceGroupPreparer
+from .example_steps import step_guest_configuration_assignment_show
+from .example_steps import step_guest_configuration_assignment_list
+from .example_steps import step_guest_configuration_assignment_report_show
+from .example_steps import step_guest_configuration_assignment_report_list
+from .example_steps import step_guest_configuration_hcrp
+from .example_steps import step_guest_configuration_hcrp2
+from .example_steps import step_guest_configuration_hcrp_assignment_show
+from .example_steps import step_guest_configuration_hcrp_assignment_list
+from .. import (
+    try_manual,
+    raise_if,
+    calc_coverage
+)
 
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
+# Env setup_scenario
 @try_manual
-def setup(test, rg):
+def setup_scenario(test, rg):
     pass
 
 
-# EXAMPLE: /GuestConfigurationAssignments/get/Get a guest configuration assignment
+# Env cleanup_scenario
 @try_manual
-def step__guestconfigurationassignments_get_get_a_guest_configuration_assignment(test, rg):
-    test.cmd('az guestconfig guest-configuration-assignment show '
-             '--name "{GuestConfigurationAssignments}" '
-             '--resource-group "{RGroup}" '
-             '--vm-name "{VMName}"',
-             checks=[])
-
-
-# EXAMPLE: /GuestConfigurationAssignments/get/List all guest configuration assignments for a virtual machine
-@try_manual
-def step__guestconfigurationassignments_get_list_all_guest_configuration_assignments_for_a_virtual_machine(test, rg):
-    test.cmd('az guestconfig guest-configuration-assignment list '
-             '--resource-group "{RGroup}" '
-             '--vm-name "{VMName}"',
-             checks=[])
-
-
-# EXAMPLE: /GuestConfigurationAssignmentReports/get/Get a guest configuration assignment report by Id for a virtual machine
-@try_manual
-def step__guestconfigurationassignmentreports_get_get_a_guest_configuration_assignment_report_by_id_for_a_virtual_machine(test, rg):
-    test.cmd('az guestconfig guest-configuration-assignment-report show '
-             '--guest-configuration-assignment-name "{GuestConfigurationAssignments}" '
-             '--report-id "{GuestConfigurationReportId}" '
-             '--resource-group "{RGroup}" '
-             '--vm-name "{VMName}"',
-             checks=[])
-
-
-# EXAMPLE: /GuestConfigurationAssignmentReports/get/List all guest configuration assignments for a virtual machine
-@try_manual
-def step__guestconfigurationassignmentreports_get_list_all_guest_configuration_assignments_for_a_virtual_machine(test, rg):
-    test.cmd('az guestconfig guest-configuration-assignment-report list '
-             '--guest-configuration-assignment-name "{GuestConfigurationAssignments}" '
-             '--resource-group "{RGroup}" '
-             '--vm-name "{VMName}"',
-             checks=[])
-
-
-# EXAMPLE: /GuestConfigurationHCRPAssignmentReports/get/Get a guest configuration assignment report by Id for a virtual machine
-@try_manual
-def step__guestconfigurationhcrpassignmentreports_get_get_a_guest_configuration_assignment_report_by_id_for_a_virtual_machine(test, rg):
-    test.cmd('az guestconfig guest-configuration-hcrp-assignment-report show '
-             '--guest-configuration-assignment-name "{HybridGuestConfigurationAssignments}" '
-             '--machine-name "{HybridMName}" '
-             '--report-id "{HybridGuestConfigurationReportId}" '
-             '--resource-group "{HybridRGroup}"',
-             checks=[])
-
-
-# EXAMPLE: /GuestConfigurationHCRPAssignmentReports/get/List all guest configuration assignments for a virtual machine
-@try_manual
-def step__guestconfigurationhcrpassignmentreports_get_list_all_guest_configuration_assignments_for_a_virtual_machine(test, rg):
-    test.cmd('az guestconfig guest-configuration-hcrp-assignment-report list '
-             '--guest-configuration-assignment-name "{HybridGuestConfigurationAssignments}" '
-             '--machine-name "{HybridMName}" '
-             '--resource-group "{HybridRGroup}"',
-             checks=[])
-
-
-# EXAMPLE: /GuestConfigurationHCRPAssignments/get/Get a guest configuration assignment
-@try_manual
-def step__guestconfigurationhcrpassignments_get_get_a_guest_configuration_assignment(test, rg):
-    test.cmd('az guestconfig guest-configuration-hcrp-assignment show '
-             '--guest-configuration-assignment-name "{HybridGuestConfigurationAssignments}" '
-             '--machine-name "{HybridMName}" '
-             '--resource-group "{HybridRGroup}"',
-             checks=[])
-
-
-# EXAMPLE: /GuestConfigurationHCRPAssignments/get/List all guest configuration assignments for a virtual machine
-@try_manual
-def step__guestconfigurationhcrpassignments_get_list_all_guest_configuration_assignments_for_a_virtual_machine(test, rg):
-    test.cmd('az guestconfig guest-configuration-hcrp-assignment list '
-             '--machine-name "{HybridMName}" '
-             '--resource-group "{HybridRGroup}"',
-             checks=[])
-
-
-@try_manual
-def cleanup(test, rg):
+def cleanup_scenario(test, rg):
     pass
 
 
+# Testcase: Scenario
 @try_manual
 def call_scenario(test, rg):
-    setup(test, rg)
-    step__guestconfigurationassignments_get_get_a_guest_configuration_assignment(test, rg)
-    step__guestconfigurationassignments_get_list_all_guest_configuration_assignments_for_a_virtual_machine(test, rg)
-    step__guestconfigurationassignmentreports_get_get_a_guest_configuration_assignment_report_by_id_for_a_virtual_machine(test, rg)
-    step__guestconfigurationassignmentreports_get_list_all_guest_configuration_assignments_for_a_virtual_machine(test, rg)
-    step__guestconfigurationhcrpassignmentreports_get_get_a_guest_configuration_assignment_report_by_id_for_a_virtual_machine(test, rg)
-    step__guestconfigurationhcrpassignmentreports_get_list_all_guest_configuration_assignments_for_a_virtual_machine(test, rg)
-    step__guestconfigurationhcrpassignments_get_get_a_guest_configuration_assignment(test, rg)
-    step__guestconfigurationhcrpassignments_get_list_all_guest_configuration_assignments_for_a_virtual_machine(test, rg)
-    cleanup(test, rg)
+    setup_scenario(test, rg)
+    step_guest_configuration_assignment_show(test, rg, checks=[])
+    step_guest_configuration_assignment_list(test, rg, checks=[])
+    step_guest_configuration_assignment_report_show(test, rg, checks=[])
+    step_guest_configuration_assignment_report_list(test, rg, checks=[])
+    step_guest_configuration_hcrp(test, rg, checks=[])
+    step_guest_configuration_hcrp2(test, rg, checks=[])
+    step_guest_configuration_hcrp_assignment_show(test, rg, checks=[])
+    step_guest_configuration_hcrp_assignment_list(test, rg, checks=[])
+    cleanup_scenario(test, rg)
 
 
+# Test class for Scenario
 @try_manual
-class GuestConfigurationClientScenarioTest(ScenarioTest):
+class GuestconfigScenarioTest(ScenarioTest):
 
-    @ResourceGroupPreparer(name_prefix='geTestResourceGroup002', key='rg', parameter_name='rg')
-    def test_guestconfig(self, rg):
-
+    def __init__(self, *args, **kwargs):
+        super(GuestconfigScenarioTest, self).__init__(*args, **kwargs)
         self.kwargs.update({
-            'WhitelistedApplication': 'WhitelistedApplication',
-            'RGroup': 'geTestResourceGroup002',
-            'VMName': 'geubuntu18.04-20200722',
-            'GuestConfigurationAssignments': 'linux-password-baseline',
-            'GuestConfigurationReportId': '8ed6b155-3627-41ee-a96c-bcb9b026eec0',
-            'HybridRGroup': 'geTestResourceGroup002',
-            'HybridMName': 'MSFT-LMR',
-            'HybridGuestConfigurationAssignments': 'WindowsTimeZone',
-            'HybridGuestConfigurationReportId': '2ecfc027-3dfa-4146-9d33-dee3cb5c7c94',
+            'myGuestConfigurationAssignment': 'SecureProtocol',
+            'myGuestConfigurationAssignment2': 'AuditSecureProtocol',
         })
 
+
+    @ResourceGroupPreparer(name_prefix='clitestguestconfig_myResourceGroupName'[:7], key='rg', parameter_name='rg')
+    def test_guestconfig_Scenario(self, rg):
         call_scenario(self, rg)
+        calc_coverage(__file__)
         raise_if()
+
