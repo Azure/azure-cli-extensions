@@ -29,7 +29,10 @@ def confluent_organization_create(cmd,
     from azure.cli.command_modules.role.custom import list_role_assignments
 
     token_info = Profile(cli_ctx=cmd.cli_ctx).get_raw_token()[0][2]
-    decode = jwt.decode(token_info['accessToken'], algorithms=['RS256'], options={"verify_signature": False})
+    # PyJWT < 2.0.0 is using `verify` to verify token
+    # PyJWT >= 2.0.0 has moved this paramter in options
+    # For compatibility, keep two options for now.
+    decode = jwt.decode(token_info['accessToken'], algorithms=['RS256'], verify=False, options={"verify_signature": False})
     body = {}
     body['user_detail'] = {}
     try:

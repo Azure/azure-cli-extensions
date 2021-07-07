@@ -7,7 +7,7 @@ Release History
 +++++
 * Remove `isRIRequired` and `msrp` in price of `az confluent offer-detail show`
 * Fix issue: could not create org with owner/contributor role through a SG assignment.
-* Upgrade dependent pacakge PyJWT from 1.7.1 to 2.1.0
+* Compatible with PyJWT  1.7.1 and 2.1.0
 
 0.2.0
 +++++
