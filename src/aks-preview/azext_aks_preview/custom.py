@@ -2797,12 +2797,36 @@ def _ensure_container_insights_for_monitoring(cmd,
             # create the DCR
             dcr_creation_body = json.dumps({"location": location,
                                             "properties": {
+                                                "dataSources": {
+                                                        "extensions": [
+                                                            {
+                                                                "name": "ContainerInsightsExtension",
+                                                                "streams": [
+                                                                    "Microsoft-Perf",
+                                                                    "Microsoft-ContainerInventory",
+                                                                    "Microsoft-ContainerLog",
+                                                                    "Microsoft-ContainerLogV2",
+                                                                    "Microsoft-ContainerNodeInventory",
+                                                                    "Microsoft-KubeEvents",
+                                                                    "Microsoft-KubeHealth",
+                                                                    "Microsoft-KubeMonAgentEvents",
+                                                                    "Microsoft-KubeNodeInventory",
+                                                                    "Microsoft-KubePodInventory",
+                                                                    "Microsoft-KubePVInventory",
+                                                                    "Microsoft-KubeServices",
+                                                                    "Microsoft-InsightsMetrics"
+                                                                ],
+                                                                "extensionName": "ContainerInsights"
+                                                            }
+                                                        ]
+                                                },
                                                 "dataFlows": [
                                                     {
                                                         "streams": [
                                                             "Microsoft-Perf",
                                                             "Microsoft-ContainerInventory",
                                                             "Microsoft-ContainerLog",
+                                                            "Microsoft-ContainerLogV2",
                                                             "Microsoft-ContainerNodeInventory",
                                                             "Microsoft-KubeEvents",
                                                             "Microsoft-KubeHealth",
