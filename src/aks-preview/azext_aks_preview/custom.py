@@ -2801,7 +2801,7 @@ def _ensure_container_insights_for_monitoring(cmd,
                                                     "extensions": [
                                                         {
                                                            "name": "ContainerInsightsExtension",
-                                                            "streams": [
+                                                           "streams": [
                                                                 "Microsoft-Perf",
                                                                 "Microsoft-ContainerInventory",
                                                                 "Microsoft-ContainerLog",
