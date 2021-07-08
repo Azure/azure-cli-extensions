@@ -5,9 +5,8 @@ Release History
 
 0.3.0
 +++++
-* Remove `isRIRequired` and `msrp` in price of `az confluent offer-detail show`
-* Fix issue: could not create org with owner/contributor role through a SG assignment.
-* Compatible with PyJWT  1.7.1 and 2.1.0
+* `az confluent offer-detail show`: Remove the properties `isRIRequired` and `msrp` from the output.
+* `az confluent organization create`: Fix the issue that organization cannot be created with owner/contributor role through a SG assignment.
 
 0.2.0
 +++++
