@@ -4,7 +4,12 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=line-too-long
-from ._client_factory import (cf_app_services, cf_spring_cloud, cf_spring_cloud_20201101preview, cf_bindings, cf_config_servers)
+from ._client_factory import (cf_app_services,
+                              cf_spring_cloud,
+                              cf_spring_cloud_20201101preview,
+                              cf_spring_cloud_20210601preview,
+                              cf_bindings,
+                              cf_config_servers)
 from ._transformers import (transform_spring_cloud_table_output,
                             transform_app_table_output,
                             transform_spring_cloud_deployment_output,
@@ -40,7 +45,7 @@ def load_command_table(self, _):
         g.custom_command('repo update', 'config_repo_update')
         g.custom_command('repo list', 'config_repo_list')
 
-    with self.command_group('spring-cloud app', client_factory=cf_spring_cloud_20201101preview) as g:
+    with self.command_group('spring-cloud app', client_factory=cf_spring_cloud_20210601preview) as g:
         g.custom_command('create', 'app_create')
         g.custom_command('update', 'app_update')
         g.custom_command('deploy', 'app_deploy', supports_no_wait=True)
@@ -69,7 +74,7 @@ def load_command_table(self, _):
                             deprecate_info=g.deprecate(redirect='az spring-cloud app logs', hide=True)) as g:
         g.custom_command('tail', 'app_tail_log')
 
-    with self.command_group('spring-cloud app deployment', client_factory=cf_spring_cloud) as g:
+    with self.command_group('spring-cloud app deployment', client_factory=cf_spring_cloud_20210601preview) as g:
         g.custom_command('create', 'deployment_create', supports_no_wait=True)
         g.custom_command('list', 'deployment_list',
                          table_transformer=transform_spring_cloud_deployment_output)

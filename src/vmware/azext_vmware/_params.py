@@ -2,7 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-# pylint: disable=line-too-long
+# pylint: disable=line-too-long,too-many-statements
 
 
 def load_arguments(self, _):
@@ -74,9 +74,36 @@ def load_arguments(self, _):
     with self.argument_context('vmware datastore') as c:
         c.argument('name', options_list=['--name', '-n'], help='The name of the datastore.')
         c.argument('cluster', help='The name of the cluster.')
+        c.argument('lun_name', help='Name of the LUN to be used.')
 
     with self.argument_context('vmware datastore create') as c:
         c.argument('nfs_provider_ip', help='IP address of the NFS provider.')
         c.argument('nfs_file_path', help='File path through which the NFS volume is exposed by the provider.')
         c.argument('endpoints', nargs='*', help='iSCSI provider target IP address list.')
-        c.argument('lun_name', help='Name of the LUN to be used.')
+
+    with self.argument_context('vmware datastore netapp-volume create') as c:
+        c.argument('volume_id', help='Azure resource ID of the NetApp volume.')
+
+    with self.argument_context('vmware datastore disk-pool-volume create') as c:
+        c.argument('target_id', help='Azure resource ID of the iSCSI target.')
+        c.argument('mount_option', nargs='*', help='Mode that describes whether the LUN has to be mounted as a datastore or attached as a LUN.')
+        c.argument('path', help='Device path.')
+
+    with self.argument_context('vmware addon') as c:
+        c.argument('name', options_list=['--name', '-n'], help='Name of the addon.')
+
+    with self.argument_context('vmware addon vr') as c:
+        c.argument('vrs_count', help='The vSphere Replication Server (VRS) count.')
+
+    with self.argument_context('vmware addon hcx') as c:
+        c.argument('offer', help='The HCX offer, example "VMware MaaS Cloud Provider (Enterprise)".')
+
+    with self.argument_context('vmware addon srm') as c:
+        c.argument('license_key', help='The Site Recovery Manager (SRM) license.')
+
+    with self.argument_context('vmware global-reach-connection') as c:
+        c.argument('name', options_list=['--name', '-n'], help='Name of the global reach connection.')
+
+    with self.argument_context('vmware global-reach-connection create') as c:
+        c.argument('peer_express_route_circuit', help='Identifier of the ExpressRoute Circuit to peer with.')
+        c.argument('authorization_key', help='Authorization key from the peer express route.')

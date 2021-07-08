@@ -76,6 +76,9 @@ aks create:
     workspace_resource_id:
       rule_exclusions:
       - option_length_too_long
+    enable_msi_auth_for_monitoring:
+      rule_exclusions:
+      - option_length_too_long
     enable_encryption_at_host:
       rule_exclusions:
       - option_length_too_long
@@ -91,6 +94,9 @@ aks enable-addons:
       rule_exclusions:
       - option_length_too_long
     workspace_resource_id:
+      rule_exclusions:
+      - option_length_too_long
+    enable_msi_auth_for_monitoring:
       rule_exclusions:
       - option_length_too_long
 aks nodepool add:

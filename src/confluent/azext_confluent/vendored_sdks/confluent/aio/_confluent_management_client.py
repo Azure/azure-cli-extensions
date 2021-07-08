@@ -16,21 +16,24 @@ if TYPE_CHECKING:
     from azure.core.credentials_async import AsyncTokenCredential
 
 from ._configuration import ConfluentManagementClientConfiguration
-from .operations import MarketplaceAgreementOperations
-from .operations import OrganizationOperationOperations
+from .operations import MarketplaceAgreementsOperations
+from .operations import OrganizationOperationsOperations
 from .operations import OrganizationOperations
+from .operations import ValidationsOperations
 from .. import models
 
 
 class ConfluentManagementClient(object):
     """ConfluentManagementClient.
 
-    :ivar marketplace_agreement: MarketplaceAgreementOperations operations
-    :vartype marketplace_agreement: confluent_management_client.aio.operations.MarketplaceAgreementOperations
-    :ivar organization_operation: OrganizationOperationOperations operations
-    :vartype organization_operation: confluent_management_client.aio.operations.OrganizationOperationOperations
+    :ivar marketplace_agreements: MarketplaceAgreementsOperations operations
+    :vartype marketplace_agreements: azure.mgmt.confluent.aio.operations.MarketplaceAgreementsOperations
+    :ivar organization_operations: OrganizationOperationsOperations operations
+    :vartype organization_operations: azure.mgmt.confluent.aio.operations.OrganizationOperationsOperations
     :ivar organization: OrganizationOperations operations
-    :vartype organization: confluent_management_client.aio.operations.OrganizationOperations
+    :vartype organization: azure.mgmt.confluent.aio.operations.OrganizationOperations
+    :ivar validations: ValidationsOperations operations
+    :vartype validations: azure.mgmt.confluent.aio.operations.ValidationsOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials_async.AsyncTokenCredential
     :param subscription_id: Microsoft Azure subscription id.
@@ -53,13 +56,16 @@ class ConfluentManagementClient(object):
 
         client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
         self._serialize = Serializer(client_models)
+        self._serialize.client_side_validation = False
         self._deserialize = Deserializer(client_models)
 
-        self.marketplace_agreement = MarketplaceAgreementOperations(
+        self.marketplace_agreements = MarketplaceAgreementsOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.organization_operation = OrganizationOperationOperations(
+        self.organization_operations = OrganizationOperationsOperations(
             self._client, self._config, self._serialize, self._deserialize)
         self.organization = OrganizationOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.validations = ValidationsOperations(
             self._client, self._config, self._serialize, self._deserialize)
 
     async def close(self) -> None:

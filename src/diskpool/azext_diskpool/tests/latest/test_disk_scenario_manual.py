@@ -29,10 +29,10 @@ class DiskpoolScenarioTest(ScenarioTest):
             'storagePoolObjectId': '09f10f07-08cf-4ab7-be0f-e9ae3d72b9ad'
         })
         result = self.cmd('disk create --name {diskName} --resource-group {rg} --zone {zone} --location {location} '
-                          '--sku Premium_LRS --max-shares 2 --size-gb 256').get_output_in_json()
+                          '--sku Premium_LRS --max-shares 2 --size-gb 1024').get_output_in_json()
         self.kwargs['diskId'] = result['id']
         result = self.cmd('disk create --name {diskName2} --resource-group {rg} --zone {zone} --location {location} '
-                          '--sku Premium_LRS --max-shares 2 --size-gb 256').get_output_in_json()
+                          '--sku Premium_LRS --max-shares 2 --size-gb 1024').get_output_in_json()
         self.kwargs['diskId2'] = result['id']
         with mock.patch('azure.cli.command_modules.role.custom._gen_guid', side_effect=self.create_guid):
             self.cmd('role assignment create --assignee-object-id {storagePoolObjectId} --role "Virtual Machine Contributor" --scope {diskId}')
@@ -61,9 +61,8 @@ class DiskpoolScenarioTest(ScenarioTest):
         self.cmd('disk-pool list --resource-group {rg}',
                  checks=[self.check('length(@)', 1)])
 
-        # TODO: Add back when fixed in server
-        # self.cmd('disk-pool list-outbound-network-dependency-endpoint --name {diskPoolName} --resource-group {rg}',
-        #          checks=[self.check('length(@)', 1)])
+        self.cmd('disk-pool list-outbound-network-dependency-endpoint --name {diskPoolName} --resource-group {rg}',
+                 checks=[self.check('length(@)', 4)])
 
         # Create an ISCSI target
         self.cmd('disk-pool iscsi-target create --name {targetName} --disk-pool-name {diskPoolName} '

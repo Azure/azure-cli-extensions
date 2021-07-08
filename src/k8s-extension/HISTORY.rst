@@ -3,6 +3,15 @@
 Release History
 ===============
 
+0.5.0
+++++++++++++++++++
+* Add microsoft.openservicemesh customization to check distros
+* Delete customization for partners 
+
+0.4.3
+++++++++++++++++++
+* Add SSL support for AzureML
+
 0.4.2
 ++++++++++++++++++
 

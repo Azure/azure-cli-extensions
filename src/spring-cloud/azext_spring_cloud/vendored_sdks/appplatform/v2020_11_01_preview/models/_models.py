@@ -165,8 +165,6 @@ class AppResourceProperties(Model):
     :type fqdn: str
     :param https_only: Indicate if only https is allowed.
     :type https_only: bool
-    :param enable_end_to_end_tls: Indicate if end to end TLS is enabled.
-    :type enable_end_to_end_tls: bool
     :ivar created_time: Date time when the resource is created
     :vartype created_time: datetime
     :param temporary_disk: Temporary disk settings
@@ -175,6 +173,8 @@ class AppResourceProperties(Model):
     :param persistent_disk: Persistent disk settings
     :type persistent_disk:
      ~azure.mgmt.appplatform.v2020_11_01_preview.models.PersistentDisk
+    :param enable_end_to_end_tls: Indicate if end to end TLS is enabled.
+    :type enable_end_to_end_tls: bool
     """
 
     _validation = {
@@ -190,10 +190,10 @@ class AppResourceProperties(Model):
         'active_deployment_name': {'key': 'activeDeploymentName', 'type': 'str'},
         'fqdn': {'key': 'fqdn', 'type': 'str'},
         'https_only': {'key': 'httpsOnly', 'type': 'bool'},
-        'enable_end_to_end_tls': {'key': 'enableEndToEndTLS', 'type': 'bool'},
         'created_time': {'key': 'createdTime', 'type': 'iso-8601'},
         'temporary_disk': {'key': 'temporaryDisk', 'type': 'TemporaryDisk'},
         'persistent_disk': {'key': 'persistentDisk', 'type': 'PersistentDisk'},
+        'enable_end_to_end_tls': {'key': 'enableEndToEndTLS', 'type': 'bool'},
     }
 
     def __init__(self, **kwargs):
@@ -204,10 +204,10 @@ class AppResourceProperties(Model):
         self.active_deployment_name = kwargs.get('active_deployment_name', None)
         self.fqdn = kwargs.get('fqdn', None)
         self.https_only = kwargs.get('https_only', None)
-        self.enable_end_to_end_tls = kwargs.get('enable_end_to_end_tls', None)
         self.created_time = None
         self.temporary_disk = kwargs.get('temporary_disk', None)
         self.persistent_disk = kwargs.get('persistent_disk', None)
+        self.enable_end_to_end_tls = kwargs.get('enable_end_to_end_tls', None)
 
 
 class AvailableRuntimeVersions(Model):
@@ -1951,9 +1951,9 @@ class ServiceSpecification(Model):
 class Sku(Model):
     """Sku of Azure Spring Cloud.
 
-    :param name: Name of the Sku
+    :param name: Name of the Sku. Default value: "S0" .
     :type name: str
-    :param tier: Tier of the Sku
+    :param tier: Tier of the Sku. Default value: "Standard" .
     :type tier: str
     :param capacity: Current capacity of the target resource
     :type capacity: int
@@ -1967,8 +1967,8 @@ class Sku(Model):
 
     def __init__(self, **kwargs):
         super(Sku, self).__init__(**kwargs)
-        self.name = kwargs.get('name', None)
-        self.tier = kwargs.get('tier', None)
+        self.name = kwargs.get('name', "S0")
+        self.tier = kwargs.get('tier', "Standard")
         self.capacity = kwargs.get('capacity', None)
 
 

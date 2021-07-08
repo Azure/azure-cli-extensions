@@ -91,6 +91,7 @@ def load_arguments(self, _):
         c.argument('pod_subnet_id', type=str, validator=validate_pod_subnet_id)
         c.argument('ppg')
         c.argument('workspace_resource_id')
+        c.argument('enable_msi_auth_for_monitoring', arg_type=get_three_state_flag(), is_preview=True)
         c.argument('skip_subnet_role_assignment', action='store_true')
         c.argument('enable_fips_image', action='store_true', is_preview=True)
         c.argument('enable_cluster_autoscaler', action='store_true')
@@ -129,6 +130,7 @@ def load_arguments(self, _):
         c.argument('appgw_watch_namespace', options_list=['--appgw-watch-namespace'], arg_group='Application Gateway')
         c.argument('aci_subnet_name', type=str)
         c.argument('enable_encryption_at_host', arg_type=get_three_state_flag(), help='Enable EncryptionAtHost.')
+        c.argument('enable_ultra_ssd', action='store_true')
         c.argument('enable_secret_rotation', action='store_true')
         c.argument('assign_kubelet_identity', type=str, validator=validate_assign_kubelet_identity)
         c.argument('disable_local_accounts', action='store_true')
@@ -228,6 +230,7 @@ def load_arguments(self, _):
             c.argument('kubelet_config', type=str)
             c.argument('linux_os_config', type=str)
             c.argument('enable_encryption_at_host', options_list=['--enable-encryption-at-host'], action='store_true')
+            c.argument('enable_ultra_ssd', action='store_true')
 
     for scope in ['aks nodepool show', 'aks nodepool delete', 'aks nodepool scale', 'aks nodepool upgrade', 'aks nodepool update']:
         with self.argument_context(scope) as c:
@@ -259,6 +262,8 @@ def load_arguments(self, _):
         c.argument('appgw_subnet_id', options_list=['--appgw-subnet-id'], arg_group='Application Gateway')
         c.argument('appgw_watch_namespace', options_list=['--appgw-watch-namespace'], arg_group='Application Gateway')
         c.argument('enable_secret_rotation', action='store_true')
+        c.argument('workspace_resource_id')
+        c.argument('enable_msi_auth_for_monitoring', arg_type=get_three_state_flag(), is_preview=True)
 
     with self.argument_context('aks get-credentials') as c:
         c.argument('admin', options_list=['--admin', '-a'], default=False)

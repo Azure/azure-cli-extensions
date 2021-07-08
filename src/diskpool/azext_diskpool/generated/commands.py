@@ -26,6 +26,8 @@ def load_command_table(self, _):
         g.custom_command('create', 'disk_pool_create', supports_no_wait=True)
         g.custom_command('update', 'disk_pool_update', supports_no_wait=True)
         g.custom_command('delete', 'disk_pool_delete', supports_no_wait=True, confirmation=True)
+        g.custom_command('list-outbound-network-dependency-endpoint', 'disk_pool_list_outbound_network_dependency_endpo'
+                         'int')
         g.custom_command('list-skus', 'disk_pool_list_skus')
         g.custom_command('start', 'disk_pool_start', supports_no_wait=True)
         g.custom_command('stop', 'disk_pool_stop', supports_no_wait=True)
