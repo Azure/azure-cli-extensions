@@ -2815,8 +2815,8 @@ def _ensure_container_insights_for_monitoring(cmd,
                                                                 "Microsoft-KubePVInventory",
                                                                 "Microsoft-KubeServices",
                                                                 "Microsoft-InsightsMetrics"
-                                                            ],
-                                                            "extensionName": "ContainerInsights"
+                                                           ],
+                                                           "extensionName": "ContainerInsights"
                                                         }
                                                     ]
                                                 },
