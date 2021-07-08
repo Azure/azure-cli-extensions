@@ -6,12 +6,4 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from ._operation_operations_async import OperationOperations
-from ._communication_service_operations_async import CommunicationServiceOperations
-from ._operation_statuses_operations_async import OperationStatusesOperations
-
-__all__ = [
-    'OperationOperations',
-    'CommunicationServiceOperations',
-    'OperationStatusesOperations',
-]
+VERSION = "1.0.0"
