@@ -210,8 +210,10 @@ class Terminal:
 
     def configure_terminal(self):
         if sys.platform.startswith('win'):
+            import colorama
             import ctypes
             from ctypes import wintypes
+            colorama.deinit()
             ENABLE_VIRTUAL_TERMINAL_PROCESSING = 0x0004
             ENABLE_VIRTUAL_TERMINAL_INPUT = 0x0200
             ENABLE_ECHO_INPUT = 0x0004
