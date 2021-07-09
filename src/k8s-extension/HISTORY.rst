@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.5.1
+++++++++++++++++++
+* Remove pyhelm which was causing users to have git installed
+
 0.5.0
 ++++++++++++++++++
 * Add microsoft.openservicemesh customization to check distros

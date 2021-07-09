@@ -18,15 +18,10 @@ if (-not (Test-Path -Path $PSScriptRoot/tmp)) {
 if (!$SkipInstall) {
     Write-Host "Removing the old connnectedk8s extension..."
     az extension remove -n connectedk8s
-    $connectedk8sVersion = $ENVCONFIG.extensionVersion.connectedk8s
-    if (!$connectedk8sVersion) {
-        Write-Host "connectedk8s extension version wasn't specified" -ForegroundColor Red
-        Exit 1
-    }
-    Write-Host "Installing connectedk8s version $connectedk8sVersion..."
-    az extension add --source ./bin/connectedk8s-$connectedk8sVersion-py3-none-any.whl
+    Write-Host "Installing connectedk8s..."
+    az extension add -n connectedk8s
     if (!$?) {
-        Write-Host "Unable to find connectedk8s version $connectedk8sVersion, exiting..."
+        Write-Host "Unable to install connectedk8s, exiting..."
         exit 1
     }
 }
@@ -76,5 +71,10 @@ if ($?)
 
 Write-Host "Connecting the cluster to Arc with connectedk8s..."
 $Env:KUBECONFIG="$PSScriptRoot/tmp/KUBECONFIG"
-$Env:HELMVALUESPATH="$PSScriptRoot/bin/connectedk8s-values.yaml"
 az connectedk8s connect -g $ENVCONFIG.resourceGroup -n $ENVCONFIG.arcClusterName
+if (!$?)
+{
+    kubectl get pods -A
+    Exit 1
+}
+Write-Host "Successfully onboarded the cluster to Azure"
