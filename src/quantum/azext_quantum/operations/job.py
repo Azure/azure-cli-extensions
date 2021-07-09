@@ -150,7 +150,10 @@ def submit(cmd, program_args, resource_group_name=None, workspace_name=None, loc
     result = subprocess.run(args, stdout=subprocess.PIPE, check=False)
 
     if result.returncode == 0:
-        job_id = result.stdout.decode('ascii').strip()
+        output = result.stdout.decode('ascii').strip()
+        # Retrieve the job-id as the last line from standard output.
+        job_id = output.split()[-1]
+        # Query for the job and return status to caller.
         return get(cmd, job_id, resource_group_name, workspace_name, location)
 
     raise CLIError("Failed to submit job.")
