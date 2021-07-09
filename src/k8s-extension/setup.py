@@ -30,9 +30,7 @@ CLASSIFIERS = [
 ]
 
 # TODO: Add any additional SDK dependencies here
-DEPENDENCIES = [
-    'pyhelm'
-]
+DEPENDENCIES = []
 
 VERSION = "0.5.1"
 
