@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.5.1
+++++++++++++++++++
+* Remove pyhelm dependency
+
 0.5.0
 ++++++++++++++++++
 * Add microsoft.openservicemesh customization to check distros

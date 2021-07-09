@@ -34,7 +34,7 @@ DEPENDENCIES = [
     'pyhelm'
 ]
 
-VERSION = "0.5.0"
+VERSION = "0.5.1"
 
 with open('README.rst', 'r', encoding='utf-8') as f:
     README = f.read()
