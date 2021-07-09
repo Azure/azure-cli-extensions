@@ -6,14 +6,5 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from ._jobs_operations import JobsOperations
-from ._providers_operations import ProvidersOperations
-from ._storage_operations import StorageOperations
-from ._quotas_operations import QuotasOperations
-
-__all__ = [
-    'JobsOperations',
-    'ProvidersOperations',
-    'StorageOperations',
-    'QuotasOperations',
-]
+from ._quantum_client import QuantumClient
+__all__ = ['QuantumClient']
