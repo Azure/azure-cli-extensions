@@ -277,7 +277,7 @@ helps['vmware addon srm create'] = """
     short-summary: Create a Site Recovery Manager (SRM) addon for a private cloud.
     examples:
     - name: Create a Site Recovery Manager (SRM) addon.
-      text: az vmware addon srm create --resource-group MyResourceGroup --private-cloud MyPrivateCloud --license-key "41915178-A8FF-4A4D-B683-6D735AF5E3F5"
+      text: az vmware addon srm create --resource-group MyResourceGroup --private-cloud MyPrivateCloud --license-key "41915-178A8-FF4A4-DB683-6D735"
 """
 
 helps['vmware addon vr show'] = """
@@ -325,7 +325,7 @@ helps['vmware addon srm update'] = """
     short-summary: Update a Site Recovery Manager (SRM) addon for a private cloud.
     examples:
     - name: Update a Site Recovery Manager (SRM) addon.
-      text: az vmware addon srm update --resource-group MyResourceGroup --private-cloud MyPrivateCloud --license-key "41915178-A8FF-4A4D-B683-6D735AF5E3F5"
+      text: az vmware addon srm update --resource-group MyResourceGroup --private-cloud MyPrivateCloud --license-key "41915-178A8-FF4A4-DB683-6D735"
 """
 
 helps['vmware addon vr delete'] = """
@@ -350,4 +350,29 @@ helps['vmware addon srm delete'] = """
     examples:
     - name: Delete a Site Recovery Manager (SRM) addon.
       text: az vmware addon srm delete --resource-group MyResourceGroup --private-cloud MyPrivateCloud
+"""
+
+helps['vmware global-reach-connection'] = """
+    type: group
+    short-summary: Commands to manage global reach connections in a private cloud.
+"""
+
+helps['vmware global-reach-connection create'] = """
+    type: command
+    short-summary: Create a global reach connection in a private cloud.
+"""
+
+helps['vmware global-reach-connection list'] = """
+    type: command
+    short-summary: List global reach connections in a private cloud.
+"""
+
+helps['vmware global-reach-connection show'] = """
+    type: command
+    short-summary: Show details of a global reach connection in a private cloud.
+"""
+
+helps['vmware global-reach-connection delete'] = """
+    type: command
+    short-summary: Delete a global reach connection in a private cloud.
 """

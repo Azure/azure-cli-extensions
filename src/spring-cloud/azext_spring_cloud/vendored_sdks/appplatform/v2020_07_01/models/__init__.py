@@ -51,6 +51,7 @@ try:
     from ._models_py3 import PersistentDisk
     from ._models_py3 import ProxyResource
     from ._models_py3 import RegenerateTestKeyRequestPayload
+    from ._models_py3 import RequiredTraffic
     from ._models_py3 import Resource
     from ._models_py3 import ResourceSku
     from ._models_py3 import ResourceSkuCapabilities
@@ -110,6 +111,7 @@ except (SyntaxError, ImportError):
     from ._models import PersistentDisk
     from ._models import ProxyResource
     from ._models import RegenerateTestKeyRequestPayload
+    from ._models import RequiredTraffic
     from ._models import Resource
     from ._models import ResourceSku
     from ._models import ResourceSkuCapabilities
@@ -137,6 +139,7 @@ from ._paged_models import ResourceSkuPaged
 from ._paged_models import ServiceResourcePaged
 from ._app_platform_management_client_enums import (
     ProvisioningState,
+    TrafficDirection,
     ManagedIdentityType,
     ConfigServerState,
     MonitoringSettingState,
@@ -195,6 +198,7 @@ __all__ = [
     'PersistentDisk',
     'ProxyResource',
     'RegenerateTestKeyRequestPayload',
+    'RequiredTraffic',
     'Resource',
     'ResourceSku',
     'ResourceSkuCapabilities',
@@ -221,6 +225,7 @@ __all__ = [
     'OperationDetailPaged',
     'ResourceSkuPaged',
     'ProvisioningState',
+    'TrafficDirection',
     'ManagedIdentityType',
     'ConfigServerState',
     'MonitoringSettingState',
