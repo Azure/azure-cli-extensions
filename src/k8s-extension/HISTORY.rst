@@ -3,9 +3,13 @@
 Release History
 ===============
 
+0.5.2
+++++++++++++++++++
+* Remove pyhelm dependency from setup.py
+
 0.5.1
 ++++++++++++++++++
-* Remove pyhelm dependency
+* Remove pyhelm dependency from osm customization
 
 0.5.0
 ++++++++++++++++++
