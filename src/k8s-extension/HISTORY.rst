@@ -5,7 +5,7 @@ Release History
 
 0.5.1
 ++++++++++++++++++
-* Remove pyhelm which was causing users to have git installed
+* Remove pyhelm dependency
 
 0.5.0
 ++++++++++++++++++
