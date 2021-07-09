@@ -12,6 +12,11 @@ az account set --subscription $ENVCONFIG.subscriptionId
 $Env:KUBECONFIG="$PSScriptRoot/tmp/KUBECONFIG"
 Write-Host "Removing the connectedk8s arc agents from the cluster..."
 az connectedk8s delete -g $ENVCONFIG.resourceGroup -n $ENVCONFIG.arcClusterName
+if (!$?)
+{
+    kubectl get pods -A
+    Exit 1
+}
 
 # Skip deleting the AKS Cluster if this is CI
 if (!$CI) {
