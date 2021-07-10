@@ -639,7 +639,7 @@ class EventGridTests(ScenarioTest):
     @StorageAccountPreparer(name_prefix='clieventgrid', location='centraluseuap')
     def test_create_event_subscriptions_to_resource(self, resource_group, resource_group_location, storage_account):
         event_subscription_name = self.create_random_name(prefix='cli', length=40)
-        endpoint_url = 'https://eventgridclitestapp.azurewebsites.net/api/SubscriptionValidation?code=4CTlhouPm0c3PWuTQ8t6Myh/FYegVUPqXUmdtL2byRytFPlt98L/pw=='
+        endpoint_url = 'https://eventgridclitestapp.azurewebsites.net/api/SubscriptionValidation?code=<Hidden>'
         endpoint_baseurl = 'https://eventgridclitestapp.azurewebsites.net/api/SubscriptionValidation'
 
         self.kwargs.update({
