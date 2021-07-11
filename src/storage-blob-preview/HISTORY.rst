@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.5.1
+++++++
+* `az storage blob download`: Allow downloading to stdout for pipe support
+
 0.5.0
 ++++++
 * `az storage blob upload`: Refine help message

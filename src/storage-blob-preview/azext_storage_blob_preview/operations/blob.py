@@ -6,6 +6,7 @@
 from __future__ import print_function
 
 import os
+import sys
 from datetime import datetime
 
 from azure.cli.core.util import sdk_no_wait
@@ -429,13 +430,20 @@ def copy_blob(client, source_url, metadata=None, **kwargs):
     return client.start_copy_from_url(source_url=source_url, metadata=metadata, incremental_copy=False, **kwargs)
 
 
-def download_blob(client, file_path, open_mode='wb', progress_callback=None, socket_timeout=None, **kwargs):
+def download_blob(client, file_path=None, open_mode='wb', progress_callback=None, socket_timeout=None, **kwargs):
     if progress_callback:
         kwargs['raw_response_hook'] = progress_callback
+    if not file_path:
+        kwargs['max_concurrency'] = 1
     download_stream = client.download_blob(**kwargs)
-    with open(file_path, open_mode) as stream:
-        blob = download_stream.readinto(stream)
-    return blob
+    if file_path:
+        with open(file_path, open_mode) as stream:
+            blob = download_stream.readinto(stream)
+        return blob
+    else:
+        with os.fdopen(sys.stdout.fileno(), open_mode) as stream:
+            download_stream.readinto(stream)
+        return
 
 
 def generate_sas_blob_uri(client, cmd, container_name, blob_name, permission=None,
@@ -577,6 +585,8 @@ def snapshot_blob(client, metadata=None, **kwargs):
 # pylint: disable=protected-access
 def _adjust_block_blob_size(client, blob_type, length):
     if not blob_type or blob_type != 'block':
+        return
+    if length is None:
         return
     # increase the block size to 4000MB when the block list will contain more than
     # 50,000 blocks(each block 4MB)

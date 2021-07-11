@@ -71,6 +71,13 @@ examples:
 helps['storage blob download'] = """
 type: command
 short-summary: Download a blob to a file path, with automatic chunking and progress notifications.
+examples:
+  - name: Download a blob to local file.
+    text: az storage blob download -f /path/to/file -c mycontainer -n myblob --account-name mystorageaccount --account-key myaccountkey
+  - name: Download to local file with blob sas url
+    text: az storage blob download -f /path/to/file --blob-url https://mystorageaccount.blob.core.windows.net/mycontainer/myblob?sv=2019-02-02&st=2020-12-22T07%3A07%3A29Z&se=2020-12-23T07%3A07%3A29Z&sr=b&sp=racw&sig=redacted
+  - name: Download a blob content to stdout(pipe support).
+    text: az storage blob download -c mycontainer -n myblob --account-name mystorageaccount --account-key myaccountkey
 """
 
 helps['storage blob filter'] = """
