@@ -64,7 +64,6 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     logger.warning("Ensure that you have the latest helm version installed before proceeding.")
     logger.warning("This operation might take a while...\n")
 
-
     # Setting subscription id
     subscription_id = get_subscription_id(cmd.cli_ctx)
 
@@ -779,7 +778,7 @@ def update_connectedk8s(client, resource_group_name, cluster_name, tags=None, en
 # pylint: disable=line-too-long
 
 
-def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="", proxy_cert="",
+def update_agents_or_resource(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="", proxy_cert="",
                   disable_proxy=False, kube_config=None, kube_context=None, auto_upgrade=None, no_wait=False, tags=None, enable_private_link=None, private_link_scope_resource_id=None):
     logger.warning("Ensure that you have the latest helm version installed before proceeding.")
     logger.warning("This operation might take a while...\n")
