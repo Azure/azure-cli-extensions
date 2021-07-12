@@ -809,6 +809,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         })
 
         create_cmd = 'aks create --resource-group={resource_group} --name={name} ' \
+                     '--generate-ssh-keys ' \
                      '--nodepool-name {node_pool_name} ' \
                      '-c 1'
         self.cmd(create_cmd, checks=[
