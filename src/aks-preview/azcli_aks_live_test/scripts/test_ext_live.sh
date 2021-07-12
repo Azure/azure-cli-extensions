@@ -51,7 +51,8 @@ fi
 # recording test
 if [[ ${TEST_MODE} == "record" || ${TEST_MODE} == "all" ]]; then
     echo "Test in recording mode!"
-    recording_options=${base_options}
+    coverage_options=" -ef test_aks_commands.AzureKubernetesServiceScenarioTest"
+    recording_options="${base_options}${coverage_options}"
     recording_options+=" --json-report-file=ext_recording_report.json"
     recording_options+=" --xml-file=ext_recording_result.xml"
     echo "recording options: ${recording_options}"
