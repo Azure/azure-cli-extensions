@@ -9,8 +9,15 @@ from azure.cli.core.util import send_raw_request
 from azure.cli.command_modules.appservice._appservice_utils import _generic_site_operation
 from azure.cli.command_modules.appservice.custom import update_app_settings
 from azure.cli.command_modules.appservice.custom import update_auth_settings
-from azure.cli.command_modules.appservice._params import AUTH_TYPES
 from azure.cli.core.commands.client_factory import get_subscription_id
+
+MICROSOFT_SECRET_SETTING_NAME = "MICROSOFT_PROVIDER_AUTHENTICATION_SECRET"
+FACEBOOK_SECRET_SETTING_NAME = "FACEBOOK_PROVIDER_AUTHENTICATION_SECRET"
+GITHUB_SECRET_SETTING_NAME = "GITHUB_PROVIDER_AUTHENTICATION_SECRET"
+GOOGLE_SECRET_SETTING_NAME = "GOOGLE_PROVIDER_AUTHENTICATION_SECRET"
+MSA_SECRET_SETTING_NAME = "MSA_PROVIDER_AUTHENTICATION_SECRET"
+TWITTER_SECRET_SETTING_NAME = "TWITTER_PROVIDER_AUTHENTICATION_SECRET"
+
 
 # region rest calls
 
@@ -171,20 +178,27 @@ def revert_to_auth_settings(cmd, resource_group_name, name, slot=None):  # pylin
 # region helper methods
 
 
+def set_field_in_auth_settings_recursive(field_name_split, field_value, auth_settings):
+    if len(field_name_split) == 1:
+        auth_settings[field_name_split[0]] = field_value
+        return auth_settings
+
+    remaining_field_names = field_name_split[1:]
+    if field_name_split[0] not in auth_settings.keys():
+        auth_settings[field_name_split[0]] = {}
+    auth_settings[field_name_split[0]] = set_field_in_auth_settings_recursive(remaining_field_names,
+                                                                              field_value,
+                                                                              auth_settings[field_name_split[0]])
+    return auth_settings
+
+
 def set_field_in_auth_settings(auth_settings, set_string):
     if set_string is not None:
         split1 = set_string.split("=")
         fieldName = split1[0]
         fieldValue = split1[1]
         split2 = fieldName.split(".")
-        split2length = len(split2)
-        for field in split2:
-            if split2[split2length - 1] == field:
-                auth_settings[field] = fieldValue
-            else:
-                if field not in auth_settings.keys():
-                    auth_settings[field] = {}
-                auth_settings = auth_settings[field]
+        auth_settings = set_field_in_auth_settings_recursive(split2, fieldValue, auth_settings)
     return auth_settings
 
 
@@ -243,23 +257,23 @@ def prep_auth_settings_for_v2(cmd, resource_group_name, name, slot=None):  # pyl
     site_auth_settings = get_auth_settings(cmd, resource_group_name, name, slot)
     settings = []
     if site_auth_settings.client_secret is not None:
-        settings.append('MICROSOFT_PROVIDER_AUTHENTICATION_SECRET=' + site_auth_settings.client_secret)
-        site_auth_settings.client_secret_setting_name = 'MICROSOFT_PROVIDER_AUTHENTICATION_SECRET'
+        settings.append(MICROSOFT_SECRET_SETTING_NAME + '=' + site_auth_settings.client_secret)
+        site_auth_settings.client_secret_setting_name = MICROSOFT_SECRET_SETTING_NAME
     if site_auth_settings.facebook_app_secret is not None:
-        settings.append('FACEBOOK_PROVIDER_AUTHENTICATION_SECRET=' + site_auth_settings.facebook_app_secret)
-        site_auth_settings.facebook_app_secret_setting_name = 'FACEBOOK_PROVIDER_AUTHENTICATION_SECRET'
+        settings.append(FACEBOOK_SECRET_SETTING_NAME + '=' + site_auth_settings.facebook_app_secret)
+        site_auth_settings.facebook_app_secret_setting_name = FACEBOOK_SECRET_SETTING_NAME
     if site_auth_settings.git_hub_client_secret is not None:
-        settings.append('GITHUB_PROVIDER_AUTHENTICATION_SECRET=' + site_auth_settings.git_hub_client_secret)
-        site_auth_settings.git_hub_client_secret_setting_name = 'GITHUB_PROVIDER_AUTHENTICATION_SECRET'
+        settings.append(GITHUB_SECRET_SETTING_NAME + '=' + site_auth_settings.git_hub_client_secret)
+        site_auth_settings.git_hub_client_secret_setting_name = GITHUB_SECRET_SETTING_NAME
     if site_auth_settings.google_client_secret is not None:
-        settings.append('GOOGLE_PROVIDER_AUTHENTICATION_SECRET=' + site_auth_settings.google_client_secret)
-        site_auth_settings.google_client_secret_setting_name = 'GOOGLE_PROVIDER_AUTHENTICATION_SECRET'
+        settings.append(GOOGLE_SECRET_SETTING_NAME + '=' + site_auth_settings.google_client_secret)
+        site_auth_settings.google_client_secret_setting_name = GOOGLE_SECRET_SETTING_NAME
     if site_auth_settings.microsoft_account_client_secret is not None:
-        settings.append('MSA_PROVIDER_AUTHENTICATION_SECRET=' + site_auth_settings.microsoft_account_client_secret)
-        site_auth_settings.microsoft_account_client_secret_setting_name = 'MSA_PROVIDER_AUTHENTICATION_SECRET'
+        settings.append(MSA_SECRET_SETTING_NAME + '=' + site_auth_settings.microsoft_account_client_secret)
+        site_auth_settings.microsoft_account_client_secret_setting_name = MSA_SECRET_SETTING_NAME
     if site_auth_settings.twitter_consumer_secret is not None:
-        settings.append('TWITTER_PROVIDER_AUTHENTICATION_SECRET=' + site_auth_settings.twitter_consumer_secret)
-        site_auth_settings.twitter_consumer_secret_setting_name = 'TWITTER_PROVIDER_AUTHENTICATION_SECRET'
+        settings.append(TWITTER_SECRET_SETTING_NAME + '=' + site_auth_settings.twitter_consumer_secret)
+        site_auth_settings.twitter_consumer_secret_setting_name = TWITTER_SECRET_SETTING_NAME
     if len(settings) > 0:
         update_app_settings(cmd, resource_group_name, name, settings, slot)
         remove_all_auth_settings_secrets(cmd, resource_group_name, name, slot)
@@ -375,9 +389,9 @@ def update_aad_settings(cmd, resource_group_name, name, slot=None,  # pylint: di
     if client_secret_setting_name is not None:
         registration["clientSecretSettingName"] = client_secret_setting_name
     if client_secret is not None:
-        registration["clientSecretSettingName"] = 'MICROSOFT_PROVIDER_AUTHENTICATION_SECRET'
+        registration["clientSecretSettingName"] = MICROSOFT_SECRET_SETTING_NAME
         settings = []
-        settings.append('MICROSOFT_PROVIDER_AUTHENTICATION_SECRET=' + client_secret)
+        settings.append(MICROSOFT_SECRET_SETTING_NAME + '=' + client_secret)
         update_app_settings(cmd, resource_group_name, name, settings, slot)
     if issuer is not None:
         registration["openIdIssuer"] = issuer
@@ -436,9 +450,9 @@ def update_facebook_settings(cmd, resource_group_name, name, slot=None,  # pylin
     if app_secret_setting_name is not None:
         registration["appSecretSettingName"] = app_secret_setting_name
     if app_secret is not None:
-        registration["appSecretSettingName"] = 'FACEBOOK_PROVIDER_AUTHENTICATION_SECRET'
+        registration["appSecretSettingName"] = FACEBOOK_SECRET_SETTING_NAME
         settings = []
-        settings.append('FACEBOOK_PROVIDER_AUTHENTICATION_SECRET=' + app_secret)
+        settings.append(FACEBOOK_SECRET_SETTING_NAME + '=' + app_secret)
         update_app_settings(cmd, resource_group_name, name, settings, slot)
     if graph_api_version is not None:
         existing_auth["identityProviders"]["facebook"]["graphApiVersion"] = graph_api_version
@@ -495,9 +509,9 @@ def update_github_settings(cmd, resource_group_name, name, slot=None,  # pylint:
     if client_secret_setting_name is not None:
         registration["clientSecretSettingName"] = client_secret_setting_name
     if client_secret is not None:
-        registration["clientSecretSettingName"] = 'GITHUB_PROVIDER_AUTHENTICATION_SECRET'
+        registration["clientSecretSettingName"] = GITHUB_SECRET_SETTING_NAME
         settings = []
-        settings.append('GITHUB_PROVIDER_AUTHENTICATION_SECRET=' + client_secret)
+        settings.append(GITHUB_SECRET_SETTING_NAME + '=' + client_secret)
         update_app_settings(cmd, resource_group_name, name, settings, slot)
     if scopes is not None:
         existing_auth["identityProviders"]["gitHub"]["login"]["scopes"] = scopes.split(",")
@@ -556,9 +570,9 @@ def update_google_settings(cmd, resource_group_name, name, slot=None,  # pylint:
     if client_secret_setting_name is not None:
         registration["clientSecretSettingName"] = client_secret_setting_name
     if client_secret is not None:
-        registration["clientSecretSettingName"] = 'GOOGLE_PROVIDER_AUTHENTICATION_SECRET'
+        registration["clientSecretSettingName"] = GOOGLE_SECRET_SETTING_NAME
         settings = []
-        settings.append('GOOGLE_PROVIDER_AUTHENTICATION_SECRET=' + client_secret)
+        settings.append(GOOGLE_SECRET_SETTING_NAME + '=' + client_secret)
         update_app_settings(cmd, resource_group_name, name, settings, slot)
     if scopes is not None:
         existing_auth["identityProviders"]["google"]["login"]["scopes"] = scopes.split(",")
@@ -613,9 +627,9 @@ def update_twitter_settings(cmd, resource_group_name, name, slot=None,  # pylint
     if consumer_secret_setting_name is not None:
         registration["consumerSecretSettingName"] = consumer_secret_setting_name
     if consumer_secret is not None:
-        registration["consumerSecretSettingName"] = 'TWITTER_PROVIDER_AUTHENTICATION_SECRET'
+        registration["consumerSecretSettingName"] = TWITTER_SECRET_SETTING_NAME
         settings = []
-        settings.append('TWITTER_PROVIDER_AUTHENTICATION_SECRET=' + consumer_secret)
+        settings.append(TWITTER_SECRET_SETTING_NAME + '=' + consumer_secret)
         update_app_settings(cmd, resource_group_name, name, settings, slot)
     if consumer_key is not None or consumer_secret is not None or consumer_secret_setting_name is not None:
         existing_auth["identityProviders"]["twitter"]["registration"] = registration
@@ -681,10 +695,10 @@ def update_apple_settings(cmd, resource_group_name, name, slot=None,  # pylint: 
     return updated_auth_settings["identityProviders"]["apple"]
 # endregion
 
-# region webapp auth oidc
+# region webapp auth openid-connect
 
 
-def get_oidc_provider_settings(cmd, resource_group_name, name, provider_name, slot=None):  # pylint: disable=unused-argument
+def get_openid_connect_provider_settings(cmd, resource_group_name, name, provider_name, slot=None):  # pylint: disable=unused-argument
     auth_settings = get_auth_settings_v2(cmd, resource_group_name, name, slot)["properties"]
     if "identityProviders" not in auth_settings.keys():
         raise CLIError('Usage Error: The following custom OpenID Connect provider '
@@ -698,9 +712,9 @@ def get_oidc_provider_settings(cmd, resource_group_name, name, provider_name, sl
     return auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]
 
 
-def add_oidc_provider_settings(cmd, resource_group_name, name, provider_name, slot=None,  # pylint: disable=unused-argument
-                               client_id=None, client_secret_setting_name=None,  # pylint: disable=unused-argument
-                               openid_configuration=None, scopes=None):    # pylint: disable=unused-argument
+def add_openid_connect_provider_settings(cmd, resource_group_name, name, provider_name, slot=None,  # pylint: disable=unused-argument
+                                         client_id=None, client_secret_setting_name=None,  # pylint: disable=unused-argument
+                                         openid_configuration=None, scopes=None):    # pylint: disable=unused-argument
     auth_settings = get_auth_settings_v2(cmd, resource_group_name, name, slot)["properties"]
     if "identityProviders" not in auth_settings.keys():
         auth_settings["identityProviders"] = {}
@@ -730,9 +744,9 @@ def add_oidc_provider_settings(cmd, resource_group_name, name, provider_name, sl
     return updated_auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]
 
 
-def update_oidc_provider_settings(cmd, resource_group_name, name, provider_name, slot=None,  # pylint: disable=unused-argument
-                                  client_id=None, client_secret_setting_name=None,  # pylint: disable=unused-argument
-                                  openid_configuration=None, scopes=None):    # pylint: disable=unused-argument
+def update_openid_connect_provider_settings(cmd, resource_group_name, name, provider_name, slot=None,  # pylint: disable=unused-argument
+                                            client_id=None, client_secret_setting_name=None,  # pylint: disable=unused-argument
+                                            openid_configuration=None, scopes=None):    # pylint: disable=unused-argument
     auth_settings = get_auth_settings_v2(cmd, resource_group_name, name, slot)["properties"]
     if "identityProviders" not in auth_settings.keys():
         raise CLIError('Usage Error: The following custom OpenID Connect provider '
@@ -779,7 +793,7 @@ def update_oidc_provider_settings(cmd, resource_group_name, name, provider_name,
     return updated_auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]
 
 
-def remove_oidc_provider_settings(cmd, resource_group_name, name, provider_name, slot=None):  # pylint: disable=unused-argument
+def remove_openid_connect_provider_settings(cmd, resource_group_name, name, provider_name, slot=None):  # pylint: disable=unused-argument
     auth_settings = get_auth_settings_v2(cmd, resource_group_name, name, slot)["properties"]
     if "identityProviders" not in auth_settings.keys():
         raise CLIError('Usage Error: The following custom OpenID Connect provider '

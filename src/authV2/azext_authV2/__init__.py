@@ -12,12 +12,8 @@ class Authv2CommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        from azext_authV2._client_factory import cf_authV2
-        authV2_custom = CliCommandType(
-            operations_tmpl='azext_authV2.custom#{}',
-            client_factory=cf_authV2)
-        super(Authv2CommandsLoader, self).__init__(cli_ctx=cli_ctx,
-                                                   custom_command_type=authV2_custom)
+        authV2_custom = CliCommandType(operations_tmpl='azext_authV2.custom#{}')
+        super().__init__(cli_ctx=cli_ctx, custom_command_type=authV2_custom)
 
     def load_command_table(self, args):
         from azext_authV2.commands import load_command_table

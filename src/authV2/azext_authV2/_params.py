@@ -30,12 +30,14 @@ def load_arguments(self, _):
 
     with self.argument_context('webapp auth microsoft update') as c:
         c.argument('client_id', options_list=['--client-id'])
+        c.argument('client_secret', options_list=['--client-secret'])
         c.argument('client_secret_setting_name', options_list=['--client-secret-setting-name'])
         c.argument('issuer', options_list=['--issuer'])
         c.argument('allowed_token_audiences', options_list=['--allowed-token-audiences'])
 
     with self.argument_context('webapp auth facebook update') as c:
         c.argument('app_id', options_list=['--app-id'])
+        c.argument('app_secret', options_list=['--app-secret'])
         c.argument('app_secret_setting_name', options_list=['--app-secret-setting-name'])
         c.argument('graph_api_version', options_list=['--graph-api-version'])
         c.argument('scopes', options_list=['--scopes'])
@@ -49,37 +51,40 @@ def load_arguments(self, _):
 
     with self.argument_context('webapp auth google update') as c:
         c.argument('client_id', options_list=['--client-id'])
+        c.argument('client_secret', options_list=['--client-secret'])
         c.argument('client_secret_setting_name', options_list=['--client-secret-setting-name'])
         c.argument('scopes', options_list=['--scopes'])
         c.argument('allowed_token_audiences', options_list=['--allowed-token-audiences'])
 
     with self.argument_context('webapp auth twitter update') as c:
         c.argument('consumer_key', options_list=['--consumer-key'])
+        c.argument('consumer_secret', options_list=['--consumer-secret'])
         c.argument('consumer_secret_setting_name', options_list=['--consumer-secret-setting-name'])
 
     with self.argument_context('webapp auth apple update') as c:
         c.argument('client_id', options_list=['--client-id'])
+        c.argument('client_secret', options_list=['--client-secret'])
         c.argument('client_secret_setting_name', options_list=['--client-secret-setting-name'])
         c.argument('scopes', options_list=['--scopes'])
 
-    with self.argument_context('webapp auth oidc show') as c:
+    with self.argument_context('webapp auth openid-connect show') as c:
         c.argument('provider_name', options_list=['--provider-name'])
 
-    with self.argument_context('webapp auth oidc add') as c:
-        c.argument('provider_name', options_list=['--provider-name'])
-        c.argument('client_id', options_list=['--client-id'])
-        c.argument('client_secret_setting_name', options_list=['--client-secret-setting-name'])
-        c.argument('openid_configuration', options_list=['--openid-configuration'])
-        c.argument('scopes', options_list=['--scopes'])
-
-    with self.argument_context('webapp auth oidc update') as c:
+    with self.argument_context('webapp auth openid-connect add') as c:
         c.argument('provider_name', options_list=['--provider-name'])
         c.argument('client_id', options_list=['--client-id'])
         c.argument('client_secret_setting_name', options_list=['--client-secret-setting-name'])
         c.argument('openid_configuration', options_list=['--openid-configuration'])
         c.argument('scopes', options_list=['--scopes'])
 
-    with self.argument_context('webapp auth oidc remove') as c:
+    with self.argument_context('webapp auth openid-connect update') as c:
+        c.argument('provider_name', options_list=['--provider-name'])
+        c.argument('client_id', options_list=['--client-id'])
+        c.argument('client_secret_setting_name', options_list=['--client-secret-setting-name'])
+        c.argument('openid_configuration', options_list=['--openid-configuration'])
+        c.argument('scopes', options_list=['--scopes'])
+
+    with self.argument_context('webapp auth openid-connect remove') as c:
         c.argument('provider_name', options_list=['--provider-name'])
 
     with self.argument_context('webapp auth-classic update') as c:

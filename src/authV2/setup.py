@@ -14,8 +14,6 @@ except ImportError:
     from distutils import log as logger
     logger.warn("Wheel is not available, disabling bdist_wheel hook")
 
-# TODO: Confirm this is the right version number you want and it matches your
-# HISTORY.rst entry.
 VERSION = '0.1.0'
 
 # The full list of classifiers is available at
@@ -32,7 +30,6 @@ CLASSIFIERS = [
     'License :: OSI Approved :: MIT License',
 ]
 
-# TODO: Add any additional SDK dependencies here
 DEPENDENCIES = []
 
 with open('README.rst', 'r', encoding='utf-8') as f:
@@ -44,10 +41,8 @@ setup(
     name='authV2',
     version=VERSION,
     description='Microsoft Azure Command-Line Tools Authv2 Extension',
-    # TODO: Update author and email, if applicable
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    # TODO: change to your extension source code repo if the code will not be put in azure-cli-extensions repo
     url='https://github.com/Azure/azure-cli-extensions/tree/master/src/authV2',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
