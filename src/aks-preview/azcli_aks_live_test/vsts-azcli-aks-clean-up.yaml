@@ -1,0 +1,19 @@
+name: $(Date:yyyyMMdd)$(Rev:.r-)CleanUp
+
+trigger: none
+
+variables:
+  - group: azcli-aks-tool
+  - name: LIVE_TEST_BASE_DIR
+  value: "azure-cli-extensions/src/aks-preview/azcli_aks_live_test"
+
+jobs:
+- job: CleanUp
+  pool:
+    vmImage: 'ubuntu-18.04'
+  timeoutInMinutes: 60
+  displayName: "CleanUp"
+  steps:
+    - bash: |
+        $(LIVE_TEST_BASE_DIR)/scripts/clean_up.sh
+      displayName: "Clean up outdated resource groups"
