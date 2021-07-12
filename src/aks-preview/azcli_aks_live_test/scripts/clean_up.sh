@@ -27,4 +27,4 @@ az group list --query "[? @.tags.date < '${cond_date}'] | [? starts_with(@.name,
 echo "Length:" $(az group list --query "[? @.tags.date < '${cond_date}'] | [? starts_with(@.name, '${PREFIX}')] | length(@)")
 
 # delete
-az group list --query "[? @.tags.date < '${cond_date}'] | [? starts_with(@.name, '${PREFIX}')].name" -o tsv | xargs -i az group delete -y -n {}
+az group list --query "[? @.tags.date < '${cond_date}'] | [? starts_with(@.name, '${PREFIX}')].name" -o tsv | xargs -i az group delete --no-wait -y -n {}
