@@ -57,40 +57,9 @@ helps['dnc controller wait'] = """
                az dnc controller wait --resource-group "TestRG" --resource-name "testcontroller" --deleted
 """
 
-helps['dnc delegated-network'] = """
-    type: group
-    short-summary: Manage delegated network with dnc
-"""
-
-helps['dnc delegated-network list'] = """
-    type: command
-    short-summary: "Get all the delegatedController resources in a resource group. And Get all the delegatedController \
-resources in a subscription."
-    examples:
-      - name: Get DelegatedNetwork resources by resource group
-        text: |-
-               az dnc delegated-network list --resource-group "testRG"
-      - name: Get DelegatedController resources by subscription
-        text: |-
-               az dnc delegated-network list
-"""
-
 helps['dnc orchestrator-instance-service'] = """
     type: group
     short-summary: Manage orchestrator instance service with dnc
-"""
-
-helps['dnc orchestrator-instance-service list'] = """
-    type: command
-    short-summary: "Get all the OrchestratorInstances resources in a resource group. And Get all the \
-orchestratorInstance resources in a subscription."
-    examples:
-      - name: Get OrchestratorInstance resources by resource group
-        text: |-
-               az dnc orchestrator-instance-service list --resource-group "testRG"
-      - name: Get orchestratorInstance resources by subscription
-        text: |-
-               az dnc orchestrator-instance-service list
 """
 
 helps['dnc orchestrator-instance-service show'] = """
@@ -145,19 +114,6 @@ deleted.
 helps['dnc delegated-subnet-service'] = """
     type: group
     short-summary: Manage delegated subnet service with dnc
-"""
-
-helps['dnc delegated-subnet-service list'] = """
-    type: command
-    short-summary: "Get all the DelegatedSubnets resources in a resource group. And Get all the DelegatedSubnets \
-resources in a subscription."
-    examples:
-      - name: Get DelegatedSubnets resources by resource group
-        text: |-
-               az dnc delegated-subnet-service list --resource-group "testRG"
-      - name: Get DelegatedSubnets resources by subscription
-        text: |-
-               az dnc delegated-subnet-service list
 """
 
 helps['dnc delegated-subnet-service show'] = """
