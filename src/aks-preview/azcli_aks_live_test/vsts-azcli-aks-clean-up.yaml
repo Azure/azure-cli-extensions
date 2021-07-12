@@ -1,4 +1,4 @@
-name: $(Date:yyyyMMdd)$(Rev:.r-)CleanUp
+name: $(Date:yyyyMMdd)$(Rev:.r-)-CleanUp
 
 trigger: none
 
@@ -12,8 +12,10 @@ jobs:
   pool:
     vmImage: 'ubuntu-18.04'
   timeoutInMinutes: 60
-  displayName: "CleanUp"
+  displayName: "Clean Up"
   steps:
     - bash: |
         $(LIVE_TEST_BASE_DIR)/scripts/clean_up.sh
+      env:
+        AZCLI_ALT_CLIENT_SECRET: $(AZCLI_ALT_CLIENT_SECRET)
       displayName: "Clean up outdated resource groups"
