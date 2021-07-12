@@ -64,7 +64,7 @@ if [[ ${TEST_MODE} == "live" || ${TEST_MODE} == "all" ]]; then
     az login --service-principal -u "${AZCLI_ALT_CLIENT_ID}" -p "${AZCLI_ALT_CLIENT_SECRET}" -t "${TENANT_ID}"
     az account set -s "${AZCLI_ALT_SUBSCRIPTION_ID}"
     az account show
-    live_options=${base_options}+${filter_options}
+    live_options="${base_options}${filter_options}"
     live_options+=" -l --json-report-file=ext_live_report.json"
     live_options+=" --xml-file=ext_live_result.xml"
     echo "live options: ${live_options}"
@@ -74,7 +74,7 @@ fi
 # re-recording test
 if [[ ${TEST_MODE} == "live" || ${TEST_MODE} == "all" ]]; then
     echo "Test in re-recording mode(after live test)!"
-    re_recording_options=${base_options}+${filter_options}
+    re_recording_options="${base_options}${filter_options}"
     re_recording_options+=" --json-report-file=ext_re_recording_report.json"
     re_recording_options+=" --xml-file=ext_re_recording_result.xml"
     echo "re-recording options: ${re_recording_options}"
