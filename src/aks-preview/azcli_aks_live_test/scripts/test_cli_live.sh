@@ -47,9 +47,9 @@ fi
 
 # recording test
 if [[ ${TEST_MODE} == "record" || ${TEST_MODE} == "all" ]]; then
-    echo "Test in record mode!"
-    run_flags+=" --json-report-file=cli_report.json"
-    run_flags+=" --xml-file=cli_result.xml"
+    echo "Test in recording mode!"
+    run_flags+=" --json-report-file=cli_recording_report.json"
+    run_flags+=" --xml-file=cli_recording_result.xml"
     echo "run flags: ${run_flags}"
     azaks ${run_flags}
 fi
@@ -62,6 +62,15 @@ if [[ ${TEST_MODE} == "live" || ${TEST_MODE} == "all" ]]; then
     az account show
     run_flags+=" -l --json-report-file=cli_live_report.json"
     run_flags+=" --xml-file=cli_live_result.xml"
+    echo "run flags: ${run_flags}"
+    azaks ${run_flags}
+fi
+
+# re-recording test
+if [[ ${TEST_MODE} == "live" || ${TEST_MODE} == "all" ]]; then
+    echo "Test in re-recording mode(after live test)!"
+    run_flags+=" --json-report-file=cli_re_recording_report.json"
+    run_flags+=" --xml-file=cli_re_recording_result.xml"
     echo "run flags: ${run_flags}"
     azaks ${run_flags}
 fi
