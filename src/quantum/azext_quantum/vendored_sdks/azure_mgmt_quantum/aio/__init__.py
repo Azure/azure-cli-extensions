@@ -6,14 +6,5 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from ._workspaces_operations import WorkspacesOperations
-from ._offerings_operations import OfferingsOperations
-from ._operations import Operations
-from ._workspace_operations import WorkspaceOperations
-
-__all__ = [
-    'WorkspacesOperations',
-    'OfferingsOperations',
-    'Operations',
-    'WorkspaceOperations',
-]
+from ._azure_quantum_management_client import AzureQuantumManagementClient
+__all__ = ['AzureQuantumManagementClient']
