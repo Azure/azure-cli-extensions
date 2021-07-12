@@ -272,3 +272,22 @@ def run(cmd, program_args, resource_group_name=None, workspace_name=None, locati
         return job
 
     return output(cmd, job.id, resource_group_name, workspace_name)
+
+
+def cancel(cmd, job_id, resource_group_name=None, workspace_name=None, location=None):
+    """
+    Request to cancel a job on Azure Quantum if it hasn't completed.
+    """
+    info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
+    client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
+    job = client.get(job_id)
+
+    if job.status == "Succeeded" or job.status == "Failed" or job.status == "Cancelled":
+        print(f"Job {job_id} has already completed with status: {job.status}.")
+        return
+    
+    # If the job hasn't succeeded or failed, attempt to cancel.
+    client.cancel(job_id)
+
+    # Return the updated job status
+    return client.get(job_id)
