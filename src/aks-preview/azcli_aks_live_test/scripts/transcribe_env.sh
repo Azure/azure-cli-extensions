@@ -8,13 +8,20 @@ set -o xtrace
 
 # check var
 # from variable group
+# client id, secret and tenant id of sp 'azcli-aks-live-test'
 [[ -z "${AZCLI_ALT_CLIENT_ID}" ]] && (echo "AZCLI_ALT_CLIENT_ID is empty"; exit 1)
 [[ -z "${AZCLI_ALT_SUBSCRIPTION_ID}" ]] && (echo "AZCLI_ALT_SUBSCRIPTION_ID is empty"; exit 1)
 [[ -z "${TENANT_ID}" ]] && (echo "TENANT_ID is empty"; exit 1)
+# basic ubuntu image with python3 pre-installed, hosted on some container registry
 [[ -z "${IMAGE_PREFIX}" ]] && (echo "IMAGE_PREFIX is empty"; exit 1)
 [[ -z "${IMAGE_NAME}" ]] && (echo "IMAGE_NAME is empty"; exit 1)
 [[ -z "${IMAGE_TAG}" ]] && (echo "IMAGE_TAG is empty"; exit 1)
+# specify the version of python3
 [[ -z "${PYTHON_VERSION}" ]] && (echo "PYTHON_VERSION is empty"; exit 1)
+# storage for az-aks-tool
+[[ -z "${TOOL_STORAGE}" ]] && (echo "TOOL_STORAGE is empty"; exit 1)
+[[ -z "${TOOL_CONTAINER}" ]] && (echo "TOOL_CONTAINER is empty"; exit 1)
+[[ -z "${LATEST_WHEEL_FILE}" ]] && (echo "LATEST_WHEEL_FILE is empty"; exit 1)
 
 # from azure devops
 [[ -z "${BUILD_REASON}" ]] && (echo "BUILD_REASON is empty")
@@ -56,6 +63,11 @@ echo "SYSTEM_PULLREQUEST_TARGETBRANCH=${SYSTEM_PULLREQUEST_TARGETBRANCH}" >> env
 
 # python version
 echo "PYTHON_VERSION=${PYTHON_VERSION}" >> env.list
+
+# storage for az-aks-tool
+echo "TOOL_STORAGE=${TOOL_STORAGE}" >> env.list
+echo "TOOL_CONTAINER=${TOOL_CONTAINER}" >> env.list
+echo "LATEST_WHEEL_FILE=${LATEST_WHEEL_FILE}" >> env.list
 
 # azdev env
 echo "AZURE_CLI_TEST_DEV_SP_NAME=${AZCLI_ALT_CLIENT_ID}" >> env.list
