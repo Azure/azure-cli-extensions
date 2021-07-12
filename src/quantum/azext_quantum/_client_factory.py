@@ -60,7 +60,6 @@ def cf_quantum(cli_ctx, subscription_id=None, resource_group_name=None, workspac
     from .vendored_sdks.azure_quantum import QuantumClient
     creds = _get_data_credentials(cli_ctx, subscription_id)
     client = QuantumClient(creds, subscription_id, resource_group_name, workspace_name, base_url=base_url(location))
-    client.config.add_user_agent(get_appid())
     return client
 
 
