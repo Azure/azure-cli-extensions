@@ -8,8 +8,8 @@ from knack.util import CLIError
 from azure.cli.core.util import send_raw_request
 from azure.cli.command_modules.appservice._appservice_utils import _generic_site_operation
 from azure.cli.command_modules.appservice.custom import update_app_settings
-from azure.cli.command_modules.appservice.custom import update_auth_settings
 from azure.cli.core.commands.client_factory import get_subscription_id
+from azure.cli.command_modules.appservice._params import AUTH_TYPES
 
 MICROSOFT_SECRET_SETTING_NAME = "MICROSOFT_PROVIDER_AUTHENTICATION_SECRET"
 FACEBOOK_SECRET_SETTING_NAME = "FACEBOOK_PROVIDER_AUTHENTICATION_SECRET"
@@ -152,27 +152,29 @@ def revert_to_auth_settings(cmd, resource_group_name, name, slot=None):  # pylin
         raise CLIError('Usage Error: Cannot use command az webapp auth revert when the app is using auth v1.')
     site_auth_settings = get_auth_settings(cmd, resource_group_name, name, slot)
     set_auth_settings_v2(cmd, resource_group_name, name, None, slot)
-    update_auth_settings(cmd, resource_group_name, name, site_auth_settings.enabled, None,
-                         site_auth_settings.client_id, site_auth_settings.token_store_enabled,
-                         site_auth_settings.runtime_version,
-                         site_auth_settings.token_refresh_extension_hours,
-                         site_auth_settings.allowed_external_redirect_urls, site_auth_settings.client_secret,
-                         site_auth_settings.client_secret_certificate_thumbprint,
-                         site_auth_settings.allowed_audiences, site_auth_settings.issuer,
-                         site_auth_settings.facebook_app_id,
-                         site_auth_settings.facebook_app_secret, site_auth_settings.facebook_o_auth_scopes,
-                         site_auth_settings.twitter_consumer_key, site_auth_settings.twitter_consumer_secret,
-                         site_auth_settings.google_client_id, site_auth_settings.google_client_secret,
-                         site_auth_settings.google_o_auth_scopes, site_auth_settings.microsoft_account_client_id,
-                         site_auth_settings.microsoft_account_client_secret,
-                         site_auth_settings.microsoft_account_o_auth_scopes, slot,
-                         site_auth_settings.git_hub_client_id, site_auth_settings.git_hub_client_secret,
-                         site_auth_settings.git_hub_o_auth_scopes, site_auth_settings.client_secret_setting_name,
-                         site_auth_settings.facebook_app_secret_setting_name,
-                         site_auth_settings.google_client_secret_setting_name,
-                         site_auth_settings.microsoft_account_client_secret_setting_name,
-                         site_auth_settings.twitter_consumer_secret_setting_name,
-                         site_auth_settings.git_hub_client_secret_setting_name)
+    update_auth_classic_settings(cmd, resource_group_name, name, site_auth_settings.enabled, None,
+                                 site_auth_settings.client_id, site_auth_settings.token_store_enabled,
+                                 site_auth_settings.runtime_version,
+                                 site_auth_settings.token_refresh_extension_hours,
+                                 site_auth_settings.allowed_external_redirect_urls, site_auth_settings.client_secret,
+                                 site_auth_settings.client_secret_certificate_thumbprint,
+                                 site_auth_settings.allowed_audiences, site_auth_settings.issuer,
+                                 site_auth_settings.facebook_app_id,
+                                 site_auth_settings.facebook_app_secret, site_auth_settings.facebook_o_auth_scopes,
+                                 site_auth_settings.twitter_consumer_key, site_auth_settings.twitter_consumer_secret,
+                                 site_auth_settings.google_client_id, site_auth_settings.google_client_secret,
+                                 site_auth_settings.google_o_auth_scopes,
+                                 site_auth_settings.microsoft_account_client_id,
+                                 site_auth_settings.microsoft_account_client_secret,
+                                 site_auth_settings.microsoft_account_o_auth_scopes, slot,
+                                 site_auth_settings.git_hub_client_id, site_auth_settings.git_hub_client_secret,
+                                 site_auth_settings.git_hub_o_auth_scopes,
+                                 site_auth_settings.client_secret_setting_name,
+                                 site_auth_settings.facebook_app_secret_setting_name,
+                                 site_auth_settings.google_client_secret_setting_name,
+                                 site_auth_settings.microsoft_account_client_secret_setting_name,
+                                 site_auth_settings.twitter_consumer_secret_setting_name,
+                                 site_auth_settings.git_hub_client_secret_setting_name)
 # endregion
 
 # region helper methods
@@ -277,25 +279,28 @@ def prep_auth_settings_for_v2(cmd, resource_group_name, name, slot=None):  # pyl
     if len(settings) > 0:
         update_app_settings(cmd, resource_group_name, name, settings, slot)
         remove_all_auth_settings_secrets(cmd, resource_group_name, name, slot)
-        update_auth_settings(cmd, resource_group_name, name, site_auth_settings.enabled, None,
-                             site_auth_settings.client_id, site_auth_settings.token_store_enabled,
-                             site_auth_settings.runtime_version, site_auth_settings.token_refresh_extension_hours,
-                             site_auth_settings.allowed_external_redirect_urls, None,
-                             site_auth_settings.client_secret_certificate_thumbprint,
-                             site_auth_settings.allowed_audiences, site_auth_settings.issuer,
-                             site_auth_settings.facebook_app_id, None, site_auth_settings.facebook_o_auth_scopes,
-                             site_auth_settings.twitter_consumer_key, None,
-                             site_auth_settings.google_client_id, None,
-                             site_auth_settings.google_o_auth_scopes, site_auth_settings.microsoft_account_client_id,
-                             None,
-                             site_auth_settings.microsoft_account_o_auth_scopes, slot,
-                             site_auth_settings.git_hub_client_id, None, site_auth_settings.git_hub_o_auth_scopes,
-                             site_auth_settings.client_secret_setting_name,
-                             site_auth_settings.facebook_app_secret_setting_name,
-                             site_auth_settings.google_client_secret_setting_name,
-                             site_auth_settings.microsoft_account_client_secret_setting_name,
-                             site_auth_settings.twitter_consumer_secret_setting_name,
-                             site_auth_settings.git_hub_client_secret_setting_name)
+        update_auth_classic_settings(cmd, resource_group_name, name, site_auth_settings.enabled, None,
+                                     site_auth_settings.client_id, site_auth_settings.token_store_enabled,
+                                     site_auth_settings.runtime_version, site_auth_settings.token_refresh_extension_hours,
+                                     site_auth_settings.allowed_external_redirect_urls, None,
+                                     site_auth_settings.client_secret_certificate_thumbprint,
+                                     site_auth_settings.allowed_audiences, site_auth_settings.issuer,
+                                     site_auth_settings.facebook_app_id, None,
+                                     site_auth_settings.facebook_o_auth_scopes,
+                                     site_auth_settings.twitter_consumer_key, None,
+                                     site_auth_settings.google_client_id, None,
+                                     site_auth_settings.google_o_auth_scopes,
+                                     site_auth_settings.microsoft_account_client_id,
+                                     None,
+                                     site_auth_settings.microsoft_account_o_auth_scopes, slot,
+                                     site_auth_settings.git_hub_client_id, None,
+                                     site_auth_settings.git_hub_o_auth_scopes,
+                                     site_auth_settings.client_secret_setting_name,
+                                     site_auth_settings.facebook_app_secret_setting_name,
+                                     site_auth_settings.google_client_secret_setting_name,
+                                     site_auth_settings.microsoft_account_client_secret_setting_name,
+                                     site_auth_settings.twitter_consumer_secret_setting_name,
+                                     site_auth_settings.git_hub_client_secret_setting_name)
 
 
 def remove_all_auth_settings_secrets(cmd, resource_group_name, name, slot=None):  # pylint: disable=unused-argument
@@ -339,7 +344,28 @@ def update_auth_classic_settings(cmd, resource_group_name, name, enabled=None, a
         raise CLIError('Usage Error: Cannot use command az webapp auth-classic update when the app '
                        'is using auth v2. If you wish to revert the app to v1, run az webapp auth revert')
 
-    return update_auth_settings(**locals())
+    auth_settings = get_auth_settings(cmd, resource_group_name, name, slot)
+    if action == 'AllowAnonymous':
+        auth_settings.unauthenticated_client_action = 'AllowAnonymous'
+    elif action:
+        auth_settings.unauthenticated_client_action = 'RedirectToLoginPage'
+        auth_settings.default_provider = AUTH_TYPES[action]
+    # validate runtime version
+    if not is_auth_runtime_version_valid(runtime_version):
+        raise CLIError('Usage Error: --runtime-version set to invalid value')
+
+    import inspect
+    frame = inspect.currentframe()
+    bool_flags = ['enabled', 'token_store_enabled']
+    # note: getargvalues is used already in azure.cli.core.commands.
+    # and no simple functional replacement for this deprecating method for 3.5
+    args, _, _, values = inspect.getargvalues(frame)  # pylint: disable=deprecated-method
+
+    for arg in args[2:]:
+        if values.get(arg, None):
+            setattr(auth_settings, arg, values[arg] if arg not in bool_flags else values[arg] == 'true')
+
+    return _generic_site_operation(cmd.cli_ctx, resource_group_name, name, 'update_auth_settings', slot, auth_settings)
 # endregion
 
 # region webapp auth microsoft
