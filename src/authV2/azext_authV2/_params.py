@@ -13,38 +13,55 @@ FORWARD_PROXY_CONVENTION = ['NoProxy', 'Standard', 'Custom']
 
 def load_arguments(self, _):
     with self.argument_context('webapp auth set') as c:
-        c.argument('body', options_list=['--body', '-b'])
+        c.argument('body',options_list=['--body', '-b'],
+                   help='JSON representation of the configuration settings for the Azure App Service Authentication / Authorization V2 feature.')
 
     with self.argument_context('webapp auth update') as c:
-        c.argument('set_string', options_list=['--set'])
-        c.argument('enabled', options_list=['--enabled'], arg_type=get_three_state_flag(return_label=True))
-        c.argument('runtime_version', options_list=['--runtime-version'])
-        c.argument('config_file_path', options_list=['--config-file-path'])
-        c.argument('unauthenticated_client_action', options_list=['--unauthenticated-client-action'], arg_type=get_enum_type(UNAUTHENTICATED_CLIENT_ACTION))
-        c.argument('redirect_provider', options_list=['--redirect-provider'])
-        c.argument('enable_token_store', options_list=['--enable-token-store'], arg_type=get_three_state_flag(return_label=True))
-        c.argument('require_https', options_list=['--require-https'], arg_type=get_three_state_flag(return_label=True))
-        c.argument('proxy_convention', options_list=['--proxy-convention'], arg_type=get_enum_type(FORWARD_PROXY_CONVENTION))
-        c.argument('proxy_custom_host_header', options_list=['--proxy-custom-host-header'])
-        c.argument('proxy_custom_proto_header', options_list=['--proxy-custom-proto-header'])
+        c.argument('set_string', options_list=['--set'],
+                   help='Value of a specific field within the configuration settings for the Azure App Service Authentication / Authorization V2 feature.')
+        c.argument('enabled', options_list=['--enabled'], arg_type=get_three_state_flag(return_label=True),
+                   help='true if the Authentication / Authorization feature is enabled for the current app; otherwise, false.')
+        c.argument('runtime_version', options_list=['--runtime-version'],
+                   help='The RuntimeVersion of the Authentication / Authorization feature in use for the current app.')
+        c.argument('config_file_path', options_list=['--config-file-path'],
+                   help='The path of the config file containing auth settings if they come from a file.')
+        c.argument('unauthenticated_client_action', options_list=['--unauthenticated-client-action'], arg_type=get_enum_type(UNAUTHENTICATED_CLIENT_ACTION),
+                   help='The action to take when an unauthenticated client attempts to access the app.')
+        c.argument('redirect_provider', options_list=['--redirect-provider'],
+                   help='The default authentication provider to use when multiple providers are configured.')
+        c.argument('enable_token_store', options_list=['--enable-token-store'], arg_type=get_three_state_flag(return_label=True),
+                   help='true to durably store platform-specific security tokens that are obtained during login flows; otherwise, false.')
+        c.argument('require_https', options_list=['--require-https'], arg_type=get_three_state_flag(return_label=True),
+                   help='false if the authentication/authorization responses not having the HTTPS scheme are permissible; otherwise, true.')
+        c.argument('proxy_convention', options_list=['--proxy-convention'], arg_type=get_enum_type(FORWARD_PROXY_CONVENTION),
+                   help='The convention used to determine the url of the request made.')
+        c.argument('proxy_custom_host_header', options_list=['--proxy-custom-host-header'],
+                   help='The name of the header containing the host of the request.')
+        c.argument('proxy_custom_proto_header', options_list=['--proxy-custom-proto-header'],
+                   help='The name of the header containing the scheme of the request.')
 
     with self.argument_context('webapp auth microsoft update') as c:
-        c.argument('client_id', options_list=['--client-id'])
-        c.argument('client_secret', options_list=['--client-secret'])
-        c.argument('client_secret_setting_name', options_list=['--client-secret-setting-name'])
-        c.argument('issuer', options_list=['--issuer'])
-        c.argument('allowed_token_audiences', options_list=['--allowed-token-audiences'])
+        c.argument('client_id', options_list=['--client-id'],
+                   help='The Client ID of this relying party application, known as the client_id.')
+        c.argument('client_secret', options_list=['--client-secret'],
+                   help='AAD application secret')
+        c.argument('client_secret_setting_name', options_list=['--client-secret-setting-name', '--secret-setting-name'],
+                   help='The app setting name that contains the client secret of the relying party application.')
+        c.argument('issuer', options_list=['--issuer'],
+                   help='The OpenID Connect Issuer URI that represents the entity which issues access tokens for this application.')
+        c.argument('allowed_token_audiences', options_list=['--allowed-token-audiences'],
+                   help='The configuration settings of the allowed list of audiences from which to validate the JWT token.')
 
     with self.argument_context('webapp auth facebook update') as c:
         c.argument('app_id', options_list=['--app-id'])
         c.argument('app_secret', options_list=['--app-secret'])
-        c.argument('app_secret_setting_name', options_list=['--app-secret-setting-name'])
+        c.argument('app_secret_setting_name', options_list=['--app-secret-setting-name', '--secret-setting-name'])
         c.argument('graph_api_version', options_list=['--graph-api-version'])
         c.argument('scopes', options_list=['--scopes'])
 
     with self.argument_context('webapp auth github update') as c:
         c.argument('client_id', options_list=['--client-id'])
-        c.argument('client_secret_setting_name', options_list=['--client-secret-setting-name'])
+        c.argument('client_secret_setting_name', options_list=['--client-secret-setting-name', '--secret-setting-name'])
         c.argument('client_secret', options_list=['--client-secret'])
         c.argument('scopes', options_list=['--scopes'])
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
@@ -52,19 +69,19 @@ def load_arguments(self, _):
     with self.argument_context('webapp auth google update') as c:
         c.argument('client_id', options_list=['--client-id'])
         c.argument('client_secret', options_list=['--client-secret'])
-        c.argument('client_secret_setting_name', options_list=['--client-secret-setting-name'])
+        c.argument('client_secret_setting_name', options_list=['--client-secret-setting-name', '--secret-setting-name'])
         c.argument('scopes', options_list=['--scopes'])
         c.argument('allowed_token_audiences', options_list=['--allowed-token-audiences'])
 
     with self.argument_context('webapp auth twitter update') as c:
         c.argument('consumer_key', options_list=['--consumer-key'])
         c.argument('consumer_secret', options_list=['--consumer-secret'])
-        c.argument('consumer_secret_setting_name', options_list=['--consumer-secret-setting-name'])
+        c.argument('consumer_secret_setting_name', options_list=['--consumer-secret-setting-name', '--secret-setting-name'])
 
     with self.argument_context('webapp auth apple update') as c:
         c.argument('client_id', options_list=['--client-id'])
         c.argument('client_secret', options_list=['--client-secret'])
-        c.argument('client_secret_setting_name', options_list=['--client-secret-setting-name'])
+        c.argument('client_secret_setting_name', options_list=['--client-secret-setting-name', '--secret-setting-name'])
         c.argument('scopes', options_list=['--scopes'])
 
     with self.argument_context('webapp auth openid-connect show') as c:
@@ -73,7 +90,7 @@ def load_arguments(self, _):
     with self.argument_context('webapp auth openid-connect add') as c:
         c.argument('provider_name', options_list=['--provider-name'])
         c.argument('client_id', options_list=['--client-id'])
-        c.argument('client_secret_setting_name', options_list=['--client-secret-setting-name'])
+        c.argument('client_secret_setting_name', options_list=['--client-secret-setting-name', '--secret-setting-name'])
         c.argument('openid_configuration', options_list=['--openid-configuration'])
         c.argument('scopes', options_list=['--scopes'])
 

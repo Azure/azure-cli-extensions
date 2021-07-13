@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=line-too-long
+
 def load_command_table(self, _):
     with self.command_group('webapp auth') as g:
         g.custom_show_command('show', 'get_auth_settings_v2')
@@ -43,7 +43,7 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'get_openid_connect_provider_settings')
         g.custom_command('add', 'add_openid_connect_provider_settings')
         g.custom_command('update', 'update_openid_connect_provider_settings')
-        g.custom_command('remove', 'remove_oidc_provider_settings')
+        g.custom_command('remove', 'remove_openid_connect_provider_settings')
 
     with self.command_group('webapp auth-classic') as g:
         g.custom_show_command('show', 'get_auth_settings')
