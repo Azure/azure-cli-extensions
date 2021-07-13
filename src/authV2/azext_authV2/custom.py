@@ -334,7 +334,7 @@ def update_auth_classic_settings(cmd, resource_group_name, name, enabled=None, a
                                  client_secret_setting_name=None, facebook_app_secret_setting_name=None,  # pylint: disable=unused-argument
                                  google_client_secret_setting_name=None,  # pylint: disable=unused-argument
                                  microsoft_account_client_secret_setting_name=None,  # pylint: disable=unused-argument
-                                 twitter_consume_secret_setting_name=None, git_hub_client_secret_setting_name=None):  # pylint: disable=unused-argument
+                                 twitter_consumer_secret_setting_name=None, git_hub_client_secret_setting_name=None):  # pylint: disable=unused-argument
     if is_auth_v2_app(cmd, resource_group_name, name, slot):
         raise CLIError('Usage Error: Cannot use command az webapp auth-classic update when the app '
                        'is using auth v2. If you wish to revert the app to v1, run az webapp auth revert')
