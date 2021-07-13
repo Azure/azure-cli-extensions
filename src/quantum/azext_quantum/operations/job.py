@@ -124,6 +124,10 @@ def _set_cli_version():
         logger.warning("User Agent environment variable could not be set.")
 
 
+def _has_completed(job):
+    return job.status in ("Succeeded", "Failed", "Cancelled")
+
+
 def submit(cmd, program_args, resource_group_name=None, workspace_name=None, location=None,
            target_id=None, project=None, job_name=None, shots=None, storage=None, no_build=False):
     """
@@ -230,9 +234,6 @@ def wait(cmd, job_id, resource_group_name=None, workspace_name=None, location=No
     """
     import time
 
-    def has_completed(job):
-        return job.status in ("Succeeded", "Failed", "Cancelled")
-
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
     client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
 
@@ -241,7 +242,7 @@ def wait(cmd, job_id, resource_group_name=None, workspace_name=None, location=No
     poll_wait = 0.2
     job = client.get(job_id)
 
-    while not has_completed(job):
+    while not _has_completed(job):
         print('.', end='', flush=True)
         wait_indicators_used = True
         time.sleep(poll_wait)
@@ -271,3 +272,22 @@ def run(cmd, program_args, resource_group_name=None, workspace_name=None, locati
         return job
 
     return output(cmd, job.id, resource_group_name, workspace_name)
+
+
+def cancel(cmd, job_id, resource_group_name=None, workspace_name=None, location=None):
+    """
+    Request to cancel a job on Azure Quantum if it hasn't completed.
+    """
+    info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
+    client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
+    job = client.get(job_id)
+
+    if _has_completed(job):
+        print(f"Job {job_id} has already completed with status: {job.status}.")
+        return
+
+    # If the job hasn't succeeded or failed, attempt to cancel.
+    client.cancel(job_id)
+
+    # Wait for the job status to complete or be reported as cancelled
+    return wait(cmd, job_id, info.resource_group, info.name, info.location)
