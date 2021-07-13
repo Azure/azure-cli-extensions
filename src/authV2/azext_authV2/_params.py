@@ -23,7 +23,13 @@ def load_arguments(self, _):
                                            local_context_attribute=LocalContextAttribute(name='web_name', actions=[
                                                LocalContextAction.GET]))
 
-    with self.argument_context('webapp') as c:
+    with self.argument_context('webapp auth') as c:
+        c.argument('resource_group_name', arg_type=resource_group_name_type)
+        c.argument('slot', options_list=['--slot', '-s'],
+                   help="the name of the slot. Default to the productions slot if not specified")
+        c.argument('name', arg_type=webapp_name_arg_type)
+    
+    with self.argument_context('webapp auth-classic') as c:
         c.argument('resource_group_name', arg_type=resource_group_name_type)
         c.argument('slot', options_list=['--slot', '-s'],
                    help="the name of the slot. Default to the productions slot if not specified")
