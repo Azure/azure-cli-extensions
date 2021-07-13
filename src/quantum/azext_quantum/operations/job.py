@@ -42,11 +42,10 @@ def build(cmd, target_id=None, project=None):
 
     args = ["dotnet", "build"]
 
-    args.append(f"-property:ExecutionTarget={target.target_id}")
-
     if project:
-        args.append("--project")
         args.append(project)
+
+    args.append(f"-property:ExecutionTarget={target.target_id}")
 
     logger.debug("Building project with arguments:")
     logger.debug(args)
