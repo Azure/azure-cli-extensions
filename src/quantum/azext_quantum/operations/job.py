@@ -286,7 +286,7 @@ def cancel(cmd, job_id, resource_group_name=None, workspace_name=None, location=
     if _has_completed(job):
         print(f"Job {job_id} has already completed with status: {job.status}.")
         return
-    
+
     # If the job hasn't succeeded or failed, attempt to cancel.
     client.cancel(job_id)
 
