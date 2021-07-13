@@ -2797,12 +2797,36 @@ def _ensure_container_insights_for_monitoring(cmd,
             # create the DCR
             dcr_creation_body = json.dumps({"location": location,
                                             "properties": {
+                                                "dataSources": {
+                                                    "extensions": [
+                                                        {
+                                                            "name": "ContainerInsightsExtension",
+                                                            "streams": [
+                                                                "Microsoft-Perf",
+                                                                "Microsoft-ContainerInventory",
+                                                                "Microsoft-ContainerLog",
+                                                                "Microsoft-ContainerLogV2",
+                                                                "Microsoft-ContainerNodeInventory",
+                                                                "Microsoft-KubeEvents",
+                                                                "Microsoft-KubeHealth",
+                                                                "Microsoft-KubeMonAgentEvents",
+                                                                "Microsoft-KubeNodeInventory",
+                                                                "Microsoft-KubePodInventory",
+                                                                "Microsoft-KubePVInventory",
+                                                                "Microsoft-KubeServices",
+                                                                "Microsoft-InsightsMetrics"
+                                                            ],
+                                                            "extensionName": "ContainerInsights"
+                                                        }
+                                                    ]
+                                                },
                                                 "dataFlows": [
                                                     {
                                                         "streams": [
                                                             "Microsoft-Perf",
                                                             "Microsoft-ContainerInventory",
                                                             "Microsoft-ContainerLog",
+                                                            "Microsoft-ContainerLogV2",
                                                             "Microsoft-ContainerNodeInventory",
                                                             "Microsoft-KubeEvents",
                                                             "Microsoft-KubeHealth",
@@ -3418,7 +3442,7 @@ def aks_disable_addons(cmd, client, resource_group_name, name, addons, no_wait=F
         if addons == "monitoring" and CONST_MONITORING_ADDON_NAME in instance.addon_profiles and \
                 instance.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled and \
                 CONST_MONITORING_USING_AAD_MSI_AUTH in instance.addon_profiles[CONST_MONITORING_ADDON_NAME].config and \
-                instance.addon_profiles[CONST_MONITORING_ADDON_NAME].config[CONST_MONITORING_USING_AAD_MSI_AUTH]:
+                str(instance.addon_profiles[CONST_MONITORING_ADDON_NAME].config[CONST_MONITORING_USING_AAD_MSI_AUTH]).lower() == 'true':
             # remove the DCR association because otherwise the DCR can't be deleted
             _ensure_container_insights_for_monitoring(
                 cmd,
@@ -3465,7 +3489,7 @@ def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_
 
     if CONST_MONITORING_ADDON_NAME in instance.addon_profiles and instance.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled:
         if CONST_MONITORING_USING_AAD_MSI_AUTH in instance.addon_profiles[CONST_MONITORING_ADDON_NAME].config and \
-                instance.addon_profiles[CONST_MONITORING_ADDON_NAME].config[CONST_MONITORING_USING_AAD_MSI_AUTH]:
+                str(instance.addon_profiles[CONST_MONITORING_ADDON_NAME].config[CONST_MONITORING_USING_AAD_MSI_AUTH]).lower() == 'true':
             if not msi_auth:
                 raise ArgumentUsageError("--enable-msi-auth-for-monitoring can not be used on clusters with service principal auth.")
             else:

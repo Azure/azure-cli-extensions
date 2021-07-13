@@ -5,6 +5,10 @@
 
 from azure.cli.core import AzCommandsLoader
 from azext_account.generated._help import helps  # pylint: disable=unused-import
+try:
+    from azext_account.manual._help import helps  # pylint: disable=reimported
+except ImportError:
+    pass
 
 
 class SubscriptionClientCommandsLoader(AzCommandsLoader):

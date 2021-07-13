@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.4.0
++++++
+* GA the whole module
+
 0.3.0
 +++++
 * [BREAKING CHANGE] Renamed command subgroup `az datafactory factory` to `az datafactory`.

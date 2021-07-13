@@ -822,8 +822,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                  '--nodepool-name={node_pool_name}',
                  checks=[
                      # if rerun the recording, please update latestNodeImageVersion to the latest value
-                     self.check('latestNodeImageVersion',
-                                'AKSUbuntu-1804gen2containerd-2021.06.02'),
+                     self.check_pattern('latestNodeImageVersion',
+                                'AKSUbuntu-1804gen2containerd-2021.(0[1-9]|1[012]).(0[1-9]|[12]\d|3[01])'),
                      self.check(
                          'type', "Microsoft.ContainerService/managedClusters/agentPools/upgradeProfiles")
                  ])
@@ -1306,11 +1306,33 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                      '--generate-ssh-keys --enable-managed-identity ' \
                      '--enable-addons monitoring ' \
                      '--node-count 1 '
-        self.cmd(create_cmd, checks=[
+        response = self.cmd(create_cmd, checks=[
             self.check('addonProfiles.omsagent.enabled', True),
             self.exists('addonProfiles.omsagent.config.logAnalyticsWorkspaceResourceID'),
             self.check('addonProfiles.omsagent.config.useAADAuth', 'False')
-        ])
+        ]).get_output_in_json()
+
+        # make sure a DCR was not created
+
+        cluster_resource_id = response["id"]
+        subscription = cluster_resource_id.split("/")[2]
+        workspace_resource_id = response["addonProfiles"]["omsagent"]["config"]["logAnalyticsWorkspaceResourceID"]
+        workspace_name = workspace_resource_id.split("/")[-1]
+        workspace_resource_group = workspace_resource_id.split("/")[4]
+
+        try:
+            # check that the DCR was created
+            dataCollectionRuleName = f"DCR-{workspace_name}"
+            dcr_resource_id = f"/subscriptions/{subscription}/resourceGroups/{workspace_resource_group}/providers/Microsoft.Insights/dataCollectionRules/{dataCollectionRuleName}"
+            get_cmd = f'rest --method get --url https://management.azure.com{dcr_resource_id}?api-version=2019-11-01-preview'
+            self.cmd(get_cmd, checks=[
+                self.check('properties.destinations.logAnalytics[0].workspaceResourceId', f'{workspace_resource_id}')
+            ])
+
+            assert False
+        except Exception as err:
+            pass  # this is expected
+
 
         # make sure monitoring can be smoothly disabled
         self.cmd(f'aks disable-addons -a monitoring -g={resource_group} -n={aks_name}')
