@@ -4,16 +4,33 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long
 
-from azure.cli.core.commands.parameters import (get_three_state_flag, get_enum_type)
+from knack.arguments import CLIArgumentType
+
+from azure.cli.core.commands.parameters import (resource_group_name_type, get_resource_name_completion_list,
+                                                get_three_state_flag, get_enum_type)
 from azure.cli.command_modules.appservice._params import AUTH_TYPES
+from azure.cli.core.local_context import LocalContextAttribute, LocalContextAction
 
 UNAUTHENTICATED_CLIENT_ACTION = ['RedirectToLoginPage', 'AllowAnonymous', 'RejectWith401', 'RejectWith404']
 FORWARD_PROXY_CONVENTION = ['NoProxy', 'Standard', 'Custom']
 
 
 def load_arguments(self, _):
+    webapp_name_arg_type = CLIArgumentType(configured_default='web', options_list=['--name', '-n'], metavar='NAME',
+                                           completer=get_resource_name_completion_list('Microsoft.Web/sites'),
+                                           id_part='name',
+                                           help="name of the web app.",
+                                           local_context_attribute=LocalContextAttribute(name='web_name', actions=[
+                                               LocalContextAction.GET]))
+
+    with self.argument_context('webapp auth') as c:
+        c.argument('resource_group_name', arg_type=resource_group_name_type)
+        c.argument('slot', options_list=['--slot', '-s'],
+                   help="the name of the slot. Default to the productions slot if not specified")
+        c.argument('name', arg_type=webapp_name_arg_type)
+
     with self.argument_context('webapp auth set') as c:
-        c.argument('body',options_list=['--body', '-b'],
+        c.argument('body', options_list=['--body', '-b'],
                    help='JSON representation of the configuration settings for the Azure App Service Authentication / Authorization V2 feature.')
 
     with self.argument_context('webapp auth update') as c:
@@ -85,24 +102,24 @@ def load_arguments(self, _):
         c.argument('scopes', options_list=['--scopes'])
 
     with self.argument_context('webapp auth openid-connect show') as c:
-        c.argument('provider_name', options_list=['--provider-name'])
+        c.argument('provider_name', options_list=['--provider-name'], required=True)
 
     with self.argument_context('webapp auth openid-connect add') as c:
-        c.argument('provider_name', options_list=['--provider-name'])
+        c.argument('provider_name', options_list=['--provider-name'], required=True)
         c.argument('client_id', options_list=['--client-id'])
         c.argument('client_secret_setting_name', options_list=['--client-secret-setting-name', '--secret-setting-name'])
         c.argument('openid_configuration', options_list=['--openid-configuration'])
         c.argument('scopes', options_list=['--scopes'])
 
     with self.argument_context('webapp auth openid-connect update') as c:
-        c.argument('provider_name', options_list=['--provider-name'])
+        c.argument('provider_name', options_list=['--provider-name'], required=True)
         c.argument('client_id', options_list=['--client-id'])
         c.argument('client_secret_setting_name', options_list=['--client-secret-setting-name'])
         c.argument('openid_configuration', options_list=['--openid-configuration'])
         c.argument('scopes', options_list=['--scopes'])
 
     with self.argument_context('webapp auth openid-connect remove') as c:
-        c.argument('provider_name', options_list=['--provider-name'])
+        c.argument('provider_name', options_list=['--provider-name'], required=True)
 
     with self.argument_context('webapp auth-classic update') as c:
         c.argument('enabled', arg_type=get_three_state_flag(return_label=True))
