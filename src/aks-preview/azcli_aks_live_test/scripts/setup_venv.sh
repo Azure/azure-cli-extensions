@@ -3,9 +3,6 @@
 # check var
 # specify the version of python3, e.g. 3.6
 [[ -z "${PYTHON_VERSION}" ]] && (echo "PYTHON_VERSION is empty"; exit 1)
-[[ -z "${TOOL_STORAGE}" ]] && (echo "TOOL_STORAGE is empty"; exit 1)
-[[ -z "${TOOL_CONTAINER}" ]] && (echo "TOOL_CONTAINER is empty"; exit 1)
-[[ -z "${LATEST_WHEEL_FILE}" ]] && (echo "LATEST_WHEEL_FILE is empty"; exit 1)
 
 patchImageTools(){
     apt install -y curl
@@ -68,9 +65,10 @@ installAZAKSTOOLFromLocal(){
 
 # need to be executed in a venv
 installAZAKSTOOL(){
-    wheel_url="https://${TOOL_STORAGE}.blob.core.windows.net/${TOOL_CONTAINER}/${LATEST_WHEEL_FILE}"
+    wheel_file="az_aks_tool-latest-py3-none-any.whl"
+    wheel_url="https://akspreview.blob.core.windows.net/azakstool/${wheel_file}"
     curl -sLO "${wheel_url}"
-    installAZAKSTOOLFromLocal "${LATEST_WHEEL_FILE}"
+    installAZAKSTOOLFromLocal "${wheel_file}"
 }
 
 # need to be executed in a venv with kusto related modules installed
