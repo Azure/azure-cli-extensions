@@ -5,7 +5,7 @@ Release History
 
 0.4.5
 +++++
-* Fix issue #17740: "az aks create" fails with "progress_patch() got an unexpected keyword argument 'det'".
+* Fix #17740: `az interactive` fails with `progress_patch() got an unexpected keyword argument 'det'`
 
 0.4.4
 +++++
