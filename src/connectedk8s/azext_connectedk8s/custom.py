@@ -1442,9 +1442,13 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
     # Loading the kubeconfig file in kubernetes client configuration
     load_kube_config(kube_config, kube_context)
     configuration = kube_client.Configuration()
-    validate_release_namespace(client, cluster_name, resource_group_name, configuration, kube_config, kube_context)
     try:
-        latest_connectedk8s_version = utils.get_latest_extension_version()
+        validate_release_namespace(client, cluster_name, resource_group_name, configuration, kube_config, kube_context)
+    except Exception as e:
+        logger.error(str(e))
+        tr_logger.error(str(e))
+    try:
+        latest_connectedk8s_version = utils.get_latest_extension_version(tr_logger)
         local_connectedk8s_version = utils.get_existing_extension_version()
         tr_logger.info("Latest available connectedk8s version: {}".format(latest_connectedk8s_version))
         tr_logger.info("Local connectedk8s version: {}".format(local_connectedk8s_version))
@@ -1473,8 +1477,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
             pods_count = 0
             for pod in pod_list.items:
                 pods_count += 1
-                if pod.status.phase != 'Running':
-                    tr_logger.warning("Pod {} is in {} state. Reason: {}. Container statuses: {}".format(pod.metadata.name, pod.status.phase, pod.status.reason, pod.status.container_statuses))
+                tr_logger.warning("Pod {} is in {} state. Reason: {}. Container statuses: {}".format(pod.metadata.name, pod.status.phase, pod.status.reason, pod.status.container_statuses))
 
             if pods_count == 0:
                 tr_logger.warning("No pods found in azure-arc namespace.")
@@ -1494,7 +1497,6 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
                 cert_expirn_time = datetime.strptime(raw_exp_time, consts.ISO_861_Time_format).replace(tzinfo=timezone.utc)
                 current_time = datetime.now(timezone.utc)
                 if cert_expirn_time != datetime.min and cert_expirn_time < current_time:
-                    tr_logger.error("MSI certificate on the cluster has expired.")
                     logger.error("MSI certificate on the cluster has expired.")
             else:
                 tr_logger.info("'managedIdentityCertificateExpirationTime' is still not populated in CC object")
