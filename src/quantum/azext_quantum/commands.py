@@ -115,6 +115,7 @@ def load_command_table(self, _):
         j.command('submit', 'submit', validator=validate_workspace_and_target_info, table_transformer=transform_job)
         j.command('wait', 'wait', validator=validate_workspace_info, table_transformer=transform_job)
         j.command('output', 'output', validator=validate_workspace_info, table_transformer=transform_output)
+        j.command('cancel', 'cancel', validator=validate_workspace_info, table_transformer=transform_job)
 
     with self.command_group('quantum', job_ops, is_preview=True) as q:
         q.command('run', 'run', validator=validate_workspace_and_target_info, table_transformer=transform_output)

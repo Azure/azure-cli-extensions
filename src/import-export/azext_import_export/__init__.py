@@ -5,6 +5,10 @@
 
 from azure.cli.core import AzCommandsLoader
 from .generated._help import helps  # pylint: disable=unused-import
+try:
+    from .manual._help import helps  # pylint: disable=reimported
+except ImportError:
+    pass
 
 
 class ImportExportCommandsLoader(AzCommandsLoader):
