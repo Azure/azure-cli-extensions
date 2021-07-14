@@ -10,6 +10,11 @@ Distribution_Enum_Values = ["auto", "generic", "openshift", "rancher_rke", "kind
 Infrastructure_Enum_Values = ["auto", "generic", "azure", "aws", "gcp", "azure_stack_hci", "azure_stack_hub", "azure_stack_edge", "vsphere", "windows_server"]
 Feature_Values = ["cluster-connect", "azure-rbac", "custom-locations"]
 Custom_Locations_Provider_Namespace = 'Microsoft.ExtendedLocation'
+Connected_Cluster_Provider_Namespace = 'Microsoft.Kubernetes'
+Kubernetes_Configuration_Provider_Namespace = 'Microsoft.KubernetesConfiguration'
+Arc_Namespace = 'azure-arc'
+AZURE_IDENTITY_CERTIFICATE_SECRET = 'azure-identity-certificate'
+ISO_861_Time_format = "%Y-%m-%dT%H:%M:%SZ"
 
 Azure_PublicCloudName = 'AZUREPUBLICCLOUD'
 Azure_USGovCloudName = 'AZUREUSGOVERNMENTCLOUD'
@@ -110,5 +115,8 @@ DEFAULT_REQUEST_TIMEOUT = 10  # seconds
 RELEASE_DATE_WINDOWS = 'release12-03-21'
 RELEASE_DATE_LINUX = 'release12-03-21'
 CSP_REFRESH_TIME = 300
+# refer https://docs.microsoft.com/en-us/rest/api/storageservices/
+# naming-and-referencing-containers--blobs--and-metadata#container-names
+STORAGE_CONTAINER_NAME_MAX_LENGTH = 63
 # URL constants
 CSP_Storage_Url = "https://k8sconnectcsp.blob.core.windows.net"

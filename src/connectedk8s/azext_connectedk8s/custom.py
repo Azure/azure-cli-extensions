@@ -17,10 +17,8 @@ from azure.core.exceptions import ClientAuthenticationError
 import yaml
 import requests
 import urllib.request
-import signal
 from _thread import interrupt_main
 from psutil import process_iter, NoSuchProcess, AccessDenied, ZombieProcess, net_connections
-from knack.util import CLIError
 from knack.log import get_logger
 from knack.prompting import prompt_y_n
 from knack.prompting import NoTTYException
@@ -47,6 +45,11 @@ from threading import Timer, Thread
 import sys
 import hashlib
 import re
+import logging
+from setuptools._vendor.packaging import version
+import colorama
+from datetime import datetime, timezone
+
 logger = get_logger(__name__)
 # pylint:disable=unused-argument
 # pylint: disable=too-many-locals
@@ -70,6 +73,9 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     # Fetching Tenant Id
     graph_client = _graph_client_factory(cmd.cli_ctx)
     onboarding_tenant_id = graph_client.config.tenant_id
+
+    # Checking provider registration status
+    utils.check_provider_registrations(cmd.cli_ctx)
 
     # Setting kubeconfig
     kube_config = set_kube_config(kube_config)
@@ -117,6 +123,10 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
         telemetry.set_exception(exception="Couldn't find any node on the kubernetes cluster with the architecture type 'amd64' and OS 'linux'", fault_type=consts.Linux_Amd64_Node_Not_Exists,
                                 summary="Couldn't find any node on the kubernetes cluster with the architecture type 'amd64' and OS 'linux'")
         logger.warning("Please ensure that this Kubernetes cluster have any nodes with OS 'linux' and architecture 'amd64', for scheduling the Arc-Agents onto and connecting to Azure. Learn more at {}".format("https://aka.ms/ArcK8sSupportedOSArchitecture"))
+
+    crb_permission = utils.can_create_clusterrolebindings(configuration)
+    if not crb_permission:
+        logger.error("Kubectl credentials doesn't have permission to create clusterrolebindings on this kubernetes cluster.")
 
     # Get kubernetes cluster info
     kubernetes_version = get_server_version(configuration)
@@ -670,6 +680,7 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
 
     # Deleting the azure-arc agents
     utils.delete_arc_agents(release_namespace, kube_config, kube_context, configuration)
+    utils.check_delete_job(configuration, consts.Arc_Namespace)  # Checks for the completion/absence of delete job
 
 
 def get_release_namespace(kube_config, kube_context):
@@ -1411,6 +1422,97 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
         raise CLIInternalError(str.format(consts.Error_disabling_Features, error_helm_upgrade.decode("ascii")))
 
     return str.format(consts.Successfully_Disabled_Features, features, connected_cluster.name)
+
+
+def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=None, kube_context=None, location=None, storage_account=None,
+                 sas_token=None, output_file=os.path.join(os.path.expanduser('~'), '.azure', 'az_connectedk8s_troubleshoot_output.tar.gz')):
+    colorama.init()
+    print(f"{colorama.Fore.YELLOW}Troubleshooting the ConnectedCluster for possible issues...")
+    utils.check_connectivity()  # Checks internet connectivity
+    troubleshoot_log_path = os.path.join(os.path.expanduser('~'), '.azure', 'connected8s_troubleshoot.log')
+    utils.setup_logger('connectedk8s_troubleshoot', troubleshoot_log_path)
+    tr_logger = logging.getLogger('connectedk8s_troubleshoot')  # logger for troubleshooting, onto a log file
+
+    # Send cloud information to telemetry
+    send_cloud_telemetry(cmd)
+
+    # setting kubeconfig
+    kube_config = set_kube_config(kube_config)
+
+    # Loading the kubeconfig file in kubernetes client configuration
+    load_kube_config(kube_config, kube_context)
+    configuration = kube_client.Configuration()
+    validate_release_namespace(client, cluster_name, resource_group_name, configuration, kube_config, kube_context)
+    try:
+        latest_connectedk8s_version = utils.get_latest_extension_version()
+        local_connectedk8s_version = utils.get_existing_extension_version()
+        tr_logger.info("Latest available connectedk8s version: {}".format(latest_connectedk8s_version))
+        tr_logger.info("Local connectedk8s version: {}".format(local_connectedk8s_version))
+        from azure.cli.core import __version__ as azure_cli_core_version
+        tr_logger.info("azure-cli-core version installed locally: {}".format(azure_cli_core_version))
+        if latest_connectedk8s_version and local_connectedk8s_version != 'Unknown' and local_connectedk8s_version != 'NotFound':
+            if version.parse(local_connectedk8s_version) < version.parse(latest_connectedk8s_version):
+                print("You have an update pending. You can update the connectedk8s extension to latest v{} using 'az extension update -n connectedk8s'".format(latest_connectedk8s_version))
+
+        try:
+            # Fetch ConnectedCluster
+            connected_cluster = client.get(resource_group_name, cluster_name, raw=True)
+            tr_logger.info("Connected cluster resource: {}".format(connected_cluster.response.content))
+        except Exception as ex:
+            try:
+                if ex.error.error.code == "NotFound" or ex.error.error.code == "ResourceNotFound":
+                    tr_logger.error("Connected cluster resource doesn't exist. " + str(ex))
+                    logger.error("The specified ConnectedCluster resource doesn't exist.")
+            except AttributeError:
+                pass
+            tr_logger.error("Couldn't check the existence of Connected cluster resource. Error: {}".format(str(ex)))
+
+        kapi_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
+        try:
+            pod_list = kapi_instance.list_namespaced_pod(consts.Arc_Namespace)
+            pods_count = 0
+            for pod in pod_list.items:
+                pods_count += 1
+                if pod.status.phase != 'Running':
+                    tr_logger.warning("Pod {} is in {} state. Reason: {}. Container statuses: {}".format(pod.metadata.name, pod.status.phase, pod.status.reason, pod.status.container_statuses))
+
+            if pods_count == 0:
+                tr_logger.warning("No pods found in azure-arc namespace.")
+
+        except Exception as ex:
+            tr_logger.error("Error occured while fetching pod's statues : {}".format(str(ex)))
+
+        cert_secret = utils.get_kubernetes_secret(kapi_instance, consts.Arc_Namespace, consts.AZURE_IDENTITY_CERTIFICATE_SECRET, custom_logger=tr_logger)
+        if (not cert_secret) or (not hasattr(cert_secret, 'data')) or (consts.AZURE_IDENTITY_CERTIFICATE_SECRET not in cert_secret.data):
+            tr_logger.error("{} secret is not present on the kubernetes cluster.".format(consts.AZURE_IDENTITY_CERTIFICATE_SECRET))
+            logger.error("{} secret is not present on the kubernetes cluster.".format(consts.AZURE_IDENTITY_CERTIFICATE_SECRET))
+
+        try:
+            cc_object = json.loads(connected_cluster.response.content)
+            raw_exp_time = cc_object.get("properties").get("managedIdentityCertificateExpirationTime")
+            if raw_exp_time:
+                cert_expirn_time = datetime.strptime(raw_exp_time, consts.ISO_861_Time_format).replace(tzinfo=timezone.utc)
+                current_time = datetime.now(timezone.utc)
+                if cert_expirn_time != datetime.min and cert_expirn_time < current_time:
+                    tr_logger.error("MSI certificate on the cluster has expired.")
+                    logger.error("MSI certificate on the cluster has expired.")
+            else:
+                tr_logger.info("'managedIdentityCertificateExpirationTime' is still not populated in CC object")
+        except Exception as ex:
+            tr_logger.error("Error occured while checking if the MSI certificate has expired: {}".format(str(ex)))
+
+        storage_account_name, sas_token, readonly_sas_token = utils.setup_validate_storage_account(cmd.cli_ctx, storage_account, sas_token, resource_group_name)
+        if storage_account_name:  # When validated the storage account
+            utils.try_upload_log_file(cluster_name, storage_account_name, sas_token, troubleshoot_log_path)
+            utils.try_archive_log_file(troubleshoot_log_path, output_file)
+            # token_in_storage_account_url = readonly_sas_token if readonly_sas_token is not None else sas_token.
+            utils.collect_periscope_logs(resource_group_name, cluster_name, storage_account_name, sas_token, readonly_sas_token, kube_context, kube_config)
+        else:
+            utils.try_archive_log_file(troubleshoot_log_path, output_file)
+
+    except Exception as ex:
+        tr_logger.error("Exception caught while running troubleshoot: {}".format(str(ex)), exc_info=True)
+        raise CLIInternalError("Exception caught while running troubleshoot: {}".format(str(ex)))
 
 
 def load_kubernetes_configuration(filename):

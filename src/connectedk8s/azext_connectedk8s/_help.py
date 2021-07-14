@@ -117,3 +117,24 @@ helps['connectedk8s disable-features'] = """
   - name: Disable multiple features.
     text: az connectedk8s disable-features -n clusterName -g resourceGroupName --features custom-locations azure-rbac
 """
+
+helps['connectedk8s troubleshoot'] = """
+  type: command
+  short-summary: Collects diagnose infomation and  gets logs on the connected cluster.
+  parameters:
+        - name: --storage-account
+          type: string
+          short-summary: Name or ID of the storage account to save the diagnostic information.
+        - name: --sas-token
+          type: string
+          short-summary: The SAS token with writable permission for the storage account.
+  examples:
+      - name: using storage account name and a shared access signature token with write permission
+        text: az connectedk8s troubleshoot -g MyResourceGroup -n ConnectedCluster --storage-account MyStorageAccount --sas-token "MySasToken"
+      - name: using the resource id of a storage account resource you own.
+        text: az connectedk8s troubleshoot -g MyResourceGroup -n ConnectedCluster --storage-account "MyStoreageAccountResourceId"
+      - name: using the storage account in diagnostics settings for your connected cluster.
+        text: az connectedk8s troubleshoot -g MyResourceGroup -n ConnectedCluster
+      - name: Onboard a connected kubernetes cluster by specifying the kubeconfig and kubecontext.
+        text: az connectedk8s troubleshoot -g resourceGroupName -n connectedClusterName --kube-config /path/to/kubeconfig --kube-context kubeContextName
+"""

@@ -8,29 +8,49 @@ import shutil
 import subprocess
 from subprocess import Popen, PIPE
 import time
+import logging
 import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 import json
+from datetime import datetime, timedelta
+import colorama
+import base64
+import platform
+from six.moves.urllib.request import urlopen  # pylint: disable=import-error
+from tabulate import tabulate  # pylint: disable=import-error
+import tempfile
 
-from knack.util import CLIError
+
 from knack.log import get_logger
 from knack.prompting import NoTTYException, prompt_y_n
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.util import send_raw_request
 from azure.cli.core import telemetry
-from msrest.exceptions import AuthenticationError, HttpOperationError, TokenExpiredError, ValidationError
+from msrest.exceptions import AuthenticationError, HttpOperationError, TokenExpiredError
+from msrest.exceptions import ValidationError as MSRestValidationError
 from msrestazure.azure_exceptions import CloudError
 from kubernetes.client.rest import ApiException
 from azext_connectedk8s._client_factory import _resource_client_factory
 import azext_connectedk8s._constants as consts
 from kubernetes import client as kube_client
 from azure.cli.core.azclierror import CLIInternalError, ClientRequestError, ArgumentUsageError, ManualInterrupt, AzureResponseError, AzureInternalError, ValidationError
+from azext_connectedk8s._client_factory import get_subscription_client, _resource_providers_client, cf_storage
 
 logger = get_logger(__name__)
 
 # pylint: disable=line-too-long
 # pylint: disable=bare-except
+
+
+def setup_logger(logger_name, log_file, level=logging.DEBUG):
+    loggr = logging.getLogger(logger_name)
+    formatter = logging.Formatter('%(asctime)s : %(levelname)s : %(message)s')
+    fileHandler = logging.FileHandler(log_file, mode='w')
+    fileHandler.setFormatter(formatter)
+
+    loggr.setLevel(level)
+    loggr.addHandler(fileHandler)
 
 
 class TimeoutHTTPAdapter(HTTPAdapter):
@@ -182,7 +202,7 @@ def arm_exception_handler(ex, fault_type, summary, return_if_not_found=False):
             raise AzureInternalError("Http operation error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
         raise AzureResponseError("Http operation error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
 
-    if isinstance(ex, ValidationError):
+    if isinstance(ex, MSRestValidationError):
         telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
         raise AzureResponseError("Validation error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
 
@@ -379,6 +399,87 @@ def is_guid(guid):
         return False
 
 
+def get_latest_extension_version(extension_name='connectedk8s'):
+    try:
+        import re
+        git_url = "https://raw.githubusercontent.com/Azure/azure-cli-extensions/master/src/{}/setup.py".format(extension_name)
+        response = requests.get(git_url, timeout=10)
+        if response.status_code != 200:
+            logger.info("Failed to fetch the latest version from '%s' with status code '%s' and reason '%s'",
+                        git_url, response.status_code, response.reason)
+            return None
+        for line in response.iter_lines():
+            txt = line.decode('utf-8', errors='ignore')
+            if txt.startswith('VERSION'):
+                match = re.search(r'VERSION = \'(.*)\'$', txt)
+                if match:
+                    return match.group(1)
+                else:
+                    match = re.search(r'VERSION = \"(.*)\"$', txt)
+                    if match:
+                        return match.group(1)
+        return None
+    except Exception as ex:  # pylint: disable=broad-except
+        logger.info("Failed to get the latest version from '%s'. %s", git_url, str(ex))
+        return None
+
+
+def get_existing_extension_version(extension_name='connectedk8s'):
+    from azure.cli.core.extension import get_extensions
+    extensions = get_extensions()
+    if extensions:
+        for ext in extensions:
+            if ext.name == extension_name:
+                return ext.version or 'Unknown'
+
+    return 'NotFound'
+
+
+def check_connectivity(url='https://azure.microsoft.com', max_retries=5, timeout=1):
+    import timeit
+    start = timeit.default_timer()
+    success = None
+    try:
+        with requests.Session() as s:
+            s.mount(url, requests.adapters.HTTPAdapter(max_retries=max_retries))
+            s.head(url, timeout=timeout)
+            success = True
+    except (requests.exceptions.ConnectionError, requests.exceptions.Timeout) as ex:
+        logger.error('Internet connectivity problem detected. Error: {}'.format(str(ex)))
+        success = False
+    stop = timeit.default_timer()
+    logger.debug('Connectivity check: %s sec', stop - start)
+    return success
+
+
+def validate_azure_management_reachability(subscription_id):
+    try:
+        get_subscription_client().get(subscription_id)
+    except Exception as ex:
+        logger.warning("Not able to reach azure management endpoints. Exception: " + str(ex))
+
+
+def check_provider_registrations(cli_ctx):
+    try:
+        rp_client = _resource_providers_client(cli_ctx)
+        cc_registration_state = rp_client.get(consts.Connected_Cluster_Provider_Namespace).registration_state
+        if cc_registration_state != "Registered":
+            logger.error("{} provider is not registered".format(consts.Connected_Cluster_Provider_Namespace))
+        kc_registration_state = rp_client.get(consts.Kubernetes_Configuration_Provider_Namespace).registration_state
+        if kc_registration_state != "Registered":
+            logger.warning("{} provider is not registered".format(consts.Kubernetes_Configuration_Provider_Namespace))
+    except Exception as ex:
+        logger.warning("Couldn't check the required provider's registration status. Error: {}".format(str(ex)))
+
+
+# Returns a list of kubernetes pod objects in a given namespace. Object description at: https://github.com/kubernetes-client/python/blob/master/kubernetes/docs/V1PodList.md
+def get_pod_list(api_instance, namespace, label_selector="", field_selector=""):
+    try:
+        return api_instance.list_namespaced_pod(namespace, label_selector=label_selector, field_selector=field_selector)
+    except Exception as e:
+        logger.debug("Error occurred when retrieving pod information: " + str(e))
+
+
 def try_list_node_fix():
     try:
         from kubernetes.client.models.v1_container_image import V1ContainerImage
@@ -389,3 +490,359 @@ def try_list_node_fix():
         V1ContainerImage.names = V1ContainerImage.names.setter(names)
     except Exception as ex:
         logger.debug("Error while trying to monkey patch the fix for list_node(): {}".format(str(ex)))
+
+
+def get_kubernetes_secret(api_instance, namespace, secret_name, custom_logger=None):
+    try:
+        return api_instance.read_namespaced_secret(secret_name, namespace)
+    except Exception as e:
+        handle_logging_error(custom_logger, "Error occurred when retrieving secret '{}': ".format(secret_name) + str(e))
+
+
+def handle_logging_error(custom_logger, error_string):
+    if custom_logger:
+        custom_logger.error(error_string)
+    else:
+        logger.debug(error_string)
+
+
+def can_create_clusterrolebindings(configuration):
+    try:
+        api_instance = kube_client.AuthorizationV1Api(kube_client.ApiClient(configuration))
+        access_review = kube_client.V1SelfSubjectAccessReview(spec={
+            "resourceAttributes": {
+                "verb": "create",
+                "resource": "clusterrolebindings",
+                "group": "rbac.authorization.k8s.io"
+            }
+        })
+        response = api_instance.create_self_subject_access_review(access_review)
+        return response.status.allowed
+    except Exception as ex:
+        logger.warning("Couldn't check for the permission to create clusterrolebindings on this k8s cluster. Error: {}".format(str(ex)))
+        return "Unknown"
+
+
+def check_delete_job(configuration, namespace):
+    try:
+        api_instance = kube_client.BatchV1Api(kube_client.ApiClient(configuration))
+        api_response = api_instance.list_namespaced_job(namespace)
+        for item in list(api_response.items):
+            annotations = item.metadata.annotations
+            if annotations.get("helm.sh/hook") == "pre-delete":
+                job_status = item.status
+                if job_status.succeeded == 0 or job_status.active > 0:
+                    logger.warning("Delete Job status conditions: {}".format(job_status.conditions))
+                break
+    except Exception as e:
+        logger.debug("Error occurred while retrieving status of the delete job: {}".format(str(e)))
+
+
+def try_upload_log_file(cluster_name, storage_account_name, storage_token, log_file_path):
+    try:  # Storage Upload
+        import uuid
+        from azure.storage.blob import BlobServiceClient
+        storage_account_url = f"https://{storage_account_name}.blob.core.windows.net/"
+        blob_service_client = BlobServiceClient(account_url=storage_account_url, credential=storage_token)
+        container_name = cluster_name + "-troubleshoot-" + time.strftime("%Y%m%d-%H%M%S")
+
+        try:
+            blob_service_client.create_container(container_name)
+        except Exception as ex:
+            raise Exception("Storage account container creation error: {}".format(str(ex)))
+
+        blob_client = blob_service_client.get_blob_client(container=container_name, blob="connectedk8s_troubleshoot.log")
+        with open(log_file_path, "rb") as data:  # Upload log file as blob
+            blob_client.upload_blob(data)
+    except Exception as e:
+        logger.warning("Error while uploading the log file to storage account: {}".format(str(e)))
+
+
+def setup_validate_storage_account(cli_ctx, storage_account, sas_token, rg_name):
+    if storage_account is None:
+        return None, None, None
+    try:
+        from msrestazure.tools import is_valid_resource_id, parse_resource_id, resource_id
+        from azure.storage.blob import generate_account_sas
+        if not is_valid_resource_id(storage_account):
+            storage_account_id = resource_id(
+                subscription=get_subscription_id(cli_ctx),
+                resource_group=rg_name,
+                namespace='Microsoft.Storage', type='storageAccounts',
+                name=storage_account
+            )
+        else:
+            storage_account_id = storage_account
+
+        if is_valid_resource_id(storage_account_id):
+            try:
+                parsed_storage_account = parse_resource_id(storage_account_id)
+            except CloudError as ex:
+                logger.warning("Couldn't validate the storage account details. Error: {}".format(ex.message))
+                return None, None, None
+        else:
+            logger.warning("Invalid storage account id - {}".format(storage_account_id))
+            return None, None, None
+
+        storage_account_name = parsed_storage_account['name']
+
+        readonly_sas_token = None
+        if sas_token is None:
+            storage_client = cf_storage(
+                cli_ctx, parsed_storage_account['subscription'])
+            storage_account_keys = storage_client.storage_accounts.list_keys(parsed_storage_account['resource_group'], storage_account_name)
+            sas_token = generate_account_sas(account_name=storage_account_name, account_key=storage_account_keys.keys[0].value, resource_types='sco', permission='rwdlacup', expiry=datetime.utcnow() + timedelta(days=1))
+            readonly_sas_token = generate_account_sas(account_name=storage_account_name, account_key=storage_account_keys.keys[0].value, resource_types='sco', permission='rl', expiry=datetime.utcnow() + timedelta(days=1))
+        return storage_account_name, sas_token, readonly_sas_token
+    except Exception as ex:
+        logger.warning("Error while validating the credentials for the storage account: {}".format(str(ex)))
+        return None, None, None
+
+
+def format_hyperlink(the_link):
+    return f'\033[1m{colorama.Style.BRIGHT}{colorama.Fore.BLUE}{the_link}{colorama.Style.RESET_ALL}'
+
+
+def format_bright(msg):
+    return f'\033[1m{colorama.Style.BRIGHT}{msg}{colorama.Style.RESET_ALL}'
+
+
+def display_diagnostics_report(kubectl_prior):   # pylint: disable=too-many-statements
+    if not which('kubectl'):
+        raise ValidationError('Can not find kubectl executable in PATH')
+    subprocess_cmd = kubectl_prior + ["get", "node", "--no-headers"]
+    nodes = subprocess.check_output(
+        subprocess_cmd,
+        universal_newlines=True)
+    logger.debug(nodes)
+    node_lines = nodes.splitlines()
+    ready_nodes = {}
+    for node_line in node_lines:
+        columns = node_line.split()
+        logger.debug(node_line)
+        if columns[1] != "Ready":
+            logger.warning("Node %s is not Ready. Current state is: %s.", columns[0], columns[1])
+        else:
+            ready_nodes[columns[0]] = False
+
+    logger.debug('There are %s ready nodes in the cluster', str(len(ready_nodes)))
+
+    if not ready_nodes:
+        logger.warning('No nodes are ready in the current cluster. Diagnostics info might not be available.')
+
+    network_config_array = []
+    network_status_array = []
+    apds_created = False
+
+    max_retry = 10
+    for retry in range(0, max_retry):
+        if not apds_created:
+            subprocess_cmd = kubectl_prior + ["get", "apd", "-n", "aks-periscope", "--no-headers"]
+            try:
+                apd = subprocess.check_output(subprocess_cmd, universal_newlines=True)
+            except subprocess.CalledProcessError as ex:
+                logger.debug(f"Exception while running {subprocess_cmd}: {ex.returncode}, {ex.output}. Retrying...")
+                continue
+
+            apd_lines = apd.splitlines()
+            if apd_lines and 'No resources found' in apd_lines[0]:
+                apd_lines.pop(0)
+
+            print("Got {} diagnostic results for {} ready nodes{}\r".format(len(apd_lines),
+                                                                            len(ready_nodes),
+                                                                            '.' * retry), end='')
+            if len(apd_lines) < len(ready_nodes):
+                time.sleep(3)
+            else:
+                apds_created = True
+                print()
+        else:
+            for node_name in ready_nodes:
+                if ready_nodes[node_name]:
+                    continue
+                apdName = "aks-periscope-diagnostic-" + node_name
+                try:
+                    subprocess_cmd = kubectl_prior + ["get", "apd", apdName, "-n", "aks-periscope", "-o=jsonpath={.spec.networkconfig}"]
+                    network_config = subprocess.check_output(
+                        subprocess_cmd,
+                        universal_newlines=True)
+                    logger.debug('Dns status for node %s is %s', node_name, network_config)
+                    subprocess_cmd = kubectl_prior + ["get", "apd", apdName, "-n", "aks-periscope", "-o=jsonpath={.spec.networkoutbound}"]
+                    network_status = subprocess.check_output(
+                        subprocess_cmd,
+                        universal_newlines=True)
+                    logger.debug('Network status for node %s is %s', node_name, network_status)
+
+                    if not network_config or not network_status:
+                        print("The diagnostics information for node {} is not ready yet. "
+                              "Will try again in 10 seconds.".format(node_name))
+                        time.sleep(10)
+                        break
+
+                    network_config_array += json.loads('[' + network_config + ']')
+                    network_status_object = json.loads(network_status)
+                    network_status_array += format_diag_status(network_status_object)
+                    ready_nodes[node_name] = True
+                except subprocess.CalledProcessError as err:
+                    raise CLIInternalError(err.output)
+
+    print()
+    if network_config_array:
+        print("Below are the network configuration for each node: ")
+        print()
+        print(tabulate(network_config_array, headers="keys", tablefmt='simple'))
+        print()
+    else:
+        logger.warning("Could not get network config. "
+                       "Please run 'az connectedk8s troubleshoot' command again later to get the analysis results.")
+
+    if network_status_array:
+        print("Below are the network connectivity results for each node:")
+        print()
+        print(tabulate(network_status_array, headers="keys", tablefmt='simple'))
+    else:
+        logger.warning("Could not get networking status. "
+                       "Please run 'az connectedk8s troubleshoot' command again later to get the analysis results.")
+
+
+def format_diag_status(diag_status):
+    for diag in diag_status:
+        if diag["Status"]:
+            if "Error:" in diag["Status"]:
+                diag["Status"] = f'{colorama.Fore.RED}{diag["Status"]}{colorama.Style.RESET_ALL}'
+            else:
+                diag["Status"] = f'{colorama.Fore.GREEN}{diag["Status"]}{colorama.Style.RESET_ALL}'
+
+    return diag_status
+
+
+def collect_periscope_logs(resource_group_name, name, storage_account_name=None, sas_token=None, readonly_sas_token=None, kube_context=None, kube_config=None):
+    colorama.init()
+
+    if not which('kubectl'):
+        raise ValidationError('Can not find kubectl executable in PATH')
+
+    kubectl_prior = ["kubectl"]
+    if kube_config:
+        kubectl_prior.extend(["--kubeconfig", kube_config])
+    if kube_context:
+        kubectl_prior.extend(["--context", kube_context])
+
+    readonly_sas_token = readonly_sas_token.strip('?')
+
+    from knack.prompting import prompt_y_n
+
+    print()
+    print('This will deploy a daemon set to your cluster to collect logs and diagnostic information and '
+          f'save them to the storage account '
+          f'{colorama.Style.BRIGHT}{colorama.Fore.GREEN}{storage_account_name}{colorama.Style.RESET_ALL} as '
+          f'outlined in {format_hyperlink("http://aka.ms/AKSPeriscope")}.')
+    print()
+    print('If you share access to that storage account to Azure support, you consent to the terms outlined'
+          f' in {format_hyperlink("http://aka.ms/DiagConsent")}.')
+    print()
+    if not prompt_y_n('Do you confirm?', default="n"):
+        return
+
+    sas_token = sas_token.strip('?')
+
+    deployment_yaml = urlopen(
+        "https://raw.githubusercontent.com/Azure/aks-periscope/latest/deployment/aks-periscope.yaml").read().decode()
+    deployment_yaml = deployment_yaml.replace("# <accountName, base64 encoded>",
+                                              (base64.b64encode(bytes(storage_account_name, 'ascii'))).decode('ascii'))
+    deployment_yaml = deployment_yaml.replace("# <saskey, base64 encoded>",
+                                              (base64.b64encode(bytes("?" + sas_token, 'ascii'))).decode('ascii'))
+    container_logs = "azure-arc"
+    kube_objects = "azure-arc/pod azure-arc/service azure-arc/deployment"
+    yaml_lines = deployment_yaml.splitlines()
+    for index, line in enumerate(yaml_lines):
+        if "DIAGNOSTIC_CONTAINERLOGS_LIST" in line:
+            yaml_lines[index] = line + ' ' + container_logs
+        if "DIAGNOSTIC_KUBEOBJECTS_LIST" in line:
+            yaml_lines[index] = line + ' ' + kube_objects
+        if "CLUSTER_TYPE" in line:
+            yaml_lines[index] = '  CLUSTER_TYPE: connectedCluster'
+
+    deployment_yaml = '\n'.join(yaml_lines)
+
+    fd, temp_yaml_path = tempfile.mkstemp()
+    temp_yaml_file = os.fdopen(fd, 'w+t')
+    try:
+        temp_yaml_file.write(deployment_yaml)
+        temp_yaml_file.flush()
+        temp_yaml_file.close()
+        try:
+            print("Cleaning up diagnostic container resources from the k8s cluster if existing...")
+
+            subprocess_cmd = kubectl_prior + ["delete", "serviceaccount,configmap,daemonset,secret", "--all", "-n", "aks-periscope", "--ignore-not-found"]
+            subprocess.call(subprocess_cmd, stderr=subprocess.STDOUT)
+
+            subprocess_cmd = kubectl_prior + ["delete", "ClusterRoleBinding", "aks-periscope-role-binding", "--ignore-not-found"]
+            subprocess.call(subprocess_cmd, stderr=subprocess.STDOUT)
+
+            subprocess_cmd = kubectl_prior + ["delete", "ClusterRole", "aks-periscope-role", "--ignore-not-found"]
+            subprocess.call(subprocess_cmd, stderr=subprocess.STDOUT)
+
+            subprocess_cmd = kubectl_prior + ["delete", "--all", "apd", "-n", "aks-periscope", "--ignore-not-found"]
+            subprocess.call(subprocess_cmd, stderr=subprocess.STDOUT)
+
+            subprocess_cmd = kubectl_prior + ["delete", "CustomResourceDefinition", "diagnostics.aks-periscope.azure.github.com", "--ignore-not-found"]
+            subprocess.call(subprocess_cmd, stderr=subprocess.STDOUT)
+
+            print()
+            print(f"{colorama.Fore.GREEN}Deploying diagnostic container on the K8s cluster...")
+            subprocess_cmd = kubectl_prior + ["apply", "-f", temp_yaml_path, "-n", "aks-periscope"]
+            subprocess.check_output(subprocess_cmd, stderr=subprocess.STDOUT)
+        except subprocess.CalledProcessError as err:
+            raise CLIInternalError(err.output)
+    finally:
+        os.remove(temp_yaml_path)
+
+    print()
+    # log_storage_account_url = f"https://{storage_account_name}.blob.core.windows.net/"
+
+    print(f'{colorama.Fore.GREEN}Your logs are being uploaded to storage account {format_bright(storage_account_name)}...')
+
+    print()
+    print(f'You can download Azure Storage Explorer here '
+          f'{format_hyperlink("https://azure.microsoft.com/en-us/features/storage-explorer/")}'
+          f' to check the logs by accessing the storage account {storage_account_name}.')
+    # f' to check the logs by adding the storage account using the following URL:')
+    # print(f'{format_hyperlink(log_storage_account_url)}')
+
+    print()
+    if not prompt_y_n('Do you want to see analysis results now?', default="n"):
+        print(f"You can rerun 'az connectedk8s troubleshoot -g {resource_group_name} -n {name}' "
+              f"anytime to check the analysis results.")
+    else:
+        display_diagnostics_report(kubectl_prior)
+
+
+def which(binary):
+    path_var = os.getenv('PATH')
+    if platform.system() == 'Windows':
+        binary = binary + '.exe'
+        parts = path_var.split(';')
+    else:
+        parts = path_var.split(':')
+
+    for part in parts:
+        bin_path = os.path.join(part, binary)
+        if os.path.exists(bin_path) and os.path.isfile(bin_path) and os.access(bin_path, os.X_OK):
+            return bin_path
+
+    return None
+
+
+def try_archive_log_file(troubleshoot_log_path, output_file):
+    try:
+        # Creating the .tar.gz for logs and deleting the actual log file
+        import tarfile
+        with tarfile.open(output_file, "w:gz") as tar:
+            tar.add(troubleshoot_log_path, 'connected8s_troubleshoot.log')
+        logging.shutdown()  # To release log file handler, so that the actual log file can be removed after archiving
+        os.remove(troubleshoot_log_path)
+        print(f"{colorama.Style.BRIGHT}{colorama.Fore.GREEN}Some diagnostic logs have been collected and archived at '{output_file}'.")
+    except Exception as ex:
+        logger.error("Error occured while archiving the log file: {}".format(str(ex)))
+        print(f"{colorama.Style.BRIGHT}{colorama.Fore.GREEN}You can find the unarchived log file at '{troubleshoot_log_path}'.")
