@@ -67,8 +67,8 @@ installAZAKSTOOLFromLocal(){
 installAZAKSTOOL(){
     wheel_file="az_aks_tool-latest-py3-none-any.whl"
     wheel_url="https://akspreview.blob.core.windows.net/azakstool/${wheel_file}"
-    curl -sLO ${wheel_url}
-    installAZAKSTOOLFromLocal ${wheel_file}
+    curl -sLO "${wheel_url}"
+    installAZAKSTOOLFromLocal "${wheel_file}"
 }
 
 # need to be executed in a venv with kusto related modules installed
