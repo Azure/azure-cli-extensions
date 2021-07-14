@@ -1097,9 +1097,10 @@ def glob_files_locally(folder_path, pattern):
 
 def process_blob_download_batch_parameters(cmd, namespace):
     """Process the parameters for storage blob download command"""
+    from azure.cli.core.azclierror import InvalidArgumentValueError
     # 1. quick check
     if not os.path.exists(namespace.destination) or not os.path.isdir(namespace.destination):
-        raise ValueError('incorrect usage: destination must be an existing directory')
+        raise InvalidArgumentValueError('incorrect usage: destination must be an existing directory')
 
     # 2. try to extract account name and container name from source string
     _process_blob_batch_container_parameters(cmd, namespace)
@@ -1128,8 +1129,9 @@ def process_blob_upload_batch_parameters(cmd, namespace):
             # when all the listed files are vhd files use page
             namespace.blob_type = 'page'
         elif any(vhd_files):
+            from azure.cli.core.azclierror import ArgumentUsageError
             # source files contain vhd files but not all of them
-            raise CLIError("""Fail to guess the required blob type. Type of the files to be
+            raise ArgumentUsageError("""Fail to guess the required blob type. Type of the files to be
             uploaded are not consistent. Default blob type for .vhd files is "page", while
             others are "block". You can solve this problem by either explicitly set the blob
             type or ensure the pattern matches a correct set of files.""")
