@@ -97,7 +97,7 @@ def _get_ssh_path(ssh_command="ssh"):
         logger.debug("Attempting to run ssh from path %s", ssh_path)
 
         if not os.path.isfile(ssh_path):
-            raise util.CLIError("Could not find " + ssh_command + ".exe. Is the OpenSSH client installed?")
+            return ssh_command
 
     return ssh_path
 
