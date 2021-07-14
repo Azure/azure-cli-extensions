@@ -2,10 +2,15 @@
 
 Release History
 ===============
-0.5.1
+0.5.2
 ++++++
 * Apply v2020-06-12 api version for blob operations
 * Add `az storage blob download-batch/upload-batch/delete-batch/copy start-batch` commands
+
+0.5.1
+++++++
+* Fix issue #3460
+* Remove commands supported in azure cli
 
 0.5.0
 ++++++

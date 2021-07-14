@@ -98,6 +98,11 @@ helps['network front-door backend-pool backend add'] = """
     short-summary: Add a backend to a Front Door backend pool.
 """
 
+helps['network front-door backend-pool backend update'] = """
+    type: command
+    short-summary: Update a backend to a Front Door backend pool.
+"""
+
 helps['network front-door backend-pool backend list'] = """
     type: command
     short-summary: List backends of a Front Door backend pool.
