@@ -15,12 +15,14 @@ try:
     from ._models_py3 import HealthBot
     from ._models_py3 import HealthBotProperties
     from ._models_py3 import HealthBotUpdateParameters
+    from ._models_py3 import Identity
     from ._models_py3 import OperationDetail
     from ._models_py3 import OperationDisplay
     from ._models_py3 import Resource
     from ._models_py3 import Sku
     from ._models_py3 import SystemData
     from ._models_py3 import TrackedResource
+    from ._models_py3 import UserAssignedIdentity
     from ._models_py3 import ValidationResult
 except (SyntaxError, ImportError):
     from ._models import AvailableOperations  # type: ignore
@@ -31,16 +33,19 @@ except (SyntaxError, ImportError):
     from ._models import HealthBot  # type: ignore
     from ._models import HealthBotProperties  # type: ignore
     from ._models import HealthBotUpdateParameters  # type: ignore
+    from ._models import Identity  # type: ignore
     from ._models import OperationDetail  # type: ignore
     from ._models import OperationDisplay  # type: ignore
     from ._models import Resource  # type: ignore
     from ._models import Sku  # type: ignore
     from ._models import SystemData  # type: ignore
     from ._models import TrackedResource  # type: ignore
+    from ._models import UserAssignedIdentity  # type: ignore
     from ._models import ValidationResult  # type: ignore
 
 from ._healthbot_client_enums import (
     IdentityType,
+    ResourceIdentityType,
     SkuName,
 )
 
@@ -53,13 +58,16 @@ __all__ = [
     'HealthBot',
     'HealthBotProperties',
     'HealthBotUpdateParameters',
+    'Identity',
     'OperationDetail',
     'OperationDisplay',
     'Resource',
     'Sku',
     'SystemData',
     'TrackedResource',
+    'UserAssignedIdentity',
     'ValidationResult',
     'IdentityType',
+    'ResourceIdentityType',
     'SkuName',
 ]

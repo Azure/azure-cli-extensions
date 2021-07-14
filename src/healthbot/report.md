@@ -62,7 +62,10 @@ az healthbot show --name "samplebotname" --resource-group "healthbotClient"
 
 ##### <a name="ExamplesBotsCreate">Example</a>
 ```
-az healthbot create --name "samplebotname" --location "East US" --sku "F0" --resource-group "healthbotClient"
+az healthbot create --bot-name "samplebotname" --type "SystemAssigned, UserAssigned" --user-assigned-identities \
+"{\\"/subscriptions/subscription-id/resourcegroups/myrg/providers/microsoft.managedidentity/userassignedidentities/my-m\
+i\\":{},\\"/subscriptions/subscription-id/resourcegroups/myrg/providers/microsoft.managedidentity/userassignedidentitie\
+s/my-mi2\\":{}}" --location "East US" --name "F0" --resource-group "healthbotClient"
 ```
 ##### <a name="ParametersBotsCreate">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -70,22 +73,29 @@ az healthbot create --name "samplebotname" --location "East US" --sku "F0" --res
 |**--resource-group-name**|string|The name of the Bot resource group in the user subscription.|resource_group_name|resourceGroupName|
 |**--bot-name**|string|The name of the Bot resource.|bot_name|botName|
 |**--location**|string|The geo-location where the resource lives|location|location|
-|**--sku**|sealed-choice|The name of the HealthBot SKU|
+|**--name**|sealed-choice|The name of the Azure Health Bot SKU|name|name|
 |**--tags**|dictionary|Resource tags.|tags|tags|
+|**--type**|sealed-choice|The identity type. The type 'SystemAssigned, UserAssigned' includes both an implicitly created identity and a set of user assigned identities. The type 'None' will remove any identities from the Azure Health Bot|type|type|
+|**--user-assigned-identities**|dictionary|The list of user identities associated with the resource. The user identity dictionary key references will be ARM resource ids in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}'. |user_assigned_identities|userAssignedIdentities|
 
 #### <a name="BotsUpdate">Command `az healthbot update`</a>
 
 ##### <a name="ExamplesBotsUpdate">Example</a>
 ```
-az healthbot update --name "samplebotname" --sku "F0" --resource-group "healthbotClient"
+az healthbot update --bot-name "samplebotname" --type "SystemAssigned, UserAssigned" --user-assigned-identities \
+"{\\"/subscriptions/subscription-id/resourcegroups/myrg/providers/microsoft.managedidentity/userassignedidentities/my-m\
+i\\":{},\\"/subscriptions/subscription-id/resourcegroups/myrg/providers/microsoft.managedidentity/userassignedidentitie\
+s/my-mi2\\":{}}" --name "F0" --resource-group "healthbotClient"
 ```
 ##### <a name="ParametersBotsUpdate">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
 |**--resource-group-name**|string|The name of the Bot resource group in the user subscription.|resource_group_name|resourceGroupName|
 |**--bot-name**|string|The name of the Bot resource.|bot_name|botName|
-|**--tags**|dictionary|Tags for a HealthBot.|tags|tags|
-|**--sku**|sealed-choice|The name of the HealthBot SKU|
+|**--tags**|dictionary|Tags for a Azure Health Bot.|tags|tags|
+|**--type**|sealed-choice|The identity type. The type 'SystemAssigned, UserAssigned' includes both an implicitly created identity and a set of user assigned identities. The type 'None' will remove any identities from the Azure Health Bot|type|type|
+|**--user-assigned-identities**|dictionary|The list of user identities associated with the resource. The user identity dictionary key references will be ARM resource ids in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}'. |user_assigned_identities|userAssignedIdentities|
+|**--name**|sealed-choice|The name of the Azure Health Bot SKU|name|name|
 
 #### <a name="BotsDelete">Command `az healthbot delete`</a>
 

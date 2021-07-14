@@ -30,14 +30,19 @@ def healthbot_create(client,
                      resource_group_name,
                      bot_name,
                      location,
-                     sku,
+                     name,
                      tags=None,
+                     type_=None,
+                     user_assigned_identities=None,
                      no_wait=False):
     parameters = {}
     parameters['tags'] = tags
     parameters['location'] = location
+    parameters['identity'] = {}
+    parameters['identity']['type'] = type_
+    parameters['identity']['user_assigned_identities'] = user_assigned_identities
     parameters['sku'] = {}
-    parameters['sku']['name'] = sku
+    parameters['sku']['name'] = name
     return sdk_no_wait(no_wait,
                        client.begin_create,
                        resource_group_name=resource_group_name,
@@ -49,11 +54,16 @@ def healthbot_update(client,
                      resource_group_name,
                      bot_name,
                      tags=None,
-                     sku=None):
+                     type_=None,
+                     user_assigned_identities=None,
+                     name=None):
     parameters = {}
     parameters['tags'] = tags
+    parameters['identity'] = {}
+    parameters['identity']['type'] = type_
+    parameters['identity']['user_assigned_identities'] = user_assigned_identities
     parameters['sku'] = {}
-    parameters['sku']['name'] = sku
+    parameters['sku']['name'] = name
     return client.update(resource_group_name=resource_group_name,
                          bot_name=bot_name,
                          parameters=parameters)

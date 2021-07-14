@@ -60,7 +60,7 @@ class BotsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-12-08"
+        api_version = "2021-06-10"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -114,13 +114,13 @@ class BotsOperations(object):
         **kwargs  # type: Any
     ):
         # type: (...) -> LROPoller["models.HealthBot"]
-        """Create a new HealthBot.
+        """Create a new Azure Health Bot.
 
         :param resource_group_name: The name of the Bot resource group in the user subscription.
         :type resource_group_name: str
         :param bot_name: The name of the Bot resource.
         :type bot_name: str
-        :param parameters: The parameters to provide for the created bot.
+        :param parameters: The parameters to provide for the created Azure Health Bot.
         :type parameters: ~azure.mgmt.healthbot.models.HealthBot
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
@@ -201,7 +201,7 @@ class BotsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-12-08"
+        api_version = "2021-06-10"
         accept = "application/json"
 
         # Construct URL
@@ -252,7 +252,7 @@ class BotsOperations(object):
         :type resource_group_name: str
         :param bot_name: The name of the Bot resource.
         :type bot_name: str
-        :param parameters: The parameters to provide for the required bot.
+        :param parameters: The parameters to provide for the required Azure Health Bot.
         :type parameters: ~azure.mgmt.healthbot.models.HealthBotUpdateParameters
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: HealthBot, or the result of cls(response)
@@ -264,7 +264,7 @@ class BotsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-12-08"
+        api_version = "2021-06-10"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -322,7 +322,7 @@ class BotsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-12-08"
+        api_version = "2021-06-10"
         accept = "application/json"
 
         # Construct URL
@@ -441,7 +441,7 @@ class BotsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-12-08"
+        api_version = "2021-06-10"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -510,7 +510,7 @@ class BotsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-12-08"
+        api_version = "2021-06-10"
         accept = "application/json"
 
         def prepare_request(next_link=None):

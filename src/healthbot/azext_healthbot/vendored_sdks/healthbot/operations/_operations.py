@@ -50,7 +50,7 @@ class Operations(object):
         **kwargs  # type: Any
     ):
         # type: (...) -> Iterable["models.AvailableOperations"]
-        """Lists all the available HealthBot operations.
+        """Lists all the available Azure Health Bot operations.
 
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either AvailableOperations or the result of cls(response)
@@ -62,7 +62,7 @@ class Operations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-12-08"
+        api_version = "2021-06-10"
         accept = "application/json"
 
         def prepare_request(next_link=None):

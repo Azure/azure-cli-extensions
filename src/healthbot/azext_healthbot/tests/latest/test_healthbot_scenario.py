@@ -45,7 +45,12 @@ def call_scenario(test, rg, rg_2):
     setup_scenario(test, rg, rg_2)
     step_create(test, rg, rg_2, checks=[
         test.check("name", "{myBot}", case_sensitive=False),
-        test.check("location", "eastus", case_sensitive=False),
+        test.check("identity.type", "SystemAssigned, UserAssigned", case_sensitive=False),
+        test.check("identity.userAssignedIdentities./subscriptions/{subscription_id}/resourcegroups/{rg_3}/providers/mi"
+                   "crosoft.managedidentity/userassignedidentities/my-mi.", {}),
+        test.check("identity.userAssignedIdentities./subscriptions/{subscription_id}/resourcegroups/{rg_3}/providers/mi"
+                   "crosoft.managedidentity/userassignedidentities/my-mi2.", {}),
+        test.check("location", "East US", case_sensitive=False),
         test.check("sku.name", "F0", case_sensitive=False),
     ])
     step_list(test, rg, rg_2, checks=[])
@@ -54,12 +59,22 @@ def call_scenario(test, rg, rg_2):
     ])
     step_show(test, rg, rg_2, checks=[
         test.check("name", "{myBot}", case_sensitive=False),
-        test.check("location", "eastus", case_sensitive=False),
+        test.check("identity.type", "SystemAssigned, UserAssigned", case_sensitive=False),
+        test.check("identity.userAssignedIdentities./subscriptions/{subscription_id}/resourcegroups/{rg_3}/providers/mi"
+                   "crosoft.managedidentity/userassignedidentities/my-mi.", {}),
+        test.check("identity.userAssignedIdentities./subscriptions/{subscription_id}/resourcegroups/{rg_3}/providers/mi"
+                   "crosoft.managedidentity/userassignedidentities/my-mi2.", {}),
+        test.check("location", "East US", case_sensitive=False),
         test.check("sku.name", "F0", case_sensitive=False),
     ])
     step_update(test, rg, rg_2, checks=[
         test.check("name", "{myBot}", case_sensitive=False),
-        test.check("location", "eastus", case_sensitive=False),
+        test.check("identity.type", "SystemAssigned, UserAssigned", case_sensitive=False),
+        test.check("identity.userAssignedIdentities./subscriptions/{subscription_id}/resourcegroups/{rg_3}/providers/mi"
+                   "crosoft.managedidentity/userassignedidentities/my-mi.", {}),
+        test.check("identity.userAssignedIdentities./subscriptions/{subscription_id}/resourcegroups/{rg_3}/providers/mi"
+                   "crosoft.managedidentity/userassignedidentities/my-mi2.", {}),
+        test.check("location", "East US", case_sensitive=False),
         test.check("sku.name", "F0", case_sensitive=False),
     ])
     step_delete(test, rg, rg_2, checks=[])
@@ -76,9 +91,11 @@ class HealthbotScenarioTest(ScenarioTest):
             'myBot': 'samplebotname',
         })
 
-    @ResourceGroupPreparer(name_prefix='clitest', random_name_length=20, key='rg', parameter_name='rg')
-    @ResourceGroupPreparer(name_prefix='clitest', random_name_length=20, key='rg_2', parameter_name='rg_2')
+
+    @ResourceGroupPreparer(name_prefix='clitesthealthbot_OneResourceGroupName'[:7], key='rg', parameter_name='rg')
+    @ResourceGroupPreparer(name_prefix='clitesthealthbot_healthbotClient'[:7], key='rg_2', parameter_name='rg_2')
     def test_healthbot_Scenario(self, rg, rg_2):
         call_scenario(self, rg, rg_2)
         calc_coverage(__file__)
         raise_if()
+

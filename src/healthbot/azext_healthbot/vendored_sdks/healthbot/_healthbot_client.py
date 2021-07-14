@@ -24,7 +24,7 @@ from . import models
 
 
 class HealthbotClient(object):
-    """Microsoft Healthcare Bot is a cloud platform that empowers developers in Healthcare organizations to build and deploy their compliant, AI-powered virtual health assistants and health bots, that help them improve processes and reduce costs.
+    """Azure Health Bot is a cloud platform that empowers developers in Healthcare organizations to build and deploy their compliant, AI-powered virtual health assistants and health bots, that help them improve processes and reduce costs.
 
     :ivar bots: BotsOperations operations
     :vartype bots: azure.mgmt.healthbot.operations.BotsOperations

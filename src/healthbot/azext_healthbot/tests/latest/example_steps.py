@@ -18,10 +18,14 @@ def step_create(test, rg, rg_2, checks=None):
     if checks is None:
         checks = []
     test.cmd('az healthbot create '
-             '--name "{myBot}" '
-             '--location "eastus" '
-             '--sku "F0" '
-             '--resource-group "{rg}"',
+             '--bot-name "{myBot}" '
+             '--type "SystemAssigned, UserAssigned" '
+             '--user-assigned-identities "{{\\"/subscriptions/subscription-id/resourcegroups/myrg/providers/microsoft.m'
+             'anagedidentity/userassignedidentities/my-mi\\":{{}},\\"/subscriptions/subscription-id/resourcegroups/myrg'
+             '/providers/microsoft.managedidentity/userassignedidentities/my-mi2\\":{{}}}}" '
+             '--location "East US" '
+             '--name "F0" '
+             '--resource-group "{rg_2}"',
              checks=checks)
 
 
@@ -52,7 +56,7 @@ def step_show(test, rg, rg_2, checks=None):
         checks = []
     test.cmd('az healthbot show '
              '--name "{myBot}" '
-             '--resource-group "{rg}"',
+             '--resource-group "{rg_2}"',
              checks=checks)
 
 
@@ -62,9 +66,13 @@ def step_update(test, rg, rg_2, checks=None):
     if checks is None:
         checks = []
     test.cmd('az healthbot update '
-             '--name "{myBot}" '
-             '--sku "F0" '
-             '--resource-group "{rg}"',
+             '--bot-name "{myBot}" '
+             '--type "SystemAssigned, UserAssigned" '
+             '--user-assigned-identities "{{\\"/subscriptions/subscription-id/resourcegroups/myrg/providers/microsoft.m'
+             'anagedidentity/userassignedidentities/my-mi\\":{{}},\\"/subscriptions/subscription-id/resourcegroups/myrg'
+             '/providers/microsoft.managedidentity/userassignedidentities/my-mi2\\":{{}}}}" '
+             '--name "F0" '
+             '--resource-group "{rg_2}"',
              checks=checks)
 
 
@@ -75,5 +83,6 @@ def step_delete(test, rg, rg_2, checks=None):
         checks = []
     test.cmd('az healthbot delete -y '
              '--name "{myBot}" '
-             '--resource-group "{rg}"',
+             '--resource-group "{rg_2}"',
              checks=checks)
+

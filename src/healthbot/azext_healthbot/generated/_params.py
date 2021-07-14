@@ -16,7 +16,10 @@ from azure.cli.core.commands.parameters import (
     resource_group_name_type,
     get_location_type
 )
-from azure.cli.core.commands.validators import get_default_location_from_resource_group
+from azure.cli.core.commands.validators import (
+    get_default_location_from_resource_group,
+    validate_file_or_dict
+)
 
 
 def load_arguments(self, _):
@@ -31,18 +34,38 @@ def load_arguments(self, _):
 
     with self.argument_context('healthbot create') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('bot_name', options_list=['--name', '-n', '--bot-name'], type=str, help='The name of the Bot resource.')
+        c.argument('bot_name', type=str, help='The name of the Bot resource.')
         c.argument('tags', tags_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
-        c.argument('sku', arg_type=get_enum_type(['F0', 'S1', 'C0']), help='The name of the HealthBot SKU',
+        c.argument('type_', options_list=['--type'], arg_type=get_enum_type(['SystemAssigned', 'UserAssigned',
+                                                                             'SystemAssigned, UserAssigned', 'None']),
+                   help='The identity type. The type \'SystemAssigned, UserAssigned\' includes both an implicitly '
+                   'created identity and a set of user assigned identities. The type \'None\' will remove any '
+                   'identities from the Azure Health Bot', arg_group='Identity')
+        c.argument('user_assigned_identities', type=validate_file_or_dict, help='The list of user identities '
+                   'associated with the resource. The user identity dictionary key references will be ARM resource ids '
+                   'in the form: \'/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microso'
+                   'ft.ManagedIdentity/userAssignedIdentities/{identityName}\'. Expected value: '
+                   'json-string/@json-file.', arg_group='Identity')
+        c.argument('name', arg_type=get_enum_type(['F0', 'S1', 'C0']), help='The name of the Azure Health Bot SKU',
                    arg_group='Sku')
 
     with self.argument_context('healthbot update') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('bot_name', options_list=['--name', '-n', '--bot-name'], type=str, help='The name of the Bot resource.', id_part='name')
+        c.argument('bot_name', type=str, help='The name of the Bot resource.', id_part='name')
         c.argument('tags', tags_type)
-        c.argument('sku', arg_type=get_enum_type(['F0', 'S1', 'C0']), help='The name of the HealthBot SKU',
+        c.argument('type_', options_list=['--type'], arg_type=get_enum_type(['SystemAssigned', 'UserAssigned',
+                                                                             'SystemAssigned, UserAssigned', 'None']),
+                   help='The identity type. The type \'SystemAssigned, UserAssigned\' includes both an implicitly '
+                   'created identity and a set of user assigned identities. The type \'None\' will remove any '
+                   'identities from the Azure Health Bot', arg_group='Identity')
+        c.argument('user_assigned_identities', type=validate_file_or_dict, help='The list of user identities '
+                   'associated with the resource. The user identity dictionary key references will be ARM resource ids '
+                   'in the form: \'/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microso'
+                   'ft.ManagedIdentity/userAssignedIdentities/{identityName}\'. Expected value: '
+                   'json-string/@json-file.', arg_group='Identity')
+        c.argument('name', arg_type=get_enum_type(['F0', 'S1', 'C0']), help='The name of the Azure Health Bot SKU',
                    arg_group='Sku')
 
     with self.argument_context('healthbot delete') as c:

@@ -41,12 +41,14 @@ helps['healthbot show'] = """
 
 helps['healthbot create'] = """
     type: command
-    short-summary: "Create a new HealthBot."
+    short-summary: "Create a new Azure Health Bot."
     examples:
       - name: BotCreate
         text: |-
-               az healthbot create --name "samplebotname" --location "East US" --sku "F0" --resource-group \
-"healthbotClient"
+               az healthbot create --bot-name "samplebotname" --type "SystemAssigned, UserAssigned" \
+--user-assigned-identities "{\\"/subscriptions/subscription-id/resourcegroups/myrg/providers/microsoft.managedidentity/\
+userassignedidentities/my-mi\\":{},\\"/subscriptions/subscription-id/resourcegroups/myrg/providers/microsoft.managedide\
+ntity/userassignedidentities/my-mi2\\":{}}" --location "East US" --name "F0" --resource-group "healthbotClient"
 """
 
 helps['healthbot update'] = """
@@ -55,7 +57,10 @@ helps['healthbot update'] = """
     examples:
       - name: BotUpdate
         text: |-
-               az healthbot update --bot-name "samplebotname" --name "F0" --resource-group "healthbotClient"
+               az healthbot update --bot-name "samplebotname" --type "SystemAssigned, UserAssigned" \
+--user-assigned-identities "{\\"/subscriptions/subscription-id/resourcegroups/myrg/providers/microsoft.managedidentity/\
+userassignedidentities/my-mi\\":{},\\"/subscriptions/subscription-id/resourcegroups/myrg/providers/microsoft.managedide\
+ntity/userassignedidentities/my-mi2\\":{}}" --name "F0" --resource-group "healthbotClient"
 """
 
 helps['healthbot delete'] = """
