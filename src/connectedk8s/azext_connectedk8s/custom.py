@@ -122,7 +122,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     kubernetes_version = get_server_version(configuration)
 
     if distribution == 'auto':
-        kubernetes_distro = get_kubernetes_distro(configuration)  # (cluster heuristics)
+        kubernetes_distro = get_kubernetes_distro(configuration, kubernetes_version)  # (cluster heuristics)
     else:
         kubernetes_distro = distribution
     if infrastructure == 'auto':
@@ -436,7 +436,11 @@ def get_server_version(configuration):
                                            raise_error=False)
 
 
-def get_kubernetes_distro(configuration):  # Heuristic
+def get_kubernetes_distro(configuration, kubernetes_version):  # Heuristic
+    if 'eks' in kubernetes_version:
+        return "eks"
+    if "gke" in kubernetes_version:
+        return "gke"
     api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
     try:
         api_response = api_instance.list_node()
@@ -798,7 +802,7 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
     if hasattr(connected_cluster, 'distribution') and (connected_cluster.distribution is not None):
         kubernetes_distro = connected_cluster.distribution
     else:
-        kubernetes_distro = get_kubernetes_distro(configuration)
+        kubernetes_distro = get_kubernetes_distro(configuration, kubernetes_version)
 
     if hasattr(connected_cluster, 'infrastructure') and (connected_cluster.infrastructure is not None):
         kubernetes_infra = connected_cluster.infrastructure
@@ -960,7 +964,7 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
     if hasattr(connected_cluster, 'distribution') and (connected_cluster.distribution is not None):
         kubernetes_distro = connected_cluster.distribution
     else:
-        kubernetes_distro = get_kubernetes_distro(configuration)
+        kubernetes_distro = get_kubernetes_distro(configuration, kubernetes_version)
 
     if hasattr(connected_cluster, 'infrastructure') and (connected_cluster.infrastructure is not None):
         kubernetes_infra = connected_cluster.infrastructure
@@ -1202,7 +1206,7 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
     if hasattr(connected_cluster, 'distribution') and (connected_cluster.distribution is not None):
         kubernetes_distro = connected_cluster.distribution
     else:
-        kubernetes_distro = get_kubernetes_distro(configuration)
+        kubernetes_distro = get_kubernetes_distro(configuration, kubernetes_version)
 
     if hasattr(connected_cluster, 'infrastructure') and (connected_cluster.infrastructure is not None):
         kubernetes_infra = connected_cluster.infrastructure
@@ -1330,7 +1334,7 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
     if hasattr(connected_cluster, 'distribution') and (connected_cluster.distribution is not None):
         kubernetes_distro = connected_cluster.distribution
     else:
-        kubernetes_distro = get_kubernetes_distro(configuration)
+        kubernetes_distro = get_kubernetes_distro(configuration, kubernetes_version)
 
     if hasattr(connected_cluster, 'infrastructure') and (connected_cluster.infrastructure is not None):
         kubernetes_infra = connected_cluster.infrastructure
