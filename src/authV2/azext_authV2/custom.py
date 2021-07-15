@@ -24,6 +24,8 @@ TWITTER_SECRET_SETTING_NAME = "TWITTER_PROVIDER_AUTHENTICATION_SECRET"
 
 def get_resource_id(cmd, resource_group_name, name, slot):
     sub_id = get_subscription_id(cmd.cli_ctx)
+
+    # TODO: Replace ARM call with SDK API after fixing swagger issues
     resource_id = "/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/sites/{}".format(
         sub_id,
         resource_group_name,
@@ -35,10 +37,14 @@ def get_resource_id(cmd, resource_group_name, name, slot):
 
 def get_auth_settings_v2(cmd, resource_group_name, name, slot=None):
     resource_id = get_resource_id(cmd, resource_group_name, name, slot)
-    request_url = "https://management.azure.com/{}/{}?api-version={}".format(
+    management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+    request_url = "{}/{}/{}?api-version={}".format(
+        management_hostname.strip('/'),
         resource_id,
         "config/authSettingsV2/list",
         "2020-12-01")
+
+    # TODO: Replace ARM call with SDK API after fixing swagger issues
     r = send_raw_request(cmd.cli_ctx, "GET", request_url)
     return r.json()
 
@@ -49,20 +55,28 @@ def update_auth_settings_v2_rest_call(cmd, resource_group_name, name, site_auth_
     }
 
     resource_id = get_resource_id(cmd, resource_group_name, name, slot)
-    request_url = "https://management.azure.com/{}/{}?api-version={}".format(
+    management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+    request_url = "{}/{}/{}?api-version={}".format(
+        management_hostname.strip('/'),
         resource_id,
         "config/authSettingsV2",
         "2020-12-01")
+    
+    # TODO: Replace ARM call with SDK API after fixing swagger issues
     r = send_raw_request(cmd.cli_ctx, "PUT", request_url, None, None, json.dumps(final_json))
     return r.json()["properties"]
 
 
 def is_auth_v2_app(cmd, resource_group_name, name, slot=None):
     resource_id = get_resource_id(cmd, resource_group_name, name, slot)
-    request_url = "https://management.azure.com/{}/{}?api-version={}".format(
+    management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+    request_url = "{}/{}/{}?api-version={}".format(
+        management_hostname.strip('/'),
         resource_id,
         "config/authSettings/list",
         "2020-12-01")
+
+    # TODO: Replace ARM call with SDK API after fixing swagger issues
     r = send_raw_request(cmd.cli_ctx, "POST", request_url)
     return r.json()["properties"]["configVersion"] == "v2"
 # endregion
