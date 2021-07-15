@@ -2,9 +2,6 @@
 
 Release History
 ===============
-0.1.1
-++++++
-* Remove list commands
 
 0.1.1
 ++++++
