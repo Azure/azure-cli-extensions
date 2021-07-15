@@ -22,11 +22,10 @@ def step_create(test, rg_2, rg, checks=None):
              '--location "Global" '
              '--data-location "United States" '
              '--resource-group "{rg}"',
-             checks=[])
+             checks=checks)
     test.cmd('az communication wait --created '
              '--name "{myCommunicationService}" '
-             '--resource-group "{rg}"',
-             checks=checks)
+             '--resource-group "{rg}"')
 
 
 # EXAMPLE: /CommunicationService/get/Get resource
