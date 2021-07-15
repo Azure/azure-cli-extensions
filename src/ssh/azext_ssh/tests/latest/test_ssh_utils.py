@@ -126,7 +126,8 @@ class SSHUtilsTests(unittest.TestCase):
         mock_environ.__getitem__.return_value = "rootpath"
         mock_isfile.return_value = False
 
-        self.assertRaises(util.CLIError, ssh_utils._get_ssh_path)
+        actual_host = ssh_utils._get_host("username", "10.0.0.1")
+        self.assertEqual("username@10.0.0.1", actual_host)
 
     def test_get_host(self):
         actual_host = ssh_utils._get_host("username", "10.0.0.1")
