@@ -121,13 +121,6 @@ helps['connectedk8s disable-features'] = """
 helps['connectedk8s troubleshoot'] = """
   type: command
   short-summary: Collects diagnose infomation and  gets logs on the connected cluster.
-  parameters:
-        - name: --storage-account
-          type: string
-          short-summary: Name or ID of the storage account to save the diagnostic information.
-        - name: --sas-token
-          type: string
-          short-summary: The SAS token with writable permission for the storage account.
   examples:
       - name: using storage account name and a shared access signature token with write permission
         text: az connectedk8s troubleshoot -g MyResourceGroup -n ConnectedCluster --storage-account MyStorageAccount --sas-token "MySasToken"

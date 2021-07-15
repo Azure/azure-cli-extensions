@@ -1484,7 +1484,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
             pods_count = 0
             for pod in pod_list.items:
                 pods_count += 1
-                tr_logger.warning("Pod {} is in {} state. Reason: {}. Container statuses: {}".format(pod.metadata.name, pod.status.phase, pod.status.reason, pod.status.container_statuses))
+                tr_logger.debug("Pod {} is in {} state. Reason: {}. Container statuses: {}".format(pod.metadata.name, pod.status.phase, pod.status.reason, pod.status.container_statuses))
 
             if pods_count == 0:
                 tr_logger.warning("No pods found in azure-arc namespace.")
