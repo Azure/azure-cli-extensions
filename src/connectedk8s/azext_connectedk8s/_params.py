@@ -70,7 +70,6 @@ def load_arguments(self, _):
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
 
     with self.argument_context('connectedk8s troubleshoot') as c:
-        c.argument('location', arg_type=get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group)
         c.argument('cluster_name', options_list=['--name', '-n'], id_part='name', help='The name of the connected cluster.')
         c.argument('kube_config', options_list=['--kube-config'], arg_group='Target Kubernetes Cluster', help='Path to the kube config file.')
         c.argument('kube_context', options_list=['--kube-context'], arg_group='Target Kubernetes Cluster', help='Kubconfig context from current machine.')

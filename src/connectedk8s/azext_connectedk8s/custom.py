@@ -1424,7 +1424,7 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
     return str.format(consts.Successfully_Disabled_Features, features, connected_cluster.name)
 
 
-def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=None, kube_context=None, location=None, storage_account=None,
+def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=None, kube_context=None, storage_account=None,
                  sas_token=None, output_file=os.path.join(os.path.expanduser('~'), '.azure', 'az_connectedk8s_troubleshoot_output.tar.gz')):
     colorama.init()
     print(f"{colorama.Fore.YELLOW}Troubleshooting the ConnectedCluster for possible issues...")
@@ -1433,20 +1433,14 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
     utils.setup_logger('connectedk8s_troubleshoot', troubleshoot_log_path)
     tr_logger = logging.getLogger('connectedk8s_troubleshoot')  # logger for troubleshooting, onto a log file
 
-    # Send cloud information to telemetry
-    send_cloud_telemetry(cmd)
+    cloud_name = cmd.cli_ctx.cloud.name.upper()
+    # Setting cloud name to format that is understood by golang SDK.
+    if cloud_name == consts.PublicCloud_OriginalName:
+        cloud_name = consts.Azure_PublicCloudName
+    elif cloud_name == consts.USGovCloud_OriginalName:
+        cloud_name = consts.Azure_USGovCloudName
+    tr_logger.info(str.format("Cloud Name: {}", cloud_name))
 
-    # setting kubeconfig
-    kube_config = set_kube_config(kube_config)
-
-    # Loading the kubeconfig file in kubernetes client configuration
-    load_kube_config(kube_config, kube_context)
-    configuration = kube_client.Configuration()
-    try:
-        validate_release_namespace(client, cluster_name, resource_group_name, configuration, kube_config, kube_context)
-    except Exception as e:
-        logger.error(str(e))
-        tr_logger.error(str(e))
     try:
         latest_connectedk8s_version = utils.get_latest_extension_version(tr_logger)
         local_connectedk8s_version = utils.get_existing_extension_version()
@@ -1470,6 +1464,17 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
             except AttributeError:
                 pass
             tr_logger.error("Couldn't check the existence of Connected cluster resource. Error: {}".format(str(ex)))
+
+        # setting kubeconfig
+        kube_config = set_kube_config(kube_config)
+        # Loading the kubeconfig file in kubernetes client configuration
+        load_kube_config(kube_config, kube_context)
+        configuration = kube_client.Configuration()
+        try:
+            validate_release_namespace(client, cluster_name, resource_group_name, configuration, kube_config, kube_context)
+        except Exception as e:
+            logger.error(str(e))
+            tr_logger.error(str(e))
 
         kapi_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
         try:
@@ -1498,10 +1503,8 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
                 current_time = datetime.now(timezone.utc)
                 if cert_expirn_time != datetime.min and cert_expirn_time < current_time:
                     logger.error("MSI certificate on the cluster has expired.")
-            else:
-                tr_logger.info("'managedIdentityCertificateExpirationTime' is still not populated in CC object")
         except Exception as ex:
-            tr_logger.error("Error occured while checking if the MSI certificate has expired: {}".format(str(ex)))
+            pass
 
         storage_account_name, sas_token, readonly_sas_token = utils.setup_validate_storage_account(cmd.cli_ctx, storage_account, sas_token, resource_group_name)
         if storage_account_name:  # When validated the storage account
