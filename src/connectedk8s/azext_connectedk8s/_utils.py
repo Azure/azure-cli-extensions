@@ -462,7 +462,9 @@ def check_provider_registrations(cli_ctx):
         rp_client = _resource_providers_client(cli_ctx)
         cc_registration_state = rp_client.get(consts.Connected_Cluster_Provider_Namespace).registration_state
         if cc_registration_state != "Registered":
-            logger.error("{} provider is not registered".format(consts.Connected_Cluster_Provider_Namespace))
+            telemetry.set_exception(exception="{} provider is not registered".format(consts.Connected_Cluster_Provider_Namespace), fault_type=consts.CC_Provider_Namespace_Not_Registered_Fault_Type,
+                                    summary="{} provider is not registered".format(consts.Connected_Cluster_Provider_Namespace))
+            raise ValidationError("{} provider is not registered. Please register it using 'az provider register -n 'Microsoft.Kubernetes' before running the connect command.".format(consts.Connected_Cluster_Provider_Namespace))
         kc_registration_state = rp_client.get(consts.Kubernetes_Configuration_Provider_Namespace).registration_state
         if kc_registration_state != "Registered":
             logger.warning("{} provider is not registered".format(consts.Kubernetes_Configuration_Provider_Namespace))

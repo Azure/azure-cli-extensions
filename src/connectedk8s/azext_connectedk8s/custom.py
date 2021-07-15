@@ -126,7 +126,9 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
 
     crb_permission = utils.can_create_clusterrolebindings(configuration)
     if not crb_permission:
-        logger.error("Kubectl credentials doesn't have permission to create clusterrolebindings on this kubernetes cluster.")
+        telemetry.set_exception(exception="Your credentials doesn't have permission to create clusterrolebindings on this kubernetes cluster.", fault_type=consts.Cant_Create_ClusterRoleBindings_Fault_Type,
+                                summary="Your credentials doesn't have permission to create clusterrolebindings on this kubernetes cluster.")
+        raise ValidationError("Your credentials doesn't have permission to create clusterrolebindings on this kubernetes cluster. Please check your permissions.")
 
     # Get kubernetes cluster info
     kubernetes_version = get_server_version(configuration)
@@ -1434,11 +1436,6 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
     tr_logger = logging.getLogger('connectedk8s_troubleshoot')  # logger for troubleshooting, onto a log file
 
     cloud_name = cmd.cli_ctx.cloud.name.upper()
-    # Setting cloud name to format that is understood by golang SDK.
-    if cloud_name == consts.PublicCloud_OriginalName:
-        cloud_name = consts.Azure_PublicCloudName
-    elif cloud_name == consts.USGovCloud_OriginalName:
-        cloud_name = consts.Azure_USGovCloudName
     tr_logger.info(str.format("Cloud Name: {}", cloud_name))
 
     try:
@@ -1465,11 +1462,16 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
                 pass
             tr_logger.error("Couldn't check the existence of Connected cluster resource. Error: {}".format(str(ex)))
 
-        # setting kubeconfig
-        kube_config = set_kube_config(kube_config)
-        # Loading the kubeconfig file in kubernetes client configuration
-        load_kube_config(kube_config, kube_context)
-        configuration = kube_client.Configuration()
+        try:
+            # setting kubeconfig
+            kube_config = set_kube_config(kube_config)
+            # Loading the kubeconfig file in kubernetes client configuration
+            load_kube_config(kube_config, kube_context)
+            configuration = kube_client.Configuration()
+        except Exception as ex:
+            logger.error("Couldn't load kubeconfig. Error: {}".format(str(ex)))
+            tr_logger.error("Couldn't load kubeconfig. Error: {}".format(str(ex)))
+
         try:
             validate_release_namespace(client, cluster_name, resource_group_name, configuration, kube_config, kube_context)
         except Exception as e:
