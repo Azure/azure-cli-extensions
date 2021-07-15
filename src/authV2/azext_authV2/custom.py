@@ -61,7 +61,7 @@ def update_auth_settings_v2_rest_call(cmd, resource_group_name, name, site_auth_
         resource_id,
         "config/authSettingsV2",
         "2020-12-01")
-    
+
     # TODO: Replace ARM call with SDK API after fixing swagger issues
     r = send_raw_request(cmd.cli_ctx, "PUT", request_url, None, None, json.dumps(final_json))
     return r.json()["properties"]
