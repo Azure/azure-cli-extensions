@@ -25,14 +25,6 @@ def load_command_table(self, _):
         g.custom_command('delete', 'dnc_controller_delete', supports_no_wait=True, confirmation=True)
         g.custom_wait_command('wait', 'dnc_controller_show')
 
-    from azext_dnc.generated._client_factory import cf_delegated_network
-    dnc_delegated_network = CliCommandType(
-        operations_tmpl='azext_dnc.vendored_sdks.dnc.operations._delegated_network_operations#DelegatedNetworkOperation'
-        's.{}',
-        client_factory=cf_delegated_network)
-    with self.command_group('dnc delegated-network', dnc_delegated_network, client_factory=cf_delegated_network) as g:
-        g.custom_command('list', 'dnc_delegated_network_list')
-
     from azext_dnc.generated._client_factory import cf_orchestrator_instance_service
     dnc_orchestrator_instance_service = CliCommandType(
         operations_tmpl='azext_dnc.vendored_sdks.dnc.operations._orchestrator_instance_service_operations#OrchestratorI'
@@ -40,7 +32,6 @@ def load_command_table(self, _):
         client_factory=cf_orchestrator_instance_service)
     with self.command_group('dnc orchestrator-instance-service', dnc_orchestrator_instance_service,
                             client_factory=cf_orchestrator_instance_service) as g:
-        g.custom_command('list', 'dnc_orchestrator_instance_service_list')
         g.custom_show_command('show', 'dnc_orchestrator_instance_service_show')
         g.custom_command('create', 'dnc_orchestrator_instance_service_create', supports_no_wait=True)
         g.custom_command('delete', 'dnc_orchestrator_instance_service_delete', supports_no_wait=True,
@@ -54,7 +45,6 @@ def load_command_table(self, _):
         client_factory=cf_delegated_subnet_service)
     with self.command_group('dnc delegated-subnet-service', dnc_delegated_subnet_service,
                             client_factory=cf_delegated_subnet_service) as g:
-        g.custom_command('list', 'dnc_delegated_subnet_service_list')
         g.custom_show_command('show', 'dnc_delegated_subnet_service_show')
         g.custom_command('create', 'dnc_delegated_subnet_service_create', supports_no_wait=True)
         g.custom_command('delete', 'dnc_delegated_subnet_service_delete', supports_no_wait=True, confirmation=True)
