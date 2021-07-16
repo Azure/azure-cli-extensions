@@ -1480,6 +1480,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
 
         kapi_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
         try:
+            utils.try_list_node_fix()
             api_response = kapi_instance.list_node()
             required_node_counts = 0
             for item in api_response.items:
@@ -1488,6 +1489,9 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
                 if node_arch == "amd64" and node_os == "linux":
                     tr_logger.info("Node {} has capacity: CPU: {}, and Memory: {} ".format(required_node_counts+1, item.status.capacity.get("cpu"), item.status.capacity.get("memory")))
                     required_node_counts += 1
+            if required_node_counts == 0:
+                tr_logger.error("There are no linux/amd64 nodes available on the kubernetes cluster.")
+                logger.error("This kubernetes cluster doesn't have any nodes with OS 'linux' and architecture 'amd64', for scheduling the Arc-Agents onto and connecting to Azure. Learn more at {}".format("https://aka.ms/ArcK8sSupportedOSArchitecture"))
         except Exception as ex:
             tr_logger.error("Couldn't list nodes on the k8s cluster. Error: {}".format(str(ex)))
 
