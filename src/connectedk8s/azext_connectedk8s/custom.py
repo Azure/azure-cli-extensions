@@ -1480,6 +1480,18 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
 
         kapi_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
         try:
+            api_response = kapi_instance.list_node()
+            required_node_counts = 0
+            for item in api_response.items:
+                node_arch = item.metadata.labels.get("kubernetes.io/arch")
+                node_os = item.metadata.labels.get("kubernetes.io/os")
+                if node_arch == "amd64" and node_os == "linux":
+                    tr_logger.info("Node {} has capacity: CPU: {}, and Memory: {} ".format(required_node_counts+1, item.status.capacity.get("cpu"), item.status.capacity.get("memory")))
+                    required_node_counts += 1
+        except Exception as ex:
+            tr_logger.error("Couldn't list nodes on the k8s cluster. Error: {}".format(str(ex)))
+
+        try:
             pod_list = kapi_instance.list_namespaced_pod(consts.Arc_Namespace)
             pods_count = 0
             for pod in pod_list.items:
