@@ -376,3 +376,48 @@ helps['vmware global-reach-connection delete'] = """
     type: command
     short-summary: Delete a global reach connection in a private cloud.
 """
+
+helps['vmware cloud-link'] = """
+    type: group
+    short-summary: Commands to manage cloud links in a private cloud.
+"""
+
+helps['vmware cloud-link create'] = """
+    type: command
+    short-summary: Create a cloud link in a private cloud.
+    examples:
+    - name: Create a cloud link.
+      text: az vmware cloud-link create --resource-group group1 --private-cloud cloud1 --name cloudLink1 --linked-cloud "/subscriptions/12341234-1234-1234-1234-123412341234/resourceGroups/mygroup/providers/Microsoft.AVS/privateClouds/cloud2"
+"""
+
+helps['vmware cloud-link update'] = """
+    type: command
+    short-summary: Create a cloud link in a private cloud.
+    examples:
+    - name: Update a cloud link.
+      text: az vmware cloud-link update --resource-group group1 --private-cloud cloud1 --name cloudLink1 --linked-cloud "/subscriptions/12341234-1234-1234-1234-123412341234/resourceGroups/mygroup/providers/Microsoft.AVS/privateClouds/cloud2"
+"""
+
+helps['vmware cloud-link list'] = """
+    type: command
+    short-summary: List cloud links in a private cloud.
+    examples:
+    - name: List cloud links.
+      text: az vmware cloud-link list --resource-group group1 --private-cloud cloud1
+"""
+
+helps['vmware cloud-link show'] = """
+    type: command
+    short-summary: Show details of a cloud link in a private cloud.
+    examples:
+    - name: Show a cloud link.
+      text: az vmware cloud-link show --resource-group group1 --private-cloud cloud1 --name cloudLink1
+"""
+
+helps['vmware cloud-link delete'] = """
+    type: command
+    short-summary: Delete a cloud link in a private cloud.
+    examples:
+    - name: Delete a cloud link.
+      text: az vmware cloud-link delete --resource-group group1 --private-cloud cloud1 --name cloudLink1
+"""

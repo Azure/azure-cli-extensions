@@ -107,3 +107,7 @@ def load_arguments(self, _):
     with self.argument_context('vmware global-reach-connection create') as c:
         c.argument('peer_express_route_circuit', help='Identifier of the ExpressRoute Circuit to peer with.')
         c.argument('authorization_key', help='Authorization key from the peer express route.')
+
+    with self.argument_context('vmware cloud-link') as c:
+        c.argument('name', options_list=['--name', '-n'], help='The name of the cloud link.')
+        c.argument('linked_cloud', help='Identifier of the other private cloud participating in the link.')
