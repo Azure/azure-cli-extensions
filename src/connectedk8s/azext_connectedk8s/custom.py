@@ -1487,7 +1487,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
                 node_arch = item.metadata.labels.get("kubernetes.io/arch")
                 node_os = item.metadata.labels.get("kubernetes.io/os")
                 if node_arch == "amd64" and node_os == "linux":
-                    tr_logger.info("Node {} has capacity: CPU: {}, and Memory: {} ".format(required_node_counts+1, item.status.capacity.get("cpu"), item.status.capacity.get("memory")))
+                    tr_logger.info("Node {} has capacity: CPU: {}, and Memory: {} ".format(required_node_counts + 1, item.status.capacity.get("cpu"), item.status.capacity.get("memory")))
                     required_node_counts += 1
             if required_node_counts == 0:
                 tr_logger.error("There are no linux/amd64 nodes available on the kubernetes cluster.")
