@@ -6,7 +6,7 @@ Release History
 0.6.0
 ++++++
 * [2021-07-19] Version intended to work with QDK version v0.18.2106.148911
-* Updated Control Plane and Data Plane clients.
+* Adding command to request job cancellation: `az quantum job cancel`.
 * Fixed a bug in which job submissions in Azure Quantum that emit standard output were reported as failed, even if the job succeeded.
 * Fixed issue with job submissions from a different directory.
 
