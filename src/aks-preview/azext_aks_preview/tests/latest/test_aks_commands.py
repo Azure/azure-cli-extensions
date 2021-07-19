@@ -5,6 +5,7 @@
 
 import unittest
 import os
+import tempfile
 
 from azure.cli.testsdk import (
     ResourceGroupPreparer, RoleBasedServicePrincipalPreparer, ScenarioTest, live_only)
@@ -44,8 +45,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 'type', 'Microsoft.ContainerService/locations/osOptions')
         ])
 
-    # without live only fails with needs .ssh fails (maybe generate-ssh-keys would fix) and maybe az login.
-    @live_only()
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_create_and_update_with_managed_aad(self, resource_group, resource_group_location):
@@ -57,7 +56,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         create_cmd = 'aks create --resource-group={resource_group} --name={name} ' \
                      '--vm-set-type VirtualMachineScaleSets -c 1 ' \
-                     '--enable-aad --aad-admin-group-object-ids 00000000-0000-0000-0000-000000000001 -o json'
+                     '--enable-aad --aad-admin-group-object-ids 00000000-0000-0000-0000-000000000001 ' \
+                     '--generate-ssh-keys -o json'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('aadProfile.managed', True),
@@ -77,8 +77,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                        '00000000-0000-0000-0000-000000000003')
         ])
 
-    # without live only fails with needs .ssh fails (maybe generate-ssh-keys would fix) and maybe az login.
-    @live_only()
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='canadacentral')
     def test_aks_create_aadv1_and_update_with_managed_aad(self, resource_group, resource_group_location):
@@ -94,7 +92,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                      '--aad-server-app-secret fake-secret ' \
                      '--aad-client-app-id 00000000-0000-0000-0000-000000000002 ' \
                      '--aad-tenant-id d5b55040-0c14-48cc-a028-91457fc190d9 ' \
-                     '-o json'
+                     '--generate-ssh-keys -o json'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('aadProfile.managed', None),
@@ -119,8 +117,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                        '00000000-0000-0000-0000-000000000004')
         ])
 
-    # without live only fails with needs .ssh fails (maybe generate-ssh-keys would fix) and maybe az login.
-    @live_only()
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='canadacentral')
     def test_aks_create_nonaad_and_update_with_managed_aad(self, resource_group, resource_group_location):
@@ -132,7 +128,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         create_cmd = 'aks create --resource-group={resource_group} --name={name} ' \
                      '--vm-set-type VirtualMachineScaleSets --node-count=1 ' \
-                     '-o json'
+                     '--generate-ssh-keys -o json'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('aadProfile', None)
@@ -151,8 +147,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                        '00000000-0000-0000-0000-000000000002')
         ])
 
-    # without live only fails with needs .ssh fails (maybe generate-ssh-keys would fix) and maybe az login.
-    @live_only()
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_create_and_update_with_managed_aad_enable_azure_rbac(self, resource_group, resource_group_location):
@@ -164,7 +158,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         create_cmd = 'aks create --resource-group={resource_group} --name={name} ' \
                      '--vm-set-type VirtualMachineScaleSets -c 1 ' \
-                     '--enable-aad --aad-admin-group-object-ids 00000000-0000-0000-0000-000000000001 -o json'
+                     '--enable-aad --aad-admin-group-object-ids 00000000-0000-0000-0000-000000000001 ' \
+                     '--generate-ssh-keys -o json'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('aadProfile.managed', True),
@@ -686,7 +681,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.is_empty(),
         ])
 
-    @live_only()
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_stop_and_start(self, resource_group, resource_group_location):
@@ -696,7 +690,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'name': aks_name
         })
 
-        create_cmd = 'aks create --resource-group={resource_group} --name={name}'
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --generate-ssh-keys'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
         ])
@@ -776,6 +770,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         })
 
         create_cmd = 'aks create --resource-group={resource_group} --name={name} ' \
+                     '--generate-ssh-keys ' \
                      '--nodepool-name {node_pool_name} ' \
                      '-c 1'
         self.cmd(create_cmd, checks=[
@@ -809,6 +804,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         })
 
         create_cmd = 'aks create --resource-group={resource_group} --name={name} ' \
+                     '--generate-ssh-keys ' \
                      '--nodepool-name {node_pool_name} ' \
                      '-c 1'
         self.cmd(create_cmd, checks=[
@@ -822,8 +818,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                  '--nodepool-name={node_pool_name}',
                  checks=[
                      # if rerun the recording, please update latestNodeImageVersion to the latest value
-                     self.check('latestNodeImageVersion',
-                                'AKSUbuntu-1804gen2containerd-2021.06.02'),
+                     self.check_pattern('latestNodeImageVersion',
+                                'AKSUbuntu-1804gen2containerd-2021.(0[1-9]|1[012]).(0[1-9]|[12]\d|3[01])'),
                      self.check(
                          'type', "Microsoft.ContainerService/managedClusters/agentPools/upgradeProfiles")
                  ])
@@ -1033,7 +1029,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(
             'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
 
-    @live_only()
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westeurope')
     def test_aks_update_to_msi_cluster(self, resource_group, resource_group_location):
@@ -1043,7 +1038,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'name': aks_name
         })
 
-        create_cmd = 'aks create --resource-group={resource_group} --name={name} --generate-ssh-keys '
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --generate-ssh-keys'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
         ])
@@ -1068,7 +1063,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'name': aks_name,
         })
 
-        create_cmd = 'aks create --resource-group={resource_group} --name={name} -a gitops -o json'
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} -a gitops ' \
+                     '--generate-ssh-keys -o json'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('addonProfiles.gitops.enabled', True),
@@ -1084,7 +1080,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'name': aks_name,
         })
 
-        create_cmd = 'aks create --resource-group={resource_group} --name={name} -o json'
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} ' \
+                     '--generate-ssh-keys -o json'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('addonProfiles.gitops', None),
@@ -1106,7 +1103,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'name': aks_name,
         })
 
-        create_cmd = 'aks create --resource-group={resource_group} --name={name} -a gitops -o json'
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} -a gitops ' \
+                     '--generate-ssh-keys -o json'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('addonProfiles.gitops.enabled', True),
@@ -1887,7 +1885,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'name': aks_name
         })
 
-        create_cmd = 'aks create --resource-group={resource_group} --name={name} --enable-managed-identity --disable-local-accounts'
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --generate-ssh-keys ' \
+                     '--enable-managed-identity --disable-local-accounts'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('disableLocalAccounts', True)
@@ -1903,7 +1902,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(
             'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
 
-    @live_only()
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_enable_utlra_ssd(self, resource_group, resource_group_location):
@@ -1913,10 +1911,65 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'name': aks_name
         })
 
-        create_cmd = 'aks create --resource-group={resource_group} --name={name} --node-vm-size Standard_D2s_v3 --zones 1 2 3 --enable-ultra-ssd'
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --generate-ssh-keys ' \
+                     '--node-vm-size Standard_D2s_v3 --zones 1 2 3 --enable-ultra-ssd'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded')
         ])
+
+        # delete
+        self.cmd(
+            'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_maintenanceconfiguration(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'mc_path': _get_test_data_file('maintenanceconfig.json')
+        })
+
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --generate-ssh-keys'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded')
+        ])
+
+        # maintenanceconfiguration add
+        maintenance_configuration_add_cmd = 'aks maintenanceconfiguration add -g {resource_group} --cluster-name {name} -n default --weekday Monday --start-hour 1'
+        self.cmd(
+            maintenance_configuration_add_cmd, checks=[
+                self.check('timeInWeek[0].day', 'Monday'),
+                self.check('timeInWeek[0].day', 'Monday'),
+                self.check('timeInWeek[0].hourSlots | contains(@, `1`)', True)]
+        )
+
+        # maintenanceconfiguration update (from config file)
+        maintenance_configuration_update_cmd = 'aks maintenanceconfiguration update -g {resource_group} --cluster-name {name} -n default --config-file {mc_path}'
+        self.cmd(
+            maintenance_configuration_update_cmd, checks=[
+                self.check("timeInWeek[*].day | contains(@, 'Tuesday') && contains(@, 'Wednesday')", True),
+                self.check("timeInWeek[*].hourSlots[*] | contains([0], `2`) && contains([1], `6`)", True),
+                self.check("notAllowedTime | length(@) == `2`", True)]
+        )
+
+        # maintenanceconfiguration show
+        maintenance_configuration_show_cmd = 'aks maintenanceconfiguration show -g {resource_group} --cluster-name {name} -n default'
+        self.cmd(
+            maintenance_configuration_show_cmd, checks=[
+                self.check("name == 'default'", True)]
+        )
+
+        # maintenanceconfiguration delete
+        maintenance_configuration_delete_cmd = 'aks maintenanceconfiguration delete -g {resource_group} --cluster-name {name} -n default'
+        self.cmd(
+            maintenance_configuration_delete_cmd, checks=[self.is_empty()])
+
+        # maintenanceconfiguration list
+        maintenance_configuration_list_cmd = 'aks maintenanceconfiguration list -g {resource_group} --cluster-name {name}'
+        self.cmd(
+            maintenance_configuration_list_cmd, checks=[self.is_empty()])
 
         # delete
         self.cmd(
