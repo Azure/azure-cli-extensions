@@ -23,7 +23,7 @@ stages:
   - job: K8sConfigurationTestSuite
     displayName: "Run the Test Suite"
     pool:
-      vmImage: 'ubuntu-16.04'
+      vmImage: 'ubuntu-latest'
     steps:
       - checkout: self
       - bash: |
@@ -136,7 +136,7 @@ stages:
 
   - job: BuildPublishExtension
     pool:
-      vmImage: 'ubuntu-16.04'
+      vmImage: 'ubuntu-latest'
     displayName: "Build and Publish the Extension Artifact"
     variables: 
       CLI_REPO_PATH: $(Agent.BuildDirectory)/s
@@ -177,7 +177,7 @@ stages:
   - job: CheckLicenseHeader
     displayName: "Check License"
     pool:
-      vmImage: 'ubuntu-16.04'
+      vmImage: 'ubuntu-latest'
     steps:
     - task: UsePythonVersion@0
       displayName: 'Use Python 3.6'
@@ -208,7 +208,7 @@ stages:
   - job: StaticAnalysis
     displayName: "Static Analysis"
     pool:
-      vmImage: 'ubuntu-16.04'
+      vmImage: 'ubuntu-latest'
     steps:
       - task: UsePythonVersion@0
         displayName: 'Use Python 3.6'
@@ -222,7 +222,7 @@ stages:
   - job: IndexVerify
     displayName: "Verify Extensions Index"
     pool:
-      vmImage: 'ubuntu-16.04'
+      vmImage: 'ubuntu-latest'
     steps:
     - task: UsePythonVersion@0
       displayName: 'Use Python 3.7'
@@ -239,7 +239,7 @@ stages:
   - job: SourceTests
     displayName: "Integration Tests, Build Tests"
     pool:
-      vmImage: 'ubuntu-16.04'
+      vmImage: 'ubuntu-latest'
     strategy:
       matrix:
         Python36:
@@ -262,7 +262,7 @@ stages:
   - job: LintModifiedExtensions
     displayName: "CLI Linter on Modified Extensions"
     pool:
-      vmImage: 'ubuntu-16.04'
+      vmImage: 'ubuntu-latest'
     steps:
       - task: UsePythonVersion@0
         displayName: 'Use Python 3.6'
