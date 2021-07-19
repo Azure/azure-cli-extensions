@@ -55,7 +55,7 @@ jobs:
       git clone -q --single-branch -b dev https://github.com/Azure/azure-cli.git ../azure-cli
 
       python -m pip install -U pip
-      pip install -q azdev==0.1.31
+      pip install -q azdev
 
       azdev setup -c ../azure-cli -r ./
 
@@ -140,7 +140,7 @@ jobs:
         git clone --single-branch -b dev https://github.com/Azure/azure-cli.git ../azure-cli
 
         python -m pip install -U pip
-        pip install azdev==0.1.31
+        pip install azdev
 
         azdev --version
 

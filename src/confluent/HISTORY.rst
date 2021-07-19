@@ -3,6 +3,11 @@
 Release History
 ===============
 
+0.3.0
++++++
+* `az confluent offer-detail show`: Remove the properties `isRIRequired` and `msrp` from the output.
+* `az confluent organization create`: Fix the issue that organization cannot be created with owner/contributor role through a SG assignment.
+
 0.2.0
 +++++
 * [BREAKING CHANGE] `az confluent organization create`: Remove `--user-detail`, the parameter is now auto-filled by the email address, first name and last name decoded from access token. 
