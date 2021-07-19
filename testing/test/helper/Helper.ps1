@@ -7,6 +7,17 @@ function Get-ExtensionData {
     return $output.items | Where-Object { $_.metadata.name -eq $extensionName }
 }
 
+function Has-ExtensionData {
+    param(
+        [string]$extensionName
+    )
+    $extensionData = Get-ExtensionData $extensionName
+    if ($extensionData) {
+        return $true
+    }
+    return $false
+}
+
 function Get-ExtensionStatus {
     param(
         [string]$extensionName

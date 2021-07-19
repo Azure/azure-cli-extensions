@@ -23,7 +23,7 @@ Describe 'Azure Defender Testing' {
         do 
         {
             # Only check the extension config, not the pod since this doesn't bring up pods
-            if (Get-ExtensionStatus $extensionName -eq $SUCCESS_MESSAGE) {
+            if (Has-ExtensionData $extensionName) {
                 break
             }
             Start-Sleep -Seconds 10
