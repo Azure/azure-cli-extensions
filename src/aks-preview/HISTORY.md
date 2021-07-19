@@ -2,6 +2,23 @@
 
 Release History
 ===============
+0.5.23
++++++
+* Fix issue that `maintenanceconfiguration add` subcommand cannot work
+
+0.5.22
++++++
+* Fix issue in dcr template
+
+0.5.21
++++++
+* Fix issue when disable monitoring on an AKS cluster would fail in regions where Data Collection Rules are not enabled
+
+0.5.20
++++++
+* Support enabling monitoring on AKS clusters with msi auth
+* Add `--enable-msi-auth-for-monitoring` option in aks create and aks enable-addons
+
 0.5.19
 +++++
 * Remove azure-defender from list of available addons to install via `az aks enable-addons` command
