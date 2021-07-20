@@ -4,11 +4,10 @@ Describe 'Source Control Configuration (SSH Configs) Testing' {
         . $PSScriptRoot/Helper.ps1
 
         $RSA_KEYPATH = "$TMP_DIRECTORY\rsa.private"
-        $DSA_KEYPATH = "$TMP_DIRECTORY\dsa.private"
         $ECDSA_KEYPATH = "$TMP_DIRECTORY\ecdsa.private"
         $ED25519_KEYPATH = "$TMP_DIRECTORY\ed25519.private"
 
-        $KEY_ARR = [System.Tuple]::Create("rsa", $RSA_KEYPATH), [System.Tuple]::Create("dsa", $DSA_KEYPATH), [System.Tuple]::Create("ecdsa", $ECDSA_KEYPATH), [System.Tuple]::Create("ed25519", $ED25519_KEYPATH)
+        $KEY_ARR = [System.Tuple]::Create("rsa", $RSA_KEYPATH), [System.Tuple]::Create("ecdsa", $ECDSA_KEYPATH), [System.Tuple]::Create("ed25519", $ED25519_KEYPATH)
         foreach ($keyTuple in $KEY_ARR) {
             # Automattically say yes to overwrite with ssh-keygen
             Write-Output "y" | ssh-keygen -t $keyTuple.Item1 -f $keyTuple.Item2 -P """"
@@ -18,15 +17,15 @@ Describe 'Source Control Configuration (SSH Configs) Testing' {
         $HTTP_GIT_URL = "https://github.com/Azure/arc-k8s-demo"
 
         $configDataRSA = [System.Tuple]::Create("rsa-config", $RSA_KEYPATH)
-        $configDataDSA = [System.Tuple]::Create("dsa-config", $DSA_KEYPATH)
         $configDataECDSA = [System.Tuple]::Create("ecdsa-config", $ECDSA_KEYPATH)
         $configDataED25519 = [System.Tuple]::Create("ed25519-config", $ED25519_KEYPATH)
 
-        $CONFIG_ARR = $configDataRSA, $configDataDSA, $configDataECDSA, $configDataED25519
+        $CONFIG_ARR = $configDataRSA, $configDataECDSA, $configDataED25519
     }
 
     It 'Creates a configuration with each type of ssh private key' {
         foreach($configData in $CONFIG_ARR) {
+            Write-Host "Creating a configuration of type $($configData.Item1)"
             az k8s-configuration create -c $ENVCONFIG.arcClusterName -g $ENVCONFIG.resourceGroup --cluster-type "connectedClusters" -u $SSH_GIT_URL -n $configData.Item1 --scope cluster --operator-namespace $configData.Item1 --ssh-private-key-file $configData.Item2
             $? | Should -BeTrue
         }
@@ -44,7 +43,7 @@ Describe 'Source Control Configuration (SSH Configs) Testing' {
             }
             Start-Sleep -Seconds 10
             $n += 1
-        } while ($n -le 30 -And $readyConfigs -ne 4)
+        } while ($n -le 30 -And $readyConfigs -ne 3)
         $n | Should -BeLessOrEqual 30
     }
 

@@ -8,9 +8,7 @@ import base64
 from azure.cli.core.azclierror import InvalidArgumentValueError, MutuallyExclusiveArgumentError
 from azext_k8s_configuration.custom import _get_protected_settings
 import azext_k8s_configuration._validators as validators
-from Crypto.PublicKey import RSA, ECC, DSA
-from paramiko.ed25519key import Ed25519Key
-
+from Crypto.PublicKey import DSA
 
 class TestValidateKeyTypes(unittest.TestCase):
     def test_bad_private_key(self):

@@ -5,6 +5,7 @@
 
 from azure.cli.core.azclierror import ResourceNotFoundError, CommandNotFoundError, \
     RequiredArgumentMissingError
+from azure.core.exceptions import HttpResponseError
 from knack.log import get_logger
 from azext_k8s_configuration._utils import _get_cluster_type, \
     _fix_compliance_state, _get_data_from_key_or_file, _to_base64
@@ -13,7 +14,6 @@ from azext_k8s_configuration._validators import _validate_known_hosts, _validate
 
 from azext_k8s_configuration.vendored_sdks.models import SourceControlConfiguration
 from azext_k8s_configuration.vendored_sdks.models import HelmOperatorProperties
-from azext_k8s_configuration.vendored_sdks.models import ErrorResponseException
 
 logger = get_logger(__name__)
 
@@ -28,7 +28,7 @@ def show_k8s_configuration(client, resource_group_name, cluster_name, name, clus
     try:
         config = client.get(resource_group_name, cluster_rp, cluster_type, cluster_name, name)
         return _fix_compliance_state(config)
-    except ErrorResponseException as ex:
+    except HttpResponseError as ex:
         # Customize the error message for resources not found
         if ex.response.status_code == 404:
             # If Cluster not found
@@ -200,7 +200,7 @@ def delete_k8s_configuration(client, resource_group_name, cluster_name, name, cl
 
     source_control_configuration_name = name
 
-    return client.delete(resource_group_name, cluster_rp, cluster_type, cluster_name, source_control_configuration_name)
+    return client.begin_delete(resource_group_name, cluster_rp, cluster_type, cluster_name, source_control_configuration_name)
 
 
 def _get_protected_settings(ssh_private_key, ssh_private_key_file, https_user, https_key):

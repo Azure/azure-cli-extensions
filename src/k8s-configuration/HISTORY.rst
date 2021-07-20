@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.1.0
+++++++++++++++++++
+* Update sourceControlConfiguration resource models to Track2
+
 1.0.1
 ++++++++++++++++++
 * Add provider registration check
