@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.6.0
+++++++++++++++++++
+* Update extension resource models to Track2
+
 0.5.1
 ++++++++++++++++++
 * Remove pyhelm dependency
