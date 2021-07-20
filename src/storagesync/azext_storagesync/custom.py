@@ -44,7 +44,8 @@ def create_storagesync_sync_group(client,
                                   resource_group_name,
                                   storage_sync_service_name,
                                   sync_group_name):
-    return client.create(resource_group_name=resource_group_name, storage_sync_service_name=storage_sync_service_name, sync_group_name=sync_group_name)
+    parameters = {'properties': None}
+    return client.create(resource_group_name=resource_group_name, storage_sync_service_name=storage_sync_service_name, sync_group_name=sync_group_name, parameters=parameters)
 
 
 def delete_storagesync_sync_group(client,
@@ -80,7 +81,7 @@ def create_storagesync_cloud_endpoint(client,
     body['storage_account_resource_id'] = storage_account_resource_id  # str
     body['azure_file_share_name'] = azure_file_share_name  # str
     body['storage_account_tenant_id'] = storage_account_tenant_id  # str
-    return sdk_no_wait(no_wait, client.create, resource_group_name=resource_group_name, storage_sync_service_name=storage_sync_service_name, sync_group_name=sync_group_name, cloud_endpoint_name=cloud_endpoint_name, parameters=body)
+    return sdk_no_wait(no_wait, client.begin_create, resource_group_name=resource_group_name, storage_sync_service_name=storage_sync_service_name, sync_group_name=sync_group_name, cloud_endpoint_name=cloud_endpoint_name, parameters=body)
 
 
 def delete_storagesync_cloud_endpoint(client,
@@ -89,7 +90,7 @@ def delete_storagesync_cloud_endpoint(client,
                                       sync_group_name,
                                       cloud_endpoint_name,
                                       no_wait=False):
-    return sdk_no_wait(no_wait, client.delete, resource_group_name=resource_group_name, storage_sync_service_name=storage_sync_service_name, sync_group_name=sync_group_name, cloud_endpoint_name=cloud_endpoint_name)
+    return sdk_no_wait(no_wait, client.begin_delete, resource_group_name=resource_group_name, storage_sync_service_name=storage_sync_service_name, sync_group_name=sync_group_name, cloud_endpoint_name=cloud_endpoint_name)
 
 
 def get_storagesync_cloud_endpoint(client,
@@ -128,7 +129,7 @@ def create_storagesync_server_endpoint(client,
     body['tier_files_older_than_days'] = tier_files_older_than_days  # int
     body['offline_data_transfer'] = offline_data_transfer  # str
     body['offline_data_transfer_share_name'] = offline_data_transfer_share_name  # str
-    return sdk_no_wait(no_wait, client.create, resource_group_name=resource_group_name, storage_sync_service_name=storage_sync_service_name, sync_group_name=sync_group_name, server_endpoint_name=server_endpoint_name, parameters=body)
+    return sdk_no_wait(no_wait, client.begin_create, resource_group_name=resource_group_name, storage_sync_service_name=storage_sync_service_name, sync_group_name=sync_group_name, server_endpoint_name=server_endpoint_name, parameters=body)
 
 
 def update_storagesync_server_endpoint(client,
@@ -153,7 +154,7 @@ def update_storagesync_server_endpoint(client,
         body['offline_data_transfer'] = offline_data_transfer  # str
     if offline_data_transfer_share_name is not None:
         body['offline_data_transfer_share_name'] = offline_data_transfer_share_name  # str
-    return sdk_no_wait(no_wait, client.update, resource_group_name=resource_group_name, storage_sync_service_name=storage_sync_service_name, sync_group_name=sync_group_name, server_endpoint_name=server_endpoint_name, parameters=body)
+    return sdk_no_wait(no_wait, client.begin_update, resource_group_name=resource_group_name, storage_sync_service_name=storage_sync_service_name, sync_group_name=sync_group_name, server_endpoint_name=server_endpoint_name, parameters=body)
 
 
 def delete_storagesync_server_endpoint(client,
@@ -162,7 +163,7 @@ def delete_storagesync_server_endpoint(client,
                                        sync_group_name,
                                        server_endpoint_name,
                                        no_wait=False):
-    return sdk_no_wait(no_wait, client.delete, resource_group_name=resource_group_name, storage_sync_service_name=storage_sync_service_name, sync_group_name=sync_group_name, server_endpoint_name=server_endpoint_name)
+    return sdk_no_wait(no_wait, client.begin_delete, resource_group_name=resource_group_name, storage_sync_service_name=storage_sync_service_name, sync_group_name=sync_group_name, server_endpoint_name=server_endpoint_name)
 
 
 def get_storagesync_server_endpoint(client,
@@ -185,7 +186,7 @@ def delete_storagesync_registered_server(client,
                                          storage_sync_service_name,
                                          server_id,
                                          no_wait=False):
-    return sdk_no_wait(no_wait, client.delete, resource_group_name=resource_group_name, storage_sync_service_name=storage_sync_service_name, server_id=server_id)
+    return sdk_no_wait(no_wait, client.begin_delete, resource_group_name=resource_group_name, storage_sync_service_name=storage_sync_service_name, server_id=server_id)
 
 
 def get_storagesync_registered_server(client,
