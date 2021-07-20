@@ -910,7 +910,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
 
-    @live_only() #without live only fails with need az login
+    @live_only() # without live only fails with need az login
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_upgrade_nodepool(self, resource_group, resource_group_location):
@@ -936,8 +936,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
                      '--dns-name-prefix={dns_name_prefix} --node-count=1 --generate-ssh-keys ' \
                      '--windows-admin-username={windows_admin_username} --windows-admin-password={windows_admin_password} ' \
-                     '--load-balancer-sku=standard --vm-set-type=virtualmachinescalesets --network-plugin=azure' \
-                     '-kubernetes-version {k8s_version}'
+                     '--load-balancer-sku=standard --vm-set-type=virtualmachinescalesets --network-plugin=azure ' \
+                     '-kubernetes-version={k8s_version}'
         self.cmd(create_cmd, checks=[
             self.exists('fqdn'),
             self.exists('nodeResourceGroup'),
