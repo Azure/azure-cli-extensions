@@ -11,12 +11,12 @@ import yaml   # pylint: disable=import-error
 from time import sleep
 from ._stream_utils import stream_logs
 from msrestazure.azure_exceptions import CloudError
-from azure.core.exceptions import ResourceNotFoundError
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
 from ._utils import _get_upload_local_file, _get_persistent_disk_size, get_portal_uri, get_azure_files_info
 from knack.util import CLIError
 from .vendored_sdks.appplatform.v2020_07_01 import models
 from .vendored_sdks.appplatform.v2020_11_01_preview import models as models_20201101preview
+from .vendored_sdks.appplatform.v2021_06_01_preview import models as models_20210601preview
 from .vendored_sdks.appplatform.v2020_07_01.models import _app_platform_management_client_enums as AppPlatformEnums
 from .vendored_sdks.appplatform.v2020_11_01_preview import (
     AppPlatformManagementClient as AppPlatformManagementClient_20201101preview
@@ -32,6 +32,7 @@ from ast import literal_eval
 from azure.cli.core.commands import cached_put
 from ._utils import _get_rg_location
 from ._utils import _get_sku_name
+from ._resource_quantity import validate_cpu, validate_memory
 from six.moves.urllib import parse
 from threading import Thread
 from threading import Timer
@@ -225,60 +226,66 @@ def app_create(cmd, client, resource_group, service, name,
                env=None,
                enable_persistent_storage=None,
                assign_identity=None):
+    cpu = validate_cpu(cpu)
+    memory = validate_memory(memory)
     apps = _get_all_apps(client, resource_group, service)
     if name in apps:
         raise CLIError("App '{}' already exists.".format(name))
     logger.warning("[1/4] Creating app with name '{}'".format(name))
-    properties = models.AppResourceProperties()
-    properties.temporary_disk = models.TemporaryDisk(
+    properties = models_20210601preview.AppResourceProperties()
+    properties.temporary_disk = models_20210601preview.TemporaryDisk(
         size_in_gb=5, mount_path="/tmp")
     resource = client.services.get(resource_group, service)
 
     _validate_instance_count(resource.sku.tier, instance_count)
 
-    app_resource = models.AppResource()
+    app_resource = models_20210601preview.AppResource()
     app_resource.properties = properties
     app_resource.location = resource.location
     if assign_identity is True:
-        app_resource.identity = models.ManagedIdentityProperties(type="systemassigned")
+        app_resource.identity = models_20210601preview.ManagedIdentityProperties(type="systemassigned")
 
     poller = client.apps.create_or_update(
         resource_group, service, name, app_resource)
     while poller.done() is False:
         sleep(APP_CREATE_OR_UPDATE_SLEEP_INTERVAL)
 
-    deployment_settings = models.DeploymentSettings(
-        cpu=cpu,
-        memory_in_gb=memory,
+    resource_requests = models_20210601preview.ResourceRequests(cpu=cpu, memory=memory)
+
+    deployment_settings = models_20210601preview.DeploymentSettings(
+        resource_requests=resource_requests,
         environment_variables=env,
         jvm_options=jvm_options,
         net_core_main_entry_path=None,
         runtime_version=runtime_version)
+    deployment_settings.cpu = None
+    deployment_settings.memory_in_gb = None
 
     file_type = "NetCoreZip" if runtime_version == AppPlatformEnums.RuntimeVersion.net_core_31 else "Jar"
 
-    user_source_info = models.UserSourceInfo(
+    user_source_info = models_20210601preview.UserSourceInfo(
         relative_path='<default>', type=file_type)
-    properties = models.DeploymentResourceProperties(
+    properties = models_20210601preview.DeploymentResourceProperties(
         deployment_settings=deployment_settings,
         source=user_source_info)
 
     # create default deployment
     logger.warning(
         "[2/4] Creating default deployment with name '{}'".format(DEFAULT_DEPLOYMENT_NAME))
+    sku = models_20210601preview.Sku(name="S0", tier="STANDARD", capacity=instance_count)
     poller = client.deployments.create_or_update(resource_group, service, name, DEFAULT_DEPLOYMENT_NAME,
                                                  properties=properties,
-                                                 sku=models.Sku(name="S0", tier="STANDARD", capacity=instance_count))
+                                                 sku=sku)
 
     logger.warning("[3/4] Setting default deployment to production")
-    properties = models.AppResourceProperties(
+    properties = models_20210601preview.AppResourceProperties(
         active_deployment_name=DEFAULT_DEPLOYMENT_NAME, public=assign_endpoint)
 
     if enable_persistent_storage:
-        properties.persistent_disk = models.PersistentDisk(
+        properties.persistent_disk = models_20210601preview.PersistentDisk(
             size_in_gb=_get_persistent_disk_size(resource.sku.tier), mount_path="/persistent")
     else:
-        properties.persistent_disk = models.PersistentDisk(
+        properties.persistent_disk = models_20210601preview.PersistentDisk(
             size_in_gb=0, mount_path="/persistent")
 
     app_resource.properties = properties
@@ -318,15 +325,15 @@ def app_update(cmd, client, resource_group, service, name,
     resource = client.services.get(resource_group, service)
     location = resource.location
 
-    properties = models_20201101preview.AppResourceProperties(public=assign_endpoint, https_only=https_only,
+    properties = models_20210601preview.AppResourceProperties(public=assign_endpoint, https_only=https_only,
                                                               enable_end_to_end_tls=enable_end_to_end_tls)
     if enable_persistent_storage is True:
-        properties.persistent_disk = models.PersistentDisk(
+        properties.persistent_disk = models_20210601preview.PersistentDisk(
             size_in_gb=_get_persistent_disk_size(resource.sku.tier), mount_path="/persistent")
     if enable_persistent_storage is False:
-        properties.persistent_disk = models.PersistentDisk(size_in_gb=0)
+        properties.persistent_disk = models_20210601preview.PersistentDisk(size_in_gb=0)
 
-    app_resource = models_20201101preview.AppResource()
+    app_resource = models_20210601preview.AppResource()
     app_resource.properties = properties
     app_resource.location = location
 
@@ -348,14 +355,14 @@ def app_update(cmd, client, resource_group, service, name,
             return app_updated
 
     logger.warning("[2/2] Updating deployment '{}'".format(deployment))
-    deployment_settings = models.DeploymentSettings(
-        cpu=None,
-        memory_in_gb=None,
+    deployment_settings = models_20210601preview.DeploymentSettings(
         environment_variables=env,
         jvm_options=jvm_options,
         net_core_main_entry_path=main_entry,
         runtime_version=runtime_version,)
-    properties = models.DeploymentResourceProperties(
+    deployment_settings.cpu = None
+    deployment_settings.memory_in_gb = None
+    properties = models_20210601preview.DeploymentResourceProperties(
         deployment_settings=deployment_settings)
     poller = client.deployments.update(
         resource_group, service, name, deployment, properties)
@@ -503,6 +510,8 @@ def app_scale(cmd, client, resource_group, service, name,
               memory=None,
               instance_count=None,
               no_wait=False):
+    cpu = validate_cpu(cpu)
+    memory = validate_memory(memory)
     if deployment is None:
         deployment = client.apps.get(
             resource_group, service, name).properties.active_deployment_name
@@ -513,12 +522,14 @@ def app_scale(cmd, client, resource_group, service, name,
     resource = client.services.get(resource_group, service)
     _validate_instance_count(resource.sku.tier, instance_count)
 
-    deployment_settings = models.DeploymentSettings(
-        cpu=cpu,
-        memory_in_gb=memory)
-    properties = models.DeploymentResourceProperties(
+    resource_requests = models_20210601preview.ResourceRequests(cpu=cpu, memory=memory)
+
+    deployment_settings = models_20210601preview.DeploymentSettings(resource_requests=resource_requests)
+    deployment_settings.cpu = None
+    deployment_settings.memory_in_gb = None
+    properties = models_20210601preview.DeploymentResourceProperties(
         deployment_settings=deployment_settings)
-    sku = models.Sku(name="S0", tier="STANDARD", capacity=instance_count)
+    sku = models_20210601preview.Sku(name="S0", tier="STANDARD", capacity=instance_count)
     return sdk_no_wait(no_wait, client.deployments.update,
                        resource_group, service, name, deployment, properties=properties, sku=sku)
 
@@ -594,9 +605,9 @@ def app_tail_log(cmd, client, resource_group, service, name,
 
 def app_identity_assign(cmd, client, resource_group, service, name, role=None, scope=None):
     _check_active_deployment_exist(client, resource_group, service, name)
-    app_resource = models.AppResource()
-    identity = models.ManagedIdentityProperties(type="systemassigned")
-    properties = models.AppResourceProperties()
+    app_resource = models_20210601preview.AppResource()
+    identity = models_20210601preview.ManagedIdentityProperties(type="systemassigned")
+    properties = models_20210601preview.AppResourceProperties()
     resource = client.services.get(resource_group, service)
     location = resource.location
 
@@ -638,9 +649,9 @@ def app_identity_assign(cmd, client, resource_group, service, name, role=None, s
 
 
 def app_identity_remove(cmd, client, resource_group, service, name):
-    app_resource = models.AppResource()
-    identity = models.ManagedIdentityProperties(type="none")
-    properties = models.AppResourceProperties()
+    app_resource = models_20210601preview.AppResource()
+    identity = models_20210601preview.ManagedIdentityProperties(type="none")
+    properties = models_20210601preview.AppResourceProperties()
     resource = client.services.get(resource_group, service)
     location = resource.location
 
@@ -666,13 +677,13 @@ def app_set_deployment(cmd, client, resource_group, service, name, deployment):
     if deployment not in deployments:
         raise CLIError("Deployment '" + deployment +
                        "' not found, please use 'az spring-cloud app deployment create' to create the new deployment")
-    properties = models.AppResourceProperties(
+    properties = models_20210601preview.AppResourceProperties(
         active_deployment_name=deployment)
 
     resource = client.services.get(resource_group, service)
     location = resource.location
 
-    app_resource = models.AppResource()
+    app_resource = models_20210601preview.AppResource()
     app_resource.properties = properties
     app_resource.location = location
 
@@ -686,12 +697,12 @@ def app_unset_deployment(cmd, client, resource_group, service, name):
         raise CLIError(NO_PRODUCTION_DEPLOYMENT_SET_ERROR)
 
     # It's designed to use empty string for active_deployment_name to unset active deployment
-    properties = models.AppResourceProperties(active_deployment_name="")
+    properties = models_20210601preview.AppResourceProperties(active_deployment_name="")
 
     resource = client.services.get(resource_group, service)
     location = resource.location
 
-    app_resource = models.AppResource()
+    app_resource = models_20210601preview.AppResource()
     app_resource.properties = properties
     app_resource.location = location
 
@@ -711,6 +722,8 @@ def deployment_create(cmd, client, resource_group, service, app, name,
                       instance_count=None,
                       env=None,
                       no_wait=False):
+    cpu = validate_cpu(cpu)
+    memory = validate_memory(memory)
     logger.warning(LOG_RUNNING_PROMPT)
     deployments = _get_all_deployments(client, resource_group, service, app)
     if name in deployments:
@@ -729,14 +742,14 @@ def deployment_create(cmd, client, resource_group, service, app, name,
             active_deployment = client.deployments.get(
                 resource_group, service, app, active_deployment_name)
             if active_deployment:
-                cpu = cpu or active_deployment.properties.deployment_settings.cpu
-                memory = memory or active_deployment.properties.deployment_settings.memory_in_gb
+                cpu = cpu or active_deployment.properties.deployment_settings.resource_requests.cpu
+                memory = memory or active_deployment.properties.deployment_settings.resource_requests.memory
                 instance_count = instance_count or active_deployment.sku.capacity
                 jvm_options = jvm_options or active_deployment.properties.deployment_settings.jvm_options
                 env = env or active_deployment.properties.deployment_settings.environment_variables
     else:
-        cpu = cpu or 1
-        memory = memory or 1
+        cpu = cpu or "1"
+        memory = memory or "1Gi"
         instance_count = instance_count or 1
 
     file_type, file_path = _get_upload_local_file(runtime_version, artifact_path)
@@ -1285,20 +1298,25 @@ def _app_deploy(client, resource_group, service, app, name, version, path, runti
         raise CLIError(
             "Failed to get a SAS URL to upload context. Error: {}".format(e.message))
 
-    deployment_settings = models.DeploymentSettings(
-        cpu=cpu,
-        memory_in_gb=memory,
+    resource_requests = None
+    if cpu is not None or memory is not None:
+        resource_requests = models_20210601preview.ResourceRequests(cpu=cpu, memory=memory)
+
+    deployment_settings = models_20210601preview.DeploymentSettings(
+        resource_requests=resource_requests,
         environment_variables=env,
         jvm_options=jvm_options,
         net_core_main_entry_path=main_entry,
         runtime_version=runtime_version)
-    sku = models.Sku(name="S0", tier="STANDARD", capacity=instance_count)
-    user_source_info = models.UserSourceInfo(
+    deployment_settings.cpu = None
+    deployment_settings.memory_in_gb = None
+    sku = models_20210601preview.Sku(name="S0", tier="STANDARD", capacity=instance_count)
+    user_source_info = models_20210601preview.UserSourceInfo(
         version=version,
         relative_path=relative_path,
         type=file_type,
         artifact_selector=target_module)
-    properties = models.DeploymentResourceProperties(
+    properties = models_20210601preview.DeploymentResourceProperties(
         deployment_settings=deployment_settings,
         source=user_source_info)
 
@@ -1561,26 +1579,12 @@ def domain_unbind(cmd, client, resource_group, service, app, domain_name):
     return client.custom_domains.delete(resource_group, service, app, domain_name)
 
 
-def get_connection_string_or_instrumentation_key(appinsights):
-    credential = None
-    if appinsights:
-        if hasattr(appinsights, "connection_string") and appinsights.connection_string:
-            credential = appinsights.connection_string
-        elif hasattr(appinsights, "instrumentation_key") and appinsights.instrumentation_key:
-            credential = appinsights.instrumentation_key
-    return credential
-
-
-def get_app_insights_credential(cli_ctx, resource_group, name):
-    """
-    Application Insights is migrating from instrumentation_key to connection_key.
-    Get connection_string first, if not exist, fall back to instrumentation_key.
-    """
+def get_app_insights_key(cli_ctx, resource_group, name):
     appinsights_client = get_mgmt_service_client(cli_ctx, ApplicationInsightsManagementClient)
     appinsights = appinsights_client.components.get(resource_group, name)
-    if appinsights is None or (appinsights.connection_string is None and appinsights.instrumentation_key is None):
-        raise ResourceNotFoundError("App Insights {} under resource group {} was not found.".format(name, resource_group))
-    return get_connection_string_or_instrumentation_key(appinsights)
+    if appinsights is None or appinsights.instrumentation_key is None:
+        raise CLIError("App Insights {} under resource group {} was not found.".format(name, resource_group))
+    return appinsights.instrumentation_key
 
 
 def update_tracing_config(cmd, resource_group, service_name, location, app_insights_key,
@@ -1593,12 +1597,12 @@ def update_tracing_config(cmd, resource_group, service_name, location, app_insig
     elif app_insights:
         if is_valid_resource_id(app_insights):
             resource_id_dict = parse_resource_id(app_insights)
-            instrumentation_key = get_app_insights_credential(cmd.cli_ctx, resource_id_dict['resource_group'],
-                                                              resource_id_dict['resource_name'])
+            instrumentation_key = get_app_insights_key(cmd.cli_ctx, resource_id_dict['resource_group'],
+                                                       resource_id_dict['resource_name'])
             trace_properties = models.MonitoringSettingProperties(
                 trace_enabled=True, app_insights_instrumentation_key=instrumentation_key)
         else:
-            instrumentation_key = get_app_insights_credential(cmd.cli_ctx, resource_group, app_insights)
+            instrumentation_key = get_app_insights_key(cmd.cli_ctx, resource_group, app_insights)
             trace_properties = models.MonitoringSettingProperties(
                 trace_enabled=True, app_insights_instrumentation_key=instrumentation_key)
     elif disable_app_insights is not True:
@@ -1629,12 +1633,12 @@ def update_java_agent_config(cmd, resource_group, service_name, location, app_in
     elif app_insights:
         if is_valid_resource_id(app_insights):
             resource_id_dict = parse_resource_id(app_insights)
-            instrumentation_key = get_app_insights_credential(cmd.cli_ctx, resource_id_dict['resource_group'],
-                                                              resource_id_dict['resource_name'])
+            instrumentation_key = get_app_insights_key(cmd.cli_ctx, resource_id_dict['resource_group'],
+                                                       resource_id_dict['resource_name'])
             trace_properties = models_20201101preview.MonitoringSettingProperties(
                 trace_enabled=True, app_insights_instrumentation_key=instrumentation_key)
         else:
-            instrumentation_key = get_app_insights_credential(cmd.cli_ctx, resource_group, app_insights)
+            instrumentation_key = get_app_insights_key(cmd.cli_ctx, resource_group, app_insights)
             trace_properties = models_20201101preview.MonitoringSettingProperties(
                 trace_enabled=True, app_insights_instrumentation_key=instrumentation_key)
     elif enable_java_agent is True:
@@ -1673,7 +1677,7 @@ def try_create_application_insights(cmd, resource_group, name, location):
         }
     }
     appinsights = app_insights_client.components.create_or_update(ai_resource_group_name, ai_name, ai_properties)
-    if appinsights is None or (appinsights.connection_string is None and appinsights.instrumentation_key is None):
+    if appinsights is None or appinsights.instrumentation_key is None:
         logger.warning(creation_failed_warn)
         return None
 
@@ -1682,7 +1686,8 @@ def try_create_application_insights(cmd, resource_group, name, location):
     logger.warning('Application Insights \"%s\" was created for this Azure Spring Cloud. '
                    'You can visit %s/#resource%s/overview to view your '
                    'Application Insights component', appinsights.name, portal_url, appinsights.id)
-    return get_connection_string_or_instrumentation_key(appinsights)
+
+    return appinsights.instrumentation_key
 
 
 def app_insights_update(cmd, client, resource_group, name, app_insights_key=None, app_insights=None, sampling_rate=None, disable=None, no_wait=False):
@@ -1697,10 +1702,10 @@ def app_insights_update(cmd, client, resource_group, name, app_insights_key=None
         elif app_insights:
             if is_valid_resource_id(app_insights):
                 resource_id_dict = parse_resource_id(app_insights)
-                instrumentation_key = get_app_insights_credential(cmd.cli_ctx, resource_id_dict['resource_group'],
-                                                                  resource_id_dict['resource_name'])
+                instrumentation_key = get_app_insights_key(cmd.cli_ctx, resource_id_dict['resource_group'],
+                                                           resource_id_dict['resource_name'])
             else:
-                instrumentation_key = get_app_insights_credential(cmd.cli_ctx, resource_group, app_insights)
+                instrumentation_key = get_app_insights_key(cmd.cli_ctx, resource_group, app_insights)
         else:
             instrumentation_key = trace_properties.app_insights_instrumentation_key
         if sampling_rate:

@@ -1238,10 +1238,15 @@ class NetworkProfile(Model):
      instance.
     :vartype outbound_ips:
      ~azure.mgmt.appplatform.v2019_05_01_preview.models.NetworkProfileOutboundIPs
+    :ivar required_traffics: Required inbound or outbound traffics for Azure
+     Spring Cloud instance.
+    :vartype required_traffics:
+     list[~azure.mgmt.appplatform.v2019_05_01_preview.models.RequiredTraffic]
     """
 
     _validation = {
         'outbound_ips': {'readonly': True},
+        'required_traffics': {'readonly': True},
     }
 
     _attribute_map = {
@@ -1251,6 +1256,7 @@ class NetworkProfile(Model):
         'service_runtime_network_resource_group': {'key': 'serviceRuntimeNetworkResourceGroup', 'type': 'str'},
         'app_network_resource_group': {'key': 'appNetworkResourceGroup', 'type': 'str'},
         'outbound_ips': {'key': 'outboundIPs', 'type': 'NetworkProfileOutboundIPs'},
+        'required_traffics': {'key': 'requiredTraffics', 'type': '[RequiredTraffic]'},
     }
 
     def __init__(self, *, service_runtime_subnet_id: str=None, app_subnet_id: str=None, service_cidr: str=None, service_runtime_network_resource_group: str=None, app_network_resource_group: str=None, **kwargs) -> None:
@@ -1261,6 +1267,7 @@ class NetworkProfile(Model):
         self.service_runtime_network_resource_group = service_runtime_network_resource_group
         self.app_network_resource_group = app_network_resource_group
         self.outbound_ips = None
+        self.required_traffics = None
 
 
 class NetworkProfileOutboundIPs(Model):
@@ -1419,6 +1426,51 @@ class RegenerateTestKeyRequestPayload(Model):
     def __init__(self, *, key_type, **kwargs) -> None:
         super(RegenerateTestKeyRequestPayload, self).__init__(**kwargs)
         self.key_type = key_type
+
+
+class RequiredTraffic(Model):
+    """Required inbound or outbound traffic for Azure Spring Cloud instance.
+
+    Variables are only populated by the server, and will be ignored when
+    sending a request.
+
+    :ivar protocol: The protocol of required traffic
+    :vartype protocol: str
+    :ivar port: The port of required traffic
+    :vartype port: int
+    :ivar ips: The ip list of required traffic
+    :vartype ips: list[str]
+    :ivar fqdns: The FQDN list of required traffic
+    :vartype fqdns: list[str]
+    :ivar direction: The direction of required traffic. Possible values
+     include: 'Inbound', 'Outbound'
+    :vartype direction: str or
+     ~azure.mgmt.appplatform.v2019_05_01_preview.models.TrafficDirection
+    """
+
+    _validation = {
+        'protocol': {'readonly': True},
+        'port': {'readonly': True},
+        'ips': {'readonly': True},
+        'fqdns': {'readonly': True},
+        'direction': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'protocol': {'key': 'protocol', 'type': 'str'},
+        'port': {'key': 'port', 'type': 'int'},
+        'ips': {'key': 'ips', 'type': '[str]'},
+        'fqdns': {'key': 'fqdns', 'type': '[str]'},
+        'direction': {'key': 'direction', 'type': 'str'},
+    }
+
+    def __init__(self, **kwargs) -> None:
+        super(RequiredTraffic, self).__init__(**kwargs)
+        self.protocol = None
+        self.port = None
+        self.ips = None
+        self.fqdns = None
+        self.direction = None
 
 
 class ResourceSku(Model):
@@ -1724,9 +1776,9 @@ class ServiceSpecification(Model):
 class Sku(Model):
     """Sku of Azure Spring Cloud.
 
-    :param name: Name of the Sku
+    :param name: Name of the Sku. Default value: "S0" .
     :type name: str
-    :param tier: Tier of the Sku
+    :param tier: Tier of the Sku. Default value: "Standard" .
     :type tier: str
     :param capacity: Current capacity of the target resource
     :type capacity: int
@@ -1738,7 +1790,7 @@ class Sku(Model):
         'capacity': {'key': 'capacity', 'type': 'int'},
     }
 
-    def __init__(self, *, name: str=None, tier: str=None, capacity: int=None, **kwargs) -> None:
+    def __init__(self, *, name: str="S0", tier: str="Standard", capacity: int=None, **kwargs) -> None:
         super(Sku, self).__init__(**kwargs)
         self.name = name
         self.tier = tier

@@ -7,6 +7,11 @@
 
 from knack.help_files import helps
 
+helps['automation'] = """
+    type: group
+    short-summary: Manage Automation
+"""
+
 helps['automation account'] = """
     type: group
     short-summary: Automation Account
