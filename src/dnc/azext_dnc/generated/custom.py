@@ -69,7 +69,7 @@ def dnc_orchestrator_instance_service_create(client,
     parameters['location'] = location
     parameters['kind'] = "Kubernetes"
     parameters['tags'] = tags
-    parameters['identity'] = {}d
+    parameters['identity'] = {}
     parameters['identity']['type'] = type_
     parameters['properties'] = {}
     parameters['properties']['orchestrator_app_id'] = orchestrator_app_id
