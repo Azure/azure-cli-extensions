@@ -14,7 +14,7 @@ from knack.help_files import helps
 
 helps['communication'] = """
     type: group
-    short-summary: Manage service with communication
+    short-summary: Manage communication service with communication
 """
 
 helps['communication list'] = """
@@ -110,18 +110,4 @@ helps['communication wait'] = """
       - name: Pause executing next line of CLI script until the communication is successfully deleted.
         text: |-
                az communication wait --name "MyCommunicationResource" --resource-group "MyResourceGroup" --deleted
-"""
-
-helps['communication'] = """
-    type: group
-    short-summary: Manage status with communication
-"""
-
-helps['communication show-status'] = """
-    type: command
-    short-summary: "Gets the current status of an async operation."
-    examples:
-      - name: Get OperationStatus
-        text: |-
-               az communication show-status --operation-id "db5f291f-284d-46e9-9152-d5c83f7c14b8" --location "westus2"
 """
