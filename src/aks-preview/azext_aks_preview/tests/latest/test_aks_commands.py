@@ -39,7 +39,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         create_version = next(x for x in versions if not x.startswith(prefix))
         return create_version, upgrade_version
 
-    @live_only()  # without live only fails with need az login
+    @live_only()  # live only is required for test environment setup like `az login`
     @AllowLargeResponse()
     def test_get_version(self):
         versions_cmd = 'aks get-versions -l westus2'
@@ -49,7 +49,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('orchestrators[0].orchestratorType', 'Kubernetes')
         ])
 
-    @live_only()  # without live only fails with need az login
+    @live_only()  # live only is required for test environment setup like `az login`
     @AllowLargeResponse()
     def test_get_os_options(self):
         osOptions_cmd = 'aks get-os-options -l westus2'
@@ -909,8 +909,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('provisioningState', 'UpgradingNodeImageVersion')
         ])
 
-
-    @live_only() #without live only fails with need az login
+    @live_only() # live only is required for test environment setup like `az login`
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_upgrade_nodepool(self, resource_group, resource_group_location):
@@ -936,8 +935,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
                      '--dns-name-prefix={dns_name_prefix} --node-count=1 --generate-ssh-keys ' \
                      '--windows-admin-username={windows_admin_username} --windows-admin-password={windows_admin_password} ' \
-                     '--load-balancer-sku=standard --vm-set-type=virtualmachinescalesets --network-plugin=azure' \
-                     '-kubernetes-version {k8s_version}'
+                     '--load-balancer-sku=standard --vm-set-type=virtualmachinescalesets --network-plugin=azure ' \
+                     '--kubernetes-version={k8s_version}'
         self.cmd(create_cmd, checks=[
             self.exists('fqdn'),
             self.exists('nodeResourceGroup'),
@@ -951,14 +950,14 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
         # upgrade cluster control plane only
-        self.cmd('aks upgrade --resource-group={resource_group} --name={name} --kubernetes-version={upgrade_k8s_version}', check=[
+        self.cmd('aks upgrade --resource-group={resource_group} --name={name} --kubernetes-version={upgrade_k8s_version} --yes', checks=[
             self.check('provisioningState', 'Succeeded')
         ])
 
         # upgrade Windows nodepool
         self.cmd('aks nodepool upgrade --resource-group={resource_group} --cluster-name={name} ' \
                  '--name={nodepool2_name} --kubernetes-version={upgrade_k8s_version} ' \
-                 '--aks-custom-headers WindowsContainerRuntime=containerd', check=[
+                 '--aks-custom-headers WindowsContainerRuntime=containerd', checks=[
             self.check('provisioningState', 'Succeeded')
         ])
 
@@ -1123,7 +1122,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(
             'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
 
-    @live_only() # without live only fails with need az login
+    @live_only() # live only is required for test environment setup like `az login`
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus')
     def test_aks_create_with_gitops_addon(self, resource_group, resource_group_location):
@@ -1140,7 +1139,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('addonProfiles.gitops.enabled', True),
         ])
 
-    @live_only() # without live only fails with need az login
+    @live_only() # live only is required for test environment setup like `az login`
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus')
     def test_aks_enable_addon_with_gitops(self, resource_group, resource_group_location):
@@ -1163,7 +1162,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('addonProfiles.gitops.enabled', True),
         ])
 
-    @live_only() # without live only fails with need az login
+    @live_only() # live only is required for test environment setup like `az login`
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus')
     def test_aks_disable_addon_gitops(self, resource_group, resource_group_location):
