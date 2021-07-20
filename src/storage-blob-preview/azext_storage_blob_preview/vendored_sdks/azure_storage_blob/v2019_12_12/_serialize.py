@@ -13,8 +13,7 @@ from azure.core import MatchConditions
 
 from ._models import (
     ContainerEncryptionScope,
-    DelimitedJsonDialect
-)
+    DelimitedJsonDialect)
 from ._generated.models import (
     ModifiedAccessConditions,
     SourceModifiedAccessConditions,
@@ -24,9 +23,10 @@ from ._generated.models import (
     QuerySerialization,
     DelimitedTextConfiguration,
     JsonTextConfiguration,
+    ArrowConfiguration,
     QueryFormatType,
     BlobTag,
-    BlobTags
+    BlobTags, LeaseAccessConditions
 )
 
 
@@ -35,6 +35,7 @@ _SUPPORTED_API_VERSIONS = [
     '2019-07-07',
     '2019-10-10',
     '2019-12-12',
+    '2020-02-10',
 ]
 
 
@@ -61,6 +62,15 @@ def _get_match_headers(kwargs, match_param, etag_param):
     else:
         raise TypeError("Invalid match condition: {}".format(match_condition))
     return if_match, if_none_match
+
+
+def get_access_conditions(lease):
+    # type: (Optional[Union[BlobLeaseClient, str]]) -> Union[LeaseAccessConditions, None]
+    try:
+        lease_id = lease.id # type: ignore
+    except AttributeError:
+        lease_id = lease # type: ignore
+    return LeaseAccessConditions(lease_id=lease_id) if lease_id else None
 
 
 def get_modify_conditions(kwargs):
@@ -172,6 +182,13 @@ def serialize_query_format(formater):
             type=QueryFormatType.delimited,
             delimited_text_configuration=serialization_settings
         )
+    elif isinstance(formater, list):
+        serialization_settings = ArrowConfiguration(
+            schema=formater
+        )
+        qq_format = QueryFormat(
+            type=QueryFormatType.arrow,
+            arrow_configuration=serialization_settings)
     elif not formater:
         return None
     else:

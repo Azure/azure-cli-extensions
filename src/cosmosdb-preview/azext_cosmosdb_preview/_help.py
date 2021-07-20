@@ -146,6 +146,11 @@ type: command
 short-summary: List all the databases and its collections that can be restored in the given account at the given timesamp and region.
 """
 
+helps['managed-cassandra'] = """
+type: group
+short-summary: Azure Managed Cassandra.
+"""
+
 helps['managed-cassandra cluster'] = """
 type: group
 short-summary: Azure Managed Cassandra Cluster.
