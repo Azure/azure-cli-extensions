@@ -271,38 +271,6 @@ class DelegatedSubnet(DelegatedSubnetResource):
     :type location: str
     :param tags: A set of tags. The resource tags.
     :type tags: dict[str, str]
-    :param properties: Properties of the provision operation request.
-    :type properties: ~dnc.models.DelegatedSubnetProperties
-    """
-
-    _validation = {
-        'id': {'readonly': True},
-        'name': {'readonly': True},
-        'type': {'readonly': True},
-    }
-
-    _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'str'},
-        'location': {'key': 'location', 'type': 'str'},
-        'tags': {'key': 'tags', 'type': '{str}'},
-        'properties': {'key': 'properties', 'type': 'DelegatedSubnetProperties'},
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        super(DelegatedSubnet, self).__init__(**kwargs)
-        self.properties = kwargs.get('properties', None)
-
-
-class DelegatedSubnetProperties(msrest.serialization.Model):
-    """Properties of delegated subnet.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
-
     :ivar resource_guid: Resource guid.
     :vartype resource_guid: str
     :ivar provisioning_state: The current state of dnc delegated subnet resource. Possible values
@@ -315,22 +283,30 @@ class DelegatedSubnetProperties(msrest.serialization.Model):
     """
 
     _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
         'resource_guid': {'readonly': True},
         'provisioning_state': {'readonly': True},
     }
 
     _attribute_map = {
-        'resource_guid': {'key': 'resourceGuid', 'type': 'str'},
-        'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
-        'subnet_details': {'key': 'subnetDetails', 'type': 'SubnetDetails'},
-        'controller_details': {'key': 'controllerDetails', 'type': 'ControllerDetails'},
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'location': {'key': 'location', 'type': 'str'},
+        'tags': {'key': 'tags', 'type': '{str}'},
+        'resource_guid': {'key': 'properties.resourceGuid', 'type': 'str'},
+        'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
+        'subnet_details': {'key': 'properties.subnetDetails', 'type': 'SubnetDetails'},
+        'controller_details': {'key': 'properties.controllerDetails', 'type': 'ControllerDetails'},
     }
 
     def __init__(
         self,
         **kwargs
     ):
-        super(DelegatedSubnetProperties, self).__init__(**kwargs)
+        super(DelegatedSubnet, self).__init__(**kwargs)
         self.resource_guid = None
         self.provisioning_state = None
         self.subnet_details = kwargs.get('subnet_details', None)

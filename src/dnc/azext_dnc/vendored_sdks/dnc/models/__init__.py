@@ -14,7 +14,6 @@ try:
     from ._models_py3 import DelegatedControllerProperties
     from ._models_py3 import DelegatedControllers
     from ._models_py3 import DelegatedSubnet
-    from ._models_py3 import DelegatedSubnetProperties
     from ._models_py3 import DelegatedSubnetResource
     from ._models_py3 import DelegatedSubnets
     from ._models_py3 import ErrorAdditionalInfo
@@ -39,7 +38,6 @@ except (SyntaxError, ImportError):
     from ._models import DelegatedControllerProperties  # type: ignore
     from ._models import DelegatedControllers  # type: ignore
     from ._models import DelegatedSubnet  # type: ignore
-    from ._models import DelegatedSubnetProperties  # type: ignore
     from ._models import DelegatedSubnetResource  # type: ignore
     from ._models import DelegatedSubnets  # type: ignore
     from ._models import ErrorAdditionalInfo  # type: ignore
@@ -75,7 +73,6 @@ __all__ = [
     'DelegatedControllerProperties',
     'DelegatedControllers',
     'DelegatedSubnet',
-    'DelegatedSubnetProperties',
     'DelegatedSubnetResource',
     'DelegatedSubnets',
     'ErrorAdditionalInfo',
