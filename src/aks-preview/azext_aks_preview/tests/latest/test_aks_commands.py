@@ -67,7 +67,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                      '--dns-name-prefix={dns_name_prefix} --node-count=1 --generate-ssh-keys ' \
                      '--windows-admin-username={windows_admin_username} --windows-admin-password={windows_admin_password} ' \
                      '--load-balancer-sku=standard --vm-set-type=virtualmachinescalesets --network-plugin=azure ' \
-                     '-kubernetes-version={k8s_version}'
+                     '--kubernetes-version={k8s_version}'
         self.cmd(create_cmd, checks=[
             self.exists('fqdn'),
             self.exists('nodeResourceGroup'),
@@ -81,14 +81,14 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
         # upgrade cluster control plane only
-        self.cmd('aks upgrade --resource-group={resource_group} --name={name} --kubernetes-version={upgrade_k8s_version}', check=[
+        self.cmd('aks upgrade --resource-group={resource_group} --name={name} --kubernetes-version={upgrade_k8s_version}', checks=[
             self.check('provisioningState', 'Succeeded')
         ])
 
         # upgrade Windows nodepool
         self.cmd('aks nodepool upgrade --resource-group={resource_group} --cluster-name={name} ' \
                  '--name={nodepool2_name} --kubernetes-version={upgrade_k8s_version} ' \
-                 '--aks-custom-headers WindowsContainerRuntime=containerd', check=[
+                 '--aks-custom-headers WindowsContainerRuntime=containerd', checks=[
             self.check('provisioningState', 'Succeeded')
         ])
 
