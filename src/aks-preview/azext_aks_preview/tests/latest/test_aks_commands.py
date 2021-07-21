@@ -1400,7 +1400,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('linuxOsConfig.sysctls.netCoreSomaxconn', 163849)
         ])
 
-    #@live_only()
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_create_with_http_proxy_config(self, resource_group, resource_group_location):
@@ -1420,12 +1419,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check(
                 'HTTPProxyConfig.HttpsProxy', 'http://myproxy.server.com:8080/'),
             self.check(
-                'HTTPProxyConfig.NoProxy', True),
-            self.check(
-                'HTTPProxyConfig.TrustedCA', 'G9yR2xrQ29NRjNURHg4cm1wOURCaUIvCi0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0=')
+                'HTTPProxyConfig.TrustedCa', 'G9yR2xrQ29NRjNURHg4cm1wOURCaUIvCi0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0=')
         ])
-
-        # nodepool update trustedCA
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
