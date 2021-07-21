@@ -23,23 +23,7 @@ class NetworkScenarioTest(ScenarioTest):
 
     def __init__(self, *args, **kwargs):
         super(NetworkScenarioTest, self).__init__(*args, **kwargs)
-        self.kwargs.update({
-            'subscription_id': self.get_subscription_id()
-        })
 
-        self.kwargs.update({
-            'myNetworkManager': 'testNetworkManager',
-            'myNetworkManager2': 'TestNetworkManager',
-            'myNetworkGroup2': 'testGroup',
-            'myNetworkGroup': 'TestNetworkGroup',
-            'mySecurityConfiguration': 'SampleSecurityConfig',
-            'mySecurityConfiguration2': 'adminConfig',
-        })
-
-    @ResourceGroupPreparer(name_prefix='clitestnetwork_resoureGroupSample'[:7], key='rg_2', parameter_name='rg_2')
-    @ResourceGroupPreparer(name_prefix='clitestnetwork_rg1'[:7], key='rg', parameter_name='rg')
-    @ResourceGroupPreparer(name_prefix='clitestnetwork_myResourceGroup'[:7], key='rg_3', parameter_name='rg_3')
-    @VirtualNetworkPreparer(name_prefix='clitestnetwork_vnet1'[:7], key='vn_2', resource_group_key='rg_2')
-    @VirtualNetworkPreparer(name_prefix='clitestnetwork_testVirtualNetwork'[:7], key='vn', resource_group_key='rg_2')
-    def test_network_Scenario(self, rg_2, rg, rg_3):
+    @ResourceGroupPreparer(name_prefix='test_network_manager', location='jioindiawest')
+    def test_network_manager(self, resource_group):
         pass

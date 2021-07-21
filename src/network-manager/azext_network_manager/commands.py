@@ -72,7 +72,6 @@ def load_command_table(self, _):
         client_factory=cf_userrule
     )
 
-
     with self.command_group('network manager', network_networkmanager, client_factory=cf_networkmanager) as g:
         g.custom_command('create', 'network_manager_create')
         g.custom_command('list', 'network_manager_list')
