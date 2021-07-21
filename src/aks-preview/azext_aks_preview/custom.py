@@ -4182,7 +4182,7 @@ def _get_http_proxy_config(file_path):
     config_object.http_proxy = hp_config.get("httpProxy", None)
     config_object.https_proxy = hp_config.get("httpsProxy", None)
     config_object.no_proxy = hp_config.get("noProxy", None)
-    config_object.trustedCa = hp_config.get("trustedCa", None)
+    config_object.trusted_ca = hp_config.get("trustedCa", None)
 
     return config_object
 
