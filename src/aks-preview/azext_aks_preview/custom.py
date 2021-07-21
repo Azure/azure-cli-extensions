@@ -77,6 +77,7 @@ from .vendored_sdks.azure_mgmt_preview_aks.v2021_05_01.models import (ContainerS
                                                                       ManagedClusterAutoUpgradeProfile,
                                                                       KubeletConfig,
                                                                       LinuxOSConfig,
+                                                                      ManagedClusterHTTPProxyConfig,
                                                                       SysctlConfig,
                                                                       ManagedClusterPodIdentityProfile,
                                                                       ManagedClusterPodIdentity,
@@ -1028,6 +1029,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                enable_sgxquotehelper=False,
                kubelet_config=None,
                linux_os_config=None,
+               http_proxy_config=None,
                assign_identity=None,
                auto_upgrade_channel=None,
                enable_pod_identity=False,
@@ -1439,6 +1441,9 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
             raise ArgumentUsageError(
                 "--fqdn-subdomain should only be used for private cluster with custom private dns zone")
         mc.fqdn_subdomain = fqdn_subdomain
+
+    if http_proxy_config:
+        mc.http_proxy_config = _get_http_proxy_config(http_proxy_config)
 
     if uptime_sla:
         mc.sku = ManagedClusterSKU(
@@ -4164,6 +4169,20 @@ def _get_linux_os_config(file_path):
     config_object.sysctls.vm_swappiness = sysctls.get("vmSwappiness", None)
     config_object.sysctls.vm_vfs_cache_pressure = sysctls.get(
         "vmVfsCachePressure", None)
+
+    return config_object
+
+
+def _get_http_proxy_config(file_path):
+    hp_config = get_file_json(file_path)
+    if not isinstance(hp_config, dict):
+        raise CLIError(
+            "Error reading Http Proxy Config at {}. Please see https://aka.ms/HttpProxyConfig for correct format.".format(file_path))
+    config_object = ManagedClusterHTTPProxyConfig()
+    config_object.http_proxy = hp_config.get("httpProxy", None)
+    config_object.https_proxy = hp_config.get("httpsProxy", None)
+    config_object.no_proxy = hp_config.get("noProxy", None)
+    config_object.trustedCa = hp_config.get("trustedCa", None)
 
     return config_object
 

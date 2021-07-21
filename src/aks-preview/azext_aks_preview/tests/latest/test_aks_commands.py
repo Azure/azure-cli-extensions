@@ -1400,6 +1400,33 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('linuxOsConfig.sysctls.netCoreSomaxconn', 163849)
         ])
 
+    #@live_only()
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_create_with_http_proxy_config(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'http_proxy_path': _get_test_data_file('httpproxyconfig.json')
+        })
+
+        # use custom feature so it does not require subscription to regiter the feature
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --generate-ssh-keys --http-proxy-config={http_proxy_path} -o json'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check(
+                'HTTPProxyConfig.HttpProxy', 'http://myproxy.server.com:8080/'),
+            self.check(
+                'HTTPProxyConfig.HttpsProxy', 'http://myproxy.server.com:8080/'),
+            self.check(
+                'HTTPProxyConfig.NoProxy', True),
+            self.check(
+                'HTTPProxyConfig.TrustedCA', 'G9yR2xrQ29NRjNURHg4cm1wOURCaUIvCi0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0=')
+        ])
+
+        # nodepool update trustedCA
+
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_create_none_private_dns_zone(self, resource_group, resource_group_location):
