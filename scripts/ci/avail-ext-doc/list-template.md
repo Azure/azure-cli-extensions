@@ -21,7 +21,7 @@ This article is a complete list of the available extensions for the Azure CLI wh
 az extension list-available --output table
 ```
 
-The Azure CLI will prompt you to install an extension on first use.  
+You will be prompted to install an extension on first use.  
 
 | Extension | Required Minimum CLI Version | Description | Status | Release Notes |
 |----|-----------------|-------------|---------|---------------|{% for extension in extensions %}
