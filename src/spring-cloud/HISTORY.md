@@ -1,6 +1,10 @@
 Release History
 ===============
 
+2.7.0
+-----
+* Migrate to track2 SDK
+
 2.6.0
 -----
 * Add support for 0.5 core, 512 Mi resource requests in app deployment
