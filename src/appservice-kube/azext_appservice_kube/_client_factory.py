@@ -35,8 +35,13 @@ def ex_handler_factory(creating_plan=False, no_throw=False):
     return _polish_bad_errors
 
 
+def customlocation_client_factory(cli_ctx, **_):
+    return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_CUSTOMLOCATION)
+
+
 def web_client_factory(cli_ctx, **_):
     return get_mgmt_service_client(cli_ctx, CUSTOM_MGMT_APPSERVICE)
+
 
 def resource_client_factory(cli_ctx, **_):
     from azure.cli.core.profiles import ResourceType

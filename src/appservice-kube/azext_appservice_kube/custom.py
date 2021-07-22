@@ -86,7 +86,7 @@ from ._create_util import (zip_contents_from_dir, get_runtime_version_details, c
                            should_create_new_rg, set_location, get_site_availability, does_app_already_exist, get_profile_username,
                            get_plan_to_use,get_kube_plan_to_use, get_lang_from_content, get_rg_to_use, get_sku_to_use,
                            detect_os_form_src, get_current_stack_from_runtime, generate_default_app_service_plan_name)
-from ._client_factory import web_client_factory, cf_kube_environments, ex_handler_factory
+from ._client_factory import web_client_factory, cf_kube_environments, ex_handler_factory, customlocation_client_factory
 
 import subprocess
 from subprocess import PIPE
@@ -100,19 +100,27 @@ logger = get_logger(__name__)
 # pylint: disable=too-many-locals,too-many-lines
 
 def create_kube_environment(cmd, client, name, resource_group_name, custom_location, static_ip,
-                              location=None, tags=None, no_wait=False):
+                            tags=None, no_wait=False):
     KubeEnvironment, ExtendedLocation, ArcConfiguration, FrontEndConfiguration = cmd.get_models('KubeEnvironment',
         'ExtendedLocation', 'ArcConfiguration', 'FrontEndConfiguration')
 
-    if not is_valid_resource_id(custom_location):
-        raise CLIError('Invalid custom location')
+    client = customlocation_client_factory(cmd.cli_ctx)
+    custom_location_object = None
 
-    parsed_custom_location = parse_resource_id(custom_location)
-    if parsed_custom_location['resource_type'].lower() != 'customlocations':
-        raise CLIError('Invalid custom location')
+    if is_valid_resource_id(custom_location):
+        parsed_custom_location = parse_resource_id(custom_location)
+        if parsed_custom_location['resource_type'].lower() != 'customlocations':
+            raise CLIError('Invalid custom location')
 
-    if not location:
-        location = _get_location_from_resource_group(cmd.cli_ctx, parsed_custom_location['resource_group'])
+        custom_location_object = client.custom_locations.get(
+            parsed_custom_location['resource_group'],
+            parsed_custom_location['name'])
+    else:
+        custom_location_object = client.custom_locations.get(resource_group_name, custom_location)
+        custom_location = custom_location_object.id
+
+    location = custom_location_object.location
+
     front_end_configuration = FrontEndConfiguration(kind="LoadBalancer")
     extended_location = ExtendedLocation(custom_location=custom_location)
     arc_configuration = ArcConfiguration(
