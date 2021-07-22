@@ -76,12 +76,12 @@ if [[ ${TEST_MODE} == "live" || ${TEST_MODE} == "all" ]]; then
     azaks ${live_options}
 fi
 
-# re-recording test
+# live-replay test
 if [[ ${TEST_MODE} == "live" || ${TEST_MODE} == "all" ]]; then
-    echo "Test in re-recording mode(after live test)!"
-    re_recording_options="${base_options}${filter_options}"
-    re_recording_options+=" --json-report-file=cli_re_recording_report.json"
-    re_recording_options+=" --xml-file=cli_re_recording_result.xml"
-    echo "re-recording options: ${re_recording_options}"
-    azaks ${re_recording_options}
+    echo "Test in live-replay mode!"
+    live_replay_options="${base_options}${filter_options}"
+    live_replay_options+=" --json-report-file=cli_live_replay_report.json"
+    live_replay_options+=" --xml-file=cli_live_replay_result.xml"
+    echo "live-replay options: ${live_replay_options}"
+    azaks ${live_replay_options}
 fi
