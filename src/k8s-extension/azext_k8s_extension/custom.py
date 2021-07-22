@@ -11,7 +11,8 @@ from knack.log import get_logger
 from azure.cli.core.azclierror import ResourceNotFoundError, MutuallyExclusiveArgumentError, \
     InvalidArgumentValueError, CommandNotFoundError, RequiredArgumentMissingError
 from azure.cli.core.commands.client_factory import get_subscription_id
-from .vendored_sdks.models import ConfigurationIdentity, ErrorResponseException, Scope
+from azure.core.exceptions import HttpResponseError
+from .vendored_sdks.models import ConfigurationIdentity, Scope
 from ._validators import validate_cc_registration
 
 from .partner_extensions.ContainerInsights import ContainerInsights
@@ -52,7 +53,7 @@ def show_k8s_extension(client, resource_group_name, cluster_name, name, cluster_
         extension = client.get(resource_group_name,
                                cluster_rp, cluster_type, cluster_name, name)
         return extension
-    except ErrorResponseException as ex:
+    except HttpResponseError as ex:
         # Customize the error message for resources not found
         if ex.response.status_code == 404:
             # If Cluster not found
@@ -198,7 +199,7 @@ def delete_k8s_extension(client, resource_group_name, cluster_name, name, cluste
     extension = None
     try:
         extension = client.get(resource_group_name, cluster_rp, cluster_type, cluster_name, name)
-    except ErrorResponseException:
+    except HttpResponseError:
         logger.warning("No extension with name '%s' found on cluster '%s', so nothing to delete", cluster_name, name)
         return None
     extension_class = ExtensionFactory(extension.extension_type.lower())
@@ -230,7 +231,6 @@ def __create_identity(cmd, resource_group_name, cluster_name, cluster_type, clus
             "Error! Cluster type '{}' is not supported for extension identity".format(cluster_type)
         )
 
-    from azure.core.exceptions import HttpResponseError
     try:
         resource = resources.get_by_id(cluster_resource_id, parent_api_version)
         location = str(resource.location.lower())

@@ -32,7 +32,7 @@ CLASSIFIERS = [
 # TODO: Add any additional SDK dependencies here
 DEPENDENCIES = []
 
-VERSION = "0.5.1"
+VERSION = "0.6.0"
 
 with open('README.rst', 'r', encoding='utf-8') as f:
     README = f.read()
