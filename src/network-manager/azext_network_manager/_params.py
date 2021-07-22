@@ -54,8 +54,7 @@ def load_arguments(self, _):
         c.argument('network_manager_name', options_list=['--name', '-n', '--network-manager-name'], type=str,
                    help='The name of the network manager.')
         c.argument('id_', options_list=['--id'], type=str, help='Resource ID.')
-        c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
-                   validator=get_default_location_from_resource_group)
+        c.argument('location', arg_type=get_location_type(self.cli_ctx))
         c.argument('tags', tags_type)
         c.argument('display_name', type=str, help='A friendly name for the network manager.')
         c.argument('description', type=str, help='A description of the network manager.')
