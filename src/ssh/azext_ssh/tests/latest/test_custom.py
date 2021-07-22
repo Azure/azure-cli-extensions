@@ -43,7 +43,7 @@ class SshCustomCommandTest(unittest.TestCase):
     @mock.patch('azext_ssh.custom._check_or_create_public_private_files')
     @mock.patch('azext_ssh.ip_utils.get_ssh_ip')
     @mock.patch('azext_ssh.custom._get_modulus_exponent')
-    @mock.patch('azure.cli.core._profile.Profile.get_msal_token')
+    @mock.patch('azure.cli.core._profile.Profile')
     @mock.patch('azext_ssh.custom._write_cert_file')
     def test_do_ssh_op(self, mock_write_cert, mock_ssh_creds, mock_get_mod_exp, mock_ip,
                        mock_check_files, mock_assert, mock_join, mock_principal):
@@ -52,7 +52,9 @@ class SshCustomCommandTest(unittest.TestCase):
         mock_check_files.return_value = "public", "private"
         mock_principal.return_value = ["username"]
         mock_get_mod_exp.return_value = "modulus", "exponent"
-        mock_ssh_creds.return_value = "username", "certificate"
+        profile = mock_ssh_creds.return_value
+        profile._adal_cache = True
+        profile.get_msal_token.return_value = "username", "certificate"
         mock_join.return_value = "public-aadcert.pub"
 
         custom._do_ssh_op(cmd, None, None, "1.2.3.4", "publicfile", "privatefile", False, mock_op)
