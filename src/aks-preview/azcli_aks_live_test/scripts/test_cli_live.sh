@@ -62,8 +62,15 @@ if [[ ${TEST_MODE} == "record" || ${TEST_MODE} == "all" ]]; then
     recording_options="${base_options}${coverage_options}"
     recording_options+=" --json-report-file=cli_recording_report.json"
     recording_options+=" --xml-file=cli_recording_result.xml"
-    echo "recording options: ${recording_options}"
-    azaks ${recording_options}
+    echo "Recording test options: ${recording_options}"
+    test_result=0
+    azaks ${recording_options} || test_result=$?
+    if [[ ${test_result} -ne 0 ]]; then
+        echo "Recording test failed!"
+        exit ${test_result}
+    else
+        echo -e "Recording test passed!\n\n"
+    fi
 fi
 
 # live test
@@ -72,8 +79,15 @@ if [[ ${TEST_MODE} == "live" || ${TEST_MODE} == "all" ]]; then
     live_options="${base_options}${filter_options}"
     live_options+=" -l --json-report-file=cli_live_report.json"
     live_options+=" --xml-file=cli_live_result.xml"
-    echo "live options: ${live_options}"
-    azaks ${live_options}
+    echo "Live test options: ${live_options}"
+    test_result=0
+    azaks ${live_options} || test_result=$?
+    if [[ ${test_result} -ne 0 ]]; then
+        echo "Live test failed!"
+        exit ${test_result}
+    else
+        echo -e "Live test passed!\n\n"
+    fi
 fi
 
 # live-replay test
@@ -82,6 +96,13 @@ if [[ ${TEST_MODE} == "live" || ${TEST_MODE} == "all" ]]; then
     live_replay_options="${base_options}${filter_options}"
     live_replay_options+=" --json-report-file=cli_live_replay_report.json"
     live_replay_options+=" --xml-file=cli_live_replay_result.xml"
-    echo "live-replay options: ${live_replay_options}"
-    azaks ${live_replay_options}
+    echo "Live-replay test options: ${live_replay_options}"
+    test_result=0
+    azaks ${live_replay_options} || test_result=$?
+    if [[ ${test_result} -ne 0 ]]; then
+        echo "Live-replay test failed!"
+        exit ${test_result}
+    else
+        echo -e "Live-replay test passed!\n\n"
+    fi
 fi
