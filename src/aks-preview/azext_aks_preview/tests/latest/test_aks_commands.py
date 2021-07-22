@@ -1482,7 +1482,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # use custom feature so it does not require subscription to regiter the feature
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --generate-ssh-keys --http-proxy-config={http_proxy_path} -o json'
         self.cmd(create_cmd, checks=[
-            self.check('provisioningState', 'Succeeded')
+            self.check('provisioningState', 'Succeeded'),
+            self.check('httpProxyConfig', None),
         ])
 
     @AllowLargeResponse()
