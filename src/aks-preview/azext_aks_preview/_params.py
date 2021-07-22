@@ -239,6 +239,7 @@ def load_arguments(self, _):
 
     with self.argument_context('aks nodepool upgrade') as c:
         c.argument('max_surge', type=str, validator=validate_max_surge)
+        c.argument('aks_custom_headers')
 
     with self.argument_context('aks nodepool update') as c:
         c.argument('enable_cluster_autoscaler', options_list=["--enable-cluster-autoscaler", "-e"], action='store_true')

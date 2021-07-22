@@ -970,6 +970,9 @@ helps['aks nodepool upgrade'] = """
         - name: --max-surge
           type: string
           short-summary: Extra nodes used to speed upgrade. When specified, it represents the number or percent used, eg. 5 or 33%
+        - name: --aks-custom-headers
+          type: string
+          short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
 """
 
 helps['aks nodepool update'] = """

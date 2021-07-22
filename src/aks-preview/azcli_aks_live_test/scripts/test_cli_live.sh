@@ -24,6 +24,12 @@ source azEnv/bin/activate
 source ./scripts/setup_venv.sh
 removeAKSPreview
 
+# login before the recording test to avoid the newly added test case does not include a corresponding
+# recording file and fall back to live mode, otherwise it will prompt `az login`.
+az login --service-principal -u "${AZCLI_ALT_CLIENT_ID}" -p "${AZCLI_ALT_CLIENT_SECRET}" -t "${TENANT_ID}"
+az account set -s "${AZCLI_ALT_SUBSCRIPTION_ID}"
+az account show
+
 # prepare running options
 # base options
 base_options="-c --no-exitfirst --report-path ./reports --reruns 3 --capture=sys"
@@ -63,9 +69,6 @@ fi
 # live test
 if [[ ${TEST_MODE} == "live" || ${TEST_MODE} == "all" ]]; then
     echo "Test in live mode!"
-    az login --service-principal -u "${AZCLI_ALT_CLIENT_ID}" -p "${AZCLI_ALT_CLIENT_SECRET}" -t "${TENANT_ID}"
-    az account set -s "${AZCLI_ALT_SUBSCRIPTION_ID}"
-    az account show
     live_options="${base_options}${filter_options}"
     live_options+=" -l --json-report-file=cli_live_report.json"
     live_options+=" --xml-file=cli_live_result.xml"

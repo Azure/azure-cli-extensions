@@ -2,11 +2,15 @@
 
 Release History
 ===============
-<<<<<<< HEAD
-0.5.24
+
+0.5.25
 +++++
 * Add support for http proxy
-=======
+
+0.5.24
++++++
+* * Add "--aks-custom-headers" for "az aks nodepool upgrade"
+
 0.5.23
 +++++
 * Fix issue that `maintenanceconfiguration add` subcommand cannot work

@@ -3313,7 +3313,8 @@ def aks_agentpool_upgrade(cmd,  # pylint: disable=unused-argument
                           kubernetes_version='',
                           no_wait=False,
                           node_image_only=False,
-                          max_surge=None):
+                          max_surge=None,
+                          aks_custom_headers=None):
     if kubernetes_version != '' and node_image_only:
         raise CLIError('Conflicting flags. Upgrading the Kubernetes version will also upgrade node image version.'
                        'If you only want to upgrade the node version please use the "--node-image-only" option only.')
@@ -3334,7 +3335,9 @@ def aks_agentpool_upgrade(cmd,  # pylint: disable=unused-argument
     if max_surge:
         instance.upgrade_settings.max_surge = max_surge
 
-    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, cluster_name, nodepool_name, instance)
+    headers = get_aks_custom_headers(aks_custom_headers)
+
+    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, cluster_name, nodepool_name, instance, headers=headers)
 
 
 def aks_agentpool_get_upgrade_profile(cmd,   # pylint: disable=unused-argument
