@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.1.21
+++++++
+* Remove vsts_cd_manager that was removed from core CLI
+
 0.1.20
 ++++++
 * Fix regression when using main CLI validator
