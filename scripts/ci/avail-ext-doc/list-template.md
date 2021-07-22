@@ -1,6 +1,6 @@
 ---
-title: Available extensions for the Azure CLI
-description: A complete list of the officially supported extensions for the Azure CLI.
+title: List of available Azure CLI extensions | Microsoft Docs
+description: A complete list of officially supported Azure Command-Line Interface (CLI) extensions that are provided and maintained by Microsoft.
 author: haroldrandom
 ms.author: jianzen
 manager: yonzhan,yungezz
@@ -10,17 +10,18 @@ ms.prod: azure
 ms.technology: azure-cli
 ms.devlang: azure-cli
 ms.custom: devx-track-azurecli
+keywords: az extension, azure cli extensions, azure extensions
 ---
 
-# Available extensions for the Azure CLI
+# Available Azure CLI extensions
 
-This article is a complete list of the available extensions for the Azure CLI which are supported by Microsoft.
-
-The list of extensions is also available from the CLI. To get it, run [az extension list-available](/cli/azure/extension#az_extension_list_available):
+This article is a complete list of the available extensions for the Azure CLI which are supported by Microsoft.  The list of extensions is also available from the CLI. To get it, run [az extension list-available](/cli/azure/extension#az_extension_list_available):
 
 ```azurecli-interactive
 az extension list-available --output table
 ```
+
+You will be prompted to install an extension on first use.  
 
 | Extension | Required Minimum CLI Version | Description | Status | Release Notes |
 |----|-----------------|-------------|---------|---------------|{% for extension in extensions %}
