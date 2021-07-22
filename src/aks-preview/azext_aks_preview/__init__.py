@@ -5,7 +5,7 @@
 
 
 from azure.cli.core import AzCommandsLoader
-from azure.cli.core.profiles import register_resource_type
+from azure.cli.core.profiles import register_resource_type, SDKProfile
 
 # pylint: disable=unused-import
 import azext_aks_preview._help
@@ -16,7 +16,11 @@ class ContainerServiceCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        register_resource_type('latest', CUSTOM_MGMT_AKS_PREVIEW, '2021-02-01')
+        register_resource_type(
+            "latest",
+            CUSTOM_MGMT_AKS_PREVIEW,
+            SDKProfile("2021-05-01", {"container_services": "2017-07-01"}),
+        )
 
         acs_custom = CliCommandType(operations_tmpl='azext_aks_preview.custom#{}')
         super(ContainerServiceCommandsLoader, self).__init__(cli_ctx=cli_ctx,

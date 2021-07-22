@@ -18,9 +18,8 @@ if TYPE_CHECKING:
 
 VERSION = "unknown"
 
-
-class ProviderhubConfiguration(Configuration):
-    """Configuration for Providerhub.
+class ProviderHubConfiguration(Configuration):
+    """Configuration for ProviderHub.
 
     Note that all parameters used to create this instance are saved as instance
     attributes.
@@ -41,7 +40,7 @@ class ProviderhubConfiguration(Configuration):
             raise ValueError("Parameter 'credential' must not be None.")
         if subscription_id is None:
             raise ValueError("Parameter 'subscription_id' must not be None.")
-        super(ProviderhubConfiguration, self).__init__(**kwargs)
+        super(ProviderHubConfiguration, self).__init__(**kwargs)
 
         self.credential = credential
         self.subscription_id = subscription_id

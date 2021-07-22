@@ -18,54 +18,25 @@ def datadog_terms_list(client):
     return client.list()
 
 
-def datadog_api_key_list(client,
-                         resource_group_name,
-                         monitor_name):
-    return client.list(resource_group_name=resource_group_name,
-                       monitor_name=monitor_name)
+def datadog_marketplace_agreement_create(client,
+                                         properties=None):
+    body = {}
+    body['properties'] = properties
+    return client.create_or_update(body=body)
 
 
-def datadog_api_key_get_default_key(client,
-                                    resource_group_name,
-                                    monitor_name):
-    return client.get_default_key(resource_group_name=resource_group_name,
-                                  monitor_name=monitor_name)
+def datadog_terms_create(client,
+                         properties=None):
+    body = {}
+    body['properties'] = properties
+    return client.create_or_update(body=body)
 
 
-def datadog_api_key_set_default_key(client,
-                                    resource_group_name,
-                                    monitor_name,
-                                    key,
-                                    created_by=None,
-                                    name=None,
-                                    created=None):
-    return client.set_default_key(resource_group_name=resource_group_name,
-                                  monitor_name=monitor_name,
-                                  created_by=created_by,
-                                  name=name,
-                                  key=key,
-                                  created=created)
-
-
-def datadog_host_list(client,
-                      resource_group_name,
-                      monitor_name):
-    return client.list(resource_group_name=resource_group_name,
-                       monitor_name=monitor_name)
-
-
-def datadog_linked_resource_list(client,
-                                 resource_group_name,
-                                 monitor_name):
-    return client.list(resource_group_name=resource_group_name,
-                       monitor_name=monitor_name)
-
-
-def datadog_monitored_resource_list(client,
-                                    resource_group_name,
-                                    monitor_name):
-    return client.list(resource_group_name=resource_group_name,
-                       monitor_name=monitor_name)
+def datadog_terms_update(client,
+                         properties=None):
+    body = {}
+    body['properties'] = properties
+    return client.create_or_update(body=body)
 
 
 def datadog_monitor_list(client,
@@ -86,33 +57,34 @@ def datadog_monitor_create(cmd,
                            client,
                            resource_group_name,
                            monitor_name,
-                           location,
                            tags=None,
-                           identity_type=None,
-                           provisioning_state=None,
-                           monitoring_status=None,
-                           marketplace_subscription_status=None,
+                           location=None,
+                           type_=None,
                            datadog_organization_properties=None,
                            user_info=None,
                            sku_name=None,
                            no_wait=False):
+    body = {}
+    body['tags'] = tags
+    body['location'] = location
+    body['identity'] = {}
+    body['identity']['type'] = type_
+    body['properties'] = {}
+    body['properties']['monitoring_status'] = "Enabled"
+    body['properties']['datadog_organization_properties'] = datadog_organization_properties
+    body['properties']['user_info'] = user_info
+    body['sku'] = {}
+    body['sku']['name'] = sku_name
     poller = sdk_no_wait(no_wait,
                          client.begin_create,
                          resource_group_name=resource_group_name,
                          monitor_name=monitor_name,
-                         tags=tags,
-                         location=location,
-                         type=identity_type,
-                         provisioning_state=provisioning_state,
-                         monitoring_status=monitoring_status,
-                         marketplace_subscription_status=marketplace_subscription_status,
-                         datadog_organization_properties=datadog_organization_properties,
-                         user_info=user_info,
-                         name=sku_name)
+                         body=body)
     result = poller.result()
-    if result and result.principal_id:
+    if result and result.identity and result.identity.principal_id:
         scrope = '/subscriptions/' + result.id.split('/')[2]
-        create_role_assignment(cmd, role='43d0d8ad-25c7-4714-9337-8ba259a9fe05', assignee_object_id=result.principal_id,
+        create_role_assignment(cmd, role='43d0d8ad-25c7-4714-9337-8ba259a9fe05',
+                               assignee_object_id=result.identity.principal_id,
                                scope=scrope, assignee_principal_type='ServicePrincipal')
     return poller
 
@@ -121,11 +93,22 @@ def datadog_monitor_update(client,
                            resource_group_name,
                            monitor_name,
                            tags=None,
-                           monitoring_status=None):
-    return client.update(resource_group_name=resource_group_name,
-                         monitor_name=monitor_name,
-                         tags=tags,
-                         monitoring_status=monitoring_status)
+                           monitoring_status=None,
+                           sku_name=None,
+                           no_wait=False):
+    body = {}
+    body['tags'] = tags
+    if monitoring_status is not None:
+        body['properties'] = {}
+        body['properties']['monitoring_status'] = monitoring_status
+    if sku_name is not None:
+        body['sku'] = {}
+        body['sku']['name'] = sku_name
+    return sdk_no_wait(no_wait,
+                       client.begin_update,
+                       resource_group_name=resource_group_name,
+                       monitor_name=monitor_name,
+                       body=body)
 
 
 def datadog_monitor_delete(cmd,
@@ -144,17 +127,69 @@ def datadog_monitor_delete(cmd,
         scrope = '/subscriptions/' + monitor.id.split('/')[2]
         role_assignments = list_role_assignments(cmd, role='43d0d8ad-25c7-4714-9337-8ba259a9fe05', scope=scrope)
         for i in role_assignments:
-            if i.get('principalId') == monitor.principal_id:
+            if i.get('principalId') == monitor.identity.principal_id:
                 delete_role_assignments(cmd, ids=[i.get('id')])
                 break
     return poller
 
 
-def datadog_refresh_set_password_get(client,
-                                     resource_group_name,
-                                     monitor_name):
-    return client.get(resource_group_name=resource_group_name,
-                      monitor_name=monitor_name)
+def datadog_monitor_get_default_key(client,
+                                    resource_group_name,
+                                    monitor_name):
+    return client.get_default_key(resource_group_name=resource_group_name,
+                                  monitor_name=monitor_name)
+
+
+def datadog_monitor_list_api_key(client,
+                                 resource_group_name,
+                                 monitor_name):
+    return client.list_api_keys(resource_group_name=resource_group_name,
+                                monitor_name=monitor_name)
+
+
+def datadog_monitor_list_host(client,
+                              resource_group_name,
+                              monitor_name):
+    return client.list_hosts(resource_group_name=resource_group_name,
+                             monitor_name=monitor_name)
+
+
+def datadog_monitor_list_linked_resource(client,
+                                         resource_group_name,
+                                         monitor_name):
+    return client.list_linked_resources(resource_group_name=resource_group_name,
+                                        monitor_name=monitor_name)
+
+
+def datadog_monitor_list_monitored_resource(client,
+                                            resource_group_name,
+                                            monitor_name):
+    return client.list_monitored_resources(resource_group_name=resource_group_name,
+                                           monitor_name=monitor_name)
+
+
+def datadog_monitor_refresh_set_password_link(client,
+                                              resource_group_name,
+                                              monitor_name):
+    return client.refresh_set_password_link(resource_group_name=resource_group_name,
+                                            monitor_name=monitor_name)
+
+
+def datadog_monitor_set_default_key(client,
+                                    resource_group_name,
+                                    monitor_name,
+                                    created_by=None,
+                                    name=None,
+                                    key=None,
+                                    created=None):
+    body = {}
+    body['created_by'] = created_by
+    body['name'] = name
+    body['key'] = key
+    body['created'] = created
+    return client.set_default_key(resource_group_name=resource_group_name,
+                                  monitor_name=monitor_name,
+                                  body=body)
 
 
 def datadog_tag_rule_list(client,
@@ -177,73 +212,85 @@ def datadog_tag_rule_create(client,
                             resource_group_name,
                             monitor_name,
                             rule_set_name,
-                            metric_rules_filtering_tags=None,
-                            log_rules_send_aad_logs=None,
-                            log_rules_send_subscription_logs=None,
-                            log_rules_send_resource_logs=None,
+                            filtering_tags=None,
+                            send_aad_logs=None,
+                            send_subscription_logs=None,
+                            send_resource_logs=None,
                             log_rules_filtering_tags=None):
+    body = {}
+    body['metric_rules'] = {}
+    body['metric_rules']['filtering_tags'] = filtering_tags
+    body['log_rules'] = {}
+    body['log_rules']['send_aad_logs'] = send_aad_logs
+    body['log_rules']['send_subscription_logs'] = send_subscription_logs
+    body['log_rules']['send_resource_logs'] = send_resource_logs
+    body['log_rules']['filtering_tags'] = log_rules_filtering_tags
     return client.create_or_update(resource_group_name=resource_group_name,
                                    monitor_name=monitor_name,
                                    rule_set_name=rule_set_name,
-                                   filtering_tags=metric_rules_filtering_tags,
-                                   send_aad_logs=log_rules_send_aad_logs,
-                                   send_subscription_logs=log_rules_send_subscription_logs,
-                                   send_resource_logs=log_rules_send_resource_logs,
-                                   log_rules_filtering_tags=log_rules_filtering_tags)
+                                   body=body)
 
 
-def datadog_tag_rule_update(client,
+def datadog_tag_rule_update(instance,
                             resource_group_name,
                             monitor_name,
                             rule_set_name,
-                            metric_rules_filtering_tags=None,
-                            log_rules_send_aad_logs=None,
-                            log_rules_send_subscription_logs=None,
-                            log_rules_send_resource_logs=None,
+                            filtering_tags=None,
+                            send_aad_logs=None,
+                            send_subscription_logs=None,
+                            send_resource_logs=None,
                             log_rules_filtering_tags=None):
-    return client.create_or_update(resource_group_name=resource_group_name,
-                                   monitor_name=monitor_name,
-                                   rule_set_name=rule_set_name,
-                                   filtering_tags=metric_rules_filtering_tags,
-                                   send_aad_logs=log_rules_send_aad_logs,
-                                   send_subscription_logs=log_rules_send_subscription_logs,
-                                   send_resource_logs=log_rules_send_resource_logs,
-                                   log_rules_filtering_tags=log_rules_filtering_tags)
+    if filtering_tags is not None:
+        instance.metric_rules.filtering_tags = filtering_tags
+    if send_aad_logs is not None:
+        instance.log_rules.send_aad_logs = send_aad_logs
+    if send_subscription_logs is not None:
+        instance.log_rules.send_subscription_logs = send_subscription_logs
+    if send_resource_logs is not None:
+        instance.log_rules.send_resource_logs = send_resource_logs
+    if log_rules_filtering_tags is not None:
+        instance.log_rules.filtering_tags = log_rules_filtering_tags
+    return instance
 
 
-def datadog_single_sign_on_configuration_list(client,
-                                              resource_group_name,
-                                              monitor_name):
+def datadog_sso_config_list(client,
+                            resource_group_name,
+                            monitor_name):
     return client.list(resource_group_name=resource_group_name,
                        monitor_name=monitor_name)
 
 
-def datadog_single_sign_on_configuration_show(client,
-                                              resource_group_name,
-                                              monitor_name,
-                                              configuration_name):
+def datadog_sso_config_show(client,
+                            resource_group_name,
+                            monitor_name,
+                            configuration_name):
     return client.get(resource_group_name=resource_group_name,
                       monitor_name=monitor_name,
                       configuration_name=configuration_name)
 
 
-def datadog_single_sign_on_configuration_create(client,
-                                                resource_group_name,
-                                                monitor_name,
-                                                configuration_name,
-                                                properties=None,
-                                                no_wait=False):
+def datadog_sso_config_create(client,
+                              resource_group_name,
+                              monitor_name,
+                              configuration_name,
+                              properties=None,
+                              no_wait=False):
+    body = {}
+    body['properties'] = properties
     return sdk_no_wait(no_wait,
                        client.begin_create_or_update,
                        resource_group_name=resource_group_name,
                        monitor_name=monitor_name,
                        configuration_name=configuration_name,
-                       properties=properties)
+                       body=body)
 
 
-def datadog_single_sign_on_configuration_update(instance,
-                                                resource_group_name,
-                                                monitor_name,
-                                                configuration_name,
-                                                no_wait=False):
+def datadog_sso_config_update(instance,
+                              resource_group_name,
+                              monitor_name,
+                              configuration_name,
+                              properties=None,
+                              no_wait=False):
+    if properties is not None:
+        instance.properties = properties
     return instance

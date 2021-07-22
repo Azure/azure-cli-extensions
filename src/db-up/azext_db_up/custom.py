@@ -224,7 +224,7 @@ def server_down(cmd, client, resource_group_name=None, server_name=None, delete_
 
         # delete resource group
         logger.warning('Deleting Resource Group \'%s\'...', resource_group_name)
-        return resource_client.resource_groups.delete(resource_group_name)
+        return resource_client.resource_groups.begin_delete(resource_group_name)
     logger.warning('Deleting server \'%s\'...', server_name)
     return client.delete(resource_group_name, server_name)
 
@@ -387,7 +387,7 @@ def _run_postgresql_commands(host, user, password, database):
         logger.warning("Ran Database Query: `CREATE USER root WITH ENCRYPTED PASSWORD '%s'`", db_password)
     except psycopg2.ProgrammingError:
         pass
-    cursor.execute("GRANT ALL PRIVILEGES ON DATABASE {} TO root".format(database))
+    cursor.execute('GRANT ALL PRIVILEGES ON DATABASE "{}" TO root'.format(database))
     logger.warning("Ran Database Query: `GRANT ALL PRIVILEGES ON DATABASE %s TO root`", database)
 
 

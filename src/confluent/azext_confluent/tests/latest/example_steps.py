@@ -7,14 +7,14 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
-
+# pylint: disable=unused-argument
 
 from .. import try_manual
 
 
 # EXAMPLE: /MarketplaceAgreements/get/MarketplaceAgreements_List
 @try_manual
-def step_terms_list(test, rg, checks=None):  # pylint: disable=unused-argument
+def step_terms_list(test, rg, checks=None):
     if checks is None:
         checks = []
     test.cmd('az confluent terms list',
@@ -23,14 +23,16 @@ def step_terms_list(test, rg, checks=None):  # pylint: disable=unused-argument
 
 # EXAMPLE: /Organization/put/Organization_Create
 @try_manual
-def step_organization_create(test, rg, checks=None):  # pylint: disable=unused-argument
+def step_organization_create(test, rg, checks=None):
     if checks is None:
         checks = []
     test.cmd('az confluent organization create '
              '--location "eastus2euap" '
-             '--offer-detail id="confluent-cloud-azure-stag" plan-id="confluent-cloud-azure-payg-stag" '
-             'plan-name="Confluent Cloud - Pay as you Go" publisher-id="confluentinc" term-unit="P1M" '
-             '--user-detail email-address="contoso@microsoft.com" first-name="contoso" last-name="zhou" '
+             '--offer-id "confluent-cloud-azure-stag" '
+             '--plan-id "confluent-cloud-azure-payg-stag" '
+             '--plan-name "Confluent Cloud - Pay as you Go" '
+             '--publisher-id "confluentinc" '
+             '--term-unit "P1M" '
              '--tags environment="Dev" '
              '--name "{myOrganization}" '
              '--resource-group "{rg}"',
@@ -43,7 +45,7 @@ def step_organization_create(test, rg, checks=None):  # pylint: disable=unused-a
 
 # EXAMPLE: /Organization/get/Organization_Get
 @try_manual
-def step_organization_show(test, rg, checks=None):  # pylint: disable=unused-argument
+def step_organization_show(test, rg, checks=None):
     if checks is None:
         checks = []
     test.cmd('az confluent organization show '
@@ -54,7 +56,7 @@ def step_organization_show(test, rg, checks=None):  # pylint: disable=unused-arg
 
 # EXAMPLE: /Organization/get/Organization_ListByResourceGroup
 @try_manual
-def step_organization_list(test, rg, checks=None):  # pylint: disable=unused-argument
+def step_organization_list(test, rg, checks=None):
     if checks is None:
         checks = []
     test.cmd('az confluent organization list '
@@ -62,9 +64,19 @@ def step_organization_list(test, rg, checks=None):  # pylint: disable=unused-arg
              checks=checks)
 
 
+# EXAMPLE: /Organization/get/Organization_ListBySubscription
+@try_manual
+def step_organization_list2(test, rg, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az confluent organization list '
+             '-g ""',
+             checks=checks)
+
+
 # EXAMPLE: /Organization/patch/Confluent_Update
 @try_manual
-def step_organization_update(test, rg, checks=None):  # pylint: disable=unused-argument
+def step_organization_update(test, rg, checks=None):
     if checks is None:
         checks = []
     test.cmd('az confluent organization update '
@@ -76,7 +88,7 @@ def step_organization_update(test, rg, checks=None):  # pylint: disable=unused-a
 
 # EXAMPLE: /Organization/delete/Confluent_Delete
 @try_manual
-def step_organization_delete(test, rg, checks=None):  # pylint: disable=unused-argument
+def step_organization_delete(test, rg, checks=None):
     if checks is None:
         checks = []
     test.cmd('az confluent organization delete -y '

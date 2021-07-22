@@ -2,14 +2,11 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-import os
+
 from azure.cli.testsdk import (ScenarioTest, LocalContextScenarioTest, JMESPathCheck, ResourceGroupPreparer,
                                StorageAccountPreparer, api_version_constraint, live_only, LiveScenarioTest)
 from azure.cli.core.profiles import ResourceType
 from ..storage_test_util import StorageScenarioMixin
-from knack.util import CLIError
-from datetime import datetime, timedelta
-from azure_devtools.scenario_tests import AllowLargeResponse
 
 
 class BlobServicePropertiesTests(StorageScenarioMixin, ScenarioTest):
