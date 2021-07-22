@@ -3,6 +3,11 @@
 Release History
 ===============
 
+0.2.0
+++++++
+* Requires core CLI 2.26.0 or later
+* Validate extended location in "az kube create"
+
 0.1.21
 ++++++
 * Remove vsts_cd_manager that was removed from core CLI
