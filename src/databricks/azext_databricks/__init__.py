@@ -16,8 +16,8 @@ class DatabricksClientCommandsLoader(AzCommandsLoader):
         databricks_custom = CliCommandType(
             operations_tmpl='azext_databricks.custom#{}',
             client_factory=cf_databricks)
-        super(DatabricksClientCommandsLoader, self).__init__(cli_ctx=cli_ctx,
-                                                             custom_command_type=databricks_custom)
+        super().__init__(cli_ctx=cli_ctx,
+                         custom_command_type=databricks_custom)
 
     def load_command_table(self, args):
         from azext_databricks.commands import load_command_table

@@ -426,7 +426,11 @@ class VNetPeeringOperations(object):
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
-            return deserialized.next_link or None, iter(list_of_elem)
+            # service error,temporary modification,issue:https://github.com/Azure/azure-rest-api-specs/issues/15301
+            if list_of_elem is None:
+                return deserialized.next_link or None, []
+            else:
+                return deserialized.next_link or None, iter(list_of_elem)
 
         def get_next(next_link=None):
             request = prepare_request(next_link)

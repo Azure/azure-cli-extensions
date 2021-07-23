@@ -33,6 +33,6 @@ def load_command_table(self, _):
         g.custom_command('create', 'create_databricks_vnet_peering', supports_no_wait=True)
         g.custom_command('update', 'update_databricks_vnet_peering', supports_no_wait=True)
         g.custom_command('delete', 'delete_databricks_vnet_peering', supports_no_wait=True)
-        g.custom_command('list', 'list_databricks_vnet_peering')
+        g.command('list', 'list_by_workspace')
         g.show_command('show', 'get')
         g.wait_command('wait')

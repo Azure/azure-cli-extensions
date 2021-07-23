@@ -170,7 +170,3 @@ def delete_databricks_vnet_peering(client, resource_group_name, workspace_name, 
                        resource_group_name=resource_group_name,
                        workspace_name=workspace_name,
                        peering_name=peering_name)
-
-def list_databricks_vnet_peering(client, resource_group_name, workspace_name):
-    return client.list_by_workspace(resource_group_name=resource_group_name,
-                                    workspace_name=workspace_name)
