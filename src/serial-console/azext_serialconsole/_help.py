@@ -14,7 +14,7 @@ helps['serial-console'] = """
 
 helps['serial-console send'] = """
     type: group
-    short-summary: Send commands to VM or VMSS Instance.
+    short-summary: Send NMI/SysRq/Reset to a VM or VMSS Instance.
 """
 
 helps['serial-console connect'] = """

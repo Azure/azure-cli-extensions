@@ -626,6 +626,11 @@ def check_resource(cli_ctx, resource_group_name, vm_vmss_name, vmss_instanceid):
                 result.instance_view.os_name is not None and
                 "windows" in result.instance_view.os_name.lower()):
             GV.os_is_windows = True
+        if (result.storage_profile is not None and
+                result.storage_profile.image_reference is not None and
+                result.storage_profile.image_reference.offer is not None and
+                "windows" in result.storage_profile.image_reference.offer.lower()):
+            GV.os_is_windows = True
 
         power_state = ','.join(
             [s.display_status for s in result.instance_view.statuses if s.code.startswith('PowerState/')])
