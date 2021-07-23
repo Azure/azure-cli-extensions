@@ -4078,6 +4078,8 @@ def _is_msi_cluster(managed_cluster):
 
 def _get_kubelet_config(file_path):
     kubelet_config = get_file_json(file_path)
+    if not os.path.isfile(kubelet_config):
+        raise CLIError("{} is not valid file, or not accessable.".format(kubelet_config))
     if not isinstance(kubelet_config, dict):
         raise CLIError(
             "Error reading kubelet configuration at {}. Please see https://aka.ms/CustomNodeConfig for correct format.".format(file_path))
@@ -4106,6 +4108,8 @@ def _get_kubelet_config(file_path):
 
 def _get_linux_os_config(file_path):
     os_config = get_file_json(file_path)
+    if not os.path.isfile(os_config):
+        raise CLIError("{} is not valid file, or not accessable.".format(os_config))
     if not isinstance(os_config, dict):
         raise CLIError(
             "Error reading Linux OS configuration at {}. Please see https://aka.ms/CustomNodeConfig for correct format.".format(file_path))
@@ -4178,6 +4182,8 @@ def _get_linux_os_config(file_path):
 
 def _get_http_proxy_config(file_path):
     hp_config = get_file_json(file_path)
+    if not os.path.isfile(hp_config):
+        raise CLIError("{} is not valid file, or not accessable.".format(hp_config))
     if not isinstance(hp_config, dict):
         raise CLIError(
             "Error reading Http Proxy Config at {}. Please see https://aka.ms/HttpProxyConfig for correct format.".format(file_path))
