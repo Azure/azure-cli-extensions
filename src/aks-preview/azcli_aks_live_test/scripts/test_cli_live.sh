@@ -67,6 +67,7 @@ if [[ ${TEST_MODE} == "record" || ${TEST_MODE} == "all" ]]; then
     azaks ${recording_options} || test_result=$?
     if [[ ${test_result} -ne 0 ]]; then
         echo "Recording test failed!"
+        echo "Please refer to this wiki (https://dev.azure.com/msazure/CloudNativeCompute/_wiki/wikis/CloudNativeCompute.wiki/156735/AZCLI-AKS-Live-Unit-Test-Pipeline) for troubleshooting guidelines."
         exit ${test_result}
     else
         echo -e "Recording test passed!\n\n"
@@ -84,6 +85,7 @@ if [[ ${TEST_MODE} == "live" || ${TEST_MODE} == "all" ]]; then
     azaks ${live_options} || test_result=$?
     if [[ ${test_result} -ne 0 ]]; then
         echo "Live test failed!"
+        echo "Please refer to this wiki (https://dev.azure.com/msazure/CloudNativeCompute/_wiki/wikis/CloudNativeCompute.wiki/156735/AZCLI-AKS-Live-Unit-Test-Pipeline) for troubleshooting guidelines."
         exit ${test_result}
     else
         echo -e "Live test passed!\n\n"
@@ -101,6 +103,7 @@ if [[ ${TEST_MODE} == "live" || ${TEST_MODE} == "all" ]]; then
     azaks ${live_replay_options} || test_result=$?
     if [[ ${test_result} -ne 0 ]]; then
         echo "Live-replay test failed!"
+        echo "Please refer to this wiki (https://dev.azure.com/msazure/CloudNativeCompute/_wiki/wikis/CloudNativeCompute.wiki/156735/AZCLI-AKS-Live-Unit-Test-Pipeline) for troubleshooting guidelines."
         exit ${test_result}
     else
         echo -e "Live-replay test passed!\n\n"
