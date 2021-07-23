@@ -55,7 +55,7 @@ if [[ -n ${EXT_TEST_COVERAGE} ]]; then
 fi
 
 # recording test
-if [[ ${TEST_MODE} == "record" || ${TEST_MODE} == "all" ]]; then
+if [[ ${TEST_MODE} == "recording" || ${TEST_MODE} == "all" ]]; then
     echo "Test in recording mode!"
     coverage_options=" -ec test_aks_commands.AzureKubernetesServiceScenarioTest"
     recording_options="${base_options}${coverage_options}"
