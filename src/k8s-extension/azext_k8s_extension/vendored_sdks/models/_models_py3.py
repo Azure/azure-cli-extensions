@@ -328,7 +328,7 @@ class ExtensionInstance(ProxyResource):
         'last_modified_time': {'key': 'properties.lastModifiedTime', 'type': 'str'},
         'last_status_time': {'key': 'properties.lastStatusTime', 'type': 'str'},
         'error_info': {'key': 'properties.errorInfo', 'type': 'ErrorDefinition'},
-        'identity': {'key': 'properties.identity', 'type': 'ConfigurationIdentity'},
+        'identity': {'key': 'identity', 'type': 'ConfigurationIdentity'},
     }
 
     def __init__(
