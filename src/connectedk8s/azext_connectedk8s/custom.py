@@ -94,6 +94,11 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
 
     proxy_cert = proxy_cert.replace('\\', r'\\\\')
 
+    # Prompt if private link is getting enabled
+    if enable_private_link == "true":
+        if not prompt_y_n("Enabling private link will disable 'cluster-connect' and 'custom-location' features. Are you sure you want to continue?"):
+            return
+
     # Set preview client if private link properties are provided.
     if enable_private_link:
         client = cf_connected_cluster_prev_2021_04_01(cmd.cli_ctx, None)
@@ -187,7 +192,11 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
                 except Exception as e:  # pylint: disable=broad-except
                     utils.arm_exception_handler(e, consts.Get_ConnectedCluster_Fault_Type, 'Failed to check if connected cluster resource already exists.')
                 cc = generate_request_payload(configuration, location, public_key, tags, kubernetes_distro, kubernetes_infra, enable_private_link, private_link_scope_resource_id)
-                create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait)
+                cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait)
+                # Dibabling cluster-connect if private link is getting enabled
+                if enable_private_link == "true":
+                    disable_cluster_connect(cmd, client, resource_group_name, cluster_name, kube_config, kube_context, values_file, values_file_provided, dp_endpoint_dogfood, release_train_dogfood)
+                return cc_response
             else:
                 telemetry.set_exception(exception='The kubernetes cluster is already onboarded', fault_type=consts.Cluster_Already_Onboarded_Fault_Type,
                                         summary='Kubernetes cluster already onboarded')
@@ -265,7 +274,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     # Install azure-arc agents
     utils.helm_install_release(chart_path, subscription_id, kubernetes_distro, kubernetes_infra, resource_group_name, cluster_name,
                                location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, proxy_cert, private_key_pem, kube_config,
-                               kube_context, no_wait, values_file_provided, values_file, azure_cloud, disable_auto_upgrade, enable_custom_locations, custom_locations_oid)
+                               kube_context, no_wait, values_file_provided, values_file, azure_cloud, disable_auto_upgrade, enable_custom_locations, custom_locations_oid, enable_private_link)
 
     return put_cc_response
 
@@ -806,6 +815,11 @@ def update_agents_or_resource(cmd, client, resource_group_name, cluster_name, ht
 
     proxy_cert = proxy_cert.replace('\\', r'\\\\')
 
+    # Prompt if private link is getting enabled
+    if enable_private_link == "true":
+        if not prompt_y_n("Enabling private link will disable 'cluster-connect' and 'custom-location' features. Are you sure you want to continue?"):
+            return
+
     # Set preview client if private link properties are provided.
     if enable_private_link:
         client = cf_connected_cluster_prev_2021_04_01(cmd.cli_ctx, None)
@@ -814,7 +828,7 @@ def update_agents_or_resource(cmd, client, resource_group_name, cluster_name, ht
     patch_cc_response = update_connectedk8s(client, resource_group_name, cluster_name, tags, enable_private_link, private_link_scope_resource_id, no_wait)
 
     # If any of the agent update params are passed, update the arc-agents
-    if https_proxy != "" or http_proxy != "" or no_proxy != "" or proxy_cert != "" or disable_proxy or auto_upgrade:
+    if https_proxy != "" or http_proxy != "" or no_proxy != "" or proxy_cert != "" or disable_proxy or auto_upgrade or enable_private_link == "true":
 
         if (https_proxy or http_proxy or no_proxy or proxy_cert) and disable_proxy:
             raise MutuallyExclusiveArgumentError(consts.EnableProxy_Conflict_Error)
@@ -917,6 +931,11 @@ def update_agents_or_resource(cmd, client, resource_group_name, cluster_name, ht
             cmd_helm_upgrade.extend(["--set", "global.isProxyEnabled={}".format(False)])
         if proxy_cert:
             cmd_helm_upgrade.extend(["--set-file", "global.proxyCert={}".format(proxy_cert)])
+        # Disable cluster connect if private link is enabled
+        if enable_private_link == "true":
+            cmd_helm_upgrade.extend(["--set", "systemDefaultValues.clusterconnect-agent.enabled=false"])
+            cmd_helm_upgrade.extend(["--set", "systemDefaultValues.customLocations.enabled=false"])
+            cmd_helm_upgrade.extend(["--set", "systemDefaultValues.customLocations.oid={}".format("")])
         if kube_config:
             cmd_helm_upgrade.extend(["--kubeconfig", kube_config])
         if kube_context:
@@ -1474,6 +1493,54 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
         raise CLIInternalError(str.format(consts.Error_disabling_Features, error_helm_upgrade.decode("ascii")))
 
     return str.format(consts.Successfully_Disabled_Features, features, connected_cluster.name)
+
+
+def disable_cluster_connect(cmd, client, resource_group_name, cluster_name, kube_config, kube_context, values_file, values_file_provided, dp_endpoint_dogfood, release_train_dogfood):
+    # Fetch Connected Cluster for agent version
+    connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
+
+    # Setting the config dataplane endpoint
+    config_dp_endpoint = get_config_dp_endpoint(cmd, connected_cluster.location)
+
+    # Retrieving Helm chart OCI Artifact location
+    registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else utils.get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood, release_train_dogfood)
+
+    reg_path_array = registry_path.split(':')
+    agent_version = reg_path_array[1]
+
+    # Set agent version in registry path
+    if connected_cluster.agent_version is not None:
+        agent_version = connected_cluster.agent_version
+        registry_path = reg_path_array[0] + ":" + agent_version
+
+    telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.AgentVersion': agent_version})
+
+    # Get Helm chart path
+    chart_path = utils.get_chart_path(registry_path, kube_config, kube_context)
+
+    cmd_helm_upgrade = ["helm", "upgrade", "azure-arc", chart_path,
+                        "--reuse-values",
+                        "--wait", "--output", "json"]
+    if values_file_provided:
+        cmd_helm_upgrade.extend(["-f", values_file])
+    if kube_config:
+        cmd_helm_upgrade.extend(["--kubeconfig", kube_config])
+    if kube_context:
+        cmd_helm_upgrade.extend(["--kube-context", kube_context])
+    # Disable cluster-connect
+    cmd_helm_upgrade.extend(["--set", "systemDefaultValues.clusterconnect-agent.enabled=false"])
+    # Disable custom location
+    cmd_helm_upgrade.extend(["--set", "systemDefaultValues.customLocations.enabled=false"])
+    cmd_helm_upgrade.extend(["--set", "systemDefaultValues.customLocations.oid={}".format("")])
+
+    response_helm_upgrade = Popen(cmd_helm_upgrade, stdout=PIPE, stderr=PIPE)
+    _, error_helm_upgrade = response_helm_upgrade.communicate()
+    if response_helm_upgrade.returncode != 0:
+        if ('forbidden' in error_helm_upgrade.decode("ascii") or 'timed out waiting for the condition' in error_helm_upgrade.decode("ascii")):
+            telemetry.set_user_fault()
+        telemetry.set_exception(exception=error_helm_upgrade.decode("ascii"), fault_type=consts.Install_HelmRelease_Fault_Type,
+                                summary='Unable to upgrade helm release')
+        raise CLIInternalError(str.format(consts.Error_disabling_Features, error_helm_upgrade.decode("ascii")))
 
 
 def load_kubernetes_configuration(filename):
