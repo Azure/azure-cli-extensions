@@ -29,6 +29,21 @@ class SSHUtilsTests(unittest.TestCase):
         mock_build.assert_called_once_with("cert", "private", None)
         mock_call.assert_called_once_with(expected_command, shell=platform.system() == 'Windows')
 
+    @mock.patch.object(ssh_utils, '_get_ssh_path')
+    @mock.patch.object(ssh_utils, '_get_host')
+    @mock.patch('subprocess.call')
+    def test_start_ssh_connection_with_args(self, mock_call, mock_host, mock_path):
+        mock_path.return_value = "ssh"
+        mock_host.return_value = "user@ip"
+
+        expected_command = ["ssh", "user@ip", "-i", "private", "-o", "CertificateFile=cert", "-p", "2222", "--thing"]
+
+        ssh_utils.start_ssh_connection("2222", "--thing", "ip", "user", "cert", "private")
+
+        mock_path.assert_called_once_with()
+        mock_host.assert_called_once_with("user", "ip")
+        mock_call.assert_called_once_with(expected_command, shell=platform.system() == 'Windows')
+
     def test_write_ssh_config_ip_and_vm(self):
         expected_lines = [
             "",
