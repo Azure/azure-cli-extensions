@@ -7,6 +7,9 @@
 # --------------------------------------------------------------------------
 
 from ._communication_service_management_client import CommunicationServiceManagementClient
+from ._version import VERSION
+
+__version__ = VERSION
 __all__ = ['CommunicationServiceManagementClient']
 
 try:

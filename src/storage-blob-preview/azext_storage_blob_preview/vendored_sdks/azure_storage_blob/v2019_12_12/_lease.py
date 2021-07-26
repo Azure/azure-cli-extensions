@@ -7,30 +7,20 @@
 import uuid
 
 from typing import (  # pylint: disable=unused-import
-    Union, Optional, Any, IO, Iterable, AnyStr, Dict, List, Tuple,
-    TypeVar, TYPE_CHECKING
+    Union, Optional, Any, TypeVar, TYPE_CHECKING
 )
 
 from azure.core.tracing.decorator import distributed_trace
 
 from ._shared.response_handlers import return_response_headers, process_storage_error
-from ._generated.models import StorageErrorException, LeaseAccessConditions
+from ._generated.models import StorageErrorException
 from ._serialize import get_modify_conditions
 
 if TYPE_CHECKING:
     from datetime import datetime
-    from ._generated.operations import BlobOperations, ContainerOperations
+
     BlobClient = TypeVar("BlobClient")
     ContainerClient = TypeVar("ContainerClient")
-
-
-def get_access_conditions(lease):
-    # type: (Optional[Union[BlobLeaseClient, str]]) -> Union[LeaseAccessConditions, None]
-    try:
-        lease_id = lease.id # type: ignore
-    except AttributeError:
-        lease_id = lease # type: ignore
-    return LeaseAccessConditions(lease_id=lease_id) if lease_id else None
 
 
 class BlobLeaseClient(object):
@@ -106,7 +96,7 @@ class BlobLeaseClient(object):
             and act according to the condition specified by the `match_condition` parameter.
         :keyword ~azure.core.MatchConditions match_condition:
             The match condition to use upon the etag.
-        :keyword str if_tags_match_condition
+        :keyword str if_tags_match_condition:
             Specify a SQL where clause on blob tags to operate only on blob with a matching value.
             eg. "\"tagname\"='my tag'"
 
@@ -159,7 +149,7 @@ class BlobLeaseClient(object):
             and act according to the condition specified by the `match_condition` parameter.
         :keyword ~azure.core.MatchConditions match_condition:
             The match condition to use upon the etag.
-        :keyword str if_tags_match_condition
+        :keyword str if_tags_match_condition:
             Specify a SQL where clause on blob tags to operate only on blob with a matching value.
             eg. "\"tagname\"='my tag'"
 
@@ -209,7 +199,7 @@ class BlobLeaseClient(object):
             and act according to the condition specified by the `match_condition` parameter.
         :keyword ~azure.core.MatchConditions match_condition:
             The match condition to use upon the etag.
-        :keyword str if_tags_match_condition
+        :keyword str if_tags_match_condition:
             Specify a SQL where clause on blob tags to operate only on blob with a matching value.
             eg. "\"tagname\"='my tag'"
 
@@ -258,7 +248,7 @@ class BlobLeaseClient(object):
             and act according to the condition specified by the `match_condition` parameter.
         :keyword ~azure.core.MatchConditions match_condition:
             The match condition to use upon the etag.
-        :keyword str if_tags_match_condition
+        :keyword str if_tags_match_condition:
             Specify a SQL where clause on blob tags to operate only on blob with a matching value.
             eg. "\"tagname\"='my tag'"
 
@@ -317,7 +307,7 @@ class BlobLeaseClient(object):
             If a date is passed in without timezone info, it is assumed to be UTC.
             Specify this header to perform the operation only if
             the resource has not been modified since the specified date/time.
-        :keyword str if_tags_match_condition
+        :keyword str if_tags_match_condition:
             Specify a SQL where clause on blob tags to operate only on blob with a matching value.
             eg. "\"tagname\"='my tag'"
 

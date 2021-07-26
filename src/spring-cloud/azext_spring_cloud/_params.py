@@ -49,7 +49,7 @@ def load_arguments(self, _):
     for scope in ['spring-cloud create', 'spring-cloud update']:
         with self.argument_context(scope) as c:
             c.argument('app_insights_key',
-                       help="Connection string of the existing Application Insights.",
+                       help="Instrumentation key of the existing Application Insights.",
                        validator=validate_tracing_parameters)
             c.argument('app_insights',
                        help="Name of the existing Application Insights in the same Resource Group. Or Resource ID of the existing Application Insights in a different Resource Group.",
@@ -79,10 +79,10 @@ def load_arguments(self, _):
                    options_list=['--assign-endpoint', c.deprecate(target='--is-public', redirect='--assign-endpoint', hide=True)])
         c.argument('assign_identity', arg_type=get_three_state_flag(),
                    help='If true, assign managed service identity.')
-        c.argument('cpu', type=int, default=1,
-                   help='Number of virtual cpu cores per instance.')
-        c.argument('memory', type=int, default=1,
-                   help='Number of GB of memory per instance.')
+        c.argument('cpu', type=str, default="1",
+                   help='CPU resource quantity. Should be 500m or number of CPU cores.')
+        c.argument('memory', type=str, default="1Gi",
+                   help='Memory resource quantity. Should be 512Mi or #Gi, e.g., 1Gi, 3Gi.')
         c.argument('instance_count', type=int,
                    default=1, help='Number of instance.', validator=validate_instance_count)
 
@@ -140,8 +140,8 @@ def load_arguments(self, _):
             c.argument('env', env_type)
 
     with self.argument_context('spring-cloud app scale') as c:
-        c.argument('cpu', type=int, help='Number of virtual cpu cores per instance.')
-        c.argument('memory', type=int, help='Number of GB of memory per instance.')
+        c.argument('cpu', type=str, help='CPU resource quantity. Should be 500m or number of CPU cores.')
+        c.argument('memory', type=str, help='Memory resource quantity. Should be 512Mi or #Gi, e.g., 1Gi, 3Gi.')
         c.argument('instance_count', type=int, help='Number of instance.', validator=validate_instance_count)
 
     for scope in ['spring-cloud app deploy', 'spring-cloud app deployment create']:
@@ -160,8 +160,8 @@ def load_arguments(self, _):
     with self.argument_context('spring-cloud app deployment create') as c:
         c.argument('skip_clone_settings', help='Create staging deployment will automatically copy settings from production deployment.',
                    action='store_true')
-        c.argument('cpu', type=int, help='Number of virtual cpu cores per instance.')
-        c.argument('memory', type=int, help='Number of GB of memory per instance.')
+        c.argument('cpu', type=str, help='CPU resource quantity. Should be 500m or number of CPU cores.')
+        c.argument('memory', type=str, help='Memory resource quantity. Should be 512Mi or #Gi, e.g., 1Gi, 3Gi.')
         c.argument('instance_count', type=int, help='Number of instance.', validator=validate_instance_count)
 
     with self.argument_context('spring-cloud app deployment') as c:
@@ -239,7 +239,7 @@ def load_arguments(self, _):
 
     with self.argument_context('spring-cloud certificate') as c:
         c.argument('service', service_name_type)
-        c.argument('name', name_type, help='Name of certificate.')
+        c.argument('name', help='Name of certificate.')
 
     with self.argument_context('spring-cloud certificate add') as c:
         c.argument('vault_uri', help='The key vault uri where store the certificate')
@@ -260,7 +260,7 @@ def load_arguments(self, _):
 
     with self.argument_context('spring-cloud app-insights update') as c:
         c.argument('app_insights_key',
-                   help="Connection string of the existing Application Insights",
+                   help="Instrumentation key of the existing Application Insights",
                    validator=validate_app_insights_parameters)
         c.argument('app_insights',
                    help="Name of the existing Application Insights in the same Resource Group. Or Resource ID of the existing Application Insights in a different Resource Group.",

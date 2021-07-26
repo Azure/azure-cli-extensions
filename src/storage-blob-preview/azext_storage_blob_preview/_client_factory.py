@@ -3,9 +3,8 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from azure.cli.core.commands.client_factory import get_mgmt_service_client
+from azure.cli.core.commands.client_factory import get_mgmt_service_client, prepare_client_kwargs_track2
 from azure.cli.core.profiles import ResourceType, get_sdk
-from azure.cli.core.commands.client_factory import _prepare_client_kwargs_track2
 from .profiles import CUSTOM_DATA_STORAGE_BLOB, CUSTOM_MGMT_STORAGE
 
 MISSING_CREDENTIALS_ERROR_MESSAGE = """
@@ -54,28 +53,37 @@ def get_credential(kwargs):
     return credential
 
 
+def _config_location_mode(kwargs, client_kwargs):
+    location_mode = kwargs.pop('location_mode', None)
+    if location_mode:
+        client_kwargs['_location_mode'] = location_mode
+    return client_kwargs
+
+
 def cf_blob_service(cli_ctx, kwargs):
-    from knack.util import CLIError
-    client_kwargs = {}
+    client_kwargs = prepare_client_kwargs_track2(cli_ctx)
+    client_kwargs = _config_location_mode(kwargs, client_kwargs)
     t_blob_service = get_sdk(cli_ctx, CUSTOM_DATA_STORAGE_BLOB,
                              '_blob_service_client#BlobServiceClient')
     connection_string = kwargs.pop('connection_string', None)
     account_name = kwargs.pop('account_name', None)
-
-    location_mode = kwargs.pop('location_mode', None)
-    if location_mode:
-        client_kwargs['_location_mode'] = location_mode
-    client_kwargs.update(_prepare_client_kwargs_track2(cli_ctx))
+    account_key = kwargs.pop('account_key', None)
+    token_credential = kwargs.pop('token_credential', None)
+    sas_token = kwargs.pop('sas_token', None)
     if connection_string:
-        return t_blob_service.from_connection_string(conn_str=connection_string, **client_kwargs)
+        try:
+            return t_blob_service.from_connection_string(conn_str=connection_string, **client_kwargs)
+        except ValueError as err:
+            from azure.cli.core.azclierror import InvalidArgumentValueError
+            raise InvalidArgumentValueError('Invalid connection string: {}, err detail: {}'
+                                            .format(connection_string, str(err)),
+                                            recommendation='Try `az storage account show-connection-string` '
+                                                           'to get a valid connection string')
 
     account_url = get_account_url(cli_ctx, account_name=account_name, service='blob')
-    credential = get_credential(kwargs)
+    credential = account_key or sas_token or token_credential
 
-    if account_url and credential:
-        return t_blob_service(account_url=account_url, credential=credential, **client_kwargs)
-    raise CLIError("Please provide valid connection string, or account name with account key, "
-                   "sas token or login auth mode.")
+    return t_blob_service(account_url=account_url, credential=credential, **client_kwargs)
 
 
 def cf_blob_client(cli_ctx, kwargs):
@@ -122,3 +130,57 @@ def cf_blob_sas(cli_ctx, kwargs):
 
     return t_blob_sas(account_name=kwargs.pop('account_name', None),
                       account_key=kwargs.pop('account_key', None))
+
+
+def cf_adls_service(cli_ctx, kwargs):
+    t_adls_service = get_sdk(cli_ctx, ResourceType.DATA_STORAGE_FILEDATALAKE,
+                             '_data_lake_service_client#DataLakeServiceClient')
+    connection_string = kwargs.pop('connection_string', None)
+    account_key = kwargs.pop('account_key', None)
+    token_credential = kwargs.pop('token_credential', None)
+    sas_token = kwargs.pop('sas_token', None)
+    if connection_string:
+        return t_adls_service.from_connection_string(connection_string=connection_string)
+
+    account_url = get_account_url(cli_ctx, account_name=kwargs.pop('account_name', None), service='dfs')
+    credential = account_key or sas_token or token_credential
+
+    if account_url and credential:
+        return t_adls_service(account_url=account_url, credential=credential)
+    return None
+
+
+def cf_adls_file_system(cli_ctx, kwargs):
+    return cf_adls_service(cli_ctx, kwargs).get_file_system_client(file_system=kwargs.pop('file_system_name'))
+
+
+def cf_adls_directory(cli_ctx, kwargs):
+    return cf_adls_file_system(cli_ctx, kwargs).get_directory_client(directory=kwargs.pop('directory_path'))
+
+
+def cf_adls_file(cli_ctx, kwargs):
+    return cf_adls_service(cli_ctx, kwargs).get_file_client(file_system=kwargs.pop('file_system_name', None),
+                                                            file_path=kwargs.pop('path', None))
+
+
+def cf_share_service(cli_ctx, kwargs):
+    t_share_service = get_sdk(cli_ctx, ResourceType.DATA_STORAGE_FILESHARE, '_share_service_client#ShareServiceClient')
+    connection_string = kwargs.pop('connection_string', None)
+    account_key = kwargs.pop('account_key', None)
+    token_credential = kwargs.pop('token_credential', None)
+    sas_token = kwargs.pop('sas_token', None)
+    account_name = kwargs.pop('account_name', None)
+    if connection_string:
+        return t_share_service.from_connection_string(conn_str=connection_string)
+
+    account_url = get_account_url(cli_ctx, account_name=account_name, service='file')
+    credential = account_key or sas_token or token_credential
+
+    if account_url and credential:
+        return t_share_service(account_url=account_url, credential=credential)
+    return None
+
+
+def cf_share_client(cli_ctx, kwargs):
+    return cf_share_service(cli_ctx, kwargs).get_share_client(share=kwargs.pop('share_name'),
+                                                              snapshot=kwargs.pop('snapshot', None))
