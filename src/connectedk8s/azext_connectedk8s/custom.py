@@ -790,7 +790,7 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
     if "3.3.0-rc" in helm_version:
         raise ClientRequestError("The current helm version is not supported for azure-arc onboarding. Please upgrade helm to a stable version and try again.")
 
-    validate_release_namespace(client, cluster_name, resource_group_name, configuration, kube_config, kube_context)
+    release_namespace = validate_release_namespace(client, cluster_name, resource_group_name, configuration, kube_config, kube_context)
 
     # Fetch Connected Cluster for agent version
     connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
@@ -835,7 +835,7 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
     # Get Helm chart path
     chart_path = utils.get_chart_path(registry_path, kube_config, kube_context)
 
-    cmd_helm_upgrade = ["helm", "upgrade", "azure-arc", chart_path,
+    cmd_helm_upgrade = ["helm", "upgrade", "azure-arc", chart_path, "--namespace", release_namespace,
                         "--reuse-values",
                         "--wait", "--output", "json"]
     if values_file_provided:
@@ -1194,7 +1194,7 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
     if "3.3.0-rc" in helm_version:
         raise ClientRequestError("The current helm version is not supported for azure-arc onboarding. Please upgrade helm to a stable version and try again.")
 
-    validate_release_namespace(client, cluster_name, resource_group_name, configuration, kube_config, kube_context)
+    release_namespace = validate_release_namespace(client, cluster_name, resource_group_name, configuration, kube_config, kube_context)
 
     # Fetch Connected Cluster for agent version
     connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
@@ -1239,7 +1239,7 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
     # Get Helm chart path
     chart_path = utils.get_chart_path(registry_path, kube_config, kube_context)
 
-    cmd_helm_upgrade = ["helm", "upgrade", "azure-arc", chart_path,
+    cmd_helm_upgrade = ["helm", "upgrade", "azure-arc", chart_path, "--namespace", release_namespace,
                         "--reuse-values",
                         "--wait", "--output", "json"]
     if values_file_provided:
@@ -1380,7 +1380,7 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
     # Get Helm chart path
     chart_path = utils.get_chart_path(registry_path, kube_config, kube_context)
 
-    cmd_helm_upgrade = ["helm", "upgrade", "azure-arc", chart_path,
+    cmd_helm_upgrade = ["helm", "upgrade", "azure-arc", chart_path, "--namespace", release_namespace,
                         "--reuse-values",
                         "--wait", "--output", "json"]
     if values_file_provided:

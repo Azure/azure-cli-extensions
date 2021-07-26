@@ -98,6 +98,16 @@ helps['disk-pool delete'] = """
                az disk-pool delete --name "myDiskPool" --resource-group "myResourceGroup"
 """
 
+helps['disk-pool list-outbound-network-dependency-endpoint'] = """
+    type: command
+    short-summary: "Gets the network endpoints of all outbound dependencies of a Disk Pool."
+    examples:
+      - name: Get Disk Pool outbound network dependencies
+        text: |-
+               az disk-pool list-outbound-network-dependency-endpoint --name "SampleAse" --resource-group \
+"Sample-WestUSResourceGroup"
+"""
+
 helps['disk-pool list-skus'] = """
     type: command
     short-summary: "Lists available Disk Pool Skus in an Azure location."
