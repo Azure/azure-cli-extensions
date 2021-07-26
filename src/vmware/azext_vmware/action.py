@@ -1,0 +1,57 @@
+
+# --------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
+
+import argparse
+from typing import Dict, List
+from knack.util import CLIError
+from azext_vmware.vendored_sdks.avs_client.models import ScriptExecutionParameter, ScriptExecutionParameterType, ScriptStringExecutionParameter, ScriptSecureStringExecutionParameter, PSCredentialExecutionParameter
+
+
+class ScriptExecutionParameterAction(argparse._AppendAction):
+
+    def __call__(self, parser, namespace, values, option_string=None):
+        print("action called with")
+        print(values)
+        parameter = script_execution_parameters(values)
+        if namespace.parameters:
+            namespace.parameters.append(parameter)
+        else:
+            namespace.parameters = [parameter]
+
+
+def script_execution_parameters(values: List[str]) -> ScriptExecutionParameter:
+    values = dict(map(lambda x: x.split('=', 1), values))
+    type = require(values, "type")
+    type_lower = type.lower()
+
+    if type_lower == ScriptExecutionParameterType.VALUE.lower():
+        try:
+            return ScriptStringExecutionParameter(name=require(values, "name"), value=values.get("value"))
+        except CLIError as error:
+            raise CLIError('parsing {} script execution parameter'.format(ScriptExecutionParameterType.VALUE)) from error
+
+    elif type_lower == ScriptExecutionParameterType.SECURE_VALUE.lower():
+        try:
+            return ScriptSecureStringExecutionParameter(name=require(values, "name"), secure_value=values.get("secureValue"))
+        except CLIError as error:
+            raise CLIError('parsing {} script execution parameter'.format(ScriptExecutionParameterType.SECURE_VALUE)) from error
+
+    elif type_lower == ScriptExecutionParameterType.CREDENTIAL.lower():
+        try:
+            return PSCredentialExecutionParameter(name=require(values, "name"), username=values.get("username"), password=values.get("password"))
+        except CLIError as error:
+            raise CLIError('parsing {} script execution parameter'.format(ScriptExecutionParameterType.CREDENTIAL)) from error
+
+    else:
+        raise CLIError('script execution paramater type \'{}\' not matched'.format(type))
+
+
+def require(values: Dict[str, str], key: str) -> str:
+    '''Gets the required script execution parameter or raises a CLIError.'''
+    value = values.get(key)
+    if value is None:
+        raise CLIError('script execution parameter \'{}\' required'.format(key))
+    return value
