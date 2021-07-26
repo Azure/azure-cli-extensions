@@ -23,8 +23,8 @@ if TYPE_CHECKING:
     T = TypeVar('T')
     ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
 
-class PublishedArtifactsOperations(object):
-    """PublishedArtifactsOperations operations.
+class AssignmentOperationsOperations(object):
+    """AssignmentOperationsOperations operations.
 
     You should not instantiate this class directly. Instead, you should create a Client instance that
     instantiates it for you and attaches it as an attribute.
@@ -45,98 +45,27 @@ class PublishedArtifactsOperations(object):
         self._deserialize = deserializer
         self._config = config
 
-    def get(
-        self,
-        resource_scope,  # type: str
-        blueprint_name,  # type: str
-        version_id,  # type: str
-        artifact_name,  # type: str
-        **kwargs  # type: Any
-    ):
-        # type: (...) -> "_models.Artifact"
-        """Get an artifact for a published blueprint definition.
-
-        :param resource_scope: The scope of the resource. Valid scopes are: management group (format:
-         '/providers/Microsoft.Management/managementGroups/{managementGroup}'), subscription (format:
-         '/subscriptions/{subscriptionId}').
-        :type resource_scope: str
-        :param blueprint_name: Name of the blueprint definition.
-        :type blueprint_name: str
-        :param version_id: Version of the published blueprint definition.
-        :type version_id: str
-        :param artifact_name: Name of the blueprint artifact.
-        :type artifact_name: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: Artifact, or the result of cls(response)
-        :rtype: ~blueprint_management_client.models.Artifact
-        :raises: ~azure.core.exceptions.HttpResponseError
-        """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.Artifact"]
-        error_map = {
-            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
-        }
-        error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2018-11-01-preview"
-        accept = "application/json"
-
-        # Construct URL
-        url = self.get.metadata['url']  # type: ignore
-        path_format_arguments = {
-            'resourceScope': self._serialize.url("resource_scope", resource_scope, 'str', skip_quote=True),
-            'blueprintName': self._serialize.url("blueprint_name", blueprint_name, 'str'),
-            'versionId': self._serialize.url("version_id", version_id, 'str'),
-            'artifactName': self._serialize.url("artifact_name", artifact_name, 'str'),
-        }
-        url = self._client.format_url(url, **path_format_arguments)
-
-        # Construct parameters
-        query_parameters = {}  # type: Dict[str, Any]
-        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
-
-        # Construct headers
-        header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
-
-        request = self._client.get(url, query_parameters, header_parameters)
-        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
-        response = pipeline_response.http_response
-
-        if response.status_code not in [200]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
-
-        deserialized = self._deserialize('Artifact', pipeline_response)
-
-        if cls:
-            return cls(pipeline_response, deserialized, {})
-
-        return deserialized
-    get.metadata = {'url': '/{resourceScope}/providers/Microsoft.Blueprint/blueprints/{blueprintName}/versions/{versionId}/artifacts/{artifactName}'}  # type: ignore
-
     def list(
         self,
         resource_scope,  # type: str
-        blueprint_name,  # type: str
-        version_id,  # type: str
+        assignment_name,  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> Iterable["_models.ArtifactList"]
-        """List artifacts for a version of a published blueprint definition.
+        # type: (...) -> Iterable["_models.AssignmentOperationList"]
+        """List operations for given blueprint assignment within a subscription or a management group.
 
         :param resource_scope: The scope of the resource. Valid scopes are: management group (format:
          '/providers/Microsoft.Management/managementGroups/{managementGroup}'), subscription (format:
          '/subscriptions/{subscriptionId}').
         :type resource_scope: str
-        :param blueprint_name: Name of the blueprint definition.
-        :type blueprint_name: str
-        :param version_id: Version of the published blueprint definition.
-        :type version_id: str
+        :param assignment_name: Name of the blueprint assignment.
+        :type assignment_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either ArtifactList or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~blueprint_management_client.models.ArtifactList]
+        :return: An iterator like instance of either AssignmentOperationList or the result of cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~blueprint_management_client.models.AssignmentOperationList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.ArtifactList"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.AssignmentOperationList"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -154,8 +83,7 @@ class PublishedArtifactsOperations(object):
                 url = self.list.metadata['url']  # type: ignore
                 path_format_arguments = {
                     'resourceScope': self._serialize.url("resource_scope", resource_scope, 'str', skip_quote=True),
-                    'blueprintName': self._serialize.url("blueprint_name", blueprint_name, 'str'),
-                    'versionId': self._serialize.url("version_id", version_id, 'str'),
+                    'assignmentName': self._serialize.url("assignment_name", assignment_name, 'str'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
@@ -170,7 +98,7 @@ class PublishedArtifactsOperations(object):
             return request
 
         def extract_data(pipeline_response):
-            deserialized = self._deserialize('ArtifactList', pipeline_response)
+            deserialized = self._deserialize('AssignmentOperationList', pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
@@ -191,4 +119,68 @@ class PublishedArtifactsOperations(object):
         return ItemPaged(
             get_next, extract_data
         )
-    list.metadata = {'url': '/{resourceScope}/providers/Microsoft.Blueprint/blueprints/{blueprintName}/versions/{versionId}/artifacts'}  # type: ignore
+    list.metadata = {'url': '/{resourceScope}/providers/Microsoft.Blueprint/blueprintAssignments/{assignmentName}/assignmentOperations'}  # type: ignore
+
+    def get(
+        self,
+        resource_scope,  # type: str
+        assignment_name,  # type: str
+        assignment_operation_name,  # type: str
+        **kwargs  # type: Any
+    ):
+        # type: (...) -> "_models.AssignmentOperation"
+        """Get a blueprint assignment operation.
+
+        :param resource_scope: The scope of the resource. Valid scopes are: management group (format:
+         '/providers/Microsoft.Management/managementGroups/{managementGroup}'), subscription (format:
+         '/subscriptions/{subscriptionId}').
+        :type resource_scope: str
+        :param assignment_name: Name of the blueprint assignment.
+        :type assignment_name: str
+        :param assignment_operation_name: Name of the blueprint assignment operation.
+        :type assignment_operation_name: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :return: AssignmentOperation, or the result of cls(response)
+        :rtype: ~blueprint_management_client.models.AssignmentOperation
+        :raises: ~azure.core.exceptions.HttpResponseError
+        """
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.AssignmentOperation"]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
+        api_version = "2018-11-01-preview"
+        accept = "application/json"
+
+        # Construct URL
+        url = self.get.metadata['url']  # type: ignore
+        path_format_arguments = {
+            'resourceScope': self._serialize.url("resource_scope", resource_scope, 'str', skip_quote=True),
+            'assignmentName': self._serialize.url("assignment_name", assignment_name, 'str'),
+            'assignmentOperationName': self._serialize.url("assignment_operation_name", assignment_operation_name, 'str'),
+        }
+        url = self._client.format_url(url, **path_format_arguments)
+
+        # Construct parameters
+        query_parameters = {}  # type: Dict[str, Any]
+        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+
+        # Construct headers
+        header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+
+        request = self._client.get(url, query_parameters, header_parameters)
+        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+
+        deserialized = self._deserialize('AssignmentOperation', pipeline_response)
+
+        if cls:
+            return cls(pipeline_response, deserialized, {})
+
+        return deserialized
+    get.metadata = {'url': '/{resourceScope}/providers/Microsoft.Blueprint/blueprintAssignments/{assignmentName}/assignmentOperations/{assignmentOperationName}'}  # type: ignore
