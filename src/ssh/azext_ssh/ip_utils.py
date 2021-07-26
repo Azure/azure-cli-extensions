@@ -11,6 +11,7 @@ from knack import log
 
 logger = log.get_logger(__name__)
 
+
 def get_ssh_ip(cmd, resource_group, vm_name, use_private_ip):
     compute_client = client_factory.get_mgmt_service_client(cmd.cli_ctx, profiles.ResourceType.MGMT_COMPUTE)
     network_client = client_factory.get_mgmt_service_client(cmd.cli_ctx, profiles.ResourceType.MGMT_NETWORK)
@@ -38,7 +39,8 @@ def get_ssh_ip(cmd, resource_group, vm_name, use_private_ip):
                 private_ips += ip_config.private_ip_address
 
     if len(private_ips) > 0:
-        logger.warning("No public IP detected, attempting private IP (you must bring your own connectivity)")
+        logger.warning("No public IP detected, attempting private IP (you must bring your own connectivity).")
+        logger.warning("Use --prefer-private-ip to avoid this message.")
         return private_ips[0]
 
     return None

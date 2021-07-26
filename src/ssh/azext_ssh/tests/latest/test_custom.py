@@ -19,7 +19,7 @@ class SshCustomCommandTest(unittest.TestCase):
         custom.ssh_vm(cmd, "rg", "vm", "ip", "public", "private", False)
 
         mock_do_op.assert_called_once_with(
-            cmd, "rg", "vm", "ip", "public", "private", False, mock_ssh_utils.start_ssh_connection)
+            cmd, "rg", "vm", "ip", "public", "private", False, mock.ANY)
 
     @mock.patch('azext_ssh.custom._do_ssh_op')
     @mock.patch('azext_ssh.ssh_utils.write_ssh_config')

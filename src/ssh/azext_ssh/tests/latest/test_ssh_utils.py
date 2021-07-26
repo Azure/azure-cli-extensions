@@ -22,11 +22,11 @@ class SSHUtilsTests(unittest.TestCase):
         mock_build.return_value = ['-i', 'file', '-o', 'option']
         expected_command = ["ssh", "user@ip", "-i", "file", "-o", "option"]
 
-        ssh_utils.start_ssh_connection("ip", "user", "cert", "private")
+        ssh_utils.start_ssh_connection(None, None, "ip", "user", "cert", "private")
 
         mock_path.assert_called_once_with()
         mock_host.assert_called_once_with("user", "ip")
-        mock_build.assert_called_once_with("cert", "private")
+        mock_build.assert_called_once_with("cert", "private", None)
         mock_call.assert_called_once_with(expected_command, shell=platform.system() == 'Windows')
 
     def test_write_ssh_config_ip_and_vm(self):
@@ -53,7 +53,7 @@ class SSHUtilsTests(unittest.TestCase):
         mock_open.assert_called_once_with("path/to/file", "w")
         mock_file.write.assert_called_once_with('\n'.join(expected_lines))
 
-    def test_write_ssh_config_append(self, mock_make_dirs):
+    def test_write_ssh_config_append(self):
         expected_lines = [
             "",
             "Host rg-vm",
@@ -127,8 +127,8 @@ class SSHUtilsTests(unittest.TestCase):
         self.assertEqual("username@10.0.0.1", actual_host)
 
     def test_build_args(self):
-        actual_args = ssh_utils._build_args("cert", "privatekey")
-        expected_args = ["-i", "privatekey", "-o", "CertificateFile=cert"]
+        actual_args = ssh_utils._build_args("cert", "privatekey", "2222")
+        expected_args = ["-i", "privatekey", "-o", "CertificateFile=cert", "-p", "2222"]
         self.assertEqual(expected_args, actual_args)
 
     @mock.patch('platform.system')
