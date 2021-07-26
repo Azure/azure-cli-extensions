@@ -1,5 +1,10 @@
 Release History
 ===============
+0.1.6
+-----
+* Add support for direct MSAL usage in newer azure cli (beta currently)
+* 
+
 0.1.5
 -----
 * Add public key error message

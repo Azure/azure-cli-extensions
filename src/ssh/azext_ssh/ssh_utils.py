@@ -51,7 +51,6 @@ def get_ssh_cert_principals(cert_file):
 
 def write_ssh_config(config_path, resource_group, vm_name, overwrite,
                      ip, username, cert_file, private_key_file):
-    file_utils.make_dirs_for_file(config_path)
 
     lines = [""]
 

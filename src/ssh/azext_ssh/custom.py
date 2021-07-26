@@ -114,7 +114,10 @@ def _check_or_create_public_private_files(public_key_file, private_key_file):
         ssh_utils.create_ssh_keyfile(private_key_file)
 
     if not public_key_file:
-        raise util.CLIError("Public key file not specified")
+        if private_key_file:
+            public_key_file = private_key_file + ".pub"
+        else:
+            raise util.CLIError("Public key file not specified")
 
     if not os.path.isfile(public_key_file):
         raise util.CLIError(f"Public key file {public_key_file} not found")
