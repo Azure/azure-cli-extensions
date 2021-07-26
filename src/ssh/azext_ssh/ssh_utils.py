@@ -14,9 +14,9 @@ from . import file_utils
 logger = log.get_logger(__name__)
 
 
-def start_ssh_connection(ip, username, cert_file, private_key_file):
+def start_ssh_connection(port, ssh_args, ip, username, cert_file, private_key_file):
     command = [_get_ssh_path(), _get_host(username, ip)]
-    command = command + _build_args(cert_file, private_key_file)
+    command = command + _build_args(cert_file, private_key_file, port) + [ssh_args]
     logger.debug("Running ssh command %s", ' '.join(command))
     subprocess.call(command, shell=platform.system() == 'Windows')
 
@@ -105,9 +105,12 @@ def _get_host(username, ip):
     return username + "@" + ip
 
 
-def _build_args(cert_file, private_key_file):
+def _build_args(cert_file, private_key_file, port):
     private_key = []
+    port_arg = []
     if private_key_file:
         private_key = ["-i", private_key_file]
+    if port:
+        port_arg = ["-p", port]
     certificate = ["-o", "CertificateFile=" + cert_file]
-    return private_key + certificate
+    return private_key + certificate + port_arg

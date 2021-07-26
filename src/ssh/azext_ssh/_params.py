@@ -13,6 +13,8 @@ def load_arguments(self, _):
         c.argument('private_key_file', options_list=['--private-key-file', '-i'], help='The RSA private key file path')
         c.argument('use_private_ip', options_list=['--prefer-private-ip'],
                    help='Will use a private IP if available.  Requires connectivity to the private IP. By default only public IPs are used.')
+        c.argument('port', options_list=['--port'], help='SSH port')
+        c.argument('ssh_args', options_list=['--ssh-args'], help='SSH Additional arguments')
 
     with self.argument_context('ssh config') as c:
         c.argument('config_path', options_list=['--file', '-f'], help='The file path to write the SSH config to')
