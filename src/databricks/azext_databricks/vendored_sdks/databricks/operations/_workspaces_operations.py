@@ -527,7 +527,6 @@ class WorkspacesOperations(object):
 
         def extract_data(pipeline_response):
             deserialized = self._deserialize('WorkspaceListResult', pipeline_response)
-            print(deserialized)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)

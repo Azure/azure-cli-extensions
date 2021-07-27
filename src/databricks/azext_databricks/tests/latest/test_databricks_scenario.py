@@ -225,6 +225,6 @@ class DatabricksVNetPeeringScenarioTest(ScenarioTest):
 
         # delete the peering
         self.cmd('az databricks workspace vnet-peering delete -n {peering_name} --workspace-name {workspace_name} -g {rg}')
-        # self.cmd('az databricks workspace vnet-peering list --workspace-name {workspace_name} -g {rg}', checks=[
-        #     self.check('length(@)', 0)
-        # ])
+        self.cmd('az databricks workspace vnet-peering list --workspace-name {workspace_name} -g {rg}', checks=[
+            self.check('length(@)', 0)
+        ])
