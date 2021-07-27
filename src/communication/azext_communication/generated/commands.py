@@ -21,7 +21,7 @@ def load_command_table(self, _):
         'ommunicationServiceOperations.{}',
         client_factory=cf_communication_service)
     with self.command_group('communication', communication_communication_service,
-                            client_factory=cf_communication_service, is_preview=True) as g:
+                            client_factory=cf_communication_service) as g:
         g.custom_command('list', 'communication_list')
         g.custom_show_command('show', 'communication_show')
         g.custom_command('create', 'communication_create', supports_no_wait=True)
@@ -31,12 +31,3 @@ def load_command_table(self, _):
         g.custom_command('list-key', 'communication_list_key')
         g.custom_command('regenerate-key', 'communication_regenerate_key')
         g.custom_wait_command('wait', 'communication_show')
-
-    from azext_communication.generated._client_factory import cf_operation_statuses
-    communication_operation_statuses = CliCommandType(
-        operations_tmpl='azext_communication.vendored_sdks.communication.operations._operation_statuses_operations#Oper'
-        'ationStatusesOperations.{}',
-        client_factory=cf_operation_statuses)
-    with self.command_group('communication', communication_operation_statuses, client_factory=cf_operation_statuses,
-                            is_preview=True) as g:
-        g.custom_command('show-status', 'communication_show_status')

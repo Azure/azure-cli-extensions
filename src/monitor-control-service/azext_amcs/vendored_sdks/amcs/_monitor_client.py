@@ -18,6 +18,7 @@ if TYPE_CHECKING:
     from azure.core.credentials import TokenCredential
 
 from ._configuration import MonitorClientConfiguration
+from .operations import DataCollectionEndpointsOperations
 from .operations import DataCollectionRuleAssociationsOperations
 from .operations import DataCollectionRulesOperations
 from . import models
@@ -26,10 +27,12 @@ from . import models
 class MonitorClient(object):
     """Monitor Management Client.
 
+    :ivar data_collection_endpoints: DataCollectionEndpointsOperations operations
+    :vartype data_collection_endpoints: azure.mgmt.amcs.operations.DataCollectionEndpointsOperations
     :ivar data_collection_rule_associations: DataCollectionRuleAssociationsOperations operations
-    :vartype data_collection_rule_associations: $(python-base-namespace).v2019_11_01_preview.operations.DataCollectionRuleAssociationsOperations
+    :vartype data_collection_rule_associations: azure.mgmt.amcs.operations.DataCollectionRuleAssociationsOperations
     :ivar data_collection_rules: DataCollectionRulesOperations operations
-    :vartype data_collection_rules: $(python-base-namespace).v2019_11_01_preview.operations.DataCollectionRulesOperations
+    :vartype data_collection_rules: azure.mgmt.amcs.operations.DataCollectionRulesOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials.TokenCredential
     :param subscription_id: The ID of the target subscription.
@@ -55,6 +58,8 @@ class MonitorClient(object):
         self._serialize.client_side_validation = False
         self._deserialize = Deserializer(client_models)
 
+        self.data_collection_endpoints = DataCollectionEndpointsOperations(
+            self._client, self._config, self._serialize, self._deserialize)
         self.data_collection_rule_associations = DataCollectionRuleAssociationsOperations(
             self._client, self._config, self._serialize, self._deserialize)
         self.data_collection_rules = DataCollectionRulesOperations(

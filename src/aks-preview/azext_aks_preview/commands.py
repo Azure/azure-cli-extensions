@@ -24,12 +24,14 @@ def load_command_table(self, _):
     managed_clusters_sdk = CliCommandType(
         operations_tmpl='azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks.'
                         'operations._managed_clusters_operations#ManagedClustersOperations.{}',
+        operation_group='managed_clusters',
         client_factory=cf_managed_clusters
     )
 
     container_services_sdk = CliCommandType(
         operations_tmpl='azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks.'
                         'operations.container_service_operations#ContainerServicesOperations.{}',
+        operation_group='container_services',
         client_factory=cf_container_services
     )
 
@@ -67,8 +69,8 @@ def load_command_table(self, _):
                          confirmation='Kubernetes will be unavailable during certificate rotation process.\n' +
                          'Are you sure you want to perform this operation?')
         g.wait_command('wait')
-        g.command('stop', 'stop', supports_no_wait=True)
-        g.command('start', 'start', supports_no_wait=True)
+        g.command('stop', 'begin_stop', supports_no_wait=True)
+        g.command('start', 'begin_start', supports_no_wait=True)
         g.custom_command('get-os-options', 'aks_get_os_options')
 
     # AKS container service commands
@@ -120,3 +122,7 @@ def load_command_table(self, _):
         g.custom_command('update', 'aks_pod_identity_exception_update')
         g.custom_command('list', 'aks_pod_identity_exception_list',
                          table_transformer=aks_pod_identity_exceptions_table_format)
+
+    # AKS egress commands
+    with self.command_group('aks egress-endpoints', managed_clusters_sdk, client_factory=cf_managed_clusters) as g:
+        g.custom_command('list', 'aks_egress_endpoints_list')

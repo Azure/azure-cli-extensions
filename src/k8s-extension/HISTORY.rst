@@ -3,6 +3,29 @@
 Release History
 ===============
 
+0.6.0
+++++++++++++++++++
+* Update extension resource models to Track2
+
+0.5.1
+++++++++++++++++++
+* Remove pyhelm dependency
+
+0.5.0
+++++++++++++++++++
+* Add microsoft.openservicemesh customization to check distros
+* Delete customization for partners 
+
+0.4.3
+++++++++++++++++++
+* Add SSL support for AzureML
+
+0.4.2
+++++++++++++++++++
+
+* Hotfix servicebus namespace creation for Track 2 changes
+* Change resource tag from 'amlk8s' to 'Azure Arc-enabled ML' in microsoft.azureml.kubernetes
+
 0.4.1
 ++++++++++++++++++
 

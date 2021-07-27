@@ -13,7 +13,7 @@ This package provides commands to
 Install this extension using the below CLI command
 
 ```sh
-az extension add --name cosmodb-preview
+az extension add --name cosmosdb-preview
 ```
 
 ### Included Features ###
@@ -22,6 +22,15 @@ az extension add --name cosmodb-preview
 
 ```sh
 az cosmosdb create \
+    --resource-group "my-rg" \
+    --name "my-continuous-backup-account" \
+    --backup-policy-type "Continuous"
+```
+
+#### Convert a periodic backup policy CosmosDB account to continuous backup Account ####
+
+```sh
+az cosmosdb update \
     --resource-group "my-rg" \
     --name "my-continuous-backup-account" \
     --backup-policy-type "Continuous"

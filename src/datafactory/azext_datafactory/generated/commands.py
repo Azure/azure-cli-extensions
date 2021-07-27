@@ -20,7 +20,7 @@ def load_command_table(self, _):
         operations_tmpl='azext_datafactory.vendored_sdks.datafactory.operations._factories_operations#FactoriesOperatio'
         'ns.{}',
         client_factory=cf_factory)
-    with self.command_group('datafactory', datafactory_factory, client_factory=cf_factory, is_experimental=True) as g:
+    with self.command_group('datafactory', datafactory_factory, client_factory=cf_factory) as g:
         g.custom_command('list', 'datafactory_list')
         g.custom_show_command('show', 'datafactory_show')
         g.custom_command('create', 'datafactory_create')

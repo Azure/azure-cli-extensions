@@ -2,7 +2,7 @@
 
 Release History
 ===============
-0.3.0
+0.3.1
 ++++++
 * Support query placeholder for `--condition` parameter.
 * Add `--condition-query` parameter to support query placeholder.

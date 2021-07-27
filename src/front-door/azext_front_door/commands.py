@@ -105,6 +105,7 @@ def load_command_table(self, _):
 
     with self.command_group('network front-door backend-pool backend', frontdoor_sdk) as g:
         g.custom_command('add', 'add_fd_backend')
+        g.custom_command('update', 'update_fd_backend')
         g.custom_command('list', 'list_fd_backends')
         g.custom_command('remove', 'remove_fd_backend')
 

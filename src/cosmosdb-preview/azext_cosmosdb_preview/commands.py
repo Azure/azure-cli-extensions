@@ -99,11 +99,11 @@ def load_command_table(self, _):
         g.custom_command('node-status', 'cli_cosmosdb_managed_cassandra_fetch_node_status', table_transformer=amc_node_status_table_format, supports_no_wait=True)
         g.custom_command('list', 'cli_cosmosdb_managed_cassandra_cluster_list')
         g.show_command('show', 'get')
-        g.command('delete', 'delete', confirmation=True, supports_no_wait=True)
+        g.command('delete', 'begin_delete', confirmation=True, supports_no_wait=True)
 
     with self.command_group('managed-cassandra datacenter', cosmosdb_managed_cassandra_datacenter_sdk, client_factory=cf_cassandra_data_center, is_preview=True) as g:
         g.custom_command('create', 'cli_cosmosdb_managed_cassandra_datacenter_create', supports_no_wait=True)
         g.custom_command('update', 'cli_cosmosdb_managed_cassandra_datacenter_update', supports_no_wait=True)
         g.command('list', 'list')
         g.show_command('show', 'get')
-        g.command('delete', 'delete', confirmation=True, supports_no_wait=True)
+        g.command('delete', 'begin_delete', confirmation=True, supports_no_wait=True)

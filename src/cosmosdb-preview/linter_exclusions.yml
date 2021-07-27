@@ -44,4 +44,25 @@ cosmosdb update:
     virtual_network_rules:
       rule_exclusions:
       - option_length_too_long
-    
+managed-cassandra cluster create:
+  parameters:
+    authentication_method:
+      rule_exclusions:
+      - option_length_too_long
+    cluster_name_override:
+      rule_exclusions:
+      - option_length_too_long
+    hours_between_backups:
+      rule_exclusions:
+      - option_length_too_long
+    restore_from_backup_id:
+      rule_exclusions:
+      - option_length_too_long
+managed-cassandra cluster update:
+  parameters:
+    authentication_method:
+      rule_exclusions:
+      - option_length_too_long
+    hours_between_backups:
+      rule_exclusions:
+      - option_length_too_long
