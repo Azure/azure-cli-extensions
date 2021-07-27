@@ -317,6 +317,9 @@ helps['aks create'] = """
         - name: --linux-os-config
           type: string
           short-summary: OS configurations for Linux agent nodes.
+        - name: --http-proxy-config
+          type: string
+          short-summary: Http Proxy configuration for this cluster.
         - name: --enable-pod-identity
           type: bool
           short-summary: (PREVIEW) Enable pod identity addon.
@@ -967,6 +970,9 @@ helps['aks nodepool upgrade'] = """
         - name: --max-surge
           type: string
           short-summary: Extra nodes used to speed upgrade. When specified, it represents the number or percent used, eg. 5 or 33%
+        - name: --aks-custom-headers
+          type: string
+          short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
 """
 
 helps['aks nodepool update'] = """
