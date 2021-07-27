@@ -18,6 +18,12 @@ function Has-ExtensionData {
     return $false
 }
 
+
+function Has-Identity-Provisioned {
+    $output = kubectl get azureclusteridentityrequests -n azure-arc container-insights-clusteridentityrequest -o json | ConvertFrom-Json
+    return ($null -ne $output.status.expirationTime) -and ($null -ne $output.status.tokenReference.dataName) -and ($null -ne $output.status.tokenReference.secretName)
+}
+
 function Get-ExtensionStatus {
     param(
         [string]$extensionName
