@@ -116,7 +116,7 @@ from ._consts import CONST_CONFCOM_ADDON_NAME, CONST_ACC_SGX_QUOTE_HELPER_ENABLE
 from ._consts import CONST_OPEN_SERVICE_MESH_ADDON_NAME
 from ._consts import CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME, CONST_SECRET_ROTATION_ENABLED
 from ._consts import CONST_MANAGED_IDENTITY_OPERATOR_ROLE, CONST_MANAGED_IDENTITY_OPERATOR_ROLE_ID
-from ._consts import ADDONS
+from ._consts import ADDONS, ADDONS_DESCRIPTIONS
 from .maintenanceconfiguration import aks_maintenanceconfiguration_update_internal
 from ._consts import CONST_PRIVATE_DNS_ZONE_SYSTEM, CONST_PRIVATE_DNS_ZONE_NONE
 logger = get_logger(__name__)
@@ -3432,6 +3432,21 @@ def aks_agentpool_delete(cmd,   # pylint: disable=unused-argument
                        "use 'aks nodepool list' to get current node pool list".format(nodepool_name))
 
     return sdk_no_wait(no_wait, client.begin_delete, resource_group_name, cluster_name, nodepool_name)
+
+def aks_addon_list_available():
+    available_addons = []
+    for k, v in ADDONS.items():
+        available_addons.append({
+            "name": k,
+            "description": ADDONS_DESCRIPTIONS[v]
+        })
+    return available_addons
+
+def aks_addon_list(cmd, client, resource_group_name, name): # pylint: disable=unused-argument
+    instance = client.get(resource_group_name, name)
+    addon_profiles = instance.addon_profiles.keys()
+
+    return instance.addon_profiles
 
 
 def aks_disable_addons(cmd, client, resource_group_name, name, addons, no_wait=False):

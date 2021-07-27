@@ -24,6 +24,16 @@ def aks_run_command_result_format(cmdResult):
     result['started At'] = cmdResult['startedAt']
     return result
 
+def aks_addon_list_available_table_format(result):
+    return [_aks_addon_table_format(r) for r in result]
+
+def _aks_addon_table_format(result):
+    parsed = compile_jmes("""{
+        name: name
+        description: description
+    }""")
+    return parsed.search(result, Options(dict_cls=OrderedDict))
+
 
 def aks_agentpool_show_table_format(result):
     """Format an agent pool as summary results for display with "-o table"."""
