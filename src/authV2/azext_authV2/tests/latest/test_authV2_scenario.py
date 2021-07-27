@@ -60,22 +60,19 @@ class Authv2ScenarioTest(ScenarioTest):
             JMESPathCheck('tokenRefreshExtensionHours', None),
             JMESPathCheck('runtimeVersion', None),
             JMESPathCheck('clientId', None),
-            JMESPathCheck('clientSecret', None),
             JMESPathCheck('clientSecretCertificateThumbprint', None),
             JMESPathCheck('allowedAudiences', None),
             JMESPathCheck('issuer', None),
             JMESPathCheck('facebookAppId', None),
-            JMESPathCheck('facebookAppSecret', None),
             JMESPathCheck('facebookOauthScopes', None)
         ])
 
         # update and verify
         result = self.cmd('webapp auth-classic update -g {} -n {} --enabled true --action LoginWithFacebook '
                           '--token-store false --token-refresh-extension-hours 7.2 --runtime-version 1.2.8 '
-                          '--aad-client-id aad_client_id --aad-client-secret aad_secret --aad-client-secret-certificate-thumbprint aad_thumbprint '
+                          '--aad-client-id aad_client_id --aad-client-secret-certificate-thumbprint aad_thumbprint '
                           '--aad-allowed-token-audiences https://audience1 --aad-token-issuer-url https://issuer_url '
-                          '--facebook-app-id facebook_id --facebook-app-secret facebook_secret '
-                          '--facebook-oauth-scopes public_profile email'
+                          '--facebook-app-id facebook_id --facebook-oauth-scopes public_profile email'
                           .format(resource_group, webapp_name)).assert_with_checks([
                               JMESPathCheck(
                                   'unauthenticatedClientAction', 'RedirectToLoginPage'),
@@ -85,10 +82,8 @@ class Authv2ScenarioTest(ScenarioTest):
                               JMESPathCheck('tokenRefreshExtensionHours', 7.2),
                               JMESPathCheck('runtimeVersion', '1.2.8'),
                               JMESPathCheck('clientId', 'aad_client_id'),
-                              JMESPathCheck('clientSecret', 'aad_secret'),
                               JMESPathCheck('clientSecretCertificateThumbprint', 'aad_thumbprint'),
                               JMESPathCheck('issuer', 'https://issuer_url'),
-                              JMESPathCheck('facebookAppId', 'facebook_id'),
-                              JMESPathCheck('facebookAppSecret', 'facebook_secret')]).get_output_in_json()
+                              JMESPathCheck('facebookAppId', 'facebook_id')]).get_output_in_json()
 
         self.assertIn('https://audience1', result['allowedAudiences'])
