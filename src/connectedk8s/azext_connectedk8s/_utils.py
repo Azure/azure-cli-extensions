@@ -197,7 +197,7 @@ def arm_exception_handler(ex, fault_type, summary, return_if_not_found=False):
         if status_code // 100 == 5:
             raise AzureInternalError("Cloud error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
         raise AzureResponseError("Cloud error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
-    
+
     if isinstance(ex, ResourceNotFoundError) and return_if_not_found:
         return
 
@@ -328,7 +328,7 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, kuberne
     if kube_context:
         cmd_helm_install.extend(["--kube-context", kube_context])
     if not no_wait:
-        # Change --timeout format for helm client to understand 
+        # Change --timeout format for helm client to understand
         onboarding_timeout = onboarding_timeout + "m"
         cmd_helm_install.extend(["--wait", "--timeout", "{}".format(onboarding_timeout)])
     response_helm_install = Popen(cmd_helm_install, stdout=PIPE, stderr=PIPE)

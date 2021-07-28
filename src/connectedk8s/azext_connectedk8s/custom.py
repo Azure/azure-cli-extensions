@@ -1021,7 +1021,7 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
                                 summary='Problem loading the helm existing user supplied values')
         raise CLIInternalError("Problem loading the helm existing user supplied values: " + str(e))
 
-    # Change --timeout format for helm client to understand 
+    # Change --timeout format for helm client to understand
     upgrade_timeout = upgrade_timeout + "m"
     cmd_helm_upgrade = ["helm", "upgrade", "azure-arc", chart_path, "--namespace", release_namespace,
                         "--output", "json", "--atomic", "--wait", "--timeout", "{}".format(upgrade_timeout)]
@@ -1822,7 +1822,7 @@ def client_side_proxy(cmd,
     # Fetching hybrid connection details from Userrp
     try:
         list_prop = ListClusterUserCredentialsProperties(
-            authentication_method=auth_method, 
+            authentication_method=auth_method,
             client_proxy=True
         )
         response = client.list_cluster_user_credentials(resource_group_name, cluster_name, list_prop)
