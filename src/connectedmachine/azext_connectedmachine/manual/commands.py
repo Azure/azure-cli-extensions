@@ -70,3 +70,10 @@ def load_command_table(self, _):
 
 def transform_machine_list(result):
     return [transform_machine(machine) for machine in result]
+
+
+def transform_machine(result):
+    return OrderedDict([('Name', result['name']),
+                        ('ResourceGroup', result['resourceGroup']),
+                        ('Location', result['location']),
+                        ('Status', result.get('status'))])
