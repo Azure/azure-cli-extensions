@@ -106,6 +106,9 @@ Successfully_Disabled_Features = 'Successsfully disabled features: {} for the Co
 Error_enabling_Features = 'Error while updating agents for enabling features. Please run \"kubectl get pods -n azure-arc\" to check the pods in case of timeout error. Error: {}'
 Error_disabling_Features = 'Error while updating agents for disabling features. Please run \"kubectl get pods -n azure-arc\" to check the pods in case of timeout error. Error: {}'
 Proxy_Kubeconfig_During_Deletion_Fault_Type = 'Encountered proxy kubeconfig during deletion.'
+Cant_Create_ClusterRoleBindings_Fault_Type = 'Cannot create cluster role bindings on this Kubernets cluster'
+CC_Provider_Namespace_Not_Registered_Fault_Type = "Connected Cluster Provider MS.K8 namespace not registered"
+
 CLIENT_PROXY_VERSION = '1.1.0'
 API_SERVER_PORT = 47011
 CLIENT_PROXY_PORT = 47010

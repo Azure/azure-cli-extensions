@@ -126,13 +126,15 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
 
     crb_permission = utils.can_create_clusterrolebindings(configuration)
     if not crb_permission:
-        logger.error("Kubectl credentials doesn't have permission to create clusterrolebindings on this kubernetes cluster.")
+        telemetry.set_exception(exception="Your credentials doesn't have permission to create clusterrolebindings on this kubernetes cluster.", fault_type=consts.Cant_Create_ClusterRoleBindings_Fault_Type,
+                                summary="Your credentials doesn't have permission to create clusterrolebindings on this kubernetes cluster.")
+        raise ValidationError("Your credentials doesn't have permission to create clusterrolebindings on this kubernetes cluster. Please check your permissions.")
 
     # Get kubernetes cluster info
     kubernetes_version = get_server_version(configuration)
 
     if distribution == 'auto':
-        kubernetes_distro = get_kubernetes_distro(configuration)  # (cluster heuristics)
+        kubernetes_distro = get_kubernetes_distro(configuration, kubernetes_version)  # (cluster heuristics)
     else:
         kubernetes_distro = distribution
     if infrastructure == 'auto':
@@ -446,7 +448,11 @@ def get_server_version(configuration):
                                            raise_error=False)
 
 
-def get_kubernetes_distro(configuration):  # Heuristic
+def get_kubernetes_distro(configuration, kubernetes_version):  # Heuristic
+    if 'eks' in kubernetes_version:
+        return "eks"
+    if "gke" in kubernetes_version:
+        return "gke"
     api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
     try:
         api_response = api_instance.list_node()
@@ -801,7 +807,7 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
     if "3.3.0-rc" in helm_version:
         raise ClientRequestError("The current helm version is not supported for azure-arc onboarding. Please upgrade helm to a stable version and try again.")
 
-    validate_release_namespace(client, cluster_name, resource_group_name, configuration, kube_config, kube_context)
+    release_namespace = validate_release_namespace(client, cluster_name, resource_group_name, configuration, kube_config, kube_context)
 
     # Fetch Connected Cluster for agent version
     connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
@@ -809,7 +815,7 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
     if hasattr(connected_cluster, 'distribution') and (connected_cluster.distribution is not None):
         kubernetes_distro = connected_cluster.distribution
     else:
-        kubernetes_distro = get_kubernetes_distro(configuration)
+        kubernetes_distro = get_kubernetes_distro(configuration, kubernetes_version)
 
     if hasattr(connected_cluster, 'infrastructure') and (connected_cluster.infrastructure is not None):
         kubernetes_infra = connected_cluster.infrastructure
@@ -846,7 +852,7 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
     # Get Helm chart path
     chart_path = utils.get_chart_path(registry_path, kube_config, kube_context)
 
-    cmd_helm_upgrade = ["helm", "upgrade", "azure-arc", chart_path,
+    cmd_helm_upgrade = ["helm", "upgrade", "azure-arc", chart_path, "--namespace", release_namespace,
                         "--reuse-values",
                         "--wait", "--output", "json"]
     if values_file_provided:
@@ -971,7 +977,7 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
     if hasattr(connected_cluster, 'distribution') and (connected_cluster.distribution is not None):
         kubernetes_distro = connected_cluster.distribution
     else:
-        kubernetes_distro = get_kubernetes_distro(configuration)
+        kubernetes_distro = get_kubernetes_distro(configuration, kubernetes_version)
 
     if hasattr(connected_cluster, 'infrastructure') and (connected_cluster.infrastructure is not None):
         kubernetes_infra = connected_cluster.infrastructure
@@ -1205,7 +1211,7 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
     if "3.3.0-rc" in helm_version:
         raise ClientRequestError("The current helm version is not supported for azure-arc onboarding. Please upgrade helm to a stable version and try again.")
 
-    validate_release_namespace(client, cluster_name, resource_group_name, configuration, kube_config, kube_context)
+    release_namespace = validate_release_namespace(client, cluster_name, resource_group_name, configuration, kube_config, kube_context)
 
     # Fetch Connected Cluster for agent version
     connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
@@ -1213,7 +1219,7 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
     if hasattr(connected_cluster, 'distribution') and (connected_cluster.distribution is not None):
         kubernetes_distro = connected_cluster.distribution
     else:
-        kubernetes_distro = get_kubernetes_distro(configuration)
+        kubernetes_distro = get_kubernetes_distro(configuration, kubernetes_version)
 
     if hasattr(connected_cluster, 'infrastructure') and (connected_cluster.infrastructure is not None):
         kubernetes_infra = connected_cluster.infrastructure
@@ -1250,7 +1256,7 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
     # Get Helm chart path
     chart_path = utils.get_chart_path(registry_path, kube_config, kube_context)
 
-    cmd_helm_upgrade = ["helm", "upgrade", "azure-arc", chart_path,
+    cmd_helm_upgrade = ["helm", "upgrade", "azure-arc", chart_path, "--namespace", release_namespace,
                         "--reuse-values",
                         "--wait", "--output", "json"]
     if values_file_provided:
@@ -1341,7 +1347,7 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
     if hasattr(connected_cluster, 'distribution') and (connected_cluster.distribution is not None):
         kubernetes_distro = connected_cluster.distribution
     else:
-        kubernetes_distro = get_kubernetes_distro(configuration)
+        kubernetes_distro = get_kubernetes_distro(configuration, kubernetes_version)
 
     if hasattr(connected_cluster, 'infrastructure') and (connected_cluster.infrastructure is not None):
         kubernetes_infra = connected_cluster.infrastructure
@@ -1391,7 +1397,7 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
     # Get Helm chart path
     chart_path = utils.get_chart_path(registry_path, kube_config, kube_context)
 
-    cmd_helm_upgrade = ["helm", "upgrade", "azure-arc", chart_path,
+    cmd_helm_upgrade = ["helm", "upgrade", "azure-arc", chart_path, "--namespace", release_namespace,
                         "--reuse-values",
                         "--wait", "--output", "json"]
     if values_file_provided:
@@ -1420,7 +1426,7 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
     return str.format(consts.Successfully_Disabled_Features, features, connected_cluster.name)
 
 
-def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=None, kube_context=None, location=None, storage_account=None,
+def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=None, kube_context=None, storage_account=None,
                  sas_token=None, output_file=os.path.join(os.path.expanduser('~'), '.azure', 'az_connectedk8s_troubleshoot_output.tar.gz')):
     colorama.init()
     print(f"{colorama.Fore.YELLOW}Troubleshooting the ConnectedCluster for possible issues...")
@@ -1429,18 +1435,11 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
     utils.setup_logger('connectedk8s_troubleshoot', troubleshoot_log_path)
     tr_logger = logging.getLogger('connectedk8s_troubleshoot')  # logger for troubleshooting, onto a log file
 
-    # Send cloud information to telemetry
-    send_cloud_telemetry(cmd)
+    cloud_name = cmd.cli_ctx.cloud.name.upper()
+    tr_logger.info(str.format("Cloud Name: {}", cloud_name))
 
-    # setting kubeconfig
-    kube_config = set_kube_config(kube_config)
-
-    # Loading the kubeconfig file in kubernetes client configuration
-    load_kube_config(kube_config, kube_context)
-    configuration = kube_client.Configuration()
-    validate_release_namespace(client, cluster_name, resource_group_name, configuration, kube_config, kube_context)
     try:
-        latest_connectedk8s_version = utils.get_latest_extension_version()
+        latest_connectedk8s_version = utils.get_latest_extension_version(tr_logger)
         local_connectedk8s_version = utils.get_existing_extension_version()
         tr_logger.info("Latest available connectedk8s version: {}".format(latest_connectedk8s_version))
         tr_logger.info("Local connectedk8s version: {}".format(local_connectedk8s_version))
@@ -1463,14 +1462,45 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
                 pass
             tr_logger.error("Couldn't check the existence of Connected cluster resource. Error: {}".format(str(ex)))
 
+        try:
+            # setting kubeconfig
+            kube_config = set_kube_config(kube_config)
+            # Loading the kubeconfig file in kubernetes client configuration
+            load_kube_config(kube_config, kube_context)
+            configuration = kube_client.Configuration()
+        except Exception as ex:
+            logger.error("Couldn't load kubeconfig. Error: {}".format(str(ex)))
+            tr_logger.error("Couldn't load kubeconfig. Error: {}".format(str(ex)))
+
+        try:
+            validate_release_namespace(client, cluster_name, resource_group_name, configuration, kube_config, kube_context)
+        except Exception as e:
+            logger.error(str(e))
+            tr_logger.error(str(e))
+
         kapi_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
+        try:
+            utils.try_list_node_fix()
+            api_response = kapi_instance.list_node()
+            required_node_counts = 0
+            for item in api_response.items:
+                node_arch = item.metadata.labels.get("kubernetes.io/arch")
+                node_os = item.metadata.labels.get("kubernetes.io/os")
+                if node_arch == "amd64" and node_os == "linux":
+                    tr_logger.info("Node {} has capacity: CPU: {}, and Memory: {} ".format(required_node_counts + 1, item.status.capacity.get("cpu"), item.status.capacity.get("memory")))
+                    required_node_counts += 1
+            if required_node_counts == 0:
+                tr_logger.error("There are no linux/amd64 nodes available on the kubernetes cluster.")
+                logger.error("This kubernetes cluster doesn't have any nodes with OS 'linux' and architecture 'amd64', for scheduling the Arc-Agents onto and connecting to Azure. Learn more at {}".format("https://aka.ms/ArcK8sSupportedOSArchitecture"))
+        except Exception as ex:
+            tr_logger.error("Couldn't list nodes on the k8s cluster. Error: {}".format(str(ex)))
+
         try:
             pod_list = kapi_instance.list_namespaced_pod(consts.Arc_Namespace)
             pods_count = 0
             for pod in pod_list.items:
                 pods_count += 1
-                if pod.status.phase != 'Running':
-                    tr_logger.warning("Pod {} is in {} state. Reason: {}. Container statuses: {}".format(pod.metadata.name, pod.status.phase, pod.status.reason, pod.status.container_statuses))
+                tr_logger.debug("Pod {} is in {} state. Reason: {}. Container statuses: {}".format(pod.metadata.name, pod.status.phase, pod.status.reason, pod.status.container_statuses))
 
             if pods_count == 0:
                 tr_logger.warning("No pods found in azure-arc namespace.")
@@ -1490,12 +1520,9 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
                 cert_expirn_time = datetime.strptime(raw_exp_time, consts.ISO_861_Time_format).replace(tzinfo=timezone.utc)
                 current_time = datetime.now(timezone.utc)
                 if cert_expirn_time != datetime.min and cert_expirn_time < current_time:
-                    tr_logger.error("MSI certificate on the cluster has expired.")
                     logger.error("MSI certificate on the cluster has expired.")
-            else:
-                tr_logger.info("'managedIdentityCertificateExpirationTime' is still not populated in CC object")
         except Exception as ex:
-            tr_logger.error("Error occured while checking if the MSI certificate has expired: {}".format(str(ex)))
+            pass
 
         storage_account_name, sas_token, readonly_sas_token = utils.setup_validate_storage_account(cmd.cli_ctx, storage_account, sas_token, resource_group_name)
         if storage_account_name:  # When validated the storage account

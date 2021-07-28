@@ -12,6 +12,26 @@ helps['vmware'] = """
     short-summary: Commands to manage Azure VMware Solution.
 """
 
+helps['vmware addon'] = """
+    type: group
+    short-summary: Commands to manage addons for a private cloud.
+"""
+
+helps['vmware addon hcx'] = """
+    type: group
+    short-summary: Commands to manage a HCX addon.
+"""
+
+helps['vmware addon srm'] = """
+    type: group
+    short-summary: Commands to manage a Site Recovery Manager (SRM) addon.
+"""
+
+helps['vmware addon vr'] = """
+    type: group
+    short-summary: Commands to manage a vSphere Replication (VR) addon.
+"""
+
 helps['vmware private-cloud'] = """
     type: group
     short-summary: Commands to manage private clouds.
@@ -175,14 +195,33 @@ helps['vmware location checktrialavailability'] = """
 
 helps['vmware datastore create'] = """
     type: command
-    short-summary: Create a datastore in a private cloud cluster.
+    short-summary: Please use "netapp-volume create" or "disk-pool-volume create" instead.
+"""
+
+helps['vmware datastore netapp-volume'] = """
+    type: group
+    short-summary: Create a new Microsoft.NetApp provided NetApp volume in a private cloud cluster.
+"""
+
+helps['vmware datastore netapp-volume create'] = """
+    type: command
+    short-summary: Create a new Microsoft.NetApp provided NetApp volume in a private cloud cluster.
+    examples:
+    - name: Create a new Microsoft.NetApp provided NetApp volume based NFSv3 datastore.
+      text: az vmware datastore netapp-volume create --name ANFDatastore1 --resource-group MyResourceGroup --cluster Cluster-1 --private-cloud MyPrivateCloud --volume-id /subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/ResourceGroup1/providers/Microsoft.NetApp/netAppAccounts/NetAppAccount1/capacityPools/CapacityPool1/volumes/NFSVol1
+"""
+
+helps['vmware datastore disk-pool-volume'] = """
+    type: group
+    short-summary: Create a VMFS datastore in a private cloud cluster using Microsoft.StoragePool provided iSCSI target.
+"""
+
+helps['vmware datastore disk-pool-volume create'] = """
+    type: command
+    short-summary: Create a VMFS datastore in a private cloud cluster using Microsoft.StoragePool provided iSCSI target.
     examples:
     - name: Create a new Microsoft.StoragePool provided disk pool based iSCSI datastore.
-      text: az vmware datastore create --name iSCSIDatastore1 --resource-group MyResourceGroup --cluster Cluster-1 --private-cloud MyPrivateCloud --endpoints 10.10.0.1:3260 --lun-name lun0
-    - name: Create a new Microsoft.StoragePool provided disk pool based iSCSI datastore with multiple endpoints.
-      text: az vmware datastore create --name iSCSIDatastore1 --resource-group MyResourceGroup --cluster Cluster-1 --private-cloud MyPrivateCloud --endpoints 10.10.0.1:3260 10.10.0.2:3260 --lun-name lun0
-    - name: Create a new Microsoft.NetApp provided NetApp volume based NFSv3 datastore.
-      text: az vmware datastore create --name ANFDatastore1 --resource-group MyResourceGroup --cluster Cluster-1 --private-cloud MyPrivateCloud --nfs-file-path ANFVol1FilePath --nfs-provider-ip 10.10.0.1
+      text: az vmware datastore disk-pool-volume create --name iSCSIDatastore1 --resource-group MyResourceGroup --cluster Cluster-1 --private-cloud MyPrivateCloud --target-id /subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/ResourceGroup1/providers/Microsoft.StoragePool/diskPools/mpio-diskpool/iscsiTargets/mpio-iscsi-target --lun-name lun0
 """
 
 helps['vmware datastore show'] = """
@@ -207,4 +246,133 @@ helps['vmware datastore delete'] = """
     examples:
     - name: Delete an iSCSI or NFS based datastore.
       text: az vmware datastore delete --name MyCloudSANDatastore1 --resource-group MyResourceGroup --cluster Cluster-1 --private-cloud MyPrivateCloud
+"""
+
+helps['vmware addon list'] = """
+    type: command
+    short-summary: List addons in a private cloud.
+    examples:
+    - name: List addons in a private cloud.
+      text: az vmware addon list --resource-group MyResourceGroup --private-cloud MyPrivateCloud
+"""
+
+helps['vmware addon vr create'] = """
+    type: command
+    short-summary: Create a vSphere Replication (VR) addon for a private cloud.
+    examples:
+    - name: Create a vSphere Replication (VR) addon.
+      text: az vmware addon vr create --resource-group MyResourceGroup --private-cloud MyPrivateCloud --vrs-count 1
+"""
+
+helps['vmware addon hcx create'] = """
+    type: command
+    short-summary: Create a HCX addon for a private cloud.
+    examples:
+    - name: Create a HCX addon.
+      text: az vmware addon hcx create --resource-group MyResourceGroup --private-cloud MyPrivateCloud --offer "VMware MaaS Cloud Provider (Enterprise)"
+"""
+
+helps['vmware addon srm create'] = """
+    type: command
+    short-summary: Create a Site Recovery Manager (SRM) addon for a private cloud.
+    examples:
+    - name: Create a Site Recovery Manager (SRM) addon.
+      text: az vmware addon srm create --resource-group MyResourceGroup --private-cloud MyPrivateCloud --license-key "41915-178A8-FF4A4-DB683-6D735"
+"""
+
+helps['vmware addon vr show'] = """
+    type: command
+    short-summary: Show details of a vSphere Replication (VR) addon for a private cloud.
+    examples:
+    - name: Show details of a vSphere Replication (VR) addon.
+      text: az vmware addon vr show --resource-group MyResourceGroup --private-cloud MyPrivateCloud
+"""
+
+helps['vmware addon hcx show'] = """
+    type: command
+    short-summary: Show details of a HCX addon for a private cloud.
+    examples:
+    - name: Show details of a HCX addon.
+      text: az vmware addon hcx show --resource-group MyResourceGroup --private-cloud MyPrivateCloud
+"""
+
+helps['vmware addon srm show'] = """
+    type: command
+    short-summary: Show details of a Site Recovery Manager (SRM) addon for a private cloud.
+    examples:
+    - name: Show details of a Site Recovery Manager (SRM) addon.
+      text: az vmware addon srm show --resource-group MyResourceGroup --private-cloud MyPrivateCloud
+"""
+
+helps['vmware addon vr update'] = """
+    type: command
+    short-summary: Update a vSphere Replication (VR) addon for a private cloud.
+    examples:
+    - name: Update a vSphere Replication (VR) addon.
+      text: az vmware addon vr update --resource-group MyResourceGroup --private-cloud MyPrivateCloud --vrs-count 1
+"""
+
+helps['vmware addon hcx update'] = """
+    type: command
+    short-summary: Update a HCX addon for a private cloud.
+    examples:
+    - name: Update a HCX addon.
+      text: az vmware addon hcx update --resource-group MyResourceGroup --private-cloud MyPrivateCloud --offer "VMware MaaS Cloud Provider (Enterprise)"
+"""
+
+helps['vmware addon srm update'] = """
+    type: command
+    short-summary: Update a Site Recovery Manager (SRM) addon for a private cloud.
+    examples:
+    - name: Update a Site Recovery Manager (SRM) addon.
+      text: az vmware addon srm update --resource-group MyResourceGroup --private-cloud MyPrivateCloud --license-key "41915-178A8-FF4A4-DB683-6D735"
+"""
+
+helps['vmware addon vr delete'] = """
+    type: command
+    short-summary: Delete a vSphere Replication (VR) addon for a private cloud.
+    examples:
+    - name: Delete a vSphere Replication (VR) addon.
+      text: az vmware addon vr delete --resource-group MyResourceGroup --private-cloud MyPrivateCloud
+"""
+
+helps['vmware addon hcx delete'] = """
+    type: command
+    short-summary: Delete a HCX addon for a private cloud.
+    examples:
+    - name: Delete a HCX addon.
+      text: az vmware addon hcx delete --resource-group MyResourceGroup --private-cloud MyPrivateCloud
+"""
+
+helps['vmware addon srm delete'] = """
+    type: command
+    short-summary: Delete a Site Recovery Manager (SRM) addon for a private cloud.
+    examples:
+    - name: Delete a Site Recovery Manager (SRM) addon.
+      text: az vmware addon srm delete --resource-group MyResourceGroup --private-cloud MyPrivateCloud
+"""
+
+helps['vmware global-reach-connection'] = """
+    type: group
+    short-summary: Commands to manage global reach connections in a private cloud.
+"""
+
+helps['vmware global-reach-connection create'] = """
+    type: command
+    short-summary: Create a global reach connection in a private cloud.
+"""
+
+helps['vmware global-reach-connection list'] = """
+    type: command
+    short-summary: List global reach connections in a private cloud.
+"""
+
+helps['vmware global-reach-connection show'] = """
+    type: command
+    short-summary: Show details of a global reach connection in a private cloud.
+"""
+
+helps['vmware global-reach-connection delete'] = """
+    type: command
+    short-summary: Delete a global reach connection in a private cloud.
 """

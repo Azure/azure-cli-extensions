@@ -1,3 +1,8 @@
+2.1.0
+++++++++++++++++++
+
+* Added back shared queries support.
+
 2.0.0
 ++++++++++++++++++
 

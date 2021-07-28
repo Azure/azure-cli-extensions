@@ -234,7 +234,7 @@ def _create_database_account(client,
         tags=tags,
         kind=kind)
 
-    async_docdb_create = client.create_or_update(resource_group_name, account_name, params)
+    async_docdb_create = client.begin_create_or_update(resource_group_name, account_name, params)
     docdb_account = async_docdb_create.result()
     docdb_account = client.get(resource_group_name, account_name)  # Workaround
     return docdb_account
@@ -259,7 +259,8 @@ def cli_cosmosdb_update(client,
                         enable_public_network=None,
                         enable_analytical_storage=None,
                         backup_interval=None,
-                        backup_retention=None):
+                        backup_retention=None,
+                        backup_policy_type=None):
     """Update an existing Azure Cosmos DB database account. """
     existing = client.get(resource_group_name, account_name)
 
@@ -291,6 +292,8 @@ def cli_cosmosdb_update(client,
     backup_policy = None
     if backup_interval is not None or backup_retention is not None:
         if isinstance(existing.backup_policy, PeriodicModeBackupPolicy):
+            if backup_policy_type is not None and backup_policy_type.lower() == 'continuous':
+                raise CLIError('backup-interval and backup-retention can only be set with periodic backup policy.')
             periodic_mode_properties = PeriodicModeProperties(
                 backup_interval_in_minutes=backup_interval,
                 backup_retention_interval_in_hours=backup_retention
@@ -300,6 +303,9 @@ def cli_cosmosdb_update(client,
         else:
             raise CLIError(
                 'backup-interval and backup-retention can only be set for accounts with periodic backup policy.')
+    elif backup_policy_type is not None and backup_policy_type.lower() == 'continuous':
+        if isinstance(existing.backup_policy, PeriodicModeBackupPolicy):
+            backup_policy = ContinuousModeBackupPolicy()
 
     params = DatabaseAccountUpdateParameters(
         locations=locations,
@@ -315,7 +321,7 @@ def cli_cosmosdb_update(client,
         public_network_access=public_network_access,
         enable_analytical_storage=enable_analytical_storage,
         backup_policy=backup_policy)
-    async_docdb_update = client.update(resource_group_name, account_name, params)
+    async_docdb_update = client.begin_update(resource_group_name, account_name, params)
     docdb_account = async_docdb_update.result()
     docdb_account = client.get(resource_group_name, account_name)  # Workaround
     return docdb_account
@@ -449,7 +455,7 @@ def cli_cosmosdb_managed_cassandra_cluster_create(client,
         identity=identity,
         properties=cluster_properties)
 
-    return client.create_update(resource_group_name, cluster_name, cluster_resource_create_update_parameters)
+    return client.begin_create_update(resource_group_name, cluster_name, cluster_resource_create_update_parameters)
 
 
 def cli_cosmosdb_managed_cassandra_cluster_update(client,
@@ -519,7 +525,7 @@ def cli_cosmosdb_managed_cassandra_cluster_update(client,
         identity=identity,
         properties=cluster_properties)
 
-    return client.create_update(resource_group_name, cluster_name, cluster_resource_create_update_parameters)
+    return client.begin_create_update(resource_group_name, cluster_name, cluster_resource_create_update_parameters)
 
 
 def cli_cosmosdb_managed_cassandra_cluster_list(client,
@@ -560,7 +566,7 @@ def cli_cosmosdb_managed_cassandra_datacenter_create(client,
         base64_encoded_cassandra_yaml_fragment=base64_encoded_cassandra_yaml_fragment
     )
 
-    return client.create_update(resource_group_name, cluster_name, data_center_name, data_center_properties)
+    return client.begin_create_update(resource_group_name, cluster_name, data_center_name, data_center_properties)
 
 
 def cli_cosmosdb_managed_cassandra_datacenter_update(client, resource_group_name,
@@ -586,7 +592,7 @@ def cli_cosmosdb_managed_cassandra_datacenter_update(client, resource_group_name
         seed_nodes=data_center_resource.properties.seed_nodes,
         base64_encoded_cassandra_yaml_fragment=base64_encoded_cassandra_yaml_fragment)
 
-    return client.create_update(resource_group_name, cluster_name, data_center_name, data_center_properties)
+    return client.begin_create_update(resource_group_name, cluster_name, data_center_name, data_center_properties)
 
 
 def _gen_guid():

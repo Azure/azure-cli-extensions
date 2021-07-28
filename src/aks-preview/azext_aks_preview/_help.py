@@ -171,7 +171,6 @@ helps['aks create'] = """
                 open-service-mesh               - enable Open Service Mesh addon (PREVIEW).
                 gitops                          - enable GitOps (PREVIEW).
                 azure-keyvault-secrets-provider - enable Azure Keyvault Secrets Provider addon (PREVIEW).
-                azure-defender                  - enable Azure Defender addon (PREVIEW).
         - name: --disable-rbac
           type: bool
           short-summary: Disable Kubernetes Role-Based Access Control.
@@ -223,6 +222,9 @@ helps['aks create'] = """
         - name: --workspace-resource-id
           type: string
           short-summary: The resource ID of an existing Log Analytics Workspace to use for storing monitoring data. If not specified, uses the default Log Analytics Workspace if it exists, otherwise creates one.
+        - name: --enable-msi-auth-for-monitoring
+          type: bool
+          short-summary: Send monitoring data to Log Analytics using the cluster's assigned identity (instead of the Log Analytics Workspace's shared key).
         - name: --enable-cluster-autoscaler
           type: bool
           short-summary: Enable cluster autoscaler, default value is false.
@@ -330,6 +332,9 @@ helps['aks create'] = """
         - name: --enable-encryption-at-host
           type: bool
           short-summary: Enable EncryptionAtHost on agent node pool.
+        - name: --enable-ultra-ssd
+          type: bool
+          short-summary: Enable UltraSSD on agent node pool.
         - name: --enable-secret-rotation
           type: bool
           short-summary: Enable secret rotation. Use with azure-keyvault-secrets-provider addon.
@@ -375,13 +380,14 @@ helps['aks create'] = """
           text: az aks create -g MyResourceGroup -n MyManagedCluster --tags "foo=bar" "baz=qux"
         - name: Create a kubernetes cluster with EncryptionAtHost enabled.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-encryption-at-host
+        - name: Create a kubernetes cluster with UltraSSD enabled.
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-ultra-ssd
         - name: Create a kubernetes cluster with custom control plane identity and kubelet identity.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --assign-identity <control-plane-identity-resource-id> --assign-kubelet-identity <kubelet-identity-resource-id>
         - name: Create a kubernetes cluster with Azure RBAC enabled.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-aad --enable-azure-rbac
         - name: Create a kubernetes cluster with a specific os-sku
           text: az aks create -g MyResourceGroup -n MyManagedCluster --os-sku Ubuntu
-
 """.format(sp_cache=AKS_SERVICE_PRINCIPAL_CACHE)
 
 helps['aks scale'] = """
@@ -927,6 +933,9 @@ helps['aks nodepool add'] = """
         - name: --enable-encryption-at-host
           type: bool
           short-summary: Enable EncryptionAtHost on agent node pool.
+        - name: --enable-ultra-ssd
+          type: bool
+          short-summary: Enable UltraSSD on agent node pool.
     examples:
         - name: Create a nodepool in an existing AKS cluster with ephemeral os enabled.
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --node-osdisk-type Ephemeral --node-osdisk-size 48
@@ -1029,8 +1038,6 @@ long-summary: |-
         open-service-mesh               - enable Open Service Mesh addon (PREVIEW).
         gitops                          - enable GitOps (PREVIEW).
         azure-keyvault-secrets-provider - enable Azure Keyvault Secrets Provider addon (PREVIEW).
-        azure-defender                  - enable Azure Defender addon (PREVIEW).
-
 parameters:
   - name: --addons -a
     type: string
@@ -1038,6 +1045,9 @@ parameters:
   - name: --workspace-resource-id
     type: string
     short-summary: The resource ID of an existing Log Analytics Workspace to use for storing monitoring data.
+  - name: --enable-msi-auth-for-monitoring
+    type: bool
+    short-summary: Send monitoring data to Log Analytics using the cluster's assigned identity (instead of the Log Analytics Workspace's shared key).
   - name: --subnet-name -s
     type: string
     short-summary: The subnet name for the virtual node to use.
@@ -1074,9 +1084,6 @@ examples:
     crafted: true
   - name: Enable open-service-mesh addon.
     text: az aks enable-addons --name MyManagedCluster --resource-group MyResourceGroup --addons open-service-mesh
-    crafted: true
-  - name: Enable azure-defender addon with workspace resourceId.
-    text: az aks enable-addons --name MyManagedCluster --resource-group MyResourceGroup --addons azure-defender --workspace-resource-id WorkspaceResourceId
     crafted: true
 """
 
@@ -1178,4 +1185,14 @@ helps['aks pod-identity exception update'] = """
 helps['aks pod-identity exception list'] = """
     type: command
     short-summary: List pod identity exceptions in a managed Kubernetes cluster
+"""
+
+helps['aks egress-endpoints'] = """
+    type: group
+    short-summary: Commands to manage egress endpoints in managed Kubernetes cluster.
+"""
+
+helps['aks egress-endpoints list'] = """
+    type: command
+    short-summary: List egress endpoints that are required or recommended to be whitelisted for a cluster.
 """

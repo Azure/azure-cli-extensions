@@ -399,29 +399,24 @@ def is_guid(guid):
         return False
 
 
-def get_latest_extension_version(extension_name='connectedk8s'):
+def get_latest_extension_version(custom_logger, extension_name='connectedk8s', max_retries=3, timeout=2):
+    git_url = "https://raw.githubusercontent.com/Azure/azure-cli-extensions/master/src/index.json"
+    # or use "https://aka.ms/azure-cli-extension-index-v1"
     try:
-        import re
-        git_url = "https://raw.githubusercontent.com/Azure/azure-cli-extensions/master/src/{}/setup.py".format(extension_name)
-        response = requests.get(git_url, timeout=10)
-        if response.status_code != 200:
-            logger.info("Failed to fetch the latest version from '%s' with status code '%s' and reason '%s'",
-                        git_url, response.status_code, response.reason)
-            return None
-        for line in response.iter_lines():
-            txt = line.decode('utf-8', errors='ignore')
-            if txt.startswith('VERSION'):
-                match = re.search(r'VERSION = \'(.*)\'$', txt)
-                if match:
-                    return match.group(1)
-                else:
-                    match = re.search(r'VERSION = \"(.*)\"$', txt)
-                    if match:
-                        return match.group(1)
-        return None
-    except Exception as ex:  # pylint: disable=broad-except
-        logger.info("Failed to get the latest version from '%s'. %s", git_url, str(ex))
-        return None
+        with requests.Session() as s:
+            s.mount(git_url, requests.adapters.HTTPAdapter(max_retries=max_retries))
+            response = s.get(git_url, timeout=timeout)
+            response_json = response.json()
+            version_list = []
+            for ver in response_json["extensions"][extension_name]:
+                version_list.append(ver["metadata"]["version"])
+            version_list.sort()
+            return version_list[-1]
+    except (requests.exceptions.ConnectionError, requests.exceptions.Timeout) as ex:
+        custom_logger.error('Internet connectivity problem detected. Error: {}'.format(str(ex)))
+    except Exception as ex:
+        custom_logger.error("Failed to get the latest connectedk8s version from '%s'. %s", git_url, str(ex))
+    return None
 
 
 def get_existing_extension_version(extension_name='connectedk8s'):
@@ -447,6 +442,9 @@ def check_connectivity(url='https://azure.microsoft.com', max_retries=5, timeout
     except (requests.exceptions.ConnectionError, requests.exceptions.Timeout) as ex:
         logger.error('Internet connectivity problem detected. Error: {}'.format(str(ex)))
         success = False
+    except Exception as ex:  # pylint: disable=broad-except
+        logger.error("Failed to check Internet connectivity. Error: %s", str(ex))
+        success = False
     stop = timeit.default_timer()
     logger.debug('Connectivity check: %s sec', stop - start)
     return success
@@ -464,7 +462,9 @@ def check_provider_registrations(cli_ctx):
         rp_client = _resource_providers_client(cli_ctx)
         cc_registration_state = rp_client.get(consts.Connected_Cluster_Provider_Namespace).registration_state
         if cc_registration_state != "Registered":
-            logger.error("{} provider is not registered".format(consts.Connected_Cluster_Provider_Namespace))
+            telemetry.set_exception(exception="{} provider is not registered".format(consts.Connected_Cluster_Provider_Namespace), fault_type=consts.CC_Provider_Namespace_Not_Registered_Fault_Type,
+                                    summary="{} provider is not registered".format(consts.Connected_Cluster_Provider_Namespace))
+            raise ValidationError("{} provider is not registered. Please register it using 'az provider register -n 'Microsoft.Kubernetes' before running the connect command.".format(consts.Connected_Cluster_Provider_Namespace))
         kc_registration_state = rp_client.get(consts.Kubernetes_Configuration_Provider_Namespace).registration_state
         if kc_registration_state != "Registered":
             logger.warning("{} provider is not registered".format(consts.Kubernetes_Configuration_Provider_Namespace))
