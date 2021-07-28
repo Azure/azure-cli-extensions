@@ -24,9 +24,7 @@ Describe 'Azure Monitor Testing' {
         do 
         {
             if (Has-ExtensionData $extensionName) {
-                if (Has-Identity-Provisioned) {
-                    break
-                }
+                break
             }
             Start-Sleep -Seconds 10
             $n += 1
