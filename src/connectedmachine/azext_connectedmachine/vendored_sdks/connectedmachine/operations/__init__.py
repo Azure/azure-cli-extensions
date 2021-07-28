@@ -6,12 +6,20 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from ._machine_operations import MachineOperations
-from ._machine_extension_operations import MachineExtensionOperations
-from ._operation_operations import OperationOperations
+from ._machines_operations import MachinesOperations
+from ._machine_extensions_operations import MachineExtensionsOperations
+from ._connected_machine_operations import ConnectedMachineOperationsMixin
+from ._operations import Operations
+from ._private_link_scopes_operations import PrivateLinkScopesOperations
+from ._private_link_resources_operations import PrivateLinkResourcesOperations
+from ._private_endpoint_connections_operations import PrivateEndpointConnectionsOperations
 
 __all__ = [
-    'MachineOperations',
-    'MachineExtensionOperations',
-    'OperationOperations',
+    'MachinesOperations',
+    'MachineExtensionsOperations',
+    'ConnectedMachineOperationsMixin',
+    'Operations',
+    'PrivateLinkScopesOperations',
+    'PrivateLinkResourcesOperations',
+    'PrivateEndpointConnectionsOperations',
 ]
