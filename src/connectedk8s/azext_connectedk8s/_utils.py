@@ -745,6 +745,7 @@ def collect_periscope_logs(resource_group_name, name, storage_account_name=None,
         return
 
     sas_token = sas_token.strip('?')
+
     deployment_yaml = urlopen(
         "https://raw.githubusercontent.com/Azure/aks-periscope/latest/deployment/aks-periscope.yaml").read().decode()
     deployment_yaml = deployment_yaml.replace("# <accountName, base64 encoded>",
@@ -815,26 +816,6 @@ def collect_periscope_logs(resource_group_name, name, storage_account_name=None,
               f"anytime to check the analysis results.")
     else:
         display_diagnostics_report(kubectl_prior)
-
-    try:
-        print("Deleting aks-periscope resources from cluster ...")
-
-        subprocess_cmd = kubectl_prior + ["delete", "serviceaccount,configmap,daemonset,secret", "--all", "-n", "aks-periscope", "--ignore-not-found"]
-        subprocess.call(subprocess_cmd, stderr=subprocess.STDOUT)
-
-        subprocess_cmd = kubectl_prior + ["delete", "ClusterRoleBinding", "aks-periscope-role-binding", "--ignore-not-found"]
-        subprocess.call(subprocess_cmd, stderr=subprocess.STDOUT)
-
-        subprocess_cmd = kubectl_prior + ["delete", "ClusterRole", "aks-periscope-role", "--ignore-not-found"]
-        subprocess.call(subprocess_cmd, stderr=subprocess.STDOUT)
-
-        subprocess_cmd = kubectl_prior + ["delete", "--all", "apd", "-n", "aks-periscope", "--ignore-not-found"]
-        subprocess.call(subprocess_cmd, stderr=subprocess.STDOUT)
-
-        subprocess_cmd = kubectl_prior + ["delete", "CustomResourceDefinition", "diagnostics.aks-periscope.azure.github.com", "--ignore-not-found"]
-        subprocess.call(subprocess_cmd, stderr=subprocess.STDOUT)
-    except subprocess.CalledProcessError as err:
-        raise CLIInternalError(err.output)
 
 
 def which(binary):
