@@ -105,14 +105,11 @@ az connectedmachine private-link-resource show --group-name "hybridcompute" --re
     --scope-name "myPrivateLinkScope" 
 ```
 #### connectedmachine private-endpoint-connection ####
-##### Create #####
+##### Update #####
 ```
-az connectedmachine private-endpoint-connection create \
+az connectedmachine private-endpoint-connection update \
     --private-link-service-connection-state description="Approved by johndoe@contoso.com" status="Approved" \
     --name "private-endpoint-connection-name" --resource-group "myResourceGroup" --scope-name "myPrivateLinkScope" 
-
-az connectedmachine private-endpoint-connection wait --created --name "{myPrivateEndpointConnection}" \
-    --resource-group "{rg}" --scope-name "myPrivateLinkScope" 
 ```
 ##### Show #####
 ```
