@@ -82,16 +82,16 @@ ADDONS = {
 }
 
 ADDONS_DESCRIPTIONS = {
-    CONST_HTTP_APPLICATION_ROUTING_ADDON_NAME: 'configure ingress with automatic public DNS name creation',
-    CONST_MONITORING_ADDON_NAME: 'turn on Log Analytics monitoring. Uses the Log Analytics Default Workspace if it exists, else creates one. Specify "--workspace-resource-id" to use an existing workspace. If monitoring addon is enabled --no-wait argument will have no effect.',
-    CONST_VIRTUAL_NODE_ADDON_NAME: 'enable AKS Virtual Node. Requires --aci-subnet-name to provide the name of an existing subnet for the Virtual Node to use. aci-subnet-name must be in the same vnet which is specified by --vnet-subnet-id (required as well).',
-    CONST_AZURE_POLICY_ADDON_NAME: 'enable Azure policy. The Azure Policy add-on for AKS enables at-scale enforcements and safeguards on your clusters in a centralized, consistent manner. Learn more at aka.ms/aks/policy.',
-    CONST_KUBE_DASHBOARD_ADDON_NAME: 'n/a',
-    CONST_INGRESS_APPGW_ADDON_NAME: 'enable Application Gateway Ingress Controller addon (PREVIEW).',
-    CONST_OPEN_SERVICE_MESH_ADDON_NAME: 'enable Open Service Mesh addon (PREVIEW).',
-    CONST_CONFCOM_ADDON_NAME: 'enable confcom addon, this will enable SGX device plugin by default (PREVIEW).',
-    CONST_GITOPS_ADDON_NAME: 'enable GitOps (PREVIEW).',
-    CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME: 'enable Azure Keyvault Secrets Provider addon (PREVIEW).'
+    CONST_HTTP_APPLICATION_ROUTING_ADDON_NAME: '- configure ingress with automatic public DNS name creation',
+    CONST_MONITORING_ADDON_NAME: '- turn on Log Analytics monitoring. Uses the Log Analytics Default Workspace if it exists, else creates one. Specify "--workspace-resource-id" to use an existing workspace.\nIf monitoring addon is enabled --no-wait argument will have no effect.',
+    CONST_VIRTUAL_NODE_ADDON_NAME: '- enable AKS Virtual Node. Requires --aci-subnet-name to provide the name of an existing subnet for the Virtual Node to use.\naci-subnet-name must be in the same vnet which is specified by --vnet-subnet-id (required as well).',
+    CONST_AZURE_POLICY_ADDON_NAME: '- enable Azure policy. The Azure Policy add-on for AKS enables at-scale enforcements and safeguards on your clusters in a centralized, consistent manner.\nLearn more at aka.ms/aks/policy.',
+    CONST_KUBE_DASHBOARD_ADDON_NAME: '- n/a',
+    CONST_INGRESS_APPGW_ADDON_NAME: '- enable Application Gateway Ingress Controller addon (PREVIEW).',
+    CONST_OPEN_SERVICE_MESH_ADDON_NAME: '- enable Open Service Mesh addon (PREVIEW).',
+    CONST_CONFCOM_ADDON_NAME: '- enable confcom addon, this will enable SGX device plugin by default (PREVIEW).',
+    CONST_GITOPS_ADDON_NAME: '- enable GitOps (PREVIEW).',
+    CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME: '- enable Azure Keyvault Secrets Provider addon (PREVIEW).'
 }
 
 CONST_MANAGED_IDENTITY_OPERATOR_ROLE = 'Managed Identity Operator'

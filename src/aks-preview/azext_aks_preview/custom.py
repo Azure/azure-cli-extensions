@@ -3444,9 +3444,27 @@ def aks_addon_list_available():
 
 def aks_addon_list(cmd, client, resource_group_name, name): # pylint: disable=unused-argument
     instance = client.get(resource_group_name, name)
-    addon_profiles = instance.addon_profiles.keys()
+    addon_profiles = instance.addon_profiles
 
-    return instance.addon_profiles
+    current_addons = []
+
+    for addon in ADDONS.values():
+        if addon not in addon_profiles:
+            current_addons.append({
+                "name": addon,
+                "config": None,
+                "enabled": False,
+                "identity": None
+            })
+        else:
+            current_addons.append({
+                "name": addon,
+                "config": addon_profiles[addon].config,
+                "enabled": addon_profiles[addon].enabled,
+                "identity": addon_profiles[addon].identity
+            })
+
+    return current_addons
 
 
 def aks_disable_addons(cmd, client, resource_group_name, name, addons, no_wait=False):

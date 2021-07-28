@@ -10,7 +10,7 @@ from ._client_factory import cf_maintenance_configurations
 from ._client_factory import cf_container_services
 from ._client_factory import cf_agent_pools
 from ._format import aks_show_table_format
-from ._format import aks_addon_list_available_table_format
+from ._format import aks_addon_list_available_table_format, aks_addon_list_table_format
 from ._format import aks_agentpool_show_table_format
 from ._format import aks_agentpool_list_table_format
 from ._format import aks_versions_table_format
@@ -96,7 +96,7 @@ def load_command_table(self, _):
     # AKS addon commands
     with self.command_group('aks addon', managed_clusters_sdk, client_factory=cf_managed_clusters) as g:
         g.custom_command('list-available', 'aks_addon_list_available', table_transformer=aks_addon_list_available_table_format)
-        g.custom_command('list', 'aks_addon_list')
+        g.custom_command('list', 'aks_addon_list', table_transformer=aks_addon_list_table_format)
 
     # AKS agent pool commands
     with self.command_group('aks nodepool', agent_pools_sdk, client_factory=cf_agent_pools) as g:
