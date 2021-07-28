@@ -41,7 +41,7 @@ def create_databricks_workspace(cmd, client,
     _set_parameter_value(parameters, 'enable_no_public_ip', enable_no_public_ip)
     body['parameters'] = parameters
 
-    return sdk_no_wait(no_wait, client.create_or_update,
+    return sdk_no_wait(no_wait, client.begin_create_or_update,
                        resource_group_name=resource_group_name,
                        workspace_name=workspace_name,
                        parameters=body)
@@ -80,7 +80,7 @@ def update_databricks_workspace(cmd, client,  # pylint: disable=too-many-branche
             encryption['key_vault_uri'] = encryption_key_vault
         _set_parameter_value(parameters, 'encryption', encryption)
 
-    return sdk_no_wait(no_wait, client.create_or_update,
+    return sdk_no_wait(no_wait, client.begin_create_or_update,
                        resource_group_name=resource_group_name,
                        workspace_name=workspace_name,
                        parameters=body)
@@ -89,7 +89,7 @@ def update_databricks_workspace(cmd, client,  # pylint: disable=too-many-branche
 def delete_databricks_workspace(cmd, client, resource_group_name,
                                 workspace_name,
                                 no_wait=False):
-    return sdk_no_wait(no_wait, client.delete,
+    return sdk_no_wait(no_wait, client.begin_delete,
                        resource_group_name=resource_group_name,
                        workspace_name=workspace_name)
 
@@ -130,7 +130,7 @@ def create_databricks_vnet_peering(client, resource_group_name, workspace_name, 
     if use_remote_gateways is not None:
         peering.use_remote_gateways = use_remote_gateways
 
-    return sdk_no_wait(no_wait, client.create_or_update,
+    return sdk_no_wait(no_wait, client.begin_create_or_update,
                        virtual_network_peering_parameters=peering,
                        resource_group_name=resource_group_name,
                        workspace_name=workspace_name,
@@ -158,7 +158,7 @@ def update_databricks_vnet_peering(client, resource_group_name, workspace_name, 
     if use_remote_gateways is not None:
         peering.use_remote_gateways = use_remote_gateways
 
-    return sdk_no_wait(no_wait, client.create_or_update,
+    return sdk_no_wait(no_wait, client.begin_create_or_update,
                        virtual_network_peering_parameters=peering,
                        resource_group_name=resource_group_name,
                        workspace_name=workspace_name,
@@ -166,7 +166,7 @@ def update_databricks_vnet_peering(client, resource_group_name, workspace_name, 
 
 
 def delete_databricks_vnet_peering(client, resource_group_name, workspace_name, peering_name, no_wait=False):
-    return sdk_no_wait(no_wait, client.delete,
+    return sdk_no_wait(no_wait, client.begin_delete,
                        resource_group_name=resource_group_name,
                        workspace_name=workspace_name,
                        peering_name=peering_name)
