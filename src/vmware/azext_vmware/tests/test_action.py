@@ -15,6 +15,7 @@ class TestAction:
         assert ScriptSecureStringExecutionParameter(name="cat", secure_value="George") == script_execution_parameters(["type=SecureValue", "name=cat", "secureValue=George"])
 
     def test_credential_execution_parameter(self):
+        # CS002:SecretInNextLine
         assert PSCredentialExecutionParameter(name="creds", username="Jim", password="bob") == script_execution_parameters(["type=credential", "name=creds", "username=Jim", "password=bob"])
 
     def test_named_outputs(self):
