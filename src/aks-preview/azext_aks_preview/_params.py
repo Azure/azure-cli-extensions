@@ -21,7 +21,7 @@ from ._validators import (
     validate_nodepool_name, validate_vm_set_type, validate_load_balancer_sku,
     validate_load_balancer_outbound_ips, validate_load_balancer_outbound_ip_prefixes,
     validate_taints, validate_priority, validate_eviction_policy, validate_spot_max_price, validate_acr, validate_user,
-    validate_load_balancer_outbound_ports, validate_load_balancer_idle_timeout, validate_nodepool_tags,
+    validate_load_balancer_outbound_ports, validate_load_balancer_idle_timeout, validate_nodepool_tags, validate_addon,
     validate_nodepool_labels, validate_vnet_subnet_id, validate_pod_subnet_id, validate_max_surge, validate_assign_identity, validate_addons,
     validate_pod_identity_pod_labels, validate_pod_identity_resource_name, validate_pod_identity_resource_namespace, validate_assign_kubelet_identity)
 from ._consts import CONST_OUTBOUND_TYPE_LOAD_BALANCER, \
@@ -246,6 +246,9 @@ def load_arguments(self, _):
         c.argument('tags', tags_type)
         c.argument('mode', arg_type=get_enum_type([CONST_NODEPOOL_MODE_SYSTEM, CONST_NODEPOOL_MODE_USER]))
         c.argument('max_surge', type=str, validator=validate_max_surge)
+
+    with self.argument_context('aks addon show') as c:
+        c.argument('addon', options_list=['--addon', '-a'], validator=validate_addon)
 
     with self.argument_context('aks disable-addons') as c:
         c.argument('addons', options_list=['--addons', '-a'], validator=validate_addons)

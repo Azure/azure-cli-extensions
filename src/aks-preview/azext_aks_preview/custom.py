@@ -3443,29 +3443,43 @@ def aks_addon_list_available():
     return available_addons
 
 def aks_addon_list(cmd, client, resource_group_name, name): # pylint: disable=unused-argument
-    instance = client.get(resource_group_name, name)
-    addon_profiles = instance.addon_profiles
+    addon_profiles = client.get(resource_group_name, name).addon_profiles
 
     current_addons = []
 
-    for addon in ADDONS.values():
+    for name, addon in ADDONS.items():
         if addon not in addon_profiles:
             current_addons.append({
-                "name": addon,
-                "config": None,
-                "enabled": False,
-                "identity": None
+                "addon_name": name,
+                "addon_key": addon,
+                "enabled": False
             })
         else:
             current_addons.append({
-                "name": addon,
-                "config": addon_profiles[addon].config,
-                "enabled": addon_profiles[addon].enabled,
-                "identity": addon_profiles[addon].identity
+                "addon_name": name,
+                "addon_key": addon,
+                "enabled": addon_profiles[addon].enabled
             })
 
     return current_addons
 
+def aks_addon_show(cmd, client, resource_group_name, name, addon): # pylint: disable=unused-argument
+    addon_profiles = client.get(resource_group_name, name).addon_profiles
+    addon_key = ADDONS[addon]
+
+    if addon_key not in addon_profiles or not addon_profiles[addon_key].enabled:
+        raise CLIError(f"Addon {addon} is not enabled in this cluster.")
+
+    config = ""
+    for k, v in addon_profiles[addon_key].config.items():
+        config += k + "=" + v + ";"
+
+    return {
+        "addon_name": addon,
+        "addon_key": addon_key,
+        "config": config,
+        "identity": addon_profiles[addon_key].identity
+    }
 
 def aks_disable_addons(cmd, client, resource_group_name, name, addons, no_wait=False):
     instance = client.get(resource_group_name, name)

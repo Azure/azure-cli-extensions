@@ -24,6 +24,7 @@ def aks_run_command_result_format(cmdResult):
     result['started At'] = cmdResult['startedAt']
     return result
 
+
 def aks_addon_list_available_table_format(result):
     def parser(entry):
         parsed = compile_jmes("""{
@@ -33,16 +34,29 @@ def aks_addon_list_available_table_format(result):
         return parsed.search(entry, Options(dict_cls=OrderedDict))
     return [parser(r) for r in result]
 
+
 def aks_addon_list_table_format(result):
     def parser(entry):
         parsed = compile_jmes("""{
-                name: name,
-                enabled: enabled,
+                addon_name: addon_name,
+                addon_key: addon_key,
+                enabled: enabled
+            }""")
+        return parsed.search(entry, Options(dict_cls=OrderedDict))
+    return [parser(r) for r in result]
+
+
+def aks_addon_show_table_format(result):
+    def parser(entry):
+        parsed = compile_jmes("""{
+                addon_name: addon_name,
+                addon_key: addon_key,
                 config: config,
                 identity: identity
             }""")
         return parsed.search(entry, Options(dict_cls=OrderedDict))
-    return [parser(r) for r in result]
+    return parser(result)
+
 
 def aks_agentpool_show_table_format(result):
     """Format an agent pool as summary results for display with "-o table"."""
