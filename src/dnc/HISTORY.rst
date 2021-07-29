@@ -2,7 +2,12 @@
 
 Release History
 ===============
-0.1.1
+
+0.1.3
+++++++
+* Correct bug with delegate subnet
+
+0.1.2
 ++++++
 * Remove list commands
 

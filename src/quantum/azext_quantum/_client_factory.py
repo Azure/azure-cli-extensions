@@ -33,7 +33,7 @@ def _get_data_credentials(cli_ctx, subscription_id=None):
 
 
 def get_appid():
-    return f"azure-cli-extension/{CLI_REPORTED_VERSION}"
+    return f"az-cli-ext/{CLI_REPORTED_VERSION}"
 
 
 # Control Plane clients
