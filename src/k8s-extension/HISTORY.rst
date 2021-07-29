@@ -3,6 +3,12 @@
 Release History
 ===============
 
+0.6.1
+++++++++++++++++++
+* Remove sending identity for clusters in Dogfood
+* Provide fix for getting tested distros for microsoft.openservicemesh
+* Add location to model for identity
+
 0.6.0
 ++++++++++++++++++
 * Update extension resource models to Track2
