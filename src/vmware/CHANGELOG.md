@@ -1,6 +1,6 @@
 # Release History
 
-## 3.1.0 (2021-07)
+## 3.1.0 (2021-08)
 - Add `az vmware cloud-link` command group
 - Add `az vmware script-cmdlet` command group
 - Add `az vmware script-execution` command group

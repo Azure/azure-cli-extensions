@@ -49,7 +49,3 @@ class VmwareScriptScenarioTest(ScenarioTest):
 
         rsp = self.cmd('az vmware script-execution delete -g {rg} -c {privatecloud} -n {scriptExecution}').output
         self.assertEqual(len(rsp), 0)
-
-
-
-

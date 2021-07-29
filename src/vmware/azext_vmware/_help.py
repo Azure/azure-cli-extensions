@@ -418,15 +418,15 @@ helps['vmware script-cmdlet list'] = """
     type: command
     short-summary: List script cmdlet resources available for a private cloud to create a script execution resource on a private cloud.
     examples:
-    - name: List cloud links.
-      text: az vmware script-cmdlet --resource-group group1 --private-cloud cloud1 --script-package package1
+    - name: List script cmdlet resources.
+      text: az vmware script-cmdlet list --resource-group group1 --private-cloud cloud1 --script-package package1
 """
 
 helps['vmware script-cmdlet show'] = """
     type: command
     short-summary: Get information about a script cmdlet resource in a specific package on a private cloud.
     examples:
-    - name: Show a cloud link.
+    - name: Show a script cmdlet.
       text: az vmware script-cmdlet show --resource-group group1 --private-cloud cloud1 --script-package package1 --name cmdlet1
 """
 
@@ -434,7 +434,7 @@ helps['vmware script-package list'] = """
     type: command
     short-summary: List script packages available to run on the private cloud.
     examples:
-    - name: List cloud links.
+    - name: List script packages.
       text: az vmware script-package list --resource-group group1 --private-cloud cloud1
 """
 
@@ -442,7 +442,7 @@ helps['vmware script-package show'] = """
     type: command
     short-summary: Get a script package available to run on a private cloud.
     examples:
-    - name: Show a cloud link.
+    - name: Show a script package.
       text: az vmware script-package show --resource-group group1 --private-cloud cloud1 --name package1
 """
 
@@ -450,15 +450,15 @@ helps['vmware script-execution create'] = """
     type: command
     short-summary: Create or update a script execution in a private cloud.
     examples:
-    - name: Create a cloud link.
-      text: az vmware script-execution create --resource-group group1 --private-cloud cloud1 --name addSsoServer --sciprt-cmdlet-id "/subscriptions/{subscription-id}/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/scriptPackages/AVS.PowerCommands@1.0.0/scriptCmdlets/New-SsoExternalIdentitySource" --timeout P0Y0M0DT0H60M60S --retention P0Y0M60DT0H60M60S --parameter name=DomainName type=Value value=placeholderDomain.local --parameter name=BaseUserDN type=Value "value=DC=placeholder, DC=placeholder" --hidden-parameter name=Password type=SecureValue secureValue=PlaceholderPassword
+    - name: Create a script execution.
+      text: az vmware script-execution create --resource-group group1 --private-cloud cloud1 --name addSsoServer --script-cmdlet-id "/subscriptions/{subscription-id}/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/scriptPackages/AVS.PowerCommands@1.0.0/scriptCmdlets/New-SsoExternalIdentitySource" --timeout P0Y0M0DT0H60M60S --retention P0Y0M60DT0H60M60S --parameter name=DomainName type=Value value=placeholderDomain.local --parameter name=BaseUserDN type=Value "value=DC=placeholder, DC=placeholder" --hidden-parameter name=Password type=SecureValue secureValue=PlaceholderPassword
 """
 
 helps['vmware script-execution list'] = """
     type: command
     short-summary: List script executions in a private cloud.
     examples:
-    - name: List cloud links.
+    - name: List script executions.
       text: az vmware script-execution list --resource-group group1 --private-cloud cloud1
 """
 
@@ -466,14 +466,14 @@ helps['vmware script-execution show'] = """
     type: command
     short-summary: Get an script execution by name in a private cloud.
     examples:
-    - name: Show a cloud link.
+    - name: Show a script execution.
       text: az vmware script-execution show --resource-group group1 --private-cloud cloud1 --name addSsoServer
 """
 
 helps['vmware script-execution delete'] = """
     type: command
-    short-summary: Delete a cloud link in a private cloud.
+    short-summary: Delete a script execution in a private cloud.
     examples:
-    - name: Delete a cloud link.
+    - name: Delete a script execution.
       text: az vmware script-execution delete --resource-group group1 --private-cloud cloud1 --name addSsoServer
 """
