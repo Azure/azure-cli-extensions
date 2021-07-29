@@ -607,6 +607,8 @@ def check_resource(cli_ctx, resource_group_name, vm_vmss_name, vmss_instanceid):
                               'MyScaleSet -g MyResourceGroup --instance-ids *".')
             raise AzureConnectionError(
                 error_message, recommendation=recommendation)
+        if result.boot_diagnostics.serial_console_log_blob_uri is None:
+            pass
     else:
         try:
             result = client.virtual_machines.get(
@@ -649,6 +651,8 @@ def check_resource(cli_ctx, resource_group_name, vm_vmss_name, vmss_instanceid):
                               'parameter "--storage https://mystor.blob.windows.net/".')
             raise AzureConnectionError(
                 error_message, recommendation=recommendation)
+        if result.diagnostics_profile.boot_diagnostics.storage_uri is None:
+            pass
 
 
 def connect_serialconsole(cmd, resource_group_name, vm_vmss_name, vmss_instanceid=None):
