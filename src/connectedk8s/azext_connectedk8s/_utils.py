@@ -775,7 +775,7 @@ def collect_periscope_logs(resource_group_name, name, storage_account_name=None,
             delete_periscope_resources(kubectl_prior)
 
             print()
-            
+
             print(f"{colorama.Fore.GREEN}Deploying diagnostic container on the K8s cluster...")
             subprocess_cmd = kubectl_prior + ["apply", "-f", temp_yaml_path, "-n", "aks-periscope"]
             subprocess.check_output(subprocess_cmd, stderr=subprocess.STDOUT)
@@ -802,12 +802,12 @@ def collect_periscope_logs(resource_group_name, name, storage_account_name=None,
               f"anytime to check the analysis results.")
     else:
         display_diagnostics_report(kubectl_prior)
-    
+
     print("Deleting existing aks-periscope resources from cluster ...")
 
     try:
         delete_periscope_resources(kubectl_prior)
-    except Exception as ex: 
+    except Exception as ex:
         raise Exception("Error occurred while deleting the aks-periscope resources. Error: {}".format(str(ex)))
 
 
