@@ -8,6 +8,7 @@ Release History
 * Moved to track2 SDK
 * `az connectedk8s connect`: Added onboarding timeout parameter
 * `az connectedk8s upgrade`: Added upgrade timeout parameter
+* Release namespace detection bug fix in multiple commands
 
 
 1.1.5
