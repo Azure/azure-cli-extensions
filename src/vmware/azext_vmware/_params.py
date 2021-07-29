@@ -5,7 +5,7 @@
 # pylint: disable=line-too-long,too-many-statements
 
 
-from azext_vmware.action import ScriptExecutionParameterAction
+from azext_vmware.action import ScriptExecutionNamedOutputAction, ScriptExecutionParameterAction
 
 
 def load_arguments(self, _):
@@ -132,4 +132,5 @@ def load_arguments(self, _):
         c.argument('failure_reason', help='Error message if the script was able to run, but if the script itself had errors or powershell threw an exception.')
         c.argument('retention', help='Time to live for the resource. If not provided, will be available for 60 days.')
         c.argument('out', help='Standard output stream from the powershell execution.')
-        
+        c.argument('named_outputs', action=ScriptExecutionNamedOutputAction, nargs='*', help='User-defined dictionary.')
+        c.argument('script_cmdlet_id', help='A reference to the script cmdlet resource if user is running a AVS script.')

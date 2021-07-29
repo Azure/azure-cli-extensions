@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from azext_vmware.action import script_execution_parameters
+from azext_vmware.action import script_execution_named_outputs, script_execution_parameters
 from azext_vmware.vendored_sdks.avs_client.models import ScriptStringExecutionParameter, ScriptSecureStringExecutionParameter, PSCredentialExecutionParameter
 
 
@@ -16,3 +16,7 @@ class TestAction:
 
     def test_credential_execution_parameter(self):
         assert PSCredentialExecutionParameter(name="creds", username="Jim", password="bob") == script_execution_parameters(["type=credential", "name=creds", "username=Jim", "password=bob"])
+
+    def test_named_outputs(self):
+        assert {"dog": "Fred"} == script_execution_named_outputs(["dog=Fred"])
+        assert {"dog": "Fred", "cat": "Tom"} == script_execution_named_outputs(["dog=Fred", "cat=Tom"])

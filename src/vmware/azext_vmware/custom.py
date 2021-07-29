@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long
 
+from typing import List, Tuple
 from azext_vmware.vendored_sdks.avs_client import AVSClient
 
 LEGAL_TERMS = '''
@@ -306,8 +307,10 @@ def script_package_show(client: AVSClient, resource_group_name, private_cloud, n
     return client.script_packages.get(resource_group_name=resource_group_name, private_cloud_name=private_cloud, script_package_name=name)
 
 
-def script_execution_create(client: AVSClient, resource_group_name, private_cloud, name, timeout, script_cmdlet_id=None, parameters=None, hidden_parameters=None, failure_reason=None, retention=None, out=None, named_outputs=None):
+def script_execution_create(client: AVSClient, resource_group_name, private_cloud, name, timeout, script_cmdlet_id=None, parameters=None, hidden_parameters=None, failure_reason=None, retention=None, out=None, named_outputs: List[Tuple[str, str]] = None):
     from azext_vmware.vendored_sdks.avs_client.models import ScriptExecution
+    if named_outputs is not None:
+        named_outputs = dict(named_outputs)
     script_execution = ScriptExecution(timeout=timeout, script_cmdlet_id=script_cmdlet_id, parameters=parameters, hidden_parameters=hidden_parameters, failure_reason=failure_reason, retention=retention, output=out, named_outputs=named_outputs)
     return client.script_executions.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, script_execution_name=name, script_execution=script_execution)
 

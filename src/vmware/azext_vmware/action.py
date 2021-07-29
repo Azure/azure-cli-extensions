@@ -10,6 +10,19 @@ from knack.util import CLIError
 from azext_vmware.vendored_sdks.avs_client.models import ScriptExecutionParameter, ScriptExecutionParameterType, ScriptStringExecutionParameter, ScriptSecureStringExecutionParameter, PSCredentialExecutionParameter
 
 
+class ScriptExecutionNamedOutputAction(argparse._AppendAction):
+
+    def __call__(self, parser, namespace, values, option_string=None):
+        namespace.named_outputs = script_execution_named_outputs(values)
+
+
+def script_execution_named_outputs(values: List[str]) -> Dict[str, str]:
+    try:
+        return dict(map(lambda x: x.split('=', 1), values))
+    except ValueError as error:
+        raise CLIError('parsing named output parameter \'{}\''.format(values)) from error
+
+
 class ScriptExecutionParameterAction(argparse._AppendAction):
 
     def __call__(self, parser, namespace, values, option_string=None):
