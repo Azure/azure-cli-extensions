@@ -772,23 +772,10 @@ def collect_periscope_logs(resource_group_name, name, storage_account_name=None,
         temp_yaml_file.close()
         try:
             print("Cleaning up diagnostic container resources from the k8s cluster if existing...")
-
-            subprocess_cmd = kubectl_prior + ["delete", "serviceaccount,configmap,daemonset,secret", "--all", "-n", "aks-periscope", "--ignore-not-found"]
-            subprocess.call(subprocess_cmd, stderr=subprocess.STDOUT)
-
-            subprocess_cmd = kubectl_prior + ["delete", "ClusterRoleBinding", "aks-periscope-role-binding", "--ignore-not-found"]
-            subprocess.call(subprocess_cmd, stderr=subprocess.STDOUT)
-
-            subprocess_cmd = kubectl_prior + ["delete", "ClusterRole", "aks-periscope-role", "--ignore-not-found"]
-            subprocess.call(subprocess_cmd, stderr=subprocess.STDOUT)
-
-            subprocess_cmd = kubectl_prior + ["delete", "--all", "apd", "-n", "aks-periscope", "--ignore-not-found"]
-            subprocess.call(subprocess_cmd, stderr=subprocess.STDOUT)
-
-            subprocess_cmd = kubectl_prior + ["delete", "CustomResourceDefinition", "diagnostics.aks-periscope.azure.github.com", "--ignore-not-found"]
-            subprocess.call(subprocess_cmd, stderr=subprocess.STDOUT)
+            delete_periscope_resources(kubectl_prior)
 
             print()
+            
             print(f"{colorama.Fore.GREEN}Deploying diagnostic container on the K8s cluster...")
             subprocess_cmd = kubectl_prior + ["apply", "-f", temp_yaml_path, "-n", "aks-periscope"]
             subprocess.check_output(subprocess_cmd, stderr=subprocess.STDOUT)
@@ -815,26 +802,30 @@ def collect_periscope_logs(resource_group_name, name, storage_account_name=None,
               f"anytime to check the analysis results.")
     else:
         display_diagnostics_report(kubectl_prior)
+    
+    print("Deleting existing aks-periscope resources from cluster ...")
 
     try:
-        print("Deleting aks-periscope resources from cluster ...")
+        delete_periscope_resources(kubectl_prior)
+    except Exception as ex: 
+        raise Exception("Error occurred while deleting the aks-periscope resources. Error: {}".format(str(ex)))
 
-        subprocess_cmd = kubectl_prior + ["delete", "serviceaccount,configmap,daemonset,secret", "--all", "-n", "aks-periscope", "--ignore-not-found"]
-        subprocess.call(subprocess_cmd, stderr=subprocess.STDOUT)
 
-        subprocess_cmd = kubectl_prior + ["delete", "ClusterRoleBinding", "aks-periscope-role-binding", "--ignore-not-found"]
-        subprocess.call(subprocess_cmd, stderr=subprocess.STDOUT)
+def delete_periscope_resources(kubectl_prior):
+    subprocess_cmd = kubectl_prior + ["delete", "serviceaccount,configmap,daemonset,secret", "--all", "-n", "aks-periscope", "--ignore-not-found"]
+    subprocess.call(subprocess_cmd, stderr=subprocess.STDOUT)
 
-        subprocess_cmd = kubectl_prior + ["delete", "ClusterRole", "aks-periscope-role", "--ignore-not-found"]
-        subprocess.call(subprocess_cmd, stderr=subprocess.STDOUT)
+    subprocess_cmd = kubectl_prior + ["delete", "ClusterRoleBinding", "aks-periscope-role-binding", "--ignore-not-found"]
+    subprocess.call(subprocess_cmd, stderr=subprocess.STDOUT)
 
-        subprocess_cmd = kubectl_prior + ["delete", "--all", "apd", "-n", "aks-periscope", "--ignore-not-found"]
-        subprocess.call(subprocess_cmd, stderr=subprocess.STDOUT)
+    subprocess_cmd = kubectl_prior + ["delete", "ClusterRole", "aks-periscope-role", "--ignore-not-found"]
+    subprocess.call(subprocess_cmd, stderr=subprocess.STDOUT)
 
-        subprocess_cmd = kubectl_prior + ["delete", "CustomResourceDefinition", "diagnostics.aks-periscope.azure.github.com", "--ignore-not-found"]
-        subprocess.call(subprocess_cmd, stderr=subprocess.STDOUT)
-    except subprocess.CalledProcessError as err:
-        raise CLIInternalError(err.output)
+    subprocess_cmd = kubectl_prior + ["delete", "--all", "apd", "-n", "aks-periscope", "--ignore-not-found"]
+    subprocess.call(subprocess_cmd, stderr=subprocess.STDOUT)
+
+    subprocess_cmd = kubectl_prior + ["delete", "CustomResourceDefinition", "diagnostics.aks-periscope.azure.github.com", "--ignore-not-found"]
+    subprocess.call(subprocess_cmd, stderr=subprocess.STDOUT)
 
 
 def which(binary):
