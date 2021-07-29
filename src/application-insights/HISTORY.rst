@@ -1,12 +1,3 @@
-.. :changelog:
-
-Release History
-===============
-0.1.14
-++++++++++++++++++
-
-* `az monitor app-insights events show`: Add enum values for `--type`.
-
 0.1.13
 ++++++++++++++++++
 

@@ -5,7 +5,6 @@
 [[ -z "${PYTHON_VERSION}" ]] && (echo "PYTHON_VERSION is empty"; exit 1)
 
 patchImageTools(){
-    apt update
     apt install -y curl
 }
 
