@@ -128,7 +128,7 @@ def load_arguments(self, _):
     with self.argument_context('vmware script-execution create') as c:
         c.argument('timeout', help='Time limit for execution.')
         c.argument('parameters', options_list=['--parameter', '-p'], action=ScriptExecutionParameterAction, nargs='*', help='Parameters the script will accept.')
-        c.argument('hidden_parameters', options_list=['--hidden-parameter', '-hp'], action=ScriptExecutionParameterAction, nargs='*', help='Parameters that will be hidden/not visible to ARM, such as passwords and credentials.')
+        c.argument('hidden_parameters', options_list=['--hidden-parameter'], action=ScriptExecutionParameterAction, nargs='*', help='Parameters that will be hidden/not visible to ARM, such as passwords and credentials.')
         c.argument('failure_reason', help='Error message if the script was able to run, but if the script itself had errors or powershell threw an exception.')
         c.argument('retention', help='Time to live for the resource. If not provided, will be available for 60 days.')
         c.argument('out', help='Standard output stream from the powershell execution.')

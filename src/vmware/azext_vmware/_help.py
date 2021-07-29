@@ -414,6 +414,11 @@ helps['vmware cloud-link delete'] = """
       text: az vmware cloud-link delete --resource-group group1 --private-cloud cloud1 --name cloudLink1
 """
 
+helps['vmware script-cmdlet'] = """
+    type: group
+    short-summary: Commands to list and show script cmdlet resources.
+"""
+
 helps['vmware script-cmdlet list'] = """
     type: command
     short-summary: List script cmdlet resources available for a private cloud to create a script execution resource on a private cloud.
@@ -430,6 +435,11 @@ helps['vmware script-cmdlet show'] = """
       text: az vmware script-cmdlet show --resource-group group1 --private-cloud cloud1 --script-package package1 --name cmdlet1
 """
 
+helps['vmware script-package'] = """
+    type: group
+    short-summary: Commands to list and show script packages available to run on the private cloud.
+"""
+
 helps['vmware script-package list'] = """
     type: command
     short-summary: List script packages available to run on the private cloud.
@@ -444,6 +454,11 @@ helps['vmware script-package show'] = """
     examples:
     - name: Show a script package.
       text: az vmware script-package show --resource-group group1 --private-cloud cloud1 --name package1
+"""
+
+helps['vmware script-execution'] = """
+    type: group
+    short-summary: Commands to manage script executions in a private cloud.
 """
 
 helps['vmware script-execution create'] = """
