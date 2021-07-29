@@ -576,7 +576,7 @@ def check_serial_console_enabled(cli_ctx):
             not result["properties"]["disabled"]):
         return
     error_message = "Azure Serial Console is not enabled for this subscription."
-    recommendation = 'Enable Serial Console with "az serial-console enable".'
+    recommendation = 'Enable Serial Console with "az serial-console enable"'
     raise ForbiddenError(error_message, recommendation=recommendation)
 
 
@@ -625,11 +625,6 @@ def check_resource(cli_ctx, resource_group_name, vm_vmss_name, vmss_instanceid):
         if (result.instance_view is not None and
                 result.instance_view.os_name is not None and
                 "windows" in result.instance_view.os_name.lower()):
-            GV.os_is_windows = True
-        if (result.storage_profile is not None and
-                result.storage_profile.image_reference is not None and
-                result.storage_profile.image_reference.offer is not None and
-                "windows" in result.storage_profile.image_reference.offer.lower()):
             GV.os_is_windows = True
 
         power_state = ','.join(
