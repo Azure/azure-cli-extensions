@@ -115,6 +115,13 @@ def load_arguments(self, _):
         c.argument('name', options_list=['--name', '-n'], help='The name of the cloud link.')
         c.argument('linked_cloud', help='Identifier of the other private cloud participating in the link.')
 
+    with self.argument_context('vmware script-package') as c:
+        c.argument('name', options_list=['--name', '-n'], help='Name of the script package.')
+
+    with self.argument_context('vmware script-cmdlet') as c:
+        c.argument('script_package', options_list=['--script-package', '-p'], help='Name of the script package.')
+        c.argument('name', options_list=['--name', '-n'], help='Name of the script cmdlet.')
+
     with self.argument_context('vmware script-execution') as c:
         c.argument('name', options_list=['--name', '-n'], help='Name of the script execution.')
 
