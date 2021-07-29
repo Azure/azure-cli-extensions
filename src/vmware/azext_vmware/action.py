@@ -3,6 +3,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+# pylint: disable=line-too-long, protected-access, too-few-public-methods
 
 import argparse
 from typing import Dict, List
@@ -35,8 +36,8 @@ class ScriptExecutionParameterAction(argparse._AppendAction):
 
 def script_execution_parameters(values: List[str]) -> ScriptExecutionParameter:
     values = dict(map(lambda x: x.split('=', 1), values))
-    type = require(values, "type")
-    type_lower = type.lower()
+    tp = require(values, "type")
+    type_lower = tp.lower()
 
     if type_lower == ScriptExecutionParameterType.VALUE.lower():
         try:
@@ -57,7 +58,7 @@ def script_execution_parameters(values: List[str]) -> ScriptExecutionParameter:
             raise CLIError('parsing {} script execution parameter'.format(ScriptExecutionParameterType.CREDENTIAL)) from error
 
     else:
-        raise CLIError('script execution paramater type \'{}\' not matched'.format(type))
+        raise CLIError('script execution paramater type \'{}\' not matched'.format(tp))
 
 
 def require(values: Dict[str, str], key: str) -> str:
