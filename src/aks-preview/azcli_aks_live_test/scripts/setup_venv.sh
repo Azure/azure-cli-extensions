@@ -4,11 +4,6 @@
 # specify the version of python3, e.g. 3.6
 [[ -z "${PYTHON_VERSION}" ]] && (echo "PYTHON_VERSION is empty"; exit 1)
 
-patchImageTools(){
-    apt update
-    apt install -y curl
-}
-
 setupVenv(){
     # delete existing venv
     deactivate || true
@@ -118,9 +113,6 @@ if [[ -n ${setup_option} ]]; then
     set -o nounset
     set -o pipefail
     set -o xtrace
-
-    # install missing tools in the image
-    patchImageTools
 
     # create new venv if second arg is not "n"
     new_venv=${2:-"n"}
