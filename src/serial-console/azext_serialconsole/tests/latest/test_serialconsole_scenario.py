@@ -22,7 +22,7 @@ from azure.core.exceptions import ResourceNotFoundError as ComputeClientResource
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 class CheckResourceTest(ScenarioTest):
-
+    @pytest.mark.recorded
     @ResourceGroupPreparer(name_prefix='cli_test_serialconsole', location='westus2')
     @StorageAccountPreparer(name_prefix='cli', location="westus2")
     def test_check_resource_VMSS(self, resource_group, storage_account):
@@ -112,6 +112,7 @@ class CheckResourceTest(ScenarioTest):
 
         check_resource(self.cli_ctx, resource_group, name, iid)
 
+    @pytest.mark.recorded
     @ResourceGroupPreparer(name_prefix='cli_test_serialconsole', location='westus2')
     @StorageAccountPreparer(name_prefix='cli', location="westus2")
     def test_check_resource_VM(self, resource_group, storage_account):
@@ -178,7 +179,7 @@ class CheckResourceTest(ScenarioTest):
 
 
 class SerialConsoleEnableDisableTest(ScenarioTest):
-
+    @pytest.mark.recorded
     def test_enable_disable(self):
         self.cmd('az serial-console disable', checks=[
             self.check('properties.disabled', 'True')
