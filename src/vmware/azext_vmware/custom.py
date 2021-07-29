@@ -274,7 +274,7 @@ def globalreachconnection_delete(client: AVSClient, resource_group_name, private
     return client.global_reach_connections.begin_delete(resource_group_name=resource_group_name, private_cloud_name=private_cloud, global_reach_connection_name=name)
 
 
-def cloud_link_create_or_update(client: AVSClient, resource_group_name, name, private_cloud, linked_cloud):
+def cloud_link_create(client: AVSClient, resource_group_name, name, private_cloud, linked_cloud):
     return client.cloud_links.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cloud_link_name=name, linked_cloud=linked_cloud)
 
 
@@ -306,7 +306,7 @@ def script_package_show(client: AVSClient, resource_group_name, private_cloud, n
     return client.script_packages.get(resource_group_name=resource_group_name, private_cloud_name=private_cloud, script_package_name=name)
 
 
-def script_execution_create_or_update(client: AVSClient, resource_group_name, private_cloud, name, timeout, script_cmdlet_id=None, parameters=None, hidden_parameters=None, failure_reason=None, retention=None, out=None, named_outputs=None):
+def script_execution_create(client: AVSClient, resource_group_name, private_cloud, name, timeout, script_cmdlet_id=None, parameters=None, hidden_parameters=None, failure_reason=None, retention=None, out=None, named_outputs=None):
     from azext_vmware.vendored_sdks.avs_client.models import ScriptExecution
     script_execution = ScriptExecution(timeout=timeout, script_cmdlet_id=script_cmdlet_id, parameters=parameters, hidden_parameters=hidden_parameters, failure_reason=failure_reason, retention=retention, output=out, named_outputs=named_outputs)
     return client.script_executions.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, script_execution_name=name, script_execution=script_execution)
@@ -317,12 +317,12 @@ def script_execution_list(client: AVSClient, resource_group_name, private_cloud)
 
 
 def script_execution_show(client: AVSClient, resource_group_name, private_cloud, name):
-    return client.script_executions.get(resource_group_name=resource_group_name, private_cloud_name=private_cloud, global_reach_connection_name=name)
+    return client.script_executions.get(resource_group_name=resource_group_name, private_cloud_name=private_cloud, script_execution_name=name)
 
 
 def script_execution_delete(client: AVSClient, resource_group_name, private_cloud, name):
-    return client.script_executions.begin_delete(resource_group_name=resource_group_name, private_cloud_name=private_cloud, global_reach_connection_name=name)
+    return client.script_executions.begin_delete(resource_group_name=resource_group_name, private_cloud_name=private_cloud, script_execution_name=name)
 
 
 def script_execution_logs(client: AVSClient, resource_group_name, private_cloud, name):
-    return client.script_executions.get_execution_logs(resource_group_name=resource_group_name, private_cloud_name=private_cloud, global_reach_connection_name=name)
+    return client.script_executions.get_execution_logs(resource_group_name=resource_group_name, private_cloud_name=private_cloud, script_execution_name=name)

@@ -13,8 +13,6 @@ from azext_vmware.vendored_sdks.avs_client.models import ScriptExecutionParamete
 class ScriptExecutionParameterAction(argparse._AppendAction):
 
     def __call__(self, parser, namespace, values, option_string=None):
-        print("action called with")
-        print(values)
         parameter = script_execution_parameters(values)
         if namespace.parameters:
             namespace.parameters.append(parameter)
