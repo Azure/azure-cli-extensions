@@ -176,6 +176,10 @@ class CheckResourceTest(ScenarioTest):
 
         check_resource(self.cli_ctx, resource_group, name, None)
 
+        self.cmd('az vm stop -g {rg} -n {name}')
+
+        check_resource(self.cli_ctx, resource_group, name, None)
+
         self.cmd('az vm deallocate -g {rg} -n {name}')
 
         with self.assertRaises(AzureConnectionError):
