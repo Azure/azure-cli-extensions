@@ -34,6 +34,9 @@ def load_arguments(self, _):
         c.argument('infrastructure', options_list=['--infrastructure'], help='The infrastructure on which the Kubernetes cluster represented by this connected cluster will be running on.', arg_type=get_enum_type(Infrastructure_Enum_Values))
         c.argument('disable_auto_upgrade', options_list=['--disable-auto-upgrade'], action='store_true', help='Flag to disable auto upgrade of arc agents.')
         c.argument('cl_oid', options_list=['--custom-locations-oid'], help="OID of 'custom-locations' app")
+        c.argument('container_registry_repository', options_list=['--container-registry-repository'], help='Custom container registry repository.')
+        c.argument('container_registry_username', options_list=['--container-registry-username'], help='Custom container registry repository username.')
+        c.argument('container_registry_password', options_list=['--container-registry-password'], help='Custom container registry repository password.')
 
     with self.argument_context('connectedk8s update') as c:
         c.argument('cluster_name', options_list=['--name', '-n'], id_part='name', help='The name of the connected cluster.')
@@ -45,6 +48,9 @@ def load_arguments(self, _):
         c.argument('proxy_cert', options_list=['--proxy-cert'], arg_group='Proxy', type=file_type, completer=FilesCompleter(), help='Path to the certificate file for proxy')
         c.argument('disable_proxy', options_list=['--disable-proxy'], arg_group='Proxy', action='store_true', help='Disables proxy settings for agents')
         c.argument('auto_upgrade', options_list=['--auto-upgrade'], help='Flag to enable/disable auto upgrade of arc agents. By default, auto upgrade of agents is enabled.', arg_type=get_enum_type(["true", "false"]))
+        c.argument('container_registry_repository', options_list=['--container-registry-repository'], help='Custom container registry repository.')
+        c.argument('container_registry_username', options_list=['--container-registry-username'], help='Custom container registry repository username.')
+        c.argument('container_registry_password', options_list=['--container-registry-password'], help='Custom container registry repository password.')
 
     with self.argument_context('connectedk8s upgrade') as c:
         c.argument('cluster_name', options_list=['--name', '-n'], id_part='name', help='The name of the connected cluster.')
