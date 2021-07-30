@@ -568,7 +568,7 @@ def cli_cosmosdb_managed_cassandra_datacenter_create(client,
     )
 
     data_center_resource = DataCenterResource(
-        data_center_properties=data_center_properties
+        properties=data_center_properties
     )
 
     return client.begin_create_update(resource_group_name, cluster_name, data_center_name, data_center_resource)
@@ -598,7 +598,7 @@ def cli_cosmosdb_managed_cassandra_datacenter_update(client, resource_group_name
         base64_encoded_cassandra_yaml_fragment=base64_encoded_cassandra_yaml_fragment)
 
     data_center_resource = DataCenterResource(
-        data_center_properties=data_center_properties
+        properties=data_center_properties
     )
 
     return client.begin_create_update(resource_group_name, cluster_name, data_center_name, data_center_resource)

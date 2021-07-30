@@ -7,6 +7,7 @@ import os
 import mock
 
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
+from azure_devtools.scenario_tests import AllowLargeResponse
 
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
@@ -39,6 +40,7 @@ class ManagedCassandraScenarioTest(ScenarioTest):
 
     # pylint: disable=broad-except
     @ResourceGroupPreparer(name_prefix='cli_managed_cassandra')
+    @AllowLargeResponse()
     def test_managed_cassandra_verify_lists(self, resource_group):
 
         self.kwargs.update({
