@@ -67,9 +67,9 @@ def validate_location(cmd, location):
             break
 
 
-def get_chart_path(registry_path, kube_config, kube_context, container_registry_repository="", container_registry_username="", container_registry_password=""):
+def get_chart_path(registry_path, kube_config, kube_context, container_registry_username="", container_registry_password=""):
 
-    helm_login(container_registry_repository, container_registry_username, container_registry_password)
+    helm_login(registry_path, container_registry_username, container_registry_password)
 
     # Pulling helm chart from registry
     os.environ['HELM_EXPERIMENTAL_OCI'] = '1'
@@ -352,10 +352,8 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, kuberne
     if container_registry_repository:
         cmd_helm_install.extend(["--set", "systemDefaultValues.image.repository={}".format(container_registry_repository)])
         if container_registry_username and container_registry_password:
-            container_registry = get_container_registry(container_registry_repository)
-            cmd_helm_install.extend(["--set", "systemDefaultValues.imageCredentials.registry={}".format(container_registry)])
-            cmd_helm_install.extend(["--set", "systemDefaultValues.imageCredentials.username={}".format(container_registry_username)])
-            cmd_helm_install.extend(["--set", "systemDefaultValues.imageCredentials.password={}".format(container_registry_password)])
+            cmd_helm_install.extend(["--set", "systemDefaultValues.image.username={}".format(container_registry_username)])
+            cmd_helm_install.extend(["--set", "systemDefaultValues.image.password={}".format(container_registry_password)])
 
     response_helm_install = Popen(cmd_helm_install, stdout=PIPE, stderr=PIPE)
     _, error_helm_install = response_helm_install.communicate()

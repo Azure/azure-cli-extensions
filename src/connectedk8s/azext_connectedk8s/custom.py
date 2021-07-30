@@ -226,6 +226,8 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
             raise ValidationError(auto_upgrade_error, recommendation='use --disable_auto_upgrade')
 
         registry_path =  "{}/azurearck8s/azure-arc-k8sagents:1.3.8".format(container_registry_repository)
+        # Send private registry information to telemetry
+        telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.PrivateContainerRegistry': container_registry_repository})
     else:
         registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else utils.get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood, release_train_dogfood)
 
@@ -234,7 +236,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.AgentVersion': azure_arc_agent_version})
 
     # Get helm chart path
-    chart_path = utils.get_chart_path(registry_path, kube_config, kube_context, container_registry_repository, container_registry_username, container_registry_password)
+    chart_path = utils.get_chart_path(registry_path, kube_config, kube_context, container_registry_username, container_registry_password)
 
     # Generate public-private key pair
     try:
@@ -832,7 +834,6 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
     config_dp_endpoint = get_config_dp_endpoint(cmd, connected_cluster.location)
 
     # Retrieving Helm chart OCI Artifact location
-    # Retrieving Helm chart OCI Artifact location
     if container_registry_repository:
         if auto_upgrade != "false":
             auto_upgrade_error = 'Disable auto upgrade when using custom repository'
@@ -841,6 +842,8 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
             raise ValidationError(auto_upgrade_error, recommendation='use --auto_upgrade false')
 
         registry_path =  "{}/azurearck8s/azure-arc-k8sagents:1.3.8".format(container_registry_repository)
+        # Send private registry information to telemetry
+        telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.PrivateContainerRegistry': container_registry_repository})
     else:
         registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else utils.get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood, release_train_dogfood)
 
@@ -855,7 +858,7 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
     telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.AgentVersion': agent_version})
 
     # Get Helm chart path
-    chart_path = utils.get_chart_path(registry_path, kube_config, kube_context, container_registry_repository, container_registry_username, container_registry_password)
+    chart_path = utils.get_chart_path(registry_path, kube_config, kube_context, container_registry_username, container_registry_password)
 
     cmd_helm_upgrade = ["helm", "upgrade", "azure-arc", chart_path, "--namespace", release_namespace,
                         "--reuse-values",
@@ -883,10 +886,8 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
     if container_registry_repository:
         cmd_helm_upgrade.extend(["--set", "systemDefaultValues.image.repository={}".format(container_registry_repository)])
         if container_registry_username and container_registry_password:
-            container_registry = utils.get_container_registry(container_registry_repository)
-            cmd_helm_upgrade.extend(["--set", "systemDefaultValues.imageCredentials.registry={}".format(container_registry)])
-            cmd_helm_upgrade.extend(["--set", "systemDefaultValues.imageCredentials.username={}".format(container_registry_username)])
-            cmd_helm_upgrade.extend(["--set", "systemDefaultValues.imageCredentials.password={}".format(container_registry_password)])
+            cmd_helm_upgrade.extend(["--set", "systemDefaultValues.image.username={}".format(container_registry_username)])
+            cmd_helm_upgrade.extend(["--set", "systemDefaultValues.image.password={}".format(container_registry_password)])
             
     response_helm_upgrade = Popen(cmd_helm_upgrade, stdout=PIPE, stderr=PIPE)
     _, error_helm_upgrade = response_helm_upgrade.communicate()
@@ -1011,21 +1012,6 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
     # Setting the config dataplane endpoint
     config_dp_endpoint = get_config_dp_endpoint(cmd, connected_cluster.location)
 
-    # Retrieving Helm chart OCI Artifact location
-    registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else utils.get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood, release_train_dogfood)
-
-    reg_path_array = registry_path.split(':')
-    agent_version = reg_path_array[1]
-
-    if arc_agent_version is not None:
-        agent_version = arc_agent_version
-        registry_path = reg_path_array[0] + ":" + agent_version
-
-    telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.AgentVersion': agent_version})
-
-    # Get Helm chart path
-    chart_path = utils.get_chart_path(registry_path, kube_config, kube_context)
-
     cmd_helm_values = ["helm", "get", "values", "azure-arc", "--namespace", release_namespace]
     if kube_config:
         cmd_helm_values.extend(["--kubeconfig", kube_config])
@@ -1049,6 +1035,31 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
         telemetry.set_exception(exception=e, fault_type=consts.Helm_Existing_User_Supplied_Value_Get_Fault,
                                 summary='Problem loading the helm existing user supplied values')
         raise CLIInternalError("Problem loading the helm existing user supplied values: " + str(e))
+
+    # Retrieving Helm chart OCI Artifact location
+    registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else utils.get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood, release_train_dogfood)
+
+    # Change registry_path to private registry if PCR is set in helm values
+    existing_user_values_flat = utils.flatten(existing_user_values)
+    helm_container_repository = existing_user_values_flat.get('systemDefaultValues.image.repository')
+    if helm_container_repository.split('.')[0] != "mcr":
+        registry_path = helm_container_repository + ":" + arc_agent_version
+        registry_username = existing_user_values_flat.get('systemDefaultValues.image.username')
+        registry_password = existing_user_values_flat.get('systemDefaultValues.image.password')
+        # Send private registry information to telemetry
+        telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.PrivateContainerRegistry': helm_container_repository})
+
+    reg_path_array = registry_path.split(':')
+    agent_version = reg_path_array[1]
+
+    if arc_agent_version is not None:
+        agent_version = arc_agent_version
+        registry_path = reg_path_array[0] + ":" + agent_version
+
+    telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.AgentVersion': agent_version})
+
+    # Get Helm chart path
+    chart_path = utils.get_chart_path(registry_path, kube_config, kube_context, registry_username, registry_password)
 
     cmd_helm_upgrade = ["helm", "upgrade", "azure-arc", chart_path, "--namespace", release_namespace,
                         "--output", "json", "--atomic"]
@@ -1256,6 +1267,17 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
     # Retrieving Helm chart OCI Artifact location
     registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else utils.get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood, release_train_dogfood)
 
+    helm_values = get_all_helm_values(release_namespace, kube_config, kube_context)
+    # Change registry_path to private registry if PCR is set in helm values
+    helm_container_repository = helm_values.get('systemDefaultValues').get('image').get('repository')
+    if helm_container_repository.split('.')[0] != "mcr":
+        registry_path = helm_container_repository + ":" + '1.3.8'
+        registry_username = helm_values.get('systemDefaultValues').get('image').get('username')
+        registry_password = helm_values.get('systemDefaultValues').get('image').get('password')
+        # Send private registry information to telemetry
+        telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.PrivateContainerRegistry': helm_container_repository})
+
+
     reg_path_array = registry_path.split(':')
     agent_version = reg_path_array[1]
 
@@ -1267,7 +1289,7 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
     telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.AgentVersion': agent_version})
 
     # Get Helm chart path
-    chart_path = utils.get_chart_path(registry_path, kube_config, kube_context)
+    chart_path = utils.get_chart_path(registry_path, kube_config, kube_context, registry_username, registry_password)
 
     cmd_helm_upgrade = ["helm", "upgrade", "azure-arc", chart_path, "--namespace", release_namespace,
                         "--reuse-values",
@@ -1396,6 +1418,15 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
 
     # Retrieving Helm chart OCI Artifact location
     registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else utils.get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood, release_train_dogfood)
+
+    # Change registry_path to private registry if PCR is set in helm values
+    helm_container_repository = helm_values.get('systemDefaultValues').get('image').get('repository')
+    if helm_container_repository.split('.')[0] != "mcr":
+        registry_path = helm_container_repository + ":" + '1.3.8'
+        registry_username = helm_values.get('systemDefaultValues').get('image').get('username')
+        registry_password = helm_values.get('systemDefaultValues').get('image').get('password')
+        # Send private registry information to telemetry
+        telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.PrivateContainerRegistry': helm_container_repository})
 
     reg_path_array = registry_path.split(':')
     agent_version = reg_path_array[1]
