@@ -514,33 +514,35 @@ def publish_blueprint(client,
                          published_blueprint=body)
 
 
-def delete_blueprint_version(cmd, client, blueprint_name, version_id, management_group=None, subscription=None, scope=None):
-    return client.delete(scope=scope,
+def delete_blueprint_version(client, blueprint_name, version_id,
+                             management_group=None, subscription=None, resource_scope=None):
+    return client.delete(resource_scope=resource_scope,
                          blueprint_name=blueprint_name,
                          version_id=version_id)
 
 
-def get_blueprint_version(cmd, client, blueprint_name, version_id, management_group=None, subscription=None, scope=None):
-    return client.get(scope=scope,
+def get_blueprint_version(client, blueprint_name, version_id, management_group=None,
+                          subscription=None, resource_scope=None):
+    return client.get(resource_scope=resource_scope,
                       blueprint_name=blueprint_name,
                       version_id=version_id)
 
 
-def list_blueprint_version(cmd, client, blueprint_name, management_group=None, subscription=None, scope=None):
-    return client.list(scope=scope, blueprint_name=blueprint_name)
+def list_blueprint_version(client, blueprint_name, management_group=None, subscription=None, resource_scope=None):
+    return client.list(resource_scope=resource_scope, blueprint_name=blueprint_name)
 
 
-def get_blueprint_version_artifact(cmd, client, blueprint_name,
-                                   version_id, artifact_name, management_group=None, subscription=None, scope=None):
-    return client.get(scope=scope,
+def get_blueprint_version_artifact(client, blueprint_name, version_id, artifact_name,
+                                   management_group=None, subscription=None, resource_scope=None):
+    return client.get(resource_scope=resource_scope,
                       blueprint_name=blueprint_name,
                       version_id=version_id,
                       artifact_name=artifact_name)
 
 
-def list_blueprint_version_artifact(cmd, client, blueprint_name,
-                                    version_id, management_group=None, subscription=None, scope=None):
-    return client.list(scope=scope,
+def list_blueprint_version_artifact(client, blueprint_name, version_id,
+                                    management_group=None, subscription=None, resource_scope=None):
+    return client.list(resource_scope=resource_scope,
                        blueprint_name=blueprint_name,
                        version_id=version_id)
 
