@@ -2,10 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-# pylint: disable=line-too-long
-# pylint: disable=too-many-statements
-# pylint: disable=too-many-lines
-# pylint: disable=too-many-locals
+
 # pylint: disable=unused-argument
 
 import json
@@ -33,7 +30,7 @@ def import_blueprint_with_artifacts(cmd,
             try:
                 blueprint = json.load(blueprint_file)
             except json.decoder.JSONDecodeError as ex:
-                raise CLIError('JSON decode error for {}: {}'.format(blueprint_path, str(ex)))
+                raise CLIError('JSON decode error for {}: {}'.format(blueprint_path, str(ex))) from ex
             if 'properties' not in blueprint:
                 raise CLIError("blueprint.json does not contain the 'properties' field")
             blueprint_properties = blueprint['properties']
@@ -56,9 +53,9 @@ def import_blueprint_with_artifacts(cmd,
                     artifact = json.load(artifact_file)
                     art_dict[artifact_name] = artifact
                 except json.decoder.JSONDecodeError as ex:
-                    raise CLIError('JSON decode error for {}: {}'.format(filepath, str(ex)))
+                    raise CLIError('JSON decode error for {}: {}'.format(filepath, str(ex))) from ex
     except FileNotFoundError as ex:
-        raise CLIError('File not Found: {}'.format(str(ex)))
+        raise CLIError('File not Found: {}'.format(str(ex))) from ex
 
     # Only import when all files have no errors
     blueprint_response = client.create_or_update(resource_scope=resource_scope,
@@ -177,7 +174,7 @@ def export_blueprint_with_artifacts(cmd, client, blueprint_name, output_path,
         blueprint = client.get(resource_scope=resource_scope, blueprint_name=blueprint_name)
         serialized_blueprint = blueprint.serialize()
     except HttpResponseError as error:
-        raise CLIError('Unable to export blueprint: {}'.format(str(error.message)))
+        raise CLIError('Unable to export blueprint: {}'.format(str(error.message))) from error
 
     os.makedirs(artifacts_location, exist_ok=True)
 
@@ -645,7 +642,8 @@ def update_blueprint_assignment(client,
         body['identity']['user_assigned_identities'] = {user_assigned_identity: {}}  # dictionary
     elif 'user_assigned_identities' in body['identity']:
         for identity in body['identity']['user_assigned_identities']:
-            body['identity']['user_assigned_identities'][identity] = {}  # service only accept empty json of a user-assigned identity in request
+            body['identity']['user_assigned_identities'][identity] = {}
+            # service only accept empty json of a user-assigned identity in request
 
     if display_name is not None:
         body['display_name'] = display_name  # str
@@ -688,11 +686,13 @@ def list_blueprint_assignment(client, management_group=None, subscription=None, 
     return client.list(resource_scope=resource_scope)
 
 
-def wait_for_blueprint_assignment(client, assignment_name, management_group=None, subscription=None, resource_scope=None):
+def wait_for_blueprint_assignment(client, assignment_name, management_group=None,
+                                  subscription=None, resource_scope=None):
     client.wait(resource_scope=resource_scope, assignment_name=assignment_name)
 
 
-def who_is_blueprint_blueprint_assignment(client, assignment_name, management_group=None, subscription=None, resource_scope=None):
+def who_is_blueprint_blueprint_assignment(client, assignment_name, management_group=None,
+                                          subscription=None, resource_scope=None):
     return client.who_is_blueprint(resource_scope=resource_scope, assignment_name=assignment_name)
 
 
