@@ -14,14 +14,14 @@ from knack.help_files import helps
 
 helps['datadog terms'] = """
     type: group
-    short-summary: Manage marketplace agreements with datadog
+    short-summary: Manage marketplace agreement with datadog
 """
 
 helps['datadog terms list'] = """
     type: command
-    short-summary: "List datadog marketplace agreements"
+    short-summary: "List Datadog marketplace agreements in the subscription."
     examples:
-      - name: List marketplace agreements
+      - name: MarketplaceAgreements_List
         text: |-
                az datadog terms list
 """
@@ -126,14 +126,11 @@ api-key=XX application-key=XX enterprise-app-id=XX
     examples:
       - name: Monitors_Create
         text: |-
-               az datadog monitor create --name "myMonitor" --resource-group "myResourceGroup" --location "West US 2" \
---tags Environment="Dev" --user-info name="Alice" email-address="alice@microsoft.com" phone-number="123-456-7890" \
---type "SystemAssigned" --sku-name "payg_v2_Monthly"
-      - name: Monitors creation with linking to Datadogo organization.
-        text: |-
-               az datadog monitor create --name "myMonitor" --resource-group "myResourceGroup" --location "West US 2" \
---datadog-organization-properties api-key=XX application-key=XX --tags Environment="Dev" --user-info name="Alice" \
-email-address="alice@microsoft.com" phone-number="123-456-7890" --type "SystemAssigned" --sku-name "Linked"
+               az datadog monitor create --monitor-name "myMonitor" --name "myMonitor" --location "West US" \
+--datadog-organization-properties name="myOrg" enterprise-app-id="00000000-0000-0000-0000-000000000000" \
+linking-auth-code="someAuthCode" linking-client-id="00000000-0000-0000-0000-000000000000" subscription="pro" \
+--user-info name="Alice" email-address="alice@microsoft.com" phone-number="123-456-7890" --name "free_Monthly" --tags \
+Environment="Dev" --resource-group "myResourceGroup"
 """
 
 helps['datadog monitor update'] = """
@@ -142,8 +139,8 @@ helps['datadog monitor update'] = """
     examples:
       - name: Monitors_Update
         text: |-
-               az datadog monitor update --name "myMonitor" --tags Environment="Dev" --monitoring-status "Disabled" \
---resource-group "myResourceGroup"
+               az datadog monitor update --monitor-name "myMonitor" --tags Environment="Dev" --resource-group \
+"myResourceGroup"
 """
 
 helps['datadog monitor delete'] = """

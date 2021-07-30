@@ -21,7 +21,7 @@ def load_command_table(self, _):
         'greementsOperations.{}',
         client_factory=cf_marketplace_agreement)
     with self.command_group('datadog terms', datadog_marketplace_agreement,
-                            client_factory=cf_marketplace_agreement, is_experimental=True) as g:
+                            client_factory=cf_marketplace_agreement) as g:
         g.custom_command('list', 'datadog_terms_list')
         g.custom_command('create', 'datadog_terms_create')
         g.custom_command('update', 'datadog_terms_update')
@@ -69,5 +69,5 @@ def load_command_table(self, _):
                                  custom_func_name='datadog_sso_config_update', supports_no_wait=True)
         g.custom_wait_command('wait', 'datadog_sso_config_show')
 
-    with self.command_group('datadog'):
+    with self.command_group('datadog', is_experimental=True):
         pass

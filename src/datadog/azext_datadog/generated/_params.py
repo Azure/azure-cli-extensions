@@ -48,8 +48,7 @@ def load_arguments(self, _):
 
     with self.argument_context('datadog monitor create') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('monitor_name', options_list=['--name', '-n', '--monitor-name'], type=str, help='Monitor resource '
-                   'name')
+        c.argument('monitor_name', type=str, help='Monitor resource name')
         c.argument('tags', tags_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
@@ -58,16 +57,13 @@ def load_arguments(self, _):
         c.argument('datadog_organization_properties', action=AddDatadogOrganizationProperties, nargs='+',
                    help='Datadog organization properties')
         c.argument('user_info', action=AddUserInfo, nargs='+', help='User info')
-        c.argument('sku_name', type=str, help='Name of the SKU.', arg_group='Sku')
+        c.argument('name', type=str, help='Name of the SKU.', arg_group='Sku')
 
     with self.argument_context('datadog monitor update') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('monitor_name', options_list=['--name', '-n', '--monitor-name'], type=str, help='Monitor resource '
-                   'name', id_part='name')
+        c.argument('monitor_name', type=str, help='Monitor resource name', id_part='name')
         c.argument('tags', tags_type)
-        c.argument('monitoring_status', type=str, help='Flag specifying if the resource monitoring is enabled or '
-                   'disabled. Allowed values: "Enabled", "Disabled".')
-        c.argument('sku_name', type=str, help='Name of the SKU.', arg_group='Sku')
+        c.argument('name', type=str, help='Name of the SKU.', arg_group='Sku')
 
     with self.argument_context('datadog monitor delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
