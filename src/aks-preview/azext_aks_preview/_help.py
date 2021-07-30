@@ -317,6 +317,9 @@ helps['aks create'] = """
         - name: --linux-os-config
           type: string
           short-summary: OS configurations for Linux agent nodes.
+        - name: --http-proxy-config
+          type: string
+          short-summary: Http Proxy configuration for this cluster.
         - name: --enable-pod-identity
           type: bool
           short-summary: (PREVIEW) Enable pod identity addon.

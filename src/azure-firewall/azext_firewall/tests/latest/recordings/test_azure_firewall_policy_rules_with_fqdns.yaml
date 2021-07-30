@@ -1,0 +1,1672 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network ip-group create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --ip-addresses
+      User-Agent:
+      - AZURECLI/2.26.0 azsdk-python-azure-mgmt-resource/18.0.0 Python/3.8.10 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_azure_firewall_policy000001?api-version=2020-10-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001","name":"cli_test_azure_firewall_policy000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2","tags":{"product":"azurecli","cause":"automation","date":"2021-07-22T02:30:00Z"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '429'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 22 Jul 2021 02:30:03 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus2", "properties": {"ipAddresses": ["10.0.0.0", "10.0.0.1"]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network ip-group create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '80'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - -n -g --ip-addresses
+      User-Agent:
+      - python/3.8.10 (Windows-10-10.0.19043-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-network/7.0.0 Azure-SDK-For-Python AZURECLI/2.26.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup?api-version=2019-09-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"firewalls\": [],\r\n    \"firewallPolicies\":
+        [],\r\n    \"ipAddresses\": [\r\n      \"10.0.0.0\",\r\n      \"10.0.0.1\"\r\n
+        \   ],\r\n    \"provisioningState\": \"Updating\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\",\r\n
+        \ \"name\": \"sourceipgroup\",\r\n  \"type\": \"Microsoft.Network/IpGroups\",\r\n
+        \ \"etag\": \"5a2b2182-c6d1-4fc5-8f4c-202b13898a71\",\r\n  \"location\": \"eastus2\"\r\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/7a641eb3-caf0-435c-ae43-3d969c35f022?api-version=2019-09-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '535'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 22 Jul 2021 02:30:13 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network ip-group create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --ip-addresses
+      User-Agent:
+      - python/3.8.10 (Windows-10-10.0.19043-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-network/7.0.0 Azure-SDK-For-Python AZURECLI/2.26.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/7a641eb3-caf0-435c-ae43-3d969c35f022?api-version=2019-09-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '29'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 22 Jul 2021 02:30:24 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network ip-group create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --ip-addresses
+      User-Agent:
+      - python/3.8.10 (Windows-10-10.0.19043-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-network/7.0.0 Azure-SDK-For-Python AZURECLI/2.26.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup?api-version=2019-09-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"firewalls\": [],\r\n    \"firewallPolicies\":
+        [],\r\n    \"ipAddresses\": [\r\n      \"10.0.0.0\",\r\n      \"10.0.0.1\"\r\n
+        \   ],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\",\r\n
+        \ \"name\": \"sourceipgroup\",\r\n  \"type\": \"Microsoft.Network/IpGroups\",\r\n
+        \ \"etag\": \"5a2b2182-c6d1-4fc5-8f4c-202b13898a71\",\r\n  \"location\": \"eastus2\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '536'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 22 Jul 2021 02:30:24 GMT
+      etag:
+      - '"5a2b2182-c6d1-4fc5-8f4c-202b13898a71"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus2", "properties": {"dnsSettings": {"servers": ["10.0.0.2",
+      "10.0.0.3"], "enableProxy": true}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '114'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --location --name --dns-servers --enable-dns-proxy
+      User-Agent:
+      - AZURECLI/2.26.0 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.10 (Windows-10-10.0.19043-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy?api-version=2020-07-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Standard\"\r\n
+        \   },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"dnsSettings\": {\r\n
+        \     \"servers\": [\r\n        \"10.0.0.2\",\r\n        \"10.0.0.3\"\r\n
+        \     ],\r\n      \"enableProxy\": true\r\n    },\r\n    \"childPolicies\":
+        [],\r\n    \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n    \"provisioningState\":
+        \"Updating\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\",\r\n
+        \ \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
+        \ \"etag\": \"3b572107-c882-42d1-90f1-7ea1ad6b3049\",\r\n  \"location\": \"eastus2\"\r\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/709b1437-b1c3-4db3-a205-ee46d4a84d1b?api-version=2020-07-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '719'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 22 Jul 2021 02:30:35 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --location --name --dns-servers --enable-dns-proxy
+      User-Agent:
+      - AZURECLI/2.26.0 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.10 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/709b1437-b1c3-4db3-a205-ee46d4a84d1b?api-version=2020-07-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '29'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 22 Jul 2021 02:30:45 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --location --name --dns-servers --enable-dns-proxy
+      User-Agent:
+      - AZURECLI/2.26.0 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.10 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy?api-version=2020-07-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Standard\"\r\n
+        \   },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"dnsSettings\": {\r\n
+        \     \"servers\": [\r\n        \"10.0.0.2\",\r\n        \"10.0.0.3\"\r\n
+        \     ],\r\n      \"enableProxy\": true\r\n    },\r\n    \"childPolicies\":
+        [],\r\n    \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n    \"provisioningState\":
+        \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\",\r\n
+        \ \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
+        \ \"etag\": \"3b572107-c882-42d1-90f1-7ea1ad6b3049\",\r\n  \"location\": \"eastus2\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '720'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 22 Jul 2021 02:30:46 GMT
+      etag:
+      - '"3b572107-c882-42d1-90f1-7ea1ad6b3049"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"name": "myclirulecollectiongroup", "properties": {"priority": 10000}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy rule-collection-group create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '71'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --priority --policy-name -n
+      User-Agent:
+      - AZURECLI/2.26.0 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.10 (Windows-10-10.0.19043-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup?api-version=2020-07-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"priority\": 10000,\r\n    \"ruleCollections\":
+        [],\r\n    \"provisioningState\": \"Updating\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\",\r\n
+        \ \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\",\r\n
+        \ \"etag\": \"0c6ae0a8-ba01-4346-a01e-eebbcc4ed5c9\",\r\n  \"location\": \"eastus2\"\r\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/06e36fe1-159c-4952-9d1e-bba4418c8051?api-version=2020-07-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '561'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 22 Jul 2021 02:30:50 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1197'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy rule-collection-group create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --priority --policy-name -n
+      User-Agent:
+      - AZURECLI/2.26.0 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.10 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/06e36fe1-159c-4952-9d1e-bba4418c8051?api-version=2020-07-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '29'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 22 Jul 2021 02:31:00 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy rule-collection-group create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --priority --policy-name -n
+      User-Agent:
+      - AZURECLI/2.26.0 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.10 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup?api-version=2020-07-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"priority\": 10000,\r\n    \"ruleCollections\":
+        [],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\",\r\n
+        \ \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\",\r\n
+        \ \"etag\": \"0c6ae0a8-ba01-4346-a01e-eebbcc4ed5c9\",\r\n  \"location\": \"eastus2\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '562'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 22 Jul 2021 02:31:01 GMT
+      etag:
+      - '"0c6ae0a8-ba01-4346-a01e-eebbcc4ed5c9"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy rule-collection-group collection add-filter-collection
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --policy-name --rule-collection-group-name -n --collection-priority --action
+        --rule-name --rule-type --description --destination-fqdns --source-ip-groups
+        --destination-ports --ip-protocols
+      User-Agent:
+      - AZURECLI/2.26.0 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.10 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup?api-version=2020-07-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"priority\": 10000,\r\n    \"ruleCollections\":
+        [],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\",\r\n
+        \ \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\",\r\n
+        \ \"etag\": \"0c6ae0a8-ba01-4346-a01e-eebbcc4ed5c9\",\r\n  \"location\": \"eastus2\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '562'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 22 Jul 2021 02:31:02 GMT
+      etag:
+      - '"0c6ae0a8-ba01-4346-a01e-eebbcc4ed5c9"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup",
+      "name": "myclirulecollectiongroup", "properties": {"priority": 10000, "ruleCollections":
+      [{"ruleCollectionType": "FirewallPolicyFilterRuleCollection", "name": "filter-collection-1",
+      "priority": 15000, "action": {"type": "Allow"}, "rules": [{"name": "network-rule",
+      "description": "test", "ruleType": "NetworkRule", "ipProtocols": ["Any", "ICMP"],
+      "destinationPorts": ["12003", "12004"], "sourceIpGroups": ["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup"],
+      "destinationFqdns": ["www.bing.com"]}]}]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy rule-collection-group collection add-filter-collection
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '902'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --policy-name --rule-collection-group-name -n --collection-priority --action
+        --rule-name --rule-type --description --destination-fqdns --source-ip-groups
+        --destination-ports --ip-protocols
+      User-Agent:
+      - AZURECLI/2.26.0 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.10 (Windows-10-10.0.19043-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup?api-version=2020-07-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"priority\": 10000,\r\n    \"ruleCollections\":
+        [\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyFilterRuleCollection\",\r\n
+        \       \"action\": {\r\n          \"type\": \"Allow\"\r\n        },\r\n        \"rules\":
+        [\r\n          {\r\n            \"ruleType\": \"NetworkRule\",\r\n            \"name\":
+        \"network-rule\",\r\n            \"ipProtocols\": [\r\n              \"Any\",\r\n
+        \             \"ICMP\"\r\n            ],\r\n            \"sourceAddresses\":
+        [],\r\n            \"sourceIpGroups\": [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\r\n
+        \           ],\r\n            \"destinationAddresses\": [],\r\n            \"destinationIpGroups\":
+        [],\r\n            \"destinationFqdns\": [\r\n              \"www.bing.com\"\r\n
+        \           ],\r\n            \"destinationPorts\": [\r\n              \"12003\",\r\n
+        \             \"12004\"\r\n            ]\r\n          }\r\n        ],\r\n
+        \       \"name\": \"filter-collection-1\",\r\n        \"priority\": 15000\r\n
+        \     }\r\n    ],\r\n    \"provisioningState\": \"Updating\"\r\n  },\r\n  \"id\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\",\r\n
+        \ \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\",\r\n
+        \ \"etag\": \"474c710b-3a92-417a-baf0-b834b4f48ce2\",\r\n  \"location\": \"eastus2\"\r\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/8ea9597e-5a5e-48df-a098-7713cf49e0a3?api-version=2020-07-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '1561'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 22 Jul 2021 02:31:06 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy rule-collection-group collection add-filter-collection
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --policy-name --rule-collection-group-name -n --collection-priority --action
+        --rule-name --rule-type --description --destination-fqdns --source-ip-groups
+        --destination-ports --ip-protocols
+      User-Agent:
+      - AZURECLI/2.26.0 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.10 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/8ea9597e-5a5e-48df-a098-7713cf49e0a3?api-version=2020-07-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '29'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 22 Jul 2021 02:31:16 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy rule-collection-group collection add-filter-collection
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --policy-name --rule-collection-group-name -n --collection-priority --action
+        --rule-name --rule-type --description --destination-fqdns --source-ip-groups
+        --destination-ports --ip-protocols
+      User-Agent:
+      - AZURECLI/2.26.0 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.10 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup?api-version=2020-07-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"priority\": 10000,\r\n    \"ruleCollections\":
+        [\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyFilterRuleCollection\",\r\n
+        \       \"action\": {\r\n          \"type\": \"Allow\"\r\n        },\r\n        \"rules\":
+        [\r\n          {\r\n            \"ruleType\": \"NetworkRule\",\r\n            \"name\":
+        \"network-rule\",\r\n            \"ipProtocols\": [\r\n              \"Any\",\r\n
+        \             \"ICMP\"\r\n            ],\r\n            \"sourceAddresses\":
+        [],\r\n            \"sourceIpGroups\": [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\r\n
+        \           ],\r\n            \"destinationAddresses\": [],\r\n            \"destinationIpGroups\":
+        [],\r\n            \"destinationFqdns\": [\r\n              \"www.bing.com\"\r\n
+        \           ],\r\n            \"destinationPorts\": [\r\n              \"12003\",\r\n
+        \             \"12004\"\r\n            ]\r\n          }\r\n        ],\r\n
+        \       \"name\": \"filter-collection-1\",\r\n        \"priority\": 15000\r\n
+        \     }\r\n    ],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n
+        \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\",\r\n
+        \ \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\",\r\n
+        \ \"etag\": \"474c710b-3a92-417a-baf0-b834b4f48ce2\",\r\n  \"location\": \"eastus2\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1562'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 22 Jul 2021 02:31:17 GMT
+      etag:
+      - '"474c710b-3a92-417a-baf0-b834b4f48ce2"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy rule-collection-group collection rule add
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --policy-name --rule-collection-group-name --collection-name --name --rule-type
+        --description --destination-fqdns --source-ip-groups --destination-ports --ip-protocols
+      User-Agent:
+      - AZURECLI/2.26.0 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.10 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup?api-version=2020-07-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"priority\": 10000,\r\n    \"ruleCollections\":
+        [\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyFilterRuleCollection\",\r\n
+        \       \"action\": {\r\n          \"type\": \"Allow\"\r\n        },\r\n        \"rules\":
+        [\r\n          {\r\n            \"ruleType\": \"NetworkRule\",\r\n            \"name\":
+        \"network-rule\",\r\n            \"ipProtocols\": [\r\n              \"Any\",\r\n
+        \             \"ICMP\"\r\n            ],\r\n            \"sourceAddresses\":
+        [],\r\n            \"sourceIpGroups\": [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\r\n
+        \           ],\r\n            \"destinationAddresses\": [],\r\n            \"destinationIpGroups\":
+        [],\r\n            \"destinationFqdns\": [\r\n              \"www.bing.com\"\r\n
+        \           ],\r\n            \"destinationPorts\": [\r\n              \"12003\",\r\n
+        \             \"12004\"\r\n            ]\r\n          }\r\n        ],\r\n
+        \       \"name\": \"filter-collection-1\",\r\n        \"priority\": 15000\r\n
+        \     }\r\n    ],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n
+        \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\",\r\n
+        \ \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\",\r\n
+        \ \"etag\": \"474c710b-3a92-417a-baf0-b834b4f48ce2\",\r\n  \"location\": \"eastus2\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1562'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 22 Jul 2021 02:31:20 GMT
+      etag:
+      - '"474c710b-3a92-417a-baf0-b834b4f48ce2"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup",
+      "name": "myclirulecollectiongroup", "properties": {"priority": 10000, "ruleCollections":
+      [{"ruleCollectionType": "FirewallPolicyFilterRuleCollection", "name": "filter-collection-1",
+      "priority": 15000, "action": {"type": "Allow"}, "rules": [{"name": "network-rule",
+      "ruleType": "NetworkRule", "ipProtocols": ["Any", "ICMP"], "sourceAddresses":
+      [], "destinationAddresses": [], "destinationPorts": ["12003", "12004"], "sourceIpGroups":
+      ["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup"],
+      "destinationIpGroups": [], "destinationFqdns": ["www.bing.com"]}, {"name": "network-rule-2",
+      "description": "test", "ruleType": "NetworkRule", "ipProtocols": ["Any", "ICMP"],
+      "destinationPorts": ["12003", "12004"], "sourceIpGroups": ["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup"],
+      "destinationFqdns": ["www.google.com"]}]}]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy rule-collection-group collection rule add
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1364'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --policy-name --rule-collection-group-name --collection-name --name --rule-type
+        --description --destination-fqdns --source-ip-groups --destination-ports --ip-protocols
+      User-Agent:
+      - AZURECLI/2.26.0 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.10 (Windows-10-10.0.19043-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup?api-version=2020-07-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"priority\": 10000,\r\n    \"ruleCollections\":
+        [\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyFilterRuleCollection\",\r\n
+        \       \"action\": {\r\n          \"type\": \"Allow\"\r\n        },\r\n        \"rules\":
+        [\r\n          {\r\n            \"ruleType\": \"NetworkRule\",\r\n            \"name\":
+        \"network-rule\",\r\n            \"ipProtocols\": [\r\n              \"Any\",\r\n
+        \             \"ICMP\"\r\n            ],\r\n            \"sourceAddresses\":
+        [],\r\n            \"sourceIpGroups\": [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\r\n
+        \           ],\r\n            \"destinationAddresses\": [],\r\n            \"destinationIpGroups\":
+        [],\r\n            \"destinationFqdns\": [\r\n              \"www.bing.com\"\r\n
+        \           ],\r\n            \"destinationPorts\": [\r\n              \"12003\",\r\n
+        \             \"12004\"\r\n            ]\r\n          },\r\n          {\r\n
+        \           \"ruleType\": \"NetworkRule\",\r\n            \"name\": \"network-rule-2\",\r\n
+        \           \"ipProtocols\": [\r\n              \"Any\",\r\n              \"ICMP\"\r\n
+        \           ],\r\n            \"sourceAddresses\": [],\r\n            \"sourceIpGroups\":
+        [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\r\n
+        \           ],\r\n            \"destinationAddresses\": [],\r\n            \"destinationIpGroups\":
+        [],\r\n            \"destinationFqdns\": [\r\n              \"www.google.com\"\r\n
+        \           ],\r\n            \"destinationPorts\": [\r\n              \"12003\",\r\n
+        \             \"12004\"\r\n            ]\r\n          }\r\n        ],\r\n
+        \       \"name\": \"filter-collection-1\",\r\n        \"priority\": 15000\r\n
+        \     }\r\n    ],\r\n    \"provisioningState\": \"Updating\"\r\n  },\r\n  \"id\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\",\r\n
+        \ \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\",\r\n
+        \ \"etag\": \"0fe8c2b1-cad5-4750-95bd-a3ba12d94801\",\r\n  \"location\": \"eastus2\"\r\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/c83f877b-b042-403e-b19e-7fb42361232f?api-version=2020-07-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '2314'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 22 Jul 2021 02:31:24 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy rule-collection-group collection rule add
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --policy-name --rule-collection-group-name --collection-name --name --rule-type
+        --description --destination-fqdns --source-ip-groups --destination-ports --ip-protocols
+      User-Agent:
+      - AZURECLI/2.26.0 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.10 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/c83f877b-b042-403e-b19e-7fb42361232f?api-version=2020-07-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '29'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 22 Jul 2021 02:31:34 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy rule-collection-group collection rule add
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --policy-name --rule-collection-group-name --collection-name --name --rule-type
+        --description --destination-fqdns --source-ip-groups --destination-ports --ip-protocols
+      User-Agent:
+      - AZURECLI/2.26.0 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.10 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup?api-version=2020-07-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"priority\": 10000,\r\n    \"ruleCollections\":
+        [\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyFilterRuleCollection\",\r\n
+        \       \"action\": {\r\n          \"type\": \"Allow\"\r\n        },\r\n        \"rules\":
+        [\r\n          {\r\n            \"ruleType\": \"NetworkRule\",\r\n            \"name\":
+        \"network-rule\",\r\n            \"ipProtocols\": [\r\n              \"Any\",\r\n
+        \             \"ICMP\"\r\n            ],\r\n            \"sourceAddresses\":
+        [],\r\n            \"sourceIpGroups\": [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\r\n
+        \           ],\r\n            \"destinationAddresses\": [],\r\n            \"destinationIpGroups\":
+        [],\r\n            \"destinationFqdns\": [\r\n              \"www.bing.com\"\r\n
+        \           ],\r\n            \"destinationPorts\": [\r\n              \"12003\",\r\n
+        \             \"12004\"\r\n            ]\r\n          },\r\n          {\r\n
+        \           \"ruleType\": \"NetworkRule\",\r\n            \"name\": \"network-rule-2\",\r\n
+        \           \"ipProtocols\": [\r\n              \"Any\",\r\n              \"ICMP\"\r\n
+        \           ],\r\n            \"sourceAddresses\": [],\r\n            \"sourceIpGroups\":
+        [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\r\n
+        \           ],\r\n            \"destinationAddresses\": [],\r\n            \"destinationIpGroups\":
+        [],\r\n            \"destinationFqdns\": [\r\n              \"www.google.com\"\r\n
+        \           ],\r\n            \"destinationPorts\": [\r\n              \"12003\",\r\n
+        \             \"12004\"\r\n            ]\r\n          }\r\n        ],\r\n
+        \       \"name\": \"filter-collection-1\",\r\n        \"priority\": 15000\r\n
+        \     }\r\n    ],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n
+        \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\",\r\n
+        \ \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\",\r\n
+        \ \"etag\": \"0fe8c2b1-cad5-4750-95bd-a3ba12d94801\",\r\n  \"location\": \"eastus2\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2315'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 22 Jul 2021 02:31:35 GMT
+      etag:
+      - '"0fe8c2b1-cad5-4750-95bd-a3ba12d94801"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy rule-collection-group collection add-nat-collection
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n --policy-name --rule-collection-group-name -g --collection-priority --action
+        --rule-name --description --destination-addresses --source-ip-groups --translated-address
+        --translated-port --destination-ports --ip-protocols
+      User-Agent:
+      - AZURECLI/2.26.0 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.10 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup?api-version=2020-07-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"priority\": 10000,\r\n    \"ruleCollections\":
+        [\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyFilterRuleCollection\",\r\n
+        \       \"action\": {\r\n          \"type\": \"Allow\"\r\n        },\r\n        \"rules\":
+        [\r\n          {\r\n            \"ruleType\": \"NetworkRule\",\r\n            \"name\":
+        \"network-rule\",\r\n            \"ipProtocols\": [\r\n              \"Any\",\r\n
+        \             \"ICMP\"\r\n            ],\r\n            \"sourceAddresses\":
+        [],\r\n            \"sourceIpGroups\": [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\r\n
+        \           ],\r\n            \"destinationAddresses\": [],\r\n            \"destinationIpGroups\":
+        [],\r\n            \"destinationFqdns\": [\r\n              \"www.bing.com\"\r\n
+        \           ],\r\n            \"destinationPorts\": [\r\n              \"12003\",\r\n
+        \             \"12004\"\r\n            ]\r\n          },\r\n          {\r\n
+        \           \"ruleType\": \"NetworkRule\",\r\n            \"name\": \"network-rule-2\",\r\n
+        \           \"ipProtocols\": [\r\n              \"Any\",\r\n              \"ICMP\"\r\n
+        \           ],\r\n            \"sourceAddresses\": [],\r\n            \"sourceIpGroups\":
+        [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\r\n
+        \           ],\r\n            \"destinationAddresses\": [],\r\n            \"destinationIpGroups\":
+        [],\r\n            \"destinationFqdns\": [\r\n              \"www.google.com\"\r\n
+        \           ],\r\n            \"destinationPorts\": [\r\n              \"12003\",\r\n
+        \             \"12004\"\r\n            ]\r\n          }\r\n        ],\r\n
+        \       \"name\": \"filter-collection-1\",\r\n        \"priority\": 15000\r\n
+        \     }\r\n    ],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n
+        \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\",\r\n
+        \ \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\",\r\n
+        \ \"etag\": \"0fe8c2b1-cad5-4750-95bd-a3ba12d94801\",\r\n  \"location\": \"eastus2\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2315'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 22 Jul 2021 02:31:36 GMT
+      etag:
+      - '"0fe8c2b1-cad5-4750-95bd-a3ba12d94801"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup",
+      "name": "myclirulecollectiongroup", "properties": {"priority": 10000, "ruleCollections":
+      [{"ruleCollectionType": "FirewallPolicyFilterRuleCollection", "name": "filter-collection-1",
+      "priority": 15000, "action": {"type": "Allow"}, "rules": [{"name": "network-rule",
+      "ruleType": "NetworkRule", "ipProtocols": ["Any", "ICMP"], "sourceAddresses":
+      [], "destinationAddresses": [], "destinationPorts": ["12003", "12004"], "sourceIpGroups":
+      ["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup"],
+      "destinationIpGroups": [], "destinationFqdns": ["www.bing.com"]}, {"name": "network-rule-2",
+      "ruleType": "NetworkRule", "ipProtocols": ["Any", "ICMP"], "sourceAddresses":
+      [], "destinationAddresses": [], "destinationPorts": ["12003", "12004"], "sourceIpGroups":
+      ["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup"],
+      "destinationIpGroups": [], "destinationFqdns": ["www.google.com"]}]}, {"ruleCollectionType":
+      "FirewallPolicyNatRuleCollection", "name": "nat-collection", "priority": 10005,
+      "action": {"type": "DNAT"}, "rules": [{"name": "nat-rule", "description": "test",
+      "ruleType": "NatRule", "ipProtocols": ["TCP", "UDP"], "destinationAddresses":
+      ["202.120.36.15"], "destinationPorts": ["12001"], "translatedAddress": "128.1.1.1",
+      "translatedPort": "1234", "sourceIpGroups": ["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup"]}]}]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy rule-collection-group collection add-nat-collection
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '2012'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n --policy-name --rule-collection-group-name -g --collection-priority --action
+        --rule-name --description --destination-addresses --source-ip-groups --translated-address
+        --translated-port --destination-ports --ip-protocols
+      User-Agent:
+      - AZURECLI/2.26.0 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.10 (Windows-10-10.0.19043-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup?api-version=2020-07-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"priority\": 10000,\r\n    \"ruleCollections\":
+        [\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyFilterRuleCollection\",\r\n
+        \       \"action\": {\r\n          \"type\": \"Allow\"\r\n        },\r\n        \"rules\":
+        [\r\n          {\r\n            \"ruleType\": \"NetworkRule\",\r\n            \"name\":
+        \"network-rule\",\r\n            \"ipProtocols\": [\r\n              \"Any\",\r\n
+        \             \"ICMP\"\r\n            ],\r\n            \"sourceAddresses\":
+        [],\r\n            \"sourceIpGroups\": [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\r\n
+        \           ],\r\n            \"destinationAddresses\": [],\r\n            \"destinationIpGroups\":
+        [],\r\n            \"destinationFqdns\": [\r\n              \"www.bing.com\"\r\n
+        \           ],\r\n            \"destinationPorts\": [\r\n              \"12003\",\r\n
+        \             \"12004\"\r\n            ]\r\n          },\r\n          {\r\n
+        \           \"ruleType\": \"NetworkRule\",\r\n            \"name\": \"network-rule-2\",\r\n
+        \           \"ipProtocols\": [\r\n              \"Any\",\r\n              \"ICMP\"\r\n
+        \           ],\r\n            \"sourceAddresses\": [],\r\n            \"sourceIpGroups\":
+        [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\r\n
+        \           ],\r\n            \"destinationAddresses\": [],\r\n            \"destinationIpGroups\":
+        [],\r\n            \"destinationFqdns\": [\r\n              \"www.google.com\"\r\n
+        \           ],\r\n            \"destinationPorts\": [\r\n              \"12003\",\r\n
+        \             \"12004\"\r\n            ]\r\n          }\r\n        ],\r\n
+        \       \"name\": \"filter-collection-1\",\r\n        \"priority\": 15000\r\n
+        \     },\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyNatRuleCollection\",\r\n
+        \       \"action\": {\r\n          \"type\": \"Dnat\"\r\n        },\r\n        \"rules\":
+        [\r\n          {\r\n            \"ruleType\": \"NatRule\",\r\n            \"name\":
+        \"nat-rule\",\r\n            \"translatedAddress\": \"128.1.1.1\",\r\n            \"translatedPort\":
+        \"1234\",\r\n            \"ipProtocols\": [\r\n              \"TCP\",\r\n
+        \             \"UDP\"\r\n            ],\r\n            \"sourceAddresses\":
+        [],\r\n            \"sourceIpGroups\": [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\r\n
+        \           ],\r\n            \"destinationAddresses\": [\r\n              \"202.120.36.15\"\r\n
+        \           ],\r\n            \"destinationPorts\": [\r\n              \"12001\"\r\n
+        \           ]\r\n          }\r\n        ],\r\n        \"name\": \"nat-collection\",\r\n
+        \       \"priority\": 10005\r\n      }\r\n    ],\r\n    \"provisioningState\":
+        \"Updating\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\",\r\n
+        \ \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\",\r\n
+        \ \"etag\": \"c6a4df66-b0ff-422e-b584-c1f2aa1d7e7f\",\r\n  \"location\": \"eastus2\"\r\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/0def84f6-4d4f-40f0-ba6f-02d73f6f4375?api-version=2020-07-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '3277'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 22 Jul 2021 02:31:40 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy rule-collection-group collection add-nat-collection
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n --policy-name --rule-collection-group-name -g --collection-priority --action
+        --rule-name --description --destination-addresses --source-ip-groups --translated-address
+        --translated-port --destination-ports --ip-protocols
+      User-Agent:
+      - AZURECLI/2.26.0 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.10 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/0def84f6-4d4f-40f0-ba6f-02d73f6f4375?api-version=2020-07-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '29'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 22 Jul 2021 02:31:50 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy rule-collection-group collection add-nat-collection
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n --policy-name --rule-collection-group-name -g --collection-priority --action
+        --rule-name --description --destination-addresses --source-ip-groups --translated-address
+        --translated-port --destination-ports --ip-protocols
+      User-Agent:
+      - AZURECLI/2.26.0 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.10 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup?api-version=2020-07-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"priority\": 10000,\r\n    \"ruleCollections\":
+        [\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyFilterRuleCollection\",\r\n
+        \       \"action\": {\r\n          \"type\": \"Allow\"\r\n        },\r\n        \"rules\":
+        [\r\n          {\r\n            \"ruleType\": \"NetworkRule\",\r\n            \"name\":
+        \"network-rule\",\r\n            \"ipProtocols\": [\r\n              \"Any\",\r\n
+        \             \"ICMP\"\r\n            ],\r\n            \"sourceAddresses\":
+        [],\r\n            \"sourceIpGroups\": [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\r\n
+        \           ],\r\n            \"destinationAddresses\": [],\r\n            \"destinationIpGroups\":
+        [],\r\n            \"destinationFqdns\": [\r\n              \"www.bing.com\"\r\n
+        \           ],\r\n            \"destinationPorts\": [\r\n              \"12003\",\r\n
+        \             \"12004\"\r\n            ]\r\n          },\r\n          {\r\n
+        \           \"ruleType\": \"NetworkRule\",\r\n            \"name\": \"network-rule-2\",\r\n
+        \           \"ipProtocols\": [\r\n              \"Any\",\r\n              \"ICMP\"\r\n
+        \           ],\r\n            \"sourceAddresses\": [],\r\n            \"sourceIpGroups\":
+        [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\r\n
+        \           ],\r\n            \"destinationAddresses\": [],\r\n            \"destinationIpGroups\":
+        [],\r\n            \"destinationFqdns\": [\r\n              \"www.google.com\"\r\n
+        \           ],\r\n            \"destinationPorts\": [\r\n              \"12003\",\r\n
+        \             \"12004\"\r\n            ]\r\n          }\r\n        ],\r\n
+        \       \"name\": \"filter-collection-1\",\r\n        \"priority\": 15000\r\n
+        \     },\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyNatRuleCollection\",\r\n
+        \       \"action\": {\r\n          \"type\": \"Dnat\"\r\n        },\r\n        \"rules\":
+        [\r\n          {\r\n            \"ruleType\": \"NatRule\",\r\n            \"name\":
+        \"nat-rule\",\r\n            \"translatedAddress\": \"128.1.1.1\",\r\n            \"translatedPort\":
+        \"1234\",\r\n            \"ipProtocols\": [\r\n              \"TCP\",\r\n
+        \             \"UDP\"\r\n            ],\r\n            \"sourceAddresses\":
+        [],\r\n            \"sourceIpGroups\": [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\r\n
+        \           ],\r\n            \"destinationAddresses\": [\r\n              \"202.120.36.15\"\r\n
+        \           ],\r\n            \"destinationPorts\": [\r\n              \"12001\"\r\n
+        \           ]\r\n          }\r\n        ],\r\n        \"name\": \"nat-collection\",\r\n
+        \       \"priority\": 10005\r\n      }\r\n    ],\r\n    \"provisioningState\":
+        \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\",\r\n
+        \ \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\",\r\n
+        \ \"etag\": \"c6a4df66-b0ff-422e-b584-c1f2aa1d7e7f\",\r\n  \"location\": \"eastus2\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '3278'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 22 Jul 2021 02:31:51 GMT
+      etag:
+      - '"c6a4df66-b0ff-422e-b584-c1f2aa1d7e7f"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy rule-collection-group collection rule add
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --policy-name --rule-collection-group-name --collection-name --name --rule-type
+        --description --destination-addresses --source-ip-groups --translated-fqdn
+        --translated-port --destination-ports --ip-protocols
+      User-Agent:
+      - AZURECLI/2.26.0 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.10 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup?api-version=2020-07-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"priority\": 10000,\r\n    \"ruleCollections\":
+        [\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyFilterRuleCollection\",\r\n
+        \       \"action\": {\r\n          \"type\": \"Allow\"\r\n        },\r\n        \"rules\":
+        [\r\n          {\r\n            \"ruleType\": \"NetworkRule\",\r\n            \"name\":
+        \"network-rule\",\r\n            \"ipProtocols\": [\r\n              \"Any\",\r\n
+        \             \"ICMP\"\r\n            ],\r\n            \"sourceAddresses\":
+        [],\r\n            \"sourceIpGroups\": [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\r\n
+        \           ],\r\n            \"destinationAddresses\": [],\r\n            \"destinationIpGroups\":
+        [],\r\n            \"destinationFqdns\": [\r\n              \"www.bing.com\"\r\n
+        \           ],\r\n            \"destinationPorts\": [\r\n              \"12003\",\r\n
+        \             \"12004\"\r\n            ]\r\n          },\r\n          {\r\n
+        \           \"ruleType\": \"NetworkRule\",\r\n            \"name\": \"network-rule-2\",\r\n
+        \           \"ipProtocols\": [\r\n              \"Any\",\r\n              \"ICMP\"\r\n
+        \           ],\r\n            \"sourceAddresses\": [],\r\n            \"sourceIpGroups\":
+        [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\r\n
+        \           ],\r\n            \"destinationAddresses\": [],\r\n            \"destinationIpGroups\":
+        [],\r\n            \"destinationFqdns\": [\r\n              \"www.google.com\"\r\n
+        \           ],\r\n            \"destinationPorts\": [\r\n              \"12003\",\r\n
+        \             \"12004\"\r\n            ]\r\n          }\r\n        ],\r\n
+        \       \"name\": \"filter-collection-1\",\r\n        \"priority\": 15000\r\n
+        \     },\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyNatRuleCollection\",\r\n
+        \       \"action\": {\r\n          \"type\": \"Dnat\"\r\n        },\r\n        \"rules\":
+        [\r\n          {\r\n            \"ruleType\": \"NatRule\",\r\n            \"name\":
+        \"nat-rule\",\r\n            \"translatedAddress\": \"128.1.1.1\",\r\n            \"translatedPort\":
+        \"1234\",\r\n            \"ipProtocols\": [\r\n              \"TCP\",\r\n
+        \             \"UDP\"\r\n            ],\r\n            \"sourceAddresses\":
+        [],\r\n            \"sourceIpGroups\": [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\r\n
+        \           ],\r\n            \"destinationAddresses\": [\r\n              \"202.120.36.15\"\r\n
+        \           ],\r\n            \"destinationPorts\": [\r\n              \"12001\"\r\n
+        \           ]\r\n          }\r\n        ],\r\n        \"name\": \"nat-collection\",\r\n
+        \       \"priority\": 10005\r\n      }\r\n    ],\r\n    \"provisioningState\":
+        \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\",\r\n
+        \ \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\",\r\n
+        \ \"etag\": \"c6a4df66-b0ff-422e-b584-c1f2aa1d7e7f\",\r\n  \"location\": \"eastus2\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '3278'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 22 Jul 2021 02:31:53 GMT
+      etag:
+      - '"c6a4df66-b0ff-422e-b584-c1f2aa1d7e7f"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup",
+      "name": "myclirulecollectiongroup", "properties": {"priority": 10000, "ruleCollections":
+      [{"ruleCollectionType": "FirewallPolicyFilterRuleCollection", "name": "filter-collection-1",
+      "priority": 15000, "action": {"type": "Allow"}, "rules": [{"name": "network-rule",
+      "ruleType": "NetworkRule", "ipProtocols": ["Any", "ICMP"], "sourceAddresses":
+      [], "destinationAddresses": [], "destinationPorts": ["12003", "12004"], "sourceIpGroups":
+      ["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup"],
+      "destinationIpGroups": [], "destinationFqdns": ["www.bing.com"]}, {"name": "network-rule-2",
+      "ruleType": "NetworkRule", "ipProtocols": ["Any", "ICMP"], "sourceAddresses":
+      [], "destinationAddresses": [], "destinationPorts": ["12003", "12004"], "sourceIpGroups":
+      ["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup"],
+      "destinationIpGroups": [], "destinationFqdns": ["www.google.com"]}]}, {"ruleCollectionType":
+      "FirewallPolicyNatRuleCollection", "name": "nat-collection", "priority": 10005,
+      "action": {"type": "Dnat"}, "rules": [{"name": "nat-rule", "ruleType": "NatRule",
+      "ipProtocols": ["TCP", "UDP"], "sourceAddresses": [], "destinationAddresses":
+      ["202.120.36.15"], "destinationPorts": ["12001"], "translatedAddress": "128.1.1.1",
+      "translatedPort": "1234", "sourceIpGroups": ["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup"]},
+      {"name": "nat-rule-2", "description": "test", "ruleType": "NatRule", "ipProtocols":
+      ["TCP", "UDP"], "destinationAddresses": ["202.120.36.16"], "destinationPorts":
+      ["12000"], "translatedPort": "1234", "sourceIpGroups": ["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup"],
+      "translatedFqdn": "www.bing2.com"}]}]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy rule-collection-group collection rule add
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '2465'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --policy-name --rule-collection-group-name --collection-name --name --rule-type
+        --description --destination-addresses --source-ip-groups --translated-fqdn
+        --translated-port --destination-ports --ip-protocols
+      User-Agent:
+      - AZURECLI/2.26.0 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.10 (Windows-10-10.0.19043-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup?api-version=2020-07-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"priority\": 10000,\r\n    \"ruleCollections\":
+        [\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyFilterRuleCollection\",\r\n
+        \       \"action\": {\r\n          \"type\": \"Allow\"\r\n        },\r\n        \"rules\":
+        [\r\n          {\r\n            \"ruleType\": \"NetworkRule\",\r\n            \"name\":
+        \"network-rule\",\r\n            \"ipProtocols\": [\r\n              \"Any\",\r\n
+        \             \"ICMP\"\r\n            ],\r\n            \"sourceAddresses\":
+        [],\r\n            \"sourceIpGroups\": [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\r\n
+        \           ],\r\n            \"destinationAddresses\": [],\r\n            \"destinationIpGroups\":
+        [],\r\n            \"destinationFqdns\": [\r\n              \"www.bing.com\"\r\n
+        \           ],\r\n            \"destinationPorts\": [\r\n              \"12003\",\r\n
+        \             \"12004\"\r\n            ]\r\n          },\r\n          {\r\n
+        \           \"ruleType\": \"NetworkRule\",\r\n            \"name\": \"network-rule-2\",\r\n
+        \           \"ipProtocols\": [\r\n              \"Any\",\r\n              \"ICMP\"\r\n
+        \           ],\r\n            \"sourceAddresses\": [],\r\n            \"sourceIpGroups\":
+        [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\r\n
+        \           ],\r\n            \"destinationAddresses\": [],\r\n            \"destinationIpGroups\":
+        [],\r\n            \"destinationFqdns\": [\r\n              \"www.google.com\"\r\n
+        \           ],\r\n            \"destinationPorts\": [\r\n              \"12003\",\r\n
+        \             \"12004\"\r\n            ]\r\n          }\r\n        ],\r\n
+        \       \"name\": \"filter-collection-1\",\r\n        \"priority\": 15000\r\n
+        \     },\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyNatRuleCollection\",\r\n
+        \       \"action\": {\r\n          \"type\": \"Dnat\"\r\n        },\r\n        \"rules\":
+        [\r\n          {\r\n            \"ruleType\": \"NatRule\",\r\n            \"name\":
+        \"nat-rule\",\r\n            \"translatedAddress\": \"128.1.1.1\",\r\n            \"translatedPort\":
+        \"1234\",\r\n            \"ipProtocols\": [\r\n              \"TCP\",\r\n
+        \             \"UDP\"\r\n            ],\r\n            \"sourceAddresses\":
+        [],\r\n            \"sourceIpGroups\": [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\r\n
+        \           ],\r\n            \"destinationAddresses\": [\r\n              \"202.120.36.15\"\r\n
+        \           ],\r\n            \"destinationPorts\": [\r\n              \"12001\"\r\n
+        \           ]\r\n          },\r\n          {\r\n            \"ruleType\":
+        \"NatRule\",\r\n            \"name\": \"nat-rule-2\",\r\n            \"translatedFqdn\":
+        \"www.bing2.com\",\r\n            \"translatedPort\": \"1234\",\r\n            \"ipProtocols\":
+        [\r\n              \"TCP\",\r\n              \"UDP\"\r\n            ],\r\n
+        \           \"sourceAddresses\": [],\r\n            \"sourceIpGroups\": [\r\n
+        \             \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\r\n
+        \           ],\r\n            \"destinationAddresses\": [\r\n              \"202.120.36.16\"\r\n
+        \           ],\r\n            \"destinationPorts\": [\r\n              \"12000\"\r\n
+        \           ]\r\n          }\r\n        ],\r\n        \"name\": \"nat-collection\",\r\n
+        \       \"priority\": 10005\r\n      }\r\n    ],\r\n    \"provisioningState\":
+        \"Updating\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\",\r\n
+        \ \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\",\r\n
+        \ \"etag\": \"142cb8a7-f829-4719-9926-1fcc5771c863\",\r\n  \"location\": \"eastus2\"\r\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/1df2d280-157e-4ad1-97f7-d970343779aa?api-version=2020-07-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '4006'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 22 Jul 2021 02:31:56 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy rule-collection-group collection rule add
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --policy-name --rule-collection-group-name --collection-name --name --rule-type
+        --description --destination-addresses --source-ip-groups --translated-fqdn
+        --translated-port --destination-ports --ip-protocols
+      User-Agent:
+      - AZURECLI/2.26.0 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.10 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/nfvOperations/1df2d280-157e-4ad1-97f7-d970343779aa?api-version=2020-07-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '29'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 22 Jul 2021 02:32:07 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy rule-collection-group collection rule add
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --policy-name --rule-collection-group-name --collection-name --name --rule-type
+        --description --destination-addresses --source-ip-groups --translated-fqdn
+        --translated-port --destination-ports --ip-protocols
+      User-Agent:
+      - AZURECLI/2.26.0 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.10 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup?api-version=2020-07-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"priority\": 10000,\r\n    \"ruleCollections\":
+        [\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyFilterRuleCollection\",\r\n
+        \       \"action\": {\r\n          \"type\": \"Allow\"\r\n        },\r\n        \"rules\":
+        [\r\n          {\r\n            \"ruleType\": \"NetworkRule\",\r\n            \"name\":
+        \"network-rule\",\r\n            \"ipProtocols\": [\r\n              \"Any\",\r\n
+        \             \"ICMP\"\r\n            ],\r\n            \"sourceAddresses\":
+        [],\r\n            \"sourceIpGroups\": [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\r\n
+        \           ],\r\n            \"destinationAddresses\": [],\r\n            \"destinationIpGroups\":
+        [],\r\n            \"destinationFqdns\": [\r\n              \"www.bing.com\"\r\n
+        \           ],\r\n            \"destinationPorts\": [\r\n              \"12003\",\r\n
+        \             \"12004\"\r\n            ]\r\n          },\r\n          {\r\n
+        \           \"ruleType\": \"NetworkRule\",\r\n            \"name\": \"network-rule-2\",\r\n
+        \           \"ipProtocols\": [\r\n              \"Any\",\r\n              \"ICMP\"\r\n
+        \           ],\r\n            \"sourceAddresses\": [],\r\n            \"sourceIpGroups\":
+        [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\r\n
+        \           ],\r\n            \"destinationAddresses\": [],\r\n            \"destinationIpGroups\":
+        [],\r\n            \"destinationFqdns\": [\r\n              \"www.google.com\"\r\n
+        \           ],\r\n            \"destinationPorts\": [\r\n              \"12003\",\r\n
+        \             \"12004\"\r\n            ]\r\n          }\r\n        ],\r\n
+        \       \"name\": \"filter-collection-1\",\r\n        \"priority\": 15000\r\n
+        \     },\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyNatRuleCollection\",\r\n
+        \       \"action\": {\r\n          \"type\": \"Dnat\"\r\n        },\r\n        \"rules\":
+        [\r\n          {\r\n            \"ruleType\": \"NatRule\",\r\n            \"name\":
+        \"nat-rule\",\r\n            \"translatedAddress\": \"128.1.1.1\",\r\n            \"translatedPort\":
+        \"1234\",\r\n            \"ipProtocols\": [\r\n              \"TCP\",\r\n
+        \             \"UDP\"\r\n            ],\r\n            \"sourceAddresses\":
+        [],\r\n            \"sourceIpGroups\": [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\r\n
+        \           ],\r\n            \"destinationAddresses\": [\r\n              \"202.120.36.15\"\r\n
+        \           ],\r\n            \"destinationPorts\": [\r\n              \"12001\"\r\n
+        \           ]\r\n          },\r\n          {\r\n            \"ruleType\":
+        \"NatRule\",\r\n            \"name\": \"nat-rule-2\",\r\n            \"translatedFqdn\":
+        \"www.bing2.com\",\r\n            \"translatedPort\": \"1234\",\r\n            \"ipProtocols\":
+        [\r\n              \"TCP\",\r\n              \"UDP\"\r\n            ],\r\n
+        \           \"sourceAddresses\": [],\r\n            \"sourceIpGroups\": [\r\n
+        \             \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\r\n
+        \           ],\r\n            \"destinationAddresses\": [\r\n              \"202.120.36.16\"\r\n
+        \           ],\r\n            \"destinationPorts\": [\r\n              \"12000\"\r\n
+        \           ]\r\n          }\r\n        ],\r\n        \"name\": \"nat-collection\",\r\n
+        \       \"priority\": 10005\r\n      }\r\n    ],\r\n    \"provisioningState\":
+        \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\",\r\n
+        \ \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\",\r\n
+        \ \"etag\": \"142cb8a7-f829-4719-9926-1fcc5771c863\",\r\n  \"location\": \"eastus2\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '4007'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 22 Jul 2021 02:32:07 GMT
+      etag:
+      - '"142cb8a7-f829-4719-9926-1fcc5771c863"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1

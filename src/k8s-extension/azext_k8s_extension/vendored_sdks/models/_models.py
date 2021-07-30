@@ -279,6 +279,8 @@ class ExtensionInstance(ProxyResource):
     :param identity: The identity of the configuration.
     :type identity:
      ~azure.mgmt.kubernetesconfiguration.v2020_07_01_preview.models.ConfigurationIdentity
+    :param location: Location of resource type
+    :type location: str
     """
 
     _validation = {
@@ -310,7 +312,8 @@ class ExtensionInstance(ProxyResource):
         'last_modified_time': {'key': 'properties.lastModifiedTime', 'type': 'str'},
         'last_status_time': {'key': 'properties.lastStatusTime', 'type': 'str'},
         'error_info': {'key': 'properties.errorInfo', 'type': 'ErrorDefinition'},
-        'identity': {'key': 'properties.identity', 'type': 'ConfigurationIdentity'},
+        'identity': {'key': 'identity', 'type': 'ConfigurationIdentity'},
+        'location': {'key': 'location', 'type': 'str'},
     }
 
     def __init__(
@@ -332,6 +335,7 @@ class ExtensionInstance(ProxyResource):
         self.last_status_time = None
         self.error_info = None
         self.identity = kwargs.get('identity', None)
+        self.location = kwargs.get('location', None)
 
 
 class ExtensionInstancesList(msrest.serialization.Model):
