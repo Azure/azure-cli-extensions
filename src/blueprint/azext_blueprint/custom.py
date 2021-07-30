@@ -18,12 +18,11 @@ from ._client_factory import cf_artifacts
 
 def import_blueprint_with_artifacts(cmd,
                                     client,
-                                    resource_group,
                                     blueprint_name,
                                     input_path,
                                     management_group=None,
                                     subscription=None,
-                                    scope=None):
+                                    resource_scope=None):
     artifact_client = cf_artifacts(cmd.cli_ctx)
     body = {}
     blueprint_path = os.path.join(input_path, 'blueprint.json')
@@ -62,16 +61,18 @@ def import_blueprint_with_artifacts(cmd,
         raise CLIError('File not Found: {}'.format(str(ex)))
 
     # Only import when all files have no errors
-    blueprint_response = client.create_or_update(scope=scope, blueprint_name=blueprint_name, blueprint=body)
+    blueprint_response = client.create_or_update(resource_scope=resource_scope,
+                                                 blueprint_name=blueprint_name,
+                                                 blueprint=body)
     # delete old artifacts
-    artifacts = artifact_client.list(scope=scope, blueprint_name=blueprint_name)
+    artifacts = artifact_client.list(resource_scope=resource_scope, blueprint_name=blueprint_name)
     for artifact in artifacts:
-        artifact_client.delete(scope=scope,
+        artifact_client.delete(resource_scope=resource_scope,
                                blueprint_name=blueprint_name,
                                artifact_name=artifact.name)
     # create new artifacts
     for artifact_name, artifact in art_dict.items():
-        artifact_client.create_or_update(scope=scope,
+        artifact_client.create_or_update(resource_scope=resource_scope,
                                          blueprint_name=blueprint_name,
                                          artifact_name=artifact_name,
                                          artifact=artifact)
@@ -159,18 +160,21 @@ def list_blueprint(client,
     return client.list(resource_scope=resource_scope)
 
 
-def export_blueprint_with_artifacts(cmd, client, blueprint_name, output_path, skip_confirmation=False, management_group=None, subscription=None, scope=None, **kwargs):
+def export_blueprint_with_artifacts(cmd, client, blueprint_name, output_path,
+                                    skip_confirmation=False, management_group=None,
+                                    subscription=None, resource_scope=None, **kwargs):
     # match folder structure required for import_blueprint_with_artifact
     blueprint_parent_folder = os.path.join(os.path.abspath(output_path), blueprint_name)
     blueprint_file_location = os.path.join(blueprint_parent_folder, 'blueprint.json')
     artifacts_location = os.path.join(blueprint_parent_folder, 'artifacts')
 
     if os.path.exists(blueprint_parent_folder) and os.listdir(blueprint_parent_folder) and not skip_confirmation:
-        user_prompt = f"That directory already contains a folder with the name {blueprint_name}. Would you like to continue?"
+        user_prompt = f"That directory already contains a folder" \
+                      f" with the name {blueprint_name}. Would you like to continue?"
         user_confirmation(user_prompt)
 
     try:
-        blueprint = client.get(scope=scope, blueprint_name=blueprint_name)
+        blueprint = client.get(resource_scope=resource_scope, blueprint_name=blueprint_name)
         serialized_blueprint = blueprint.serialize()
     except HttpResponseError as error:
         raise CLIError('Unable to export blueprint: {}'.format(str(error.message)))
@@ -181,7 +185,7 @@ def export_blueprint_with_artifacts(cmd, client, blueprint_name, output_path, sk
         json.dump(serialized_blueprint, f, indent=4)
 
     artifact_client = cf_artifacts(cmd.cli_ctx)
-    available_artifacts = artifact_client.list(scope=scope, blueprint_name=blueprint_name)
+    available_artifacts = artifact_client.list(resource_scope=resource_scope, blueprint_name=blueprint_name)
 
     for artifact in available_artifacts:
         artifact_file_location = os.path.join(artifacts_location, artifact.name + '.json')
@@ -192,21 +196,23 @@ def export_blueprint_with_artifacts(cmd, client, blueprint_name, output_path, sk
     return blueprint
 
 
-def delete_blueprint_artifact(cmd, client, blueprint_name, artifact_name,
-                              management_group=None, subscription=None, scope=None):
-    return client.delete(scope=scope,
+def delete_blueprint_artifact(client, blueprint_name, artifact_name,
+                              management_group=None, subscription=None, resource_scope=None):
+    return client.delete(resource_scope=resource_scope,
                          blueprint_name=blueprint_name,
                          artifact_name=artifact_name)
 
 
-def get_blueprint_artifact(cmd, client, blueprint_name, artifact_name, management_group=None, subscription=None, scope=None):
-    return client.get(scope=scope,
+def get_blueprint_artifact(client, blueprint_name, artifact_name,
+                           management_group=None, subscription=None,
+                           resource_scope=None):
+    return client.get(resource_scope=resource_scope,
                       blueprint_name=blueprint_name,
                       artifact_name=artifact_name)
 
 
-def list_blueprint_artifact(cmd, client, blueprint_name, management_group=None, subscription=None, scope=None):
-    return client.list(scope=scope, blueprint_name=blueprint_name)
+def list_blueprint_artifact(client, blueprint_name, management_group=None, subscription=None, resource_scope=None):
+    return client.list(resource_scope=resource_scope, blueprint_name=blueprint_name)
 
 
 def add_blueprint_resource_group(client,
@@ -430,8 +436,7 @@ def update_blueprint_artifact_role(client,
                                    artifact=body)
 
 
-def create_blueprint_artifact_template(cmd,
-                                       client,
+def create_blueprint_artifact_template(client,
                                        blueprint_name,
                                        template,
                                        artifact_name,

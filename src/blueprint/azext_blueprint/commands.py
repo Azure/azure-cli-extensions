@@ -23,6 +23,8 @@ def load_command_table(self, _):
         g.generic_update_command('update', custom_func_name='update_blueprint',
                                  setter_arg_name='blueprint',
                                  setter_name='create_or_update')
+        g.custom_command('delete', 'delete_blueprint', confirmation=True)
+        g.custom_show_command('show', 'get_blueprint')
         g.custom_command('list', 'list_blueprint')
         g.custom_command('import', 'import_blueprint_with_artifacts',
                          confirmation="This operation will overwrite any unpublished changes"
