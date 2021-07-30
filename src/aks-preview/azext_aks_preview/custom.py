@@ -94,7 +94,7 @@ from ._client_factory import get_resource_by_name
 from ._client_factory import cf_container_registry_service
 from ._client_factory import cf_storage
 from ._client_factory import cf_agent_pools
-
+from ._client_factory import CUSTOM_MGMT_AKS_PREVIEW
 from ._helpers import (_populate_api_server_access_profile, _set_vm_set_type,
                        _set_outbound_type, _parse_comma_separated_list,
                        _trim_fqdn_name_containing_hcp)
@@ -941,6 +941,257 @@ def aks_maintenanceconfiguration_update(
                        "use 'aks maintenanceconfiguration list' to get current list of maitenance configurations".format(config_name))
 
     return aks_maintenanceconfiguration_update_internal(cmd, client, resource_group_name, cluster_name, config_name, config_file, weekday, start_hour)
+
+from azure.cli.command_modules.acs.custom import AKSCreateDecorator, AKSCreateModels
+
+class PreviewAKSCreateModels(AKSCreateModels):
+    def __init__(self, cmd, resource_type):
+        super().__init__(cmd, resource_type=resource_type)
+        self.ManagedClusterPodIdentityProfile = self.cmd.get_models(
+            "ManagedClusterPodIdentityProfile",
+            resource_type=self.resource_type,
+            operation_group="managed_clusters",
+        )
+        self.ManagedClusterAutoUpgradeProfile = self.cmd.get_models(
+            "ManagedClusterAutoUpgradeProfile",
+            resource_type=self.resource_type,
+            operation_group="managed_clusters",
+        )
+
+
+class PreviewAKSCreateDecorator(AKSCreateDecorator):
+    def __init__(self, cmd, client, models, raw_parameters):
+        super().__init__(cmd, client, models, raw_parameters)
+
+    def check_vm_set_type(self):
+        # Flag to be removed, kept for back-compatibility only. Remove the below section
+        # when we deprecate the enable-vmss flag
+        if self.param.enable_vmss:
+            if (
+                self.param.vm_set_type
+                and self.param.vm_set_type.lower() != "VirtualMachineScaleSets".lower()
+            ):
+                raise CLIError(
+                    "enable-vmss and provided vm_set_type ({}) are conflicting with each other".format(
+                        self.param.vm_set_type
+                    )
+                )
+            self.param.vm_set_type = "VirtualMachineScaleSets"
+
+        self.param.vm_set_type = _set_vm_set_type(
+            self.param.vm_set_type, self.param.kubernetes_version
+        )
+
+    def set_up_agent_pool_profiles(self):
+        super().set_up_agent_pool_profiles()
+        agent_pool_profile = self.mc.agent_pool_profiles[0]
+        agent_pool_profile.os_sku = self.param.os_sku
+        agent_pool_profile.pod_subnet_id = self.param.pod_subnet_id
+        agent_pool_profile.availability_zones = self.param.node_zones
+        agent_pool_profile.enable_fips = self.param.enable_fips_image
+
+        if self.param.kubelet_config:
+            agent_pool_profile.kubelet_config = _get_kubelet_config(self.param.kubelet_config)
+
+        if self.param.linux_os_config:
+            agent_pool_profile.linux_os_config = _get_linux_os_config(
+                self.param.linux_os_config
+            )
+
+    def set_up_addon_profiles(self):
+        addon_profiles = _handle_addons_args(
+            cmd=self.cmd,
+            addons_str=self.param.enable_addons,
+            subscription_id=self.context.subscription_id,
+            resource_group_name=self.param.resource_group_name,
+            addon_profiles={},
+            workspace_resource_id=self.param.workspace_resource_id,
+            enable_msi_auth_for_monitoring=self.param.enable_msi_auth_for_monitoring,
+            appgw_name=self.param.appgw_name,
+            appgw_subnet_prefix=self.param.appgw_subnet_prefix,
+            appgw_subnet_cidr=self.param.appgw_subnet_cidr,
+            appgw_id=self.param.appgw_id,
+            appgw_subnet_id=self.param.appgw_subnet_id,
+            appgw_watch_namespace=self.param.appgw_watch_namespace,
+            enable_sgxquotehelper=self.param.enable_sgxquotehelper,
+            aci_subnet_name=self.param.aci_subnet_name,
+            vnet_subnet_id=self.param.vnet_subnet_id,
+            enable_secret_rotation=self.param.enable_secret_rotation,
+        )
+        monitoring = False
+        if CONST_MONITORING_ADDON_NAME in addon_profiles:
+            monitoring = True
+            if self.param.enable_msi_auth_for_monitoring and not self.param.enable_managed_identity:
+                raise ArgumentUsageError(
+                    "--enable-msi-auth-for-monitoring can not be used on clusters with service principal auth."
+                )
+            _ensure_container_insights_for_monitoring(
+                self.cmd,
+                addon_profiles[CONST_MONITORING_ADDON_NAME],
+                self.context.subscription_id,
+                self.param.resource_group_name,
+                self.param.name,
+                self.param.location,
+                aad_route=self.param.enable_msi_auth_for_monitoring,
+                create_dcr=True,
+                create_dcra=False,
+            )
+
+        # addon is in the list and is enabled
+        ingress_appgw_addon_enabled = (
+            CONST_INGRESS_APPGW_ADDON_NAME in addon_profiles
+            and addon_profiles[CONST_INGRESS_APPGW_ADDON_NAME].enabled
+        )
+
+        os_type = "Linux"
+        enable_virtual_node = False
+        if CONST_VIRTUAL_NODE_ADDON_NAME + os_type in addon_profiles:
+            enable_virtual_node = True
+
+        # update context
+        self.context.monitoring = monitoring
+        self.context.ingress_appgw_addon_enabled = ingress_appgw_addon_enabled
+        self.context.enable_virtual_node = enable_virtual_node
+
+        # update mc
+        self.mc.addon_profiles = addon_profiles
+
+    def set_up_api_server_access_profile(self):
+        api_server_access_profile = None
+        if self.param.api_server_authorized_ip_ranges:
+            api_server_access_profile = _populate_api_server_access_profile(
+                self.param.api_server_authorized_ip_ranges)
+
+        # update mc
+        self.mc.api_server_access_profile = api_server_access_profile
+
+    def set_up_pod_identity_profile(self):
+        pod_identity_profile = None
+        if self.param.enable_pod_identity:
+            if not self.param.enable_managed_identity:
+                raise CLIError(
+                    "--enable-pod-identity can only be specified when --enable-managed-identity is specified"
+                )
+            pod_identity_profile = self.models.ManagedClusterPodIdentityProfile(enabled=True)
+            _ensure_pod_identity_kubenet_consent(
+                self.mc.network_profile,
+                pod_identity_profile,
+                self.param.enable_pod_identity_with_kubenet,
+            )
+
+        # update mc
+        self.mc.pod_identity_profile = pod_identity_profile
+
+    def set_up_auto_upgrade_profile(self):
+        auto_upgrade_profile = None
+        if self.param.auto_upgrade_channel is not None:
+            auto_upgrade_profile = self.models.ManagedClusterAutoUpgradeProfile(
+                upgrade_channel=self.param.auto_upgrade_channel
+            )
+
+        # update mc
+        self.mc.auto_upgrade_profile = auto_upgrade_profile
+
+    def set_up_mc_with_params(self):
+        super().set_up_mc_with_params()
+        self.mc.enable_pod_security_policy = bool(self.param.enable_pod_security_policy)
+        self.mc.disable_local_accounts = bool(self.param.disable_local_accounts)
+        self.mc.node_resource_group = self.param.node_resource_group
+        self.mc.http_proxy_config =_get_http_proxy_config(self.param.http_proxy_config)
+
+    def set_up_public_fqdn(self):
+        if not self.param.enable_private_cluster and self.param.enable_public_fqdn:
+            raise ArgumentUsageError(
+                "--enable-public-fqdn should only be used with --enable-private-cluster"
+            )
+        if self.param.enable_private_cluster:
+            if self.param.load_balancer_sku.lower() != "standard":
+                raise ArgumentUsageError(
+                    "Please use standard load balancer for private cluster"
+                )
+            self.mc.api_server_access_profile = ManagedClusterAPIServerAccessProfile(
+                enable_private_cluster=True
+            )
+            if self.param.enable_public_fqdn:
+                self.mc.api_server_access_profile.enable_private_cluster_public_fqdn = (
+                    True
+                )
+
+    def build_custom_headers(self):
+        super().build_custom_headers()
+        custom_headers = get_aks_custom_headers(self.param.aks_custom_headers)
+
+        # update context
+        self.context.custom_headers.update(custom_headers)
+
+    def set_up_preview_mc(self):
+        super().set_up_default_mc()
+        self.set_up_pod_identity_profile()
+        self.set_up_auto_upgrade_profile()
+        self.set_up_public_fqdn()
+
+    def create_preview_cluster(self):
+        # Due to SPN replication latency, we do a few retries here
+        max_retry = 30
+        retry_exception = Exception(None)
+        for _ in range(0, max_retry):
+            try:
+                if self.context.monitoring and self.param.enable_msi_auth_for_monitoring:
+                    # Creating a DCR Association (for the monitoring addon) requires waiting for cluster creation to finish
+                    no_wait = False
+
+                created_cluster = _put_managed_cluster_ensuring_permission(
+                    self.cmd,
+                    self.client,
+                    self.context.subscription_id,
+                    self.param.resource_group_name,
+                    self.param.name,
+                    self.mc,
+                    self.context.monitoring,
+                    self.context.ingress_appgw_addon_enabled,
+                    self.context.enable_virtual_node,
+                    self.context.need_post_creation_vnet_permission_granting,
+                    self.param.vnet_subnet_id,
+                    self.param.enable_managed_identity,
+                    self.param.attach_acr,
+                    self.context.custom_headers,
+                    self.param.no_wait,
+                )
+
+                if self.context.monitoring and self.param.enable_msi_auth_for_monitoring:
+                    # Create the DCR Association here
+                    _ensure_container_insights_for_monitoring(
+                        self.cmd,
+                        self.mc.addon_profiles[CONST_MONITORING_ADDON_NAME],
+                        self.context.subscription_id,
+                        self.param.resource_group_name,
+                        self.param.name,
+                        self.param.location,
+                        aad_route=self.param.enable_msi_auth_for_monitoring,
+                        create_dcr=False,
+                        create_dcra=True,
+                    )
+
+                return created_cluster
+            except CloudError as ex:
+                retry_exception = ex
+                if "not found in Active Directory tenant" in ex.message:
+                    time.sleep(3)
+                else:
+                    raise ex
+        raise retry_exception
+
+
+def _aks_create(cmd, client, resource_type=CUSTOM_MGMT_AKS_PREVIEW, raw_parameters={}):
+    models = PreviewAKSCreateModels(cmd, resource_type)
+    preview_aks_create_decorator = PreviewAKSCreateDecorator(
+        cmd=cmd,
+        client=client,
+        models=models,
+        raw_parameters=raw_parameters,
+    )
+    preview_aks_create_decorator.set_up_preview_mc()
+    return preview_aks_create_decorator.create_cluster()
 
 
 def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,too-many-branches
