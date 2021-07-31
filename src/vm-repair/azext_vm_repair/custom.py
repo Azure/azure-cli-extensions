@@ -37,13 +37,7 @@ from .repair_utils import (
 from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError, SkuDoesNotSupportHyperV, ScriptReturnsError
 logger = get_logger(__name__)
 
-
-<<<<<<< HEAD
-def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, associate_public_ip=False, unlock_encrypted_vm=False):
-
-=======
-def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, unlock_encrypted_vm=False, enable_nested=False):
->>>>>>> 4dd9bb5324d6d75aff21a34176a46099515e6704
+def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, unlock_encrypted_vm=False, associate_public_ip=False, enable_nested=False):
     # Init command helper object
     command = command_helper(logger, cmd, 'vm repair create')
     # Main command calling block
@@ -69,18 +63,13 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             _check_hyperV_gen(source_vm)
 
         # Set up base create vm command
-<<<<<<< HEAD
-        create_repair_vm_command = 'az vm create -g {g} -n {n} --tag {tag} --image {image} --admin-username {username} --admin-password {password} --public-ip-address {option}' \
-                                   .format(g=repair_group_name, n=repair_vm_name, tag=resource_tag, image=os_image_urn, username=repair_username, password=repair_password, option=associate_public_ip)
-=======
         if is_linux:
-            create_repair_vm_command = 'az vm create -g {g} -n {n} --tag {tag} --image {image} --admin-username {username} --admin-password {password} --custom-data {cloud_init_script}' \
-                .format(g=repair_group_name, n=repair_vm_name, tag=resource_tag, image=os_image_urn, username=repair_username, password=repair_password, cloud_init_script=_get_cloud_init_script())
+            create_repair_vm_command = 'az vm create -g {g} -n {n} --tag {tag} --image {image} --admin-username {username} --admin-password {password} --public-ip-address {option} --custom-data {cloud_init_script}' \
+                .format(g=repair_group_name, n=repair_vm_name, tag=resource_tag, image=os_image_urn, username=repair_username, password=repair_password, option=associate_public_ip, cloud_init_script=_get_cloud_init_script())
         else:
-            create_repair_vm_command = 'az vm create -g {g} -n {n} --tag {tag} --image {image} --admin-username {username} --admin-password {password}' \
-                .format(g=repair_group_name, n=repair_vm_name, tag=resource_tag, image=os_image_urn, username=repair_username, password=repair_password)
+            create_repair_vm_command = 'az vm create -g {g} -n {n} --tag {tag} --image {image} --admin-username {username} --admin-password {password} --public-ip-address {option}' \
+                .format(g=repair_group_name, n=repair_vm_name, tag=resource_tag, image=os_image_urn, username=repair_username, password=repair_password, option=associate_public_ip)
 
->>>>>>> 4dd9bb5324d6d75aff21a34176a46099515e6704
         # Fetch VM size of repair VM
         sku = _fetch_compatible_sku(source_vm, enable_nested)
         if not sku:
