@@ -4,27 +4,24 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long, too-many-statements
 
-from enum import Enum
 
 from azure.cli.core.commands.parameters import (
-    get_resource_name_completion_list, name_type, get_enum_type, get_three_state_flag, get_datetime_type, get_location_type)
+    get_resource_name_completion_list, name_type, get_enum_type, get_three_state_flag, get_location_type)
 
 from azext_cosmosdb_preview._validators import (
-    validate_capabilities, validate_virtual_network_rules, validate_ip_range_filter)
+    validate_capabilities, validate_virtual_network_rules, validate_ip_range_filter,
+    validate_gossip_certificates,
+    validate_client_certificates,
+    validate_seednodes,
+    validate_node_count)
 
 from azext_cosmosdb_preview.actions import (
-    CreateLocation, CreateDatabaseRestoreResource)
+    CreateLocation, CreateDatabaseRestoreResource, UtcDatetimeAction)
 
-from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import DefaultConsistencyLevel, DatabaseAccountKind, ServerVersion
-
-
-class BackupPolicyTypes(str, Enum):
-    periodic = "Periodic"
-    continuous = "Continuous"
+from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import DefaultConsistencyLevel, DatabaseAccountKind, ServerVersion, BackupPolicyType
 
 
 def load_arguments(self, _):
-
     from azure.cli.core.commands.parameters import tags_type
 
     with self.argument_context('cosmosdb') as c:
@@ -38,9 +35,8 @@ def load_arguments(self, _):
         c.argument('server_version', arg_type=get_enum_type(ServerVersion), help="Valid only for MongoDB accounts.", is_preview=True)
         c.argument('is_restore_request', options_list=['--is-restore-request', '-r'], arg_type=get_three_state_flag(), help="Restore from an existing/deleted account.", is_preview=True, arg_group='Restore')
         c.argument('restore_source', help="The restorable-database-account Id of the source account from which the account has to be restored. Required if --is-restore-request is set to true.", is_preview=True, arg_group='Restore')
-        c.argument('restore_timestamp', arg_type=get_datetime_type(help="The timestamp to which the account has to be restored to. Required if --is-restore-request is set to true."), is_preview=True, arg_group='Restore')
+        c.argument('restore_timestamp', action=UtcDatetimeAction, help="The timestamp to which the account has to be restored to. Required if --is-restore-request is set to true.", is_preview=True, arg_group='Restore')
         c.argument('databases_to_restore', nargs='+', action=CreateDatabaseRestoreResource, is_preview=True, arg_group='Restore')
-        c.argument('backup_policy_type', arg_type=get_enum_type(BackupPolicyTypes), help="The type of backup policy of the account to create", arg_group='Backup Policy')
 
     for scope in ['cosmosdb create', 'cosmosdb update']:
         with self.argument_context(scope) as c:
@@ -62,18 +58,23 @@ def load_arguments(self, _):
             c.argument('enable_analytical_storage', arg_type=get_three_state_flag(), help="Flag to enable log storage on the account.", is_preview=True)
             c.argument('backup_interval', type=int, help="the frequency(in minutes) with which backups are taken (only for accounts with periodic mode backups)", arg_group='Backup Policy')
             c.argument('backup_retention', type=int, help="the time(in hours) for which each backup is retained (only for accounts with periodic mode backups)", arg_group='Backup Policy')
+            c.argument('backup_policy_type', arg_type=get_enum_type(BackupPolicyType), help="The type of backup policy of the account to create", arg_group='Backup Policy')
 
     with self.argument_context('cosmosdb restore') as c:
         c.argument('target_database_account_name', options_list=['--target-database-account-name', '-n'], help='Name of the new target Cosmos DB database account after the restore')
         c.argument('account_name', completer=None, options_list=['--account-name', '-a'], help='Name of the source Cosmos DB database account for the restore', id_part=None)
-        c.argument('restore_timestamp', options_list=['--restore-timestamp', '-t'], arg_type=get_datetime_type(help="The timestamp to which the account has to be restored to."))
+        c.argument('restore_timestamp', options_list=['--restore-timestamp', '-t'], action=UtcDatetimeAction, help="The timestamp to which the account has to be restored to.")
         c.argument('location', arg_type=get_location_type(self.cli_ctx), help="The location of the source account from which restore is triggered. This will also be the write region of the restored account")
         c.argument('databases_to_restore', nargs='+', action=CreateDatabaseRestoreResource)
 
     # Restorable Database Accounts
-    with self.argument_context('cosmosdb restorable-database-account') as c:
+    with self.argument_context('cosmosdb restorable-database-account show') as c:
         c.argument('location', options_list=['--location', '-l'], help="Location", required=False)
         c.argument('instance_id', options_list=['--instance-id', '-i'], help="InstanceId of the Account", required=False)
+
+    with self.argument_context('cosmosdb restorable-database-account list') as c:
+        c.argument('location', options_list=['--location', '-l'], help="Location", required=False)
+        c.argument('account_name', options_list=['--account-name', '-n'], help="Name of the Account", required=False, id_part=None)
 
     # Restorable Sql Databases
     with self.argument_context('cosmosdb sql restorable-database') as c:
@@ -110,3 +111,67 @@ def load_arguments(self, _):
         c.argument('instance_id', options_list=['--instance-id', '-i'], help="InstanceId of the Account", required=True)
         c.argument('restore_location', options_list=['--restore-location', '-r'], help="The region of the restore.", required=True)
         c.argument('restore_timestamp_in_utc', options_list=['--restore-timestamp', '-t'], help="The timestamp of the restore", required=True)
+
+    # Managed Cassandra Cluster
+    for scope in [
+            'managed-cassandra cluster create',
+            'managed-cassandra cluster update',
+            'managed-cassandra cluster show',
+            'managed-cassandra cluster delete',
+            'managed-cassandra cluster node-status']:
+        with self.argument_context(scope) as c:
+            c.argument('cluster_name', options_list=['--cluster-name', '-c'], help="Cluster Name", required=True)
+
+    # Managed Cassandra Cluster
+    for scope in [
+            'managed-cassandra cluster create',
+            'managed-cassandra cluster update']:
+        with self.argument_context(scope) as c:
+            c.argument('tags', arg_type=tags_type)
+            c.argument('external_gossip_certificates', nargs='+', validator=validate_gossip_certificates, options_list=['--external-gossip-certificates', '-e'], help="A list of certificates that the managed cassandra data center's should accept.")
+            c.argument('cassandra_version', help="The version of Cassandra chosen.")
+            c.argument('authentication_method', help="Authentication mode can be None or Cassandra. If None, no authentication will be required to connect to the Cassandra API. If Cassandra, then passwords will be used.")
+            c.argument('hours_between_backups', help="The number of hours between backup attempts.")
+            c.argument('repair_enabled', help="Enables automatic repair.")
+            c.argument('client_certificates', nargs='+', validator=validate_client_certificates, help="If specified, enables client certificate authentication to the Cassandra API.")
+            c.argument('gossip_certificates', help="A list of certificates that should be accepted by on-premise data centers.")
+            c.argument('external_seed_nodes', nargs='+', validator=validate_seednodes, help="A list of ip addresses of the seed nodes of on-premise data centers.")
+            c.argument('identity', help="Identity used to authenticate.")
+
+    # Managed Cassandra Cluster
+    with self.argument_context('managed-cassandra cluster create') as c:
+        c.argument('location', options_list=['--location', '-l'], help="Azure Location of the Cluster", required=True)
+        c.argument('delegated_management_subnet_id', options_list=['--delegated-management-subnet-id', '-s'], help="The resource id of a subnet where the ip address of the cassandra management server will be allocated. This subnet must have connectivity to the delegated_subnet_id subnet of each data center.", required=True)
+        c.argument('initial_cassandra_admin_password', options_list=['--initial-cassandra-admin-password', '-i'], help="The intial password to be configured when a cluster is created for authentication_method Cassandra.")
+        c.argument('restore_from_backup_id', help="The resource id of a backup. If provided on create, the backup will be used to prepopulate the cluster. The cluster data center count and node counts must match the backup.")
+        c.argument('cluster_name_override', help="If a cluster must have a name that is not a valid azure resource name, this field can be specified to choose the Cassandra cluster name. Otherwise, the resource name will be used as the cluster name.")
+
+    # Managed Cassandra Datacenter
+    for scope in [
+            'managed-cassandra datacenter create',
+            'managed-cassandra datacenter update',
+            'managed-cassandra datacenter show',
+            'managed-cassandra datacenter delete']:
+        with self.argument_context(scope) as c:
+            c.argument('cluster_name', options_list=['--cluster-name', '-c'], help="Cluster Name", required=True)
+            c.argument('data_center_name', options_list=['--data-center-name', '-d'], help="Datacenter Name", required=True)
+
+    # Managed Cassandra Datacenter
+    for scope in [
+            'managed-cassandra datacenter create',
+            'managed-cassandra datacenter update']:
+        with self.argument_context(scope) as c:
+            c.argument('node_count', options_list=['--node-count', '-n'], validator=validate_node_count, help="The number of Cassandra virtual machines in this data center. The minimum value is 3.")
+            c.argument('base64_encoded_cassandra_yaml_fragment', options_list=['--base64-encoded-cassandra-yaml-fragment', '-b'], help="This is a Base64 encoded yaml file that is a subset of cassandra.yaml.  Supported fields will be honored and others will be ignored.")
+            c.argument('data_center_location', options_list=['--data-center-location', '-l'], help="The region where the virtual machine for this data center will be located.")
+            c.argument('delegated_subnet_id', options_list=['--delegated-subnet-id', '-s'], help="The resource id of a subnet where ip addresses of the Cassandra virtual machines will be allocated. This must be in the same region as data_center_location.")
+
+    # Managed Cassandra Datacenter
+    with self.argument_context('managed-cassandra datacenter create') as c:
+        c.argument('data_center_location', options_list=['--data-center-location', '-l'], help="Azure Location of the Datacenter", required=True)
+        c.argument('delegated_subnet_id', options_list=['--delegated-subnet-id', '-s'], help="The resource id of a subnet where ip addresses of the Cassandra virtual machines will be allocated. This must be in the same region as data_center_location.", required=True)
+        c.argument('node_count', options_list=['--node-count', '-n'], validator=validate_node_count, help="The number of Cassandra virtual machines in this data center. The minimum value is 3.", required=True)
+
+    # Managed Cassandra Datacenter
+    with self.argument_context('managed-cassandra datacenter list') as c:
+        c.argument('cluster_name', options_list=['--cluster-name', '-c'], help="Cluster Name", required=True)

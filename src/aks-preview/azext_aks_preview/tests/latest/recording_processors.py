@@ -45,15 +45,19 @@ class KeyReplacer(RecordingProcessor):
     def _replace_byte_keys(self, val):
         import re
         if b'secret' in val:
-            val = re.sub(b'"secret":( ?)"([^"]+)"', '"secret":"{}"'
-                         .format(MOCK_SECRET).encode(), val, flags=re.IGNORECASE)
+            val = re.sub(b'"secret":( ?)"([^"]+)"',
+                         ('"secret":"{}"'.format(MOCK_SECRET)).encode('utf-8'),
+                         val, flags=re.IGNORECASE)
         if b'clientId' in val:
-            val = re.sub(b'"clientId":( ?)"([^"]+)"', '"clientId":"{}"'
-                         .format(MOCK_GUID).encode(), val, flags=re.IGNORECASE)
+            val = re.sub(b'"clientId":( ?)"([^"]+)"',
+                         ('"clientId":"{}"'.format(MOCK_GUID)).encode('utf-8'),
+                         val, flags=re.IGNORECASE)
         if b'objectId' in val:
-            val = re.sub(b'"objectId":( ?)"([^"]+)"', '"objectId":"{}"'
-                         .format(MOCK_GUID), val, flags=re.IGNORECASE)
+            val = re.sub(b'"objectId":( ?)"([^"]+)"',
+                         ('"objectId":"{}"'.format(MOCK_GUID)).encode('utf-8'),
+                         val, flags=re.IGNORECASE)
         if b'principalId' in val:
-            val = re.sub(b'"principalId":( ?)"([^"]+)"', '"principalId":"{}"'
-                         .format(MOCK_GUID), val, flags=re.IGNORECASE)
+            val = re.sub(b'"principalId":( ?)"([^"]+)"',
+                         ('"principalId":"{}"'.format(MOCK_GUID)).encode('utf-8'),
+                         val, flags=re.IGNORECASE)
         return val

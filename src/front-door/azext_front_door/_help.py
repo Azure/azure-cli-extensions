@@ -37,6 +37,23 @@ helps['network front-door delete'] = """
     type: command
     short-summary: Delete a Front Door.
 """
+
+helps['network front-door check-name-availability'] = """
+type: command
+short-summary: Check the availability of a Front Door resource name.
+examples:
+  - name: Check the availability of a Front Door resource name.
+    text: >
+        az network front-door check-name-availability --name frontdoor1 --resource-type Microsoft.Network/frontDoors
+"""
+
+helps['network front-door wait'] = """
+type: command
+short-summary: Place the CLI in a waiting state until a condition of the Front Door is met.
+examples:
+  - name: Wait until a front door is created.
+    text: az network front-door wait -g MyResourceGroup --name frontdoor1 --created
+"""
 # endregion
 
 # region FrontDoor BackendPool
@@ -79,6 +96,11 @@ helps['network front-door backend-pool backend'] = """
 helps['network front-door backend-pool backend add'] = """
     type: command
     short-summary: Add a backend to a Front Door backend pool.
+"""
+
+helps['network front-door backend-pool backend update'] = """
+    type: command
+    short-summary: Update a backend to a Front Door backend pool.
 """
 
 helps['network front-door backend-pool backend list'] = """
@@ -130,6 +152,14 @@ helps['network front-door frontend-endpoint enable-https'] = """
 helps['network front-door frontend-endpoint disable-https'] = """
     type: command
     short-summary: Disable HTTPS protocol for a custom domain.
+"""
+
+helps['network front-door frontend-endpoint wait'] = """
+type: command
+short-summary: Place the CLI in a waiting state until a condition of the Front Door frontend endpoint is met.
+examples:
+  - name: Wait until a front endpoint's certificate is deployed.
+    text: az network front-door frontend-endpoint wait -g MyResourceGroup --name endpoint1 --front-door-name frontdoor1 --custom "customHttpsProvisioningState=='Enabled'"
 """
 # endregion
 

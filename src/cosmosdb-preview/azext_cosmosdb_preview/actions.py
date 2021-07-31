@@ -91,3 +91,32 @@ class CreateDatabaseRestoreResource(argparse._AppendAction):
                 database_restore_resource.collection_names.append(item)
             i += 1
         namespace.databases_to_restore.append(database_restore_resource)
+
+
+class UtcDatetimeAction(argparse.Action):
+    def __call__(self, parser, namespace, values, option_string=None):
+        """ Parse a date value and return the ISO8601 string. """
+        import dateutil.parser
+        import dateutil.tz
+
+        accepted_formats = []
+        accepted_formats.append('date (yyyy-mm-dd)')
+        accepted_formats.append('time (hh:mm:ss.xxxxx)')
+        accepted_formats.append('timezone (+/-hh:mm)')
+        help_string = 'Format: ' + ' '.join(accepted_formats)
+        value_string = ''.join(values)
+        dt_val = None
+        try:
+            # attempt to parse ISO 8601
+            dt_val = dateutil.parser.parse(value_string)
+        except ValueError:
+            pass
+
+        if not dt_val:
+            raise CLIError("Unable to parse: '{}'. Expected format: {}".format(value_string, help_string))
+
+        if not dt_val.tzinfo:
+            dt_val = dt_val.replace(tzinfo=dateutil.tz.tzutc())
+
+        iso_string = dt_val.isoformat()
+        setattr(namespace, self.dest, iso_string)

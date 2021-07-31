@@ -1,5 +1,14 @@
 Release History
 ===============
+0.1.5
+-----
+* Add public key error message
+* Cleanup documentation
+
+0.1.4
+-----
+* Change to use the first in the list of validprincipals as the default username
+* Remove old paramiko dependency
 
 0.1.3
 -----

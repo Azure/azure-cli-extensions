@@ -13,7 +13,7 @@ This package provides commands to
 Install this extension using the below CLI command
 
 ```sh
-az extension add --name cosmodb-preview
+az extension add --name cosmosdb-preview
 ```
 
 ### Included Features ###
@@ -27,12 +27,29 @@ az cosmosdb create \
     --backup-policy-type "Continuous"
 ```
 
+#### Convert a periodic backup policy CosmosDB account to continuous backup Account ####
+
+```sh
+az cosmosdb update \
+    --resource-group "my-rg" \
+    --name "my-continuous-backup-account" \
+    --backup-policy-type "Continuous"
+```
+
 #### List all the CosmosDB accounts that can be restored (live and deleted) ####
 
 This command returns all the continuous mode backup accounts that can be restored.
 
 ```sh
 az cosmosdb restorable-database-account list
+```
+
+#### List all the CosmosDB accounts with the given name that can be restored (live and deleted) ####
+
+This command returns all the continuous mode backup accounts with the given name that can be restored.
+
+```sh
+az cosmosdb restorable-database-account list --name "account-name"
 ```
 
 #### Restore from an existing(live or deleted) database account to a new account ####

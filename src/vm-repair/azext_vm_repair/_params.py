@@ -29,7 +29,11 @@ def load_arguments(self, _):
         c.argument('copy_disk_name', help='Name of OS disk copy.')
         c.argument('repair_group_name', help='Repair resource group name.')
         c.argument('unlock_encrypted_vm', help='Option to auto-unlock encrypted VMs using current subscription auth.')
+<<<<<<< HEAD
         c.argument('associate_public_ip', help='Option to create repair vm with public ip')
+=======
+        c.argument('enable_nested', help='enable nested hyperv.')
+>>>>>>> 4dd9bb5324d6d75aff21a34176a46099515e6704
 
     with self.argument_context('vm repair restore') as c:
         c.argument('repair_vm_id', help='Repair VM resource id.')

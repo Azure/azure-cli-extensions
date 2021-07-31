@@ -6,7 +6,7 @@
 import os
 
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, record_only)
-
+from azure.cli.testsdk.checkers import StringContainCheck
 from .credential_replacer import VpnClientGeneratedURLReplacer
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
@@ -40,28 +40,34 @@ class AzureVWanVHubScenario(ScenarioTest):
         self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan}  --address-prefix 10.0.0.0/24 -l SouthCentralUS --sku Standard')
 
         self.cmd('network vhub route add -g {rg} --vhub-name {vhub} --next-hop 10.0.0.7 --address-prefixes 10.3.3.0/28')
-        self.cmd('network vhub route reset -g {rg} --vhub-name {vhub}', checks=[
-            self.check('@[0].addressPrefixes[0]', '10.3.3.0/28'),
-            self.check('@[0].nextHopIpAddress', '10.0.0.7')
-        ])
+        # self.cmd('network vhub route reset -g {rg} --vhub-name {vhub}', checks=[
+        #     self.check('@[0].addressPrefixes[0]', '10.3.3.0/28'),
+        #     self.check('@[0].nextHopIpAddress', '10.0.0.7')
+        # ])
 
     @ResourceGroupPreparer(name_prefix='cli_test_azure_vhub_connection')
     def test_azure_vhub_connection_basic_scenario(self, resource_group):
         self.kwargs.update({
-            'vnet': 'clitestvnet',
-            'vwan': 'clitestvwan',
-            'vhub': 'clitestvhub',
-            'connection': 'clitestvhubconnection',
+            'vnet': 'clitestvnet2',
+            'vwan': 'clitestvwan2',
+            'vhub': 'clitestvhub2',
+            'connection': 'clitestvhubconnection2',
             'rg': resource_group
         })
 
         self.cmd('network vnet create -g {rg} -n {vnet}')
         self.cmd('network vwan create -n {vwan} -g {rg} --type Standard')
         self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan}  --address-prefix 10.5.0.0/16 -l westus --sku Standard')
-        self.cmd('network vhub connection create --resource-group {rg} --vhub-name {vhub} --name {connection} --remote-vnet {vnet}', checks=[
+        self.cmd('network vhub connection create -g {rg} --vhub-name {vhub} --name {connection} --remote-vnet {vnet}', checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('name', self.kwargs.get('connection'))
         ])
+        self.cmd('network vhub connection list -g {rg} --vhub-name {vhub}', checks=self.check('length(@)', 1))
+        self.cmd('network vhub connection show -g {rg} --vhub-name {vhub} --name {connection}')
+        self.cmd('network vhub connection update -g {rg} --vhub-name {vhub} --name {connection} --labels x1 x2',
+                 checks=self.check('length(routingConfiguration.propagatedRouteTables.labels)', 2))
+        self.cmd('network vhub connection delete -g {rg} --vhub-name {vhub} --name {connection} -y')
+        self.cmd('network vhub connection list -g {rg} --vhub-name {vhub}', checks=self.check('length(@)', 0))
 
     @ResourceGroupPreparer(name_prefix='cli_test_azure_vpn_server_config', location='westcentralus')
     def test_azure_vpn_server_config_basic_scenario(self, resource_group):
@@ -157,6 +163,56 @@ class AzureVWanVHubScenario(ScenarioTest):
         with self.assertRaisesRegexp(SystemExit, '3'):
             self.cmd('network vpn-server-config show -n {vserverconfig} -g {rg}')
 
+    @ResourceGroupPreparer(name_prefix='test_azure_vpn_server_config_multi_auth', location='westcentralus')
+    def test_azure_vpn_server_config_multi_auth(self, resource_group):
+        self.kwargs.update({
+            'vserverconfig': 'clitestserverconfig',
+            'vserverconfig1': 'clitestserverconfig1',
+            'cert_file': os.path.join(TEST_DIR, 'data', 'ApplicationGatewayAuthCert.cer'),
+            'pem_file': os.path.join(TEST_DIR, 'data', 'ApplicationGatewayAuthCert.pem'),
+            'rg': resource_group,
+            'aad_tenant': 'https://login.microsoftonline.com/0ab2c4f4-81e6-44cc-a0b2-b3a47a1443f4',
+            'aad_issuer': 'https://sts.windows.net/0ab2c4f4-81e6-44cc-a0b2-b3a47a1443f4/',
+            'aad_audience': 'a21fce82-76af-45e6-8583-a08cb3b956f9'
+        })
+
+        self.cmd('network vpn-server-config create -n {vserverconfig} -g {rg} '
+                 '--vpn-client-root-certs "{cert_file}" --vpn-client-revoked-certs "{pem_file}" '
+                 '--radius-servers address=test1 secret=clitest score=10 '
+                 '--radius-servers address=test2 secret=clitest score=10 '
+                 '--aad-audience {aad_audience} '
+                 '--aad-issuer {aad_issuer} '
+                 '--aad-tenant {aad_tenant} '
+                 '--auth-types Radius AAD Certificate',
+                 checks=[
+                     self.check('name', '{vserverconfig}'),
+                     self.exists('vpnClientRootCertificates[0].publicCertData'),
+                     self.exists('vpnClientRevokedCertificates[0].thumbprint'),
+                     self.check('length(vpnAuthenticationTypes)', 3),
+                     self.check('length(radiusServers)', 2),
+                     self.check('aadAuthenticationParameters.aadAudience', '{aad_audience}')
+                 ])
+
+        self.cmd('network vpn-server-config create -n {vserverconfig1} -g {rg} '
+                 '--vpn-client-root-certs "{cert_file}" --vpn-client-revoked-certs "{pem_file}" ')
+
+        self.cmd('network vpn-server-config set -n {vserverconfig1} -g {rg} '
+                 '--vpn-client-root-certs "{cert_file}" --vpn-client-revoked-certs "{pem_file}" '
+                 '--radius-servers address=test1 secret=clitest score=10 '
+                 '--radius-servers address=test2 secret=clitest score=10 '
+                 '--aad-audience {aad_audience} '
+                 '--aad-issuer {aad_issuer} '
+                 '--aad-tenant {aad_tenant} '
+                 '--auth-types Radius AAD Certificate',
+                 checks=[
+                     self.check('name', '{vserverconfig1}'),
+                     self.check('length(vpnClientRootCertificates)', 1),
+                     self.check('length(vpnClientRevokedCertificates)', 1),
+                     self.check('length(vpnAuthenticationTypes)', 3),
+                     self.check('length(radiusServers)', 2),
+                     self.check('aadAuthenticationParameters.aadAudience', '{aad_audience}')
+                 ])
+
     @ResourceGroupPreparer(name_prefix='cli_test_azure_p2s_vpn_gateway', location='westcentralus')
     def test_azure_p2s_vpn_gateway_basic_scenario(self, resource_group):
         self.kwargs.update({
@@ -184,13 +240,15 @@ class AzureVWanVHubScenario(ScenarioTest):
                  '--vhub {vhub} --vpn-server-config {vserverconfig} --address-space 10.0.0.0/24 11.0.0.0/24 --no-wait')
         self.cmd('az network p2s-vpn-gateway wait -g {rg} -n {vp2sgateway} --created')
         self.cmd('az network p2s-vpn-gateway update -g {rg} -n {vp2sgateway} --scale-unit 3 '
-                 '--vpn-server-config {vserverconfig2} --address-space 13.0.0.0/24 12.0.0.0/24')
+                 '--vpn-server-config {vserverconfig2} --address-space 13.0.0.0/24 12.0.0.0/24 --labels x1 x2 x3',
+                 checks=self.check(
+                     'length(p2SConnectionConfigurations[0].routingConfiguration.propagatedRouteTables.labels)', 3))
         self.cmd('az network p2s-vpn-gateway list -g {rg}', checks=[
             self.check('length(@)', 1)
         ])
         self.cmd('az network p2s-vpn-gateway list', checks=[])
         self.cmd('az network p2s-vpn-gateway show -g {rg} -n {vp2sgateway}', checks=[
-            self.check('length(p2SconnectionConfigurations[0].vpnClientAddressPool.addressPrefixes)', 2),
+            self.check('length(p2SConnectionConfigurations[0].vpnClientAddressPool.addressPrefixes)', 2),
             self.check('vpnGatewayScaleUnit', 3)
         ])
         self.cmd('az network p2s-vpn-gateway delete -g {rg} -n {vp2sgateway} -y')
@@ -288,6 +346,10 @@ class AzureVWanVHubScenario(ScenarioTest):
                      self.check('length(@)', 1)
                  ])
 
+        self.cmd(
+            'network vpn-gateway connection update -g {rg} --gateway-name {vpngateway} -n {connection} --labels x1 x2',
+            checks=self.check('length(routingConfiguration.propagatedRouteTables.labels)', 2))
+
         self.cmd('network vpn-gateway connection delete '
                  '-g {rg} '
                  '-n {connection} '
@@ -331,14 +393,14 @@ class AzureVWanVHubScenario(ScenarioTest):
                  checks=[
                      self.check('provisioningState', 'Succeeded'),
                      self.check('name', self.kwargs['gateway']),
-                     self.check('p2SconnectionConfigurations[0].name', self.kwargs['connection_config']),
-                     self.check('p2SconnectionConfigurations[0].routingConfiguration.associatedRouteTable.id', self.kwargs['route_table1']),
-                     self.check('length(p2SconnectionConfigurations[0].routingConfiguration.propagatedRouteTables.ids)', 2),
-                     self.check('p2SconnectionConfigurations[0].routingConfiguration.propagatedRouteTables.ids[0].id', self.kwargs['route_table1']),
-                     self.check('p2SconnectionConfigurations[0].routingConfiguration.propagatedRouteTables.ids[1].id', self.kwargs['route_table2']),
-                     self.check('length(p2SconnectionConfigurations[0].routingConfiguration.propagatedRouteTables.labels)', 2),
-                     self.check('p2SconnectionConfigurations[0].routingConfiguration.propagatedRouteTables.labels[0]', 'label1'),
-                     self.check('p2SconnectionConfigurations[0].routingConfiguration.propagatedRouteTables.labels[1]', 'label2')
+                     self.check('p2SConnectionConfigurations[0].name', self.kwargs['connection_config']),
+                     self.check('p2SConnectionConfigurations[0].routingConfiguration.associatedRouteTable.id', self.kwargs['route_table1']),
+                     self.check('length(p2SConnectionConfigurations[0].routingConfiguration.propagatedRouteTables.ids)', 2),
+                     self.check('p2SConnectionConfigurations[0].routingConfiguration.propagatedRouteTables.ids[0].id', self.kwargs['route_table1']),
+                     self.check('p2SConnectionConfigurations[0].routingConfiguration.propagatedRouteTables.ids[1].id', self.kwargs['route_table2']),
+                     self.check('length(p2SConnectionConfigurations[0].routingConfiguration.propagatedRouteTables.labels)', 2),
+                     self.check('p2SConnectionConfigurations[0].routingConfiguration.propagatedRouteTables.labels[0]', 'label1'),
+                     self.check('p2SConnectionConfigurations[0].routingConfiguration.propagatedRouteTables.labels[1]', 'label2')
                  ])
 
         self.cmd('network p2s-vpn-gateway connection show '
@@ -454,14 +516,14 @@ class AzureVWanVHubScenario(ScenarioTest):
         })
 
         # You need to create a virtual hub and a P2S VPN gateway with connection, then connect them together before running the following command.
-        self.cmd('network vhub get-effective-routes '
+        result = self.cmd('network vhub get-effective-routes '
                  '-g {rg} '
                  '-n {vhub} '
                  '--resource-type {resource_type} '
-                 '--resource-id {resource_id}',
-                 checks=[
-                     self.check('length(value)', 5)
-                 ])
+                 '--resource-id {resource_id} '
+                 '-o table')
+        lines = result.output.strip().split('\n')
+        self.assertTrue(len(lines) == 7)
 
 
 class P2SVpnGatewayVpnClientTestScenario(ScenarioTest):
@@ -484,9 +546,10 @@ class P2SVpnGatewayVpnClientTestScenario(ScenarioTest):
         self.cmd('network vwan create -g {rg} -n {vwan}')
         self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan} --address-prefix 10.0.1.0/24')
 
+        # when live test, run in Linux environment or annotate "self.escape = '\\'" in shlex.py in Powershell before run
         self.cmd('network vpn-server-config create -g {rg} -n {vpn_server_config} '
-                 '--vpn-client-root-certs {vpn_server_cert} '
-                 '--vpn-client-revoked-certs {vpn_server_pem}')
+                 '--vpn-client-root-certs "{vpn_server_cert}" '
+                 '--vpn-client-revoked-certs "{vpn_server_pem}"')
 
         self.cmd('az network p2s-vpn-gateway create -g {rg} --vhub {vhub} -n {p2s_gateway} '
                  '--scale-unit 2 '

@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.2.4
+++++++++++++++++++
+* Deprecate k8sconfiguration
+
 0.2.3
 ++++++++++++++++++
 * Add parameter regex validation, improve table formatting

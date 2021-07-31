@@ -37,6 +37,7 @@ class SshCustomCommandTest(unittest.TestCase):
         mock_do_op.assert_called_once_with(
             cmd, "rg", "vm", "ip", "public", "private", False, mock.ANY)
 
+    @mock.patch('azext_ssh.ssh_utils.get_ssh_cert_principals')
     @mock.patch('os.path.join')
     @mock.patch('azext_ssh.custom._assert_args')
     @mock.patch('azext_ssh.custom._check_or_create_public_private_files')
@@ -45,10 +46,11 @@ class SshCustomCommandTest(unittest.TestCase):
     @mock.patch('azure.cli.core._profile.Profile.get_msal_token')
     @mock.patch('azext_ssh.custom._write_cert_file')
     def test_do_ssh_op(self, mock_write_cert, mock_ssh_creds, mock_get_mod_exp, mock_ip,
-                       mock_check_files, mock_assert, mock_join):
+                       mock_check_files, mock_assert, mock_join, mock_principal):
         cmd = mock.Mock()
         mock_op = mock.Mock()
         mock_check_files.return_value = "public", "private"
+        mock_principal.return_value = ["username"]
         mock_get_mod_exp.return_value = "modulus", "exponent"
         mock_ssh_creds.return_value = "username", "certificate"
         mock_join.return_value = "public-aadcert.pub"
@@ -61,7 +63,7 @@ class SshCustomCommandTest(unittest.TestCase):
         mock_get_mod_exp.assert_called_once_with("public")
         mock_write_cert.assert_called_once_with("certificate", "public-aadcert.pub")
         mock_op.assert_called_once_with(
-            "1.2.3.4", "username", mock_write_cert.return_value, "private")
+            "1.2.3.4", "username", "public-aadcert.pub", "private")
 
     @mock.patch('azext_ssh.custom._assert_args')
     @mock.patch('azext_ssh.custom._check_or_create_public_private_files')

@@ -50,14 +50,18 @@ def _do_ssh_op(cmd, resource_group, vm_name, ssh_ip, public_key_file, private_ke
 
 
 def _get_and_write_certificate(cmd, public_key_file, cert_file):
-    scopes = ["https://pas.windows.net/CheckMyAccess/Linux/user_impersonation"]
+    scopes = ["https://pas.windows.net/CheckMyAccess/Linux/.default"]
     data = _prepare_jwk_data(public_key_file)
     from azure.cli.core._profile import Profile
     profile = Profile(cli_ctx=cmd.cli_ctx)
-    username, certificate = profile.get_msal_token(scopes, data)
+    # we used to use the username from the token but now we throw it away
+    _, certificate = profile.get_msal_token(scopes, data)
     if not cert_file:
         cert_file = public_key_file + "-aadcert.pub"
-    return _write_cert_file(certificate, cert_file), username.lower()
+    _write_cert_file(certificate, cert_file)
+    # instead we use the validprincipals from the cert due to mismatched upn and email in guest scenarios
+    username = ssh_utils.get_ssh_cert_principals(cert_file)[0]
+    return cert_file, username.lower()
 
 
 def _prepare_jwk_data(public_key_file):
@@ -99,6 +103,9 @@ def _check_or_create_public_private_files(public_key_file, private_key_file):
         public_key_file = os.path.join(temp_dir, "id_rsa.pub")
         private_key_file = os.path.join(temp_dir, "id_rsa")
         ssh_utils.create_ssh_keyfile(private_key_file)
+
+    if not public_key_file:
+        raise util.CLIError(f"Public key file not specified")
 
     if not os.path.isfile(public_key_file):
         raise util.CLIError(f"Public key file {public_key_file} not found")
