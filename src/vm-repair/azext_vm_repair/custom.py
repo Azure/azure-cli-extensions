@@ -36,7 +36,7 @@ from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyE
 logger = get_logger(__name__)
 
 
-def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, unlock_encrypted_vm=False):
+def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, associate_public_ip=False, unlock_encrypted_vm=False):
 
     # Init command helper object
     command = command_helper(logger, cmd, 'vm repair create')
@@ -60,8 +60,8 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             os_type = 'Windows'
 
         # Set up base create vm command
-        create_repair_vm_command = 'az vm create -g {g} -n {n} --tag {tag} --image {image} --admin-username {username} --admin-password {password}' \
-                                   .format(g=repair_group_name, n=repair_vm_name, tag=resource_tag, image=os_image_urn, username=repair_username, password=repair_password)
+        create_repair_vm_command = 'az vm create -g {g} -n {n} --tag {tag} --image {image} --admin-username {username} --admin-password {password} --public-ip-address {option}' \
+                                   .format(g=repair_group_name, n=repair_vm_name, tag=resource_tag, image=os_image_urn, username=repair_username, password=repair_password, option=associate_public_ip)
         # Fetch VM size of repair VM
         sku = _fetch_compatible_sku(source_vm)
         if not sku:
