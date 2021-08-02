@@ -159,7 +159,7 @@ def create(cmd, resource_group_name=None, workspace_name=None, location=None, st
         raise CLIError("Please run 'az quantum workspace set' first to select a default resource group.")
     quantum_workspace = _get_basic_quantum_workspace(location, info, storage_account)
     _add_quantum_providers(cmd, quantum_workspace, provider_sku_list)
-    poller = client.create_or_update(info.resource_group, info.name, quantum_workspace, polling=False)
+    poller = client.begin_create_or_update(info.resource_group, info.name, quantum_workspace, polling=False)
     while not poller.done():
         time.sleep(POLLING_TIME_DURATION)
     quantum_workspace = poller.result()
@@ -176,7 +176,7 @@ def delete(cmd, resource_group_name=None, workspace_name=None):
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
     if (not info.resource_group) or (not info.name):
         raise CLIError("Please run 'az quantum workspace set' first to select a default Quantum Workspace.")
-    client.delete(info.resource_group, info.name, polling=False)
+    client.begin_delete(info.resource_group, info.name, polling=False)
     # If we deleted the current workspace, clear it
     curr_ws = WorkspaceInfo(cmd)
     if (curr_ws.resource_group == info.resource_group and curr_ws.name == info.name):

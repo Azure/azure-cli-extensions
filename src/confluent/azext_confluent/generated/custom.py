@@ -35,27 +35,37 @@ def confluent_organization_create(client,
                                   organization_name,
                                   tags=None,
                                   location=None,
-                                  offer_detail=None,
-                                  user_detail=None,
+                                  publisher_id=None,
+                                  offer_id=None,
+                                  plan_id=None,
+                                  plan_name=None,
+                                  term_unit=None,
                                   no_wait=False):
+    body = {}
+    body['tags'] = tags
+    body['location'] = location
+    body['offer_detail'] = {}
+    body['offer_detail']['publisher_id'] = publisher_id
+    body['offer_detail']['id'] = offer_id
+    body['offer_detail']['plan_id'] = plan_id
+    body['offer_detail']['plan_name'] = plan_name
+    body['offer_detail']['term_unit'] = term_unit
     return sdk_no_wait(no_wait,
                        client.begin_create,
                        resource_group_name=resource_group_name,
                        organization_name=organization_name,
-                       tags=tags,
-                       location=location,
-                       provisioning_state=None,
-                       offer_detail=offer_detail,
-                       user_detail=user_detail)
+                       body=body)
 
 
 def confluent_organization_update(client,
                                   resource_group_name,
                                   organization_name,
                                   tags=None):
+    body = {}
+    body['tags'] = tags
     return client.update(resource_group_name=resource_group_name,
                          organization_name=organization_name,
-                         tags=tags)
+                         body=body)
 
 
 def confluent_organization_delete(client,

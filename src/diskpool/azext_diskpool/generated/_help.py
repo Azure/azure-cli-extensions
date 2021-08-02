@@ -12,11 +12,6 @@
 from knack.help_files import helps
 
 
-helps['disk-pool'] = '''
-    type: group
-    short-summary: Manage Storage Pool Management
-'''
-
 helps['disk-pool'] = """
     type: group
     short-summary: Manage disk pool with diskpool
@@ -101,6 +96,16 @@ helps['disk-pool delete'] = """
       - name: Delete Disk pool
         text: |-
                az disk-pool delete --name "myDiskPool" --resource-group "myResourceGroup"
+"""
+
+helps['disk-pool list-outbound-network-dependency-endpoint'] = """
+    type: command
+    short-summary: "Gets the network endpoints of all outbound dependencies of a Disk Pool."
+    examples:
+      - name: Get Disk Pool outbound network dependencies
+        text: |-
+               az disk-pool list-outbound-network-dependency-endpoint --name "SampleAse" --resource-group \
+"Sample-WestUSResourceGroup"
 """
 
 helps['disk-pool list-skus'] = """

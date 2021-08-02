@@ -12,7 +12,7 @@ az extension add --name k8s-extension
 
 ### Included Features
 #### Kubernetes Extensions:
-Kubernetes Extensions: [more info](https://docs.microsoft.com/en-us/azure/kubernetessconfiguration/)\
+Kubernetes Extensions: [more info](https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/extensions)\
 *Examples:*
 
 ##### Create a KubernetesExtension
