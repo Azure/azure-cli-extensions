@@ -6,8 +6,10 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from ._dedicated_hsm_operations_async import DedicatedHsmOperations
+from ._operations import Operations
+from ._dedicated_hsm_operations import DedicatedHsmOperations
 
 __all__ = [
+    'Operations',
     'DedicatedHsmOperations',
 ]
