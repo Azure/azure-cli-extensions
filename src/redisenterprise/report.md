@@ -218,15 +218,16 @@ BlobContainer?sasKeyParameters" --resource-group "rg1"
 
 ##### <a name="ExamplesDatabasesImport">Example</a>
 ```
-az redisenterprise database import --cluster-name "cache1" --sas-uri "https://contosostorage.blob.core.window.net/urlto\
-BlobFile?sasKeyParameters" --resource-group "rg1"
+az redisenterprise database import --cluster-name "cache1" --sas-uris "https://contosostorage.blob.core.window.net/urlt\
+oBlobFile1?sasKeyParameters" "https://contosostorage.blob.core.window.net/urltoBlobFile2?sasKeyParameters" \
+--resource-group "rg1"
 ```
 ##### <a name="ParametersDatabasesImport">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
 |**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--cluster-name**|string|The name of the RedisEnterprise cluster.|cluster_name|clusterName|
-|**--sas-uri**|string|SAS URI for the target blob to import from|sas_uri|sasUri|
+|**--sas-uris**|array|SAS URIs for the target blobs to import from|sas_uris|sasUris|
 
 #### <a name="DatabasesListKeys">Command `az redisenterprise database list-keys`</a>
 

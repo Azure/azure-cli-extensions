@@ -7,9 +7,6 @@
 # --------------------------------------------------------------------------
 
 from ._redis_enterprise_management_client import RedisEnterpriseManagementClient
-from ._version import VERSION
-
-__version__ = VERSION
 __all__ = ['RedisEnterpriseManagementClient']
 
 try:

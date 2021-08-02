@@ -149,27 +149,28 @@ class Cluster(TrackedResource):
     :param location: Required. The geo-location where the resource lives.
     :type location: str
     :param sku: Required. The SKU to create, which affects price, performance, and features.
-    :type sku: ~azure.mgmt.redisenterprise.models.Sku
+    :type sku: ~redis_enterprise_management_client.models.Sku
     :param zones: The Availability Zones where this cluster will be deployed.
     :type zones: list[str]
     :param minimum_tls_version: The minimum TLS version for the cluster to support, e.g. '1.2'.
      Possible values include: "1.0", "1.1", "1.2".
-    :type minimum_tls_version: str or ~azure.mgmt.redisenterprise.models.TlsVersion
+    :type minimum_tls_version: str or ~redis_enterprise_management_client.models.TlsVersion
     :ivar host_name: DNS name of the cluster endpoint.
     :vartype host_name: str
     :ivar provisioning_state: Current provisioning status of the cluster. Possible values include:
      "Succeeded", "Failed", "Canceled", "Creating", "Updating", "Deleting".
-    :vartype provisioning_state: str or ~azure.mgmt.redisenterprise.models.ProvisioningState
+    :vartype provisioning_state: str or
+     ~redis_enterprise_management_client.models.ProvisioningState
     :ivar resource_state: Current resource status of the cluster. Possible values include:
      "Running", "Creating", "CreateFailed", "Updating", "UpdateFailed", "Deleting", "DeleteFailed",
      "Enabling", "EnableFailed", "Disabling", "DisableFailed", "Disabled".
-    :vartype resource_state: str or ~azure.mgmt.redisenterprise.models.ResourceState
+    :vartype resource_state: str or ~redis_enterprise_management_client.models.ResourceState
     :ivar redis_version: Version of redis the cluster supports, e.g. '6'.
     :vartype redis_version: str
     :ivar private_endpoint_connections: List of private endpoint connections associated with the
      specified RedisEnterprise cluster.
     :vartype private_endpoint_connections:
-     list[~azure.mgmt.redisenterprise.models.PrivateEndpointConnection]
+     list[~redis_enterprise_management_client.models.PrivateEndpointConnection]
     """
 
     _validation = {
@@ -228,7 +229,7 @@ class ClusterList(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :param value: List of clusters.
-    :type value: list[~azure.mgmt.redisenterprise.models.Cluster]
+    :type value: list[~redis_enterprise_management_client.models.Cluster]
     :ivar next_link: The URI to fetch the next page of results.
     :vartype next_link: str
     """
@@ -259,27 +260,28 @@ class ClusterUpdate(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :param sku: The SKU to create, which affects price, performance, and features.
-    :type sku: ~azure.mgmt.redisenterprise.models.Sku
+    :type sku: ~redis_enterprise_management_client.models.Sku
     :param tags: A set of tags. Resource tags.
     :type tags: dict[str, str]
     :param minimum_tls_version: The minimum TLS version for the cluster to support, e.g. '1.2'.
      Possible values include: "1.0", "1.1", "1.2".
-    :type minimum_tls_version: str or ~azure.mgmt.redisenterprise.models.TlsVersion
+    :type minimum_tls_version: str or ~redis_enterprise_management_client.models.TlsVersion
     :ivar host_name: DNS name of the cluster endpoint.
     :vartype host_name: str
     :ivar provisioning_state: Current provisioning status of the cluster. Possible values include:
      "Succeeded", "Failed", "Canceled", "Creating", "Updating", "Deleting".
-    :vartype provisioning_state: str or ~azure.mgmt.redisenterprise.models.ProvisioningState
+    :vartype provisioning_state: str or
+     ~redis_enterprise_management_client.models.ProvisioningState
     :ivar resource_state: Current resource status of the cluster. Possible values include:
      "Running", "Creating", "CreateFailed", "Updating", "UpdateFailed", "Deleting", "DeleteFailed",
      "Enabling", "EnableFailed", "Disabling", "DisableFailed", "Disabled".
-    :vartype resource_state: str or ~azure.mgmt.redisenterprise.models.ResourceState
+    :vartype resource_state: str or ~redis_enterprise_management_client.models.ResourceState
     :ivar redis_version: Version of redis the cluster supports, e.g. '6'.
     :vartype redis_version: str
     :ivar private_endpoint_connections: List of private endpoint connections associated with the
      specified RedisEnterprise cluster.
     :vartype private_endpoint_connections:
-     list[~azure.mgmt.redisenterprise.models.PrivateEndpointConnection]
+     list[~redis_enterprise_management_client.models.PrivateEndpointConnection]
     """
 
     _validation = {
@@ -336,29 +338,30 @@ class Database(Resource):
     :param client_protocol: Specifies whether redis clients can connect using TLS-encrypted or
      plaintext redis protocols. Default is TLS-encrypted. Possible values include: "Encrypted",
      "Plaintext".
-    :type client_protocol: str or ~azure.mgmt.redisenterprise.models.Protocol
+    :type client_protocol: str or ~redis_enterprise_management_client.models.Protocol
     :param port: TCP port of the database endpoint. Specified at create time. Defaults to an
      available port.
     :type port: int
     :ivar provisioning_state: Current provisioning status of the database. Possible values include:
      "Succeeded", "Failed", "Canceled", "Creating", "Updating", "Deleting".
-    :vartype provisioning_state: str or ~azure.mgmt.redisenterprise.models.ProvisioningState
+    :vartype provisioning_state: str or
+     ~redis_enterprise_management_client.models.ProvisioningState
     :ivar resource_state: Current resource status of the database. Possible values include:
      "Running", "Creating", "CreateFailed", "Updating", "UpdateFailed", "Deleting", "DeleteFailed",
      "Enabling", "EnableFailed", "Disabling", "DisableFailed", "Disabled".
-    :vartype resource_state: str or ~azure.mgmt.redisenterprise.models.ResourceState
+    :vartype resource_state: str or ~redis_enterprise_management_client.models.ResourceState
     :param clustering_policy: Clustering policy - default is OSSCluster. Specified at create time.
      Possible values include: "EnterpriseCluster", "OSSCluster".
-    :type clustering_policy: str or ~azure.mgmt.redisenterprise.models.ClusteringPolicy
+    :type clustering_policy: str or ~redis_enterprise_management_client.models.ClusteringPolicy
     :param eviction_policy: Redis eviction policy - default is VolatileLRU. Possible values
      include: "AllKeysLFU", "AllKeysLRU", "AllKeysRandom", "VolatileLRU", "VolatileLFU",
      "VolatileTTL", "VolatileRandom", "NoEviction".
-    :type eviction_policy: str or ~azure.mgmt.redisenterprise.models.EvictionPolicy
+    :type eviction_policy: str or ~redis_enterprise_management_client.models.EvictionPolicy
     :param persistence: Persistence settings.
-    :type persistence: ~azure.mgmt.redisenterprise.models.Persistence
+    :type persistence: ~redis_enterprise_management_client.models.Persistence
     :param modules: Optional set of redis modules to enable in this database - modules can only be
      added at creation time.
-    :type modules: list[~azure.mgmt.redisenterprise.models.Module]
+    :type modules: list[~redis_enterprise_management_client.models.Module]
     """
 
     _validation = {
@@ -411,7 +414,7 @@ class DatabaseList(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :param value: List of databases.
-    :type value: list[~azure.mgmt.redisenterprise.models.Database]
+    :type value: list[~redis_enterprise_management_client.models.Database]
     :ivar next_link: The URI to fetch the next page of results.
     :vartype next_link: str
     """
@@ -444,29 +447,30 @@ class DatabaseUpdate(msrest.serialization.Model):
     :param client_protocol: Specifies whether redis clients can connect using TLS-encrypted or
      plaintext redis protocols. Default is TLS-encrypted. Possible values include: "Encrypted",
      "Plaintext".
-    :type client_protocol: str or ~azure.mgmt.redisenterprise.models.Protocol
+    :type client_protocol: str or ~redis_enterprise_management_client.models.Protocol
     :param port: TCP port of the database endpoint. Specified at create time. Defaults to an
      available port.
     :type port: int
     :ivar provisioning_state: Current provisioning status of the database. Possible values include:
      "Succeeded", "Failed", "Canceled", "Creating", "Updating", "Deleting".
-    :vartype provisioning_state: str or ~azure.mgmt.redisenterprise.models.ProvisioningState
+    :vartype provisioning_state: str or
+     ~redis_enterprise_management_client.models.ProvisioningState
     :ivar resource_state: Current resource status of the database. Possible values include:
      "Running", "Creating", "CreateFailed", "Updating", "UpdateFailed", "Deleting", "DeleteFailed",
      "Enabling", "EnableFailed", "Disabling", "DisableFailed", "Disabled".
-    :vartype resource_state: str or ~azure.mgmt.redisenterprise.models.ResourceState
+    :vartype resource_state: str or ~redis_enterprise_management_client.models.ResourceState
     :param clustering_policy: Clustering policy - default is OSSCluster. Specified at create time.
      Possible values include: "EnterpriseCluster", "OSSCluster".
-    :type clustering_policy: str or ~azure.mgmt.redisenterprise.models.ClusteringPolicy
+    :type clustering_policy: str or ~redis_enterprise_management_client.models.ClusteringPolicy
     :param eviction_policy: Redis eviction policy - default is VolatileLRU. Possible values
      include: "AllKeysLFU", "AllKeysLRU", "AllKeysRandom", "VolatileLRU", "VolatileLFU",
      "VolatileTTL", "VolatileRandom", "NoEviction".
-    :type eviction_policy: str or ~azure.mgmt.redisenterprise.models.EvictionPolicy
+    :type eviction_policy: str or ~redis_enterprise_management_client.models.EvictionPolicy
     :param persistence: Persistence settings.
-    :type persistence: ~azure.mgmt.redisenterprise.models.Persistence
+    :type persistence: ~redis_enterprise_management_client.models.Persistence
     :param modules: Optional set of redis modules to enable in this database - modules can only be
      added at creation time.
-    :type modules: list[~azure.mgmt.redisenterprise.models.Module]
+    :type modules: list[~redis_enterprise_management_client.models.Module]
     """
 
     _validation = {
@@ -549,9 +553,9 @@ class ErrorDetail(msrest.serialization.Model):
     :ivar target: The error target.
     :vartype target: str
     :ivar details: The error details.
-    :vartype details: list[~azure.mgmt.redisenterprise.models.ErrorDetail]
+    :vartype details: list[~redis_enterprise_management_client.models.ErrorDetail]
     :ivar additional_info: The error additional info.
-    :vartype additional_info: list[~azure.mgmt.redisenterprise.models.ErrorAdditionalInfo]
+    :vartype additional_info: list[~redis_enterprise_management_client.models.ErrorAdditionalInfo]
     """
 
     _validation = {
@@ -586,7 +590,7 @@ class ErrorResponse(msrest.serialization.Model):
     """Common error response for all Azure Resource Manager APIs to return error details for failed operations. (This also follows the OData error response format.).
 
     :param error: The error object.
-    :type error: ~azure.mgmt.redisenterprise.models.ErrorDetail
+    :type error: ~redis_enterprise_management_client.models.ErrorDetail
     """
 
     _attribute_map = {
@@ -635,26 +639,26 @@ class ImportClusterParameters(msrest.serialization.Model):
 
     All required parameters must be populated in order to send to Azure.
 
-    :param sas_uri: Required. SAS URI for the target blob to import from.
-    :type sas_uri: str
+    :param sas_uris: Required. SAS URIs for the target blobs to import from.
+    :type sas_uris: list[str]
     """
 
     _validation = {
-        'sas_uri': {'required': True},
+        'sas_uris': {'required': True},
     }
 
     _attribute_map = {
-        'sas_uri': {'key': 'sasUri', 'type': 'str'},
+        'sas_uris': {'key': 'sasUris', 'type': '[str]'},
     }
 
     def __init__(
         self,
         *,
-        sas_uri: str,
+        sas_uris: List[str],
         **kwargs
     ):
         super(ImportClusterParameters, self).__init__(**kwargs)
-        self.sas_uri = sas_uri
+        self.sas_uris = sas_uris
 
 
 class Module(msrest.serialization.Model):
@@ -709,14 +713,14 @@ class Operation(msrest.serialization.Model):
      plane operations and "false" for ARM/control-plane operations.
     :vartype is_data_action: bool
     :param display: Localized display information for this particular operation.
-    :type display: ~azure.mgmt.redisenterprise.models.OperationDisplay
+    :type display: ~redis_enterprise_management_client.models.OperationDisplay
     :ivar origin: The intended executor of the operation; as in Resource Based Access Control
      (RBAC) and audit logs UX. Default value is "user,system". Possible values include: "user",
      "system", "user,system".
-    :vartype origin: str or ~azure.mgmt.redisenterprise.models.Origin
+    :vartype origin: str or ~redis_enterprise_management_client.models.Origin
     :ivar action_type: Enum. Indicates the action type. "Internal" refers to actions that are for
      internal only APIs. Possible values include: "Internal".
-    :vartype action_type: str or ~azure.mgmt.redisenterprise.models.ActionType
+    :vartype action_type: str or ~redis_enterprise_management_client.models.ActionType
     """
 
     _validation = {
@@ -798,7 +802,7 @@ class OperationListResult(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar value: List of operations supported by the resource provider.
-    :vartype value: list[~azure.mgmt.redisenterprise.models.Operation]
+    :vartype value: list[~redis_enterprise_management_client.models.Operation]
     :ivar next_link: URL to get the next set of operation list results (if there are any).
     :vartype next_link: str
     """
@@ -836,7 +840,7 @@ class OperationStatus(msrest.serialization.Model):
     :param status: The current status of the operation.
     :type status: str
     :param error: Error response describing why the operation failed.
-    :type error: ~azure.mgmt.redisenterprise.models.ErrorResponse
+    :type error: ~redis_enterprise_management_client.models.ErrorResponse
     """
 
     _attribute_map = {
@@ -877,10 +881,10 @@ class Persistence(msrest.serialization.Model):
     :type rdb_enabled: bool
     :param aof_frequency: Sets the frequency at which data is written to disk. Possible values
      include: "1s", "always".
-    :type aof_frequency: str or ~azure.mgmt.redisenterprise.models.AofFrequency
+    :type aof_frequency: str or ~redis_enterprise_management_client.models.AofFrequency
     :param rdb_frequency: Sets the frequency at which a snapshot of the database is created.
      Possible values include: "1h", "6h", "12h".
-    :type rdb_frequency: str or ~azure.mgmt.redisenterprise.models.RdbFrequency
+    :type rdb_frequency: str or ~redis_enterprise_management_client.models.RdbFrequency
     """
 
     _attribute_map = {
@@ -945,15 +949,15 @@ class PrivateEndpointConnection(Resource):
      "Microsoft.Storage/storageAccounts".
     :vartype type: str
     :param private_endpoint: The resource of private end point.
-    :type private_endpoint: ~azure.mgmt.redisenterprise.models.PrivateEndpoint
+    :type private_endpoint: ~redis_enterprise_management_client.models.PrivateEndpoint
     :param private_link_service_connection_state: A collection of information about the state of
      the connection between service consumer and provider.
     :type private_link_service_connection_state:
-     ~azure.mgmt.redisenterprise.models.PrivateLinkServiceConnectionState
+     ~redis_enterprise_management_client.models.PrivateLinkServiceConnectionState
     :ivar provisioning_state: The provisioning state of the private endpoint connection resource.
      Possible values include: "Succeeded", "Creating", "Deleting", "Failed".
     :vartype provisioning_state: str or
-     ~azure.mgmt.redisenterprise.models.PrivateEndpointConnectionProvisioningState
+     ~redis_enterprise_management_client.models.PrivateEndpointConnectionProvisioningState
     """
 
     _validation = {
@@ -989,7 +993,7 @@ class PrivateEndpointConnectionListResult(msrest.serialization.Model):
     """List of private endpoint connection associated with the specified storage account.
 
     :param value: Array of private endpoint connections.
-    :type value: list[~azure.mgmt.redisenterprise.models.PrivateEndpointConnection]
+    :type value: list[~redis_enterprise_management_client.models.PrivateEndpointConnection]
     """
 
     _attribute_map = {
@@ -1060,7 +1064,7 @@ class PrivateLinkResourceListResult(msrest.serialization.Model):
     """A list of private link resources.
 
     :param value: Array of private link resources.
-    :type value: list[~azure.mgmt.redisenterprise.models.PrivateLinkResource]
+    :type value: list[~redis_enterprise_management_client.models.PrivateLinkResource]
     """
 
     _attribute_map = {
@@ -1082,7 +1086,8 @@ class PrivateLinkServiceConnectionState(msrest.serialization.Model):
 
     :param status: Indicates whether the connection has been Approved/Rejected/Removed by the owner
      of the service. Possible values include: "Pending", "Approved", "Rejected".
-    :type status: str or ~azure.mgmt.redisenterprise.models.PrivateEndpointServiceConnectionStatus
+    :type status: str or
+     ~redis_enterprise_management_client.models.PrivateEndpointServiceConnectionStatus
     :param description: The reason for approval/rejection of the connection.
     :type description: str
     :param actions_required: A message indicating if changes on the service provider require any
@@ -1151,7 +1156,7 @@ class RegenerateKeyParameters(msrest.serialization.Model):
 
     :param key_type: Required. Which access key to regenerate. Possible values include: "Primary",
      "Secondary".
-    :type key_type: str or ~azure.mgmt.redisenterprise.models.AccessKeyType
+    :type key_type: str or ~redis_enterprise_management_client.models.AccessKeyType
     """
 
     _validation = {
@@ -1181,7 +1186,7 @@ class Sku(msrest.serialization.Model):
      (Enterprise_E10, EnterpriseFlash_F300 etc.). Possible values include: "Enterprise_E10",
      "Enterprise_E20", "Enterprise_E50", "Enterprise_E100", "EnterpriseFlash_F300",
      "EnterpriseFlash_F700", "EnterpriseFlash_F1500".
-    :type name: str or ~azure.mgmt.redisenterprise.models.SkuName
+    :type name: str or ~redis_enterprise_management_client.models.SkuName
     :param capacity: The size of the RedisEnterprise cluster. Defaults to 2 or 3 depending on SKU.
      Valid values are (2, 4, 6, ...) for Enterprise SKUs and (3, 9, 15, ...) for Flash SKUs.
     :type capacity: int

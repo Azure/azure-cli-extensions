@@ -32,7 +32,7 @@ class DatabasesOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.redisenterprise.models
+    :type models: ~redis_enterprise_management_client.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -62,7 +62,7 @@ class DatabasesOperations(object):
         :type cluster_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either DatabaseList or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.redisenterprise.models.DatabaseList]
+        :rtype: ~azure.core.paging.ItemPaged[~redis_enterprise_management_client.models.DatabaseList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DatabaseList"]
@@ -70,7 +70,7 @@ class DatabasesOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-03-01"
+        api_version = "2021-08-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -83,7 +83,7 @@ class DatabasesOperations(object):
                 url = self.list_by_cluster.metadata['url']  # type: ignore
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
-                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
                     'clusterName': self._serialize.url("cluster_name", cluster_name, 'str'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
@@ -137,14 +137,14 @@ class DatabasesOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-03-01"
+        api_version = "2021-08-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
         # Construct URL
         url = self._create_initial.metadata['url']  # type: ignore
         path_format_arguments = {
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'clusterName': self._serialize.url("cluster_name", cluster_name, 'str'),
             'databaseName': self._serialize.url("database_name", database_name, 'str'),
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
@@ -202,7 +202,7 @@ class DatabasesOperations(object):
         :param database_name: The name of the database.
         :type database_name: str
         :param parameters: Parameters supplied to the create or update database operation.
-        :type parameters: ~azure.mgmt.redisenterprise.models.Database
+        :type parameters: ~redis_enterprise_management_client.models.Database
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
@@ -210,7 +210,7 @@ class DatabasesOperations(object):
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of LROPoller that returns either Database or the result of cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.redisenterprise.models.Database]
+        :rtype: ~azure.core.polling.LROPoller[~redis_enterprise_management_client.models.Database]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
@@ -241,7 +241,7 @@ class DatabasesOperations(object):
             return deserialized
 
         path_format_arguments = {
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'clusterName': self._serialize.url("cluster_name", cluster_name, 'str'),
             'databaseName': self._serialize.url("database_name", database_name, 'str'),
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
@@ -275,14 +275,14 @@ class DatabasesOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-03-01"
+        api_version = "2021-08-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
         # Construct URL
         url = self._update_initial.metadata['url']  # type: ignore
         path_format_arguments = {
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'clusterName': self._serialize.url("cluster_name", cluster_name, 'str'),
             'databaseName': self._serialize.url("database_name", database_name, 'str'),
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
@@ -338,7 +338,7 @@ class DatabasesOperations(object):
         :param database_name: The name of the database.
         :type database_name: str
         :param parameters: Parameters supplied to the create or update database operation.
-        :type parameters: ~azure.mgmt.redisenterprise.models.DatabaseUpdate
+        :type parameters: ~redis_enterprise_management_client.models.DatabaseUpdate
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
@@ -346,7 +346,7 @@ class DatabasesOperations(object):
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of LROPoller that returns either Database or the result of cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.redisenterprise.models.Database]
+        :rtype: ~azure.core.polling.LROPoller[~redis_enterprise_management_client.models.Database]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
@@ -377,7 +377,7 @@ class DatabasesOperations(object):
             return deserialized
 
         path_format_arguments = {
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'clusterName': self._serialize.url("cluster_name", cluster_name, 'str'),
             'databaseName': self._serialize.url("database_name", database_name, 'str'),
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
@@ -415,7 +415,7 @@ class DatabasesOperations(object):
         :type database_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: Database, or the result of cls(response)
-        :rtype: ~azure.mgmt.redisenterprise.models.Database
+        :rtype: ~redis_enterprise_management_client.models.Database
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.Database"]
@@ -423,13 +423,13 @@ class DatabasesOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-03-01"
+        api_version = "2021-08-01"
         accept = "application/json"
 
         # Construct URL
         url = self.get.metadata['url']  # type: ignore
         path_format_arguments = {
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'clusterName': self._serialize.url("cluster_name", cluster_name, 'str'),
             'databaseName': self._serialize.url("database_name", database_name, 'str'),
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
@@ -474,13 +474,13 @@ class DatabasesOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-03-01"
+        api_version = "2021-08-01"
         accept = "application/json"
 
         # Construct URL
         url = self._delete_initial.metadata['url']  # type: ignore
         path_format_arguments = {
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'clusterName': self._serialize.url("cluster_name", cluster_name, 'str'),
             'databaseName': self._serialize.url("database_name", database_name, 'str'),
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
@@ -559,7 +559,7 @@ class DatabasesOperations(object):
                 return cls(pipeline_response, None, {})
 
         path_format_arguments = {
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'clusterName': self._serialize.url("cluster_name", cluster_name, 'str'),
             'databaseName': self._serialize.url("database_name", database_name, 'str'),
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
@@ -597,7 +597,7 @@ class DatabasesOperations(object):
         :type database_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: AccessKeys, or the result of cls(response)
-        :rtype: ~azure.mgmt.redisenterprise.models.AccessKeys
+        :rtype: ~redis_enterprise_management_client.models.AccessKeys
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.AccessKeys"]
@@ -605,13 +605,13 @@ class DatabasesOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-03-01"
+        api_version = "2021-08-01"
         accept = "application/json"
 
         # Construct URL
         url = self.list_keys.metadata['url']  # type: ignore
         path_format_arguments = {
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'clusterName': self._serialize.url("cluster_name", cluster_name, 'str'),
             'databaseName': self._serialize.url("database_name", database_name, 'str'),
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
@@ -657,14 +657,14 @@ class DatabasesOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-03-01"
+        api_version = "2021-08-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
         # Construct URL
         url = self._regenerate_key_initial.metadata['url']  # type: ignore
         path_format_arguments = {
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'clusterName': self._serialize.url("cluster_name", cluster_name, 'str'),
             'databaseName': self._serialize.url("database_name", database_name, 'str'),
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
@@ -720,7 +720,7 @@ class DatabasesOperations(object):
         :param database_name: The name of the database.
         :type database_name: str
         :param parameters: Specifies which key to regenerate.
-        :type parameters: ~azure.mgmt.redisenterprise.models.RegenerateKeyParameters
+        :type parameters: ~redis_enterprise_management_client.models.RegenerateKeyParameters
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
@@ -728,7 +728,7 @@ class DatabasesOperations(object):
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of LROPoller that returns either AccessKeys or the result of cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.redisenterprise.models.AccessKeys]
+        :rtype: ~azure.core.polling.LROPoller[~redis_enterprise_management_client.models.AccessKeys]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
@@ -759,7 +759,7 @@ class DatabasesOperations(object):
             return deserialized
 
         path_format_arguments = {
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'clusterName': self._serialize.url("cluster_name", cluster_name, 'str'),
             'databaseName': self._serialize.url("database_name", database_name, 'str'),
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
@@ -793,14 +793,14 @@ class DatabasesOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-03-01"
+        api_version = "2021-08-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
         # Construct URL
         url = self._import_method_initial.metadata['url']  # type: ignore
         path_format_arguments = {
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'clusterName': self._serialize.url("cluster_name", cluster_name, 'str'),
             'databaseName': self._serialize.url("database_name", database_name, 'str'),
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
@@ -842,7 +842,7 @@ class DatabasesOperations(object):
         **kwargs  # type: Any
     ):
         # type: (...) -> LROPoller[None]
-        """Imports a database file to target database.
+        """Imports database files to target database.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
@@ -851,7 +851,7 @@ class DatabasesOperations(object):
         :param database_name: The name of the database.
         :type database_name: str
         :param parameters: Storage information for importing into the cluster.
-        :type parameters: ~azure.mgmt.redisenterprise.models.ImportClusterParameters
+        :type parameters: ~redis_enterprise_management_client.models.ImportClusterParameters
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
@@ -887,7 +887,7 @@ class DatabasesOperations(object):
                 return cls(pipeline_response, None, {})
 
         path_format_arguments = {
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'clusterName': self._serialize.url("cluster_name", cluster_name, 'str'),
             'databaseName': self._serialize.url("database_name", database_name, 'str'),
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
@@ -921,14 +921,14 @@ class DatabasesOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-03-01"
+        api_version = "2021-08-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
         # Construct URL
         url = self._export_initial.metadata['url']  # type: ignore
         path_format_arguments = {
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'clusterName': self._serialize.url("cluster_name", cluster_name, 'str'),
             'databaseName': self._serialize.url("database_name", database_name, 'str'),
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
@@ -979,7 +979,7 @@ class DatabasesOperations(object):
         :param database_name: The name of the database.
         :type database_name: str
         :param parameters: Storage information for exporting into the cluster.
-        :type parameters: ~azure.mgmt.redisenterprise.models.ExportClusterParameters
+        :type parameters: ~redis_enterprise_management_client.models.ExportClusterParameters
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
@@ -1015,7 +1015,7 @@ class DatabasesOperations(object):
                 return cls(pipeline_response, None, {})
 
         path_format_arguments = {
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'clusterName': self._serialize.url("cluster_name", cluster_name, 'str'),
             'databaseName': self._serialize.url("database_name", database_name, 'str'),
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),

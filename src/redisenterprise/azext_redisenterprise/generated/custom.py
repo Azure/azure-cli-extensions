@@ -49,7 +49,6 @@ def redisenterprise_create(client,
     parameters['sku'] = {}
     parameters['sku']['name'] = sku
     parameters['sku']['capacity'] = capacity
-    parameters['zones'] = zones
     parameters['minimum_tls_version'] = minimum_tls_version
     return sdk_no_wait(no_wait,
                        client.begin_create,
@@ -70,7 +69,6 @@ def redisenterprise_update(client,
     parameters['sku'] = {}
     parameters['sku']['name'] = sku
     parameters['sku']['capacity'] = capacity
-    parameters['tags'] = tags
     parameters['minimum_tls_version'] = minimum_tls_version
     return sdk_no_wait(no_wait,
                        client.begin_update,
@@ -177,10 +175,10 @@ def redisenterprise_database_export(client,
 def redisenterprise_database_import(client,
                                     resource_group_name,
                                     cluster_name,
-                                    sas_uri,
+                                    sas_uris,
                                     no_wait=False):
     parameters = {}
-    parameters['sas_uri'] = sas_uri
+    parameters['sas_uris'] = sas_uris
     return sdk_no_wait(no_wait,
                        client.begin_import_method,
                        resource_group_name=resource_group_name,

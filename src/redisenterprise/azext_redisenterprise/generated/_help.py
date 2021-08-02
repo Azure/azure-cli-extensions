@@ -193,12 +193,13 @@ indow.net/urlToBlobContainer?sasKeyParameters" --resource-group "rg1"
 
 helps['redisenterprise database import'] = """
     type: command
-    short-summary: "Imports a database file to target database."
+    short-summary: "Imports database files to target database."
     examples:
       - name: RedisEnterpriseDatabasesImport
         text: |-
-               az redisenterprise database import --cluster-name "cache1" --sas-uri "https://contosostorage.blob.core.w\
-indow.net/urltoBlobFile?sasKeyParameters" --resource-group "rg1"
+               az redisenterprise database import --cluster-name "cache1" --sas-uris "https://contosostorage.blob.core.\
+window.net/urltoBlobFile1?sasKeyParameters" "https://contosostorage.blob.core.window.net/urltoBlobFile2?sasKeyParameter\
+s" --resource-group "rg1"
 """
 
 helps['redisenterprise database list-keys'] = """

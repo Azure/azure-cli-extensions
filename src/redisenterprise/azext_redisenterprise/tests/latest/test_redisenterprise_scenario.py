@@ -67,6 +67,7 @@ class Redisenterprisescenario1Test(ScenarioTest):
     def __init__(self, *args, **kwargs):
         super(Redisenterprisescenario1Test, self).__init__(*args, **kwargs)
 
+
     @ResourceGroupPreparer(name_prefix='clitestredisenterprise_rg1'[:7], key='rg', parameter_name='rg')
     def test_redisenterprise_scenario1(self, rg):
         call_scenario1(self, rg)
@@ -111,8 +112,10 @@ class Redisenterprisescenario2Test(ScenarioTest):
     def __init__(self, *args, **kwargs):
         super(Redisenterprisescenario2Test, self).__init__(*args, **kwargs)
 
+
     @ResourceGroupPreparer(name_prefix='clitestredisenterprise_rg1'[:7], key='rg', parameter_name='rg')
     def test_redisenterprise_scenario2(self, rg):
         call_scenario2(self, rg)
         calc_coverage(__file__)
         raise_if()
+

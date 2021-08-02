@@ -136,7 +136,7 @@ def load_arguments(self, _):
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', options_list=['--cluster-name', '--name', '-n'], type=str, help='The name of the '
                    'RedisEnterprise cluster.', id_part='name')
-        c.argument('sas_uri', type=str, help='SAS URI for the target blob to import from')
+        c.argument('sas_uris', nargs='+', help='SAS URIs for the target blobs to import from')
 
     with self.argument_context('redisenterprise database list-keys') as c:
         c.argument('resource_group_name', resource_group_name_type)

@@ -31,17 +31,17 @@ class RedisEnterpriseManagementClient(object):
     """REST API for managing Redis Enterprise resources in Azure.
 
     :ivar operations: Operations operations
-    :vartype operations: azure.mgmt.redisenterprise.operations.Operations
+    :vartype operations: redis_enterprise_management_client.operations.Operations
     :ivar operations_status: OperationsStatusOperations operations
-    :vartype operations_status: azure.mgmt.redisenterprise.operations.OperationsStatusOperations
+    :vartype operations_status: redis_enterprise_management_client.operations.OperationsStatusOperations
     :ivar redis_enterprise: RedisEnterpriseOperations operations
-    :vartype redis_enterprise: azure.mgmt.redisenterprise.operations.RedisEnterpriseOperations
+    :vartype redis_enterprise: redis_enterprise_management_client.operations.RedisEnterpriseOperations
     :ivar databases: DatabasesOperations operations
-    :vartype databases: azure.mgmt.redisenterprise.operations.DatabasesOperations
+    :vartype databases: redis_enterprise_management_client.operations.DatabasesOperations
     :ivar private_endpoint_connections: PrivateEndpointConnectionsOperations operations
-    :vartype private_endpoint_connections: azure.mgmt.redisenterprise.operations.PrivateEndpointConnectionsOperations
+    :vartype private_endpoint_connections: redis_enterprise_management_client.operations.PrivateEndpointConnectionsOperations
     :ivar private_link_resources: PrivateLinkResourcesOperations operations
-    :vartype private_link_resources: azure.mgmt.redisenterprise.operations.PrivateLinkResourcesOperations
+    :vartype private_link_resources: redis_enterprise_management_client.operations.PrivateLinkResourcesOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials.TokenCredential
     :param subscription_id: The ID of the target subscription.
@@ -65,7 +65,6 @@ class RedisEnterpriseManagementClient(object):
 
         client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
         self._serialize = Serializer(client_models)
-        self._serialize.client_side_validation = False
         self._deserialize = Deserializer(client_models)
 
         self.operations = Operations(

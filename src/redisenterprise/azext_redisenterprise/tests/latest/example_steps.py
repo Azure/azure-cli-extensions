@@ -7,7 +7,6 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
-# pylint: disable=unused-argument
 
 
 from .. import try_manual
@@ -87,7 +86,8 @@ def step_database_import(test, rg, checks=None):
         checks = []
     test.cmd('az redisenterprise database import '
              '--cluster-name "cache1" '
-             '--sas-uri "https://contosostorage.blob.core.window.net/urltoBlobFile?sasKeyParameters" '
+             '--sas-uris "https://contosostorage.blob.core.window.net/urltoBlobFile1?sasKeyParameters" '
+             '"https://contosostorage.blob.core.window.net/urltoBlobFile2?sasKeyParameters" '
              '--resource-group "{rg}"',
              checks=checks)
 
@@ -209,3 +209,4 @@ def step_delete(test, rg, checks=None):
              '--cluster-name "cache1" '
              '--resource-group "{rg}"',
              checks=checks)
+
