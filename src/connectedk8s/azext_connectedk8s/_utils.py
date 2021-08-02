@@ -20,7 +20,8 @@ from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.util import send_raw_request
 from azure.cli.core import telemetry
 from azure.core.exceptions import ResourceNotFoundError
-from msrest.exceptions import AuthenticationError, HttpOperationError, TokenExpiredError, ValidationError
+from msrest.exceptions import AuthenticationError, HttpOperationError, TokenExpiredError
+from msrest.exceptions import ValidationError as MSRestValidationError
 from msrestazure.azure_exceptions import CloudError
 from kubernetes.client.rest import ApiException
 from azext_connectedk8s._client_factory import _resource_client_factory
@@ -183,7 +184,7 @@ def arm_exception_handler(ex, fault_type, summary, return_if_not_found=False):
             raise AzureInternalError("Http operation error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
         raise AzureResponseError("Http operation error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
 
-    if isinstance(ex, ValidationError):
+    if isinstance(ex, MSRestValidationError):
         telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
         raise AzureResponseError("Validation error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
 
