@@ -41,15 +41,17 @@ def validate_communication_create(cmd, namespace):
 
 def _validate_communication_name(cmd, ticket_name, communication_name):
     client = cf_communications(cmd.cli_ctx)
-    rsp = client.check_name_availability(support_ticket_name=ticket_name, name=communication_name,
-                                         type="Microsoft.Support/communications")
+    check_name_availability_input = {"name": communication_name, "type": "Microsoft.Support/communications"}
+    rsp = client.check_name_availability(support_ticket_name=ticket_name,
+                                         check_name_availability_input=check_name_availability_input)
     if not rsp.name_available:
         raise CLIError(rsp.message)
 
 
 def _validate_ticket_name(cmd, ticket_name):
     client = cf_support_tickets(cmd.cli_ctx)
-    rsp = client.check_name_availability(name=ticket_name, type="Microsoft.Support/supportTickets")
+    check_name_availability_input = {"name": ticket_name, "type": "Microsoft.Support/supportTickets"}
+    rsp = client.check_name_availability(check_name_availability_input=check_name_availability_input)
     if not rsp.name_available:
         raise CLIError(rsp.message)
 
