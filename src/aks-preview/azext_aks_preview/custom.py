@@ -983,11 +983,12 @@ class PreviewAKSCreateDecorator(AKSCreateDecorator):
         )
 
     def set_up_agent_pool_profiles(self):
+        # variable `node_zones` has been renamed to `zone` in acs
+        self.param.zones = self.param.node_zones
         super().set_up_agent_pool_profiles()
         agent_pool_profile = self.mc.agent_pool_profiles[0]
         agent_pool_profile.os_sku = self.param.os_sku
         agent_pool_profile.pod_subnet_id = self.param.pod_subnet_id
-        agent_pool_profile.availability_zones = self.param.node_zones
         agent_pool_profile.enable_fips = self.param.enable_fips_image
 
         if self.param.kubelet_config:
@@ -1097,7 +1098,10 @@ class PreviewAKSCreateDecorator(AKSCreateDecorator):
         self.mc.enable_pod_security_policy = bool(self.param.enable_pod_security_policy)
         self.mc.disable_local_accounts = bool(self.param.disable_local_accounts)
         self.mc.node_resource_group = self.param.node_resource_group
-        self.mc.http_proxy_config =_get_http_proxy_config(self.param.http_proxy_config)
+        # the default value of variable `http_proxy_config` is None,
+        # and the path check provided by the `os` module only accepts string
+        if self.param.http_proxy_config:
+            self.mc.http_proxy_config =_get_http_proxy_config(self.param.http_proxy_config)
 
     def set_up_public_fqdn(self):
         if not self.param.enable_private_cluster and self.param.enable_public_fqdn:
@@ -1138,7 +1142,7 @@ class PreviewAKSCreateDecorator(AKSCreateDecorator):
             try:
                 if self.context.monitoring and self.param.enable_msi_auth_for_monitoring:
                     # Creating a DCR Association (for the monitoring addon) requires waiting for cluster creation to finish
-                    no_wait = False
+                    self.param.no_wait = False
 
                 created_cluster = _put_managed_cluster_ensuring_permission(
                     self.cmd,
@@ -1180,18 +1184,6 @@ class PreviewAKSCreateDecorator(AKSCreateDecorator):
                 else:
                     raise ex
         raise retry_exception
-
-
-def _aks_create(cmd, client, resource_type=CUSTOM_MGMT_AKS_PREVIEW, raw_parameters={}):
-    models = PreviewAKSCreateModels(cmd, resource_type)
-    preview_aks_create_decorator = PreviewAKSCreateDecorator(
-        cmd=cmd,
-        client=client,
-        models=models,
-        raw_parameters=raw_parameters,
-    )
-    preview_aks_create_decorator.set_up_preview_mc()
-    return preview_aks_create_decorator.create_cluster()
 
 
 def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,too-many-branches
@@ -1292,6 +1284,16 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                no_wait=False,
                assign_kubelet_identity=None,
                yes=False):
+    raw_parameters = locals()
+    models = PreviewAKSCreateModels(cmd, CUSTOM_MGMT_AKS_PREVIEW)
+    preview_aks_create_decorator = PreviewAKSCreateDecorator(
+        cmd=cmd,
+        client=client,
+        models=models,
+        raw_parameters=raw_parameters,
+    )
+    preview_aks_create_decorator.set_up_preview_mc()
+    return preview_aks_create_decorator.create_preview_cluster()
     if not no_ssh_key:
         try:
             if not ssh_key_value or not is_valid_ssh_rsa_public_key(ssh_key_value):
