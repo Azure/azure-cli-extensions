@@ -2,7 +2,7 @@ Release History
 ===============
 0.1.6
 -----
-* Add support for direct MSAL usage in newer azure cli (beta currently)
+* Add support for direct MSAL usage in newer Azure CLI (beta currently)
 * Add support for port option and ssh additional arguments option
 * Remove directory creation as part of ssh_config creation
 * Try .pub for public key if only private key is specified
