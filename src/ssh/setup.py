@@ -22,7 +22,7 @@ CLASSIFIERS = [
 ]
 
 DEPENDENCIES = [
-    'cryptography==2.8.0'
+    'cryptography'
 ]
 
 setup(
