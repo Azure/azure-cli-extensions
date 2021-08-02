@@ -28,17 +28,19 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
             'kubeconfig': "%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml')),
             'managed_cluster_name': managed_cluster_name
         })
-        self.cmd('aks create -g akkeshar-test2 -n {} -s Standard_B2s -l westeurope -c 1 --generate-ssh-keys'.format(managed_cluster_name))
-        self.cmd('aks get-credentials -g akkeshar-test2 -n {managed_cluster_name} -f {kubeconfig}')
-        os.environ['HELMCHART'] = _get_test_data_file('setupChart.tgz')
-        self.cmd('connectedk8s connect -g akkeshar-test2 -n {name} -l eastus2euap --tags foo=doo --kube-config {kubeconfig}', checks=[
+        self.cmd('aks create -g akkeshar -n {} -s Standard_B2s -l westeurope -c 1 --generate-ssh-keys'.format(managed_cluster_name))
+        self.cmd('aks get-credentials -g akkeshar -n {managed_cluster_name} -f {kubeconfig}')
+        self.cmd('connectedk8s connect -g akkeshar -n {name} -l eastus2euap --tags foo=doo --kube-config {kubeconfig}', checks=[
             self.check('tags.foo', 'doo'),
             self.check('name', '{name}')
         ])
-        self.cmd('connectedk8s show -g akkeshar-test2 -n {name}', checks=[
+        self.cmd('connectedk8s show -g akkeshar -n {name}', checks=[
             self.check('name', '{name}'),
-            self.check('resourceGroup', 'akkeshar-test2'),
+            self.check('resourceGroup', 'akkeshar'),
             self.check('tags.foo', 'doo')
         ])
-        self.cmd('connectedk8s delete -g akkeshar-test2 -n {name} --kube-config {kubeconfig} -y')
-        self.cmd('aks delete -g akkeshar-test2 -n {} -y'.format(managed_cluster_name))
+        self.cmd('connectedk8s delete -g akkeshar -n {name} --kube-config {kubeconfig} -y')
+        self.cmd('aks delete -g akkeshar -n {} -y'.format(managed_cluster_name))
+
+        # delete the kube config
+        os.remove("%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml')))
