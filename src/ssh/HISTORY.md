@@ -8,6 +8,7 @@ Release History
 * Try .pub for public key if only private key is specified
 * Add --hostname to --ip argument
 * Add fallback to private IP with warning
+* Add support for USGov and China clouds
 
 0.1.5
 -----

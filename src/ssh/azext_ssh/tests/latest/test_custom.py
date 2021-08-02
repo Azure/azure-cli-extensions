@@ -48,6 +48,9 @@ class SshCustomCommandTest(unittest.TestCase):
     def test_do_ssh_op(self, mock_write_cert, mock_ssh_creds, mock_get_mod_exp, mock_ip,
                        mock_check_files, mock_assert, mock_join, mock_principal):
         cmd = mock.Mock()
+        cmd.cli_ctx = mock.Mock()
+        cmd.cli_ctx.cloud = mock.Mock()
+        cmd.cli_ctx.cloud.name = "azurecloud"
         mock_op = mock.Mock()
         mock_check_files.return_value = "public", "private"
         mock_principal.return_value = ["username"]

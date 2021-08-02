@@ -51,7 +51,16 @@ def _do_ssh_op(cmd, resource_group, vm_name, ssh_ip, public_key_file, private_ke
 
 
 def _get_and_write_certificate(cmd, public_key_file, cert_file):
-    scopes = ["https://pas.windows.net/CheckMyAccess/Linux/.default"]
+    cloudtoscope = {
+        "azurecloud": "https://pas.windows.net/CheckMyAccess/Linux/.default",
+        "azurechinacloud": "https://pas.chinacloudapi.cn/CheckMyAccess/Linux",
+        "azureusgovernment": "https://pasff.usgovcloudapi.net/CheckMyAccess/Linux/.default"
+    }
+    scope = cloudtoscope.get(cmd.cli_ctx.cloud.name.lower(), None)
+    if not scope:
+        raise util.CLIError(f"Unsupported cloud {cmd.cli_ctx.cloud.name.lower()}")
+
+    scopes = [scope]
     data = _prepare_jwk_data(public_key_file)
     from azure.cli.core._profile import Profile
     profile = Profile(cli_ctx=cmd.cli_ctx)
