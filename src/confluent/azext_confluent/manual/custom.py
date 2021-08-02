@@ -29,7 +29,10 @@ def confluent_organization_create(cmd,
     from azure.cli.command_modules.role.custom import list_role_assignments
 
     token_info = Profile(cli_ctx=cmd.cli_ctx).get_raw_token()[0][2]
-    decode = jwt.decode(token_info['accessToken'], verify=False, algorithms=['RS256'])
+    # PyJWT < 2.0.0 is using `verify` to verify token
+    # PyJWT >= 2.0.0 has moved this paramter in options
+    # For compatibility, keep two options for now.
+    decode = jwt.decode(token_info['accessToken'], algorithms=['RS256'], verify=False, options={"verify_signature": False})
     body = {}
     body['user_detail'] = {}
     try:
@@ -42,8 +45,8 @@ def confluent_organization_create(cmd,
 
     # Check owner or contributor role of subscription
     user_object_id = decode['oid']
-    role_assignments = list_role_assignments(cmd, assignee=user_object_id, role='Owner') + \
-        list_role_assignments(cmd, assignee=user_object_id, role='Contributor')
+    role_assignments = list_role_assignments(cmd, assignee=user_object_id, role='Owner', include_inherited=True, include_groups=True) + \
+        list_role_assignments(cmd, assignee=user_object_id, role='Contributor', include_inherited=True, include_groups=True)
     if not role_assignments:
         raise UnauthorizedError('You must have Owner or Contributor role of the subscription to create an organization.')
 
@@ -113,7 +116,10 @@ def confluent_offer_detail_show(cmd, publisher_id=None, offer_id=None):
                   'offerId': offer_id,
                   'publisherId': publisher_id,
                   'termUnits':[{
-                      'price': item['price'],
+                      'price': {
+                          'currencyCode': item['price']['currencyCode'],
+                          'listPrice': item['price']['listPrice']
+                      },
                       'termDescription': item['termDescription'],
                       'termUnits': item['termUnits']
                   } for a in plan['availabilities'] for item in a['terms']]

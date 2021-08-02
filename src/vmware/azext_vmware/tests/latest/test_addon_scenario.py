@@ -47,19 +47,19 @@ class VmwareAddonScenarioTest(ScenarioTest):
         count = len(self.cmd('vmware addon list -g {rg} -c {privatecloud}').get_output_in_json())
         self.assertEqual(count, 0, 'addon count expected to be 0')
 
-        # # Create a SRM addon
-        # self.cmd('az vmware addon srm create -g {rg} -c {privatecloud} --license-key "41915178-A8FF-4A4D-B683-6D735AF5E3F5"')
+        # Create a SRM addon
+        self.cmd('az vmware addon srm create -g {rg} -c {privatecloud} --license-key "41915-178A8-FF4A4-DB683-6D735"')
 
-        # # List all existing addon
-        # count = len(self.cmd('vmware addon list -g {rg} -c {privatecloud}').get_output_in_json())
-        # self.assertEqual(count, 1, 'addon count expected to be 1')
+        # List all existing addon
+        count = len(self.cmd('vmware addon list -g {rg} -c {privatecloud}').get_output_in_json())
+        self.assertEqual(count, 1, 'addon count expected to be 1')
 
-        # # Show a SRM addon
-        # self.cmd('az vmware addon srm show -g {rg} -c {privatecloud}')
+        # Show a SRM addon
+        self.cmd('az vmware addon srm show -g {rg} -c {privatecloud}')
 
-        # # Delete a SRM addon
-        # self.cmd('az vmware addon srm delete -g {rg} -c {privatecloud}')
+        # Delete a SRM addon
+        self.cmd('az vmware addon srm delete -g {rg} -c {privatecloud}')
 
-        # # List all existing addon
-        # count = len(self.cmd('vmware addon list -g {rg} -c {privatecloud}').get_output_in_json())
-        # self.assertEqual(count, 0, 'addon count expected to be 0')
+        # List all existing addon
+        count = len(self.cmd('vmware addon list -g {rg} -c {privatecloud}').get_output_in_json())
+        self.assertEqual(count, 0, 'addon count expected to be 0')

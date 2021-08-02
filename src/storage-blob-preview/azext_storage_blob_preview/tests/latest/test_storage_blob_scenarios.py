@@ -11,6 +11,7 @@ from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, StorageAccou
                                JMESPathCheck, JMESPathCheckExists, NoneCheck, api_version_constraint)
 from knack.util import CLIError
 from azure.cli.core.profiles import ResourceType
+from azure_devtools.scenario_tests import AllowLargeResponse
 
 from ..storage_test_util import StorageScenarioMixin
 
@@ -39,6 +40,7 @@ class StorageBlobUploadTests(StorageScenarioMixin, ScenarioTest):
                          target_account_info, source_container, source_account,
                          source_account_info[1], snapshot, target_container)
 
+    @AllowLargeResponse()
     def test_storage_blob_no_credentials_scenario(self):
         source_file = self.create_temp_file(1)
         self.cmd('storage blob upload -c foo -n bar -f "' + source_file + '"', expect_failure=CLIError)

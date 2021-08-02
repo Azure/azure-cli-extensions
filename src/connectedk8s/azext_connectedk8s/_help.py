@@ -26,6 +26,8 @@ helps['connectedk8s connect'] = """
       text: az connectedk8s connect -g resourceGroupName -n connectedClusterName --proxy-https https://proxy-url --proxy-http http://proxy-url --proxy-skip-range excludedIP,excludedCIDR,exampleCIDRfollowed,10.0.0.0/24
     - name: Onboard a connected kubernetes cluster by specifying the https proxy, http proxy, no proxy  with cert settings.
       text: az connectedk8s connect -g resourceGroupName -n connectedClusterName --proxy-cert /path/to/crt --proxy-https https://proxy-url --proxy-http http://proxy-url --proxy-skip-range excludedIP,excludedCIDR,exampleCIDRfollowed,10.0.0.0/24
+    - name: Onboard a connected kubernetes cluster with custom onboarding timeout.
+      text: az connectedk8s connect -g resourceGroupName -n connectedClusterName --onboarding-timeout 600
 
 """
 
@@ -49,6 +51,8 @@ helps['connectedk8s upgrade'] = """
       text: az connectedk8s upgrade -g resourceGroupName -n connectedClusterName
     - name: Upgrade the agents to a specific version
       text: az connectedk8s upgrade -g resourceGroupName -n connectedClusterName --agent-version 0.2.62
+    - name: Upgrade the agents with custom upgrade timeout.
+      text: az connectedk8s upgrade -g resourceGroupName -n connectedClusterName --upgrade-timeout 600
 """
 
 helps['connectedk8s list'] = """

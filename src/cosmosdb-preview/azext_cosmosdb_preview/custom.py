@@ -20,6 +20,7 @@ from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     ContinuousModeBackupPolicy,
     ClusterResource,
     ClusterResourceProperties,
+    DataCenterResource,
     DataCenterResourceProperties
 )
 
@@ -545,7 +546,7 @@ def cli_cosmosdb_managed_cassandra_fetch_node_status(client,
 
     """Get Azure Managed Cassandra Cluster Node Status"""
 
-    return client.fetch_node_status(resource_group_name, cluster_name)
+    return client.begin_fetch_node_status(resource_group_name, cluster_name)
 
 
 def cli_cosmosdb_managed_cassandra_datacenter_create(client,
@@ -566,7 +567,11 @@ def cli_cosmosdb_managed_cassandra_datacenter_create(client,
         base64_encoded_cassandra_yaml_fragment=base64_encoded_cassandra_yaml_fragment
     )
 
-    return client.begin_create_update(resource_group_name, cluster_name, data_center_name, data_center_properties)
+    data_center_resource = DataCenterResource(
+        properties=data_center_properties
+    )
+
+    return client.begin_create_update(resource_group_name, cluster_name, data_center_name, data_center_resource)
 
 
 def cli_cosmosdb_managed_cassandra_datacenter_update(client, resource_group_name,
@@ -592,7 +597,11 @@ def cli_cosmosdb_managed_cassandra_datacenter_update(client, resource_group_name
         seed_nodes=data_center_resource.properties.seed_nodes,
         base64_encoded_cassandra_yaml_fragment=base64_encoded_cassandra_yaml_fragment)
 
-    return client.begin_create_update(resource_group_name, cluster_name, data_center_name, data_center_properties)
+    data_center_resource = DataCenterResource(
+        properties=data_center_properties
+    )
+
+    return client.begin_create_update(resource_group_name, cluster_name, data_center_name, data_center_resource)
 
 
 def _gen_guid():
