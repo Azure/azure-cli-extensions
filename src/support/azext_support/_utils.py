@@ -5,9 +5,7 @@
 
 import re
 
-from azure.cli.core._profile import Profile
 from knack.log import get_logger
-from knack.util import CLIError
 
 logger = get_logger(__name__)
 
@@ -40,16 +38,3 @@ def parse_support_area_path(problem_classification_id):
         return {"service_name": match.group(1), "problem_classifications_name": match.group(2)}
 
     return None
-
-
-def get_bearer_token(cmd, tenant_id):
-    client = Profile(cli_ctx=cmd.cli_ctx)
-
-    try:
-        logger.debug("Retrieving access token for tenant %s", tenant_id)
-        creds, _, _ = client.get_raw_token(tenant=tenant_id)
-    except CLIError as cli_error:
-        raise CLIError("Can't find authorization for {0}. ".format(tenant_id) +
-                       "Run \'az login -t <tenant_name> --allow-no-subscriptions\' and try again.") from cli_error
-
-    return "Bearer " + creds[1]
