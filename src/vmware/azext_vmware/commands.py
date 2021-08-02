@@ -87,3 +87,10 @@ def load_command_table(self, _):
         g.custom_command('list', 'globalreachconnection_list')
         g.custom_command('delete', 'globalreachconnection_delete')
         g.custom_show_command('show', 'globalreachconnection_show')
+
+    with self.command_group('vmware cloud-link', vmware_sdk, client_factory=cf_vmware) as g:
+        g.custom_command('create', 'cloud_link_create_or_update')
+        g.custom_command('update', 'cloud_link_create_or_update')
+        g.custom_command('list', 'cloud_link_list')
+        g.custom_command('delete', 'cloud_link_delete')
+        g.custom_show_command('show', 'cloud_link_show')

@@ -11,7 +11,8 @@ from knack.log import get_logger
 from azure.cli.core.azclierror import ResourceNotFoundError, MutuallyExclusiveArgumentError, \
     InvalidArgumentValueError, CommandNotFoundError, RequiredArgumentMissingError
 from azure.cli.core.commands.client_factory import get_subscription_id
-from .vendored_sdks.models import ConfigurationIdentity, ErrorResponseException, Scope
+from azure.core.exceptions import HttpResponseError
+from .vendored_sdks.models import ConfigurationIdentity, Scope
 from ._validators import validate_cc_registration
 
 from .partner_extensions.ContainerInsights import ContainerInsights
@@ -52,7 +53,7 @@ def show_k8s_extension(client, resource_group_name, cluster_name, name, cluster_
         extension = client.get(resource_group_name,
                                cluster_rp, cluster_type, cluster_name, name)
         return extension
-    except ErrorResponseException as ex:
+    except HttpResponseError as ex:
         # Customize the error message for resources not found
         if ex.response.status_code == 404:
             # If Cluster not found
@@ -137,7 +138,8 @@ def create_k8s_extension(cmd, client, resource_group_name, cluster_name, name, c
     validate_cc_registration(cmd)
 
     # Create identity, if required
-    if create_identity:
+    # We don't create the identity if we are in DF
+    if create_identity and not __is_dogfood_cluster(cmd):
         extension_instance.identity, extension_instance.location = \
             __create_identity(cmd, resource_group_name, cluster_name, cluster_type, cluster_rp)
 
@@ -195,6 +197,17 @@ def delete_k8s_extension(client, resource_group_name, cluster_name, name, cluste
     """
     # Determine ClusterRP
     cluster_rp = __get_cluster_rp(cluster_type)
+    extension = None
+    try:
+        extension = client.get(resource_group_name, cluster_rp, cluster_type, cluster_name, name)
+    except HttpResponseError:
+        logger.warning("No extension with name '%s' found on cluster '%s', so nothing to delete", cluster_name, name)
+        return None
+    extension_class = ExtensionFactory(extension.extension_type.lower())
+
+    # If there is any custom delete logic, this will call the logic
+    extension_class.Delete(client, resource_group_name, cluster_name, name, cluster_type)
+
     return client.delete(resource_group_name, cluster_rp, cluster_type, cluster_name, name)
 
 
@@ -219,7 +232,6 @@ def __create_identity(cmd, resource_group_name, cluster_name, cluster_type, clus
             "Error! Cluster type '{}' is not supported for extension identity".format(cluster_type)
         )
 
-    from azure.core.exceptions import HttpResponseError
     try:
         resource = resources.get_by_id(cluster_resource_id, parent_api_version)
         location = str(resource.location.lower())
@@ -281,3 +293,7 @@ def __get_config_settings_from_file(file_path):
         raise Exception("File {} is empty".format(file_path))
 
     return settings
+
+
+def __is_dogfood_cluster(cmd):
+    return cmd.cli_ctx.cloud.endpoints.resource_manager == consts.DF_RM_ENDPOINT
