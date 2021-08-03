@@ -19,6 +19,7 @@ from knack.prompting import NoTTYException, prompt_y_n
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.util import send_raw_request
 from azure.cli.core import telemetry
+from azure.core.exceptions import ResourceNotFoundError
 from msrest.exceptions import AuthenticationError, HttpOperationError, TokenExpiredError, ValidationError
 from msrestazure.azure_exceptions import CloudError
 from kubernetes.client.rest import ApiException
@@ -200,6 +201,9 @@ def arm_exception_handler(ex, fault_type, summary, return_if_not_found=False):
             raise AzureInternalError("Cloud error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
         raise AzureResponseError("Cloud error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
 
+    if isinstance(ex, ResourceNotFoundError) and return_if_not_found:
+        return
+
     telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
     raise ClientRequestError("Error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
 
@@ -309,8 +313,9 @@ def helm_login(container_registry_repository, container_registry_username, conta
 def helm_install_release(chart_path, subscription_id, kubernetes_distro, kubernetes_infra, resource_group_name, cluster_name,
                          location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, proxy_cert, private_key_pem,
                          kube_config, kube_context, no_wait, values_file_provided, values_file, cloud_name, disable_auto_upgrade,
-                         enable_custom_locations, custom_locations_oid, container_registry_repository, container_registry_username,
-                         container_registry_password):        
+                         enable_custom_locations, custom_locations_oid, onboarding_timeout="300", container_registry_repository="", 
+                         container_registry_username="", container_registry_password=""):
+                         
     cmd_helm_install = ["helm", "upgrade", "--install", "azure-arc", chart_path,
                         "--set", "global.subscriptionId={}".format(subscription_id),
                         "--set", "global.kubernetesDistro={}".format(kubernetes_distro),
@@ -349,6 +354,9 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, kuberne
         cmd_helm_install.extend(["--kube-context", kube_context])
     if not no_wait:
         cmd_helm_install.extend(["--wait"])
+        # Change --timeout format for helm client to understand
+        onboarding_timeout = onboarding_timeout + "s"
+        cmd_helm_install.extend(["--wait", "--timeout", "{}".format(onboarding_timeout)])
     if container_registry_repository:
         cmd_helm_install.extend(["--set", "systemDefaultValues.image.repository={}".format(container_registry_repository)])
         if container_registry_username and container_registry_password:

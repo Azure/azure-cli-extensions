@@ -153,11 +153,11 @@ def create_virtual_hub(cmd, resource_group_name, virtual_hub_name, address_prefi
 def get_effective_virtual_hub_routes(cmd, resource_group_name, virtual_hub_name,
                                      virtual_wan_resource_type=None, resource_id=None, no_wait=False):
     parameters = None
-    Resource, EffectiveRoutesParameters = cmd.get_models("Resource", 'EffectiveRoutesParameters')
+    EffectiveRoutesParameters = cmd.get_models('EffectiveRoutesParameters')
     if virtual_wan_resource_type is not None or resource_id is not None:
         parameters = EffectiveRoutesParameters(
             virtual_wan_resource_type=virtual_wan_resource_type,
-            resource_id=Resource(id=resource_id)
+            resource_id=resource_id
         )
 
     client = network_client_factory(cmd.cli_ctx).virtual_hubs

@@ -43,6 +43,7 @@ import azext_connectedk8s._constants as consts
 import azext_connectedk8s._utils as utils
 from glob import glob
 from .vendored_sdks.models import ConnectedCluster, ConnectedClusterIdentity
+from .vendored_sdks.preview_2021_04_01.models import ListClusterUserCredentialsProperties
 from threading import Timer, Thread
 import sys
 import hashlib
@@ -57,8 +58,9 @@ logger = get_logger(__name__)
 
 def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="", proxy_cert="", location=None,
                         kube_config=None, kube_context=None, no_wait=False, tags=None, distribution='auto', infrastructure='auto',
-                        disable_auto_upgrade=False, cl_oid=None, container_registry_repository="", container_registry_username="",
+                        disable_auto_upgrade=False, cl_oid=None, onboarding_timeout="300", container_registry_repository="", container_registry_username="",
                         container_registry_password=""):
+
     logger.warning("Ensure that you have the latest helm version installed before proceeding.")
     logger.warning("This operation might take a while...\n")
 
@@ -271,8 +273,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     utils.helm_install_release(chart_path, subscription_id, kubernetes_distro, kubernetes_infra, resource_group_name, cluster_name,
                                location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, proxy_cert, private_key_pem, kube_config,
                                kube_context, no_wait, values_file_provided, values_file, azure_cloud, disable_auto_upgrade, enable_custom_locations,
-                               custom_locations_oid, container_registry_repository, container_registry_username, container_registry_password)
-
+                               custom_locations_oid, onboarding_timeout, container_registry_repository, container_registry_username, container_registry_password)
     return put_cc_response
 
 
@@ -708,7 +709,7 @@ def get_release_namespace(kube_config, kube_context):
 
 def create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait):
     try:
-        return sdk_no_wait(no_wait, client.create, resource_group_name=resource_group_name,
+        return sdk_no_wait(no_wait, client.begin_create, resource_group_name=resource_group_name,
                            cluster_name=cluster_name, connected_cluster=cc)
     except CloudError as e:
         utils.arm_exception_handler(e, consts.Create_ConnectedCluster_Fault_Type, 'Unable to create connected cluster resource')
@@ -716,7 +717,7 @@ def create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait):
 
 def delete_cc_resource(client, resource_group_name, cluster_name, no_wait):
     try:
-        sdk_no_wait(no_wait, client.delete,
+        sdk_no_wait(no_wait, client.begin_delete,
                     resource_group_name=resource_group_name,
                     cluster_name=cluster_name)
     except CloudError as e:
@@ -901,7 +902,7 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
     return str.format(consts.Update_Agent_Success, connected_cluster.name)
 
 
-def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=None, kube_context=None, arc_agent_version=None):
+def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=None, kube_context=None, arc_agent_version=None, upgrade_timeout="300"):
     logger.warning("Ensure that you have the latest helm version installed before proceeding.")
     logger.warning("This operation might take a while...\n")
 
@@ -977,7 +978,7 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
             telemetry.set_exception(exception='connectedk8s upgrade called when auto-update is set to true', fault_type=consts.Manual_Upgrade_Called_In_Auto_Update_Enabled,
                                     summary='az connectedk8s upgrade to manually upgrade agents and extensions is only supported when auto-upgrade is set to false.')
             raise ClientRequestError("az connectedk8s upgrade to manually upgrade agents and extensions is only supported when auto-upgrade is set to false.",
-                                     recommendation="Please run az connectedk8s update -n <connected-cluster-name> -g <resource-group-name> --auto-upgrade 'false' before performing manual upgrade")
+                                     recommendation="Please run 'az connectedk8s update -n <connected-cluster-name> -g <resource-group-name> --auto-upgrade false' before performing manual upgrade")
 
     else:
         telemetry.set_exception(exception="The azure-arc release namespace couldn't be retrieved", fault_type=consts.Release_Namespace_Not_Found,
@@ -1061,8 +1062,10 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
     # Get Helm chart path
     chart_path = utils.get_chart_path(registry_path, kube_config, kube_context, registry_username, registry_password)
 
+    # Change --timeout format for helm client to understand
+    upgrade_timeout = upgrade_timeout + "s"
     cmd_helm_upgrade = ["helm", "upgrade", "azure-arc", chart_path, "--namespace", release_namespace,
-                        "--output", "json", "--atomic"]
+                        "--output", "json", "--atomic", "--wait", "--timeout", "{}".format(upgrade_timeout)]
 
     proxy_enabled_param_added = False
     infra_added = False
@@ -1879,7 +1882,11 @@ def client_side_proxy(cmd,
 
     # Fetching hybrid connection details from Userrp
     try:
-        response = client.list_cluster_user_credentials(resource_group_name, cluster_name, auth_method, True)
+        list_prop = ListClusterUserCredentialsProperties(
+            authentication_method=auth_method,
+            client_proxy=True
+        )
+        response = client.list_cluster_user_credentials(resource_group_name, cluster_name, list_prop)
     except Exception as e:
         if flag == 1:
             clientproxy_process.terminate()
