@@ -21,8 +21,6 @@ from azext_dms.vendored_sdks.datamigration.models import (Project,
                                                           MongoDbConnectionInfo,
                                                           MongoDbCancelCommand,
                                                           MongoDbCommandInput,
-                                                          MongoDbFinishCommand,
-                                                          MongoDbFinishCommandInput,
                                                           MongoDbRestartCommand,
                                                           ValidateMongoDbTaskProperties)
 from azext_dms.scenario_inputs import (get_mongo_to_mongo_input)
@@ -341,13 +339,7 @@ def get_task_migration_properties(
         source_connection_info,
         target_connection_info):
     st = get_scenario_type(source_platform, target_platform, task_type)
-    if st.name == "mysql_azuremysql_online":
-        TaskProperties = MigrateMySqlAzureDbForMySqlSyncTaskProperties
-        GetInput = get_migrate_mysql_to_azuredbformysql_sync_input
-    elif st.name == "postgres_azurepostgres_online":
-        TaskProperties = MigratePostgreSqlAzureDbForPostgreSqlSyncTaskProperties
-        GetInput = get_migrate_postgresql_to_azuredbforpostgresql_sync_input
-    elif "mongo_mongo" in st.name:
+    if "mongo_mongo" in st.name:
         TaskProperties = MigrateMongoDbTaskProperties
         GetInput = get_mongo_to_mongo_input
     else:

@@ -4,10 +4,10 @@
 # --------------------------------------------------------------------------------------------
 
 
-import json
-import unittest
-
-from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer, VirtualNetworkPreparer, JMESPathCheck, JMESPathCheckGreaterThan
+from azure.cli.testsdk import (ScenarioTest,
+                               ResourceGroupPreparer,
+                               VirtualNetworkPreparer,
+                               JMESPathCheck)
 
 
 class DmsServiceTests(ScenarioTest):
@@ -35,7 +35,10 @@ class DmsServiceTests(ScenarioTest):
             'vsubnet_vn': self.vsubnet_vn,
             'vsubnet_sn': self.vsubnet_sn
         })
-        subnet = self.cmd('az network vnet subnet show -g {vsubnet_rg} -n {vsubnet_sn} --vnet-name {vsubnet_vn}').get_output_in_json()
+        subnet = self.cmd(("az network vnet subnet show ",
+                           "-g {vsubnet_rg} ",
+                           "-n {vsubnet_sn} ",
+                           "--vnet-name {vsubnet_vn}")).get_output_in_json()
 
         self.kwargs.update({
             'lname': self.location_name,
@@ -49,9 +52,19 @@ class DmsServiceTests(ScenarioTest):
         })
 
         # Set up container service
-        self.cmd('az dms create -l {lname} -n {sname} -g {rg} --sku-name {skuname} --subnet {vnetid} --tags area=cli env=test')
+        self.cmd(("az dms create ",
+                  "-l {lname} ",
+                  "-n {sname} ",
+                  "-g {rg} ",
+                  "--sku-name {skuname} ",
+                  "--subnet {vnetid} ",
+                  "--tags area=cli env=test"))
 
-        self.cmd('az dms project show -g {rg} --service-name {sname} -n {pname1}', expect_failure=True)
+        self.cmd(("az dms project show ",
+                  "-g {rg} ",
+                  "--service-name {sname} ",
+                  "-n {pname1}"),
+                 expect_failure=True)
 
         create_checks = [JMESPathCheck('location', self.location_name),
                          JMESPathCheck('resourceGroup', resource_group),
@@ -62,9 +75,21 @@ class DmsServiceTests(ScenarioTest):
                          JMESPathCheck('tags.Cli', ''),
                          JMESPathCheck('tags.Type', 'test'),
                          JMESPathCheck('type', 'Microsoft.DataMigration/services/projects')]
-        self.cmd('az dms project create -g {rg} --service-name {sname} -l {lname} -n {pname1} --source-platform SQL --target-platform SQLDB --tags Type=test Cli', checks=create_checks)
+        self.cmd(("az dms project create ",
+                  "-g {rg} ",
+                  "--service-name {sname} ",
+                  "-l {lname} ",
+                  "-n {pname1} ",
+                  "--source-platform SQL ",
+                  "--target-platform SQLDB ",
+                  "--tags Type=test Cli"),
+                 checks=create_checks)
 
-        self.cmd('az dms project show -g {rg} --service-name {sname} -n {pname1}', create_checks)
+        self.cmd(("az dms project show ",
+                  "-g {rg} ",
+                  "--service-name {sname} ",
+                  "-n {pname1}"),
+                 create_checks)
 
         # Test PostgreSQL project creation and deletion
         create_checks_pg = [JMESPathCheck('location', self.location_name),
@@ -76,8 +101,20 @@ class DmsServiceTests(ScenarioTest):
                             JMESPathCheck('tags.Cli', ''),
                             JMESPathCheck('tags.Type', 'test'),
                             JMESPathCheck('type', 'Microsoft.DataMigration/services/projects')]
-        self.cmd('az dms project create -g {rg} --service-name {sname} -l {lname} -n {pnamepg} --source-platform PostgreSQL --target-platform AzureDbForPostgreSQL --tags Type=test Cli', checks=create_checks_pg)
-        self.cmd('az dms project show -g {rg} --service-name {sname} -n {pnamepg}', create_checks_pg)
+        self.cmd(("az dms project create ",
+                  "-g {rg} ",
+                  "--service-name {sname} ",
+                  "-l {lname} ",
+                  "-n {pnamepg} ",
+                  "--source-platform PostgreSQL ",
+                  "--target-platform AzureDbForPostgreSQL ",
+                  "--tags Type=test Cli"),
+                 checks=create_checks_pg)
+        self.cmd(("az dms project show ",
+                  "-g {rg} ",
+                  "--service-name {sname} ",
+                  "-n {pnamepg}"),
+                 create_checks_pg)
 
         # Test MongoDb project creation and deletion
         create_checks_mg = [JMESPathCheck('location', self.location_name),
@@ -89,24 +126,60 @@ class DmsServiceTests(ScenarioTest):
                             JMESPathCheck('tags.Cli', ''),
                             JMESPathCheck('tags.Type', 'test'),
                             JMESPathCheck('type', 'Microsoft.DataMigration/services/projects')]
-        self.cmd('az dms project create -g {rg} --service-name {sname} -l {lname} -n {pnamemg} --source-platform MongoDb --target-platform MongoDb --tags Type=test Cli', checks=create_checks_mg)
-        self.cmd('az dms project show -g {rg} --service-name {sname} -n {pnamemg}', create_checks_mg)
+        self.cmd(("az dms project create ",
+                  "-g {rg} ",
+                  "--service-name {sname} ",
+                  "-l {lname} ",
+                  "-n {pnamemg} ",
+                  "--source-platform MongoDb ",
+                  "--target-platform MongoDb ",
+                  "--tags Type=test Cli"),
+                 checks=create_checks_mg)
+        self.cmd(("az dms project show ",
+                  "-g {rg} ",
+                  "--service-name {sname} ",
+                  "-n {pnamemg}"),
+                 create_checks_mg)
 
         create_checks_notags = [JMESPathCheck('tags', None)]
-        self.cmd('az dms project create -g {rg} --service-name {sname} -l {lname} -n {pname2} --source-platform SQL --target-platform SQLDB', checks=create_checks_notags)
+        self.cmd(("az dms project create ",
+                  "-g {rg} ",
+                  "--service-name {sname} ",
+                  "-l {lname} ",
+                  "-n {pname2} ",
+                  "--source-platform SQL ",
+                  "--target-platform SQLDB"),
+                 checks=create_checks_notags)
 
         list_checks = [JMESPathCheck('length(@)', 4),
                        JMESPathCheck("length([?name == '{}'])".format(project_name1), 1)]
-        self.cmd('az dms project list -g {rg} --service-name {sname}', list_checks)
+        self.cmd(("az dms project list ",
+                  "-g {rg} ",
+                  "--service-name {sname}"),
+                 list_checks)
 
-        self.cmd('az dms project check-name -g {rg} --service-name {sname} -n {pname2}', checks=self.name_exists_checks)
+        self.cmd(("az dms project check-name ",
+                  "-g {rg} ",
+                  "--service-name {sname} ",
+                  "-n {pname2}"),
+                 checks=self.name_exists_checks)
 
-        self.cmd('az dms project delete -g {rg} --service-name {sname} -n {pname2} -y')
+        self.cmd(("az dms project delete ",
+                  "-g {rg} ",
+                  "--service-name {sname} ",
+                  "-n {pname2} -y"))
 
-        self.cmd('az dms project check-name -g {rg} --service-name {sname} -n {pname2}', checks=self.name_available_checks)
+        self.cmd(("az dms project check-name ",
+                  "-g {rg} ",
+                  "--service-name {sname} ",
+                  "-n {pname2}"),
+                 checks=self.name_available_checks)
 
         # Clean up service for live runs
-        self.cmd('az dms delete -g {rg} -n {sname} --delete-running-tasks true -y')
+        self.cmd(("az dms delete ",
+                  "-g {rg} ",
+                  "-n {sname} ",
+                  "--delete-running-tasks true -y"))
 
     @ResourceGroupPreparer(name_prefix='dms_cli_test_', location=location_name)
     @VirtualNetworkPreparer(name_prefix='dms.clitest.vn')
@@ -117,24 +190,39 @@ class DmsServiceTests(ScenarioTest):
         project_name = self.create_random_name('project', 15)
         task_name1 = self.create_random_name('task1', 15)
         task_name2 = self.create_random_name('task2', 15)
-        database_options1 = "[ { 'name': 'SourceDatabase1', 'target_database_name': 'TargetDatabase1', 'make_source_db_read_only': False, 'table_map': { 'dbo.TestTableSource1': 'dbo.TestTableTarget1', 'dbo.TestTableSource2': 'dbo.TestTableTarget2' } } ]"
-        database_options2 = "[ { 'name': 'SourceDatabase2', 'target_database_name': 'TargetDatabase2', 'make_source_db_read_only': False, 'table_map': { 'dbo.TestTableSource1': 'dbo.TestTableTarget1', 'dbo.TestTableSource2': 'dbo.TestTableTarget2' } } ]"
-        source_connection_info = "{ 'userName': 'testuser', 'password': 'testpassword', 'dataSource': 'notarealsourceserver', 'authentication': 'SqlAuthentication', 'encryptConnection': True, 'trustServerCertificate': True }"
-        target_connection_info = "{ 'userName': 'testuser', 'password': 'testpassword', 'dataSource': 'notarealtargetserver', 'authentication': 'SqlAuthentication', 'encryptConnection': True, 'trustServerCertificate': True }"
+        database_options1 = ("[ { 'name': 'SourceDatabase1', 'target_database_name': 'TargetDatabase1', ",
+                             "'make_source_db_read_only': False, 'table_map': { 'dbo.TestTableSource1': ",
+                             "'dbo.TestTableTarget1', 'dbo.TestTableSource2': 'dbo.TestTableTarget2' } } ]")
+        database_options2 = ("[ { 'name': 'SourceDatabase2', 'target_database_name': 'TargetDatabase2', ",
+                             "'make_source_db_read_only': False, 'table_map': { 'dbo.TestTableSource1': ",
+                             "'dbo.TestTableTarget1', 'dbo.TestTableSource2': 'dbo.TestTableTarget2' } } ]")
+        source_connection_info = ("{ 'userName': 'testuser', 'password': 'testpassword', 'dataSource': ",
+                                  "'notarealsourceserver', 'authentication': 'SqlAuthentication', ",
+                                  "'encryptConnection': True, 'trustServerCertificate': True }")
+        target_connection_info = ("{ 'userName': 'testuser', 'password': 'testpassword', 'dataSource': ",
+                                  "'notarealtargetserver', 'authentication': 'SqlAuthentication', ",
+                                  "'encryptConnection': True, 'trustServerCertificate': True }")
 
         self.kwargs.update({
             'vsubnet_rg': self.vsubnet_rg,
             'vsubnet_vn': self.vsubnet_vn,
             'vsubnet_sn': self.vsubnet_sn
         })
-        subnet = self.cmd('az network vnet subnet show -g {vsubnet_rg} -n {vsubnet_sn} --vnet-name {vsubnet_vn}').get_output_in_json()
+        subnet = self.cmd(("az network vnet subnet show ",
+                           "-g {vsubnet_rg} ",
+                           "-n {vsubnet_sn} ",
+                           "--vnet-name {vsubnet_vn}")).get_output_in_json()
 
 
         project_name_pg = self.create_random_name('projectpg', 20)
         task_name_pg = self.create_random_name('taskpg', 20)
-        source_connection_info_pg = "{ 'userName': 'testuser', 'password': 'testpassword', 'serverName': 'notarealsourceserver', 'databaseName': 'notarealdatabasename', 'encryptConnection': False, 'trustServerCertificate': True }"
-        target_connection_info_pg = "{ 'userName': 'testuser', 'password': 'testpassword', 'serverName': 'notarealtargetserver', 'databaseName': 'notarealdatabasename'}"
-        database_options_pg = "[ { 'name': 'SourceDatabase1', 'target_database_name': 'TargetDatabase1', 'selectedTables': [ 'public.TestTableSource1', 'public.TestTableSource2'] } ]"
+        source_connection_info_pg = ("{ 'userName': 'testuser', 'password': 'testpassword', 'serverName': ",
+                                     "'notarealsourceserver', 'databaseName': 'notarealdatabasename', ",
+                                     "'encryptConnection': False, 'trustServerCertificate': True }")
+        target_connection_info_pg = ("{ 'userName': 'testuser', 'password': 'testpassword', 'serverName': ",
+                                     "'notarealtargetserver', 'databaseName': 'notarealdatabasename'}")
+        database_options_pg = ("[ { 'name': 'SourceDatabase1', 'target_database_name': 'TargetDatabase1', ",
+                               "'selectedTables': [ 'public.TestTableSource1', 'public.TestTableSource2'] } ]")
 
         self.kwargs.update({
             'lname': self.location_name,
@@ -156,12 +244,40 @@ class DmsServiceTests(ScenarioTest):
         })
 
         # Set up container service and project
-        self.cmd('az dms create -l {lname} -n {sname} -g {rg} --sku-name {skuname} --subnet {vnetid} --tags area=cli env=test')
-        self.cmd('az dms project create -g {rg} --service-name {sname} -l {lname} -n {pname} --source-platform SQL --target-platform SQLDB')
-        self.cmd('az dms project create -g {rg} --service-name {sname} -l {lname} -n {pnamepg} --source-platform PostgreSQL --target-platform AzureDbForPostgreSQL')
+        self.cmd(("az dms create ",
+                  "-l {lname} ",
+                  "-n {sname} ",
+                  "-g {rg} ",
+                  "--sku-name {skuname} ",
+                  "--subnet {vnetid} ",
+                  "--tags area=cli env=test"))
+        self.cmd(("az dms project create ",
+                  "-g {rg} ",
+                  "--service-name {sname} ",
+                  "-l {lname} ",
+                  "-n {pname} ",
+                  "--source-platform SQL ",
+                  "--target-platform SQLDB"))
+        self.cmd(("az dms project create ",
+                  "-g {rg} ",
+                  "--service-name {sname} ",
+                  "-l {lname} ",
+                  "-n {pnamepg} ",
+                  "--source-platform PostgreSQL ",
+                  "--target-platform AzureDbForPostgreSQL"))
 
-        self.cmd('az dms project task show -g {rg} --service-name {sname} --project-name {pname} -n {tname1}', expect_failure=True)
-        self.cmd('az dms project task show -g {rg} --service-name {sname} --project-name {pnamepg} -n {tnamepg}', expect_failure=True)
+        self.cmd(("az dms project task show ",
+                  "-g {rg} ",
+                  "--service-name {sname} ",
+                  "--project-name {pname} ",
+                  "-n {tname1}"),
+                 expect_failure=True)
+        self.cmd(("az dms project task show ",
+                  "-g {rg} ",
+                  "--service-name {sname} ",
+                  "--project-name {pnamepg} ",
+                  "-n {tnamepg}"),
+                 expect_failure=True)
 
         create_checks = [JMESPathCheck('name', task_name1),
                          JMESPathCheck('resourceGroup', resource_group),
@@ -190,26 +306,95 @@ class DmsServiceTests(ScenarioTest):
                             JMESPathPatternCheck('properties.state', 'Cancel(?:ed|ing)')]
 
         # SQL Tests
-        self.cmd('az dms project task create --task-type OfflineMigration --database-options-json "{dboptions1}" -n {tname1} --project-name {pname} -g {rg} --service-name {sname} --source-connection-json "{sconn}" --target-connection-json "{tconn}"', checks=create_checks)
-        self.cmd('az dms project task show -g {rg} --service-name {sname} --project-name {pname} -n {tname1}', checks=create_checks)
-        self.cmd('az dms project task cancel -g {rg} --service-name {sname} --project-name {pname} -n {tname1}', checks=cancel_checks)
+        self.cmd(("az dms project task create ",
+                  "--task-type OfflineMigration ",
+                  "--database-options-json \"{dboptions1}\" ",
+                  "-n {tname1} ",
+                  "--project-name {pname} ",
+                  "-g {rg} ",
+                  "--service-name {sname} ",
+                  "--source-connection-json \"{sconn}\" ",
+                  "--target-connection-json \"{tconn}\""),
+                 checks=create_checks)
+        self.cmd(("az dms project task show ",
+                  "-g {rg} ",
+                  "--service-name {sname} ",
+                  "--project-name {pname} ",
+                  "-n {tname1}"),
+                 checks=create_checks)
+        self.cmd(("az dms project task cancel ",
+                  "-g {rg} ",
+                  "--service-name {sname} ",
+                  "--project-name {pname} ",
+                  "-n {tname1}"),
+                 checks=cancel_checks)
 
         # PG Tests
-        self.cmd('az dms project task create --task-type OnlineMigration --database-options-json "{dboptionspg}" -n {tnamepg} --project-name {pnamepg} -g {rg} --service-name {sname} --source-connection-json "{sconnpg}" --target-connection-json "{tconnpg}"', checks=create_checks_pg)
-        self.cmd('az dms project task show -g {rg} --service-name {sname} --project-name {pnamepg} -n {tnamepg}', checks=create_checks_pg)
-        self.cmd('az dms project task cancel -g {rg} --service-name {sname} --project-name {pnamepg} -n {tnamepg}', checks=cancel_checks_pg)
+        self.cmd(("az dms project task create ",
+                  "--task-type OnlineMigration ",
+                  "--database-options-json \"{dboptionspg}\" ",
+                  "-n {tnamepg} ",
+                  "--project-name {pnamepg} ",
+                  "-g {rg} ",
+                  "--service-name {sname} ",
+                  "--source-connection-json \"{sconnpg}\" ",
+                  "--target-connection-json \"{tconnpg}\""),
+                 checks=create_checks_pg)
+        self.cmd(("az dms project task show ",
+                  "-g {rg} ",
+                  "--service-name {sname} ",
+                  "--project-name {pnamepg} ",
+                  "-n {tnamepg}"),
+                 checks=create_checks_pg)
+        self.cmd(("az dms project task cancel ",
+                  "-g {rg} ",
+                  "--service-name {sname} ",
+                  "--project-name {pnamepg} ",
+                  "-n {tnamepg}"),
+                 checks=cancel_checks_pg)
 
-        self.cmd('az dms project task create --task-type OfflineMigration --database-options-json "{dboptions2}" -n {tname2} --project-name {pname} -g {rg} --service-name {sname} --source-connection-json "{sconn}" --target-connection-json "{tconn}"')
+        self.cmd(("az dms project task create ",
+                  "--task-type OfflineMigration ",
+                  "--database-options-json \"{dboptions2}\" ",
+                  "-n {tname2} ",
+                  "--project-name {pname} ",
+                  "-g {rg} ",
+                  "--service-name {sname} ",
+                  "--source-connection-json \"{sconn}\" ",
+                  "--target-connection-json \"{tconn}\""))
 
         list_checks = [JMESPathCheck('length(@)', 2),
                        JMESPathCheck("length([?name == '{}'])".format(task_name1), 1)]
-        self.cmd('az dms project task list -g {rg} --service-name {sname} --project-name {pname} --task-type "Migrate.SqlServer.SqlDb"', checks=list_checks)
+        self.cmd(("az dms project task list ",
+                  "-g {rg} ",
+                  "--service-name {sname} ",
+                  "--project-name {pname} ",
+                  "--task-type \"Migrate.SqlServer.SqlDb\""),
+                 checks=list_checks)
 
-        self.cmd('az dms project task check-name -g {rg} --service-name {sname} --project-name {pname} -n {tname1}', checks=self.name_exists_checks)
+        self.cmd(("az dms project task check-name ",
+                  "-g {rg} ",
+                  "--service-name {sname} ",
+                  "--project-name {pname} ",
+                  "-n {tname1}"),
+                 checks=self.name_exists_checks)
 
-        self.cmd('az dms project task delete -g {rg} --service-name {sname} --project-name {pname} -n {tname1} --delete-running-tasks true -y')
+        self.cmd(("az dms project task delete ",
+                  "-g {rg} ",
+                  "--service-name {sname} ",
+                  "--project-name {pname} ",
+                  "-n {tname1} ",
+                  "--delete-running-tasks true -y"))
 
-        self.cmd('az dms project task check-name -g {rg} --service-name {sname} --project-name {pname} -n {tname1}', checks=self.name_available_checks)
+        self.cmd(("az dms project task check-name ",
+                  "-g {rg} ",
+                  "--service-name {sname} ",
+                  "--project-name {pname} ",
+                  "-n {tname1}"),
+                 checks=self.name_available_checks)
 
         # Clean up service for live runs
-        self.cmd('az dms delete -g {rg} -n {sname} --delete-running-tasks true -y')
+        self.cmd(("az dms delete ",
+                  "-g {rg} ",
+                  "-n {sname} ",
+                  "--delete-running-tasks true -y"))
