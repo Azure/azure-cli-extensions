@@ -55,3 +55,6 @@ class DefaultExtension(PartnerExtensionModel):
             release_train=release_train,
             version=version
         )
+
+    def Delete(self, client, resource_group_name, cluster_name, name, cluster_type):
+        pass

@@ -66,15 +66,15 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
                             custom_command_type=get_custom_sdk('blob', client_factory=cf_blob_client,
                                                                resource_type=CUSTOM_DATA_STORAGE_BLOB)) as g:
         from azure.cli.command_modules.storage._format import transform_blob_output
-        from ._transformers import transform_blob_list_output, transform_blob_json_output, transform_metadata,\
-            create_boolean_result_output_transformer
+        from ._transformers import transform_blob_json_output, transform_metadata,\
+            create_boolean_result_output_transformer, transform_blob_list_output
+        from ._validators import (process_blob_download_batch_parameters, process_blob_delete_batch_parameters,
+                                  process_blob_upload_batch_parameters)
         g.storage_custom_command_oauth('list', 'list_blobs', client_factory=cf_container_client,
                                        transform=transform_blob_list_output,
                                        table_transformer=transform_blob_output)
-
-        g.storage_custom_command_oauth('copy start', 'copy_blob')
         g.storage_command_oauth('delete', 'delete_blob')
-        g.storage_custom_command_oauth('download', 'download_blob')
+        g.storage_custom_command_oauth('download', 'download_blob', transform=transform_blob_json_output)
         g.storage_command_oauth('exists', 'exists', transform=create_boolean_result_output_transformer('exists'))
         g.storage_custom_command_oauth('generate-sas', 'generate_sas_blob_uri',
                                        custom_command_type=blob_service_custom_sdk)
@@ -88,6 +88,13 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
                                        exception_handler=show_exception_handler)
         g.storage_command_oauth('undelete', 'undelete_blob')
         g.storage_custom_command_oauth('upload', 'upload_blob')
+        g.storage_custom_command_oauth('upload-batch', 'storage_blob_upload_batch', client_factory=cf_blob_service,
+                                       validator=process_blob_upload_batch_parameters)
+        g.storage_custom_command_oauth('download-batch', 'storage_blob_download_batch', client_factory=cf_blob_service,
+                                       validator=process_blob_download_batch_parameters)
+        g.storage_custom_command_oauth('delete-batch', 'storage_blob_delete_batch', client_factory=cf_blob_service,
+                                       validator=process_blob_delete_batch_parameters)
+        g.storage_custom_command_oauth('copy start-batch', 'storage_blob_copy_batch', client_factory=cf_blob_service)
 
     with self.command_group('storage blob', blob_service_sdk, resource_type=CUSTOM_DATA_STORAGE_BLOB,
                             min_api='2019-12-12',
