@@ -24,7 +24,7 @@ from msrest.exceptions import AuthenticationError, HttpOperationError, TokenExpi
 from msrest.exceptions import ValidationError as MSRestValidationError
 from msrestazure.azure_exceptions import CloudError
 from kubernetes.client.rest import ApiException
-from azext_connectedk8s._client_factory import _resource_client_factory
+from azext_connectedk8s._client_factory import _resource_client_factory, _resource_providers_client
 import azext_connectedk8s._constants as consts
 from kubernetes import client as kube_client
 from azure.cli.core.azclierror import CLIInternalError, ClientRequestError, ArgumentUsageError, ManualInterrupt, AzureResponseError, AzureInternalError, ValidationError
@@ -396,3 +396,35 @@ def try_list_node_fix():
         V1ContainerImage.names = V1ContainerImage.names.setter(names)
     except Exception as ex:
         logger.debug("Error while trying to monkey patch the fix for list_node(): {}".format(str(ex)))
+
+
+def check_provider_registrations(cli_ctx):
+    try:
+        rp_client = _resource_providers_client(cli_ctx)
+        cc_registration_state = rp_client.get(consts.Connected_Cluster_Provider_Namespace).registration_state
+        if cc_registration_state != "Registered":
+            telemetry.set_exception(exception="{} provider is not registered".format(consts.Connected_Cluster_Provider_Namespace), fault_type=consts.CC_Provider_Namespace_Not_Registered_Fault_Type,
+                                    summary="{} provider is not registered".format(consts.Connected_Cluster_Provider_Namespace))
+            raise ValidationError("{} provider is not registered. Please register it using 'az provider register -n 'Microsoft.Kubernetes' before running the connect command.".format(consts.Connected_Cluster_Provider_Namespace))
+        kc_registration_state = rp_client.get(consts.Kubernetes_Configuration_Provider_Namespace).registration_state
+        if kc_registration_state != "Registered":
+            logger.warning("{} provider is not registered".format(consts.Kubernetes_Configuration_Provider_Namespace))
+    except Exception as ex:
+        logger.warning("Couldn't check the required provider's registration status. Error: {}".format(str(ex)))
+
+
+def can_create_clusterrolebindings(configuration):
+    try:
+        api_instance = kube_client.AuthorizationV1Api(kube_client.ApiClient(configuration))
+        access_review = kube_client.V1SelfSubjectAccessReview(spec={
+            "resourceAttributes": {
+                "verb": "create",
+                "resource": "clusterrolebindings",
+                "group": "rbac.authorization.k8s.io"
+            }
+        })
+        response = api_instance.create_self_subject_access_review(access_review)
+        return response.status.allowed
+    except Exception as ex:
+        logger.warning("Couldn't check for the permission to create clusterrolebindings on this k8s cluster. Error: {}".format(str(ex)))
+        return "Unknown"
