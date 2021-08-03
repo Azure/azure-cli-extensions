@@ -2468,6 +2468,148 @@ interactions:
       code: 200
       message: OK
 - request:
+    body: '{"objectIds": ["aec1e0fd-9d6b-4885-887b-51eeb838031c", "aba9e85c-2772-4540-9cff-e17797872a4f",
+      "f38f83c9-1619-4877-92b7-2af0b6685c5b", "f44aacb9-ad0e-446f-bef6-96b8475738a7",
+      "2a4a86dc-7337-4d70-a757-631ffd93628d", "fdb68281-d99a-4d84-aadc-ad725ebb29d2",
+      "66497ceb-caf8-4678-812a-fa858cb1b62f", "c053781e-64dd-489b-ae5a-80d7d4ffab7b",
+      "d9ebd88d-2585-46c3-abcf-4684adbc54e2", "a2807a61-2ec7-408e-b8e4-78cf3d9715ef",
+      "17ffc090-92d5-4539-8fd4-f1d3190b4db7", "bc53cdc1-5485-4cd2-b094-cba43901c268"],
+      "includeDirectoryObjectReferences": true}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datadog monitor delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '537'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - -y --name --resource-group
+      User-Agent:
+      - python/3.7.8 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-graphrbac/0.60.0 Azure-SDK-For-Python AZURECLI/2.17.1
+      accept-language:
+      - en-US
+    method: POST
+    uri: https://graph.windows.net/00000000-0000-0000-0000-000000000000/getObjectsByObjectIds?api-version=1.6
+  response:
+    body:
+      string: '{"odata.metadata":"https://graph.windows.net/00000000-0000-0000-0000-000000000000/$metadata#directoryObjects","value":[{"odata.type":"Microsoft.DirectoryServices.ServicePrincipal","objectType":"ServicePrincipal","objectId":"c053781e-64dd-489b-ae5a-80d7d4ffab7b","deletionTimestamp":null,"accountEnabled":true,"addIns":[],"alternativeNames":["isExplicit=False","/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/datadog-sdk-test-rg5851/providers/Microsoft.Datadog/monitors/test113215"],"appDisplayName":null,"appId":"ddcf38f6-e4f2-42ba-be2d-4f92d125cb87","applicationTemplateId":null,"appOwnerTenantId":null,"appRoleAssignmentRequired":false,"appRoles":[],"displayName":"test113215","errorUrl":null,"homepage":null,"informationalUrls":null,"keyCredentials":[{"customKeyIdentifier":"BC8366C7B239574EE8E542D8A6A93B0CF74A4234","endDate":"2021-04-14T02:29:00Z","keyId":"7fe43784-ac4d-4904-aefa-61b61fe64b3e","startDate":"2021-01-14T02:29:00Z","type":"AsymmetricX509Cert","usage":"Verify","value":null}],"logoutUrl":null,"notificationEmailAddresses":[],"oauth2Permissions":[],"passwordCredentials":[],"preferredSingleSignOnMode":null,"preferredTokenSigningKeyEndDateTime":null,"preferredTokenSigningKeyThumbprint":null,"publisherName":null,"replyUrls":[],"samlMetadataUrl":null,"samlSingleSignOnSettings":null,"servicePrincipalNames":["ddcf38f6-e4f2-42ba-be2d-4f92d125cb87","https://identity.azure.net/2xOSd4H/5Ed0qS3txsA0rVOrggb3pjBiA/87Mq4fae4="],"servicePrincipalType":"ManagedIdentity","signInAudience":null,"tags":[],"tokenEncryptionKeyId":null},{"odata.type":"Microsoft.DirectoryServices.ServicePrincipal","objectType":"ServicePrincipal","objectId":"d9ebd88d-2585-46c3-abcf-4684adbc54e2","deletionTimestamp":null,"accountEnabled":true,"addIns":[],"alternativeNames":["isExplicit=False","/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Datadog/monitors/myMonitor"],"appDisplayName":null,"appId":"d3db9ebb-1111-4e86-bc31-9c277b6e45ce","applicationTemplateId":null,"appOwnerTenantId":null,"appRoleAssignmentRequired":false,"appRoles":[],"displayName":"myMonitor","errorUrl":null,"homepage":null,"informationalUrls":null,"keyCredentials":[{"customKeyIdentifier":"8FDB5DD4C7C0919FFDA544B92B53EBD28FED2A32","endDate":"2021-04-14T03:15:00Z","keyId":"4c6b3112-4706-45cf-a438-0f5fc2763c8f","startDate":"2021-01-14T03:15:00Z","type":"AsymmetricX509Cert","usage":"Verify","value":null}],"logoutUrl":null,"notificationEmailAddresses":[],"oauth2Permissions":[],"passwordCredentials":[],"preferredSingleSignOnMode":null,"preferredTokenSigningKeyEndDateTime":null,"preferredTokenSigningKeyThumbprint":null,"publisherName":null,"replyUrls":[],"samlMetadataUrl":null,"samlSingleSignOnSettings":null,"servicePrincipalNames":["d3db9ebb-1111-4e86-bc31-9c277b6e45ce","https://identity.azure.net/ywUPoYAXlJmogIfzF2EifKFrCRNCZ6rmuOFXM01r5jc="],"servicePrincipalType":"ManagedIdentity","signInAudience":null,"tags":[],"tokenEncryptionKeyId":null}]}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      content-length:
+      - '3056'
+      content-type:
+      - application/json; odata=minimalmetadata; streaming=true; charset=utf-8
+      dataserviceversion:
+      - 3.0;
+      date:
+      - Thu, 14 Jan 2021 03:22:46 GMT
+      duration:
+      - '681452'
+      expires:
+      - '-1'
+      ocp-aad-diagnostics-server-name:
+      - 59OCHzJHCxhhT7FhpZromaJYcrmR37pzbTf89DrTXxI=
+      ocp-aad-session-key:
+      - Vqwkh8Ym7nnraZ2hgwEgbJBWxsgmMRefGsbRcMhDOlhjoawt5KdNrNZrgisysLvqWAlU6ofZQ-kgBrrUHb9O_4USHkAEovgNZ2zQbPIki2Mpdg-bj9hobGb5z1Froswl.KDoLTETTs5xbbJrZvNgBU8HbVlogh8c2CBnzjhvMdFI
+      pragma:
+      - no-cache
+      request-id:
+      - 862ccf5c-fc4e-4c04-8603-08586582c938
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-ms-dirapi-data-contract-version:
+      - '1.6'
+      x-ms-resource-unit:
+      - '3'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"objectIds": ["aec1e0fd-9d6b-4885-887b-51eeb838031c", "aba9e85c-2772-4540-9cff-e17797872a4f",
+      "f38f83c9-1619-4877-92b7-2af0b6685c5b", "f44aacb9-ad0e-446f-bef6-96b8475738a7",
+      "2a4a86dc-7337-4d70-a757-631ffd93628d", "fdb68281-d99a-4d84-aadc-ad725ebb29d2",
+      "66497ceb-caf8-4678-812a-fa858cb1b62f", "c053781e-64dd-489b-ae5a-80d7d4ffab7b",
+      "d9ebd88d-2585-46c3-abcf-4684adbc54e2", "a2807a61-2ec7-408e-b8e4-78cf3d9715ef",
+      "17ffc090-92d5-4539-8fd4-f1d3190b4db7", "bc53cdc1-5485-4cd2-b094-cba43901c268"],
+      "includeDirectoryObjectReferences": true}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datadog monitor delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '537'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - -y --name --resource-group
+      User-Agent:
+      - python/3.7.8 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-graphrbac/0.60.0 Azure-SDK-For-Python AZURECLI/2.17.1
+      accept-language:
+      - en-US
+    method: POST
+    uri: https://graph.windows.net/00000000-0000-0000-0000-000000000000/getObjectsByObjectIds?api-version=1.6
+  response:
+    body:
+      string: '{"odata.metadata":"https://graph.windows.net/00000000-0000-0000-0000-000000000000/$metadata#directoryObjects","value":[{"odata.type":"Microsoft.DirectoryServices.ServicePrincipal","objectType":"ServicePrincipal","objectId":"c053781e-64dd-489b-ae5a-80d7d4ffab7b","deletionTimestamp":null,"accountEnabled":true,"addIns":[],"alternativeNames":["isExplicit=False","/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/datadog-sdk-test-rg5851/providers/Microsoft.Datadog/monitors/test113215"],"appDisplayName":null,"appId":"ddcf38f6-e4f2-42ba-be2d-4f92d125cb87","applicationTemplateId":null,"appOwnerTenantId":null,"appRoleAssignmentRequired":false,"appRoles":[],"displayName":"test113215","errorUrl":null,"homepage":null,"informationalUrls":null,"keyCredentials":[{"customKeyIdentifier":"BC8366C7B239574EE8E542D8A6A93B0CF74A4234","endDate":"2021-04-14T02:29:00Z","keyId":"7fe43784-ac4d-4904-aefa-61b61fe64b3e","startDate":"2021-01-14T02:29:00Z","type":"AsymmetricX509Cert","usage":"Verify","value":null}],"logoutUrl":null,"notificationEmailAddresses":[],"oauth2Permissions":[],"passwordCredentials":[],"preferredSingleSignOnMode":null,"preferredTokenSigningKeyEndDateTime":null,"preferredTokenSigningKeyThumbprint":null,"publisherName":null,"replyUrls":[],"samlMetadataUrl":null,"samlSingleSignOnSettings":null,"servicePrincipalNames":["ddcf38f6-e4f2-42ba-be2d-4f92d125cb87","https://identity.azure.net/2xOSd4H/5Ed0qS3txsA0rVOrggb3pjBiA/87Mq4fae4="],"servicePrincipalType":"ManagedIdentity","signInAudience":null,"tags":[],"tokenEncryptionKeyId":null},{"odata.type":"Microsoft.DirectoryServices.ServicePrincipal","objectType":"ServicePrincipal","objectId":"d9ebd88d-2585-46c3-abcf-4684adbc54e2","deletionTimestamp":null,"accountEnabled":true,"addIns":[],"alternativeNames":["isExplicit=False","/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Datadog/monitors/myMonitor"],"appDisplayName":null,"appId":"d3db9ebb-1111-4e86-bc31-9c277b6e45ce","applicationTemplateId":null,"appOwnerTenantId":null,"appRoleAssignmentRequired":false,"appRoles":[],"displayName":"myMonitor","errorUrl":null,"homepage":null,"informationalUrls":null,"keyCredentials":[{"customKeyIdentifier":"8FDB5DD4C7C0919FFDA544B92B53EBD28FED2A32","endDate":"2021-04-14T03:15:00Z","keyId":"4c6b3112-4706-45cf-a438-0f5fc2763c8f","startDate":"2021-01-14T03:15:00Z","type":"AsymmetricX509Cert","usage":"Verify","value":null}],"logoutUrl":null,"notificationEmailAddresses":[],"oauth2Permissions":[],"passwordCredentials":[],"preferredSingleSignOnMode":null,"preferredTokenSigningKeyEndDateTime":null,"preferredTokenSigningKeyThumbprint":null,"publisherName":null,"replyUrls":[],"samlMetadataUrl":null,"samlSingleSignOnSettings":null,"servicePrincipalNames":["d3db9ebb-1111-4e86-bc31-9c277b6e45ce","https://identity.azure.net/ywUPoYAXlJmogIfzF2EifKFrCRNCZ6rmuOFXM01r5jc="],"servicePrincipalType":"ManagedIdentity","signInAudience":null,"tags":[],"tokenEncryptionKeyId":null}]}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      content-length:
+      - '3056'
+      content-type:
+      - application/json; odata=minimalmetadata; streaming=true; charset=utf-8
+      dataserviceversion:
+      - 3.0;
+      date:
+      - Thu, 14 Jan 2021 03:22:46 GMT
+      duration:
+      - '681452'
+      expires:
+      - '-1'
+      ocp-aad-diagnostics-server-name:
+      - 59OCHzJHCxhhT7FhpZromaJYcrmR37pzbTf89DrTXxI=
+      ocp-aad-session-key:
+      - Vqwkh8Ym7nnraZ2hgwEgbJBWxsgmMRefGsbRcMhDOlhjoawt5KdNrNZrgisysLvqWAlU6ofZQ-kgBrrUHb9O_4USHkAEovgNZ2zQbPIki2Mpdg-bj9hobGb5z1Froswl.KDoLTETTs5xbbJrZvNgBU8HbVlogh8c2CBnzjhvMdFI
+      pragma:
+      - no-cache
+      request-id:
+      - 862ccf5c-fc4e-4c04-8603-08586582c938
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-ms-dirapi-data-contract-version:
+      - '1.6'
+      x-ms-resource-unit:
+      - '3'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
     body: null
     headers:
       Accept:

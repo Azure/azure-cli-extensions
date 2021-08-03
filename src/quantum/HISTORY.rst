@@ -3,9 +3,26 @@
 Release History
 ===============
 
+0.6.1
+++++++
+* [2021-07-22] Reduced the lenghth of the user agent reported by the tool.
+
+0.6.0
+++++++
+* [2021-07-20] Version intended to work with QDK version v0.18.2106.148911
+* Adding command to request job cancellation: `az quantum job cancel`.
+* Fixed a bug in which job submissions in Azure Quantum that emit standard output were reported as failed, even if the job succeeded.
+* Fixed issue with job submissions from a different directory.
+
+0.5.0
+++++++
+* [2021-05-25] Version intended to work with QDK version v0.17.2105.143879
+* Adapted to 'az' tool version 2.23.0
+* Added user agent information on calls to Azure Quantum Service.
+
 0.4.0
 ++++++
-* [2021-05-03] Version intended to work with QDK version v0.16.2104.138035
+* [2021-05-07] Version intended to work with QDK version v0.16.2104.138035
 * Updated generated clients for Azure Quantum control plane to include support for restricted plans.
 * Fixed regression on offerings commands dependent on Azure Markeplace APIs.
 

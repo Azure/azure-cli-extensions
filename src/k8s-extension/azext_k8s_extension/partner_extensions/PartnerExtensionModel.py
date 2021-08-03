@@ -21,3 +21,7 @@ class PartnerExtensionModel(ABC):
     def Update(self, extension: ExtensionInstance, auto_upgrade_minor_version: bool,
                release_train: str, version: str) -> ExtensionInstanceUpdate:
         pass
+
+    @abstractmethod
+    def Delete(self, client, resource_group_name: str, cluster_name: str, name: str, cluster_type: str):
+        pass

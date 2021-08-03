@@ -49,8 +49,8 @@ def _upsert_frontdoor_subresource(cmd, resource_group_name, front_door_name, col
 
     item_name = getattr(obj_to_add, key_name)
     if item_name is None:
-        from knack.util import CLIError
-        raise CLIError(
+        from azure.cli.core.azclierror import ClientRequestError
+        raise ClientRequestError(
             "Unable to resolve a value for key '{}' with which to match.".format(key_name))
     match = next((x for x in collection if getattr(x, key_name, None) == item_name), None)
     if match:
@@ -61,6 +61,18 @@ def _upsert_frontdoor_subresource(cmd, resource_group_name, front_door_name, col
     collection = getattr(result, collection_name)
     item = next(x for x in collection if getattr(x, key_name) == item_name)
     return item
+
+
+def _update_cache_configuration(cache_configuration,
+                                dynamic_compression,
+                                query_parameter_strip_directive,
+                                query_parameters,
+                                cache_duration):
+    with UpdateContext(cache_configuration) as c:
+        c.update_param('dynamic_compression', dynamic_compression, False)
+        c.update_param('query_parameter_strip_directive', query_parameter_strip_directive, False)
+        c.update_param('query_parameters', query_parameters, True)
+        c.update_param('cache_duration', cache_duration, False)
 
 
 def list_frontdoor_resource_property(resource, prop):
@@ -84,8 +96,8 @@ def get_frontdoor_resource_property_entry(resource, prop):
 
         result = next((x for x in items if x.name.lower() == item_name.lower()), None)
         if not result:
-            from knack.util import CLIError
-            raise CLIError("Item '{}' does not exist on {} '{}'".format(
+            from azure.cli.core.azclierror import ResourceNotFoundError
+            raise ResourceNotFoundError("Item '{}' does not exist on {} '{}'".format(
                 item_name, resource, resource_name))
 
         return result
@@ -113,8 +125,8 @@ def delete_frontdoor_resource_property_entry(resource, prop):
                                  client.begin_create_or_update,
                                  resource_group_name, resource_name, item).result()
             if next((x for x in getattr(result, prop) if x.name.lower() == item_name.lower()), None):
-                from knack.util import CLIError
-                raise CLIError("Failed to delete '{}' on '{}'".format(item_name, resource_name))
+                from azure.cli.core.azclierror import AzureResponseError
+                raise AzureResponseError("Failed to delete '{}' on '{}'".format(item_name, resource_name))
 
     func_name = 'delete_fd_{}_{}'.format(resource, prop)
     setattr(sys.modules[__name__], func_name, delete_func)
@@ -328,14 +340,14 @@ def configure_fd_frontend_endpoint_enable_https(cmd, resource_group_name, front_
                                                 secret_name=None, secret_version=None,
                                                 certificate_source='FrontDoor', vault_id=None,
                                                 minimum_tls_version='1.2'):
-    from knack.util import CLIError
+    from azure.cli.core.azclierror import ArgumentUsageError
     if certificate_source != 'AzureKeyVault' and any([vault_id, secret_name, secret_version]):
-        raise CLIError("usage error: no need to specify --vault-id, --secret-name and --secret-version "
-                       "for Front Door managed certificate source.")
+        raise ArgumentUsageError("usage error: no need to specify --vault-id, --secret-name and --secret-version "
+                                 "for Front Door managed certificate source.")
 
     if certificate_source == 'AzureKeyVault' and not all([vault_id, secret_name]):
-        raise CLIError("usage error: at least --vault-id and --secret-name are rquired for "
-                       "Azure Key Vault certificate source.")
+        raise ArgumentUsageError("usage error: at least --vault-id and --secret-name are rquired for "
+                                 "Azure Key Vault certificate source.")
 
     # if not being disabled, then must be enabled
     if certificate_source == 'FrontDoor':
@@ -436,7 +448,7 @@ def add_fd_backend(cmd, resource_group_name, front_door_name, backend_pool_name,
         enabled_state='Disabled' if disabled else 'Enabled',
         priority=priority,
         weight=weight,
-        backend_host_header=backend_host_header or address,
+        backend_host_header=address if backend_host_header is None else backend_host_header,
         private_link_alias=private_link_alias,
         private_link_resource_id=private_link_resource_id,
         private_link_location=private_link_location,
@@ -446,11 +458,47 @@ def add_fd_backend(cmd, resource_group_name, front_door_name, backend_pool_name,
     frontdoor = client.get(resource_group_name, front_door_name)
     backend_pool = next((x for x in frontdoor.backend_pools if x.name == backend_pool_name), None)
     if not backend_pool:
-        from knack.util import CLIError
-        raise CLIError("Backend pool '{}' could not be found on frontdoor '{}'".format(
+        from azure.cli.core.azclierror import ResourceNotFoundError
+        raise ResourceNotFoundError("Backend pool '{}' could not be found on frontdoor '{}'".format(
             backend_pool_name, front_door_name))
     backend_pool.backends.append(backend)
     client.begin_create_or_update(resource_group_name, front_door_name, frontdoor).result()
+    return backend
+
+
+def update_fd_backend(cmd, resource_group_name, front_door_name, backend_pool_name, index, address=None,
+                      http_port=None, https_port=None, disabled=None, priority=None, weight=None,
+                      backend_host_header=None, private_link_alias=None, private_link_resource_id=None,
+                      private_link_location=None, private_link_approval_message=None):
+
+    client = cf_frontdoor(cmd.cli_ctx, None)
+    frontdoor = client.get(resource_group_name, front_door_name)
+    backend_pool = next((x for x in frontdoor.backend_pools if x.name == backend_pool_name), None)
+    if not backend_pool:
+        from azure.cli.core.azclierror import ResourceNotFoundError
+        raise ResourceNotFoundError("Backend pool '{}' could not be found on frontdoor '{}'".format(
+            backend_pool_name, front_door_name))
+    if index > len(backend_pool.backends) or index <= 0:
+        from azure.cli.core.azclierror import InvalidArgumentValueError
+        raise InvalidArgumentValueError("Backend range is from 1 to {}, index '{}' could not be found on frontdoor '{}'".format(
+            len(backend_pool.backends), index, front_door_name))
+    backend = backend_pool.backends[index - 1]
+    with UpdateContext(backend) as c:
+        c.update_param('address', address, None)
+        c.update_param('http_port', http_port, None)
+        c.update_param('https_port', https_port, None)
+        c.update_param('enabled_state', 'Disabled' if disabled else 'Enabled', None)
+        c.update_param('priority', priority, None)
+        c.update_param('weight', weight, None)
+        c.update_param('backend_host_header', backend_host_header, None)
+        c.update_param('private_link_alias', private_link_alias, None)
+        c.update_param('private_link_resource_id', private_link_resource_id, None)
+        c.update_param('private_link_location', private_link_location, None)
+        c.update_param('private_link_approval_message', private_link_approval_message, None)
+    frontdoor = client.begin_create_or_update(resource_group_name, front_door_name, frontdoor).result()
+
+    backend_pool = next((x for x in frontdoor.backend_pools if x.name == backend_pool_name), None)
+    backend = backend_pool.backends[index - 1]
     return backend
 
 
@@ -459,19 +507,19 @@ def list_fd_backends(cmd, resource_group_name, front_door_name, backend_pool_nam
     frontdoor = client.get(resource_group_name, front_door_name)
     backend_pool = next((x for x in frontdoor.backend_pools if x.name == backend_pool_name), None)
     if not backend_pool:
-        from knack.util import CLIError
-        raise CLIError("Backend pool '{}' could not be found on frontdoor '{}'".format(
+        from azure.cli.core.azclierror import ResourceNotFoundError
+        raise ResourceNotFoundError("Backend pool '{}' could not be found on frontdoor '{}'".format(
             backend_pool_name, front_door_name))
     return backend_pool.backends
 
 
 def remove_fd_backend(cmd, resource_group_name, front_door_name, backend_pool_name, index):
-    from knack.util import CLIError
+    from azure.cli.core.azclierror import ResourceNotFoundError, InvalidArgumentValueError
     client = cf_frontdoor(cmd.cli_ctx, None)
     frontdoor = client.get(resource_group_name, front_door_name)
     backend_pool = next((x for x in frontdoor.backend_pools if x.name == backend_pool_name), None)
     if not backend_pool:
-        raise CLIError("Backend pool '{}' could not be found on frontdoor '{}'".format(
+        raise ResourceNotFoundError("Backend pool '{}' could not be found on frontdoor '{}'".format(
             backend_pool_name, front_door_name))
     try:
         if index > 0:
@@ -479,9 +527,9 @@ def remove_fd_backend(cmd, resource_group_name, front_door_name, backend_pool_na
         elif index < 0:
             backend_pool.backends.pop(index)
         else:
-            raise CLIError('invalid index. Index can range from 1 to {}'.format(len(backend_pool.backends)))
+            raise InvalidArgumentValueError('invalid index. Index can range from 1 to {}'.format(len(backend_pool.backends)))
     except IndexError:
-        raise CLIError('invalid index. Index can range from 1 to {}'.format(len(backend_pool.backends)))
+        raise InvalidArgumentValueError('invalid index. Index can range from 1 to {}'.format(len(backend_pool.backends)))
     client.begin_create_or_update(resource_group_name, front_door_name, frontdoor).result()
 
 
@@ -507,8 +555,8 @@ def update_fd_health_probe_settings(cmd, resource_group_name, front_door_name, i
     frontdoor = client.get(resource_group_name, front_door_name)
     probe_setting = next((x for x in frontdoor.health_probe_settings if x.name == item_name), None)
     if not probe_setting:
-        from knack.util import CLIError
-        raise CLIError("Health probe setting '{}' could not be found on frontdoor '{}'".format(
+        from azure.cli.core.azclierror import ResourceNotFoundError
+        raise ResourceNotFoundError("Health probe setting '{}' could not be found on frontdoor '{}'".format(
             item_name, front_door_name))
     if probe_method:
         probe_setting.health_probe_method = probe_method
@@ -568,12 +616,12 @@ def routing_rule_usage_helper(route_type, backend_pool=None, custom_forwarding_p
 
     # pylint: disable=line-too-long
     if 'Forward' in route_type and any([custom_host, custom_path, custom_fragment, custom_query_string]) and getattr(redirect_type, 'is_default', None) and getattr(redirect_protocol, 'is_default', None):
-        from knack.util import CLIError
-        raise CLIError(forwarding_usage)
+        from azure.cli.core.azclierror import ArgumentUsageError
+        raise ArgumentUsageError(forwarding_usage)
     if 'Redirect' in route_type and any([custom_forwarding_path, forwarding_protocol, backend_pool, query_parameters,
                                          cache_duration, query_parameter_strip_directive, dynamic_compression]):
-        from knack.util import CLIError
-        raise CLIError(redirect_usage)
+        from azure.cli.core.azclierror import ArgumentUsageError
+        raise ArgumentUsageError(redirect_usage)
 
 
 def create_fd_routing_rules(cmd, resource_group_name, front_door_name, item_name, frontend_endpoints, route_type,
@@ -654,16 +702,28 @@ def update_fd_routing_rule(parent, instance, item_name, frontend_endpoints=None,
                 c.update_param('custom_forwarding_path', custom_forwarding_path, False)
                 c.update_param('forwarding_protocol', forwarding_protocol, False)
                 c.update_param('backend_pool', SubResource(id=backend_pool) if backend_pool else None, False)
-            if caching:
+
+            if caching is None:
+                # Allow caching configuration field be able to be updated individually
+                if hasattr(instance.route_configuration, 'cache_configuration'):
+                    _update_cache_configuration(
+                        instance.route_configuration.cache_configuration,
+                        dynamic_compression,
+                        query_parameter_strip_directive,
+                        query_parameters,
+                        cache_duration)
+            elif caching:
                 if instance.route_configuration.cache_configuration is None:
                     from azext_front_door.vendored_sdks.models import CacheConfiguration
                     instance.route_configuration.cache_configuration = CacheConfiguration(
                         query_parameter_strip_directive='StripNone', dynamic_compression='Enabled')
-                with UpdateContext(instance.route_configuration.cache_configuration) as c:
-                    c.update_param('dynamic_compression', dynamic_compression, False)
-                    c.update_param('query_parameter_strip_directive', query_parameter_strip_directive, False)
-                    c.update_param('query_parameters', query_parameters, True)
-                    c.update_param('cache_duration', cache_duration, False)
+
+                _update_cache_configuration(
+                    instance.route_configuration.cache_configuration,
+                    dynamic_compression,
+                    query_parameter_strip_directive,
+                    query_parameters,
+                    cache_duration)
             else:
                 if hasattr(instance.route_configuration, 'cache_configuration'):
                     instance.route_configuration.cache_configuration = None
@@ -811,8 +871,8 @@ def add_override_azure_managed_rule_set(cmd, resource_group_name, policy_name, r
                 setRule = True
 
     if not setRule:
-        from knack.util import CLIError
-        raise CLIError("type '{}' not found".format(rule_set_type))
+        from azure.cli.core.azclierror import ResourceNotFoundError
+        raise ResourceNotFoundError("type '{}' not found".format(rule_set_type))
     return client.begin_create_or_update(resource_group_name, policy_name, policy)
 
 
@@ -841,8 +901,8 @@ def remove_override_azure_managed_rule_set(cmd, resource_group_name, policy_name
                             removedRule = True
 
     if not removedRule:
-        from knack.util import CLIError
-        raise CLIError("rule '{}' not found".format(rule_id))
+        from azure.cli.core.azclierror import ResourceNotFoundError
+        raise ResourceNotFoundError("rule '{}' not found".format(rule_id))
     return client.begin_create_or_update(resource_group_name, policy_name, policy)
 
 
@@ -857,8 +917,8 @@ def list_override_azure_managed_rule_set(cmd, resource_group_name, policy_name, 
         if rule_set.rule_set_type.upper() == rule_set_type.upper():
             return rule_set.rule_group_overrides
 
-    from knack.util import CLIError
-    raise CLIError("rule set '{}' not found".format(rule_set_type))
+    from azure.cli.core.azclierror import ResourceNotFoundError
+    raise ResourceNotFoundError("rule set '{}' not found".format(rule_set_type))
 
 
 def add_exclusion_azure_managed_rule_set(cmd, resource_group_name, policy_name, rule_set_type,
@@ -866,10 +926,10 @@ def add_exclusion_azure_managed_rule_set(cmd, resource_group_name, policy_name, 
                                          rule_group_id=None, rule_id=None):
     from azext_front_door.vendored_sdks.models import ManagedRuleOverride, ManagedRuleGroupOverride
     from azext_front_door.vendored_sdks.models import ManagedRuleExclusion
-    from knack.util import CLIError
+    from azure.cli.core.azclierror import RequiredArgumentMissingError, ResourceNotFoundError
 
     if rule_id and not rule_group_id:
-        raise CLIError("Must specify rule-group-id of the rule when you specify rule-id")
+        raise RequiredArgumentMissingError("Must specify rule-group-id of the rule when you specify rule-id")
 
     client = cf_waf_policies(cmd.cli_ctx, None)
     policy = client.get(resource_group_name, policy_name)
@@ -891,7 +951,7 @@ def add_exclusion_azure_managed_rule_set(cmd, resource_group_name, policy_name, 
             break
 
     if rule_set_obj is None:
-        raise CLIError("type '{}' not found".format(rule_set_type))
+        raise ResourceNotFoundError("type '{}' not found".format(rule_set_type))
 
     rule_group_override = None
     if rule_group_id is None:
@@ -927,9 +987,9 @@ def add_exclusion_azure_managed_rule_set(cmd, resource_group_name, policy_name, 
         exclusion_holder.exclusions.append(exclusion)
     else:
         if rule_id:
-            raise CLIError("rule {} within group {} within type '{}' not found"
-                           .format(rule_id, rule_group_id, rule_set_type))
-        raise CLIError("group {} within type '{}' not found".format(rule_group_id, rule_set_type))
+            raise ResourceNotFoundError("rule {} within group {} within type '{}' not found"
+                                        .format(rule_id, rule_group_id, rule_set_type))
+        raise ResourceNotFoundError("group {} within type '{}' not found".format(rule_group_id, rule_set_type))
 
     return client.begin_create_or_update(resource_group_name, policy_name, policy)
 
@@ -937,10 +997,10 @@ def add_exclusion_azure_managed_rule_set(cmd, resource_group_name, policy_name, 
 def remove_exclusion_azure_managed_rule_set(cmd, resource_group_name, policy_name, rule_set_type,
                                             match_variable, operator, value,
                                             rule_group_id=None, rule_id=None):
-    from knack.util import CLIError
+    from azure.cli.core.azclierror import RequiredArgumentMissingError, ResourceNotFoundError
 
     if rule_id and not rule_group_id:
-        raise CLIError("Must specify rule-group-id of the rule when you specify rule-id")
+        raise RequiredArgumentMissingError("Must specify rule-group-id of the rule when you specify rule-id")
 
     client = cf_waf_policies(cmd.cli_ctx, None)
     policy = client.get(resource_group_name, policy_name)
@@ -948,7 +1008,7 @@ def remove_exclusion_azure_managed_rule_set(cmd, resource_group_name, policy_nam
     exclusions = None
 
     if not policy.managed_rules.managed_rule_sets:
-        raise CLIError("Exclusion not found")
+        raise ResourceNotFoundError("Exclusion not found")
 
     rule_set_obj = None
     for rule_set in policy.managed_rules.managed_rule_sets:
@@ -962,7 +1022,7 @@ def remove_exclusion_azure_managed_rule_set(cmd, resource_group_name, policy_nam
             exclusions = rule_set_obj.exclusions
         else:
             if not rule_set_obj.rule_group_overrides:
-                raise CLIError("Exclusion not found")
+                raise ResourceNotFoundError("Exclusion not found")
             for rg in rule_set_obj.rule_group_overrides:
                 if rg.rule_group_name.upper() == rule_group_id.upper():
                     rule_group_override = rg
@@ -973,14 +1033,14 @@ def remove_exclusion_azure_managed_rule_set(cmd, resource_group_name, policy_nam
             exclusions = rule_group_override.exclusions
         else:
             if rule_group_override.rules is None:
-                raise CLIError("Exclusion not found")
+                raise ResourceNotFoundError("Exclusion not found")
             for rule in rule_group_override.rules:
                 if rule.rule_id.upper() == rule_id.upper():
                     exclusions = rule.exclusions
                     break
 
     if exclusions is None:
-        raise CLIError("Exclusion not found")
+        raise ResourceNotFoundError("Exclusion not found")
 
     for i, exclusion in enumerate(exclusions):
         if (exclusion.match_variable == match_variable and
@@ -992,19 +1052,19 @@ def remove_exclusion_azure_managed_rule_set(cmd, resource_group_name, policy_nam
 
 def list_exclusion_azure_managed_rule_set(cmd, resource_group_name, policy_name, rule_set_type,
                                           rule_group_id=None, rule_id=None):
-    from knack.util import CLIError
+    from azure.cli.core.azclierror import RequiredArgumentMissingError, ResourceNotFoundError
 
     client = cf_waf_policies(cmd.cli_ctx, None)
     policy = client.get(resource_group_name, policy_name)
 
     if rule_id and not rule_group_id:
-        raise CLIError("Must specify rule-group-id of the rule when you specify rule-id")
+        raise RequiredArgumentMissingError("Must specify rule-group-id of the rule when you specify rule-id")
 
     client = cf_waf_policies(cmd.cli_ctx, None)
     policy = client.get(resource_group_name, policy_name)
 
     if policy.managed_rules.managed_rule_sets is None:
-        raise CLIError("rule set '{}' not found".format(rule_set_type))
+        raise ResourceNotFoundError("rule set '{}' not found".format(rule_set_type))
 
     rule_set_obj = None
     for rule_set in policy.managed_rules.managed_rule_sets:
@@ -1015,10 +1075,10 @@ def list_exclusion_azure_managed_rule_set(cmd, resource_group_name, policy_name,
             break
 
     if rule_set_obj is None:
-        raise CLIError("rule set '{}' not found".format(rule_set_type))
+        raise ResourceNotFoundError("rule set '{}' not found".format(rule_set_type))
 
     if rule_set_obj.rule_group_overrides is None:
-        raise CLIError("rule set '{}' has no overrides".format(rule_set_type))
+        raise RequiredArgumentMissingError("rule set '{}' has no overrides".format(rule_set_type))
 
     rule_group_override = None
     for rg in rule_set_obj.rule_group_overrides:
@@ -1030,16 +1090,16 @@ def list_exclusion_azure_managed_rule_set(cmd, resource_group_name, policy_name,
             break
 
     if rule_group_override is None:
-        raise CLIError("rule group '{}' not found".format(rule_group_id))
+        raise ResourceNotFoundError("rule group '{}' not found".format(rule_group_id))
 
     if rule_group_override.rules is None:
-        raise CLIError("rule '{}' not found".format(rule_id))
+        raise ResourceNotFoundError("rule '{}' not found".format(rule_id))
 
     for rule in rule_group_override.rules:
         if rule.rule_id.upper() == rule_id.upper():
             return rule.exclusions or []
 
-    raise CLIError("rule '{}' not found".format(rule_id))
+    raise ResourceNotFoundError("rule '{}' not found".format(rule_id))
 
 
 def list_managed_rules_definitions(cmd):
@@ -1051,8 +1111,8 @@ def list_managed_rules_definitions(cmd):
 def create_wp_custom_rule(cmd, resource_group_name, policy_name, rule_name, priority, rule_type, action,
                           rate_limit_duration=None, rate_limit_threshold=None, disabled=None):
     if rule_type.lower() == "ratelimitrule" and (rate_limit_duration is None or rate_limit_threshold is None):
-        from knack.util import CLIError
-        raise CLIError("rate_limit_duration and rate_limit_threshold are required for a RateLimitRule")
+        from azure.cli.core.azclierror import RequiredArgumentMissingError
+        raise RequiredArgumentMissingError("rate_limit_duration and rate_limit_threshold are required for a RateLimitRule")
 
     from azext_front_door.vendored_sdks.models import CustomRule
     client = cf_waf_policies(cmd.cli_ctx, None)
@@ -1088,8 +1148,8 @@ def update_wp_custom_rule(cmd, resource_group_name, policy_name, rule_name, prio
                 c.update_param('enabled_state', 'Enabled' if not disabled else 'Disabled', 'Disabled')
 
     if not foundRule:
-        from knack.util import CLIError
-        raise CLIError("rule '{}' not found".format(rule_name))
+        from azure.cli.core.azclierror import ResourceNotFoundError
+        raise ResourceNotFoundError("rule '{}' not found".format(rule_name))
 
     return cached_put(cmd, client.begin_create_or_update, policy, resource_group_name, policy_name).result()
 
@@ -1113,8 +1173,8 @@ def show_wp_custom_rule(cmd, resource_group_name, policy_name, rule_name):
     try:
         return next(x for x in policy.custom_rules.rules if x.name.lower() == rule_name.lower())
     except StopIteration:
-        from knack.util import CLIError
-        raise CLIError("rule '{}' not found".format(rule_name))
+        from azure.cli.core.azclierror import ResourceNotFoundError
+        raise ResourceNotFoundError("rule '{}' not found".format(rule_name))
 
 
 def remove_custom_rule_match_condition(cmd, resource_group_name, policy_name, rule_name,
@@ -1128,14 +1188,14 @@ def remove_custom_rule_match_condition(cmd, resource_group_name, policy_name, ru
             foundRule = True
 
             if index >= len(rule.match_conditions):
-                from knack.util import CLIError
-                raise CLIError("Index out of bounds")
+                from azure.cli.core.azclierror import InvalidArgumentValueError
+                raise InvalidArgumentValueError("Index out of bounds")
 
             rule.match_conditions = [v for (i, v) in enumerate(rule.match_conditions) if i != index]
 
     if not foundRule:
-        from knack.util import CLIError
-        raise CLIError("rule '{}' not found".format(rule_name))
+        from azure.cli.core.azclierror import ResourceNotFoundError
+        raise ResourceNotFoundError("rule '{}' not found".format(rule_name))
 
     return cached_put(cmd, client.begin_create_or_update, policy, resource_group_name, policy_name).result()
 
@@ -1167,8 +1227,8 @@ def add_custom_rule_match_condition(cmd, resource_group_name, policy_name, rule_
             ))
 
     if not foundRule:
-        from knack.util import CLIError
-        raise CLIError("rule '{}' not found".format(rule_name))
+        from azure.cli.core.azclierror import ResourceNotFoundError
+        raise ResourceNotFoundError("rule '{}' not found".format(rule_name))
 
     return cached_put(cmd, client.begin_create_or_update, policy, resource_group_name, policy_name).result()
 
@@ -1181,8 +1241,8 @@ def list_custom_rule_match_conditions(cmd, resource_group_name, policy_name, rul
         if rule.name.upper() == rule_name.upper():
             return rule.match_conditions
 
-    from knack.util import CLIError
-    raise CLIError("rule '{}' not found".format(rule_name))
+    from azure.cli.core.azclierror import ResourceNotFoundError
+    raise ResourceNotFoundError("rule '{}' not found".format(rule_name))
 # endregion
 
 
@@ -1254,8 +1314,8 @@ def delete_rules_engine_rule(cmd, resource_group_name, front_door_name, rules_en
     rules_engine = client.get(resource_group_name, front_door_name, rules_engine_name)
     rules_engine.rules = [x for x in rules_engine.rules if x.name.lower() != rule_name.lower()]
     if not rules_engine.rules:
-        from knack.util import CLIError
-        raise CLIError("Rules Engine must at least contain one rule")
+        from azure.cli.core.azclierror import BadRequestError
+        raise BadRequestError("Rules Engine must at least contain one rule")
 
     rules_engine_parameters = RulesEngine(rules=rules_engine.rules)
     return client.begin_create_or_update(resource_group_name,
@@ -1270,8 +1330,8 @@ def show_rules_engine_rule(cmd, resource_group_name, front_door_name, rules_engi
     try:
         return next(x for x in rules_engine.rules if x.name.lower() == rule_name.lower())
     except StopIteration:
-        from knack.util import CLIError
-        raise CLIError("rule '{}' not found".format(rule_name))
+        from azure.cli.core.azclierror import ResourceNotFoundError
+        raise ResourceNotFoundError("rule '{}' not found".format(rule_name))
 
 
 def list_rules_engine_rule(cmd, resource_group_name, front_door_name, rules_engine_name):
@@ -1296,8 +1356,8 @@ def update_rules_engine_rule(cmd, resource_group_name, front_door_name,
             break
 
     if not found_rule:
-        from knack.util import CLIError
-        raise CLIError("rule '{}' not found".format(rule_name))
+        from azure.cli.core.azclierror import ResourceNotFoundError
+        raise ResourceNotFoundError("rule '{}' not found".format(rule_name))
 
     rules_engine_parameters = RulesEngine(rules=rules_engine.rules)
     return client.begin_create_or_update(resource_group_name,
@@ -1328,8 +1388,8 @@ def add_rules_engine_condition(cmd, resource_group_name, front_door_name, rules_
                 rule.match_conditions.append(condition)
 
     if not found_rule:
-        from knack.util import CLIError
-        raise CLIError("rule '{}' not found".format(rule_name))
+        from azure.cli.core.azclierror import ResourceNotFoundError
+        raise ResourceNotFoundError("rule '{}' not found".format(rule_name))
 
     rules_engine_parameters = RulesEngine(rules=rules_engine.rules)
     return client.begin_create_or_update(resource_group_name,
@@ -1350,14 +1410,14 @@ def remove_rules_engine_condition(cmd, resource_group_name,
             found_rule = True
 
             if index >= len(rule.match_conditions):
-                from knack.util import CLIError
-                raise CLIError("Index out of bounds")
+                from azure.cli.core.azclierror import InvalidArgumentValueError
+                raise InvalidArgumentValueError("Index out of bounds")
 
             rule.match_conditions = [v for (i, v) in enumerate(rule.match_conditions) if i != index]
 
     if not found_rule:
-        from knack.util import CLIError
-        raise CLIError("rule '{}' not found".format(rule_name))
+        from azure.cli.core.azclierror import ResourceNotFoundError
+        raise ResourceNotFoundError("rule '{}' not found".format(rule_name))
 
     rules_engine_parameters = RulesEngine(rules=rules_engine.rules)
     return client.begin_create_or_update(resource_group_name,
@@ -1376,8 +1436,8 @@ def list_rules_engine_condition(cmd, resource_group_name,
         if rule.name.upper() == rule_name.upper():
             return rule.match_conditions
 
-    from knack.util import CLIError
-    raise CLIError("rule '{}' not found".format(rule_name))
+    from azure.cli.core.azclierror import ResourceNotFoundError
+    raise ResourceNotFoundError("rule '{}' not found".format(rule_name))
 
 
 def add_rules_engine_action(cmd, resource_group_name, front_door_name, rules_engine_name, rule_name,
@@ -1443,8 +1503,8 @@ def add_rules_engine_action(cmd, resource_group_name, front_door_name, rules_eng
             add_action_helper(rule)
 
     if not found_rule:
-        from knack.util import CLIError
-        raise CLIError("rule '{}' not found".format(rule_name))
+        from azure.cli.core.azclierror import ResourceNotFoundError
+        raise ResourceNotFoundError("rule '{}' not found".format(rule_name))
 
     rules_engine_parameters = RulesEngine(rules=rules_engine.rules)
     return client.begin_create_or_update(resource_group_name,
@@ -1457,8 +1517,8 @@ def remove_rules_engine_action(cmd, resource_group_name, front_door_name, rules_
                                rule_name, action_type, index=None):
     def check_index(arr):
         if index is None or index >= len(arr):
-            from knack.util import CLIError
-            raise CLIError("Index out of bounds")
+            from azure.cli.core.azclierror import InvalidArgumentValueError
+            raise InvalidArgumentValueError("Index out of bounds")
 
     def remove_action_helper(rule):
         if action_type.lower() == 'requestheader':
@@ -1486,12 +1546,12 @@ def remove_rules_engine_action(cmd, resource_group_name, front_door_name, rules_
             if len(rule.action.request_header_actions) <= 0 and \
                len(rule.action.response_header_actions) <= 0 and \
                rule.action.route_configuration_override is None:
-                from knack.util import CLIError
-                raise CLIError("Cannot remove all actions from rule '{}'".format(rule_name))
+                from azure.cli.core.azclierror import BadRequestError
+                raise BadRequestError("Cannot remove all actions from rule '{}'".format(rule_name))
 
     if not found_rule:
-        from knack.util import CLIError
-        raise CLIError("rule '{}' not found".format(rule_name))
+        from azure.cli.core.azclierror import ResourceNotFoundError
+        raise ResourceNotFoundError("rule '{}' not found".format(rule_name))
 
     rules_engine_parameters = RulesEngine(rules=rules_engine.rules)
     return client.begin_create_or_update(resource_group_name,
@@ -1510,7 +1570,7 @@ def list_rules_engine_action(cmd, resource_group_name,
         if rule.name.upper() == rule_name.upper():
             return rule.action
 
-    from knack.util import CLIError
-    raise CLIError("rule '{}' not found".format(rule_name))
+    from azure.cli.core.azclierror import ResourceNotFoundError
+    raise ResourceNotFoundError("rule '{}' not found".format(rule_name))
 
 # endregion

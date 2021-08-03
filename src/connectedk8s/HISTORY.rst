@@ -3,6 +3,24 @@
 Release History
 ===============
 
+1.1.6
+++++++
+* Moved to track2 SDK
+* `az connectedk8s connect`: Added onboarding timeout parameter
+* `az connectedk8s upgrade`: Added upgrade timeout parameter
+* Release namespace detection bug fix in multiple commands
+
+
+1.1.5
+++++++
+* Add custom-locations oid parameter for spn scenario
+
+
+1.1.4
+++++++
+* Add compatible logic for the track 2 migration of resource dependence
+
+
 1.1.3
 ++++++
 * Fix for list_node() sdk function for AKS v1.19.x clusters

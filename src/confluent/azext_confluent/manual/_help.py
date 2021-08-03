@@ -16,6 +16,17 @@ helps['confluent'] = """
     short-summary: Manage confluent resources
 """
 
+helps['confluent organization create'] = """
+    type: command
+    short-summary: "Create Organization resource."
+    examples:
+      - name: Create organization
+        text: |-
+               az confluent organization create --location "West US" --tags Environment="Dev" --name "myOrganization" \
+--resource-group "myResourceGroup" --offer-id "confluent-cloud-azure-prod" --plan-id "confluent-cloud-azure-payg-prod" \
+--plan-name "Confluent Cloud - Pay as you Go" --publisher-id "confluentinc" --term-unit "P1M"
+"""
+
 helps['confluent organization show'] = """
     type: command
     short-summary: "Get the properties of a specific Organization resource."
@@ -38,4 +49,18 @@ helps['confluent organization delete'] = """
       - name: Delete organization using IDs
         text: |-
                az confluent organization delete --ids "/subscriptions/{SubID}/resourceGroups/{ResourceGroup}/providers/Microsoft.Confluent/organizations/{myOrganization}"
+"""
+
+helps['confluent offer-detail'] = """
+    type: group
+    short-summary: Manage confluent offer details
+"""
+
+helps['confluent offer-detail show'] = """
+    type: command
+    short-summary: "Get the offer details for available offers."
+    examples:
+      - name: Show default offer details
+        text: |-
+               az confluent offer-detail show
 """

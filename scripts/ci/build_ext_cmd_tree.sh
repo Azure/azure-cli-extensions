@@ -18,8 +18,9 @@ export AZURE_CORE_COLLECT_TELEMETRY=False
 export AZURE_EXTENSION_INDEX_URL=https://raw.githubusercontent.com/Azure/azure-cli-extensions/master/src/index.json
 
 output=$(az extension list-available --query [].name -otsv)
-# azure-cli-iot-ext is the deprecated old versions of the renamed azure-iot extension
-blocklist=("azure-cli-iot-ext")
+# azure-cli-ml is replaced by ml
+# TODO: azure-batch-cli-extensions is not compatible with latest batch SDK.
+blocklist=("azure-cli-ml" "azure-batch-cli-extensions")
 
 rm -f ~/.azure/extCmdTreeToUpload.json
 

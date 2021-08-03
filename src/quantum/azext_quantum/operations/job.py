@@ -42,11 +42,10 @@ def build(cmd, target_id=None, project=None):
 
     args = ["dotnet", "build"]
 
-    args.append(f"-property:ExecutionTarget={target.target_id}")
-
     if project:
-        args.append("--project")
         args.append(project)
+
+    args.append(f"-property:ExecutionTarget={target.target_id}")
 
     logger.debug("Building project with arguments:")
     logger.debug(args)
@@ -102,8 +101,8 @@ def _generate_submit_args(program_args, ws, target, token, project, job_name, sh
     args.append("--aad-token")
     args.append(token)
 
-    args.append("--base-uri")
-    args.append(base_url(ws.location))
+    args.append("--location")
+    args.append(ws.location)
 
     args.extend(program_args)
 
@@ -111,6 +110,22 @@ def _generate_submit_args(program_args, ws, target, token, project, job_name, sh
     logger.debug(args)
 
     return args
+
+
+def _set_cli_version():
+    # This is a temporary approach for runtime compatibility between a runtime version
+    # before support for the --user-agent parameter is added. We'll rely on the environment
+    # variable before the stand alone executable submits to the service.
+    try:
+        import os
+        from .._client_factory import get_appid
+        os.environ["USER_AGENT"] = get_appid()
+    except:
+        logger.warning("User Agent environment variable could not be set.")
+
+
+def _has_completed(job):
+    return job.status in ("Succeeded", "Failed", "Cancelled")
 
 
 def submit(cmd, program_args, resource_group_name=None, workspace_name=None, location=None,
@@ -132,12 +147,16 @@ def submit(cmd, program_args, resource_group_name=None, workspace_name=None, loc
     token = _get_data_credentials(cmd.cli_ctx, ws.subscription).get_token().token
 
     args = _generate_submit_args(program_args, ws, target, token, project, job_name, shots, storage)
+    _set_cli_version()
 
     import subprocess
     result = subprocess.run(args, stdout=subprocess.PIPE, check=False)
 
     if result.returncode == 0:
-        job_id = result.stdout.decode('ascii').strip()
+        output = result.stdout.decode('ascii').strip()
+        # Retrieve the job-id as the last line from standard output.
+        job_id = output.split()[-1]
+        # Query for the job and return status to caller.
         return get(cmd, job_id, resource_group_name, workspace_name, location)
 
     raise CLIError("Failed to submit job.")
@@ -173,15 +192,14 @@ def output(cmd, job_id, resource_group_name=None, workspace_name=None, location=
     from azure.cli.command_modules.storage._client_factory import blob_data_service_factory
 
     path = os.path.join(tempfile.gettempdir(), job_id)
+    info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
+    client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
+    job = client.get(job_id)
 
     if os.path.exists(path):
         logger.debug("Using existing blob from %s", path)
     else:
         logger.debug("Downloading job results blob into %s", path)
-
-        info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
-        client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
-        job = client.get(job_id)
 
         if job.status != "Succeeded":
             return f"Job status: {job.status}. Output only available if Succeeded."
@@ -191,7 +209,22 @@ def output(cmd, job_id, resource_group_name=None, workspace_name=None, location=
         blob_service.get_blob_to_path(args['container'], args['blob'], path)
 
     with open(path) as json_file:
-        data = json.load(json_file)
+        if job.target.startswith("microsoft.simulator"):
+
+            lines = [line.strip() for line in json_file.readlines()]
+            result_start_line = len(lines) - 1
+            if lines[-1].endswith('"'):
+                while not lines[result_start_line].startswith('"'):
+                    result_start_line -= 1
+
+            print('\n'.join(lines[:result_start_line]))
+            result = ' '.join(lines[result_start_line:])[1:-1]  # seems the cleanest version to display
+            print("_" * len(result) + "\n")
+
+            json_string = "{ \"histogram\" : { \"" + result + "\" : 1 } }"
+            data = json.loads(json_string)
+        else:
+            data = json.load(json_file)
         return data
 
 
@@ -201,9 +234,6 @@ def wait(cmd, job_id, resource_group_name=None, workspace_name=None, location=No
     """
     import time
 
-    def has_completed(job):
-        return job.status in ("Succeeded", "Failed", "Cancelled")
-
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
     client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
 
@@ -212,7 +242,7 @@ def wait(cmd, job_id, resource_group_name=None, workspace_name=None, location=No
     poll_wait = 0.2
     job = client.get(job_id)
 
-    while not has_completed(job):
+    while not _has_completed(job):
         print('.', end='', flush=True)
         wait_indicators_used = True
         time.sleep(poll_wait)
@@ -242,3 +272,22 @@ def run(cmd, program_args, resource_group_name=None, workspace_name=None, locati
         return job
 
     return output(cmd, job.id, resource_group_name, workspace_name)
+
+
+def cancel(cmd, job_id, resource_group_name=None, workspace_name=None, location=None):
+    """
+    Request to cancel a job on Azure Quantum if it hasn't completed.
+    """
+    info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
+    client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
+    job = client.get(job_id)
+
+    if _has_completed(job):
+        print(f"Job {job_id} has already completed with status: {job.status}.")
+        return
+
+    # If the job hasn't succeeded or failed, attempt to cancel.
+    client.cancel(job_id)
+
+    # Wait for the job status to complete or be reported as cancelled
+    return wait(cmd, job_id, info.resource_group, info.name, info.location)
