@@ -121,6 +121,7 @@ def load_arguments(self, _):
         c.argument('auto_upgrade_channel', arg_type=get_enum_type([CONST_RAPID_UPGRADE_CHANNEL, CONST_STABLE_UPGRADE_CHANNEL, CONST_PATCH_UPGRADE_CHANNEL, CONST_NODE_IMAGE_UPGRADE_CHANNEL, CONST_NONE_UPGRADE_CHANNEL]))
         c.argument('kubelet_config', type=str)
         c.argument('linux_os_config', type=str)
+        c.argument('http_proxy_config', options_list=['--http-proxy-config'], type=str)
         c.argument('enable_pod_identity', action='store_true')
         c.argument('appgw_name', options_list=['--appgw-name'], arg_group='Application Gateway')
         c.argument('appgw_subnet_prefix', options_list=['--appgw-subnet-prefix'], arg_group='Application Gateway', deprecate_info=c.deprecate(redirect='--appgw-subnet-cidr', hide=True))
@@ -238,6 +239,7 @@ def load_arguments(self, _):
 
     with self.argument_context('aks nodepool upgrade') as c:
         c.argument('max_surge', type=str, validator=validate_max_surge)
+        c.argument('aks_custom_headers')
 
     with self.argument_context('aks nodepool update') as c:
         c.argument('enable_cluster_autoscaler', options_list=["--enable-cluster-autoscaler", "-e"], action='store_true')
