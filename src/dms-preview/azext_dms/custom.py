@@ -14,12 +14,9 @@ from azure.cli.command_modules.dms._client_factory import dms_cf_projects
 from azure.cli.command_modules.dms.custom import (create_or_update_project as core_create_or_update_project,
                                                   create_task as core_create_task)
 from azext_dms.vendored_sdks.datamigration.models import (Project,
+                                                          ProjectTask,
                                                           MySqlConnectionInfo,
                                                           PostgreSqlConnectionInfo,
-                                                          MigrateSyncCompleteCommandInput,
-                                                          MigrateMySqlAzureDbForMySqlSyncTaskProperties,
-                                                          MigratePostgreSqlAzureDbForPostgreSqlSyncTaskProperties,
-                                                          MigrateSyncCompleteCommandProperties,
                                                           MigrateMongoDbTaskProperties,
                                                           MongoDbConnectionInfo,
                                                           MongoDbCancelCommand,
@@ -28,9 +25,7 @@ from azext_dms.vendored_sdks.datamigration.models import (Project,
                                                           MongoDbFinishCommandInput,
                                                           MongoDbRestartCommand,
                                                           ValidateMongoDbTaskProperties)
-from azext_dms.scenario_inputs import (get_migrate_mysql_to_azuredbformysql_sync_input,
-                                       get_migrate_postgresql_to_azuredbforpostgresql_sync_input,
-                                       get_mongo_to_mongo_input)
+from azext_dms.scenario_inputs import (get_mongo_to_mongo_input)
 
 logger = get_logger(__name__)
 
@@ -53,15 +48,7 @@ def create_or_update_project(
 
     # Validation: Test scenario eligibility
     if not scenario_handled_in_extension:
-        # If not an extension scenario, run CLI core method
-        # TODO: We currently don't have any CLI core code to perform any validations
-        # because of this we need to raise the error here.
-
-        # TODO: Remove this check after validations are added to core
-        if source_platform != "sql" or target_platform != "sqldb":
-            raise CLIError("The provided source-platform, target-platform combination is not appropriate. \n\
-Please refer to the help file 'az dms project create -h' for the supported scenarios.")
-
+        # If the core also doesn't handle this scenario, this will return with a failure.
         return core_create_or_update_project(
             client,
             project_name,
@@ -86,22 +73,21 @@ Please refer to the help file 'az dms project create -h' for the supported scena
 
 
 # region Task
-def create_task(
-        cmd,
-        client,
-        resource_group_name,
-        service_name,
-        project_name,
-        task_name,
-        task_type,
-        source_connection_json,
-        target_connection_json,
-        database_options_json,
-        enable_schema_validation=False,
-        enable_data_integrity_validation=False,
-        enable_query_analysis_validation=False,
-        validate_only=False,
-        validated_task_name=None):
+def create_task(cmd,
+                client,
+                resource_group_name,
+                service_name,
+                project_name,
+                task_name,
+                source_connection_json,
+                target_connection_json,
+                database_options_json,
+                task_type="",
+                enable_schema_validation=False,
+                enable_data_integrity_validation=False,
+                enable_query_analysis_validation=False,
+                validate_only=False,
+                validated_task_name=None):
 
     # Get source and target platform abd set inputs to lowercase
     source_platform, target_platform = get_project_platforms(cmd,
@@ -116,22 +102,8 @@ def create_task(
     # Validation: Test scenario eligibility
     if not scenario_handled_in_extension:
         # If not an extension scenario, run CLI core method
-
-        # TODO: Remove this check after validations are added to core
-        if source_platform != "sql" or target_platform != "sqldb":
-            raise CLIError("The combination of the provided task-type and the project's \
-source-platform and target-platform is not appropriate. \n\
-Please refer to the help file 'az dms project task create -h' \
-for the supported scenarios.")
-
-        # TODO: Calling this validates our inputs. Remove this check after this function is added to core
-        transform_json_inputs(source_connection_json,
-                              source_platform,
-                              target_connection_json,
-                              target_platform,
-                              database_options_json)
-
-        return core_create_task(client,
+        return core_create_task(cmd,
+                                client,
                                 resource_group_name,
                                 service_name,
                                 project_name,
@@ -139,6 +111,7 @@ for the supported scenarios.")
                                 source_connection_json,
                                 target_connection_json,
                                 database_options_json,
+                                task_type,
                                 enable_schema_validation,
                                 enable_data_integrity_validation,
                                 enable_query_analysis_validation)
@@ -186,52 +159,12 @@ validate-only task.")
                                        source_connection_info,
                                        target_connection_info)
 
+    parameters = ProjectTask(properties=task_properties)
     return client.create_or_update(group_name=resource_group_name,
                                    service_name=service_name,
                                    project_name=project_name,
                                    task_name=task_name,
-                                   properties=task_properties)
-
-
-def cutover_sync_task(
-        cmd,
-        client,
-        resource_group_name,
-        service_name,
-        project_name,
-        task_name,
-        object_name=None,
-        immediate=False):
-    # If object name is empty, treat this as cutting over the entire online migration.
-    # Otherwise, for scenarios that support it, just cut over the migration on the specified object.
-    # 'input' is a built in function. Even though we can technically use it, it's not recommended.
-    # https://stackoverflow.com/questions/20670732/is-input-a-keyword-in-python
-
-    source_platform, target_platform = get_project_platforms(cmd,
-                                                             project_name=project_name,
-                                                             service_name=service_name,
-                                                             resource_group_name=resource_group_name)
-    st = get_scenario_type(source_platform, target_platform, "onlinemigration")
-
-    if st in [ScenarioType.mysql_azuremysql_online,
-              ScenarioType.postgres_azurepostgres_online]:
-        if object_name is None:
-            raise CLIError("The argument 'object_name' must be present for this task type.")
-        command_input = MigrateSyncCompleteCommandInput(database_name=object_name)
-        command_properties_model = MigrateSyncCompleteCommandProperties
-    elif st == ScenarioType.mongo_mongo_online:
-        command_input = MongoDbFinishCommandInput(object_name=object_name, immediate=immediate)
-        command_properties_model = MongoDbFinishCommand
-    else:
-        raise CLIError("The supplied project's source and target do not support cutting over the migration.")
-
-    run_command(client,
-                command_input,
-                command_properties_model,
-                resource_group_name,
-                service_name,
-                project_name,
-                task_name)
+                                   parameters=parameters)
 
 
 def restart_task(
@@ -319,9 +252,6 @@ def extension_handles_scenario(
         task_type=""):
     # Remove scenario types from this list when moving them out of this extension (preview) and into the core CLI (GA)
     ExtensionScenarioTypes = [
-        ScenarioType.sql_sqldb_online,
-        ScenarioType.mysql_azuremysql_online,
-        ScenarioType.postgres_azurepostgres_online,
         ScenarioType.mongo_mongo_offline,
         ScenarioType.mongo_mongo_online]
     return get_scenario_type(source_platform, target_platform, task_type) in ExtensionScenarioTypes
