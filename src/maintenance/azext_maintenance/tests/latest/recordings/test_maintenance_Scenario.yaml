@@ -19,7 +19,7 @@ interactions:
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001?api-version=2020-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001?api-version=2021-04-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001","name":"clitest000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2021-05-13T15:35:33Z"},"properties":{"provisioningState":"Succeeded"}}'
@@ -207,7 +207,7 @@ interactions:
       3389}}], "frontendIPConfigurations": [{"name": "loadBalancerFrontEnd", "properties":
       {"publicIPAddress": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/publicIPAddresses/clitestvmssLBPublicIP"}}}]}},
       {"type": "Microsoft.Compute/virtualMachineScaleSets", "name": "clitestvmss",
-      "location": "westus", "tags": {}, "apiVersion": "2020-12-01", "dependsOn": ["Microsoft.Network/virtualNetworks/clitestvmssVNET",
+      "location": "westus", "tags": {}, "apiVersion": "2021-03-01", "dependsOn": ["Microsoft.Network/virtualNetworks/clitestvmssVNET",
       "Microsoft.Network/loadBalancers/clitestvmssLB"], "sku": {"name": "Standard_DS1_v2",
       "capacity": 1}, "properties": {"overprovision": true, "upgradePolicy": {"mode":
       "Automatic", "rollingUpgradePolicy": {"maxBatchInstancePercent": null, "maxUnhealthyInstancePercent":
@@ -250,13 +250,13 @@ interactions:
       accept-language:
       - en-US
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2020-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2021-04-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Resources/deployments/vmss_deploy_sPwcW84BEzNmKdZ3NL8UxWSy2ri90kHS","name":"vmss_deploy_sPwcW84BEzNmKdZ3NL8UxWSy2ri90kHS","type":"Microsoft.Resources/deployments","properties":{"templateHash":"5281358231619270912","parameters":{"adminPassword":{"type":"SecureString"}},"mode":"Incremental","provisioningState":"Accepted","timestamp":"2021-05-13T15:35:47.4442415Z","duration":"PT2.0263205S","correlationId":"5869ce7d-5cbc-40cd-8240-42c68d06f72c","providers":[{"namespace":"Microsoft.Network","resourceTypes":[{"resourceType":"virtualNetworks","locations":["westus"]},{"resourceType":"publicIPAddresses","locations":["westus"]},{"resourceType":"loadBalancers","locations":["westus"]}]},{"namespace":"Microsoft.Compute","resourceTypes":[{"resourceType":"virtualMachineScaleSets","locations":["westus"]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/clitestvmssVNET","resourceType":"Microsoft.Network/virtualNetworks","resourceName":"clitestvmssVNET"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/publicIPAddresses/clitestvmssLBPublicIP","resourceType":"Microsoft.Network/publicIPAddresses","resourceName":"clitestvmssLBPublicIP"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/loadBalancers/clitestvmssLB","resourceType":"Microsoft.Network/loadBalancers","resourceName":"clitestvmssLB"},{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/clitestvmssVNET","resourceType":"Microsoft.Network/virtualNetworks","resourceName":"clitestvmssVNET"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/loadBalancers/clitestvmssLB","resourceType":"Microsoft.Network/loadBalancers","resourceName":"clitestvmssLB"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss","resourceType":"Microsoft.Compute/virtualMachineScaleSets","resourceName":"clitestvmss"}]}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/vmss_deploy_sPwcW84BEzNmKdZ3NL8UxWSy2ri90kHS/operationStatuses/08585806867400597189?api-version=2020-10-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/vmss_deploy_sPwcW84BEzNmKdZ3NL8UxWSy2ri90kHS/operationStatuses/08585806867400597189?api-version=2021-04-01
       cache-control:
       - no-cache
       content-length:
@@ -296,7 +296,7 @@ interactions:
         msrest/0.6.21 msrest_azure/0.6.4 azure-mgmt-resource/12.1.0 Azure-SDK-For-Python
         AZURECLI/2.23.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585806867400597189?api-version=2020-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585806867400597189?api-version=2021-04-01
   response:
     body:
       string: '{"status":"Running"}'
@@ -340,7 +340,7 @@ interactions:
         msrest/0.6.21 msrest_azure/0.6.4 azure-mgmt-resource/12.1.0 Azure-SDK-For-Python
         AZURECLI/2.23.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585806867400597189?api-version=2020-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585806867400597189?api-version=2021-04-01
   response:
     body:
       string: '{"status":"Running"}'
@@ -384,7 +384,7 @@ interactions:
         msrest/0.6.21 msrest_azure/0.6.4 azure-mgmt-resource/12.1.0 Azure-SDK-For-Python
         AZURECLI/2.23.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585806867400597189?api-version=2020-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585806867400597189?api-version=2021-04-01
   response:
     body:
       string: '{"status":"Running"}'
@@ -428,7 +428,7 @@ interactions:
         msrest/0.6.21 msrest_azure/0.6.4 azure-mgmt-resource/12.1.0 Azure-SDK-For-Python
         AZURECLI/2.23.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585806867400597189?api-version=2020-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585806867400597189?api-version=2021-04-01
   response:
     body:
       string: '{"status":"Running"}'
@@ -472,7 +472,7 @@ interactions:
         msrest/0.6.21 msrest_azure/0.6.4 azure-mgmt-resource/12.1.0 Azure-SDK-For-Python
         AZURECLI/2.23.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585806867400597189?api-version=2020-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585806867400597189?api-version=2021-04-01
   response:
     body:
       string: '{"status":"Running"}'
@@ -516,7 +516,7 @@ interactions:
         msrest/0.6.21 msrest_azure/0.6.4 azure-mgmt-resource/12.1.0 Azure-SDK-For-Python
         AZURECLI/2.23.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585806867400597189?api-version=2020-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585806867400597189?api-version=2021-04-01
   response:
     body:
       string: '{"status":"Running"}'
@@ -560,7 +560,7 @@ interactions:
         msrest/0.6.21 msrest_azure/0.6.4 azure-mgmt-resource/12.1.0 Azure-SDK-For-Python
         AZURECLI/2.23.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585806867400597189?api-version=2020-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585806867400597189?api-version=2021-04-01
   response:
     body:
       string: '{"status":"Running"}'
@@ -604,7 +604,7 @@ interactions:
         msrest/0.6.21 msrest_azure/0.6.4 azure-mgmt-resource/12.1.0 Azure-SDK-For-Python
         AZURECLI/2.23.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585806867400597189?api-version=2020-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585806867400597189?api-version=2021-04-01
   response:
     body:
       string: '{"status":"Running"}'
@@ -648,7 +648,7 @@ interactions:
         msrest/0.6.21 msrest_azure/0.6.4 azure-mgmt-resource/12.1.0 Azure-SDK-For-Python
         AZURECLI/2.23.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585806867400597189?api-version=2020-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585806867400597189?api-version=2021-04-01
   response:
     body:
       string: '{"status":"Running"}'
@@ -692,7 +692,7 @@ interactions:
         msrest/0.6.21 msrest_azure/0.6.4 azure-mgmt-resource/12.1.0 Azure-SDK-For-Python
         AZURECLI/2.23.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585806867400597189?api-version=2020-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585806867400597189?api-version=2021-04-01
   response:
     body:
       string: '{"status":"Running"}'
@@ -736,7 +736,7 @@ interactions:
         msrest/0.6.21 msrest_azure/0.6.4 azure-mgmt-resource/12.1.0 Azure-SDK-For-Python
         AZURECLI/2.23.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585806867400597189?api-version=2020-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585806867400597189?api-version=2021-04-01
   response:
     body:
       string: '{"status":"Running"}'
@@ -780,7 +780,7 @@ interactions:
         msrest/0.6.21 msrest_azure/0.6.4 azure-mgmt-resource/12.1.0 Azure-SDK-For-Python
         AZURECLI/2.23.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585806867400597189?api-version=2020-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585806867400597189?api-version=2021-04-01
   response:
     body:
       string: '{"status":"Running"}'
@@ -824,7 +824,7 @@ interactions:
         msrest/0.6.21 msrest_azure/0.6.4 azure-mgmt-resource/12.1.0 Azure-SDK-For-Python
         AZURECLI/2.23.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585806867400597189?api-version=2020-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585806867400597189?api-version=2021-04-01
   response:
     body:
       string: '{"status":"Running"}'
@@ -868,7 +868,7 @@ interactions:
         msrest/0.6.21 msrest_azure/0.6.4 azure-mgmt-resource/12.1.0 Azure-SDK-For-Python
         AZURECLI/2.23.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585806867400597189?api-version=2020-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585806867400597189?api-version=2021-04-01
   response:
     body:
       string: '{"status":"Running"}'
@@ -912,7 +912,7 @@ interactions:
         msrest/0.6.21 msrest_azure/0.6.4 azure-mgmt-resource/12.1.0 Azure-SDK-For-Python
         AZURECLI/2.23.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585806867400597189?api-version=2020-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585806867400597189?api-version=2021-04-01
   response:
     body:
       string: '{"status":"Running"}'
@@ -956,7 +956,7 @@ interactions:
         msrest/0.6.21 msrest_azure/0.6.4 azure-mgmt-resource/12.1.0 Azure-SDK-For-Python
         AZURECLI/2.23.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585806867400597189?api-version=2020-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585806867400597189?api-version=2021-04-01
   response:
     body:
       string: '{"status":"Succeeded"}'
@@ -1000,7 +1000,7 @@ interactions:
         msrest/0.6.21 msrest_azure/0.6.4 azure-mgmt-resource/12.1.0 Azure-SDK-For-Python
         AZURECLI/2.23.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2020-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2021-04-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Resources/deployments/vmss_deploy_sPwcW84BEzNmKdZ3NL8UxWSy2ri90kHS","name":"vmss_deploy_sPwcW84BEzNmKdZ3NL8UxWSy2ri90kHS","type":"Microsoft.Resources/deployments","properties":{"templateHash":"5281358231619270912","parameters":{"adminPassword":{"type":"SecureString"}},"mode":"Incremental","provisioningState":"Succeeded","timestamp":"2021-05-13T15:43:41.2166237Z","duration":"PT7M55.7987027S","correlationId":"5869ce7d-5cbc-40cd-8240-42c68d06f72c","providers":[{"namespace":"Microsoft.Network","resourceTypes":[{"resourceType":"virtualNetworks","locations":["westus"]},{"resourceType":"publicIPAddresses","locations":["westus"]},{"resourceType":"loadBalancers","locations":["westus"]}]},{"namespace":"Microsoft.Compute","resourceTypes":[{"resourceType":"virtualMachineScaleSets","locations":["westus"]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/clitestvmssVNET","resourceType":"Microsoft.Network/virtualNetworks","resourceName":"clitestvmssVNET"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/publicIPAddresses/clitestvmssLBPublicIP","resourceType":"Microsoft.Network/publicIPAddresses","resourceName":"clitestvmssLBPublicIP"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/loadBalancers/clitestvmssLB","resourceType":"Microsoft.Network/loadBalancers","resourceName":"clitestvmssLB"},{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/clitestvmssVNET","resourceType":"Microsoft.Network/virtualNetworks","resourceName":"clitestvmssVNET"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/loadBalancers/clitestvmssLB","resourceType":"Microsoft.Network/loadBalancers","resourceName":"clitestvmssLB"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss","resourceType":"Microsoft.Compute/virtualMachineScaleSets","resourceName":"clitestvmss"}],"outputs":{"vmss":{"type":"Object","value":{"singlePlacementGroup":true,"upgradePolicy":{"mode":"Automatic","rollingUpgradePolicy":{"maxBatchInstancePercent":20,"maxUnhealthyInstancePercent":20,"maxUnhealthyUpgradedInstancePercent":20,"pauseTimeBetweenBatches":"PT0S"}},"virtualMachineProfile":{"osProfile":{"computerNamePrefix":"clite1792","adminUsername":"azureuser","windowsConfiguration":{"provisionVMAgent":true,"enableAutomaticUpdates":true},"secrets":[],"allowExtensionOperations":true,"requireGuestProvisionSignal":true},"storageProfile":{"osDisk":{"osType":"Windows","createOption":"FromImage","caching":"ReadWrite","managedDisk":{"storageAccountType":"Premium_LRS"},"diskSizeGB":127},"imageReference":{"publisher":"MicrosoftWindowsServer","offer":"WindowsServer","sku":"2016-Datacenter","version":"latest"},"dataDisks":[{"lun":0,"createOption":"Empty","caching":"None","managedDisk":{"storageAccountType":"Premium_LRS"},"diskSizeGB":2}]},"networkProfile":{"networkInterfaceConfigurations":[{"name":"clite1792Nic","properties":{"primary":true,"enableAcceleratedNetworking":false,"dnsSettings":{"dnsServers":[]},"enableIPForwarding":false,"ipConfigurations":[{"name":"clite1792IPConfig","properties":{"subnet":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/clitestvmssVNET/subnets/clitestvmssSubnet"},"privateIPAddressVersion":"IPv4","loadBalancerBackendAddressPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/loadBalancers/clitestvmssLB/backendAddressPools/clitestvmssLBBEPool"}],"loadBalancerInboundNatPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/loadBalancers/clitestvmssLB/inboundNatPools/clitestvmssLBNatPool"}]}}]}}]},"extensionProfile":{"extensions":[{"name":"Microsoft.Azure.Security.AntimalwareSignature.AntimalwareConfiguration","properties":{"autoUpgradeMinorVersion":true,"enableAutomaticUpgrade":true,"publisher":"Microsoft.Azure.Security.AntimalwareSignature","type":"AntimalwareConfiguration","typeHandlerVersion":"2.0","settings":{}}},{"name":"Microsoft.Azure.Geneva.GenevaMonitoring","properties":{"autoUpgradeMinorVersion":true,"enableAutomaticUpgrade":true,"publisher":"Microsoft.Azure.Geneva","type":"GenevaMonitoring","typeHandlerVersion":"2.0","settings":{}}}]}},"provisioningState":"Succeeded","overprovision":true,"doNotRunExtensionsOnOverprovisionedVMs":false,"uniqueId":"d47a392f-29ab-4735-ab55-ae93559fbebc"}}},"outputResources":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/loadBalancers/clitestvmssLB"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/publicIPAddresses/clitestvmssLBPublicIP"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/clitestvmssVNET"}]}}'
@@ -1042,7 +1042,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.23.0 azsdk-python-azure-mgmt-compute/20.0.0 Python/3.7.6 (Linux-5.4.72-microsoft-standard-WSL2-x86_64-with-debian-10.3)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss?api-version=2020-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss?api-version=2021-03-01
   response:
     body:
       string: "{\r\n  \"name\": \"clitestvmss\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss\",\r\n
@@ -1160,7 +1160,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.23.0 azsdk-python-azure-mgmt-compute/20.0.0 Python/3.7.6 (Linux-5.4.72-microsoft-standard-WSL2-x86_64-with-debian-10.3)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss?api-version=2020-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss?api-version=2021-03-01
   response:
     body:
       string: "{\r\n  \"name\": \"clitestvmss\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss\",\r\n
@@ -1207,7 +1207,7 @@ interactions:
       azure-asyncnotification:
       - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/86a0c3f2-7705-432c-a65f-6c32bceaaaa9?api-version=2020-12-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/86a0c3f2-7705-432c-a65f-6c32bceaaaa9?api-version=2021-03-01
       cache-control:
       - no-cache
       content-length:
@@ -1256,7 +1256,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.23.0 azsdk-python-azure-mgmt-compute/20.0.0 Python/3.7.6 (Linux-5.4.72-microsoft-standard-WSL2-x86_64-with-debian-10.3)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/86a0c3f2-7705-432c-a65f-6c32bceaaaa9?api-version=2020-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/86a0c3f2-7705-432c-a65f-6c32bceaaaa9?api-version=2021-03-01
   response:
     body:
       string: "{\r\n  \"startTime\": \"2021-05-13T15:44:05.70978+00:00\",\r\n  \"status\":
@@ -1306,7 +1306,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.23.0 azsdk-python-azure-mgmt-compute/20.0.0 Python/3.7.6 (Linux-5.4.72-microsoft-standard-WSL2-x86_64-with-debian-10.3)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/86a0c3f2-7705-432c-a65f-6c32bceaaaa9?api-version=2020-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/86a0c3f2-7705-432c-a65f-6c32bceaaaa9?api-version=2021-03-01
   response:
     body:
       string: "{\r\n  \"startTime\": \"2021-05-13T15:44:05.70978+00:00\",\r\n  \"endTime\":
@@ -1357,7 +1357,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.23.0 azsdk-python-azure-mgmt-compute/20.0.0 Python/3.7.6 (Linux-5.4.72-microsoft-standard-WSL2-x86_64-with-debian-10.3)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss?api-version=2020-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss?api-version=2021-03-01
   response:
     body:
       string: "{\r\n  \"name\": \"clitestvmss\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss\",\r\n
@@ -1445,7 +1445,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.23.0 azsdk-python-azure-mgmt-compute/20.0.0 Python/3.7.6 (Linux-5.4.72-microsoft-standard-WSL2-x86_64-with-debian-10.3)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss?api-version=2020-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss?api-version=2021-03-01
   response:
     body:
       string: "{\r\n  \"name\": \"clitestvmss\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss\",\r\n
@@ -1566,7 +1566,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.23.0 azsdk-python-azure-mgmt-compute/20.0.0 Python/3.7.6 (Linux-5.4.72-microsoft-standard-WSL2-x86_64-with-debian-10.3)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss?api-version=2020-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss?api-version=2021-03-01
   response:
     body:
       string: "{\r\n  \"name\": \"clitestvmss\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss\",\r\n
@@ -1618,7 +1618,7 @@ interactions:
       azure-asyncnotification:
       - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/418ad8ea-9489-41cb-b765-327b697a9591?api-version=2020-12-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/418ad8ea-9489-41cb-b765-327b697a9591?api-version=2021-03-01
       cache-control:
       - no-cache
       content-length:
@@ -1667,7 +1667,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.23.0 azsdk-python-azure-mgmt-compute/20.0.0 Python/3.7.6 (Linux-5.4.72-microsoft-standard-WSL2-x86_64-with-debian-10.3)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/418ad8ea-9489-41cb-b765-327b697a9591?api-version=2020-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/418ad8ea-9489-41cb-b765-327b697a9591?api-version=2021-03-01
   response:
     body:
       string: "{\r\n  \"startTime\": \"2021-05-13T15:45:14.0382868+00:00\",\r\n  \"status\":
@@ -1717,7 +1717,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.23.0 azsdk-python-azure-mgmt-compute/20.0.0 Python/3.7.6 (Linux-5.4.72-microsoft-standard-WSL2-x86_64-with-debian-10.3)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/418ad8ea-9489-41cb-b765-327b697a9591?api-version=2020-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/418ad8ea-9489-41cb-b765-327b697a9591?api-version=2021-03-01
   response:
     body:
       string: "{\r\n  \"startTime\": \"2021-05-13T15:45:14.0382868+00:00\",\r\n  \"status\":
@@ -1767,7 +1767,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.23.0 azsdk-python-azure-mgmt-compute/20.0.0 Python/3.7.6 (Linux-5.4.72-microsoft-standard-WSL2-x86_64-with-debian-10.3)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/418ad8ea-9489-41cb-b765-327b697a9591?api-version=2020-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/418ad8ea-9489-41cb-b765-327b697a9591?api-version=2021-03-01
   response:
     body:
       string: "{\r\n  \"startTime\": \"2021-05-13T15:45:14.0382868+00:00\",\r\n  \"status\":
@@ -1817,7 +1817,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.23.0 azsdk-python-azure-mgmt-compute/20.0.0 Python/3.7.6 (Linux-5.4.72-microsoft-standard-WSL2-x86_64-with-debian-10.3)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/418ad8ea-9489-41cb-b765-327b697a9591?api-version=2020-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/418ad8ea-9489-41cb-b765-327b697a9591?api-version=2021-03-01
   response:
     body:
       string: "{\r\n  \"startTime\": \"2021-05-13T15:45:14.0382868+00:00\",\r\n  \"endTime\":
@@ -1868,7 +1868,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.23.0 azsdk-python-azure-mgmt-compute/20.0.0 Python/3.7.6 (Linux-5.4.72-microsoft-standard-WSL2-x86_64-with-debian-10.3)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss?api-version=2020-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss?api-version=2021-03-01
   response:
     body:
       string: "{\r\n  \"name\": \"clitestvmss\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss\",\r\n
@@ -1961,7 +1961,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.23.0 azsdk-python-azure-mgmt-compute/20.0.0 Python/3.7.6 (Linux-5.4.72-microsoft-standard-WSL2-x86_64-with-debian-10.3)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss?api-version=2020-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss?api-version=2021-03-01
   response:
     body:
       string: "{\r\n  \"name\": \"clitestvmss\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss\",\r\n
@@ -2087,7 +2087,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.23.0 azsdk-python-azure-mgmt-compute/20.0.0 Python/3.7.6 (Linux-5.4.72-microsoft-standard-WSL2-x86_64-with-debian-10.3)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss?api-version=2020-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss?api-version=2021-03-01
   response:
     body:
       string: "{\r\n  \"name\": \"clitestvmss\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss\",\r\n
@@ -2141,7 +2141,7 @@ interactions:
       azure-asyncnotification:
       - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/86956d3c-2ca2-4154-9f8d-23c5c671d955?api-version=2020-12-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/86956d3c-2ca2-4154-9f8d-23c5c671d955?api-version=2021-03-01
       cache-control:
       - no-cache
       content-length:
@@ -2190,7 +2190,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.23.0 azsdk-python-azure-mgmt-compute/20.0.0 Python/3.7.6 (Linux-5.4.72-microsoft-standard-WSL2-x86_64-with-debian-10.3)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/86956d3c-2ca2-4154-9f8d-23c5c671d955?api-version=2020-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/86956d3c-2ca2-4154-9f8d-23c5c671d955?api-version=2021-03-01
   response:
     body:
       string: "{\r\n  \"startTime\": \"2021-05-13T15:47:26.0855682+00:00\",\r\n  \"endTime\":
@@ -2241,7 +2241,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.23.0 azsdk-python-azure-mgmt-compute/20.0.0 Python/3.7.6 (Linux-5.4.72-microsoft-standard-WSL2-x86_64-with-debian-10.3)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss?api-version=2020-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss?api-version=2021-03-01
   response:
     body:
       string: "{\r\n  \"name\": \"clitestvmss\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss\",\r\n
@@ -2336,7 +2336,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.23.0 azsdk-python-azure-mgmt-compute/20.0.0 Python/3.7.6 (Linux-5.4.72-microsoft-standard-WSL2-x86_64-with-debian-10.3)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss?api-version=2020-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss?api-version=2021-03-01
   response:
     body:
       string: "{\r\n  \"name\": \"clitestvmss\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss\",\r\n
@@ -2465,7 +2465,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.23.0 azsdk-python-azure-mgmt-compute/20.0.0 Python/3.7.6 (Linux-5.4.72-microsoft-standard-WSL2-x86_64-with-debian-10.3)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss?api-version=2020-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss?api-version=2021-03-01
   response:
     body:
       string: "{\r\n  \"name\": \"clitestvmss\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss\",\r\n
@@ -2519,7 +2519,7 @@ interactions:
       azure-asyncnotification:
       - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/8772c792-4063-4d5b-88f5-67a37c7a1af3?api-version=2020-12-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/8772c792-4063-4d5b-88f5-67a37c7a1af3?api-version=2021-03-01
       cache-control:
       - no-cache
       content-length:
@@ -2568,7 +2568,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.23.0 azsdk-python-azure-mgmt-compute/20.0.0 Python/3.7.6 (Linux-5.4.72-microsoft-standard-WSL2-x86_64-with-debian-10.3)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/8772c792-4063-4d5b-88f5-67a37c7a1af3?api-version=2020-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/8772c792-4063-4d5b-88f5-67a37c7a1af3?api-version=2021-03-01
   response:
     body:
       string: "{\r\n  \"startTime\": \"2021-05-13T15:47:43.4277597+00:00\",\r\n  \"endTime\":
@@ -2619,7 +2619,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.23.0 azsdk-python-azure-mgmt-compute/20.0.0 Python/3.7.6 (Linux-5.4.72-microsoft-standard-WSL2-x86_64-with-debian-10.3)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss?api-version=2020-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss?api-version=2021-03-01
   response:
     body:
       string: "{\r\n  \"name\": \"clitestvmss\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss\",\r\n
@@ -2990,7 +2990,7 @@ interactions:
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001?api-version=2020-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001?api-version=2021-04-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001","name":"clitest000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2021-05-13T15:35:33Z"},"properties":{"provisioningState":"Succeeded"}}'
@@ -3672,7 +3672,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.23.0 azsdk-python-azure-mgmt-compute/20.0.0 Python/3.7.6 (Linux-5.4.72-microsoft-standard-WSL2-x86_64-with-debian-10.3)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss?api-version=2020-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss?api-version=2021-03-01
   response:
     body:
       string: ''
@@ -3680,7 +3680,7 @@ interactions:
       azure-asyncnotification:
       - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/e44576d8-0445-402d-98e7-03ef89978ccc?api-version=2020-12-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/e44576d8-0445-402d-98e7-03ef89978ccc?api-version=2021-03-01
       cache-control:
       - no-cache
       content-length:
@@ -3690,7 +3690,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/e44576d8-0445-402d-98e7-03ef89978ccc?monitor=true&api-version=2020-12-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/e44576d8-0445-402d-98e7-03ef89978ccc?monitor=true&api-version=2021-03-01
       pragma:
       - no-cache
       server:
@@ -3725,7 +3725,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.23.0 azsdk-python-azure-mgmt-compute/20.0.0 Python/3.7.6 (Linux-5.4.72-microsoft-standard-WSL2-x86_64-with-debian-10.3)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/e44576d8-0445-402d-98e7-03ef89978ccc?api-version=2020-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/e44576d8-0445-402d-98e7-03ef89978ccc?api-version=2021-03-01
   response:
     body:
       string: "{\r\n  \"startTime\": \"2021-05-13T15:49:23.4761327+00:00\",\r\n  \"status\":
@@ -3775,7 +3775,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.23.0 azsdk-python-azure-mgmt-compute/20.0.0 Python/3.7.6 (Linux-5.4.72-microsoft-standard-WSL2-x86_64-with-debian-10.3)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/e44576d8-0445-402d-98e7-03ef89978ccc?api-version=2020-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/e44576d8-0445-402d-98e7-03ef89978ccc?api-version=2021-03-01
   response:
     body:
       string: "{\r\n  \"startTime\": \"2021-05-13T15:49:23.4761327+00:00\",\r\n  \"status\":
@@ -3825,7 +3825,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.23.0 azsdk-python-azure-mgmt-compute/20.0.0 Python/3.7.6 (Linux-5.4.72-microsoft-standard-WSL2-x86_64-with-debian-10.3)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/e44576d8-0445-402d-98e7-03ef89978ccc?api-version=2020-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/e44576d8-0445-402d-98e7-03ef89978ccc?api-version=2021-03-01
   response:
     body:
       string: "{\r\n  \"startTime\": \"2021-05-13T15:49:23.4761327+00:00\",\r\n  \"endTime\":
