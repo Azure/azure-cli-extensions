@@ -78,12 +78,6 @@ def load_command_table(self, _):
         g.custom_command('get-versions', 'aks_get_versions',
                          table_transformer=aks_versions_table_format)
 
-    with self.command_group('aks command', managed_clusters_sdk, client_factory=cf_managed_clusters) as g:
-        g.custom_command('invoke', 'aks_runcommand', supports_no_wait=True,
-                         table_transformer=aks_run_command_result_format)
-        g.custom_command('result', 'aks_command_result',
-                         supports_no_wait=False, table_transformer=aks_run_command_result_format)
-
     # AKS maintenance configuration commands
     with self.command_group('aks maintenanceconfiguration', maintenance_configuration_sdk, client_factory=cf_maintenance_configurations) as g:
         g.custom_command('list', 'aks_maintenanceconfiguration_list')
