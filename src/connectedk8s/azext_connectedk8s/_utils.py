@@ -353,7 +353,6 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, kuberne
     if kube_context:
         cmd_helm_install.extend(["--kube-context", kube_context])
     if not no_wait:
-        cmd_helm_install.extend(["--wait"])
         # Change --timeout format for helm client to understand
         onboarding_timeout = onboarding_timeout + "s"
         cmd_helm_install.extend(["--wait", "--timeout", "{}".format(onboarding_timeout)])
