@@ -9,7 +9,7 @@
 import json
 from datetime import date, datetime, timedelta
 
-from azext_support._utils import (is_quota_ticket,
+from azext_support._utils import (get_bearer_token, is_quota_ticket,
                                   is_technical_ticket, parse_support_area_path)
 from knack.log import get_logger
 
@@ -134,6 +134,11 @@ def create_support_tickets(cmd, client,
 
     logger.debug("Sending create request with below payload: ")
     logger.debug(json.dumps(body, indent=4))
+
+    if partner_tenant_id is not None:
+        external_bearer_token = get_bearer_token(cmd, partner_tenant_id)
+        client.begin_create(support_ticket_name=ticket_name, create_support_ticket_parameters=body,
+                            headers={'x-ms-authorization-auxiliary': external_bearer_token})
 
     return client.begin_create(support_ticket_name=ticket_name, create_support_ticket_parameters=body)
 
