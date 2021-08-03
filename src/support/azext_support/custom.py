@@ -137,8 +137,8 @@ def create_support_tickets(cmd, client,
 
     if partner_tenant_id is not None:
         external_bearer_token = get_bearer_token(cmd, partner_tenant_id)
-        client.begin_create(support_ticket_name=ticket_name, create_support_ticket_parameters=body,
-                            headers={'x-ms-authorization-auxiliary': external_bearer_token})
+        return client.begin_create(support_ticket_name=ticket_name, create_support_ticket_parameters=body,
+                                   headers={'x-ms-authorization-auxiliary': external_bearer_token})
 
     return client.begin_create(support_ticket_name=ticket_name, create_support_ticket_parameters=body)
 
