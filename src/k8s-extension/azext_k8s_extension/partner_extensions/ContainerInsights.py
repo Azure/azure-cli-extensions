@@ -82,6 +82,9 @@ class ContainerInsights(PartnerExtensionModel):
             version=version
         )
 
+    def Delete(self, client, resource_group_name, cluster_name, name, cluster_type):
+        pass
+
 
 # Custom Validation Logic for Container Insights
 

@@ -222,6 +222,9 @@ helps['aks create'] = """
         - name: --workspace-resource-id
           type: string
           short-summary: The resource ID of an existing Log Analytics Workspace to use for storing monitoring data. If not specified, uses the default Log Analytics Workspace if it exists, otherwise creates one.
+        - name: --enable-msi-auth-for-monitoring
+          type: bool
+          short-summary: Send monitoring data to Log Analytics using the cluster's assigned identity (instead of the Log Analytics Workspace's shared key).
         - name: --enable-cluster-autoscaler
           type: bool
           short-summary: Enable cluster autoscaler, default value is false.
@@ -314,6 +317,9 @@ helps['aks create'] = """
         - name: --linux-os-config
           type: string
           short-summary: OS configurations for Linux agent nodes.
+        - name: --http-proxy-config
+          type: string
+          short-summary: Http Proxy configuration for this cluster.
         - name: --enable-pod-identity
           type: bool
           short-summary: (PREVIEW) Enable pod identity addon.
@@ -964,6 +970,9 @@ helps['aks nodepool upgrade'] = """
         - name: --max-surge
           type: string
           short-summary: Extra nodes used to speed upgrade. When specified, it represents the number or percent used, eg. 5 or 33%
+        - name: --aks-custom-headers
+          type: string
+          short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
 """
 
 helps['aks nodepool update'] = """
@@ -1042,6 +1051,9 @@ parameters:
   - name: --workspace-resource-id
     type: string
     short-summary: The resource ID of an existing Log Analytics Workspace to use for storing monitoring data.
+  - name: --enable-msi-auth-for-monitoring
+    type: bool
+    short-summary: Send monitoring data to Log Analytics using the cluster's assigned identity (instead of the Log Analytics Workspace's shared key).
   - name: --subnet-name -s
     type: string
     short-summary: The subnet name for the virtual node to use.

@@ -47,6 +47,8 @@ def step_offer_detail_show(test, rg, checks=None):
             if term_unit.get('termUnits', None): 
                 assert term_unit['termUnits'] in ['P1M', 'P1Y']
             assert term_unit.get('price', None) is not None
+            assert term_unit['price'].get('isPIRequired', None) is None
+            assert term_unit['price'].get('msrp', None) is None
             assert term_unit.get('termDescription', None) is not None
 
 

@@ -9,41 +9,51 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from msrest.service_client import SDKClient
-from msrest import Serializer, Deserializer
+from typing import TYPE_CHECKING
 
+from azure.mgmt.core import ARMPipelineClient
 from azure.profiles import KnownProfiles, ProfileDefinition
 from azure.profiles.multiapiclient import MultiApiClientMixin
+from msrest import Deserializer, Serializer
+
 from ._configuration import AppPlatformManagementClientConfiguration
 
+if TYPE_CHECKING:
+    # pylint: disable=unused-import,ungrouped-imports
+    from typing import Any, Optional
 
+    from azure.core.credentials import TokenCredential
+    from azure.core.pipeline.transport import HttpRequest, HttpResponse
 
-class AppPlatformManagementClient(MultiApiClientMixin, SDKClient):
-    """REST API for Azure Spring Cloud
+class _SDKClient(object):
+    def __init__(self, *args, **kwargs):
+        """This is a fake class to support current implemetation of MultiApiClientMixin."
+        Will be removed in final version of multiapi azure-core based client
+        """
+        pass
 
-    This ready contains multiple API versions, to help you deal with all Azure clouds
+class AppPlatformManagementClient(MultiApiClientMixin, _SDKClient):
+    """REST API for Azure Spring Cloud.
+
+    This ready contains multiple API versions, to help you deal with all of the Azure clouds
     (Azure Stack, Azure Government, Azure China, etc.).
-    By default, uses latest API version available on public Azure.
-    For production, you should stick a particular api-version and/or profile.
-    The profile sets a mapping between the operation group and an API version.
+    By default, it uses the latest API version available on public Azure.
+    For production, you should stick to a particular api-version and/or profile.
+    The profile sets a mapping between an operation group and its API version.
     The api-version parameter sets the default API version if the operation
     group is not described in the profile.
 
-    :ivar config: Configuration for client.
-    :vartype config: AppPlatformManagementClientConfiguration
-
-    :param credentials: Credentials needed for the client to connect to Azure.
-    :type credentials: :mod:`A msrestazure Credentials
-     object<msrestazure.azure_active_directory>`
-    :param subscription_id: Subscription credentials which uniquely identify
-     Microsoft Azure subscription. The subscription ID forms part of the URI
-     for every service call.
+    :param credential: Credential needed for the client to connect to Azure.
+    :type credential: ~azure.core.credentials.TokenCredential
+    :param subscription_id: Gets subscription ID which uniquely identify the Microsoft Azure subscription. The subscription ID forms part of the URI for every service call.
     :type subscription_id: str
-    :param str api_version: API version to use if no profile is provided, or if
-     missing in profile.
-    :param str base_url: Service URL
+    :param api_version: API version to use if no profile is provided, or if missing in profile.
+    :type api_version: str
+    :param base_url: Service URL
+    :type base_url: str
     :param profile: A profile definition, from KnownProfiles to dict.
     :type profile: azure.profiles.KnownProfiles
+    :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
     """
 
     DEFAULT_API_VERSION = '2020-07-01'
@@ -56,11 +66,20 @@ class AppPlatformManagementClient(MultiApiClientMixin, SDKClient):
         _PROFILE_TAG + " latest"
     )
 
-    def __init__(self, credentials, subscription_id, api_version=None, base_url=None, profile=KnownProfiles.default):
-        self.config = AppPlatformManagementClientConfiguration(credentials, subscription_id, base_url)
+    def __init__(
+        self,
+        credential,  # type: "TokenCredential"
+        subscription_id,  # type: str
+        api_version=None, # type: Optional[str]
+        base_url=None,  # type: Optional[str]
+        profile=KnownProfiles.default, # type: KnownProfiles
+        **kwargs  # type: Any
+    ):
+        if not base_url:
+            base_url = 'https://management.azure.com'
+        self._config = AppPlatformManagementClientConfiguration(credential, subscription_id, **kwargs)
+        self._client = ARMPipelineClient(base_url=base_url, config=self._config, **kwargs)
         super(AppPlatformManagementClient, self).__init__(
-            credentials,
-            self.config,
             api_version=api_version,
             profile=profile
         )
@@ -90,7 +109,7 @@ class AppPlatformManagementClient(MultiApiClientMixin, SDKClient):
         elif api_version == '2021-06-01-preview':
             from .v2021_06_01_preview import models
             return models
-        raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        raise ValueError("API version {} is not available".format(api_version))
 
     @property
     def apps(self):
@@ -111,8 +130,8 @@ class AppPlatformManagementClient(MultiApiClientMixin, SDKClient):
         elif api_version == '2021-06-01-preview':
             from .v2021_06_01_preview.operations import AppsOperations as OperationClass
         else:
-            raise NotImplementedError("APIVersion {} is not available".format(api_version))
-        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+            raise ValueError("API version {} does not have operation group 'apps'".format(api_version))
+        return OperationClass(self._client, self._config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
 
     @property
     def bindings(self):
@@ -133,8 +152,8 @@ class AppPlatformManagementClient(MultiApiClientMixin, SDKClient):
         elif api_version == '2021-06-01-preview':
             from .v2021_06_01_preview.operations import BindingsOperations as OperationClass
         else:
-            raise NotImplementedError("APIVersion {} is not available".format(api_version))
-        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+            raise ValueError("API version {} does not have operation group 'bindings'".format(api_version))
+        return OperationClass(self._client, self._config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
 
     @property
     def certificates(self):
@@ -155,8 +174,8 @@ class AppPlatformManagementClient(MultiApiClientMixin, SDKClient):
         elif api_version == '2021-06-01-preview':
             from .v2021_06_01_preview.operations import CertificatesOperations as OperationClass
         else:
-            raise NotImplementedError("APIVersion {} is not available".format(api_version))
-        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+            raise ValueError("API version {} does not have operation group 'certificates'".format(api_version))
+        return OperationClass(self._client, self._config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
 
     @property
     def config_servers(self):
@@ -174,8 +193,8 @@ class AppPlatformManagementClient(MultiApiClientMixin, SDKClient):
         elif api_version == '2021-06-01-preview':
             from .v2021_06_01_preview.operations import ConfigServersOperations as OperationClass
         else:
-            raise NotImplementedError("APIVersion {} is not available".format(api_version))
-        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+            raise ValueError("API version {} does not have operation group 'config_servers'".format(api_version))
+        return OperationClass(self._client, self._config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
 
     @property
     def custom_domains(self):
@@ -196,8 +215,8 @@ class AppPlatformManagementClient(MultiApiClientMixin, SDKClient):
         elif api_version == '2021-06-01-preview':
             from .v2021_06_01_preview.operations import CustomDomainsOperations as OperationClass
         else:
-            raise NotImplementedError("APIVersion {} is not available".format(api_version))
-        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+            raise ValueError("API version {} does not have operation group 'custom_domains'".format(api_version))
+        return OperationClass(self._client, self._config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
 
     @property
     def deployments(self):
@@ -218,8 +237,8 @@ class AppPlatformManagementClient(MultiApiClientMixin, SDKClient):
         elif api_version == '2021-06-01-preview':
             from .v2021_06_01_preview.operations import DeploymentsOperations as OperationClass
         else:
-            raise NotImplementedError("APIVersion {} is not available".format(api_version))
-        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+            raise ValueError("API version {} does not have operation group 'deployments'".format(api_version))
+        return OperationClass(self._client, self._config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
 
     @property
     def monitoring_settings(self):
@@ -237,8 +256,8 @@ class AppPlatformManagementClient(MultiApiClientMixin, SDKClient):
         elif api_version == '2021-06-01-preview':
             from .v2021_06_01_preview.operations import MonitoringSettingsOperations as OperationClass
         else:
-            raise NotImplementedError("APIVersion {} is not available".format(api_version))
-        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+            raise ValueError("API version {} does not have operation group 'monitoring_settings'".format(api_version))
+        return OperationClass(self._client, self._config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
 
     @property
     def operations(self):
@@ -259,8 +278,8 @@ class AppPlatformManagementClient(MultiApiClientMixin, SDKClient):
         elif api_version == '2021-06-01-preview':
             from .v2021_06_01_preview.operations import Operations as OperationClass
         else:
-            raise NotImplementedError("APIVersion {} is not available".format(api_version))
-        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+            raise ValueError("API version {} does not have operation group 'operations'".format(api_version))
+        return OperationClass(self._client, self._config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
 
     @property
     def runtime_versions(self):
@@ -281,8 +300,8 @@ class AppPlatformManagementClient(MultiApiClientMixin, SDKClient):
         elif api_version == '2021-06-01-preview':
             from .v2021_06_01_preview.operations import RuntimeVersionsOperations as OperationClass
         else:
-            raise NotImplementedError("APIVersion {} is not available".format(api_version))
-        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+            raise ValueError("API version {} does not have operation group 'runtime_versions'".format(api_version))
+        return OperationClass(self._client, self._config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
 
     @property
     def services(self):
@@ -303,8 +322,8 @@ class AppPlatformManagementClient(MultiApiClientMixin, SDKClient):
         elif api_version == '2021-06-01-preview':
             from .v2021_06_01_preview.operations import ServicesOperations as OperationClass
         else:
-            raise NotImplementedError("APIVersion {} is not available".format(api_version))
-        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+            raise ValueError("API version {} does not have operation group 'services'".format(api_version))
+        return OperationClass(self._client, self._config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
 
     @property
     def sku(self):
@@ -316,8 +335,8 @@ class AppPlatformManagementClient(MultiApiClientMixin, SDKClient):
         if api_version == '2019-05-01-preview':
             from .v2019_05_01_preview.operations import SkuOperations as OperationClass
         else:
-            raise NotImplementedError("APIVersion {} is not available".format(api_version))
-        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+            raise ValueError("API version {} does not have operation group 'sku'".format(api_version))
+        return OperationClass(self._client, self._config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
 
     @property
     def skus(self):
@@ -335,5 +354,13 @@ class AppPlatformManagementClient(MultiApiClientMixin, SDKClient):
         elif api_version == '2021-06-01-preview':
             from .v2021_06_01_preview.operations import SkusOperations as OperationClass
         else:
-            raise NotImplementedError("APIVersion {} is not available".format(api_version))
-        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+            raise ValueError("API version {} does not have operation group 'skus'".format(api_version))
+        return OperationClass(self._client, self._config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    def close(self):
+        self._client.close()
+    def __enter__(self):
+        self._client.__enter__()
+        return self
+    def __exit__(self, *exc_details):
+        self._client.__exit__(*exc_details)
