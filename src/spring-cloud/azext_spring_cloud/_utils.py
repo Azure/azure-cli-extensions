@@ -2,7 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-
+import json
 from enum import Enum
 import os
 import codecs
@@ -14,7 +14,7 @@ from re import (search, match, compile)
 from json import dumps
 from knack.util import CLIError, todict
 from knack.log import get_logger
-from .vendored_sdks.appplatform.models import _app_platform_management_client_enums as AppPlatformEnums
+from .vendored_sdks.appplatform.v2020_07_01.models import _app_platform_management_client_enums as AppPlatformEnums
 from ._client_factory import cf_resource_groups
 
 
@@ -23,7 +23,7 @@ logger = get_logger(__name__)
 
 def _get_upload_local_file(runtime_version, artifact_path=None):
     file_path = artifact_path
-    file_type = "NetCoreZip" if runtime_version == AppPlatformEnums.RuntimeVersion.net_core_31 else "Jar"
+    file_type = "NetCoreZip" if runtime_version == AppPlatformEnums.RuntimeVersion.NET_CORE31 else "Jar"
 
     if file_path is None:
         file_type = "Source"
@@ -229,3 +229,14 @@ def get_portal_uri(cli_ctx):
     except Exception as e:
         logger.debug("Could not get Azure Portal endpoint. Exception: %s", str(e))
         return 'https://portal.azure.com'
+
+
+def handle_asc_exception(ex):
+    try:
+        raise CLIError(ex.inner_exception.error.message)
+    except AttributeError:
+        if hasattr(ex, 'response'):
+            response_dict = json.loads(ex.response.internal_response.text)
+            raise CLIError(response_dict["error"]["message"])
+        else:
+            raise CLIError(ex)

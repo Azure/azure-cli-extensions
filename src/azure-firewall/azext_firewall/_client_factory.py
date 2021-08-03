@@ -8,7 +8,7 @@ def network_client_factory(cli_ctx, aux_subscriptions=None, **_):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
     from .profiles import CUSTOM_FIREWALL
     return get_mgmt_service_client(cli_ctx, CUSTOM_FIREWALL, aux_subscriptions=aux_subscriptions,
-                                   api_version='2020-05-01')
+                                   api_version='2020-07-01')
 
 
 def cf_firewalls(cli_ctx, _):

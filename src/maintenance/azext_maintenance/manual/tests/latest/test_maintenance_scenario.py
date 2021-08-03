@@ -14,7 +14,17 @@ from azure.cli.testsdk import ResourceGroupPreparer
 
 
 def setup(test, rg):
-    test.cmd('az vmss create -n "clitestvmss" -g "{rg}" --instance-count 1 --image "Win2016Datacenter" --data-disk-sizes-gb 2 --admin-password "PasswordCLIMaintenanceRP8!"', checks=[])
+    test.cmd('az vmss create -n "clitestvmss" -g "{rg}"  --instance-count 1 --image "Win2016Datacenter" --data-disk-sizes-gb 2 --admin-password "PasswordCLIMaintenanceRP8!"  --upgrade-policy-mode Automatic ', checks=[])
+
+    # Disable AutomaticUpdates for VM
+    test.cmd('az vmss update --name  "clitestvmss"  -g "{rg}"  --set virtualMachineProfile.osProfile.windowsConfiguration.enableAutomaticUpdates=false', checks=[])
+
+    # Enable Health extension, it is required to enable AutomaticOSUpgradePolicy
+    test.cmd('az vmss extension set --name ApplicationHealthWindows --publisher Microsoft.ManagedServices --version 1.0 --resource-group "{rg}" --vmss-name  clitestvmss --settings \'{HSProbeSettings}\'', checks=[])
+
+    # Enable AutomaticOSUpgradePolicy
+    test.cmd('az vmss update --name "clitestvmss" -g "{rg}" --set UpgradePolicy.AutomaticOSUpgradePolicy.EnableAutomaticOSUpgrade=true', checks=[])
+
     pass
 
 
@@ -44,7 +54,7 @@ def step__maintenanceconfigurations_put_maintenanceconfigurations_createorupdate
              '--maintenance-window-duration "05:00" '
              '--maintenance-window-expiration-date-time "9999-12-31 00:00" '
              '--maintenance-window-recur-every "Day" '
-             '--maintenance-window-start-date-time "2020-09-30 08:00" '
+             '--maintenance-window-start-date-time "2025-09-30 08:00" '
              '--maintenance-window-time-zone "Pacific Standard Time" '
              '--namespace "Microsoft.Maintenance" '
              '--visibility "Custom" '
@@ -71,8 +81,8 @@ def step__maintenanceconfigurations_patch_maintenanceconfigurations_updateforres
              '--maintenance-scope "OSImage" '
              '--maintenance-window-duration "05:00" '
              '--maintenance-window-expiration-date-time "9999-12-31 00:00" '
-             '--maintenance-window-recur-every "Month Third Sunday" '
-             '--maintenance-window-start-date-time "2020-09-30 08:00" '
+             '--maintenance-window-recur-every "Day" '
+             '--maintenance-window-start-date-time "2025-09-30 08:00" '
              '--maintenance-window-time-zone "Pacific Standard Time" '
              '--namespace "Microsoft.Maintenance" '
              '--visibility "Custom" '
@@ -156,7 +166,7 @@ def step__maintenanceconfigurations_put_publicmaintenanceconfigurations_createor
              '--maintenance-window-duration "05:00" '
              '--maintenance-window-expiration-date-time "9999-12-31 00:00" '
              '--maintenance-window-recur-every "Day" '
-             '--maintenance-window-start-date-time "2020-09-30 08:00" '
+             '--maintenance-window-start-date-time "2025-09-30 08:00" '
              '--maintenance-window-time-zone "Pacific Standard Time" '
              '--namespace "Microsoft.Maintenance" '
              '--visibility "Public" '

@@ -14,7 +14,7 @@ def stack_hci_cluster_list(client,
                            resource_group_name=None):
     if resource_group_name:
         return client.list_by_resource_group(resource_group_name=resource_group_name)
-    return client.list()
+    return client.list_by_subscription()
 
 
 def stack_hci_cluster_show(client,
@@ -38,21 +38,24 @@ def stack_hci_cluster_create(cmd,
         profile = Profile(cli_ctx=cmd.cli_ctx)
         aad_tenant_id = profile.get_subscription()['tenantId']
 
+    from azext_stack_hci.vendored_sdks.azurestackhci.models._models import Cluster
+    cluster = Cluster(aad_client_id=aad_client_id, aad_tenant_id=aad_tenant_id, tags=tags, location=location)
+
     return client.create(resource_group_name=resource_group_name,
                          cluster_name=cluster_name,
-                         tags=tags,
-                         location=location,
-                         aad_client_id=aad_client_id,
-                         aad_tenant_id=aad_tenant_id)
+                         cluster=cluster)
 
 
 def stack_hci_cluster_update(client,
                              resource_group_name,
                              cluster_name,
                              tags=None):
+
+    from azext_stack_hci.vendored_sdks.azurestackhci.models._models import ClusterUpdate
+    cluster = ClusterUpdate(tags=tags)
     return client.update(resource_group_name=resource_group_name,
                          cluster_name=cluster_name,
-                         tags=tags)
+                         cluster=cluster)
 
 
 def stack_hci_cluster_delete(client,

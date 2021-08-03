@@ -2,6 +2,34 @@
 
 Release History
 ===============
+
+0.12.0
+++++++
+* `az network firewall policy rule-collection-group collection add-filter-collection`: Add parameter `--destination-fqdns`
+* `az network firewall policy rule-collection-group collection rule add`: Add parameters `--destination-fqdns` and `--translated-fqdn`
+* `az network firewall policy rule-collection-group collection rule update`: Add parameters `--destination-fqdns` and `--translated-fqdn`
+
+0.11.0
+++++++
+* Fix issue: `create_or_update` not found
+
+0.10.0
+++++++
+* `az network firewall create`: Add new parameter `--tier`
+* Migrate to Track2 SDK.
+
+0.9.0
+++++++
+* `az network firewall policy rule-collection-group collection add-filter-collection`: Add parameter 'web-categories'
+* `az network firewall policy rule-collection-group collection rule add`: Add parameter 'web-categories'
+
+0.8.0
+++++++
+* `az network firewall policy create`: support `--sku` to create premium tier firewall policy
+* `az network firewall policy create`: support `--key-vault-secret-id` to configure transport security
+* `az network firewall policy rule-collection-group collection`: support `--target-urls` to configure target URLs and `--enable-terminate-tls` to enable TLS terminate for rules for premium tier firewall policy
+* `az network firewall policy intrusion-detection`: new commad group to support to configure intrusion detection policy for premium tier firewall policy
+
 0.6.2
 ++++++
 * `az network firewall create`: improve documentation of application and network rules options

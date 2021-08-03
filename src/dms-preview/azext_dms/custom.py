@@ -27,19 +27,10 @@ from azext_dms.vendored_sdks.datamigration.models import (Project,
                                                           MongoDbFinishCommand,
                                                           MongoDbFinishCommandInput,
                                                           MongoDbRestartCommand,
-                                                          ValidateMongoDbTaskProperties,
-                                                          OracleConnectionInfo,
-                                                          MigrateOracleAzureDbForPostgreSqlSyncTaskProperties,
-                                                          CheckOCIDriverTaskProperties,
-                                                          UploadOCIDriverTaskProperties,
-                                                          InstallOCIDriverTaskProperties)
+                                                          ValidateMongoDbTaskProperties)
 from azext_dms.scenario_inputs import (get_migrate_mysql_to_azuredbformysql_sync_input,
                                        get_migrate_postgresql_to_azuredbforpostgresql_sync_input,
-                                       get_mongo_to_mongo_input,
-                                       get_migrate_oracle_to_azuredbforpostgresql_sync_input,
-                                       get_check_oci_driver_input,
-                                       get_upload_oci_driver_input,
-                                       get_install_oci_driver_input)
+                                       get_mongo_to_mongo_input)
 
 logger = get_logger(__name__)
 
@@ -223,8 +214,7 @@ def cutover_sync_task(
     st = get_scenario_type(source_platform, target_platform, "onlinemigration")
 
     if st in [ScenarioType.mysql_azuremysql_online,
-              ScenarioType.postgres_azurepostgres_online,
-              ScenarioType.oracle_azurepostgres_online]:
+              ScenarioType.postgres_azurepostgres_online]:
         if object_name is None:
             raise CLIError("The argument 'object_name' must be present for this task type.")
         command_input = MigrateSyncCompleteCommandInput(database_name=object_name)
@@ -316,29 +306,6 @@ To cancel this task do not supply the object-name parameter.")
 # endregion
 
 
-# region Service Task
-def create_service_task(
-        client,
-        resource_group_name,
-        service_name,
-        task_name,
-        task_type,
-        task_options_json):
-
-    task_type = task_type.lower()
-
-    task_options_json = get_file_or_parse_json(task_options_json, "task-options-json")
-
-    task_properties = get_service_task_properties(task_options_json,
-                                                  task_type)
-
-    return client.create_or_update(group_name=resource_group_name,
-                                   service_name=service_name,
-                                   task_name=task_name,
-                                   properties=task_properties)
-# endregion
-
-
 # region Helper Methods
 def get_project_platforms(cmd, project_name, service_name, resource_group_name):
     client = dms_cf_projects(cmd.cli_ctx)
@@ -356,8 +323,7 @@ def extension_handles_scenario(
         ScenarioType.mysql_azuremysql_online,
         ScenarioType.postgres_azurepostgres_online,
         ScenarioType.mongo_mongo_offline,
-        ScenarioType.mongo_mongo_online,
-        ScenarioType.oracle_azurepostgres_online]
+        ScenarioType.mongo_mongo_online]
     return get_scenario_type(source_platform, target_platform, task_type) in ExtensionScenarioTypes
 
 
@@ -381,15 +347,15 @@ def transform_json_inputs(
     return (source_connection_info, target_connection_info, database_options_json)
 
 
-def get_file_or_parse_json(value, value_type):
+def get_file_or_parse_json(value, vtype):
     if os.path.exists(value):
         return get_file_json(value)
 
     # Test if provided value is a valid json
     try:
         json_parse = shell_safe_json_parse(value)
-    except:
-        raise CLIError("The supplied input for '" + value_type + "' is not a valid file path or a valid json object.")
+    except Exception as e:
+        raise CLIError("The supplied input for '" + vtype + "' is not a valid file path or a valid json object.") from e
     else:
         return json_parse
 
@@ -433,12 +399,6 @@ def create_connection(connection_info_json, prompt_prefix, typeOfInfo):
                                      user_name=user_name,
                                      password=password)
 
-    if "oracle" in typeOfInfo:
-        data_source = connection_info_json['dataSource']
-        return OracleConnectionInfo(user_name=user_name,
-                                    password=password,
-                                    data_source=data_source)
-
     # If no match, Pass the connection info through
     return connection_info_json
 
@@ -460,9 +420,6 @@ def get_task_migration_properties(
     elif "mongo_mongo" in st.name:
         TaskProperties = MigrateMongoDbTaskProperties
         GetInput = get_mongo_to_mongo_input
-    elif "oracle_azurepostgres" in st.name:
-        TaskProperties = MigrateOracleAzureDbForPostgreSqlSyncTaskProperties
-        GetInput = get_migrate_oracle_to_azuredbforpostgresql_sync_input
     else:
         raise CLIError("The supplied source, target, and task type is not supported for migration.")
 
@@ -492,28 +449,6 @@ def get_task_validation_properties(
                                database_options_json,
                                source_connection_info,
                                target_connection_info)
-
-
-def get_service_task_properties(
-        task_options_json,
-        task_type):
-    if task_type == "checkocidriver":
-        input_func = get_check_oci_driver_input
-        task_properties_type = CheckOCIDriverTaskProperties
-    elif task_type == "uploadocidriver":
-        input_func = get_upload_oci_driver_input
-        task_properties_type = UploadOCIDriverTaskProperties
-    elif task_type == "installocidriver":
-        input_func = get_install_oci_driver_input
-        task_properties_type = InstallOCIDriverTaskProperties
-    else:
-        raise CLIError("The supplied service task type is not supported.")
-
-    return get_task_properties(input_func,
-                               task_properties_type,
-                               task_options_json,
-                               None,
-                               None)
 
 
 def get_task_properties(input_func,
@@ -568,10 +503,6 @@ def get_scenario_type(source_platform, target_platform, task_type=""):
     elif source_platform == "mongodb" and target_platform == "mongodb":
         scenario_type = ScenarioType.mongo_mongo_validation if "validation" in task_type else \
             ScenarioType.mongo_mongo_online if "online" in task_type else ScenarioType.mongo_mongo_offline
-    elif source_platform == "oracle" and target_platform == "azuredbforpostgresql":
-        # Allow a project to be created for Oracle to PGSQL even though no task type is passed in
-        scenario_type = ScenarioType.oracle_azurepostgres_online if "online" in task_type or not task_type else \
-            ScenarioType.oracle_azurepostgres_offline
     else:
         scenario_type = ScenarioType.unknown
 
@@ -605,8 +536,5 @@ class ScenarioType(Enum):
     mongo_mongo_offline = 40
     mongo_mongo_online = 41
     mongo_mongo_validation = 42
-    # Oracle to Azure for PostgreSQL
-    oracle_azurepostgres_offline = 43
-    oracle_azurepostgres_online = 44
 
 # endregion

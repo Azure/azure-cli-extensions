@@ -38,7 +38,7 @@ def ads_use_dev_spaces(cluster_name, resource_group_name, update=False, space_na
     :param do_not_prompt: Do not prompt for confirmation. Requires --space.
     :type do_not_prompt: bool
     """
-
+    logger.warning("For more information, please see https://github.com/Azure/dev-spaces/issues/410")
     azds_cli = _install_dev_spaces_cli(update, do_not_prompt)
 
     use_command_arguments = [azds_cli, 'use', '--name', cluster_name,
@@ -66,7 +66,7 @@ def ads_remove_dev_spaces(cluster_name, resource_group_name, do_not_prompt=False
     :param do_not_prompt: Do not prompt for confirmation.
     :type do_not_prompt: bool
     """
-
+    logger.warning("For more information, please see https://github.com/Azure/dev-spaces/issues/410")
     azds_cli = _install_dev_spaces_cli(False, do_not_prompt)
 
     remove_command_arguments = [azds_cli, 'remove', '--name', cluster_name,

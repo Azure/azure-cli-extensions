@@ -3,6 +3,32 @@
 Release History
 ===============
 
+0.2.7
+++++++
+* bugfix: `az network vhub get-effective-routes` always returns empty value list.
+
+0.2.6
+++++++
+* `az network vhub get-effective-routes` support `-o table` outputs.
+
+0.2.5
+++++++
+* Migrate to Track2 SDK.
+
+0.2.4
+++++++
+* `az network vhub connection`: Support command `update`
+* `az network vpn-gateway connection`: Support command `update`
+
+0.2.3
+++++++
+* `az network vpn-gateway connection`: Change the underlying operations from VpnGatewayOperations to VpnConnectionOperations
+* [BREAKING CHANGE] `az network vpn-gateway connection create`: the response data structure of successful creation is `VpnConnection` instead of `VpnGateway`
+
+0.2.2
+++++++
+* `az network p2s-vpn-gateway vpn-client`: Support to generate download URL to get VPN client configuration
+
 0.2.1
 ++++++
 * [BREAKING CHANGE] `az network vwan create/update`: Remove the stale argument `--vnet-to-vnet-traffic`.

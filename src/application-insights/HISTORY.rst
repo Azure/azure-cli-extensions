@@ -1,3 +1,17 @@
+.. :changelog:
+
+Release History
+===============
+0.1.14
+++++++++++++++++++
+
+* `az monitor app-insights events show`: Add enum values for `--type`.
+
+0.1.13
+++++++++++++++++++
+
+* `az monitor app-insights component connect-function`: Enable application insights on Azure function.
+
 0.1.12
 ++++++++++++++++++
 

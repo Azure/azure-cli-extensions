@@ -2,6 +2,165 @@
 
 Release History
 ===============
+
+0.5.25
++++++
+* Add support for http proxy
+
+0.5.24
++++++
+* * Add "--aks-custom-headers" for "az aks nodepool upgrade"
+
+0.5.23
++++++
+* Fix issue that `maintenanceconfiguration add` subcommand cannot work
+
+0.5.22
++++++
+* Fix issue in dcr template
+
+0.5.21
++++++
+* Fix issue when disable monitoring on an AKS cluster would fail in regions where Data Collection Rules are not enabled
+
+0.5.20
++++++
+* Support enabling monitoring on AKS clusters with msi auth
+* Add `--enable-msi-auth-for-monitoring` option in aks create and aks enable-addons
+
+0.5.19
++++++
+* Remove azure-defender from list of available addons to install via `az aks enable-addons` command
+
+0.5.18
++++++
+* Fix issue with node config not consuming logging settings
+
+0.5.17
++++++
+* Add parameter '--enable-ultra-ssd' to enable UltraSSD on agent node pool
+
+0.5.16
++++++
+* Vendor SDK using latest swagger with optional query parameter added
+* Support private cluster public fqdn feature
+
+0.5.15
++++++
+* Update to use 2021-05-01 api-version
+
+0.5.14
++++++
+* Add os-sku argument for cluster and nodepool creation
+
+0.5.13
++++++
+* Add compatible logic for the track 2 migration of resource dependence
+
+0.5.12
++++++
+* Add --enable-azure-rbac and --disable-azure-rbac in aks update
+* Support disabling local accounts
+* Add addon `azure-defender` to list of available addons under `az aks enable-addons` command
+
+0.5.11
++++++
+* Add get OS options support
+* Fix wrong behavior when enabling pod identity addon for cluster with addon enabled
+
+0.5.10
++++++
+* Add `--binding-selector` to AAD pod identity add sub command
+* Support using custom kubelet identity
+* Support updating Windows password
+* Add FIPS support to CLI extension
+
+0.5.9
++++++
+* Display result better for `az aks command invoke`, while still honor output option
+* Fix the bug that checking the addon profile whether it exists
+
+0.5.8
++++++
+* Update to use 2021-03-01 api-version
+
+0.5.7
++++++
+* Add command invoke for run-command feature
+
+0.5.6
++++++
+* Fix issue that assigning identity in another subscription will fail
+
+0.5.5
++++++
+* Add support for Azure KeyVault Secrets Provider as an AKS addon
+
+0.5.4
++++++
+* Add operations of maintenance configuration
+
+0.5.3
++++++
+* Add `--enable-pod-identity-with-kubenet` for enabling AAD Pod Identity in Kubenet cluster
+* Add `--fqdn-subdomain parameter` to create private cluster with custom private dns zone scenario
+
+0.5.2
++++++
+* Add support for node public IP prefix ID '--node-public-ip-prefix-id'
+
+0.5.1
++++++
+* Update to use 2021-02-01 api-version
+
+0.5.0
++++++
+* Modify addon confcom behavior to only enable SGX device plugin by default.
+* Introducte argument '--enable-sgx-quotehelper'
+* Breaking Change: remove argument '--diable-sgx-quotehelper'.
+
+0.4.73
++++++
+* Update to use 2020-12-01 api-version
+* Add argument '--enable-encryption-at-host'
+
+0.4.72
+++++++
+* Add --no-uptime-sla
+* Create MSI clusters by default.
+
+0.4.71
+++++++
+* Add support using custom private dns zone resource id for parameter '--private-dns-zone'
+
+0.4.70
+++++++
+* Revert to use CLIError to be compatible with azure cli versions < 2.15.0
+
+0.4.69
++++++
+* Add argument 'subnetCIDR' to replace 'subnetPrefix' when using ingress-azure addon.
+
+0.4.68
++++++
+* Add support for AAD Pod Identity resources configuration in Azure CLI.
+
+0.4.67
++++++
+* Add support for node configuration when creating cluster or agent pool.
+* Support private DNS zone for AKS private cluster.
+
+0.4.66
++++++
+* Add support for GitOps as an AKS addon
+* Update standard load balancer (SLB) max idle timeout from 120 to 100 minutes
+
+0.4.65
++++++
+* Honor addon names defined in Azure CLI
+* Add LicenseType support for Windows
+* Remove patterns for adminUsername and adminPassword in WindowsProfile
+
 0.4.64
 +++++
 * Add support for Open Service Mesh as an AKS addon

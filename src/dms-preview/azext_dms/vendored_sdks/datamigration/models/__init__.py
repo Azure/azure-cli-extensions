@@ -83,10 +83,10 @@ try:
     from ._models_py3 import GetTdeCertificatesSqlTaskInput
     from ._models_py3 import GetTdeCertificatesSqlTaskOutput
     from ._models_py3 import GetTdeCertificatesSqlTaskProperties
+    from ._models_py3 import GetUserTablesPostgreSqlTaskInput
     from ._models_py3 import GetUserTablesOracleTaskInput
     from ._models_py3 import GetUserTablesOracleTaskOutput
     from ._models_py3 import GetUserTablesOracleTaskProperties
-    from ._models_py3 import GetUserTablesPostgreSqlTaskInput
     from ._models_py3 import GetUserTablesPostgreSqlTaskOutput
     from ._models_py3 import GetUserTablesPostgreSqlTaskProperties
     from ._models_py3 import GetUserTablesSqlSyncTaskInput
@@ -111,6 +111,7 @@ try:
     from ._models_py3 import MigrateMySqlAzureDbForMySqlSyncTaskOutputMigrationLevel
     from ._models_py3 import MigrateMySqlAzureDbForMySqlSyncTaskOutputTableLevel
     from ._models_py3 import MigrateMySqlAzureDbForMySqlSyncTaskProperties
+    from ._models_py3 import MigratePostgreSqlAzureDbForPostgreSqlSyncDatabaseInput
     from ._models_py3 import MigrateOracleAzureDbForPostgreSqlSyncTaskProperties
     from ._models_py3 import MigrateOracleAzureDbPostgreSqlSyncDatabaseInput
     from ._models_py3 import MigrateOracleAzureDbPostgreSqlSyncTaskInput
@@ -120,7 +121,6 @@ try:
     from ._models_py3 import MigrateOracleAzureDbPostgreSqlSyncTaskOutputError
     from ._models_py3 import MigrateOracleAzureDbPostgreSqlSyncTaskOutputMigrationLevel
     from ._models_py3 import MigrateOracleAzureDbPostgreSqlSyncTaskOutputTableLevel
-    from ._models_py3 import MigratePostgreSqlAzureDbForPostgreSqlSyncDatabaseInput
     from ._models_py3 import MigratePostgreSqlAzureDbForPostgreSqlSyncDatabaseTableInput
     from ._models_py3 import MigratePostgreSqlAzureDbForPostgreSqlSyncTaskInput
     from ._models_py3 import MigratePostgreSqlAzureDbForPostgreSqlSyncTaskOutput
@@ -217,9 +217,9 @@ try:
     from ._models_py3 import NonSqlMigrationTaskInput
     from ._models_py3 import NonSqlMigrationTaskOutput
     from ._models_py3 import ODataError
+    from ._models_py3 import OrphanedUserInfo
     from ._models_py3 import OracleConnectionInfo
     from ._models_py3 import OracleOCIDriverInfo
-    from ._models_py3 import OrphanedUserInfo
     from ._models_py3 import PostgreSqlConnectionInfo
     from ._models_py3 import Project
     from ._models_py3 import ProjectFile
@@ -263,9 +263,9 @@ try:
     from ._models_py3 import ValidateMigrationInputSqlServerSqlMITaskOutput
     from ._models_py3 import ValidateMigrationInputSqlServerSqlMITaskProperties
     from ._models_py3 import ValidateMongoDbTaskProperties
+    from ._models_py3 import ValidateSyncMigrationInputSqlServerTaskInput
     from ._models_py3 import ValidateOracleAzureDbForPostgreSqlSyncTaskProperties
     from ._models_py3 import ValidateOracleAzureDbPostgreSqlSyncTaskOutput
-    from ._models_py3 import ValidateSyncMigrationInputSqlServerTaskInput
     from ._models_py3 import ValidateSyncMigrationInputSqlServerTaskOutput
     from ._models_py3 import ValidationError
     from ._models_py3 import WaitStatistics
@@ -287,10 +287,10 @@ except (SyntaxError, ImportError):
     from ._models import ConnectToSourceMySqlTaskInput
     from ._models import ConnectToSourceMySqlTaskProperties
     from ._models import ConnectToSourceNonSqlTaskOutput
+    from ._models import ConnectToSourcePostgreSqlSyncTaskInput
     from ._models import ConnectToSourceOracleSyncTaskInput
     from ._models import ConnectToSourceOracleSyncTaskOutput
     from ._models import ConnectToSourceOracleSyncTaskProperties
-    from ._models import ConnectToSourcePostgreSqlSyncTaskInput
     from ._models import ConnectToSourcePostgreSqlSyncTaskOutput
     from ._models import ConnectToSourcePostgreSqlSyncTaskProperties
     from ._models import ConnectToSourceSqlServerSyncTaskProperties
@@ -307,11 +307,11 @@ except (SyntaxError, ImportError):
     from ._models import ConnectToTargetAzureDbForPostgreSqlSyncTaskInput
     from ._models import ConnectToTargetAzureDbForPostgreSqlSyncTaskOutput
     from ._models import ConnectToTargetAzureDbForPostgreSqlSyncTaskProperties
+    from ._models import ConnectToTargetSqlDbTaskInput
     from ._models import ConnectToTargetOracleAzureDbForPostgreSqlSyncTaskInput
     from ._models import ConnectToTargetOracleAzureDbForPostgreSqlSyncTaskOutput
     from ._models import ConnectToTargetOracleAzureDbForPostgreSqlSyncTaskOutputDatabaseSchemaMapItem
     from ._models import ConnectToTargetOracleAzureDbForPostgreSqlSyncTaskProperties
-    from ._models import ConnectToTargetSqlDbTaskInput
     from ._models import ConnectToTargetSqlDbTaskOutput
     from ._models import ConnectToTargetSqlDbTaskProperties
     from ._models import ConnectToTargetSqlMISyncTaskInput
@@ -343,10 +343,10 @@ except (SyntaxError, ImportError):
     from ._models import GetTdeCertificatesSqlTaskInput
     from ._models import GetTdeCertificatesSqlTaskOutput
     from ._models import GetTdeCertificatesSqlTaskProperties
+    from ._models import GetUserTablesPostgreSqlTaskInput
     from ._models import GetUserTablesOracleTaskInput
     from ._models import GetUserTablesOracleTaskOutput
     from ._models import GetUserTablesOracleTaskProperties
-    from ._models import GetUserTablesPostgreSqlTaskInput
     from ._models import GetUserTablesPostgreSqlTaskOutput
     from ._models import GetUserTablesPostgreSqlTaskProperties
     from ._models import GetUserTablesSqlSyncTaskInput
@@ -371,6 +371,7 @@ except (SyntaxError, ImportError):
     from ._models import MigrateMySqlAzureDbForMySqlSyncTaskOutputMigrationLevel
     from ._models import MigrateMySqlAzureDbForMySqlSyncTaskOutputTableLevel
     from ._models import MigrateMySqlAzureDbForMySqlSyncTaskProperties
+    from ._models import MigratePostgreSqlAzureDbForPostgreSqlSyncDatabaseInput
     from ._models import MigrateOracleAzureDbForPostgreSqlSyncTaskProperties
     from ._models import MigrateOracleAzureDbPostgreSqlSyncDatabaseInput
     from ._models import MigrateOracleAzureDbPostgreSqlSyncTaskInput
@@ -380,7 +381,6 @@ except (SyntaxError, ImportError):
     from ._models import MigrateOracleAzureDbPostgreSqlSyncTaskOutputError
     from ._models import MigrateOracleAzureDbPostgreSqlSyncTaskOutputMigrationLevel
     from ._models import MigrateOracleAzureDbPostgreSqlSyncTaskOutputTableLevel
-    from ._models import MigratePostgreSqlAzureDbForPostgreSqlSyncDatabaseInput
     from ._models import MigratePostgreSqlAzureDbForPostgreSqlSyncDatabaseTableInput
     from ._models import MigratePostgreSqlAzureDbForPostgreSqlSyncTaskInput
     from ._models import MigratePostgreSqlAzureDbForPostgreSqlSyncTaskOutput
@@ -477,9 +477,9 @@ except (SyntaxError, ImportError):
     from ._models import NonSqlMigrationTaskInput
     from ._models import NonSqlMigrationTaskOutput
     from ._models import ODataError
+    from ._models import OrphanedUserInfo
     from ._models import OracleConnectionInfo
     from ._models import OracleOCIDriverInfo
-    from ._models import OrphanedUserInfo
     from ._models import PostgreSqlConnectionInfo
     from ._models import Project
     from ._models import ProjectFile
@@ -523,9 +523,9 @@ except (SyntaxError, ImportError):
     from ._models import ValidateMigrationInputSqlServerSqlMITaskOutput
     from ._models import ValidateMigrationInputSqlServerSqlMITaskProperties
     from ._models import ValidateMongoDbTaskProperties
+    from ._models import ValidateSyncMigrationInputSqlServerTaskInput
     from ._models import ValidateOracleAzureDbForPostgreSqlSyncTaskProperties
     from ._models import ValidateOracleAzureDbPostgreSqlSyncTaskOutput
-    from ._models import ValidateSyncMigrationInputSqlServerTaskInput
     from ._models import ValidateSyncMigrationInputSqlServerTaskOutput
     from ._models import ValidationError
     from ._models import WaitStatistics
@@ -606,10 +606,10 @@ __all__ = [
     'ConnectToSourceMySqlTaskInput',
     'ConnectToSourceMySqlTaskProperties',
     'ConnectToSourceNonSqlTaskOutput',
+    'ConnectToSourcePostgreSqlSyncTaskInput',
     'ConnectToSourceOracleSyncTaskInput',
     'ConnectToSourceOracleSyncTaskOutput',
     'ConnectToSourceOracleSyncTaskProperties',
-    'ConnectToSourcePostgreSqlSyncTaskInput',
     'ConnectToSourcePostgreSqlSyncTaskOutput',
     'ConnectToSourcePostgreSqlSyncTaskProperties',
     'ConnectToSourceSqlServerSyncTaskProperties',
@@ -626,11 +626,11 @@ __all__ = [
     'ConnectToTargetAzureDbForPostgreSqlSyncTaskInput',
     'ConnectToTargetAzureDbForPostgreSqlSyncTaskOutput',
     'ConnectToTargetAzureDbForPostgreSqlSyncTaskProperties',
+    'ConnectToTargetSqlDbTaskInput',
     'ConnectToTargetOracleAzureDbForPostgreSqlSyncTaskInput',
     'ConnectToTargetOracleAzureDbForPostgreSqlSyncTaskOutput',
     'ConnectToTargetOracleAzureDbForPostgreSqlSyncTaskOutputDatabaseSchemaMapItem',
     'ConnectToTargetOracleAzureDbForPostgreSqlSyncTaskProperties',
-    'ConnectToTargetSqlDbTaskInput',
     'ConnectToTargetSqlDbTaskOutput',
     'ConnectToTargetSqlDbTaskProperties',
     'ConnectToTargetSqlMISyncTaskInput',
@@ -662,10 +662,10 @@ __all__ = [
     'GetTdeCertificatesSqlTaskInput',
     'GetTdeCertificatesSqlTaskOutput',
     'GetTdeCertificatesSqlTaskProperties',
+    'GetUserTablesPostgreSqlTaskInput',
     'GetUserTablesOracleTaskInput',
     'GetUserTablesOracleTaskOutput',
     'GetUserTablesOracleTaskProperties',
-    'GetUserTablesPostgreSqlTaskInput',
     'GetUserTablesPostgreSqlTaskOutput',
     'GetUserTablesPostgreSqlTaskProperties',
     'GetUserTablesSqlSyncTaskInput',
@@ -690,6 +690,7 @@ __all__ = [
     'MigrateMySqlAzureDbForMySqlSyncTaskOutputMigrationLevel',
     'MigrateMySqlAzureDbForMySqlSyncTaskOutputTableLevel',
     'MigrateMySqlAzureDbForMySqlSyncTaskProperties',
+    'MigratePostgreSqlAzureDbForPostgreSqlSyncDatabaseInput',
     'MigrateOracleAzureDbForPostgreSqlSyncTaskProperties',
     'MigrateOracleAzureDbPostgreSqlSyncDatabaseInput',
     'MigrateOracleAzureDbPostgreSqlSyncTaskInput',
@@ -699,7 +700,6 @@ __all__ = [
     'MigrateOracleAzureDbPostgreSqlSyncTaskOutputError',
     'MigrateOracleAzureDbPostgreSqlSyncTaskOutputMigrationLevel',
     'MigrateOracleAzureDbPostgreSqlSyncTaskOutputTableLevel',
-    'MigratePostgreSqlAzureDbForPostgreSqlSyncDatabaseInput',
     'MigratePostgreSqlAzureDbForPostgreSqlSyncDatabaseTableInput',
     'MigratePostgreSqlAzureDbForPostgreSqlSyncTaskInput',
     'MigratePostgreSqlAzureDbForPostgreSqlSyncTaskOutput',
@@ -796,9 +796,9 @@ __all__ = [
     'NonSqlMigrationTaskInput',
     'NonSqlMigrationTaskOutput',
     'ODataError',
+    'OrphanedUserInfo',
     'OracleConnectionInfo',
     'OracleOCIDriverInfo',
-    'OrphanedUserInfo',
     'PostgreSqlConnectionInfo',
     'Project',
     'ProjectFile',
@@ -842,9 +842,9 @@ __all__ = [
     'ValidateMigrationInputSqlServerSqlMITaskOutput',
     'ValidateMigrationInputSqlServerSqlMITaskProperties',
     'ValidateMongoDbTaskProperties',
+    'ValidateSyncMigrationInputSqlServerTaskInput',
     'ValidateOracleAzureDbForPostgreSqlSyncTaskProperties',
     'ValidateOracleAzureDbPostgreSqlSyncTaskOutput',
-    'ValidateSyncMigrationInputSqlServerTaskInput',
     'ValidateSyncMigrationInputSqlServerTaskOutput',
     'ValidationError',
     'WaitStatistics',

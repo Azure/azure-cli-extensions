@@ -16,7 +16,7 @@ from ._shared.shared_access_signature import SharedAccessSignature, _SharedAcces
 
 if TYPE_CHECKING:
     from datetime import datetime
-    from . import (
+    from .import (
         ResourceTypes,
         AccountSasPermissions,
         UserDelegationKey,
@@ -43,7 +43,7 @@ class BlobSharedAccessSignature(SharedAccessSignature):
             The storage account name used to generate the shared access signatures.
         :param str account_key:
             The access key to generate the shares access signatures.
-        :param ~azure.storage.blob.models.UserDelegationKey user_delegation_key:
+        :param ~.models.UserDelegationKey user_delegation_key:
             Instead of an account key, the user could pass in a user delegation key.
             A user delegation key can be obtained from the service by authenticating with an AAD identity;
             this can be accomplished by calling get_user_delegation_key on any Blob service object.
@@ -55,7 +55,7 @@ class BlobSharedAccessSignature(SharedAccessSignature):
                       expiry=None, start=None, policy_id=None, ip=None, protocol=None,
                       cache_control=None, content_disposition=None,
                       content_encoding=None, content_language=None,
-                      content_type=None):
+                      content_type=None, **kwargs):
         '''
         Generates a shared access signature for the blob or one of its snapshots.
         Use the returned signature with the sas_token parameter of any BlobService.
@@ -126,12 +126,14 @@ class BlobSharedAccessSignature(SharedAccessSignature):
 
         resource = 'bs' if snapshot else 'b'
         resource = 'bv' if version_id else resource
+        resource = 'd' if kwargs.pop("is_directory", None) else resource
         sas.add_resource(resource)
 
         sas.add_timestamp(snapshot or version_id)
         sas.add_override_response_headers(cache_control, content_disposition,
                                           content_encoding, content_language,
                                           content_type)
+        sas.add_info_for_hns_account(**kwargs)
         sas.add_resource_signature(self.account_name, self.account_key, resource_path,
                                    user_delegation_key=self.user_delegation_key)
 
@@ -141,7 +143,7 @@ class BlobSharedAccessSignature(SharedAccessSignature):
                            start=None, policy_id=None, ip=None, protocol=None,
                            cache_control=None, content_disposition=None,
                            content_encoding=None, content_language=None,
-                           content_type=None):
+                           content_type=None, **kwargs):
         '''
         Generates a shared access signature for the container.
         Use the returned signature with the sas_token parameter of any BlobService.
@@ -206,6 +208,7 @@ class BlobSharedAccessSignature(SharedAccessSignature):
         sas.add_override_response_headers(cache_control, content_disposition,
                                           content_encoding, content_language,
                                           content_type)
+        sas.add_info_for_hns_account(**kwargs)
         sas.add_resource_signature(self.account_name, self.account_key, container_name,
                                    user_delegation_key=self.user_delegation_key)
         return sas.get_token()
@@ -215,6 +218,12 @@ class _BlobSharedAccessHelper(_SharedAccessHelper):
 
     def add_timestamp(self, timestamp):
         self._add_query(BlobQueryStringConstants.SIGNED_TIMESTAMP, timestamp)
+
+    def add_info_for_hns_account(self, **kwargs):
+        self._add_query(QueryStringConstants.SIGNED_DIRECTORY_DEPTH, kwargs.pop('sdd', None))
+        self._add_query(QueryStringConstants.SIGNED_AUTHORIZED_OID, kwargs.pop('preauthorized_agent_object_id', None))
+        self._add_query(QueryStringConstants.SIGNED_UNAUTHORIZED_OID, kwargs.pop('agent_object_id', None))
+        self._add_query(QueryStringConstants.SIGNED_CORRELATION_ID, kwargs.pop('correlation_id', None))
 
     def get_value_to_append(self, query):
         return_value = self.query_dict.get(query) or ''
@@ -249,7 +258,10 @@ class _BlobSharedAccessHelper(_SharedAccessHelper):
                  self.get_value_to_append(QueryStringConstants.SIGNED_KEY_START) +
                  self.get_value_to_append(QueryStringConstants.SIGNED_KEY_EXPIRY) +
                  self.get_value_to_append(QueryStringConstants.SIGNED_KEY_SERVICE) +
-                 self.get_value_to_append(QueryStringConstants.SIGNED_KEY_VERSION))
+                 self.get_value_to_append(QueryStringConstants.SIGNED_KEY_VERSION) +
+                 self.get_value_to_append(QueryStringConstants.SIGNED_AUTHORIZED_OID) +
+                 self.get_value_to_append(QueryStringConstants.SIGNED_UNAUTHORIZED_OID) +
+                 self.get_value_to_append(QueryStringConstants.SIGNED_CORRELATION_ID))
         else:
             string_to_sign += self.get_value_to_append(QueryStringConstants.SIGNED_IDENTIFIER)
 
@@ -302,14 +314,14 @@ def generate_account_sas(
         The account key, also called shared key or access key, to generate the shared access signature.
     :param resource_types:
         Specifies the resource types that are accessible with the account SAS.
-    :type resource_types: str or ~azure.storage.blob.ResourceTypes
+    :type resource_types: str or ~.ResourceTypes
     :param permission:
         The permissions associated with the shared access signature. The
         user is restricted to operations allowed by the permissions.
         Required unless an id is given referencing a stored access policy
         which contains this field. This field must be omitted if it has been
         specified in an associated stored access policy.
-    :type permission: str or ~azure.storage.blob.AccountSasPermissions
+    :type permission: str or ~.AccountSasPermissions
     :param expiry:
         The time at which the shared access signature becomes invalid.
         Required unless an id is given referencing a stored access policy
@@ -382,10 +394,10 @@ def generate_container_sas(
     :param str account_key:
         The account key, also called shared key or access key, to generate the shared access signature.
         Either `account_key` or `user_delegation_key` must be specified.
-    :param ~azure.storage.blob.UserDelegationKey user_delegation_key:
+    :param ~.UserDelegationKey user_delegation_key:
         Instead of an account shared key, the user could pass in a user delegation key.
         A user delegation key can be obtained from the service by authenticating with an AAD identity;
-        this can be accomplished by calling :func:`~azure.storage.blob.BlobServiceClient.get_user_delegation_key`.
+        this can be accomplished by calling :func:`~.BlobServiceClient.get_user_delegation_key`.
         When present, the SAS is signed with the user delegation key instead.
     :param permission:
         The permissions associated with the shared access signature. The
@@ -394,7 +406,7 @@ def generate_container_sas(
         Required unless an id is given referencing a stored access policy
         which contains this field. This field must be omitted if it has been
         specified in an associated stored access policy.
-    :type permission: str or ~azure.storage.blob.ContainerSasPermissions
+    :type permission: str or ~.ContainerSasPermissions
     :param expiry:
         The time at which the shared access signature becomes invalid.
         Required unless an id is given referencing a stored access policy
@@ -413,7 +425,7 @@ def generate_container_sas(
     :param str policy_id:
         A unique value up to 64 characters in length that correlates to a
         stored access policy. To create a stored access policy, use
-        :func:`~azure.storage.blob.ContainerClient.set_container_access_policy`.
+        :func:`~.ContainerClient.set_container_access_policy`.
     :param str ip:
         Specifies an IP address or a range of IP addresses from which to accept requests.
         If the IP address from which the request originates does not match the IP address
@@ -498,10 +510,10 @@ def generate_blob_sas(
     :param str account_key:
         The account key, also called shared key or access key, to generate the shared access signature.
         Either `account_key` or `user_delegation_key` must be specified.
-    :param ~azure.storage.blob.UserDelegationKey user_delegation_key:
+    :param ~.UserDelegationKey user_delegation_key:
         Instead of an account shared key, the user could pass in a user delegation key.
         A user delegation key can be obtained from the service by authenticating with an AAD identity;
-        this can be accomplished by calling :func:`~azure.storage.blob.BlobServiceClient.get_user_delegation_key`.
+        this can be accomplished by calling :func:`~.BlobServiceClient.get_user_delegation_key`.
         When present, the SAS is signed with the user delegation key instead.
     :param permission:
         The permissions associated with the shared access signature. The
@@ -510,7 +522,7 @@ def generate_blob_sas(
         Required unless an id is given referencing a stored access policy
         which contains this field. This field must be omitted if it has been
         specified in an associated stored access policy.
-    :type permission: str or ~azure.storage.blob.BlobSasPermissions
+    :type permission: str or ~.BlobSasPermissions
     :param expiry:
         The time at which the shared access signature becomes invalid.
         Required unless an id is given referencing a stored access policy
@@ -529,7 +541,7 @@ def generate_blob_sas(
     :param str policy_id:
         A unique value up to 64 characters in length that correlates to a
         stored access policy. To create a stored access policy, use
-        :func:`~azure.storage.blob.ContainerClient.set_container_access_policy()`.
+        :func:`~.ContainerClient.set_container_access_policy()`.
     :param str ip:
         Specifies an IP address or a range of IP addresses from which to accept requests.
         If the IP address from which the request originates does not match the IP address
