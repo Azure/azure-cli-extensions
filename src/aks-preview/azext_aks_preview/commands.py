@@ -16,7 +16,6 @@ from ._format import aks_versions_table_format
 from ._format import aks_upgrades_table_format
 from ._format import aks_pod_identities_table_format
 from ._format import aks_pod_identity_exceptions_table_format
-from ._format import aks_run_command_result_format
 
 
 def load_command_table(self, _):
