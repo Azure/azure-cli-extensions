@@ -76,7 +76,7 @@ def load_arguments(self, _):
                    'value: json-string/json-file/@json-file.')
         c.argument('instance_view_type', type=str, help='Specifies the type of the extension; an example is '
                    '"CustomScriptExtension".', arg_group='Instance View')
-        c.argument('instance_view_type_handler_version', type=str, help='Specifies the version of the script handler.',
+        c.argument('inst_handler_version', type=str, help='Specifies the version of the script handler.',
                    arg_group='Instance View')
         c.argument('status', action=AddStatus, nargs='+', help='Instance view status.', arg_group='Instance View')
 

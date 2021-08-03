@@ -68,7 +68,7 @@ def connectedmachine_extension_create(client,
                                       settings=None,
                                       protected_settings=None,
                                       instance_view_type=None,
-                                      instance_view_type_handler_version=None,
+                                      inst_handler_version=None,
                                       status=None,
                                       no_wait=False):
     extension_parameters = {}
@@ -85,7 +85,7 @@ def connectedmachine_extension_create(client,
     extension_parameters['properties']['instance_view'] = {}
     extension_parameters['properties']['instance_view']['name'] = name
     extension_parameters['properties']['instance_view']['type'] = instance_view_type
-    extension_parameters['properties']['instance_view']['type_handler_version'] = instance_view_type_handler_version
+    extension_parameters['properties']['instance_view']['type_handler_version'] = inst_handler_version
     extension_parameters['properties']['instance_view']['status'] = status
     return sdk_no_wait(no_wait,
                        client.begin_create_or_update,

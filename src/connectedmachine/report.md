@@ -184,7 +184,7 @@ az connectedmachine extension create --name "CustomScriptExtension" --location "
 |**--protected-settings**|any|The extension can contain either protectedSettings or protectedSettingsFromKeyVault or no protected settings at all.|protected_settings|protectedSettings|
 |**--name**|string|The machine extension name.|name|name|
 |**--instance-view-type**|string|Specifies the type of the extension; an example is "CustomScriptExtension".|instance_view_type|type|
-|**--instance-view-type-handler-version**|string|Specifies the version of the script handler.|instance_view_type_handler_version|typeHandlerVersion|
+|**--inst-handler-version**|string|Specifies the version of the script handler.|inst_handler_version|typeHandlerVersion|
 |**--status**|object|Instance view status.|status|status|
 
 #### <a name="MachineExtensionsUpdate">Command `az connectedmachine extension update`</a>
