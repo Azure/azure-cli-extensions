@@ -53,7 +53,7 @@ def _do_ssh_op(cmd, resource_group, vm_name, ssh_ip, public_key_file, private_ke
 def _get_and_write_certificate(cmd, public_key_file, cert_file):
     cloudtoscope = {
         "azurecloud": "https://pas.windows.net/CheckMyAccess/Linux/.default",
-        "azurechinacloud": "https://pas.chinacloudapi.cn/CheckMyAccess/Linux",
+        "azurechinacloud": "https://pas.chinacloudapi.cn/CheckMyAccess/Linux/.default",
         "azureusgovernment": "https://pasff.usgovcloudapi.net/CheckMyAccess/Linux/.default"
     }
     scope = cloudtoscope.get(cmd.cli_ctx.cloud.name.lower(), None)
