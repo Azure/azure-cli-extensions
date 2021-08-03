@@ -1442,7 +1442,7 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
     telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.AgentVersion': agent_version})
 
     # Get Helm chart path
-    chart_path = utils.get_chart_path(registry_path, kube_config, kube_context)
+    chart_path = utils.get_chart_path(registry_path, kube_config, kube_context, registry_username, registry_password)
 
     cmd_helm_upgrade = ["helm", "upgrade", "azure-arc", chart_path, "--namespace", release_namespace,
                         "--reuse-values",
