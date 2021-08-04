@@ -311,7 +311,7 @@ def helm_login(container_registry_repository, container_registry_username, conta
 def helm_install_release(chart_path, subscription_id, kubernetes_distro, kubernetes_infra, resource_group_name, cluster_name,
                          location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, proxy_cert, private_key_pem,
                          kube_config, kube_context, no_wait, values_file_provided, values_file, cloud_name, disable_auto_upgrade,
-                         enable_custom_locations, custom_locations_oid, onboarding_timeout="300", container_registry_repository="", 
+                         enable_custom_locations, custom_locations_oid, onboarding_timeout="300", container_registry_repository="",
                          container_registry_username="", container_registry_password=""):
 
     cmd_helm_install = ["helm", "upgrade", "--install", "azure-arc", chart_path,
