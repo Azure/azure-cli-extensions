@@ -227,11 +227,11 @@ class AppResourceProperties(msrest.serialization.Model):
         self.provisioning_state = None
         self.active_deployment_name = kwargs.get('active_deployment_name', None)
         self.fqdn = kwargs.get('fqdn', None)
-        self.https_only = kwargs.get('https_only', None)
+        self.https_only = kwargs.get('https_only', False)
         self.created_time = None
         self.temporary_disk = kwargs.get('temporary_disk', None)
         self.persistent_disk = kwargs.get('persistent_disk', None)
-        self.enable_end_to_end_tls = kwargs.get('enable_end_to_end_tls', None)
+        self.enable_end_to_end_tls = kwargs.get('enable_end_to_end_tls', False)
 
 
 class AvailableOperations(msrest.serialization.Model):
@@ -1185,7 +1185,7 @@ class DeploymentSettings(msrest.serialization.Model):
     :param environment_variables: Collection of environment variables.
     :type environment_variables: dict[str, str]
     :param runtime_version: Runtime version. Possible values include: "Java_8", "Java_11",
-     "NetCore_31".
+     "NetCore_31". Default value: "Java_8".
     :type runtime_version: str or ~azure.mgmt.appplatform.v2021_06_01_preview.models.RuntimeVersion
     """
 
@@ -1210,7 +1210,7 @@ class DeploymentSettings(msrest.serialization.Model):
         self.jvm_options = kwargs.get('jvm_options', None)
         self.net_core_main_entry_path = kwargs.get('net_core_main_entry_path', None)
         self.environment_variables = kwargs.get('environment_variables', None)
-        self.runtime_version = kwargs.get('runtime_version', None)
+        self.runtime_version = kwargs.get('runtime_version', "Java_8")
 
 
 class Error(msrest.serialization.Model):
@@ -2425,7 +2425,7 @@ class TemporaryDisk(msrest.serialization.Model):
     ):
         super(TemporaryDisk, self).__init__(**kwargs)
         self.size_in_gb = kwargs.get('size_in_gb', None)
-        self.mount_path = kwargs.get('mount_path', None)
+        self.mount_path = kwargs.get('mount_path', "/tmp")
 
 
 class TestKeys(msrest.serialization.Model):
