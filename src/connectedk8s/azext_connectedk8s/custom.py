@@ -223,11 +223,10 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     if container_registry_repository:
         if disable_auto_upgrade is False:
             auto_upgrade_error = 'Disable auto upgrade when using custom repository'
-            telemetry.set_exception(exception=auto_upgrade_error, fault_type=consts.Custom_Repository_Disable_Auto_Upgrade_Fault_Type,
-                                summary=auto_upgrade_error)
+            telemetry.set_exception(exception=auto_upgrade_error, fault_type=consts.Custom_Repository_Disable_Auto_Upgrade_Fault_Type, summary=auto_upgrade_error)
             raise ValidationError(auto_upgrade_error, recommendation='use --disable_auto_upgrade')
 
-        registry_path =  "{}/azurearck8s/azure-arc-k8sagents:1.3.8".format(container_registry_repository)
+        registry_path = "{}/azurearck8s/azure-arc-k8sagents:1.3.8".format(container_registry_repository)
         # Send private registry information to telemetry
         telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.PrivateContainerRegistry': container_registry_repository})
     else:
@@ -838,11 +837,10 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
     if container_registry_repository:
         if auto_upgrade != "false":
             auto_upgrade_error = 'Disable auto upgrade when using custom repository'
-            telemetry.set_exception(exception=auto_upgrade_error, fault_type=consts.Custom_Repository_Disable_Auto_Upgrade_Fault_Type,
-                                summary=auto_upgrade_error)
+            telemetry.set_exception(exception=auto_upgrade_error, fault_type=consts.Custom_Repository_Disable_Auto_Upgrade_Fault_Type, summary=auto_upgrade_error)
             raise ValidationError(auto_upgrade_error, recommendation='use --auto_upgrade false')
 
-        registry_path =  "{}/azurearck8s/azure-arc-k8sagents:1.3.8".format(container_registry_repository)
+        registry_path = "{}/azurearck8s/azure-arc-k8sagents:1.3.8".format(container_registry_repository)
         # Send private registry information to telemetry
         telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.PrivateContainerRegistry': container_registry_repository})
     else:
@@ -889,7 +887,7 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
         if container_registry_username and container_registry_password:
             cmd_helm_upgrade.extend(["--set", "systemDefaultValues.image.username={}".format(container_registry_username)])
             cmd_helm_upgrade.extend(["--set", "systemDefaultValues.image.password={}".format(container_registry_password)])
-            
+
     response_helm_upgrade = Popen(cmd_helm_upgrade, stdout=PIPE, stderr=PIPE)
     _, error_helm_upgrade = response_helm_upgrade.communicate()
     if response_helm_upgrade.returncode != 0:
@@ -1279,7 +1277,6 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
         registry_password = helm_values.get('systemDefaultValues').get('image').get('password')
         # Send private registry information to telemetry
         telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.PrivateContainerRegistry': helm_container_repository})
-
 
     reg_path_array = registry_path.split(':')
     agent_version = reg_path_array[1]
