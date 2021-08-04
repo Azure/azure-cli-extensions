@@ -21,10 +21,12 @@ class TestLoadBalancer(unittest.TestCase):
         idle_timeout = 3600
 
         profile = ManagedClusterLoadBalancerProfile()
-        profile.managed_outbound_ips = ManagedClusterLoadBalancerProfileManagedOutboundIPs(
+        # ips -> i_ps due to track 2 naming issue
+        profile.managed_outbound_i_ps = ManagedClusterLoadBalancerProfileManagedOutboundIPs(
             count=2
         )
-        profile.outbound_ips = ManagedClusterLoadBalancerProfileOutboundIPs(
+        # ips -> i_ps due to track 2 naming issue
+        profile.outbound_i_ps = ManagedClusterLoadBalancerProfileOutboundIPs(
             public_ips="public_ips"
         )
         profile.outbound_ip_prefixes = ManagedClusterLoadBalancerProfileOutboundIPPrefixes(
@@ -33,8 +35,10 @@ class TestLoadBalancer(unittest.TestCase):
 
         p = loadbalancer.configure_load_balancer_profile(managed_outbound_ip_count, outbound_ips, outbound_ip_prefixes, outbound_ports, idle_timeout, profile)
 
-        self.assertIsNotNone(p.managed_outbound_ips)
-        self.assertIsNone(p.outbound_ips)
+        # ips -> i_ps due to track 2 naming issue
+        self.assertIsNotNone(p.managed_outbound_i_ps)
+        # ips -> i_ps due to track 2 naming issue
+        self.assertIsNone(p.outbound_i_ps)
         self.assertIsNone(p.outbound_ip_prefixes)
 
 

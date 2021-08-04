@@ -2,6 +2,15 @@
 
 Release History
 ===============
+
+0.2.7
+++++++
+* bugfix: `az network vhub get-effective-routes` always returns empty value list.
+
+0.2.6
+++++++
+* `az network vhub get-effective-routes` support `-o table` outputs.
+
 0.2.5
 ++++++
 * Migrate to Track2 SDK.

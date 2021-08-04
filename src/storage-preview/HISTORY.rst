@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.7.3(2021-05-20)
+++++++++++++++++++
+* Support soft delete for ADLS Gen2 account
+
 0.7.2(2021-04-09)
 ++++++++++++++++++
 * Remove `az storage blob service-properties` as it is supported in storage-blob-preview extension and Azure CLI
