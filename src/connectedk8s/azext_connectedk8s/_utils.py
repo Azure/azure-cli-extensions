@@ -70,10 +70,9 @@ def validate_location(cmd, location):
 
 def get_chart_path(registry_path, kube_config, kube_context, container_registry_username="", container_registry_password=""):
 
-    helm_login(registry_path, container_registry_username, container_registry_password)
-
     # Pulling helm chart from registry
     os.environ['HELM_EXPERIMENTAL_OCI'] = '1'
+    helm_login(registry_path, container_registry_username, container_registry_password)
     pull_helm_chart(registry_path, kube_config, kube_context)
 
     # Exporting helm chart after cleanup

@@ -851,6 +851,7 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
         telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.PrivateContainerRegistry': container_registry_repository})
 
     if default_registry is not None or registry_path is None:
+        logger.info("Setting default MCR registry")
         registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else utils.get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood, release_train_dogfood)
 
     reg_path_array = registry_path.split(':')
@@ -889,7 +890,7 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
         cmd_helm_upgrade.extend(["--kubeconfig", kube_config])
     if kube_context:
         cmd_helm_upgrade.extend(["--kube-context", kube_context])
-    if container_registry_repository:
+    if container_registry_repository and default_registry is None:
         cmd_helm_upgrade.extend(["--set", "systemDefaultValues.image.repository={}".format(container_registry_repository)])
         if container_registry_username and container_registry_password and anonymous_pull is None:
             cmd_helm_upgrade.extend(["--set", "systemDefaultValues.image.username={}".format(container_registry_username)])
@@ -897,6 +898,8 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
     if anonymous_pull:
         cmd_helm_upgrade.extend(["--set", "systemDefaultValues.image.username={}".format("")])
         cmd_helm_upgrade.extend(["--set", "systemDefaultValues.image.password={}".format("")])
+    if default_registry:
+        cmd_helm_upgrade.extend(["--set", "systemDefaultValues.image.repository={}".format("mcr.microsoft.com")])
 
     response_helm_upgrade = Popen(cmd_helm_upgrade, stdout=PIPE, stderr=PIPE)
     _, error_helm_upgrade = response_helm_upgrade.communicate()
