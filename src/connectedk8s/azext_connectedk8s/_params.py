@@ -53,6 +53,8 @@ def load_arguments(self, _):
         c.argument('container_registry_repository', options_list=['--pcr-repository'], help='Custom container registry repository.')
         c.argument('container_registry_username', options_list=['--pcr-username'], help='Custom container registry repository username.')
         c.argument('container_registry_password', options_list=['--pcr-password'], help='Custom container registry repository password.')
+        c.argument('default_registry', options_list=['--default-registry'], help='Flag to restore default container registry (MCR).')
+        c.argument('anonymous_pull', options_list=['--anonymous-pull'], help='Flag to change PCR with credentials to PCR with anonymous pull.')
 
     with self.argument_context('connectedk8s upgrade') as c:
         c.argument('cluster_name', options_list=['--name', '-n'], id_part='name', help='The name of the connected cluster.')
