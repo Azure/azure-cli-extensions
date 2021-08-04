@@ -882,11 +882,12 @@ class PreviewAKSCreateDecorator(AKSCreateDecorator):
             self.param.vm_set_type, self.param.kubernetes_version
         )
 
-    def set_up_agent_pool_profiles(self):
+    def set_up_agent_pool_profiles(self, mc):
         # variable `node_zones` has been renamed to `zone` in acs
         self.param.zones = self.param.node_zones
-        super().set_up_agent_pool_profiles()
-        agent_pool_profile = self.mc.agent_pool_profiles[0]
+        super().set_up_agent_pool_profiles(mc)
+        # update agent_pool_profile, which also update mc
+        agent_pool_profile = mc.agent_pool_profiles[0]
         agent_pool_profile.os_sku = self.param.os_sku
         agent_pool_profile.pod_subnet_id = self.param.pod_subnet_id
         agent_pool_profile.enable_fips = self.param.enable_fips_image
@@ -898,8 +899,9 @@ class PreviewAKSCreateDecorator(AKSCreateDecorator):
             agent_pool_profile.linux_os_config = _get_linux_os_config(
                 self.param.linux_os_config
             )
+        return mc
 
-    def set_up_addon_profiles(self):
+    def set_up_addon_profiles(self, mc):
         addon_profiles = _handle_addons_args(
             cmd=self.cmd,
             addons_str=self.param.enable_addons,
@@ -955,9 +957,10 @@ class PreviewAKSCreateDecorator(AKSCreateDecorator):
         self.context.enable_virtual_node = enable_virtual_node
 
         # update mc
-        self.mc.addon_profiles = addon_profiles
+        mc.addon_profiles = addon_profiles
+        return mc
 
-    def set_up_pod_identity_profile(self):
+    def set_up_pod_identity_profile(self, mc):
         pod_identity_profile = None
         if self.param.enable_pod_identity:
             if not self.param.enable_managed_identity:
@@ -966,15 +969,16 @@ class PreviewAKSCreateDecorator(AKSCreateDecorator):
                 )
             pod_identity_profile = self.models.ManagedClusterPodIdentityProfile(enabled=True)
             _ensure_pod_identity_kubenet_consent(
-                self.mc.network_profile,
+                mc.network_profile,
                 pod_identity_profile,
                 self.param.enable_pod_identity_with_kubenet,
             )
 
         # update mc
-        self.mc.pod_identity_profile = pod_identity_profile
+        mc.pod_identity_profile = pod_identity_profile
+        return mc
 
-    def set_up_auto_upgrade_profile(self):
+    def set_up_auto_upgrade_profile(self, mc):
         auto_upgrade_profile = None
         if self.param.auto_upgrade_channel is not None:
             auto_upgrade_profile = self.models.ManagedClusterAutoUpgradeProfile(
@@ -982,25 +986,30 @@ class PreviewAKSCreateDecorator(AKSCreateDecorator):
             )
 
         # update mc
-        self.mc.auto_upgrade_profile = auto_upgrade_profile
+        mc.auto_upgrade_profile = auto_upgrade_profile
+        return mc
 
-    def set_up_mc_with_params(self):
-        super().set_up_mc_with_params()
-        self.mc.enable_pod_security_policy = bool(self.param.enable_pod_security_policy)
-        self.mc.disable_local_accounts = bool(self.param.disable_local_accounts)
-        self.mc.node_resource_group = self.param.node_resource_group
+    def set_up_mc_with_params(self, mc):
+        super().set_up_mc_with_params(mc)
+        mc.enable_pod_security_policy = bool(self.param.enable_pod_security_policy)
+        mc.disable_local_accounts = bool(self.param.disable_local_accounts)
+        mc.node_resource_group = self.param.node_resource_group
         # the default value of variable `http_proxy_config` is None,
         # and the path check provided by the `os` module only accepts string
         if self.param.http_proxy_config:
-            self.mc.http_proxy_config =_get_http_proxy_config(self.param.http_proxy_config)
+            # update mc
+            mc.http_proxy_config =_get_http_proxy_config(self.param.http_proxy_config)
+        return mc
 
-    def set_up_public_fqdn(self):
+    def set_up_public_fqdn(self, mc):
         if not self.param.enable_private_cluster and self.param.enable_public_fqdn:
             raise ArgumentUsageError(
                 "--enable-public-fqdn should only be used with --enable-private-cluster"
             )
         if self.param.enable_public_fqdn:
-            self.mc.api_server_access_profile.enable_private_cluster_public_fqdn = True
+            # update mc
+            mc.api_server_access_profile.enable_private_cluster_public_fqdn = True
+        return mc
 
     def build_custom_headers(self):
         super().build_custom_headers()
@@ -1009,13 +1018,14 @@ class PreviewAKSCreateDecorator(AKSCreateDecorator):
         # update context
         self.context.custom_headers.update(custom_headers)
 
-    def set_up_preview_mc(self):
-        super().set_up_default_mc()
-        self.set_up_pod_identity_profile()
-        self.set_up_auto_upgrade_profile()
-        self.set_up_public_fqdn()
+    def construct_preview_mc(self):
+        mc = super().construct_default_mc()
+        mc = self.set_up_pod_identity_profile(mc)
+        mc = self.set_up_auto_upgrade_profile(mc)
+        mc = self.set_up_public_fqdn(mc)
+        return mc
 
-    def create_preview_cluster(self):
+    def create_preview_cluster(self, mc):
         # Due to SPN replication latency, we do a few retries here
         max_retry = 30
         retry_exception = Exception(None)
@@ -1031,7 +1041,7 @@ class PreviewAKSCreateDecorator(AKSCreateDecorator):
                     self.context.subscription_id,
                     self.param.resource_group_name,
                     self.param.name,
-                    self.mc,
+                    mc,
                     self.context.monitoring,
                     self.context.ingress_appgw_addon_enabled,
                     self.context.enable_virtual_node,
@@ -1047,7 +1057,7 @@ class PreviewAKSCreateDecorator(AKSCreateDecorator):
                     # Create the DCR Association here
                     _ensure_container_insights_for_monitoring(
                         self.cmd,
-                        self.mc.addon_profiles[CONST_MONITORING_ADDON_NAME],
+                        mc.addon_profiles[CONST_MONITORING_ADDON_NAME],
                         self.context.subscription_id,
                         self.param.resource_group_name,
                         self.param.name,
@@ -1173,8 +1183,8 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         models=models,
         raw_parameters=raw_parameters,
     )
-    preview_aks_create_decorator.set_up_preview_mc()
-    return preview_aks_create_decorator.create_preview_cluster()
+    mc = preview_aks_create_decorator.construct_preview_mc()
+    return preview_aks_create_decorator.create_preview_cluster(mc)
 
 
 def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,too-many-locals
