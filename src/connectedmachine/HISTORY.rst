@@ -5,7 +5,7 @@ Release History
 
 0.4.0	
 +++++	
-* Added private link scope and private endpoint connection commands	
+* Add private link scope and private endpoint connection commands	
 
 0.3.0	
 +++++	

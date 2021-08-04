@@ -66,7 +66,7 @@ def load_arguments(self, _):
         c.argument('type_', options_list=['--type'], type=str, help='Specifies the type of the extension; an example '
                    'is "CustomScriptExtension".')
         c.argument('type_handler_version', type=str, help='Specifies the version of the script handler.')
-        c.argument('auto_upgrade_minor', arg_type=get_three_state_flag(), help='Indicates whether the extension should '
+        c.argument('auto_upgrade_minor', arg_type=get_three_state_flag(), help='Indicate whether the extension should '
                    'use a newer minor version if one is available at deployment time. Once deployed, however, the '
                    'extension will not upgrade minor versions unless redeployed, even with this property set to true.')
         c.argument('settings', type=validate_file_or_dict, help='Json formatted public settings for the extension. '
@@ -92,7 +92,7 @@ def load_arguments(self, _):
         c.argument('type_', options_list=['--type'], type=str, help='Specifies the type of the extension; an example '
                    'is "CustomScriptExtension".')
         c.argument('type_handler_version', type=str, help='Specifies the version of the script handler.')
-        c.argument('auto_upgrade_minor', arg_type=get_three_state_flag(), help='Indicates whether the extension should '
+        c.argument('auto_upgrade_minor', arg_type=get_three_state_flag(), help='Indicate whether the extension should '
                    'use a newer minor version if one is available at deployment time. Once deployed, however, the '
                    'extension will not upgrade minor versions unless redeployed, even with this property set to true.')
         c.argument('settings', type=validate_file_or_dict, help='Json formatted public settings for the extension. '
@@ -115,7 +115,7 @@ def load_arguments(self, _):
     with self.argument_context('connectedmachine upgrade-extension') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('machine_name', type=str, help='The name of the hybrid machine.', id_part='name')
-        c.argument('extension_targets', type=validate_file_or_dict, help='Describes the Extension Target Properties. '
+        c.argument('extension_targets', type=validate_file_or_dict, help='Describe the Extension Target Properties. '
                    'Expected value: json-string/json-file/@json-file.')
 
     with self.argument_context('connectedmachine private-link-scope list') as c:

@@ -19,7 +19,7 @@ helps['connectedmachine'] = '''
 
 helps['connectedmachine list'] = """
     type: command
-    short-summary: "Lists all the hybrid machines in the specified resource group. Use the nextLink property in the \
+    short-summary: "List all the hybrid machines in the specified resource group. Use the nextLink property in the \
 response to get the next page of hybrid machines. And Lists all the hybrid machines in the specified subscription. Use \
 the nextLink property in the response to get the next page of hybrid machines."
     examples:
@@ -58,7 +58,7 @@ helps['connectedmachine extension list'] = """
     type: command
     short-summary: "The operation to get all extensions of a non-Azure machine."
     examples:
-      - name: GET all Machine Extensions
+      - name: Get all Machine Extensions
         text: |-
                az connectedmachine extension list --machine-name "myMachine" --resource-group "myResourceGroup"
 """
@@ -67,7 +67,7 @@ helps['connectedmachine extension show'] = """
     type: command
     short-summary: "The operation to get the extension."
     examples:
-      - name: GET Machine Extension
+      - name: Get Machine Extension
         text: |-
                az connectedmachine extension show --name "CustomScriptExtension" --machine-name "myMachine" \
 --resource-group "myResourceGroup"
@@ -81,7 +81,6 @@ helps['connectedmachine extension create'] = """
         short-summary: "Instance view status."
         long-summary: |
             Usage: --status code=XX level=XX display-status=XX message=XX time=XX
-
             code: The status code.
             level: The level code.
             display-status: The short localizable label for the status.
@@ -154,7 +153,7 @@ helps['connectedmachine private-link-scope'] = """
 
 helps['connectedmachine private-link-scope list'] = """
     type: command
-    short-summary: "Gets a list of Azure Arc PrivateLinkScopes within a resource group. And Gets a list of all Azure \
+    short-summary: "Get a list of Azure Arc PrivateLinkScopes within a resource group. And Gets a list of all Azure \
 Arc PrivateLinkScopes within a subscription."
     examples:
       - name: PrivateLinkScopeListByResourceGroup
@@ -167,7 +166,7 @@ Arc PrivateLinkScopes within a subscription."
 
 helps['connectedmachine private-link-scope show'] = """
     type: command
-    short-summary: "Returns a Azure Arc PrivateLinkScope."
+    short-summary: "Return a Azure Arc PrivateLinkScope."
     examples:
       - name: PrivateLinkScopeGet
         text: |-

@@ -40,7 +40,7 @@ from .. import (
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
-MACHINE_NAME = ''
+MACHINE_NAME = 'sdkTestVM'
 RESOURCE_GROUP = 'az-sdk-test'
 LOCATION = 'eastus2euap'
 EXTENSION_NAME = 'CustomScriptExtension'

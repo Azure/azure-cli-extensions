@@ -11,7 +11,7 @@
 
 from .. import try_manual
 
-MACHINE_NAME = ''
+MACHINE_NAME = 'sdkTestVM'
 RESOURCE_GROUP = 'az-sdk-test'
 LOCATION = 'eastus2euap'
 EXTENSION_NAME = 'CustomScriptExtension'
