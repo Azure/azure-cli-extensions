@@ -841,7 +841,7 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
         helm_container_repository = helm_values.get('systemDefaultValues').get('image').get('repository')
         if helm_container_repository.split('.')[0] != "mcr":
             registry_path = "{}/azurearck8s/azure-arc-k8sagents:1.3.8".format(helm_container_repository)
-    else :
+    else:
         if auto_upgrade != "false":
             auto_upgrade_error = 'Disable auto upgrade when using custom repository'
             telemetry.set_exception(exception=auto_upgrade_error, fault_type=consts.Custom_Repository_Disable_Auto_Upgrade_Fault_Type, summary=auto_upgrade_error)
