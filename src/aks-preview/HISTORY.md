@@ -2,6 +2,61 @@
 
 Release History
 ===============
+
+0.5.25
++++++
+* Add support for http proxy
+
+0.5.24
++++++
+* * Add "--aks-custom-headers" for "az aks nodepool upgrade"
+
+0.5.23
++++++
+* Fix issue that `maintenanceconfiguration add` subcommand cannot work
+
+0.5.22
++++++
+* Fix issue in dcr template
+
+0.5.21
++++++
+* Fix issue when disable monitoring on an AKS cluster would fail in regions where Data Collection Rules are not enabled
+
+0.5.20
++++++
+* Support enabling monitoring on AKS clusters with msi auth
+* Add `--enable-msi-auth-for-monitoring` option in aks create and aks enable-addons
+
+0.5.19
++++++
+* Remove azure-defender from list of available addons to install via `az aks enable-addons` command
+
+0.5.18
++++++
+* Fix issue with node config not consuming logging settings
+
+0.5.17
++++++
+* Add parameter '--enable-ultra-ssd' to enable UltraSSD on agent node pool
+
+0.5.16
++++++
+* Vendor SDK using latest swagger with optional query parameter added
+* Support private cluster public fqdn feature
+
+0.5.15
++++++
+* Update to use 2021-05-01 api-version
+
+0.5.14
++++++
+* Add os-sku argument for cluster and nodepool creation
+
+0.5.13
++++++
+* Add compatible logic for the track 2 migration of resource dependence
+
 0.5.12
 +++++
 * Add --enable-azure-rbac and --disable-azure-rbac in aks update

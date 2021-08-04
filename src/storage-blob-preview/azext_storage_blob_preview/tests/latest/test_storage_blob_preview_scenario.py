@@ -5,9 +5,7 @@
 
 import os
 
-from azure_devtools.scenario_tests import AllowLargeResponse
-from azure.cli.testsdk import (JMESPathCheck, JMESPathCheckExists,
-                               ScenarioTest, ResourceGroupPreparer, StorageAccountPreparer)
+from azure.cli.testsdk import (JMESPathCheck, ScenarioTest, ResourceGroupPreparer, StorageAccountPreparer)
 from ..storage_test_util import StorageScenarioMixin
 
 

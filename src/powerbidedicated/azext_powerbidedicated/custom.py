@@ -25,7 +25,7 @@ def create_powerbi_embedded_capacity(client,
     body['tags'] = tags  # dictionary
     body['location'] = location  # dictionary
     body.setdefault('administration', {})['members'] = None if administration_members is None else administration_members
-    return sdk_no_wait(no_wait, client.create, resource_group_name=resource_group_name, dedicated_capacity_name=name, capacity_parameters=body)
+    return sdk_no_wait(no_wait, client.begin_create, resource_group_name=resource_group_name, dedicated_capacity_name=name, capacity_parameters=body)
 
 
 def update_powerbi_embedded_capacity(client,
@@ -45,14 +45,14 @@ def update_powerbi_embedded_capacity(client,
     if administration_members is not None:
         body.setdefault('administration', {})['members'] = None if administration_members is None \
             else administration_members
-    return sdk_no_wait(no_wait, client.update, resource_group_name=resource_group_name, dedicated_capacity_name=name,
+    return sdk_no_wait(no_wait, client.begin_update, resource_group_name=resource_group_name, dedicated_capacity_name=name,
                        capacity_update_parameters=body)
 
 
 def delete_powerbi_embedded_capacity(client,
                                      resource_group_name,
                                      name, no_wait=False):
-    return sdk_no_wait(no_wait, client.delete, resource_group_name=resource_group_name, dedicated_capacity_name=name)
+    return sdk_no_wait(no_wait, client.begin_delete, resource_group_name=resource_group_name, dedicated_capacity_name=name)
 
 
 def get_powerbi_embedded_capacity(client,

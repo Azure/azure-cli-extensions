@@ -18,6 +18,7 @@ if TYPE_CHECKING:
 from ._configuration import ResourceGraphClientConfiguration
 from .operations import ResourceGraphClientOperationsMixin
 from .operations import Operations
+from .operations import GraphQueryOperations
 from .. import models
 
 
@@ -26,28 +27,34 @@ class ResourceGraphClient(ResourceGraphClientOperationsMixin):
 
     :ivar operations: Operations operations
     :vartype operations: azure.mgmt.resourcegraph.aio.operations.Operations
+    :ivar graph_query: GraphQueryOperations operations
+    :vartype graph_query: azure.mgmt.resourcegraph.aio.operations.GraphQueryOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials_async.AsyncTokenCredential
+    :param subscription_id: The Azure subscription Id.
+    :type subscription_id: str
     :param str base_url: Service URL
     """
 
     def __init__(
         self,
         credential: "AsyncTokenCredential",
+        subscription_id: str,
         base_url: Optional[str] = None,
         **kwargs: Any
     ) -> None:
         if not base_url:
             base_url = 'https://management.azure.com'
-        self._config = ResourceGraphClientConfiguration(credential, **kwargs)
+        self._config = ResourceGraphClientConfiguration(credential, subscription_id, **kwargs)
         self._client = AsyncARMPipelineClient(base_url=base_url, config=self._config, **kwargs)
 
         client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
         self._serialize = Serializer(client_models)
-        self._serialize.client_side_validation = False
         self._deserialize = Deserializer(client_models)
 
         self.operations = Operations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.graph_query = GraphQueryOperations(
             self._client, self._config, self._serialize, self._deserialize)
 
     async def close(self) -> None:

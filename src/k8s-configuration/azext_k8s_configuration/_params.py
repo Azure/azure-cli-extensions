@@ -13,7 +13,7 @@ from azure.cli.core.commands.parameters import (
 )
 
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
-from ._validators import validate_configuration_type, validate_operator_namespace, validate_operator_instance_name
+from ._validators import _validate_configuration_type, _validate_operator_namespace, _validate_operator_instance_name
 
 
 def load_arguments(self, _):
@@ -38,7 +38,7 @@ def load_arguments(self, _):
                    arg_type=get_enum_type(['namespace', 'cluster']),
                    help='''Specify scope of the operator to be 'namespace' or 'cluster' ''')
         c.argument('configuration_type',
-                   validator=validate_configuration_type,
+                   validator=_validate_configuration_type,
                    arg_type=get_enum_type(['sourceControlConfiguration']),
                    help='Type of the configuration')
         c.argument('enable_helm_operator',
@@ -60,11 +60,11 @@ def load_arguments(self, _):
         c.argument('operator_instance_name',
                    arg_group="Operator",
                    help='Instance name of the Operator',
-                   validator=validate_operator_instance_name)
+                   validator=_validate_operator_instance_name)
         c.argument('operator_namespace',
                    arg_group="Operator",
                    help='Namespace in which to install the Operator',
-                   validator=validate_operator_namespace)
+                   validator=_validate_operator_namespace)
         c.argument('operator_type',
                    arg_group="Operator",
                    help='''Type of the operator. Valid value is 'flux' ''')
