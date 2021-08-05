@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 from knack import util
-import mock
+from unittest import mock
 import unittest
 import platform
 
