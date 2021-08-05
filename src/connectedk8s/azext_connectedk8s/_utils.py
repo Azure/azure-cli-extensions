@@ -410,6 +410,8 @@ def check_provider_registrations(cli_ctx):
         if kc_registration_state != "Registered":
             telemetry.set_user_fault()
             logger.warning("{} provider is not registered".format(consts.Kubernetes_Configuration_Provider_Namespace))
+    except ValidationError as e:
+        raise e
     except Exception as ex:
         logger.warning("Couldn't check the required provider's registration status. Error: {}".format(str(ex)))
 
