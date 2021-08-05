@@ -53,7 +53,7 @@ def validate_create(cmd, namespace):
     # Check copy resouce group name
     if namespace.repair_group_name:
         if namespace.repair_group_name == namespace.resource_group_name:
-           raise CLIError('The repair resource group name cannot be the same as the source VM resource group.')
+            raise CLIError('The repair resource group name cannot be the same as the source VM resource group.')
         _validate_resource_group_name(namespace.repair_group_name)
     else:
         namespace.repair_group_name = 'repair-' + namespace.vm_name + '-' + timestamp
@@ -203,17 +203,18 @@ def _prompt_repair_password(namespace):
     except NoTTYException:
         raise CLIError('Please specify the password parameter in non-interactive mode.')
 
+
 def _prompt_public_ip(namespace):
     from knack.prompting import prompt_y_n, NoTTYException
     try:
         if prompt_y_n('Does repair vm requires public ip?'):
             namespace.associate_public_ip = "yes"
         else:
-        #    raise CLIError('Stopping execution upon user input.')
             namespace.associate_public_ip = '""'
 
     except NoTTYException:
         raise CLIError('Please specify the associate-public-ip parameter in non-interactive mode.')
+
 
 def _classic_vm_exists(cmd, resource_group_name, vm_name):
     classic_vm_provider = 'Microsoft.ClassicCompute'
