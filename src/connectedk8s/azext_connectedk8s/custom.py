@@ -228,7 +228,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
         if arc_agent_version is None:
             agent_version_error = 'Arc agent version needs to be provided when using private container repository'
             telemetry.set_exception(exception=agent_version_error, fault_type=consts.Custom_Repository_Agent_Version_Required_Fault_Type, summary=agent_version_error)
-            raise ArgumentUsageError(agent_version_error, recommendation='use --disable-auto-upgrade')
+            raise ArgumentUsageError(agent_version_error, recommendation='use --agent-version <version>')
 
         registry_path = "{}/azurearck8s/azure-arc-k8sagents:{}".format(container_registry_repository, arc_agent_version)
         # Send private registry information to telemetry
@@ -768,7 +768,7 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
 
     proxy_cert = proxy_cert.replace('\\', r'\\\\')
 
-    if https_proxy == "" and http_proxy == "" and no_proxy == "" and proxy_cert == "" and not disable_proxy and not auto_upgrade:
+    if https_proxy == "" and http_proxy == "" and no_proxy == "" and proxy_cert == "" and not disable_proxy and not auto_upgrade and not container_registry_repository and not default_registry:
         raise RequiredArgumentMissingError(consts.No_Param_Error)
 
     if (https_proxy or http_proxy or no_proxy or proxy_cert) and disable_proxy:
