@@ -28,7 +28,10 @@ helps['connectedk8s connect'] = """
       text: az connectedk8s connect -g resourceGroupName -n connectedClusterName --proxy-cert /path/to/crt --proxy-https https://proxy-url --proxy-http http://proxy-url --proxy-skip-range excludedIP,excludedCIDR,exampleCIDRfollowed,10.0.0.0/24
     - name: Onboard a connected kubernetes cluster with custom onboarding timeout.
       text: az connectedk8s connect -g resourceGroupName -n connectedClusterName --onboarding-timeout 600
-
+    - name: Onboard a connected kubernetes cluster with custom container registry where anonymous pull is allowed.
+      text: az connectedk8s connect -g resourceGroupName -n connectedClusterName --registry-repository registry.example.com --agent-version 1.3.8
+    - name: Onboard a connected kubernetes cluster with custom container registry with credentials.
+      text: az connectedk8s connect -g resourceGroupName -n connectedClusterName --registry-repository registry.example.com --agent-version 1.3.8 --registry-username userA --registry-password passwordA
 """
 
 helps['connectedk8s update'] = """

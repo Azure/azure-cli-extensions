@@ -68,11 +68,14 @@ def validate_location(cmd, location):
             break
 
 
-def get_chart_path(registry_path, kube_config, kube_context, container_registry_username="", container_registry_password=""):
+def get_chart_path(registry_path, kube_config, kube_context, container_registry_username=None, container_registry_password=None):
 
     # Pulling helm chart from registry
     os.environ['HELM_EXPERIMENTAL_OCI'] = '1'
-    helm_login(registry_path, container_registry_username, container_registry_password)
+
+    if container_registry_username and container_registry_password:
+        helm_login(registry_path, container_registry_username, container_registry_password)
+
     pull_helm_chart(registry_path, kube_config, kube_context)
 
     # Exporting helm chart after cleanup
@@ -295,16 +298,14 @@ def get_container_registry(container_registry_repository):
 
 
 def helm_login(container_registry_repository, container_registry_username, container_registry_password):
-    if container_registry_username:
-        container_registry = get_container_registry(container_registry_repository)
-        cmd_helm_login = ["helm", "registry", "login", container_registry, "--username", container_registry_username, "--password", container_registry_password]
-        response_helm_install = Popen(cmd_helm_login, stdout=PIPE, stderr=PIPE)
-        _, error_helm_install = response_helm_install.communicate()
-        if response_helm_install.returncode != 0:
-            if ('forbidden' in error_helm_install.decode("ascii") or 'timed out waiting for the condition' in error_helm_install.decode("ascii")):
-                telemetry.set_user_fault()
-            telemetry.set_exception(exception=error_helm_install.decode("ascii"), fault_type=consts.Install_HelmRelease_Fault_Type, summary='Unable to helm login registry')
-            raise CLIInternalError("Unable to helm login registry: " + error_helm_install.decode("ascii"))
+    container_registry = get_container_registry(container_registry_repository)
+    cmd_helm_login = ["helm", "registry", "login", container_registry, "--username", container_registry_username, "--password", container_registry_password]
+    response_helm_install = Popen(cmd_helm_login, stdout=PIPE, stderr=PIPE)
+    _, error_helm_install = response_helm_install.communicate()
+    if response_helm_install.returncode != 0:
+        telemetry.set_user_fault()
+        telemetry.set_exception(exception=error_helm_install.decode("ascii"), fault_type=consts.Install_HelmLogin_Fault_Type, summary='Unable to helm login registry')
+        raise CLIInternalError("Unable to helm login registry: " + error_helm_install.decode("ascii"))
 
 
 def helm_install_release(chart_path, subscription_id, kubernetes_distro, kubernetes_infra, resource_group_name, cluster_name,
@@ -354,6 +355,7 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, kuberne
         onboarding_timeout = onboarding_timeout + "s"
         cmd_helm_install.extend(["--wait", "--timeout", "{}".format(onboarding_timeout)])
     if container_registry_repository:
+        cmd_helm_install.extend(["--set", "global.isCustomRegistryEnabled={}".format(True)])
         cmd_helm_install.extend(["--set", "systemDefaultValues.image.repository={}".format(container_registry_repository)])
         if container_registry_username and container_registry_password:
             cmd_helm_install.extend(["--set", "systemDefaultValues.image.username={}".format(container_registry_username)])
