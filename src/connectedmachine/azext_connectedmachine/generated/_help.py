@@ -137,7 +137,7 @@ helps['connectedmachine extension wait'] = """
 
 helps['connectedmachine upgrade-extension'] = """
     type: command
-    short-summary: "The operation to Upgrade Machine Extensions."
+    short-summary: "The operation to upgrade Machine Extensions."
     examples:
       - name: Upgrade Machine Extensions
         text: |-
@@ -258,7 +258,7 @@ helps['connectedmachine private-link-resource list'] = """
     type: command
     short-summary: "Get the private link resources that need to be created for a Azure Monitor PrivateLinkScope."
     examples:
-      - name: Gets private endpoint connection.
+      - name: Get private endpoint connection.
         text: |-
                az connectedmachine private-link-resource list --resource-group "myResourceGroup" --scope-name \
 "myPrivateLinkScope"
@@ -268,7 +268,7 @@ helps['connectedmachine private-link-resource show'] = """
     type: command
     short-summary: "Get the private link resources that need to be created for a Azure Monitor PrivateLinkScope."
     examples:
-      - name: Gets private endpoint connection.
+      - name: Get private endpoint connection.
         text: |-
                az connectedmachine private-link-resource show --group-name "hybridcompute" --resource-group \
 "myResourceGroup" --scope-name "myPrivateLinkScope"
@@ -283,7 +283,7 @@ helps['connectedmachine private-endpoint-connection list'] = """
     type: command
     short-summary: "Get all private endpoint connections on a private link scope."
     examples:
-      - name: Gets list of private endpoint connections on a private link scope.
+      - name: Get list of private endpoint connections on a private link scope.
         text: |-
                az connectedmachine private-endpoint-connection list --resource-group "myResourceGroup" --scope-name \
 "myPrivateLinkScope"
@@ -293,7 +293,7 @@ helps['connectedmachine private-endpoint-connection show'] = """
     type: command
     short-summary: "Get a private endpoint connection."
     examples:
-      - name: Gets private endpoint connection.
+      - name: Get private endpoint connection.
         text: |-
                az connectedmachine private-endpoint-connection show --name "private-endpoint-connection-name" \
 --resource-group "myResourceGroup" --scope-name "myPrivateLinkScope"
@@ -322,7 +322,7 @@ helps['connectedmachine private-endpoint-connection delete'] = """
     type: command
     short-summary: "Delete a private endpoint connection with a given name."
     examples:
-      - name: Deletes a private endpoint connection with a given name.
+      - name: Delete a private endpoint connection with a given name.
         text: |-
                az connectedmachine private-endpoint-connection delete --name "private-endpoint-connection-name" \
 --resource-group "myResourceGroup" --scope-name "myPrivateLinkScope"
