@@ -224,7 +224,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
         if disable_auto_upgrade is False:
             auto_upgrade_error = 'Disable auto upgrade when using custom repository'
             telemetry.set_exception(exception=auto_upgrade_error, fault_type=consts.Custom_Repository_Disable_Auto_Upgrade_Fault_Type, summary=auto_upgrade_error)
-            raise ValidationError(auto_upgrade_error, recommendation='use --disable_auto_upgrade')
+            raise ValidationError(auto_upgrade_error, recommendation='use --disable-auto-upgrade')
 
         registry_path = "{}/azurearck8s/azure-arc-k8sagents:1.3.8".format(container_registry_repository)
         # Send private registry information to telemetry
