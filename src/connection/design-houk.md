@@ -104,6 +104,14 @@ Examples:
         --secret name=<XX> secret=<XX>
 ```
 
+Another option for source block
+```
+Source Services
+    --source-id
+    --source-resource-group
+    --source-resource-type
+    --source-resource-name
+```
 
 ## az connection delete
 
