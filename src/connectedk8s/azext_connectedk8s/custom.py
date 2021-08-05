@@ -218,6 +218,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
                 for context in k8s_contexts[0]:
                     if context.get('name') == kube_context:
                         current_k8s_context = context
+                        break
         else:
             current_k8s_context = k8s_contexts[1]
 
