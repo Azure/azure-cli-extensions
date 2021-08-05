@@ -20,3 +20,12 @@ def _get_client(cmd):
 def _is_enterprise_tier(client, resource_group, name):
     resource = client.services.get(resource_group, name)
     return resource.sku.name == 'E0'
+
+
+def app_get_routing(cmd, client,
+            resource_group,
+            service, name):
+    if _is_enterprise_tier(client, resource_group, service):
+        return app_get_enterprise(cmd, _get_client(cmd), resource_group, service, name)
+    else:
+        return app_get(cmd, client, resource_group, service, name)

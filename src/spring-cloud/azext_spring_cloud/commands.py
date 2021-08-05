@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=line-too-long
+from azure.cli.core.commands import CliCommandType
 from azext_spring_cloud._utils import handle_asc_exception
 
 from ._client_factory import (cf_app_services,
@@ -20,6 +21,11 @@ from ._transformers import (transform_spring_cloud_table_output,
 
 # pylint: disable=too-many-statements
 def load_command_table(self, _):
+    routing_util = CliCommandType(
+        operations_tmpl='azext_spring_cloud.tier_routing#{}',
+        client_factory=cf_spring_cloud
+    )
+
     with self.command_group('spring-cloud', client_factory=cf_app_services,
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('create', 'spring_cloud_create', supports_no_wait=True, client_factory=cf_spring_cloud)
@@ -49,6 +55,11 @@ def load_command_table(self, _):
         g.custom_command('repo update', 'config_repo_update')
         g.custom_command('repo list', 'config_repo_list')
 
+    with self.command_group('spring-cloud app', custom_command_type=routing_util,
+                            exception_handler=handle_asc_exception) as g:
+        g.custom_show_command(
+            'show', 'app_get_routing', table_transformer=transform_app_table_output)
+
     with self.command_group('spring-cloud app', client_factory=cf_spring_cloud_20210601preview,
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('create', 'app_create')
@@ -63,8 +74,6 @@ def load_command_table(self, _):
         g.custom_command('delete', 'app_delete')
         g.custom_command('list', 'app_list',
                          table_transformer=transform_app_table_output)
-        g.custom_show_command(
-            'show', 'app_get', table_transformer=transform_app_table_output)
         g.custom_command('start', 'app_start', supports_no_wait=True)
         g.custom_command('stop', 'app_stop', supports_no_wait=True)
         g.custom_command('restart', 'app_restart', supports_no_wait=True)
