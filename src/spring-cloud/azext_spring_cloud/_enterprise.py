@@ -64,6 +64,36 @@ def app_create_enterprise(cmd, client, resource_group, service, name,
     return app_get_enterprise(cmd, client, resource_group, service, name)
 
 
+def app_update_enterprise(cmd, client, resource_group, service, name,
+                         assign_endpoint,
+                         deployment,
+                         jvm_options,
+                         env):
+    '''app_update_enterprise
+    1. update app properties (make sure some properties requires active deployment exist)
+    2. update deployment properties
+    '''
+    # check app properties need active deployment exist
+    is_app_update = any(x is not None for x in [assign_endpoint])
+    is_deployment_update = any(x is not None for x in [jvm_options, env])
+    app_properties_needs_deployment_update = any(x is not None for x in [assign_endpoint])
+    if app_properties_needs_deployment_update or is_deployment_update:
+        deployment = _deployment_or_active_deployment_name(client, resource_group, service, name, deployment)
+    app_poller = None
+    deployment_poller = None
+    if is_app_update:
+        app_poller = _update_app(assign_endpoint=assign_endpoint)
+    if is_deployment_update:
+        deployment_resource = models.DeploymentResource(
+            properties=models.DeploymentResourceProperties(
+                deployment_settings=_format_deployment_settings(jvm_options=jvm_options, env=env)
+            )
+        )
+        deployment_poller = client.deployments.begin_update(resource_group, service, name, deployment, deployment_resource)
+    _wait_till_end(cmd, app_poller, deployment_poller)
+    return app_get_enterprise(cmd, client, resource_group, service, name)
+
+
 def app_deploy_enterprise(cmd, client, resource_group, service, name,
                           version, deployment, artifact_path, target_module, jvm_options,
                           env, config_file_patterns, no_wait):
@@ -79,7 +109,7 @@ def app_deploy_enterprise(cmd, client, resource_group, service, name,
     5. Send build result id to deployment
     '''
     logger.warning(LOG_RUNNING_PROMPT)
-    deployment = deployment or _ensure_active_deployment_exist_and_get_name(client, resource_group, service, name)
+    deployment = _deployment_or_active_deployment_name(client, resource_group, service, name, deployment)
     
     deployment_settings = _format_deployment_settings(jvm_options=jvm_options, env=env, config_file_patterns=config_file_patterns)
     user_source_info = _build_and_get_result(cmd, client, resource_group, service, name, version, artifact_path, target_module, additional_steps=1)
@@ -99,7 +129,7 @@ def app_scale_enterprise(cmd, client, resource_group, service, name,
                          memory=None,
                          instance_count=None,
                          no_wait=False):
-    deployment = deployment or _ensure_active_deployment_exist_and_get_name(client, resource_group, service, name)
+    deployment = _deployment_or_active_deployment_name(client, resource_group, service, name, deployment)
     settings = _format_deployment_settings(cpu=cpu, memory=memory)
     sku = _format_sku(instance_count)
     resource = models.DeploymentResource(
@@ -203,12 +233,17 @@ def _get_active_deployment(client, resource_group, service, name):
     return next(iter(x for x in deployments if x.properties.active), None)
 
 
-def _ensure_active_deployment_exist_and_get_name(client, resource_group, service, name):
+def _ensure_active_deployment_exist_and_get(client, resource_group, service, name):
     deployment_resource = _get_active_deployment(client, resource_group, service, name)
     if not deployment_resource:
         raise CLIError(NO_PRODUCTION_DEPLOYMENT_ERROR)
-    return deployment_resource.name
+    return deployment_resource
 
+def _deployment_or_active_deployment_name(client, resource_group, service, app, deployment):
+    if deployment:
+        return client.deployments.get(resource_group, service, app, deployment).name
+    else:
+        return _ensure_active_deployment_exist_and_get(client, resource_group, service, app).name
 
 def _format_deployment_settings(cpu=None, memory=None, jvm_options=None, env=None, config_file_patterns=None):
     if all(x is None for x in [cpu, memory, jvm_options, env, config_file_patterns]):
@@ -263,6 +298,7 @@ def _update_app(assign_endpoint=None):
         properties=properties
     )
     return client.apps.begin_update(resource_group, service, name, app_resource)
+
 
 def _create_deployment(cmd, client, resource_group, service, app, name, source,
                        cpu, memory, instance_count, jvm_options, env, is_active=None):

@@ -5,8 +5,8 @@
 
 # pylint: disable=wrong-import-order
 from ._enterprise import (app_get_enterprise, app_list_enterprise, app_create_enterprise, 
-                          app_scale_enterprise, app_deploy_enterprise)
-from .custom import (app_get, app_list, app_create, app_scale, app_deploy)
+                          app_update_enterprise, app_scale_enterprise, app_deploy_enterprise)
+from .custom import (app_get, app_list, app_create, app_update, app_scale, app_deploy)
 from .vendored_sdks.appplatform.v2022_05_01_preview import AppPlatformManagementClient
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from knack.log import get_logger
@@ -50,7 +50,7 @@ def app_create_routing(cmd, client, resource_group, service, name,
                        enable_persistent_storage=None,
                        assign_identity=None):
     if _is_enterprise_tier(client, resource_group, service):
-        # runtime_version, enabled_persistent_storagem assign_ideneity not support
+        # runtime_version, enable_persistent_storage assign_ideneity not support
         return app_create_enterprise(cmd, _get_client(cmd), resource_group, service, name,
                                      assign_endpoint, cpu, memory, instance_count, jvm_options, 
                                      env)
@@ -58,6 +58,27 @@ def app_create_routing(cmd, client, resource_group, service, name,
         return app_create(cmd, client, resource_group, service, name,
                           assign_endpoint, cpu, memory, instance_count, runtime_version, 
                           jvm_options, env, enable_persistent_storage, assign_identity)
+
+
+def app_update_routing(cmd, client, resource_group, service, name,
+                       assign_endpoint=None,
+                       deployment=None,
+                       runtime_version=None,
+                       jvm_options=None,
+                       main_entry=None,
+                       env=None,
+                       enable_persistent_storage=None,
+                       https_only=None,
+                       enable_end_to_end_tls=None):
+    if _is_enterprise_tier(client, resource_group, service):
+        # runtime_version, enable_persistent_storage, main_entry, https_only, enable_end_to_end_tls not support
+        return app_update_enterprise(cmd, _get_client(cmd), resource_group, service, name,
+                                     assign_endpoint, deployment, jvm_options, env)
+    else:
+        return app_update(cmd, client, resource_group, service, name,
+                          assign_endpoint, deployment, runtime_version, jvm_options,
+                          main_entry, env, enable_persistent_storage,
+                          https_only, enable_end_to_end_tls)
 
 
 def app_scale_routing(cmd, client, resource_group, service, name,
