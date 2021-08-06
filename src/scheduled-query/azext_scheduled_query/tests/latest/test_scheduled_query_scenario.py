@@ -18,7 +18,7 @@ class Scheduled_queryScenarioTest(ScenarioTest):
     def test_scheduled_query(self, resource_group):
         from azure.mgmt.core.tools import resource_id
         import time
-        import mock
+        from unittest import mock
         self.kwargs.update({
             'name1': 'sq01',
             'name2': 'sq02',
