@@ -59,12 +59,13 @@ def load_command_table(self, _):
                             exception_handler=handle_asc_exception) as g:
         g.custom_show_command(
             'show', 'app_get_routing', table_transformer=transform_app_table_output)
+        g.custom_command('deploy', 'app_deploy_routing', supports_no_wait=True)
+
 
     with self.command_group('spring-cloud app', client_factory=cf_spring_cloud_20210601preview,
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('create', 'app_create')
         g.custom_command('update', 'app_update')
-        g.custom_command('deploy', 'app_deploy', supports_no_wait=True)
         g.custom_command('scale', 'app_scale', supports_no_wait=True)
         g.custom_command('show-deploy-log', 'app_get_build_log')
         g.custom_command('set-deployment', 'app_set_deployment',

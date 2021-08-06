@@ -13,6 +13,7 @@ from ._validators import (validate_env, validate_cosmos_type, validate_resource_
                           validate_vnet, validate_vnet_required_parameters, validate_node_resource_group,
                           validate_tracing_parameters, validate_app_insights_parameters, validate_java_agent_parameters,
                           validate_instance_count)
+from ._validators_enterprise import (validate_config_file_patterns)
 from ._utils import ApiType
 
 from .vendored_sdks.appplatform.v2020_07_01.models import RuntimeVersion, TestKeyType
@@ -138,6 +139,11 @@ def load_arguments(self, _):
             c.argument('jvm_options', type=str, validator=validate_jvm_options,
                        help="A string containing jvm options, use '=' instead of ' ' for this argument to avoid bash parse error, eg: --jvm-options='-Xms1024m -Xmx2048m'")
             c.argument('env', env_type)
+
+    with self.argument_context('spring-cloud app deploy') as c:
+        c.argument('config_file_patterns', type=str,
+                    help="Configure file patterns separated with \',\' to decide which patterns of Application Configuration Service will be used. Use '\"\"' to clear existing configurations.",
+                    validator=validate_config_file_patterns)
 
     with self.argument_context('spring-cloud app scale') as c:
         c.argument('cpu', type=str, help='CPU resource quantity. Should be 500m or number of CPU cores.')
