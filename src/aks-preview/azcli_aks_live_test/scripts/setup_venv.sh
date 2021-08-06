@@ -106,6 +106,12 @@ setupAKSPreview(){
     source azEnv/bin/activate
 }
 
+createSSHKey(){
+    # create ssh-key in advance to avoid the race condition that is prone to occur when key creation is handled by
+    # azure-cli when performing test cases concurrently, this command will not overwrite the existing ssh-key
+    ssh-keygen -t rsa -b 2048 -C "azcli_aks_live_test@example.com" -f ~/.ssh/id_rsa -N "" -q <<< $'\n'
+}
+
 setup_option=${1:-""}
 if [[ -n ${setup_option} ]]; then
     # bash options
@@ -142,6 +148,7 @@ if [[ -n ${setup_option} ]]; then
         ext_repo=${4:-""}
         setupAZ "${cli_repo}" "${ext_repo}"
         installTestPackages
+        createSSHKey
     elif [[ ${setup_option} == "setup-akspreview" ]]; then
         echo "Start to setup aks-preview!"
         setupAKSPreview
