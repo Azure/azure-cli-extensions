@@ -28,6 +28,14 @@ def app_get_enterprise(cmd, client, resource_group, service, name):
     return app
 
 
+def app_list_enterprise(cmd, client, resource_group, service):
+    apps = list(client.apps.list(resource_group, service))
+    deployments = list(
+        client.deployments.list_for_cluster(resource_group, service))
+    for app in apps:
+        app.properties.active_deployment = next(iter(x for x in deployments if x.properties.active and x.id.startswith(app.id + '/deployments/')), None)
+    return apps
+
 def app_create_enterprise(cmd, client, resource_group, service, name, 
                           assign_endpoint, cpu, memory, instance_count, jvm_options, env):
     '''app_create_enterprise
@@ -178,7 +186,7 @@ def _get_addon_configs(config_file_patterns):
 
 def _get_active_deployment(client, resource_group, service, name):
     deployments = client.deployments.list(resource_group, service, name)
-    return next(x for x in deployments if x.properties.active)
+    return next(iter(x for x in deployments if x.properties.active), None)
 
 
 def _format_deployment_settings(cpu=None, memory=None, jvm_options=None, env=None, config_file_patterns=None):

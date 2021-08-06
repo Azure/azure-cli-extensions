@@ -61,6 +61,8 @@ def load_command_table(self, _):
             'show', 'app_get_routing', table_transformer=transform_app_table_output)
         g.custom_command('deploy', 'app_deploy_routing', supports_no_wait=True)
         g.custom_command('create', 'app_create_routing')
+        g.custom_command('list', 'app_list_routing',
+                         table_transformer=transform_app_table_output)
 
 
     with self.command_group('spring-cloud app', client_factory=cf_spring_cloud_20210601preview,
@@ -73,8 +75,6 @@ def load_command_table(self, _):
         g.custom_command('unset-deployment', 'app_unset_deployment',
                          supports_no_wait=True)
         g.custom_command('delete', 'app_delete')
-        g.custom_command('list', 'app_list',
-                         table_transformer=transform_app_table_output)
         g.custom_command('start', 'app_start', supports_no_wait=True)
         g.custom_command('stop', 'app_stop', supports_no_wait=True)
         g.custom_command('restart', 'app_restart', supports_no_wait=True)
