@@ -12,7 +12,7 @@ Global Arguments
     --...
 
 Examples:
-    az connection list-available --source webapp -o table
+    az connection list-support-type --source webapp -o table
 
     =======================sample output======================
         Source          Target              AuthType
