@@ -4804,8 +4804,8 @@
         ],
         "azure-cli-ml": [
             {
-                "downloadUrl": "https://azurecliext.blob.core.windows.net/release/azure_cli_ml-1.29.0-py3-none-any.whl",
-                "filename": "azure_cli_ml-1.29.0-py3-none-any.whl",
+                "downloadUrl": "https://azurecliext.blob.core.windows.net/release/azure_cli_ml-1.33.0-py3-none-any.whl",
+                "filename": "azure_cli_ml-1.33.0-py3-none-any.whl",
                 "metadata": {
                     "azext.minCliCoreVersion": "2.3.1",
                     "classifiers": [
@@ -4815,7 +4815,8 @@
                         "Programming Language :: Python :: 3.5",
                         "Programming Language :: Python :: 3.6",
                         "Programming Language :: Python :: 3.7",
-                        "Programming Language :: Python :: 3.8"
+                        "Programming Language :: Python :: 3.8",
+                        "Programming Language :: Python :: 3.9"
                     ],
                     "description_content_type": "text/x-rst",
                     "extensions": {
@@ -4846,7 +4847,7 @@
                         {
                             "requires": [
                                 "adal (>=1.2.1)",
-                                "azureml-cli-common (~=1.29.0)",
+                                "azureml-cli-common (~=1.33.0)",
                                 "cryptography (<=3.3.2)",
                                 "docker (>=3.7.2)",
                                 "msrest (>=0.6.6)",
@@ -4866,9 +4867,9 @@
                             ]
                         }
                     ],
-                    "version": "1.29.0"
+                    "version": "1.33.0"
                 },
-                "sha256Digest": "da655bfc3ad1d987465dd59742a232fbebde9f6c6262b0c5c7eba5e6b5d51b05"
+                "sha256Digest": "8ed9f235f417672a27c6f1abb1473d063e2adf11f6cbf91683124cfa7b8ac8e4"
             },
             {
                 "downloadUrl": "https://azurecliext.blob.core.windows.net/release/azure_cli_ml-1.5.0-py2.py3-none-any.whl",
@@ -5047,8 +5048,8 @@
                 "sha256Digest": "1e891afc8b6ee52c62c4f99802d77728ff60e89e4c08972325178cc4fdac6be9"
             },
             {
-                "downloadUrl": "https://github.com/Azure/azure-devops-cli-extension/releases/download/20200401.4/azure_devops-0.18.0-py2.py3-none-any.whl",
-                "filename": "azure_devops-0.18.0-py2.py3-none-any.whl",
+                "downloadUrl": "https://github.com/Azure/azure-devops-cli-extension/releases/download/20210805.1/azure_devops-0.20.0-py2.py3-none-any.whl",
+                "filename": "azure_devops-0.20.0-py2.py3-none-any.whl",
                 "metadata": {
                     "azext.minCliCoreVersion": "2.2.0",
                     "classifiers": [
@@ -5087,16 +5088,14 @@
                     "run_requires": [
                         {
                             "requires": [
-                                "distro (==1.3.0)",
-                                "msrest (<0.7.0,>=0.6.0)",
-                                "python-dateutil (==2.7.3)"
+                                "distro (==1.3.0)"
                             ]
                         }
                     ],
                     "summary": "Tools for managing Azure DevOps.",
-                    "version": "0.18.0"
+                    "version": "0.20.0"
                 },
-                "sha256Digest": "21fd9bf9c01a315184f11d7f709f354075118c298fd662472273cb003bfbe23e"
+                "sha256Digest": "7fe02246e51c0f2c25ac502a3c13793ddee87258503878df50a50b6d0ce2bd4f"
             }
         ],
         "azure-firewall": [
@@ -8104,6 +8103,48 @@
                     "version": "0.3.0"
                 },
                 "sha256Digest": "591bed0d6a6251028471bac6a9ebf0f641d7765bf04b13271aae29c37491ba55"
+            },
+            {
+                "downloadUrl": "https://azcliprod.blob.core.windows.net/cli-extensions/connectedmachine-0.4.0-py3-none-any.whl",
+                "filename": "connectedmachine-0.4.0-py3-none-any.whl",
+                "metadata": {
+                    "azext.minCliCoreVersion": "2.15.0",
+                    "classifiers": [
+                        "Development Status :: 4 - Beta",
+                        "Intended Audience :: Developers",
+                        "Intended Audience :: System Administrators",
+                        "Programming Language :: Python",
+                        "Programming Language :: Python :: 3",
+                        "Programming Language :: Python :: 3.6",
+                        "Programming Language :: Python :: 3.7",
+                        "Programming Language :: Python :: 3.8",
+                        "License :: OSI Approved :: MIT License"
+                    ],
+                    "extensions": {
+                        "python.details": {
+                            "contacts": [
+                                {
+                                    "email": "azpycli@microsoft.com",
+                                    "name": "Microsoft Corporation",
+                                    "role": "author"
+                                }
+                            ],
+                            "document_names": {
+                                "description": "DESCRIPTION.rst"
+                            },
+                            "project_urls": {
+                                "Home": "https://github.com/Azure/azure-cli-extensions/tree/master/src/connectedmachine"
+                            }
+                        }
+                    },
+                    "generator": "bdist_wheel (0.30.0)",
+                    "license": "MIT",
+                    "metadata_version": "2.0",
+                    "name": "connectedmachine",
+                    "summary": "Microsoft Azure Command-Line Tools ConnectedMachine Extension",
+                    "version": "0.4.0"
+                },
+                "sha256Digest": "2183f183dac5e88820b8f69d8e56936a94b6b2bd16c7619c41f7ceac52951abf"
             }
         ],
         "connection-monitor-preview": [
@@ -16035,6 +16076,67 @@
                     "version": "2.0.1a4"
                 },
                 "sha256Digest": "5a20917c68a953ad52c6c0596cd04e8c89f833e8ede17e64866a26f43e7f0164"
+            },
+            {
+                "downloadUrl": "https://azuremlsdktestpypi.blob.core.windows.net/wheels/sdk-cli-v2-public/ml-2.0.1a5-py3-none-any.whl",
+                "filename": "ml-2.0.1a5-py3-none-any.whl",
+                "metadata": {
+                    "azext.isExperimental": true,
+                    "azext.minCliCoreVersion": "2.15.0",
+                    "classifiers": [
+                        "Development Status :: 4 - Beta",
+                        "Intended Audience :: Developers",
+                        "Intended Audience :: System Administrators",
+                        "Programming Language :: Python",
+                        "Programming Language :: Python :: 3",
+                        "Programming Language :: Python :: 3.6",
+                        "Programming Language :: Python :: 3.7",
+                        "Programming Language :: Python :: 3.8",
+                        "License :: OSI Approved :: MIT License"
+                    ],
+                    "extensions": {
+                        "python.details": {
+                            "contacts": [
+                                {
+                                    "email": "azpycli@microsoft.com",
+                                    "name": "Microsoft Corporation",
+                                    "role": "author"
+                                }
+                            ],
+                            "document_names": {
+                                "description": "DESCRIPTION.rst"
+                            },
+                            "project_urls": {
+                                "Home": "https://github.com/Azure/azure-cli-extensions/tree/master/src/machinelearningservices"
+                            }
+                        }
+                    },
+                    "extras": [],
+                    "generator": "bdist_wheel (0.30.0)",
+                    "license": "MIT",
+                    "metadata_version": "2.0",
+                    "name": "ml",
+                    "run_requires": [
+                        {
+                            "requires": [
+                                "azure-identity",
+                                "azure-storage-blob (<=12.5.0,>12.0.0b4)",
+                                "azure-storage-file-share (==12.3.0)",
+                                "cryptography (<=3.3.2)",
+                                "docker (>=4.0.0,~=5.0.0)",
+                                "isodate",
+                                "marshmallow (<4.0.0,>=3.5)",
+                                "pathspec (==0.8.*)",
+                                "pydash (<=4.9.0)",
+                                "pyjwt (<2.0.0)",
+                                "tqdm"
+                            ]
+                        }
+                    ],
+                    "summary": "Microsoft Azure Command-Line Tools AzureMachineLearningWorkspaces Extension",
+                    "version": "2.0.1a5"
+                },
+                "sha256Digest": "234ad4707c7c2b4bace2f4c3ed9e15f2f47d01ee00f7a5e13ccafaacec6de8d2"
             }
         ],
         "monitor-control-service": [

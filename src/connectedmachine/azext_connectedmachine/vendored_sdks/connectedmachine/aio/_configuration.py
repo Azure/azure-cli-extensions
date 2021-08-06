@@ -12,11 +12,12 @@ from azure.core.configuration import Configuration
 from azure.core.pipeline import policies
 from azure.mgmt.core.policies import ARMHttpLoggingPolicy
 
+from .._version import VERSION
+
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
     from azure.core.credentials_async import AsyncTokenCredential
 
-VERSION = "unknown"
 
 class ConnectedMachineConfiguration(Configuration):
     """Configuration for ConnectedMachine.
@@ -26,7 +27,7 @@ class ConnectedMachineConfiguration(Configuration):
 
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials_async.AsyncTokenCredential
-    :param subscription_id: Subscription credentials which uniquely identify Microsoft Azure subscription. The subscription ID forms part of the URI for every service call.
+    :param subscription_id: The ID of the target subscription.
     :type subscription_id: str
     """
 
@@ -44,10 +45,9 @@ class ConnectedMachineConfiguration(Configuration):
 
         self.credential = credential
         self.subscription_id = subscription_id
-        self.api_version = "2020-08-02"
-        self.credential_scopes = ['https://management.azure.com/.default']
-        self.credential_scopes.extend(kwargs.pop('credential_scopes', []))
-        kwargs.setdefault('sdk_moniker', 'connectedmachine/{}'.format(VERSION))
+        self.api_version = "2021-05-20"
+        self.credential_scopes = kwargs.pop('credential_scopes', ['https://management.azure.com/.default'])
+        kwargs.setdefault('sdk_moniker', 'mgmt-hybridcompute/{}'.format(VERSION))
         self._configure(**kwargs)
 
     def _configure(
