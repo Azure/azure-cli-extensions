@@ -74,9 +74,9 @@ def load_arguments(self, _):
         c.argument('protected_settings', type=validate_file_or_dict, help='The extension can contain either '
                    'protectedSettings or protectedSettingsFromKeyVault or no protected settings at all. Expected '
                    'value: json-string/json-file/@json-file.')
-        c.argument('instance_view_type', type=str, help='Specifies the type of the extension; an example is '
+        c.argument('instance_view_type', type=str, help='Specify the type of the extension; an example is '
                    '"CustomScriptExtension".', arg_group='Instance View')
-        c.argument('inst_handler_version', type=str, help='Specifies the version of the script handler.',
+        c.argument('inst_handler_version', type=str, help='Specify the version of the script handler.',
                    arg_group='Instance View')
         c.argument('status', action=AddStatus, nargs='+', help='Instance view status.', arg_group='Instance View')
 
@@ -132,7 +132,7 @@ def load_arguments(self, _):
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
         c.argument('tags', tags_type)
-        c.argument('public_network_access', arg_type=get_enum_type(['Enabled', 'Disabled']), help='Indicates whether '
+        c.argument('public_network_access', arg_type=get_enum_type(['Enabled', 'Disabled']), help='Indicate whether '
                    'machines associated with the private link scope can also use public Azure Arc service endpoints.')
 
     with self.argument_context('connectedmachine private-link-scope update') as c:
@@ -142,7 +142,7 @@ def load_arguments(self, _):
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
         c.argument('tags', tags_type)
-        c.argument('public_network_access', arg_type=get_enum_type(['Enabled', 'Disabled']), help='Indicates whether '
+        c.argument('public_network_access', arg_type=get_enum_type(['Enabled', 'Disabled']), help='Indicate whether '
                    'machines associated with the private link scope can also use public Azure Arc service endpoints.')
         c.ignore('parameters')
 
