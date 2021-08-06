@@ -1,0 +1,420 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedmachine extension create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --type --publisher --settings --type-handler-version --machine-name
+        --resource-group
+      User-Agent:
+      - AZURECLI/2.25.0 azsdk-python-azure-mgmt-resource/18.0.0 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/az-sdk-test?api-version=2020-10-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test","name":"az-sdk-test","type":"Microsoft.Resources/resourceGroups","location":"eastus2euap","tags":{},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '234'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 Aug 2021 01:42:19 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus2euap", "properties": {"publisher": "Microsoft.Compute",
+      "type": "CustomScriptExtension", "typeHandlerVersion": "1.10.10", "settings":
+      {"commandToExecute": "powershell.exe -c \"Get-Process | Where-Object {{ $_.CPU
+      -gt 10000 }}\""}, "instanceView": {"name": "CustomScriptExtension"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedmachine extension create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '303'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --type --publisher --settings --type-handler-version --machine-name
+        --resource-group
+      User-Agent:
+      - AZURECLI/2.25.0 azsdk-python-mgmt-hybridcompute/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/sdkTestVM/extensions/CustomScriptExtension?api-version=2021-05-20
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/eb3920ab-b89f-4da2-9133-0773ec2d6e39?api-version=2021-05-20
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      content-type:
+      - application/json
+      date:
+      - Thu, 05 Aug 2021 01:42:22 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationresults/eb3920ab-b89f-4da2-9133-0773ec2d6e39?api-version=2021-05-20
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '31'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedmachine extension create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --type --publisher --settings --type-handler-version --machine-name
+        --resource-group
+      User-Agent:
+      - AZURECLI/2.25.0 azsdk-python-mgmt-hybridcompute/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/eb3920ab-b89f-4da2-9133-0773ec2d6e39?api-version=2021-05-20
+  response:
+    body:
+      string: '{"name":"eb3920ab-b89f-4da2-9133-0773ec2d6e39","status":"InProgress","startTime":"2021-08-05T01:42:23.1763809Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/eb3920ab-b89f-4da2-9133-0773ec2d6e39?api-version=2021-05-20
+      cache-control:
+      - no-cache
+      content-length:
+      - '112'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 Aug 2021 01:47:22 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationresults/eb3920ab-b89f-4da2-9133-0773ec2d6e39?api-version=2021-05-20
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedmachine extension create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --type --publisher --settings --type-handler-version --machine-name
+        --resource-group
+      User-Agent:
+      - AZURECLI/2.25.0 azsdk-python-mgmt-hybridcompute/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/eb3920ab-b89f-4da2-9133-0773ec2d6e39?api-version=2021-05-20
+  response:
+    body:
+      string: '{"name":"eb3920ab-b89f-4da2-9133-0773ec2d6e39","status":"InProgress","startTime":"2021-08-05T01:42:23.1763809Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/eb3920ab-b89f-4da2-9133-0773ec2d6e39?api-version=2021-05-20
+      cache-control:
+      - no-cache
+      content-length:
+      - '112'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 Aug 2021 01:49:23 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationresults/eb3920ab-b89f-4da2-9133-0773ec2d6e39?api-version=2021-05-20
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedmachine extension create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --type --publisher --settings --type-handler-version --machine-name
+        --resource-group
+      User-Agent:
+      - AZURECLI/2.25.0 azsdk-python-mgmt-hybridcompute/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/eb3920ab-b89f-4da2-9133-0773ec2d6e39?api-version=2021-05-20
+  response:
+    body:
+      string: '{"name":"eb3920ab-b89f-4da2-9133-0773ec2d6e39","status":"InProgress","startTime":"2021-08-05T01:42:23.1763809Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/eb3920ab-b89f-4da2-9133-0773ec2d6e39?api-version=2021-05-20
+      cache-control:
+      - no-cache
+      content-length:
+      - '112'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 Aug 2021 01:51:24 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationresults/eb3920ab-b89f-4da2-9133-0773ec2d6e39?api-version=2021-05-20
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedmachine extension create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --type --publisher --settings --type-handler-version --machine-name
+        --resource-group
+      User-Agent:
+      - AZURECLI/2.25.0 azsdk-python-mgmt-hybridcompute/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/eb3920ab-b89f-4da2-9133-0773ec2d6e39?api-version=2021-05-20
+  response:
+    body:
+      string: '{"name":"eb3920ab-b89f-4da2-9133-0773ec2d6e39","status":"Succeeded","startTime":"2021-08-05T01:42:23.1763809Z","properties":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/sdkTestVM/extensions/CustomScriptExtension","name":"CustomScriptExtension","location":"eastus2euap","type":"Microsoft.HybridCompute/machines/extensions","properties":{"publisher":"Microsoft.Compute","type":"CustomScriptExtension","typeHandlerVersion":"1.10.10","autoUpgradeMinorVersion":false,"enableAutomaticUpgrade":false,"settings":{"commandToExecute":"powershell.exe
+        -c \"Get-Process | Where-Object {{ $_.CPU -gt 10000 }}\""},"provisioningState":"Succeeded","instanceView":{"name":"CustomScriptExtension","type":"CustomScriptExtension","typeHandlerVersion":"1.10.10","status":{"code":"success","level":"Information","message":"Extension
+        Message: Command execution finished, StdOut: 00       7564       0.20   1760   0
+        svchost                                                      \r\n    338      14     3408      13708      32.05   1780   0
+        svchost                                                      \r\n    485      26     4228      12972       0.23   1924   0
+        svchost                                                      \r\n    225      12     2256       9728       0.09   2028   0
+        svchost                                                      \r\n    134       9     1728       6200       0.16   2192   0
+        svchost                                                      \r\n    394      14     2716       9408       0.27   2232   0
+        svchost                                                      \r\n    433      32    11416      17864       9.41   2280   0
+        svchost                                                      \r\n    366      21     3560       9792       0.83   2632   0
+        svchost                                                      \r\n    537      27    20248      27512       7.77   2932   0
+        svchost                                                      \r\n    414      15     4044      12768       0.58   3068   0
+        svchost                                                      \r\n    311      15     3684      20952       0.77   3388   2
+        svchost                                                      \r\n    205      11    12020      21612      16.88   3668   0
+        svchost                                                      \r\n    655      27     9032      33768       2.81   4092   2
+        svchost                                                      \r\n    347      19     6588      26436       2.41   7568   0
+        svchost                                                      \r\n    227      12     2580       9344       0.88   8524   0
+        svchost                                                      \r\n   2768       0      196         88      50.67      4   0
+        System                                                       \r\n    310      15     3472      13736       7.00   6136   2
+        TabTip                                                       \r\n    120       7     1272       6108       0.02   4032   0
+        taskhostw                                                    \r\n    263      30     6068      14332       0.69   5828   2
+        taskhostw                                                    \r\n    174      56    20840      28080       0.64   8008   0
+        TiWorker                                                     \r\n    133       8     1760       6908       0.08   8440   0
+        TrustedInstaller                                             \r\n    293      14     3756      17000       0.33   2368   0
+        uhssvc                                                       \r\n    151      10     1652       7188       0.06   1912   0
+        VSSVC                                                        \r\n    161      11     1376       6092       0.11    656   0
+        wininit                                                      \r\n    227      11     2524       8712       0.14    756   1
+        winlogon                                                     \r\n    269      11     2364       9360       0.38   4180   2
+        winlogon                                                     \r\n     59       4      748       3480       0.09   2264   0
+        wlms                                                         \r\n    404      17     9472      19152      98.55   2828   0
+        WmiPrvSE                                                     \r\n    185      10     2368       8272       0.09   2992   0
+        WmiPrvSE                                                     \r\n    469      24    15332      26636      34.66   4124   0
+        WmiPrvSE                                                     \r\n    620      29    39644      52264       2.23   6328   0
+        WmiPrvSE                                                     \r\n    195      12     3468      10704       1.03   6652   0
+        WmiPrvSE                                                     \r\n    241      17     3864      14132       0.44   8260   0
+        WmiPrvSE                                                     \r\n    727      47    25268      36164       1.14   7416   2
+        YourPhone                                                    \r\n\r\n\r\n"}}}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '5113'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 Aug 2021 01:53:24 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedmachine extension create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --type --publisher --settings --type-handler-version --machine-name
+        --resource-group
+      User-Agent:
+      - AZURECLI/2.25.0 azsdk-python-mgmt-hybridcompute/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/sdkTestVM/extensions/CustomScriptExtension?api-version=2021-05-20
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/sdkTestVM/extensions/CustomScriptExtension","name":"CustomScriptExtension","type":"Microsoft.HybridCompute/machines/extensions","location":"eastus2euap","properties":{"publisher":"Microsoft.Compute","type":"CustomScriptExtension","typeHandlerVersion":"1.10.10","autoUpgradeMinorVersion":false,"enableAutomaticUpgrade":false,"settings":{"commandToExecute":"powershell.exe
+        -c \"Get-Process | Where-Object {{ $_.CPU -gt 10000 }}\""},"provisioningState":"Succeeded","instanceView":{"name":"CustomScriptExtension","type":"CustomScriptExtension","typeHandlerVersion":"1.10.10","status":{"code":"success","level":"Information","message":"Extension
+        Message: Command execution finished, StdOut: 00       7564       0.20   1760   0
+        svchost                                                      \r\n    338      14     3408      13708      32.05   1780   0
+        svchost                                                      \r\n    485      26     4228      12972       0.23   1924   0
+        svchost                                                      \r\n    225      12     2256       9728       0.09   2028   0
+        svchost                                                      \r\n    134       9     1728       6200       0.16   2192   0
+        svchost                                                      \r\n    394      14     2716       9408       0.27   2232   0
+        svchost                                                      \r\n    433      32    11416      17864       9.41   2280   0
+        svchost                                                      \r\n    366      21     3560       9792       0.83   2632   0
+        svchost                                                      \r\n    537      27    20248      27512       7.77   2932   0
+        svchost                                                      \r\n    414      15     4044      12768       0.58   3068   0
+        svchost                                                      \r\n    311      15     3684      20952       0.77   3388   2
+        svchost                                                      \r\n    205      11    12020      21612      16.88   3668   0
+        svchost                                                      \r\n    655      27     9032      33768       2.81   4092   2
+        svchost                                                      \r\n    347      19     6588      26436       2.41   7568   0
+        svchost                                                      \r\n    227      12     2580       9344       0.88   8524   0
+        svchost                                                      \r\n   2768       0      196         88      50.67      4   0
+        System                                                       \r\n    310      15     3472      13736       7.00   6136   2
+        TabTip                                                       \r\n    120       7     1272       6108       0.02   4032   0
+        taskhostw                                                    \r\n    263      30     6068      14332       0.69   5828   2
+        taskhostw                                                    \r\n    174      56    20840      28080       0.64   8008   0
+        TiWorker                                                     \r\n    133       8     1760       6908       0.08   8440   0
+        TrustedInstaller                                             \r\n    293      14     3756      17000       0.33   2368   0
+        uhssvc                                                       \r\n    151      10     1652       7188       0.06   1912   0
+        VSSVC                                                        \r\n    161      11     1376       6092       0.11    656   0
+        wininit                                                      \r\n    227      11     2524       8712       0.14    756   1
+        winlogon                                                     \r\n    269      11     2364       9360       0.38   4180   2
+        winlogon                                                     \r\n     59       4      748       3480       0.09   2264   0
+        wlms                                                         \r\n    404      17     9472      19152      98.55   2828   0
+        WmiPrvSE                                                     \r\n    185      10     2368       8272       0.09   2992   0
+        WmiPrvSE                                                     \r\n    469      24    15332      26636      34.66   4124   0
+        WmiPrvSE                                                     \r\n    620      29    39644      52264       2.23   6328   0
+        WmiPrvSE                                                     \r\n    195      12     3468      10704       1.03   6652   0
+        WmiPrvSE                                                     \r\n    241      17     3864      14132       0.44   8260   0
+        WmiPrvSE                                                     \r\n    727      47    25268      36164       1.14   7416   2
+        YourPhone                                                    \r\n\r\n\r\n"}}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '4988'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 Aug 2021 01:53:25 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1
