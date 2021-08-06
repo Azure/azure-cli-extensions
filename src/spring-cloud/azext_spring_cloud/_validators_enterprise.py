@@ -8,8 +8,20 @@
 from re import match
 from azure.cli.core.util import CLIError
 from knack.log import get_logger
+from ._resource_quantity import (
+    validate_cpu as validate_and_normalize_cpu, 
+    validate_memory as validate_and_normalize_memory)
+
 
 logger = get_logger(__name__)
+
+
+def validate_cpu(namespace):
+    validate_and_normalize_cpu(namespace.cpu)
+
+
+def validate_memory(namespace):
+    validate_and_normalize_memory(namespace.memory)
 
 
 def validate_config_file_patterns(namespace):

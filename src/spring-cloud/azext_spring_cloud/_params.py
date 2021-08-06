@@ -13,7 +13,7 @@ from ._validators import (validate_env, validate_cosmos_type, validate_resource_
                           validate_vnet, validate_vnet_required_parameters, validate_node_resource_group,
                           validate_tracing_parameters, validate_app_insights_parameters, validate_java_agent_parameters,
                           validate_instance_count)
-from ._validators_enterprise import (validate_config_file_patterns)
+from ._validators_enterprise import (validate_config_file_patterns, validate_cpu, validate_memory)
 from ._utils import ApiType
 
 from .vendored_sdks.appplatform.v2020_07_01.models import RuntimeVersion, TestKeyType
@@ -81,9 +81,11 @@ def load_arguments(self, _):
         c.argument('assign_identity', arg_type=get_three_state_flag(),
                    help='If true, assign managed service identity.')
         c.argument('cpu', type=str, default="1",
-                   help='CPU resource quantity. Should be 500m or number of CPU cores.')
+                   help='CPU resource quantity. Should be 500m or number of CPU cores.',
+                   validator=validate_cpu)
         c.argument('memory', type=str, default="1Gi",
-                   help='Memory resource quantity. Should be 512Mi or #Gi, e.g., 1Gi, 3Gi.')
+                   help='Memory resource quantity. Should be 512Mi or #Gi, e.g., 1Gi, 3Gi.',
+                   validator=validate_memory)
         c.argument('instance_count', type=int,
                    default=1, help='Number of instance.', validator=validate_instance_count)
 
@@ -146,8 +148,8 @@ def load_arguments(self, _):
                     validator=validate_config_file_patterns)
 
     with self.argument_context('spring-cloud app scale') as c:
-        c.argument('cpu', type=str, help='CPU resource quantity. Should be 500m or number of CPU cores.')
-        c.argument('memory', type=str, help='Memory resource quantity. Should be 512Mi or #Gi, e.g., 1Gi, 3Gi.')
+        c.argument('cpu', type=str, help='CPU resource quantity. Should be 500m or number of CPU cores.', validator=validate_cpu)
+        c.argument('memory', type=str, help='Memory resource quantity. Should be 512Mi or #Gi, e.g., 1Gi, 3Gi.', validator=validate_memory)
         c.argument('instance_count', type=int, help='Number of instance.', validator=validate_instance_count)
 
     for scope in ['spring-cloud app deploy', 'spring-cloud app deployment create']:
@@ -166,8 +168,8 @@ def load_arguments(self, _):
     with self.argument_context('spring-cloud app deployment create') as c:
         c.argument('skip_clone_settings', help='Create staging deployment will automatically copy settings from production deployment.',
                    action='store_true')
-        c.argument('cpu', type=str, help='CPU resource quantity. Should be 500m or number of CPU cores.')
-        c.argument('memory', type=str, help='Memory resource quantity. Should be 512Mi or #Gi, e.g., 1Gi, 3Gi.')
+        c.argument('cpu', type=str, help='CPU resource quantity. Should be 500m or number of CPU cores.', validator=validate_cpu)
+        c.argument('memory', type=str, help='Memory resource quantity. Should be 512Mi or #Gi, e.g., 1Gi, 3Gi.', validator=validate_memory)
         c.argument('instance_count', type=int, help='Number of instance.', validator=validate_instance_count)
 
     with self.argument_context('spring-cloud app deployment') as c:

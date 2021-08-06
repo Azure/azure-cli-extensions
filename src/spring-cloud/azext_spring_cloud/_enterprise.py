@@ -13,6 +13,7 @@ import sys
 logger = get_logger(__name__)
 APPLICATION_CONFIGURATION_SERVICE_NAME = "ApplicationConfigurationService"
 APPLICATION_CONFIGURATION_SERVICE_PROPERTY_PATTERN = "ConfigFilePatterns"
+DEFAULT_DEPLOYMENT_NAME = "default"
 
 # pylint: disable=line-too-long
 NO_PRODUCTION_DEPLOYMENT_ERROR = "No production deployment found, use --deployment to specify deployment or create deployment with: az spring-cloud app deployment create"
@@ -25,6 +26,34 @@ def app_get_enterprise(cmd, client, resource_group, service, name):
     app = client.apps.get(resource_group, service, name)
     app.properties.activeDeployment = _get_active_deployment(client, resource_group, service, name)
     return app
+
+
+def app_create_enterprise(cmd, client, resource_group, service, name, 
+                          assign_endpoint, cpu, memory, instance_count, jvm_options, env):
+    '''app_create_enterprise
+    Create app with an active deployment, deployment should be deployed with default banner
+    1. Create app
+    2. Create deployment with default banner
+    3. [Optional] Update app properties which needs an active deployment exist
+    '''
+    _ensure_app_not_exist(client, resource_group, service, name)
+    need_update_app_after_deployment = assign_endpoint
+    total_steps = 3 if need_update_app_after_deployment else 2
+    
+    logger.warning("[1/{}] Creating app {}".format(total_steps, name))
+    app_poller = _create_empty_app(client, resource_group, service, name)
+    _wait_till_end(cmd, app_poller)
+
+    logger.warning('[2/{}] Create default deployment with name {} {}'.format(total_steps, DEFAULT_DEPLOYMENT_NAME, 
+                   '(this operation can take a while to complete)' if not need_update_app_after_deployment else ''))
+    source = models.BuildResultUserSourceInfo(build_result_id='<default>') 
+    deployment_poller = _create_deployment(cmd, client, resource_group, service, name, DEFAULT_DEPLOYMENT_NAME, source,
+                                           cpu, memory, instance_count, jvm_options, env, is_active=True)
+    if need_update_app_after_deployment:
+        logger.warning('[3/{}] Update app {} properties (this operation can take a while to complete)'.format(total_steps, name))
+        app_poller = _update_app(assign_endpoint=assign_endpoint)
+    _wait_till_end(cmd, app_poller, deployment_poller)
+    return app_get_enterprise(cmd, client, resource_group, service, name)
 
 
 def app_deploy_enterprise(cmd, client, resource_group, service, name,
@@ -151,6 +180,7 @@ def _get_active_deployment(client, resource_group, service, name):
     deployments = client.deployments.list(resource_group, service, name)
     return next(x for x in deployments if x.properties.active)
 
+
 def _format_deployment_settings(cpu=None, memory=None, jvm_options=None, env=None, config_file_patterns=None):
     if all(x is None for x in [cpu, memory, jvm_options, env, config_file_patterns]):
         return None
@@ -160,11 +190,72 @@ def _format_deployment_settings(cpu=None, memory=None, jvm_options=None, env=Non
     return models.DeploymentSettings(
         addon_configs=addon_configs,
         resource_requests=resource_requests,
-        env=env
+        environment_variables=env
     )
+
+
+def _format_sku(instance_count):
+    return models.Sku(name="E0", tier="ENTERPRISE", capacity=instance_count)
 
 
 def _get_upload_local_file():
     file_path = os.path.join(tempfile.gettempdir(), 'build_archive_{}.tar.gz'.format(uuid.uuid4().hex))
     _pack_source_code(os.getcwd(), file_path)
     return file_path
+
+
+def _ensure_app_not_exist(client, resource_group, service, name):
+    app = None
+    try:
+        app = client.apps.get(resource_group, service, name)
+    except Exception:
+        # ignore
+        return
+    if app:
+        raise CLIError('App {} already exist'.format(app.id))
+
+
+def _create_empty_app(client, resource_group, service, name):
+    resource = models.AppResource(
+                    properties=models.AppResourceProperties(
+                        temporary_disk=models.TemporaryDisk(size_in_gb=5, mount_path='/tmp')
+                    )
+                )
+    return client.apps.begin_create_or_update(resource_group, service, name, resource)
+
+
+def _update_app(assign_endpoint=None):
+    if all(x is None for x in (assign_endpoint)):
+        return
+    properties = models.AppResourceProperties(
+       public=assign_endpoint 
+    )
+    resource = models.AppResource(
+        properties=properties
+    )
+    return client.apps.begin_update(resource_group, service, name, app_resource)
+
+def _create_deployment(cmd, client, resource_group, service, app, name, source,
+                       cpu, memory, instance_count, jvm_options, env, is_active=None):
+    settings = _format_deployment_settings(cpu=cpu, memory=memory, jvm_options=jvm_options, env=env)
+    sku = _format_sku(instance_count)
+    resource = models.DeploymentResource(
+        properties=models.DeploymentResourceProperties(
+            deployment_settings=settings,
+            source=source,
+            active=is_active
+        ),
+        sku=sku
+    )
+    return client.deployments.begin_create_or_update(resource_group, service, app, name, resource)
+
+
+def _wait_till_end(cmd, *pollers):
+    if not pollers:
+        return
+    progress_bar = cmd.cli_ctx.get_progress_controller()
+    progress_bar.add(message='Running')
+    progress_bar.begin()
+    while any(x and not x.done() for x in pollers):
+        progress_bar.add(message='Running')
+        sleep(5)

@@ -219,6 +219,8 @@ def _get_persistent_disk_size(tier):  # pylint: disable=too-many-return-statemen
         return 1
     if tier == 'STANDARD':
         return 50
+    if tier == 'ENTERPRISE':
+        return 50
     return 50
 
 
