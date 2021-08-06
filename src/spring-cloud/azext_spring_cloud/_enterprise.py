@@ -79,11 +79,7 @@ def app_deploy_enterprise(cmd, client, resource_group, service, name,
     5. Send build result id to deployment
     '''
     logger.warning(LOG_RUNNING_PROMPT)
-    if not deployment:
-        deployment_resource = _get_active_deployment(client, resource_group, service, name)
-        if not deployment_resource:
-            raise CLIError(NO_PRODUCTION_DEPLOYMENT_ERROR)
-        deployment = deployment_resource.name
+    deployment = deployment or _ensure_active_deployment_exist_and_get_name(client, resource_group, service, name)
     
     deployment_settings = _format_deployment_settings(jvm_options=jvm_options, env=env, config_file_patterns=config_file_patterns)
     user_source_info = _build_and_get_result(cmd, client, resource_group, service, name, version, artifact_path, target_module, additional_steps=1)
@@ -96,6 +92,24 @@ def app_deploy_enterprise(cmd, client, resource_group, service, name,
     )
     return sdk_no_wait(no_wait, client.deployments.begin_update, resource_group, service, name, deployment, resource)
 
+
+def app_scale_enterprise(cmd, client, resource_group, service, name,
+                         deployment=None,
+                         cpu=None,
+                         memory=None,
+                         instance_count=None,
+                         no_wait=False):
+    deployment = deployment or _ensure_active_deployment_exist_and_get_name(client, resource_group, service, name)
+    settings = _format_deployment_settings(cpu=cpu, memory=memory)
+    sku = _format_sku(instance_count)
+    resource = models.DeploymentResource(
+        properties=models.DeploymentResourceProperties(
+            deployment_settings=settings
+        ),
+        sku=sku
+    )
+    return sdk_no_wait(no_wait, client.deployments.begin_update,
+                       resource_group, service, name, deployment, resource)
 
 def _build_and_get_result(cmd, client, resource_group, service, name, version, artifact_path, target_module, additional_steps=0):
     total_steps = 4 + additional_steps
@@ -189,6 +203,13 @@ def _get_active_deployment(client, resource_group, service, name):
     return next(iter(x for x in deployments if x.properties.active), None)
 
 
+def _ensure_active_deployment_exist_and_get_name(client, resource_group, service, name):
+    deployment_resource = _get_active_deployment(client, resource_group, service, name)
+    if not deployment_resource:
+        raise CLIError(NO_PRODUCTION_DEPLOYMENT_ERROR)
+    return deployment_resource.name
+
+
 def _format_deployment_settings(cpu=None, memory=None, jvm_options=None, env=None, config_file_patterns=None):
     if all(x is None for x in [cpu, memory, jvm_options, env, config_file_patterns]):
         return None
@@ -203,7 +224,7 @@ def _format_deployment_settings(cpu=None, memory=None, jvm_options=None, env=Non
 
 
 def _format_sku(instance_count):
-    return models.Sku(name="E0", tier="ENTERPRISE", capacity=instance_count)
+    return models.Sku(name="E0", tier="ENTERPRISE", capacity=instance_count) if instance_count else None
 
 
 def _get_upload_local_file():

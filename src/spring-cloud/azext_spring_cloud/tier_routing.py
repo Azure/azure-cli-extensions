@@ -4,8 +4,9 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=wrong-import-order
-from ._enterprise import (app_get_enterprise, app_list_enterprise, app_create_enterprise, app_deploy_enterprise)
-from .custom import (app_get, app_list, app_create, app_deploy)
+from ._enterprise import (app_get_enterprise, app_list_enterprise, app_create_enterprise, 
+                          app_scale_enterprise, app_deploy_enterprise)
+from .custom import (app_get, app_list, app_create, app_scale, app_deploy)
 from .vendored_sdks.appplatform.v2022_05_01_preview import AppPlatformManagementClient
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from knack.log import get_logger
@@ -57,6 +58,20 @@ def app_create_routing(cmd, client, resource_group, service, name,
         return app_create(cmd, client, resource_group, service, name,
                           assign_endpoint, cpu, memory, instance_count, runtime_version, 
                           jvm_options, env, enable_persistent_storage, assign_identity)
+
+
+def app_scale_routing(cmd, client, resource_group, service, name,
+                      deployment=None,
+                      cpu=None,
+                      memory=None,
+                      instance_count=None,
+                      no_wait=False):
+    if _is_enterprise_tier(client, resource_group, service):
+        return app_scale_enterprise(cmd, _get_client(cmd), resource_group, service, name,
+                                    deployment, cpu, memory, instance_count, no_wait)
+    else:
+        return app_scale(cmd, _get_client(cmd), resource_group, service, name,
+                         deployment, cpu, memory, instance_count, no_wait)
 
 
 def app_deploy_routing(cmd, client, resource_group, service, name,
