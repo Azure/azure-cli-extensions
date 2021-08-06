@@ -9,7 +9,7 @@ import os
 import shutil
 import tempfile
 import unittest
-import mock
+from unittest import mock
 
 from azext_alias.util import remove_pos_arg_placeholders, build_tab_completion_table, get_config_parser
 from azext_alias._const import ALIAS_TAB_COMP_TABLE_FILE_NAME
