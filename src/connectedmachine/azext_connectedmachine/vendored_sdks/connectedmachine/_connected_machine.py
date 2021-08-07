@@ -18,24 +18,34 @@ if TYPE_CHECKING:
     from azure.core.credentials import TokenCredential
 
 from ._configuration import ConnectedMachineConfiguration
-from .operations import MachineOperations
-from .operations import MachineExtensionOperations
-from .operations import OperationOperations
+from .operations import MachinesOperations
+from .operations import MachineExtensionsOperations
+from .operations import ConnectedMachineOperationsMixin
+from .operations import Operations
+from .operations import PrivateLinkScopesOperations
+from .operations import PrivateLinkResourcesOperations
+from .operations import PrivateEndpointConnectionsOperations
 from . import models
 
 
-class ConnectedMachine(object):
+class ConnectedMachine(ConnectedMachineOperationsMixin):
     """The Hybrid Compute Management Client.
 
-    :ivar machine: MachineOperations operations
-    :vartype machine: connected_machine.operations.MachineOperations
-    :ivar machine_extension: MachineExtensionOperations operations
-    :vartype machine_extension: connected_machine.operations.MachineExtensionOperations
-    :ivar operation: OperationOperations operations
-    :vartype operation: connected_machine.operations.OperationOperations
+    :ivar machines: MachinesOperations operations
+    :vartype machines: azure.mgmt.hybridcompute.operations.MachinesOperations
+    :ivar machine_extensions: MachineExtensionsOperations operations
+    :vartype machine_extensions: azure.mgmt.hybridcompute.operations.MachineExtensionsOperations
+    :ivar operations: Operations operations
+    :vartype operations: azure.mgmt.hybridcompute.operations.Operations
+    :ivar private_link_scopes: PrivateLinkScopesOperations operations
+    :vartype private_link_scopes: azure.mgmt.hybridcompute.operations.PrivateLinkScopesOperations
+    :ivar private_link_resources: PrivateLinkResourcesOperations operations
+    :vartype private_link_resources: azure.mgmt.hybridcompute.operations.PrivateLinkResourcesOperations
+    :ivar private_endpoint_connections: PrivateEndpointConnectionsOperations operations
+    :vartype private_endpoint_connections: azure.mgmt.hybridcompute.operations.PrivateEndpointConnectionsOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials.TokenCredential
-    :param subscription_id: Subscription credentials which uniquely identify Microsoft Azure subscription. The subscription ID forms part of the URI for every service call.
+    :param subscription_id: The ID of the target subscription.
     :type subscription_id: str
     :param str base_url: Service URL
     :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
@@ -59,11 +69,17 @@ class ConnectedMachine(object):
         self._serialize.client_side_validation = False
         self._deserialize = Deserializer(client_models)
 
-        self.machine = MachineOperations(
+        self.machines = MachinesOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.machine_extension = MachineExtensionOperations(
+        self.machine_extensions = MachineExtensionsOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.operation = OperationOperations(
+        self.operations = Operations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.private_link_scopes = PrivateLinkScopesOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.private_link_resources = PrivateLinkResourcesOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.private_endpoint_connections = PrivateEndpointConnectionsOperations(
             self._client, self._config, self._serialize, self._deserialize)
 
     def close(self):

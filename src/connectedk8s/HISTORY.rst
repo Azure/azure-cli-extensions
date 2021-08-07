@@ -9,6 +9,11 @@ Release History
 * `az connectedk8s connect`: Added registry repository, registry username, registry password, agent version parameters
 * `az connectedk8s update`: Added registry repository, registry username, registry password, use default registry, anonymous pull parameters
 
+1.1.7
+++++++
+* Add non-existing namespace deploy check
+* Improve some error and warning experiences
+
 
 1.1.6
 ++++++
