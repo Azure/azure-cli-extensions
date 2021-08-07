@@ -7,8 +7,9 @@ from .vendored_sdks.appplatform.v2022_05_01_preview import models
 from ._utils import  get_azure_files_info, _pack_source_code
 from azure.cli.core.util import sdk_no_wait
 from .azure_storage_file import FileService
-import requests
-import sys
+import os
+import tempfile
+import uuid
 
 logger = get_logger(__name__)
 APPLICATION_CONFIGURATION_SERVICE_NAME = "ApplicationConfigurationService"
@@ -59,7 +60,8 @@ def app_create_enterprise(cmd, client, resource_group, service, name,
                                            cpu, memory, instance_count, jvm_options, env, is_active=True)
     if need_update_app_after_deployment:
         logger.warning('[3/{}] Update app {} properties (this operation can take a while to complete)'.format(total_steps, name))
-        app_poller = _update_app(assign_endpoint=assign_endpoint)
+        app_resource = _update_app(assign_endpoint=assign_endpoint)
+        app_poller = client.apps.begin_update(resource_group, service, name, app_resource)
     _wait_till_end(cmd, app_poller, deployment_poller)
     return app_get_enterprise(cmd, client, resource_group, service, name)
 
@@ -82,7 +84,8 @@ def app_update_enterprise(cmd, client, resource_group, service, name,
     app_poller = None
     deployment_poller = None
     if is_app_update:
-        app_poller = _update_app(assign_endpoint=assign_endpoint)
+        app_resource = _update_app(assign_endpoint=assign_endpoint)
+        app_poller = client.apps.begin_update(resource_group, service, name, app_resource)
     if is_deployment_update:
         deployment_resource = models.DeploymentResource(
             properties=models.DeploymentResourceProperties(
@@ -121,6 +124,39 @@ def app_deploy_enterprise(cmd, client, resource_group, service, name,
         )
     )
     return sdk_no_wait(no_wait, client.deployments.begin_update, resource_group, service, name, deployment, resource)
+
+
+def app_start_enterprise(cmd, client,
+                         resource_group,
+                         service,
+                         name,
+                         deployment=None,
+                         no_wait=False):
+    deployment = _deployment_or_active_deployment_name(client, resource_group, service, name, deployment)
+    return sdk_no_wait(no_wait, client.deployments.begin_start,
+                       resource_group, service, name, deployment)
+
+
+def app_stop_enterprise(cmd, client,
+                        resource_group,
+                        service,
+                        name,
+                        deployment=None,
+                        no_wait=False):
+    deployment = _deployment_or_active_deployment_name(client, resource_group, service, name, deployment)
+    return sdk_no_wait(no_wait, client.deployments.begin_stop,
+                       resource_group, service, name, deployment)
+
+
+def app_restart_enterprise(cmd, client,
+                           resource_group,
+                           service,
+                           name,
+                           deployment=None,
+                           no_wait=False):
+    deployment = _deployment_or_active_deployment_name(client, resource_group, service, name, deployment)
+    return sdk_no_wait(no_wait, client.deployments.begin_restart,
+                       resource_group, service, name, deployment)
 
 
 def app_scale_enterprise(cmd, client, resource_group, service, name,
@@ -294,10 +330,9 @@ def _update_app(assign_endpoint=None):
     properties = models.AppResourceProperties(
        public=assign_endpoint 
     )
-    resource = models.AppResource(
+    return models.AppResource(
         properties=properties
     )
-    return client.apps.begin_update(resource_group, service, name, app_resource)
 
 
 def _create_deployment(cmd, client, resource_group, service, app, name, source,

@@ -23,7 +23,7 @@ from ._transformers import (transform_spring_cloud_table_output,
 def load_command_table(self, _):
     app_routing_util = CliCommandType(
         operations_tmpl='azext_spring_cloud.tier_routing_app#{}',
-        client_factory=cf_spring_cloud
+        client_factory=cf_spring_cloud_20210601preview
     )
 
     deployment_routing_util = CliCommandType(
@@ -62,15 +62,18 @@ def load_command_table(self, _):
 
     with self.command_group('spring-cloud app', custom_command_type=app_routing_util,
                             exception_handler=handle_asc_exception) as g:
-        g.custom_show_command(
-            'show', 'app_get_routing', table_transformer=transform_app_table_output)
-        g.custom_command('deploy', 'app_deploy_routing', supports_no_wait=True)
-        g.custom_command('create', 'app_create_routing')
-        g.custom_command('list', 'app_list_routing',
+        g.custom_command('create', 'app_create')
+        g.custom_command('update', 'app_update')
+        g.custom_command('deploy', 'app_deploy', supports_no_wait=True)
+        g.custom_command('scale', 'app_scale', supports_no_wait=True)
+        g.custom_command('delete', 'app_delete')
+        g.custom_command('list', 'app_list',
                          table_transformer=transform_app_table_output)
-        g.custom_command('scale', 'app_scale_routing', supports_no_wait=True)
-        g.custom_command('update', 'app_update_routing')
-
+        g.custom_show_command(
+            'show', 'app_get', table_transformer=transform_app_table_output)
+        g.custom_command('start', 'app_start', supports_no_wait=True)
+        g.custom_command('stop', 'app_stop', supports_no_wait=True)
+        g.custom_command('restart', 'app_restart', supports_no_wait=True)
 
     with self.command_group('spring-cloud app', client_factory=cf_spring_cloud_20210601preview,
                             exception_handler=handle_asc_exception) as g:
@@ -79,10 +82,6 @@ def load_command_table(self, _):
                          supports_no_wait=True)
         g.custom_command('unset-deployment', 'app_unset_deployment',
                          supports_no_wait=True)
-        g.custom_command('delete', 'app_delete')
-        g.custom_command('start', 'app_start', supports_no_wait=True)
-        g.custom_command('stop', 'app_stop', supports_no_wait=True)
-        g.custom_command('restart', 'app_restart', supports_no_wait=True)
         g.custom_command('logs', 'app_tail_log')
 
     with self.command_group('spring-cloud app identity', client_factory=cf_spring_cloud,
