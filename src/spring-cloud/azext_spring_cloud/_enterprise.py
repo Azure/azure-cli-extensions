@@ -177,6 +177,14 @@ def app_scale_enterprise(cmd, client, resource_group, service, name,
     return sdk_no_wait(no_wait, client.deployments.begin_update,
                        resource_group, service, name, deployment, resource)
 
+
+def deployment_delete_enterprise(cmd, client, resource_group, service, app, name):
+    deployment = client.deployments.get(client, resource_group, service, app, name)
+    if deployment.properties.active:
+        logger.warning(DELETE_PRODUCTION_DEPLOYMENT_WARNING)
+    return client.deployments.begin_delete(resource_group, service, app, name)
+    
+
 def _build_and_get_result(cmd, client, resource_group, service, name, version, artifact_path, target_module, additional_steps=0):
     total_steps = 4 + additional_steps
     logger.warning("[1/{}] Requesting for upload URL.".format(total_steps))
