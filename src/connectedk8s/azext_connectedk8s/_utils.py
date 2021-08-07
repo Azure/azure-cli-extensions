@@ -310,7 +310,7 @@ def helm_login(container_registry_repository, container_registry_username, conta
 
 def helm_install_release(chart_path, subscription_id, kubernetes_distro, kubernetes_infra, resource_group_name, cluster_name,
                          location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, proxy_cert, private_key_pem,
-                         kube_config, kube_context, no_wait, values_file_provided, values_file, cloud_name, disable_auto_upgrade,
+                         kube_config, kube_context, no_wait, values_file_provided, values_file, cloud_name, auto_upgrade,
                          enable_custom_locations, custom_locations_oid, onboarding_timeout="300", container_registry_repository="",
                          container_registry_username="", container_registry_password=""):
 
@@ -334,8 +334,8 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, kuberne
     # To set some other helm parameters through file
     if values_file_provided:
         cmd_helm_install.extend(["-f", values_file])
-    if disable_auto_upgrade:
-        cmd_helm_install.extend(["--set", "systemDefaultValues.azureArcAgents.autoUpdate={}".format("false")])
+    if auto_upgrade is not None:
+        cmd_helm_install.extend(["--set", "systemDefaultValues.azureArcAgents.autoUpdate={}".format(auto_upgrade)])
     if https_proxy:
         cmd_helm_install.extend(["--set", "global.httpsProxy={}".format(https_proxy)])
     if http_proxy:
