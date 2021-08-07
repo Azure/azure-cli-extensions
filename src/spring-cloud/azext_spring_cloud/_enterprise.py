@@ -1,3 +1,4 @@
+from sys import excepthook
 from time import sleep
 from knack.util import CLIError
 from knack.log import get_logger
@@ -185,6 +186,38 @@ def deployment_delete_enterprise(cmd, client, resource_group, service, app, name
     return client.deployments.begin_delete(resource_group, service, app, name)
     
 
+def deployment_create_enterprise(cmd, client, resource_group, service, app, name,
+                                 skip_clone_settings=False,
+                                 version=None,
+                                 artifact_path=None,
+                                 target_module=None,
+                                 jvm_options=None,
+                                 cpu=None,
+                                 memory=None,
+                                 instance_count=None,
+                                 env=None,
+                                 no_wait=False):
+    _ensure_deployment_not_exist(client, resource_group, service, app, name)
+    origin_deployment = _get_active_deployment_or_default(client, resource_group, service, app, skip_clone_settings)
+    sku = _format_sku(instance_count or origin_deployment.sku.capacity)
+    origin_settings = origin_deployment.properties.deployment_settings
+    settings = _format_deployment_settings(cpu=cpu or origin_settings.resource_requests.cpu,
+                                           memory=memory or origin_settings.resource_requests.memory,
+                                           jvm_options=jvm_options,
+                                           env=env or origin_settings.environment_variables)
+    user_source_info = _build_and_get_result(cmd, client, resource_group, service, app, version, artifact_path, target_module, additional_steps=1)
+    resource = models.DeploymentResource(
+        properties=models.DeploymentResourceProperties(
+            source=user_source_info,
+            deployment_settings=settings
+        ),
+        sku=sku
+    )
+    logger.warning("[5/5] Create deployment {} (this operation can take a while to complete)".format(name))
+    return sdk_no_wait(no_wait, client.deployments.begin_create_or_update,
+                       resource_group, service, app, name, resource)
+
+
 def _build_and_get_result(cmd, client, resource_group, service, name, version, artifact_path, target_module, additional_steps=0):
     total_steps = 4 + additional_steps
     logger.warning("[1/{}] Requesting for upload URL.".format(total_steps))
@@ -312,6 +345,17 @@ def _get_upload_local_file():
     return file_path
 
 
+def _ensure_deployment_not_exist(client, resource_group, service, app, name):
+    deployment = None
+    try:
+        deployment = client.deployments.get(resource_group, service, app, name)
+    except Exception:
+        # ingore
+        return
+    if deployment:
+        raise CLIError('Deployment {} already exist.'.format(deployment.id))
+
+
 def _ensure_app_not_exist(client, resource_group, service, name):
     app = None
     try:
@@ -320,7 +364,7 @@ def _ensure_app_not_exist(client, resource_group, service, name):
         # ignore
         return
     if app:
-        raise CLIError('App {} already exist'.format(app.id))
+        raise CLIError('App {} already exist.'.format(app.id))
 
 
 def _create_empty_app(client, resource_group, service, name):
@@ -357,6 +401,30 @@ def _create_deployment(cmd, client, resource_group, service, app, name, source,
     )
     return client.deployments.begin_create_or_update(resource_group, service, app, name, resource)
 
+
+def _get_active_deployment_or_default(client, resource_group, service, app, skip_clone_settings):
+    deployment = models.DeploymentResource(
+        properties=models.DeploymentResourceProperties(
+            deployment_settings=_default_deployment_settings()
+        ),
+        sku = _default_deployment_sku()
+    )
+    if not skip_clone_settings:
+        active_deployment = _get_active_deployment(client, resource_group, service, app)
+        if not active_deployment:
+            logger.warning("No production deployment found, use --skip-clone-settings to skip copying settings from "
+                           "production deployment.")
+        else:
+            deployment = active_deployment
+    return deployment
+
+
+
+def _default_deployment_settings():
+    return _format_deployment_settings(cpu='1', memory='1Gi')
+
+def _default_deployment_sku():
+    return _format_sku(instance_count=1)
 
 def _wait_till_end(cmd, *pollers):
     if not pollers:

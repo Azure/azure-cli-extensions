@@ -97,15 +97,12 @@ def load_command_table(self, _):
 
     with self.command_group('spring-cloud app deployment', custom_command_type=deployment_routing_util,
                             exception_handler=handle_asc_exception) as g:
-        g.custom_show_command(
-            'show', 'deployment_get', table_transformer=transform_spring_cloud_deployment_output)
+        g.custom_command('create', 'deployment_create', supports_no_wait=True)
         g.custom_command('list', 'deployment_list',
                          table_transformer=transform_spring_cloud_deployment_output)
+        g.custom_show_command(
+            'show', 'deployment_get', table_transformer=transform_spring_cloud_deployment_output)
         g.custom_command('delete', 'deployment_delete')
-
-    with self.command_group('spring-cloud app deployment', client_factory=cf_spring_cloud_20210601preview,
-                            exception_handler=handle_asc_exception) as g:
-        g.custom_command('create', 'deployment_create', supports_no_wait=True)
 
     with self.command_group('spring-cloud app binding', client_factory=cf_spring_cloud,
                             exception_handler=handle_asc_exception) as g:
