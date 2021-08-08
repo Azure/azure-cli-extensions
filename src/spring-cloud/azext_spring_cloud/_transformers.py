@@ -27,24 +27,11 @@ def transform_app_table_output(result):
         result = [result]
 
     for item in result:
-        item['Production Deployment'] = item['properties']['activeDeploymentName']
         item['Public Url'] = item['properties']['url']
 
         if 'activeDeployment' in item['properties']:
-            isStarted = item['properties']['activeDeployment']['properties']['status'].upper() == "RUNNING"
-            instance_count = item['properties']['activeDeployment']['sku']['capacity']
-            instances = item['properties']['activeDeployment']['properties']['instances']
-            if instances is None:
-                instances = []
-            up_number = len(
-                [x for x in instances if x['discoveryStatus'].upper() == 'UP' or x['discoveryStatus'].upper() == 'OUT_OF_SERVICE'])
-            running_number = len(
-                [x for x in instances if x['status'].upper() == "RUNNING"])
-            item['Provisioning Status'] = item['properties']['activeDeployment']['properties']['provisioningState']
-            item['CPU'] = item['properties']['activeDeployment']['properties']['deploymentSettings']['cpu']
-            item['Memory'] = item['properties']['activeDeployment']['properties']['deploymentSettings']['memoryInGb']
-            item['Running Instance'] = "{}/{}".format(running_number, instance_count) if isStarted else "Stopped"
-            item['Registered Instance'] = "{}/{}".format(up_number, instance_count) if isStarted else "Stopped"
+            item['Production Deployment'] = item['properties']['activeDeployment']['name']
+            _apply_deployment_table(item, item['properties']['activeDeployment'])
 
         persistentStorage = item['properties']['persistentDisk']
         item['Persistent Storage'] = "{}/{} Gb".format(
@@ -60,20 +47,8 @@ def transform_spring_cloud_deployment_output(result):
         result = [result]
 
     for item in result:
-        isStarted = item['properties']['status'].upper() == "RUNNING"
-        instance_count = item['sku']['capacity']
-        instances = item['properties']['instances']
-        if instances is None:
-            instances = []
-        up_number = len(
-            [x for x in instances if x['discoveryStatus'].upper() == 'UP' or x['discoveryStatus'].upper() == 'OUT_OF_SERVICE'])
-        running_number = len([x for x in instances if x['status'].upper() == "RUNNING"])
         item['App Name'] = item['properties']["appName"]
-        item['Provisioning Status'] = item['properties']['provisioningState']
-        item['CPU'] = item['properties']['deploymentSettings']['cpu']
-        item['Memory'] = item['properties']['deploymentSettings']['memoryInGb']
-        item['Running Instance'] = "{}/{}".format(running_number, instance_count) if isStarted else "Stopped"
-        item['Registered Instance'] = "{}/{}".format(up_number, instance_count) if isStarted else "Stopped"
+        _apply_deployment_table(item, item)
 
     return result if is_list else result[0]
 
@@ -108,3 +83,27 @@ def transform_spring_cloud_custom_domain_output(result):
         item['Thumbprint'] = item['properties']['thumbprint']
 
     return result if is_list else result[0]
+
+
+def _get_registration_state(deployment):
+    if deployment['properties']['status'].upper() == 'STOPPED':
+        return 'Stopped'
+    instances = deployment['properties']['instances'] or []
+    if len(instances) > 0 and all(x['discoveryStatus'].upper() == 'N/A' for x in instances):
+        return 'N/A'
+    up_number = len(
+        [x for x in instances if x['discoveryStatus'].upper() == 'UP' or x['discoveryStatus'].upper() == 'OUT_OF_SERVICE'])
+    return "{}/{}".format(up_number, deployment['sku']['capacity'])
+
+
+def _apply_deployment_table(item, deployment):
+    isStarted = deployment['properties']['status'].upper() == "RUNNING"
+    instance_count = deployment['sku']['capacity']
+    instances = deployment['properties']['instances'] or []
+    running_number = len(
+        [x for x in instances if x['status'].upper() == "RUNNING"])
+    item['Provisioning State'] = deployment['properties']['provisioningState']
+    item['CPU'] = deployment['properties']['deploymentSettings']['resourceRequests']['cpu']
+    item['Memory'] = deployment['properties']['deploymentSettings']['resourceRequests']['memory']
+    item['Running Instance'] = "{}/{}".format(running_number, instance_count) if isStarted else "Stopped"
+    item['Registered Instance'] = _get_registration_state(deployment)

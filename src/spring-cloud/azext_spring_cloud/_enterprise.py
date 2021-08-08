@@ -1,4 +1,3 @@
-from sys import excepthook
 from time import sleep
 from knack.util import CLIError
 from knack.log import get_logger

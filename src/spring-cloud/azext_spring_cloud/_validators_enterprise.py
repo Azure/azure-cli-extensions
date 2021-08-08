@@ -17,11 +17,11 @@ logger = get_logger(__name__)
 
 
 def validate_cpu(namespace):
-    validate_and_normalize_cpu(namespace.cpu)
+    namespace.cpu = validate_and_normalize_cpu(namespace.cpu)
 
 
 def validate_memory(namespace):
-    validate_and_normalize_memory(namespace.memory)
+    namespace.memory = validate_and_normalize_memory(namespace.memory)
 
 
 def validate_config_file_patterns(namespace):
