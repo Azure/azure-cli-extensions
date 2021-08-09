@@ -946,6 +946,7 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
     if container_registry_repository:
         cmd_helm_upgrade.extend(["--set", "systemDefaultValues.image.repository={}".format(container_registry_repository)])
         cmd_helm_upgrade.extend(["--set", "global.isCustomRegistryEnabled={}".format(True)])
+        cmd_helm_upgrade.extend(["--set", "systemDefaultValues.image.releaseName={}".format("azurearck8s")])
         if container_registry_username is not None and container_registry_password is not None:
             cmd_helm_upgrade.extend(["--set", "systemDefaultValues.image.username={}".format(container_registry_username)])
             cmd_helm_upgrade.extend(["--set", "systemDefaultValues.image.password={}".format(container_registry_password)])

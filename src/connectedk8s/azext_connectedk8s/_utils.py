@@ -358,6 +358,7 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, kuberne
     if container_registry_repository:
         cmd_helm_install.extend(["--set", "global.isCustomRegistryEnabled={}".format(True)])
         cmd_helm_install.extend(["--set", "systemDefaultValues.image.repository={}".format(container_registry_repository)])
+        cmd_helm_install.extend(["--set", "systemDefaultValues.image.releaseName={}".format("azurearck8s")])
         if container_registry_username and container_registry_password:
             cmd_helm_install.extend(["--set", "systemDefaultValues.image.username={}".format(container_registry_username)])
             cmd_helm_install.extend(["--set", "systemDefaultValues.image.password={}".format(container_registry_password)])
