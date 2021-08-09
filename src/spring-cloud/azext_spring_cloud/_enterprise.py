@@ -325,13 +325,21 @@ def _format_deployment_settings(cpu=None, memory=None, jvm_options=None, env=Non
     if all(x is None for x in [cpu, memory, jvm_options, env, config_file_patterns]):
         return None
     resource_requests = models.ResourceRequests(cpu=cpu, memory=memory) if cpu or memory else None
-    # TODO set jvm to env
+    env = _merge_jvm_to_env(env, jvm_options)
     addon_configs = _get_addon_configs(config_file_patterns) if config_file_patterns is not None else None
     return models.DeploymentSettings(
         addon_configs=addon_configs,
         resource_requests=resource_requests,
         environment_variables=env
     )
+
+
+def _merge_jvm_to_env(env, jvm_options):
+    if not jvm_options:
+        return env
+    env = env or {}
+    env['JAVA_OPTS'] = jvm_options
+    return env
 
 
 def _format_sku(instance_count):
