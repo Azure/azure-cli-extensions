@@ -45,10 +45,10 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # In order to avoid misuse of personal ssh-key during testing and the race condition that is prone to occur when key creation
         # is handled by azure-cli when performing test cases concurrently, we provide this function as a workround.
 
-        # In the scenario of runner and AKS check-in pipeline, a temporary ssh-key will be generated in advance under the "/opt/.ssh"
+        # In the scenario of runner and AKS check-in pipeline, a temporary ssh-key will be generated in advance under the "/tmp/azaks/.ssh"
         # directory when setting up the environment. Each test case will read the ssh-key from a pre-generated file during execution,
         # so there will be no race conditions caused by concurrent reading and writing/creating of the same file.
-        pre_generated_ssh_key_path = "/opt/.ssh/id_rsa.pub"
+        pre_generated_ssh_key_path = "/tmp/azaks/.ssh/id_rsa.pub"
         if os.path.exists(pre_generated_ssh_key_path):
             return pre_generated_ssh_key_path.replace('\\', '\\\\')
 

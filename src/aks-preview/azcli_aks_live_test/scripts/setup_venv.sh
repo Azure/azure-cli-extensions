@@ -109,7 +109,7 @@ setupAKSPreview(){
 createSSHKey(){
     # create ssh-key in advance to avoid the race condition that is prone to occur when key creation is handled by
     # azure-cli when performing test cases concurrently, this command will not overwrite the existing ssh-key
-    custom_ssh_dir=${1:-"/opt/.ssh"}
+    custom_ssh_dir=${1:-"/tmp/azaks/.ssh"}
     mkdir -p ${custom_ssh_dir}
     ssh-keygen -t rsa -b 2048 -C "azcli_aks_live_test@example.com" -f ${custom_ssh_dir}/id_rsa -N "" -q <<< n
 }
