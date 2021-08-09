@@ -19,7 +19,7 @@ helps['connectedk8s connect'] = """
     - name: Onboard a connected kubernetes cluster with default kube config and kube context.
       text: az connectedk8s connect -g resourceGroupName -n connectedClusterName
     - name: Onboard a connected kubernetes cluster with default kube config and kube context and disabling auto upgrade of arc agents.
-      text: az connectedk8s connect -g resourceGroupName -n connectedClusterName --disable-auto-upgrade
+      text: az connectedk8s connect -g resourceGroupName -n connectedClusterName --auto-upgrade false
     - name: Onboard a connected kubernetes cluster by specifying the kubeconfig and kubecontext.
       text: az connectedk8s connect -g resourceGroupName -n connectedClusterName --kube-config /path/to/kubeconfig --kube-context kubeContextName
     - name: Onboard a connected kubernetes cluster by specifying the https proxy, http proxy, no proxy settings.
