@@ -16,12 +16,6 @@ helps['monitor scheduled-query create'] = """
 type: command
 short-summary: Create a scheduled query.
 parameters:
-  - name: --action -a
-    short-summary: Add an action group and optional webhook properties to fire when the alert is triggered.
-    long-summary: |
-        Usage:   --action ACTION_GROUP_NAME_OR_ID [KEY=VAL [KEY=VAL ...]]
-
-        Multiple action groups can be specified by using more than one `--action` argument.
   - name: --condition
     short-summary: The condition which triggers the rule.
     long-summary: |

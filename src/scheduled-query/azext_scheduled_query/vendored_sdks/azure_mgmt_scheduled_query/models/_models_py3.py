@@ -7,7 +7,7 @@
 # --------------------------------------------------------------------------
 
 import datetime
-from typing import Any, Dict, List, Optional, Union
+from typing import Dict, List, Optional, Union
 
 from azure.core.exceptions import HttpResponseError
 import msrest.serialization
@@ -452,7 +452,7 @@ class ScheduledQueryRuleResource(TrackedResource):
      format) after the alert is fired. Relevant only for rules of the kind LogAlert.
     :type mute_actions_duration: ~datetime.timedelta
     :param actions: Actions to invoke when the alert fires.
-    :type actions: any
+    :type actions: ~$(python-base-namespace).v2021_02_preview.models.Actions
     :ivar is_workspace_alerts_storage_configured: The flag which indicates whether this scheduled
      query rule has been configured to be stored in the customer's storage. The default is false.
     :vartype is_workspace_alerts_storage_configured: bool
@@ -493,7 +493,7 @@ class ScheduledQueryRuleResource(TrackedResource):
         'is_legacy_log_analytics_rule': {'key': 'properties.isLegacyLogAnalyticsRule', 'type': 'bool'},
         'description': {'key': 'properties.description', 'type': 'str'},
         'display_name': {'key': 'properties.displayName', 'type': 'str'},
-        'severity': {'key': 'properties.severity', 'type': 'float'},
+        'severity': {'key': 'properties.severity', 'type': 'int'},
         'enabled': {'key': 'properties.enabled', 'type': 'bool'},
         'scopes': {'key': 'properties.scopes', 'type': '[str]'},
         'evaluation_frequency': {'key': 'properties.evaluationFrequency', 'type': 'duration'},
@@ -502,7 +502,7 @@ class ScheduledQueryRuleResource(TrackedResource):
         'target_resource_types': {'key': 'properties.targetResourceTypes', 'type': '[str]'},
         'criteria': {'key': 'properties.criteria', 'type': 'ScheduledQueryRuleCriteria'},
         'mute_actions_duration': {'key': 'properties.muteActionsDuration', 'type': 'duration'},
-        'actions': {'key': 'properties.actions', 'type': 'object'},
+        'actions': {'key': 'properties.actions', 'type': 'Actions'},
         'is_workspace_alerts_storage_configured': {'key': 'properties.isWorkspaceAlertsStorageConfigured', 'type': 'bool'},
         'check_workspace_alerts_storage_configured': {'key': 'properties.checkWorkspaceAlertsStorageConfigured', 'type': 'bool'},
         'skip_query_validation': {'key': 'properties.skipQueryValidation', 'type': 'bool'},
@@ -517,7 +517,7 @@ class ScheduledQueryRuleResource(TrackedResource):
         kind: Optional[Union[str, "Kind"]] = None,
         description: Optional[str] = None,
         display_name: Optional[str] = None,
-        severity: Optional[Union[float, "AlertSeverity"]] = None,
+        severity: Optional[Union[int, "AlertSeverity"]] = None,
         enabled: Optional[bool] = None,
         scopes: Optional[List[str]] = None,
         evaluation_frequency: Optional[datetime.timedelta] = None,
@@ -526,7 +526,7 @@ class ScheduledQueryRuleResource(TrackedResource):
         target_resource_types: Optional[List[str]] = None,
         criteria: Optional["ScheduledQueryRuleCriteria"] = None,
         mute_actions_duration: Optional[datetime.timedelta] = None,
-        actions: Optional[Any] = None,
+        actions: Optional["Actions"] = None,
         check_workspace_alerts_storage_configured: Optional[bool] = None,
         skip_query_validation: Optional[bool] = None,
         auto_mitigate: Optional[bool] = None,
@@ -622,7 +622,7 @@ class ScheduledQueryRuleResourcePatch(msrest.serialization.Model):
      format) after the alert is fired. Relevant only for rules of the kind LogAlert.
     :type mute_actions_duration: ~datetime.timedelta
     :param actions: Actions to invoke when the alert fires.
-    :type actions: any
+    :type actions: ~$(python-base-namespace).v2021_02_preview.models.Actions
     :ivar is_workspace_alerts_storage_configured: The flag which indicates whether this scheduled
      query rule has been configured to be stored in the customer's storage. The default is false.
     :vartype is_workspace_alerts_storage_configured: bool
@@ -650,7 +650,7 @@ class ScheduledQueryRuleResourcePatch(msrest.serialization.Model):
         'is_legacy_log_analytics_rule': {'key': 'properties.isLegacyLogAnalyticsRule', 'type': 'bool'},
         'description': {'key': 'properties.description', 'type': 'str'},
         'display_name': {'key': 'properties.displayName', 'type': 'str'},
-        'severity': {'key': 'properties.severity', 'type': 'float'},
+        'severity': {'key': 'properties.severity', 'type': 'int'},
         'enabled': {'key': 'properties.enabled', 'type': 'bool'},
         'scopes': {'key': 'properties.scopes', 'type': '[str]'},
         'evaluation_frequency': {'key': 'properties.evaluationFrequency', 'type': 'duration'},
@@ -659,7 +659,7 @@ class ScheduledQueryRuleResourcePatch(msrest.serialization.Model):
         'target_resource_types': {'key': 'properties.targetResourceTypes', 'type': '[str]'},
         'criteria': {'key': 'properties.criteria', 'type': 'ScheduledQueryRuleCriteria'},
         'mute_actions_duration': {'key': 'properties.muteActionsDuration', 'type': 'duration'},
-        'actions': {'key': 'properties.actions', 'type': 'object'},
+        'actions': {'key': 'properties.actions', 'type': 'Actions'},
         'is_workspace_alerts_storage_configured': {'key': 'properties.isWorkspaceAlertsStorageConfigured', 'type': 'bool'},
         'check_workspace_alerts_storage_configured': {'key': 'properties.checkWorkspaceAlertsStorageConfigured', 'type': 'bool'},
         'skip_query_validation': {'key': 'properties.skipQueryValidation', 'type': 'bool'},
@@ -672,7 +672,7 @@ class ScheduledQueryRuleResourcePatch(msrest.serialization.Model):
         tags: Optional[Dict[str, str]] = None,
         description: Optional[str] = None,
         display_name: Optional[str] = None,
-        severity: Optional[Union[float, "AlertSeverity"]] = None,
+        severity: Optional[Union[int, "AlertSeverity"]] = None,
         enabled: Optional[bool] = None,
         scopes: Optional[List[str]] = None,
         evaluation_frequency: Optional[datetime.timedelta] = None,
@@ -681,7 +681,7 @@ class ScheduledQueryRuleResourcePatch(msrest.serialization.Model):
         target_resource_types: Optional[List[str]] = None,
         criteria: Optional["ScheduledQueryRuleCriteria"] = None,
         mute_actions_duration: Optional[datetime.timedelta] = None,
-        actions: Optional[Any] = None,
+        actions: Optional["Actions"] = None,
         check_workspace_alerts_storage_configured: Optional[bool] = None,
         skip_query_validation: Optional[bool] = None,
         auto_mitigate: Optional[bool] = None,

@@ -46,7 +46,12 @@ class Scheduled_queryScenarioTest(ScenarioTest):
                      self.check('criteria.allOf[0].timeAggregation', 'Count'),
                      self.check('criteria.allOf[0].operator', 'GreaterThan'),
                      self.check('criteria.allOf[0].failingPeriods.minFailingPeriodsToAlert', 1),
-                     self.check('criteria.allOf[0].failingPeriods.numberOfEvaluationPeriods', 1)
+                     self.check('criteria.allOf[0].failingPeriods.numberOfEvaluationPeriods', 1),
+                     self.check('criteria.allOf[0].failingPeriods.minFailingPeriodsToAlert', 1),
+                     self.check('criteria.allOf[0].failingPeriods.numberOfEvaluationPeriods', 1),
+                     self.check('autoMitigate', True),
+                     self.check('skipQueryValidation', False),
+                     self.check('checkWorkspaceAlertsStorageConfigured', False)
                  ])
         self.cmd('monitor scheduled-query create -g {rg} -n {name2} --scopes {rg_id} --condition "count \'union Event, Syslog | where TimeGenerated > ago(1h)\' > 360 resource id _ResourceId" --description "Test rule"',
                  checks=[
@@ -67,6 +72,12 @@ class Scheduled_queryScenarioTest(ScenarioTest):
                      self.check('criteria.allOf[0].operator', 'LessThan'),
                      self.check('criteria.allOf[0].failingPeriods.minFailingPeriodsToAlert', 2),
                      self.check('criteria.allOf[0].failingPeriods.numberOfEvaluationPeriods', 3)
+                 ])
+        self.cmd('monitor scheduled-query update -g {rg} -n {name1} --mad PT30M --auto-mitigate False --skip-query-validation True',
+                 checks=[
+                     self.check('skipQueryValidation', True),
+                     self.check('muteActionsDuration', '0:30:00'),
+                     self.check('autoMitigate', False)
                  ])
         self.cmd('monitor scheduled-query show -g {rg} -n {name1}',
                  checks=[

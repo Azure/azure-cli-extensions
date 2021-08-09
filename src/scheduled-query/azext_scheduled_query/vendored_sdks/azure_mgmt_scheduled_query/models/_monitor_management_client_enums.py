@@ -26,7 +26,7 @@ class _CaseInsensitiveEnumMeta(EnumMeta):
             raise AttributeError(name)
 
 
-class AlertSeverity(with_metaclass(_CaseInsensitiveEnumMeta, float, Enum)):
+class AlertSeverity(with_metaclass(_CaseInsensitiveEnumMeta, int, Enum)):
     """Severity of the alert. Should be an integer between [0-4]. Value of 0 is severest. Relevant and
     required only for rules of the kind LogAlert.
     """

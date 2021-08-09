@@ -2,6 +2,13 @@
 
 Release History
 ===============
+0.3.2
+++++++
+* Add `--skip-query-validation` parameter
+* Add `--check-ws-alerts-storage` parameter
+* Add `--auto-mitigate` parameter
+* `--actions` are split into `--action-groups` and `--custom-properties`
+
 0.3.1
 ++++++
 * Support query placeholder for `--condition` parameter.
