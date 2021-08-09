@@ -83,7 +83,6 @@ from .vendored_sdks.azure_mgmt_preview_aks.v2021_05_01.models import (ContainerS
                                                                       ManagedClusterPodIdentity,
                                                                       ManagedClusterPodIdentityException,
                                                                       UserAssignedIdentity,
-                                                                      RunCommandRequest,
                                                                       ComponentsQit0EtSchemasManagedclusterpropertiesPropertiesIdentityprofileAdditionalproperties)
 from ._client_factory import cf_resource_groups
 from ._client_factory import get_auth_management_client
@@ -2292,115 +2291,6 @@ def aks_upgrade(cmd,    # pylint: disable=unused-argument, too-many-return-state
     headers = get_aks_custom_headers(aks_custom_headers)
 
     return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, name, instance, headers=headers)
-
-
-def aks_runcommand(cmd, client, resource_group_name, name, command_string="", command_files=None):
-    colorama.init()
-
-    mc = client.get(resource_group_name, name)
-
-    if not command_string:
-        raise CLIError('Command cannot be empty.')
-
-    request_payload = RunCommandRequest(command=command_string)
-    request_payload.context = _get_command_context(command_files)
-    if mc.aad_profile is not None and mc.aad_profile.managed:
-        request_payload.cluster_token = _get_dataplane_aad_token(
-            cmd.cli_ctx, "6dae42f8-4368-4678-94ff-3960e28e3630")
-
-    commandResultFuture = client.begin_run_command(
-        resource_group_name, name, request_payload, polling_interval=5, retry_total=0)
-
-    return _print_command_result(cmd.cli_ctx, commandResultFuture.result(300))
-
-
-def aks_command_result(cmd, client, resource_group_name, name, command_id=""):
-    if not command_id:
-        raise CLIError('CommandID cannot be empty.')
-
-    commandResult = client.get_command_result(
-        resource_group_name, name, command_id)
-    return _print_command_result(cmd.cli_ctx, commandResult)
-
-
-def _print_command_result(cli_ctx, commandResult):
-    # cli_ctx.data['safe_params'] contains list of parameter name user typed in, without value.
-    # cli core also use this calculate ParameterSetName header for all http request from cli.
-    if cli_ctx.data['safe_params'] is None or "-o" in cli_ctx.data['safe_params'] or "--output" in cli_ctx.data['safe_params']:
-        # user specified output format, honor their choice, return object to render pipeline
-        return commandResult
-    else:
-        # user didn't specified any format, we can customize the print for best experience
-        if commandResult.provisioning_state == "Succeeded":
-            # succeed, print exitcode, and logs
-            print(f"{colorama.Fore.GREEN}command started at {commandResult.started_at}, finished at {commandResult.finished_at}, with exitcode={commandResult.exit_code}{colorama.Style.RESET_ALL}")
-            print(commandResult.logs)
-            return
-
-        if commandResult.provisioning_state == "Failed":
-            # failed, print reason in error
-            print(
-                f"{colorama.Fore.RED}command failed with reason: {commandResult.reason}{colorama.Style.RESET_ALL}")
-            return
-
-        # *-ing state
-        print(f"{colorama.Fore.BLUE}command is in : {commandResult.provisioning_state} state{colorama.Style.RESET_ALL}")
-        return None
-
-
-def _get_command_context(command_files):
-    if not command_files:
-        return ""
-
-    filesToAttach = {}
-    # . means to attach current folder, cannot combine more files. (at least for now)
-    if len(command_files) == 1 and command_files[0] == ".":
-        # current folder
-        cwd = os.getcwd()
-        for filefolder, _, files in os.walk(cwd):
-            for file in files:
-                # retain folder structure
-                rel = os.path.relpath(filefolder, cwd)
-                filesToAttach[os.path.join(
-                    filefolder, file)] = os.path.join(rel, file)
-    else:
-        for file in command_files:
-            if file == ".":
-                raise CLIError(
-                    ". is used to attach current folder, not expecting other attachements.")
-            if os.path.isfile(file):
-                # for individual attached file, flatten them to same folder
-                filesToAttach[file] = os.path.basename(file)
-            else:
-                raise CLIError(f"{file} is not valid file, or not accessable.")
-
-    if len(filesToAttach) < 1:
-        logger.debug("no files to attach!")
-        return ""
-
-    zipStream = io.BytesIO()
-    zipFile = zipfile.ZipFile(zipStream, "w")
-    for _, (osfile, zipEntry) in enumerate(filesToAttach.items()):
-        zipFile.write(osfile, zipEntry)
-    # zipFile.printdir() // use this to debug
-    zipFile.close()
-
-    return str(base64.encodebytes(zipStream.getbuffer()), "utf-8")
-
-
-def _get_dataplane_aad_token(cli_ctx, serverAppId):
-    # this function is mostly copied from keyvault cli
-    import adal
-    try:
-        return Profile(cli_ctx=cli_ctx).get_raw_token(resource=serverAppId)[0][2].get('accessToken')
-    except adal.AdalError as err:
-        # pylint: disable=no-member
-        if (hasattr(err, 'error_response') and
-                ('error_description' in err.error_response) and
-                ('AADSTS70008:' in err.error_response['error_description'])):
-            raise CLIError(
-                "Credentials have expired due to inactivity. Please run 'az login'")
-        raise CLIError(err)
 
 
 def _upgrade_single_nodepool_image_version(no_wait, client, resource_group_name, cluster_name, nodepool_name):
