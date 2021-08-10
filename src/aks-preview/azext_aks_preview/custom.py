@@ -209,7 +209,6 @@ def _build_service_principal(rbac_client, cli_ctx, name, url, client_secret):
     return service_principal
 
 
-
 def _delete_role_assignments(cli_ctx, role, service_principal, delay=2, scope=None):
     # AAD can have delays in propagating data, so sleep and retry
     hook = cli_ctx.get_progress_controller(True)
@@ -363,8 +362,6 @@ def create_service_principal(cli_ctx, identifier, resolve_app=True, rbac_client=
     return rbac_client.service_principals.create(ServicePrincipalCreateParameters(app_id=app_id, account_enabled=True))
 
 
-
-
 def delete_role_assignments(cli_ctx, ids=None, assignee=None, role=None, resource_group_name=None,
                             scope=None, include_inherited=False, yes=None):
     factory = get_auth_management_client(cli_ctx, scope)
@@ -463,10 +460,6 @@ def _get_role_property(obj, property_name):
     if isinstance(obj, dict):
         return obj[property_name]
     return getattr(obj, property_name)
-
-
-
-
 
 
 def subnet_role_assignment_exists(cli_ctx, scope):
@@ -2176,10 +2169,6 @@ def _handle_addons_args(cmd,  # pylint: disable=too-many-statements
     return addon_profiles
 
 
-
-
-
-
 def _ensure_aks_service_principal(cli_ctx,
                                   service_principal=None,
                                   client_secret=None,
@@ -2225,7 +2214,6 @@ def _ensure_aks_service_principal(cli_ctx,
     store_acs_service_principal(
         subscription_id, client_secret, service_principal, file_name=file_name_aks)
     return load_acs_service_principal(subscription_id, file_name=file_name_aks)
-
 
 
 def _check_cluster_autoscaler_flag(enable_cluster_autoscaler,
@@ -2315,8 +2303,6 @@ def _ensure_aks_acr_role_assignment(cli_ctx,
         raise CLIError('Could not create a role assignment for ACR. '
                        'Are you an Owner on this subscription?')
     return
-
-
 
 
 def aks_agentpool_show(cmd,     # pylint: disable=unused-argument
@@ -2605,6 +2591,7 @@ def aks_agentpool_delete(cmd,   # pylint: disable=unused-argument
 
     return sdk_no_wait(no_wait, client.begin_delete, resource_group_name, cluster_name, nodepool_name)
 
+
 def aks_addon_list_available():
     available_addons = []
     for k, v in ADDONS.items():
@@ -2614,7 +2601,8 @@ def aks_addon_list_available():
         })
     return available_addons
 
-def aks_addon_list(cmd, client, resource_group_name, name): # pylint: disable=unused-argument
+
+def aks_addon_list(cmd, client, resource_group_name, name):  # pylint: disable=unused-argument
     addon_profiles = client.get(resource_group_name, name).addon_profiles
 
     current_addons = []
@@ -2635,7 +2623,8 @@ def aks_addon_list(cmd, client, resource_group_name, name): # pylint: disable=un
 
     return current_addons
 
-def aks_addon_show(cmd, client, resource_group_name, name, addon): # pylint: disable=unused-argument
+
+def aks_addon_show(cmd, client, resource_group_name, name, addon):  # pylint: disable=unused-argument
     addon_profiles = client.get(resource_group_name, name).addon_profiles
     addon_key = ADDONS[addon]
 
@@ -2689,6 +2678,7 @@ def aks_addon_update(cmd, client, resource_group_name, name, addon, workspace_re
                          appgw_watch_namespace=appgw_watch_namespace, enable_sgxquotehelper=enable_sgxquotehelper,
                          enable_secret_rotation=enable_secret_rotation, no_wait=no_wait,
                          enable_msi_auth_for_monitoring=enable_msi_auth_for_monitoring)
+
 
 def aks_disable_addons(cmd, client, resource_group_name, name, addons, no_wait=False):
     instance = client.get(resource_group_name, name)

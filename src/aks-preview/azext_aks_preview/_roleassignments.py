@@ -1,7 +1,7 @@
-from azure.graphrbac.models import GetObjectsParameters
-from knack.log import get_logger
 import time
 import uuid
+from azure.graphrbac.models import GetObjectsParameters
+from knack.log import get_logger
 from knack.util import CLIError
 from msrestazure.azure_exceptions import CloudError
 from ._client_factory import get_auth_management_client, get_graph_rbac_management_client
@@ -13,6 +13,7 @@ def _get_object_stubs(graph_client, assignees):
     params = GetObjectsParameters(include_directory_object_references=True,
                                   object_ids=assignees)
     return list(graph_client.objects.get_objects_by_object_ids(params))
+
 
 def resolve_object_id(cli_ctx, assignee):
     client = get_graph_rbac_management_client(cli_ctx)
@@ -33,6 +34,7 @@ def resolve_object_id(cli_ctx, assignee):
 
     return result[0].object_id
 
+
 def resolve_role_id(role, scope, definitions_client):
     role_id = None
     try:
@@ -51,6 +53,7 @@ def resolve_role_id(role, scope, definitions_client):
             raise CLIError(err.format(role, ids))
         role_id = role_defs[0].id
     return role_id
+
 
 def build_role_scope(resource_group_name, scope, subscription_id):
     subscription_scope = '/subscriptions/' + subscription_id

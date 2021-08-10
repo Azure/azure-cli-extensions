@@ -1,6 +1,12 @@
 import json
 import datetime
 from knack.log import get_logger
+from knack.util import CLIError
+from azure.cli.core.azclierror import ArgumentUsageError, ClientRequestError
+from azure.cli.core.commands import LongRunningOperation
+from azure.cli.core.commands.client_factory import get_subscription_id, get_mgmt_service_client
+from azure.cli.core.util import sdk_no_wait
+from azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks.v2021_05_01.models import ManagedClusterAddonProfile
 from ._client_factory import cf_resources, cf_resource_groups
 from ._resourcegroup import get_rg_location
 from ._roleassignments import add_role_assignment
@@ -11,12 +17,6 @@ from ._consts import ADDONS, CONST_VIRTUAL_NODE_ADDON_NAME, CONST_MONITORING_ADD
     CONST_INGRESS_APPGW_WATCH_NAMESPACE, CONST_OPEN_SERVICE_MESH_ADDON_NAME, CONST_CONFCOM_ADDON_NAME, \
     CONST_ACC_SGX_QUOTE_HELPER_ENABLED, CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME, CONST_SECRET_ROTATION_ENABLED, \
     CONST_KUBE_DASHBOARD_ADDON_NAME
-from azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks.v2021_05_01.models import ManagedClusterAddonProfile
-from azure.cli.core.azclierror import ArgumentUsageError, ClientRequestError
-from azure.cli.core.commands import LongRunningOperation
-from azure.cli.core.commands.client_factory import get_subscription_id, get_mgmt_service_client
-from azure.cli.core.util import sdk_no_wait
-from knack.util import CLIError
 
 logger = get_logger(__name__)
 
@@ -40,36 +40,38 @@ def enable_addons(cmd,
                   no_wait=False,
                   enable_msi_auth_for_monitoring=False):
     instance = client.get(resource_group_name, name)
-    msi_auth = True if instance.service_principal_profile.client_id == "msi" else False  # this is overwritten by _update_addons(), so the value needs to be recorded here
+    # this is overwritten by _update_addons(), so the value needs to be recorded here
+    msi_auth = True if instance.service_principal_profile.client_id == "msi" else False
 
     subscription_id = get_subscription_id(cmd.cli_ctx)
-    instance = update_addons(cmd, instance, subscription_id, resource_group_name, name, addons, enable=True, check_enabled=check_enabled,
-                              workspace_resource_id=workspace_resource_id,
-                              enable_msi_auth_for_monitoring=enable_msi_auth_for_monitoring, subnet_name=subnet_name,
-                              appgw_name=appgw_name, appgw_subnet_prefix=appgw_subnet_prefix,
-                              appgw_subnet_cidr=appgw_subnet_cidr, appgw_id=appgw_id, appgw_subnet_id=appgw_subnet_id,
-                              appgw_watch_namespace=appgw_watch_namespace,
-                              enable_sgxquotehelper=enable_sgxquotehelper,
-                              enable_secret_rotation=enable_secret_rotation, no_wait=no_wait)
+    instance = update_addons(cmd, instance, subscription_id, resource_group_name, name, addons, enable=True,
+                             check_enabled=check_enabled,
+                             workspace_resource_id=workspace_resource_id,
+                             enable_msi_auth_for_monitoring=enable_msi_auth_for_monitoring, subnet_name=subnet_name,
+                             appgw_name=appgw_name, appgw_subnet_prefix=appgw_subnet_prefix,
+                             appgw_subnet_cidr=appgw_subnet_cidr, appgw_id=appgw_id, appgw_subnet_id=appgw_subnet_id,
+                             appgw_watch_namespace=appgw_watch_namespace,
+                             enable_sgxquotehelper=enable_sgxquotehelper,
+                             enable_secret_rotation=enable_secret_rotation, no_wait=no_wait)
 
     if CONST_MONITORING_ADDON_NAME in instance.addon_profiles and instance.addon_profiles[
-        CONST_MONITORING_ADDON_NAME].enabled:
+       CONST_MONITORING_ADDON_NAME].enabled:
         if CONST_MONITORING_USING_AAD_MSI_AUTH in instance.addon_profiles[CONST_MONITORING_ADDON_NAME].config and \
                 str(instance.addon_profiles[CONST_MONITORING_ADDON_NAME].config[
-                        CONST_MONITORING_USING_AAD_MSI_AUTH]).lower() == 'true':
+                    CONST_MONITORING_USING_AAD_MSI_AUTH]).lower() == 'true':
             if not msi_auth:
                 raise ArgumentUsageError(
                     "--enable-msi-auth-for-monitoring can not be used on clusters with service principal auth.")
             else:
                 # create a Data Collection Rule (DCR) and associate it with the cluster
                 ensure_container_insights_for_monitoring(cmd, instance.addon_profiles[CONST_MONITORING_ADDON_NAME],
-                                                          subscription_id, resource_group_name, name, instance.location,
-                                                          aad_route=True, create_dcr=True, create_dcra=True)
+                                                         subscription_id, resource_group_name, name, instance.location,
+                                                         aad_route=True, create_dcr=True, create_dcra=True)
         else:
             # monitoring addon will use legacy path
             ensure_container_insights_for_monitoring(cmd, instance.addon_profiles[CONST_MONITORING_ADDON_NAME],
-                                                      subscription_id, resource_group_name, name, instance.location,
-                                                      aad_route=False)
+                                                     subscription_id, resource_group_name, name, instance.location,
+                                                     aad_route=False)
 
     monitoring_addon_enabled = CONST_MONITORING_ADDON_NAME in instance.addon_profiles and instance.addon_profiles[
         CONST_MONITORING_ADDON_NAME].enabled
@@ -114,6 +116,7 @@ def enable_addons(cmd,
                              resource_group_name, name, instance)
     return result
 
+
 def update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                   instance,
                   subscription_id,
@@ -133,7 +136,7 @@ def update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                   appgw_watch_namespace=None,
                   enable_sgxquotehelper=False,
                   enable_secret_rotation=False,
-                  no_wait=False): # pylint: disable=unused-argument
+                  no_wait=False):  # pylint: disable=unused-argument
     # parse the comma-separated addons argument
     addon_args = addons.split(',')
 
@@ -171,9 +174,11 @@ def update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                         cmd,
                         subscription_id,
                         resource_group_name)
-                workspace_resource_id = sanitize_loganalytics_ws_resource_id(workspace_resource_id)
+                workspace_resource_id = sanitize_loganalytics_ws_resource_id(
+                    workspace_resource_id)
 
-                addon_profile.config = {logAnalyticsConstName: workspace_resource_id}
+                addon_profile.config = {
+                    logAnalyticsConstName: workspace_resource_id}
                 addon_profile.config[CONST_MONITORING_USING_AAD_MSI_AUTH] = enable_msi_auth_for_monitoring
             elif addon == (CONST_VIRTUAL_NODE_ADDON_NAME + os_type):
                 if addon_profile.enabled and check_enabled:
@@ -255,6 +260,7 @@ def update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
     instance.aad_profile = None
 
     return instance
+
 
 def ensure_default_log_analytics_workspace_for_monitoring(cmd, subscription_id, resource_group_name):
     # mapping for azure public cloud
@@ -393,8 +399,8 @@ def ensure_default_log_analytics_workspace_for_monitoring(cmd, subscription_id, 
         subscription_id, workspace_region_code)
 
     default_workspace_resource_id = '/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.OperationalInsights' \
-        '/workspaces/{2}'.format(subscription_id,
-                                 default_workspace_resource_group, default_workspace_name)
+                                    '/workspaces/{2}'.format(subscription_id,
+                                                             default_workspace_resource_group, default_workspace_name)
     resource_groups = cf_resource_groups(cmd.cli_ctx, subscription_id)
     resources = cf_resources(cmd.cli_ctx, subscription_id)
 
@@ -410,12 +416,16 @@ def ensure_default_log_analytics_workspace_for_monitoring(cmd, subscription_id, 
             if ex.status_code != 404:
                 raise ex
     else:
-        ResourceGroup = cmd.get_models('ResourceGroup', resource_type=ResourceType.MGMT_RESOURCE_RESOURCES)
+        ResourceGroup = cmd.get_models(
+            'ResourceGroup', resource_type=ResourceType.MGMT_RESOURCE_RESOURCES)
         resource_group = ResourceGroup(location=workspace_region)
-        resource_groups.create_or_update(default_workspace_resource_group, resource_group)
+        resource_groups.create_or_update(
+            default_workspace_resource_group, resource_group)
 
-    GenericResource = cmd.get_models('GenericResource', resource_type=ResourceType.MGMT_RESOURCE_RESOURCES)
-    generic_resource = GenericResource(location=workspace_region, properties={'sku': {'name': 'standalone'}})
+    GenericResource = cmd.get_models(
+        'GenericResource', resource_type=ResourceType.MGMT_RESOURCE_RESOURCES)
+    generic_resource = GenericResource(location=workspace_region, properties={
+                                       'sku': {'name': 'standalone'}})
 
     async_poller = resources.begin_create_or_update_by_id(default_workspace_resource_id, '2015-11-01-preview',
                                                           generic_resource)
@@ -429,6 +439,7 @@ def ensure_default_log_analytics_workspace_for_monitoring(cmd, subscription_id, 
 
     return ws_resource_id
 
+
 def sanitize_loganalytics_ws_resource_id(workspace_resource_id):
     workspace_resource_id = workspace_resource_id.strip()
     if not workspace_resource_id.startswith('/'):
@@ -439,15 +450,15 @@ def sanitize_loganalytics_ws_resource_id(workspace_resource_id):
 
 
 def ensure_container_insights_for_monitoring(cmd,
-                                              addon,
-                                              cluster_subscription,
-                                              cluster_resource_group_name,
-                                              cluster_name,
-                                              cluster_region,
-                                              remove_monitoring=False,
-                                              aad_route=False,
-                                              create_dcr=False,
-                                              create_dcra=False):
+                                             addon,
+                                             cluster_subscription,
+                                             cluster_resource_group_name,
+                                             cluster_name,
+                                             cluster_region,
+                                             remove_monitoring=False,
+                                             aad_route=False,
+                                             create_dcr=False,
+                                             create_dcra=False):
     """
     Either adds the ContainerInsights solution to a LA Workspace OR sets up a DCR (Data Collection Rule) and DCRA
     (Data Collection Rule Association). Both let the monitoring addon send data to a Log Analytics Workspace.
@@ -524,7 +535,8 @@ def ensure_container_insights_for_monitoring(cmd,
                 raise error
             json_response = json.loads(r.text)
             for region_data in json_response["value"]:
-                region_names_to_id[region_data["displayName"]] = region_data["name"]
+                region_names_to_id[region_data["displayName"]
+                                   ] = region_data["name"]
 
             # check if region supports DCRs and DCR-A
             for _ in range(3):
@@ -539,11 +551,15 @@ def ensure_container_insights_for_monitoring(cmd,
                 raise error
             json_response = json.loads(r.text)
             for resource in json_response["resourceTypes"]:
-                region_ids = map(lambda x: region_names_to_id[x], resource["locations"])  # map is lazy, so doing this for every region isn't slow
+                region_ids = map(lambda x: region_names_to_id[x],
+                                 resource["locations"])  # map is lazy, so doing this for every region isn't slow
                 if resource["resourceType"].lower() == "datacollectionrules" and location not in region_ids:
-                    raise ClientRequestError(f'Data Collection Rules are not supported for LA workspace region {location}')
-                elif resource["resourceType"].lower() == "datacollectionruleassociations" and cluster_region not in region_ids:
-                    raise ClientRequestError(f'Data Collection Rule Associations are not supported for cluster region {location}')
+                    raise ClientRequestError(
+                        f'Data Collection Rules are not supported for LA workspace region {location}')
+                elif resource[
+                        "resourceType"].lower() == "datacollectionruleassociations" and cluster_region not in region_ids:
+                    raise ClientRequestError(
+                        f'Data Collection Rule Associations are not supported for cluster region {location}')
 
             # create the DCR
             dcr_creation_body = json.dumps({"location": location,
@@ -605,7 +621,8 @@ def ensure_container_insights_for_monitoring(cmd,
             dcr_url = f"https://management.azure.com/{dcr_resource_id}?api-version=2019-11-01-preview"
             for _ in range(3):
                 try:
-                    send_raw_request(cmd.cli_ctx, "PUT", dcr_url, body=dcr_creation_body)
+                    send_raw_request(cmd.cli_ctx, "PUT",
+                                     dcr_url, body=dcr_creation_body)
                     error = None
                     break
                 except CLIError as e:
@@ -623,7 +640,8 @@ def ensure_container_insights_for_monitoring(cmd,
             association_url = f"https://management.azure.com/{cluster_resource_id}/providers/Microsoft.Insights/dataCollectionRuleAssociations/send-to-{workspace_name}?api-version=2019-11-01-preview"
             for _ in range(3):
                 try:
-                    send_raw_request(cmd.cli_ctx, "PUT" if not remove_monitoring else "DELETE", association_url, body=association_body)
+                    send_raw_request(cmd.cli_ctx, "PUT" if not remove_monitoring else "DELETE", association_url,
+                                     body=association_body)
                     error = None
                     break
                 except CLIError as e:
@@ -733,11 +751,13 @@ def _invoke_deployment(cmd, resource_group_name, deployment_name, template, para
         logger.info(json.dumps(template, indent=2))
         logger.info('==== END TEMPLATE ====')
 
-    Deployment = cmd.get_models('Deployment', resource_type=ResourceType.MGMT_RESOURCE_RESOURCES)
+    Deployment = cmd.get_models(
+        'Deployment', resource_type=ResourceType.MGMT_RESOURCE_RESOURCES)
     deployment = Deployment(properties=properties)
     if validate:
         if cmd.supported_api_version(min_api='2019-10-01', resource_type=ResourceType.MGMT_RESOURCE_RESOURCES):
-            validation_poller = smc.begin_validate(resource_group_name, deployment_name, deployment)
+            validation_poller = smc.begin_validate(
+                resource_group_name, deployment_name, deployment)
             return LongRunningOperation(cmd.cli_ctx)(validation_poller)
         else:
             return smc.validate(resource_group_name, deployment_name, deployment)
@@ -770,12 +790,13 @@ def add_monitoring_role_assignment(result, cluster_resource_id, cmd):
 
     if service_principal_msi_id is not None:
         if not add_role_assignment(cmd.cli_ctx, 'Monitoring Metrics Publisher',
-                                    service_principal_msi_id, is_service_principal, scope=cluster_resource_id):
+                                   service_principal_msi_id, is_service_principal, scope=cluster_resource_id):
             logger.warning('Could not create a role assignment for Monitoring addon. '
                            'Are you an Owner on this subscription?')
     else:
         logger.warning('Could not find service principal or user assigned MSI for role'
                        'assignment')
+
 
 def add_ingress_appgw_addon_role_assignment(result, cmd):
     service_principal_msi_id = None
@@ -808,14 +829,14 @@ def add_ingress_appgw_addon_role_assignment(result, cmd):
             appgw_group_id = resource_id(subscription=parsed_appgw_id["subscription"],
                                          resource_group=parsed_appgw_id["resource_group"])
             if not add_role_assignment(cmd.cli_ctx, 'Contributor',
-                                        service_principal_msi_id, is_service_principal, scope=appgw_group_id):
+                                       service_principal_msi_id, is_service_principal, scope=appgw_group_id):
                 logger.warning('Could not create a role assignment for application gateway: %s '
                                'specified in %s addon. '
                                'Are you an Owner on this subscription?', appgw_id, CONST_INGRESS_APPGW_ADDON_NAME)
         if CONST_INGRESS_APPGW_SUBNET_ID in config:
             subnet_id = config[CONST_INGRESS_APPGW_SUBNET_ID]
             if not add_role_assignment(cmd.cli_ctx, 'Network Contributor',
-                                        service_principal_msi_id, is_service_principal, scope=subnet_id):
+                                       service_principal_msi_id, is_service_principal, scope=subnet_id):
                 logger.warning('Could not create a role assignment for subnet: %s '
                                'specified in %s addon. '
                                'Are you an Owner on this subscription?', subnet_id, CONST_INGRESS_APPGW_ADDON_NAME)
@@ -829,10 +850,11 @@ def add_ingress_appgw_addon_role_assignment(result, cmd):
                                       type="virtualNetworks",
                                       name=parsed_subnet_vnet_id["name"])
                 if not add_role_assignment(cmd.cli_ctx, 'Contributor',
-                                            service_principal_msi_id, is_service_principal, scope=vnet_id):
+                                           service_principal_msi_id, is_service_principal, scope=vnet_id):
                     logger.warning('Could not create a role assignment for virtual network: %s '
                                    'specified in %s addon. '
                                    'Are you an Owner on this subscription?', vnet_id, CONST_INGRESS_APPGW_ADDON_NAME)
+
 
 def add_virtual_node_role_assignment(cmd, result, vnet_subnet_id):
     # Remove trailing "/subnets/<SUBNET_NAME>" to get the vnet id
@@ -865,7 +887,7 @@ def add_virtual_node_role_assignment(cmd, result, vnet_subnet_id):
 
     if service_principal_msi_id is not None:
         if not add_role_assignment(cmd.cli_ctx, 'Contributor',
-                                    service_principal_msi_id, is_service_principal, scope=vnet_id):
+                                   service_principal_msi_id, is_service_principal, scope=vnet_id):
             logger.warning('Could not create a role assignment for virtual node addon. '
                            'Are you an Owner on this subscription?')
     else:

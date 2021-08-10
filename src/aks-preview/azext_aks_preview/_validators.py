@@ -413,6 +413,7 @@ def _recognize_addons(addon_args):
             raise CLIError(
                 f"The addon \"{addon_arg}\" is not a recognized addon option. Did you mean {matches}? Possible options: {all_addons}")  # pylint:disable=line-too-long
 
+
 def validate_addon(namespace):
     if not hasattr(namespace, 'addon'):
         return
@@ -421,13 +422,13 @@ def validate_addon(namespace):
         raise CLIError("Please pick only 1 addon.")
     _recognize_addons([addon])
 
+
 def validate_addons(namespace):
     if not hasattr(namespace, 'addons'):
         return
     addons = namespace.addons
     addon_args = addons.split(',')
     _recognize_addons(addon_args)
-
 
 
 def validate_pod_identity_pod_labels(namespace):
