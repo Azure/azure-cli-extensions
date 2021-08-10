@@ -245,6 +245,39 @@ def load_arguments(self, _):
     with self.argument_context('aks addon show') as c:
         c.argument('addon', options_list=['--addon', '-a'], validator=validate_addon)
 
+    with self.argument_context('aks addon enable') as c:
+        c.argument('addon', options_list=['--addon', '-a'], validator=validate_addon)
+        c.argument('subnet_name', options_list=['--subnet-name', '-s'])
+        c.argument('enable_sgxquotehelper', action='store_true')
+        c.argument('osm_mesh_name', options_list=['--osm-mesh-name'])
+        c.argument('appgw_name', options_list=['--appgw-name'], arg_group='Application Gateway')
+        c.argument('appgw_subnet_prefix', options_list=['--appgw-subnet-prefix'], arg_group='Application Gateway', deprecate_info=c.deprecate(redirect='--appgw-subnet-cidr', hide=True))
+        c.argument('appgw_subnet_cidr', options_list=['--appgw-subnet-cidr'], arg_group='Application Gateway')
+        c.argument('appgw_id', options_list=['--appgw-id'], arg_group='Application Gateway')
+        c.argument('appgw_subnet_id', options_list=['--appgw-subnet-id'], arg_group='Application Gateway')
+        c.argument('appgw_watch_namespace', options_list=['--appgw-watch-namespace'], arg_group='Application Gateway')
+        c.argument('enable_secret_rotation', action='store_true')
+        c.argument('workspace_resource_id')
+        c.argument('enable_msi_auth_for_monitoring', arg_type=get_three_state_flag(), is_preview=True)
+
+    with self.argument_context('aks addon disable') as c:
+        c.argument('addon', options_list=['--addon', '-a'], validator=validate_addon)
+
+    with self.argument_context('aks addon update') as c:
+        c.argument('addon', options_list=['--addon', '-a'], validator=validate_addon)
+        c.argument('subnet_name', options_list=['--subnet-name', '-s'])
+        c.argument('enable_sgxquotehelper', action='store_true')
+        c.argument('osm_mesh_name', options_list=['--osm-mesh-name'])
+        c.argument('appgw_name', options_list=['--appgw-name'], arg_group='Application Gateway')
+        c.argument('appgw_subnet_prefix', options_list=['--appgw-subnet-prefix'], arg_group='Application Gateway', deprecate_info=c.deprecate(redirect='--appgw-subnet-cidr', hide=True))
+        c.argument('appgw_subnet_cidr', options_list=['--appgw-subnet-cidr'], arg_group='Application Gateway')
+        c.argument('appgw_id', options_list=['--appgw-id'], arg_group='Application Gateway')
+        c.argument('appgw_subnet_id', options_list=['--appgw-subnet-id'], arg_group='Application Gateway')
+        c.argument('appgw_watch_namespace', options_list=['--appgw-watch-namespace'], arg_group='Application Gateway')
+        c.argument('enable_secret_rotation', action='store_true')
+        c.argument('workspace_resource_id')
+        c.argument('enable_msi_auth_for_monitoring', arg_type=get_three_state_flag(), is_preview=True)
+
     with self.argument_context('aks disable-addons') as c:
         c.argument('addons', options_list=['--addons', '-a'], validator=validate_addons)
 

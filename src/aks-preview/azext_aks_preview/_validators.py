@@ -418,7 +418,7 @@ def validate_addon(namespace):
         return
     addon = namespace.addon
     if ',' in addon:
-        raise CLIError("Please pick only 1 addon to show.")
+        raise CLIError("Please pick only 1 addon.")
     _recognize_addons([addon])
 
 def validate_addons(namespace):
