@@ -14,11 +14,11 @@ Subgroups:
     ...           : ...
 
 Commands:
-    list               : List connections which connects to a webapp.
     list-support-type  : List webapp supported connection types.
+    list               : List connections which connects to a webapp.
     list-configuration : List source configurations for a webapp connection.
     delete             : Delete a webapp connection.
-    show               : Get the details of a webapp connection with keyvault.
+    show               : Get the details of a webapp connection.
     validate           : Validate a connection.
 ```
 
