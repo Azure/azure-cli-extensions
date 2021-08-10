@@ -142,7 +142,8 @@ Command
     az webapp connection update : Update a webapp connection.
 
 Arguments
-    --client-type               : The client type of the webapp.
+    --client-type               : The client type of the webapp.  Allowed values: Nodejs, django,
+                                  dotnet, dotnetCore, go, java, none, php, python, springCloudBinding.
     --connection-name --name -n : The name of the webapp connection.
     --id                        : The resource id of the connection. "--source-resource-group", "--
                                   webapp-name" and "--connection-name" are required if "--id" is not
@@ -190,7 +191,8 @@ Command
     az webapp connection create keyvault  : Create a webapp and keyvault connection.
 
 Arguments
-    --client-type               : The client type of the webapp.
+    --client-type               : The client type of the webapp.  Allowed values: Nodejs, django,
+                                  dotnet, dotnetCore, go, java, none, php, python, springCloudBinding.
     --connection-name --name -n : The name of the webapp connection.
     --keyvault-name             : The name of the keyvault.
     --no-wait                   : Do not wait for the long-running operation to finish.
