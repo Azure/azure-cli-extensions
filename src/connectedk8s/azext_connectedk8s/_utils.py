@@ -27,12 +27,12 @@ from knack.prompting import NoTTYException, prompt_y_n
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.util import send_raw_request
 from azure.cli.core import telemetry
+from azure.core.exceptions import ResourceNotFoundError
 from msrest.exceptions import AuthenticationError, HttpOperationError, TokenExpiredError
 from msrest.exceptions import ValidationError as MSRestValidationError
-from azure.core.exceptions import ResourceNotFoundError
 from msrestazure.azure_exceptions import CloudError
 from kubernetes.client.rest import ApiException
-from azext_connectedk8s._client_factory import _resource_client_factory
+from azext_connectedk8s._client_factory import _resource_client_factory, _resource_providers_client
 import azext_connectedk8s._constants as consts
 from kubernetes import client as kube_client
 from azure.cli.core.azclierror import CLIInternalError, ClientRequestError, ArgumentUsageError, ManualInterrupt, AzureResponseError, AzureInternalError, ValidationError
@@ -463,21 +463,6 @@ def validate_azure_management_reachability(subscription_id):
         logger.warning("Not able to reach azure management endpoints. Exception: " + str(ex))
 
 
-def check_provider_registrations(cli_ctx):
-    try:
-        rp_client = _resource_providers_client(cli_ctx)
-        cc_registration_state = rp_client.get(consts.Connected_Cluster_Provider_Namespace).registration_state
-        if cc_registration_state != "Registered":
-            telemetry.set_exception(exception="{} provider is not registered".format(consts.Connected_Cluster_Provider_Namespace), fault_type=consts.CC_Provider_Namespace_Not_Registered_Fault_Type,
-                                    summary="{} provider is not registered".format(consts.Connected_Cluster_Provider_Namespace))
-            raise ValidationError("{} provider is not registered. Please register it using 'az provider register -n 'Microsoft.Kubernetes' before running the connect command.".format(consts.Connected_Cluster_Provider_Namespace))
-        kc_registration_state = rp_client.get(consts.Kubernetes_Configuration_Provider_Namespace).registration_state
-        if kc_registration_state != "Registered":
-            logger.warning("{} provider is not registered".format(consts.Kubernetes_Configuration_Provider_Namespace))
-    except Exception as ex:
-        logger.warning("Couldn't check the required provider's registration status. Error: {}".format(str(ex)))
-
-
 # Returns a list of kubernetes pod objects in a given namespace. Object description at: https://github.com/kubernetes-client/python/blob/master/kubernetes/docs/V1PodList.md
 def get_pod_list(api_instance, namespace, label_selector="", field_selector=""):
     try:
@@ -510,6 +495,24 @@ def handle_logging_error(custom_logger, error_string):
         custom_logger.error(error_string)
     else:
         logger.debug(error_string)
+
+
+def check_provider_registrations(cli_ctx):
+    try:
+        rp_client = _resource_providers_client(cli_ctx)
+        cc_registration_state = rp_client.get(consts.Connected_Cluster_Provider_Namespace).registration_state
+        if cc_registration_state != "Registered":
+            telemetry.set_exception(exception="{} provider is not registered".format(consts.Connected_Cluster_Provider_Namespace), fault_type=consts.CC_Provider_Namespace_Not_Registered_Fault_Type,
+                                    summary="{} provider is not registered".format(consts.Connected_Cluster_Provider_Namespace))
+            raise ValidationError("{} provider is not registered. Please register it using 'az provider register -n 'Microsoft.Kubernetes' before running the connect command.".format(consts.Connected_Cluster_Provider_Namespace))
+        kc_registration_state = rp_client.get(consts.Kubernetes_Configuration_Provider_Namespace).registration_state
+        if kc_registration_state != "Registered":
+            telemetry.set_user_fault()
+            logger.warning("{} provider is not registered".format(consts.Kubernetes_Configuration_Provider_Namespace))
+    except ValidationError as e:
+        raise e
+    except Exception as ex:
+        logger.warning("Couldn't check the required provider's registration status. Error: {}".format(str(ex)))
 
 
 def can_create_clusterrolebindings(configuration):

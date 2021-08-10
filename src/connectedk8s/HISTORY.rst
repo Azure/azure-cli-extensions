@@ -3,6 +3,13 @@
 Release History
 ===============
 
+
+1.1.7
+++++++
+* Add non-existing namespace deploy check
+* Improve some error and warning experiences
+
+
 1.1.6
 ++++++
 * Moved to track2 SDK

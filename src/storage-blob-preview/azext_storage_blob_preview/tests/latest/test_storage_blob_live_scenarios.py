@@ -80,7 +80,7 @@ class StorageBlobUploadLiveTests(LiveScenarioTest):
             client._config.max_single_put_size = 5000 * 1024 * 1024
 
         if fix_block_size:
-            import mock
+            from unittest import mock
             with mock.patch('azext_storage_blob_preview.operations.blob._adjust_block_blob_size',
                             side_effect=fix_block_blob_size):
                 self.cmd('storage blob upload -c {} -f "{}" -n {} --type {} --timeout 1200'

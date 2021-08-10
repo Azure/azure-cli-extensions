@@ -127,7 +127,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
 
     crb_permission = utils.can_create_clusterrolebindings(configuration)
     if not crb_permission:
-        telemetry.set_exception(exception="Your credentials doesn't have permission to create clusterrolebindings on this kubernetes cluster.", fault_type=consts.Cant_Create_ClusterRoleBindings_Fault_Type,
+        telemetry.set_exception(exception="Your credentials doesn't have permission to create clusterrolebindings on this kubernetes cluster.", fault_type=consts.Cannot_Create_ClusterRoleBindings_Fault_Type,
                                 summary="Your credentials doesn't have permission to create clusterrolebindings on this kubernetes cluster.")
         raise ValidationError("Your credentials doesn't have permission to create clusterrolebindings on this kubernetes cluster. Please check your permissions.")
 
@@ -211,6 +211,36 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
                                      "in the resource group {} ".format(resource_group_name) +
                                      "and corresponds to a different Kubernetes cluster.", recommendation="To onboard this Kubernetes cluster " +
                                      "to Azure, specify different resource name or resource group name.")
+
+    try:
+        k8s_contexts = config.list_kube_config_contexts()  # returns tuple of (all_contexts, current_context)
+        if kube_context:  # if custom kube-context is specified
+            if k8s_contexts[1].get('name') == kube_context:
+                current_k8s_context = k8s_contexts[1]
+            else:
+                for context in k8s_contexts[0]:
+                    if context.get('name') == kube_context:
+                        current_k8s_context = context
+                        break
+        else:
+            current_k8s_context = k8s_contexts[1]
+
+        current_k8s_namespace = current_k8s_context.get('context').get('namespace', "default")  # Take "default" namespace, if not specified in the kube-config
+        namespace_exists = False
+        k8s_v1 = kube_client.CoreV1Api()
+        k8s_ns = k8s_v1.list_namespace()
+        for ns in k8s_ns.items:
+            if ns.metadata.name == current_k8s_namespace:
+                namespace_exists = True
+                break
+        if namespace_exists is False:
+            telemetry.set_exception(exception="Namespace doesn't exist", fault_type=consts.Default_Namespace_Does_Not_Exist_Fault_Type,
+                                    summary="The default namespace defined in the kubeconfig doesn't exist on the kubernetes cluster.")
+            raise ValidationError("The default namespace '{}' defined in the kubeconfig doesn't exist on the kubernetes cluster.".format(current_k8s_namespace))
+    except ValidationError as e:
+        raise e
+    except Exception as e:
+        logger.warning("Failed to validate if the active namespace exists on the kubernetes cluster. Exception: {}".format(str(e)))
 
     # Resource group Creation
     if resource_group_exists(cmd.cli_ctx, resource_group_name, subscription_id) is False:
