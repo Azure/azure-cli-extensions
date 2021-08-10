@@ -1,7 +1,6 @@
 # Service Connector Command Interface
 
-## az {source} connect -h
-```az webapp connect -h```
+## az {source} connect
 ```
 Group
     az webapp connect: Manage webapp connections.
