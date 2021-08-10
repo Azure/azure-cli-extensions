@@ -382,7 +382,7 @@ def delete_role_assignments(cli_ctx, ids=None, assignee=None, role=None, resourc
             return
 
     scope = build_role_scope(resource_group_name, scope,
-                              assignments_client.config.subscription_id)
+                             assignments_client.config.subscription_id)
     assignments = _search_role_assignments(cli_ctx, assignments_client, definitions_client,
                                            scope, assignee, role, include_inherited,
                                            include_groups=False)
@@ -972,7 +972,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
             else:
                 identity_client_id = service_principal_profile.client_id
             if not add_role_assignment(cmd.cli_ctx, 'Network Contributor',
-                                        identity_client_id, scope=scope):
+                                       identity_client_id, scope=scope):
                 logger.warning('Could not create a role assignment for subnet. '
                                'Are you an Owner on this subscription?')
 
@@ -1047,10 +1047,10 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         if enable_msi_auth_for_monitoring and not enable_managed_identity:
             raise ArgumentUsageError("--enable-msi-auth-for-monitoring can not be used on clusters with service principal auth.")
         ensure_container_insights_for_monitoring(cmd,
-                                                  addon_profiles[CONST_MONITORING_ADDON_NAME], subscription_id,
-                                                  resource_group_name, name, location,
-                                                  aad_route=enable_msi_auth_for_monitoring, create_dcr=True,
-                                                  create_dcra=False)
+                                                 addon_profiles[CONST_MONITORING_ADDON_NAME], subscription_id,
+                                                 resource_group_name, name, location,
+                                                 aad_route=enable_msi_auth_for_monitoring, create_dcr=True,
+                                                 create_dcra=False)
 
     # addon is in the list and is enabled
     ingress_appgw_addon_enabled = CONST_INGRESS_APPGW_ADDON_NAME in addon_profiles and \
@@ -1251,10 +1251,10 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
             if monitoring and enable_msi_auth_for_monitoring:
                 # Create the DCR Association here
                 ensure_container_insights_for_monitoring(cmd,
-                                                          addon_profiles[CONST_MONITORING_ADDON_NAME], subscription_id,
-                                                          resource_group_name, name, location,
-                                                          aad_route=enable_msi_auth_for_monitoring, create_dcr=False,
-                                                          create_dcra=True)
+                                                         addon_profiles[CONST_MONITORING_ADDON_NAME], subscription_id,
+                                                         resource_group_name, name, location,
+                                                         aad_route=enable_msi_auth_for_monitoring, create_dcr=False,
+                                                         create_dcra=True)
 
             return created_cluster
         except CloudError as ex:
@@ -2297,9 +2297,9 @@ def _ensure_aks_acr_role_assignment(cli_ctx,
         return
 
     if not add_role_assignment(cli_ctx,
-                                'acrpull',
-                                client_id,
-                                scope=registry_id):
+                               'acrpull',
+                               client_id,
+                               scope=registry_id):
         raise CLIError('Could not create a role assignment for ACR. '
                        'Are you an Owner on this subscription?')
     return
@@ -3280,8 +3280,8 @@ def _put_managed_cluster_ensuring_permission(
             add_virtual_node_role_assignment(cmd, cluster, vnet_subnet_id)
         if need_grant_vnet_permission_to_cluster_identity:
             if not create_role_assignment(cmd.cli_ctx, 'Network Contributor',
-                                           cluster.identity.principal_id, scope=vnet_subnet_id,
-                                           resolve_assignee=False):
+                                          cluster.identity.principal_id, scope=vnet_subnet_id,
+                                          resolve_assignee=False):
                 logger.warning('Could not create a role assignment for subnet. '
                                'Are you an Owner on this subscription?')
 
@@ -3518,7 +3518,7 @@ def _ensure_managed_identity_operator_permission(cli_ctx, instance, scope):
         return
 
     if not add_role_assignment(cli_ctx, CONST_MANAGED_IDENTITY_OPERATOR_ROLE, cluster_identity_object_id,
-                                is_service_principal=False, scope=scope):
+                               is_service_principal=False, scope=scope):
         raise CLIError(
             'Could not grant Managed Identity Operator permission for cluster')
 
@@ -3691,7 +3691,7 @@ def _ensure_cluster_identity_permission_on_kubelet_identity(cli_ctx, cluster_ide
         return
 
     if not add_role_assignment(cli_ctx, CONST_MANAGED_IDENTITY_OPERATOR_ROLE, cluster_identity_object_id,
-                                is_service_principal=False, scope=scope):
+                               is_service_principal=False, scope=scope):
         raise CLIError('Could not grant Managed Identity Operator permission to cluster identity at scope {}'.format(scope))
 
 
