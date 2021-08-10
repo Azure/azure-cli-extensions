@@ -9,7 +9,7 @@
 # --------------------------------------------------------------------------
 
 import jwt
-import mock
+from unittest import mock
 import os
 import azure.cli.command_modules.role.custom
 from azure.cli.testsdk import ScenarioTest

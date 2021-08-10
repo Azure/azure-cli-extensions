@@ -10,21 +10,6 @@ from jmespath import compile as compile_jmes, Options
 from jmespath import functions
 
 
-def aks_run_command_result_format(cmdResult):
-    result = OrderedDict()
-    if cmdResult['provisioningState'] == "Succeeded":
-        result['exit code'] = cmdResult['exitCode']
-        result['logs'] = cmdResult['logs']
-        return result
-    if cmdResult['provisioningState'] == "Failed":
-        result['provisioning state'] = cmdResult['provisioningState']
-        result['reason'] = cmdResult['reason']
-        return result
-    result['provisioning state'] = cmdResult['provisioningState']
-    result['started At'] = cmdResult['startedAt']
-    return result
-
-
 def aks_addon_list_available_table_format(result):
     def parser(entry):
         parsed = compile_jmes("""{

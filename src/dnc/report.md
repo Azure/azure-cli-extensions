@@ -10,7 +10,6 @@
 |CLI Command Group|Group Swagger name|Commands|
 |---------|------------|--------|
 |az dnc controller|Controller|[commands](#CommandsInController)|
-|az dnc delegated-network|DelegatedNetwork|[commands](#CommandsInDelegatedNetwork)|
 |az dnc orchestrator-instance-service|OrchestratorInstanceService|[commands](#CommandsInOrchestratorInstanceService)|
 |az dnc delegated-subnet-service|DelegatedSubnetService|[commands](#CommandsInDelegatedSubnetService)|
 
@@ -22,17 +21,9 @@
 |[az dnc controller create](#ControllerCreate)|Create|[Parameters](#ParametersControllerCreate)|[Example](#ExamplesControllerCreate)|
 |[az dnc controller delete](#ControllerDelete)|Delete|[Parameters](#ParametersControllerDelete)|[Example](#ExamplesControllerDelete)|
 
-### <a name="CommandsInDelegatedNetwork">Commands in `az dnc delegated-network` group</a>
-|CLI Command|Operation Swagger name|Parameters|Examples|
-|---------|------------|--------|-----------|
-|[az dnc delegated-network list](#DelegatedNetworkListByResourceGroup)|ListByResourceGroup|[Parameters](#ParametersDelegatedNetworkListByResourceGroup)|[Example](#ExamplesDelegatedNetworkListByResourceGroup)|
-|[az dnc delegated-network list](#DelegatedNetworkListBySubscription)|ListBySubscription|[Parameters](#ParametersDelegatedNetworkListBySubscription)|[Example](#ExamplesDelegatedNetworkListBySubscription)|
-
 ### <a name="CommandsInDelegatedSubnetService">Commands in `az dnc delegated-subnet-service` group</a>
 |CLI Command|Operation Swagger name|Parameters|Examples|
 |---------|------------|--------|-----------|
-|[az dnc delegated-subnet-service list](#DelegatedSubnetServiceListByResourceGroup)|ListByResourceGroup|[Parameters](#ParametersDelegatedSubnetServiceListByResourceGroup)|[Example](#ExamplesDelegatedSubnetServiceListByResourceGroup)|
-|[az dnc delegated-subnet-service list](#DelegatedSubnetServiceListBySubscription)|ListBySubscription|[Parameters](#ParametersDelegatedSubnetServiceListBySubscription)|[Example](#ExamplesDelegatedSubnetServiceListBySubscription)|
 |[az dnc delegated-subnet-service show](#DelegatedSubnetServiceGetDetails)|GetDetails|[Parameters](#ParametersDelegatedSubnetServiceGetDetails)|[Example](#ExamplesDelegatedSubnetServiceGetDetails)|
 |[az dnc delegated-subnet-service create](#DelegatedSubnetServicePutDetails)|PutDetails|[Parameters](#ParametersDelegatedSubnetServicePutDetails)|[Example](#ExamplesDelegatedSubnetServicePutDetails)|
 |[az dnc delegated-subnet-service delete](#DelegatedSubnetServiceDeleteDetails)|DeleteDetails|[Parameters](#ParametersDelegatedSubnetServiceDeleteDetails)|[Example](#ExamplesDelegatedSubnetServiceDeleteDetails)|
@@ -40,8 +31,6 @@
 ### <a name="CommandsInOrchestratorInstanceService">Commands in `az dnc orchestrator-instance-service` group</a>
 |CLI Command|Operation Swagger name|Parameters|Examples|
 |---------|------------|--------|-----------|
-|[az dnc orchestrator-instance-service list](#OrchestratorInstanceServiceListByResourceGroup)|ListByResourceGroup|[Parameters](#ParametersOrchestratorInstanceServiceListByResourceGroup)|[Example](#ExamplesOrchestratorInstanceServiceListByResourceGroup)|
-|[az dnc orchestrator-instance-service list](#OrchestratorInstanceServiceListBySubscription)|ListBySubscription|[Parameters](#ParametersOrchestratorInstanceServiceListBySubscription)|[Example](#ExamplesOrchestratorInstanceServiceListBySubscription)|
 |[az dnc orchestrator-instance-service show](#OrchestratorInstanceServiceGetDetails)|GetDetails|[Parameters](#ParametersOrchestratorInstanceServiceGetDetails)|[Example](#ExamplesOrchestratorInstanceServiceGetDetails)|
 |[az dnc orchestrator-instance-service create](#OrchestratorInstanceServiceCreate)|Create|[Parameters](#ParametersOrchestratorInstanceServiceCreate)|[Example](#ExamplesOrchestratorInstanceServiceCreate)|
 |[az dnc orchestrator-instance-service delete](#OrchestratorInstanceServiceDelete)|Delete|[Parameters](#ParametersOrchestratorInstanceServiceDelete)|[Example](#ExamplesOrchestratorInstanceServiceDelete)|
@@ -88,48 +77,7 @@ az dnc controller delete --resource-group "TestRG" --resource-name "testcontroll
 |**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--resource-name**|string|The name of the resource. It must be a minimum of 3 characters, and a maximum of 63.|resource_name|resourceName|
 
-### group `az dnc delegated-network`
-#### <a name="DelegatedNetworkListByResourceGroup">Command `az dnc delegated-network list`</a>
-
-##### <a name="ExamplesDelegatedNetworkListByResourceGroup">Example</a>
-```
-az dnc delegated-network list --resource-group "testRG"
-```
-##### <a name="ParametersDelegatedNetworkListByResourceGroup">Parameters</a> 
-|Option|Type|Description|Path (SDK)|Swagger name|
-|------|----|-----------|----------|------------|
-|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
-
-#### <a name="DelegatedNetworkListBySubscription">Command `az dnc delegated-network list`</a>
-
-##### <a name="ExamplesDelegatedNetworkListBySubscription">Example</a>
-```
-az dnc delegated-network list
-```
-##### <a name="ParametersDelegatedNetworkListBySubscription">Parameters</a> 
-|Option|Type|Description|Path (SDK)|Swagger name|
-|------|----|-----------|----------|------------|
 ### group `az dnc delegated-subnet-service`
-#### <a name="DelegatedSubnetServiceListByResourceGroup">Command `az dnc delegated-subnet-service list`</a>
-
-##### <a name="ExamplesDelegatedSubnetServiceListByResourceGroup">Example</a>
-```
-az dnc delegated-subnet-service list --resource-group "testRG"
-```
-##### <a name="ParametersDelegatedSubnetServiceListByResourceGroup">Parameters</a> 
-|Option|Type|Description|Path (SDK)|Swagger name|
-|------|----|-----------|----------|------------|
-|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
-
-#### <a name="DelegatedSubnetServiceListBySubscription">Command `az dnc delegated-subnet-service list`</a>
-
-##### <a name="ExamplesDelegatedSubnetServiceListBySubscription">Example</a>
-```
-az dnc delegated-subnet-service list
-```
-##### <a name="ParametersDelegatedSubnetServiceListBySubscription">Parameters</a> 
-|Option|Type|Description|Path (SDK)|Swagger name|
-|------|----|-----------|----------|------------|
 #### <a name="DelegatedSubnetServiceGetDetails">Command `az dnc delegated-subnet-service show`</a>
 
 ##### <a name="ExamplesDelegatedSubnetServiceGetDetails">Example</a>
@@ -175,26 +123,6 @@ az dnc delegated-subnet-service delete --resource-group "TestRG" --resource-name
 |**--force-delete**|boolean|Force delete resource|force_delete|forceDelete|
 
 ### group `az dnc orchestrator-instance-service`
-#### <a name="OrchestratorInstanceServiceListByResourceGroup">Command `az dnc orchestrator-instance-service list`</a>
-
-##### <a name="ExamplesOrchestratorInstanceServiceListByResourceGroup">Example</a>
-```
-az dnc orchestrator-instance-service list --resource-group "testRG"
-```
-##### <a name="ParametersOrchestratorInstanceServiceListByResourceGroup">Parameters</a> 
-|Option|Type|Description|Path (SDK)|Swagger name|
-|------|----|-----------|----------|------------|
-|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
-
-#### <a name="OrchestratorInstanceServiceListBySubscription">Command `az dnc orchestrator-instance-service list`</a>
-
-##### <a name="ExamplesOrchestratorInstanceServiceListBySubscription">Example</a>
-```
-az dnc orchestrator-instance-service list
-```
-##### <a name="ParametersOrchestratorInstanceServiceListBySubscription">Parameters</a> 
-|Option|Type|Description|Path (SDK)|Swagger name|
-|------|----|-----------|----------|------------|
 #### <a name="OrchestratorInstanceServiceGetDetails">Command `az dnc orchestrator-instance-service show`</a>
 
 ##### <a name="ExamplesOrchestratorInstanceServiceGetDetails">Example</a>
