@@ -3,6 +3,16 @@
 Release History
 ===============
 
+0.5.26
++++++
+* Add support for new addon commands
+  * `az aks addon list`
+  * `az aks addon list-available`
+  * `az aks addon show`
+  * `az aks addon enable`
+  * `az aks addon disable`
+  * `az aks addon update`
+
 0.5.25
 +++++
 * Add support for http proxy
