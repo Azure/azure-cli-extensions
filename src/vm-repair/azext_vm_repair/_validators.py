@@ -8,6 +8,7 @@ from json import loads
 from re import match, search, findall
 from knack.log import get_logger
 from knack.util import CLIError
+from azure.cli.core.azclierror import ValidationError
 
 from azure.cli.command_modules.vm.custom import get_vm, _is_linux_os
 from azure.cli.command_modules.resource._client_factory import _resource_client_factory
@@ -213,7 +214,7 @@ def _prompt_public_ip(namespace):
             namespace.associate_public_ip = '""'
 
     except NoTTYException:
-        raise CLIError('Please specify the associate-public-ip parameter in non-interactive mode.')
+        raise ValidationError('Please specify the associate-public-ip parameter in non-interactive mode.')
 
 
 def _classic_vm_exists(cmd, resource_group_name, vm_name):
