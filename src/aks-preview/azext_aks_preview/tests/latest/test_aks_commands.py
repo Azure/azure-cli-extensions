@@ -51,7 +51,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # race conditions caused by concurrent reading and writing/creating of the same file.
         acs_base_dir = os.getenv("ACS_BASE_DIR", None)
         if acs_base_dir:
-            pre_generated_ssh_key_path = os.path.join(acs_base_dir, "tests/latest/data/.ssh")
+            pre_generated_ssh_key_path = os.path.join(acs_base_dir, "tests/latest/data/.ssh/id_rsa.pub")
             if os.path.exists(pre_generated_ssh_key_path):
                 return pre_generated_ssh_key_path.replace('\\', '\\\\')
 
