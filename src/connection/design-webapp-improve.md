@@ -1,37 +1,32 @@
 # Service Connector Command Interface
 
-## az {source} connect
+## az {source} connection
 ```
 Group
-    az webapp connect: Manage webapp connections.
+    az webapp connection: Manage webapp connections.
 
 Subgroups:
-    keyvault      : Manage webapp connections with keyvault.
-    storage-blob  : Manage webapp connections with storage-blob.
-    storage-file  : Manage webapp connections with storage-file.
-    storage-queue : Manage webapp connections with storage-queue.
-    storage-table : Manage webapp connections with storage-table.
-    ...           : ...
+    create             : Create a webapp connection.
 
 Commands:
-    list-support-type  : List webapp supported connection types.
-    list               : List connections which connects to a webapp.
-    list-configuration : List source configurations for a webapp connection.
     delete             : Delete a webapp connection.
+    list               : List connections which connects to a webapp.
+    list-configuration : List source configurations of a webapp connection.
     show               : Get the details of a webapp connection.
-    validate           : Validate a connection.
+    update             : Update a webapp connection.
+    validate           : Validate a webapp connection.
 ```
 
-## az {source} connect list-support-type
+## az {source} connection list-support-type
 ```
 Command
-    az webapp connect list-support-type : List webapp supported connection types.
+    az webapp connection list-support-type : List webapp supported connection types.
 
 Arguments
     --target
 
 Examples:
-    az webapp connect list-support-type --target keyvault -o table
+    az webapp connection list-support-type --target keyvault -o table
 
     ====================sample output===================
         Target              AuthType
@@ -43,153 +38,195 @@ Examples:
 ```
 
 
-## az {source} connect list
+## az {source} connection list
 ```
 Command
-    az webapp connect list  :   List webapp connections.
+    az webapp connection list  :   List webapp connections.
  
 Arguments
-    --source-resource-group :   The resource group which contains the webapp.
-    --webapp-name           :   The name of the webapp.
-    --source-id             :   The resource id of the webapp.
+    --source-id                     : The resource id of a webapp. "--source-resource-group" and "--
+                                      webapp-name" are required if "--source-id" is not specified.
+    --source-resource-group -sg     : The resource group which contains the webapp.
+    --webapp-name                   : The name of the webapp.
 
 Examples:
-    az webapp connect list --source-id <XX>
-    az webapp connect list --source-resource-group <XX> --webapp-name <XX> 
+    az webapp connection list --source-id <XX>
+    az webapp connection list --source-resource-group <XX> --webapp-name <XX> 
 ```
 
 
-## az {source} connect delete
+## az {source} connection delete
 
 ```
 Command
-    az webapp connect delete  : Delete a webapp connection.
+    az webapp connection delete  : Delete a webapp connection.
 
 Arguments
-    --source-resource-group         :   The resource group which contains the webapp.
-    --webapp-name                   :   The name of the webapp.
-    --source-id                     :   The resource id of the webapp.
-    --connection-name   [Required]  :   The connection name.
+    --connection-name --name -n : The name of the webapp connection.
+    --id                        : The resource id of the connection. "--source-resource-group", "--
+                                  webapp-name" and "--connection-name" are required if "--id" is not
+                                  specified.
+    --source-resource-group -sg : The resource group which contains the webapp.
+    --webapp-name               : The name of the webapp.
 
 Examples:
-    az webapp connect delete --source-id <XX> --connection-name <XX>
-    az webapp connect delete --webapp-name <XX> --source-resource-group <XX> --connection-name <XX>
+    az webapp connection delete --id <XX>
+    az webapp connection delete --webapp-name <XX> --source-resource-group <XX> --connection-name <XX>
 ```
 
 
-## az {source} connect show
+## az {source} connection show
 
 ```
 Command
-    az webapp connect show  : Get the details of a webapp connection.
+    az webapp connection show  : Get the details of a webapp connection.
 
 Arguments
-    --source-resource-group         :   The resource group which contains the webapp.
-    --webapp-name                   :   The name of the webapp.
-    --source-id                     :   The resource id of the webapp.
-    --connection-name   [Required]  :   The connection name.
+    --connection-name --name -n : The name of the webapp connection.
+    --id                        : The resource id of the connection. "--source-resource-group", "--
+                                  webapp-name" and "--connection-name" are required if "--id" is not
+                                  specified.
+    --source-resource-group -sg : The resource group which contains the webapp.
+    --webapp-name               : The name of the webapp.
 
 Examples:
-    az webapp connect show --source-id <XX> --connection-name <XX>
-    az webapp connect show --webapp-name <XX> --source-resource-group <XX> --connection-name <XX>
+    az webapp connection show --id <XX>
+    az webapp connection show --webapp-name <XX> --source-resource-group <XX> --connection-name <XX>
 ```
 
 
-## az {source} connect list-configuration
+## az {source} connection list-configuration
 
 ```
 Command
-    az webapp connect list-configuration  : List the source configurations of a webapp connection.
+    az webapp connection list-configuration  : List the source configurations of a webapp connection.
 
 Arguments
-    --source-resource-group         :   The resource group which contains the webapp.
-    --webapp-name                   :   The name of the webapp.
-    --source-id                     :   The resource id of the webapp.
-    --connection-name   [Required]  :   The connection name.
+    --connection-name --name -n : The name of the webapp connection.
+    --id                        : The resource id of the connection. "--source-resource-group", "--
+                                  webapp-name" and "--connection-name" are required if "--id" is not
+                                  specified.
+    --source-resource-group -sg : The resource group which contains the webapp.
+    --webapp-name               : The name of the webapp.
 
 Examples:
-    az webapp connect list-configuration \
-        --source-id <XX> --connection-name <XX>
-    az webapp connect list-configuration \
+    az webapp connection list-configuration --id <XX>
+    az webapp connection list-configuration \
         --webapp-name <XX> --source-resource-group <XX> --connection-name <XX>
 ```
 
 
-## az {source} connect validate
+## az {source} connection validate
 
 ```
 Command
-    az webapp connect list-configuration  : List the source configurations of a webapp connection.
+    az webapp connection list-configuration  : List the source configurations of a webapp connection.
 
 Arguments
-    --source-resource-group         :   The resource group which contains the webapp.
-    --webapp-name                   :   The name of the webapp.
-    --source-id                     :   The resource id of the webapp.
-    --connection-name   [Required]  :   The connection name.
+    --connection-name --name -n : The name of the webapp connection.
+    --id                        : The resource id of the connection. "--source-resource-group", "--
+                                  webapp-name" and "--connection-name" are required if "--id" is not
+                                  specified.
+    --source-resource-group -sg : The resource group which contains the webapp.
+    --webapp-name               : The name of the webapp.
 
 Examples:
-    az webapp connect validate --source-id <XX> --connection-name <XX>
-    az webapp connect validate --webapp-name <XX> --source-resource-group <XX> --connection-name <XX>
+    az webapp connection validate --id <XX>
+    az webapp connection validate --webapp-name <XX> --source-resource-group <XX> --connection-name <XX>
 ```
 
-## az {source} connect {target}
-```
-Group
-    az webapp connect keyvault : Manage webapp connections with keyvault.
 
-Commands:
-    create  : Create a webapp connection with keyvault.
-    update  : Update an existing connection.
-```
-
-## az {source} connect {target} create/update
+## az {source} connection update
 ```
 Command
-    az webapp connect keyvault create  : Create a webapp and keyvault connection.
-
+    az webapp connection update : Update a webapp connection.
 
 Arguments
-    --source-resource-group         :   The resource group which contains the webapp.
-    --webapp-name                   :   The name of the webapp.
-    --source-id                     :   The resource id of the webapp.
-    --connection-name   [Required]  :   The connection name.
-    --client-type                   :   The client type of the webapp.
+    --client-type               : The client type of the webapp.
+    --connection-name --name -n : The name of the webapp connection.
+    --id                        : The resource id of the connection. "--source-resource-group", "--
+                                  webapp-name" and "--connection-name" are required if "--id" is not
+                                  specified.
+    --no-wait                   : Do not wait for the long-running operation to finish.
+    --source-resource-group -sg : The resource group which contains the webapp.
+    --webapp-name               : The name of the webapp.
 
-
-Target Resource Arguments
-    --target-resource-group     :   The resource group which contains the target resource.
-    --keyvault-name:            :   The name of the keyvault.
-    --target-id                 :   The resource id of the keyvault.
-
-
-Auth Type Arguments
-    --secret
+AuthType Arguments
+    --secret                    : The secret auth info.
         Usage: --secret name=XX secret=XX
 
-        name        :   The user name of an account.
-        secret      :   The secret of the account.
-    
-    --service-principal
-        Usage: --service-principal id=XX secret=XX
+        name    : Username or account name for secret auth.
+        secret  : Password or account key for secret auth.
+    --service-principal         : The service principal auth info.
+        Usage: --service-principal id=XX name=XX
 
-        id          :   Service principal name, or object id. (refer `az ad sp show`)
-        secret      :   The service principal secret.
-        certificate :   The service principal certificate.
-
-    --user-assigned-identity
+        id      : Required. Client Id fo the service principal.
+        name    : Required. Name of the service principal.
+    --system-assigned-identity  : The system assigned identity auth info.
+        Usage: --system-assigned-identity.
+    --user-assigned-identity    : The user assigned identity auth info.
         Usage: --user-assigned-identity id=XX
 
-        id          :   The client id of a user assigned managed identity.
+        id      : Required. Client Id of the user assigned managed identity.
+```
 
-    --system-assigned-identity
+## az {source} connection create
+```
+Group
+    az webapp connection create : Create a webapp connection.
+
+Commands:
+    keyvault      : Create a webapp connection with keyvault.
+    storage-blob  : Create a webapp connection with storage-blob.
+    storage-file  : Create a webapp connection with storage-file.
+    storage-queue : Create a webapp connection with storage-queue.
+    storage-table : Create a webapp connection with storage-table.
+    ...           : ...
+```
+
+## az {source} connection {target} create
+```
+Command
+    az webapp connection create keyvault  : Create a webapp and keyvault connection.
+
+Arguments
+    --client-type               : The client type of the webapp.
+    --connection-name --name -n : The name of the webapp connection.
+    --keyvault-name             : The name of the keyvault.
+    --no-wait                   : Do not wait for the long-running operation to finish.
+    --source-id                 : The resource id of a webapp. "--source-resource-group" and "--
+                                  webapp-name" are required if "--source-id" is not specified.
+    --source-resource-group -sg : The resource group which contains the webapp.
+    --target-id                 : The resource id of the keyvault. "--target-resource-group" and "--
+                                  keyvault-name" are required if "--target-id" is not specified.
+    --target-resource-group -tg : The resource group name of the target resource.
+    --webapp-name               : The name of the webapp.
+
+AuthType Arguments
+    --secret                    : The secret auth info.
+        Usage: --secret name=XX secret=XX
+
+        name    : Username or account name for secret auth.
+        secret  : Password or account key for secret auth.
+    --service-principal         : The service principal auth info.
+        Usage: --service-principal id=XX name=XX
+
+        id      : Required. Client Id fo the service principal.
+        name    : Required. Name of the service principal.
+    --system-assigned-identity  : The system assigned identity auth info.
+        Usage: --system-assigned-identity.
+    --user-assigned-identity    : The user assigned identity auth info.
+        Usage: --user-assigned-identity id=XX
+
+        id      : Required. Client Id of the user assigned managed identity.
 
 
 Examples:
     Create a webapp and keyvault connection with default auth type.
-        az webapp connect keyvault create --connection-name <XX> --source-id <XX> --target-id <XX>
+        az webapp connection create keyvault --connection-name <XX> --source-id <XX> --target-id <XX>
         
     Create a webapp and keyvault connection with service principal.
-        az webapp connect keyvault create \
+        az webapp connection create keyvault \
             --source-resource-group <XX> --connection-name <XX> --client-type <XX> \
             --target-resource-group=<XX> --keyvault-name=<XX> \
             --service-principal id=<XX> secret=<XX>
