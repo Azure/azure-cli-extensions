@@ -239,7 +239,7 @@ def load_arguments(self, _):
 
     with self.argument_context('spring-cloud certificate') as c:
         c.argument('service', service_name_type)
-        c.argument('name', name_type, help='Name of certificate.')
+        c.argument('name', help='Name of certificate.')
 
     with self.argument_context('spring-cloud certificate add') as c:
         c.argument('vault_uri', help='The key vault uri where store the certificate')

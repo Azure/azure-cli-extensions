@@ -317,6 +317,9 @@ helps['aks create'] = """
         - name: --linux-os-config
           type: string
           short-summary: OS configurations for Linux agent nodes.
+        - name: --http-proxy-config
+          type: string
+          short-summary: Http Proxy configuration for this cluster.
         - name: --enable-pod-identity
           type: bool
           short-summary: (PREVIEW) Enable pod identity addon.
@@ -664,32 +667,6 @@ helps['aks kanalyze'] = """
     short-summary: Display diagnostic results for the Kubernetes cluster after kollect is done.
 """
 
-helps['aks command'] = """
-    type: group
-    short-summary: see detail usage in 'az aks command invoke', 'az aks command result'.
-"""
-
-helps['aks command invoke'] = """
-    type: command
-    short-summary: run a shell command (with kubectl, helm) on your aks cluster, support attaching files as well.
-    parameters:
-        - name: --command -c
-          type: string
-          short-summary: command or shell script you want run.
-        - name: --file -f
-          type: string
-          short-summary: files will be used by the command, use '.' to attach the current folder.
-"""
-
-helps['aks command result'] = """
-    type: command
-    short-summary: fetch result from previously triggered 'aks command invoke'.
-    parameters:
-        - name: --command-id -i
-          type: string
-          short-summary: commandId returned from 'aks command invoke'.
-"""
-
 helps['aks maintenanceconfiguration'] = """
     type: group
     short-summary: Commands to manage maintenance configurations in managed Kubernetes cluster.
@@ -967,6 +944,9 @@ helps['aks nodepool upgrade'] = """
         - name: --max-surge
           type: string
           short-summary: Extra nodes used to speed upgrade. When specified, it represents the number or percent used, eg. 5 or 33%
+        - name: --aks-custom-headers
+          type: string
+          short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
 """
 
 helps['aks nodepool update'] = """
