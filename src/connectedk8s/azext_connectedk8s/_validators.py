@@ -6,6 +6,7 @@
 from knack.log import get_logger
 from azure.cli.core import telemetry
 from azure.cli.core.azclierror import ArgumentUsageError
+import azext_connectedk8s._constants as consts
 
 logger = get_logger(__name__)
 
