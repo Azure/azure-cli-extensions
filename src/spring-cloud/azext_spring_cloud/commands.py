@@ -11,6 +11,7 @@ from ._client_factory import (cf_app_services,
                               cf_spring_cloud,
                               cf_spring_cloud_20201101preview,
                               cf_spring_cloud_20210601preview,
+                              cf_spring_cloud_enterprise,
                               cf_config_servers)
 from ._transformers import (transform_spring_cloud_table_output,
                             transform_app_table_output,
@@ -29,6 +30,11 @@ def load_command_table(self, _):
     deployment_routing_util = CliCommandType(
         operations_tmpl='azext_spring_cloud.tier_routing_deployment#{}',
         client_factory=cf_spring_cloud_20210601preview
+    )
+
+    service_registry_cmd_group = CliCommandType(
+        operations_tmpl='azext_spring_cloud.service_registry#{}',
+        client_factory=cf_spring_cloud_enterprise
     )
 
     with self.command_group('spring-cloud', client_factory=cf_app_services,
@@ -136,6 +142,13 @@ def load_command_table(self, _):
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('update', 'app_insights_update')
         g.custom_show_command('show', 'app_insights_show')
+
+    with self.command_group('spring-cloud service-registry',
+                            custom_command_type=service_registry_cmd_group,
+                            exception_handler=handle_asc_exception) as g:
+        g.custom_command('show', 'service_registry_show')
+        g.custom_command('bind', 'service_registry_bind')
+        g.custom_command('unbind', 'service_registry_unbind')
 
     with self.command_group('spring-cloud', exception_handler=handle_asc_exception):
         pass

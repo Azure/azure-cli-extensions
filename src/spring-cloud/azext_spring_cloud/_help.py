@@ -466,3 +466,24 @@ helps['spring-cloud app-insights update'] = """
         - name: Disable Application Insights.
           text: az spring-cloud app-insights update -n MyService -g MyResourceGroup --disable
 """
+
+helps['spring-cloud service-registry show'] = """
+    type: command
+    short-summary: Show provisioning status and runtime status of Service Registry.
+"""
+
+helps['spring-cloud service-registry bind'] = """
+    type: command
+    short-summary: Bind app to Service Registry.
+    examples:
+        - name: Bind an app to Service Registry.
+          text: az spring-cloud service-registry bind --app MyApp -s MyService -g MyResourceGroup
+"""
+
+helps['spring-cloud service-registry unbind'] = """
+    type: command
+    short-summary: Unbind app to Service Registry.
+    examples:
+        - name: Unbind an app to Service Registry.
+          text: az spring-cloud service-registry unbind --app MyApp -s MyService -g MyResourceGroup
+"""
