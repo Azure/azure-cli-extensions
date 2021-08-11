@@ -45,13 +45,13 @@ helps['connectedk8s update'] = """
     - name: Disable auto-upgrade of agents
       text: az connectedk8s update -g resourceGroupName -n connectedClusterName --auto-upgrade false
     - name: Update connected kubernetes cluster with custom container registry where anonymous pull is allowed.
-      text: az connectedk8s connect -g resourceGroupName -n connectedClusterName --auto-upgrade false --registry-repository registry.example.com --agent-version 1.3.8
+      text: az connectedk8s update -g resourceGroupName -n connectedClusterName --auto-upgrade false --registry-repository registry.example.com --agent-version 1.3.8
     - name: Update connected kubernetes cluster with custom container registry with credentials.
-      text: az connectedk8s connect -g resourceGroupName -n connectedClusterName --auto-upgrade false --registry-repository registry.example.com --agent-version 1.3.8 --registry-username userB --registry-password passwordB
+      text: az connectedk8s update -g resourceGroupName -n connectedClusterName --auto-upgrade false --registry-repository registry.example.com --agent-version 1.3.8 --registry-username userB --registry-password passwordB
     - name: Update connected kubernetes cluster with custom container registry with credentials to custom container registry with anonymous pull enable.
-      text: az connectedk8s connect -g resourceGroupName -n connectedClusterName --anonymous-pull
+      text: az connectedk8s update -g resourceGroupName -n connectedClusterName --anonymous-pull
     - name: Update connected kubernetes cluster from custom container registry to Microsoft container registry.
-      text: az connectedk8s connect -g resourceGroupName -n connectedClusterName --default-registry
+      text: az connectedk8s update -g resourceGroupName -n connectedClusterName --use-default-registry
 """
 
 helps['connectedk8s upgrade'] = """

@@ -41,6 +41,7 @@ from azext_connectedk8s._client_factory import _resource_providers_client
 from azext_connectedk8s._client_factory import get_graph_client_service_principals
 import azext_connectedk8s._constants as consts
 import azext_connectedk8s._utils as utils
+import azext_connectedk8s._validators as validators
 from glob import glob
 from .vendored_sdks.models import ConnectedCluster, ConnectedClusterIdentity
 from .vendored_sdks.preview_2021_04_01.models import ListClusterUserCredentialsProperties
@@ -258,8 +259,8 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     # Setting the config dataplane endpoint
     config_dp_endpoint = get_config_dp_endpoint(cmd, location)
 
-    isCustomRegistryProvided = utils.check_and_validate_custom_registry_arguments(container_registry_repository, container_registry_username, container_registry_password, container_registry_agent_version, auto_upgrade)
-    
+    isCustomRegistryProvided = validators.check_and_validate_custom_registry_arguments(container_registry_repository, container_registry_username, container_registry_password, container_registry_agent_version, auto_upgrade)
+
     # Retrieving Helm chart OCI Artifact location
     if isCustomRegistryProvided:
         registry_path = "{}/azurearck8s/azure-arc-k8sagents:{}".format(container_registry_repository, container_registry_agent_version)
@@ -907,7 +908,7 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
             auto_upgrade_error = 'Disable auto upgrade when using custom registry'
             telemetry.set_exception(exception=auto_upgrade_error, fault_type=consts.Custom_Registry_Disable_Auto_Upgrade_Fault_Type, summary=auto_upgrade_error)
             raise ArgumentUsageError(auto_upgrade_error, recommendation='use --auto_upgrade false')
-        if container_registry_agent_version is None: # true only when we are moving from MCR to custom registry and version is not provided
+        if container_registry_agent_version is None:  # true only when we are moving from MCR to custom registry and version is not provided
             agent_version_error = 'Arc agent version must be provided when using custom container registry'
             telemetry.set_exception(exception=agent_version_error, fault_type=consts.Custom_Registry_Agent_Version_Required_Fault_Type, summary=agent_version_error)
             raise ArgumentUsageError(agent_version_error, recommendation='use --agent-version <version>')

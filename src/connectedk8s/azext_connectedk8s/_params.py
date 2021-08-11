@@ -99,4 +99,3 @@ def load_arguments(self, _):
         c.argument('context_name', options_list=['--kube-context'], help='If specified, overwrite the default context name.')
         c.argument('path', options_list=['--file', '-f'], type=file_type, completer=FilesCompleter(), default=os.path.join(os.path.expanduser('~'), '.kube', 'config'), help="Kubernetes configuration file to update. If not provided, updates the file '~/.kube/config'. Use '-' to print YAML to stdout instead.")
         c.argument('api_server_port', options_list=['--port'], help='Port used for accessing connected cluster.')
-
