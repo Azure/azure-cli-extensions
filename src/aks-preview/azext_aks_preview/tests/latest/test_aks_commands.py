@@ -39,7 +39,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         create_version = next(x for x in versions if not x.startswith(prefix))
         return create_version, upgrade_version
 
-    def generate_ssh_keys(self):
+    @classmethod
+    def generate_ssh_keys(cls):
         # If the `--ssh-key-value` option is not specified, the validator will try to read the ssh-key from the "~/.ssh" directory,
         # and if no key exists, it will call the method provided by azure-cli.core to generate one under the "~/.ssh" directory.
         # In order to avoid misuse of personal ssh-key during testing and the race condition that is prone to occur when key creation
