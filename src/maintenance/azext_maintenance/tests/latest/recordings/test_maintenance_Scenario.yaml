@@ -207,7 +207,7 @@ interactions:
       3389}}], "frontendIPConfigurations": [{"name": "loadBalancerFrontEnd", "properties":
       {"publicIPAddress": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/publicIPAddresses/clitestvmssLBPublicIP"}}}]}},
       {"type": "Microsoft.Compute/virtualMachineScaleSets", "name": "clitestvmss",
-      "location": "westus", "tags": {}, "apiVersion": "2021-03-01", "dependsOn": ["Microsoft.Network/virtualNetworks/clitestvmssVNET",
+      "location": "westus", "tags": {}, "apiVersion": "2021-04-01", "dependsOn": ["Microsoft.Network/virtualNetworks/clitestvmssVNET",
       "Microsoft.Network/loadBalancers/clitestvmssLB"], "sku": {"name": "Standard_DS1_v2",
       "capacity": 1}, "properties": {"overprovision": true, "upgradePolicy": {"mode":
       "Automatic", "rollingUpgradePolicy": {"maxBatchInstancePercent": null, "maxUnhealthyInstancePercent":
@@ -1042,7 +1042,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.23.0 azsdk-python-azure-mgmt-compute/20.0.0 Python/3.7.6 (Linux-5.4.72-microsoft-standard-WSL2-x86_64-with-debian-10.3)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss?api-version=2021-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss?api-version=2021-04-01
   response:
     body:
       string: "{\r\n  \"name\": \"clitestvmss\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss\",\r\n
@@ -1160,7 +1160,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.23.0 azsdk-python-azure-mgmt-compute/20.0.0 Python/3.7.6 (Linux-5.4.72-microsoft-standard-WSL2-x86_64-with-debian-10.3)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss?api-version=2021-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss?api-version=2021-04-01
   response:
     body:
       string: "{\r\n  \"name\": \"clitestvmss\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss\",\r\n
@@ -1207,7 +1207,7 @@ interactions:
       azure-asyncnotification:
       - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/86a0c3f2-7705-432c-a65f-6c32bceaaaa9?api-version=2021-03-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/86a0c3f2-7705-432c-a65f-6c32bceaaaa9?api-version=2021-04-01
       cache-control:
       - no-cache
       content-length:
@@ -1256,7 +1256,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.23.0 azsdk-python-azure-mgmt-compute/20.0.0 Python/3.7.6 (Linux-5.4.72-microsoft-standard-WSL2-x86_64-with-debian-10.3)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/86a0c3f2-7705-432c-a65f-6c32bceaaaa9?api-version=2021-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/86a0c3f2-7705-432c-a65f-6c32bceaaaa9?api-version=2021-04-01
   response:
     body:
       string: "{\r\n  \"startTime\": \"2021-05-13T15:44:05.70978+00:00\",\r\n  \"status\":
@@ -1306,7 +1306,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.23.0 azsdk-python-azure-mgmt-compute/20.0.0 Python/3.7.6 (Linux-5.4.72-microsoft-standard-WSL2-x86_64-with-debian-10.3)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/86a0c3f2-7705-432c-a65f-6c32bceaaaa9?api-version=2021-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/86a0c3f2-7705-432c-a65f-6c32bceaaaa9?api-version=2021-04-01
   response:
     body:
       string: "{\r\n  \"startTime\": \"2021-05-13T15:44:05.70978+00:00\",\r\n  \"endTime\":
@@ -1357,7 +1357,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.23.0 azsdk-python-azure-mgmt-compute/20.0.0 Python/3.7.6 (Linux-5.4.72-microsoft-standard-WSL2-x86_64-with-debian-10.3)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss?api-version=2021-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss?api-version=2021-04-01
   response:
     body:
       string: "{\r\n  \"name\": \"clitestvmss\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss\",\r\n
@@ -1445,7 +1445,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.23.0 azsdk-python-azure-mgmt-compute/20.0.0 Python/3.7.6 (Linux-5.4.72-microsoft-standard-WSL2-x86_64-with-debian-10.3)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss?api-version=2021-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss?api-version=2021-04-01
   response:
     body:
       string: "{\r\n  \"name\": \"clitestvmss\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss\",\r\n
@@ -1566,7 +1566,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.23.0 azsdk-python-azure-mgmt-compute/20.0.0 Python/3.7.6 (Linux-5.4.72-microsoft-standard-WSL2-x86_64-with-debian-10.3)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss?api-version=2021-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss?api-version=2021-04-01
   response:
     body:
       string: "{\r\n  \"name\": \"clitestvmss\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss\",\r\n
@@ -1618,7 +1618,7 @@ interactions:
       azure-asyncnotification:
       - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/418ad8ea-9489-41cb-b765-327b697a9591?api-version=2021-03-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/418ad8ea-9489-41cb-b765-327b697a9591?api-version=2021-04-01
       cache-control:
       - no-cache
       content-length:
@@ -1667,7 +1667,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.23.0 azsdk-python-azure-mgmt-compute/20.0.0 Python/3.7.6 (Linux-5.4.72-microsoft-standard-WSL2-x86_64-with-debian-10.3)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/418ad8ea-9489-41cb-b765-327b697a9591?api-version=2021-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/418ad8ea-9489-41cb-b765-327b697a9591?api-version=2021-04-01
   response:
     body:
       string: "{\r\n  \"startTime\": \"2021-05-13T15:45:14.0382868+00:00\",\r\n  \"status\":
@@ -1717,7 +1717,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.23.0 azsdk-python-azure-mgmt-compute/20.0.0 Python/3.7.6 (Linux-5.4.72-microsoft-standard-WSL2-x86_64-with-debian-10.3)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/418ad8ea-9489-41cb-b765-327b697a9591?api-version=2021-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/418ad8ea-9489-41cb-b765-327b697a9591?api-version=2021-04-01
   response:
     body:
       string: "{\r\n  \"startTime\": \"2021-05-13T15:45:14.0382868+00:00\",\r\n  \"status\":
@@ -1767,7 +1767,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.23.0 azsdk-python-azure-mgmt-compute/20.0.0 Python/3.7.6 (Linux-5.4.72-microsoft-standard-WSL2-x86_64-with-debian-10.3)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/418ad8ea-9489-41cb-b765-327b697a9591?api-version=2021-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/418ad8ea-9489-41cb-b765-327b697a9591?api-version=2021-04-01
   response:
     body:
       string: "{\r\n  \"startTime\": \"2021-05-13T15:45:14.0382868+00:00\",\r\n  \"status\":
@@ -1817,7 +1817,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.23.0 azsdk-python-azure-mgmt-compute/20.0.0 Python/3.7.6 (Linux-5.4.72-microsoft-standard-WSL2-x86_64-with-debian-10.3)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/418ad8ea-9489-41cb-b765-327b697a9591?api-version=2021-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/418ad8ea-9489-41cb-b765-327b697a9591?api-version=2021-04-01
   response:
     body:
       string: "{\r\n  \"startTime\": \"2021-05-13T15:45:14.0382868+00:00\",\r\n  \"endTime\":
@@ -1868,7 +1868,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.23.0 azsdk-python-azure-mgmt-compute/20.0.0 Python/3.7.6 (Linux-5.4.72-microsoft-standard-WSL2-x86_64-with-debian-10.3)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss?api-version=2021-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss?api-version=2021-04-01
   response:
     body:
       string: "{\r\n  \"name\": \"clitestvmss\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss\",\r\n
@@ -1961,7 +1961,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.23.0 azsdk-python-azure-mgmt-compute/20.0.0 Python/3.7.6 (Linux-5.4.72-microsoft-standard-WSL2-x86_64-with-debian-10.3)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss?api-version=2021-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss?api-version=2021-04-01
   response:
     body:
       string: "{\r\n  \"name\": \"clitestvmss\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss\",\r\n
@@ -2087,7 +2087,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.23.0 azsdk-python-azure-mgmt-compute/20.0.0 Python/3.7.6 (Linux-5.4.72-microsoft-standard-WSL2-x86_64-with-debian-10.3)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss?api-version=2021-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss?api-version=2021-04-01
   response:
     body:
       string: "{\r\n  \"name\": \"clitestvmss\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss\",\r\n
@@ -2141,7 +2141,7 @@ interactions:
       azure-asyncnotification:
       - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/86956d3c-2ca2-4154-9f8d-23c5c671d955?api-version=2021-03-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/86956d3c-2ca2-4154-9f8d-23c5c671d955?api-version=2021-04-01
       cache-control:
       - no-cache
       content-length:
@@ -2190,7 +2190,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.23.0 azsdk-python-azure-mgmt-compute/20.0.0 Python/3.7.6 (Linux-5.4.72-microsoft-standard-WSL2-x86_64-with-debian-10.3)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/86956d3c-2ca2-4154-9f8d-23c5c671d955?api-version=2021-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/86956d3c-2ca2-4154-9f8d-23c5c671d955?api-version=2021-04-01
   response:
     body:
       string: "{\r\n  \"startTime\": \"2021-05-13T15:47:26.0855682+00:00\",\r\n  \"endTime\":
@@ -2241,7 +2241,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.23.0 azsdk-python-azure-mgmt-compute/20.0.0 Python/3.7.6 (Linux-5.4.72-microsoft-standard-WSL2-x86_64-with-debian-10.3)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss?api-version=2021-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss?api-version=2021-04-01
   response:
     body:
       string: "{\r\n  \"name\": \"clitestvmss\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss\",\r\n
@@ -2336,7 +2336,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.23.0 azsdk-python-azure-mgmt-compute/20.0.0 Python/3.7.6 (Linux-5.4.72-microsoft-standard-WSL2-x86_64-with-debian-10.3)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss?api-version=2021-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss?api-version=2021-04-01
   response:
     body:
       string: "{\r\n  \"name\": \"clitestvmss\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss\",\r\n
@@ -2465,7 +2465,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.23.0 azsdk-python-azure-mgmt-compute/20.0.0 Python/3.7.6 (Linux-5.4.72-microsoft-standard-WSL2-x86_64-with-debian-10.3)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss?api-version=2021-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss?api-version=2021-04-01
   response:
     body:
       string: "{\r\n  \"name\": \"clitestvmss\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss\",\r\n
@@ -2519,7 +2519,7 @@ interactions:
       azure-asyncnotification:
       - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/8772c792-4063-4d5b-88f5-67a37c7a1af3?api-version=2021-03-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/8772c792-4063-4d5b-88f5-67a37c7a1af3?api-version=2021-04-01
       cache-control:
       - no-cache
       content-length:
@@ -2568,7 +2568,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.23.0 azsdk-python-azure-mgmt-compute/20.0.0 Python/3.7.6 (Linux-5.4.72-microsoft-standard-WSL2-x86_64-with-debian-10.3)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/8772c792-4063-4d5b-88f5-67a37c7a1af3?api-version=2021-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/8772c792-4063-4d5b-88f5-67a37c7a1af3?api-version=2021-04-01
   response:
     body:
       string: "{\r\n  \"startTime\": \"2021-05-13T15:47:43.4277597+00:00\",\r\n  \"endTime\":
@@ -2619,7 +2619,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.23.0 azsdk-python-azure-mgmt-compute/20.0.0 Python/3.7.6 (Linux-5.4.72-microsoft-standard-WSL2-x86_64-with-debian-10.3)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss?api-version=2021-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss?api-version=2021-04-01
   response:
     body:
       string: "{\r\n  \"name\": \"clitestvmss\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss\",\r\n
@@ -3672,7 +3672,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.23.0 azsdk-python-azure-mgmt-compute/20.0.0 Python/3.7.6 (Linux-5.4.72-microsoft-standard-WSL2-x86_64-with-debian-10.3)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss?api-version=2021-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/virtualMachineScaleSets/clitestvmss?api-version=2021-04-01
   response:
     body:
       string: ''
@@ -3680,7 +3680,7 @@ interactions:
       azure-asyncnotification:
       - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/e44576d8-0445-402d-98e7-03ef89978ccc?api-version=2021-03-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/e44576d8-0445-402d-98e7-03ef89978ccc?api-version=2021-04-01
       cache-control:
       - no-cache
       content-length:
@@ -3690,7 +3690,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/e44576d8-0445-402d-98e7-03ef89978ccc?monitor=true&api-version=2021-03-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/e44576d8-0445-402d-98e7-03ef89978ccc?monitor=true&api-version=2021-04-01
       pragma:
       - no-cache
       server:
@@ -3725,7 +3725,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.23.0 azsdk-python-azure-mgmt-compute/20.0.0 Python/3.7.6 (Linux-5.4.72-microsoft-standard-WSL2-x86_64-with-debian-10.3)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/e44576d8-0445-402d-98e7-03ef89978ccc?api-version=2021-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/e44576d8-0445-402d-98e7-03ef89978ccc?api-version=2021-04-01
   response:
     body:
       string: "{\r\n  \"startTime\": \"2021-05-13T15:49:23.4761327+00:00\",\r\n  \"status\":
@@ -3775,7 +3775,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.23.0 azsdk-python-azure-mgmt-compute/20.0.0 Python/3.7.6 (Linux-5.4.72-microsoft-standard-WSL2-x86_64-with-debian-10.3)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/e44576d8-0445-402d-98e7-03ef89978ccc?api-version=2021-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/e44576d8-0445-402d-98e7-03ef89978ccc?api-version=2021-04-01
   response:
     body:
       string: "{\r\n  \"startTime\": \"2021-05-13T15:49:23.4761327+00:00\",\r\n  \"status\":
@@ -3825,7 +3825,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.23.0 azsdk-python-azure-mgmt-compute/20.0.0 Python/3.7.6 (Linux-5.4.72-microsoft-standard-WSL2-x86_64-with-debian-10.3)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/e44576d8-0445-402d-98e7-03ef89978ccc?api-version=2021-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/operations/e44576d8-0445-402d-98e7-03ef89978ccc?api-version=2021-04-01
   response:
     body:
       string: "{\r\n  \"startTime\": \"2021-05-13T15:49:23.4761327+00:00\",\r\n  \"endTime\":
