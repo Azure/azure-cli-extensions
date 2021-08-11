@@ -271,7 +271,7 @@ def run(cmd, program_args, resource_group_name=None, workspace_name=None, locati
     if not job.status == "Succeeded":
         return job
 
-    return output(cmd, job.id, resource_group_name, workspace_name)
+    return output(cmd, job.id, resource_group_name, workspace_name, location)
 
 
 def cancel(cmd, job_id, resource_group_name=None, workspace_name=None, location=None):
