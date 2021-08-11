@@ -90,7 +90,7 @@ def load_command_table(self, _):
     with self.command_group('aks addon', managed_clusters_sdk, client_factory=cf_managed_clusters) as g:
         g.custom_command('list-available', 'aks_addon_list_available', table_transformer=aks_addon_list_available_table_format)
         g.custom_command('list', 'aks_addon_list', table_transformer=aks_addon_list_table_format)
-        g.custom_command('show', 'aks_addon_show', table_transformer=aks_addon_show_table_format)
+        g.custom_show_command('show', 'aks_addon_show', table_transformer=aks_addon_show_table_format)
         g.custom_command('enable', 'aks_addon_enable', supports_no_wait=True)
         g.custom_command('disable', 'aks_addon_disable', supports_no_wait=True)
         g.custom_command('update', 'aks_addon_update', supports_no_wait=True)
