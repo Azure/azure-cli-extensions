@@ -6,6 +6,7 @@ Release History
 0.2.4 (2021-07-12)
 ++++++++++++++++++
 * Fix issue with non-existing resource group
+* Fix issue #3301: az postgres up fails unpleasantly when database name contains dash
 
 0.2.3 (2021-05-10)
 ++++++++++++++++++

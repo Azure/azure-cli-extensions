@@ -272,3 +272,19 @@ def globalreachconnection_show(client: AVSClient, resource_group_name, private_c
 
 def globalreachconnection_delete(client: AVSClient, resource_group_name, private_cloud, name):
     return client.global_reach_connections.begin_delete(resource_group_name=resource_group_name, private_cloud_name=private_cloud, global_reach_connection_name=name)
+
+
+def cloud_link_create_or_update(client: AVSClient, resource_group_name, name, private_cloud, linked_cloud):
+    return client.cloud_links.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cloud_link_name=name, linked_cloud=linked_cloud)
+
+
+def cloud_link_list(client: AVSClient, resource_group_name, private_cloud):
+    return client.cloud_links.list(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
+
+
+def cloud_link_show(client: AVSClient, resource_group_name, private_cloud, name):
+    return client.cloud_links.get(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cloud_link_name=name)
+
+
+def cloud_link_delete(client: AVSClient, resource_group_name, private_cloud, name):
+    return client.cloud_links.begin_delete(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cloud_link_name=name)

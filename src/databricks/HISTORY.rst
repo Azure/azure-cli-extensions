@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.7.3
++++++
+* Migrate databricks to track2 SDK
+
 0.7.2
 +++++
 * az databricks workspace create: Add --enable-no-public-ip to allow creating workspace with no public ip

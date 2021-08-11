@@ -17,7 +17,7 @@ helps['quantum execute'] = """
     examples:
       - name: Submit the Q# program from the current folder and wait for the result.
         text: |-
-            az quantum execute -g MyResourceGroup -w MyWorkspace -l MyLocation
+            az quantum execute -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget
 """
 
 helps['quantum run'] = """
@@ -26,7 +26,7 @@ helps['quantum run'] = """
     examples:
       - name: Submit the Q# program from the current folder and wait for the result.
         text: |-
-            az quantum run -g MyResourceGroup -w MyWorkspace -l MyLocation
+            az quantum run -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget
 """
 
 helps['quantum job'] = """

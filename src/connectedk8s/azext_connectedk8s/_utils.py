@@ -19,10 +19,12 @@ from knack.prompting import NoTTYException, prompt_y_n
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.util import send_raw_request
 from azure.cli.core import telemetry
-from msrest.exceptions import AuthenticationError, HttpOperationError, TokenExpiredError, ValidationError
+from azure.core.exceptions import ResourceNotFoundError
+from msrest.exceptions import AuthenticationError, HttpOperationError, TokenExpiredError
+from msrest.exceptions import ValidationError as MSRestValidationError
 from msrestazure.azure_exceptions import CloudError
 from kubernetes.client.rest import ApiException
-from azext_connectedk8s._client_factory import _resource_client_factory
+from azext_connectedk8s._client_factory import _resource_client_factory, _resource_providers_client
 import azext_connectedk8s._constants as consts
 from kubernetes import client as kube_client
 from azure.cli.core.azclierror import CLIInternalError, ClientRequestError, ArgumentUsageError, ManualInterrupt, AzureResponseError, AzureInternalError, ValidationError
@@ -182,7 +184,7 @@ def arm_exception_handler(ex, fault_type, summary, return_if_not_found=False):
             raise AzureInternalError("Http operation error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
         raise AzureResponseError("Http operation error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
 
-    if isinstance(ex, ValidationError):
+    if isinstance(ex, MSRestValidationError):
         telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
         raise AzureResponseError("Validation error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
 
@@ -196,6 +198,9 @@ def arm_exception_handler(ex, fault_type, summary, return_if_not_found=False):
         if status_code // 100 == 5:
             raise AzureInternalError("Cloud error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
         raise AzureResponseError("Cloud error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
+
+    if isinstance(ex, ResourceNotFoundError) and return_if_not_found:
+        return
 
     telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
     raise ClientRequestError("Error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
@@ -286,7 +291,7 @@ def delete_arc_agents(release_namespace, kube_config, kube_context, configuratio
 
 def helm_install_release(chart_path, subscription_id, kubernetes_distro, kubernetes_infra, resource_group_name, cluster_name,
                          location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, proxy_cert, private_key_pem,
-                         kube_config, kube_context, no_wait, values_file_provided, values_file, cloud_name, disable_auto_upgrade, enable_custom_locations, custom_locations_oid):
+                         kube_config, kube_context, no_wait, values_file_provided, values_file, cloud_name, disable_auto_upgrade, enable_custom_locations, custom_locations_oid, onboarding_timeout="300"):
     cmd_helm_install = ["helm", "upgrade", "--install", "azure-arc", chart_path,
                         "--set", "global.subscriptionId={}".format(subscription_id),
                         "--set", "global.kubernetesDistro={}".format(kubernetes_distro),
@@ -324,7 +329,9 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, kuberne
     if kube_context:
         cmd_helm_install.extend(["--kube-context", kube_context])
     if not no_wait:
-        cmd_helm_install.extend(["--wait"])
+        # Change --timeout format for helm client to understand
+        onboarding_timeout = onboarding_timeout + "s"
+        cmd_helm_install.extend(["--wait", "--timeout", "{}".format(onboarding_timeout)])
     response_helm_install = Popen(cmd_helm_install, stdout=PIPE, stderr=PIPE)
     _, error_helm_install = response_helm_install.communicate()
     if response_helm_install.returncode != 0:
@@ -389,3 +396,38 @@ def try_list_node_fix():
         V1ContainerImage.names = V1ContainerImage.names.setter(names)
     except Exception as ex:
         logger.debug("Error while trying to monkey patch the fix for list_node(): {}".format(str(ex)))
+
+
+def check_provider_registrations(cli_ctx):
+    try:
+        rp_client = _resource_providers_client(cli_ctx)
+        cc_registration_state = rp_client.get(consts.Connected_Cluster_Provider_Namespace).registration_state
+        if cc_registration_state != "Registered":
+            telemetry.set_exception(exception="{} provider is not registered".format(consts.Connected_Cluster_Provider_Namespace), fault_type=consts.CC_Provider_Namespace_Not_Registered_Fault_Type,
+                                    summary="{} provider is not registered".format(consts.Connected_Cluster_Provider_Namespace))
+            raise ValidationError("{} provider is not registered. Please register it using 'az provider register -n 'Microsoft.Kubernetes' before running the connect command.".format(consts.Connected_Cluster_Provider_Namespace))
+        kc_registration_state = rp_client.get(consts.Kubernetes_Configuration_Provider_Namespace).registration_state
+        if kc_registration_state != "Registered":
+            telemetry.set_user_fault()
+            logger.warning("{} provider is not registered".format(consts.Kubernetes_Configuration_Provider_Namespace))
+    except ValidationError as e:
+        raise e
+    except Exception as ex:
+        logger.warning("Couldn't check the required provider's registration status. Error: {}".format(str(ex)))
+
+
+def can_create_clusterrolebindings(configuration):
+    try:
+        api_instance = kube_client.AuthorizationV1Api(kube_client.ApiClient(configuration))
+        access_review = kube_client.V1SelfSubjectAccessReview(spec={
+            "resourceAttributes": {
+                "verb": "create",
+                "resource": "clusterrolebindings",
+                "group": "rbac.authorization.k8s.io"
+            }
+        })
+        response = api_instance.create_self_subject_access_review(access_review)
+        return response.status.allowed
+    except Exception as ex:
+        logger.warning("Couldn't check for the permission to create clusterrolebindings on this k8s cluster. Error: {}".format(str(ex)))
+        return "Unknown"

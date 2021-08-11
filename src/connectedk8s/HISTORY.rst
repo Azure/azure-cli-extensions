@@ -3,6 +3,21 @@
 Release History
 ===============
 
+
+1.1.7
+++++++
+* Add non-existing namespace deploy check
+* Improve some error and warning experiences
+
+
+1.1.6
+++++++
+* Moved to track2 SDK
+* `az connectedk8s connect`: Added onboarding timeout parameter
+* `az connectedk8s upgrade`: Added upgrade timeout parameter
+* Release namespace detection bug fix in multiple commands
+
+
 1.1.5
 ++++++
 * Add custom-locations oid parameter for spn scenario
