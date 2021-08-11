@@ -18,10 +18,6 @@ set -o xtrace
 [[ -z "${IMAGE_TAG}" ]] && (echo "IMAGE_TAG is empty"; exit 1)
 # specify the version of python3
 [[ -z "${PYTHON_VERSION}" ]] && (echo "PYTHON_VERSION is empty"; exit 1)
-# base directories for acs, aks-preview and live test
-[[ -z "${ACS_BASE_DIR}" ]] && (echo "ACS_BASE_DIR is empty"; exit 1)
-[[ -z "${AKS_PREVIEW_BASE_DIR}" ]] && (echo "AKS_PREVIEW_BASE_DIR is empty"; exit 1)
-[[ -z "${LIVE_TEST_BASE_DIR}" ]] && (echo "LIVE_TEST_BASE_DIR is empty"; exit 1)
 
 # from azure devops
 [[ -z "${BUILD_REASON}" ]] && (echo "BUILD_REASON is empty")
@@ -43,6 +39,10 @@ set -o xtrace
 [[ -z "${CLI_BRANCH}" ]] && (echo "CLI_BRANCH is empty"; exit 1)
 [[ -z "${EXT_REPO}" ]] && (echo "EXT_REPO is empty"; exit 1)
 [[ -z "${EXT_BRANCH}" ]] && (echo "EXT_BRANCH is empty"; exit 1)
+# base directories for acs, aks-preview and live test
+[[ -z "${ACS_BASE_DIR}" ]] && (echo "ACS_BASE_DIR is empty"; exit 1)
+[[ -z "${AKS_PREVIEW_BASE_DIR}" ]] && (echo "AKS_PREVIEW_BASE_DIR is empty"; exit 1)
+[[ -z "${LIVE_TEST_BASE_DIR}" ]] && (echo "LIVE_TEST_BASE_DIR is empty"; exit 1)
 
 # clear
 cat /dev/null > env.list
