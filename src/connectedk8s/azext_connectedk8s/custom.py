@@ -59,7 +59,7 @@ logger = get_logger(__name__)
 def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="", proxy_cert="", location=None,
                         kube_config=None, kube_context=None, no_wait=False, tags=None, distribution='auto', infrastructure='auto',
                         auto_upgrade=None, cl_oid=None, onboarding_timeout="300", container_registry_repository=None, container_registry_username=None,
-                        container_registry_password=None, arc_agent_version=None):
+                        container_registry_password=None, container_registry_agent_version=None):
 
     logger.warning("Ensure that you have the latest helm version installed before proceeding.")
     logger.warning("This operation might take a while...\n")
@@ -258,18 +258,11 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     # Setting the config dataplane endpoint
     config_dp_endpoint = get_config_dp_endpoint(cmd, location)
 
+    isCustomRegistryProvided = utils.check_and_validate_custom_registry_arguments(container_registry_repository, container_registry_username, container_registry_password, container_registry_agent_version, auto_upgrade)
+    
     # Retrieving Helm chart OCI Artifact location
-    if container_registry_repository:
-        if auto_upgrade is not "false":
-            auto_upgrade_error = 'Disable auto upgrade when using custom registry'
-            telemetry.set_exception(exception=auto_upgrade_error, fault_type=consts.Custom_Registry_Disable_Auto_Upgrade_Fault_Type, summary=auto_upgrade_error)
-            raise ArgumentUsageError(auto_upgrade_error, recommendation='use --auto-upgrade false')
-        if arc_agent_version is None:
-            agent_version_error = 'Arc agent version needs to be provided when using custom container registry'
-            telemetry.set_exception(exception=agent_version_error, fault_type=consts.Custom_Registry_Agent_Version_Required_Fault_Type, summary=agent_version_error)
-            raise ArgumentUsageError(agent_version_error, recommendation='use --agent-version <version>')
-
-        registry_path = "{}/azurearck8s/azure-arc-k8sagents:{}".format(container_registry_repository, arc_agent_version)
+    if isCustomRegistryProvided:
+        registry_path = "{}/azurearck8s/azure-arc-k8sagents:{}".format(container_registry_repository, container_registry_agent_version)
         # Send private registry information to telemetry
         telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.CustomContainerRegistry': container_registry_repository})
     else:
@@ -780,7 +773,8 @@ def update_connectedk8s(cmd, instance, tags=None):
 
 def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="", proxy_cert="",
                   disable_proxy=False, kube_config=None, kube_context=None, auto_upgrade=None, container_registry_repository=None,
-                  container_registry_username=None, container_registry_password=None, default_registry=None, anonymous_pull=None):
+                  container_registry_username=None, container_registry_password=None, container_registry_agent_version=None,
+                  default_registry=None, container_registry_anonymous_pull=None):
     logger.warning("Ensure that you have the latest helm version installed before proceeding.")
     logger.warning("This operation might take a while...\n")
 
@@ -807,7 +801,7 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
 
     proxy_cert = proxy_cert.replace('\\', r'\\\\')
 
-    if https_proxy == "" and http_proxy == "" and no_proxy == "" and proxy_cert == "" and not disable_proxy and not auto_upgrade and not container_registry_repository and not default_registry:
+    if https_proxy == "" and http_proxy == "" and no_proxy == "" and proxy_cert == "" and not disable_proxy and not auto_upgrade and not container_registry_repository and not default_registry and not container_registry_anonymous_pull:
         raise RequiredArgumentMissingError(consts.No_Param_Error)
 
     if (https_proxy or http_proxy or no_proxy or proxy_cert) and disable_proxy:
@@ -876,24 +870,36 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
     # Setting the config dataplane endpoint
     config_dp_endpoint = get_config_dp_endpoint(cmd, connected_cluster.location)
 
-    if auto_upgrade != "false":
-        helm_values = get_all_helm_values(release_namespace, kube_config, kube_context)
+    if container_registry_repository is not None and default_registry is not None:
+        default_registry_error = "--default-registry and --registry-repository must not be provided at once"
+        telemetry.set_exception(exception=default_registry_error, fault_type=consts.Custom_Registry_Default_Registry_Fault_Type, summary=default_registry_error)
+        raise ArgumentUsageError(default_registry_error)
+
+    if container_registry_anonymous_pull is not None and (container_registry_username is not None or container_registry_password is not None):
+        anonymous_pull_error = "--anonymous-pull must be provided without --registry-username and --registry-password"
+        telemetry.set_exception(exception=anonymous_pull_error, fault_type=consts.Custom_Registry_Anonymous_Pull_Fault_Type, summary=anonymous_pull_error)
+        raise ArgumentUsageError(anonymous_pull_error)
+
+    helm_values = get_all_helm_values(release_namespace, kube_config, kube_context)
+
+    if default_registry is None:
+        isCustomRegistryEnabled = helm_values.get('global').get('isCustomRegistryEnabled')
+        if isCustomRegistryEnabled:
+            if container_registry_repository is None:
+                container_registry_repository = helm_values.get('systemDefaultValues').get('image').get('repository')
+            if container_registry_anonymous_pull is not None:
+                container_registry_username = ""
+                container_registry_password = ""
+            elif container_registry_username is None and container_registry_password is None:
+                container_registry_username = helm_values.get('systemDefaultValues').get('image').get('username')
+                container_registry_password = helm_values.get('systemDefaultValues').get('image').get('password')
+            if container_registry_agent_version is None:
+                container_registry_agent_version = connected_cluster.agent_version
+
+    if auto_upgrade is None:
         auto_upgrade = helm_values.get('systemDefaultValues').get('azureArcAgents').get('autoUpdate')
         if not auto_upgrade:
             auto_upgrade = "false"
-
-    if default_registry:
-        container_registry_repository = None
-    else:
-        isCustomRegistryEnabled = helm_values.get('global').get('isCustomRegistryEnabled')
-        if isCustomRegistryEnabled is True and container_registry_repository is None:
-            container_registry_repository = helm_values.get('systemDefaultValues').get('image').get('repository')
-        if anonymous_pull is not None:
-            container_registry_username = ""
-            container_registry_password = ""
-        elif container_registry_username is None and container_registry_password is None:
-            container_registry_username = helm_values.get('systemDefaultValues').get('image').get('username')
-            container_registry_password = helm_values.get('systemDefaultValues').get('image').get('password')
 
     # Retrieving Helm chart OCI Artifact location
     if container_registry_repository:
@@ -901,7 +907,11 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
             auto_upgrade_error = 'Disable auto upgrade when using custom registry'
             telemetry.set_exception(exception=auto_upgrade_error, fault_type=consts.Custom_Registry_Disable_Auto_Upgrade_Fault_Type, summary=auto_upgrade_error)
             raise ArgumentUsageError(auto_upgrade_error, recommendation='use --auto_upgrade false')
-        registry_path = "{}/azurearck8s/azure-arc-k8sagents:{}".format(container_registry_repository, connected_cluster.agent_version)
+        if container_registry_agent_version is None: # true only when we are moving from MCR to custom registry and version is not provided
+            agent_version_error = 'Arc agent version must be provided when using custom container registry'
+            telemetry.set_exception(exception=agent_version_error, fault_type=consts.Custom_Registry_Agent_Version_Required_Fault_Type, summary=agent_version_error)
+            raise ArgumentUsageError(agent_version_error, recommendation='use --agent-version <version>')
+        registry_path = "{}/azurearck8s/azure-arc-k8sagents:{}".format(container_registry_repository, container_registry_agent_version)
         # Send private registry information to telemetry
         telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.CustomContainerRegistry': container_registry_repository})
     else:
@@ -950,7 +960,7 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
         if container_registry_username is not None and container_registry_password is not None:
             cmd_helm_upgrade.extend(["--set", "systemDefaultValues.image.username={}".format(container_registry_username)])
             cmd_helm_upgrade.extend(["--set", "systemDefaultValues.image.password={}".format(container_registry_password)])
-    if anonymous_pull:
+    if container_registry_anonymous_pull:
         cmd_helm_upgrade.extend(["--set", "systemDefaultValues.image.username={}".format("")])
         cmd_helm_upgrade.extend(["--set", "systemDefaultValues.image.password={}".format("")])
 
