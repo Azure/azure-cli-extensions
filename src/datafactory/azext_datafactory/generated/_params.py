@@ -22,8 +22,7 @@ from azure.cli.core.commands.validators import (
     validate_file_or_dict
 )
 from azext_datafactory.action import (
-    AddFactoryVstsConfiguration,
-    AddFactoryGitHubConfiguration,
+    AddGitHubClientSecret,
     AddFolder,
     AddFilters,
     AddOrderBy
@@ -51,12 +50,10 @@ def load_arguments(self, _):
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
         c.argument('tags', tags_type)
-        c.argument('factory_vsts_configuration', action=AddFactoryVstsConfiguration, nargs='+', help='Factory\'s VSTS '
-                   'repo information.', arg_group='RepoConfiguration')
-        c.argument('factory_git_hub_configuration', action=AddFactoryGitHubConfiguration, nargs='+', help='Factory\'s '
-                   'GitHub repo information.', arg_group='RepoConfiguration')
+        c.argument('repo_configuration', type=validate_file_or_dict, help='Git repo information of the factory. '
+                   'Expected value: json-string/json-file/@json-file.')
         c.argument('global_parameters', type=validate_file_or_dict, help='List of parameters for factory. Expected '
-                   'value: json-string/@json-file.')
+                   'value: json-string/json-file/@json-file.')
 
     with self.argument_context('datafactory update') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -72,10 +69,8 @@ def load_arguments(self, _):
     with self.argument_context('datafactory configure-factory-repo') as c:
         c.argument('location', arg_type=get_location_type(self.cli_ctx), id_part='name')
         c.argument('factory_resource_id', type=str, help='The factory resource id.')
-        c.argument('factory_vsts_configuration', action=AddFactoryVstsConfiguration, nargs='+', help='Factory\'s VSTS '
-                   'repo information.', arg_group='RepoConfiguration')
-        c.argument('factory_git_hub_configuration', action=AddFactoryGitHubConfiguration, nargs='+', help='Factory\'s '
-                   'GitHub repo information.', arg_group='RepoConfiguration')
+        c.argument('repo_configuration', type=validate_file_or_dict, help='Git repo information of the factory. '
+                   'Expected value: json-string/json-file/@json-file.')
 
     with self.argument_context('datafactory get-data-plane-access') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -98,6 +93,8 @@ def load_arguments(self, _):
                    id_part='name')
         c.argument('git_hub_access_code', type=str, help='GitHub access code.')
         c.argument('git_hub_client_id', type=str, help='GitHub application client ID.')
+        c.argument('git_hub_client_secret', action=AddGitHubClientSecret, nargs='+', help='GitHub bring your own app '
+                   'client secret information.')
         c.argument('git_hub_access_token_base_url', type=str, help='GitHub access token base URL.')
 
     with self.argument_context('datafactory integration-runtime list') as c:
@@ -134,9 +131,10 @@ def load_arguments(self, _):
                    'update, for which it should match existing entity or can be * for unconditional update.')
         c.argument('description', type=str, help='Integration runtime description.')
         c.argument('compute_properties', type=validate_file_or_dict, help='The compute resource for managed '
-                   'integration runtime. Expected value: json-string/@json-file.', arg_group='Type Properties')
+                   'integration runtime. Expected value: json-string/json-file/@json-file.', arg_group='Type '
+                   'Properties')
         c.argument('ssis_properties', type=validate_file_or_dict, help='SSIS properties for managed integration '
-                   'runtime. Expected value: json-string/@json-file.', arg_group='Type Properties')
+                   'runtime. Expected value: json-string/json-file/@json-file.', arg_group='Type Properties')
 
     with self.argument_context('datafactory integration-runtime self-hosted create') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -147,7 +145,7 @@ def load_arguments(self, _):
                    'update, for which it should match existing entity or can be * for unconditional update.')
         c.argument('description', type=str, help='Integration runtime description.')
         c.argument('linked_info', type=validate_file_or_dict, help='The base definition of a linked integration '
-                   'runtime. Expected value: json-string/@json-file.', arg_group='Type Properties')
+                   'runtime. Expected value: json-string/json-file/@json-file.', arg_group='Type Properties')
 
     with self.argument_context('datafactory integration-runtime update') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -285,7 +283,7 @@ def load_arguments(self, _):
         c.argument('if_match', type=str, help='ETag of the linkedService entity.  Should only be specified for update, '
                    'for which it should match existing entity or can be * for unconditional update.')
         c.argument('properties', type=validate_file_or_dict, help='Properties of linked service. Expected value: '
-                   'json-string/@json-file.')
+                   'json-string/json-file/@json-file.')
 
     with self.argument_context('datafactory linked-service update') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -295,12 +293,12 @@ def load_arguments(self, _):
         c.argument('if_match', type=str, help='ETag of the linkedService entity.  Should only be specified for update, '
                    'for which it should match existing entity or can be * for unconditional update.')
         c.argument('connect_via', type=validate_file_or_dict, help='The integration runtime reference. Expected value: '
-                   'json-string/@json-file.')
+                   'json-string/json-file/@json-file.')
         c.argument('description', type=str, help='Linked service description.')
         c.argument('parameters', type=validate_file_or_dict, help='Parameters for linked service. Expected value: '
-                   'json-string/@json-file.')
+                   'json-string/json-file/@json-file.')
         c.argument('annotations', type=validate_file_or_dict, help='List of tags that can be used for describing the '
-                   'linked service. Expected value: json-string/@json-file.')
+                   'linked service. Expected value: json-string/json-file/@json-file.')
         c.ignore('linked_service')
 
     with self.argument_context('datafactory linked-service delete') as c:
@@ -329,7 +327,7 @@ def load_arguments(self, _):
         c.argument('if_match', type=str, help='ETag of the dataset entity.  Should only be specified for update, for '
                    'which it should match existing entity or can be * for unconditional update.')
         c.argument('properties', type=validate_file_or_dict, help='Dataset properties. Expected value: '
-                   'json-string/@json-file.')
+                   'json-string/json-file/@json-file.')
 
     with self.argument_context('datafactory dataset update') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -341,16 +339,16 @@ def load_arguments(self, _):
         c.argument('description', type=str, help='Dataset description.')
         c.argument('structure', type=validate_file_or_dict, help='Columns that define the structure of the dataset. '
                    'Type: array (or Expression with resultType array), itemType: DatasetDataElement. Expected value: '
-                   'json-string/@json-file.')
+                   'json-string/json-file/@json-file.')
         c.argument('schema', type=validate_file_or_dict, help='Columns that define the physical type schema of the '
                    'dataset. Type: array (or Expression with resultType array), itemType: DatasetSchemaDataElement. '
-                   'Expected value: json-string/@json-file.')
+                   'Expected value: json-string/json-file/@json-file.')
         c.argument('linked_service_name', type=validate_file_or_dict, help='Linked service reference. Expected value: '
-                   'json-string/@json-file.')
+                   'json-string/json-file/@json-file.')
         c.argument('parameters', type=validate_file_or_dict, help='Parameters for dataset. Expected value: '
-                   'json-string/@json-file.')
+                   'json-string/json-file/@json-file.')
         c.argument('annotations', type=validate_file_or_dict, help='List of tags that can be used for describing the '
-                   'Dataset. Expected value: json-string/@json-file.')
+                   'Dataset. Expected value: json-string/json-file/@json-file.')
         c.argument('folder', action=AddFolder, nargs='+', help='The folder that this Dataset is in. If not specified, '
                    'Dataset will appear at the root level.')
         c.ignore('dataset')
@@ -381,7 +379,7 @@ def load_arguments(self, _):
         c.argument('if_match', type=str, help='ETag of the pipeline entity.  Should only be specified for update, for '
                    'which it should match existing entity or can be * for unconditional update.')
         c.argument('pipeline', type=validate_file_or_dict, help='Pipeline resource definition. Expected value: '
-                   'json-string/@json-file.')
+                   'json-string/json-file/@json-file.')
 
     with self.argument_context('datafactory pipeline update') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -392,18 +390,19 @@ def load_arguments(self, _):
                    'which it should match existing entity or can be * for unconditional update.')
         c.argument('description', type=str, help='The description of the pipeline.')
         c.argument('activities', type=validate_file_or_dict, help='List of activities in pipeline. Expected value: '
-                   'json-string/@json-file.')
+                   'json-string/json-file/@json-file.')
         c.argument('parameters', type=validate_file_or_dict, help='List of parameters for pipeline. Expected value: '
-                   'json-string/@json-file.')
+                   'json-string/json-file/@json-file.')
         c.argument('variables', type=validate_file_or_dict, help='List of variables for pipeline. Expected value: '
-                   'json-string/@json-file.')
+                   'json-string/json-file/@json-file.')
         c.argument('concurrency', type=int, help='The max number of concurrent runs for the pipeline.')
         c.argument('annotations', type=validate_file_or_dict, help='List of tags that can be used for describing the '
-                   'Pipeline. Expected value: json-string/@json-file.')
+                   'Pipeline. Expected value: json-string/json-file/@json-file.')
         c.argument('run_dimensions', type=validate_file_or_dict, help='Dimensions emitted by Pipeline. Expected value: '
-                   'json-string/@json-file.')
+                   'json-string/json-file/@json-file.')
         c.argument('duration', type=validate_file_or_dict, help='TimeSpan value, after which an Azure Monitoring '
-                   'Metric is fired. Expected value: json-string/@json-file.', arg_group='Policy Elapsed Time Metric')
+                   'Metric is fired. Expected value: json-string/json-file/@json-file.', arg_group='Policy Elapsed '
+                   'Time Metric')
         c.argument('folder_name', type=str, help='The name of the folder that this Pipeline is in.',
                    arg_group='Folder')
         c.ignore('pipeline')
@@ -430,7 +429,7 @@ def load_arguments(self, _):
                    'rerun will start from failed activities. The property will be used only if startActivityName is '
                    'not specified.')
         c.argument('parameters', type=validate_file_or_dict, help='Parameters of the pipeline run. These parameters '
-                   'will be used only if the runId is not specified. Expected value: json-string/@json-file.')
+                   'will be used only if the runId is not specified. Expected value: json-string/json-file/@json-file.')
 
     with self.argument_context('datafactory pipeline-run show') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -489,7 +488,7 @@ def load_arguments(self, _):
         c.argument('if_match', type=str, help='ETag of the trigger entity.  Should only be specified for update, for '
                    'which it should match existing entity or can be * for unconditional update.')
         c.argument('properties', type=validate_file_or_dict, help='Properties of the trigger. Expected value: '
-                   'json-string/@json-file.')
+                   'json-string/json-file/@json-file.')
 
     with self.argument_context('datafactory trigger update') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -500,7 +499,7 @@ def load_arguments(self, _):
                    'which it should match existing entity or can be * for unconditional update.')
         c.argument('description', type=str, help='Trigger description.')
         c.argument('annotations', type=validate_file_or_dict, help='List of tags that can be used for describing the '
-                   'trigger. Expected value: json-string/@json-file.')
+                   'trigger. Expected value: json-string/json-file/@json-file.')
         c.ignore('trigger')
 
     with self.argument_context('datafactory trigger delete') as c:

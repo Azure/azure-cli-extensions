@@ -45,45 +45,45 @@ class DataFactoryManagementClient(object):
     """The Azure Data Factory V2 management API provides a RESTful set of web services that interact with Azure Data Factory V2 services.
 
     :ivar operations: Operations operations
-    :vartype operations: data_factory_management_client.operations.Operations
+    :vartype operations: azure.mgmt.datafactory.operations.Operations
     :ivar factories: FactoriesOperations operations
-    :vartype factories: data_factory_management_client.operations.FactoriesOperations
+    :vartype factories: azure.mgmt.datafactory.operations.FactoriesOperations
     :ivar exposure_control: ExposureControlOperations operations
-    :vartype exposure_control: data_factory_management_client.operations.ExposureControlOperations
+    :vartype exposure_control: azure.mgmt.datafactory.operations.ExposureControlOperations
     :ivar integration_runtimes: IntegrationRuntimesOperations operations
-    :vartype integration_runtimes: data_factory_management_client.operations.IntegrationRuntimesOperations
+    :vartype integration_runtimes: azure.mgmt.datafactory.operations.IntegrationRuntimesOperations
     :ivar integration_runtime_object_metadata: IntegrationRuntimeObjectMetadataOperations operations
-    :vartype integration_runtime_object_metadata: data_factory_management_client.operations.IntegrationRuntimeObjectMetadataOperations
+    :vartype integration_runtime_object_metadata: azure.mgmt.datafactory.operations.IntegrationRuntimeObjectMetadataOperations
     :ivar integration_runtime_nodes: IntegrationRuntimeNodesOperations operations
-    :vartype integration_runtime_nodes: data_factory_management_client.operations.IntegrationRuntimeNodesOperations
+    :vartype integration_runtime_nodes: azure.mgmt.datafactory.operations.IntegrationRuntimeNodesOperations
     :ivar linked_services: LinkedServicesOperations operations
-    :vartype linked_services: data_factory_management_client.operations.LinkedServicesOperations
+    :vartype linked_services: azure.mgmt.datafactory.operations.LinkedServicesOperations
     :ivar datasets: DatasetsOperations operations
-    :vartype datasets: data_factory_management_client.operations.DatasetsOperations
+    :vartype datasets: azure.mgmt.datafactory.operations.DatasetsOperations
     :ivar pipelines: PipelinesOperations operations
-    :vartype pipelines: data_factory_management_client.operations.PipelinesOperations
+    :vartype pipelines: azure.mgmt.datafactory.operations.PipelinesOperations
     :ivar pipeline_runs: PipelineRunsOperations operations
-    :vartype pipeline_runs: data_factory_management_client.operations.PipelineRunsOperations
+    :vartype pipeline_runs: azure.mgmt.datafactory.operations.PipelineRunsOperations
     :ivar activity_runs: ActivityRunsOperations operations
-    :vartype activity_runs: data_factory_management_client.operations.ActivityRunsOperations
+    :vartype activity_runs: azure.mgmt.datafactory.operations.ActivityRunsOperations
     :ivar triggers: TriggersOperations operations
-    :vartype triggers: data_factory_management_client.operations.TriggersOperations
+    :vartype triggers: azure.mgmt.datafactory.operations.TriggersOperations
     :ivar trigger_runs: TriggerRunsOperations operations
-    :vartype trigger_runs: data_factory_management_client.operations.TriggerRunsOperations
+    :vartype trigger_runs: azure.mgmt.datafactory.operations.TriggerRunsOperations
     :ivar data_flows: DataFlowsOperations operations
-    :vartype data_flows: data_factory_management_client.operations.DataFlowsOperations
+    :vartype data_flows: azure.mgmt.datafactory.operations.DataFlowsOperations
     :ivar data_flow_debug_session: DataFlowDebugSessionOperations operations
-    :vartype data_flow_debug_session: data_factory_management_client.operations.DataFlowDebugSessionOperations
+    :vartype data_flow_debug_session: azure.mgmt.datafactory.operations.DataFlowDebugSessionOperations
     :ivar managed_virtual_networks: ManagedVirtualNetworksOperations operations
-    :vartype managed_virtual_networks: data_factory_management_client.operations.ManagedVirtualNetworksOperations
+    :vartype managed_virtual_networks: azure.mgmt.datafactory.operations.ManagedVirtualNetworksOperations
     :ivar managed_private_endpoints: ManagedPrivateEndpointsOperations operations
-    :vartype managed_private_endpoints: data_factory_management_client.operations.ManagedPrivateEndpointsOperations
+    :vartype managed_private_endpoints: azure.mgmt.datafactory.operations.ManagedPrivateEndpointsOperations
     :ivar private_end_point_connections: PrivateEndPointConnectionsOperations operations
-    :vartype private_end_point_connections: data_factory_management_client.operations.PrivateEndPointConnectionsOperations
+    :vartype private_end_point_connections: azure.mgmt.datafactory.operations.PrivateEndPointConnectionsOperations
     :ivar private_endpoint_connection: PrivateEndpointConnectionOperations operations
-    :vartype private_endpoint_connection: data_factory_management_client.operations.PrivateEndpointConnectionOperations
+    :vartype private_endpoint_connection: azure.mgmt.datafactory.operations.PrivateEndpointConnectionOperations
     :ivar private_link_resources: PrivateLinkResourcesOperations operations
-    :vartype private_link_resources: data_factory_management_client.operations.PrivateLinkResourcesOperations
+    :vartype private_link_resources: azure.mgmt.datafactory.operations.PrivateLinkResourcesOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials.TokenCredential
     :param subscription_id: The subscription identifier.

@@ -10,13 +10,13 @@
 |CLI Command Group|Group Swagger name|Commands|
 |---------|------------|--------|
 |az datafactory|Factories|[commands](#CommandsInFactories)|
+|az datafactory activity-run|ActivityRuns|[commands](#CommandsInActivityRuns)|
+|az datafactory dataset|Datasets|[commands](#CommandsInDatasets)|
 |az datafactory integration-runtime|IntegrationRuntimes|[commands](#CommandsInIntegrationRuntimes)|
 |az datafactory integration-runtime-node|IntegrationRuntimeNodes|[commands](#CommandsInIntegrationRuntimeNodes)|
 |az datafactory linked-service|LinkedServices|[commands](#CommandsInLinkedServices)|
-|az datafactory dataset|Datasets|[commands](#CommandsInDatasets)|
 |az datafactory pipeline|Pipelines|[commands](#CommandsInPipelines)|
 |az datafactory pipeline-run|PipelineRuns|[commands](#CommandsInPipelineRuns)|
-|az datafactory activity-run|ActivityRuns|[commands](#CommandsInActivityRuns)|
 |az datafactory trigger|Triggers|[commands](#CommandsInTriggers)|
 |az datafactory trigger-run|TriggerRuns|[commands](#CommandsInTriggerRuns)|
 
@@ -45,7 +45,7 @@
 |[az datafactory dataset list](#DatasetsListByFactory)|ListByFactory|[Parameters](#ParametersDatasetsListByFactory)|[Example](#ExamplesDatasetsListByFactory)|
 |[az datafactory dataset show](#DatasetsGet)|Get|[Parameters](#ParametersDatasetsGet)|[Example](#ExamplesDatasetsGet)|
 |[az datafactory dataset create](#DatasetsCreateOrUpdate#Create)|CreateOrUpdate#Create|[Parameters](#ParametersDatasetsCreateOrUpdate#Create)|[Example](#ExamplesDatasetsCreateOrUpdate#Create)|
-|[az datafactory dataset update](#DatasetsCreateOrUpdate#Update)|CreateOrUpdate#Update|[Parameters](#ParametersDatasetsCreateOrUpdate#Update)|[Example](#ExamplesDatasetsCreateOrUpdate#Update)|
+|[az datafactory dataset update](#DatasetsCreateOrUpdate#Update)|CreateOrUpdate#Update|[Parameters](#ParametersDatasetsCreateOrUpdate#Update)|Not Found|
 |[az datafactory dataset delete](#DatasetsDelete)|Delete|[Parameters](#ParametersDatasetsDelete)|[Example](#ExamplesDatasetsDelete)|
 
 ### <a name="CommandsInIntegrationRuntimes">Commands in `az datafactory integration-runtime` group</a>
@@ -83,7 +83,7 @@
 |[az datafactory linked-service list](#LinkedServicesListByFactory)|ListByFactory|[Parameters](#ParametersLinkedServicesListByFactory)|[Example](#ExamplesLinkedServicesListByFactory)|
 |[az datafactory linked-service show](#LinkedServicesGet)|Get|[Parameters](#ParametersLinkedServicesGet)|[Example](#ExamplesLinkedServicesGet)|
 |[az datafactory linked-service create](#LinkedServicesCreateOrUpdate#Create)|CreateOrUpdate#Create|[Parameters](#ParametersLinkedServicesCreateOrUpdate#Create)|[Example](#ExamplesLinkedServicesCreateOrUpdate#Create)|
-|[az datafactory linked-service update](#LinkedServicesCreateOrUpdate#Update)|CreateOrUpdate#Update|[Parameters](#ParametersLinkedServicesCreateOrUpdate#Update)|[Example](#ExamplesLinkedServicesCreateOrUpdate#Update)|
+|[az datafactory linked-service update](#LinkedServicesCreateOrUpdate#Update)|CreateOrUpdate#Update|[Parameters](#ParametersLinkedServicesCreateOrUpdate#Update)|Not Found|
 |[az datafactory linked-service delete](#LinkedServicesDelete)|Delete|[Parameters](#ParametersLinkedServicesDelete)|[Example](#ExamplesLinkedServicesDelete)|
 
 ### <a name="CommandsInPipelines">Commands in `az datafactory pipeline` group</a>
@@ -109,7 +109,7 @@
 |[az datafactory trigger list](#TriggersListByFactory)|ListByFactory|[Parameters](#ParametersTriggersListByFactory)|[Example](#ExamplesTriggersListByFactory)|
 |[az datafactory trigger show](#TriggersGet)|Get|[Parameters](#ParametersTriggersGet)|[Example](#ExamplesTriggersGet)|
 |[az datafactory trigger create](#TriggersCreateOrUpdate#Create)|CreateOrUpdate#Create|[Parameters](#ParametersTriggersCreateOrUpdate#Create)|[Example](#ExamplesTriggersCreateOrUpdate#Create)|
-|[az datafactory trigger update](#TriggersCreateOrUpdate#Update)|CreateOrUpdate#Update|[Parameters](#ParametersTriggersCreateOrUpdate#Update)|[Example](#ExamplesTriggersCreateOrUpdate#Update)|
+|[az datafactory trigger update](#TriggersCreateOrUpdate#Update)|CreateOrUpdate#Update|[Parameters](#ParametersTriggersCreateOrUpdate#Update)|Not Found|
 |[az datafactory trigger delete](#TriggersDelete)|Delete|[Parameters](#ParametersTriggersDelete)|[Example](#ExamplesTriggersDelete)|
 |[az datafactory trigger get-event-subscription-status](#TriggersGetEventSubscriptionStatus)|GetEventSubscriptionStatus|[Parameters](#ParametersTriggersGetEventSubscriptionStatus)|[Example](#ExamplesTriggersGetEventSubscriptionStatus)|
 |[az datafactory trigger query-by-factory](#TriggersQueryByFactory)|QueryByFactory|[Parameters](#ParametersTriggersQueryByFactory)|[Example](#ExamplesTriggersQueryByFactory)|
@@ -127,7 +127,6 @@
 
 
 ## COMMAND DETAILS
-
 ### group `az datafactory`
 #### <a name="FactoriesListByResourceGroup">Command `az datafactory list`</a>
 
@@ -149,6 +148,7 @@ az datafactory list
 ##### <a name="ParametersFactoriesList">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
+
 #### <a name="FactoriesGet">Command `az datafactory show`</a>
 
 ##### <a name="ExamplesFactoriesGet">Example</a>
@@ -176,8 +176,7 @@ az datafactory create --location "East US" --name "exampleFactoryName" --resourc
 |**--if-match**|string|ETag of the factory entity. Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|If-Match|
 |**--location**|string|The resource location.|location|location|
 |**--tags**|dictionary|The resource tags.|tags|tags|
-|**--factory-vsts-configuration**|object|Factory's VSTS repo information.|factory_vsts_configuration|FactoryVSTSConfiguration|
-|**--factory-git-hub-configuration**|object|Factory's GitHub repo information.|factory_git_hub_configuration|FactoryGitHubConfiguration|
+|**--repo-configuration**|object|Git repo information of the factory.|repo_configuration|repoConfiguration|
 |**--global-parameters**|dictionary|List of parameters for factory.|global_parameters|globalParameters|
 
 #### <a name="FactoriesUpdate">Command `az datafactory update`</a>
@@ -211,17 +210,17 @@ az datafactory delete --name "exampleFactoryName" --resource-group "exampleResou
 ##### <a name="ExamplesFactoriesConfigureFactoryRepo">Example</a>
 ```
 az datafactory configure-factory-repo --factory-resource-id "/subscriptions/12345678-1234-1234-1234-12345678abc/resourc\
-eGroups/exampleResourceGroup/providers/Microsoft.DataFactory/factories/exampleFactoryName" \
---factory-vsts-configuration account-name="ADF" collaboration-branch="master" last-commit-id="" project-name="project" \
-repository-name="repo" root-folder="/" tenant-id="" --location "East US"
+eGroups/exampleResourceGroup/providers/Microsoft.DataFactory/factories/exampleFactoryName" --repo-configuration \
+"{\\"type\\":\\"FactoryVSTSConfiguration\\",\\"accountName\\":\\"ADF\\",\\"collaborationBranch\\":\\"master\\",\\"lastC\
+ommitId\\":\\"\\",\\"projectName\\":\\"project\\",\\"repositoryName\\":\\"repo\\",\\"rootFolder\\":\\"/\\",\\"tenantId\
+\\":\\"\\"}" --location "East US"
 ```
 ##### <a name="ParametersFactoriesConfigureFactoryRepo">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
 |**--location**|string|The location identifier.|location|locationId|
 |**--factory-resource-id**|string|The factory resource id.|factory_resource_id|factoryResourceId|
-|**--factory-vsts-configuration**|object|Factory's VSTS repo information.|factory_vsts_configuration|FactoryVSTSConfiguration|
-|**--factory-git-hub-configuration**|object|Factory's GitHub repo information.|factory_git_hub_configuration|FactoryGitHubConfiguration|
+|**--repo-configuration**|object|Git repo information of the factory.|repo_configuration|repoConfiguration|
 
 #### <a name="FactoriesGetDataPlaneAccess">Command `az datafactory get-data-plane-access`</a>
 
@@ -257,6 +256,7 @@ az datafactory get-git-hub-access-token --name "exampleFactoryName" --git-hub-ac
 |**--git-hub-access-code**|string|GitHub access code.|git_hub_access_code|gitHubAccessCode|
 |**--git-hub-access-token-base-url**|string|GitHub access token base URL.|git_hub_access_token_base_url|gitHubAccessTokenBaseUrl|
 |**--git-hub-client-id**|string|GitHub application client ID.|git_hub_client_id|gitHubClientId|
+|**--git-hub-client-secret**|object|GitHub bring your own app client secret information.|git_hub_client_secret|gitHubClientSecret|
 
 ### group `az datafactory activity-run`
 #### <a name="ActivityRunsQueryByPipelineRun">Command `az datafactory activity-run query-by-pipeline-run`</a>
@@ -324,26 +324,20 @@ pression\\",\\"value\\":\\"@dataset().MyFolderPath\\"}}}" --name "exampleDataset
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resourceGroupName|
 |**--factory-name**|string|The factory name.|factory_name|factoryName|
 |**--dataset-name**|string|The dataset name.|dataset_name|datasetName|
-|**--properties**|object|Dataset properties.|properties|properties|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|If-Match|
+|**--properties**|object|Dataset properties.|properties|properties|
 
 #### <a name="DatasetsCreateOrUpdate#Update">Command `az datafactory dataset update`</a>
 
-##### <a name="ExamplesDatasetsCreateOrUpdate#Update">Example</a>
-```
-az datafactory dataset update --description "Example description" --linked-service-name "{\\"type\\":\\"LinkedServiceRe\
-ference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\
-\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --name "exampleDataset" --factory-name "exampleFactoryName" \
---resource-group "exampleResourceGroup"
-```
+
 ##### <a name="ParametersDatasetsCreateOrUpdate#Update">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resourceGroupName|
 |**--factory-name**|string|The factory name.|factory_name|factoryName|
 |**--dataset-name**|string|The dataset name.|dataset_name|datasetName|
-|**--linked-service-name**|object|Linked service reference.|linked_service_name|linkedServiceName|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|If-Match|
+|**--linked-service-name**|object|Linked service reference.|linked_service_name|linkedServiceName|
 |**--description**|string|Dataset description.|description|description|
 |**--structure**|any|Columns that define the structure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataElement.|structure|structure|
 |**--schema**|any|Columns that define the physical type schema of the dataset. Type: array (or Expression with resultType array), itemType: DatasetSchemaDataElement.|schema|schema|
@@ -414,6 +408,7 @@ az datafactory integration-runtime linked-integration-runtime create --name "bfa
 |**--location**|string|The location of the data factory that the linked integration runtime belongs to.|location|dataFactoryLocation|
 
 #### <a name="IntegrationRuntimesCreateOrUpdate#Create#Managed">Command `az datafactory integration-runtime managed create`</a>
+
 
 ##### <a name="ParametersIntegrationRuntimesCreateOrUpdate#Create#Managed">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -720,16 +715,12 @@ ps;AccountName=examplestorageaccount;AccountKey=<storage key>\\"}}}" --name "exa
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resourceGroupName|
 |**--factory-name**|string|The factory name.|factory_name|factoryName|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linkedServiceName|
-|**--properties**|object|Properties of linked service.|properties|properties|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|If-Match|
+|**--properties**|object|Properties of linked service.|properties|properties|
 
 #### <a name="LinkedServicesCreateOrUpdate#Update">Command `az datafactory linked-service update`</a>
 
-##### <a name="ExamplesLinkedServicesCreateOrUpdate#Update">Example</a>
-```
-az datafactory linked-service update --factory-name "exampleFactoryName" --description "Example description" --name \
-"exampleLinkedService" --resource-group "exampleResourceGroup"
-```
+
 ##### <a name="ParametersLinkedServicesCreateOrUpdate#Update">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
@@ -807,8 +798,8 @@ es\\":{\\"TestVariableArray\\":{\\"type\\":\\"Array\\"}},\\"runDimensions\\":{\\
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resourceGroupName|
 |**--factory-name**|string|The factory name.|factory_name|factoryName|
 |**--pipeline-name**|string|The pipeline name.|pipeline_name|pipelineName|
-|**--pipeline**|object|Pipeline resource definition.|pipeline|pipeline|
 |**--if-match**|string|ETag of the pipeline entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|If-Match|
+|**--pipeline**|object|Pipeline resource definition.|pipeline|pipeline|
 
 #### <a name="PipelinesCreateOrUpdate#Update">Command `az datafactory pipeline update`</a>
 
@@ -968,16 +959,12 @@ perties\\":{\\"recurrence\\":{\\"endTime\\":\\"2018-06-16T00:55:13.8441801Z\\",\
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resourceGroupName|
 |**--factory-name**|string|The factory name.|factory_name|factoryName|
 |**--trigger-name**|string|The trigger name.|trigger_name|triggerName|
-|**--properties**|object|Properties of the trigger.|properties|properties|
 |**--if-match**|string|ETag of the trigger entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|If-Match|
+|**--properties**|object|Properties of the trigger.|properties|properties|
 
 #### <a name="TriggersCreateOrUpdate#Update">Command `az datafactory trigger update`</a>
 
-##### <a name="ExamplesTriggersCreateOrUpdate#Update">Example</a>
-```
-az datafactory trigger update --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup" \
---description "Example description" --name "exampleTrigger"
-```
+
 ##### <a name="ParametersTriggersCreateOrUpdate#Update">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
