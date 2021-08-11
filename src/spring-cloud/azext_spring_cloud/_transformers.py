@@ -29,7 +29,7 @@ def transform_app_table_output(result):
     for item in result:
         item['Public Url'] = item['properties']['url']
 
-        if 'activeDeployment' in item['properties']:
+        if 'activeDeployment' in item['properties'] and item['properties']['activeDeployment']:
             item['Production Deployment'] = item['properties']['activeDeployment']['name']
             _apply_deployment_table(item, item['properties']['activeDeployment'])
 
