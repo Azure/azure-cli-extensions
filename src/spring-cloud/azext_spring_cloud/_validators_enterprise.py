@@ -11,9 +11,21 @@ from knack.log import get_logger
 from ._resource_quantity import (
     validate_cpu as validate_and_normalize_cpu, 
     validate_memory as validate_and_normalize_memory)
+from ._util_enterprise import (
+    is_enterprise_tier
+)
 
 
 logger = get_logger(__name__)
+
+def only_support_enterprise(cmd, namespace):
+    if namespace.resource_group and namespace.service and not is_enterprise_tier(cmd, namespace.resource_group, namespace.service):
+        raise CLIError("'{}' only supports for Enterprise tier Spring instance.".format(namespace.command))
+
+
+def not_support_enterprise(cmd, namespace):
+    if namespace.resource_group and namespace.service and is_enterprise_tier(cmd, namespace.resource_group, namespace.service):
+        raise CLIError("'{}' doesn't support for Enterprise tier Spring instance.".format(namespace.command))
 
 
 def validate_cpu(namespace):
