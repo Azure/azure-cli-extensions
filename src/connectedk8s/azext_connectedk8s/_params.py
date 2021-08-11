@@ -32,7 +32,7 @@ def load_arguments(self, _):
         c.argument('proxy_cert', options_list=['--proxy-cert'], arg_group='Proxy', type=file_type, completer=FilesCompleter(), help='Path to the certificate file for proxy')
         c.argument('distribution', options_list=['--distribution'], help='The Kubernetes distribution which will be running on this connected cluster.', arg_type=get_enum_type(Distribution_Enum_Values))
         c.argument('infrastructure', options_list=['--infrastructure'], help='The infrastructure on which the Kubernetes cluster represented by this connected cluster will be running on.', arg_type=get_enum_type(Infrastructure_Enum_Values))
-        c.argument('auto_upgrade', options_list=['--auto-upgrade', c.deprecate(target='--disable-auto-upgrade', redirect='--target')], help='Flag to disable auto upgrade of arc agents. This flag must be false when using custom registry repository', arg_type=get_enum_type(["true", "false"]))
+        c.argument('auto_upgrade', options_list=['--auto-upgrade', c.deprecate(target='--disable-auto-upgrade', redirect='--auto-upgrade')], help='Flag to disable auto upgrade of arc agents. This flag must be false when using custom registry repository', arg_type=get_enum_type(["true", "false"]))
         c.argument('cl_oid', options_list=['--custom-locations-oid'], help="OID of 'custom-locations' app")
         c.argument('container_registry_repository', options_list=['--registry-repository'], arg_group='Agent upgrade and container registry', help='Custom container registry repository.')
         c.argument('container_registry_username', options_list=['--registry-username'], arg_group='Agent upgrade and container registry', help='Custom container registry repository username.')
