@@ -667,32 +667,6 @@ helps['aks kanalyze'] = """
     short-summary: Display diagnostic results for the Kubernetes cluster after kollect is done.
 """
 
-helps['aks command'] = """
-    type: group
-    short-summary: see detail usage in 'az aks command invoke', 'az aks command result'.
-"""
-
-helps['aks command invoke'] = """
-    type: command
-    short-summary: run a shell command (with kubectl, helm) on your aks cluster, support attaching files as well.
-    parameters:
-        - name: --command -c
-          type: string
-          short-summary: command or shell script you want run.
-        - name: --file -f
-          type: string
-          short-summary: files will be used by the command, use '.' to attach the current folder.
-"""
-
-helps['aks command result'] = """
-    type: command
-    short-summary: fetch result from previously triggered 'aks command invoke'.
-    parameters:
-        - name: --command-id -i
-          type: string
-          short-summary: commandId returned from 'aks command invoke'.
-"""
-
 helps['aks maintenanceconfiguration'] = """
     type: group
     short-summary: Commands to manage maintenance configurations in managed Kubernetes cluster.
