@@ -62,13 +62,14 @@ def app_update(cmd, client, resource_group, service, name,
                jvm_options=None,
                main_entry=None,
                env=None,
+               config_file_patterns=None,
                enable_persistent_storage=None,
                https_only=None,
                enable_end_to_end_tls=None):
     if is_enterprise_tier(cmd, resource_group, service):
         # runtime_version, enable_persistent_storage, main_entry, https_only, enable_end_to_end_tls not support
         return app_update_enterprise(cmd, get_client(cmd), resource_group, service, name,
-                                     assign_endpoint, deployment, jvm_options, env)
+                                     assign_endpoint, deployment, jvm_options, env, config_file_patterns)
     else:
         return app_update_standard(cmd, client, resource_group, service, name,
                                    assign_endpoint, deployment, runtime_version, jvm_options,

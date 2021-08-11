@@ -142,9 +142,10 @@ def load_arguments(self, _):
                        help="A string containing jvm options, use '=' instead of ' ' for this argument to avoid bash parse error, eg: --jvm-options='-Xms1024m -Xmx2048m'")
             c.argument('env', env_type)
 
-    with self.argument_context('spring-cloud app deploy') as c:
-        c.argument('config_file_patterns', type=str,
-                    help="Configure file patterns separated with \',\' to decide which patterns of Application Configuration Service will be used. Use '\"\"' to clear existing configurations.",
+    for scope in ['spring-cloud app update', 'spring-cloud app deployment create', 'spring-cloud app deploy']:
+        with self.argument_context(scope) as c:
+            c.argument('config_file_patterns', type=str,
+                    help="Only support in enterprise tier now. Config file patterns separated with \',\' to decide which patterns of Application Configuration Service will be used. Use '\"\"' to clear existing configurations.",
                     validator=validate_config_file_patterns)
 
     with self.argument_context('spring-cloud app scale') as c:

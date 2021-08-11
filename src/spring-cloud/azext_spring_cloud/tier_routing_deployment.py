@@ -46,11 +46,12 @@ def deployment_create(cmd, client, resource_group, service, app, name,
                       memory=None,
                       instance_count=None,
                       env=None,
+                      config_file_patterns=None,
                       no_wait=False):
     if is_enterprise_tier(cmd, resource_group, service):
         return deployment_create_enterprise(cmd, get_client(cmd), resource_group, service, app, name,
                                             skip_clone_settings, version, artifact_path, target_module,
-                                            jvm_options, cpu, memory, instance_count, env, no_wait)
+                                            jvm_options, cpu, memory, instance_count, env, config_file_patterns, no_wait)
     else:
         return deployment_create_standard(cmd, client, resource_group, service, app, name,
                                           skip_clone_settings, version, artifact_path, target_module, runtime_version,
