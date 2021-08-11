@@ -22,7 +22,8 @@ from azure.cli.core.commands.validators import (
     validate_file_or_dict
 )
 from azext_datafactory.action import (
-    AddGitHubClientSecret,
+    AddFactoryVstsConfiguration,
+    AddFactoryGitHubConfiguration,
     AddFolder,
     AddFilters,
     AddOrderBy
@@ -50,8 +51,10 @@ def load_arguments(self, _):
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
         c.argument('tags', tags_type)
-        c.argument('repo_configuration', type=validate_file_or_dict, help='Git repo information of the factory. '
-                   'Expected value: json-string/json-file/@json-file.')
+        c.argument('factory_vsts_configuration', action=AddFactoryVstsConfiguration, nargs='+', help='Factory\'s VSTS '
+                   'repo information.', arg_group='RepoConfiguration')
+        c.argument('factory_git_hub_configuration', action=AddFactoryGitHubConfiguration, nargs='+', help='Factory\'s '
+                   'GitHub repo information.', arg_group='RepoConfiguration')
         c.argument('global_parameters', type=validate_file_or_dict, help='List of parameters for factory. Expected '
                    'value: json-string/json-file/@json-file.')
 
@@ -69,8 +72,10 @@ def load_arguments(self, _):
     with self.argument_context('datafactory configure-factory-repo') as c:
         c.argument('location', arg_type=get_location_type(self.cli_ctx), id_part='name')
         c.argument('factory_resource_id', type=str, help='The factory resource id.')
-        c.argument('repo_configuration', type=validate_file_or_dict, help='Git repo information of the factory. '
-                   'Expected value: json-string/json-file/@json-file.')
+        c.argument('factory_vsts_configuration', action=AddFactoryVstsConfiguration, nargs='+', help='Factory\'s VSTS '
+                   'repo information.', arg_group='RepoConfiguration')
+        c.argument('factory_git_hub_configuration', action=AddFactoryGitHubConfiguration, nargs='+', help='Factory\'s '
+                   'GitHub repo information.', arg_group='RepoConfiguration')
 
     with self.argument_context('datafactory get-data-plane-access') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -93,8 +98,6 @@ def load_arguments(self, _):
                    id_part='name')
         c.argument('git_hub_access_code', type=str, help='GitHub access code.')
         c.argument('git_hub_client_id', type=str, help='GitHub application client ID.')
-        c.argument('git_hub_client_secret', action=AddGitHubClientSecret, nargs='+', help='GitHub bring your own app '
-                   'client secret information.')
         c.argument('git_hub_access_token_base_url', type=str, help='GitHub access token base URL.')
 
     with self.argument_context('datafactory integration-runtime list') as c:

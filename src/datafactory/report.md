@@ -176,7 +176,8 @@ az datafactory create --location "East US" --name "exampleFactoryName" --resourc
 |**--if-match**|string|ETag of the factory entity. Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|If-Match|
 |**--location**|string|The resource location.|location|location|
 |**--tags**|dictionary|The resource tags.|tags|tags|
-|**--repo-configuration**|object|Git repo information of the factory.|repo_configuration|repoConfiguration|
+|**--factory-vsts-configuration**|object|Factory's VSTS repo information.|factory_vsts_configuration|FactoryVSTSConfiguration|
+|**--factory-git-hub-configuration**|object|Factory's GitHub repo information.|factory_git_hub_configuration|FactoryGitHubConfiguration|
 |**--global-parameters**|dictionary|List of parameters for factory.|global_parameters|globalParameters|
 
 #### <a name="FactoriesUpdate">Command `az datafactory update`</a>
@@ -210,17 +211,17 @@ az datafactory delete --name "exampleFactoryName" --resource-group "exampleResou
 ##### <a name="ExamplesFactoriesConfigureFactoryRepo">Example</a>
 ```
 az datafactory configure-factory-repo --factory-resource-id "/subscriptions/12345678-1234-1234-1234-12345678abc/resourc\
-eGroups/exampleResourceGroup/providers/Microsoft.DataFactory/factories/exampleFactoryName" --repo-configuration \
-"{\\"type\\":\\"FactoryVSTSConfiguration\\",\\"accountName\\":\\"ADF\\",\\"collaborationBranch\\":\\"master\\",\\"lastC\
-ommitId\\":\\"\\",\\"projectName\\":\\"project\\",\\"repositoryName\\":\\"repo\\",\\"rootFolder\\":\\"/\\",\\"tenantId\
-\\":\\"\\"}" --location "East US"
+eGroups/exampleResourceGroup/providers/Microsoft.DataFactory/factories/exampleFactoryName" \
+--factory-vsts-configuration account-name="ADF" collaboration-branch="master" last-commit-id="" project-name="project" \
+repository-name="repo" root-folder="/" tenant-id="" --location "East US"
 ```
 ##### <a name="ParametersFactoriesConfigureFactoryRepo">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
 |**--location**|string|The location identifier.|location|locationId|
 |**--factory-resource-id**|string|The factory resource id.|factory_resource_id|factoryResourceId|
-|**--repo-configuration**|object|Git repo information of the factory.|repo_configuration|repoConfiguration|
+|**--factory-vsts-configuration**|object|Factory's VSTS repo information.|factory_vsts_configuration|FactoryVSTSConfiguration|
+|**--factory-git-hub-configuration**|object|Factory's GitHub repo information.|factory_git_hub_configuration|FactoryGitHubConfiguration|
 
 #### <a name="FactoriesGetDataPlaneAccess">Command `az datafactory get-data-plane-access`</a>
 
@@ -256,7 +257,6 @@ az datafactory get-git-hub-access-token --name "exampleFactoryName" --git-hub-ac
 |**--git-hub-access-code**|string|GitHub access code.|git_hub_access_code|gitHubAccessCode|
 |**--git-hub-access-token-base-url**|string|GitHub access token base URL.|git_hub_access_token_base_url|gitHubAccessTokenBaseUrl|
 |**--git-hub-client-id**|string|GitHub application client ID.|git_hub_client_id|gitHubClientId|
-|**--git-hub-client-secret**|object|GitHub bring your own app client secret information.|git_hub_client_secret|gitHubClientSecret|
 
 ### group `az datafactory activity-run`
 #### <a name="ActivityRunsQueryByPipelineRun">Command `az datafactory activity-run query-by-pipeline-run`</a>

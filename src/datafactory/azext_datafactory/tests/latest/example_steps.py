@@ -75,9 +75,8 @@ def step_configure_factory_repo(test, checks=None):
     test.cmd('az datafactory configure-factory-repo '
              '--factory-resource-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.DataFacto'
              'ry/factories/{myFactory}" '
-             '--repo-configuration "{{\\"type\\":\\"FactoryVSTSConfiguration\\",\\"accountName\\":\\"ADF\\",\\"collabor'
-             'ationBranch\\":\\"master\\",\\"lastCommitId\\":\\"\\",\\"projectName\\":\\"project\\",\\"repositoryName\\'
-             '":\\"repo\\",\\"rootFolder\\":\\"/\\",\\"tenantId\\":\\"\\"}}" '
+             '--factory-vsts-configuration account-name="ADF" collaboration-branch="master" last-commit-id="" '
+             'project-name="project" repository-name="repo" root-folder="/" tenant-id="" '
              '--location "East US"',
              checks=checks)
 

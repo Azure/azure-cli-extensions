@@ -41,6 +41,34 @@ helps['datafactory show'] = """
 helps['datafactory create'] = """
     type: command
     short-summary: "Create a factory."
+    parameters:
+      - name: --factory-vsts-configuration
+        short-summary: "Factory's VSTS repo information."
+        long-summary: |
+            Usage: --factory-vsts-configuration project-name=XX tenant-id=XX type=XX account-name=XX \
+repository-name=XX collaboration-branch=XX root-folder=XX last-commit-id=XX
+
+            project-name: Required. VSTS project name.
+            tenant-id: VSTS tenant id.
+            type: Required. Type of repo configuration.
+            account-name: Required. Account name.
+            repository-name: Required. Repository name.
+            collaboration-branch: Required. Collaboration branch.
+            root-folder: Required. Root folder.
+            last-commit-id: Last commit id.
+      - name: --factory-git-hub-configuration
+        short-summary: "Factory's GitHub repo information."
+        long-summary: |
+            Usage: --factory-git-hub-configuration host-name=XX type=XX account-name=XX repository-name=XX \
+collaboration-branch=XX root-folder=XX last-commit-id=XX
+
+            host-name: GitHub Enterprise host name. For example: https://github.mydomain.com
+            type: Required. Type of repo configuration.
+            account-name: Required. Account name.
+            repository-name: Required. Repository name.
+            collaboration-branch: Required. Collaboration branch.
+            root-folder: Required. Root folder.
+            last-commit-id: Last commit id.
     examples:
       - name: Factories_CreateOrUpdate
         text: |-
@@ -70,14 +98,41 @@ helps['datafactory delete'] = """
 helps['datafactory configure-factory-repo'] = """
     type: command
     short-summary: "Updates a factory's repo information."
+    parameters:
+      - name: --factory-vsts-configuration
+        short-summary: "Factory's VSTS repo information."
+        long-summary: |
+            Usage: --factory-vsts-configuration project-name=XX tenant-id=XX type=XX account-name=XX \
+repository-name=XX collaboration-branch=XX root-folder=XX last-commit-id=XX
+
+            project-name: Required. VSTS project name.
+            tenant-id: VSTS tenant id.
+            type: Required. Type of repo configuration.
+            account-name: Required. Account name.
+            repository-name: Required. Repository name.
+            collaboration-branch: Required. Collaboration branch.
+            root-folder: Required. Root folder.
+            last-commit-id: Last commit id.
+      - name: --factory-git-hub-configuration
+        short-summary: "Factory's GitHub repo information."
+        long-summary: |
+            Usage: --factory-git-hub-configuration host-name=XX type=XX account-name=XX repository-name=XX \
+collaboration-branch=XX root-folder=XX last-commit-id=XX
+
+            host-name: GitHub Enterprise host name. For example: https://github.mydomain.com
+            type: Required. Type of repo configuration.
+            account-name: Required. Account name.
+            repository-name: Required. Repository name.
+            collaboration-branch: Required. Collaboration branch.
+            root-folder: Required. Root folder.
+            last-commit-id: Last commit id.
     examples:
       - name: Factories_ConfigureFactoryRepo
         text: |-
                az datafactory configure-factory-repo --factory-resource-id "/subscriptions/12345678-1234-1234-1234-1234\
 5678abc/resourceGroups/exampleResourceGroup/providers/Microsoft.DataFactory/factories/exampleFactoryName" \
---repo-configuration "{\\"type\\":\\"FactoryVSTSConfiguration\\",\\"accountName\\":\\"ADF\\",\\"collaborationBranch\\":\
-\\"master\\",\\"lastCommitId\\":\\"\\",\\"projectName\\":\\"project\\",\\"repositoryName\\":\\"repo\\",\\"rootFolder\\"\
-:\\"/\\",\\"tenantId\\":\\"\\"}" --location "East US"
+--factory-vsts-configuration account-name="ADF" collaboration-branch="master" last-commit-id="" project-name="project" \
+repository-name="repo" root-folder="/" tenant-id="" --location "East US"
 """
 
 helps['datafactory get-data-plane-access'] = """
@@ -94,14 +149,6 @@ helps['datafactory get-data-plane-access'] = """
 helps['datafactory get-git-hub-access-token'] = """
     type: command
     short-summary: "Get GitHub Access Token."
-    parameters:
-      - name: --git-hub-client-secret
-        short-summary: "GitHub bring your own app client secret information."
-        long-summary: |
-            Usage: --git-hub-client-secret byoa-secret-akv-url=XX byoa-secret-name=XX
-
-            byoa-secret-akv-url: Bring your own app client secret AKV URL.
-            byoa-secret-name: Bring your own app client secret name in AKV.
     examples:
       - name: Factories_GetGitHubAccessToken
         text: |-

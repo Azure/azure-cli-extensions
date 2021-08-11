@@ -16816,10 +16816,6 @@ class FactoryGitHubConfiguration(FactoryRepoConfiguration):
     :type last_commit_id: str
     :param host_name: GitHub Enterprise host name. For example: https://github.mydomain.com.
     :type host_name: str
-    :param client_id: GitHub bring your own app client id.
-    :type client_id: str
-    :param client_secret: GitHub bring your own app client secret information.
-    :type client_secret: ~azure.mgmt.datafactory.models.GitHubClientSecret
     """
 
     _validation = {
@@ -16838,8 +16834,6 @@ class FactoryGitHubConfiguration(FactoryRepoConfiguration):
         'root_folder': {'key': 'rootFolder', 'type': 'str'},
         'last_commit_id': {'key': 'lastCommitId', 'type': 'str'},
         'host_name': {'key': 'hostName', 'type': 'str'},
-        'client_id': {'key': 'clientId', 'type': 'str'},
-        'client_secret': {'key': 'clientSecret', 'type': 'GitHubClientSecret'},
     }
 
     def __init__(
@@ -16851,15 +16845,11 @@ class FactoryGitHubConfiguration(FactoryRepoConfiguration):
         root_folder: str,
         last_commit_id: Optional[str] = None,
         host_name: Optional[str] = None,
-        client_id: Optional[str] = None,
-        client_secret: Optional["GitHubClientSecret"] = None,
         **kwargs
     ):
         super(FactoryGitHubConfiguration, self).__init__(account_name=account_name, repository_name=repository_name, collaboration_branch=collaboration_branch, root_folder=root_folder, last_commit_id=last_commit_id, **kwargs)
         self.type = 'FactoryGitHubConfiguration'  # type: str
         self.host_name = host_name
-        self.client_id = client_id
-        self.client_secret = client_secret
 
 
 class FactoryIdentity(msrest.serialization.Model):

@@ -11,6 +11,7 @@
 # pylint: disable=too-many-lines
 # pylint: disable=unused-argument
 
+from knack.util import CLIError
 from azure.cli.core.util import sdk_no_wait
 
 
@@ -36,8 +37,18 @@ def datafactory_create(client,
                        if_match=None,
                        location=None,
                        tags=None,
-                       repo_configuration=None,
+                       factory_vsts_configuration=None,
+                       factory_git_hub_configuration=None,
                        global_parameters=None):
+    all_repo_configuration = []
+    if factory_vsts_configuration is not None:
+        all_repo_configuration.append(factory_vsts_configuration)
+    if factory_git_hub_configuration is not None:
+        all_repo_configuration.append(factory_git_hub_configuration)
+    if len(all_repo_configuration) > 1:
+        raise CLIError('at most one of  factory_vsts_configuration, factory_git_hub_configuration is needed for '
+                       'repo_configuration!')
+    repo_configuration = all_repo_configuration[0] if len(all_repo_configuration) == 1 else None
     factory = {}
     if location is not None:
         factory['location'] = location
@@ -84,7 +95,17 @@ def datafactory_delete(client,
 def datafactory_configure_factory_repo(client,
                                        location,
                                        factory_resource_id=None,
-                                       repo_configuration=None):
+                                       factory_vsts_configuration=None,
+                                       factory_git_hub_configuration=None):
+    all_repo_configuration = []
+    if factory_vsts_configuration is not None:
+        all_repo_configuration.append(factory_vsts_configuration)
+    if factory_git_hub_configuration is not None:
+        all_repo_configuration.append(factory_git_hub_configuration)
+    if len(all_repo_configuration) > 1:
+        raise CLIError('at most one of  factory_vsts_configuration, factory_git_hub_configuration is needed for '
+                       'repo_configuration!')
+    repo_configuration = all_repo_configuration[0] if len(all_repo_configuration) == 1 else None
     factory_repo_update = {}
     if factory_resource_id is not None:
         factory_repo_update['factory_resource_id'] = factory_resource_id
@@ -123,14 +144,11 @@ def datafactory_get_git_hub_access_token(client,
                                          factory_name,
                                          git_hub_access_code,
                                          git_hub_access_token_base_url,
-                                         git_hub_client_id=None,
-                                         git_hub_client_secret=None):
+                                         git_hub_client_id=None):
     git_hub_access_token_request = {}
     git_hub_access_token_request['git_hub_access_code'] = git_hub_access_code
     if git_hub_client_id is not None:
         git_hub_access_token_request['git_hub_client_id'] = git_hub_client_id
-    if git_hub_client_secret is not None:
-        git_hub_access_token_request['git_hub_client_secret'] = git_hub_client_secret
     git_hub_access_token_request['git_hub_access_token_base_url'] = git_hub_access_token_base_url
     return client.get_git_hub_access_token(resource_group_name=resource_group_name,
                                            factory_name=factory_name,
