@@ -2,7 +2,7 @@
 
 Release History
 ===============
-0.3.2
+0.4.0
 ++++++
 * Add `--skip-query-validation` parameter
 * Add `--check-ws-alerts-storage` parameter
