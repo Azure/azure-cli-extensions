@@ -7,7 +7,7 @@ Release History
 * Add `--skip-query-validation` parameter
 * Add `--check-ws-alerts-storage` parameter
 * Add `--auto-mitigate` parameter
-* `--actions` are split into `--action-groups` and `--custom-properties`
+* [Breaking Change] `--actions` are split into `--action-groups` and `--custom-properties`
 
 0.3.1
 ++++++
