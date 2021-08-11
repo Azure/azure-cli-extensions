@@ -32,6 +32,7 @@ def load_arguments(self, _):
                    help='Name of the Kubernetes cluster')
         c.argument('cluster_type',
                    arg_type=get_enum_type(['connectedClusters', 'managedClusters', 'appliances']),
+                   options_list=['--cluster-type', '-t'],
                    help='Specify Arc clusters or AKS managed clusters or Arc appliances.')
         c.argument('scope',
                    arg_type=get_enum_type(['cluster', 'namespace']),
