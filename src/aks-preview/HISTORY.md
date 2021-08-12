@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.5.26
++++++
+* Correct containerLogMaxSizeMb to containerLogMaxSizeMB in customized kubelet config
+
 0.5.25
 +++++
 * Add support for http proxy
