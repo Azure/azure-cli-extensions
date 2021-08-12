@@ -84,7 +84,8 @@ def update_scheduled_query(cmd,
                            tags=None,
                            disabled=None,
                            condition=None,
-                           actions=None,
+                           action_groups=None,
+                           custom_properties=None,
                            condition_query=None,
                            description=None,
                            severity=None,
@@ -100,7 +101,8 @@ def update_scheduled_query(cmd,
         c.set_param('tags', tags)
         c.set_param('enabled', not disabled)
         c.set_param('description', description)
-        c.set_param('actions', actions)
+        c.set_param('actions.action_groups', action_groups)
+        c.set_param('actions.custom_properties', custom_properties)
         c.set_param('severity', severity)
         c.set_param('window_size', window_size)
         c.set_param('evaluation_frequency', evaluation_frequency)
