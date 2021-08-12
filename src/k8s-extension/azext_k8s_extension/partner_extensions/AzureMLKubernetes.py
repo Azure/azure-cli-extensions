@@ -82,6 +82,9 @@ class AzureMLKubernetes(PartnerExtensionModel):
         self.privateEndpointNodeport = 'privateEndpointNodeport'
         self.inferenceLoadBalancerHA = 'inferenceLoadBalancerHA'
 
+        # constants for existing AKS to AMLARC migration
+        self.IS_AKS_MIGRATION = 'isAKSMigration'
+
         # reference mapping
         self.reference_mapping = {
             self.RELAY_SERVER_CONNECTION_STRING: [self.RELAY_CONNECTION_STRING_KEY, self.RELAY_CONNECTION_STRING_DEPRECATED_KEY],
@@ -211,6 +214,12 @@ class AzureMLKubernetes(PartnerExtensionModel):
             configuration_settings['clusterPurpose'] = 'DevTest'
         else:
             configuration_settings['clusterPurpose'] = 'FastProd'
+        isAKSMigration = _get_value_from_config_protected_config(
+            self.IS_AKS_MIGRATION, configuration_settings, configuration_protected_settings)
+        isAKSMigration = str(isAKSMigration).lower() == 'true'
+        if isAKSMigration:
+            configuration_settings['scoringFe.namespace'] = "default"
+            configuration_settings[self.IS_AKS_MIGRATION] = "true"
         feSslCertFile = configuration_protected_settings.get(self.sslCertPemFile)
         feSslKeyFile = configuration_protected_settings.get(self.sslKeyPemFile)
         allowInsecureConnections = _get_value_from_config_protected_config(
