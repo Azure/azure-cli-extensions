@@ -9,7 +9,7 @@ import os
 import shutil
 import tempfile
 import unittest
-import mock
+from unittest import mock
 
 from azure.cli.testsdk import ScenarioTest
 from azext_alias import alias
