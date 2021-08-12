@@ -73,10 +73,11 @@ def build_role_scope(resource_group_name, scope, subscription_id):
     return scope
 
 
-def create_role_assignment(cli_ctx, role, assignee, is_service_principal, resource_group_name=None, scope=None):
+def create_role_assignment(cli_ctx, role, assignee,
+                           is_service_principal=True, resource_group_name=None, scope=None, resolve_assignee=True):
     return _create_role_assignment(cli_ctx,
                                    role, assignee, resource_group_name,
-                                   scope, resolve_assignee=is_service_principal)
+                                   scope, resolve_assignee=(is_service_principal and resolve_assignee))
 
 
 def _create_role_assignment(cli_ctx, role, assignee,

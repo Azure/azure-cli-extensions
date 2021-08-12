@@ -2628,7 +2628,7 @@ def aks_addon_show(cmd, client, resource_group_name, name, addon):  # pylint: di
     addon_profiles = client.get(resource_group_name, name).addon_profiles
     addon_key = ADDONS[addon]
 
-    if addon_key not in addon_profiles or not addon_profiles[addon_key].enabled:
+    if not addon_profiles or addon_key not in addon_profiles or not addon_profiles[addon_key].enabled:
         raise CLIError(f'Addon "{addon}" is not enabled in this cluster.')
 
     config = ""
@@ -2668,7 +2668,7 @@ def aks_addon_update(cmd, client, resource_group_name, name, addon, workspace_re
     addon_profiles = client.get(resource_group_name, name).addon_profiles
     addon_key = ADDONS[addon]
 
-    if addon_key not in addon_profiles or not addon_profiles[addon_key].enabled:
+    if not addon_profiles or addon_key not in addon_profiles or not addon_profiles[addon_key].enabled:
         raise CLIError(f'Addon "{addon}" is not enabled in this cluster.')
 
     return enable_addons(cmd, client, resource_group_name, name, addon, check_enabled=False,
