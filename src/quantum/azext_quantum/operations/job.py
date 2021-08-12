@@ -208,13 +208,12 @@ def output(cmd, job_id, resource_group_name=None, workspace_name=None, location=
         blob_service = blob_data_service_factory(cmd.cli_ctx, args)
         blob_service.get_blob_to_path(args['container'], args['blob'], path)
 
-
     with open(path) as json_file:
         lines = [line.strip() for line in json_file.readlines()]
 
         # Receiving an empty response is valid.
         if len(lines) == 0:
-            return 
+            return
 
         if job.target.startswith("microsoft.simulator"):
             result_start_line = len(lines) - 1
@@ -226,7 +225,7 @@ def output(cmd, job_id, resource_group_name=None, workspace_name=None, location=
 
             print('\n'.join(lines[:result_start_line]))
             result = ' '.join(lines[result_start_line:])[1:-1]  # seems the cleanest version to display
-            print("_" * len(result) + "\n")
+            print('_' * len(result) + '\n')
 
             json_string = '{ "histogram" : { "' + result + '" : 1 } }'
             data = json.loads(json_string)
