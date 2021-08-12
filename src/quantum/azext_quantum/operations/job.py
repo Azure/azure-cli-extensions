@@ -208,20 +208,27 @@ def output(cmd, job_id, resource_group_name=None, workspace_name=None, location=
         blob_service = blob_data_service_factory(cmd.cli_ctx, args)
         blob_service.get_blob_to_path(args['container'], args['blob'], path)
 
-    with open(path) as json_file:
-        if job.target.startswith("microsoft.simulator"):
 
-            lines = [line.strip() for line in json_file.readlines()]
+    with open(path) as json_file:
+        lines = [line.strip() for line in json_file.readlines()]
+
+        # Receiving an empty response is valid.
+        if len(lines) == 0:
+            return 
+
+        if job.target.startswith("microsoft.simulator"):
             result_start_line = len(lines) - 1
             if lines[-1].endswith('"'):
-                while not lines[result_start_line].startswith('"'):
+                while result_start_line >= 0 and not lines[result_start_line].startswith('"'):
                     result_start_line -= 1
+            if result_start_line < 0:
+                raise CLIError("Job output is malformed, mismatched quote characters.")
 
             print('\n'.join(lines[:result_start_line]))
             result = ' '.join(lines[result_start_line:])[1:-1]  # seems the cleanest version to display
             print("_" * len(result) + "\n")
 
-            json_string = "{ \"histogram\" : { \"" + result + "\" : 1 } }"
+            json_string = '{ "histogram" : { "' + result + '" : 1 } }'
             data = json.loads(json_string)
         else:
             data = json.load(json_file)
