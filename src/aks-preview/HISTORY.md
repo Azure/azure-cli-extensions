@@ -3,7 +3,7 @@
 Release History
 ===============
 
-0.5.26
+0.5.27
 +++++
 * Add support for new addon commands
   * `az aks addon list`
@@ -12,6 +12,10 @@ Release History
   * `az aks addon enable`
   * `az aks addon disable`
   * `az aks addon update`
+
+0.5.26
++++++
+* Correct containerLogMaxSizeMb to containerLogMaxSizeMB in customized kubelet config
 
 0.5.25
 +++++
