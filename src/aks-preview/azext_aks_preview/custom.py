@@ -2608,7 +2608,7 @@ def aks_addon_list(cmd, client, resource_group_name, name):  # pylint: disable=u
     current_addons = []
 
     for name, addon in ADDONS.items():
-        if addon not in addon_profiles:
+        if not addon_profiles or addon not in addon_profiles:
             current_addons.append({
                 "addon_name": name,
                 "addon_key": addon,
