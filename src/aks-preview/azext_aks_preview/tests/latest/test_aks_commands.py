@@ -1451,12 +1451,10 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                      '--kubelet-config={kc_path} --linux-os-config={oc_path} --aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/CustomNodeConfigPreview -o json'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check(
-                'agentPoolProfiles[0].kubeletConfig.cpuManagerPolicy', 'static'),
-            self.check(
-                'agentPoolProfiles[0].linuxOsConfig.swapFileSizeMb', 1500),
-            self.check(
-                'agentPoolProfiles[0].linuxOsConfig.sysctls.netIpv4TcpTwReuse', True)
+            self.check('agentPoolProfiles[0].kubeletConfig.cpuManagerPolicy', 'static'),
+            self.check('agentPoolProfiles[0].kubeletConfig.containerLogMaxSizeMb', 20),
+            self.check('agentPoolProfiles[0].linuxOsConfig.swapFileSizeMb', 1500),
+            self.check('agentPoolProfiles[0].linuxOsConfig.sysctls.netIpv4TcpTwReuse', True)
         ])
 
         # nodepool add
@@ -1466,6 +1464,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('provisioningState', 'Succeeded'),
             self.check('kubeletConfig.cpuCfsQuotaPeriod', '200ms'),
             self.check('kubeletConfig.podMaxPids', 120),
+            self.check('kubeletConfig.containerLogMaxSizeMb', 20),
             self.check('linuxOsConfig.sysctls.netCoreSomaxconn', 163849)
         ])
 

@@ -3991,9 +3991,10 @@ def _get_kubelet_config(file_path):
     config_object.container_log_max_files = kubelet_config.get(
         "containerLogMaxFiles", None)
     config_object.container_log_max_size_mb = kubelet_config.get(
-        "containerLogMaxSizeMb", None)
+        "containerLogMaxSizeMB", None)
     config_object.pod_max_pids = kubelet_config.get(
         "podMaxPids", None)
+
 
     return config_object
 
