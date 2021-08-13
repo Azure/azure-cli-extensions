@@ -40,7 +40,6 @@ def load_arguments(self, _):
         c.argument('mute_actions_duration', type=get_period_type(as_timedelta=True),
                    options_list=['--mute-actions-duration', '--mad'],
                    help='Mute actions for the chosen period of time (in ISO 8601 duration format) after the alert is fired.')
-        c.argument('actions', options_list=['--action', '-a'], nargs='+', deprecate_info=c.deprecate(redirect='--actions', hide=True))
         c.argument('action_groups', options_list=['--action-groups'], nargs='+', help='Action Group resource Ids to invoke when the alert fires.')
         c.argument('custom_properties', custom_properties_arg_type)
         c.argument('auto_mitigate', arg_type=get_three_state_flag(),
