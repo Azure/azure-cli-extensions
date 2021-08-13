@@ -1123,6 +1123,11 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
     registry_username = None
     registry_password = None
     isContainerRegistryEnabled = existing_user_values_flat.get('global.isCustomRegistryEnabled')
+
+    if isContainerRegistryEnabled and arc_agent_version is None:
+        logger.warning("Skipping upgrade as Arc agent version is not provided for custom container registry")
+        return
+
     if isContainerRegistryEnabled:
         helm_container_repository = existing_user_values_flat.get('systemDefaultValues.image.repository')
         registry_path = "{}/azurearck8s/azure-arc-k8sagents:{}".format(helm_container_repository, connected_cluster.agent_version)
