@@ -19,14 +19,14 @@ def load_command_table(self, _):
     connection_linker = CliCommandType(
         operations_tmpl='azext_connection.vendored_sdks.connection.operations._linker_operations#LinkerOperations.{}',
         client_factory=cf_linker)
-    with self.command_group('connection', connection_linker, client_factory=cf_linker) as g:
+    with self.command_group('connection linker', connection_linker, client_factory=cf_linker) as g:
         g.custom_command('list', 'connection_linker_list')
         g.custom_show_command('show', 'connection_linker_show')
         g.custom_command('create', 'connection_linker_create', supports_no_wait=True)
-        g.custom_command('update', 'connection_linker_create', supports_no_wait=True)
+        g.custom_command('update', 'connection_linker_update', supports_no_wait=True)
         g.custom_command('delete', 'connection_linker_delete', confirmation=True)
         g.custom_command('list-configuration', 'connection_linker_list_configuration')
-        g.custom_command('validate', 'connection_linker_validate_linker', supports_no_wait=True)
+        g.custom_command('validate-linker', 'connection_linker_validate_linker')
         g.custom_wait_command('wait', 'connection_linker_show')
 
     with self.command_group('connection', is_experimental=True):

@@ -22,14 +22,11 @@ def step_linker_create(test, rg, checks=None):
              '--auth-info "{{\\"name\\":\\"name\\",\\"authType\\":\\"secret\\",\\"secret\\":\\"secret\\"}}" '
              '--target-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.DocumentDb/database'
              'Accounts/test-acc/mongodbDatabases/test-db" '
-             '--resource-group "{rg}" '
-             '--source-provider "Microsoft.Web" '
-             '--source-resource-name "test-app" '
-             '--source-resource-type "sites"',
+             '--resource-uri "subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-rg/providers/Micro'
+             'soft.Web/sites/test-app"',
              checks=[])
     test.cmd('az connection linker wait --created '
-             '--name "{myLinker}" '
-             '--resource-group "{rg}"',
+             '--name "{myLinker}"',
              checks=checks)
 
 
@@ -40,10 +37,8 @@ def step_linker_show(test, rg, checks=None):
         checks = []
     test.cmd('az connection linker show '
              '--name "{myLinker}" '
-             '--resource-group "{rg}" '
-             '--source-provider "Microsoft.Web" '
-             '--source-resource-name "test-app" '
-             '--source-resource-type "sites"',
+             '--resource-uri "subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-rg/providers/Micro'
+             'soft.Web/sites/test-app"',
              checks=checks)
 
 
@@ -53,10 +48,8 @@ def step_linker_list(test, rg, checks=None):
     if checks is None:
         checks = []
     test.cmd('az connection linker list '
-             '--resource-group "{rg}" '
-             '--source-provider "Microsoft.Web" '
-             '--source-resource-name "test-app" '
-             '--source-resource-type "sites"',
+             '--resource-uri "subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-rg/providers/Micro'
+             'soft.Web/sites/test-app"',
              checks=checks)
 
 
@@ -67,13 +60,12 @@ def step_linker_update(test, rg, checks=None):
         checks = []
     test.cmd('az connection linker update '
              '--name "{myLinker}" '
-             '--auth-info "{{\\"name\\":\\"name\\",\\"authType\\":\\"servicePrincipal\\",\\"id\\":\\"id\\"}}" '
+             '--auth-info "{{\\"authType\\":\\"servicePrincipalSecret\\",\\"clientId\\":\\"name\\",\\"principalId\\":\\'
+             '"id\\",\\"secret\\":\\"secret\\"}}" '
              '--target-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.DocumentDb/database'
              'Accounts/test-acc/mongodbDatabases/test-db" '
-             '--resource-group "{rg}" '
-             '--source-provider "Microsoft.Web" '
-             '--source-resource-name "test-app" '
-             '--source-resource-type "sites"',
+             '--resource-uri "subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-rg/providers/Micro'
+             'soft.Web/sites/test-app"',
              checks=checks)
 
 
@@ -84,10 +76,8 @@ def step_linker_list_configuration(test, rg, checks=None):
         checks = []
     test.cmd('az connection linker list-configuration '
              '--name "{myLinker}" '
-             '--resource-group "{rg}" '
-             '--source-provider "Microsoft.Web" '
-             '--source-resource-name "test-app" '
-             '--source-resource-type "sites"',
+             '--resource-uri "subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-rg/providers/Micro'
+             'soft.Web/sites/test-app"',
              checks=checks)
 
 
@@ -98,10 +88,8 @@ def step_linker_validate_linker(test, rg, checks=None):
         checks = []
     test.cmd('az connection linker validate-linker '
              '--name "{myLinker}" '
-             '--resource-group "{rg}" '
-             '--source-provider "Microsoft.Web" '
-             '--source-resource-name "test-app" '
-             '--source-resource-type "sites"',
+             '--resource-uri "subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-rg/providers/Micro'
+             'soft.Web/sites/test-app"',
              checks=checks)
 
 
@@ -118,9 +106,7 @@ def step_linker_delete(test, rg, checks=None):
         checks = []
     test.cmd('az connection linker delete -y '
              '--name "{myLinker}" '
-             '--resource-group "{rg}" '
-             '--source-provider "Microsoft.Web" '
-             '--source-resource-name "test-app" '
-             '--source-resource-type "sites"',
+             '--resource-uri "subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-rg/providers/Micro'
+             'soft.Web/sites/test-app"',
              checks=checks)
 

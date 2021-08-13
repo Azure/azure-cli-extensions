@@ -9,7 +9,7 @@
 # --------------------------------------------------------------------------
 
 from azure.cli.core import AzCommandsLoader
-from azext_connection.generated._help import helps  # pylint: disable=unused-import
+# from azext_connection.generated._help import helps  # pylint: disable=unused-import
 try:
     from azext_connection.manual._help import helps  # pylint: disable=reimported
 except ImportError:
@@ -28,8 +28,8 @@ class MicrosoftServiceLinkerCommandsLoader(AzCommandsLoader):
         parent.__init__(cli_ctx=cli_ctx, custom_command_type=connection_custom)
 
     def load_command_table(self, args):
-        from azext_connection.generated.commands import load_command_table
-        load_command_table(self, args)
+        # from azext_connection.generated.commands import load_command_table
+        # load_command_table(self, args)
         try:
             from azext_connection.manual.commands import load_command_table as load_command_table_manual
             load_command_table_manual(self, args)
@@ -38,8 +38,8 @@ class MicrosoftServiceLinkerCommandsLoader(AzCommandsLoader):
         return self.command_table
 
     def load_arguments(self, command):
-        from azext_connection.generated._params import load_arguments
-        load_arguments(self, command)
+        # from azext_connection.generated._params import load_arguments
+        # load_arguments(self, command)
         try:
             from azext_connection.manual._params import load_arguments as load_arguments_manual
             load_arguments_manual(self, command)

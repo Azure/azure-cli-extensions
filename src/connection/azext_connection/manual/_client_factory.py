@@ -7,11 +7,14 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
-# pylint: disable=wildcard-import
-# pylint: disable=unused-wildcard-import
 
-# from .generated.action import *  # noqa: F403
-try:
-    from .manual.action import *  # noqa: F403
-except ImportError:
-    pass
+
+def cf_connection_cl(cli_ctx, *_):
+    from azure.cli.core.commands.client_factory import get_mgmt_service_client
+    from azext_connection.vendored_sdks.connection import MicrosoftServiceLinker
+    return get_mgmt_service_client(cli_ctx,
+                                   MicrosoftServiceLinker)
+
+
+def cf_linker(cli_ctx, *_):
+    return cf_connection_cl(cli_ctx).linker

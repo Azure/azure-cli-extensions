@@ -38,8 +38,22 @@ class AuthType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
 
     SYSTEM_ASSIGNED_IDENTITY = "systemAssignedIdentity"
     USER_ASSIGNED_IDENTITY = "userAssignedIdentity"
-    SERVICE_PRINCIPAL = "servicePrincipal"
+    SERVICE_PRINCIPAL_SECRET = "servicePrincipalSecret"
+    SERVICE_PRINCIPAL_CERTIFICATE = "servicePrincipalCertificate"
     SECRET = "secret"
+
+class ClientType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+
+    NONE = "none"
+    DOTNET = "dotnet"
+    DOTNET_CORE = "dotnetCore"
+    PYTHON = "python"
+    DJANGO = "django"
+    PHP = "php"
+    NODEJS = "Nodejs"
+    JAVA = "java"
+    GO = "go"
+    SPRING_CLOUD_BINDING = "springCloudBinding"
 
 class CreatedByType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The type of identity that created the resource.
@@ -50,7 +64,7 @@ class CreatedByType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     MANAGED_IDENTITY = "ManagedIdentity"
     KEY = "Key"
 
-class LinkStatus(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+class LinkerStatus(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Specifies if the linker is healthy.
     """
 

@@ -19,12 +19,13 @@ class AuthInfoBase(msrest.serialization.Model):
     """The authentication info.
 
     You probably want to use the sub-classes and not this class directly. Known
-    sub-classes are: SecretAuthInfo, ServicePrincipalAuthInfo, SystemAssignedIdentityAuthInfo, UserAssignedIdentityAuthInfo.
+    sub-classes are: SecretAuthInfo, ServicePrincipalCertificateAuthInfo, ServicePrincipalSecretAuthInfo, SystemAssignedIdentityAuthInfo, UserAssignedIdentityAuthInfo.
 
     All required parameters must be populated in order to send to Azure.
 
     :param auth_type: Required. The authentication type.Constant filled by server.  Possible values
-     include: "systemAssignedIdentity", "userAssignedIdentity", "servicePrincipal", "secret".
+     include: "systemAssignedIdentity", "userAssignedIdentity", "servicePrincipalSecret",
+     "servicePrincipalCertificate", "secret".
     :type auth_type: str or ~microsoft_service_linker.models.AuthType
     """
 
@@ -37,7 +38,7 @@ class AuthInfoBase(msrest.serialization.Model):
     }
 
     _subtype_map = {
-        'auth_type': {'secret': 'SecretAuthInfo', 'servicePrincipal': 'ServicePrincipalAuthInfo', 'systemAssignedIdentity': 'SystemAssignedIdentityAuthInfo', 'userAssignedIdentity': 'UserAssignedIdentityAuthInfo'}
+        'auth_type': {'secret': 'SecretAuthInfo', 'servicePrincipalCertificate': 'ServicePrincipalCertificateAuthInfo', 'servicePrincipalSecret': 'ServicePrincipalSecretAuthInfo', 'systemAssignedIdentity': 'SystemAssignedIdentityAuthInfo', 'userAssignedIdentity': 'UserAssignedIdentityAuthInfo'}
     }
 
     def __init__(
@@ -179,6 +180,9 @@ class LinkerPatch(msrest.serialization.Model):
     :type target_id: str
     :param auth_info: The authentication type.
     :type auth_info: ~microsoft_service_linker.models.AuthInfoBase
+    :param client_type:  Possible values include: "none", "dotnet", "dotnetCore", "python",
+     "django", "php", "Nodejs", "java", "go", "springCloudBinding".
+    :type client_type: str or ~microsoft_service_linker.models.ClientType
     :ivar provisioning_state: The provisioning state.
     :vartype provisioning_state: str
     """
@@ -190,6 +194,7 @@ class LinkerPatch(msrest.serialization.Model):
     _attribute_map = {
         'target_id': {'key': 'properties.targetId', 'type': 'str'},
         'auth_info': {'key': 'properties.authInfo', 'type': 'AuthInfoBase'},
+        'client_type': {'key': 'properties.clientType', 'type': 'str'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
     }
 
@@ -198,11 +203,13 @@ class LinkerPatch(msrest.serialization.Model):
         *,
         target_id: Optional[str] = None,
         auth_info: Optional["AuthInfoBase"] = None,
+        client_type: Optional[Union[str, "ClientType"]] = None,
         **kwargs
     ):
         super(LinkerPatch, self).__init__(**kwargs)
         self.target_id = target_id
         self.auth_info = auth_info
+        self.client_type = client_type
         self.provisioning_state = None
 
 
@@ -262,6 +269,9 @@ class LinkerResource(Resource):
     :type target_id: str
     :param auth_info: The authentication type.
     :type auth_info: ~microsoft_service_linker.models.AuthInfoBase
+    :param client_type:  Possible values include: "none", "dotnet", "dotnetCore", "python",
+     "django", "php", "Nodejs", "java", "go", "springCloudBinding".
+    :type client_type: str or ~microsoft_service_linker.models.ClientType
     :ivar provisioning_state: The provisioning state.
     :vartype provisioning_state: str
     """
@@ -281,6 +291,7 @@ class LinkerResource(Resource):
         'system_data': {'key': 'systemData', 'type': 'SystemData'},
         'target_id': {'key': 'properties.targetId', 'type': 'str'},
         'auth_info': {'key': 'properties.authInfo', 'type': 'AuthInfoBase'},
+        'client_type': {'key': 'properties.clientType', 'type': 'str'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
     }
 
@@ -289,12 +300,14 @@ class LinkerResource(Resource):
         *,
         target_id: Optional[str] = None,
         auth_info: Optional["AuthInfoBase"] = None,
+        client_type: Optional[Union[str, "ClientType"]] = None,
         **kwargs
     ):
         super(LinkerResource, self).__init__(**kwargs)
         self.system_data = None
         self.target_id = target_id
         self.auth_info = auth_info
+        self.client_type = client_type
         self.provisioning_state = None
 
 
@@ -424,7 +437,7 @@ class OperationListResult(msrest.serialization.Model):
 
 
 class ProxyResource(Resource):
-    """The resource model definition for an Azure Resource Manager proxy resource. It will have everything other than required location and tags.
+    """The resource model definition for a Azure Resource Manager proxy resource. It will not have tags and a location.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
@@ -463,7 +476,8 @@ class SecretAuthInfo(AuthInfoBase):
     All required parameters must be populated in order to send to Azure.
 
     :param auth_type: Required. The authentication type.Constant filled by server.  Possible values
-     include: "systemAssignedIdentity", "userAssignedIdentity", "servicePrincipal", "secret".
+     include: "systemAssignedIdentity", "userAssignedIdentity", "servicePrincipalSecret",
+     "servicePrincipalCertificate", "secret".
     :type auth_type: str or ~microsoft_service_linker.models.AuthType
     :param name: Required. Username or account name for secret auth.
     :type name: str
@@ -495,43 +509,96 @@ class SecretAuthInfo(AuthInfoBase):
         self.secret = secret
 
 
-class ServicePrincipalAuthInfo(AuthInfoBase):
-    """The authentication info when authType is servicePrincipal.
+class ServicePrincipalCertificateAuthInfo(AuthInfoBase):
+    """The authentication info when authType is servicePrincipal certificate.
 
     All required parameters must be populated in order to send to Azure.
 
     :param auth_type: Required. The authentication type.Constant filled by server.  Possible values
-     include: "systemAssignedIdentity", "userAssignedIdentity", "servicePrincipal", "secret".
+     include: "systemAssignedIdentity", "userAssignedIdentity", "servicePrincipalSecret",
+     "servicePrincipalCertificate", "secret".
     :type auth_type: str or ~microsoft_service_linker.models.AuthType
-    :param id: Required. ServicePrincipal Id for servicePrincipal auth.
-    :type id: str
-    :param name: Required. ServicePrincipal Name for servicePrincipal auth.
-    :type name: str
+    :param client_id: Required. Application clientId for servicePrincipal auth.
+    :type client_id: str
+    :param principal_id: Required. Principal Id for servicePrincipal auth.
+    :type principal_id: str
+    :param certificate: Required. ServicePrincipal certificate for servicePrincipal auth.
+    :type certificate: str
     """
 
     _validation = {
         'auth_type': {'required': True},
-        'id': {'required': True},
-        'name': {'required': True},
+        'client_id': {'required': True},
+        'principal_id': {'required': True},
+        'certificate': {'required': True},
     }
 
     _attribute_map = {
         'auth_type': {'key': 'authType', 'type': 'str'},
-        'id': {'key': 'id', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
+        'client_id': {'key': 'clientId', 'type': 'str'},
+        'principal_id': {'key': 'principalId', 'type': 'str'},
+        'certificate': {'key': 'certificate', 'type': 'str'},
     }
 
     def __init__(
         self,
         *,
-        id: str,
-        name: str,
+        client_id: str,
+        principal_id: str,
+        certificate: str,
         **kwargs
     ):
-        super(ServicePrincipalAuthInfo, self).__init__(**kwargs)
-        self.auth_type = 'servicePrincipal'  # type: str
-        self.id = id
-        self.name = name
+        super(ServicePrincipalCertificateAuthInfo, self).__init__(**kwargs)
+        self.auth_type = 'servicePrincipalCertificate'  # type: str
+        self.client_id = client_id
+        self.principal_id = principal_id
+        self.certificate = certificate
+
+
+class ServicePrincipalSecretAuthInfo(AuthInfoBase):
+    """The authentication info when authType is servicePrincipal secret.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param auth_type: Required. The authentication type.Constant filled by server.  Possible values
+     include: "systemAssignedIdentity", "userAssignedIdentity", "servicePrincipalSecret",
+     "servicePrincipalCertificate", "secret".
+    :type auth_type: str or ~microsoft_service_linker.models.AuthType
+    :param client_id: Required. ServicePrincipal application clientId for servicePrincipal auth.
+    :type client_id: str
+    :param principal_id: Required. Principal Id for servicePrincipal auth.
+    :type principal_id: str
+    :param secret: Required. Secret for servicePrincipal auth.
+    :type secret: str
+    """
+
+    _validation = {
+        'auth_type': {'required': True},
+        'client_id': {'required': True},
+        'principal_id': {'required': True},
+        'secret': {'required': True},
+    }
+
+    _attribute_map = {
+        'auth_type': {'key': 'authType', 'type': 'str'},
+        'client_id': {'key': 'clientId', 'type': 'str'},
+        'principal_id': {'key': 'principalId', 'type': 'str'},
+        'secret': {'key': 'secret', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        client_id: str,
+        principal_id: str,
+        secret: str,
+        **kwargs
+    ):
+        super(ServicePrincipalSecretAuthInfo, self).__init__(**kwargs)
+        self.auth_type = 'servicePrincipalSecret'  # type: str
+        self.client_id = client_id
+        self.principal_id = principal_id
+        self.secret = secret
 
 
 class SourceConfiguration(msrest.serialization.Model):
@@ -589,7 +656,8 @@ class SystemAssignedIdentityAuthInfo(AuthInfoBase):
     All required parameters must be populated in order to send to Azure.
 
     :param auth_type: Required. The authentication type.Constant filled by server.  Possible values
-     include: "systemAssignedIdentity", "userAssignedIdentity", "servicePrincipal", "secret".
+     include: "systemAssignedIdentity", "userAssignedIdentity", "servicePrincipalSecret",
+     "servicePrincipalCertificate", "secret".
     :type auth_type: str or ~microsoft_service_linker.models.AuthType
     """
 
@@ -624,7 +692,7 @@ class SystemData(msrest.serialization.Model):
     :param last_modified_by_type: The type of identity that last modified the resource. Possible
      values include: "User", "Application", "ManagedIdentity", "Key".
     :type last_modified_by_type: str or ~microsoft_service_linker.models.CreatedByType
-    :param last_modified_at: The type of identity that last modified the resource.
+    :param last_modified_at: The timestamp of resource last modification (UTC).
     :type last_modified_at: ~datetime.datetime
     """
 
@@ -663,7 +731,8 @@ class UserAssignedIdentityAuthInfo(AuthInfoBase):
     All required parameters must be populated in order to send to Azure.
 
     :param auth_type: Required. The authentication type.Constant filled by server.  Possible values
-     include: "systemAssignedIdentity", "userAssignedIdentity", "servicePrincipal", "secret".
+     include: "systemAssignedIdentity", "userAssignedIdentity", "servicePrincipalSecret",
+     "servicePrincipalCertificate", "secret".
     :type auth_type: str or ~microsoft_service_linker.models.AuthType
     :param id: Required. Client Id for userAssignedIdentity.
     :type id: str
@@ -695,9 +764,9 @@ class ValidateResult(msrest.serialization.Model):
 
     :param name: The linker name.
     :type name: str
-    :param link_status: Specifies if the linker is healthy. Possible values include: "Healthy",
+    :param linker_status: Specifies if the linker is healthy. Possible values include: "Healthy",
      "Not healthy".
-    :type link_status: str or ~microsoft_service_linker.models.LinkStatus
+    :type linker_status: str or ~microsoft_service_linker.models.LinkerStatus
     :param reason: The reason of the error.
     :type reason: str
     :param report_start_time_utc: The start time of the validation report.
@@ -707,13 +776,13 @@ class ValidateResult(msrest.serialization.Model):
     :param target_id: The resource Id of target service.
     :type target_id: str
     :param auth_type: The authentication type. Possible values include: "systemAssignedIdentity",
-     "userAssignedIdentity", "servicePrincipal", "secret".
+     "userAssignedIdentity", "servicePrincipalSecret", "servicePrincipalCertificate", "secret".
     :type auth_type: str or ~microsoft_service_linker.models.AuthType
     """
 
     _attribute_map = {
         'name': {'key': 'name', 'type': 'str'},
-        'link_status': {'key': 'linkStatus', 'type': 'str'},
+        'linker_status': {'key': 'linkerStatus', 'type': 'str'},
         'reason': {'key': 'reason', 'type': 'str'},
         'report_start_time_utc': {'key': 'reportStartTimeUtc', 'type': 'iso-8601'},
         'report_end_time_utc': {'key': 'reportEndTimeUtc', 'type': 'iso-8601'},
@@ -725,7 +794,7 @@ class ValidateResult(msrest.serialization.Model):
         self,
         *,
         name: Optional[str] = None,
-        link_status: Optional[Union[str, "LinkStatus"]] = None,
+        linker_status: Optional[Union[str, "LinkerStatus"]] = None,
         reason: Optional[str] = None,
         report_start_time_utc: Optional[datetime.datetime] = None,
         report_end_time_utc: Optional[datetime.datetime] = None,
@@ -735,7 +804,7 @@ class ValidateResult(msrest.serialization.Model):
     ):
         super(ValidateResult, self).__init__(**kwargs)
         self.name = name
-        self.link_status = link_status
+        self.linker_status = linker_status
         self.reason = reason
         self.report_start_time_utc = report_start_time_utc
         self.report_end_time_utc = report_end_time_utc

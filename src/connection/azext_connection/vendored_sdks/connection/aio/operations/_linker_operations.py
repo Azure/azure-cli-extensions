@@ -45,22 +45,14 @@ class LinkerOperations:
 
     def list(
         self,
-        resource_group_name: str,
-        source_provider: str,
-        source_resource_type: str,
-        source_resource_name: str,
+        resource_uri: str,
         **kwargs
     ) -> AsyncIterable["models.LinkerList"]:
         """Returns list of Linkers which connects to the resource.
 
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-        :type resource_group_name: str
-        :param source_provider: The Azure resource provider of the source resource to be connected.
-        :type source_provider: str
-        :param source_resource_type: The Azure resource type of source resource to be connected.
-        :type source_resource_type: str
-        :param source_resource_name: The Azure resource name of source resource to be connected.
-        :type source_resource_name: str
+        :param resource_uri: The fully qualified Azure Resource manager identifier of the resource to
+         be connected.
+        :type resource_uri: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either LinkerList or the result of cls(response)
         :rtype: ~azure.core.async_paging.AsyncItemPaged[~microsoft_service_linker.models.LinkerList]
@@ -83,11 +75,7 @@ class LinkerOperations:
                 # Construct URL
                 url = self.list.metadata['url']  # type: ignore
                 path_format_arguments = {
-                    'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
-                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
-                    'sourceProvider': self._serialize.url("source_provider", source_provider, 'str'),
-                    'sourceResourceType': self._serialize.url("source_resource_type", source_resource_type, 'str'),
-                    'sourceResourceName': self._serialize.url("source_resource_name", source_resource_name, 'str'),
+                    'resourceUri': self._serialize.url("resource_uri", resource_uri, 'str', skip_quote=True),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
@@ -124,27 +112,19 @@ class LinkerOperations:
         return AsyncItemPaged(
             get_next, extract_data
         )
-    list.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{sourceProvider}/{sourceResourceType}/{sourceResourceName}/providers/Microsoft.ServiceLinker/linkers'}  # type: ignore
+    list.metadata = {'url': '/{resourceUri}/providers/Microsoft.ServiceLinker/linkers'}  # type: ignore
 
     async def get(
         self,
-        resource_group_name: str,
-        source_provider: str,
-        source_resource_type: str,
-        source_resource_name: str,
+        resource_uri: str,
         linker_name: str,
         **kwargs
     ) -> "models.LinkerResource":
         """Returns Linker resource for a given name.
 
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-        :type resource_group_name: str
-        :param source_provider: The Azure resource provider of the source resource to be connected.
-        :type source_provider: str
-        :param source_resource_type: The Azure resource type of source resource to be connected.
-        :type source_resource_type: str
-        :param source_resource_name: The Azure resource name of source resource to be connected.
-        :type source_resource_name: str
+        :param resource_uri: The fully qualified Azure Resource manager identifier of the resource to
+         be connected.
+        :type resource_uri: str
         :param linker_name: The name Linker resource.
         :type linker_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
@@ -163,11 +143,7 @@ class LinkerOperations:
         # Construct URL
         url = self.get.metadata['url']  # type: ignore
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
-            'sourceProvider': self._serialize.url("source_provider", source_provider, 'str'),
-            'sourceResourceType': self._serialize.url("source_resource_type", source_resource_type, 'str'),
-            'sourceResourceName': self._serialize.url("source_resource_name", source_resource_name, 'str'),
+            'resourceUri': self._serialize.url("resource_uri", resource_uri, 'str', skip_quote=True),
             'linkerName': self._serialize.url("linker_name", linker_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -195,14 +171,11 @@ class LinkerOperations:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{sourceProvider}/{sourceResourceType}/{sourceResourceName}/providers/Microsoft.ServiceLinker/linkers/{linkerName}'}  # type: ignore
+    get.metadata = {'url': '/{resourceUri}/providers/Microsoft.ServiceLinker/linkers/{linkerName}'}  # type: ignore
 
     async def _create_or_update_initial(
         self,
-        resource_group_name: str,
-        source_provider: str,
-        source_resource_type: str,
-        source_resource_name: str,
+        resource_uri: str,
         linker_name: str,
         parameters: "models.LinkerResource",
         **kwargs
@@ -219,11 +192,7 @@ class LinkerOperations:
         # Construct URL
         url = self._create_or_update_initial.metadata['url']  # type: ignore
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
-            'sourceProvider': self._serialize.url("source_provider", source_provider, 'str'),
-            'sourceResourceType': self._serialize.url("source_resource_type", source_resource_type, 'str'),
-            'sourceResourceName': self._serialize.url("source_resource_name", source_resource_name, 'str'),
+            'resourceUri': self._serialize.url("resource_uri", resource_uri, 'str', skip_quote=True),
             'linkerName': self._serialize.url("linker_name", linker_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -259,28 +228,20 @@ class LinkerOperations:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    _create_or_update_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{sourceProvider}/{sourceResourceType}/{sourceResourceName}/providers/Microsoft.ServiceLinker/linkers/{linkerName}'}  # type: ignore
+    _create_or_update_initial.metadata = {'url': '/{resourceUri}/providers/Microsoft.ServiceLinker/linkers/{linkerName}'}  # type: ignore
 
     async def begin_create_or_update(
         self,
-        resource_group_name: str,
-        source_provider: str,
-        source_resource_type: str,
-        source_resource_name: str,
+        resource_uri: str,
         linker_name: str,
         parameters: "models.LinkerResource",
         **kwargs
     ) -> AsyncLROPoller["models.LinkerResource"]:
         """Create or update linker resource.
 
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-        :type resource_group_name: str
-        :param source_provider: The Azure resource provider of the source resource to be connected.
-        :type source_provider: str
-        :param source_resource_type: The Azure resource type of source resource to be connected.
-        :type source_resource_type: str
-        :param source_resource_name: The Azure resource name of source resource to be connected.
-        :type source_resource_name: str
+        :param resource_uri: The fully qualified Azure Resource manager identifier of the resource to
+         be connected.
+        :type resource_uri: str
         :param linker_name: The name Linker resource.
         :type linker_name: str
         :param parameters: Linker details.
@@ -304,10 +265,7 @@ class LinkerOperations:
         cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
         if cont_token is None:
             raw_result = await self._create_or_update_initial(
-                resource_group_name=resource_group_name,
-                source_provider=source_provider,
-                source_resource_type=source_resource_type,
-                source_resource_name=source_resource_name,
+                resource_uri=resource_uri,
                 linker_name=linker_name,
                 parameters=parameters,
                 cls=lambda x,y,z: x,
@@ -325,11 +283,7 @@ class LinkerOperations:
             return deserialized
 
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
-            'sourceProvider': self._serialize.url("source_provider", source_provider, 'str'),
-            'sourceResourceType': self._serialize.url("source_resource_type", source_resource_type, 'str'),
-            'sourceResourceName': self._serialize.url("source_resource_name", source_resource_name, 'str'),
+            'resourceUri': self._serialize.url("resource_uri", resource_uri, 'str', skip_quote=True),
             'linkerName': self._serialize.url("linker_name", linker_name, 'str'),
         }
 
@@ -345,27 +299,19 @@ class LinkerOperations:
             )
         else:
             return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    begin_create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{sourceProvider}/{sourceResourceType}/{sourceResourceName}/providers/Microsoft.ServiceLinker/linkers/{linkerName}'}  # type: ignore
+    begin_create_or_update.metadata = {'url': '/{resourceUri}/providers/Microsoft.ServiceLinker/linkers/{linkerName}'}  # type: ignore
 
     async def delete(
         self,
-        resource_group_name: str,
-        source_provider: str,
-        source_resource_type: str,
-        source_resource_name: str,
+        resource_uri: str,
         linker_name: str,
         **kwargs
     ) -> None:
         """Delete a link.
 
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-        :type resource_group_name: str
-        :param source_provider: The Azure resource provider of the source resource to be connected.
-        :type source_provider: str
-        :param source_resource_type: The Azure resource type of source resource to be connected.
-        :type source_resource_type: str
-        :param source_resource_name: The Azure resource name of source resource to be connected.
-        :type source_resource_name: str
+        :param resource_uri: The fully qualified Azure Resource manager identifier of the resource to
+         be connected.
+        :type resource_uri: str
         :param linker_name: The name Linker resource.
         :type linker_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
@@ -384,11 +330,7 @@ class LinkerOperations:
         # Construct URL
         url = self.delete.metadata['url']  # type: ignore
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
-            'sourceProvider': self._serialize.url("source_provider", source_provider, 'str'),
-            'sourceResourceType': self._serialize.url("source_resource_type", source_resource_type, 'str'),
-            'sourceResourceName': self._serialize.url("source_resource_name", source_resource_name, 'str'),
+            'resourceUri': self._serialize.url("resource_uri", resource_uri, 'str', skip_quote=True),
             'linkerName': self._serialize.url("linker_name", linker_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -413,14 +355,11 @@ class LinkerOperations:
         if cls:
             return cls(pipeline_response, None, {})
 
-    delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{sourceProvider}/{sourceResourceType}/{sourceResourceName}/providers/Microsoft.ServiceLinker/linkers/{linkerName}'}  # type: ignore
+    delete.metadata = {'url': '/{resourceUri}/providers/Microsoft.ServiceLinker/linkers/{linkerName}'}  # type: ignore
 
     async def _update_initial(
         self,
-        resource_group_name: str,
-        source_provider: str,
-        source_resource_type: str,
-        source_resource_name: str,
+        resource_uri: str,
         linker_name: str,
         parameters: "models.LinkerPatch",
         **kwargs
@@ -437,11 +376,7 @@ class LinkerOperations:
         # Construct URL
         url = self._update_initial.metadata['url']  # type: ignore
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
-            'sourceProvider': self._serialize.url("source_provider", source_provider, 'str'),
-            'sourceResourceType': self._serialize.url("source_resource_type", source_resource_type, 'str'),
-            'sourceResourceName': self._serialize.url("source_resource_name", source_resource_name, 'str'),
+            'resourceUri': self._serialize.url("resource_uri", resource_uri, 'str', skip_quote=True),
             'linkerName': self._serialize.url("linker_name", linker_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -477,28 +412,20 @@ class LinkerOperations:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    _update_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{sourceProvider}/{sourceResourceType}/{sourceResourceName}/providers/Microsoft.ServiceLinker/linkers/{linkerName}'}  # type: ignore
+    _update_initial.metadata = {'url': '/{resourceUri}/providers/Microsoft.ServiceLinker/linkers/{linkerName}'}  # type: ignore
 
     async def begin_update(
         self,
-        resource_group_name: str,
-        source_provider: str,
-        source_resource_type: str,
-        source_resource_name: str,
+        resource_uri: str,
         linker_name: str,
         parameters: "models.LinkerPatch",
         **kwargs
     ) -> AsyncLROPoller["models.LinkerResource"]:
         """Operation to update an existing link.
 
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-        :type resource_group_name: str
-        :param source_provider: The Azure resource provider of the source resource to be connected.
-        :type source_provider: str
-        :param source_resource_type: The Azure resource type of source resource to be connected.
-        :type source_resource_type: str
-        :param source_resource_name: The Azure resource name of source resource to be connected.
-        :type source_resource_name: str
+        :param resource_uri: The fully qualified Azure Resource manager identifier of the resource to
+         be connected.
+        :type resource_uri: str
         :param linker_name: The name Linker resource.
         :type linker_name: str
         :param parameters: Linker details.
@@ -522,10 +449,7 @@ class LinkerOperations:
         cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
         if cont_token is None:
             raw_result = await self._update_initial(
-                resource_group_name=resource_group_name,
-                source_provider=source_provider,
-                source_resource_type=source_resource_type,
-                source_resource_name=source_resource_name,
+                resource_uri=resource_uri,
                 linker_name=linker_name,
                 parameters=parameters,
                 cls=lambda x,y,z: x,
@@ -543,11 +467,7 @@ class LinkerOperations:
             return deserialized
 
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
-            'sourceProvider': self._serialize.url("source_provider", source_provider, 'str'),
-            'sourceResourceType': self._serialize.url("source_resource_type", source_resource_type, 'str'),
-            'sourceResourceName': self._serialize.url("source_resource_name", source_resource_name, 'str'),
+            'resourceUri': self._serialize.url("resource_uri", resource_uri, 'str', skip_quote=True),
             'linkerName': self._serialize.url("linker_name", linker_name, 'str'),
         }
 
@@ -563,18 +483,27 @@ class LinkerOperations:
             )
         else:
             return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    begin_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{sourceProvider}/{sourceResourceType}/{sourceResourceName}/providers/Microsoft.ServiceLinker/linkers/{linkerName}'}  # type: ignore
+    begin_update.metadata = {'url': '/{resourceUri}/providers/Microsoft.ServiceLinker/linkers/{linkerName}'}  # type: ignore
 
-    async def _validate_linker_initial(
+    async def validate_linker(
         self,
+        resource_uri: str,
         linker_name: str,
-        resource_group_name: str,
-        source_provider: str,
-        source_resource_type: str,
-        source_resource_name: str,
         **kwargs
-    ) -> Optional["models.ValidateResult"]:
-        cls = kwargs.pop('cls', None)  # type: ClsType[Optional["models.ValidateResult"]]
+    ) -> "models.ValidateResult":
+        """Validate a link.
+
+        :param resource_uri: The fully qualified Azure Resource manager identifier of the resource to
+         be connected.
+        :type resource_uri: str
+        :param linker_name: The name Linker resource.
+        :type linker_name: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :return: ValidateResult, or the result of cls(response)
+        :rtype: ~microsoft_service_linker.models.ValidateResult
+        :raises: ~azure.core.exceptions.HttpResponseError
+        """
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.ValidateResult"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -583,14 +512,10 @@ class LinkerOperations:
         accept = "application/json"
 
         # Construct URL
-        url = self._validate_linker_initial.metadata['url']  # type: ignore
+        url = self.validate_linker.metadata['url']  # type: ignore
         path_format_arguments = {
+            'resourceUri': self._serialize.url("resource_uri", resource_uri, 'str', skip_quote=True),
             'linkerName': self._serialize.url("linker_name", linker_name, 'str'),
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
-            'sourceProvider': self._serialize.url("source_provider", source_provider, 'str'),
-            'sourceResourceType': self._serialize.url("source_resource_type", source_resource_type, 'str'),
-            'sourceResourceName': self._serialize.url("source_resource_name", source_resource_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -606,124 +531,32 @@ class LinkerOperations:
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
-        if response.status_code not in [200, 202]:
+        if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = None
-        if response.status_code == 200:
-            deserialized = self._deserialize('ValidateResult', pipeline_response)
+        deserialized = self._deserialize('ValidateResult', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    _validate_linker_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{sourceProvider}/{sourceResourceType}/{sourceResourceName}/providers/Microsoft.ServiceLinker/linkers/{linkerName}/validateLinker'}  # type: ignore
-
-    async def begin_validate_linker(
-        self,
-        linker_name: str,
-        resource_group_name: str,
-        source_provider: str,
-        source_resource_type: str,
-        source_resource_name: str,
-        **kwargs
-    ) -> AsyncLROPoller["models.ValidateResult"]:
-        """Validate a link.
-
-        :param linker_name: The name Linker resource.
-        :type linker_name: str
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-        :type resource_group_name: str
-        :param source_provider: The Azure resource provider of the source resource to be connected.
-        :type source_provider: str
-        :param source_resource_type: The Azure resource type of source resource to be connected.
-        :type source_resource_type: str
-        :param source_resource_name: The Azure resource name of source resource to be connected.
-        :type source_resource_name: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: True for ARMPolling, False for no polling, or a
-         polling object for personal polling strategy
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
-        :return: An instance of AsyncLROPoller that returns either ValidateResult or the result of cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~microsoft_service_linker.models.ValidateResult]
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-        polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.ValidateResult"]
-        lro_delay = kwargs.pop(
-            'polling_interval',
-            self._config.polling_interval
-        )
-        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
-        if cont_token is None:
-            raw_result = await self._validate_linker_initial(
-                linker_name=linker_name,
-                resource_group_name=resource_group_name,
-                source_provider=source_provider,
-                source_resource_type=source_resource_type,
-                source_resource_name=source_resource_name,
-                cls=lambda x,y,z: x,
-                **kwargs
-            )
-
-        kwargs.pop('error_map', None)
-        kwargs.pop('content_type', None)
-
-        def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize('ValidateResult', pipeline_response)
-
-            if cls:
-                return cls(pipeline_response, deserialized, {})
-            return deserialized
-
-        path_format_arguments = {
-            'linkerName': self._serialize.url("linker_name", linker_name, 'str'),
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
-            'sourceProvider': self._serialize.url("source_provider", source_provider, 'str'),
-            'sourceResourceType': self._serialize.url("source_resource_type", source_resource_type, 'str'),
-            'sourceResourceName': self._serialize.url("source_resource_name", source_resource_name, 'str'),
-        }
-
-        if polling is True: polling_method = AsyncARMPolling(lro_delay, lro_options={'final-state-via': 'azure-async-operation'}, path_format_arguments=path_format_arguments,  **kwargs)
-        elif polling is False: polling_method = AsyncNoPolling()
-        else: polling_method = polling
-        if cont_token:
-            return AsyncLROPoller.from_continuation_token(
-                polling_method=polling_method,
-                continuation_token=cont_token,
-                client=self._client,
-                deserialization_callback=get_long_running_output
-            )
-        else:
-            return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    begin_validate_linker.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{sourceProvider}/{sourceResourceType}/{sourceResourceName}/providers/Microsoft.ServiceLinker/linkers/{linkerName}/validateLinker'}  # type: ignore
+    validate_linker.metadata = {'url': '/{resourceUri}/providers/Microsoft.ServiceLinker/linkers/{linkerName}/validateLinker'}  # type: ignore
 
     async def list_configurations(
         self,
-        resource_group_name: str,
+        resource_uri: str,
         linker_name: str,
-        source_provider: str,
-        source_resource_type: str,
-        source_resource_name: str,
         **kwargs
     ) -> "models.SourceConfigurationResult":
         """list source configurations for a linker.
 
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-        :type resource_group_name: str
+        :param resource_uri: The fully qualified Azure Resource manager identifier of the resource to
+         be connected.
+        :type resource_uri: str
         :param linker_name: The name Linker resource.
         :type linker_name: str
-        :param source_provider: The Azure resource provider of the source resource to be connected.
-        :type source_provider: str
-        :param source_resource_type: The Azure resource type of source resource to be connected.
-        :type source_resource_type: str
-        :param source_resource_name: The Azure resource name of source resource to be connected.
-        :type source_resource_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: SourceConfigurationResult, or the result of cls(response)
         :rtype: ~microsoft_service_linker.models.SourceConfigurationResult
@@ -740,12 +573,8 @@ class LinkerOperations:
         # Construct URL
         url = self.list_configurations.metadata['url']  # type: ignore
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'resourceUri': self._serialize.url("resource_uri", resource_uri, 'str', skip_quote=True),
             'linkerName': self._serialize.url("linker_name", linker_name, 'str'),
-            'sourceProvider': self._serialize.url("source_provider", source_provider, 'str'),
-            'sourceResourceType': self._serialize.url("source_resource_type", source_resource_type, 'str'),
-            'sourceResourceName': self._serialize.url("source_resource_name", source_resource_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -772,4 +601,4 @@ class LinkerOperations:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    list_configurations.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{sourceProvider}/{sourceResourceType}/{sourceResourceName}/providers/Microsoft.ServiceLinker/linkers/{linkerName}/listConfigurations'}  # type: ignore
+    list_configurations.metadata = {'url': '/{resourceUri}/providers/Microsoft.ServiceLinker/linkers/{linkerName}/listConfigurations'}  # type: ignore

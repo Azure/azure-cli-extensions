@@ -20,7 +20,8 @@ try:
     from ._models_py3 import ProxyResource
     from ._models_py3 import Resource
     from ._models_py3 import SecretAuthInfo
-    from ._models_py3 import ServicePrincipalAuthInfo
+    from ._models_py3 import ServicePrincipalCertificateAuthInfo
+    from ._models_py3 import ServicePrincipalSecretAuthInfo
     from ._models_py3 import SourceConfiguration
     from ._models_py3 import SourceConfigurationResult
     from ._models_py3 import SystemAssignedIdentityAuthInfo
@@ -41,7 +42,8 @@ except (SyntaxError, ImportError):
     from ._models import ProxyResource  # type: ignore
     from ._models import Resource  # type: ignore
     from ._models import SecretAuthInfo  # type: ignore
-    from ._models import ServicePrincipalAuthInfo  # type: ignore
+    from ._models import ServicePrincipalCertificateAuthInfo  # type: ignore
+    from ._models import ServicePrincipalSecretAuthInfo  # type: ignore
     from ._models import SourceConfiguration  # type: ignore
     from ._models import SourceConfigurationResult  # type: ignore
     from ._models import SystemAssignedIdentityAuthInfo  # type: ignore
@@ -52,8 +54,9 @@ except (SyntaxError, ImportError):
 from ._microsoft_service_linker_enums import (
     ActionType,
     AuthType,
+    ClientType,
     CreatedByType,
-    LinkStatus,
+    LinkerStatus,
     Origin,
     Type,
 )
@@ -72,7 +75,8 @@ __all__ = [
     'ProxyResource',
     'Resource',
     'SecretAuthInfo',
-    'ServicePrincipalAuthInfo',
+    'ServicePrincipalCertificateAuthInfo',
+    'ServicePrincipalSecretAuthInfo',
     'SourceConfiguration',
     'SourceConfigurationResult',
     'SystemAssignedIdentityAuthInfo',
@@ -81,8 +85,9 @@ __all__ = [
     'ValidateResult',
     'ActionType',
     'AuthType',
+    'ClientType',
     'CreatedByType',
-    'LinkStatus',
+    'LinkerStatus',
     'Origin',
     'Type',
 ]

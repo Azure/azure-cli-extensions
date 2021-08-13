@@ -12,40 +12,43 @@
 from knack.help_files import helps
 
 
-helps['connection'] = """
+helps['connection linker'] = """
     type: group
-    short-summary: Manage connection resource
+    short-summary: Manage linker with connection
 """
 
-helps['connection list'] = """
+helps['connection linker list'] = """
     type: command
-    short-summary: "List operation is not supported now. (Returns list of connections which connects to the resource.)"
+    short-summary: "Returns list of Linkers which connects to the resource."
     examples:
       - name: LinkList
         text: |-
-               az connection list --resource-group "test-rg" --webapp "test-webapp"
+               az connection linker list --resource-uri "subscriptions/00000000-0000-0000-0000-000000000000/resourceGro\
+ups/test-rg/providers/Microsoft.Web/sites/test-app"
 """
 
-helps['connection show'] = """
+helps['connection linker show'] = """
     type: command
-    short-summary: "Returns connection resource for a given name."
+    short-summary: "Returns Linker resource for a given name."
     examples:
       - name: Link
         text: |-
-               az connection show --name "linkName" --resource-group "test-rg" --webapp "test-webapp"
+               az connection linker show --name "linkName" --resource-uri "subscriptions/00000000-0000-0000-0000-000000\
+000000/resourceGroups/test-rg/providers/Microsoft.Web/sites/test-app"
 """
 
-helps['connection create'] = """
+helps['connection linker create'] = """
     type: command
-    short-summary: "Create connection resource."
+    short-summary: "Create linker resource."
     parameters:
-      - name: --secret-auth
+      - name: --secret-auth-info
         short-summary: "The authentication info when authType is secret"
         long-summary: |
-            Usage: --secret-auth name=XX secret=XX
+            Usage: --secret-auth-info name=XX secret=XX auth-type=XX
 
             name: Required. Username or account name for secret auth.
             secret: Password or account key for secret auth.
+            auth-type: Required. The authentication type.
       - name: --user-assigned-identity-auth-info
         short-summary: "The authentication info when authType is userAssignedIdentity"
         long-summary: |
@@ -59,32 +62,45 @@ helps['connection create'] = """
             Usage: --system-assigned-identity-auth-info auth-type=XX
 
             auth-type: Required. The authentication type.
-      - name: --service-principal-auth-info
-        short-summary: "The authentication info when authType is servicePrincipal"
+      - name: --service-principal-secret-auth-info
+        short-summary: "The authentication info when authType is servicePrincipal secret"
         long-summary: |
-            Usage: --service-principal-auth-info id=XX name=XX auth-type=XX
+            Usage: --service-principal-secret-auth-info client-id=XX principal-id=XX secret=XX auth-type=XX
 
-            id: Required. ServicePrincipal Id for servicePrincipal auth.
-            name: Required. ServicePrincipal Name for servicePrincipal auth.
+            client-id: Required. ServicePrincipal application clientId for servicePrincipal auth.
+            principal-id: Required. Principal Id for servicePrincipal auth.
+            secret: Required. Secret for servicePrincipal auth.
+            auth-type: Required. The authentication type.
+      - name: --service-principal-certificate-auth-info
+        short-summary: "The authentication info when authType is servicePrincipal certificate"
+        long-summary: |
+            Usage: --service-principal-certificate-auth-info client-id=XX principal-id=XX certificate=XX auth-type=XX
+
+            client-id: Required. Application clientId for servicePrincipal auth.
+            principal-id: Required. Principal Id for servicePrincipal auth.
+            certificate: Required. ServicePrincipal certificate for servicePrincipal auth.
             auth-type: Required. The authentication type.
     examples:
       - name: PutLink
         text: |-
-               az connection create --name "linkName" --webapp test-web --postgres test-postgres --database test\
--n test_conn --secret-auth name=eng secret=secret
+               az connection linker create --name "linkName" --auth-info "{\\"name\\":\\"name\\",\\"authType\\":\\"secr\
+et\\",\\"secret\\":\\"secret\\"}" --target-id "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-\
+rg/providers/Microsoft.DocumentDb/databaseAccounts/test-acc/mongodbDatabases/test-db" --resource-uri \
+"subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-rg/providers/Microsoft.Web/sites/test-app"
 """
 
-helps['connection update'] = """
+helps['connection linker update'] = """
     type: command
-    short-summary: "Operation to update an existing connection."
+    short-summary: "Operation to update an existing link."
     parameters:
-      - name: --secret-auth
+      - name: --secret-auth-info
         short-summary: "The authentication info when authType is secret"
         long-summary: |
-            Usage: --secret-auth name=XX secret=XX
+            Usage: --secret-auth-info name=XX secret=XX auth-type=XX
 
             name: Required. Username or account name for secret auth.
             secret: Password or account key for secret auth.
+            auth-type: Required. The authentication type.
       - name: --user-assigned-identity-auth-info
         short-summary: "The authentication info when authType is userAssignedIdentity"
         long-summary: |
@@ -98,56 +114,78 @@ helps['connection update'] = """
             Usage: --system-assigned-identity-auth-info auth-type=XX
 
             auth-type: Required. The authentication type.
-      - name: --service-principal-auth-info
-        short-summary: "The authentication info when authType is servicePrincipal"
+      - name: --service-principal-secret-auth-info
+        short-summary: "The authentication info when authType is servicePrincipal secret"
         long-summary: |
-            Usage: --service-principal-auth-info id=XX name=XX auth-type=XX
+            Usage: --service-principal-secret-auth-info client-id=XX principal-id=XX secret=XX auth-type=XX
 
-            id: Required. ServicePrincipal Id for servicePrincipal auth.
-            name: Required. ServicePrincipal Name for servicePrincipal auth.
+            client-id: Required. ServicePrincipal application clientId for servicePrincipal auth.
+            principal-id: Required. Principal Id for servicePrincipal auth.
+            secret: Required. Secret for servicePrincipal auth.
+            auth-type: Required. The authentication type.
+      - name: --service-principal-certificate-auth-info
+        short-summary: "The authentication info when authType is servicePrincipal certificate"
+        long-summary: |
+            Usage: --service-principal-certificate-auth-info client-id=XX principal-id=XX certificate=XX auth-type=XX
+
+            client-id: Required. Application clientId for servicePrincipal auth.
+            principal-id: Required. Principal Id for servicePrincipal auth.
+            certificate: Required. ServicePrincipal certificate for servicePrincipal auth.
             auth-type: Required. The authentication type.
     examples:
       - name: PatchLink
         text: |-
-               az connection update --name "linkName" --webapp test-web --postgres test-postgres --database test\
--n test_conn --secret-auth name=eng secret=secret
+               az connection linker update --name "linkName" --auth-info "{\\"authType\\":\\"servicePrincipalSecret\\",\
+\\"clientId\\":\\"name\\",\\"principalId\\":\\"id\\",\\"secret\\":\\"secret\\"}" --target-id \
+"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-rg/providers/Microsoft.DocumentDb/databaseAcco\
+unts/test-acc/mongodbDatabases/test-db" --resource-uri "subscriptions/00000000-0000-0000-0000-000000000000/resourceGrou\
+ps/test-rg/providers/Microsoft.Web/sites/test-app"
 """
 
-helps['connection delete'] = """
+helps['connection linker delete'] = """
     type: command
     short-summary: "Delete a link."
     examples:
       - name: DeleteLink
         text: |-
-               az connection delete --name "linkName" --resource-group "test-rg" --webapp test-web
+               az connection linker delete --name "linkName" --resource-uri "subscriptions/00000000-0000-0000-0000-0000\
+00000000/resourceGroups/test-rg/providers/Microsoft.Web/sites/test-app"
 """
 
-helps['connection list-configuration'] = """
+helps['connection linker list-configuration'] = """
     type: command
-    short-summary: "list source configurations for a connection."
+    short-summary: "list source configurations for a linker."
     examples:
       - name: GetConfiguration
         text: |-
-               az connection list-configuration --name "linkName" --resource-group "test-rg" --webapp test-web 
+               az connection linker list-configuration --name "linkName" --resource-uri "subscriptions/00000000-0000-00\
+00-0000-000000000000/resourceGroups/test-rg/providers/Microsoft.Web/sites/test-app"
 """
 
-helps['connection validate'] = """
+helps['connection linker validate-linker'] = """
     type: command
-    short-summary: "Validate a connection."
+    short-summary: "Validate a link."
     examples:
       - name: ValidateLinkFailure
         text: |-
-               az connection validate --name "linkName" --resource-group "test-rg" --webapp test-web
+               az connection linker validate-linker --name "linkName" --resource-uri "subscriptions/00000000-0000-0000-\
+0000-000000000000/resourceGroups/test-rg/providers/Microsoft.Web/sites/test-app"
       - name: ValidateLinkSuccess
         text: |-
-               az connection validate --name "linkName" --resource-group "test-rg" --webapp test-web
+               az connection linker validate-linker --name "linkName" --resource-uri "subscriptions/00000000-0000-0000-\
+0000-000000000000/resourceGroups/test-rg/providers/Microsoft.Web/sites/test-app"
 """
 
-helps['connection wait'] = """
+helps['connection linker wait'] = """
     type: command
-    short-summary: Place the CLI in a waiting state until a condition of the connection is met.
+    short-summary: Place the CLI in a waiting state until a condition of the connection linker is met.
     examples:
       - name: Pause executing next line of CLI script until the connection linker is successfully created.
         text: |-
-               az connection wait --name "linkName" --resource-group "test-rg" --webapp test-web --created
+               az connection linker wait --name "linkName" --resource-uri "subscriptions/00000000-0000-0000-0000-000000\
+000000/resourceGroups/test-rg/providers/Microsoft.Web/sites/test-app" --created
+      - name: Pause executing next line of CLI script until the connection linker is successfully updated.
+        text: |-
+               az connection linker wait --name "linkName" --resource-uri "subscriptions/00000000-0000-0000-0000-000000\
+000000/resourceGroups/test-rg/providers/Microsoft.Web/sites/test-app" --updated
 """

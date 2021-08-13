@@ -60,9 +60,10 @@ def call_scenario(test, rg):
     ])
     step_linker_update(test, rg, checks=[
         test.check("name", "{myLinker}", case_sensitive=False),
-        test.check("authInfo.name", "name", case_sensitive=False),
-        test.check("authInfo.authType", "servicePrincipal", case_sensitive=False),
-        test.check("authInfo.id", "id", case_sensitive=False),
+        test.check("authInfo.authType", "servicePrincipalSecret", case_sensitive=False),
+        test.check("authInfo.clientId", "name", case_sensitive=False),
+        test.check("authInfo.principalId", "id", case_sensitive=False),
+        test.check("authInfo.secret", "secret", case_sensitive=False),
         test.check("targetId", "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.DocumentDb/dat"
                    "abaseAccounts/test-acc/mongodbDatabases/test-db", case_sensitive=False),
     ])

@@ -14,40 +14,27 @@ from azure.cli.core.util import sdk_no_wait
 
 
 def connection_linker_list(client,
-                           resource_group_name,
-                           source_provider,
-                           source_resource_type,
-                           source_resource_name):
-    return client.list(resource_group_name=resource_group_name,
-                       source_provider=source_provider,
-                       source_resource_type=source_resource_type,
-                       source_resource_name=source_resource_name)
+                           resource_uri):
+    return client.list(resource_uri=resource_uri)
 
 
 def connection_linker_show(client,
-                           resource_group_name,
-                           source_provider,
-                           source_resource_type,
-                           source_resource_name,
+                           resource_uri,
                            linker_name):
-    return client.get(resource_group_name=resource_group_name,
-                      source_provider=source_provider,
-                      source_resource_type=source_resource_type,
-                      source_resource_name=source_resource_name,
+    return client.get(resource_uri=resource_uri,
                       linker_name=linker_name)
 
 
 def connection_linker_create(client,
-                             resource_group_name,
-                             source_provider,
-                             source_resource_type,
-                             source_resource_name,
+                             resource_uri,
                              linker_name,
                              target_id=None,
                              secret_auth_info=None,
                              user_assigned_identity_auth_info=None,
                              system_assigned_identity_auth_info=None,
-                             service_principal_auth_info=None,
+                             service_principal_secret_auth_info=None,
+                             service_principal_certificate_auth_info=None,
+                             client_type=None,
                              no_wait=False):
     all_auth_info = []
     if secret_auth_info is not None:
@@ -56,36 +43,36 @@ def connection_linker_create(client,
         all_auth_info.append(user_assigned_identity_auth_info)
     if system_assigned_identity_auth_info is not None:
         all_auth_info.append(system_assigned_identity_auth_info)
-    if service_principal_auth_info is not None:
-        all_auth_info.append(service_principal_auth_info)
+    if service_principal_secret_auth_info is not None:
+        all_auth_info.append(service_principal_secret_auth_info)
+    if service_principal_certificate_auth_info is not None:
+        all_auth_info.append(service_principal_certificate_auth_info)
     if len(all_auth_info) > 1:
         raise CLIError('at most one of  secret_auth_info, user_assigned_identity_auth_info, '
-                       'system_assigned_identity_auth_info, service_principal_auth_info is needed for auth_info!')
+                       'system_assigned_identity_auth_info, service_principal_secret_auth_info, '
+                       'service_principal_certificate_auth_info is needed for auth_info!')
     auth_info = all_auth_info[0] if len(all_auth_info) == 1 else None
     parameters = {}
     parameters['target_id'] = target_id
     parameters['auth_info'] = auth_info
+    parameters['client_type'] = client_type
     return sdk_no_wait(no_wait,
                        client.begin_create_or_update,
-                       resource_group_name=resource_group_name,
-                       source_provider=source_provider,
-                       source_resource_type=source_resource_type,
-                       source_resource_name=source_resource_name,
+                       resource_uri=resource_uri,
                        linker_name=linker_name,
                        parameters=parameters)
 
 
 def connection_linker_update(client,
-                             resource_group_name,
-                             source_provider,
-                             source_resource_type,
-                             source_resource_name,
+                             resource_uri,
                              linker_name,
                              target_id=None,
                              secret_auth_info=None,
                              user_assigned_identity_auth_info=None,
                              system_assigned_identity_auth_info=None,
-                             service_principal_auth_info=None,
+                             service_principal_secret_auth_info=None,
+                             service_principal_certificate_auth_info=None,
+                             client_type=None,
                              no_wait=False):
     all_auth_info = []
     if secret_auth_info is not None:
@@ -94,62 +81,42 @@ def connection_linker_update(client,
         all_auth_info.append(user_assigned_identity_auth_info)
     if system_assigned_identity_auth_info is not None:
         all_auth_info.append(system_assigned_identity_auth_info)
-    if service_principal_auth_info is not None:
-        all_auth_info.append(service_principal_auth_info)
+    if service_principal_secret_auth_info is not None:
+        all_auth_info.append(service_principal_secret_auth_info)
+    if service_principal_certificate_auth_info is not None:
+        all_auth_info.append(service_principal_certificate_auth_info)
     if len(all_auth_info) > 1:
         raise CLIError('at most one of  secret_auth_info, user_assigned_identity_auth_info, '
-                       'system_assigned_identity_auth_info, service_principal_auth_info is needed for auth_info!')
+                       'system_assigned_identity_auth_info, service_principal_secret_auth_info, '
+                       'service_principal_certificate_auth_info is needed for auth_info!')
     auth_info = all_auth_info[0] if len(all_auth_info) == 1 else None
     parameters = {}
     parameters['target_id'] = target_id
     parameters['auth_info'] = auth_info
+    parameters['client_type'] = client_type
     return sdk_no_wait(no_wait,
                        client.begin_update,
-                       resource_group_name=resource_group_name,
-                       source_provider=source_provider,
-                       source_resource_type=source_resource_type,
-                       source_resource_name=source_resource_name,
+                       resource_uri=resource_uri,
                        linker_name=linker_name,
                        parameters=parameters)
 
 
 def connection_linker_delete(client,
-                             resource_group_name,
-                             source_provider,
-                             source_resource_type,
-                             source_resource_name,
+                             resource_uri,
                              linker_name):
-    return client.delete(resource_group_name=resource_group_name,
-                         source_provider=source_provider,
-                         source_resource_type=source_resource_type,
-                         source_resource_name=source_resource_name,
+    return client.delete(resource_uri=resource_uri,
                          linker_name=linker_name)
 
 
 def connection_linker_list_configuration(client,
-                                         resource_group_name,
-                                         linker_name,
-                                         source_provider,
-                                         source_resource_type,
-                                         source_resource_name):
-    return client.list_configurations(resource_group_name=resource_group_name,
-                                      linker_name=linker_name,
-                                      source_provider=source_provider,
-                                      source_resource_type=source_resource_type,
-                                      source_resource_name=source_resource_name)
+                                         resource_uri,
+                                         linker_name):
+    return client.list_configurations(resource_uri=resource_uri,
+                                      linker_name=linker_name)
 
 
 def connection_linker_validate_linker(client,
-                                      linker_name,
-                                      resource_group_name,
-                                      source_provider,
-                                      source_resource_type,
-                                      source_resource_name,
-                                      no_wait=False):
-    return sdk_no_wait(no_wait,
-                       client.begin_validate_linker,
-                       linker_name=linker_name,
-                       resource_group_name=resource_group_name,
-                       source_provider=source_provider,
-                       source_resource_type=source_resource_type,
-                       source_resource_name=source_resource_name)
+                                      resource_uri,
+                                      linker_name):
+    return client.validate_linker(resource_uri=resource_uri,
+                                  linker_name=linker_name)

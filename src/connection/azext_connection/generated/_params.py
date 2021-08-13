@@ -10,112 +10,88 @@
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
 
-from azure.cli.core.commands.parameters import resource_group_name_type
+from azure.cli.core.commands.parameters import get_enum_type
 from azext_connection.action import (
     AddSecretAuthInfo,
     AddUserAssignedIdentityAuthInfo,
     AddSystemAssignedIdentityAuthInfo,
-    AddServicePrincipalAuthInfo
+    AddServicePrincipalSecretAuthInfo,
+    AddServicePrincipalCertificateAuthInfo
 )
-from ._validators import validate_source_resource, validate_target_resource
 
 
 def load_arguments(self, _):
 
-    with self.argument_context('connection list') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.extra('webapp', type=str, help='The name of webapp service.', validator=validate_source_resource)
-        c.ignore('source_provider')
-        c.ignore('source_resource_type')
-        c.ignore('source_resource_name')
+    with self.argument_context('connection linker list') as c:
+        c.argument('resource_uri', type=str, help='The fully qualified Azure Resource manager identifier of the '
+                   'resource to be connected.')
 
-    with self.argument_context('connection show') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.extra('webapp', type=str, help='The name of webapp service.', validator=validate_source_resource)
-        c.ignore('source_provider')
-        c.ignore('source_resource_type')
-        c.ignore('source_resource_name')
-        c.argument('linker_name', options_list=['--name', '-n', '--connection-name'], type=str, help='The name connection '
-                   'resource.', id_part='child_name_1')
-
-    with self.argument_context('connection create') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.extra('webapp', type=str, help='The name of webapp service.', validator=validate_source_resource)
-        c.extra('target_resource_group_name', options_list=['-tg', '--target-resource-group-name'], type=str,
-                help='The resource group name of target resource.')
-        c.extra('postgres', type=str, help='The name of postgres service.')
-        c.extra('database', type=str, help='The name of database.')
-        c.ignore('source_provider')
-        c.ignore('source_resource_type')
-        c.ignore('source_resource_name')
-        c.argument('target_id', type=str, help='The resource Id of target service.', validator=validate_target_resource)
-        c.argument('secret_auth_info', options_list=['--secret-auth'], action=AddSecretAuthInfo, nargs='+', help='The authentication info when '
-                   'authType is secret', arg_group='AuthInfo')
-        c.argument('user_assigned_identity_auth_info', action=AddUserAssignedIdentityAuthInfo, nargs='+', help='The '
-                   'authentication info when authType is userAssignedIdentity', arg_group='AuthInfo')
-        c.argument('system_assigned_identity_auth_info', action=AddSystemAssignedIdentityAuthInfo, nargs='+',
-                   help='The authentication info when authType is systemAssignedIdentity Expect value: KEY1=VALUE1 '
-                   'KEY2=VALUE2 ...', arg_group='AuthInfo')
-        c.argument('service_principal_auth_info', action=AddServicePrincipalAuthInfo, nargs='+', help='The '
-                   'authentication info when authType is servicePrincipal', arg_group='AuthInfo')
-        c.argument('linker_name', options_list=['--name', '-n', '--connection-name'], type=str, help='The name of connection '
-                   'resource.', required=False)
-
-    with self.argument_context('connection update') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.extra('webapp', type=str, help='The name of webapp service.', validator=validate_source_resource)
-        c.extra('target_resource_group_name', options_list=['-tg', '--target-resource-group-name'], type=str,
-                help='The resource group name of target resource.')
-        c.extra('postgres', type=str, help='The name of postgres service.')
-        c.extra('database', type=str, help='The name of database.')
-        c.ignore('source_provider')
-        c.ignore('source_resource_type')
-        c.ignore('source_resource_name')
-        c.argument('target_id', type=str, help='The resource Id of target service.', validator=validate_target_resource)
-        c.argument('linker_name', options_list=['--name', '-n', '--connection-name'], type=str, help='The name Linker '
-                   'resource.', id_part='child_name_1')
-        c.argument('secret_auth_info', options_list=['--secret-auth'], action=AddSecretAuthInfo, nargs='+', help='The authentication info when '
-                   'authType is secret', arg_group='AuthInfo')
-        c.argument('user_assigned_identity_auth_info', action=AddUserAssignedIdentityAuthInfo, nargs='+', help='The '
-                   'authentication info when authType is userAssignedIdentity', arg_group='AuthInfo')
-        c.argument('system_assigned_identity_auth_info', action=AddSystemAssignedIdentityAuthInfo, nargs='+',
-                   help='The authentication info when authType is systemAssignedIdentity Expect value: KEY1=VALUE1 '
-                   'KEY2=VALUE2 ...', arg_group='AuthInfo')
-        c.argument('service_principal_auth_info', action=AddServicePrincipalAuthInfo, nargs='+', help='The '
-                   'authentication info when authType is servicePrincipal', arg_group='AuthInfo')
-
-    with self.argument_context('connection delete') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.extra('webapp', type=str, help='The name of webapp service.', validator=validate_source_resource)
-        c.ignore('source_provider')
-        c.ignore('source_resource_type')
-        c.ignore('source_resource_name')
-        c.argument('linker_name', options_list=['--name', '-n', '--connection-name'], type=str, help='The name connection '
-                   'resource.', id_part='child_name_1')
-
-    with self.argument_context('connection list-configuration') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('linker_name', options_list=['--name', '-n', '--connection-name'], type=str, help='The name connection '
+    with self.argument_context('connection linker show') as c:
+        c.argument('resource_uri', type=str, help='The fully qualified Azure Resource manager identifier of the '
+                   'resource to be connected.')
+        c.argument('linker_name', options_list=['--name', '-n', '--linker-name'], type=str, help='The name Linker '
                    'resource.')
-        c.extra('webapp', type=str, help='The name of webapp service.', validator=validate_source_resource)
-        c.ignore('source_provider')
-        c.ignore('source_resource_type')
-        c.ignore('source_resource_name')
 
-    with self.argument_context('connection validate') as c:
-        c.argument('linker_name', options_list=['--name', '-n', '--connection-name'], type=str, help='The name connection '
-                   'resource.', id_part='child_name_1')
-        c.argument('resource_group_name', resource_group_name_type)
-        c.extra('webapp', type=str, help='The name of webapp service.', validator=validate_source_resource)
-        c.ignore('source_provider')
-        c.ignore('source_resource_type')
-        c.ignore('source_resource_name')
+    with self.argument_context('connection linker create') as c:
+        c.argument('resource_uri', type=str, help='The fully qualified Azure Resource manager identifier of the '
+                   'resource to be connected.')
+        c.argument('linker_name', options_list=['--name', '-n', '--linker-name'], type=str, help='The name Linker '
+                   'resource.')
+        c.argument('target_id', type=str, help='The resource Id of target service.')
+        c.argument('secret_auth_info', action=AddSecretAuthInfo, nargs='+', help='The authentication info when '
+                   'authType is secret', arg_group='AuthInfo')
+        c.argument('user_assigned_identity_auth_info', action=AddUserAssignedIdentityAuthInfo, nargs='+', help='The '
+                   'authentication info when authType is userAssignedIdentity', arg_group='AuthInfo')
+        c.argument('system_assigned_identity_auth_info', action=AddSystemAssignedIdentityAuthInfo, nargs='+',
+                   help='The authentication info when authType is systemAssignedIdentity Expect value: KEY1=VALUE1 '
+                   'KEY2=VALUE2 ...', arg_group='AuthInfo')
+        c.argument('service_principal_secret_auth_info', action=AddServicePrincipalSecretAuthInfo, nargs='+',
+                   help='The authentication info when authType is servicePrincipal secret', arg_group='AuthInfo')
+        c.argument('service_principal_certificate_auth_info', action=AddServicePrincipalCertificateAuthInfo, nargs='+',
+                   help='The authentication info when authType is servicePrincipal certificate', arg_group='AuthInfo')
+        c.argument('client_type', arg_type=get_enum_type(['none', 'dotnet', 'dotnetCore', 'python', 'django', 'php',
+                                                          'Nodejs', 'java', 'go', 'springCloudBinding']), help='')
 
-    with self.argument_context('connection wait') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.extra('webapp', type=str, help='The name of webapp service.', validator=validate_source_resource)
-        c.ignore('source_provider')
-        c.ignore('source_resource_type')
-        c.ignore('source_resource_name')
-        c.argument('linker_name', options_list=['--name', '-n', '--connection-name'], type=str, help='The name connection '
-                   'resource.', id_part='child_name_1')
+    with self.argument_context('connection linker update') as c:
+        c.argument('resource_uri', type=str, help='The fully qualified Azure Resource manager identifier of the '
+                   'resource to be connected.')
+        c.argument('linker_name', options_list=['--name', '-n', '--linker-name'], type=str, help='The name Linker '
+                   'resource.')
+        c.argument('target_id', type=str, help='The resource Id of target service.')
+        c.argument('secret_auth_info', action=AddSecretAuthInfo, nargs='+', help='The authentication info when '
+                   'authType is secret', arg_group='AuthInfo')
+        c.argument('user_assigned_identity_auth_info', action=AddUserAssignedIdentityAuthInfo, nargs='+', help='The '
+                   'authentication info when authType is userAssignedIdentity', arg_group='AuthInfo')
+        c.argument('system_assigned_identity_auth_info', action=AddSystemAssignedIdentityAuthInfo, nargs='+',
+                   help='The authentication info when authType is systemAssignedIdentity Expect value: KEY1=VALUE1 '
+                   'KEY2=VALUE2 ...', arg_group='AuthInfo')
+        c.argument('service_principal_secret_auth_info', action=AddServicePrincipalSecretAuthInfo, nargs='+',
+                   help='The authentication info when authType is servicePrincipal secret', arg_group='AuthInfo')
+        c.argument('service_principal_certificate_auth_info', action=AddServicePrincipalCertificateAuthInfo, nargs='+',
+                   help='The authentication info when authType is servicePrincipal certificate', arg_group='AuthInfo')
+        c.argument('client_type', arg_type=get_enum_type(['none', 'dotnet', 'dotnetCore', 'python', 'django', 'php',
+                                                          'Nodejs', 'java', 'go', 'springCloudBinding']), help='')
+
+    with self.argument_context('connection linker delete') as c:
+        c.argument('resource_uri', type=str, help='The fully qualified Azure Resource manager identifier of the '
+                   'resource to be connected.')
+        c.argument('linker_name', options_list=['--name', '-n', '--linker-name'], type=str, help='The name Linker '
+                   'resource.')
+
+    with self.argument_context('connection linker list-configuration') as c:
+        c.argument('resource_uri', type=str, help='The fully qualified Azure Resource manager identifier of the '
+                   'resource to be connected.')
+        c.argument('linker_name', options_list=['--name', '-n', '--linker-name'], type=str, help='The name Linker '
+                   'resource.')
+
+    with self.argument_context('connection linker validate-linker') as c:
+        c.argument('resource_uri', type=str, help='The fully qualified Azure Resource manager identifier of the '
+                   'resource to be connected.')
+        c.argument('linker_name', options_list=['--name', '-n', '--linker-name'], type=str, help='The name Linker '
+                   'resource.')
+
+    with self.argument_context('connection linker wait') as c:
+        c.argument('resource_uri', type=str, help='The fully qualified Azure Resource manager identifier of the '
+                   'resource to be connected.')
+        c.argument('linker_name', options_list=['--name', '-n', '--linker-name'], type=str, help='The name Linker '
+                   'resource.')
