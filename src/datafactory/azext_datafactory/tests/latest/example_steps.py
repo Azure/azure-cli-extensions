@@ -468,6 +468,95 @@ def step_linked_service_delete(test, checks=None):
              checks=checks)
 
 
+# EXAMPLE: /ManagedVirtualNetworks/put/ManagedVirtualNetworks_Create
+@try_manual
+def step_managed_virtual_network_create(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az datafactory managed-virtual-network create '
+             '--factory-name "{myFactory}" '
+             '--name "{myManagedVirtualNetwork}" '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+
+# EXAMPLE: /ManagedVirtualNetworks/get/ManagedVirtualNetworks_Get
+@try_manual
+def step_managed_virtual_network_show(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az datafactory managed-virtual-network show '
+             '--factory-name "{myFactory}" '
+             '--name "{myManagedVirtualNetwork}" '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+
+# EXAMPLE: /ManagedVirtualNetworks/get/ManagedVirtualNetworks_ListByFactory
+@try_manual
+def step_managed_virtual_network_list(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az datafactory managed-virtual-network list '
+             '--factory-name "{myFactory}" '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+
+# EXAMPLE: /ManagedPrivateEndpoints/put/ManagedPrivateEndpoints_Create
+@try_manual
+def step_managed_private_endpoint_create(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az datafactory managed-private-endpoint create '
+             '--factory-name "{myFactory}" '
+             '--group-id "blob" '
+             '--private-link-resource-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Stor'
+             'age/storageAccounts/{sa}" '
+             '--name "{myManagedPrivateEndpoint}" '
+             '--managed-virtual-network-name "{myManagedVirtualNetwork}" '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+
+# EXAMPLE: /ManagedPrivateEndpoints/get/ManagedPrivateEndpoints_Get
+@try_manual
+def step_managed_private_endpoint_show(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az datafactory managed-private-endpoint show '
+             '--factory-name "{myFactory}" '
+             '--name "{myManagedPrivateEndpoint}" '
+             '--managed-virtual-network-name "{myManagedVirtualNetwork}" '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+
+# EXAMPLE: /ManagedPrivateEndpoints/get/ManagedPrivateEndpoints_ListByFactory
+@try_manual
+def step_managed_private_endpoint_list(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az datafactory managed-private-endpoint list '
+             '--factory-name "{myFactory}" '
+             '--managed-virtual-network-name "{myManagedVirtualNetwork}" '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+
+# EXAMPLE: /ManagedPrivateEndpoints/delete/ManagedPrivateEndpoints_Delete
+@try_manual
+def step_managed_private_endpoint_delete(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az datafactory managed-private-endpoint delete -y '
+             '--factory-name "{myFactory}" '
+             '--name "{myManagedPrivateEndpoint}" '
+             '--managed-virtual-network-name "{myManagedVirtualNetwork}" '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+
 # EXAMPLE: /PipelineRuns/get/PipelineRuns_Get
 @try_manual
 def step_pipeline_run_show(test, checks=None):

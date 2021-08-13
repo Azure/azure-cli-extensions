@@ -15,6 +15,8 @@
 |az datafactory integration-runtime|IntegrationRuntimes|[commands](#CommandsInIntegrationRuntimes)|
 |az datafactory integration-runtime-node|IntegrationRuntimeNodes|[commands](#CommandsInIntegrationRuntimeNodes)|
 |az datafactory linked-service|LinkedServices|[commands](#CommandsInLinkedServices)|
+|az datafactory managed-private-endpoint|ManagedPrivateEndpoints|[commands](#CommandsInManagedPrivateEndpoints)|
+|az datafactory managed-virtual-network|ManagedVirtualNetworks|[commands](#CommandsInManagedVirtualNetworks)|
 |az datafactory pipeline|Pipelines|[commands](#CommandsInPipelines)|
 |az datafactory pipeline-run|PipelineRuns|[commands](#CommandsInPipelineRuns)|
 |az datafactory trigger|Triggers|[commands](#CommandsInTriggers)|
@@ -85,6 +87,23 @@
 |[az datafactory linked-service create](#LinkedServicesCreateOrUpdate#Create)|CreateOrUpdate#Create|[Parameters](#ParametersLinkedServicesCreateOrUpdate#Create)|[Example](#ExamplesLinkedServicesCreateOrUpdate#Create)|
 |[az datafactory linked-service update](#LinkedServicesCreateOrUpdate#Update)|CreateOrUpdate#Update|[Parameters](#ParametersLinkedServicesCreateOrUpdate#Update)|Not Found|
 |[az datafactory linked-service delete](#LinkedServicesDelete)|Delete|[Parameters](#ParametersLinkedServicesDelete)|[Example](#ExamplesLinkedServicesDelete)|
+
+### <a name="CommandsInManagedPrivateEndpoints">Commands in `az datafactory managed-private-endpoint` group</a>
+|CLI Command|Operation Swagger name|Parameters|Examples|
+|---------|------------|--------|-----------|
+|[az datafactory managed-private-endpoint list](#ManagedPrivateEndpointsListByFactory)|ListByFactory|[Parameters](#ParametersManagedPrivateEndpointsListByFactory)|[Example](#ExamplesManagedPrivateEndpointsListByFactory)|
+|[az datafactory managed-private-endpoint show](#ManagedPrivateEndpointsGet)|Get|[Parameters](#ParametersManagedPrivateEndpointsGet)|[Example](#ExamplesManagedPrivateEndpointsGet)|
+|[az datafactory managed-private-endpoint create](#ManagedPrivateEndpointsCreateOrUpdate#Create)|CreateOrUpdate#Create|[Parameters](#ParametersManagedPrivateEndpointsCreateOrUpdate#Create)|[Example](#ExamplesManagedPrivateEndpointsCreateOrUpdate#Create)|
+|[az datafactory managed-private-endpoint update](#ManagedPrivateEndpointsCreateOrUpdate#Update)|CreateOrUpdate#Update|[Parameters](#ParametersManagedPrivateEndpointsCreateOrUpdate#Update)|Not Found|
+|[az datafactory managed-private-endpoint delete](#ManagedPrivateEndpointsDelete)|Delete|[Parameters](#ParametersManagedPrivateEndpointsDelete)|[Example](#ExamplesManagedPrivateEndpointsDelete)|
+
+### <a name="CommandsInManagedVirtualNetworks">Commands in `az datafactory managed-virtual-network` group</a>
+|CLI Command|Operation Swagger name|Parameters|Examples|
+|---------|------------|--------|-----------|
+|[az datafactory managed-virtual-network list](#ManagedVirtualNetworksListByFactory)|ListByFactory|[Parameters](#ParametersManagedVirtualNetworksListByFactory)|[Example](#ExamplesManagedVirtualNetworksListByFactory)|
+|[az datafactory managed-virtual-network show](#ManagedVirtualNetworksGet)|Get|[Parameters](#ParametersManagedVirtualNetworksGet)|[Example](#ExamplesManagedVirtualNetworksGet)|
+|[az datafactory managed-virtual-network create](#ManagedVirtualNetworksCreateOrUpdate#Create)|CreateOrUpdate#Create|[Parameters](#ParametersManagedVirtualNetworksCreateOrUpdate#Create)|[Example](#ExamplesManagedVirtualNetworksCreateOrUpdate#Create)|
+|[az datafactory managed-virtual-network update](#ManagedVirtualNetworksCreateOrUpdate#Update)|CreateOrUpdate#Update|[Parameters](#ParametersManagedVirtualNetworksCreateOrUpdate#Update)|Not Found|
 
 ### <a name="CommandsInPipelines">Commands in `az datafactory pipeline` group</a>
 |CLI Command|Operation Swagger name|Parameters|Examples|
@@ -746,6 +765,144 @@ az datafactory linked-service delete --factory-name "exampleFactoryName" --name 
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resourceGroupName|
 |**--factory-name**|string|The factory name.|factory_name|factoryName|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linkedServiceName|
+
+### group `az datafactory managed-private-endpoint`
+#### <a name="ManagedPrivateEndpointsListByFactory">Command `az datafactory managed-private-endpoint list`</a>
+
+##### <a name="ExamplesManagedPrivateEndpointsListByFactory">Example</a>
+```
+az datafactory managed-private-endpoint list --factory-name "exampleFactoryName" --managed-virtual-network-name \
+"exampleManagedVirtualNetworkName" --resource-group "exampleResourceGroup"
+```
+##### <a name="ParametersManagedPrivateEndpointsListByFactory">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The resource group name.|resource_group_name|resourceGroupName|
+|**--factory-name**|string|The factory name.|factory_name|factoryName|
+|**--managed-virtual-network-name**|string|Managed virtual network name|managed_virtual_network_name|managedVirtualNetworkName|
+
+#### <a name="ManagedPrivateEndpointsGet">Command `az datafactory managed-private-endpoint show`</a>
+
+##### <a name="ExamplesManagedPrivateEndpointsGet">Example</a>
+```
+az datafactory managed-private-endpoint show --factory-name "exampleFactoryName" --name "exampleManagedPrivateEndpointN\
+ame" --managed-virtual-network-name "exampleManagedVirtualNetworkName" --resource-group "exampleResourceGroup"
+```
+##### <a name="ParametersManagedPrivateEndpointsGet">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The resource group name.|resource_group_name|resourceGroupName|
+|**--factory-name**|string|The factory name.|factory_name|factoryName|
+|**--managed-virtual-network-name**|string|Managed virtual network name|managed_virtual_network_name|managedVirtualNetworkName|
+|**--managed-private-endpoint-name**|string|Managed private endpoint name|managed_private_endpoint_name|managedPrivateEndpointName|
+|**--if-none-match**|string|ETag of the managed private endpoint entity. Should only be specified for get. If the ETag matches the existing entity tag, or if * was provided, then no content will be returned.|if_none_match|If-None-Match|
+
+#### <a name="ManagedPrivateEndpointsCreateOrUpdate#Create">Command `az datafactory managed-private-endpoint create`</a>
+
+##### <a name="ExamplesManagedPrivateEndpointsCreateOrUpdate#Create">Example</a>
+```
+az datafactory managed-private-endpoint create --factory-name "exampleFactoryName" --group-id "blob" \
+--private-link-resource-id "/subscriptions/12345678-1234-1234-1234-12345678abc/resourceGroups/exampleResourceGroup/prov\
+iders/Microsoft.Storage/storageAccounts/exampleBlobStorage" --name "exampleManagedPrivateEndpointName" \
+--managed-virtual-network-name "exampleManagedVirtualNetworkName" --resource-group "exampleResourceGroup"
+```
+##### <a name="ParametersManagedPrivateEndpointsCreateOrUpdate#Create">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The resource group name.|resource_group_name|resourceGroupName|
+|**--factory-name**|string|The factory name.|factory_name|factoryName|
+|**--managed-virtual-network-name**|string|Managed virtual network name|managed_virtual_network_name|managedVirtualNetworkName|
+|**--managed-private-endpoint-name**|string|Managed private endpoint name|managed_private_endpoint_name|managedPrivateEndpointName|
+|**--if-match**|string|ETag of the managed private endpoint entity. Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|If-Match|
+|**--fqdns**|array|Fully qualified domain names|fqdns|fqdns|
+|**--group-id**|string|The groupId to which the managed private endpoint is created|group_id|groupId|
+|**--private-link-resource-id**|string|The ARM resource ID of the resource to which the managed private endpoint is created|private_link_resource_id|privateLinkResourceId|
+
+#### <a name="ManagedPrivateEndpointsCreateOrUpdate#Update">Command `az datafactory managed-private-endpoint update`</a>
+
+
+##### <a name="ParametersManagedPrivateEndpointsCreateOrUpdate#Update">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The resource group name.|resource_group_name|resourceGroupName|
+|**--factory-name**|string|The factory name.|factory_name|factoryName|
+|**--managed-virtual-network-name**|string|Managed virtual network name|managed_virtual_network_name|managedVirtualNetworkName|
+|**--managed-private-endpoint-name**|string|Managed private endpoint name|managed_private_endpoint_name|managedPrivateEndpointName|
+|**--if-match**|string|ETag of the managed private endpoint entity. Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|If-Match|
+|**--fqdns**|array|Fully qualified domain names|fqdns|fqdns|
+|**--group-id**|string|The groupId to which the managed private endpoint is created|group_id|groupId|
+|**--private-link-resource-id**|string|The ARM resource ID of the resource to which the managed private endpoint is created|private_link_resource_id|privateLinkResourceId|
+
+#### <a name="ManagedPrivateEndpointsDelete">Command `az datafactory managed-private-endpoint delete`</a>
+
+##### <a name="ExamplesManagedPrivateEndpointsDelete">Example</a>
+```
+az datafactory managed-private-endpoint delete --factory-name "exampleFactoryName" --name \
+"exampleManagedPrivateEndpointName" --managed-virtual-network-name "exampleManagedVirtualNetworkName" --resource-group \
+"exampleResourceGroup"
+```
+##### <a name="ParametersManagedPrivateEndpointsDelete">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The resource group name.|resource_group_name|resourceGroupName|
+|**--factory-name**|string|The factory name.|factory_name|factoryName|
+|**--managed-virtual-network-name**|string|Managed virtual network name|managed_virtual_network_name|managedVirtualNetworkName|
+|**--managed-private-endpoint-name**|string|Managed private endpoint name|managed_private_endpoint_name|managedPrivateEndpointName|
+
+### group `az datafactory managed-virtual-network`
+#### <a name="ManagedVirtualNetworksListByFactory">Command `az datafactory managed-virtual-network list`</a>
+
+##### <a name="ExamplesManagedVirtualNetworksListByFactory">Example</a>
+```
+az datafactory managed-virtual-network list --factory-name "exampleFactoryName" --resource-group \
+"exampleResourceGroup"
+```
+##### <a name="ParametersManagedVirtualNetworksListByFactory">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The resource group name.|resource_group_name|resourceGroupName|
+|**--factory-name**|string|The factory name.|factory_name|factoryName|
+
+#### <a name="ManagedVirtualNetworksGet">Command `az datafactory managed-virtual-network show`</a>
+
+##### <a name="ExamplesManagedVirtualNetworksGet">Example</a>
+```
+az datafactory managed-virtual-network show --factory-name "exampleFactoryName" --name "exampleManagedVirtualNetworkNam\
+e" --resource-group "exampleResourceGroup"
+```
+##### <a name="ParametersManagedVirtualNetworksGet">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The resource group name.|resource_group_name|resourceGroupName|
+|**--factory-name**|string|The factory name.|factory_name|factoryName|
+|**--managed-virtual-network-name**|string|Managed virtual network name|managed_virtual_network_name|managedVirtualNetworkName|
+|**--if-none-match**|string|ETag of the managed Virtual Network entity. Should only be specified for get. If the ETag matches the existing entity tag, or if * was provided, then no content will be returned.|if_none_match|If-None-Match|
+
+#### <a name="ManagedVirtualNetworksCreateOrUpdate#Create">Command `az datafactory managed-virtual-network create`</a>
+
+##### <a name="ExamplesManagedVirtualNetworksCreateOrUpdate#Create">Example</a>
+```
+az datafactory managed-virtual-network create --factory-name "exampleFactoryName" --name \
+"exampleManagedVirtualNetworkName" --resource-group "exampleResourceGroup"
+```
+##### <a name="ParametersManagedVirtualNetworksCreateOrUpdate#Create">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The resource group name.|resource_group_name|resourceGroupName|
+|**--factory-name**|string|The factory name.|factory_name|factoryName|
+|**--managed-virtual-network-name**|string|Managed virtual network name|managed_virtual_network_name|managedVirtualNetworkName|
+|**--if-match**|string|ETag of the managed Virtual Network entity. Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|If-Match|
+
+#### <a name="ManagedVirtualNetworksCreateOrUpdate#Update">Command `az datafactory managed-virtual-network update`</a>
+
+
+##### <a name="ParametersManagedVirtualNetworksCreateOrUpdate#Update">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The resource group name.|resource_group_name|resourceGroupName|
+|**--factory-name**|string|The factory name.|factory_name|factoryName|
+|**--managed-virtual-network-name**|string|Managed virtual network name|managed_virtual_network_name|managedVirtualNetworkName|
+|**--if-match**|string|ETag of the managed Virtual Network entity. Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|If-Match|
 
 ### group `az datafactory pipeline`
 #### <a name="PipelinesListByFactory">Command `az datafactory pipeline list`</a>

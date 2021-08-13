@@ -24,6 +24,8 @@ from azext_datafactory.generated._client_factory import (
     cf_activity_run,
     cf_trigger,
     cf_trigger_run,
+    cf_managed_virtual_network,
+    cf_managed_private_endpoint,
 )
 
 
@@ -66,6 +68,18 @@ datafactory_linked_service = CliCommandType(
         'azext_datafactory.vendored_sdks.datafactory.operations._linked_services_operations#LinkedServicesOperations.{}'
     ),
     client_factory=cf_linked_service,
+)
+
+
+datafactory_managed_private_endpoint = CliCommandType(
+    operations_tmpl='azext_datafactory.vendored_sdks.datafactory.operations._managed_private_endpoints_operations#ManagedPrivateEndpointsOperations.{}',
+    client_factory=cf_managed_private_endpoint,
+)
+
+
+datafactory_managed_virtual_network = CliCommandType(
+    operations_tmpl='azext_datafactory.vendored_sdks.datafactory.operations._managed_virtual_networks_operations#ManagedVirtualNetworksOperations.{}',
+    client_factory=cf_managed_virtual_network,
 )
 
 
@@ -165,6 +179,35 @@ def load_command_table(self, _):
             'update', custom_func_name='datafactory_linked_service_update', setter_arg_name='linked_service'
         )
         g.custom_command('delete', 'datafactory_linked_service_delete', confirmation=True)
+
+    with self.command_group(
+        'datafactory managed-private-endpoint',
+        datafactory_managed_private_endpoint,
+        client_factory=cf_managed_private_endpoint,
+    ) as g:
+        g.custom_command('list', 'datafactory_managed_private_endpoint_list')
+        g.custom_show_command('show', 'datafactory_managed_private_endpoint_show')
+        g.custom_command('create', 'datafactory_managed_private_endpoint_create')
+        g.generic_update_command(
+            'update',
+            custom_func_name='datafactory_managed_private_endpoint_update',
+            setter_arg_name='managed_private_endpoint',
+        )
+        g.custom_command('delete', 'datafactory_managed_private_endpoint_delete', confirmation=True)
+
+    with self.command_group(
+        'datafactory managed-virtual-network',
+        datafactory_managed_virtual_network,
+        client_factory=cf_managed_virtual_network,
+    ) as g:
+        g.custom_command('list', 'datafactory_managed_virtual_network_list')
+        g.custom_show_command('show', 'datafactory_managed_virtual_network_show')
+        g.custom_command('create', 'datafactory_managed_virtual_network_create')
+        g.generic_update_command(
+            'update',
+            custom_func_name='datafactory_managed_virtual_network_update',
+            setter_arg_name='managed_virtual_network',
+        )
 
     with self.command_group('datafactory pipeline', datafactory_pipeline, client_factory=cf_pipeline) as g:
         g.custom_command('list', 'datafactory_pipeline_list')

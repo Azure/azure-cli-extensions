@@ -11,6 +11,7 @@
 import os
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk import ResourceGroupPreparer
+from azure.cli.testsdk import StorageAccountPreparer
 from .example_steps import step_create
 from .example_steps import step_update
 from .example_steps import step_linked_service_create
@@ -63,32 +64,40 @@ from .example_steps import step_pipeline_delete
 from .example_steps import step_dataset_delete
 from .example_steps import step_linked_service_delete
 from .example_steps import step_delete
+from .example_steps import step_managed_virtual_network_create
+from .example_steps import step_managed_virtual_network_list
+from .example_steps import step_managed_virtual_network_show
+from .example_steps import step_managed_private_endpoint_create
+from .example_steps import step_managed_private_endpoint_list
+from .example_steps import step_managed_private_endpoint_show
+from .example_steps import step_managed_private_endpoint_delete
 from .. import (
     try_manual,
     raise_if,
     calc_coverage
 )
+import time
 
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
-# Env setup_scenario
+# Env setup_main
 @try_manual
-def setup_scenario(test):
+def setup_main(test):
     pass
 
 
-# Env cleanup_scenario
+# Env cleanup_main
 @try_manual
-def cleanup_scenario(test):
+def cleanup_main(test):
     pass
 
 
-# Testcase: Scenario
+# Testcase: main
 @try_manual
-def call_scenario(test):
-    setup_scenario(test)
+def call_main(test):
+    setup_main(test)
     step_create(test, checks=[])
     step_update(test, checks=[])
     step_linked_service_create(test, checks=[])
@@ -150,14 +159,14 @@ def call_scenario(test):
     step_dataset_delete(test, checks=[])
     step_linked_service_delete(test, checks=[])
     step_delete(test, checks=[])
-    cleanup_scenario(test)
+    cleanup_main(test)
 
 
-# Test class for Scenario
+# Test class for main
 @try_manual
-class DatafactoryScenarioTest(ScenarioTest):
+class DatafactorymainTest(ScenarioTest):
     def __init__(self, *args, **kwargs):
-        super(DatafactoryScenarioTest, self).__init__(*args, **kwargs)
+        super(DatafactorymainTest, self).__init__(*args, **kwargs)
         self.kwargs.update({
             'subscription_id': self.get_subscription_id()
         })
@@ -173,7 +182,61 @@ class DatafactoryScenarioTest(ScenarioTest):
         })
 
     @ResourceGroupPreparer(name_prefix='clitestdatafactory_exampleResourceGroup'[:7], key='rg', parameter_name='rg')
-    def test_datafactory_Scenario(self, rg):
-        call_scenario(self)
+    def test_datafactory_main(self, rg):
+        call_main(self)
+        calc_coverage(__file__)
+        raise_if()
+
+# Env setup_managedprivateendpoint
+@try_manual
+def setup_managedprivateendpoint(test):
+    pass
+
+
+# Env cleanup_managedprivateendpoint
+@try_manual
+def cleanup_managedprivateendpoint(test):
+    pass
+
+
+# Testcase: managedPrivateEndpoint
+@try_manual
+def call_managedprivateendpoint(test):
+    setup_managedprivateendpoint(test)
+    step_create(test, checks=[])
+    step_managed_virtual_network_create(test, checks=[])
+    step_managed_virtual_network_list(test, checks=[])
+    step_managed_virtual_network_show(test, checks=[])
+    step_managed_private_endpoint_create(test, checks=[])
+    step_managed_private_endpoint_list(test, checks=[])
+    step_managed_private_endpoint_show(test, checks=[])
+    time.sleep(200)
+    step_managed_private_endpoint_delete(test, checks=[])
+    step_delete(test, checks=[])
+    cleanup_managedprivateendpoint(test)
+
+
+# Test class for managedPrivateEndpoint
+@try_manual
+class DatafactorymanagedPrivateEndpointTest(ScenarioTest):
+    def __init__(self, *args, **kwargs):
+        super(DatafactorymanagedPrivateEndpointTest, self).__init__(*args, **kwargs)
+        self.kwargs.update({
+            'subscription_id': self.get_subscription_id()
+        })
+
+        self.kwargs.update({
+            'myFactory': self.create_random_name(prefix='exampleFactoryName'[:9], length=18),
+            'myManagedVirtualNetwork': self.create_random_name(prefix='exampleManagedVirtualNetworkName'[:16],
+                                                               length=32),
+            'myManagedPrivateEndpoint': self.create_random_name(prefix='exampleManagedPrivateEndpointName'[:16],
+                                                                length=33),
+        })
+
+    @ResourceGroupPreparer(name_prefix='clitestdatafactory_exampleResourceGroup'[:7], key='rg', parameter_name='rg')
+    @StorageAccountPreparer(name_prefix='clitestdatafactory_exampleBlobStorage'[:7], key='sa',
+                            resource_group_parameter_name='rg')
+    def test_datafactory_managedPrivateEndpoint(self, rg):
+        call_managedprivateendpoint(self)
         calc_coverage(__file__)
         raise_if()

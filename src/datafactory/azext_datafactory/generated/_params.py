@@ -580,3 +580,85 @@ def load_arguments(self, _):
         c.argument('factory_name', type=str, help='The factory name.', id_part='name')
         c.argument('trigger_name', type=str, help='The trigger name.', id_part='child_name_1')
         c.argument('run_id', type=str, help='The pipeline run identifier.', id_part='child_name_2')
+
+    with self.argument_context('datafactory managed-virtual-network list') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('factory_name', type=str, help='The factory name.')
+
+    with self.argument_context('datafactory managed-virtual-network show') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('factory_name', type=str, help='The factory name.', id_part='name')
+        c.argument('managed_virtual_network_name', options_list=['--name', '-n', '--managed-virtual-network-name'],
+                   type=str, help='Managed virtual network name', id_part='child_name_1')
+        c.argument('if_none_match', type=str, help='ETag of the managed Virtual Network entity. Should only be '
+                   'specified for get. If the ETag matches the existing entity tag, or if * was provided, then no '
+                   'content will be returned.')
+
+    with self.argument_context('datafactory managed-virtual-network create') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('factory_name', type=str, help='The factory name.')
+        c.argument('managed_virtual_network_name', options_list=['--name', '-n', '--managed-virtual-network-name'],
+                   type=str, help='Managed virtual network name')
+        c.argument('if_match', type=str, help='ETag of the managed Virtual Network entity. Should only be specified '
+                   'for update, for which it should match existing entity or can be * for unconditional update.')
+
+    with self.argument_context('datafactory managed-virtual-network update') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('factory_name', type=str, help='The factory name.', id_part='name')
+        c.argument('managed_virtual_network_name', options_list=['--name', '-n', '--managed-virtual-network-name'],
+                   type=str, help='Managed virtual network name', id_part='child_name_1')
+        c.argument('if_match', type=str, help='ETag of the managed Virtual Network entity. Should only be specified '
+                   'for update, for which it should match existing entity or can be * for unconditional update.')
+        c.ignore('managed_virtual_network')
+
+    with self.argument_context('datafactory managed-private-endpoint list') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('factory_name', type=str, help='The factory name.')
+        c.argument('managed_virtual_network_name', type=str, help='Managed virtual network name')
+
+    with self.argument_context('datafactory managed-private-endpoint show') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('factory_name', type=str, help='The factory name.', id_part='name')
+        c.argument('managed_virtual_network_name', type=str, help='Managed virtual network name',
+                   id_part='child_name_1')
+        c.argument('managed_private_endpoint_name', options_list=['--name', '-n', '--managed-private-endpoint-name'],
+                   type=str, help='Managed private endpoint name', id_part='child_name_2')
+        c.argument('if_none_match', type=str, help='ETag of the managed private endpoint entity. Should only be '
+                   'specified for get. If the ETag matches the existing entity tag, or if * was provided, then no '
+                   'content will be returned.')
+
+    with self.argument_context('datafactory managed-private-endpoint create') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('factory_name', type=str, help='The factory name.')
+        c.argument('managed_virtual_network_name', type=str, help='Managed virtual network name')
+        c.argument('managed_private_endpoint_name', options_list=['--name', '-n', '--managed-private-endpoint-name'],
+                   type=str, help='Managed private endpoint name')
+        c.argument('if_match', type=str, help='ETag of the managed private endpoint entity. Should only be specified '
+                   'for update, for which it should match existing entity or can be * for unconditional update.')
+        c.argument('fqdns', nargs='+', help='Fully qualified domain names')
+        c.argument('group_id', type=str, help='The groupId to which the managed private endpoint is created')
+        c.argument('private_link_resource_id', type=str, help='The ARM resource ID of the resource to which the '
+                   'managed private endpoint is created')
+
+    with self.argument_context('datafactory managed-private-endpoint update') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('factory_name', type=str, help='The factory name.', id_part='name')
+        c.argument('managed_virtual_network_name', type=str, help='Managed virtual network name',
+                   id_part='child_name_1')
+        c.argument('managed_private_endpoint_name', options_list=['--name', '-n', '--managed-private-endpoint-name'],
+                   type=str, help='Managed private endpoint name', id_part='child_name_2')
+        c.argument('if_match', type=str, help='ETag of the managed private endpoint entity. Should only be specified '
+                   'for update, for which it should match existing entity or can be * for unconditional update.')
+        c.argument('fqdns', nargs='+', help='Fully qualified domain names')
+        c.argument('group_id', type=str, help='The groupId to which the managed private endpoint is created')
+        c.argument('private_link_resource_id', type=str, help='The ARM resource ID of the resource to which the '
+                   'managed private endpoint is created')
+        c.ignore('managed_private_endpoint')
+
+    with self.argument_context('datafactory managed-private-endpoint delete') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('factory_name', type=str, help='The factory name.', id_part='name')
+        c.argument('managed_virtual_network_name', type=str, help='Managed virtual network name',
+                   id_part='child_name_1')
+        c.argument('managed_private_endpoint_name', options_list=['--name', '-n', '--managed-private-endpoint-name'],
+                   type=str, help='Managed private endpoint name', id_part='child_name_2')

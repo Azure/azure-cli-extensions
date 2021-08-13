@@ -883,3 +883,121 @@ def datafactory_trigger_run_rerun(client,
                         factory_name=factory_name,
                         trigger_name=trigger_name,
                         run_id=run_id)
+
+
+def datafactory_managed_virtual_network_list(client,
+                                             resource_group_name,
+                                             factory_name):
+    return client.list_by_factory(resource_group_name=resource_group_name,
+                                  factory_name=factory_name)
+
+
+def datafactory_managed_virtual_network_show(client,
+                                             resource_group_name,
+                                             factory_name,
+                                             managed_virtual_network_name,
+                                             if_none_match=None):
+    return client.get(resource_group_name=resource_group_name,
+                      factory_name=factory_name,
+                      managed_virtual_network_name=managed_virtual_network_name,
+                      if_none_match=if_none_match)
+
+
+def datafactory_managed_virtual_network_create(client,
+                                               resource_group_name,
+                                               factory_name,
+                                               managed_virtual_network_name,
+                                               if_match=None):
+    managed_virtual_network = {}
+    managed_virtual_network['properties'] = {}
+    return client.create_or_update(resource_group_name=resource_group_name,
+                                   factory_name=factory_name,
+                                   managed_virtual_network_name=managed_virtual_network_name,
+                                   if_match=if_match,
+                                   managed_virtual_network=managed_virtual_network)
+
+
+def datafactory_managed_virtual_network_update(instance,
+                                               resource_group_name,
+                                               factory_name,
+                                               managed_virtual_network_name,
+                                               if_match=None):
+    return instance
+
+
+def datafactory_managed_private_endpoint_list(client,
+                                              resource_group_name,
+                                              factory_name,
+                                              managed_virtual_network_name):
+    return client.list_by_factory(resource_group_name=resource_group_name,
+                                  factory_name=factory_name,
+                                  managed_virtual_network_name=managed_virtual_network_name)
+
+
+def datafactory_managed_private_endpoint_show(client,
+                                              resource_group_name,
+                                              factory_name,
+                                              managed_virtual_network_name,
+                                              managed_private_endpoint_name,
+                                              if_none_match=None):
+    return client.get(resource_group_name=resource_group_name,
+                      factory_name=factory_name,
+                      managed_virtual_network_name=managed_virtual_network_name,
+                      managed_private_endpoint_name=managed_private_endpoint_name,
+                      if_none_match=if_none_match)
+
+
+def datafactory_managed_private_endpoint_create(client,
+                                                resource_group_name,
+                                                factory_name,
+                                                managed_virtual_network_name,
+                                                managed_private_endpoint_name,
+                                                if_match=None,
+                                                fqdns=None,
+                                                group_id=None,
+                                                private_link_resource_id=None):
+    managed_private_endpoint = {}
+    managed_private_endpoint['properties'] = {}
+    if fqdns is not None:
+        managed_private_endpoint['properties']['fqdns'] = fqdns
+    if group_id is not None:
+        managed_private_endpoint['properties']['group_id'] = group_id
+    if private_link_resource_id is not None:
+        managed_private_endpoint['properties']['private_link_resource_id'] = private_link_resource_id
+    if len(managed_private_endpoint['properties']) == 0:
+        del managed_private_endpoint['properties']
+    return client.create_or_update(resource_group_name=resource_group_name,
+                                   factory_name=factory_name,
+                                   managed_virtual_network_name=managed_virtual_network_name,
+                                   managed_private_endpoint_name=managed_private_endpoint_name,
+                                   if_match=if_match,
+                                   managed_private_endpoint=managed_private_endpoint)
+
+
+def datafactory_managed_private_endpoint_update(instance,
+                                                resource_group_name,
+                                                factory_name,
+                                                managed_virtual_network_name,
+                                                managed_private_endpoint_name,
+                                                if_match=None,
+                                                fqdns=None,
+                                                group_id=None,
+                                                private_link_resource_id=None):
+    if fqdns is not None:
+        instance.properties.fqdns = fqdns
+    if group_id is not None:
+        instance.properties.group_id = group_id
+    if private_link_resource_id is not None:
+        instance.properties.private_link_resource_id = private_link_resource_id
+    return instance
+
+
+def datafactory_managed_private_endpoint_delete(client,
+                                                resource_group_name,
+                                                factory_name,
+                                                managed_virtual_network_name,
+                                                managed_private_endpoint_name):
+    return client.delete(resource_group_name=resource_group_name,
+                         factory_name=factory_name,
+                         managed_virtual_network_name=managed_virtual_network_name,
+                         managed_private_endpoint_name=managed_private_endpoint_name)
