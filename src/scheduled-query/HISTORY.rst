@@ -8,6 +8,7 @@ Release History
 * Add `--check-ws-alerts-storage` parameter
 * Add `--auto-mitigate` parameter
 * [Breaking Change] `--actions` are split into `--action-groups` and `--custom-properties`
+* [Breaking Change] the default value of `--mute-actions-duration` is changed to None
 
 0.3.1
 ++++++
