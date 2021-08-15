@@ -765,9 +765,9 @@ def collect_periscope_logs(resource_group_name, name, storage_account_name=None,
     yaml_lines = deployment_yaml.splitlines()
     for index, line in enumerate(yaml_lines):
         if "DIAGNOSTIC_CONTAINERLOGS_LIST" in line:
-            yaml_lines[index] =  line + ' ' + container_logs
-        if "AZURE_BLOB_SAS_KEY" in line: 
-            yaml_lines[index] = line + '\n' + '  AZURE_BLOB_CONTAINER_NAME: ' + base64.b64encode(bytes(container_name, 'ascii')).decode('ascii') 
+            yaml_lines[index] = line + ' ' + container_logs
+        if "AZURE_BLOB_SAS_KEY" in line:
+            yaml_lines[index] = line + '\n' + '  AZURE_BLOB_CONTAINER_NAME: ' + base64.b64encode(bytes(container_name, 'ascii')).decode('ascii')
         if "DIAGNOSTIC_KUBEOBJECTS_LIST" in line:
             yaml_lines[index] = line.replace('kube-system/deployment', '') + kube_objects
         if "COLLECTOR_LIST" in line:
