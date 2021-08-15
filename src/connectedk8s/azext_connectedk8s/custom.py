@@ -1427,7 +1427,7 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
 
 
 def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=None, kube_context=None, storage_account=None,
-                 sas_token=None, output_file=os.path.join(os.path.expanduser('~'), '.azure', 'az_connectedk8s_troubleshoot_output.tar.gz')):
+                 sas_token=None, container_name=None, output_file=os.path.join(os.path.expanduser('~'), '.azure', 'az_connectedk8s_troubleshoot_output.tar.gz')):
     colorama.init()
     print(f"{colorama.Fore.YELLOW}Troubleshooting the ConnectedCluster for possible issues...")
     utils.check_connectivity()  # Checks internet connectivity
@@ -1525,11 +1525,13 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
             pass
 
         storage_account_name, sas_token, readonly_sas_token = utils.setup_validate_storage_account(cmd.cli_ctx, storage_account, sas_token, resource_group_name)
+        container_name = container_name + time.strftime("%Y%m%d-%H%M%S")
         if storage_account_name:  # When validated the storage account
-            utils.try_upload_log_file(cluster_name, storage_account_name, sas_token, troubleshoot_log_path)
+            print(f"Logs will be uploaded to the following storage account: {storage_account_name} in container {container_name}")
+            utils.try_upload_log_file(cluster_name, storage_account_name, sas_token, container_name, troubleshoot_log_path)
             utils.try_archive_log_file(troubleshoot_log_path, output_file)
             # token_in_storage_account_url = readonly_sas_token if readonly_sas_token is not None else sas_token.
-            utils.collect_periscope_logs(resource_group_name, cluster_name, storage_account_name, sas_token, readonly_sas_token, kube_context, kube_config)
+            utils.collect_periscope_logs(resource_group_name, cluster_name, storage_account_name, sas_token, container_name, readonly_sas_token, kube_context, kube_config)
         else:
             utils.try_archive_log_file(troubleshoot_log_path, output_file)
 

@@ -75,6 +75,7 @@ def load_arguments(self, _):
         c.argument('kube_context', options_list=['--kube-context'], arg_group='Target Kubernetes Cluster', help='Kubconfig context from current machine.')
         c.argument('storage_account', options_list=['--storage-account'], arg_group='Storage Account', help='Name or ID of the storage account to save the diagnostic information')
         c.argument('sas_token', options_list=['--sas-token'], arg_group='Storage Account', help='The SAS token with writable permission for the storage account.')
+        c.argument('container_name', options_list=['--container-name'], help = 'The name of the storage container.')
         c.argument('output_file', options_list=['--output-file-path'], type=file_type, completer=FilesCompleter(allowednames=[".tar.gz"]), default=os.path.join(os.path.expanduser('~'), '.azure', 'az_connectedk8s_troubleshoot_output.tar.gz'), help="Archived file path for the logs collected during troubleshoot.")
 
     with self.argument_context('connectedk8s list') as c:

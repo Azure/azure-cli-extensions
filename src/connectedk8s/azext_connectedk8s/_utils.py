@@ -538,13 +538,12 @@ def check_delete_job(configuration, namespace):
         logger.debug("Error occurred while retrieving status of the delete job: {}".format(str(e)))
 
 
-def try_upload_log_file(cluster_name, storage_account_name, storage_token, log_file_path):
+def try_upload_log_file(storage_account_name, storage_token, container_name, log_file_path):
     try:  # Storage Upload
         import uuid
         from azure.storage.blob import BlobServiceClient
         storage_account_url = f"https://{storage_account_name}.blob.core.windows.net/"
         blob_service_client = BlobServiceClient(account_url=storage_account_url, credential=storage_token)
-        container_name = cluster_name + "-troubleshoot-" + time.strftime("%Y%m%d-%H%M%S")
 
         try:
             blob_service_client.create_container(container_name)
@@ -716,7 +715,7 @@ def format_diag_status(diag_status):
     return diag_status
 
 
-def collect_periscope_logs(resource_group_name, name, storage_account_name=None, sas_token=None, readonly_sas_token=None, kube_context=None, kube_config=None):
+def collect_periscope_logs(resource_group_name, name, storage_account_name=None, sas_token=None, container_name=None, readonly_sas_token=None, kube_context=None, kube_config=None):
     colorama.init()
 
     if not which('kubectl'):
@@ -746,24 +745,26 @@ def collect_periscope_logs(resource_group_name, name, storage_account_name=None,
 
     sas_token = sas_token.strip('?')
     deployment_yaml = urlopen(
-        "https://raw.githubusercontent.com/Azure/aks-periscope/latest/deployment/aks-periscope.yaml").read().decode()
+        "https://raw.githubusercontent.com/Azure/aks-periscope/master/deployment/aks-periscope.yaml").read().decode()
     deployment_yaml = deployment_yaml.replace("# <accountName, base64 encoded>",
                                               (base64.b64encode(bytes(storage_account_name, 'ascii'))).decode('ascii'))
     deployment_yaml = deployment_yaml.replace("# <saskey, base64 encoded>",
                                               (base64.b64encode(bytes("?" + sas_token, 'ascii'))).decode('ascii'))
+    deployment_yaml = deployment_yaml.replace("aksrepos.azurecr.io/staging/aks-periscope:v0.4", "aksrepos.azurecr.io/staging/aks-periscope:0.5")
     container_logs = "azure-arc"
-    kube_objects = "azure-arc/pod azure-arc/service azure-arc/deployment"
+    kube_objects = "azure-arc/pod azure-arc/service"
     yaml_lines = deployment_yaml.splitlines()
     for index, line in enumerate(yaml_lines):
         if "DIAGNOSTIC_CONTAINERLOGS_LIST" in line:
-            yaml_lines[index] = line + ' ' + container_logs
+            yaml_lines[index] =  line + ' ' + container_logs
+        if "AZURE_BLOB_SAS_KEY" in line: 
+            yaml_lines[index] = line + '\n' + '  AZURE_BLOB_CONTAINER_NAME: ' + base64.b64encode(bytes(container_name, 'ascii')).decode('ascii') 
         if "DIAGNOSTIC_KUBEOBJECTS_LIST" in line:
-            yaml_lines[index] = line + ' ' + kube_objects
-        if "CLUSTER_TYPE" in line:
-            yaml_lines[index] = '  CLUSTER_TYPE: connectedCluster'
+            yaml_lines[index] = line.replace('kube-system/deployment', '') + kube_objects
+        if "COLLECTOR_LIST" in line:
+            yaml_lines[index] = '  COLLECTOR_LIST: connectedCluster'
 
     deployment_yaml = '\n'.join(yaml_lines)
-
     fd, temp_yaml_path = tempfile.mkstemp()
     temp_yaml_file = os.fdopen(fd, 'w+t')
     try:
