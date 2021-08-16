@@ -438,6 +438,37 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_addon_list_confcom_enabled(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'ssh_key_value': self.generate_ssh_keys()
+        })
+
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --enable-managed-identity --ssh-key-value={ssh_key_value} ' \
+                     '-a confcom -o json'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('addonProfiles.ACCSGXDevicePlugin.enabled', True),
+            self.check(
+                'addonProfiles.ACCSGXDevicePlugin.config.ACCSGXQuoteHelperEnabled', "false")
+        ])
+
+        list_cmd = 'aks addon list --resource-group={resource_group} --name={name} -o json'
+        addon_list = self.cmd(list_cmd).get_output_in_json()
+
+        assert len(addon_list) > 0
+
+        for addon in addon_list:
+            if addon["addon_name"] == "confcom":
+                assert addon["enabled"]
+            else:
+                assert not addon["enabled"]
+
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_addon_list_openservicemesh_enabled(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
         self.kwargs.update({
@@ -486,6 +517,34 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         with self.assertRaisesRegexp(CLIError, 'Addon "open-service-mesh" is not enabled in this cluster.'):
             self.cmd(show_cmd)
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_addon_show_confcom_enabled(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'ssh_key_value': self.generate_ssh_keys()
+        })
+
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --enable-managed-identity --ssh-key-value={ssh_key_value} ' \
+                     '-a confcom -o json'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('addonProfiles.ACCSGXDevicePlugin.enabled', True),
+            self.check(
+                'addonProfiles.ACCSGXDevicePlugin.config.ACCSGXQuoteHelperEnabled', "false")
+        ])
+
+        show_cmd = 'aks addon show --resource-group={resource_group} --name={name} ' \
+                   '-a confcom -o json'
+
+        self.cmd(show_cmd, checks=[
+            self.check("addon_key", "ACCSGXDevicePlugin"),
+            self.check("addon_name", "confcom"),
+            self.exists('config')
+        ])
 
 
     @AllowLargeResponse()
@@ -686,6 +745,44 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         with self.assertRaisesRegexp(CLIError, 'Addon "confcom" is not enabled in this cluster.'):
             self.cmd(update_cmd)
 
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_addon_update_with_confcom(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'ssh_key_value': self.generate_ssh_keys()
+        })
+
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --enable-managed-identity ' \
+                     '--ssh-key-value={ssh_key_value} -o json'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('addonProfiles.ACCSGXDevicePlugin', None)
+        ])
+
+        enable_cmd = 'aks addon enable --addon confcom --resource-group={resource_group} --name={name} -o json'
+        self.cmd(enable_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('addonProfiles.ACCSGXDevicePlugin.enabled', True),
+            self.check(
+                'addonProfiles.ACCSGXDevicePlugin.config.ACCSGXQuoteHelperEnabled', "false")
+        ])
+
+        update_cmd = 'aks addon update --resource-group={resource_group} --name={name} ' \
+                     '-a confcom --enable-sgxquotehelper -o json'
+        self.cmd(update_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('addonProfiles.ACCSGXDevicePlugin.enabled', True),
+            self.check(
+                'addonProfiles.ACCSGXDevicePlugin.config.ACCSGXQuoteHelperEnabled', "true")
+        ])
+
+        delete_cmd = 'aks delete --resource-group={resource_group} --name={name} --yes --no-wait'
+        self.cmd(delete_cmd, checks=[
+            self.is_empty(),
+        ])
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
