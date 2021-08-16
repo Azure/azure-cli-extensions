@@ -1460,7 +1460,7 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
 
 
 def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=None, kube_context=None, storage_account=None,
-                 sas_token=None, container_name=None, output_file=os.path.join(os.path.expanduser('~'), '.azure', 'az_connectedk8s_troubleshoot_output.tar.gz')):
+                 sas_token=None, container_name="connectedk8s_troubleshoot", output_file=os.path.join(os.path.expanduser('~'), '.azure', 'az_connectedk8s_troubleshoot_output.tar.gz')):
     colorama.init()
     print(f"{colorama.Fore.YELLOW}Troubleshooting the ConnectedCluster for possible issues...")
     utils.check_connectivity()  # Checks internet connectivity
