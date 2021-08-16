@@ -1561,7 +1561,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
         container_name = container_name + time.strftime("%Y%m%d-%H%M%S")
         if storage_account_name:  # When validated the storage account
             print(f"Logs will be uploaded to the following storage account: {storage_account_name} in container {container_name}")
-            utils.try_upload_log_file(cluster_name, storage_account_name, sas_token, container_name, troubleshoot_log_path)
+            utils.try_upload_log_file(storage_account_name, sas_token, container_name, troubleshoot_log_path)
             utils.try_archive_log_file(troubleshoot_log_path, output_file)
             # token_in_storage_account_url = readonly_sas_token if readonly_sas_token is not None else sas_token.
             utils.collect_periscope_logs(resource_group_name, cluster_name, storage_account_name, sas_token, container_name, readonly_sas_token, kube_context, kube_config)
