@@ -12,21 +12,19 @@ from azure.core.exceptions import ClientAuthenticationError, HttpResponseError, 
 from azure.core.paging import ItemPaged
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import HttpRequest, HttpResponse
-from azure.core.polling import LROPoller, NoPolling, PollingMethod
 from azure.mgmt.core.exceptions import ARMErrorFormat
-from azure.mgmt.core.polling.arm_polling import ARMPolling
 
 from .. import models
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
-    from typing import Any, Callable, Dict, Generic, Iterable, Optional, TypeVar, Union
+    from typing import Any, Callable, Dict, Generic, Iterable, Optional, TypeVar
 
     T = TypeVar('T')
     ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
 
-class BackupVaultsOperations(object):
-    """BackupVaultsOperations operations.
+class ResourceGuardsOperations(object):
+    """ResourceGuardsOperations operations.
 
     You should not instantiate this class directly. Instead, you should create a Client instance that
     instantiates it for you and attaches it as an attribute.
@@ -47,19 +45,21 @@ class BackupVaultsOperations(object):
         self._deserialize = deserializer
         self._config = config
 
-    def get_in_subscription(
+    def get_resources_in_subscription(
         self,
         **kwargs  # type: Any
     ):
-        # type: (...) -> Iterable["models.BackupVaultResourceList"]
-        """Returns resource collection belonging to a subscription.
+        # type: (...) -> Iterable["models.ResourceGuardResourceList"]
+        """Returns ResourceGuards collection belonging to a subscription.
+
+        Returns ResourceGuards collection belonging to a subscription.
 
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either BackupVaultResourceList or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~data_protection_client.models.BackupVaultResourceList]
+        :return: An iterator like instance of either ResourceGuardResourceList or the result of cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~data_protection_client.models.ResourceGuardResourceList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.BackupVaultResourceList"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.ResourceGuardResourceList"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -74,7 +74,7 @@ class BackupVaultsOperations(object):
 
             if not next_link:
                 # Construct URL
-                url = self.get_in_subscription.metadata['url']  # type: ignore
+                url = self.get_resources_in_subscription.metadata['url']  # type: ignore
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
                 }
@@ -91,7 +91,7 @@ class BackupVaultsOperations(object):
             return request
 
         def extract_data(pipeline_response):
-            deserialized = self._deserialize('BackupVaultResourceList', pipeline_response)
+            deserialized = self._deserialize('ResourceGuardResourceList', pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
@@ -112,24 +112,26 @@ class BackupVaultsOperations(object):
         return ItemPaged(
             get_next, extract_data
         )
-    get_in_subscription.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.DataProtection/backupVaults'}  # type: ignore
+    get_resources_in_subscription.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.DataProtection/resourceGuards'}  # type: ignore
 
-    def get_in_resource_group(
+    def get_resources_in_resource_group(
         self,
         resource_group_name,  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> Iterable["models.BackupVaultResourceList"]
-        """Returns resource collection belonging to a resource group.
+        # type: (...) -> Iterable["models.ResourceGuardResourceList"]
+        """Returns ResourceGuards collection belonging to a ResourceGroup.
+
+        Returns ResourceGuards collection belonging to a ResourceGroup.
 
         :param resource_group_name: The name of the resource group where the backup vault is present.
         :type resource_group_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either BackupVaultResourceList or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~data_protection_client.models.BackupVaultResourceList]
+        :return: An iterator like instance of either ResourceGuardResourceList or the result of cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~data_protection_client.models.ResourceGuardResourceList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.BackupVaultResourceList"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.ResourceGuardResourceList"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -144,10 +146,10 @@ class BackupVaultsOperations(object):
 
             if not next_link:
                 # Construct URL
-                url = self.get_in_resource_group.metadata['url']  # type: ignore
+                url = self.get_resources_in_resource_group.metadata['url']  # type: ignore
                 path_format_arguments = {
-                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
@@ -162,7 +164,7 @@ class BackupVaultsOperations(object):
             return request
 
         def extract_data(pipeline_response):
-            deserialized = self._deserialize('BackupVaultResourceList', pipeline_response)
+            deserialized = self._deserialize('ResourceGuardResourceList', pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
@@ -183,27 +185,98 @@ class BackupVaultsOperations(object):
         return ItemPaged(
             get_next, extract_data
         )
-    get_in_resource_group.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataProtection/backupVaults'}  # type: ignore
+    get_resources_in_resource_group.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataProtection/resourceGuards'}  # type: ignore
+
+    def put(
+        self,
+        resource_group_name,  # type: str
+        resource_guards_name,  # type: str
+        parameters,  # type: "models.ResourceGuardResource"
+        **kwargs  # type: Any
+    ):
+        # type: (...) -> "models.ResourceGuardResource"
+        """Creates or updates a ResourceGuard resource belonging to a resource group.
+
+        Creates or updates a ResourceGuard resource belonging to a resource group.
+
+        :param resource_group_name: The name of the resource group where the backup vault is present.
+        :type resource_group_name: str
+        :param resource_guards_name: The name of ResourceGuard.
+        :type resource_guards_name: str
+        :param parameters: Request body for operation.
+        :type parameters: ~data_protection_client.models.ResourceGuardResource
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :return: ResourceGuardResource, or the result of cls(response)
+        :rtype: ~data_protection_client.models.ResourceGuardResource
+        :raises: ~azure.core.exceptions.HttpResponseError
+        """
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.ResourceGuardResource"]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
+        api_version = "2021-01-01"
+        content_type = kwargs.pop("content_type", "application/json")
+        accept = "application/json"
+
+        # Construct URL
+        url = self.put.metadata['url']  # type: ignore
+        path_format_arguments = {
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGuardsName': self._serialize.url("resource_guards_name", resource_guards_name, 'str'),
+        }
+        url = self._client.format_url(url, **path_format_arguments)
+
+        # Construct parameters
+        query_parameters = {}  # type: Dict[str, Any]
+        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+
+        # Construct headers
+        header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+
+        body_content_kwargs = {}  # type: Dict[str, Any]
+        body_content = self._serialize.body(parameters, 'ResourceGuardResource')
+        body_content_kwargs['content'] = body_content
+        request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
+        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+
+        deserialized = self._deserialize('ResourceGuardResource', pipeline_response)
+
+        if cls:
+            return cls(pipeline_response, deserialized, {})
+
+        return deserialized
+    put.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataProtection/resourceGuards/{resourceGuardsName}'}  # type: ignore
 
     def get(
         self,
-        vault_name,  # type: str
         resource_group_name,  # type: str
+        resource_guards_name,  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> "models.BackupVaultResource"
-        """Returns a resource belonging to a resource group.
+        # type: (...) -> "models.ResourceGuardResource"
+        """Returns a ResourceGuard belonging to a resource group.
 
-        :param vault_name: The name of the backup vault.
-        :type vault_name: str
+        Returns a ResourceGuard belonging to a resource group.
+
         :param resource_group_name: The name of the resource group where the backup vault is present.
         :type resource_group_name: str
+        :param resource_guards_name: The name of ResourceGuard.
+        :type resource_guards_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: BackupVaultResource, or the result of cls(response)
-        :rtype: ~data_protection_client.models.BackupVaultResource
+        :return: ResourceGuardResource, or the result of cls(response)
+        :rtype: ~data_protection_client.models.ResourceGuardResource
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.BackupVaultResource"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.ResourceGuardResource"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -214,9 +287,9 @@ class BackupVaultsOperations(object):
         # Construct URL
         url = self.get.metadata['url']  # type: ignore
         path_format_arguments = {
-            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGuardsName': self._serialize.url("resource_guards_name", resource_guards_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -236,157 +309,29 @@ class BackupVaultsOperations(object):
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('BackupVaultResource', pipeline_response)
+        deserialized = self._deserialize('ResourceGuardResource', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataProtection/backupVaults/{vaultName}'}  # type: ignore
-
-    def _create_or_update_initial(
-        self,
-        vault_name,  # type: str
-        resource_group_name,  # type: str
-        parameters,  # type: "models.BackupVaultResource"
-        **kwargs  # type: Any
-    ):
-        # type: (...) -> "models.BackupVaultResource"
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.BackupVaultResource"]
-        error_map = {
-            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
-        }
-        error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-01-01"
-        content_type = kwargs.pop("content_type", "application/json")
-        accept = "application/json"
-
-        # Construct URL
-        url = self._create_or_update_initial.metadata['url']  # type: ignore
-        path_format_arguments = {
-            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-        }
-        url = self._client.format_url(url, **path_format_arguments)
-
-        # Construct parameters
-        query_parameters = {}  # type: Dict[str, Any]
-        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
-
-        # Construct headers
-        header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
-        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
-
-        body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(parameters, 'BackupVaultResource')
-        body_content_kwargs['content'] = body_content
-        request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
-        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
-        response = pipeline_response.http_response
-
-        if response.status_code not in [200, 201]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
-
-        if response.status_code == 200:
-            deserialized = self._deserialize('BackupVaultResource', pipeline_response)
-
-        if response.status_code == 201:
-            deserialized = self._deserialize('BackupVaultResource', pipeline_response)
-
-        if cls:
-            return cls(pipeline_response, deserialized, {})
-
-        return deserialized
-    _create_or_update_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataProtection/backupVaults/{vaultName}'}  # type: ignore
-
-    def begin_create_or_update(
-        self,
-        vault_name,  # type: str
-        resource_group_name,  # type: str
-        parameters,  # type: "models.BackupVaultResource"
-        **kwargs  # type: Any
-    ):
-        # type: (...) -> LROPoller["models.BackupVaultResource"]
-        """Creates or updates a BackupVault resource belonging to a resource group.
-
-        :param vault_name: The name of the backup vault.
-        :type vault_name: str
-        :param resource_group_name: The name of the resource group where the backup vault is present.
-        :type resource_group_name: str
-        :param parameters: Request body for operation.
-        :type parameters: ~data_protection_client.models.BackupVaultResource
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: True for ARMPolling, False for no polling, or a
-         polling object for personal polling strategy
-        :paramtype polling: bool or ~azure.core.polling.PollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
-        :return: An instance of LROPoller that returns either BackupVaultResource or the result of cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~data_protection_client.models.BackupVaultResource]
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-        polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.BackupVaultResource"]
-        lro_delay = kwargs.pop(
-            'polling_interval',
-            self._config.polling_interval
-        )
-        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
-        if cont_token is None:
-            raw_result = self._create_or_update_initial(
-                vault_name=vault_name,
-                resource_group_name=resource_group_name,
-                parameters=parameters,
-                cls=lambda x,y,z: x,
-                **kwargs
-            )
-
-        kwargs.pop('error_map', None)
-        kwargs.pop('content_type', None)
-
-        def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize('BackupVaultResource', pipeline_response)
-
-            if cls:
-                return cls(pipeline_response, deserialized, {})
-            return deserialized
-
-        path_format_arguments = {
-            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-        }
-
-        if polling is True: polling_method = ARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
-        elif polling is False: polling_method = NoPolling()
-        else: polling_method = polling
-        if cont_token:
-            return LROPoller.from_continuation_token(
-                polling_method=polling_method,
-                continuation_token=cont_token,
-                client=self._client,
-                deserialization_callback=get_long_running_output
-            )
-        else:
-            return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    begin_create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataProtection/backupVaults/{vaultName}'}  # type: ignore
+    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataProtection/resourceGuards/{resourceGuardsName}'}  # type: ignore
 
     def delete(
         self,
-        vault_name,  # type: str
         resource_group_name,  # type: str
+        resource_guards_name,  # type: str
         **kwargs  # type: Any
     ):
         # type: (...) -> None
-        """Deletes a BackupVault resource from the resource group.
+        """Deletes a ResourceGuard resource from the resource group.
 
-        :param vault_name: The name of the backup vault.
-        :type vault_name: str
+        Deletes a ResourceGuard resource from the resource group.
+
         :param resource_group_name: The name of the resource group where the backup vault is present.
         :type resource_group_name: str
+        :param resource_guards_name: The name of ResourceGuard.
+        :type resource_guards_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: None, or the result of cls(response)
         :rtype: None
@@ -403,9 +348,9 @@ class BackupVaultsOperations(object):
         # Construct URL
         url = self.delete.metadata['url']  # type: ignore
         path_format_arguments = {
-            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGuardsName': self._serialize.url("resource_guards_name", resource_guards_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -421,24 +366,40 @@ class BackupVaultsOperations(object):
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
-        if response.status_code not in [200, 202, 204]:
+        if response.status_code not in [200, 204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         if cls:
             return cls(pipeline_response, None, {})
 
-    delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataProtection/backupVaults/{vaultName}'}  # type: ignore
+    delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataProtection/resourceGuards/{resourceGuardsName}'}  # type: ignore
 
-    def _update_initial(
+    def patch(
         self,
-        vault_name,  # type: str
         resource_group_name,  # type: str
+        resource_guards_name,  # type: str
         parameters,  # type: "models.PatchResourceRequestInput"
         **kwargs  # type: Any
     ):
-        # type: (...) -> Optional["models.BackupVaultResource"]
-        cls = kwargs.pop('cls', None)  # type: ClsType[Optional["models.BackupVaultResource"]]
+        # type: (...) -> "models.ResourceGuardResource"
+        """Updates a ResourceGuard resource belonging to a resource group. For example, updating tags for a resource.
+
+        Updates a ResourceGuard resource belonging to a resource group. For example, updating tags for
+        a resource.
+
+        :param resource_group_name: The name of the resource group where the backup vault is present.
+        :type resource_group_name: str
+        :param resource_guards_name: The name of ResourceGuard.
+        :type resource_guards_name: str
+        :param parameters: Request body for operation.
+        :type parameters: ~data_protection_client.models.PatchResourceRequestInput
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :return: ResourceGuardResource, or the result of cls(response)
+        :rtype: ~data_protection_client.models.ResourceGuardResource
+        :raises: ~azure.core.exceptions.HttpResponseError
+        """
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.ResourceGuardResource"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -448,11 +409,11 @@ class BackupVaultsOperations(object):
         accept = "application/json"
 
         # Construct URL
-        url = self._update_initial.metadata['url']  # type: ignore
+        url = self.patch.metadata['url']  # type: ignore
         path_format_arguments = {
-            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGuardsName': self._serialize.url("resource_guards_name", resource_guards_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -472,131 +433,143 @@ class BackupVaultsOperations(object):
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
-        if response.status_code not in [200, 202]:
+        if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        deserialized = None
-        if response.status_code == 200:
-            deserialized = self._deserialize('BackupVaultResource', pipeline_response)
+        deserialized = self._deserialize('ResourceGuardResource', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    _update_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataProtection/backupVaults/{vaultName}'}  # type: ignore
+    patch.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataProtection/resourceGuards/{resourceGuardsName}'}  # type: ignore
 
-    def begin_update(
-        self,
-        vault_name,  # type: str
-        resource_group_name,  # type: str
-        parameters,  # type: "models.PatchResourceRequestInput"
-        **kwargs  # type: Any
-    ):
-        # type: (...) -> LROPoller["models.BackupVaultResource"]
-        """Updates a BackupVault resource belonging to a resource group. For example, updating tags for a
-        resource.
-
-        :param vault_name: The name of the backup vault.
-        :type vault_name: str
-        :param resource_group_name: The name of the resource group where the backup vault is present.
-        :type resource_group_name: str
-        :param parameters: Request body for operation.
-        :type parameters: ~data_protection_client.models.PatchResourceRequestInput
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: True for ARMPolling, False for no polling, or a
-         polling object for personal polling strategy
-        :paramtype polling: bool or ~azure.core.polling.PollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
-        :return: An instance of LROPoller that returns either BackupVaultResource or the result of cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~data_protection_client.models.BackupVaultResource]
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-        polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.BackupVaultResource"]
-        lro_delay = kwargs.pop(
-            'polling_interval',
-            self._config.polling_interval
-        )
-        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
-        if cont_token is None:
-            raw_result = self._update_initial(
-                vault_name=vault_name,
-                resource_group_name=resource_group_name,
-                parameters=parameters,
-                cls=lambda x,y,z: x,
-                **kwargs
-            )
-
-        kwargs.pop('error_map', None)
-        kwargs.pop('content_type', None)
-
-        def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize('BackupVaultResource', pipeline_response)
-
-            if cls:
-                return cls(pipeline_response, deserialized, {})
-            return deserialized
-
-        path_format_arguments = {
-            'vaultName': self._serialize.url("vault_name", vault_name, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-        }
-
-        if polling is True: polling_method = ARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
-        elif polling is False: polling_method = NoPolling()
-        else: polling_method = polling
-        if cont_token:
-            return LROPoller.from_continuation_token(
-                polling_method=polling_method,
-                continuation_token=cont_token,
-                client=self._client,
-                deserialization_callback=get_long_running_output
-            )
-        else:
-            return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    begin_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataProtection/backupVaults/{vaultName}'}  # type: ignore
-
-    def check_name_availability(
+    def get_operation_request_objects(
         self,
         resource_group_name,  # type: str
-        location,  # type: str
-        parameters,  # type: "models.CheckNameAvailabilityRequest"
+        resource_guards_name,  # type: str
+        operation_name,  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> "models.CheckNameAvailabilityResult"
-        """API to check for resource name availability.
+        # type: (...) -> Iterable["models.ObjectResourceList"]
+        """Returns collection of operation request objects for a critical operation protected by the given ResourceGuard resource.
 
-        API to check for resource name availability.
+        Returns collection of operation request objects for a critical operation protected by the given
+        ResourceGuard resource.
 
         :param resource_group_name: The name of the resource group where the backup vault is present.
         :type resource_group_name: str
-        :param location: The location in which uniqueness will be verified.
-        :type location: str
-        :param parameters: Check name availability request.
-        :type parameters: ~data_protection_client.models.CheckNameAvailabilityRequest
+        :param resource_guards_name:
+        :type resource_guards_name: str
+        :param operation_name:
+        :type operation_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: CheckNameAvailabilityResult, or the result of cls(response)
-        :rtype: ~data_protection_client.models.CheckNameAvailabilityResult
+        :return: An iterator like instance of either ObjectResourceList or the result of cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~data_protection_client.models.ObjectResourceList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.CheckNameAvailabilityResult"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.ObjectResourceList"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2021-01-01"
-        content_type = kwargs.pop("content_type", "application/json")
+        accept = "application/json"
+
+        def prepare_request(next_link=None):
+            # Construct headers
+            header_parameters = {}  # type: Dict[str, Any]
+            header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+
+            if not next_link:
+                # Construct URL
+                url = self.get_operation_request_objects.metadata['url']  # type: ignore
+                path_format_arguments = {
+                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+                    'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+                    'resourceGuardsName': self._serialize.url("resource_guards_name", resource_guards_name, 'str'),
+                    'operationName': self._serialize.url("operation_name", operation_name, 'str'),
+                }
+                url = self._client.format_url(url, **path_format_arguments)
+                # Construct parameters
+                query_parameters = {}  # type: Dict[str, Any]
+                query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+
+                request = self._client.get(url, query_parameters, header_parameters)
+            else:
+                url = next_link
+                query_parameters = {}  # type: Dict[str, Any]
+                request = self._client.get(url, query_parameters, header_parameters)
+            return request
+
+        def extract_data(pipeline_response):
+            deserialized = self._deserialize('ObjectResourceList', pipeline_response)
+            list_of_elem = deserialized.value
+            if cls:
+                list_of_elem = cls(list_of_elem)
+            return deserialized.next_link or None, iter(list_of_elem)
+
+        def get_next(next_link=None):
+            request = prepare_request(next_link)
+
+            pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+            response = pipeline_response.http_response
+
+            if response.status_code not in [200]:
+                map_error(status_code=response.status_code, response=response, error_map=error_map)
+                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+
+            return pipeline_response
+
+        return ItemPaged(
+            get_next, extract_data
+        )
+    get_operation_request_objects.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataProtection/resourceGuards/{resourceGuardsName}/{operationName}'}  # type: ignore
+
+    def get_default_operation_request_object(
+        self,
+        resource_group_name,  # type: str
+        resource_guards_name,  # type: str
+        operation_name,  # type: str
+        operation_request_name,  # type: str
+        **kwargs  # type: Any
+    ):
+        # type: (...) -> object
+        """Returns collection of operation request objects for a critical operation protected by the given ResourceGuard resource.
+
+        Returns collection of operation request objects for a critical operation protected by the given
+        ResourceGuard resource.
+
+        :param resource_group_name: The name of the resource group where the backup vault is present.
+        :type resource_group_name: str
+        :param resource_guards_name:
+        :type resource_guards_name: str
+        :param operation_name:
+        :type operation_name: str
+        :param operation_request_name:
+        :type operation_request_name: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :return: object, or the result of cls(response)
+        :rtype: object
+        :raises: ~azure.core.exceptions.HttpResponseError
+        """
+        cls = kwargs.pop('cls', None)  # type: ClsType[object]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
+        api_version = "2021-01-01"
         accept = "application/json"
 
         # Construct URL
-        url = self.check_name_availability.metadata['url']  # type: ignore
+        url = self.get_default_operation_request_object.metadata['url']  # type: ignore
         path_format_arguments = {
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'location': self._serialize.url("location", location, 'str'),
+            'resourceGuardsName': self._serialize.url("resource_guards_name", resource_guards_name, 'str'),
+            'operationName': self._serialize.url("operation_name", operation_name, 'str'),
+            'operationRequestName': self._serialize.url("operation_request_name", operation_request_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -606,13 +579,9 @@ class BackupVaultsOperations(object):
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
         header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
-        body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(parameters, 'CheckNameAvailabilityRequest')
-        body_content_kwargs['content'] = body_content
-        request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
+        request = self._client.get(url, query_parameters, header_parameters)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
@@ -620,10 +589,10 @@ class BackupVaultsOperations(object):
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('CheckNameAvailabilityResult', pipeline_response)
+        deserialized = self._deserialize('object', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    check_name_availability.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataProtection/locations/{location}/checkNameAvailability'}  # type: ignore
+    get_default_operation_request_object.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataProtection/resourceGuards/{resourceGuardsName}/{operationName}/{operationRequestName}'}  # type: ignore
