@@ -70,13 +70,11 @@ from .example_steps import step_managed_virtual_network_show
 from .example_steps import step_managed_private_endpoint_create
 from .example_steps import step_managed_private_endpoint_list
 from .example_steps import step_managed_private_endpoint_show
-from .example_steps import step_managed_private_endpoint_delete
 from .. import (
     try_manual,
     raise_if,
     calc_coverage
 )
-import time
 
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
@@ -210,8 +208,6 @@ def call_managedprivateendpoint(test):
     step_managed_private_endpoint_create(test, checks=[])
     step_managed_private_endpoint_list(test, checks=[])
     step_managed_private_endpoint_show(test, checks=[])
-    time.sleep(200)
-    step_managed_private_endpoint_delete(test, checks=[])
     step_delete(test, checks=[])
     cleanup_managedprivateendpoint(test)
 

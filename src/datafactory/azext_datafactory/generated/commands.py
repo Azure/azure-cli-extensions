@@ -184,6 +184,7 @@ def load_command_table(self, _):
         'datafactory managed-private-endpoint',
         datafactory_managed_private_endpoint,
         client_factory=cf_managed_private_endpoint,
+        is_preview=True,
     ) as g:
         g.custom_command('list', 'datafactory_managed_private_endpoint_list')
         g.custom_show_command('show', 'datafactory_managed_private_endpoint_show')
@@ -199,6 +200,7 @@ def load_command_table(self, _):
         'datafactory managed-virtual-network',
         datafactory_managed_virtual_network,
         client_factory=cf_managed_virtual_network,
+        is_preview=True,
     ) as g:
         g.custom_command('list', 'datafactory_managed_virtual_network_list')
         g.custom_show_command('show', 'datafactory_managed_virtual_network_show')
