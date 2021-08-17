@@ -20,6 +20,8 @@ GITHUB_SECRET_SETTING_NAME = "GITHUB_PROVIDER_AUTHENTICATION_SECRET"
 GOOGLE_SECRET_SETTING_NAME = "GOOGLE_PROVIDER_AUTHENTICATION_SECRET"
 MSA_SECRET_SETTING_NAME = "MSA_PROVIDER_AUTHENTICATION_SECRET"
 TWITTER_SECRET_SETTING_NAME = "TWITTER_PROVIDER_AUTHENTICATION_SECRET"
+TRUE_STRING = "true"
+FALSE_STRING = "false"
 
 
 # region rest calls
@@ -53,13 +55,14 @@ def get_auth_settings_v2(cmd, resource_group_name, name, slot=None):
 
 
 def update_auth_settings_v2_rest_call(cmd, resource_group_name, name, site_auth_settings_v2,
-                                      slot=None, overwrite_settings=False):  # pylint: disable=unused-argument
+                                      slot=None, overwrite_settings=False, is_upgrade=False):  # pylint: disable=unused-argument
     is_using_v1 = get_config_version(cmd, resource_group_name, name, slot)["configVersion"] == 'v1'
     is_new_auth_app = is_app_new_to_auth(cmd, resource_group_name, name, slot)
 
-    if is_using_v1 and not is_new_auth_app:
-        raise CLIError('Usage Error: Cannot use auth v2 commands when the app is using auth v1. \
-                        Update the auth settings using the az webapp auth-classic command group.')
+    if not is_upgrade and is_using_v1 and not is_new_auth_app:
+        msg = 'Usage Error: Cannot use auth v2 commands when the app is using auth v1. ' \
+              'Update the auth settings using the az webapp auth-classic command group.'
+        raise CLIError(msg)
 
     if not overwrite_settings:  # if no auth v2 settings set, then default token store to true
         if is_new_auth_app:
@@ -168,7 +171,8 @@ def upgrade_to_auth_settings_v2(cmd, resource_group_name, name, slot=None):  # p
         raise CLIError('Usage Error: Cannot use command az webapp auth upgrade when the app is using auth v2.')
     prep_auth_settings_for_v2(cmd, resource_group_name, name, slot)
     site_auth_settings_v2 = get_auth_settings_v2(cmd, resource_group_name, name, slot)["properties"]
-    return update_auth_settings_v2_rest_call(cmd, resource_group_name, name, site_auth_settings_v2, slot)
+    return update_auth_settings_v2_rest_call(cmd, resource_group_name, name,
+                                             site_auth_settings_v2, slot, is_upgrade=True)
 
 
 def get_config_version(cmd, resource_group_name, name, slot=None):  # pylint: disable=unused-argument
@@ -186,7 +190,24 @@ def revert_to_auth_settings(cmd, resource_group_name, name, slot=None):  # pylin
         raise CLIError('Usage Error: Cannot use command az webapp auth revert when the app is using auth v1.')
     site_auth_settings = get_auth_settings(cmd, resource_group_name, name, slot)
     set_auth_settings_v2(cmd, resource_group_name, name, None, slot)
-    update_auth_classic_settings(cmd, resource_group_name, name, site_auth_settings.enabled, None,
+    site_auth_settings.enabled = TRUE_STRING if site_auth_settings.enabled else FALSE_STRING
+    site_auth_settings.token_store_enabled = TRUE_STRING if site_auth_settings.token_store_enabled else FALSE_STRING
+    action = None
+    if site_auth_settings.unauthenticated_client_action == "AllowAnonymous":
+        action = "AllowAnonymous"
+    elif site_auth_settings.unauthenticated_client_action == "RedirectToLoginPage":
+        if site_auth_settings.default_provider == "AzureActiveDirectory":
+            action = "LoginWithAzureActiveDirectory"
+        elif site_auth_settings.default_provider == "Facebook":
+            action = "LoginWithFacebook"
+        elif site_auth_settings.default_provider == "Google":
+            action = "LoginWithGoogle"
+        elif site_auth_settings.default_provider == "MicrosoftAccount":
+            action = "LoginWithMicrosoftAccount"
+        elif site_auth_settings.default_provider == "Twitter":
+            action = "LoginWithTwitter" 
+
+    update_auth_classic_settings(cmd, resource_group_name, name, site_auth_settings.enabled, action,
                                  site_auth_settings.client_id, site_auth_settings.token_store_enabled,
                                  site_auth_settings.runtime_version,
                                  site_auth_settings.token_refresh_extension_hours,
