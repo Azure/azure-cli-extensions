@@ -14,7 +14,8 @@ from knack.log import get_logger
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core._profile import Profile
 from azure.cli.core import telemetry
-from azure.cli.core.azclierror import UnclassifiedUserFault, CLIInternalError, FileOperationError, ClientRequestError, ValidationError, ArgumentUsageError, MutuallyExclusiveArgumentError, RequiredArgumentMissingError
+from azure.cli.core.azclierror import UnclassifiedUserFault, CLIInternalError, FileOperationError, ClientRequestError
+from azure.cli.core.azclierror import ValidationError, ArgumentUsageError, MutuallyExclusiveArgumentError, RequiredArgumentMissingError
 from kubernetes import client as kube_client, config
 from azext_connectedk8s._client_factory import _graph_client_factory
 from azext_connectedk8s._client_factory import _resource_client_factory
