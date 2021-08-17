@@ -66,16 +66,6 @@ def resource_group_exists(ctx, resource_group_name, subscription_id=None):
         return False
 
 
-def get_connectedk8s(client, resource_group_name, cluster_name):
-    return client.get(resource_group_name, cluster_name)
-
-
-def list_connectedk8s(client, resource_group_name=None):
-    if not resource_group_name:
-        return client.list_by_subscription()
-    return client.list_by_resource_group(resource_group_name)
-
-
 def create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait):
     try:
         return sdk_no_wait(no_wait, client.begin_create, resource_group_name=resource_group_name,
