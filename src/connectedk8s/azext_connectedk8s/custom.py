@@ -639,11 +639,11 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
     return str.format(consts.Successfully_Disabled_Features, features, connected_cluster.name)
 
 
-def get_connectedk8s(client, resource_group_name, cluster_name):
+def get_connectedk8s(cmd, client, resource_group_name, cluster_name):
     return client.get(resource_group_name, cluster_name)
 
 
-def list_connectedk8s(client, resource_group_name=None):
+def list_connectedk8s(cmd, client, resource_group_name=None):
     if not resource_group_name:
         return client.list_by_subscription()
     return client.list_by_resource_group(resource_group_name)
