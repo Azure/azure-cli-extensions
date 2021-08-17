@@ -178,22 +178,22 @@ class ArcAgentUtils:
         if self.__auto_upgrade:
             cmd_helm.extend(["--set", "systemDefaultValues.azureArcAgents.autoUpdate={}"
                             .format(self.__auto_upgrade)])
-        if self.__proxy_details.get('https_proxy'):
+        if self.__proxy_details and self.__proxy_details.get('https_proxy'):
             cmd_helm.extend(["--set", "global.httpsProxy={}"
                             .format(self.__proxy_details.get('https_proxy'))])
-        if self.__proxy_details.get('http_proxy'):
+        if self.__proxy_details and self.__proxy_details.get('http_proxy'):
             cmd_helm.extend(["--set", "global.httpProxy={}"
                             .format(self.__proxy_details.get('http_proxy'))])
-        if self.__proxy_details.get('no_proxy'):
+        if self.__proxy_details and self.__proxy_details.get('no_proxy'):
             cmd_helm.extend(["--set", "global.noProxy={}"
                             .format(self.__proxy_details.get('no_proxy'))])
-        if self.__proxy_details.get('proxy_cert'):
+        if self.__proxy_details and self.__proxy_details.get('proxy_cert'):
             cmd_helm.extend(["--set-file", "global.proxyCert={}"
                             .format(self.__proxy_details.get('proxy_cert'))])
-        if (self.__proxy_details.get('https_proxy') or self.__proxy_details.get('http_proxy') or
-                self.__proxy_details.get('no_proxy')):
+        if self.__proxy_details and  (self.__proxy_details.get('https_proxy') or 
+                self.__proxy_details.get('http_proxy') or self.__proxy_details.get('no_proxy')):
             cmd_helm.extend(["--set", "global.isProxyEnabled={}".format(True)])
-        if self.__proxy_details.get('disable_proxy'):
+        if self.__proxy_details and self.__proxy_details.get('disable_proxy'):
             cmd_helm.extend(["--set", "global.isProxyEnabled={}".format(False)])
         if self.__kube_config:
             cmd_helm.extend(["--kubeconfig", self.__kube_config])

@@ -12,7 +12,6 @@ from azext_connectedk8s._helm_core_utils import HelmCoreUtils
 import azext_connectedk8s._constants as consts
 import azext_connectedk8s._kube_utils as kube_utils
 import azext_connectedk8s._connected_cluster_utils as cc_utils
-import azext_connectedk8s._utils as utils
 from kubernetes import client as kube_client
 
 logger = get_logger(__name__)
@@ -125,13 +124,20 @@ def get_kubernetes_infra(configuration):  # Heuristic
                 return "aws"
             if infra == "moc":    # Todo: ask from aks hci team for more reliable identifier in node labels,etc
                 return "generic"  # return "azure_stack_hci"
-            return utils.validate_infrastructure_type(infra)
+            return validate_infrastructure_type(infra)
         return "generic"
     except Exception as e:  # pylint: disable=broad-except
         logger.debug("Error occured while trying to fetch kubernetes infrastructure: " + str(e))
         kube_utils.kubernetes_exception_handler(e, consts.Get_Kubernetes_Infra_Fault_Type,
                                                 'Unable to fetch kubernetes infrastructure', raise_error=False)
         return "generic"
+
+
+def validate_infrastructure_type(infra):
+    for s in consts.Infrastructure_Enum_Values[1:]:  # First value is "auto"
+        if s.lower() == infra.lower():
+            return s
+    return "generic"
 
 
 def check_linux_amd64_node(configuration):

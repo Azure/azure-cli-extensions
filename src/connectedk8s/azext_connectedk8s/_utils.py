@@ -104,13 +104,6 @@ def get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood=None, release
         raise CLIInternalError("No content was found in helm registry path response.")
 
 
-def validate_infrastructure_type(infra):
-    for s in consts.Infrastructure_Enum_Values[1:]:  # First value is "auto"
-        if s.lower() == infra.lower():
-            return s
-    return "generic"
-
-
 def get_values_file():
     values_file_provided = False
     values_file = os.getenv('HELMVALUESPATH')
