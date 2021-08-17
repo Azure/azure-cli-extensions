@@ -32,23 +32,19 @@ class ArcAgentUtils:
         self.__kube_config = kube_config
         self.__kube_context = kube_context
 
-
     def set_proxy_configuration(self, proxy_details=None):
         self.__proxy_details = proxy_details
-
 
     def set_values_file(self, values_file=None):
         self.__values_file = values_file
 
-
     def set_auto_upgrade(self, auto_upgrade=None):
         self.__auto_upgrade = auto_upgrade
 
-
     def execute_arc_agent_install(self, chart_path, subscription_id, kubernetes_distro,
-                             kubernetes_infra, resource_group_name, cluster_name, location,
-                             onboarding_tenant_id, private_key_pem, no_wait, cloud_name,
-                             enable_custom_locations, custom_locations_oid, onboarding_timeout="300"):
+                                  kubernetes_infra, resource_group_name, cluster_name, location,
+                                  onboarding_tenant_id, private_key_pem, no_wait, cloud_name,
+                                  enable_custom_locations, custom_locations_oid, onboarding_timeout="300"):
 
         cmd_helm_install = ["helm", "upgrade", "--install", "azure-arc", chart_path,
                             "--set", "global.subscriptionId={}".format(subscription_id),
@@ -79,16 +75,14 @@ class ArcAgentUtils:
 
         self.__execute_helm_command(cmd_helm_install, "Unable to install helm release: ")
 
+    def execute_arc_agent_update(self, chart_path, release_namespace):
 
-    def execute_arc_agent_update(self, chart_path, cluster_name, release_namespace):
-
-        cmd_helm_upgrade = ["helm", "upgrade", "azure-arc", chart_path, "--namespace"
-                            , release_namespace, "--reuse-values", "--wait", "--output", "json"]
+        cmd_helm_upgrade = ["helm", "upgrade", "azure-arc", chart_path, "--namespace",
+                            release_namespace, "--reuse-values", "--wait", "--output", "json"]
 
         cmd_helm_upgrade = self.__set_params(cmd_helm_upgrade)
 
         self.__execute_helm_command(cmd_helm_upgrade, consts.Update_Agent_Failure)
-
 
     def execute_arc_agent_upgrade(self, chart_path, release_namespace, upgrade_timeout, existing_user_values):
 
@@ -122,11 +116,10 @@ class ArcAgentUtils:
 
         self.__execute_helm_command(cmd_helm_upgrade, consts.Upgrade_Agent_Failure)
 
-
     def execute_arc_agent_enable_features(self, chart_path, release_namespace, enable_azure_rbac,
-                          enable_cluster_connect, enable_cl, custom_locations_oid,
-                          azrbac_client_id=None, azrbac_client_secret=None,
-                          azrbac_skip_authz_check=None):
+                                          enable_cluster_connect, enable_cl, custom_locations_oid,
+                                          azrbac_client_id=None, azrbac_client_secret=None,
+                                          azrbac_skip_authz_check=None):
         cmd_helm_upgrade = ["helm", "upgrade", "azure-arc", chart_path, "--namespace",
                             release_namespace, "--reuse-values", "--wait", "--output", "json"]
 
@@ -149,9 +142,8 @@ class ArcAgentUtils:
 
         self.__execute_helm_command(cmd_helm_upgrade, consts.Error_enabling_Features)
 
-
     def execute_arc_agent_disable_features(self, chart_path, release_namespace, disable_azure_rbac,
-                                   disable_cluster_connect, disable_cl):
+                                           disable_cluster_connect, disable_cl):
         cmd_helm_upgrade = ["helm", "upgrade", "azure-arc", chart_path, "--namespace", release_namespace,
                             "--reuse-values",
                             "--wait", "--output", "json"]
@@ -168,7 +160,6 @@ class ArcAgentUtils:
 
         self.__execute_helm_command(cmd_helm_upgrade, consts.Error_disabling_Features)
 
-
     def execute_delete_arc_agents(self, release_namespace, configuration):
         cmd_helm_delete = ["helm", "delete", "azure-arc", "--namespace", release_namespace]
 
@@ -179,7 +170,6 @@ class ArcAgentUtils:
 
         kube_core_utils.ensure_namespace_cleanup(configuration)
 
-
     def __set_params(self, cmd_helm):
 
         # To set some other helm parameters through file
@@ -187,21 +177,21 @@ class ArcAgentUtils:
             cmd_helm.extend(["-f", self.__values_file])
         if self.__auto_upgrade:
             cmd_helm.extend(["--set", "systemDefaultValues.azureArcAgents.autoUpdate={}"
-                                     .format(self.__auto_upgrade)])
+                            .format(self.__auto_upgrade)])
         if self.__proxy_details.get('https_proxy'):
             cmd_helm.extend(["--set", "global.httpsProxy={}"
-                                     .format(self.__proxy_details.get('https_proxy'))])
+                            .format(self.__proxy_details.get('https_proxy'))])
         if self.__proxy_details.get('http_proxy'):
             cmd_helm.extend(["--set", "global.httpProxy={}"
-                                     .format(self.__proxy_details.get('http_proxy'))])
+                            .format(self.__proxy_details.get('http_proxy'))])
         if self.__proxy_details.get('no_proxy'):
             cmd_helm.extend(["--set", "global.noProxy={}"
-                                     .format(self.__proxy_details.get('no_proxy'))])
+                            .format(self.__proxy_details.get('no_proxy'))])
         if self.__proxy_details.get('proxy_cert'):
             cmd_helm.extend(["--set-file", "global.proxyCert={}"
-                                     .format(self.__proxy_details.get('proxy_cert'))])
-        if self.__proxy_details.get('https_proxy') or self.__proxy_details.get('http_proxy') \
-        or self.__proxy_details.get('no_proxy'):
+                            .format(self.__proxy_details.get('proxy_cert'))])
+        if (self.__proxy_details.get('https_proxy') or self.__proxy_details.get('http_proxy')
+        or self.__proxy_details.get('no_proxy')):
             cmd_helm.extend(["--set", "global.isProxyEnabled={}".format(True)])
         if self.__proxy_details.get('disable_proxy'):
             cmd_helm.extend(["--set", "global.isProxyEnabled={}".format(False)])
@@ -212,20 +202,19 @@ class ArcAgentUtils:
 
         return cmd_helm
 
-
     def __execute_helm_command(self, cmd_helm, error=None):
         response_helm_cmd = Popen(cmd_helm, stdout=PIPE, stderr=PIPE)
         _, error_helm_cmd = response_helm_cmd.communicate()
         if response_helm_cmd.returncode != 0:
-            if ('forbidden' in error_helm_cmd.decode("ascii") or \
-                'timed out waiting for the condition' in error_helm_cmd.decode("ascii")):
+            if ('forbidden' in error_helm_cmd.decode("ascii") or
+            'timed out waiting for the condition' in error_helm_cmd.decode("ascii")):
                 telemetry.set_user_fault()
             telemetry.set_exception(exception=error_helm_cmd.decode("ascii"),
                                     fault_type=consts.Install_HelmRelease_Fault_Type,
                                     summary='Unable to install helm release')
-            logger.warning("Please check if the azure-arc namespace was deployed and run" \
-                           " 'kubectl get pods -n azure-arc' to check if all the pods are" \
-                           " in running state. A possible cause for pods stuck in pending" \
-                           " state could be insufficient resources on the kubernetes cluster" \
+            logger.warning("Please check if the azure-arc namespace was deployed and run" +
+                           " 'kubectl get pods -n azure-arc' to check if all the pods are" +
+                           " in running state. A possible cause for pods stuck in pending" +
+                           " state could be insufficient resources on the kubernetes cluster" +
                            " to onboard to arc.")
             raise CLIInternalError(str.format(error, error_helm_cmd.decode("ascii")))

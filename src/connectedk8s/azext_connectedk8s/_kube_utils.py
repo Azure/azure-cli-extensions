@@ -222,8 +222,8 @@ def set_kube_config(kube_config):
 
 def get_kubeconfig_node_dict(config, kube_config=None):
     if kube_config is None:
-        kube_config = os.getenv('KUBECONFIG') if os.getenv('KUBECONFIG') \
-                      else os.path.join(os.path.expanduser('~'), '.kube', 'config')
+        kube_config = (os.getenv('KUBECONFIG') if os.getenv('KUBECONFIG')
+                       else os.path.join(os.path.expanduser('~'), '.kube', 'config'))
     try:
         kubeconfig_data = config.kube_config._get_kube_config_loader_for_yaml_file(kube_config)._config
     except Exception as ex:

@@ -14,7 +14,7 @@ from knack.log import get_logger
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core._profile import Profile
 from azure.cli.core import telemetry
-from azure.cli.core.azclierror import  UnclassifiedUserFault, CLIInternalError, FileOperationError, ClientRequestError, ValidationError, ArgumentUsageError, MutuallyExclusiveArgumentError, RequiredArgumentMissingError
+from azure.cli.core.azclierror import UnclassifiedUserFault, CLIInternalError, FileOperationError, ClientRequestError, ValidationError, ArgumentUsageError, MutuallyExclusiveArgumentError, RequiredArgumentMissingError
 from kubernetes import client as kube_client, config
 from azext_connectedk8s._client_factory import _graph_client_factory
 from azext_connectedk8s._client_factory import _resource_client_factory
@@ -66,7 +66,8 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     values_file_provided, values_file = utils.get_values_file()
 
     cloud_name, dp_endpoint_dogfood, release_train_dogfood = \
-                    utils.validate_helm_environment(cmd, values_file, values_file_provided)
+    utils.validate_helm_environment(cmd, values_file, values_file_provided)
+
     if cloud_name:
         azure_cloud = cloud_name
 
@@ -284,8 +285,8 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
         configmap = api_instance.read_namespaced_config_map('azure-clusterconfig', 'azure-arc')
     except Exception as e:  # pylint: disable=broad-except
         kube_utils.kubernetes_exception_handler(e, consts.Read_ConfigMap_Fault_Type, 'Unable to read ConfigMap',
-                                           error_message="Unable to read ConfigMap 'azure-clusterconfig' in 'azure-arc' namespace: ",
-                                           message_for_not_found="The helm release 'azure-arc' is present but the azure-arc namespace/configmap is missing. Please run 'helm delete azure-arc --no-hooks' to cleanup the release before onboarding the cluster again.")
+                                                error_message="Unable to read ConfigMap 'azure-clusterconfig' in 'azure-arc' namespace: ",
+                                                message_for_not_found="The helm release 'azure-arc' is present but the azure-arc namespace/configmap is missing. Please run 'helm delete azure-arc --no-hooks' to cleanup the release before onboarding the cluster again.")
 
     subscription_id = get_subscription_id(cmd.cli_ctx)
 
@@ -349,7 +350,7 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
     values_file_provided, values_file = utils.get_values_file()
 
     _, dp_endpoint_dogfood, release_train_dogfood = \
-                    utils.validate_helm_environment(cmd, values_file, values_file_provided)
+    utils.validate_helm_environment(cmd, values_file, values_file_provided)
 
     # Loading the kubeconfig file in kubernetes client configuration
     kube_utils.load_kube_config(config, kube_config, kube_context)
@@ -386,7 +387,7 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
     proxy_details = proxy_utils.create_proxy_details(https_proxy, http_proxy, no_proxy, proxy_cert, disable_proxy)
     arc_agent_utils = ArcAgentUtils(kube_config, kube_context, values_file, proxy_details, auto_upgrade)
 
-    arc_agent_utils.execute_arc_agent_update(chart_path, cluster_name, release_namespace)
+    arc_agent_utils.execute_arc_agent_update(chart_path, release_namespace)
 
     return str.format(consts.Update_Agent_Success, cluster_name)
 
@@ -404,7 +405,7 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
     values_file_provided, values_file = utils.get_values_file()
 
     _, dp_endpoint_dogfood, release_train_dogfood = \
-                    utils.validate_helm_environment(cmd, values_file, values_file_provided)
+    utils.validate_helm_environment(cmd, values_file, values_file_provided)
 
     # Loading the kubeconfig file in kubernetes client configuration
     kube_utils.load_kube_config(config, kube_config, kube_context)
@@ -516,7 +517,7 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
     values_file_provided, values_file = utils.get_values_file()
 
     _, dp_endpoint_dogfood, release_train_dogfood = \
-                    utils.validate_helm_environment(cmd, values_file, values_file_provided)
+    utils.validate_helm_environment(cmd, values_file, values_file_provided)
 
     # Loading the kubeconfig file in kubernetes client configuration
     kube_utils.load_kube_config(config, kube_config, kube_context)
@@ -582,7 +583,7 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
     values_file_provided, values_file = utils.get_values_file()
 
     _, dp_endpoint_dogfood, release_train_dogfood = \
-                    utils.validate_helm_environment(cmd, values_file, values_file_provided)
+    utils.validate_helm_environment(cmd, values_file, values_file_provided)
 
     # Loading the kubeconfig file in kubernetes client configuration
     kube_utils.load_kube_config(config, kube_config, kube_context)

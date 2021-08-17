@@ -147,7 +147,7 @@ def client_side_proxy(cmd,
         if flag == 1:
             clientproxy_process.terminate()
         cc_utils.arm_exception_handler(e, consts.Get_Credentials_Failed_Fault_Type,
-                                    'Unable to list cluster user credentials')
+                                       'Unable to list cluster user credentials')
         raise CLIInternalError("Failed to get credentials." + str(e))
 
     # Starting the client proxy process, if this is the first time that this function is invoked
@@ -186,9 +186,9 @@ def client_side_proxy(cmd,
         data['kubeconfigs'][0]['value'] = kube_utils.insert_token_in_kubeconfig(data, token)
 
     uri = (
-            f'http://localhost:{client_proxy_port}/subscriptions/{subscription_id}' 
-            f'/resourceGroups/{resource_group_name}/providers/Microsoft.Kubernetes/'
-            f'connectedClusters/{cluster_name}/register?api-version=2020-10-01'
+           f'http://localhost:{client_proxy_port}/subscriptions/{subscription_id}'
+           f'/resourceGroups/{resource_group_name}/providers/Microsoft.Kubernetes/'
+           f'connectedClusters/{cluster_name}/register?api-version=2020-10-01'
     )
 
     # Posting hybrid connection details to proxy in order to get kubeconfig

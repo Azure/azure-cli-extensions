@@ -24,11 +24,9 @@ class HelmCoreUtils:
         os.environ['HELM_EXPERIMENTAL_OCI'] = '1'
         self.set_kube_configuration(kube_config, kube_context)
 
-
     def set_kube_configuration(self, kube_config=None, kube_context=None):
         self.__kube_config = kube_config
         self.__kube_context = kube_context
-
 
     def __set_param(self, cmd_helm):
         if self.__kube_config:
@@ -36,7 +34,6 @@ class HelmCoreUtils:
         if self.__kube_context:
             cmd_helm.extend(["--kube-context", self.__kube_context])
         return cmd_helm
-
 
     def pull_helm_chart(self, registry_path):
         cmd_helm_chart_pull = ["helm", "chart", "pull", registry_path]
@@ -47,7 +44,6 @@ class HelmCoreUtils:
                                     'Unable to pull helm chart from the registry',
                                     "Unable to pull helm chart from the registry '{}': "
                                     .format(registry_path))
-
 
     def export_helm_chart(self, registry_path, chart_export_path):
         cmd_helm_chart_export = ["helm", "chart", "export", registry_path,
@@ -60,7 +56,6 @@ class HelmCoreUtils:
                                     "Unable to export helm chart from the registry '{}': "
                                     .format(registry_path))
 
-
     def add_helm_repo(self, repo_name, repo_url):
         cmd_helm_repo = ["helm", "repo", "add", repo_name, repo_url]
 
@@ -69,7 +64,6 @@ class HelmCoreUtils:
         self.__execute_helm_command(cmd_helm_repo, consts.Add_HelmRepo_Fault_Type,
                                     'Failed to add helm repository',
                                     "Unable to add repository {} to helm: ".format(repo_url))
-
 
     def check_helm_version(self):
         cmd_helm_version = ["helm", "version", "--short", "--client"]
@@ -80,7 +74,6 @@ class HelmCoreUtils:
                                            'Unable to determine helm version',
                                            "Unable to determine helm version: ",
                                            self.HELM_VERSION_COMMAND)
-
 
     def get_release_namespace(self):
         cmd_helm_release = ["helm", "list", "-a", "--all-namespaces", "--output", "json"]
@@ -98,7 +91,6 @@ class HelmCoreUtils:
             if release['name'] == 'azure-arc':
                 return release['namespace']
         return None
-
 
     def get_all_helm_values(self, release_namespace):
         cmd_helm_values = ["helm", "get", "values", "--all", "azure-arc", "--namespace",
@@ -120,7 +112,6 @@ class HelmCoreUtils:
                                     summary='Problem loading the helm existing values')
             raise CLIInternalError("Problem loading the helm existing values: " + str(e))
 
-
     def __execute_helm_command(self, helm_cmd, fault_type=None, error_summary=None,
                                error_string=None, cmd_type=None):
         response_helm = Popen(helm_cmd, stdout=PIPE, stderr=PIPE)
@@ -140,7 +131,6 @@ class HelmCoreUtils:
                                   "Learn more at https://aka.ms/arc/k8s/onboarding-helm-install")
 
         return output.decode('ascii')
-
 
     def check_helm_install(self):
         cmd_helm_installed = ["helm", "--debug"]

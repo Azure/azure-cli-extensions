@@ -51,8 +51,8 @@ def connected_cluster_exists(client, resource_group_name, cluster_name):
         client.get(resource_group_name, cluster_name)
     except Exception as e:  # pylint: disable=broad-except
         arm_exception_handler(e, consts.Get_ConnectedCluster_Fault_Type,
-                                    'Failed to check if connected cluster resource already exists.',
-                                    return_if_not_found=True)
+                              'Failed to check if connected cluster resource already exists.',
+                              return_if_not_found=True)
         return False
     return True
 
@@ -82,7 +82,7 @@ def create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait):
                            cluster_name=cluster_name, connected_cluster=cc)
     except CloudError as e:
         arm_exception_handler(e, consts.Create_ConnectedCluster_Fault_Type,
-                                    'Unable to create connected cluster resource')
+                              'Unable to create connected cluster resource')
 
 
 def delete_cc_resource(client, resource_group_name, cluster_name, no_wait):
@@ -92,7 +92,7 @@ def delete_cc_resource(client, resource_group_name, cluster_name, no_wait):
                     cluster_name=cluster_name)
     except CloudError as e:
         arm_exception_handler(e, consts.Delete_ConnectedCluster_Fault_Type,
-                                    'Unable to delete connected cluster resource')
+                              'Unable to delete connected cluster resource')
 
 
 def arm_exception_handler(ex, fault_type, summary, return_if_not_found=False):

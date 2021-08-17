@@ -129,7 +129,7 @@ def get_values_file():
 def flatten(dd, separator='.', prefix=''):
     try:
         if isinstance(dd, dict):
-            return {prefix + separator + k if prefix else k: v for kk, vv in dd.items() \
+            return {prefix + separator + k if prefix else k: v for kk, vv in dd.items()
                     for k, v in flatten(vv, separator, kk).items()}
         else:
             return {prefix: dd}
@@ -277,6 +277,7 @@ def validate_env_file_dogfood(values_file, values_file_provided):
     dp_endpoint = env_dict.get('systemDefaultValues').get('azureArcAgents').get('config_dp_endpoint_override')
     release_train = env_dict.get('systemDefaultValues').get('azureArcAgents').get('releaseTrain')
     return dp_endpoint, release_train
+
 
 def initial_log_warning():
     logger.warning("Ensure that you have the latest helm version installed before proceeding.")

@@ -72,6 +72,7 @@ def get_server_version(configuration):
         kube_utils.kubernetes_exception_handler(e, consts.Get_Kubernetes_Version_Fault_Type,
                                                 'Unable to fetch kubernetes version', raise_error=False)
 
+
 def get_kubernetes_distro(configuration):  # Heuristic
     api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
     try:
@@ -229,9 +230,9 @@ def load_config_map(configuration):
         configmap = api_instance.read_namespaced_config_map('azure-clusterconfig', 'azure-arc')
     except Exception as e:  # pylint: disable=broad-except
         kube_utils.kubernetes_exception_handler(e, consts.Read_ConfigMap_Fault_Type, 'Unable to read ConfigMap',
-                                            error_message="Unable to read ConfigMap 'azure-clusterconfig' in" +
-                                            " 'azure-arc' namespace: ", message_for_not_found="The helm release" +
-                                            " 'azure-arc' is present but the azure-arc namespace/configmap is" +
-                                            " missing. Please run 'helm delete azure-arc --no-hooks' to cleanup" +
-                                            " the release before onboarding the cluster again.")
+                                                error_message="Unable to read ConfigMap 'azure-clusterconfig' in" +
+                                                " 'azure-arc' namespace: ", message_for_not_found="The helm release" +
+                                                " 'azure-arc' is present but the azure-arc namespace/configmap is" +
+                                                " missing. Please run 'helm delete azure-arc --no-hooks' to cleanup" +
+                                                " the release before onboarding the cluster again.")
     return configmap
