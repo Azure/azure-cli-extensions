@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.5.27
++++++
+* Update to adopt 2021-07-01 api-version
+
 0.5.26
 +++++
 * Correct containerLogMaxSizeMb to containerLogMaxSizeMB in customized kubelet config
