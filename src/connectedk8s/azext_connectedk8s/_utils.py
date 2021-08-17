@@ -724,7 +724,7 @@ def format_diag_status(diag_status):
     return diag_status
 
 
-def collect_periscope_logs(resource_group_name, name, storage_account_name=None, sas_token=None, container_name=None, readonly_sas_token=None, kube_context=None, kube_config=None):
+def collect_periscope_logs(resource_group_name, name, storage_account_name=None, sas_token=None, container_name="connectedk8stroubleshoot", readonly_sas_token=None, kube_context=None, kube_config=None):
     colorama.init()
 
     if not which('kubectl'):

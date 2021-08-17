@@ -713,7 +713,6 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
 
     # Deleting the azure-arc agents
     utils.delete_arc_agents(release_namespace, kube_config, kube_context, configuration)
-    utils.check_delete_job(configuration, consts.Arc_Namespace)  # Checks for the completion/absence of delete job
 
 
 def get_release_namespace(kube_config, kube_context):
@@ -1460,7 +1459,7 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
 
 
 def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=None, kube_context=None, storage_account=None,
-                 sas_token=None, container_name="mycontainername", output_file=os.path.join(os.path.expanduser('~'), '.azure', 'az_connectedk8s_troubleshoot_output.tar.gz')):
+                 sas_token=None, container_name="connectedk8stroubleshoot", output_file=os.path.join(os.path.expanduser('~'), '.azure', 'az_connectedk8s_troubleshoot_output.tar.gz')):
     colorama.init()
     print(f"{colorama.Fore.YELLOW}Troubleshooting the ConnectedCluster for possible issues...")
     utils.check_connectivity()  # Checks internet connectivity
@@ -1484,16 +1483,19 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
 
         try:
             # Fetch ConnectedCluster
-            connected_cluster = client.get(resource_group_name, cluster_name, raw=True)
-            tr_logger.info("Connected cluster resource: {}".format(connected_cluster.response.content))
+            connected_cluster = client.get(resource_group_name, cluster_name)
+            tr_logger.info("Connected cluster resource: {}".format(connected_cluster))
         except Exception as ex:
+            not_found = False
             try:
                 if ex.error.error.code == "NotFound" or ex.error.error.code == "ResourceNotFound":
                     tr_logger.error("Connected cluster resource doesn't exist. " + str(ex))
                     logger.error("The specified ConnectedCluster resource doesn't exist.")
-            except AttributeError:
+                    not_found = True
+            except Exception:
                 pass
-            tr_logger.error("Couldn't check the existence of Connected cluster resource. Error: {}".format(str(ex)))
+            if not not_found:
+                tr_logger.error("Couldn't check the existence of Connected cluster resource. Error: {}".format(str(ex)))
 
         try:
             # setting kubeconfig
@@ -1547,18 +1549,17 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
             logger.error("{} secret is not present on the kubernetes cluster.".format(consts.AZURE_IDENTITY_CERTIFICATE_SECRET))
 
         try:
-            cc_object = json.loads(connected_cluster.response.content)
-            raw_exp_time = cc_object.get("properties").get("managedIdentityCertificateExpirationTime")
-            if raw_exp_time:
-                cert_expirn_time = datetime.strptime(raw_exp_time, consts.ISO_861_Time_format).replace(tzinfo=timezone.utc)
-                current_time = datetime.now(timezone.utc)
-                if cert_expirn_time != datetime.min and cert_expirn_time < current_time:
-                    logger.error("MSI certificate on the cluster has expired.")
+            current_time = datetime.now(timezone.utc)
+            cert_expirn_time = connected_cluster.managed_identity_certificate_expiration_time
+            if cert_expirn_time != datetime.min and cert_expirn_time < current_time:
+                logger.error("MSI certificate on the cluster has expired.")
+        except ValueError as ex:
+            tr_logger.error(str(ex))
         except Exception as ex:
-            pass
+            tr_logger.error("Error while checking MSI cert expiration time: {}".format(str(ex)))
 
         storage_account_name, sas_token, readonly_sas_token = utils.setup_validate_storage_account(cmd.cli_ctx, storage_account, sas_token, resource_group_name)
-        container_name = container_name + time.strftime("%Y%m%d-%H%M%S")
+        container_name = container_name + "-" + time.strftime("%Y%m%d-%H%M%S")
         if storage_account_name:  # When validated the storage account
             print(f"Logs will be uploaded to the following storage account: {storage_account_name} in container {container_name}")
             utils.try_upload_log_file(storage_account_name, sas_token, container_name, troubleshoot_log_path)
