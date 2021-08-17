@@ -192,7 +192,7 @@ class ArcAgentUtils:
                             .format(self.__proxy_details.get('proxy_cert'))])
         if (self.__proxy_details.get('https_proxy') or self.__proxy_details.get('http_proxy') or
             self.__proxy_details.get('no_proxy')):
-            cmd_helm.extend(["--set", "global.isProxyEnabled={}".format(True)])
+                cmd_helm.extend(["--set", "global.isProxyEnabled={}".format(True)])
         if self.__proxy_details.get('disable_proxy'):
             cmd_helm.extend(["--set", "global.isProxyEnabled={}".format(False)])
         if self.__kube_config:
@@ -208,7 +208,7 @@ class ArcAgentUtils:
         if response_helm_cmd.returncode != 0:
             if ('forbidden' in error_helm_cmd.decode("ascii") or
                 'timed out waiting for the condition' in error_helm_cmd.decode("ascii")):
-                telemetry.set_user_fault()
+                    telemetry.set_user_fault()
             telemetry.set_exception(exception=error_helm_cmd.decode("ascii"),
                                     fault_type=consts.Install_HelmRelease_Fault_Type,
                                     summary='Unable to install helm release')
