@@ -134,7 +134,7 @@ def create_task(cmd,
                                   project_name=project_name,
                                   task_name=validated_task_name,
                                   expand="output")
-            if not mongo_validation_succeeded(v_result.properties.output[0]):
+            if not mongo_validation_succeeded(v_result.properties):
                 raise CLIError("Not all collections passed during the validation task. Fix your settings, \
 validate those settings, and try again. \n\
 To view the errors use 'az dms project task show' with the '--expand output' argument on your previous \
@@ -207,10 +207,10 @@ def stop_task(
 
     # If object name is empty, treat this as stopping/cancelling the entire task.
     if object_name is None:
-        client.cancel(group_name=resource_group_name,
-                      service_name=service_name,
-                      project_name=project_name,
-                      task_name=task_name)
+        return client.cancel(group_name=resource_group_name,
+                             service_name=service_name,
+                             project_name=project_name,
+                             task_name=task_name)
     # Otherwise, for scenarios that support it, just stop migration on the specified object.
     else:
         source_platform, target_platform = get_project_platforms(cmd,
@@ -227,13 +227,13 @@ def stop_task(
 cancelling at the object level. \n\
 To cancel this task do not supply the object-name parameter.")
 
-        run_command(client,
-                    command_input,
-                    command_properties_model,
-                    resource_group_name,
-                    service_name,
-                    project_name,
-                    task_name)
+        return run_command(client,
+                           command_input,
+                           command_properties_model,
+                           resource_group_name,
+                           service_name,
+                           project_name,
+                           task_name)
 # endregion
 
 
@@ -402,11 +402,11 @@ def run_command(client,
     command_properties_params = {'input': command_input}
     command_properties = command_properties_model(**command_properties_params)
 
-    client.command(group_name=resource_group_name,
-                   service_name=service_name,
-                   project_name=project_name,
-                   task_name=task_name,
-                   parameters=command_properties)
+    return client.command(group_name=resource_group_name,
+                          service_name=service_name,
+                          project_name=project_name,
+                          task_name=task_name,
+                          parameters=command_properties)
 
 
 def get_scenario_type(source_platform, target_platform, task_type=""):
@@ -432,7 +432,8 @@ def get_scenario_type(source_platform, target_platform, task_type=""):
 
 
 def mongo_validation_succeeded(migration_progress):
-    for dummy_key1, db in migration_progress.databases.items():
+    if migration_progress.state == "Failed": return False
+    for dummy_key1, db in migration_progress.output[0].databases.items():
         if db.state == "Failed" or any(c.state == "Failed" for dummy_key2, c in db.collections.items()):
             return False
 

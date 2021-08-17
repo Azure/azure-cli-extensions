@@ -1,0 +1,1775 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vnet subnet show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --vnet-name
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-azure-mgmt-network/19.0.0 Python/3.7.3 (Linux-5.10.43.3-microsoft-standard-WSL2-x86_64-with-debian-10.10)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ERNetwork/providers/Microsoft.Network/virtualNetworks/AzureDMS-CORP-USC-VNET-5044/subnets/Subnet-1?api-version=2021-02-01
+  response:
+    body:
+      string: "{\r\n  \"name\": \"Subnet-1\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ERNetwork/providers/Microsoft.Network/virtualNetworks/AzureDMS-CORP-USC-VNET-5044/subnets/Subnet-1\"\
+        ,\r\n  \"etag\": \"W/\\\"872cb1c3-c3a9-4fda-a481-0c0eae5cc714\\\"\",\r\n \
+        \ \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"\
+        addressPrefix\": \"172.16.7.64/27\",\r\n    \"ipConfigurations\": [\r\n  \
+        \    {\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DMSLoadResources/providers/Microsoft.Network/networkInterfaces/sqlsource307/ipConfigurations/ipconfig1\"\
+        \r\n      },\r\n      {\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DMSLoadResources/providers/Microsoft.Network/networkInterfaces/mysqlsource947/ipConfigurations/ipconfig1\"\
+        \r\n      },\r\n      {\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yaly/providers/Microsoft.Network/networkInterfaces/yalyoneboxvm352/ipConfigurations/ipconfig1\"\
+        \r\n      },\r\n      {\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/brih-dec-train-2/providers/Microsoft.Network/networkInterfaces/NIC-i784xakgpk93g8uxkbhqaubv/ipConfigurations/ipconfig\"\
+        \r\n      },\r\n      {\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DMS-Tutorials-RG/providers/Microsoft.Network/networkInterfaces/NIC-2vgfwyyzz748bnv25rkjcsdx/ipConfigurations/ipconfig\"\
+        \r\n      },\r\n      {\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/SiyaoSignoffT3Service/providers/Microsoft.Network/networkInterfaces/NIC-h7nsa3m7fa5dfng7ti4qfun8/ipConfigurations/ipconfig\"\
+        \r\n      },\r\n      {\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tzppe322/providers/Microsoft.Network/networkInterfaces/NIC-7rfjudjp9qadzdnnd6aqpanc/ipConfigurations/ipconfig\"\
+        \r\n      },\r\n      {\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/brih-dec-train-2/providers/Microsoft.Network/networkInterfaces/NIC-3h77idm9dbrsrs33n7hxpntz/ipConfigurations/ipconfig\"\
+        \r\n      },\r\n      {\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/hijavappe/providers/Microsoft.Network/networkInterfaces/NIC-k7dqvk5gb9r2m6qip58yxep9/ipConfigurations/ipconfig\"\
+        \r\n      },\r\n      {\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/siyaosignoffRG/providers/Microsoft.Network/networkInterfaces/NIC-54wukfqgti84rk85if49yy4n/ipConfigurations/ipconfig\"\
+        \r\n      },\r\n      {\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AkmaOneboxTest/providers/Microsoft.Network/networkInterfaces/oneboxvm975/ipConfigurations/ipconfig1\"\
+        \r\n      },\r\n      {\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DMSSignOffTest/providers/Microsoft.Network/networkInterfaces/NIC-kdgap38rx8639wqd7vkq2ris/ipConfigurations/ipconfig\"\
+        \r\n      }\r\n    ],\r\n    \"serviceEndpoints\": [\r\n      {\r\n      \
+        \  \"provisioningState\": \"Succeeded\",\r\n        \"service\": \"Microsoft.Storage\"\
+        ,\r\n        \"locations\": [\r\n          \"centralus\",\r\n          \"\
+        eastus2\"\r\n        ]\r\n      }\r\n    ],\r\n    \"delegations\": [],\r\n\
+        \    \"privateEndpointNetworkPolicies\": \"Disabled\",\r\n    \"privateLinkServiceNetworkPolicies\"\
+        : \"Enabled\"\r\n  },\r\n  \"type\": \"Microsoft.Network/virtualNetworks/subnets\"\
+        \r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '3367'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 17 Aug 2021 04:05:13 GMT
+      etag:
+      - W/"872cb1c3-c3a9-4fda-a481-0c0eae5cc714"
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 96c7b82d-8dfb-4ed8-b235-f403036d9b23
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"tags": {"area": "cli", "env": "test"}, "location": "centralus", "sku":
+      {"name": "Premium_4vCores"}, "properties": {"virtualSubnetId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ERNetwork/providers/Microsoft.Network/virtualNetworks/AzureDMS-CORP-USC-VNET-5044/subnets/Subnet-1"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dms create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '305'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -l -n -g --sku-name --subnet --tags
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-datamigration/9.0.0 Python/3.7.3 (Linux-5.10.43.3-microsoft-standard-WSL2-x86_64-with-debian-10.10)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dmsext_cli_test_000001/providers/Microsoft.DataMigration/services/dmsextclitest000003?api-version=2018-07-15-preview
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Accepted","virtualSubnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ERNetwork/providers/Microsoft.Network/virtualNetworks/AzureDMS-CORP-USC-VNET-5044/subnets/Subnet-1"},"etag":"SkokBUvgX5wh/vWoav6EmL1mR7P+OHNE3RlxoDZtfgA=","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dmsext_cli_test_000001/providers/Microsoft.DataMigration/services/dmsextclitest000003","kind":"Cloud","location":"centralus","name":"dmsextclitest000003","sku":{"name":"Premium_4vCores","size":"4
+        vCores","tier":"Premium"},"tags":{"area":"cli","env":"test"},"type":"Microsoft.DataMigration/services"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/centralus/operationStatuses/ac2dd136-ea3d-40f1-96ac-d04960f3fad5?api-version=2018-07-15-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '714'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 17 Aug 2021 04:05:18 GMT
+      etag:
+      - '"SkokBUvgX5wh/vWoav6EmL1mR7P+OHNE3RlxoDZtfgA="'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dms create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -l -n -g --sku-name --subnet --tags
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-datamigration/9.0.0 Python/3.7.3 (Linux-5.10.43.3-microsoft-standard-WSL2-x86_64-with-debian-10.10)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/centralus/operationStatuses/ac2dd136-ea3d-40f1-96ac-d04960f3fad5?api-version=2018-07-15-preview
+  response:
+    body:
+      string: '{"name":"ac2dd136-ea3d-40f1-96ac-d04960f3fad5","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/centralus/operationStatuses/ac2dd136-ea3d-40f1-96ac-d04960f3fad5","status":"Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '234'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 17 Aug 2021 04:05:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dms create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -l -n -g --sku-name --subnet --tags
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-datamigration/9.0.0 Python/3.7.3 (Linux-5.10.43.3-microsoft-standard-WSL2-x86_64-with-debian-10.10)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/centralus/operationStatuses/ac2dd136-ea3d-40f1-96ac-d04960f3fad5?api-version=2018-07-15-preview
+  response:
+    body:
+      string: '{"name":"ac2dd136-ea3d-40f1-96ac-d04960f3fad5","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/centralus/operationStatuses/ac2dd136-ea3d-40f1-96ac-d04960f3fad5","status":"Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '234'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 17 Aug 2021 04:06:19 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dms create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -l -n -g --sku-name --subnet --tags
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-datamigration/9.0.0 Python/3.7.3 (Linux-5.10.43.3-microsoft-standard-WSL2-x86_64-with-debian-10.10)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/centralus/operationStatuses/ac2dd136-ea3d-40f1-96ac-d04960f3fad5?api-version=2018-07-15-preview
+  response:
+    body:
+      string: '{"name":"ac2dd136-ea3d-40f1-96ac-d04960f3fad5","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/centralus/operationStatuses/ac2dd136-ea3d-40f1-96ac-d04960f3fad5","status":"Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '234'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 17 Aug 2021 04:06:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dms create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -l -n -g --sku-name --subnet --tags
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-datamigration/9.0.0 Python/3.7.3 (Linux-5.10.43.3-microsoft-standard-WSL2-x86_64-with-debian-10.10)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/centralus/operationStatuses/ac2dd136-ea3d-40f1-96ac-d04960f3fad5?api-version=2018-07-15-preview
+  response:
+    body:
+      string: '{"name":"ac2dd136-ea3d-40f1-96ac-d04960f3fad5","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/centralus/operationStatuses/ac2dd136-ea3d-40f1-96ac-d04960f3fad5","status":"Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '234'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 17 Aug 2021 04:07:19 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dms create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -l -n -g --sku-name --subnet --tags
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-datamigration/9.0.0 Python/3.7.3 (Linux-5.10.43.3-microsoft-standard-WSL2-x86_64-with-debian-10.10)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/centralus/operationStatuses/ac2dd136-ea3d-40f1-96ac-d04960f3fad5?api-version=2018-07-15-preview
+  response:
+    body:
+      string: '{"name":"ac2dd136-ea3d-40f1-96ac-d04960f3fad5","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/centralus/operationStatuses/ac2dd136-ea3d-40f1-96ac-d04960f3fad5","status":"Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '234'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 17 Aug 2021 04:07:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dms create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -l -n -g --sku-name --subnet --tags
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-datamigration/9.0.0 Python/3.7.3 (Linux-5.10.43.3-microsoft-standard-WSL2-x86_64-with-debian-10.10)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/centralus/operationStatuses/ac2dd136-ea3d-40f1-96ac-d04960f3fad5?api-version=2018-07-15-preview
+  response:
+    body:
+      string: '{"name":"ac2dd136-ea3d-40f1-96ac-d04960f3fad5","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/centralus/operationStatuses/ac2dd136-ea3d-40f1-96ac-d04960f3fad5","status":"Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '234'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 17 Aug 2021 04:08:19 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dms create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -l -n -g --sku-name --subnet --tags
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-datamigration/9.0.0 Python/3.7.3 (Linux-5.10.43.3-microsoft-standard-WSL2-x86_64-with-debian-10.10)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/centralus/operationStatuses/ac2dd136-ea3d-40f1-96ac-d04960f3fad5?api-version=2018-07-15-preview
+  response:
+    body:
+      string: '{"name":"ac2dd136-ea3d-40f1-96ac-d04960f3fad5","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/centralus/operationStatuses/ac2dd136-ea3d-40f1-96ac-d04960f3fad5","status":"Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '234'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 17 Aug 2021 04:08:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dms create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -l -n -g --sku-name --subnet --tags
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-datamigration/9.0.0 Python/3.7.3 (Linux-5.10.43.3-microsoft-standard-WSL2-x86_64-with-debian-10.10)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/centralus/operationStatuses/ac2dd136-ea3d-40f1-96ac-d04960f3fad5?api-version=2018-07-15-preview
+  response:
+    body:
+      string: '{"name":"ac2dd136-ea3d-40f1-96ac-d04960f3fad5","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/centralus/operationStatuses/ac2dd136-ea3d-40f1-96ac-d04960f3fad5","status":"Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '234'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 17 Aug 2021 04:09:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dms create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -l -n -g --sku-name --subnet --tags
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-datamigration/9.0.0 Python/3.7.3 (Linux-5.10.43.3-microsoft-standard-WSL2-x86_64-with-debian-10.10)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/centralus/operationStatuses/ac2dd136-ea3d-40f1-96ac-d04960f3fad5?api-version=2018-07-15-preview
+  response:
+    body:
+      string: '{"name":"ac2dd136-ea3d-40f1-96ac-d04960f3fad5","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/centralus/operationStatuses/ac2dd136-ea3d-40f1-96ac-d04960f3fad5","status":"Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '234'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 17 Aug 2021 04:09:50 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dms create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -l -n -g --sku-name --subnet --tags
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-datamigration/9.0.0 Python/3.7.3 (Linux-5.10.43.3-microsoft-standard-WSL2-x86_64-with-debian-10.10)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/centralus/operationStatuses/ac2dd136-ea3d-40f1-96ac-d04960f3fad5?api-version=2018-07-15-preview
+  response:
+    body:
+      string: '{"name":"ac2dd136-ea3d-40f1-96ac-d04960f3fad5","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/centralus/operationStatuses/ac2dd136-ea3d-40f1-96ac-d04960f3fad5","status":"Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '234'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 17 Aug 2021 04:10:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dms create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -l -n -g --sku-name --subnet --tags
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-datamigration/9.0.0 Python/3.7.3 (Linux-5.10.43.3-microsoft-standard-WSL2-x86_64-with-debian-10.10)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/centralus/operationStatuses/ac2dd136-ea3d-40f1-96ac-d04960f3fad5?api-version=2018-07-15-preview
+  response:
+    body:
+      string: '{"name":"ac2dd136-ea3d-40f1-96ac-d04960f3fad5","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/centralus/operationStatuses/ac2dd136-ea3d-40f1-96ac-d04960f3fad5","status":"Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '234'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 17 Aug 2021 04:10:50 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dms create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -l -n -g --sku-name --subnet --tags
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-datamigration/9.0.0 Python/3.7.3 (Linux-5.10.43.3-microsoft-standard-WSL2-x86_64-with-debian-10.10)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/centralus/operationStatuses/ac2dd136-ea3d-40f1-96ac-d04960f3fad5?api-version=2018-07-15-preview
+  response:
+    body:
+      string: '{"name":"ac2dd136-ea3d-40f1-96ac-d04960f3fad5","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/centralus/operationStatuses/ac2dd136-ea3d-40f1-96ac-d04960f3fad5","status":"Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '234'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 17 Aug 2021 04:11:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dms create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -l -n -g --sku-name --subnet --tags
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-datamigration/9.0.0 Python/3.7.3 (Linux-5.10.43.3-microsoft-standard-WSL2-x86_64-with-debian-10.10)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/centralus/operationStatuses/ac2dd136-ea3d-40f1-96ac-d04960f3fad5?api-version=2018-07-15-preview
+  response:
+    body:
+      string: '{"name":"ac2dd136-ea3d-40f1-96ac-d04960f3fad5","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/centralus/operationStatuses/ac2dd136-ea3d-40f1-96ac-d04960f3fad5","status":"Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '234'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 17 Aug 2021 04:11:51 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dms create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -l -n -g --sku-name --subnet --tags
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-datamigration/9.0.0 Python/3.7.3 (Linux-5.10.43.3-microsoft-standard-WSL2-x86_64-with-debian-10.10)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/centralus/operationStatuses/ac2dd136-ea3d-40f1-96ac-d04960f3fad5?api-version=2018-07-15-preview
+  response:
+    body:
+      string: '{"name":"ac2dd136-ea3d-40f1-96ac-d04960f3fad5","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/centralus/operationStatuses/ac2dd136-ea3d-40f1-96ac-d04960f3fad5","status":"Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '234'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 17 Aug 2021 04:12:21 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dms create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -l -n -g --sku-name --subnet --tags
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-datamigration/9.0.0 Python/3.7.3 (Linux-5.10.43.3-microsoft-standard-WSL2-x86_64-with-debian-10.10)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/centralus/operationStatuses/ac2dd136-ea3d-40f1-96ac-d04960f3fad5?api-version=2018-07-15-preview
+  response:
+    body:
+      string: '{"name":"ac2dd136-ea3d-40f1-96ac-d04960f3fad5","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/centralus/operationStatuses/ac2dd136-ea3d-40f1-96ac-d04960f3fad5","status":"Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '234'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 17 Aug 2021 04:12:51 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dms create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -l -n -g --sku-name --subnet --tags
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-datamigration/9.0.0 Python/3.7.3 (Linux-5.10.43.3-microsoft-standard-WSL2-x86_64-with-debian-10.10)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/centralus/operationStatuses/ac2dd136-ea3d-40f1-96ac-d04960f3fad5?api-version=2018-07-15-preview
+  response:
+    body:
+      string: '{"name":"ac2dd136-ea3d-40f1-96ac-d04960f3fad5","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/centralus/operationStatuses/ac2dd136-ea3d-40f1-96ac-d04960f3fad5","status":"Succeeded"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '236'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 17 Aug 2021 04:13:21 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dms create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -l -n -g --sku-name --subnet --tags
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-datamigration/9.0.0 Python/3.7.3 (Linux-5.10.43.3-microsoft-standard-WSL2-x86_64-with-debian-10.10)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dmsext_cli_test_000001/providers/Microsoft.DataMigration/services/dmsextclitest000003?api-version=2018-07-15-preview
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Succeeded","virtualNicId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dmsext_cli_test_000001/providers/Microsoft.Network/networkInterfaces/NIC-kb4taibqmwmmkfx3emi326qh","virtualSubnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ERNetwork/providers/Microsoft.Network/virtualNetworks/AzureDMS-CORP-USC-VNET-5044/subnets/Subnet-1"},"etag":"uDdC8by8Lop7vc1lDYfF4GhMzEv362HiZYlu1UlEEsc=","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dmsext_cli_test_000001/providers/Microsoft.DataMigration/services/dmsextclitest000003","kind":"Cloud","location":"centralus","name":"dmsextclitest000003","sku":{"name":"Premium_4vCores","size":"4
+        vCores","tier":"Premium"},"tags":{"area":"cli","env":"test"},"type":"Microsoft.DataMigration/services"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '950'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 17 Aug 2021 04:13:22 GMT
+      etag:
+      - '"uDdC8by8Lop7vc1lDYfF4GhMzEv362HiZYlu1UlEEsc="'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dms project show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --service-name -n
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-datamigration/9.0.0 Python/3.7.3 (Linux-5.10.43.3-microsoft-standard-WSL2-x86_64-with-debian-10.10)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dmsext_cli_test_000001/providers/Microsoft.DataMigration/services/dmsextclitest000003/projects/project1000004?api-version=2018-07-15-preview
+  response:
+    body:
+      string: '{"error":{"code":"ResourceNotFound","message":"The Resource ''Microsoft.DataMigration/services/dmsextclitest000003/projects/project1000004''
+        under resource group ''dmsext_cli_test_000001'' was not found. For more details
+        please go to https://aka.ms/ARMResourceNotFoundFix"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '325'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 17 Aug 2021 04:13:23 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+    status:
+      code: 404
+      message: Not Found
+- request:
+    body: '{"tags": {"Type": "test", "Cli": ""}, "location": "centralus", "properties":
+      {"sourcePlatform": "sql", "targetPlatform": "sqldb"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dms project create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '130'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --service-name -l -n --source-platform --target-platform --tags
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-datamigration/9.0.0 Python/3.7.3 (Linux-5.10.43.3-microsoft-standard-WSL2-x86_64-with-debian-10.10)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dmsext_cli_test_000001/providers/Microsoft.DataMigration/services/dmsextclitest000003/projects/project1000004?api-version=2018-07-15-preview
+  response:
+    body:
+      string: '{"properties":{"sourcePlatform":"SQL","targetPlatform":"SQLDB","creationTime":"2021-08-17T04:13:29.3647785+00:00","provisioningState":"Succeeded"},"etag":"W2M2pzGRHIyXI3I9G5iGtPh6j8ndj6p6lOa+nxHR6ao=","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dmsext_cli_test_000001/providers/Microsoft.DataMigration/services/dmsextclitest000003/projects/project1000004","location":"centralus","name":"project1000004","tags":{"Type":"test","Cli":""},"type":"Microsoft.DataMigration/services/projects"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '571'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 17 Aug 2021 04:13:29 GMT
+      etag:
+      - '"W2M2pzGRHIyXI3I9G5iGtPh6j8ndj6p6lOa+nxHR6ao="'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dms project show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --service-name -n
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-datamigration/9.0.0 Python/3.7.3 (Linux-5.10.43.3-microsoft-standard-WSL2-x86_64-with-debian-10.10)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dmsext_cli_test_000001/providers/Microsoft.DataMigration/services/dmsextclitest000003/projects/project1000004?api-version=2018-07-15-preview
+  response:
+    body:
+      string: '{"properties":{"sourcePlatform":"SQL","targetPlatform":"SQLDB","creationTime":"2021-08-17T04:13:29.3647785+00:00","provisioningState":"Succeeded"},"etag":"W2M2pzGRHIyXI3I9G5iGtPh6j8ndj6p6lOa+nxHR6ao=","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dmsext_cli_test_000001/providers/Microsoft.DataMigration/services/dmsextclitest000003/projects/project1000004","location":"centralus","name":"project1000004","tags":{"Type":"test","Cli":""},"type":"Microsoft.DataMigration/services/projects"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '571'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 17 Aug 2021 04:13:30 GMT
+      etag:
+      - '"W2M2pzGRHIyXI3I9G5iGtPh6j8ndj6p6lOa+nxHR6ao="'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"tags": {"Type": "test", "Cli": ""}, "location": "centralus", "properties":
+      {"sourcePlatform": "postgresql", "targetPlatform": "azuredbforpostgresql"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dms project create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '152'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --service-name -l -n --source-platform --target-platform --tags
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-datamigration/9.0.0 Python/3.7.3 (Linux-5.10.43.3-microsoft-standard-WSL2-x86_64-with-debian-10.10)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dmsext_cli_test_000001/providers/Microsoft.DataMigration/services/dmsextclitest000003/projects/projectpg000006?api-version=2018-07-15-preview
+  response:
+    body:
+      string: '{"properties":{"sourcePlatform":"PostgreSQL","targetPlatform":"AzureDbForPostgreSQL","creationTime":"2021-08-17T04:13:36.4115916+00:00","provisioningState":"Succeeded"},"etag":"VmI5tkvNia3ASchoOA0dGVve7nYyqXVDzy41+L7qxuc=","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dmsext_cli_test_000001/providers/Microsoft.DataMigration/services/dmsextclitest000003/projects/projectpg000006","location":"centralus","name":"projectpg000006","tags":{"Type":"test","Cli":""},"type":"Microsoft.DataMigration/services/projects"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '603'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 17 Aug 2021 04:13:36 GMT
+      etag:
+      - '"VmI5tkvNia3ASchoOA0dGVve7nYyqXVDzy41+L7qxuc="'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dms project show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --service-name -n
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-datamigration/9.0.0 Python/3.7.3 (Linux-5.10.43.3-microsoft-standard-WSL2-x86_64-with-debian-10.10)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dmsext_cli_test_000001/providers/Microsoft.DataMigration/services/dmsextclitest000003/projects/projectpg000006?api-version=2018-07-15-preview
+  response:
+    body:
+      string: '{"properties":{"sourcePlatform":"PostgreSQL","targetPlatform":"AzureDbForPostgreSQL","creationTime":"2021-08-17T04:13:36.4115916+00:00","provisioningState":"Succeeded"},"etag":"VmI5tkvNia3ASchoOA0dGVve7nYyqXVDzy41+L7qxuc=","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dmsext_cli_test_000001/providers/Microsoft.DataMigration/services/dmsextclitest000003/projects/projectpg000006","location":"centralus","name":"projectpg000006","tags":{"Type":"test","Cli":""},"type":"Microsoft.DataMigration/services/projects"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '603'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 17 Aug 2021 04:13:37 GMT
+      etag:
+      - '"VmI5tkvNia3ASchoOA0dGVve7nYyqXVDzy41+L7qxuc="'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"tags": {"Type": "test", "Cli": ""}, "location": "centralus", "properties":
+      {"sourcePlatform": "mongodb", "targetPlatform": "mongodb"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dms project create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '136'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --service-name -l -n --source-platform --target-platform --tags
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-datamigration/9.0.0 Python/3.7.3 (Linux-5.10.43.3-microsoft-standard-WSL2-x86_64-with-debian-10.10)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dmsext_cli_test_000001/providers/Microsoft.DataMigration/services/dmsextclitest000003/projects/projectmg000007?api-version=2018-07-15-preview
+  response:
+    body:
+      string: '{"properties":{"sourcePlatform":"MongoDb","targetPlatform":"MongoDb","creationTime":"2021-08-17T04:13:43.0915856+00:00","provisioningState":"Succeeded"},"etag":"iu3rcfqQwiFy1RPr2i/ecN1HcGJV3ep7/WbyTcwZcgw=","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dmsext_cli_test_000001/providers/Microsoft.DataMigration/services/dmsextclitest000003/projects/projectmg000007","location":"centralus","name":"projectmg000007","tags":{"Type":"test","Cli":""},"type":"Microsoft.DataMigration/services/projects"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '587'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 17 Aug 2021 04:13:42 GMT
+      etag:
+      - '"iu3rcfqQwiFy1RPr2i/ecN1HcGJV3ep7/WbyTcwZcgw="'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dms project show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --service-name -n
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-datamigration/9.0.0 Python/3.7.3 (Linux-5.10.43.3-microsoft-standard-WSL2-x86_64-with-debian-10.10)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dmsext_cli_test_000001/providers/Microsoft.DataMigration/services/dmsextclitest000003/projects/projectmg000007?api-version=2018-07-15-preview
+  response:
+    body:
+      string: '{"properties":{"sourcePlatform":"MongoDb","targetPlatform":"MongoDb","creationTime":"2021-08-17T04:13:43.0915856+00:00","provisioningState":"Succeeded"},"etag":"iu3rcfqQwiFy1RPr2i/ecN1HcGJV3ep7/WbyTcwZcgw=","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dmsext_cli_test_000001/providers/Microsoft.DataMigration/services/dmsextclitest000003/projects/projectmg000007","location":"centralus","name":"projectmg000007","tags":{"Type":"test","Cli":""},"type":"Microsoft.DataMigration/services/projects"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '587'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 17 Aug 2021 04:13:45 GMT
+      etag:
+      - '"iu3rcfqQwiFy1RPr2i/ecN1HcGJV3ep7/WbyTcwZcgw="'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "centralus", "properties": {"sourcePlatform": "sql", "targetPlatform":
+      "sqldb"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dms project create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '93'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --service-name -l -n --source-platform --target-platform
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-datamigration/9.0.0 Python/3.7.3 (Linux-5.10.43.3-microsoft-standard-WSL2-x86_64-with-debian-10.10)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dmsext_cli_test_000001/providers/Microsoft.DataMigration/services/dmsextclitest000003/projects/project2000005?api-version=2018-07-15-preview
+  response:
+    body:
+      string: '{"properties":{"sourcePlatform":"SQL","targetPlatform":"SQLDB","creationTime":"2021-08-17T04:13:50.3583448+00:00","provisioningState":"Succeeded"},"etag":"LjiH+msk8hkUZovxqoYslovhfQNDdOYc2b2lKvqUYEQ=","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dmsext_cli_test_000001/providers/Microsoft.DataMigration/services/dmsextclitest000003/projects/project2000005","location":"centralus","name":"project2000005","type":"Microsoft.DataMigration/services/projects"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '539'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 17 Aug 2021 04:13:49 GMT
+      etag:
+      - '"LjiH+msk8hkUZovxqoYslovhfQNDdOYc2b2lKvqUYEQ="'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dms project list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --service-name
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-datamigration/9.0.0 Python/3.7.3 (Linux-5.10.43.3-microsoft-standard-WSL2-x86_64-with-debian-10.10)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dmsext_cli_test_000001/providers/Microsoft.DataMigration/services/dmsextclitest000003/projects?api-version=2018-07-15-preview
+  response:
+    body:
+      string: '{"value":[{"properties":{"sourcePlatform":"SQL","targetPlatform":"SQLDB","creationTime":"2021-08-17T04:13:29.3647785+00:00","provisioningState":"Succeeded"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dmsext_cli_test_000001/providers/Microsoft.DataMigration/services/dmsextclitest000003/projects/project1000004","location":"centralus","name":"project1000004","tags":{"Type":"test","Cli":""},"type":"Microsoft.DataMigration/services/projects"},{"properties":{"sourcePlatform":"SQL","targetPlatform":"SQLDB","creationTime":"2021-08-17T04:13:50.3583448+00:00","provisioningState":"Succeeded"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dmsext_cli_test_000001/providers/Microsoft.DataMigration/services/dmsextclitest000003/projects/project2000005","location":"centralus","name":"project2000005","type":"Microsoft.DataMigration/services/projects"},{"properties":{"sourcePlatform":"MongoDb","targetPlatform":"MongoDb","creationTime":"2021-08-17T04:13:43.0915856+00:00","provisioningState":"Succeeded"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dmsext_cli_test_000001/providers/Microsoft.DataMigration/services/dmsextclitest000003/projects/projectmg000007","location":"centralus","name":"projectmg000007","tags":{"Type":"test","Cli":""},"type":"Microsoft.DataMigration/services/projects"},{"properties":{"sourcePlatform":"PostgreSQL","targetPlatform":"AzureDbForPostgreSQL","creationTime":"2021-08-17T04:13:36.4115916+00:00","provisioningState":"Succeeded"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dmsext_cli_test_000001/providers/Microsoft.DataMigration/services/dmsextclitest000003/projects/projectpg000006","location":"centralus","name":"projectpg000006","tags":{"Type":"test","Cli":""},"type":"Microsoft.DataMigration/services/projects"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2099'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 17 Aug 2021 04:13:51 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"name": "project2000005", "type": "projects"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dms project check-name
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '47'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --service-name -n
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-datamigration/9.0.0 Python/3.7.3 (Linux-5.10.43.3-microsoft-standard-WSL2-x86_64-with-debian-10.10)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dmsext_cli_test_000001/providers/Microsoft.DataMigration/services/dmsextclitest000003/checkNameAvailability?api-version=2018-07-15-preview
+  response:
+    body:
+      string: '{"reason":"AlreadyExists","message":"The resource name is already in
+        use.","nameAvailable":false}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '97'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 17 Aug 2021 04:13:53 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dms project delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --service-name -n -y
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-datamigration/9.0.0 Python/3.7.3 (Linux-5.10.43.3-microsoft-standard-WSL2-x86_64-with-debian-10.10)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dmsext_cli_test_000001/providers/Microsoft.DataMigration/services/dmsextclitest000003/projects/project2000005?api-version=2018-07-15-preview
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 17 Aug 2021 04:13:57 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"name": "project2000005", "type": "projects"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dms project check-name
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '47'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --service-name -n
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-datamigration/9.0.0 Python/3.7.3 (Linux-5.10.43.3-microsoft-standard-WSL2-x86_64-with-debian-10.10)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dmsext_cli_test_000001/providers/Microsoft.DataMigration/services/dmsextclitest000003/checkNameAvailability?api-version=2018-07-15-preview
+  response:
+    body:
+      string: '{"nameAvailable":true}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '22'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 17 Aug 2021 04:13:59 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dms delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g -n --delete-running-tasks -y
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-datamigration/9.0.0 Python/3.7.3 (Linux-5.10.43.3-microsoft-standard-WSL2-x86_64-with-debian-10.10)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dmsext_cli_test_000001/providers/Microsoft.DataMigration/services/dmsextclitest000003?api-version=2018-07-15-preview&deleteRunningTasks=true
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/centralus/operationStatuses/1943ddd3-c3d1-47f9-bc14-eda22eb30c16?api-version=2018-07-15-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 17 Aug 2021 04:14:01 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/centralus/operationResults/1943ddd3-c3d1-47f9-bc14-eda22eb30c16?api-version=2018-07-15-preview
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dms delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --delete-running-tasks -y
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-datamigration/9.0.0 Python/3.7.3 (Linux-5.10.43.3-microsoft-standard-WSL2-x86_64-with-debian-10.10)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/centralus/operationStatuses/1943ddd3-c3d1-47f9-bc14-eda22eb30c16?api-version=2018-07-15-preview
+  response:
+    body:
+      string: '{"name":"1943ddd3-c3d1-47f9-bc14-eda22eb30c16","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/centralus/operationStatuses/1943ddd3-c3d1-47f9-bc14-eda22eb30c16","status":"Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '234'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 17 Aug 2021 04:14:32 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dms delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --delete-running-tasks -y
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-datamigration/9.0.0 Python/3.7.3 (Linux-5.10.43.3-microsoft-standard-WSL2-x86_64-with-debian-10.10)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/centralus/operationStatuses/1943ddd3-c3d1-47f9-bc14-eda22eb30c16?api-version=2018-07-15-preview
+  response:
+    body:
+      string: '{"name":"1943ddd3-c3d1-47f9-bc14-eda22eb30c16","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/centralus/operationStatuses/1943ddd3-c3d1-47f9-bc14-eda22eb30c16","status":"Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '234'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 17 Aug 2021 04:15:02 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dms delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --delete-running-tasks -y
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-datamigration/9.0.0 Python/3.7.3 (Linux-5.10.43.3-microsoft-standard-WSL2-x86_64-with-debian-10.10)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/centralus/operationStatuses/1943ddd3-c3d1-47f9-bc14-eda22eb30c16?api-version=2018-07-15-preview
+  response:
+    body:
+      string: '{"name":"1943ddd3-c3d1-47f9-bc14-eda22eb30c16","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/centralus/operationStatuses/1943ddd3-c3d1-47f9-bc14-eda22eb30c16","status":"Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '234'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 17 Aug 2021 04:15:32 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dms delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --delete-running-tasks -y
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-datamigration/9.0.0 Python/3.7.3 (Linux-5.10.43.3-microsoft-standard-WSL2-x86_64-with-debian-10.10)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/centralus/operationStatuses/1943ddd3-c3d1-47f9-bc14-eda22eb30c16?api-version=2018-07-15-preview
+  response:
+    body:
+      string: '{"name":"1943ddd3-c3d1-47f9-bc14-eda22eb30c16","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/centralus/operationStatuses/1943ddd3-c3d1-47f9-bc14-eda22eb30c16","status":"Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '234'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 17 Aug 2021 04:16:02 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dms delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --delete-running-tasks -y
+      User-Agent:
+      - AZURECLI/2.27.1 azsdk-python-mgmt-datamigration/9.0.0 Python/3.7.3 (Linux-5.10.43.3-microsoft-standard-WSL2-x86_64-with-debian-10.10)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/centralus/operationStatuses/1943ddd3-c3d1-47f9-bc14-eda22eb30c16?api-version=2018-07-15-preview
+  response:
+    body:
+      string: '{"name":"1943ddd3-c3d1-47f9-bc14-eda22eb30c16","id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataMigration/locations/centralus/operationStatuses/1943ddd3-c3d1-47f9-bc14-eda22eb30c16","status":"Succeeded"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '236'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 17 Aug 2021 04:16:32 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1
