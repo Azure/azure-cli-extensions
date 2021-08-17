@@ -205,7 +205,7 @@ def revert_to_auth_settings(cmd, resource_group_name, name, slot=None):  # pylin
         elif site_auth_settings.default_provider == "MicrosoftAccount":
             action = "LoginWithMicrosoftAccount"
         elif site_auth_settings.default_provider == "Twitter":
-            action = "LoginWithTwitter" 
+            action = "LoginWithTwitter"
 
     update_auth_classic_settings(cmd, resource_group_name, name, site_auth_settings.enabled, action,
                                  site_auth_settings.client_id, site_auth_settings.token_store_enabled,
