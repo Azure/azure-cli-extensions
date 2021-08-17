@@ -1129,7 +1129,7 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
                                 fault_type=consts.Install_HelmRelease_Fault_Type,
                                 summary='Unable to install helm release')
         raise ArgumentUsageError("Please provide agent version for upgrading the arc agents on the kubernetes cluster.",
-                            recommendation="Use --agent-version for providing arc agent version.")
+                                 recommendation="Use --agent-version for providing arc agent version.")
 
     if isContainerRegistryEnabled:
         helm_container_repository = existing_user_values_flat.get('systemDefaultValues.image.repository')
