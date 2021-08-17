@@ -66,7 +66,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     values_file_provided, values_file = utils.get_values_file()
 
     cloud_name, dp_endpoint_dogfood, release_train_dogfood = \
-    utils.validate_helm_environment(cmd, values_file, values_file_provided)
+        utils.validate_helm_environment(cmd, values_file, values_file_provided)
 
     if cloud_name:
         azure_cloud = cloud_name
@@ -350,7 +350,7 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
     values_file_provided, values_file = utils.get_values_file()
 
     _, dp_endpoint_dogfood, release_train_dogfood = \
-    utils.validate_helm_environment(cmd, values_file, values_file_provided)
+        utils.validate_helm_environment(cmd, values_file, values_file_provided)
 
     # Loading the kubeconfig file in kubernetes client configuration
     kube_utils.load_kube_config(config, kube_config, kube_context)
@@ -405,7 +405,7 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
     values_file_provided, values_file = utils.get_values_file()
 
     _, dp_endpoint_dogfood, release_train_dogfood = \
-    utils.validate_helm_environment(cmd, values_file, values_file_provided)
+        utils.validate_helm_environment(cmd, values_file, values_file_provided)
 
     # Loading the kubeconfig file in kubernetes client configuration
     kube_utils.load_kube_config(config, kube_config, kube_context)
@@ -517,7 +517,7 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
     values_file_provided, values_file = utils.get_values_file()
 
     _, dp_endpoint_dogfood, release_train_dogfood = \
-    utils.validate_helm_environment(cmd, values_file, values_file_provided)
+        utils.validate_helm_environment(cmd, values_file, values_file_provided)
 
     # Loading the kubeconfig file in kubernetes client configuration
     kube_utils.load_kube_config(config, kube_config, kube_context)
@@ -583,7 +583,7 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
     values_file_provided, values_file = utils.get_values_file()
 
     _, dp_endpoint_dogfood, release_train_dogfood = \
-    utils.validate_helm_environment(cmd, values_file, values_file_provided)
+        utils.validate_helm_environment(cmd, values_file, values_file_provided)
 
     # Loading the kubeconfig file in kubernetes client configuration
     kube_utils.load_kube_config(config, kube_config, kube_context)

@@ -190,8 +190,8 @@ class ArcAgentUtils:
         if self.__proxy_details.get('proxy_cert'):
             cmd_helm.extend(["--set-file", "global.proxyCert={}"
                             .format(self.__proxy_details.get('proxy_cert'))])
-        if (self.__proxy_details.get('https_proxy') or self.__proxy_details.get('http_proxy')
-        or self.__proxy_details.get('no_proxy')):
+        if (self.__proxy_details.get('https_proxy') or self.__proxy_details.get('http_proxy') or
+            self.__proxy_details.get('no_proxy')):
             cmd_helm.extend(["--set", "global.isProxyEnabled={}".format(True)])
         if self.__proxy_details.get('disable_proxy'):
             cmd_helm.extend(["--set", "global.isProxyEnabled={}".format(False)])
@@ -207,7 +207,7 @@ class ArcAgentUtils:
         _, error_helm_cmd = response_helm_cmd.communicate()
         if response_helm_cmd.returncode != 0:
             if ('forbidden' in error_helm_cmd.decode("ascii") or
-            'timed out waiting for the condition' in error_helm_cmd.decode("ascii")):
+                'timed out waiting for the condition' in error_helm_cmd.decode("ascii")):
                 telemetry.set_user_fault()
             telemetry.set_exception(exception=error_helm_cmd.decode("ascii"),
                                     fault_type=consts.Install_HelmRelease_Fault_Type,
