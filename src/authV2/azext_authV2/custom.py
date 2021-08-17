@@ -12,7 +12,7 @@ from azure.cli.command_modules.appservice._appservice_utils import _generic_site
 from azure.cli.command_modules.appservice.custom import update_app_settings
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.command_modules.appservice._params import AUTH_TYPES
-from azure.cli.core.cloud import AZURE_PUBLIC_CLOUD, AZURE_CHINA_CLOUD, AZURE_US_GOV_CLOUD, AZURE_GERMAN_CLOUD 
+from azure.cli.core.cloud import AZURE_PUBLIC_CLOUD, AZURE_CHINA_CLOUD, AZURE_US_GOV_CLOUD, AZURE_GERMAN_CLOUD
 
 MICROSOFT_SECRET_SETTING_NAME = "MICROSOFT_PROVIDER_AUTHENTICATION_SECRET"
 FACEBOOK_SECRET_SETTING_NAME = "FACEBOOK_PROVIDER_AUTHENTICATION_SECRET"
@@ -61,7 +61,7 @@ def update_auth_settings_v2_rest_call(cmd, resource_group_name, name, site_auth_
         raise CLIError('Usage Error: Cannot use auth v2 commands when the app is using auth v1. \
                         Update the auth settings using the az webapp auth-classic command group.')
 
-    if not overwrite_settings: # if no auth v2 settings set, then default token store to true
+    if not overwrite_settings:  # if no auth v2 settings set, then default token store to true
         if is_new_auth_app:
             if "login" not in site_auth_settings_v2.keys():
                 site_auth_settings_v2["login"] = {}
@@ -421,7 +421,7 @@ def get_aad_settings(cmd, resource_group_name, name, slot=None):
 
 def update_aad_settings(cmd, resource_group_name, name, slot=None,  # pylint: disable=unused-argument
                         client_id=None, client_secret_setting_name=None,  # pylint: disable=unused-argument
-                        issuer=None, allowed_token_audiences=None, client_secret=None, # pylint: disable=unused-argument
+                        issuer=None, allowed_token_audiences=None, client_secret=None,  # pylint: disable=unused-argument
                         yes=False, tenant_id=None, cloud=None, aad_version=None):    # pylint: disable=unused-argument
     if client_secret is not None and client_secret_setting_name is not None:
         raise CLIError('Usage Error: --client-secret and --client-secret-setting-name cannot both be '
@@ -432,12 +432,12 @@ def update_aad_settings(cmd, resource_group_name, name, slot=None,  # pylint: di
         if not prompt_y_n(msg, default="n"):
             raise CLIError('Usage Error: --client-secret cannot be used without agreeing to add app settings '
                            'to the web app.')
-    
+
     openid_issuer = issuer
     if openid_issuer is None:
         authority = cmd.cli_ctx.cloud.endpoints.active_directory
         if cloud is not None:
-            if cloud == AZURE_PUBLIC_CLOUD.name :
+            if cloud == AZURE_PUBLIC_CLOUD.name:
                 authority = AZURE_PUBLIC_CLOUD.endpoints.active_directory
             elif cloud == AZURE_CHINA_CLOUD.name:
                 authority = AZURE_CHINA_CLOUD.endpoints.active_directory
@@ -451,7 +451,7 @@ def update_aad_settings(cmd, resource_group_name, name, slot=None,  # pylint: di
             if aad_version != "v2.0":
                 openid_issuer = openid_issuer + "/" + aad_version
         else:
-            openid_issuer = authority + "/common/v2.0"            
+            openid_issuer = authority + "/common/v2.0"
 
     existing_auth = get_auth_settings_v2(cmd, resource_group_name, name, slot)["properties"]
     registration = {}
@@ -845,7 +845,7 @@ def add_openid_connect_provider_settings(cmd, resource_group_name, name, provide
         login["scopes"] = scopes.split(',')
     else:
         login["scopes"] = ["openid"]
-    
+
     auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]["login"] = login
 
     updated_auth_settings = update_auth_settings_v2_rest_call(cmd, resource_group_name, name, auth_settings, slot)
@@ -854,7 +854,7 @@ def add_openid_connect_provider_settings(cmd, resource_group_name, name, provide
 
 def update_openid_connect_provider_settings(cmd, resource_group_name, name, provider_name, slot=None,  # pylint: disable=unused-argument
                                             client_id=None, client_secret_setting_name=None,  # pylint: disable=unused-argument
-                                            openid_configuration=None, scopes=None, # pylint: disable=unused-argument
+                                            openid_configuration=None, scopes=None,  # pylint: disable=unused-argument
                                             client_secret=None, yes=False):    # pylint: disable=unused-argument
     if client_secret is not None and not yes:
         msg = 'Configuring --client-secret will add app settings to the web app. ' \
