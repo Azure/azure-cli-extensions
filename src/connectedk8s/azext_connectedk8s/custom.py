@@ -882,9 +882,9 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
         raise ArgumentUsageError(anonymous_pull_error)
 
     helm_values = get_all_helm_values(release_namespace, kube_config, kube_context)
+    isCustomRegistryEnabled = helm_values.get('global').get('isCustomRegistryEnabled')
 
     if default_registry is None:
-        isCustomRegistryEnabled = helm_values.get('global').get('isCustomRegistryEnabled')
         if isCustomRegistryEnabled:
             if container_registry_repository is None:
                 container_registry_repository = helm_values.get('systemDefaultValues').get('image').get('repository')
@@ -922,7 +922,7 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
     agent_version = reg_path_array[1]
 
     # Set agent version in registry path
-    if connected_cluster.agent_version is not None:
+    if not isCustomRegistryEnabled and connected_cluster.agent_version is not None:
         agent_version = connected_cluster.agent_version
         registry_path = reg_path_array[0] + ":" + agent_version
 
