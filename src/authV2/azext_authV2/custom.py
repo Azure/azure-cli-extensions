@@ -422,7 +422,7 @@ def get_aad_settings(cmd, resource_group_name, name, slot=None):
 def update_aad_settings(cmd, resource_group_name, name, slot=None,  # pylint: disable=unused-argument
                         client_id=None, client_secret_setting_name=None,  # pylint: disable=unused-argument
                         issuer=None, allowed_token_audiences=None, client_secret=None, # pylint: disable=unused-argument
-                        yes=False, tenant_id=None, cloud=None, aad_version="v2.0"):    # pylint: disable=unused-argument
+                        yes=False, tenant_id=None, cloud=None, aad_version=None):    # pylint: disable=unused-argument
     if client_secret is not None and client_secret_setting_name is not None:
         raise CLIError('Usage Error: --client-secret and --client-secret-setting-name cannot both be '
                        'configured to non empty strings')
@@ -448,7 +448,7 @@ def update_aad_settings(cmd, resource_group_name, name, slot=None,  # pylint: di
 
         if tenant_id is not None:
             openid_issuer = authority + "/" + tenant_id
-            if aad_version == "v2.0":
+            if aad_version != "v2.0":
                 openid_issuer = openid_issuer + "/" + aad_version
         else:
             openid_issuer = authority + "/common/v2.0"            
