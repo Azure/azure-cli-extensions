@@ -1125,8 +1125,11 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
     isContainerRegistryEnabled = existing_user_values_flat.get('global.isCustomRegistryEnabled')
 
     if isContainerRegistryEnabled and arc_agent_version is None:
-        logger.warning("Skipping upgrade as Arc agent version is not provided for custom container registry")
-        return
+        telemetry.set_exception(exception="agent version must be provided for custom container registry",
+                                fault_type=consts.Install_HelmRelease_Fault_Type,
+                                summary='Unable to install helm release')
+        raise ArgumentUsageError("Please provide agent version for upgrading the arc agents on the kubernetes cluster.",
+                            recommendation="Use --agent-version for providing arc agent version.")
 
     if isContainerRegistryEnabled:
         helm_container_repository = existing_user_values_flat.get('systemDefaultValues.image.repository')
