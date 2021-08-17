@@ -3,6 +3,8 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 import json
+from re import A
+import re
 from knack.prompting import prompt_y_n
 from knack.util import CLIError
 from azure.cli.core.util import send_raw_request
@@ -10,6 +12,7 @@ from azure.cli.command_modules.appservice._appservice_utils import _generic_site
 from azure.cli.command_modules.appservice.custom import update_app_settings
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.command_modules.appservice._params import AUTH_TYPES
+from azure.cli.core.cloud import AZURE_PUBLIC_CLOUD, AZURE_CHINA_CLOUD, AZURE_US_GOV_CLOUD, AZURE_GERMAN_CLOUD 
 
 MICROSOFT_SECRET_SETTING_NAME = "MICROSOFT_PROVIDER_AUTHENTICATION_SECRET"
 FACEBOOK_SECRET_SETTING_NAME = "FACEBOOK_PROVIDER_AUTHENTICATION_SECRET"
@@ -31,7 +34,7 @@ def get_resource_id(cmd, resource_group_name, name, slot):
         resource_group_name,
         name)
     if slot is not None:
-        resource_id = resource_id + "/slots" + slot
+        resource_id = resource_id + "/slots/" + slot
     return resource_id
 
 
@@ -49,7 +52,23 @@ def get_auth_settings_v2(cmd, resource_group_name, name, slot=None):
     return r.json()
 
 
-def update_auth_settings_v2_rest_call(cmd, resource_group_name, name, site_auth_settings_v2, slot=None):  # pylint: disable=unused-argument
+def update_auth_settings_v2_rest_call(cmd, resource_group_name, name, site_auth_settings_v2,
+                                      slot=None, overwrite_settings=False):  # pylint: disable=unused-argument
+    is_using_v1 = get_config_version(cmd, resource_group_name, name, slot)["configVersion"] == 'v1'
+    is_new_auth_app = is_app_new_to_auth(cmd, resource_group_name, name, slot)
+
+    if is_using_v1 and not is_new_auth_app:
+        raise CLIError('Usage Error: Cannot use auth v2 commands when the app is using auth v1. \
+                        Update the auth settings using the az webapp auth-classic command group.')
+
+    if not overwrite_settings: # if no auth v2 settings set, then default token store to true
+        if is_new_auth_app:
+            if "login" not in site_auth_settings_v2.keys():
+                site_auth_settings_v2["login"] = {}
+            if "tokenStore" not in site_auth_settings_v2["login"].keys():
+                site_auth_settings_v2["login"]["tokenStore"] = {}
+            site_auth_settings_v2["login"]["tokenStore"]["enabled"] = True
+
     final_json = {
         "properties": site_auth_settings_v2
     }
@@ -89,7 +108,8 @@ def set_auth_settings_v2(cmd, resource_group_name, name, body=None, slot=None): 
         json_object = None
     else:
         json_object = json.loads(body)
-    return update_auth_settings_v2_rest_call(cmd, resource_group_name, name, json_object, slot)
+    return update_auth_settings_v2_rest_call(cmd, resource_group_name, name, json_object,
+                                             slot, overwrite_settings=True)
 
 
 def update_auth_settings_v2(cmd, resource_group_name, name, set_string=None, enabled=None,  # pylint: disable=unused-argument
@@ -192,6 +212,11 @@ def revert_to_auth_settings(cmd, resource_group_name, name, slot=None):  # pylin
 # endregion
 
 # region helper methods
+
+
+def is_app_new_to_auth(cmd, resource_group_name, name, slot):
+    existing_site_auth_settings_v2 = get_auth_settings_v2(cmd, resource_group_name, name, slot)
+    return json.dumps(existing_site_auth_settings_v2["properties"]) == "{}"
 
 
 def set_field_in_auth_settings_recursive(field_name_split, field_value, auth_settings):
@@ -396,7 +421,8 @@ def get_aad_settings(cmd, resource_group_name, name, slot=None):
 
 def update_aad_settings(cmd, resource_group_name, name, slot=None,  # pylint: disable=unused-argument
                         client_id=None, client_secret_setting_name=None,  # pylint: disable=unused-argument
-                        issuer=None, allowed_token_audiences=None, client_secret=None, yes=False):    # pylint: disable=unused-argument
+                        issuer=None, allowed_token_audiences=None, client_secret=None, # pylint: disable=unused-argument
+                        yes=False, tenant_id=None, cloud=None, aad_version="v2.0"):    # pylint: disable=unused-argument
     if client_secret is not None and client_secret_setting_name is not None:
         raise CLIError('Usage Error: --client-secret and --client-secret-setting-name cannot both be '
                        'configured to non empty strings')
@@ -406,6 +432,26 @@ def update_aad_settings(cmd, resource_group_name, name, slot=None,  # pylint: di
         if not prompt_y_n(msg, default="n"):
             raise CLIError('Usage Error: --client-secret cannot be used without agreeing to add app settings '
                            'to the web app.')
+    
+    openid_issuer = issuer
+    if openid_issuer is None:
+        authority = cmd.cli_ctx.cloud.endpoints.active_directory
+        if cloud is not None:
+            if cloud == AZURE_PUBLIC_CLOUD.name :
+                authority = AZURE_PUBLIC_CLOUD.endpoints.active_directory
+            elif cloud == AZURE_CHINA_CLOUD.name:
+                authority = AZURE_CHINA_CLOUD.endpoints.active_directory
+            elif cloud == AZURE_GERMAN_CLOUD.name:
+                authority = AZURE_GERMAN_CLOUD.endpoints.active_directory
+            elif cloud == AZURE_US_GOV_CLOUD:
+                authority = AZURE_US_GOV_CLOUD.endpoints.active_directory
+
+        if tenant_id is not None:
+            openid_issuer = authority + "/" + tenant_id
+            if aad_version == "v2.0":
+                openid_issuer = openid_issuer + "/" + aad_version
+        else:
+            openid_issuer = authority + "/common/v2.0"            
 
     existing_auth = get_auth_settings_v2(cmd, resource_group_name, name, slot)["properties"]
     registration = {}
@@ -415,7 +461,7 @@ def update_aad_settings(cmd, resource_group_name, name, slot=None,  # pylint: di
     if "azureActiveDirectory" not in existing_auth["identityProviders"].keys():
         existing_auth["identityProviders"]["azureActiveDirectory"] = {}
     if (client_id is not None or client_secret is not None or
-            client_secret_setting_name is not None or issuer is not None):
+            client_secret_setting_name is not None or openid_issuer is not None):
         if "registration" not in existing_auth["identityProviders"]["azureActiveDirectory"].keys():
             existing_auth["identityProviders"]["azureActiveDirectory"]["registration"] = {}
         registration = existing_auth["identityProviders"]["azureActiveDirectory"]["registration"]
@@ -433,8 +479,8 @@ def update_aad_settings(cmd, resource_group_name, name, slot=None,  # pylint: di
         settings = []
         settings.append(MICROSOFT_SECRET_SETTING_NAME + '=' + client_secret)
         update_app_settings(cmd, resource_group_name, name, settings, slot)
-    if issuer is not None:
-        registration["openIdIssuer"] = issuer
+    if openid_issuer is not None:
+        registration["openIdIssuer"] = openid_issuer
     if allowed_token_audiences is not None:
         validation["allowedAudiences"] = allowed_token_audiences.split(",")
         existing_auth["identityProviders"]["azureActiveDirectory"]["validation"] = validation
@@ -754,7 +800,15 @@ def get_openid_connect_provider_settings(cmd, resource_group_name, name, provide
 
 def add_openid_connect_provider_settings(cmd, resource_group_name, name, provider_name, slot=None,  # pylint: disable=unused-argument
                                          client_id=None, client_secret_setting_name=None,  # pylint: disable=unused-argument
-                                         openid_configuration=None, scopes=None):    # pylint: disable=unused-argument
+                                         openid_configuration=None, scopes=None,        # pylint: disable=unused-argument
+                                         client_secret=None, yes=False):    # pylint: disable=unused-argument
+    if client_secret is not None and not yes:
+        msg = 'Configuring --client-secret will add app settings to the web app. ' \
+            'Are you sure you want to continue?'
+        if not prompt_y_n(msg, default="n"):
+            raise CLIError('Usage Error: --client-secret cannot be used without agreeing '
+                           'to add app settings to the web app.')
+
     auth_settings = get_auth_settings_v2(cmd, resource_group_name, name, slot)["properties"]
     if "identityProviders" not in auth_settings.keys():
         auth_settings["identityProviders"] = {}
@@ -764,21 +818,35 @@ def add_openid_connect_provider_settings(cmd, resource_group_name, name, provide
         raise CLIError('Usage Error: The following custom OpenID Connect provider has already been '
                        'configured: ' + provider_name + '. Please use az webapp auth oidc update to '
                        'update the provider.')
+
+    final_client_secret_setting_name = client_secret_setting_name
+    if client_secret is not None:
+        provider_name_prefix = provider_name.upper()
+        if len(provider_name_prefix) > 32:
+            provider_name_prefix = provider_name_prefix[0:31]
+        final_client_secret_setting_name = provider_name_prefix + "_PROVIDER_AUTHENTICATION_SECRET"
+        settings = []
+        settings.append(final_client_secret_setting_name + '=' + client_secret)
+        update_app_settings(cmd, resource_group_name, name, settings, slot)
+
     auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name] = {
         "registration": {
             "clientId": client_id,
             "clientCredential": {
-                "clientSecretSettingName": client_secret_setting_name
+                "clientSecretSettingName": final_client_secret_setting_name
             },
             "openIdConnectConfiguration": {
                 "wellKnownOpenIdConfiguration": openid_configuration
             }
         }
     }
+    login = {}
     if scopes is not None:
-        login = {}
         login["scopes"] = scopes.split(',')
-        auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]["login"] = login
+    else:
+        login["scopes"] = ["openid"]
+    
+    auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]["login"] = login
 
     updated_auth_settings = update_auth_settings_v2_rest_call(cmd, resource_group_name, name, auth_settings, slot)
     return updated_auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]
@@ -786,7 +854,15 @@ def add_openid_connect_provider_settings(cmd, resource_group_name, name, provide
 
 def update_openid_connect_provider_settings(cmd, resource_group_name, name, provider_name, slot=None,  # pylint: disable=unused-argument
                                             client_id=None, client_secret_setting_name=None,  # pylint: disable=unused-argument
-                                            openid_configuration=None, scopes=None):    # pylint: disable=unused-argument
+                                            openid_configuration=None, scopes=None, # pylint: disable=unused-argument
+                                            client_secret=None, yes=False):    # pylint: disable=unused-argument
+    if client_secret is not None and not yes:
+        msg = 'Configuring --client-secret will add app settings to the web app. ' \
+            'Are you sure you want to continue?'
+        if not prompt_y_n(msg, default="n"):
+            raise CLIError('Usage Error: --client-secret cannot be used without agreeing '
+                           'to add app settings to the web app.')
+
     auth_settings = get_auth_settings_v2(cmd, resource_group_name, name, slot)["properties"]
     if "identityProviders" not in auth_settings.keys():
         raise CLIError('Usage Error: The following custom OpenID Connect provider '
@@ -805,7 +881,7 @@ def update_openid_connect_provider_settings(cmd, resource_group_name, name, prov
             custom_open_id_connect_providers[provider_name]["registration"] = {}
         registration = custom_open_id_connect_providers[provider_name]["registration"]
 
-    if client_secret_setting_name is not None:
+    if client_secret_setting_name is not None or client_secret is not None:
         if "clientCredential" not in custom_open_id_connect_providers[provider_name]["registration"].keys():
             custom_open_id_connect_providers[provider_name]["registration"]["clientCredential"] = {}
 
@@ -821,6 +897,15 @@ def update_openid_connect_provider_settings(cmd, resource_group_name, name, prov
         registration["clientId"] = client_id
     if client_secret_setting_name is not None:
         registration["clientCredential"]["clientSecretSettingName"] = client_secret_setting_name
+    if client_secret is not None:
+        provider_name_prefix = provider_name.upper()
+        if len(provider_name_prefix) > 32:
+            provider_name_prefix = provider_name_prefix[0:31]
+        final_client_secret_setting_name = provider_name_prefix + "_PROVIDER_AUTHENTICATION_SECRET"
+        registration["clientSecretSettingName"] = final_client_secret_setting_name
+        settings = []
+        settings.append(final_client_secret_setting_name + '=' + client_secret)
+        update_app_settings(cmd, resource_group_name, name, settings, slot)
     if openid_configuration is not None:
         registration["openIdConnectConfiguration"]["wellKnownOpenIdConfiguration"] = openid_configuration
     if scopes is not None:
