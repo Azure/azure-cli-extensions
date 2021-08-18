@@ -211,29 +211,29 @@ def stop_task(
                              service_name=service_name,
                              project_name=project_name,
                              task_name=task_name)
-    # Otherwise, for scenarios that support it, just stop migration on the specified object.
-    else:
-        source_platform, target_platform = get_project_platforms(cmd,
-                                                                 project_name=project_name,
-                                                                 service_name=service_name,
-                                                                 resource_group_name=resource_group_name)
-        st = get_scenario_type(source_platform, target_platform, "offlinemigration")
 
-        if st in [ScenarioType.mongo_mongo_offline]:
-            command_input = MongoDbCommandInput(object_name=object_name)
-            command_properties_model = MongoDbCancelCommand
-        else:
-            raise CLIError("The supplied project's source and target does not support \
+    # Otherwise, for scenarios that support it, just stop migration on the specified object.
+    source_platform, target_platform = get_project_platforms(cmd,
+                                                             project_name=project_name,
+                                                             service_name=service_name,
+                                                             resource_group_name=resource_group_name)
+    st = get_scenario_type(source_platform, target_platform, "offlinemigration")
+
+    if st in [ScenarioType.mongo_mongo_offline]:
+        command_input = MongoDbCommandInput(object_name=object_name)
+        command_properties_model = MongoDbCancelCommand
+    else:
+        raise CLIError("The supplied project's source and target does not support \
 cancelling at the object level. \n\
 To cancel this task do not supply the object-name parameter.")
 
-        return run_command(client,
-                           command_input,
-                           command_properties_model,
-                           resource_group_name,
-                           service_name,
-                           project_name,
-                           task_name)
+    return run_command(client,
+                       command_input,
+                       command_properties_model,
+                       resource_group_name,
+                       service_name,
+                       project_name,
+                       task_name)
 # endregion
 
 
@@ -432,7 +432,8 @@ def get_scenario_type(source_platform, target_platform, task_type=""):
 
 
 def mongo_validation_succeeded(migration_progress):
-    if migration_progress.state == "Failed": return False
+    if migration_progress.state == "Failed":
+        return False
     for dummy_key1, db in migration_progress.output[0].databases.items():
         if db.state == "Failed" or any(c.state == "Failed" for dummy_key2, c in db.collections.items()):
             return False
