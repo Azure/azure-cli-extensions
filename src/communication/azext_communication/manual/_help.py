@@ -111,3 +111,49 @@ helps['communication wait'] = """
         text: |-
                az communication wait --name "MyCommunicationResource" --resource-group "MyResourceGroup" --deleted
 """
+
+helps['communication send-sms'] = """
+    type: command
+    short-summary: "Sends SMS to phone numbers."
+    examples:
+      - name: send sms
+        text: |-
+               az communication send-sms --connection-string \
+"Endpoint=sb://MyNamespace.servicebus.windows.net/;SharedAccessKey=abcd1234" \
+--sender "+155555555555" --recipient "+155555555666" --message "This is an SMS"
+"""
+
+
+helps['communication create-useraccesstoken'] = """
+    type: command
+    short-summary: "Creates user access token"
+    examples:
+      - name: create user access token
+        text: |-
+               az communication create-useraccesstoken --connection-string \
+"Endpoint=sb://MyNamespace.servicebus.windows.net/;SharedAccessKey=abcd1234" \
+--scope "Scope for access token. Ex: voip"
+"""
+
+
+helps['communication list-phonenumbers'] = """
+    type: command
+    short-summary: "Lists communication phone numbers"
+    examples:
+      - name: list phone numbers
+        text: |-
+               az communication list-phonenumbers --connection-string \
+"Endpoint=sb://MyNamespace.servicebus.windows.net/;SharedAccessKey=abcd1234"
+"""
+
+
+helps['communication show-phonenumber-info'] = """
+    type: command
+    short-summary: "Shows communication phonenumber information"
+    examples:
+      - name: show phonenumber info
+        text: |-
+               az communication show-phonenumber-info --connection-string \
+"Endpoint=sb://MyNamespace.servicebus.windows.net/;SharedAccessKey=abcd1234" \
+--phone-number "+155555555555"
+"""

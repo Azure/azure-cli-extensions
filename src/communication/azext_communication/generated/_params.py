@@ -17,9 +17,15 @@ from azure.cli.core.commands.parameters import (
     get_location_type
 )
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
+from knack.arguments import CLIArgumentType
 
 
 def load_arguments(self, _):
+
+    country_code_type = CLIArgumentType(
+        options_list='--country-code-name',
+        help='Name of the Communicationphonenumbers.',
+        id_part='name')
 
     with self.argument_context('communication list') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -77,3 +83,19 @@ def load_arguments(self, _):
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('name', options_list=['--name', '-n'], type=str, help='The name of the CommunicationService '
                    'resource.', id_part='name')
+
+    with self.argument_context('communication send-sms') as c:
+        c.argument('connection-string', type=str, help='connection string')
+        c.argument('sender', type=str, help='The sender of the SMS')
+        c.argument('recipient', type=str, help='The recipient of the SMS')
+        c.argument('message', type=str, help='The message in the SMS')
+
+    with self.argument_context('communication create-useraccesstoken') as c:
+        c.argument('connection-string', type=str, help = 'connection string')
+        c.argument('scope', type=str, help = 'scope for an access token chat/voip')
+
+    with self.argument_context('communication list-phonenumbers') as c:
+        c.argument('country_code', country_code_type, id_part=None)
+
+    with self.argument_context('communication show-phonenumber-info') as c:
+        c.argument('country_code', country_code_type, id_part=None)

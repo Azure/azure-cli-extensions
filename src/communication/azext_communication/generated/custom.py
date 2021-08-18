@@ -10,6 +10,8 @@
 # pylint: disable=too-many-lines
 
 from azure.cli.core.util import sdk_no_wait
+from knack.util import CLIError
+from azext_communication.vendored_sdks.identity._generated.models import CommunicationTokenScope
 
 
 def communication_list(client,
@@ -98,3 +100,31 @@ def communication_regenerate_key(client,
     return client.regenerate_key(resource_group_name=resource_group_name,
                                  communication_service_name=name,
                                  parameters=parameters)
+
+
+def communication_send_sms(client, connection_string, sender, recipient, message):
+    sms_client=client.from_connection_string(connection_string)
+    return sms_client.send(from_=sender, to=recipient, message=message)
+
+
+def communication_create_useraccesstoken(client, connection_string, scope):
+    communication_client = client.from_connection_string(conn_str=connection_string)
+    if scope == CommunicationTokenScope.CHAT:
+        scopes = [CommunicationTokenScope.CHAT]
+    elif scope == CommunicationTokenScope.VOIP:
+        scopes = [CommunicationTokenScope.VOIP]
+    else:
+        raise CLIError('select scope as chat/voip')
+
+    user = communication_client.create_user()
+    return communication_client.get_token(user, scopes)
+
+
+def communication_list_phonenumbers(client, connection_string):
+    phone_client = client.from_connection_string(connection_string)
+    return phone_client.list_purchased_phone_numbers()
+
+
+def communication_show_phonenumber_info(client, connection_string, phone_number):
+    phone_client = client.from_connection_string(connection_string)
+    return phone_client.get_purchased_phone_number(phone_number)
