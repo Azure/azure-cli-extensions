@@ -18,3 +18,23 @@ def cf_communication_cl(cli_ctx, *_):
 
 def cf_communication_service(cli_ctx, *_):
     return cf_communication_cl(cli_ctx).communication_service
+
+
+def cf_communication_sms(cli_ctx, *_):
+    from azure.cli.core.commands.client_factory import get_mgmt_service_client
+    from azext_communication.vendored_sdks.sms import SmsClient
+    return get_mgmt_service_client(cli_ctx, SmsClient)
+
+
+def cf_communication_identity(cli_ctx, *_):
+
+    from azure.cli.core.commands.client_factory import get_mgmt_service_client
+    from azext_communication.vendored_sdks.identity import CommunicationIdentityClient
+    return get_mgmt_service_client(cli_ctx, CommunicationIdentityClient)
+
+
+def cf_communication_phonenumbers(cli_ctx, *_):
+
+    from azure.cli.core.commands.client_factory import get_mgmt_service_client
+    from azext_communication.vendored_sdks.phonenumbers import PhoneNumbersClient
+    return get_mgmt_service_client(cli_ctx, PhoneNumbersClient)

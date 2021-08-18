@@ -31,3 +31,43 @@ def load_command_table(self, _):
         g.custom_command('list-key', 'communication_list_key')
         g.custom_command('regenerate-key', 'communication_regenerate_key')
         g.custom_wait_command('wait', 'communication_show')
+
+
+    from azext_communication.generated._client_factory import cf_communication_sms
+    communication_sms_sdk = CliCommandType(
+        operations_tmpl='azext_communication.vendored_sdks.sms._generated.operations._sms_operations#SmsOperations.{}',
+        client_factory=cf_communication_sms)
+
+    with self.command_group(
+        'communication',
+        communication_sms_sdk,
+        client_factory=cf_communication_sms,
+        is_preview=True) as g:
+        g.custom_command('send-sms', 'communication_send_sms')
+
+
+    from azext_communication.generated._client_factory import cf_communication_identity
+    communication_identity_sdk = CliCommandType(
+        operations_tmpl='azext_communication.vendored_sdks.identity._generated.operations.'
+        '_communication_identity_operations#CommunicationIdentityOperations.{}',
+        client_factory=cf_communication_identity)
+
+    with self.command_group(
+        'communication',
+        communication_identity_sdk,
+        client_factory=cf_communication_identity) as g:
+        g.custom_command('create-useraccesstoken', 'communication_create_useraccesstoken')
+
+
+    from azext_communication.generated._client_factory import cf_communication_phonenumbers
+    communication_phonenumbers_sdk = CliCommandType(
+        operations_tmpl='azext_communication.vendored_sdks.phonenumbers._generated.operations'
+        '#PhoneNumbersOperations.{}',
+        client_factory=cf_communication_phonenumbers)
+
+    with self.command_group(
+        'communication',
+        communication_phonenumbers_sdk,
+        client_factory=cf_communication_phonenumbers) as g:
+        g.custom_command('list-phonenumbers', 'communication_list_phonenumbers')
+        g.custom_show_command('show-phonenumber-info', 'communication_show_phonenumber_info')
