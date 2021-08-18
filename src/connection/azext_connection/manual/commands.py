@@ -22,9 +22,6 @@ def load_command_table(self, _):
     connection_type = CliCommandType(
         operations_tmpl='azext_connection.vendored_sdks.connection.operations._linker_operations#LinkerOperations.{}',
         client_factory=cf_linker)
-    
-    with self.command_group('{} connection'.format('webapp'), connection_type, client_factory=cf_linker) as og:
-        og.custom_command('list', 'connection_list')
 
     for source in SOURCE_RESOURCES:
         with self.command_group('{} connection'.format(source.value), connection_type, client_factory=cf_linker) as og:
@@ -39,5 +36,3 @@ def load_command_table(self, _):
         for target in TARGET_RESOURCES:
             with self.command_group('{} connection create'.format(source.value), connection_type, client_factory=cf_linker) as ig:
                 ig.custom_command(target.value, 'connection_create', supports_no_wait=True)
-                
-                
