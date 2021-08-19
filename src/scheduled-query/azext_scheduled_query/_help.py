@@ -16,12 +16,14 @@ helps['monitor scheduled-query create'] = """
 type: command
 short-summary: Create a scheduled query.
 parameters:
-  - name: --action -a
-    short-summary: Add an action group and optional webhook properties to fire when the alert is triggered.
+  - name: --action-groups
+    short-summary: Action Group resource Ids to invoke when the alert fires.
     long-summary: |
-        Usage:   --action ACTION_GROUP_NAME_OR_ID [KEY=VAL [KEY=VAL ...]]
-
-        Multiple action groups can be specified by using more than one `--action` argument.
+        Usage:   --action-groups ACTION_GROUP_NAME_OR_ID [NAME_OR_ID,...]
+  - name: --custom-properties
+    short-summary: The properties of an alert payload.
+    long-summary: |
+        Usage:   --custom-properties ALERT_PAYLOAD_PROPERTIES [KEY=VAL,KEY=VAL ...]
   - name: --condition
     short-summary: The condition which triggers the rule.
     long-summary: |
@@ -44,12 +46,14 @@ helps['monitor scheduled-query update'] = """
 type: command
 short-summary: Update a scheduled query.
 parameters:
-  - name: --action -a
-    short-summary: Add an action group and optional webhook properties to fire when the alert is triggered.
+  - name: --action-groups
+    short-summary: Action Group resource Ids to invoke when the alert fires.
     long-summary: |
-        Usage:   --action ACTION_GROUP_NAME_OR_ID [KEY=VAL [KEY=VAL ...]]
-
-        Multiple action groups can be specified by using more than one `--action` argument.
+        Usage:   --action-groups ACTION_GROUP_NAME_OR_ID [NAME_OR_ID,...]
+  - name: --custom-properties
+    short-summary: The properties of an alert payload.
+    long-summary: |
+        Usage:   --custom-properties ALERT_PAYLOAD_PROPERTIES [KEY=VAL,KEY=VAL ...]
   - name: --condition
     short-summary: The condition which triggers the rule.
     long-summary: |

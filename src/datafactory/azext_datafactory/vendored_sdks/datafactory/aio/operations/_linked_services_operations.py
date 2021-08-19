@@ -26,7 +26,7 @@ class LinkedServicesOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~data_factory_management_client.models
+    :type models: ~azure.mgmt.datafactory.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -55,7 +55,7 @@ class LinkedServicesOperations:
         :type factory_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either LinkedServiceListResponse or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~data_factory_management_client.models.LinkedServiceListResponse]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.datafactory.models.LinkedServiceListResponse]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.LinkedServiceListResponse"]
@@ -133,13 +133,13 @@ class LinkedServicesOperations:
         :param linked_service_name: The linked service name.
         :type linked_service_name: str
         :param linked_service: Linked service resource definition.
-        :type linked_service: ~data_factory_management_client.models.LinkedServiceResource
+        :type linked_service: ~azure.mgmt.datafactory.models.LinkedServiceResource
         :param if_match: ETag of the linkedService entity.  Should only be specified for update, for
          which it should match existing entity or can be * for unconditional update.
         :type if_match: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: LinkedServiceResource, or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.LinkedServiceResource
+        :rtype: ~azure.mgmt.datafactory.models.LinkedServiceResource
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.LinkedServiceResource"]
@@ -213,7 +213,7 @@ class LinkedServicesOperations:
         :type if_none_match: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: LinkedServiceResource, or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.LinkedServiceResource or None
+        :rtype: ~azure.mgmt.datafactory.models.LinkedServiceResource or None
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType[Optional["models.LinkedServiceResource"]]

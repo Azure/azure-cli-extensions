@@ -114,7 +114,7 @@ def load_arguments(self, _):
         c.argument('enable_private_cluster', action='store_true')
         c.argument('private_dns_zone')
         c.argument('fqdn_subdomain')
-        c.argument('enable_public_fqdn', action='store_true', is_preview=True)
+        c.argument('disable_public_fqdn', action='store_true')
         c.argument('enable_managed_identity', action='store_true')
         c.argument('assign_identity', type=str, validator=validate_assign_identity)
         c.argument('enable_sgxquotehelper', action='store_true')
@@ -154,8 +154,8 @@ def load_arguments(self, _):
         c.argument('api_server_authorized_ip_ranges', type=str, validator=validate_ip_ranges)
         c.argument('enable_pod_security_policy', action='store_true')
         c.argument('disable_pod_security_policy', action='store_true')
-        c.argument('enable_public_fqdn', action='store_true', is_preview=True)
-        c.argument('disable_public_fqdn', action='store_true', is_preview=True)
+        c.argument('enable_public_fqdn', action='store_true')
+        c.argument('disable_public_fqdn', action='store_true')
         c.argument('attach_acr', acr_arg_type, validator=validate_acr)
         c.argument('detach_acr', acr_arg_type, validator=validate_acr)
         c.argument('aks_custom_headers')
@@ -195,13 +195,6 @@ def load_arguments(self, _):
 
     with self.argument_context('aks nodepool') as c:
         c.argument('cluster_name', type=str, help='The cluster name.')
-
-    with self.argument_context('aks command invoke') as c:
-        c.argument('command_string', type=str, options_list=["--command", "-c"], help='the command to run')
-        c.argument('command_files', options_list=["--file", "-f"], required=False, action="append", help='attach any files the command may use, or use \'.\' to upload the current folder.')
-
-    with self.argument_context('aks command result') as c:
-        c.argument('command_id', type=str, options_list=["--command-id", "-i"], help='the command ID from "aks command invoke"')
 
     for scope in ['aks nodepool add']:
         with self.argument_context(scope) as c:
@@ -274,7 +267,7 @@ def load_arguments(self, _):
         c.argument('user', options_list=['--user', '-u'], default='clusterUser', validator=validate_user)
         c.argument('path', options_list=['--file', '-f'], type=file_type, completer=FilesCompleter(),
                    default=os.path.join(os.path.expanduser('~'), '.kube', 'config'))
-        c.argument('public_fqdn', default=False, action='store_true', is_preview=True)
+        c.argument('public_fqdn', default=False, action='store_true')
 
     with self.argument_context('aks pod-identity') as c:
         c.argument('cluster_name', type=str, help='The cluster name.')

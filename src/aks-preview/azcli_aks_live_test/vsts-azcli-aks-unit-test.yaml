@@ -18,6 +18,10 @@ variables:
     value: "azure-cli-extensions"
   - name: LIVE_TEST_BASE_DIR
     value: "azure-cli-extensions/src/aks-preview/azcli_aks_live_test"
+  - name: ACS_BASE_DIR
+    value: "azure-cli/src/azure-cli/azure/cli/command_modules/acs"
+  - name: AKS_PREVIEW_BASE_DIR
+    value: "azure-cli-extensions/src/aks-preview/azext_aks_preview"
 
 jobs:
 - job: UnitTest

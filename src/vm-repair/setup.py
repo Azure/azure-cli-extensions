@@ -8,7 +8,7 @@
 from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "0.3.6"
+VERSION = "0.3.7"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -33,7 +33,7 @@ setup(
     name='vm-repair',
     version=VERSION,
     description='Auto repair commands to fix VMs.',
-    long_description='VM repair command will enable Azure users to self-repair non-bootable VMs by copying the source VM\'s OS disk and attaching it to a newly created repair VM.'+ '\n\n' + HISTORY,
+    long_description='VM repair command will enable Azure users to self-repair non-bootable VMs by copying the source VM\'s OS disk and attaching it to a newly created repair VM.' + '\n\n' + HISTORY,
     license='MIT',
     author='Microsoft Corporation',
     author_email='caiddev@microsoft.com',

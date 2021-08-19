@@ -15,7 +15,7 @@ import shutil
 import shlex
 from subprocess import check_output, check_call, CalledProcessError
 
-import mock
+from unittest import mock
 from wheel.install import WHEEL_INFO_RE
 from six import with_metaclass
 
