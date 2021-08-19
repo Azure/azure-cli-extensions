@@ -1012,7 +1012,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                private_dns_zone=None,
                enable_managed_identity=True,
                fqdn_subdomain=None,
-               enable_public_fqdn=False,
+               disable_public_fqdn=False,
                api_server_authorized_ip_ranges=None,
                aks_custom_headers=None,
                appgw_name=None,
@@ -1411,8 +1411,8 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         mc.node_resource_group = node_resource_group
 
     use_custom_private_dns_zone = False
-    if not enable_private_cluster and enable_public_fqdn:
-        raise ArgumentUsageError("--enable-public-fqdn should only be used with --enable-private-cluster")
+    if not enable_private_cluster and disable_public_fqdn:
+        raise ArgumentUsageError("--disable_public_fqdn should only be used with --enable-private-cluster")
     if enable_private_cluster:
         if load_balancer_sku.lower() != "standard":
             raise ArgumentUsageError(
@@ -1420,8 +1420,8 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         mc.api_server_access_profile = ManagedClusterAPIServerAccessProfile(
             enable_private_cluster=True
         )
-        if enable_public_fqdn:
-            mc.api_server_access_profile.enable_private_cluster_public_fqdn = True
+        if disable_public_fqdn:
+            mc.api_server_access_profile.enable_private_cluster_public_fqdn = False
 
     if private_dns_zone:
         if not enable_private_cluster:
