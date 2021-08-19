@@ -2,7 +2,7 @@
 
 Release History
 ===============
-0.5.3
+0.6.0
 ++++++
 * Remove `az storage account blob-service-properties` since all the preview arguments are supported in main azure cli
 

@@ -6,14 +6,11 @@
 
 from azure.cli.core.commands.validators import validate_tags
 from azure.cli.core.commands.parameters import (file_type, get_enum_type, get_three_state_flag)
-from azure.cli.core.local_context import LocalContextAttribute, LocalContextAction
 
 from ._validators import (validate_metadata, get_permission_validator, get_permission_help_string,
                           validate_blob_type, validate_included_datasets_v2,
                           add_download_progress_callback, add_upload_progress_callback,
-                          validate_storage_data_plane_list, as_user_validator, blob_tier_validator,
-                          validate_container_delete_retention_days, validate_delete_retention_days,
-                          process_resource_group)
+                          validate_storage_data_plane_list, as_user_validator, blob_tier_validator)
 
 from .profiles import CUSTOM_DATA_STORAGE_BLOB
 
@@ -23,16 +20,8 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
 
     from knack.arguments import ignore_type, CLIArgumentType
 
-    from azure.cli.core.commands.parameters import get_resource_name_completion_list
-
     from .sdkutil import get_table_data_type
     from .completers import get_storage_name_completion_list
-
-    acct_name_type = CLIArgumentType(options_list=['--account-name', '-n'], help='The storage account name.',
-                                     id_part='name',
-                                     completer=get_resource_name_completion_list('Microsoft.Storage/storageAccounts'),
-                                     local_context_attribute=LocalContextAttribute(
-                                         name='storage_account_name', actions=[LocalContextAction.GET]))
 
     t_base_blob_service = self.get_sdk('blob.baseblobservice#BaseBlobService')
     t_file_service = self.get_sdk('file#FileService')
