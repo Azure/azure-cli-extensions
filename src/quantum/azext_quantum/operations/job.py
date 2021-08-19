@@ -230,6 +230,7 @@ def output(cmd, job_id, resource_group_name=None, workspace_name=None, location=
             json_string = '{ "histogram" : { "' + result + '" : 1 } }'
             data = json.loads(json_string)
         else:
+            json_file.seek(0)  # Reset the file pointer before loading
             data = json.load(json_file)
         return data
 
