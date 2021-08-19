@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.5.27
++++++
+* GA private cluster public FQDN feature.
+
 0.5.26
 +++++
 * Correct containerLogMaxSizeMb to containerLogMaxSizeMB in customized kubelet config
