@@ -933,8 +933,30 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
     chart_path = utils.get_chart_path(registry_path, kube_config, kube_context, container_registry_username, container_registry_password)
 
     cmd_helm_upgrade = ["helm", "upgrade", "azure-arc", chart_path, "--namespace", release_namespace,
-                        "--reuse-values",
-                        "--wait", "--output", "json"]
+                        "--output", "json", "--atomic", "--wait"]
+
+    proxy_enabled_param_added = False
+    infra_added = False
+    for key, value in utils.flatten(helm_values).items():
+        if value is not None:
+            if key == "global.isProxyEnabled":
+                proxy_enabled_param_added = True
+            if (key == "global.httpProxy" or key == "global.httpsProxy" or key == "global.noProxy"):
+                if value and not proxy_enabled_param_added:
+                    cmd_helm_upgrade.extend(["--set", "global.isProxyEnabled={}".format(True)])
+                    proxy_enabled_param_added = True
+            if key == "global.kubernetesDistro" and value == "default":
+                value = "generic"
+            if key == "global.kubernetesInfra":
+                infra_added = True
+            cmd_helm_upgrade.extend(["--set", "{}={}".format(key, value)])
+
+    if not proxy_enabled_param_added:
+        cmd_helm_upgrade.extend(["--set", "global.isProxyEnabled={}".format(False)])
+
+    if not infra_added:
+        cmd_helm_upgrade.extend(["--set", "global.kubernetesInfra={}".format("generic")])
+
     if values_file_provided:
         cmd_helm_upgrade.extend(["-f", values_file])
     if auto_upgrade is not None:
@@ -1237,8 +1259,10 @@ def validate_release_namespace(client, cluster_name, resource_group_name, config
     return release_namespace
 
 
-def get_all_helm_values(release_namespace, kube_config, kube_context):
-    cmd_helm_values = ["helm", "get", "values", "--all", "azure-arc", "--namespace", release_namespace]
+def get_all_helm_values(release_namespace, kube_config, kube_context, all_values=False):
+    cmd_helm_values = ["helm", "get", "values", "azure-arc", "--namespace", release_namespace]
+    if all_values:
+        cmd_helm_values.extend(["--all"])
     if kube_config:
         cmd_helm_values.extend(["--kubeconfig", kube_config])
     if kube_context:
@@ -1360,7 +1384,7 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
     # Setting the config dataplane endpoint
     config_dp_endpoint = get_config_dp_endpoint(cmd, connected_cluster.location)
 
-    helm_values = get_all_helm_values(release_namespace, kube_config, kube_context)
+    helm_values = get_all_helm_values(release_namespace, kube_config, kube_context, True)
     # Change registry_path to private registry if PCR is set in helm values
     registry_username = None
     registry_password = None
@@ -1496,7 +1520,7 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
 
     if disable_cluster_connect:
         try:
-            helm_values = get_all_helm_values(release_namespace, kube_config, kube_context)
+            helm_values = get_all_helm_values(release_namespace, kube_config, kube_context, True)
             if not disable_cl and helm_values.get('systemDefaultValues').get('customLocations').get('enabled') is True and helm_values.get('systemDefaultValues').get('customLocations').get('oid') != "":
                 raise Exception("Disabling 'cluster-connect' feature is not allowed when 'custom-locations' feature is enabled.")
         except AttributeError as e:
