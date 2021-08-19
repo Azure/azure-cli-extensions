@@ -3,7 +3,7 @@
 Release History
 ===============
 
-0.5.27
+0.5.28
 +++++
 * Add support for new addon commands
   * `az aks addon list`
@@ -12,6 +12,10 @@ Release History
   * `az aks addon enable`
   * `az aks addon disable`
   * `az aks addon update`
+
+0.5.27
++++++
+* GA private cluster public FQDN feature, breaking change to replace create parameter `--enable-public-fqdn` with `--disable-public-fqdn` since now it's enabled by default for private cluster during cluster creation.
 
 0.5.26
 +++++
