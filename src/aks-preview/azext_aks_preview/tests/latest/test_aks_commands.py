@@ -1620,8 +1620,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
         # update
-        update_cmd = 'aks update --resource-group={resource_group} --name={name} ' \
-                     '--disable-public-fqdn'
+        update_cmd = 'aks update --resource-group={resource_group} --name={name} --disable-public-fqdn'
         self.cmd(update_cmd, checks=[
             self.exists('privateFqdn'),
             self.check('fqdn', None),
