@@ -913,6 +913,7 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
             telemetry.set_exception(exception=agent_version_error, fault_type=consts.Custom_Registry_Agent_Version_Required_Fault_Type, summary=agent_version_error)
             raise ArgumentUsageError(agent_version_error, recommendation='use --agent-version <version>')
         registry_path = "{}/azurearck8s/azure-arc-k8sagents:{}".format(container_registry_repository, container_registry_agent_version)
+        isCustomRegistryEnabled = True
         # Send private registry information to telemetry
         telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.CustomContainerRegistry': container_registry_repository})
     else:
