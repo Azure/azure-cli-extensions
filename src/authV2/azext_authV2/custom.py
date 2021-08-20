@@ -70,7 +70,7 @@ def update_auth_settings_v2_rest_call(cmd, resource_group_name, name, site_auth_
                 site_auth_settings_v2["login"] = {}
             if "tokenStore" not in site_auth_settings_v2["login"].keys():
                 site_auth_settings_v2["login"]["tokenStore"] = {}
-            site_auth_settings_v2["login"]["tokenStore"]["enabled"] = True
+                site_auth_settings_v2["login"]["tokenStore"]["enabled"] = True
 
     final_json = {
         "properties": site_auth_settings_v2
@@ -373,6 +373,15 @@ def remove_all_auth_settings_secrets(cmd, resource_group_name, name, slot=None):
     auth_settings.twitter_consumer_secret_setting_name = ""
     return _generic_site_operation(cmd.cli_ctx, resource_group_name, name,
                                    'update_auth_settings', slot, auth_settings)
+
+
+def get_oidc_client_setting_app_setting_name(provider_name):
+    provider_name_prefix = provider_name.upper()
+        
+    # an appsetting name can be up to 64 characters, and the suffix _PROVIDER_AUTHENTICATION_SECRET is 31 characters so limitting this to 32
+    if len(provider_name_prefix) > 32:
+        provider_name_prefix = provider_name_prefix[0:31]
+    return provider_name_prefix + "_PROVIDER_AUTHENTICATION_SECRET"
 # endregion
 
 # region webapp auth-classic
@@ -443,10 +452,28 @@ def get_aad_settings(cmd, resource_group_name, name, slot=None):
 def update_aad_settings(cmd, resource_group_name, name, slot=None,  # pylint: disable=unused-argument
                         client_id=None, client_secret_setting_name=None,  # pylint: disable=unused-argument
                         issuer=None, allowed_token_audiences=None, client_secret=None,  # pylint: disable=unused-argument
-                        yes=False, tenant_id=None, cloud=None, aad_version=None):    # pylint: disable=unused-argument
+                        yes=False, tenant_id=None, cloud=None):    # pylint: disable=unused-argument
     if client_secret is not None and client_secret_setting_name is not None:
         raise CLIError('Usage Error: --client-secret and --client-secret-setting-name cannot both be '
                        'configured to non empty strings')
+
+    if issuer is not None and (tenant_id is not None or cloud is not None):
+        raise CLIError('Usage Error: --issuer and the combination of --tenant-id and/or --cloud cannot '
+                       'be configured to non empty strings at the same time.')
+
+    is_new_aad_app = False
+    existing_auth = get_auth_settings_v2(cmd, resource_group_name, name, slot)["properties"]
+    registration = {}
+    validation = {}
+    if "identityProviders" not in existing_auth.keys():
+        existing_auth["identityProviders"] = {}
+    if "azureActiveDirectory" not in existing_auth["identityProviders"].keys():
+        existing_auth["identityProviders"]["azureActiveDirectory"] = {}
+        is_new_aad_app = True
+
+    if is_new_aad_app and issuer is None and tenant_id is None:
+        raise CLIError('Usage Error: Either --issuer or --tenant-id must be specified when configuring the '
+                       'Microsoft auth registration.')
 
     if client_secret is not None and not yes:
         msg = 'Configuring --client-secret will add app settings to the web app. Are you sure you want to continue?'
@@ -468,11 +495,7 @@ def update_aad_settings(cmd, resource_group_name, name, slot=None,  # pylint: di
                 authority = AZURE_US_GOV_CLOUD.endpoints.active_directory
 
         if tenant_id is not None:
-            openid_issuer = authority + "/" + tenant_id
-            if aad_version != "v2.0":
-                openid_issuer = openid_issuer + "/" + aad_version
-        else:
-            openid_issuer = authority + "/common/v2.0"
+            openid_issuer = authority + "/" + tenant_id + "/v2.0"
 
     existing_auth = get_auth_settings_v2(cmd, resource_group_name, name, slot)["properties"]
     registration = {}
@@ -842,10 +865,7 @@ def add_openid_connect_provider_settings(cmd, resource_group_name, name, provide
 
     final_client_secret_setting_name = client_secret_setting_name
     if client_secret is not None:
-        provider_name_prefix = provider_name.upper()
-        if len(provider_name_prefix) > 32:
-            provider_name_prefix = provider_name_prefix[0:31]
-        final_client_secret_setting_name = provider_name_prefix + "_PROVIDER_AUTHENTICATION_SECRET"
+        final_client_secret_setting_name = get_oidc_client_setting_app_setting_name(provider_name)
         settings = []
         settings.append(final_client_secret_setting_name + '=' + client_secret)
         update_app_settings(cmd, resource_group_name, name, settings, slot)
@@ -919,10 +939,7 @@ def update_openid_connect_provider_settings(cmd, resource_group_name, name, prov
     if client_secret_setting_name is not None:
         registration["clientCredential"]["clientSecretSettingName"] = client_secret_setting_name
     if client_secret is not None:
-        provider_name_prefix = provider_name.upper()
-        if len(provider_name_prefix) > 32:
-            provider_name_prefix = provider_name_prefix[0:31]
-        final_client_secret_setting_name = provider_name_prefix + "_PROVIDER_AUTHENTICATION_SECRET"
+        final_client_secret_setting_name = get_oidc_client_setting_app_setting_name(provider_name)
         registration["clientSecretSettingName"] = final_client_secret_setting_name
         settings = []
         settings.append(final_client_secret_setting_name + '=' + client_secret)

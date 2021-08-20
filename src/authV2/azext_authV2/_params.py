@@ -15,7 +15,6 @@ from azure.cli.core.cloud import AZURE_PUBLIC_CLOUD, AZURE_CHINA_CLOUD, AZURE_US
 UNAUTHENTICATED_CLIENT_ACTION = ['RedirectToLoginPage', 'AllowAnonymous', 'RejectWith401', 'RejectWith404']
 FORWARD_PROXY_CONVENTION = ['NoProxy', 'Standard', 'Custom']
 CLOUD_NAMES = [AZURE_PUBLIC_CLOUD.name, AZURE_CHINA_CLOUD.name, AZURE_US_GOV_CLOUD.name, AZURE_GERMAN_CLOUD.name]
-AAD_VERSIONS = ['v1.0', 'v2.0']
 
 
 def load_arguments(self, _):
@@ -83,8 +82,6 @@ def load_arguments(self, _):
                    help='The tenant id of the application.')
         c.argument('cloud', options_list=['--cloud'], arg_type=get_enum_type(CLOUD_NAMES),
                    help='The name of the cloud that the application belongs to.')
-        c.argument('aad_version', options_list=['--aad-version'], arg_type=get_enum_type(AAD_VERSIONS),
-                   help='The version of the Azure Active Directory endpoint to use for the OpenID Issuer.')
 
     with self.argument_context('webapp auth facebook update') as c:
         c.argument('app_id', options_list=['--app-id'],
