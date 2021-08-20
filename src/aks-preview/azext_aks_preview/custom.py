@@ -3995,7 +3995,6 @@ def _get_kubelet_config(file_path):
     config_object.pod_max_pids = kubelet_config.get(
         "podMaxPids", None)
 
-
     return config_object
 
 
