@@ -377,7 +377,7 @@ def remove_all_auth_settings_secrets(cmd, resource_group_name, name, slot=None):
 
 def get_oidc_client_setting_app_setting_name(provider_name):
     provider_name_prefix = provider_name.upper()
-        
+
     # an appsetting name can be up to 64 characters, and the suffix _PROVIDER_AUTHENTICATION_SECRET is 31 characters so limitting this to 32
     if len(provider_name_prefix) > 32:
         provider_name_prefix = provider_name_prefix[0:31]
