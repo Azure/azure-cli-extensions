@@ -150,6 +150,9 @@ def load_arguments(self, _):
                 'artifact_path', options_list=[
                     '--artifact-path', '--jar-path', '-p'], help='If provided, deploy pre-built artifact (jar or netcore zip), otherwise deploy current folder as tar.')
             c.argument(
+                'disable_validation', arg_type=get_three_state_flag(),
+                help='If true, disable jar validation.')
+            c.argument(
                 'main_entry', options_list=[
                     '--main-entry', '-m'], help="A string containing the path to the .NET executable relative to zip root.")
             c.argument(

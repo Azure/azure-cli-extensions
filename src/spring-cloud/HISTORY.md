@@ -1,5 +1,9 @@
 Release History
 ===============
+2.8.0
+-----
+* Add support to validate jar before create/update deployment
+* Add support to delete deployment with no-wait
 
 2.7.0
 -----

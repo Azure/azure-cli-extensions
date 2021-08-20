@@ -6,12 +6,13 @@
 # pylint: disable=unused-argument, logging-format-interpolation, protected-access, wrong-import-order, too-many-lines
 import requests
 import re
+import zipfile
 
 from azure.core.exceptions import HttpResponseError
 from azure.mgmt.cosmosdb import CosmosDBManagementClient
 from azure.mgmt.redis import RedisManagementClient
 from requests.auth import HTTPBasicAuth
-import yaml   # pylint: disable=import-error
+import yaml  # pylint: disable=import-error
 from time import sleep
 from ._stream_utils import stream_logs
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
@@ -29,6 +30,7 @@ from .azure_storage_file import FileService
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.util import sdk_no_wait
+from azure.cli.core import telemetry
 from azure.cli.core.profiles import ResourceType, get_sdk
 from azure.mgmt.applicationinsights import ApplicationInsightsManagementClient
 from azure.cli.core.commands import cached_put
@@ -87,7 +89,8 @@ def spring_cloud_create(cmd, client, resource_group, name, location=None, app_in
         if enable_java_agent:
             client_preview = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20201101preview)
             logger.warning("Start configure Application Insights")
-            trace_properties = update_java_agent_config(cmd, resource_group, name, location, app_insights_key, app_insights,
+            trace_properties = update_java_agent_config(cmd, resource_group, name, location, app_insights_key,
+                                                        app_insights,
                                                         enable_java_agent)
             if trace_properties is not None:
                 monitoring_setting_resource.properties = trace_properties
@@ -96,7 +99,8 @@ def spring_cloud_create(cmd, client, resource_group, name, location=None, app_in
                             monitoring_setting_resource=monitoring_setting_resource)
         else:
             logger.warning("Start configure Application Insights")
-            trace_properties = update_tracing_config(cmd, resource_group, name, location, app_insights_key, app_insights,
+            trace_properties = update_tracing_config(cmd, resource_group, name, location, app_insights_key,
+                                                     app_insights,
                                                      disable_app_insights)
             if trace_properties is not None:
                 monitoring_setting_resource.properties = trace_properties
@@ -130,7 +134,8 @@ def spring_cloud_update(cmd, client, resource_group, name, app_insights_key=None
         app_insights_target_status = True
         if trace_enabled is False:
             update_app_insights = True
-        elif app_insights or (app_insights_key and app_insights_key != trace_properties.app_insights_instrumentation_key):
+        elif app_insights or (
+                app_insights_key and app_insights_key != trace_properties.app_insights_instrumentation_key):
             update_app_insights = True
     elif disable_distributed_tracing is True or disable_app_insights is True:
         app_insights_target_status = False
@@ -145,7 +150,8 @@ def spring_cloud_update(cmd, client, resource_group, name, app_insights_key=None
             trace_properties.trace_enabled = app_insights_target_status
         else:
             trace_properties = update_tracing_config(cmd, resource_group, name, location,
-                                                     app_insights_key, app_insights, (disable_distributed_tracing or disable_app_insights))
+                                                     app_insights_key, app_insights,
+                                                     (disable_distributed_tracing or disable_app_insights))
         if trace_properties is not None:
             monitoring_setting_resource = models.MonitoringSettingResource(properties=trace_properties)
             sdk_no_wait(no_wait, client.monitoring_settings.begin_update_put,
@@ -209,7 +215,8 @@ def list_keys(cmd, client, resource_group, name, app=None, deployment=None):
 
 # pylint: disable=redefined-builtin
 def regenerate_keys(cmd, client, resource_group, name, type):
-    return client.services.regenerate_test_key(resource_group, name, models.RegenerateTestKeyRequestPayload(key_type=type))
+    return client.services.regenerate_test_key(resource_group, name,
+                                               models.RegenerateTestKeyRequestPayload(key_type=type))
 
 
 def app_create(cmd, client, resource_group, service, name,
@@ -358,7 +365,7 @@ def app_update(cmd, client, resource_group, service, name,
         environment_variables=env,
         jvm_options=jvm_options,
         net_core_main_entry_path=main_entry,
-        runtime_version=runtime_version,)
+        runtime_version=runtime_version, )
     deployment_settings.cpu = None
     deployment_settings.memory_in_gb = None
     properties = models_20210601preview.DeploymentResourceProperties(
@@ -465,6 +472,7 @@ def app_get(cmd, client,
 def app_deploy(cmd, client, resource_group, service, name,
                version=None,
                deployment=None,
+               disable_validation=None,
                artifact_path=None,
                target_module=None,
                runtime_version=None,
@@ -501,6 +509,7 @@ def app_deploy(cmd, client, resource_group, service, name,
                        target_module,
                        no_wait,
                        file_type,
+                       disable_validation,
                        True)
 
 
@@ -573,7 +582,9 @@ def app_tail_log(cmd, client, resource_group, service, name,
     test_keys = client.services.list_test_keys(resource_group, service)
     primary_key = test_keys.primary_key
     if not primary_key:
-        raise CLIError("To use the log streaming feature, please enable the test endpoint by running 'az spring-cloud test-endpoint enable -n {0} -g {1}'".format(service, resource_group))
+        raise CLIError(
+            "To use the log streaming feature, please enable the test endpoint by running 'az spring-cloud test-endpoint enable -n {0} -g {1}'".format(
+                service, resource_group))
 
     # https://primary:xxxx[key]@servicename.test.azuremicrosoervice.io -> servicename.azuremicroservice.io
     test_url = test_keys.primary_test_endpoint
@@ -714,6 +725,7 @@ def deployment_create(cmd, client, resource_group, service, app, name,
                       skip_clone_settings=False,
                       version=None,
                       artifact_path=None,
+                      disable_validation=None,
                       target_module=None,
                       runtime_version=None,
                       jvm_options=None,
@@ -764,7 +776,8 @@ def deployment_create(cmd, client, resource_group, service, app, name,
                        main_entry,
                        target_module,
                        no_wait,
-                       file_type)
+                       file_type,
+                       disable_validation)
 
 
 def _validate_instance_count(sku, instance_count=None):
@@ -788,12 +801,12 @@ def deployment_get(cmd, client, resource_group, service, app, name):
     return client.deployments.get(resource_group, service, app, name)
 
 
-def deployment_delete(cmd, client, resource_group, service, app, name):
+def deployment_delete(cmd, client, resource_group, service, app, name, no_wait=False):
     active_deployment_name = client.apps.get(resource_group, service, app).properties.active_deployment_name
     if active_deployment_name == name:
         logger.warning(DELETE_PRODUCTION_DEPLOYMENT_WARNING)
     client.deployments.get(resource_group, service, app, name)
-    return client.deployments.begin_delete(resource_group, service, app, name)
+    return sdk_no_wait(no_wait, client.deployments.begin_delete, resource_group, service, app, name)
 
 
 def is_valid_git_uri(uri):
@@ -814,7 +827,9 @@ def validate_config_server_settings(client, resource_group, name, config_server_
     try:
         result = sdk_no_wait(False, client.begin_validate, resource_group, name, config_server_settings).result()
     except Exception as err:  # pylint: disable=broad-except
-        raise CLIError("{0}. You may raise a support ticket if needed by the following link: https://docs.microsoft.com/azure/spring-cloud/spring-cloud-faq?pivots=programming-language-java#how-can-i-provide-feedback-and-report-issues".format(err))
+        raise CLIError(
+            "{0}. You may raise a support ticket if needed by the following link: https://docs.microsoft.com/azure/spring-cloud/spring-cloud-faq?pivots=programming-language-java#how-can-i-provide-feedback-and-report-issues".format(
+                err))
 
     if not result.is_valid:
         for item in result.details or []:
@@ -1274,10 +1289,13 @@ def _app_deploy(client, resource_group, service, app, name, version, path, runti
                 target_module=None,
                 no_wait=False,
                 file_type="Jar",
+                disable_validation=None,
                 update=False):
     upload_url = None
     relative_path = None
     logger.warning("file_type is {}".format(file_type))
+    if file_type == "Jar" and (disable_validation is None or not disable_validation):
+        _validate_jar(path)
     logger.warning("[1/3] Requesting for upload URL")
     try:
         response = client.apps.get_resource_upload_url(resource_group, service, app)
@@ -1359,6 +1377,104 @@ def _app_deploy(client, resource_group, service, app, name, version, path, runti
                        resource_group, service, app, name, deployment_resource)
 
 
+def _validate_jar(jar_file):
+    values = _parse_jar_file(jar_file)
+    if values is None:
+        # ignore jar_file check
+        return
+
+    file_size, spring_boot_version, spring_cloud_version, has_actuator, has_manifest, has_jar, has_class, \
+    ms_sdk_version = values
+
+    if not has_jar and not has_class:
+        telemetry.set_user_fault("invalid_jar_no_class_jar")
+        raise CLIError("Do not find any class or jar file, please check if your artifact is a valid fat jar")
+    if not has_manifest:
+        telemetry.set_user_fault("invalid_jar_no_manifest")
+        raise CLIError("Do not find MANIFEST.MF, please check if your artifact is a valid fat jar")
+    if file_size / 1024 / 1024 < 10:
+        telemetry.set_user_fault("invalid_jar_thin_jar")
+        raise CLIError("Thin jar detected, please check if your artifact is a valid fat jar")
+
+    # validate spring boot version
+    if spring_boot_version and spring_boot_version.startswith('1'):
+        telemetry.set_user_fault("old_spring_boot_version")
+        raise CLIError("The spring boot {} you are using is not supported. To get the latest supported "
+                       "versions please refer to: https://aka.ms/ascspringversion".format(spring_boot_version))
+
+    # old spring cloud version, need to import ms sdk <= 2.2.1
+    if spring_cloud_version:
+        if spring_cloud_version < "2.2.5":
+            if not ms_sdk_version or ms_sdk_version > "2.2.1":
+                telemetry.set_user_fault("old_spring_cloud_version")
+                raise CLIError("The spring cloud {} you are using is not supported. To get the latest supported "
+                               "versions please refer to: https://aka.ms/ascspringversion".format(spring_cloud_version))
+        else:
+            if ms_sdk_version and ms_sdk_version <= "2.2.1":
+                telemetry.set_user_fault("old_ms_sdk_version")
+                raise CLIError("The spring-cloud-starter-azure-spring-cloud-client version {} is no longer "
+                               "supported, please remove it or upgrade to a higher version, to get the latest "
+                               "supported versions please refer to: "
+                               "https://mvnrepository.com/artifact/com.microsoft.azure/spring-cloud-starter-azure"
+                               "-spring-cloud-client".format(ms_sdk_version))
+
+    if not has_actuator:
+        telemetry.set_user_fault("no_spring_actuator")
+        logger.warning(
+            "Seems you do not import spring actuator, thus metrics are not enabled, please refer to "
+            "https://aka.ms/ascdependencies for more details")
+
+
+def _parse_jar_file(jar_file):
+    file_size = 0
+    spring_boot_version = ""
+    spring_cloud_version = ""
+    has_actuator = False
+    has_manifest = False
+    has_jar = False
+    has_class = False
+    ms_sdk_version = ""
+
+    spring_boot_pattern = "/spring-boot-[0-9].*jar"
+    spring_boot_actuator_pattern = "/spring-boot-actuator-[0-9].*jar"
+    ms_sdk_pattern = "/spring-cloud-starter-azure-spring-cloud-client-[0-9].*jar"
+    spring_cloud_config_pattern = "/spring-cloud-config-client-[0-9].*jar"
+    spring_cloud_eureka_pattern = "/spring-cloud-netflix-eureka-client-[0-9].*jar"
+
+    try:
+        with zipfile.ZipFile(jar_file, 'r') as zf:
+            files = zf.infolist()
+        for file in files:
+            file_size += file.file_size
+            file_name = file.filename
+
+            if file_name.lower().endswith('.jar'):
+                has_jar = True
+            if file_name.lower().endswith('.class'):
+                has_class = True
+            if file_name.upper().endswith('MANIFEST.MF'):
+                has_manifest = True
+
+            if re.search(spring_boot_pattern, file_name):
+                prefix = 'spring-boot-'
+                spring_boot_version = file_name[file_name.index(prefix) + len(prefix):file_name.index('.jar')]
+            if re.search(spring_boot_actuator_pattern, file_name):
+                has_actuator = True
+            if re.search(ms_sdk_pattern, file_name):
+                prefix = 'spring-cloud-starter-azure-spring-cloud-client-'
+                ms_sdk_version = file_name[file_name.index(prefix) + len(prefix):file_name.index('.jar')]
+            if re.search(spring_cloud_config_pattern, file_name):
+                prefix = 'spring-cloud-config-client-'
+                spring_cloud_version = file_name[file_name.index(prefix) + len(prefix):file_name.index('.jar')]
+            if re.search(spring_cloud_eureka_pattern, file_name):
+                prefix = 'spring-cloud-netflix-eureka-client-'
+                spring_cloud_version = file_name[file_name.index(prefix) + len(prefix):file_name.index('.jar')]
+        return file_size, spring_boot_version, spring_cloud_version, has_actuator, has_manifest, has_jar, has_class, ms_sdk_version
+    except Exception as err:  # pylint: disable=broad-except
+        telemetry.set_exception("parse user jar file failed, " + str(err))
+        return None
+
+
 # pylint: disable=bare-except, too-many-statements
 def _get_app_log(url, user_name, password, format_json, exceptions):
     logger_seg_regex = re.compile(r'([^\.])[^\.]+\.')
@@ -1429,7 +1545,7 @@ def _get_app_log(url, user_name, password, format_json, exceptions):
 
         return format_line
 
-    def iter_lines(response, limit=2**20):
+    def iter_lines(response, limit=2 ** 20):
         '''
         Returns a line iterator from the response content. If no line ending was found and the buffered content size is
         larger than the limit, the buffer will be yielded directly.
@@ -1689,13 +1805,15 @@ def try_create_application_insights(cmd, resource_group, name, location):
     return appinsights.instrumentation_key
 
 
-def app_insights_update(cmd, client, resource_group, name, app_insights_key=None, app_insights=None, sampling_rate=None, disable=None, no_wait=False):
+def app_insights_update(cmd, client, resource_group, name, app_insights_key=None, app_insights=None, sampling_rate=None,
+                        disable=None, no_wait=False):
     if disable:
         trace_properties = models_20201101preview.MonitoringSettingProperties(trace_enabled=False)
     else:
         trace_properties = client.monitoring_settings.get(resource_group, name).properties
         if not trace_properties.app_insights_instrumentation_key and not app_insights_key and not app_insights and sampling_rate:
-            CLIError("Can't set '--sampling-rate' without connecting to Application Insights. Please provide '--app-insights' or '--app-insights-key'.")
+            CLIError(
+                "Can't set '--sampling-rate' without connecting to Application Insights. Please provide '--app-insights' or '--app-insights-key'.")
         if app_insights_key:
             instrumentation_key = app_insights_key
         elif app_insights:
@@ -1709,10 +1827,12 @@ def app_insights_update(cmd, client, resource_group, name, app_insights_key=None
             instrumentation_key = trace_properties.app_insights_instrumentation_key
         if sampling_rate:
             trace_properties = models_20201101preview.MonitoringSettingProperties(
-                trace_enabled=True, app_insights_instrumentation_key=instrumentation_key, app_insights_sampling_rate=sampling_rate)
+                trace_enabled=True, app_insights_instrumentation_key=instrumentation_key,
+                app_insights_sampling_rate=sampling_rate)
         elif trace_properties.app_insights_sampling_rate:
             trace_properties = models_20201101preview.MonitoringSettingProperties(
-                trace_enabled=True, app_insights_instrumentation_key=instrumentation_key, app_insights_sampling_rate=trace_properties.app_insights_sampling_rate)
+                trace_enabled=True, app_insights_instrumentation_key=instrumentation_key,
+                app_insights_sampling_rate=trace_properties.app_insights_sampling_rate)
     if trace_properties is not None:
         monitoring_setting_resource = models.MonitoringSettingResource(properties=trace_properties)
         sdk_no_wait(no_wait, client.monitoring_settings.begin_update_put,
