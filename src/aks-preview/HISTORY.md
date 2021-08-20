@@ -3,6 +3,14 @@
 Release History
 ===============
 
+0.5.28
++++++
+* Update to adopt 2021-07-01 api-version
+
+0.5.27
++++++
+* GA private cluster public FQDN feature, breaking change to replace create parameter `--enable-public-fqdn` with `--disable-public-fqdn` since now it's enabled by default for private cluster during cluster creation.
+
 0.5.26
 +++++
 * Add podMaxPids argument for node config
