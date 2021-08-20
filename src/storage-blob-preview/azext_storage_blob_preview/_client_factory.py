@@ -5,7 +5,7 @@
 
 from azure.cli.core.commands.client_factory import get_mgmt_service_client, prepare_client_kwargs_track2
 from azure.cli.core.profiles import ResourceType, get_sdk
-from .profiles import CUSTOM_DATA_STORAGE_BLOB, CUSTOM_MGMT_STORAGE
+from .profiles import CUSTOM_DATA_STORAGE_BLOB
 
 MISSING_CREDENTIALS_ERROR_MESSAGE = """
 Missing credentials to access storage service. The following variations are accepted:
@@ -19,22 +19,6 @@ Missing credentials to access storage service. The following variations are acce
         set AZURE_STORAGE_CONNECTION_STRING environment variable); some shells will require
         quoting to preserve literal character interpretation.
 """
-
-
-def storage_client_factory(cli_ctx, **_):
-    return get_mgmt_service_client(cli_ctx, CUSTOM_MGMT_STORAGE)
-
-
-def cf_mgmt_blob_services(cli_ctx, _):
-    return storage_client_factory(cli_ctx).blob_services
-
-
-def cf_mgmt_policy(cli_ctx, _):
-    return storage_client_factory(cli_ctx).management_policies
-
-
-def cf_sa(cli_ctx, _):
-    return storage_client_factory(cli_ctx).storage_accounts
 
 
 def get_account_url(cli_ctx, account_name, service):
