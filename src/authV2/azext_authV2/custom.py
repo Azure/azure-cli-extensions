@@ -337,7 +337,7 @@ def prep_auth_settings_for_v2(cmd, resource_group_name, name, slot=None):  # pyl
         settings.append(TWITTER_SECRET_SETTING_NAME + '=' + site_auth_settings.twitter_consumer_secret)
         site_auth_settings.twitter_consumer_secret_setting_name = TWITTER_SECRET_SETTING_NAME
     if len(settings) > 0:
-        update_app_settings(cmd, resource_group_name, name, settings, slot)
+        update_app_settings(cmd, resource_group_name, name, slot=slot, slot_settings=settings)
         remove_all_auth_settings_secrets(cmd, resource_group_name, name, slot)
         update_auth_classic_settings(cmd, resource_group_name, name, site_auth_settings.enabled, None,
                                      site_auth_settings.client_id, site_auth_settings.token_store_enabled,
@@ -523,7 +523,7 @@ def update_aad_settings(cmd, resource_group_name, name, slot=None,  # pylint: di
         registration["clientSecretSettingName"] = MICROSOFT_SECRET_SETTING_NAME
         settings = []
         settings.append(MICROSOFT_SECRET_SETTING_NAME + '=' + client_secret)
-        update_app_settings(cmd, resource_group_name, name, settings, slot)
+        update_app_settings(cmd, resource_group_name, name, slot=slot, slot_settings=settings)
     if openid_issuer is not None:
         registration["openIdIssuer"] = openid_issuer
     if allowed_token_audiences is not None:
@@ -584,7 +584,7 @@ def update_facebook_settings(cmd, resource_group_name, name, slot=None,  # pylin
         registration["appSecretSettingName"] = FACEBOOK_SECRET_SETTING_NAME
         settings = []
         settings.append(FACEBOOK_SECRET_SETTING_NAME + '=' + app_secret)
-        update_app_settings(cmd, resource_group_name, name, settings, slot)
+        update_app_settings(cmd, resource_group_name, name, slot=slot, slot_settings=settings)
     if graph_api_version is not None:
         existing_auth["identityProviders"]["facebook"]["graphApiVersion"] = graph_api_version
     if scopes is not None:
@@ -643,7 +643,7 @@ def update_github_settings(cmd, resource_group_name, name, slot=None,  # pylint:
         registration["clientSecretSettingName"] = GITHUB_SECRET_SETTING_NAME
         settings = []
         settings.append(GITHUB_SECRET_SETTING_NAME + '=' + client_secret)
-        update_app_settings(cmd, resource_group_name, name, settings, slot)
+        update_app_settings(cmd, resource_group_name, name, slot=slot, slot_settings=settings)
     if scopes is not None:
         existing_auth["identityProviders"]["gitHub"]["login"]["scopes"] = scopes.split(",")
     if client_id is not None or client_secret is not None or client_secret_setting_name is not None:
@@ -704,7 +704,7 @@ def update_google_settings(cmd, resource_group_name, name, slot=None,  # pylint:
         registration["clientSecretSettingName"] = GOOGLE_SECRET_SETTING_NAME
         settings = []
         settings.append(GOOGLE_SECRET_SETTING_NAME + '=' + client_secret)
-        update_app_settings(cmd, resource_group_name, name, settings, slot)
+        update_app_settings(cmd, resource_group_name, name, slot=slot, slot_settings=settings)
     if scopes is not None:
         existing_auth["identityProviders"]["google"]["login"]["scopes"] = scopes.split(",")
     if allowed_token_audiences is not None:
@@ -761,7 +761,7 @@ def update_twitter_settings(cmd, resource_group_name, name, slot=None,  # pylint
         registration["consumerSecretSettingName"] = TWITTER_SECRET_SETTING_NAME
         settings = []
         settings.append(TWITTER_SECRET_SETTING_NAME + '=' + consumer_secret)
-        update_app_settings(cmd, resource_group_name, name, settings, slot)
+        update_app_settings(cmd, resource_group_name, name, slot=slot, slot_settings=settings)
     if consumer_key is not None or consumer_secret is not None or consumer_secret_setting_name is not None:
         existing_auth["identityProviders"]["twitter"]["registration"] = registration
     updated_auth_settings = update_auth_settings_v2_rest_call(cmd, resource_group_name, name, existing_auth, slot)
@@ -816,7 +816,7 @@ def update_apple_settings(cmd, resource_group_name, name, slot=None,  # pylint: 
         registration["clientSecretSettingName"] = 'APPLE_PROVIDER_AUTHENTICATION_SECRET'
         settings = []
         settings.append('APPLE_PROVIDER_AUTHENTICATION_SECRET=' + client_secret)
-        update_app_settings(cmd, resource_group_name, name, settings, slot)
+        update_app_settings(cmd, resource_group_name, name, slot=slot, slot_settings=settings)
     if scopes is not None:
         existing_auth["identityProviders"]["apple"]["login"]["scopes"] = scopes.split(",")
     if client_id is not None or client_secret is not None or client_secret_setting_name is not None:
@@ -869,7 +869,7 @@ def add_openid_connect_provider_settings(cmd, resource_group_name, name, provide
         final_client_secret_setting_name = get_oidc_client_setting_app_setting_name(provider_name)
         settings = []
         settings.append(final_client_secret_setting_name + '=' + client_secret)
-        update_app_settings(cmd, resource_group_name, name, settings, slot)
+        update_app_settings(cmd, resource_group_name, name, slot=slot, slot_settings=settings)
 
     auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name] = {
         "registration": {
@@ -944,7 +944,7 @@ def update_openid_connect_provider_settings(cmd, resource_group_name, name, prov
         registration["clientSecretSettingName"] = final_client_secret_setting_name
         settings = []
         settings.append(final_client_secret_setting_name + '=' + client_secret)
-        update_app_settings(cmd, resource_group_name, name, settings, slot)
+        update_app_settings(cmd, resource_group_name, name, slot=slot, slot_settings=settings)
     if openid_configuration is not None:
         registration["openIdConnectConfiguration"]["wellKnownOpenIdConfiguration"] = openid_configuration
     if scopes is not None:
