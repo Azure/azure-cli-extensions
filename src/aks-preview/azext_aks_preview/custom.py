@@ -54,14 +54,11 @@ from azure.graphrbac.models import (ApplicationCreateParameters,
                                     KeyCredential,
                                     ServicePrincipalCreateParameters,
                                     GetObjectsParameters)
-from .vendored_sdks.azure_mgmt_preview_aks.v2021_05_01.models import (ContainerServiceLinuxProfile,
+from .vendored_sdks.azure_mgmt_preview_aks.v2021_07_01.models import (ContainerServiceLinuxProfile,
                                                                       ManagedClusterWindowsProfile,
                                                                       ContainerServiceNetworkProfile,
                                                                       ManagedClusterServicePrincipalProfile,
                                                                       ContainerServiceSshConfiguration,
-                                                                      MaintenanceConfiguration,
-                                                                      TimeInWeek,
-                                                                      TimeSpan,
                                                                       ContainerServiceSshPublicKey,
                                                                       ManagedCluster,
                                                                       ManagedClusterAADProfile,
@@ -73,7 +70,7 @@ from .vendored_sdks.azure_mgmt_preview_aks.v2021_05_01.models import (ContainerS
                                                                       ManagedClusterIdentity,
                                                                       ManagedClusterAPIServerAccessProfile,
                                                                       ManagedClusterSKU,
-                                                                      Components1Umhcm8SchemasManagedclusteridentityPropertiesUserassignedidentitiesAdditionalproperties,
+                                                                      ManagedServiceIdentityUserAssignedIdentitiesValue,
                                                                       ManagedClusterAutoUpgradeProfile,
                                                                       KubeletConfig,
                                                                       LinuxOSConfig,
@@ -82,8 +79,7 @@ from .vendored_sdks.azure_mgmt_preview_aks.v2021_05_01.models import (ContainerS
                                                                       ManagedClusterPodIdentityProfile,
                                                                       ManagedClusterPodIdentity,
                                                                       ManagedClusterPodIdentityException,
-                                                                      UserAssignedIdentity,
-                                                                      ComponentsQit0EtSchemasManagedclusterpropertiesPropertiesIdentityprofileAdditionalproperties)
+                                                                      UserAssignedIdentity)
 from ._client_factory import cf_resource_groups
 from ._client_factory import get_auth_management_client
 from ._client_factory import get_graph_rbac_management_client
@@ -1114,7 +1110,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         )
     elif enable_managed_identity and assign_identity:
         user_assigned_identity = {
-            assign_identity: Components1Umhcm8SchemasManagedclusteridentityPropertiesUserassignedidentitiesAdditionalproperties()
+            assign_identity: ManagedServiceIdentityUserAssignedIdentitiesValue()
         }
         identity = ManagedClusterIdentity(
             type="UserAssigned",
@@ -1127,7 +1123,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
             raise CLIError('--assign-kubelet-identity can only be specified when --assign-identity is specified')
         kubelet_identity = _get_user_assigned_identity(cmd.cli_ctx, assign_kubelet_identity)
         identity_profile = {
-            'kubeletidentity': ComponentsQit0EtSchemasManagedclusterpropertiesPropertiesIdentityprofileAdditionalproperties(
+            'kubeletidentity': UserAssignedIdentity(
                 resource_id=assign_kubelet_identity,
                 client_id=kubelet_identity.client_id,
                 object_id=kubelet_identity.principal_id
@@ -1604,7 +1600,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
             )
         elif goal_identity_type == "userassigned":
             user_assigned_identity = {
-                assign_identity: Components1Umhcm8SchemasManagedclusteridentityPropertiesUserassignedidentitiesAdditionalproperties()
+                assign_identity: ManagedServiceIdentityUserAssignedIdentitiesValue()
             }
             instance.identity = ManagedClusterIdentity(
                 type="UserAssigned",

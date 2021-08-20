@@ -3,7 +3,7 @@
 Release History
 ===============
 
-0.5.28
+0.5.29
 +++++
 * Add support for new addon commands
   * `az aks addon list`
@@ -12,6 +12,10 @@ Release History
   * `az aks addon enable`
   * `az aks addon disable`
   * `az aks addon update`
+
+0.5.28
++++++
+* Update to adopt 2021-07-01 api-version
 
 0.5.27
 +++++
