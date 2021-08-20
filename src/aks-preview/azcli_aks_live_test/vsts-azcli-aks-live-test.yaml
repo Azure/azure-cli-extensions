@@ -31,6 +31,15 @@ jobs:
   displayName: "Live Test with Python"
   steps:
     - bash: |
+        if [[ $(SUB_NAME) == "acs" ]]; then
+          echo "##vso[task.setvariable variable=AZCLI_ALT_SUBSCRIPTION_ID]$(ACS_TEST_SUB_ID)"
+        elif [[ $(SUB_NAME) == "runner" ]]; then
+          echo "##vso[task.setvariable variable=AZCLI_ALT_SUBSCRIPTION_ID]$(AKS_CLI_RUNNER_SUB_ID)"
+        else
+          echo "##vso[task.setvariable variable=AZCLI_ALT_SUBSCRIPTION_ID]$(AKS_CLI_PR_GATE_SUB_ID)"
+        fi
+      displayName: "Choose Subscription"
+    - bash: |
         mkdir $(REPO_NAME)
         shopt -s extglob dotglob
         mv !($(REPO_NAME)) $(REPO_NAME)
