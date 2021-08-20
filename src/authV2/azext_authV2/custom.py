@@ -483,6 +483,7 @@ def update_aad_settings(cmd, resource_group_name, name, slot=None,  # pylint: di
 
     openid_issuer = issuer
     if openid_issuer is None:
+        # cmd.cli_ctx.cloud resolves to whichever cloud the customer is currently logged into
         authority = cmd.cli_ctx.cloud.endpoints.active_directory
         if cloud is not None:
             if cloud == AZURE_PUBLIC_CLOUD.name:
