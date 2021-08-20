@@ -23,8 +23,7 @@ def aks_addon_list_available_table_format(result):
 def aks_addon_list_table_format(result):
     def parser(entry):
         parsed = compile_jmes("""{
-                addon_name: addon_name,
-                addon_key: addon_key,
+                name: name,
                 enabled: enabled
             }""")
         return parsed.search(entry, Options(dict_cls=OrderedDict))
@@ -33,9 +32,13 @@ def aks_addon_list_table_format(result):
 
 def aks_addon_show_table_format(result):
     def parser(entry):
+        config = ""
+        for k, v in entry["config"].items():
+            config += k + "=" + v + ";"
+        entry["config"] = config
         parsed = compile_jmes("""{
-                addon_name: addon_name,
-                addon_key: addon_key,
+                name: name,
+                api_key: api_key,
                 config: config,
                 identity: identity
             }""")

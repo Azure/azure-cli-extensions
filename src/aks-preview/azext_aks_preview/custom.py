@@ -2606,14 +2606,14 @@ def aks_addon_list(cmd, client, resource_group_name, name):  # pylint: disable=u
     for name, addon in ADDONS.items():
         if not addon_profiles or addon not in addon_profiles:
             current_addons.append({
-                "addon_name": name,
-                "addon_key": addon,
+                "name": name,
+                "api_key": addon,
                 "enabled": False
             })
         else:
             current_addons.append({
-                "addon_name": name,
-                "addon_key": addon,
+                "name": name,
+                "api_key": addon,
                 "enabled": addon_profiles[addon].enabled
             })
 
@@ -2627,14 +2627,10 @@ def aks_addon_show(cmd, client, resource_group_name, name, addon):  # pylint: di
     if not addon_profiles or addon_key not in addon_profiles or not addon_profiles[addon_key].enabled:
         raise CLIError(f'Addon "{addon}" is not enabled in this cluster.')
 
-    config = ""
-    for k, v in addon_profiles[addon_key].config.items():
-        config += k + "=" + v + ";"
-
     return {
-        "addon_name": addon,
-        "addon_key": addon_key,
-        "config": config,
+        "name": addon,
+        "api_key": addon_key,
+        "config": addon_profiles[addon_key].config,
         "identity": addon_profiles[addon_key].identity
     }
 

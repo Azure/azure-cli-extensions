@@ -461,7 +461,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         assert len(addon_list) > 0
 
         for addon in addon_list:
-            if addon["addon_name"] == "confcom":
+            if addon["name"] == "confcom":
                 assert addon["enabled"]
             else:
                 assert not addon["enabled"]
@@ -490,7 +490,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         assert len(addon_list) > 0
 
         for addon in addon_list:
-            if addon["addon_name"] == "open-service-mesh":
+            if addon["name"] == "open-service-mesh":
                 assert addon["enabled"]
             else:
                 assert not addon["enabled"]
@@ -541,8 +541,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                    '-a confcom -o json'
 
         self.cmd(show_cmd, checks=[
-            self.check("addon_key", "ACCSGXDevicePlugin"),
-            self.check("addon_name", "confcom"),
+            self.check("api_key", "ACCSGXDevicePlugin"),
+            self.check("name", "confcom"),
             self.exists('config')
         ])
 
@@ -568,8 +568,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                    '-a open-service-mesh -o json'
 
         self.cmd(show_cmd, checks=[
-            self.check("addon_key", "openServiceMesh"),
-            self.check("addon_name", "open-service-mesh"),
+            self.check("api_key", "openServiceMesh"),
+            self.check("name", "open-service-mesh"),
             self.exists('identity')
         ])
 
