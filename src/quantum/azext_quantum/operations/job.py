@@ -34,11 +34,30 @@ def get(cmd, job_id, resource_group_name=None, workspace_name=None, location=Non
     return client.get(job_id)
 
 
+def _check_dotnet_available():
+    """
+    Will fail if dotnet cannot be executed on the system.
+    """
+    args = ["dotnet", "--version"]
+
+    try:
+        import subprocess
+        result = subprocess.run(args, stdout=subprocess.PIPE, check=False)
+    except FileNotFoundError:
+        raise CLIError(f"Could not find 'dotnet' on the system.")
+
+    if result.returncode != 0:
+        raise CLIError(f"Failed to run 'dotnet'. (Error {result.returncode})")
+
+
 def build(cmd, target_id=None, project=None):
     """
     Compile a Q# program to run on Azure Quantum.
     """
     target = TargetInfo(cmd, target_id)
+
+    # Validate that dotnet is available
+    _check_dotnet_available()
 
     args = ["dotnet", "build"]
 
@@ -56,6 +75,9 @@ def build(cmd, target_id=None, project=None):
     if result.returncode == 0:
         return {'result': 'ok'}
 
+    # If we got here, we might have encountered an error during compilation, so propagate standard output to the user.
+    logger.error(f"Compilation stage failed with error code {result.returncode}")
+    print(result.stdout.decode('ascii'))
     raise CLIError("Failed to compile program.")
 
 
@@ -139,8 +161,9 @@ def submit(cmd, program_args, resource_group_name=None, workspace_name=None, loc
     # `ExecutionTarget` property when passed in the command line
     if not no_build:
         build(cmd, target_id=target_id, project=project)
-
-    logger.info("Project built successfully.")
+        logger.info("Project built successfully.")
+    else:
+        _check_dotnet_available()
 
     ws = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
     target = TargetInfo(cmd, target_id)
@@ -159,6 +182,9 @@ def submit(cmd, program_args, resource_group_name=None, workspace_name=None, loc
         # Query for the job and return status to caller.
         return get(cmd, job_id, resource_group_name, workspace_name, location)
 
+    # The program compiled succesfully, but executing the stand-alone .exe failed to run.
+    logger.error(f"Submission of job failed with error code {result.returncode}")
+    print(result.stdout.decode('ascii'))
     raise CLIError("Failed to submit job.")
 
 
@@ -230,6 +256,7 @@ def output(cmd, job_id, resource_group_name=None, workspace_name=None, location=
             json_string = '{ "histogram" : { "' + result + '" : 1 } }'
             data = json.loads(json_string)
         else:
+            json_file.seek(0)  # Reset the file pointer before loading
             data = json.load(json_file)
         return data
 
