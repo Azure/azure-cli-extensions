@@ -480,10 +480,10 @@ def get_kubernetes_distro(configuration):  # Heuristic
     api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
     try:
         api_response = api_instance.list_node()
-        if api_response.items:
-            labels = api_response.items[0].metadata.labels
-            provider_id = str(api_response.items[0].spec.provider_id)
-            annotations = list(api_response.items)[0].metadata.annotations
+        for node in api_response.items:
+            labels = node.metadata.labels
+            provider_id = str(node.spec.provider_id)
+            annotations = node.metadata.annotations
             if labels.get("node.openshift.io/os_id"):
                 return "openshift"
             if labels.get("kubernetes.azure.com/node-image-version"):
@@ -500,8 +500,6 @@ def get_kubernetes_distro(configuration):  # Heuristic
                 return "k3s"
             if annotations.get("rke.cattle.io/external-ip") or annotations.get("rke.cattle.io/internal-ip"):
                 return "rancher_rke"
-            if provider_id.startswith("moc://"):   # Todo: ask from aks hci team for more reliable identifier in node labels,etc
-                return "generic"                   # return "aks_hci"
         return "generic"
     except Exception as e:  # pylint: disable=broad-except
         logger.debug("Error occured while trying to fetch kubernetes distribution: " + str(e))
@@ -514,8 +512,8 @@ def get_kubernetes_infra(configuration):  # Heuristic
     api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
     try:
         api_response = api_instance.list_node()
-        if api_response.items:
-            provider_id = str(api_response.items[0].spec.provider_id)
+        for node in api_response.items:
+            provider_id = str(node.spec.provider_id)
             infra = provider_id.split(':')[0]
             if infra == "k3s" or infra == "kind":
                 return "generic"
@@ -525,9 +523,9 @@ def get_kubernetes_infra(configuration):  # Heuristic
                 return "gcp"
             if infra == "aws":
                 return "aws"
-            if infra == "moc":                  # Todo: ask from aks hci team for more reliable identifier in node labels,etc
-                return "generic"                # return "azure_stack_hci"
-            return utils.validate_infrastructure_type(infra)
+            k8s_infra = utils.validate_infrastructure_type(infra)
+            if k8s_infra != None:
+                return k8s_infra
         return "generic"
     except Exception as e:  # pylint: disable=broad-except
         logger.debug("Error occured while trying to fetch kubernetes infrastructure: " + str(e))

@@ -233,7 +233,7 @@ def validate_infrastructure_type(infra):
     for s in consts.Infrastructure_Enum_Values[1:]:  # First value is "auto"
         if s.lower() == infra.lower():
             return s
-    return "generic"
+    return None
 
 
 def get_values_file():
