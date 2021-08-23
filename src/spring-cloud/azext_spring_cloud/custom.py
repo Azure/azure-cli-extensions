@@ -6,9 +6,7 @@
 # pylint: disable=unused-argument, logging-format-interpolation, protected-access, wrong-import-order, too-many-lines
 import requests
 import re
-import zipfile
-from azure.cli.core import telemetry
-
+from azext_spring_cloud._validators import _validate_jar
 from azure.core.exceptions import HttpResponseError
 from azure.mgmt.cosmosdb import CosmosDBManagementClient
 from azure.mgmt.redis import RedisManagementClient
@@ -1366,104 +1364,6 @@ def _app_deploy(client, resource_group, service, app, name, version, path, runti
 
     return sdk_no_wait(no_wait, client.deployments.begin_create_or_update,
                        resource_group, service, app, name, deployment_resource)
-
-
-def _validate_jar(jar_file):
-    values = _parse_jar_file(jar_file)
-    if values is None:
-        # ignore jar_file check
-        return
-
-    file_size, spring_boot_version, spring_cloud_version, has_actuator, has_manifest, has_jar, has_class, \
-    ms_sdk_version = values
-
-    if not has_jar and not has_class:
-        telemetry.set_user_fault("invalid_jar_no_class_jar")
-        raise CLIError("Do not find any class or jar file, please check if your artifact is a valid fat jar")
-    if not has_manifest:
-        telemetry.set_user_fault("invalid_jar_no_manifest")
-        raise CLIError("Do not find MANIFEST.MF, please check if your artifact is a valid fat jar")
-    if file_size / 1024 / 1024 < 10:
-        telemetry.set_user_fault("invalid_jar_thin_jar")
-        raise CLIError("Thin jar detected, please check if your artifact is a valid fat jar")
-
-    # validate spring boot version
-    if spring_boot_version and spring_boot_version.startswith('1'):
-        telemetry.set_user_fault("old_spring_boot_version")
-        raise CLIError("The spring boot {} you are using is not supported. To get the latest supported "
-                       "versions please refer to: https://aka.ms/ascspringversion".format(spring_boot_version))
-
-    # old spring cloud version, need to import ms sdk <= 2.2.1
-    if spring_cloud_version:
-        if spring_cloud_version < "2.2.5":
-            if not ms_sdk_version or ms_sdk_version > "2.2.1":
-                telemetry.set_user_fault("old_spring_cloud_version")
-                raise CLIError("The spring cloud {} you are using is not supported. To get the latest supported "
-                               "versions please refer to: https://aka.ms/ascspringversion".format(spring_cloud_version))
-        else:
-            if ms_sdk_version and ms_sdk_version <= "2.2.1":
-                telemetry.set_user_fault("old_ms_sdk_version")
-                raise CLIError("The spring-cloud-starter-azure-spring-cloud-client version {} is no longer "
-                               "supported, please remove it or upgrade to a higher version, to get the latest "
-                               "supported versions please refer to: "
-                               "https://mvnrepository.com/artifact/com.microsoft.azure/spring-cloud-starter-azure"
-                               "-spring-cloud-client".format(ms_sdk_version))
-
-    if not has_actuator:
-        telemetry.set_user_fault("no_spring_actuator")
-        logger.warning(
-            "Seems you do not import spring actuator, thus metrics are not enabled, please refer to "
-            "https://aka.ms/ascdependencies for more details")
-
-
-def _parse_jar_file(jar_file):
-    file_size = 0
-    spring_boot_version = ""
-    spring_cloud_version = ""
-    has_actuator = False
-    has_manifest = False
-    has_jar = False
-    has_class = False
-    ms_sdk_version = ""
-
-    spring_boot_pattern = "/spring-boot-[0-9].*jar"
-    spring_boot_actuator_pattern = "/spring-boot-actuator-[0-9].*jar"
-    ms_sdk_pattern = "/spring-cloud-starter-azure-spring-cloud-client-[0-9].*jar"
-    spring_cloud_config_pattern = "/spring-cloud-config-client-[0-9].*jar"
-    spring_cloud_eureka_pattern = "/spring-cloud-netflix-eureka-client-[0-9].*jar"
-
-    try:
-        with zipfile.ZipFile(jar_file, 'r') as zf:
-            files = zf.infolist()
-        for file in files:
-            file_size += file.file_size
-            file_name = file.filename
-
-            if file_name.lower().endswith('.jar'):
-                has_jar = True
-            if file_name.lower().endswith('.class'):
-                has_class = True
-            if file_name.upper().endswith('MANIFEST.MF'):
-                has_manifest = True
-
-            if re.search(spring_boot_pattern, file_name):
-                prefix = 'spring-boot-'
-                spring_boot_version = file_name[file_name.index(prefix) + len(prefix):file_name.index('.jar')]
-            if re.search(spring_boot_actuator_pattern, file_name):
-                has_actuator = True
-            if re.search(ms_sdk_pattern, file_name):
-                prefix = 'spring-cloud-starter-azure-spring-cloud-client-'
-                ms_sdk_version = file_name[file_name.index(prefix) + len(prefix):file_name.index('.jar')]
-            if re.search(spring_cloud_config_pattern, file_name):
-                prefix = 'spring-cloud-config-client-'
-                spring_cloud_version = file_name[file_name.index(prefix) + len(prefix):file_name.index('.jar')]
-            if re.search(spring_cloud_eureka_pattern, file_name):
-                prefix = 'spring-cloud-netflix-eureka-client-'
-                spring_cloud_version = file_name[file_name.index(prefix) + len(prefix):file_name.index('.jar')]
-        return file_size, spring_boot_version, spring_cloud_version, has_actuator, has_manifest, has_jar, has_class, ms_sdk_version
-    except Exception as err:  # pylint: disable=broad-except
-        telemetry.set_exception("parse user jar file failed, " + str(err))
-        return None
 
 
 # pylint: disable=bare-except, too-many-statements
