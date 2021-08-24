@@ -76,21 +76,6 @@ def get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood=None, release
         raise CLIInternalError("No content was found in helm registry path response.")
 
 
-def get_values_file():
-    values_file_provided = False
-    values_file = os.getenv('HELMVALUESPATH')
-    if (values_file is not None) and (os.path.isfile(values_file)):
-        values_file_provided = True
-        logger.warning("Values files detected. Reading additional helm parameters from same.")
-        # trimming required for windows os
-        if (values_file.startswith("'") or values_file.startswith('"')):
-            values_file = values_file[1:]
-        if (values_file.endswith("'") or values_file.endswith('"')):
-            values_file = values_file[:-1]
-
-    return values_file_provided, values_file
-
-
 def validate_env_file_dogfood(values_file, values_file_provided):
     if not values_file_provided:
         telemetry.set_exception(exception='Helm environment file not provided',
