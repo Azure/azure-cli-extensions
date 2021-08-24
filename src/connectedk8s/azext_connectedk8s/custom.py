@@ -24,6 +24,7 @@ from azext_connectedk8s._helm_core_utils import HelmCoreUtils
 import azext_connectedk8s._constants as consts
 import azext_connectedk8s._custom_location_utils as cl_utils
 import azext_connectedk8s._connected_cluster_utils as cc_utils
+import azext_connectedk8s._helm_utils as helm_utils
 import azext_connectedk8s._kube_core_utils as kube_core_utils
 import azext_connectedk8s._kube_utils as kube_utils
 import azext_connectedk8s._proxy_utils as proxy_utils
@@ -67,7 +68,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     values_file_provided, values_file = utils.get_values_file()
 
     cloud_name, dp_endpoint_dogfood, release_train_dogfood = \
-        utils.validate_helm_environment(cmd, values_file, values_file_provided)
+        helm_utils.validate_helm_environment(cmd, values_file, values_file_provided)
 
     if cloud_name:
         azure_cloud = cloud_name
@@ -117,7 +118,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     # Checking helm installation
     helm_core_utils.check_helm_install()
 
-    utils.check_faulty_helm_version(helm_core_utils)
+    helm_utils.check_faulty_helm_version(helm_core_utils)
 
     # Validate location
     cc_utils.validate_location(cmd, location)
@@ -207,17 +208,17 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
         helm_core_utils.add_helm_repo(os.getenv('HELMREPONAME'), os.getenv('HELMREPOURL'))
 
     # Setting the config dataplane endpoint
-    config_dp_endpoint = utils.get_config_dp_endpoint(cmd, location)
+    config_dp_endpoint = helm_utils.get_config_dp_endpoint(cmd, location)
 
     # Retrieving Helm chart OCI Artifact location
-    registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else utils.get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood, release_train_dogfood)
+    registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else helm_utils.get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood, release_train_dogfood)
 
     # Get azure-arc agent version for telemetry
     azure_arc_agent_version = registry_path.split(':')[1]
     telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.AgentVersion': azure_arc_agent_version})
 
     # Get helm chart path
-    chart_path = utils.get_chart_path(registry_path, kube_config, kube_context)
+    chart_path = helm_utils.get_chart_path(registry_path, kube_config, kube_context)
 
     public_key, private_key_pem = utils.generate_public_private_key()
 
@@ -351,7 +352,7 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
     values_file_provided, values_file = utils.get_values_file()
 
     _, dp_endpoint_dogfood, release_train_dogfood = \
-        utils.validate_helm_environment(cmd, values_file, values_file_provided)
+        helm_utils.validate_helm_environment(cmd, values_file, values_file_provided)
 
     # Loading the kubeconfig file in kubernetes client configuration
     kube_utils.load_kube_config(config, kube_config, kube_context)
@@ -368,22 +369,22 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
     # Checking helm installation
     helm_core_utils.check_helm_install()
 
-    utils.check_faulty_helm_version(helm_core_utils)
+    helm_utils.check_faulty_helm_version(helm_core_utils)
 
     release_namespace = kube_core_utils.validate_release_namespace(client, cluster_name, resource_group_name,
                                                                    configuration, kube_config, kube_context)
 
     # Fetch Connected Cluster for agent version
-    connected_cluster = cc_utils.get_connectedk8s(client, resource_group_name, cluster_name)
+    connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
 
     utils.add_telemetry_extenstion_event(connected_cluster, configuration)
 
-    registry_path = utils.get_helm_registry_path(cmd, connected_cluster.location, helm_core_utils,
+    registry_path = helm_utils.get_helm_registry_path(cmd, connected_cluster.location, helm_core_utils,
                                                  connected_cluster.agent_version, dp_endpoint_dogfood,
                                                  release_train_dogfood)
 
     # Get Helm chart path
-    chart_path = utils.get_chart_path(registry_path, kube_config, kube_context)
+    chart_path = helm_utils.get_chart_path(registry_path, kube_config, kube_context)
 
     proxy_details = proxy_utils.create_proxy_details(https_proxy, http_proxy, no_proxy, proxy_cert, disable_proxy)
     arc_agent_utils = ArcAgentUtils(kube_config, kube_context, values_file, proxy_details, auto_upgrade)
@@ -406,7 +407,7 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
     values_file_provided, values_file = utils.get_values_file()
 
     _, dp_endpoint_dogfood, release_train_dogfood = \
-        utils.validate_helm_environment(cmd, values_file, values_file_provided)
+        helm_utils.validate_helm_environment(cmd, values_file, values_file_provided)
 
     # Loading the kubeconfig file in kubernetes client configuration
     kube_utils.load_kube_config(config, kube_config, kube_context)
@@ -423,7 +424,7 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
     # Checking helm installation
     helm_core_utils.check_helm_install()
 
-    utils.check_faulty_helm_version(helm_core_utils)
+    helm_utils.check_faulty_helm_version(helm_core_utils)
 
     # Check Release Existance
     release_namespace = helm_core_utils.get_release_namespace()
@@ -460,15 +461,15 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
                                  recommendation="Please run 'az connectedk8s connect -n <connected-cluster-name> -g <resource-group-name>' to onboard the cluster")
 
     # Fetch Connected Cluster for agent version
-    connected_cluster = cc_utils.get_connectedk8s(client, resource_group_name, cluster_name)
+    connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
 
     utils.add_telemetry_extenstion_event(connected_cluster, configuration)
 
-    registry_path = utils.get_helm_registry_path(cmd, connected_cluster.location, helm_core_utils, arc_agent_version,
+    registry_path = helm_utils.get_helm_registry_path(cmd, connected_cluster.location, helm_core_utils, arc_agent_version,
                                                  dp_endpoint_dogfood, release_train_dogfood)
 
     # Get Helm chart path
-    chart_path = utils.get_chart_path(registry_path, kube_config, kube_context)
+    chart_path = helm_utils.get_chart_path(registry_path, kube_config, kube_context)
 
     existing_user_values = helm_core_utils.get_all_helm_values(release_namespace)
 
@@ -518,7 +519,7 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
     values_file_provided, values_file = utils.get_values_file()
 
     _, dp_endpoint_dogfood, release_train_dogfood = \
-        utils.validate_helm_environment(cmd, values_file, values_file_provided)
+        helm_utils.validate_helm_environment(cmd, values_file, values_file_provided)
 
     # Loading the kubeconfig file in kubernetes client configuration
     kube_utils.load_kube_config(config, kube_config, kube_context)
@@ -535,12 +536,12 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
     # Checking helm installation
     helm_core_utils.check_helm_install()
 
-    utils.check_faulty_helm_version(helm_core_utils)
+    helm_utils.check_faulty_helm_version(helm_core_utils)
 
     release_namespace = kube_core_utils.validate_release_namespace(client, cluster_name, resource_group_name, configuration, kube_config, kube_context)
 
     # Fetch Connected Cluster for agent version
-    connected_cluster = cc_utils.get_connectedk8s(client, resource_group_name, cluster_name)
+    connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
 
     utils.add_telemetry_extenstion_event(connected_cluster, configuration)
 
@@ -548,12 +549,12 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
     if os.getenv('HELMREPONAME') and os.getenv('HELMREPOURL'):
         helm_core_utils.add_helm_repo(os.getenv('HELMREPONAME'), os.getenv('HELMREPOURL'))
 
-    registry_path = utils.get_helm_registry_path(cmd, connected_cluster.location, helm_core_utils,
+    registry_path = helm_utils.get_helm_registry_path(cmd, connected_cluster.location, helm_core_utils,
                                                  connected_cluster.agent_version, dp_endpoint_dogfood,
                                                  release_train_dogfood)
 
     # Get Helm chart path
-    chart_path = utils.get_chart_path(registry_path, kube_config, kube_context)
+    chart_path = helm_utils.get_chart_path(registry_path, kube_config, kube_context)
 
     arc_agent_utils = ArcAgentUtils(kube_config, kube_context, values_file)
 
@@ -584,7 +585,7 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
     values_file_provided, values_file = utils.get_values_file()
 
     _, dp_endpoint_dogfood, release_train_dogfood = \
-        utils.validate_helm_environment(cmd, values_file, values_file_provided)
+        helm_utils.validate_helm_environment(cmd, values_file, values_file_provided)
 
     # Loading the kubeconfig file in kubernetes client configuration
     kube_utils.load_kube_config(config, kube_config, kube_context)
@@ -601,12 +602,12 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
     # Checking helm installation
     helm_core_utils.check_helm_install()
 
-    utils.check_faulty_helm_version(helm_core_utils)
+    helm_utils.check_faulty_helm_version(helm_core_utils)
 
     release_namespace = kube_core_utils.validate_release_namespace(client, cluster_name, resource_group_name, configuration, kube_config, kube_context)
 
     # Fetch Connected Cluster for agent version
-    connected_cluster = cc_utils.get_connectedk8s(client, resource_group_name, cluster_name)
+    connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
 
     utils.add_telemetry_extenstion_event(connected_cluster, configuration)
 
@@ -624,12 +625,12 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
     if disable_cl:
         logger.warning("Disabling 'custom-locations' feature might impact some dependent resources. Learn more about this at https://aka.ms/ArcK8sDependentResources.")
 
-    registry_path = utils.get_helm_registry_path(cmd, connected_cluster.location, helm_core_utils,
+    registry_path = helm_utils.get_helm_registry_path(cmd, connected_cluster.location, helm_core_utils,
                                                  connected_cluster.agent_version, dp_endpoint_dogfood,
                                                  release_train_dogfood)
 
     # Get Helm chart path
-    chart_path = utils.get_chart_path(registry_path, kube_config, kube_context)
+    chart_path = helm_utils.get_chart_path(registry_path, kube_config, kube_context)
 
     arc_agent_utils = ArcAgentUtils(kube_config, kube_context, values_file)
 
