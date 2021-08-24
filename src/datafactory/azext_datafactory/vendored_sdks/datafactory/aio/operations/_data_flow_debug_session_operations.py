@@ -28,7 +28,7 @@ class DataFlowDebugSessionOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~data_factory_management_client.models
+    :type models: ~azure.mgmt.datafactory.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -116,7 +116,7 @@ class DataFlowDebugSessionOperations:
         :param factory_name: The factory name.
         :type factory_name: str
         :param request: Data flow debug session definition.
-        :type request: ~data_factory_management_client.models.CreateDataFlowDebugSessionRequest
+        :type request: ~azure.mgmt.datafactory.models.CreateDataFlowDebugSessionRequest
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
@@ -124,7 +124,7 @@ class DataFlowDebugSessionOperations:
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either CreateDataFlowDebugSessionResponse or the result of cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~data_factory_management_client.models.CreateDataFlowDebugSessionResponse]
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.datafactory.models.CreateDataFlowDebugSessionResponse]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
@@ -187,7 +187,7 @@ class DataFlowDebugSessionOperations:
         :type factory_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either QueryDataFlowDebugSessionsResponse or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~data_factory_management_client.models.QueryDataFlowDebugSessionsResponse]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.datafactory.models.QueryDataFlowDebugSessionsResponse]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.QueryDataFlowDebugSessionsResponse"]
@@ -261,10 +261,10 @@ class DataFlowDebugSessionOperations:
         :param factory_name: The factory name.
         :type factory_name: str
         :param request: Data flow debug session definition with debug content.
-        :type request: ~data_factory_management_client.models.DataFlowDebugPackage
+        :type request: ~azure.mgmt.datafactory.models.DataFlowDebugPackage
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: AddDataFlowToDebugSessionResponse, or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.AddDataFlowToDebugSessionResponse
+        :rtype: ~azure.mgmt.datafactory.models.AddDataFlowToDebugSessionResponse
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.AddDataFlowToDebugSessionResponse"]
@@ -327,7 +327,7 @@ class DataFlowDebugSessionOperations:
         :param factory_name: The factory name.
         :type factory_name: str
         :param request: Data flow debug session definition for deletion.
-        :type request: ~data_factory_management_client.models.DeleteDataFlowDebugSessionRequest
+        :type request: ~azure.mgmt.datafactory.models.DeleteDataFlowDebugSessionRequest
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: None, or the result of cls(response)
         :rtype: None
@@ -449,7 +449,7 @@ class DataFlowDebugSessionOperations:
         :param factory_name: The factory name.
         :type factory_name: str
         :param request: Data flow debug command definition.
-        :type request: ~data_factory_management_client.models.DataFlowDebugCommandRequest
+        :type request: ~azure.mgmt.datafactory.models.DataFlowDebugCommandRequest
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
@@ -457,7 +457,7 @@ class DataFlowDebugSessionOperations:
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either DataFlowDebugCommandResponse or the result of cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~data_factory_management_client.models.DataFlowDebugCommandResponse]
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.datafactory.models.DataFlowDebugCommandResponse]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
