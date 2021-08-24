@@ -226,11 +226,16 @@ def _get_kube_env_from_custom_location(cmd, custom_location):
 
     kube_envs = cf_kube_environments(cmd.cli_ctx).list_by_subscription()
     for kube in kube_envs:
-        if kube.extended_location and kube.extended_location.custom_location:
+        parsed_custom_location_2 = None
+
+        if kube.additional_properties and 'extendedLocation' in kube.additional_properties:
+            parsed_custom_location_2 = parse_resource_id(kube.additional_properties['extendedLocation'].get('name'))
+        elif kube.extended_location and kube.extended_location.custom_location:
             parsed_custom_location_2 = parse_resource_id(kube.extended_location.custom_location)
-            if parsed_custom_location_2.get("name").lower() == custom_location.lower():
-                kube_environment_id = kube.id
-                break
+
+        if parsed_custom_location_2 and parsed_custom_location_2.get("name").lower() == custom_location.lower():
+            kube_environment_id = kube.id
+            break
 
     if not kube_environment_id:
         raise ResourceNotFoundError('Unable to find Kube Environment associated to the Custom Location')
