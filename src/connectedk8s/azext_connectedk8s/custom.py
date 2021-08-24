@@ -524,7 +524,7 @@ def get_kubernetes_infra(configuration):  # Heuristic
             if infra == "aws":
                 return "aws"
             k8s_infra = utils.validate_infrastructure_type(infra)
-            if k8s_infra != None:
+            if k8s_infra is not None:
                 return k8s_infra
         return "generic"
     except Exception as e:  # pylint: disable=broad-except
