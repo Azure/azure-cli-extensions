@@ -380,8 +380,8 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
     utils.add_telemetry_extenstion_event(connected_cluster, configuration)
 
     registry_path = helm_utils.get_helm_registry_path(cmd, connected_cluster.location, helm_core_utils,
-                                                 connected_cluster.agent_version, dp_endpoint_dogfood,
-                                                 release_train_dogfood)
+                                                      connected_cluster.agent_version, dp_endpoint_dogfood,
+                                                      release_train_dogfood)
 
     # Get Helm chart path
     chart_path = helm_utils.get_chart_path(registry_path, kube_config, kube_context)
@@ -466,7 +466,7 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
     utils.add_telemetry_extenstion_event(connected_cluster, configuration)
 
     registry_path = helm_utils.get_helm_registry_path(cmd, connected_cluster.location, helm_core_utils, arc_agent_version,
-                                                 dp_endpoint_dogfood, release_train_dogfood)
+                                                      dp_endpoint_dogfood, release_train_dogfood)
 
     # Get Helm chart path
     chart_path = helm_utils.get_chart_path(registry_path, kube_config, kube_context)
@@ -550,8 +550,8 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
         helm_core_utils.add_helm_repo(os.getenv('HELMREPONAME'), os.getenv('HELMREPOURL'))
 
     registry_path = helm_utils.get_helm_registry_path(cmd, connected_cluster.location, helm_core_utils,
-                                                 connected_cluster.agent_version, dp_endpoint_dogfood,
-                                                 release_train_dogfood)
+                                                      connected_cluster.agent_version, dp_endpoint_dogfood,
+                                                      release_train_dogfood)
 
     # Get Helm chart path
     chart_path = helm_utils.get_chart_path(registry_path, kube_config, kube_context)
@@ -626,8 +626,8 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
         logger.warning("Disabling 'custom-locations' feature might impact some dependent resources. Learn more about this at https://aka.ms/ArcK8sDependentResources.")
 
     registry_path = helm_utils.get_helm_registry_path(cmd, connected_cluster.location, helm_core_utils,
-                                                 connected_cluster.agent_version, dp_endpoint_dogfood,
-                                                 release_train_dogfood)
+                                                      connected_cluster.agent_version, dp_endpoint_dogfood,
+                                                      release_train_dogfood)
 
     # Get Helm chart path
     chart_path = helm_utils.get_chart_path(registry_path, kube_config, kube_context)
