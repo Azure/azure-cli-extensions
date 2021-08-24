@@ -13,7 +13,6 @@ Release History
 
 0.5.26
 +++++
-* Add podMaxPids argument for node config
 * Correct containerLogMaxSizeMb to containerLogMaxSizeMB in customized kubelet config
 
 0.5.25
