@@ -9,7 +9,7 @@
 
 from knack.log import get_logger
 
-from azure.cli.core.azclierror import InvalidArgumentValueError, RequiredArgumentMissingError
+from azure.cli.core.azclierror import InvalidArgumentValueError
 from azure.cli.core.commands.client_factory import get_subscription_id
 
 from packaging import version
@@ -52,16 +52,6 @@ class OpenServiceMesh(PartnerExtensionModel):
 
         scope_cluster = ScopeCluster(release_namespace=release_namespace)
         ext_scope = Scope(cluster=scope_cluster, namespace=None)
-
-        # version is a mandatory if release-train is staging or pilot
-        if version is None:
-            raise RequiredArgumentMissingError(
-                "A version must be provided for release-train {}.".format(release_train)
-            )
-        # If the release-train is 'staging' or 'pilot' then auto-upgrade-minor-version MUST be set to False
-        if auto_upgrade_minor_version or auto_upgrade_minor_version is None:
-            auto_upgrade_minor_version = False
-            logger.warning("Setting auto-upgrade-minor-version to False since release-train is '%s'", release_train)
 
         # NOTE-2: Return a valid ExtensionInstance object, Instance name and flag for Identity
         create_identity = False
