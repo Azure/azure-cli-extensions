@@ -10,6 +10,7 @@
 import copy
 from hashlib import md5
 from typing import Any, Dict, List, Tuple
+from azext_k8s_extension.partner_extensions.DefaultExtension import DefaultExtension
 
 import azure.mgmt.relay
 import azure.mgmt.relay.models
@@ -27,10 +28,9 @@ from knack.log import get_logger
 from msrestazure.azure_exceptions import CloudError
 
 from .._client_factory import cf_resources
-from .PartnerExtensionModel import PartnerExtensionModel
+from .DefaultExtension import DefaultExtension, user_confirmation_factory
 from ..vendored_sdks.models import (
     ExtensionInstance,
-    ExtensionInstanceUpdate,
     Scope,
     ScopeCluster
 )
@@ -41,7 +41,7 @@ resource_tag = {'created_by': 'Azure Arc-enabled ML'}
 
 
 # pylint: disable=too-many-instance-attributes
-class AzureMLKubernetes(PartnerExtensionModel):
+class AzureMLKubernetes(DefaultExtension):
     def __init__(self):
         # constants for configuration settings.
         self.DEFAULT_RELEASE_NAMESPACE = 'azureml'
@@ -158,18 +158,12 @@ class AzureMLKubernetes(PartnerExtensionModel):
         )
         return extension_instance, name, create_identity
 
-    def Update(self, extension, auto_upgrade_minor_version, release_train, version):
-        return ExtensionInstanceUpdate(
-            auto_upgrade_minor_version=auto_upgrade_minor_version,
-            release_train=release_train,
-            version=version
-        )
-
-    def Delete(self, client, resource_group_name, cluster_name, name, cluster_type):
+    def Delete(self, cmd, client, resource_group_name, cluster_name, name, cluster_type, yes):
         # Give a warning message
         logger.warning("If nvidia.com/gpu or fuse resource is not recognized by kubernetes after this deletion, "
                        "you probably have installed nvidia-device-plugin or fuse-device-plugin before installing AMLArc extension. "
                        "Please try to reinstall device plugins to fix this issue.")
+        user_confirmation_factory(cmd, yes)
 
     def __validate_config(self, configuration_settings, configuration_protected_settings):
         # perform basic validation of the input config

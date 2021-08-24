@@ -7,6 +7,7 @@
 # pylint: disable=redefined-outer-name
 # pylint: disable=no-member
 
+from azext_k8s_extension.partner_extensions.DefaultExtension import DefaultExtension
 from knack.log import get_logger
 
 from azure.cli.core.azclierror import InvalidArgumentValueError
@@ -16,9 +17,7 @@ from packaging import version
 import yaml
 import requests
 
-from ..partner_extensions import PartnerExtensionModel
-
-from .PartnerExtensionModel import PartnerExtensionModel
+from .DefaultExtension import DefaultExtension
 
 from ..vendored_sdks.models import (
     ExtensionInstance,
@@ -32,7 +31,7 @@ from .._client_factory import cf_resources
 logger = get_logger(__name__)
 
 
-class OpenServiceMesh(PartnerExtensionModel):
+class OpenServiceMesh(DefaultExtension):
 
     def Create(self, cmd, client, resource_group_name, cluster_name, name, cluster_type, extension_type,
                scope, auto_upgrade_minor_version, release_train, version, target_namespace,
@@ -89,9 +88,6 @@ class OpenServiceMesh(PartnerExtensionModel):
             release_train=release_train,
             version=version
         )
-
-    def Delete(self, client, resource_group_name, cluster_name, name, cluster_type):
-        pass
 
 
 def _validate_tested_distro(cmd, cluster_resource_group_name, cluster_name, extension_version):

@@ -191,7 +191,7 @@ def update_k8s_extension(client, resource_group_name, cluster_type, cluster_name
     # return client.update(resource_group_name, cluster_rp, cluster_type, cluster_name, name, upd_extension)
 
 
-def delete_k8s_extension(client, resource_group_name, cluster_name, name, cluster_type):
+def delete_k8s_extension(cmd, client, resource_group_name, cluster_name, name, cluster_type, yes=False):
     """Delete an existing Kubernetes Extension.
 
     """
@@ -201,12 +201,12 @@ def delete_k8s_extension(client, resource_group_name, cluster_name, name, cluste
     try:
         extension = client.get(resource_group_name, cluster_rp, cluster_type, cluster_name, name)
     except HttpResponseError:
-        logger.warning("No extension with name '%s' found on cluster '%s', so nothing to delete", cluster_name, name)
+        logger.warning("No extension with name '%s' found on cluster '%s', so nothing to delete", name, cluster_name)
         return None
     extension_class = ExtensionFactory(extension.extension_type.lower())
 
     # If there is any custom delete logic, this will call the logic
-    extension_class.Delete(client, resource_group_name, cluster_name, name, cluster_type)
+    extension_class.Delete(cmd, client, resource_group_name, cluster_name, name, cluster_type, yes)
 
     return client.delete(resource_group_name, cluster_rp, cluster_type, cluster_name, name)
 

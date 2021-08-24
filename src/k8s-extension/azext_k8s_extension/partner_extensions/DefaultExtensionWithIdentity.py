@@ -11,10 +11,10 @@ from ..vendored_sdks.models import ScopeCluster
 from ..vendored_sdks.models import ScopeNamespace
 from ..vendored_sdks.models import Scope
 
-from .PartnerExtensionModel import PartnerExtensionModel
+from .DefaultExtension import DefaultExtension
 
 
-class DefaultExtensionWithIdentity(PartnerExtensionModel):
+class DefaultExtensionWithIdentity(DefaultExtension):
     def Create(self, cmd, client, resource_group_name, cluster_name, name, cluster_type, extension_type,
                scope, auto_upgrade_minor_version, release_train, version, target_namespace,
                release_namespace, configuration_settings, configuration_protected_settings,
@@ -55,6 +55,3 @@ class DefaultExtensionWithIdentity(PartnerExtensionModel):
             release_train=release_train,
             version=version
         )
-
-    def Delete(self, client, resource_group_name, cluster_name, name, cluster_type):
-        pass
