@@ -10,8 +10,10 @@
 # pylint: disable=line-too-long
 
 import os
+
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk import ResourceGroupPreparer
+
 from .preparers import VirtualNetworkPreparer
 
 
@@ -25,5 +27,27 @@ class NetworkScenarioTest(ScenarioTest):
         super(NetworkScenarioTest, self).__init__(*args, **kwargs)
 
     @ResourceGroupPreparer(name_prefix='test_network_manager', location='jioindiawest')
-    def test_network_manager(self, resource_group):
-        pass
+    def test_network_manager_crud(self, resource_group):
+        self.kwargs.update({
+            'name': 'TestNetworkManager',
+            'description': '"My Test Network Manager"',
+            'display_name': 'TestNetworkManager',
+            'mg': '/providers/Microsoft.Management/managementGroups/azure-cli-management-groupxk66tmjjbhwp72',
+            'sub': '/subscriptions/{}'.format(self.get_subscription_id())
+        })
+
+        self.cmd('network manager create --name {name} --description {description} --display-name {display_name} '
+                 '--network-manager-scope-accesses "Routing" "Connectivity" '
+                 '--network-manager-scopes '
+                 # 'management-groups={mg} '
+                 ' subscriptions={sub} '
+                 '-l jioindiawest '
+                 '--resource-group {rg}')
+
+        # Update is not allowed for NM.
+        # self.cmd('network manager update --resource-group {rg} --name {name} --tags key1=value1')
+
+        self.cmd('network manager list --resource-group {rg}')
+
+        self.cmd('network manager delete --resource-group {rg} --name {name} --yes')
+
