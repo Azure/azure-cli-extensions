@@ -1543,6 +1543,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(nodepool_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('kubeletConfig.cpuCfsQuotaPeriod', '200ms'),
+            self.check('kubeletConfig.podMaxPids', 120),
             self.check('kubeletConfig.containerLogMaxSizeMb', 20),
             self.check('linuxOsConfig.sysctls.netCoreSomaxconn', 163849)
         ])
@@ -1610,8 +1611,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # create
         create_cmd = 'aks create --resource-group={resource_group} --name={name} ' \
-                     '--node-count=1 --enable-public-fqdn ' \
-                     '--enable-private-cluster --aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EnablePrivateClusterPublicFQDN ' \
+                     '--enable-private-cluster --node-count=1 ' \
                      '--ssh-key-value={ssh_key_value}'
         self.cmd(create_cmd, checks=[
             self.exists('privateFqdn'),
@@ -1621,8 +1621,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
         # update
-        update_cmd = 'aks update --resource-group={resource_group} --name={name} ' \
-                     '--disable-public-fqdn --aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EnablePrivateClusterPublicFQDN'
+        update_cmd = 'aks update --resource-group={resource_group} --name={name} --disable-public-fqdn'
         self.cmd(update_cmd, checks=[
             self.exists('privateFqdn'),
             self.check('fqdn', None),
