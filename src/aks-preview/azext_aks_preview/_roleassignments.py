@@ -23,8 +23,8 @@ def _get_object_stubs(graph_client, assignees):
 def resolve_object_id(cli_ctx, assignee):
     client = get_graph_rbac_management_client(cli_ctx)
     result = None
-    # if assignee is None:
-    #     raise ValueError('Inputted parameter "assignee" is None.')
+    if assignee is None:
+        raise ValueError('Inputted parameter "assignee" is None.')
     if assignee.find('@') >= 0:  # looks like a user principal name
         result = list(client.users.list(
             filter="userPrincipalName eq '{}'".format(assignee)))
@@ -52,7 +52,7 @@ def resolve_role_id(role, scope, definitions_client):
     if not role_id:  # retrieve role id
         role_defs = list(definitions_client.list(
             scope, "roleName eq '{}'".format(role)))
-        if not role_defs:
+        if len(role_defs) == 0:
             raise CLIError("Role '{}' doesn't exist.".format(role))
         if len(role_defs) > 1:
             ids = [r.id for r in role_defs]
@@ -62,9 +62,9 @@ def resolve_role_id(role, scope, definitions_client):
     return role_id
 
 
-def build_role_scope(resource_group_name, scope, subscription_id):
+def build_role_scope(resource_group_name: str, scope: str, subscription_id):
     subscription_scope = '/subscriptions/' + subscription_id
-    if scope:
+    if scope is not None:
         if resource_group_name:
             err = 'Resource group "{}" is redundant because scope is supplied'
             raise CLIError(err.format(resource_group_name))
@@ -89,8 +89,8 @@ def _create_role_assignment(cli_ctx, role, assignee,
     assignments_client = factory.role_assignments
     definitions_client = factory.role_definitions
 
-    # if assignments_client.config is None:
-    #     raise CLIError("Assignments client config is undefined.")
+    if assignments_client.config is None:
+        raise CLIError("Assignments client config is undefined.")
 
     scope = build_role_scope(
         resource_group_name, scope, assignments_client.config.subscription_id)
