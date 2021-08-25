@@ -9,6 +9,7 @@ Release History
 * Provide compiler output to users in case of error for easier troubleshooting.
 * Fixed bug in which retrieving output from workspaces in a location different to another set as default failed.
 * Processing jobs that produce no output is allowed.
+* Simplification of resources used in extension tests and allowing overrides via environment variables.
 
 0.6.1
 ++++++
