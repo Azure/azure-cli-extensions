@@ -146,7 +146,7 @@ def dataprotection_backup_instance_create(client,
     if len(all_datasource_auth_credentials) > 1:
         raise CLIError('at most one of  secret_store_based_auth_credentials is needed for datasource_auth_credentials!')
     datasource_auth_credentials = all_datasource_auth_credentials[0] if len(all_datasource_auth_credentials) == 1 else \
-    None
+        None
     parameters = {}
     parameters['properties'] = {}
     parameters['properties']['friendly_name'] = friendly_name
@@ -228,7 +228,7 @@ def dataprotection_backup_instance_validate_for_backup(client,
     if len(all_datasource_auth_credentials) > 1:
         raise CLIError('at most one of  secret_store_based_auth_credentials is needed for datasource_auth_credentials!')
     datasource_auth_credentials = all_datasource_auth_credentials[0] if len(all_datasource_auth_credentials) == 1 else \
-    None
+        None
     parameters = {}
     parameters['backup_instance'] = {}
     parameters['backup_instance']['friendly_name'] = friendly_name

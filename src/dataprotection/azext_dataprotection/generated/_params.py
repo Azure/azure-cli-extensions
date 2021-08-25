@@ -192,8 +192,7 @@ def load_arguments(self, _):
         c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('backup_instance_name', type=str, help='The name of the backup instance', id_part='child_name_1')
-        c.argument('source_data_store_type', arg_type=get_enum_type(['OperationalStore', 'VaultStore',
-                                                                     'ArchiveStore']), help='Gets or sets the type of '
-                                                                     'the source data store.')
+        c.argument('source_data_store_type', help='Gets or sets the type of the source data store.',
+                   arg_type=get_enum_type(['OperationalStore', 'VaultStore', 'ArchiveStore']))
         c.argument('start_time', type=str, help='Start time for the List Restore Ranges request. ISO 8601 format.')
         c.argument('end_time', type=str, help='End time for the List Restore Ranges request. ISO 8601 format.')
