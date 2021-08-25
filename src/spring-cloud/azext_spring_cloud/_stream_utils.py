@@ -188,6 +188,7 @@ def _stream_logs(no_format,  # pylint: disable=too-many-locals, too-many-stateme
         # If no new data available but not complete, sleep before trying to process additional data.
         if (_blob_is_not_complete(metadata) and start >= available):
             num_fails += 1
+
             if num_fails >= num_fails_for_backoff:
                 num_fails = 0
                 sleep_time = min(sleep_time * 2, max_sleep_time)
