@@ -7,11 +7,12 @@ manifest = '''
 {
   "isProxyResource": true,
   "resourceType": "Microsoft.DBforPostgreSQL/servers/databases",
-  "parentResourceType": "Microsoft.DBforPostgreSQL/servers/databases",
+  "parentResourceType": "Microsoft.DBforPostgreSQL/servers",
   "datasourceType": "Microsoft.DBforPostgreSQL/servers/databases",
   "allowedRestoreModes": [ "RecoveryPointBased" ],
   "allowedRestoreTargetTypes": [ "AlternateLocation", "RestoreAsFiles" ],
   "itemLevelRecoveyEnabled": false,
+  "supportSecretStoreAuthentication": true,
   "policySettings": {
     "supportedRetentionTags": [ "Weekly", "Monthly", "Yearly" ],
     "supportedDatastoreTypes": [ "VaultStore", "ArchiveStore" ],
