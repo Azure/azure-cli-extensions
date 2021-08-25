@@ -6,7 +6,7 @@
 import os
 import unittest
 
-from azure_devtools.scenario_tests import AllowLargeResponse
+from azure_devtools.scenario_tests import AllowLargeResponse, live_only
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 
 from .utils import get_test_resource_group, get_test_workspace, get_test_workspace_location, get_test_workspace_storage, get_test_workspace_random_name
@@ -24,8 +24,6 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
         test_location = get_test_workspace_location()
         test_workspace = get_test_workspace()
         test_resource_group = get_test_resource_group()
-        test_workspace_temp = get_test_workspace_random_name()
-        test_storage_account = get_test_workspace_storage()
 
         # list
         workspaces = self.cmd(f'az quantum workspace list -l {test_location} -o json').get_output_in_json()
@@ -46,6 +44,14 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
 
         # clear
         self.cmd(f'az quantum workspace clear')
+
+    @live_only()
+    def test_workspace_create_destroy(self):
+        # initialize values
+        test_location = get_test_workspace_location()
+        test_resource_group = get_test_resource_group()
+        test_workspace_temp = get_test_workspace_random_name()
+        test_storage_account = get_test_workspace_storage()
 
         # create
         self.cmd(f'az quantum workspace create -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account} -r "Microsoft/Basic" -o json --skip-role-assignment', checks=[
