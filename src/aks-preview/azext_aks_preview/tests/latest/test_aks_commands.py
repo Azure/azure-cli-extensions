@@ -1959,6 +1959,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(nodepool_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('kubeletConfig.cpuCfsQuotaPeriod', '200ms'),
+            self.check('kubeletConfig.podMaxPids', 120),
             self.check('kubeletConfig.containerLogMaxSizeMb', 20),
             self.check('linuxOsConfig.sysctls.netCoreSomaxconn', 163849)
         ])

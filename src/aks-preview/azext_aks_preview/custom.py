@@ -1560,10 +1560,9 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
             raise ArgumentUsageError('--disable-public-fqdn cannot be applied for none mode private dns zone cluster')
         instance.api_server_access_profile.enable_private_cluster_public_fqdn = False
 
-    if instance.auto_upgrade_profile is None:
-        instance.auto_upgrade_profile = ManagedClusterAutoUpgradeProfile()
-
     if auto_upgrade_channel is not None:
+        if instance.auto_upgrade_profile is None:
+            instance.auto_upgrade_profile = ManagedClusterAutoUpgradeProfile()
         instance.auto_upgrade_profile.upgrade_channel = auto_upgrade_channel
 
     if not enable_managed_identity and assign_identity:
@@ -3332,6 +3331,8 @@ def _get_kubelet_config(file_path):
         "containerLogMaxFiles", None)
     config_object.container_log_max_size_mb = kubelet_config.get(
         "containerLogMaxSizeMB", None)
+    config_object.pod_max_pids = kubelet_config.get(
+        "podMaxPids", None)
 
     return config_object
 
