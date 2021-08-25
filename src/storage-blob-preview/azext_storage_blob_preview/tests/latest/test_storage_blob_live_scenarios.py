@@ -201,3 +201,28 @@ class StorageBlobURLScenarioTest(StorageScenarioMixin, LiveScenarioTest):
         self.cmd('storage blob undelete --blob-url {} '.format(blob_uri))
         self.storage_cmd('storage blob list -c {}', account_info, container).assert_with_checks(
             JMESPathCheck('length(@)', 1))
+
+
+    @api_version_constraint(ResourceType.DATA_STORAGE_BLOB, min_api='2020-10-02')
+    class StorageBlobQueryTests(StorageScenarioMixin, LiveScenarioTest):
+        @ResourceGroupPreparer()
+        @StorageAccountPreparer(kind='StorageV2')
+        def test_storage_blob_query_scenario(self, resource_group, storage_account):
+            account_info = self.get_account_info(group=resource_group, name=storage_account)
+            container = self.create_container(account_info)
+            blob = self.create_random_name(prefix='blob', length=12)
+            curr_dir = os.path.dirname(os.path.realpath(__file__))
+            csv_file = os.path.join(curr_dir, 'quick_query.csv').replace('\\', '\\\\')
+
+            self.storage_cmd('storage blob upload -f "{}" -c {} -n {}', account_info, csv_file, container, blob)
+            query_string = "SELECT _2 from BlobStorage"
+            result = self.storage_cmd('storage blob query -c {} -n {} --query-expression "{}"',
+                                      account_info, container, blob, query_string).output
+            self.assertIsNotNone(result)
+
+            temp_dir = self.create_temp_dir()
+            result_file = os.path.join(temp_dir, 'result.csv')
+            self.assertFalse(os.path.exists(result_file))
+            self.storage_cmd('storage blob query -c {} -n {} --query-expression "{}" --result-file "{}"',
+                             account_info, container, blob, query_string, result_file)
+            self.assertTrue(os.path.exists(result_file))
