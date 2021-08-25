@@ -9,7 +9,7 @@ import unittest
 from azure_devtools.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 
-from .utils import get_test_subscription_id, get_test_resource_group, get_test_workspace, get_test_workspace_location, get_test_workspace_storage, get_test_workspace_random_name
+from .utils import get_test_resource_group, get_test_workspace, get_test_workspace_location, get_test_workspace_storage, get_test_workspace_random_name
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
@@ -19,7 +19,6 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
     def test_workspace(self):
         # clear
         self.cmd(f'az quantum workspace clear')
-        self.cmd(f'az account set -s {get_test_subscription_id()}')
 
         # initialize values
         test_location = get_test_workspace_location()

@@ -31,5 +31,5 @@ def get_test_workspace_storage():
 def get_test_workspace_random_name():
     import random
     return "e2e-test-w" + str(random.randint(1000000, 9999999))
-    
+
 

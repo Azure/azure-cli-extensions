@@ -22,7 +22,6 @@ class QuantumJobsScenarioTest(ScenarioTest):
 
     def test_jobs(self):
         # set current workspace:
-        self.cmd(f'az account set -s {get_test_subscription_id()}')
         self.cmd(f'az quantum workspace set -g {get_test_resource_group()} -w {get_test_workspace()} -l {get_test_workspace_location()}')
 
         # list
