@@ -431,3 +431,15 @@ def can_create_clusterrolebindings(configuration):
     except Exception as ex:
         logger.warning("Couldn't check for the permission to create clusterrolebindings on this k8s cluster. Error: {}".format(str(ex)))
         return "Unknown"
+
+
+def validate_node_api_response(api_instance, node_api_response):
+    if node_api_response is None:
+        try:
+            node_api_response = api_instance.list_node()
+            return node_api_response
+        except Exception as ex:
+            logger.debug("Error occcured while listing nodes on this kubernetes cluster: {}".format(str(ex)))
+            return None
+    else:
+        return node_api_response

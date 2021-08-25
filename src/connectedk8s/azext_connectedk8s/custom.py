@@ -818,12 +818,6 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
     check_kube_connection(configuration)
 
     utils.try_list_node_fix()
-    api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
-    node_api_response = None
-    try:
-        node_api_response = api_instance.list_node()
-    except Exception as ex:
-        logger.debug("Error occcured while listing nodes on this kubernetes cluster: {}".format(str(ex)))
 
     # Get kubernetes cluster info for telemetry
     kubernetes_version = get_server_version(configuration)
@@ -843,15 +837,19 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
 
     # Fetch Connected Cluster for agent version
     connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
+    api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
+    node_api_response = None
 
     if hasattr(connected_cluster, 'distribution') and (connected_cluster.distribution is not None):
         kubernetes_distro = connected_cluster.distribution
     else:
+        node_api_response = utils.validate_node_api_response(api_instance, node_api_response)
         kubernetes_distro = get_kubernetes_distro(node_api_response)
 
     if hasattr(connected_cluster, 'infrastructure') and (connected_cluster.infrastructure is not None):
         kubernetes_infra = connected_cluster.infrastructure
     else:
+        node_api_response = utils.validate_node_api_response(api_instance, node_api_response)
         kubernetes_infra = get_kubernetes_infra(node_api_response)
 
     kubernetes_properties = {
@@ -950,10 +948,6 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
     utils.try_list_node_fix()
     api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
     node_api_response = None
-    try:
-        node_api_response = api_instance.list_node()
-    except Exception as ex:
-        logger.debug("Error occcured while listing nodes on this kubernetes cluster: {}".format(str(ex)))
 
     # Get kubernetes cluster info for telemetry
     kubernetes_version = get_server_version(configuration)
@@ -1015,11 +1009,13 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
     if hasattr(connected_cluster, 'distribution') and (connected_cluster.distribution is not None):
         kubernetes_distro = connected_cluster.distribution
     else:
+        node_api_response = utils.validate_node_api_response(api_instance, node_api_response)
         kubernetes_distro = get_kubernetes_distro(node_api_response)
 
     if hasattr(connected_cluster, 'infrastructure') and (connected_cluster.infrastructure is not None):
         kubernetes_infra = connected_cluster.infrastructure
     else:
+        node_api_response = utils.validate_node_api_response(api_instance, node_api_response)
         kubernetes_infra = get_kubernetes_infra(node_api_response)
 
     kubernetes_properties = {
@@ -1238,10 +1234,6 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
     utils.try_list_node_fix()
     api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
     node_api_response = None
-    try:
-        node_api_response = api_instance.list_node()
-    except Exception as ex:
-        logger.debug("Error occcured while listing nodes on this kubernetes cluster: {}".format(str(ex)))
 
     # Get kubernetes cluster info for telemetry
     kubernetes_version = get_server_version(configuration)
@@ -1265,11 +1257,13 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
     if hasattr(connected_cluster, 'distribution') and (connected_cluster.distribution is not None):
         kubernetes_distro = connected_cluster.distribution
     else:
+        node_api_response = utils.validate_node_api_response(api_instance, node_api_response)
         kubernetes_distro = get_kubernetes_distro(node_api_response)
 
     if hasattr(connected_cluster, 'infrastructure') and (connected_cluster.infrastructure is not None):
         kubernetes_infra = connected_cluster.infrastructure
     else:
+        node_api_response = utils.validate_node_api_response(api_instance, node_api_response)
         kubernetes_infra = get_kubernetes_infra(node_api_response)
 
     kubernetes_properties = {
@@ -1372,10 +1366,6 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
     utils.try_list_node_fix()
     api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
     node_api_response = None
-    try:
-        node_api_response = api_instance.list_node()
-    except Exception as ex:
-        logger.debug("Error occcured while listing nodes on this kubernetes cluster: {}".format(str(ex)))
 
     # Get kubernetes cluster info for telemetry
     kubernetes_version = get_server_version(configuration)
@@ -1399,11 +1389,13 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
     if hasattr(connected_cluster, 'distribution') and (connected_cluster.distribution is not None):
         kubernetes_distro = connected_cluster.distribution
     else:
+        node_api_response = utils.validate_node_api_response(api_instance, node_api_response)
         kubernetes_distro = get_kubernetes_distro(node_api_response)
 
     if hasattr(connected_cluster, 'infrastructure') and (connected_cluster.infrastructure is not None):
         kubernetes_infra = connected_cluster.infrastructure
     else:
+        node_api_response = utils.validate_node_api_response(api_instance, node_api_response)
         kubernetes_infra = get_kubernetes_infra(node_api_response)
 
     kubernetes_properties = {
