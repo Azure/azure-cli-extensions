@@ -99,12 +99,12 @@ logger = get_logger(__name__)
 
 # pylint: disable=too-many-locals,too-many-lines
 
-def create_kube_environment(cmd, client, name, resource_group_name, custom_location, static_ip,
+def create_kube_environment(cmd, client, name, resource_group_name, custom_location, static_ip=None, location=None,
                             tags=None, no_wait=False):
     KubeEnvironment, ExtendedLocation, ArcConfiguration, FrontEndConfiguration = cmd.get_models('KubeEnvironment',
         'ExtendedLocation', 'ArcConfiguration', 'FrontEndConfiguration')
 
-    client = customlocation_client_factory(cmd.cli_ctx)
+    custom_location_client = customlocation_client_factory(cmd.cli_ctx)
     custom_location_object = None
 
     if is_valid_resource_id(custom_location):
@@ -112,14 +112,15 @@ def create_kube_environment(cmd, client, name, resource_group_name, custom_locat
         if parsed_custom_location['resource_type'].lower() != 'customlocations':
             raise CLIError('Invalid custom location')
 
-        custom_location_object = client.custom_locations.get(
+        custom_location_object = custom_location_client.custom_locations.get(
             parsed_custom_location['resource_group'],
             parsed_custom_location['name'])
     else:
-        custom_location_object = client.custom_locations.get(resource_group_name, custom_location)
+        custom_location_object = custom_location_client.custom_locations.get(resource_group_name, custom_location)
         custom_location = custom_location_object.id
 
-    location = custom_location_object.location
+    if not location:
+        location = custom_location_object.location
 
     front_end_configuration = FrontEndConfiguration(kind="LoadBalancer")
     extended_location = ExtendedLocation(custom_location=custom_location)
