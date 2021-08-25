@@ -182,7 +182,7 @@ def submit(cmd, program_args, resource_group_name=None, workspace_name=None, loc
         # Query for the job and return status to caller.
         return get(cmd, job_id, resource_group_name, workspace_name, location)
 
-    # The program compiled succesfully, but executing the stand-alone .exe failed to run.
+    # The program compiled succesfully, but executing the stand-alone .exe failed to run, propagate standard output to the user.
     logger.error(f"Submission of job failed with error code {result.returncode}")
     print(result.stdout.decode('ascii'))
     raise CLIError("Failed to submit job.")
