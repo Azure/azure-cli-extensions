@@ -116,11 +116,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
 
     utils.try_list_node_fix()
     api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
-    node_api_response = None
-    try:
-        node_api_response = api_instance.list_node()
-    except Exception as ex:
-        logger.debug("Error occcured while listing nodes on this kubernetes cluster: {}".format(str(ex)))
+    node_api_response = utils.validate_node_api_response(api_instance, None)
 
     required_node_exists = check_linux_amd64_node(node_api_response)
     if not required_node_exists:
