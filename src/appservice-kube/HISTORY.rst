@@ -3,6 +3,11 @@
 Release History
 ===============
 
+0.2.1
+++++++
+* Fix AppService plan creation
+* location and static ip should be optional parameters in "az kube create"
+
 0.2.0
 ++++++
 * Requires core CLI 2.26.0 or later
