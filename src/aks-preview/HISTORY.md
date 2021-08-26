@@ -12,6 +12,7 @@ Release History
   * `az aks addon enable`
   * `az aks addon disable`
   * `az aks addon update`
+* Refactored code to bring addon specific functionality into a separate file.
 
 0.5.28
 +++++
