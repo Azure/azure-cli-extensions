@@ -5,7 +5,7 @@ Release History
 
 0.7.0
 ++++++
-* [2021-08-30] Version intended to work with QDK version [[TBD]]
+* [2021-08-30] Version intended to work with QDK version v0.18.2108
 * Provide compiler output to users in case of error for easier troubleshooting.
 * Fixed bug in which retrieving output from workspaces in a location different to another set as default failed.
 * Processing jobs that produce no output is allowed.
