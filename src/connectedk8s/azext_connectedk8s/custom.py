@@ -499,6 +499,8 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
             azrbac_skip_authz_check = ""
         azrbac_skip_authz_check = proxy_utils.escape_proxy_settings(azrbac_skip_authz_check)
 
+    enable_cl = None
+    custom_locations_oid = None
     if enable_cl:
         enable_cl, custom_locations_oid = cl_utils.check_cl_registration_and_get_oid(cmd, cl_oid)
         if not enable_cluster_connect and enable_cl:
