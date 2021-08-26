@@ -18,6 +18,9 @@ helps['network firewall create'] = """
     - name: Create a Azure firewall with private ranges
       text: |
         az network firewall create -g MyResourceGroup -n MyFirewall --private-ranges 10.0.0.0 10.0.0.0/16 IANAPrivateRanges
+    - name: Create a Virtual WAN Secure Hub Firewall
+      text: |
+        az network firewall create -g MyResourceGroup -n MyFirewall --sku AZFW_Hub --tier Standard --virtual-hub MyVirtualHub1 --public-ip-count 1
 """
 
 helps['network firewall delete'] = """
