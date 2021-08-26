@@ -6,7 +6,7 @@
 # pylint: disable=unused-argument, logging-format-interpolation, protected-access, wrong-import-order, too-many-lines
 import requests
 import re
-from azext_spring_cloud._validators import _validate_jar
+
 from azure.core.exceptions import HttpResponseError
 from azure.mgmt.cosmosdb import CosmosDBManagementClient
 from azure.mgmt.redis import RedisManagementClient
@@ -502,7 +502,6 @@ def app_deploy(cmd, client, resource_group, service, name,
                        target_module,
                        no_wait,
                        file_type,
-                       disable_validation,
                        True)
 
 
@@ -767,8 +766,7 @@ def deployment_create(cmd, client, resource_group, service, app, name,
                        main_entry,
                        target_module,
                        no_wait,
-                       file_type,
-                       disable_validation)
+                       file_type)
 
 
 def _validate_instance_count(sku, instance_count=None):
@@ -1278,13 +1276,10 @@ def _app_deploy(client, resource_group, service, app, name, version, path, runti
                 target_module=None,
                 no_wait=False,
                 file_type="Jar",
-                disable_validation=None,
                 update=False):
     upload_url = None
     relative_path = None
     logger.warning("file_type is {}".format(file_type))
-    if file_type == "Jar" and (disable_validation is None or not disable_validation):
-        _validate_jar(path)
     logger.warning("[1/3] Requesting for upload URL")
     try:
         response = client.apps.get_resource_upload_url(resource_group, service, app)

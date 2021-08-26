@@ -441,8 +441,11 @@ def _validate_route_table(namespace, vnet_obj):
             '--service-runtime-subnet and --app-subnet should both associate with different route tables or neither.')
 
 
-def _validate_jar(jar_file):
-    values = _parse_jar_file(jar_file)
+def validate_jar(namespace):
+    if namespace.disable_validation is not None and namespace.disable_validation:
+        telemetry.set_user_fault("jar validation is disabled")
+        return
+    values = _parse_jar_file(namespace.artifact_path)
     if values is None:
         # ignore jar_file check
         logger.warning("ignore validate jar")
@@ -489,7 +492,7 @@ def _validate_jar(jar_file):
             "https://aka.ms/ascdependencies for more details")
 
 
-def _parse_jar_file(jar_file):
+def _parse_jar_file(artifact_path):
     file_size = 0
     spring_boot_version = ""
     spring_cloud_version = ""
@@ -506,7 +509,7 @@ def _parse_jar_file(jar_file):
     spring_cloud_eureka_pattern = "/spring-cloud-netflix-eureka-client-[0-9].*jar"
 
     try:
-        with zipfile.ZipFile(jar_file, 'r') as zf:
+        with zipfile.ZipFile(artifact_path, 'r') as zf:
             files = zf.infolist()
         for file in files:
             file_size += file.file_size
