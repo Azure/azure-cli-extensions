@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core import azclierror
-import mock
+from unittest import mock
 import unittest
 import platform
 

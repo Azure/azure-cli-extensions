@@ -10,13 +10,15 @@
 |CLI Command Group|Group Swagger name|Commands|
 |---------|------------|--------|
 |az datafactory|Factories|[commands](#CommandsInFactories)|
+|az datafactory activity-run|ActivityRuns|[commands](#CommandsInActivityRuns)|
+|az datafactory dataset|Datasets|[commands](#CommandsInDatasets)|
 |az datafactory integration-runtime|IntegrationRuntimes|[commands](#CommandsInIntegrationRuntimes)|
 |az datafactory integration-runtime-node|IntegrationRuntimeNodes|[commands](#CommandsInIntegrationRuntimeNodes)|
 |az datafactory linked-service|LinkedServices|[commands](#CommandsInLinkedServices)|
-|az datafactory dataset|Datasets|[commands](#CommandsInDatasets)|
+|az datafactory managed-private-endpoint|ManagedPrivateEndpoints|[commands](#CommandsInManagedPrivateEndpoints)|
+|az datafactory managed-virtual-network|ManagedVirtualNetworks|[commands](#CommandsInManagedVirtualNetworks)|
 |az datafactory pipeline|Pipelines|[commands](#CommandsInPipelines)|
 |az datafactory pipeline-run|PipelineRuns|[commands](#CommandsInPipelineRuns)|
-|az datafactory activity-run|ActivityRuns|[commands](#CommandsInActivityRuns)|
 |az datafactory trigger|Triggers|[commands](#CommandsInTriggers)|
 |az datafactory trigger-run|TriggerRuns|[commands](#CommandsInTriggerRuns)|
 
@@ -45,7 +47,7 @@
 |[az datafactory dataset list](#DatasetsListByFactory)|ListByFactory|[Parameters](#ParametersDatasetsListByFactory)|[Example](#ExamplesDatasetsListByFactory)|
 |[az datafactory dataset show](#DatasetsGet)|Get|[Parameters](#ParametersDatasetsGet)|[Example](#ExamplesDatasetsGet)|
 |[az datafactory dataset create](#DatasetsCreateOrUpdate#Create)|CreateOrUpdate#Create|[Parameters](#ParametersDatasetsCreateOrUpdate#Create)|[Example](#ExamplesDatasetsCreateOrUpdate#Create)|
-|[az datafactory dataset update](#DatasetsCreateOrUpdate#Update)|CreateOrUpdate#Update|[Parameters](#ParametersDatasetsCreateOrUpdate#Update)|[Example](#ExamplesDatasetsCreateOrUpdate#Update)|
+|[az datafactory dataset update](#DatasetsCreateOrUpdate#Update)|CreateOrUpdate#Update|[Parameters](#ParametersDatasetsCreateOrUpdate#Update)|Not Found|
 |[az datafactory dataset delete](#DatasetsDelete)|Delete|[Parameters](#ParametersDatasetsDelete)|[Example](#ExamplesDatasetsDelete)|
 
 ### <a name="CommandsInIntegrationRuntimes">Commands in `az datafactory integration-runtime` group</a>
@@ -83,8 +85,25 @@
 |[az datafactory linked-service list](#LinkedServicesListByFactory)|ListByFactory|[Parameters](#ParametersLinkedServicesListByFactory)|[Example](#ExamplesLinkedServicesListByFactory)|
 |[az datafactory linked-service show](#LinkedServicesGet)|Get|[Parameters](#ParametersLinkedServicesGet)|[Example](#ExamplesLinkedServicesGet)|
 |[az datafactory linked-service create](#LinkedServicesCreateOrUpdate#Create)|CreateOrUpdate#Create|[Parameters](#ParametersLinkedServicesCreateOrUpdate#Create)|[Example](#ExamplesLinkedServicesCreateOrUpdate#Create)|
-|[az datafactory linked-service update](#LinkedServicesCreateOrUpdate#Update)|CreateOrUpdate#Update|[Parameters](#ParametersLinkedServicesCreateOrUpdate#Update)|[Example](#ExamplesLinkedServicesCreateOrUpdate#Update)|
+|[az datafactory linked-service update](#LinkedServicesCreateOrUpdate#Update)|CreateOrUpdate#Update|[Parameters](#ParametersLinkedServicesCreateOrUpdate#Update)|Not Found|
 |[az datafactory linked-service delete](#LinkedServicesDelete)|Delete|[Parameters](#ParametersLinkedServicesDelete)|[Example](#ExamplesLinkedServicesDelete)|
+
+### <a name="CommandsInManagedPrivateEndpoints">Commands in `az datafactory managed-private-endpoint` group</a>
+|CLI Command|Operation Swagger name|Parameters|Examples|
+|---------|------------|--------|-----------|
+|[az datafactory managed-private-endpoint list](#ManagedPrivateEndpointsListByFactory)|ListByFactory|[Parameters](#ParametersManagedPrivateEndpointsListByFactory)|[Example](#ExamplesManagedPrivateEndpointsListByFactory)|
+|[az datafactory managed-private-endpoint show](#ManagedPrivateEndpointsGet)|Get|[Parameters](#ParametersManagedPrivateEndpointsGet)|[Example](#ExamplesManagedPrivateEndpointsGet)|
+|[az datafactory managed-private-endpoint create](#ManagedPrivateEndpointsCreateOrUpdate#Create)|CreateOrUpdate#Create|[Parameters](#ParametersManagedPrivateEndpointsCreateOrUpdate#Create)|[Example](#ExamplesManagedPrivateEndpointsCreateOrUpdate#Create)|
+|[az datafactory managed-private-endpoint update](#ManagedPrivateEndpointsCreateOrUpdate#Update)|CreateOrUpdate#Update|[Parameters](#ParametersManagedPrivateEndpointsCreateOrUpdate#Update)|Not Found|
+|[az datafactory managed-private-endpoint delete](#ManagedPrivateEndpointsDelete)|Delete|[Parameters](#ParametersManagedPrivateEndpointsDelete)|[Example](#ExamplesManagedPrivateEndpointsDelete)|
+
+### <a name="CommandsInManagedVirtualNetworks">Commands in `az datafactory managed-virtual-network` group</a>
+|CLI Command|Operation Swagger name|Parameters|Examples|
+|---------|------------|--------|-----------|
+|[az datafactory managed-virtual-network list](#ManagedVirtualNetworksListByFactory)|ListByFactory|[Parameters](#ParametersManagedVirtualNetworksListByFactory)|[Example](#ExamplesManagedVirtualNetworksListByFactory)|
+|[az datafactory managed-virtual-network show](#ManagedVirtualNetworksGet)|Get|[Parameters](#ParametersManagedVirtualNetworksGet)|[Example](#ExamplesManagedVirtualNetworksGet)|
+|[az datafactory managed-virtual-network create](#ManagedVirtualNetworksCreateOrUpdate#Create)|CreateOrUpdate#Create|[Parameters](#ParametersManagedVirtualNetworksCreateOrUpdate#Create)|[Example](#ExamplesManagedVirtualNetworksCreateOrUpdate#Create)|
+|[az datafactory managed-virtual-network update](#ManagedVirtualNetworksCreateOrUpdate#Update)|CreateOrUpdate#Update|[Parameters](#ParametersManagedVirtualNetworksCreateOrUpdate#Update)|Not Found|
 
 ### <a name="CommandsInPipelines">Commands in `az datafactory pipeline` group</a>
 |CLI Command|Operation Swagger name|Parameters|Examples|
@@ -109,7 +128,7 @@
 |[az datafactory trigger list](#TriggersListByFactory)|ListByFactory|[Parameters](#ParametersTriggersListByFactory)|[Example](#ExamplesTriggersListByFactory)|
 |[az datafactory trigger show](#TriggersGet)|Get|[Parameters](#ParametersTriggersGet)|[Example](#ExamplesTriggersGet)|
 |[az datafactory trigger create](#TriggersCreateOrUpdate#Create)|CreateOrUpdate#Create|[Parameters](#ParametersTriggersCreateOrUpdate#Create)|[Example](#ExamplesTriggersCreateOrUpdate#Create)|
-|[az datafactory trigger update](#TriggersCreateOrUpdate#Update)|CreateOrUpdate#Update|[Parameters](#ParametersTriggersCreateOrUpdate#Update)|[Example](#ExamplesTriggersCreateOrUpdate#Update)|
+|[az datafactory trigger update](#TriggersCreateOrUpdate#Update)|CreateOrUpdate#Update|[Parameters](#ParametersTriggersCreateOrUpdate#Update)|Not Found|
 |[az datafactory trigger delete](#TriggersDelete)|Delete|[Parameters](#ParametersTriggersDelete)|[Example](#ExamplesTriggersDelete)|
 |[az datafactory trigger get-event-subscription-status](#TriggersGetEventSubscriptionStatus)|GetEventSubscriptionStatus|[Parameters](#ParametersTriggersGetEventSubscriptionStatus)|[Example](#ExamplesTriggersGetEventSubscriptionStatus)|
 |[az datafactory trigger query-by-factory](#TriggersQueryByFactory)|QueryByFactory|[Parameters](#ParametersTriggersQueryByFactory)|[Example](#ExamplesTriggersQueryByFactory)|
@@ -127,7 +146,6 @@
 
 
 ## COMMAND DETAILS
-
 ### group `az datafactory`
 #### <a name="FactoriesListByResourceGroup">Command `az datafactory list`</a>
 
@@ -149,6 +167,7 @@ az datafactory list
 ##### <a name="ParametersFactoriesList">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
+
 #### <a name="FactoriesGet">Command `az datafactory show`</a>
 
 ##### <a name="ExamplesFactoriesGet">Example</a>
@@ -324,26 +343,20 @@ pression\\",\\"value\\":\\"@dataset().MyFolderPath\\"}}}" --name "exampleDataset
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resourceGroupName|
 |**--factory-name**|string|The factory name.|factory_name|factoryName|
 |**--dataset-name**|string|The dataset name.|dataset_name|datasetName|
-|**--properties**|object|Dataset properties.|properties|properties|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|If-Match|
+|**--properties**|object|Dataset properties.|properties|properties|
 
 #### <a name="DatasetsCreateOrUpdate#Update">Command `az datafactory dataset update`</a>
 
-##### <a name="ExamplesDatasetsCreateOrUpdate#Update">Example</a>
-```
-az datafactory dataset update --description "Example description" --linked-service-name "{\\"type\\":\\"LinkedServiceRe\
-ference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters "{\\"MyFileName\\":{\\"type\\":\\"String\\"},\
-\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --name "exampleDataset" --factory-name "exampleFactoryName" \
---resource-group "exampleResourceGroup"
-```
+
 ##### <a name="ParametersDatasetsCreateOrUpdate#Update">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resourceGroupName|
 |**--factory-name**|string|The factory name.|factory_name|factoryName|
 |**--dataset-name**|string|The dataset name.|dataset_name|datasetName|
-|**--linked-service-name**|object|Linked service reference.|linked_service_name|linkedServiceName|
 |**--if-match**|string|ETag of the dataset entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|If-Match|
+|**--linked-service-name**|object|Linked service reference.|linked_service_name|linkedServiceName|
 |**--description**|string|Dataset description.|description|description|
 |**--structure**|any|Columns that define the structure of the dataset. Type: array (or Expression with resultType array), itemType: DatasetDataElement.|structure|structure|
 |**--schema**|any|Columns that define the physical type schema of the dataset. Type: array (or Expression with resultType array), itemType: DatasetSchemaDataElement.|schema|schema|
@@ -414,6 +427,7 @@ az datafactory integration-runtime linked-integration-runtime create --name "bfa
 |**--location**|string|The location of the data factory that the linked integration runtime belongs to.|location|dataFactoryLocation|
 
 #### <a name="IntegrationRuntimesCreateOrUpdate#Create#Managed">Command `az datafactory integration-runtime managed create`</a>
+
 
 ##### <a name="ParametersIntegrationRuntimesCreateOrUpdate#Create#Managed">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -720,16 +734,12 @@ ps;AccountName=examplestorageaccount;AccountKey=<storage key>\\"}}}" --name "exa
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resourceGroupName|
 |**--factory-name**|string|The factory name.|factory_name|factoryName|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linkedServiceName|
-|**--properties**|object|Properties of linked service.|properties|properties|
 |**--if-match**|string|ETag of the linkedService entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|If-Match|
+|**--properties**|object|Properties of linked service.|properties|properties|
 
 #### <a name="LinkedServicesCreateOrUpdate#Update">Command `az datafactory linked-service update`</a>
 
-##### <a name="ExamplesLinkedServicesCreateOrUpdate#Update">Example</a>
-```
-az datafactory linked-service update --factory-name "exampleFactoryName" --description "Example description" --name \
-"exampleLinkedService" --resource-group "exampleResourceGroup"
-```
+
 ##### <a name="ParametersLinkedServicesCreateOrUpdate#Update">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
@@ -755,6 +765,144 @@ az datafactory linked-service delete --factory-name "exampleFactoryName" --name 
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resourceGroupName|
 |**--factory-name**|string|The factory name.|factory_name|factoryName|
 |**--linked-service-name**|string|The linked service name.|linked_service_name|linkedServiceName|
+
+### group `az datafactory managed-private-endpoint`
+#### <a name="ManagedPrivateEndpointsListByFactory">Command `az datafactory managed-private-endpoint list`</a>
+
+##### <a name="ExamplesManagedPrivateEndpointsListByFactory">Example</a>
+```
+az datafactory managed-private-endpoint list --factory-name "exampleFactoryName" --managed-virtual-network-name \
+"exampleManagedVirtualNetworkName" --resource-group "exampleResourceGroup"
+```
+##### <a name="ParametersManagedPrivateEndpointsListByFactory">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The resource group name.|resource_group_name|resourceGroupName|
+|**--factory-name**|string|The factory name.|factory_name|factoryName|
+|**--managed-virtual-network-name**|string|Managed virtual network name|managed_virtual_network_name|managedVirtualNetworkName|
+
+#### <a name="ManagedPrivateEndpointsGet">Command `az datafactory managed-private-endpoint show`</a>
+
+##### <a name="ExamplesManagedPrivateEndpointsGet">Example</a>
+```
+az datafactory managed-private-endpoint show --factory-name "exampleFactoryName" --name "exampleManagedPrivateEndpointN\
+ame" --managed-virtual-network-name "exampleManagedVirtualNetworkName" --resource-group "exampleResourceGroup"
+```
+##### <a name="ParametersManagedPrivateEndpointsGet">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The resource group name.|resource_group_name|resourceGroupName|
+|**--factory-name**|string|The factory name.|factory_name|factoryName|
+|**--managed-virtual-network-name**|string|Managed virtual network name|managed_virtual_network_name|managedVirtualNetworkName|
+|**--managed-private-endpoint-name**|string|Managed private endpoint name|managed_private_endpoint_name|managedPrivateEndpointName|
+|**--if-none-match**|string|ETag of the managed private endpoint entity. Should only be specified for get. If the ETag matches the existing entity tag, or if * was provided, then no content will be returned.|if_none_match|If-None-Match|
+
+#### <a name="ManagedPrivateEndpointsCreateOrUpdate#Create">Command `az datafactory managed-private-endpoint create`</a>
+
+##### <a name="ExamplesManagedPrivateEndpointsCreateOrUpdate#Create">Example</a>
+```
+az datafactory managed-private-endpoint create --factory-name "exampleFactoryName" --group-id "blob" \
+--private-link-resource-id "/subscriptions/12345678-1234-1234-1234-12345678abc/resourceGroups/exampleResourceGroup/prov\
+iders/Microsoft.Storage/storageAccounts/exampleBlobStorage" --name "exampleManagedPrivateEndpointName" \
+--managed-virtual-network-name "exampleManagedVirtualNetworkName" --resource-group "exampleResourceGroup"
+```
+##### <a name="ParametersManagedPrivateEndpointsCreateOrUpdate#Create">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The resource group name.|resource_group_name|resourceGroupName|
+|**--factory-name**|string|The factory name.|factory_name|factoryName|
+|**--managed-virtual-network-name**|string|Managed virtual network name|managed_virtual_network_name|managedVirtualNetworkName|
+|**--managed-private-endpoint-name**|string|Managed private endpoint name|managed_private_endpoint_name|managedPrivateEndpointName|
+|**--if-match**|string|ETag of the managed private endpoint entity. Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|If-Match|
+|**--fqdns**|array|Fully qualified domain names|fqdns|fqdns|
+|**--group-id**|string|The groupId to which the managed private endpoint is created|group_id|groupId|
+|**--private-link-resource-id**|string|The ARM resource ID of the resource to which the managed private endpoint is created|private_link_resource_id|privateLinkResourceId|
+
+#### <a name="ManagedPrivateEndpointsCreateOrUpdate#Update">Command `az datafactory managed-private-endpoint update`</a>
+
+
+##### <a name="ParametersManagedPrivateEndpointsCreateOrUpdate#Update">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The resource group name.|resource_group_name|resourceGroupName|
+|**--factory-name**|string|The factory name.|factory_name|factoryName|
+|**--managed-virtual-network-name**|string|Managed virtual network name|managed_virtual_network_name|managedVirtualNetworkName|
+|**--managed-private-endpoint-name**|string|Managed private endpoint name|managed_private_endpoint_name|managedPrivateEndpointName|
+|**--if-match**|string|ETag of the managed private endpoint entity. Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|If-Match|
+|**--fqdns**|array|Fully qualified domain names|fqdns|fqdns|
+|**--group-id**|string|The groupId to which the managed private endpoint is created|group_id|groupId|
+|**--private-link-resource-id**|string|The ARM resource ID of the resource to which the managed private endpoint is created|private_link_resource_id|privateLinkResourceId|
+
+#### <a name="ManagedPrivateEndpointsDelete">Command `az datafactory managed-private-endpoint delete`</a>
+
+##### <a name="ExamplesManagedPrivateEndpointsDelete">Example</a>
+```
+az datafactory managed-private-endpoint delete --factory-name "exampleFactoryName" --name \
+"exampleManagedPrivateEndpointName" --managed-virtual-network-name "exampleManagedVirtualNetworkName" --resource-group \
+"exampleResourceGroup"
+```
+##### <a name="ParametersManagedPrivateEndpointsDelete">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The resource group name.|resource_group_name|resourceGroupName|
+|**--factory-name**|string|The factory name.|factory_name|factoryName|
+|**--managed-virtual-network-name**|string|Managed virtual network name|managed_virtual_network_name|managedVirtualNetworkName|
+|**--managed-private-endpoint-name**|string|Managed private endpoint name|managed_private_endpoint_name|managedPrivateEndpointName|
+
+### group `az datafactory managed-virtual-network`
+#### <a name="ManagedVirtualNetworksListByFactory">Command `az datafactory managed-virtual-network list`</a>
+
+##### <a name="ExamplesManagedVirtualNetworksListByFactory">Example</a>
+```
+az datafactory managed-virtual-network list --factory-name "exampleFactoryName" --resource-group \
+"exampleResourceGroup"
+```
+##### <a name="ParametersManagedVirtualNetworksListByFactory">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The resource group name.|resource_group_name|resourceGroupName|
+|**--factory-name**|string|The factory name.|factory_name|factoryName|
+
+#### <a name="ManagedVirtualNetworksGet">Command `az datafactory managed-virtual-network show`</a>
+
+##### <a name="ExamplesManagedVirtualNetworksGet">Example</a>
+```
+az datafactory managed-virtual-network show --factory-name "exampleFactoryName" --name "exampleManagedVirtualNetworkNam\
+e" --resource-group "exampleResourceGroup"
+```
+##### <a name="ParametersManagedVirtualNetworksGet">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The resource group name.|resource_group_name|resourceGroupName|
+|**--factory-name**|string|The factory name.|factory_name|factoryName|
+|**--managed-virtual-network-name**|string|Managed virtual network name|managed_virtual_network_name|managedVirtualNetworkName|
+|**--if-none-match**|string|ETag of the managed Virtual Network entity. Should only be specified for get. If the ETag matches the existing entity tag, or if * was provided, then no content will be returned.|if_none_match|If-None-Match|
+
+#### <a name="ManagedVirtualNetworksCreateOrUpdate#Create">Command `az datafactory managed-virtual-network create`</a>
+
+##### <a name="ExamplesManagedVirtualNetworksCreateOrUpdate#Create">Example</a>
+```
+az datafactory managed-virtual-network create --factory-name "exampleFactoryName" --name \
+"exampleManagedVirtualNetworkName" --resource-group "exampleResourceGroup"
+```
+##### <a name="ParametersManagedVirtualNetworksCreateOrUpdate#Create">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The resource group name.|resource_group_name|resourceGroupName|
+|**--factory-name**|string|The factory name.|factory_name|factoryName|
+|**--managed-virtual-network-name**|string|Managed virtual network name|managed_virtual_network_name|managedVirtualNetworkName|
+|**--if-match**|string|ETag of the managed Virtual Network entity. Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|If-Match|
+
+#### <a name="ManagedVirtualNetworksCreateOrUpdate#Update">Command `az datafactory managed-virtual-network update`</a>
+
+
+##### <a name="ParametersManagedVirtualNetworksCreateOrUpdate#Update">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The resource group name.|resource_group_name|resourceGroupName|
+|**--factory-name**|string|The factory name.|factory_name|factoryName|
+|**--managed-virtual-network-name**|string|Managed virtual network name|managed_virtual_network_name|managedVirtualNetworkName|
+|**--if-match**|string|ETag of the managed Virtual Network entity. Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|If-Match|
 
 ### group `az datafactory pipeline`
 #### <a name="PipelinesListByFactory">Command `az datafactory pipeline list`</a>
@@ -807,8 +955,8 @@ es\\":{\\"TestVariableArray\\":{\\"type\\":\\"Array\\"}},\\"runDimensions\\":{\\
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resourceGroupName|
 |**--factory-name**|string|The factory name.|factory_name|factoryName|
 |**--pipeline-name**|string|The pipeline name.|pipeline_name|pipelineName|
-|**--pipeline**|object|Pipeline resource definition.|pipeline|pipeline|
 |**--if-match**|string|ETag of the pipeline entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|If-Match|
+|**--pipeline**|object|Pipeline resource definition.|pipeline|pipeline|
 
 #### <a name="PipelinesCreateOrUpdate#Update">Command `az datafactory pipeline update`</a>
 
@@ -968,16 +1116,12 @@ perties\\":{\\"recurrence\\":{\\"endTime\\":\\"2018-06-16T00:55:13.8441801Z\\",\
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resourceGroupName|
 |**--factory-name**|string|The factory name.|factory_name|factoryName|
 |**--trigger-name**|string|The trigger name.|trigger_name|triggerName|
-|**--properties**|object|Properties of the trigger.|properties|properties|
 |**--if-match**|string|ETag of the trigger entity.  Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|If-Match|
+|**--properties**|object|Properties of the trigger.|properties|properties|
 
 #### <a name="TriggersCreateOrUpdate#Update">Command `az datafactory trigger update`</a>
 
-##### <a name="ExamplesTriggersCreateOrUpdate#Update">Example</a>
-```
-az datafactory trigger update --factory-name "exampleFactoryName" --resource-group "exampleResourceGroup" \
---description "Example description" --name "exampleTrigger"
-```
+
 ##### <a name="ParametersTriggersCreateOrUpdate#Update">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|

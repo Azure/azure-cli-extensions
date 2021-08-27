@@ -54,14 +54,11 @@ from azure.graphrbac.models import (ApplicationCreateParameters,
                                     KeyCredential,
                                     ServicePrincipalCreateParameters,
                                     GetObjectsParameters)
-from .vendored_sdks.azure_mgmt_preview_aks.v2021_05_01.models import (ContainerServiceLinuxProfile,
+from .vendored_sdks.azure_mgmt_preview_aks.v2021_07_01.models import (ContainerServiceLinuxProfile,
                                                                       ManagedClusterWindowsProfile,
                                                                       ContainerServiceNetworkProfile,
                                                                       ManagedClusterServicePrincipalProfile,
                                                                       ContainerServiceSshConfiguration,
-                                                                      MaintenanceConfiguration,
-                                                                      TimeInWeek,
-                                                                      TimeSpan,
                                                                       ContainerServiceSshPublicKey,
                                                                       ManagedCluster,
                                                                       ManagedClusterAADProfile,
@@ -73,17 +70,16 @@ from .vendored_sdks.azure_mgmt_preview_aks.v2021_05_01.models import (ContainerS
                                                                       ManagedClusterIdentity,
                                                                       ManagedClusterAPIServerAccessProfile,
                                                                       ManagedClusterSKU,
-                                                                      Components1Umhcm8SchemasManagedclusteridentityPropertiesUserassignedidentitiesAdditionalproperties,
+                                                                      ManagedServiceIdentityUserAssignedIdentitiesValue,
                                                                       ManagedClusterAutoUpgradeProfile,
                                                                       KubeletConfig,
                                                                       LinuxOSConfig,
+                                                                      ManagedClusterHTTPProxyConfig,
                                                                       SysctlConfig,
                                                                       ManagedClusterPodIdentityProfile,
                                                                       ManagedClusterPodIdentity,
                                                                       ManagedClusterPodIdentityException,
-                                                                      UserAssignedIdentity,
-                                                                      RunCommandRequest,
-                                                                      ComponentsQit0EtSchemasManagedclusterpropertiesPropertiesIdentityprofileAdditionalproperties)
+                                                                      UserAssignedIdentity)
 from ._client_factory import cf_resource_groups
 from ._client_factory import get_auth_management_client
 from ._client_factory import get_graph_rbac_management_client
@@ -1012,7 +1008,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                private_dns_zone=None,
                enable_managed_identity=True,
                fqdn_subdomain=None,
-               enable_public_fqdn=False,
+               disable_public_fqdn=False,
                api_server_authorized_ip_ranges=None,
                aks_custom_headers=None,
                appgw_name=None,
@@ -1028,6 +1024,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                enable_sgxquotehelper=False,
                kubelet_config=None,
                linux_os_config=None,
+               http_proxy_config=None,
                assign_identity=None,
                auto_upgrade_channel=None,
                enable_pod_identity=False,
@@ -1343,7 +1340,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         )
     elif enable_managed_identity and assign_identity:
         user_assigned_identity = {
-            assign_identity: Components1Umhcm8SchemasManagedclusteridentityPropertiesUserassignedidentitiesAdditionalproperties()
+            assign_identity: ManagedServiceIdentityUserAssignedIdentitiesValue()
         }
         identity = ManagedClusterIdentity(
             type="UserAssigned",
@@ -1356,7 +1353,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
             raise CLIError('--assign-kubelet-identity can only be specified when --assign-identity is specified')
         kubelet_identity = _get_user_assigned_identity(cmd.cli_ctx, assign_kubelet_identity)
         identity_profile = {
-            'kubeletidentity': ComponentsQit0EtSchemasManagedclusterpropertiesPropertiesIdentityprofileAdditionalproperties(
+            'kubeletidentity': UserAssignedIdentity(
                 resource_id=assign_kubelet_identity,
                 client_id=kubelet_identity.client_id,
                 object_id=kubelet_identity.principal_id
@@ -1410,8 +1407,8 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         mc.node_resource_group = node_resource_group
 
     use_custom_private_dns_zone = False
-    if not enable_private_cluster and enable_public_fqdn:
-        raise ArgumentUsageError("--enable-public-fqdn should only be used with --enable-private-cluster")
+    if not enable_private_cluster and disable_public_fqdn:
+        raise ArgumentUsageError("--disable_public_fqdn should only be used with --enable-private-cluster")
     if enable_private_cluster:
         if load_balancer_sku.lower() != "standard":
             raise ArgumentUsageError(
@@ -1419,8 +1416,8 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         mc.api_server_access_profile = ManagedClusterAPIServerAccessProfile(
             enable_private_cluster=True
         )
-        if enable_public_fqdn:
-            mc.api_server_access_profile.enable_private_cluster_public_fqdn = True
+        if disable_public_fqdn:
+            mc.api_server_access_profile.enable_private_cluster_public_fqdn = False
 
     if private_dns_zone:
         if not enable_private_cluster:
@@ -1439,6 +1436,9 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
             raise ArgumentUsageError(
                 "--fqdn-subdomain should only be used for private cluster with custom private dns zone")
         mc.fqdn_subdomain = fqdn_subdomain
+
+    if http_proxy_config:
+        mc.http_proxy_config = _get_http_proxy_config(http_proxy_config)
 
     if uptime_sla:
         mc.sku = ManagedClusterSKU(
@@ -1790,10 +1790,9 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
             raise ArgumentUsageError('--disable-public-fqdn cannot be applied for none mode private dns zone cluster')
         instance.api_server_access_profile.enable_private_cluster_public_fqdn = False
 
-    if instance.auto_upgrade_profile is None:
-        instance.auto_upgrade_profile = ManagedClusterAutoUpgradeProfile()
-
     if auto_upgrade_channel is not None:
+        if instance.auto_upgrade_profile is None:
+            instance.auto_upgrade_profile = ManagedClusterAutoUpgradeProfile()
         instance.auto_upgrade_profile.upgrade_channel = auto_upgrade_channel
 
     if not enable_managed_identity and assign_identity:
@@ -1830,7 +1829,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
             )
         elif goal_identity_type == "userassigned":
             user_assigned_identity = {
-                assign_identity: Components1Umhcm8SchemasManagedclusteridentityPropertiesUserassignedidentitiesAdditionalproperties()
+                assign_identity: ManagedServiceIdentityUserAssignedIdentitiesValue()
             }
             instance.identity = ManagedClusterIdentity(
                 type="UserAssigned",
@@ -2287,115 +2286,6 @@ def aks_upgrade(cmd,    # pylint: disable=unused-argument, too-many-return-state
     headers = get_aks_custom_headers(aks_custom_headers)
 
     return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, name, instance, headers=headers)
-
-
-def aks_runcommand(cmd, client, resource_group_name, name, command_string="", command_files=None):
-    colorama.init()
-
-    mc = client.get(resource_group_name, name)
-
-    if not command_string:
-        raise CLIError('Command cannot be empty.')
-
-    request_payload = RunCommandRequest(command=command_string)
-    request_payload.context = _get_command_context(command_files)
-    if mc.aad_profile is not None and mc.aad_profile.managed:
-        request_payload.cluster_token = _get_dataplane_aad_token(
-            cmd.cli_ctx, "6dae42f8-4368-4678-94ff-3960e28e3630")
-
-    commandResultFuture = client.begin_run_command(
-        resource_group_name, name, request_payload, polling_interval=5, retry_total=0)
-
-    return _print_command_result(cmd.cli_ctx, commandResultFuture.result(300))
-
-
-def aks_command_result(cmd, client, resource_group_name, name, command_id=""):
-    if not command_id:
-        raise CLIError('CommandID cannot be empty.')
-
-    commandResult = client.get_command_result(
-        resource_group_name, name, command_id)
-    return _print_command_result(cmd.cli_ctx, commandResult)
-
-
-def _print_command_result(cli_ctx, commandResult):
-    # cli_ctx.data['safe_params'] contains list of parameter name user typed in, without value.
-    # cli core also use this calculate ParameterSetName header for all http request from cli.
-    if cli_ctx.data['safe_params'] is None or "-o" in cli_ctx.data['safe_params'] or "--output" in cli_ctx.data['safe_params']:
-        # user specified output format, honor their choice, return object to render pipeline
-        return commandResult
-    else:
-        # user didn't specified any format, we can customize the print for best experience
-        if commandResult.provisioning_state == "Succeeded":
-            # succeed, print exitcode, and logs
-            print(f"{colorama.Fore.GREEN}command started at {commandResult.started_at}, finished at {commandResult.finished_at}, with exitcode={commandResult.exit_code}{colorama.Style.RESET_ALL}")
-            print(commandResult.logs)
-            return
-
-        if commandResult.provisioning_state == "Failed":
-            # failed, print reason in error
-            print(
-                f"{colorama.Fore.RED}command failed with reason: {commandResult.reason}{colorama.Style.RESET_ALL}")
-            return
-
-        # *-ing state
-        print(f"{colorama.Fore.BLUE}command is in : {commandResult.provisioning_state} state{colorama.Style.RESET_ALL}")
-        return None
-
-
-def _get_command_context(command_files):
-    if not command_files:
-        return ""
-
-    filesToAttach = {}
-    # . means to attach current folder, cannot combine more files. (at least for now)
-    if len(command_files) == 1 and command_files[0] == ".":
-        # current folder
-        cwd = os.getcwd()
-        for filefolder, _, files in os.walk(cwd):
-            for file in files:
-                # retain folder structure
-                rel = os.path.relpath(filefolder, cwd)
-                filesToAttach[os.path.join(
-                    filefolder, file)] = os.path.join(rel, file)
-    else:
-        for file in command_files:
-            if file == ".":
-                raise CLIError(
-                    ". is used to attach current folder, not expecting other attachements.")
-            if os.path.isfile(file):
-                # for individual attached file, flatten them to same folder
-                filesToAttach[file] = os.path.basename(file)
-            else:
-                raise CLIError(f"{file} is not valid file, or not accessable.")
-
-    if len(filesToAttach) < 1:
-        logger.debug("no files to attach!")
-        return ""
-
-    zipStream = io.BytesIO()
-    zipFile = zipfile.ZipFile(zipStream, "w")
-    for _, (osfile, zipEntry) in enumerate(filesToAttach.items()):
-        zipFile.write(osfile, zipEntry)
-    # zipFile.printdir() // use this to debug
-    zipFile.close()
-
-    return str(base64.encodebytes(zipStream.getbuffer()), "utf-8")
-
-
-def _get_dataplane_aad_token(cli_ctx, serverAppId):
-    # this function is mostly copied from keyvault cli
-    import adal
-    try:
-        return Profile(cli_ctx=cli_ctx).get_raw_token(resource=serverAppId)[0][2].get('accessToken')
-    except adal.AdalError as err:
-        # pylint: disable=no-member
-        if (hasattr(err, 'error_response') and
-                ('error_description' in err.error_response) and
-                ('AADSTS70008:' in err.error_response['error_description'])):
-            raise CLIError(
-                "Credentials have expired due to inactivity. Please run 'az login'")
-        raise CLIError(err)
 
 
 def _upgrade_single_nodepool_image_version(no_wait, client, resource_group_name, cluster_name, nodepool_name):
@@ -3308,7 +3198,8 @@ def aks_agentpool_upgrade(cmd,  # pylint: disable=unused-argument
                           kubernetes_version='',
                           no_wait=False,
                           node_image_only=False,
-                          max_surge=None):
+                          max_surge=None,
+                          aks_custom_headers=None):
     if kubernetes_version != '' and node_image_only:
         raise CLIError('Conflicting flags. Upgrading the Kubernetes version will also upgrade node image version.'
                        'If you only want to upgrade the node version please use the "--node-image-only" option only.')
@@ -3329,7 +3220,9 @@ def aks_agentpool_upgrade(cmd,  # pylint: disable=unused-argument
     if max_surge:
         instance.upgrade_settings.max_surge = max_surge
 
-    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, cluster_name, nodepool_name, instance)
+    headers = get_aks_custom_headers(aks_custom_headers)
+
+    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, cluster_name, nodepool_name, instance, headers=headers)
 
 
 def aks_agentpool_get_upgrade_profile(cmd,   # pylint: disable=unused-argument
@@ -4069,6 +3962,8 @@ def _is_msi_cluster(managed_cluster):
 
 
 def _get_kubelet_config(file_path):
+    if not os.path.isfile(file_path):
+        raise CLIError("{} is not valid file, or not accessable.".format(file_path))
     kubelet_config = get_file_json(file_path)
     if not isinstance(kubelet_config, dict):
         raise CLIError(
@@ -4091,12 +3986,16 @@ def _get_kubelet_config(file_path):
     config_object.container_log_max_files = kubelet_config.get(
         "containerLogMaxFiles", None)
     config_object.container_log_max_size_mb = kubelet_config.get(
-        "containerLogMaxSizeMb", None)
+        "containerLogMaxSizeMB", None)
+    config_object.pod_max_pids = kubelet_config.get(
+        "podMaxPids", None)
 
     return config_object
 
 
 def _get_linux_os_config(file_path):
+    if not os.path.isfile(file_path):
+        raise CLIError("{} is not valid file, or not accessable.".format(file_path))
     os_config = get_file_json(file_path)
     if not isinstance(os_config, dict):
         raise CLIError(
@@ -4164,6 +4063,22 @@ def _get_linux_os_config(file_path):
     config_object.sysctls.vm_swappiness = sysctls.get("vmSwappiness", None)
     config_object.sysctls.vm_vfs_cache_pressure = sysctls.get(
         "vmVfsCachePressure", None)
+
+    return config_object
+
+
+def _get_http_proxy_config(file_path):
+    if not os.path.isfile(file_path):
+        raise CLIError("{} is not valid file, or not accessable.".format(file_path))
+    hp_config = get_file_json(file_path)
+    if not isinstance(hp_config, dict):
+        raise CLIError(
+            "Error reading Http Proxy Config at {}. Please see https://aka.ms/HttpProxyConfig for correct format.".format(file_path))
+    config_object = ManagedClusterHTTPProxyConfig()
+    config_object.http_proxy = hp_config.get("httpProxy", None)
+    config_object.https_proxy = hp_config.get("httpsProxy", None)
+    config_object.no_proxy = hp_config.get("noProxy", None)
+    config_object.trusted_ca = hp_config.get("trustedCa", None)
 
     return config_object
 

@@ -2,6 +2,27 @@
 
 Release History
 ===============
+
+0.5.28
++++++
+* Update to adopt 2021-07-01 api-version
+
+0.5.27
++++++
+* GA private cluster public FQDN feature, breaking change to replace create parameter `--enable-public-fqdn` with `--disable-public-fqdn` since now it's enabled by default for private cluster during cluster creation.
+
+0.5.26
++++++
+* Correct containerLogMaxSizeMb to containerLogMaxSizeMB in customized kubelet config
+
+0.5.25
++++++
+* Add support for http proxy
+
+0.5.24
++++++
+* * Add "--aks-custom-headers" for "az aks nodepool upgrade"
+
 0.5.23
 +++++
 * Fix issue that `maintenanceconfiguration add` subcommand cannot work
