@@ -457,9 +457,9 @@ def update_aad_settings(cmd, resource_group_name, name, slot=None,  # pylint: di
         raise CLIError('Usage Error: --client-secret and --client-secret-setting-name cannot both be '
                        'configured to non empty strings')
 
-    if issuer is not None and (tenant_id is not None or cloud is not None):
-        raise CLIError('Usage Error: --issuer and the combination of --tenant-id and/or --cloud cannot '
-                       'be configured to non empty strings at the same time.')
+    if issuer is not None and (tenant_id is not None):
+        raise CLIError('Usage Error: --issuer and --tenant-id cannot be configured '
+                       'to non empty strings at the same time.')
 
     is_new_aad_app = False
     existing_auth = get_auth_settings_v2(cmd, resource_group_name, name, slot)["properties"]
