@@ -3,6 +3,12 @@
 Release History
 ===============
 
+0.5.29
++++++
+* Fix update (fails due to "ERROR: (BadRequest) Feature Microsoft.ContainerService/AutoUpgradePreview is not enabled" even when autoupgrade is not specified)
+* Add podMaxPids argument for node config
+
+
 0.5.28
 +++++
 * Update to adopt 2021-07-01 api-version
