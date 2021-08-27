@@ -391,7 +391,7 @@ def dataprotection_backup_policy_tag_remove_in_policy(name, policy):
 
 def restore_initialize_for_data_recovery(target_resource_id, datasource_type, source_datastore, restore_location,
                                          recovery_point_id=None, point_in_time=None, secret_store_type=None,
-                                         secret_store_uri=None, rehydration_priority=None, rehydration_duration=None):
+                                         secret_store_uri=None, rehydration_priority=None, rehydration_duration=15):
 
     restore_request = {}
     restore_mode = None
@@ -418,12 +418,12 @@ def restore_initialize_for_data_recovery(target_resource_id, datasource_type, so
 
     if source_datastore in manifest["policySettings"]["supportedDatastoreTypes"]:
         restore_request["source_data_store_type"] = source_datastore
-        if (rehydration_duration is None) ^ (rehydration_priority is None):
-            raise CLIError("Either rehydration duration or rehydration priority is not provided")
-        if rehydration_duration and rehydration_priority:
+        if rehydration_priority:
+            if rehydration_duration < 10 or rehydration_duration > 30:
+                raise CLIError("The allowed range of rehydration duration is 10 to 30 days.")
             restore_request["object_type"] = "AzureBackupRestoreWithRehydrationRequest"
             restore_request["rehydration_priority"] = rehydration_priority
-            restore_request["rehydration_retention_duration"] = "P" + str(rehydration_duration) + "D"               
+            restore_request["rehydration_retention_duration"] = "P" + str(rehydration_duration) + "D"
     else:
         raise CLIError(source_datastore + " datastore type is not supported for datasource type " + datasource_type +
                        ". Supported datastore types are " + ','.join(manifest["policySettings"]["supportedDatastoreTypes"]))
@@ -455,7 +455,7 @@ def restore_initialize_for_data_recovery(target_resource_id, datasource_type, so
 
 def restore_initialize_for_data_recovery_as_files(target_blob_container_url, target_file_name, datasource_type, source_datastore,
                                                   restore_location, recovery_point_id=None, point_in_time=None,
-                                                  rehydration_priority=None, rehydration_duration=None):
+                                                  rehydration_priority=None, rehydration_duration=15):
 
     restore_request = {}
     restore_mode = None
@@ -482,12 +482,12 @@ def restore_initialize_for_data_recovery_as_files(target_blob_container_url, tar
 
     if source_datastore in manifest["policySettings"]["supportedDatastoreTypes"]:
         restore_request["source_data_store_type"] = source_datastore
-        if (rehydration_duration is None) ^ (rehydration_priority is None):
-            raise CLIError("Either rehydration duration or rehydration priority is not provided")
-        if rehydration_duration and rehydration_priority:
+        if rehydration_priority:
+            if rehydration_duration < 10 or rehydration_duration > 30:
+                raise CLIError("The allowed range of rehydration duration is 10 to 30 days.")
             restore_request["object_type"] = "AzureBackupRestoreWithRehydrationRequest"
             restore_request["rehydration_priority"] = rehydration_priority
-            restore_request["rehydration_retention_duration"] = "P" + str(rehydration_duration) + "D"               
+            restore_request["rehydration_retention_duration"] = "P" + str(rehydration_duration) + "D"
     else:
         raise CLIError(source_datastore + " datastore type is not supported for datasource type " + datasource_type +
                        ". Supported datastore types are " + ','.join(manifest["policySettings"]["supportedDatastoreTypes"]))

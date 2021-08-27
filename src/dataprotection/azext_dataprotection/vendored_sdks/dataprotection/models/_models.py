@@ -2321,6 +2321,66 @@ class Day(msrest.serialization.Model):
         self.is_last = kwargs.get('is_last', None)
 
 
+class DppBaseResource(msrest.serialization.Model):
+    """Base resource under Microsoft.DataProtection provider namespace.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Resource Id represents the complete path to the resource.
+    :vartype id: str
+    :ivar name: Resource name associated with the resource.
+    :vartype name: str
+    :ivar type: Resource type represents the complete path of the form
+     Namespace/ResourceType/ResourceType/...
+    :vartype type: str
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(DppBaseResource, self).__init__(**kwargs)
+        self.id = None
+        self.name = None
+        self.type = None
+
+
+class DppBaseResourceList(msrest.serialization.Model):
+    """Base for all lists of V2 resources.
+
+    :param value: List of Dpp resources.
+    :type value: list[~data_protection_client.models.DppBaseResource]
+    :param next_link: The uri to fetch the next page of resources. Call ListNext() fetches next
+     page of resources.
+    :type next_link: str
+    """
+
+    _attribute_map = {
+        'value': {'key': 'value', 'type': '[DppBaseResource]'},
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(DppBaseResourceList, self).__init__(**kwargs)
+        self.value = kwargs.get('value', None)
+        self.next_link = kwargs.get('next_link', None)
+
+
 class DppIdentityDetails(msrest.serialization.Model):
     """Identity details.
 
@@ -2907,29 +2967,6 @@ class JobSubTask(msrest.serialization.Model):
         self.task_name = kwargs['task_name']
         self.task_progress = None
         self.task_status = kwargs['task_status']
-
-
-class ObjectResourceList(DppResourceList):
-    """List of Object resources.
-
-    :param next_link: The uri to fetch the next page of resources. Call ListNext() fetches next
-     page of resources.
-    :type next_link: str
-    :param value: List of resources.
-    :type value: list[object]
-    """
-
-    _attribute_map = {
-        'next_link': {'key': 'nextLink', 'type': 'str'},
-        'value': {'key': 'value', 'type': '[object]'},
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        super(ObjectResourceList, self).__init__(**kwargs)
-        self.value = kwargs.get('value', None)
 
 
 class OperationExtendedInfo(msrest.serialization.Model):

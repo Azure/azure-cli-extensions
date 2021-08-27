@@ -64,6 +64,8 @@ try:
     from ._models_py3 import DatasourceSet
     from ._models_py3 import Day
     from ._models_py3 import DeleteOption
+    from ._models_py3 import DppBaseResource
+    from ._models_py3 import DppBaseResourceList
     from ._models_py3 import DppIdentityDetails
     from ._models_py3 import DppResource
     from ._models_py3 import DppResourceList
@@ -83,7 +85,6 @@ try:
     from ._models_py3 import ItemLevelRestoreTargetInfo
     from ._models_py3 import JobExtendedInfo
     from ._models_py3 import JobSubTask
-    from ._models_py3 import ObjectResourceList
     from ._models_py3 import OperationExtendedInfo
     from ._models_py3 import OperationJobExtendedInfo
     from ._models_py3 import OperationResource
@@ -179,6 +180,8 @@ except (SyntaxError, ImportError):
     from ._models import DatasourceSet  # type: ignore
     from ._models import Day  # type: ignore
     from ._models import DeleteOption  # type: ignore
+    from ._models import DppBaseResource  # type: ignore
+    from ._models import DppBaseResourceList  # type: ignore
     from ._models import DppIdentityDetails  # type: ignore
     from ._models import DppResource  # type: ignore
     from ._models import DppResourceList  # type: ignore
@@ -198,7 +201,6 @@ except (SyntaxError, ImportError):
     from ._models import ItemLevelRestoreTargetInfo  # type: ignore
     from ._models import JobExtendedInfo  # type: ignore
     from ._models import JobSubTask  # type: ignore
-    from ._models import ObjectResourceList  # type: ignore
     from ._models import OperationExtendedInfo  # type: ignore
     from ._models import OperationJobExtendedInfo  # type: ignore
     from ._models import OperationResource  # type: ignore
@@ -319,6 +321,8 @@ __all__ = [
     'DatasourceSet',
     'Day',
     'DeleteOption',
+    'DppBaseResource',
+    'DppBaseResourceList',
     'DppIdentityDetails',
     'DppResource',
     'DppResourceList',
@@ -338,7 +342,6 @@ __all__ = [
     'ItemLevelRestoreTargetInfo',
     'JobExtendedInfo',
     'JobSubTask',
-    'ObjectResourceList',
     'OperationExtendedInfo',
     'OperationJobExtendedInfo',
     'OperationResource',

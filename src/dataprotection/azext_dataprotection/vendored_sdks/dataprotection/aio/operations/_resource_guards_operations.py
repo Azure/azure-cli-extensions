@@ -59,7 +59,7 @@ class ResourceGuardsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-01-01"
+        api_version = "2021-07-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -130,7 +130,7 @@ class ResourceGuardsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-01-01"
+        api_version = "2021-07-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -208,7 +208,7 @@ class ResourceGuardsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-01-01"
+        api_version = "2021-07-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -273,7 +273,7 @@ class ResourceGuardsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-01-01"
+        api_version = "2021-07-01"
         accept = "application/json"
 
         # Construct URL
@@ -333,7 +333,7 @@ class ResourceGuardsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-01-01"
+        api_version = "2021-07-01"
         accept = "application/json"
 
         # Construct URL
@@ -394,7 +394,7 @@ class ResourceGuardsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-01-01"
+        api_version = "2021-07-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -435,13 +435,12 @@ class ResourceGuardsOperations:
         return deserialized
     patch.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataProtection/resourceGuards/{resourceGuardsName}'}  # type: ignore
 
-    def get_operation_request_objects(
+    def get_disable_soft_delete_requests_objects(
         self,
         resource_group_name: str,
         resource_guards_name: str,
-        operation_name: str,
         **kwargs
-    ) -> AsyncIterable["models.ObjectResourceList"]:
+    ) -> AsyncIterable["models.DppBaseResourceList"]:
         """Returns collection of operation request objects for a critical operation protected by the given ResourceGuard resource.
 
         Returns collection of operation request objects for a critical operation protected by the given
@@ -451,19 +450,17 @@ class ResourceGuardsOperations:
         :type resource_group_name: str
         :param resource_guards_name:
         :type resource_guards_name: str
-        :param operation_name:
-        :type operation_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either ObjectResourceList or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~data_protection_client.models.ObjectResourceList]
+        :return: An iterator like instance of either DppBaseResourceList or the result of cls(response)
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~data_protection_client.models.DppBaseResourceList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.ObjectResourceList"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.DppBaseResourceList"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-01-01"
+        api_version = "2021-07-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -473,12 +470,11 @@ class ResourceGuardsOperations:
 
             if not next_link:
                 # Construct URL
-                url = self.get_operation_request_objects.metadata['url']  # type: ignore
+                url = self.get_disable_soft_delete_requests_objects.metadata['url']  # type: ignore
                 path_format_arguments = {
                     'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
                     'resourceGuardsName': self._serialize.url("resource_guards_name", resource_guards_name, 'str'),
-                    'operationName': self._serialize.url("operation_name", operation_name, 'str'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
@@ -493,7 +489,7 @@ class ResourceGuardsOperations:
             return request
 
         async def extract_data(pipeline_response):
-            deserialized = self._deserialize('ObjectResourceList', pipeline_response)
+            deserialized = self._deserialize('DppBaseResourceList', pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
@@ -514,16 +510,14 @@ class ResourceGuardsOperations:
         return AsyncItemPaged(
             get_next, extract_data
         )
-    get_operation_request_objects.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataProtection/resourceGuards/{resourceGuardsName}/{operationName}'}  # type: ignore
+    get_disable_soft_delete_requests_objects.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataProtection/resourceGuards/{resourceGuardsName}/disableSoftDeleteRequests'}  # type: ignore
 
-    async def get_default_operation_request_object(
+    def get_delete_resource_guard_proxy_requests_objects(
         self,
         resource_group_name: str,
         resource_guards_name: str,
-        operation_name: str,
-        operation_request_name: str,
         **kwargs
-    ) -> object:
+    ) -> AsyncIterable["models.DppBaseResourceList"]:
         """Returns collection of operation request objects for a critical operation protected by the given ResourceGuard resource.
 
         Returns collection of operation request objects for a critical operation protected by the given
@@ -533,31 +527,414 @@ class ResourceGuardsOperations:
         :type resource_group_name: str
         :param resource_guards_name:
         :type resource_guards_name: str
-        :param operation_name:
-        :type operation_name: str
-        :param operation_request_name:
-        :type operation_request_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: object, or the result of cls(response)
-        :rtype: object
+        :return: An iterator like instance of either DppBaseResourceList or the result of cls(response)
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~data_protection_client.models.DppBaseResourceList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType[object]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.DppBaseResourceList"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-01-01"
+        api_version = "2021-07-01"
+        accept = "application/json"
+
+        def prepare_request(next_link=None):
+            # Construct headers
+            header_parameters = {}  # type: Dict[str, Any]
+            header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+
+            if not next_link:
+                # Construct URL
+                url = self.get_delete_resource_guard_proxy_requests_objects.metadata['url']  # type: ignore
+                path_format_arguments = {
+                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+                    'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+                    'resourceGuardsName': self._serialize.url("resource_guards_name", resource_guards_name, 'str'),
+                }
+                url = self._client.format_url(url, **path_format_arguments)
+                # Construct parameters
+                query_parameters = {}  # type: Dict[str, Any]
+                query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+
+                request = self._client.get(url, query_parameters, header_parameters)
+            else:
+                url = next_link
+                query_parameters = {}  # type: Dict[str, Any]
+                request = self._client.get(url, query_parameters, header_parameters)
+            return request
+
+        async def extract_data(pipeline_response):
+            deserialized = self._deserialize('DppBaseResourceList', pipeline_response)
+            list_of_elem = deserialized.value
+            if cls:
+                list_of_elem = cls(list_of_elem)
+            return deserialized.next_link or None, AsyncList(list_of_elem)
+
+        async def get_next(next_link=None):
+            request = prepare_request(next_link)
+
+            pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
+            response = pipeline_response.http_response
+
+            if response.status_code not in [200]:
+                map_error(status_code=response.status_code, response=response, error_map=error_map)
+                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+
+            return pipeline_response
+
+        return AsyncItemPaged(
+            get_next, extract_data
+        )
+    get_delete_resource_guard_proxy_requests_objects.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataProtection/resourceGuards/{resourceGuardsName}/deleteResourceGuardProxyRequests'}  # type: ignore
+
+    def get_backup_security_pin_requests_objects(
+        self,
+        resource_group_name: str,
+        resource_guards_name: str,
+        **kwargs
+    ) -> AsyncIterable["models.DppBaseResourceList"]:
+        """Returns collection of operation request objects for a critical operation protected by the given ResourceGuard resource.
+
+        Returns collection of operation request objects for a critical operation protected by the given
+        ResourceGuard resource.
+
+        :param resource_group_name: The name of the resource group where the backup vault is present.
+        :type resource_group_name: str
+        :param resource_guards_name:
+        :type resource_guards_name: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :return: An iterator like instance of either DppBaseResourceList or the result of cls(response)
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~data_protection_client.models.DppBaseResourceList]
+        :raises: ~azure.core.exceptions.HttpResponseError
+        """
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.DppBaseResourceList"]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
+        api_version = "2021-07-01"
+        accept = "application/json"
+
+        def prepare_request(next_link=None):
+            # Construct headers
+            header_parameters = {}  # type: Dict[str, Any]
+            header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+
+            if not next_link:
+                # Construct URL
+                url = self.get_backup_security_pin_requests_objects.metadata['url']  # type: ignore
+                path_format_arguments = {
+                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+                    'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+                    'resourceGuardsName': self._serialize.url("resource_guards_name", resource_guards_name, 'str'),
+                }
+                url = self._client.format_url(url, **path_format_arguments)
+                # Construct parameters
+                query_parameters = {}  # type: Dict[str, Any]
+                query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+
+                request = self._client.get(url, query_parameters, header_parameters)
+            else:
+                url = next_link
+                query_parameters = {}  # type: Dict[str, Any]
+                request = self._client.get(url, query_parameters, header_parameters)
+            return request
+
+        async def extract_data(pipeline_response):
+            deserialized = self._deserialize('DppBaseResourceList', pipeline_response)
+            list_of_elem = deserialized.value
+            if cls:
+                list_of_elem = cls(list_of_elem)
+            return deserialized.next_link or None, AsyncList(list_of_elem)
+
+        async def get_next(next_link=None):
+            request = prepare_request(next_link)
+
+            pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
+            response = pipeline_response.http_response
+
+            if response.status_code not in [200]:
+                map_error(status_code=response.status_code, response=response, error_map=error_map)
+                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+
+            return pipeline_response
+
+        return AsyncItemPaged(
+            get_next, extract_data
+        )
+    get_backup_security_pin_requests_objects.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataProtection/resourceGuards/{resourceGuardsName}/getBackupSecurityPINRequests'}  # type: ignore
+
+    def get_delete_protected_item_requests_objects(
+        self,
+        resource_group_name: str,
+        resource_guards_name: str,
+        **kwargs
+    ) -> AsyncIterable["models.DppBaseResourceList"]:
+        """Returns collection of operation request objects for a critical operation protected by the given ResourceGuard resource.
+
+        Returns collection of operation request objects for a critical operation protected by the given
+        ResourceGuard resource.
+
+        :param resource_group_name: The name of the resource group where the backup vault is present.
+        :type resource_group_name: str
+        :param resource_guards_name:
+        :type resource_guards_name: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :return: An iterator like instance of either DppBaseResourceList or the result of cls(response)
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~data_protection_client.models.DppBaseResourceList]
+        :raises: ~azure.core.exceptions.HttpResponseError
+        """
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.DppBaseResourceList"]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
+        api_version = "2021-07-01"
+        accept = "application/json"
+
+        def prepare_request(next_link=None):
+            # Construct headers
+            header_parameters = {}  # type: Dict[str, Any]
+            header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+
+            if not next_link:
+                # Construct URL
+                url = self.get_delete_protected_item_requests_objects.metadata['url']  # type: ignore
+                path_format_arguments = {
+                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+                    'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+                    'resourceGuardsName': self._serialize.url("resource_guards_name", resource_guards_name, 'str'),
+                }
+                url = self._client.format_url(url, **path_format_arguments)
+                # Construct parameters
+                query_parameters = {}  # type: Dict[str, Any]
+                query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+
+                request = self._client.get(url, query_parameters, header_parameters)
+            else:
+                url = next_link
+                query_parameters = {}  # type: Dict[str, Any]
+                request = self._client.get(url, query_parameters, header_parameters)
+            return request
+
+        async def extract_data(pipeline_response):
+            deserialized = self._deserialize('DppBaseResourceList', pipeline_response)
+            list_of_elem = deserialized.value
+            if cls:
+                list_of_elem = cls(list_of_elem)
+            return deserialized.next_link or None, AsyncList(list_of_elem)
+
+        async def get_next(next_link=None):
+            request = prepare_request(next_link)
+
+            pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
+            response = pipeline_response.http_response
+
+            if response.status_code not in [200]:
+                map_error(status_code=response.status_code, response=response, error_map=error_map)
+                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+
+            return pipeline_response
+
+        return AsyncItemPaged(
+            get_next, extract_data
+        )
+    get_delete_protected_item_requests_objects.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataProtection/resourceGuards/{resourceGuardsName}/deleteProtectedItemRequests'}  # type: ignore
+
+    def get_update_protection_policy_requests_objects(
+        self,
+        resource_group_name: str,
+        resource_guards_name: str,
+        **kwargs
+    ) -> AsyncIterable["models.DppBaseResourceList"]:
+        """Returns collection of operation request objects for a critical operation protected by the given ResourceGuard resource.
+
+        Returns collection of operation request objects for a critical operation protected by the given
+        ResourceGuard resource.
+
+        :param resource_group_name: The name of the resource group where the backup vault is present.
+        :type resource_group_name: str
+        :param resource_guards_name:
+        :type resource_guards_name: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :return: An iterator like instance of either DppBaseResourceList or the result of cls(response)
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~data_protection_client.models.DppBaseResourceList]
+        :raises: ~azure.core.exceptions.HttpResponseError
+        """
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.DppBaseResourceList"]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
+        api_version = "2021-07-01"
+        accept = "application/json"
+
+        def prepare_request(next_link=None):
+            # Construct headers
+            header_parameters = {}  # type: Dict[str, Any]
+            header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+
+            if not next_link:
+                # Construct URL
+                url = self.get_update_protection_policy_requests_objects.metadata['url']  # type: ignore
+                path_format_arguments = {
+                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+                    'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+                    'resourceGuardsName': self._serialize.url("resource_guards_name", resource_guards_name, 'str'),
+                }
+                url = self._client.format_url(url, **path_format_arguments)
+                # Construct parameters
+                query_parameters = {}  # type: Dict[str, Any]
+                query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+
+                request = self._client.get(url, query_parameters, header_parameters)
+            else:
+                url = next_link
+                query_parameters = {}  # type: Dict[str, Any]
+                request = self._client.get(url, query_parameters, header_parameters)
+            return request
+
+        async def extract_data(pipeline_response):
+            deserialized = self._deserialize('DppBaseResourceList', pipeline_response)
+            list_of_elem = deserialized.value
+            if cls:
+                list_of_elem = cls(list_of_elem)
+            return deserialized.next_link or None, AsyncList(list_of_elem)
+
+        async def get_next(next_link=None):
+            request = prepare_request(next_link)
+
+            pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
+            response = pipeline_response.http_response
+
+            if response.status_code not in [200]:
+                map_error(status_code=response.status_code, response=response, error_map=error_map)
+                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+
+            return pipeline_response
+
+        return AsyncItemPaged(
+            get_next, extract_data
+        )
+    get_update_protection_policy_requests_objects.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataProtection/resourceGuards/{resourceGuardsName}/updateProtectionPolicyRequests'}  # type: ignore
+
+    def get_update_protected_item_requests_objects(
+        self,
+        resource_group_name: str,
+        resource_guards_name: str,
+        **kwargs
+    ) -> AsyncIterable["models.DppBaseResourceList"]:
+        """Returns collection of operation request objects for a critical operation protected by the given ResourceGuard resource.
+
+        Returns collection of operation request objects for a critical operation protected by the given
+        ResourceGuard resource.
+
+        :param resource_group_name: The name of the resource group where the backup vault is present.
+        :type resource_group_name: str
+        :param resource_guards_name:
+        :type resource_guards_name: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :return: An iterator like instance of either DppBaseResourceList or the result of cls(response)
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~data_protection_client.models.DppBaseResourceList]
+        :raises: ~azure.core.exceptions.HttpResponseError
+        """
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.DppBaseResourceList"]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
+        api_version = "2021-07-01"
+        accept = "application/json"
+
+        def prepare_request(next_link=None):
+            # Construct headers
+            header_parameters = {}  # type: Dict[str, Any]
+            header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+
+            if not next_link:
+                # Construct URL
+                url = self.get_update_protected_item_requests_objects.metadata['url']  # type: ignore
+                path_format_arguments = {
+                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+                    'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+                    'resourceGuardsName': self._serialize.url("resource_guards_name", resource_guards_name, 'str'),
+                }
+                url = self._client.format_url(url, **path_format_arguments)
+                # Construct parameters
+                query_parameters = {}  # type: Dict[str, Any]
+                query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+
+                request = self._client.get(url, query_parameters, header_parameters)
+            else:
+                url = next_link
+                query_parameters = {}  # type: Dict[str, Any]
+                request = self._client.get(url, query_parameters, header_parameters)
+            return request
+
+        async def extract_data(pipeline_response):
+            deserialized = self._deserialize('DppBaseResourceList', pipeline_response)
+            list_of_elem = deserialized.value
+            if cls:
+                list_of_elem = cls(list_of_elem)
+            return deserialized.next_link or None, AsyncList(list_of_elem)
+
+        async def get_next(next_link=None):
+            request = prepare_request(next_link)
+
+            pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
+            response = pipeline_response.http_response
+
+            if response.status_code not in [200]:
+                map_error(status_code=response.status_code, response=response, error_map=error_map)
+                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+
+            return pipeline_response
+
+        return AsyncItemPaged(
+            get_next, extract_data
+        )
+    get_update_protected_item_requests_objects.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataProtection/resourceGuards/{resourceGuardsName}/updateProtectedItemRequests'}  # type: ignore
+
+    async def get_default_disable_soft_delete_requests_object(
+        self,
+        resource_group_name: str,
+        resource_guards_name: str,
+        request_name: str,
+        **kwargs
+    ) -> "models.DppBaseResource":
+        """Returns collection of operation request objects for a critical operation protected by the given ResourceGuard resource.
+
+        Returns collection of operation request objects for a critical operation protected by the given
+        ResourceGuard resource.
+
+        :param resource_group_name: The name of the resource group where the backup vault is present.
+        :type resource_group_name: str
+        :param resource_guards_name:
+        :type resource_guards_name: str
+        :param request_name:
+        :type request_name: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :return: DppBaseResource, or the result of cls(response)
+        :rtype: ~data_protection_client.models.DppBaseResource
+        :raises: ~azure.core.exceptions.HttpResponseError
+        """
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.DppBaseResource"]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
+        api_version = "2021-07-01"
         accept = "application/json"
 
         # Construct URL
-        url = self.get_default_operation_request_object.metadata['url']  # type: ignore
+        url = self.get_default_disable_soft_delete_requests_object.metadata['url']  # type: ignore
         path_format_arguments = {
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGuardsName': self._serialize.url("resource_guards_name", resource_guards_name, 'str'),
-            'operationName': self._serialize.url("operation_name", operation_name, 'str'),
-            'operationRequestName': self._serialize.url("operation_request_name", operation_request_name, 'str'),
+            'requestName': self._serialize.url("request_name", request_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -577,10 +954,335 @@ class ResourceGuardsOperations:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('object', pipeline_response)
+        deserialized = self._deserialize('DppBaseResource', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    get_default_operation_request_object.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataProtection/resourceGuards/{resourceGuardsName}/{operationName}/{operationRequestName}'}  # type: ignore
+    get_default_disable_soft_delete_requests_object.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataProtection/resourceGuards/{resourceGuardsName}/disableSoftDeleteRequests/{requestName}'}  # type: ignore
+
+    async def get_default_delete_resource_guard_proxy_requests_object(
+        self,
+        resource_group_name: str,
+        resource_guards_name: str,
+        request_name: str,
+        **kwargs
+    ) -> "models.DppBaseResource":
+        """Returns collection of operation request objects for a critical operation protected by the given ResourceGuard resource.
+
+        Returns collection of operation request objects for a critical operation protected by the given
+        ResourceGuard resource.
+
+        :param resource_group_name: The name of the resource group where the backup vault is present.
+        :type resource_group_name: str
+        :param resource_guards_name:
+        :type resource_guards_name: str
+        :param request_name:
+        :type request_name: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :return: DppBaseResource, or the result of cls(response)
+        :rtype: ~data_protection_client.models.DppBaseResource
+        :raises: ~azure.core.exceptions.HttpResponseError
+        """
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.DppBaseResource"]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
+        api_version = "2021-07-01"
+        accept = "application/json"
+
+        # Construct URL
+        url = self.get_default_delete_resource_guard_proxy_requests_object.metadata['url']  # type: ignore
+        path_format_arguments = {
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGuardsName': self._serialize.url("resource_guards_name", resource_guards_name, 'str'),
+            'requestName': self._serialize.url("request_name", request_name, 'str'),
+        }
+        url = self._client.format_url(url, **path_format_arguments)
+
+        # Construct parameters
+        query_parameters = {}  # type: Dict[str, Any]
+        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+
+        # Construct headers
+        header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+
+        request = self._client.get(url, query_parameters, header_parameters)
+        pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+
+        deserialized = self._deserialize('DppBaseResource', pipeline_response)
+
+        if cls:
+            return cls(pipeline_response, deserialized, {})
+
+        return deserialized
+    get_default_delete_resource_guard_proxy_requests_object.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataProtection/resourceGuards/{resourceGuardsName}/deleteResourceGuardProxyRequests/{requestName}'}  # type: ignore
+
+    async def get_default_backup_security_pin_requests_object(
+        self,
+        resource_group_name: str,
+        resource_guards_name: str,
+        request_name: str,
+        **kwargs
+    ) -> "models.DppBaseResource":
+        """Returns collection of operation request objects for a critical operation protected by the given ResourceGuard resource.
+
+        Returns collection of operation request objects for a critical operation protected by the given
+        ResourceGuard resource.
+
+        :param resource_group_name: The name of the resource group where the backup vault is present.
+        :type resource_group_name: str
+        :param resource_guards_name:
+        :type resource_guards_name: str
+        :param request_name:
+        :type request_name: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :return: DppBaseResource, or the result of cls(response)
+        :rtype: ~data_protection_client.models.DppBaseResource
+        :raises: ~azure.core.exceptions.HttpResponseError
+        """
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.DppBaseResource"]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
+        api_version = "2021-07-01"
+        accept = "application/json"
+
+        # Construct URL
+        url = self.get_default_backup_security_pin_requests_object.metadata['url']  # type: ignore
+        path_format_arguments = {
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGuardsName': self._serialize.url("resource_guards_name", resource_guards_name, 'str'),
+            'requestName': self._serialize.url("request_name", request_name, 'str'),
+        }
+        url = self._client.format_url(url, **path_format_arguments)
+
+        # Construct parameters
+        query_parameters = {}  # type: Dict[str, Any]
+        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+
+        # Construct headers
+        header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+
+        request = self._client.get(url, query_parameters, header_parameters)
+        pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+
+        deserialized = self._deserialize('DppBaseResource', pipeline_response)
+
+        if cls:
+            return cls(pipeline_response, deserialized, {})
+
+        return deserialized
+    get_default_backup_security_pin_requests_object.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataProtection/resourceGuards/{resourceGuardsName}/getBackupSecurityPINRequests/{requestName}'}  # type: ignore
+
+    async def get_default_delete_protected_item_requests_object(
+        self,
+        resource_group_name: str,
+        resource_guards_name: str,
+        request_name: str,
+        **kwargs
+    ) -> "models.DppBaseResource":
+        """Returns collection of operation request objects for a critical operation protected by the given ResourceGuard resource.
+
+        Returns collection of operation request objects for a critical operation protected by the given
+        ResourceGuard resource.
+
+        :param resource_group_name: The name of the resource group where the backup vault is present.
+        :type resource_group_name: str
+        :param resource_guards_name:
+        :type resource_guards_name: str
+        :param request_name:
+        :type request_name: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :return: DppBaseResource, or the result of cls(response)
+        :rtype: ~data_protection_client.models.DppBaseResource
+        :raises: ~azure.core.exceptions.HttpResponseError
+        """
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.DppBaseResource"]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
+        api_version = "2021-07-01"
+        accept = "application/json"
+
+        # Construct URL
+        url = self.get_default_delete_protected_item_requests_object.metadata['url']  # type: ignore
+        path_format_arguments = {
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGuardsName': self._serialize.url("resource_guards_name", resource_guards_name, 'str'),
+            'requestName': self._serialize.url("request_name", request_name, 'str'),
+        }
+        url = self._client.format_url(url, **path_format_arguments)
+
+        # Construct parameters
+        query_parameters = {}  # type: Dict[str, Any]
+        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+
+        # Construct headers
+        header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+
+        request = self._client.get(url, query_parameters, header_parameters)
+        pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+
+        deserialized = self._deserialize('DppBaseResource', pipeline_response)
+
+        if cls:
+            return cls(pipeline_response, deserialized, {})
+
+        return deserialized
+    get_default_delete_protected_item_requests_object.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataProtection/resourceGuards/{resourceGuardsName}/deleteProtectedItemRequests/{requestName}'}  # type: ignore
+
+    async def get_default_update_protection_policy_requests_object(
+        self,
+        resource_group_name: str,
+        resource_guards_name: str,
+        request_name: str,
+        **kwargs
+    ) -> "models.DppBaseResource":
+        """Returns collection of operation request objects for a critical operation protected by the given ResourceGuard resource.
+
+        Returns collection of operation request objects for a critical operation protected by the given
+        ResourceGuard resource.
+
+        :param resource_group_name: The name of the resource group where the backup vault is present.
+        :type resource_group_name: str
+        :param resource_guards_name:
+        :type resource_guards_name: str
+        :param request_name:
+        :type request_name: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :return: DppBaseResource, or the result of cls(response)
+        :rtype: ~data_protection_client.models.DppBaseResource
+        :raises: ~azure.core.exceptions.HttpResponseError
+        """
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.DppBaseResource"]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
+        api_version = "2021-07-01"
+        accept = "application/json"
+
+        # Construct URL
+        url = self.get_default_update_protection_policy_requests_object.metadata['url']  # type: ignore
+        path_format_arguments = {
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGuardsName': self._serialize.url("resource_guards_name", resource_guards_name, 'str'),
+            'requestName': self._serialize.url("request_name", request_name, 'str'),
+        }
+        url = self._client.format_url(url, **path_format_arguments)
+
+        # Construct parameters
+        query_parameters = {}  # type: Dict[str, Any]
+        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+
+        # Construct headers
+        header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+
+        request = self._client.get(url, query_parameters, header_parameters)
+        pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+
+        deserialized = self._deserialize('DppBaseResource', pipeline_response)
+
+        if cls:
+            return cls(pipeline_response, deserialized, {})
+
+        return deserialized
+    get_default_update_protection_policy_requests_object.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataProtection/resourceGuards/{resourceGuardsName}/updateProtectionPolicyRequests/{requestName}'}  # type: ignore
+
+    async def get_default_update_protected_item_requests_object(
+        self,
+        resource_group_name: str,
+        resource_guards_name: str,
+        request_name: str,
+        **kwargs
+    ) -> "models.DppBaseResource":
+        """Returns collection of operation request objects for a critical operation protected by the given ResourceGuard resource.
+
+        Returns collection of operation request objects for a critical operation protected by the given
+        ResourceGuard resource.
+
+        :param resource_group_name: The name of the resource group where the backup vault is present.
+        :type resource_group_name: str
+        :param resource_guards_name:
+        :type resource_guards_name: str
+        :param request_name:
+        :type request_name: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :return: DppBaseResource, or the result of cls(response)
+        :rtype: ~data_protection_client.models.DppBaseResource
+        :raises: ~azure.core.exceptions.HttpResponseError
+        """
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.DppBaseResource"]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
+        api_version = "2021-07-01"
+        accept = "application/json"
+
+        # Construct URL
+        url = self.get_default_update_protected_item_requests_object.metadata['url']  # type: ignore
+        path_format_arguments = {
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGuardsName': self._serialize.url("resource_guards_name", resource_guards_name, 'str'),
+            'requestName': self._serialize.url("request_name", request_name, 'str'),
+        }
+        url = self._client.format_url(url, **path_format_arguments)
+
+        # Construct parameters
+        query_parameters = {}  # type: Dict[str, Any]
+        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+
+        # Construct headers
+        header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+
+        request = self._client.get(url, query_parameters, header_parameters)
+        pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+
+        deserialized = self._deserialize('DppBaseResource', pipeline_response)
+
+        if cls:
+            return cls(pipeline_response, deserialized, {})
+
+        return deserialized
+    get_default_update_protected_item_requests_object.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataProtection/resourceGuards/{resourceGuardsName}/updateProtectedItemRequests/{requestName}'}  # type: ignore
