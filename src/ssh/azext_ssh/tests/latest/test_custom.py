@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import io
-from knack import util
+from azure.cli.core import azclierror
 import mock
 import unittest
 
@@ -82,7 +82,7 @@ class SshCustomCommandTest(unittest.TestCase):
         mock_ip.return_value = None
 
         self.assertRaises(
-            util.CLIError, custom._do_ssh_op, cmd, "rg", "vm", None,
+            azclierror.ResourceNotFoundError, custom._do_ssh_op, cmd, "rg", "vm", None,
             "publicfile", "privatefile", False, mock_op)
 
         mock_assert.assert_called_once_with("rg", "vm", None)
@@ -90,15 +90,15 @@ class SshCustomCommandTest(unittest.TestCase):
         mock_ip.assert_called_once_with(cmd, "rg", "vm", False)
 
     def test_assert_args_no_ip_or_vm(self):
-        self.assertRaises(util.CLIError, custom._assert_args, None, None, None)
+        self.assertRaises(azclierror.RequiredArgumentMissingError, custom._assert_args, None, None, None)
 
     def test_assert_args_vm_rg_mismatch(self):
-        self.assertRaises(util.CLIError, custom._assert_args, "rg", None, None)
-        self.assertRaises(util.CLIError, custom._assert_args, None, "vm", None)
+        self.assertRaises(azclierror.MutuallyExclusiveArgumentError, custom._assert_args, "rg", None, None)
+        self.assertRaises(azclierror.MutuallyExclusiveArgumentError, custom._assert_args, None, "vm", None)
 
     def test_assert_args_ip_with_vm_or_rg(self):
-        self.assertRaises(util.CLIError, custom._assert_args, None, "vm", "ip")
-        self.assertRaises(util.CLIError, custom._assert_args, "rg", "vm", "ip")
+        self.assertRaises(azclierror.MutuallyExclusiveArgumentError, custom._assert_args, None, "vm", "ip")
+        self.assertRaises(azclierror.MutuallyExclusiveArgumentError, custom._assert_args, "rg", "vm", "ip")
 
     @mock.patch('azext_ssh.ssh_utils.create_ssh_keyfile')
     @mock.patch('tempfile.mkdtemp')
@@ -130,7 +130,7 @@ class SshCustomCommandTest(unittest.TestCase):
     def test_check_or_create_public_private_files_no_public(self, mock_join, mock_isfile):
         mock_isfile.side_effect = [False]
         self.assertRaises(
-            util.CLIError, custom._check_or_create_public_private_files, "public", None)
+            azclierror.FileOperationError, custom._check_or_create_public_private_files, "public", None)
 
         mock_isfile.assert_called_once_with("public")
 
@@ -140,7 +140,7 @@ class SshCustomCommandTest(unittest.TestCase):
         mock_isfile.side_effect = [True, False]
 
         self.assertRaises(
-            util.CLIError, custom._check_or_create_public_private_files, "public", "private")
+            azclierror.FileOperationError, custom._check_or_create_public_private_files, "public", "private")
 
         mock_join.assert_not_called()
         mock_isfile.assert_has_calls([
@@ -177,7 +177,7 @@ class SshCustomCommandTest(unittest.TestCase):
     def test_get_modulus_exponent_file_not_found(self, mock_isfile):
         mock_isfile.return_value = False
 
-        self.assertRaises(util.CLIError, custom._get_modulus_exponent, 'file')
+        self.assertRaises(azclierror.FileOperationError, custom._get_modulus_exponent, 'file')
         mock_isfile.assert_called_once_with('file')
 
     @mock.patch('azext_ssh.rsa_parser.RSAParser')
@@ -190,7 +190,7 @@ class SshCustomCommandTest(unittest.TestCase):
         mock_parser.return_value = mock_parser_obj
         mock_parser_obj.parse.side_effect = ValueError
 
-        self.assertRaises(util.CLIError, custom._get_modulus_exponent, 'file')
+        self.assertRaises(azclierror.FileOperationError, custom._get_modulus_exponent, 'file')
 
 
 if __name__ == '__main__':

@@ -9,7 +9,7 @@ import hashlib
 import json
 import tempfile
 
-from knack import util
+from azure.cli.core import azclierror
 
 from . import ip_utils
 from . import rsa_parser
@@ -42,9 +42,9 @@ def _do_ssh_op(cmd, resource_group, vm_name, ssh_ip, public_key_file, private_ke
 
     if not ssh_ip:
         if not use_private_ip:
-            raise util.CLIError(f"VM '{vm_name}' does not have a public IP address to SSH to")
+            raise azclierror.ResourceNotFoundError(f"VM '{vm_name}' does not have a public IP address to SSH to")
 
-        raise util.CLIError(f"VM '{vm_name}' does not have a public or private IP address to SSH to")
+        raise azclierror.ResourceNotFoundError(f"VM '{vm_name}' does not have a public or private IP address to SSH to")
 
     cert_file, username = _get_and_write_certificate(cmd, public_key_file, None)
     op_call(ssh_ip, username, cert_file, private_key_file)
@@ -58,7 +58,9 @@ def _get_and_write_certificate(cmd, public_key_file, cert_file):
     }
     scope = cloudtoscope.get(cmd.cli_ctx.cloud.name.lower(), None)
     if not scope:
-        raise util.CLIError(f"Unsupported cloud {cmd.cli_ctx.cloud.name.lower()}")
+        raise azclierror.InvalidArgumentValueError(
+            f"Unsupported cloud {cmd.cli_ctx.cloud.name.lower()}",
+            "Supported clouds include azurecloud,azurechinacloud,azureusgovernment")
 
     scopes = [scope]
     data = _prepare_jwk_data(public_key_file)
@@ -106,13 +108,16 @@ def _prepare_jwk_data(public_key_file):
 
 def _assert_args(resource_group, vm_name, ssh_ip):
     if not (resource_group or vm_name or ssh_ip):
-        raise util.CLIError("The VM must be specified by --ip or --resource-group and --vm-name/--name")
+        raise azclierror.RequiredArgumentMissingError(
+            "The VM must be specified by --ip or --resource-group and --vm-name/--name")
 
     if resource_group and not vm_name or vm_name and not resource_group:
-        raise util.CLIError("--resource-group and --vm-name/--name must be provided together")
+        raise azclierror.MutuallyExclusiveArgumentError(
+            "--resource-group and --vm-name/--name must be provided together")
 
     if ssh_ip and (vm_name or resource_group):
-        raise util.CLIError("--ip cannot be used with --resource-group or --vm-name/--name")
+        raise azclierror.MutuallyExclusiveArgumentError(
+            "--ip cannot be used with --resource-group or --vm-name/--name")
 
 
 def _check_or_create_public_private_files(public_key_file, private_key_file):
@@ -127,16 +132,16 @@ def _check_or_create_public_private_files(public_key_file, private_key_file):
         if private_key_file:
             public_key_file = private_key_file + ".pub"
         else:
-            raise util.CLIError("Public key file not specified")
+            raise azclierror.RequiredArgumentMissingError("Public key file not specified")
 
     if not os.path.isfile(public_key_file):
-        raise util.CLIError(f"Public key file {public_key_file} not found")
+        raise azclierror.FileOperationError(f"Public key file {public_key_file} not found")
 
     # The private key is not required as the user may be using a keypair
     # stored in ssh-agent (and possibly in a hardware token)
     if private_key_file:
         if not os.path.isfile(private_key_file):
-            raise util.CLIError(f"Private key file {private_key_file} not found")
+            raise azclierror.FileOperationError(f"Private key file {private_key_file} not found")
 
     return public_key_file, private_key_file
 
@@ -150,7 +155,7 @@ def _write_cert_file(certificate_contents, cert_file):
 
 def _get_modulus_exponent(public_key_file):
     if not os.path.isfile(public_key_file):
-        raise util.CLIError(f"Public key file '{public_key_file}' was not found")
+        raise azclierror.FileOperationError(f"Public key file '{public_key_file}' was not found")
 
     with open(public_key_file, 'r') as f:
         public_key_text = f.read()
@@ -159,7 +164,7 @@ def _get_modulus_exponent(public_key_file):
     try:
         parser.parse(public_key_text)
     except Exception as e:
-        raise util.CLIError(f"Could not parse public key. Error: {str(e)}")
+        raise azclierror.FileOperationError(f"Could not parse public key. Error: {str(e)}")
     modulus = parser.modulus
     exponent = parser.exponent
 

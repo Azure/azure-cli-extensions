@@ -24,6 +24,10 @@ helps['ssh vm'] = """
         - name: Using a custom private key file
           text: |
             az ssh vm --ip 1.2.3.4 --private-key-file key --public-key-file key.pub
+        - name: Using additional ssh arguments (must be quoted)
+          text: |
+            az ssh vm --ip 1.2.3.4 --ssh-args '-A -o ForwardX11=yes'
+            az ssh vm --ip 1.2.3.4 --ssh-args="-A -o ForwardX11=yes"
 """
 
 helps['ssh config'] = """

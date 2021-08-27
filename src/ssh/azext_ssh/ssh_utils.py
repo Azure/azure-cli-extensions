@@ -4,10 +4,11 @@
 # --------------------------------------------------------------------------------------------
 import os
 import platform
+import shlex
 import subprocess
 
 from knack import log
-from knack import util
+from azure.cli.core import azclierror
 
 logger = log.get_logger(__name__)
 
@@ -15,7 +16,7 @@ logger = log.get_logger(__name__)
 def start_ssh_connection(port, ssh_args, ip, username, cert_file, private_key_file):
     ssh_arg_list = []
     if ssh_args:
-        ssh_arg_list = [ssh_args]
+        ssh_arg_list = shlex.split(ssh_args)
     command = [_get_ssh_path(), _get_host(username, ip)]
     command = command + _build_args(cert_file, private_key_file, port) + ssh_arg_list
     logger.debug("Running ssh command %s", ' '.join(command))
@@ -97,7 +98,9 @@ def _get_ssh_path(ssh_command="ssh"):
         logger.debug("Attempting to run ssh from path %s", ssh_path)
 
         if not os.path.isfile(ssh_path):
-            raise util.CLIError("Could not find " + ssh_command + ".exe. Is the OpenSSH client installed?")
+            raise azclierror.UnclassifiedUserFault(
+                "Could not find " + ssh_command + ".exe.",
+                "https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse")
 
     return ssh_path
 
