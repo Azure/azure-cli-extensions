@@ -80,8 +80,6 @@ def load_arguments(self, _):
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
         c.argument('tenant_id', options_list=['--tenant-id'],
                    help='The tenant id of the application.')
-        c.argument('cloud', options_list=['--cloud'], arg_type=get_enum_type(CLOUD_NAMES),
-                   help='The name of the cloud that the application belongs to.')
 
     with self.argument_context('webapp auth facebook update') as c:
         c.argument('app_id', options_list=['--app-id'],

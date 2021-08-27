@@ -452,7 +452,7 @@ def get_aad_settings(cmd, resource_group_name, name, slot=None):
 def update_aad_settings(cmd, resource_group_name, name, slot=None,  # pylint: disable=unused-argument
                         client_id=None, client_secret_setting_name=None,  # pylint: disable=unused-argument
                         issuer=None, allowed_token_audiences=None, client_secret=None,  # pylint: disable=unused-argument
-                        yes=False, tenant_id=None, cloud=None):    # pylint: disable=unused-argument
+                        yes=False, tenant_id=None):    # pylint: disable=unused-argument
     if client_secret is not None and client_secret_setting_name is not None:
         raise CLIError('Usage Error: --client-secret and --client-secret-setting-name cannot both be '
                        'configured to non empty strings')
@@ -485,15 +485,6 @@ def update_aad_settings(cmd, resource_group_name, name, slot=None,  # pylint: di
     if openid_issuer is None:
         # cmd.cli_ctx.cloud resolves to whichever cloud the customer is currently logged into
         authority = cmd.cli_ctx.cloud.endpoints.active_directory
-        if cloud is not None:
-            if cloud == AZURE_PUBLIC_CLOUD.name:
-                authority = AZURE_PUBLIC_CLOUD.endpoints.active_directory
-            elif cloud == AZURE_CHINA_CLOUD.name:
-                authority = AZURE_CHINA_CLOUD.endpoints.active_directory
-            elif cloud == AZURE_GERMAN_CLOUD.name:
-                authority = AZURE_GERMAN_CLOUD.endpoints.active_directory
-            elif cloud == AZURE_US_GOV_CLOUD:
-                authority = AZURE_US_GOV_CLOUD.endpoints.active_directory
 
         if tenant_id is not None:
             openid_issuer = authority + "/" + tenant_id + "/v2.0"
