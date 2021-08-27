@@ -38,7 +38,7 @@ class SSHUtilsTests(unittest.TestCase):
 
         expected_command = ["ssh", "user@ip", "-i", "private", "-o", "CertificateFile=cert", "-p", "2222", "--thing"]
 
-        ssh_utils.start_ssh_connection("2222", "--thing", "ip", "user", "cert", "private")
+        ssh_utils.start_ssh_connection("2222", ["--thing"], "ip", "user", "cert", "private")
 
         mock_path.assert_called_once_with()
         mock_host.assert_called_once_with("user", "ip")

@@ -4,7 +4,6 @@
 # --------------------------------------------------------------------------------------------
 import os
 import platform
-import shlex
 import subprocess
 
 from knack import log
