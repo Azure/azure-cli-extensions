@@ -67,7 +67,8 @@ def show_k8s_extension(client, resource_group_name, cluster_name, name, cluster_
                               cluster_rp, cluster_type, cluster_name, name)
             else:
                 message = ex.message
-            raise ResourceNotFoundError(message)
+            raise ResourceNotFoundError(message) from ex
+        raise ex
 
 
 def create_k8s_extension(cmd, client, resource_group_name, cluster_name, name, cluster_type,
@@ -98,7 +99,7 @@ def create_k8s_extension(cmd, client, resource_group_name, cluster_name, name, c
     config_protected_settings = {}
     # Get Configuration Settings from file
     if configuration_settings_file is not None:
-        config_settings = __get_config_settings_from_file(configuration_settings_file)
+        config_settings = __read_config_settings_file(configuration_settings_file)
 
     if configuration_settings is not None:
         for dicts in configuration_settings:
@@ -107,7 +108,7 @@ def create_k8s_extension(cmd, client, resource_group_name, cluster_name, name, c
 
     # Get Configuration Protected Settings from file
     if configuration_protected_settings_file is not None:
-        config_protected_settings = __get_config_settings_from_file(configuration_protected_settings_file)
+        config_protected_settings = __read_config_settings_file(configuration_protected_settings_file)
 
     if configuration_protected_settings is not None:
         for dicts in configuration_protected_settings:
@@ -281,18 +282,15 @@ def __validate_version_and_auto_upgrade(version, auto_upgrade_minor_version):
         auto_upgrade_minor_version = False
 
 
-def __get_config_settings_from_file(file_path):
+def __read_config_settings_file(file_path):
     try:
-        config_file = open(file_path,)
-        settings = json.load(config_file)
-    except ValueError:
-        raise Exception("File {} is not a valid JSON file".format(file_path))
-
-    files = len(settings)
-    if files == 0:
-        raise Exception("File {} is empty".format(file_path))
-
-    return settings
+        with open(file_path, 'r') as f:
+            settings = json.load(f)
+            if len(settings) == 0:
+                raise Exception("File {} is empty".format(file_path))
+            return settings
+    except ValueError as ex:
+        raise Exception("File {} is not a valid JSON file".format(file_path)) from ex
 
 
 def __is_dogfood_cluster(cmd):
