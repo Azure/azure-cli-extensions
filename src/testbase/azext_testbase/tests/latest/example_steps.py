@@ -14,27 +14,27 @@ from .. import try_manual
 
 # EXAMPLE: /TestBaseAccounts/put/TestBaseAccountCreate
 @try_manual
-def step_test_base_account_create(test, checks=None):
+def step_account_create(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az testbase test-base-account create '
+    test.cmd('az testbase account create '
              '--location "westus" '
-             '--name "S0" '
+             '--sku-name "S0" '
              '--resource-group "{rg}" '
-             '--test-base-account-name "{myTestBaseAccount}"',
+             '--name "{myTestBaseAccount}"',
              checks=[])
-    test.cmd('az testbase test-base-account wait --created '
+    test.cmd('az testbase account wait --created '
              '--resource-group "{rg}" '
-             '--test-base-account-name "{myTestBaseAccount}"',
+             '--name "{myTestBaseAccount}"',
              checks=checks)
 
 
 # EXAMPLE: /TestBaseAccounts/get/TestBaseAccountGet
 @try_manual
-def step_test_base_account_show(test, checks=None):
+def step_account_show(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az testbase test-base-account show '
+    test.cmd('az testbase account show '
              '--resource-group "{rg}" '
              '--name "{myTestBaseAccount}"',
              checks=checks)
@@ -42,58 +42,56 @@ def step_test_base_account_show(test, checks=None):
 
 # EXAMPLE: /TestBaseAccounts/get/TestBaseAccountsList
 @try_manual
-def step_test_base_account_list(test, checks=None):
+def step_account_list(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az testbase test-base-account list '
+    test.cmd('az testbase account list '
              '--resource-group "{rg}"',
              checks=checks)
 
 
 # EXAMPLE: /TestBaseAccounts/get/TestBaseAccountsListBySubscription
 @try_manual
-def step_test_base_account_list2(test, checks=None):
+def step_account_list2(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az testbase test-base-account list '
+    test.cmd('az testbase account list '
              '-g ""',
              checks=checks)
 
 
 # EXAMPLE: /TestBaseAccounts/patch/TestBaseAccountUpdate
 @try_manual
-def step_test_base_account_update(test, checks=None):
+def step_account_update(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az testbase test-base-account update '
+    test.cmd('az testbase account update '
              '--name "S0" '
-             '--resource-group "{rg}" '
-             '--test-base-account-name "{myTestBaseAccount}"',
+             '--resource-group "{rg}"',
              checks=checks)
 
 
 # EXAMPLE: /TestBaseAccounts/post/CheckPackageNameAvailability
 @try_manual
-def step_test_base_account(test, checks=None):
+def step_account_check_package_name(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az testbase test-base-account check-package-name-availability '
+    test.cmd('az testbase account check-package-name '
              '--name "testApp" '
              '--type "Microsoft.TestBase/testBaseAccounts/packages" '
              '--application-name "testApp" '
              '--version "1.0.0" '
-             '--resource-group "{rg}" '
-             '--test-base-account-name "{myTestBaseAccount}"',
+             '--resource-group "{rg}"',
              checks=checks)
 
 
 # EXAMPLE: /TestBaseAccounts/post/TestBaseAccountGetFileUploadUrl
 @try_manual
-def step_test_base_account_get_file_upload_url(test, checks=None):
+def step_account_get_package_blob_path(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az testbase test-base-account get-file-upload-url '
-             '--blob-name "package.zip" '
+    test.cmd('az testbase account get-package-blob-path '
+             '--file-name "package.zip" '
              '--resource-group "{rg}" '
              '--name "{myTestBaseAccount}"',
              checks=checks)
@@ -101,12 +99,76 @@ def step_test_base_account_get_file_upload_url(test, checks=None):
 
 # EXAMPLE: /TestBaseAccounts/post/TestBaseAccountOffboard
 @try_manual
-def step_test_base_account_offboard(test, checks=None):
+def step_account_soft_delete(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az testbase test-base-account offboard '
+    test.cmd('az testbase account soft-delete '
              '--resource-group "{rg}" '
              '--name "{myTestBaseAccount}"',
+             checks=checks)
+
+
+# EXAMPLE: /CustomerEvents/put/CustomerEventCreate
+@try_manual
+def step_customer_event_create(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az testbase customer-event create '
+             '--name "{myCustomerEvent}" '
+             '--event-name "{myCustomerEvent}" '
+             '--receivers "[{{\\"receiverType\\":\\"UserObjects\\",\\"receiverValue\\":{{\\"userObjectReceiverValue\\":'
+             '{{\\"userObjectIds\\":[\\"245245245245325\\",\\"365365365363565\\"]}}}}}},{{\\"receiverType\\":\\"Distrib'
+             'utionGroup\\",\\"receiverValue\\":{{\\"distributionGroupListReceiverValue\\":{{\\"distributionGroups\\":['
+             '\\"test@microsoft.com\\"]}}}}}}]" '
+             '--resource-group "{rg}" '
+             '--account-name "{myTestBaseAccount}"',
+             checks=checks)
+
+
+# EXAMPLE: /CustomerEvents/get/CustomerEventGet
+@try_manual
+def step_customer_event_show(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az testbase customer-event show '
+             '--name "{myCustomerEvent}" '
+             '--resource-group "{rg}" '
+             '--account-name "{myTestBaseAccount}"',
+             checks=checks)
+
+
+# EXAMPLE: /CustomerEvents/get/CustomerEventsList
+@try_manual
+def step_customer_event_list(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az testbase customer-event list '
+             '--resource-group "{rg}" '
+             '--account-name "{myTestBaseAccount}"',
+             checks=checks)
+
+
+# EXAMPLE: /CustomerEvents/delete/CustomerEventDelete
+@try_manual
+def step_customer_event_delete(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az testbase customer-event delete -y '
+             '--name "{myCustomerEvent}" '
+             '--resource-group "{rg}" '
+             '--account-name "{myTestBaseAccount}"',
+             checks=checks)
+
+
+# EXAMPLE: /EmailEvents/get/EmailEventGet
+@try_manual
+def step_email_event_show(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az testbase email-event show '
+             '--email-event-resource-name "weekly-summary" '
+             '--resource-group "{rg_2}" '
+             '--account-name "{myTestBaseAccount2}"',
              checks=checks)
 
 
@@ -117,7 +179,7 @@ def step_email_event_list(test, checks=None):
         checks = []
     test.cmd('az testbase email-event list '
              '--resource-group "{rg_2}" '
-             '--test-base-account-name "{myTestBaseAccount2}"',
+             '--account-name "{myTestBaseAccount2}"',
              checks=checks)
 
 
@@ -148,12 +210,12 @@ def step_package_create(test, checks=None):
              '\\"runAsInteractive\\":true,\\"runElevated\\":true}}]}}]" '
              '--version "1.0.0" '
              '--resource-group "{rg}" '
-             '--test-base-account-name "{myTestBaseAccount}"',
+             '--account-name "{myTestBaseAccount}"',
              checks=[])
     test.cmd('az testbase package wait --created '
              '--name "{myPackage}" '
              '--resource-group "{rg}" '
-             '--test-base-account-name "{myTestBaseAccount}"',
+             '--account-name "{myTestBaseAccount}"',
              checks=checks)
 
 
@@ -165,7 +227,7 @@ def step_package_show(test, checks=None):
     test.cmd('az testbase package show '
              '--name "{myPackage}" '
              '--resource-group "{rg}" '
-             '--test-base-account-name "{myTestBaseAccount}"',
+             '--account-name "{myTestBaseAccount}"',
              checks=checks)
 
 
@@ -176,7 +238,7 @@ def step_package_list(test, checks=None):
         checks = []
     test.cmd('az testbase package list '
              '--resource-group "{rg}" '
-             '--test-base-account-name "{myTestBaseAccount}"',
+             '--account-name "{myTestBaseAccount}"',
              checks=checks)
 
 
@@ -205,7 +267,7 @@ def step_package_update(test, checks=None):
              'scripts/uninstall/job.ps1\\",\\"contentType\\":\\"Path\\",\\"maxRunTime\\":1800,\\"restartAfter\\":false,'
              '\\"runAsInteractive\\":true,\\"runElevated\\":true}}]}}]" '
              '--resource-group "{rg}" '
-             '--test-base-account-name "{myTestBaseAccount}"',
+             '--account-name "{myTestBaseAccount}"',
              checks=checks)
 
 
@@ -217,7 +279,7 @@ def step_package_get_download_url(test, checks=None):
     test.cmd('az testbase package get-download-url '
              '--name "{myPackage}" '
              '--resource-group "{rg}" '
-             '--test-base-account-name "{myTestBaseAccount}"',
+             '--account-name "{myTestBaseAccount}"',
              checks=checks)
 
 
@@ -229,7 +291,7 @@ def step_package_hard_delete(test, checks=None):
     test.cmd('az testbase package hard-delete '
              '--name "{myPackage}" '
              '--resource-group "{rg}" '
-             '--test-base-account-name "{myTestBaseAccount}"',
+             '--account-name "{myTestBaseAccount}"',
              checks=checks)
 
 
@@ -242,7 +304,7 @@ def step_analysis_result_show(test, checks=None):
              '--name "{myAnalysisResult}" '
              '--package-name "{myPackage}" '
              '--resource-group "{rg}" '
-             '--test-base-account-name "{myTestBaseAccount}" '
+             '--account-name "{myTestBaseAccount}" '
              '--test-result-name "{myTestResult2}"',
              checks=checks)
 
@@ -256,7 +318,7 @@ def step_analysis_result_list(test, checks=None):
              '--analysis-result-type "CPURegression" '
              '--package-name "{myPackage}" '
              '--resource-group "{rg}" '
-             '--test-base-account-name "{myTestBaseAccount}" '
+             '--account-name "{myTestBaseAccount}" '
              '--test-result-name "{myTestResult2}"',
              checks=checks)
 
@@ -270,7 +332,7 @@ def step_analysis_result_show2(test, checks=None):
              '--name "{myAnalysisResult2}" '
              '--package-name "{myPackage}" '
              '--resource-group "{rg}" '
-             '--test-base-account-name "{myTestBaseAccount}" '
+             '--account-name "{myTestBaseAccount}" '
              '--test-result-name "{myTestResult2}"',
              checks=checks)
 
@@ -284,7 +346,7 @@ def step_analysis_result_list2(test, checks=None):
              '--analysis-result-type "CPUUtilization" '
              '--package-name "{myPackage}" '
              '--resource-group "{rg}" '
-             '--test-base-account-name "{myTestBaseAccount}" '
+             '--account-name "{myTestBaseAccount}" '
              '--test-result-name "{myTestResult2}"',
              checks=checks)
 
@@ -298,7 +360,7 @@ def step_analysis_result_show3(test, checks=None):
              '--name "{myAnalysisResult3}" '
              '--package-name "{myPackage}" '
              '--resource-group "{rg}" '
-             '--test-base-account-name "{myTestBaseAccount}" '
+             '--account-name "{myTestBaseAccount}" '
              '--test-result-name "{myTestResult2}"',
              checks=checks)
 
@@ -312,7 +374,7 @@ def step_analysis_result_list3(test, checks=None):
              '--analysis-result-type "MemoryRegression" '
              '--package-name "{myPackage}" '
              '--resource-group "{rg}" '
-             '--test-base-account-name "{myTestBaseAccount}" '
+             '--account-name "{myTestBaseAccount}" '
              '--test-result-name "{myTestResult2}"',
              checks=checks)
 
@@ -326,7 +388,7 @@ def step_analysis_result_show4(test, checks=None):
              '--name "{myAnalysisResult4}" '
              '--package-name "{myPackage}" '
              '--resource-group "{rg}" '
-             '--test-base-account-name "{myTestBaseAccount}" '
+             '--account-name "{myTestBaseAccount}" '
              '--test-result-name "{myTestResult2}"',
              checks=checks)
 
@@ -340,7 +402,7 @@ def step_analysis_result_list4(test, checks=None):
              '--analysis-result-type "MemoryUtilization" '
              '--package-name "{myPackage}" '
              '--resource-group "{rg}" '
-             '--test-base-account-name "{myTestBaseAccount}" '
+             '--account-name "{myTestBaseAccount}" '
              '--test-result-name "{myTestResult2}"',
              checks=checks)
 
@@ -353,7 +415,7 @@ def step_available_os_show(test, checks=None):
     test.cmd('az testbase available-os show '
              '--available-os-resource-name "Windows-10-2004" '
              '--resource-group "{rg_2}" '
-             '--test-base-account-name "{myTestBaseAccount2}"',
+             '--account-name "{myTestBaseAccount2}"',
              checks=checks)
 
 
@@ -365,71 +427,7 @@ def step_available_os_list(test, checks=None):
     test.cmd('az testbase available-os list '
              '--os-update-type "SecurityUpdate" '
              '--resource-group "{rg_2}" '
-             '--test-base-account-name "{myTestBaseAccount2}"',
-             checks=checks)
-
-
-# EXAMPLE: /CustomerEvents/put/CustomerEventCreate
-@try_manual
-def step_customer_event_create(test, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az testbase customer-event create '
-             '--name "{myCustomerEvent}" '
-             '--event-name "{myCustomerEvent}" '
-             '--receivers "[{{\\"receiverType\\":\\"UserObjects\\",\\"receiverValue\\":{{\\"userObjectReceiverValue\\":'
-             '{{\\"userObjectIds\\":[\\"245245245245325\\",\\"365365365363565\\"]}}}}}},{{\\"receiverType\\":\\"Distrib'
-             'utionGroup\\",\\"receiverValue\\":{{\\"distributionGroupListReceiverValue\\":{{\\"distributionGroups\\":['
-             '\\"test@microsoft.com\\"]}}}}}}]" '
-             '--resource-group "{rg}" '
-             '--test-base-account-name "{myTestBaseAccount}"',
-             checks=checks)
-
-
-# EXAMPLE: /CustomerEvents/get/CustomerEventGet
-@try_manual
-def step_customer_event_show(test, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az testbase customer-event show '
-             '--name "{myCustomerEvent}" '
-             '--resource-group "{rg}" '
-             '--test-base-account-name "{myTestBaseAccount}"',
-             checks=checks)
-
-
-# EXAMPLE: /CustomerEvents/get/CustomerEventsList
-@try_manual
-def step_customer_event_list(test, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az testbase customer-event list '
-             '--resource-group "{rg}" '
-             '--test-base-account-name "{myTestBaseAccount}"',
-             checks=checks)
-
-
-# EXAMPLE: /CustomerEvents/delete/CustomerEventDelete
-@try_manual
-def step_customer_event_delete(test, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az testbase customer-event delete -y '
-             '--name "{myCustomerEvent}" '
-             '--resource-group "{rg}" '
-             '--test-base-account-name "{myTestBaseAccount}"',
-             checks=checks)
-
-
-# EXAMPLE: /EmailEvents/get/EmailEventGet
-@try_manual
-def step_email_event_show(test, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az testbase email-event show '
-             '--email-event-resource-name "weekly-summary" '
-             '--resource-group "{rg_2}" '
-             '--test-base-account-name "{myTestBaseAccount2}"',
+             '--account-name "{myTestBaseAccount2}"',
              checks=checks)
 
 
@@ -439,11 +437,11 @@ def step_favorite_process_create(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az testbase favorite-process create '
-             '--favorite-process-resource-name "testAppProcess" '
+             '--name "testAppProcess" '
              '--package-name "{myPackage}" '
              '--actual-process-name "testApp&.exe" '
              '--resource-group "{rg}" '
-             '--test-base-account-name "{myTestBaseAccount}"',
+             '--account-name "{myTestBaseAccount}"',
              checks=checks)
 
 
@@ -455,7 +453,7 @@ def step_favorite_process_list(test, checks=None):
     test.cmd('az testbase favorite-process list '
              '--package-name "{myPackage}" '
              '--resource-group "{rg}" '
-             '--test-base-account-name "{myTestBaseAccount}"',
+             '--account-name "{myTestBaseAccount}"',
              checks=checks)
 
 
@@ -465,10 +463,10 @@ def step_favorite_process_show(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az testbase favorite-process show '
-             '--favorite-process-resource-name "testAppProcess" '
+             '--name "testAppProcess" '
              '--package-name "{myPackage}" '
              '--resource-group "{rg}" '
-             '--test-base-account-name "{myTestBaseAccount}"',
+             '--account-name "{myTestBaseAccount}"',
              checks=checks)
 
 
@@ -478,10 +476,10 @@ def step_favorite_process_delete(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az testbase favorite-process delete -y '
-             '--favorite-process-resource-name "testAppProcess" '
+             '--name "testAppProcess" '
              '--package-name "{myPackage}" '
              '--resource-group "{rg}" '
-             '--test-base-account-name "{myTestBaseAccount}"',
+             '--account-name "{myTestBaseAccount}"',
              checks=checks)
 
 
@@ -493,7 +491,7 @@ def step_flighting_ring_show(test, checks=None):
     test.cmd('az testbase flighting-ring show '
              '--flighting-ring-resource-name "Insider-Beta-Channel" '
              '--resource-group "{rg_2}" '
-             '--test-base-account-name "{myTestBaseAccount2}"',
+             '--account-name "{myTestBaseAccount2}"',
              checks=checks)
 
 
@@ -504,7 +502,7 @@ def step_flighting_ring_list(test, checks=None):
         checks = []
     test.cmd('az testbase flighting-ring list '
              '--resource-group "{rg_2}" '
-             '--test-base-account-name "{myTestBaseAccount2}"',
+             '--account-name "{myTestBaseAccount2}"',
              checks=checks)
 
 
@@ -517,7 +515,7 @@ def step_os_update_show(test, checks=None):
              '--os-update-resource-name "Windows-10-2004-2020-12-B-505" '
              '--package-name "{myPackage}" '
              '--resource-group "{rg}" '
-             '--test-base-account-name "{myTestBaseAccount}"',
+             '--account-name "{myTestBaseAccount}"',
              checks=checks)
 
 
@@ -530,7 +528,28 @@ def step_os_update_list(test, checks=None):
              '--os-update-type "SecurityUpdate" '
              '--package-name "{myPackage}" '
              '--resource-group "{rg}" '
-             '--test-base-account-name "{myTestBaseAccount}"',
+             '--account-name "{myTestBaseAccount}"',
+             checks=checks)
+
+
+# EXAMPLE: /Packages/delete/PackageDelete
+@try_manual
+def step_package_delete(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az testbase package delete -y '
+             '--name "{myPackage}" '
+             '--resource-group "{rg}" '
+             '--account-name "{myTestBaseAccount}"',
+             checks=checks)
+
+
+# EXAMPLE: /Skus/get/TestBaseAccountSKUsList
+@try_manual
+def step_sku_list(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az testbase sku list',
              checks=checks)
 
 
@@ -542,7 +561,7 @@ def step_test_result_show(test, checks=None):
     test.cmd('az testbase test-result show '
              '--package-name "{myPackage}" '
              '--resource-group "{rg}" '
-             '--test-base-account-name "{myTestBaseAccount}" '
+             '--account-name "{myTestBaseAccount}" '
              '--name "{myTestResult}"',
              checks=checks)
 
@@ -557,7 +576,7 @@ def step_test_result_list(test, checks=None):
              '--os-update-type "SecurityUpdate" '
              '--package-name "{myPackage}" '
              '--resource-group "{rg}" '
-             '--test-base-account-name "{myTestBaseAccount}"',
+             '--account-name "{myTestBaseAccount}"',
              checks=checks)
 
 
@@ -569,7 +588,7 @@ def step_test_result_get_download_url(test, checks=None):
     test.cmd('az testbase test-result get-download-url '
              '--package-name "{myPackage}" '
              '--resource-group "{rg}" '
-             '--test-base-account-name "{myTestBaseAccount}" '
+             '--account-name "{myTestBaseAccount}" '
              '--name "{myTestResult}"',
              checks=checks)
 
@@ -582,29 +601,8 @@ def step_test_result_get_video_download_url(test, checks=None):
     test.cmd('az testbase test-result get-video-download-url '
              '--package-name "{myPackage}" '
              '--resource-group "{rg}" '
-             '--test-base-account-name "{myTestBaseAccount}" '
+             '--account-name "{myTestBaseAccount}" '
              '--name "{myTestResult}"',
-             checks=checks)
-
-
-# EXAMPLE: /Packages/delete/PackageDelete
-@try_manual
-def step_package_delete(test, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az testbase package delete -y '
-             '--name "{myPackage}" '
-             '--resource-group "{rg}" '
-             '--test-base-account-name "{myTestBaseAccount}"',
-             checks=checks)
-
-
-# EXAMPLE: /Skus/get/TestBaseAccountSKUsList
-@try_manual
-def step_sku_list(test, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az testbase sku list',
              checks=checks)
 
 
@@ -615,7 +613,7 @@ def step_test_summary_list(test, checks=None):
         checks = []
     test.cmd('az testbase test-summary list '
              '--resource-group "{rg}" '
-             '--test-base-account-name "{myTestBaseAccount}"',
+             '--account-name "{myTestBaseAccount}"',
              checks=checks)
 
 
@@ -626,7 +624,7 @@ def step_test_summary_show(test, checks=None):
         checks = []
     test.cmd('az testbase test-summary show '
              '--resource-group "{rg}" '
-             '--test-base-account-name "{myTestBaseAccount}" '
+             '--account-name "{myTestBaseAccount}" '
              '--name "{myTestSummary}"',
              checks=checks)
 
@@ -638,7 +636,7 @@ def step_test_type_show(test, checks=None):
         checks = []
     test.cmd('az testbase test-type show '
              '--resource-group "{rg_2}" '
-             '--test-base-account-name "{myTestBaseAccount2}" '
+             '--account-name "{myTestBaseAccount2}" '
              '--test-type-resource-name "Functional-Test"',
              checks=checks)
 
@@ -650,7 +648,7 @@ def step_test_type_list(test, checks=None):
         checks = []
     test.cmd('az testbase test-type list '
              '--resource-group "{rg_2}" '
-             '--test-base-account-name "{myTestBaseAccount2}"',
+             '--account-name "{myTestBaseAccount2}"',
              checks=checks)
 
 
@@ -661,16 +659,5 @@ def step_usage_list(test, checks=None):
         checks = []
     test.cmd('az testbase usage list '
              '--resource-group "{rg}" '
-             '--test-base-account-name "{myTestBaseAccount}"',
-             checks=checks)
-
-
-# EXAMPLE: /TestBaseAccounts/delete/TestBaseAccountDelete
-@try_manual
-def step_test_base_account_delete(test, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az testbase test-base-account delete -y '
-             '--resource-group "{rg}" '
-             '--name "{myTestBaseAccount}"',
+             '--account-name "{myTestBaseAccount}"',
              checks=checks)

@@ -29,124 +29,106 @@ from azext_testbase.action import (
 
 def load_arguments(self, _):
 
-    with self.argument_context('testbase test-base-account list') as c:
+    with self.argument_context('testbase account list') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('get_deleted', arg_type=get_three_state_flag(), help='The flag indicating if we need to include the '
                    'Test Base Accounts which were soft deleted before.')
 
-    with self.argument_context('testbase test-base-account show') as c:
+    with self.argument_context('testbase account show') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('test_base_account_name', options_list=['--name', '-n', '--test-base-account-name'], type=str,
-                   help='The resource name of the Test Base Account.', id_part='name')
+        c.argument('name', type=str, help='The resource name of the Test Base Account.', id_part='name')
 
-    with self.argument_context('testbase test-base-account create') as c:
+    with self.argument_context('testbase account create') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('test_base_account_name', type=str, help='The resource name of the Test Base Account.')
+        c.argument('name', type=str, help='The resource name of the Test Base Account.')
         c.argument('restore', arg_type=get_three_state_flag(), help='The flag indicating if we would like to restore '
                    'the Test Base Accounts which were soft deleted before.')
         c.argument('tags', tags_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
         c.argument('resource_type', type=str, help='The type of resource the SKU applies to.', arg_group='Sku')
-        c.argument('name', type=str, help='The name of the SKU. This is typically a letter + number code, such as B0 '
-                   'or S0.', arg_group='Sku')
+        c.argument('sku_name', type=str, help='The name of the SKU. This is typically a letter + number code, such as '
+                   'B0 or S0.', arg_group='Sku')
         c.argument('locations', nargs='+', help='The locations that the SKU is available.', arg_group='Sku')
 
-    with self.argument_context('testbase test-base-account update') as c:
+    with self.argument_context('testbase account update') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('test_base_account_name', type=str, help='The resource name of the Test Base Account.',
-                   id_part='name')
+        c.argument('name', type=str, help='The resource name of the Test Base Account.', id_part='name')
         c.argument('tags', tags_type)
         c.argument('resource_type', type=str, help='The type of resource the SKU applies to.', arg_group='Sku')
-        c.argument('name', type=str, help='The name of the SKU. This is typically a letter + number code, such as B0 '
-                   'or S0.', arg_group='Sku')
         c.argument('locations', nargs='+', help='The locations that the SKU is available.', arg_group='Sku')
 
-    with self.argument_context('testbase test-base-account delete') as c:
+    with self.argument_context('testbase account check-package-name') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('test_base_account_name', options_list=['--name', '-n', '--test-base-account-name'], type=str,
-                   help='The resource name of the Test Base Account.', id_part='name')
-
-    with self.argument_context('testbase test-base-account check-package-name-availability') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('test_base_account_name', type=str, help='The resource name of the Test Base Account.',
-                   id_part='name')
-        c.argument('name', type=str, help='Resource name to verify.')
+        c.argument('name', type=str, help='The resource name of the Test Base Account.', id_part='name')
         c.argument('application_name', type=str, help='Application name to verify.')
         c.argument('version', type=str, help='Version name to verify.')
         c.argument('type_', options_list=['--type'], type=str, help='fully qualified resource type which includes '
                    'provider namespace.')
 
-    with self.argument_context('testbase test-base-account get-file-upload-url') as c:
+    with self.argument_context('testbase account get-package-blob-path') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('test_base_account_name', options_list=['--name', '-n', '--test-base-account-name'], type=str,
-                   help='The resource name of the Test Base Account.', id_part='name')
-        c.argument('blob_name', type=str, help='The custom file name of the uploaded blob.')
+        c.argument('name', type=str, help='The resource name of the Test Base Account.', id_part='name')
+        c.argument('file_name', type=str, help='The custom file name of the uploaded blob.')
 
-    with self.argument_context('testbase test-base-account offboard') as c:
+    with self.argument_context('testbase account soft-delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('test_base_account_name', options_list=['--name', '-n', '--test-base-account-name'], type=str,
-                   help='The resource name of the Test Base Account.', id_part='name')
+        c.argument('name', type=str, help='The resource name of the Test Base Account.', id_part='name')
 
-    with self.argument_context('testbase test-base-account wait') as c:
+    with self.argument_context('testbase account wait') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('test_base_account_name', options_list=['--name', '-n', '--test-base-account-name'], type=str,
-                   help='The resource name of the Test Base Account.', id_part='name')
+        c.argument('name', type=str, help='The resource name of the Test Base Account.', id_part='name')
 
     with self.argument_context('testbase usage list') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('test_base_account_name', type=str, help='The resource name of the Test Base Account.')
+        c.argument('account_name', type=str, help='The resource name of the Test Base Account.')
         c.argument('filter_', options_list=['--filter'], type=str, help='Odata filter')
 
     with self.argument_context('testbase available-os list') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('test_base_account_name', type=str, help='The resource name of the Test Base Account.')
+        c.argument('account_name', type=str, help='The resource name of the Test Base Account.')
         c.argument('os_update_type', arg_type=get_enum_type(['SecurityUpdate', 'FeatureUpdate']), help='The type of '
                    'the OS Update.')
 
     with self.argument_context('testbase available-os show') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('test_base_account_name', type=str, help='The resource name of the Test Base Account.',
-                   id_part='name')
+        c.argument('account_name', type=str, help='The resource name of the Test Base Account.', id_part='name')
         c.argument('available_os_resource_name', type=str, help='The resource name of an Available OS.',
                    id_part='child_name_1')
 
     with self.argument_context('testbase flighting-ring list') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('test_base_account_name', type=str, help='The resource name of the Test Base Account.')
+        c.argument('account_name', type=str, help='The resource name of the Test Base Account.')
 
     with self.argument_context('testbase flighting-ring show') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('test_base_account_name', type=str, help='The resource name of the Test Base Account.',
-                   id_part='name')
+        c.argument('account_name', type=str, help='The resource name of the Test Base Account.', id_part='name')
         c.argument('flighting_ring_resource_name', type=str, help='The resource name of a flighting ring.',
                    id_part='child_name_1')
 
     with self.argument_context('testbase test-type list') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('test_base_account_name', type=str, help='The resource name of the Test Base Account.')
+        c.argument('account_name', type=str, help='The resource name of the Test Base Account.')
 
     with self.argument_context('testbase test-type show') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('test_base_account_name', type=str, help='The resource name of the Test Base Account.',
-                   id_part='name')
+        c.argument('account_name', type=str, help='The resource name of the Test Base Account.', id_part='name')
         c.argument('test_type_resource_name', type=str, help='The resource name of a test type.',
                    id_part='child_name_1')
 
     with self.argument_context('testbase package list') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('test_base_account_name', type=str, help='The resource name of the Test Base Account.')
+        c.argument('account_name', type=str, help='The resource name of the Test Base Account.')
 
     with self.argument_context('testbase package show') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('test_base_account_name', type=str, help='The resource name of the Test Base Account.',
-                   id_part='name')
+        c.argument('account_name', type=str, help='The resource name of the Test Base Account.', id_part='name')
         c.argument('package_name', options_list=['--name', '-n', '--package-name'], type=str, help='The resource name '
                    'of the Test Base Package.', id_part='child_name_1')
 
     with self.argument_context('testbase package create') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('test_base_account_name', type=str, help='The resource name of the Test Base Account.')
+        c.argument('account_name', type=str, help='The resource name of the Test Base Account.')
         c.argument('package_name', options_list=['--name', '-n', '--package-name'], type=str, help='The resource name '
                    'of the Test Base Package.')
         c.argument('tags', tags_type)
@@ -163,8 +145,7 @@ def load_arguments(self, _):
 
     with self.argument_context('testbase package update') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('test_base_account_name', type=str, help='The resource name of the Test Base Account.',
-                   id_part='name')
+        c.argument('account_name', type=str, help='The resource name of the Test Base Account.', id_part='name')
         c.argument('package_name', options_list=['--name', '-n', '--package-name'], type=str, help='The resource name '
                    'of the Test Base Package.', id_part='child_name_1')
         c.argument('tags', tags_type)
@@ -179,46 +160,41 @@ def load_arguments(self, _):
 
     with self.argument_context('testbase package delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('test_base_account_name', type=str, help='The resource name of the Test Base Account.',
-                   id_part='name')
+        c.argument('account_name', type=str, help='The resource name of the Test Base Account.', id_part='name')
         c.argument('package_name', options_list=['--name', '-n', '--package-name'], type=str, help='The resource name '
                    'of the Test Base Package.', id_part='child_name_1')
 
     with self.argument_context('testbase package get-download-url') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('test_base_account_name', type=str, help='The resource name of the Test Base Account.',
-                   id_part='name')
+        c.argument('account_name', type=str, help='The resource name of the Test Base Account.', id_part='name')
         c.argument('package_name', options_list=['--name', '-n', '--package-name'], type=str, help='The resource name '
                    'of the Test Base Package.', id_part='child_name_1')
 
     with self.argument_context('testbase package hard-delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('test_base_account_name', type=str, help='The resource name of the Test Base Account.',
-                   id_part='name')
+        c.argument('account_name', type=str, help='The resource name of the Test Base Account.', id_part='name')
         c.argument('package_name', options_list=['--name', '-n', '--package-name'], type=str, help='The resource name '
                    'of the Test Base Package.', id_part='child_name_1')
 
     with self.argument_context('testbase package wait') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('test_base_account_name', type=str, help='The resource name of the Test Base Account.',
-                   id_part='name')
+        c.argument('account_name', type=str, help='The resource name of the Test Base Account.', id_part='name')
         c.argument('package_name', options_list=['--name', '-n', '--package-name'], type=str, help='The resource name '
                    'of the Test Base Package.', id_part='child_name_1')
 
     with self.argument_context('testbase test-summary list') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('test_base_account_name', type=str, help='The resource name of the Test Base Account.')
+        c.argument('account_name', type=str, help='The resource name of the Test Base Account.')
 
     with self.argument_context('testbase test-summary show') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('test_base_account_name', type=str, help='The resource name of the Test Base Account.',
-                   id_part='name')
+        c.argument('account_name', type=str, help='The resource name of the Test Base Account.', id_part='name')
         c.argument('test_summary_name', options_list=['--name', '-n', '--test-summary-name'], type=str, help='The name '
                    'of the Test Summary.', id_part='child_name_1')
 
     with self.argument_context('testbase test-result list') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('test_base_account_name', type=str, help='The resource name of the Test Base Account.')
+        c.argument('account_name', type=str, help='The resource name of the Test Base Account.')
         c.argument('package_name', type=str, help='The resource name of the Test Base Package.')
         c.argument('os_update_type', arg_type=get_enum_type(['SecurityUpdate', 'FeatureUpdate']), help='The type of '
                    'the OS Update.')
@@ -226,8 +202,7 @@ def load_arguments(self, _):
 
     with self.argument_context('testbase test-result show') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('test_base_account_name', type=str, help='The resource name of the Test Base Account.',
-                   id_part='name')
+        c.argument('account_name', type=str, help='The resource name of the Test Base Account.', id_part='name')
         c.argument('package_name', type=str, help='The resource name of the Test Base Package.',
                    id_part='child_name_1')
         c.argument('test_result_name', options_list=['--name', '-n', '--test-result-name'], type=str, help='The Test '
@@ -235,8 +210,7 @@ def load_arguments(self, _):
 
     with self.argument_context('testbase test-result get-download-url') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('test_base_account_name', type=str, help='The resource name of the Test Base Account.',
-                   id_part='name')
+        c.argument('account_name', type=str, help='The resource name of the Test Base Account.', id_part='name')
         c.argument('package_name', type=str, help='The resource name of the Test Base Package.',
                    id_part='child_name_1')
         c.argument('test_result_name', options_list=['--name', '-n', '--test-result-name'], type=str, help='The Test '
@@ -244,8 +218,7 @@ def load_arguments(self, _):
 
     with self.argument_context('testbase test-result get-video-download-url') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('test_base_account_name', type=str, help='The resource name of the Test Base Account.',
-                   id_part='name')
+        c.argument('account_name', type=str, help='The resource name of the Test Base Account.', id_part='name')
         c.argument('package_name', type=str, help='The resource name of the Test Base Package.',
                    id_part='child_name_1')
         c.argument('test_result_name', options_list=['--name', '-n', '--test-result-name'], type=str, help='The Test '
@@ -253,15 +226,14 @@ def load_arguments(self, _):
 
     with self.argument_context('testbase os-update list') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('test_base_account_name', type=str, help='The resource name of the Test Base Account.')
+        c.argument('account_name', type=str, help='The resource name of the Test Base Account.')
         c.argument('package_name', type=str, help='The resource name of the Test Base Package.')
         c.argument('os_update_type', arg_type=get_enum_type(['SecurityUpdate', 'FeatureUpdate']), help='The type of '
                    'the OS Update.')
 
     with self.argument_context('testbase os-update show') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('test_base_account_name', type=str, help='The resource name of the Test Base Account.',
-                   id_part='name')
+        c.argument('account_name', type=str, help='The resource name of the Test Base Account.', id_part='name')
         c.argument('package_name', type=str, help='The resource name of the Test Base Package.',
                    id_part='child_name_1')
         c.argument('os_update_resource_name', type=str, help='The resource name of an OS Update.',
@@ -269,43 +241,41 @@ def load_arguments(self, _):
 
     with self.argument_context('testbase favorite-process list') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('test_base_account_name', type=str, help='The resource name of the Test Base Account.')
+        c.argument('account_name', type=str, help='The resource name of the Test Base Account.')
         c.argument('package_name', type=str, help='The resource name of the Test Base Package.')
 
     with self.argument_context('testbase favorite-process show') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('test_base_account_name', type=str, help='The resource name of the Test Base Account.',
-                   id_part='name')
+        c.argument('account_name', type=str, help='The resource name of the Test Base Account.', id_part='name')
         c.argument('package_name', type=str, help='The resource name of the Test Base Package.',
                    id_part='child_name_1')
-        c.argument('favorite_process_resource_name', type=str, help='The resource name of a favorite process in a '
-                   'package. If the process name contains characters that are not allowed in Azure Resource Name, we '
-                   'use \'actualProcessName\' in request body to submit the name.', id_part='child_name_2')
+        c.argument('name', type=str, help='The resource name of a favorite process in a package. If the process name '
+                   'contains characters that are not allowed in Azure Resource Name, we use \'actualProcessName\' in '
+                   'request body to submit the name.', id_part='child_name_2')
 
     with self.argument_context('testbase favorite-process create') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('test_base_account_name', type=str, help='The resource name of the Test Base Account.')
+        c.argument('account_name', type=str, help='The resource name of the Test Base Account.')
         c.argument('package_name', type=str, help='The resource name of the Test Base Package.')
-        c.argument('favorite_process_resource_name', type=str, help='The resource name of a favorite process in a '
-                   'package. If the process name contains characters that are not allowed in Azure Resource Name, we '
-                   'use \'actualProcessName\' in request body to submit the name.')
+        c.argument('name', type=str, help='The resource name of a favorite process in a package. If the process name '
+                   'contains characters that are not allowed in Azure Resource Name, we use \'actualProcessName\' in '
+                   'request body to submit the name.')
         c.argument('actual_process_name', type=str, help='The actual name of the favorite process. It will be equal to '
                    'resource name except for the scenario that the process name contains characters that are not '
                    'allowed in the resource name.')
 
     with self.argument_context('testbase favorite-process delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('test_base_account_name', type=str, help='The resource name of the Test Base Account.',
-                   id_part='name')
+        c.argument('account_name', type=str, help='The resource name of the Test Base Account.', id_part='name')
         c.argument('package_name', type=str, help='The resource name of the Test Base Package.',
                    id_part='child_name_1')
-        c.argument('favorite_process_resource_name', type=str, help='The resource name of a favorite process in a '
-                   'package. If the process name contains characters that are not allowed in Azure Resource Name, we '
-                   'use \'actualProcessName\' in request body to submit the name.', id_part='child_name_2')
+        c.argument('name', type=str, help='The resource name of a favorite process in a package. If the process name '
+                   'contains characters that are not allowed in Azure Resource Name, we use \'actualProcessName\' in '
+                   'request body to submit the name.', id_part='child_name_2')
 
     with self.argument_context('testbase analysis-result list') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('test_base_account_name', type=str, help='The resource name of the Test Base Account.')
+        c.argument('account_name', type=str, help='The resource name of the Test Base Account.')
         c.argument('package_name', type=str, help='The resource name of the Test Base Package.')
         c.argument('test_result_name', type=str, help='The Test Result Name. It equals to {osName}-{TestResultId} '
                    'string.')
@@ -316,8 +286,7 @@ def load_arguments(self, _):
 
     with self.argument_context('testbase analysis-result show') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('test_base_account_name', type=str, help='The resource name of the Test Base Account.',
-                   id_part='name')
+        c.argument('account_name', type=str, help='The resource name of the Test Base Account.', id_part='name')
         c.argument('package_name', type=str, help='The resource name of the Test Base Package.',
                    id_part='child_name_1')
         c.argument('test_result_name', type=str, help='The Test Result Name. It equals to {osName}-{TestResultId} '
@@ -329,29 +298,27 @@ def load_arguments(self, _):
 
     with self.argument_context('testbase email-event list') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('test_base_account_name', type=str, help='The resource name of the Test Base Account.')
+        c.argument('account_name', type=str, help='The resource name of the Test Base Account.')
 
     with self.argument_context('testbase email-event show') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('test_base_account_name', type=str, help='The resource name of the Test Base Account.',
-                   id_part='name')
+        c.argument('account_name', type=str, help='The resource name of the Test Base Account.', id_part='name')
         c.argument('email_event_resource_name', type=str, help='The resource name of an email event.',
                    id_part='child_name_1')
 
     with self.argument_context('testbase customer-event list') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('test_base_account_name', type=str, help='The resource name of the Test Base Account.')
+        c.argument('account_name', type=str, help='The resource name of the Test Base Account.')
 
     with self.argument_context('testbase customer-event show') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('test_base_account_name', type=str, help='The resource name of the Test Base Account.',
-                   id_part='name')
+        c.argument('account_name', type=str, help='The resource name of the Test Base Account.', id_part='name')
         c.argument('customer_event_name', options_list=['--name', '-n', '--customer-event-name'], type=str, help='The '
                    'resource name of the Test Base Customer event.', id_part='child_name_1')
 
     with self.argument_context('testbase customer-event create') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('test_base_account_name', type=str, help='The resource name of the Test Base Account.')
+        c.argument('account_name', type=str, help='The resource name of the Test Base Account.')
         c.argument('customer_event_name', options_list=['--name', '-n', '--customer-event-name'], type=str, help='The '
                    'resource name of the Test Base Customer event.')
         c.argument('event_name', type=str, help='The name of the event subscribed to.')
@@ -360,14 +327,12 @@ def load_arguments(self, _):
 
     with self.argument_context('testbase customer-event delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('test_base_account_name', type=str, help='The resource name of the Test Base Account.',
-                   id_part='name')
+        c.argument('account_name', type=str, help='The resource name of the Test Base Account.', id_part='name')
         c.argument('customer_event_name', options_list=['--name', '-n', '--customer-event-name'], type=str, help='The '
                    'resource name of the Test Base Customer event.', id_part='child_name_1')
 
     with self.argument_context('testbase customer-event wait') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('test_base_account_name', type=str, help='The resource name of the Test Base Account.',
-                   id_part='name')
+        c.argument('account_name', type=str, help='The resource name of the Test Base Account.', id_part='name')
         c.argument('customer_event_name', options_list=['--name', '-n', '--customer-event-name'], type=str, help='The '
                    'resource name of the Test Base Customer event.', id_part='child_name_1')

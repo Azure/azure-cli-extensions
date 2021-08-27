@@ -11,14 +11,19 @@
 import os
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk import ResourceGroupPreparer
-from .example_steps import step_test_base_account_create
-from .example_steps import step_test_base_account_show
-from .example_steps import step_test_base_account_list
-from .example_steps import step_test_base_account_list2
-from .example_steps import step_test_base_account_update
-from .example_steps import step_test_base_account
-from .example_steps import step_test_base_account_get_file_upload_url
-from .example_steps import step_test_base_account_offboard
+from .example_steps import step_account_create
+from .example_steps import step_account_show
+from .example_steps import step_account_list
+from .example_steps import step_account_list2
+from .example_steps import step_account_update
+from .example_steps import step_account_check_package_name
+from .example_steps import step_account_get_package_blob_path
+from .example_steps import step_account_soft_delete
+from .example_steps import step_customer_event_create
+from .example_steps import step_customer_event_show
+from .example_steps import step_customer_event_list
+from .example_steps import step_customer_event_delete
+from .example_steps import step_email_event_show
 from .example_steps import step_email_event_list
 from .example_steps import step_package_create
 from .example_steps import step_package_show
@@ -36,11 +41,6 @@ from .example_steps import step_analysis_result_show4
 from .example_steps import step_analysis_result_list4
 from .example_steps import step_available_os_show
 from .example_steps import step_available_os_list
-from .example_steps import step_customer_event_create
-from .example_steps import step_customer_event_show
-from .example_steps import step_customer_event_list
-from .example_steps import step_customer_event_delete
-from .example_steps import step_email_event_show
 from .example_steps import step_favorite_process_create
 from .example_steps import step_favorite_process_list
 from .example_steps import step_favorite_process_show
@@ -49,18 +49,17 @@ from .example_steps import step_flighting_ring_show
 from .example_steps import step_flighting_ring_list
 from .example_steps import step_os_update_show
 from .example_steps import step_os_update_list
+from .example_steps import step_package_delete
+from .example_steps import step_sku_list
 from .example_steps import step_test_result_show
 from .example_steps import step_test_result_list
 from .example_steps import step_test_result_get_download_url
 from .example_steps import step_test_result_get_video_download_url
-from .example_steps import step_package_delete
-from .example_steps import step_sku_list
 from .example_steps import step_test_summary_list
 from .example_steps import step_test_summary_show
 from .example_steps import step_test_type_show
 from .example_steps import step_test_type_list
 from .example_steps import step_usage_list
-from .example_steps import step_test_base_account_delete
 from .. import (
     try_manual,
     raise_if,
@@ -87,30 +86,43 @@ def cleanup_scenario(test):
 @try_manual
 def call_scenario(test):
     setup_scenario(test)
-    step_test_base_account_create(test, checks=[
+    step_account_create(test, checks=[
         test.check("location", "westus", case_sensitive=False),
         test.check("sku.name", "S0", case_sensitive=False),
         test.check("name", "{myTestBaseAccount}", case_sensitive=False),
     ])
-    step_test_base_account_show(test, checks=[
+    step_account_show(test, checks=[
         test.check("location", "westus", case_sensitive=False),
         test.check("sku.name", "S0", case_sensitive=False),
         test.check("name", "{myTestBaseAccount}", case_sensitive=False),
     ])
-    step_test_base_account_list(test, checks=[
+    step_account_list(test, checks=[
         test.check('length(@)', 1),
     ])
-    step_test_base_account_list2(test, checks=[
+    step_account_list2(test, checks=[
         test.check('length(@)', 1),
     ])
-    step_test_base_account_update(test, checks=[
+    step_account_update(test, checks=[
         test.check("location", "westus", case_sensitive=False),
         test.check("sku.name", "S0", case_sensitive=False),
         test.check("name", "{myTestBaseAccount}", case_sensitive=False),
     ])
-    step_test_base_account(test, checks=[])
-    step_test_base_account_get_file_upload_url(test, checks=[])
-    step_test_base_account_offboard(test, checks=[])
+    step_account_check_package_name(test, checks=[])
+    step_account_get_package_blob_path(test, checks=[])
+    step_account_soft_delete(test, checks=[])
+    step_customer_event_create(test, checks=[
+        test.check("name", "{myCustomerEvent}", case_sensitive=False),
+        test.check("eventName", "{myCustomerEvent}", case_sensitive=False),
+    ])
+    step_customer_event_show(test, checks=[
+        test.check("name", "{myCustomerEvent}", case_sensitive=False),
+        test.check("eventName", "{myCustomerEvent}", case_sensitive=False),
+    ])
+    step_customer_event_list(test, checks=[
+        test.check('length(@)', 1),
+    ])
+    step_customer_event_delete(test, checks=[])
+    step_email_event_show(test, checks=[])
     step_email_event_list(test, checks=[])
     step_package_create(test, checks=[
         test.check("name", "{myPackage}", case_sensitive=False),
@@ -152,19 +164,6 @@ def call_scenario(test):
     step_analysis_result_list4(test, checks=[])
     step_available_os_show(test, checks=[])
     step_available_os_list(test, checks=[])
-    step_customer_event_create(test, checks=[
-        test.check("name", "{myCustomerEvent}", case_sensitive=False),
-        test.check("eventName", "{myCustomerEvent}", case_sensitive=False),
-    ])
-    step_customer_event_show(test, checks=[
-        test.check("name", "{myCustomerEvent}", case_sensitive=False),
-        test.check("eventName", "{myCustomerEvent}", case_sensitive=False),
-    ])
-    step_customer_event_list(test, checks=[
-        test.check('length(@)', 1),
-    ])
-    step_customer_event_delete(test, checks=[])
-    step_email_event_show(test, checks=[])
     step_favorite_process_create(test, checks=[])
     step_favorite_process_list(test, checks=[])
     step_favorite_process_show(test, checks=[])
@@ -173,18 +172,17 @@ def call_scenario(test):
     step_flighting_ring_list(test, checks=[])
     step_os_update_show(test, checks=[])
     step_os_update_list(test, checks=[])
+    step_package_delete(test, checks=[])
+    step_sku_list(test, checks=[])
     step_test_result_show(test, checks=[])
     step_test_result_list(test, checks=[])
     step_test_result_get_download_url(test, checks=[])
     step_test_result_get_video_download_url(test, checks=[])
-    step_package_delete(test, checks=[])
-    step_sku_list(test, checks=[])
     step_test_summary_list(test, checks=[])
     step_test_summary_show(test, checks=[])
     step_test_type_show(test, checks=[])
     step_test_type_list(test, checks=[])
     step_usage_list(test, checks=[])
-    step_test_base_account_delete(test, checks=[])
     cleanup_scenario(test)
 
 

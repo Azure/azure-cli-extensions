@@ -31,109 +31,92 @@ helps['testbase sku list'] = """
                az testbase sku list
 """
 
-helps['testbase test-base-account'] = """
+helps['testbase account'] = """
     type: group
     short-summary: Manage test base account with testbase
 """
 
-helps['testbase test-base-account list'] = """
+helps['testbase account list'] = """
     type: command
     short-summary: "Lists all the Test Base Accounts in a resource group. And Lists all the Test Base Accounts in a \
 subscription. This API is required by ARM guidelines."
     examples:
       - name: TestBaseAccountsList
         text: |-
-               az testbase test-base-account list --resource-group "contoso-rg1"
+               az testbase account list --resource-group "contoso-rg1"
       - name: TestBaseAccountsListBySubscription
         text: |-
-               az testbase test-base-account list
+               az testbase account list
 """
 
-helps['testbase test-base-account show'] = """
+helps['testbase account show'] = """
     type: command
     short-summary: "Gets a Test Base Account."
     examples:
       - name: TestBaseAccountGet
         text: |-
-               az testbase test-base-account show --resource-group "contoso-rg1" --name "contoso-testBaseAccount1"
+               az testbase account show --resource-group "contoso-rg1" --name "contoso-testBaseAccount1"
 """
 
-helps['testbase test-base-account create'] = """
+helps['testbase account create'] = """
     type: command
     short-summary: "Create or replace (overwrite/recreate, with potential downtime) a Test Base Account in the \
 specified subscription."
     examples:
       - name: TestBaseAccountCreate
         text: |-
-               az testbase test-base-account create --location "westus" --name "S0" --resource-group "contoso-rg1" \
---test-base-account-name "contoso-testBaseAccount1"
+               az testbase account create --location "westus" --sku-name "S0" --resource-group "contoso-rg1" --name \
+"contoso-testBaseAccount1"
 """
 
-helps['testbase test-base-account update'] = """
+helps['testbase account update'] = """
     type: command
     short-summary: "Update an existing Test Base Account."
     examples:
       - name: TestBaseAccountUpdate
         text: |-
-               az testbase test-base-account update --name "S0" --resource-group "contoso-rg1" \
---test-base-account-name "contoso-testBaseAccount1"
+               az testbase account update --name "S0" --resource-group "contoso-rg1"
 """
 
-helps['testbase test-base-account delete'] = """
-    type: command
-    short-summary: "Deletes a Test Base Account."
-    examples:
-      - name: TestBaseAccountDelete
-        text: |-
-               az testbase test-base-account delete --resource-group "contoso-rg1" --name "contoso-testBaseAccount1"
-"""
-
-helps['testbase test-base-account check-package-name-availability'] = """
+helps['testbase account check-package-name'] = """
     type: command
     short-summary: "Checks that the Test Base Package name and version is valid and is not already in use."
     examples:
       - name: CheckPackageNameAvailability
         text: |-
-               az testbase test-base-account check-package-name-availability --name "testApp" --type \
-"Microsoft.TestBase/testBaseAccounts/packages" --application-name "testApp" --version "1.0.0" --resource-group \
-"contoso-rg1" --test-base-account-name "contoso-testBaseAccount1"
+               az testbase account check-package-name --name "testApp" --type "Microsoft.TestBase/testBaseAccounts/pack\
+ages" --application-name "testApp" --version "1.0.0" --resource-group "contoso-rg1"
 """
 
-helps['testbase test-base-account get-file-upload-url'] = """
+helps['testbase account get-package-blob-path'] = """
     type: command
     short-summary: "Gets the file upload URL of a Test Base Account."
     examples:
       - name: TestBaseAccountGetFileUploadUrl
         text: |-
-               az testbase test-base-account get-file-upload-url --blob-name "package.zip" --resource-group \
-"contoso-rg1" --name "contoso-testBaseAccount1"
+               az testbase account get-package-blob-path --file-name "package.zip" --resource-group "contoso-rg1" \
+--name "contoso-testBaseAccount1"
 """
 
-helps['testbase test-base-account offboard'] = """
+helps['testbase account soft-delete'] = """
     type: command
     short-summary: "Offboard a Test Base Account."
     examples:
       - name: TestBaseAccountOffboard
         text: |-
-               az testbase test-base-account offboard --resource-group "contoso-rg1" --name "contoso-testBaseAccount1"
+               az testbase account soft-delete --resource-group "contoso-rg1" --name "contoso-testBaseAccount1"
 """
 
-helps['testbase test-base-account wait'] = """
+helps['testbase account wait'] = """
     type: command
-    short-summary: Place the CLI in a waiting state until a condition of the testbase test-base-account is met.
+    short-summary: Place the CLI in a waiting state until a condition of the testbase account is met.
     examples:
-      - name: Pause executing next line of CLI script until the testbase test-base-account is successfully created.
+      - name: Pause executing next line of CLI script until the testbase account is successfully created.
         text: |-
-               az testbase test-base-account wait --resource-group "contoso-rg1" --name "contoso-testBaseAccount1" \
---created
-      - name: Pause executing next line of CLI script until the testbase test-base-account is successfully updated.
+               az testbase account wait --resource-group "contoso-rg1" --name "contoso-testBaseAccount1" --created
+      - name: Pause executing next line of CLI script until the testbase account is successfully updated.
         text: |-
-               az testbase test-base-account wait --resource-group "contoso-rg1" --name "contoso-testBaseAccount1" \
---updated
-      - name: Pause executing next line of CLI script until the testbase test-base-account is successfully deleted.
-        text: |-
-               az testbase test-base-account wait --resource-group "contoso-rg1" --name "contoso-testBaseAccount1" \
---deleted
+               az testbase account wait --resource-group "contoso-rg1" --name "contoso-testBaseAccount1" --updated
 """
 
 helps['testbase usage'] = """
@@ -147,8 +130,7 @@ helps['testbase usage list'] = """
     examples:
       - name: TestBaseAccountUsagesList
         text: |-
-               az testbase usage list --resource-group "contoso-rg1" --test-base-account-name \
-"contoso-testBaseAccount1"
+               az testbase usage list --resource-group "contoso-rg1" --account-name "contoso-testBaseAccount1"
 """
 
 helps['testbase available-os'] = """
@@ -163,7 +145,7 @@ helps['testbase available-os list'] = """
       - name: AvailableOSsList
         text: |-
                az testbase available-os list --os-update-type "SecurityUpdate" --resource-group "contoso-rg" \
---test-base-account-name "contoso-testBaseAccount"
+--account-name "contoso-testBaseAccount"
 """
 
 helps['testbase available-os show'] = """
@@ -173,7 +155,7 @@ helps['testbase available-os show'] = """
       - name: AvailableOSGet
         text: |-
                az testbase available-os show --available-os-resource-name "Windows-10-2004" --resource-group \
-"contoso-rg" --test-base-account-name "contoso-testBaseAccount"
+"contoso-rg" --account-name "contoso-testBaseAccount"
 """
 
 helps['testbase flighting-ring'] = """
@@ -187,8 +169,7 @@ helps['testbase flighting-ring list'] = """
     examples:
       - name: FlightingRingsList
         text: |-
-               az testbase flighting-ring list --resource-group "contoso-rg" --test-base-account-name \
-"contoso-testBaseAccount"
+               az testbase flighting-ring list --resource-group "contoso-rg" --account-name "contoso-testBaseAccount"
 """
 
 helps['testbase flighting-ring show'] = """
@@ -198,7 +179,7 @@ helps['testbase flighting-ring show'] = """
       - name: FlightingRingGet
         text: |-
                az testbase flighting-ring show --flighting-ring-resource-name "Insider-Beta-Channel" --resource-group \
-"contoso-rg" --test-base-account-name "contoso-testBaseAccount"
+"contoso-rg" --account-name "contoso-testBaseAccount"
 """
 
 helps['testbase test-type'] = """
@@ -212,8 +193,7 @@ helps['testbase test-type list'] = """
     examples:
       - name: TestTypesList
         text: |-
-               az testbase test-type list --resource-group "contoso-rg" --test-base-account-name \
-"contoso-testBaseAccount"
+               az testbase test-type list --resource-group "contoso-rg" --account-name "contoso-testBaseAccount"
 """
 
 helps['testbase test-type show'] = """
@@ -222,8 +202,8 @@ helps['testbase test-type show'] = """
     examples:
       - name: TestTypeGet
         text: |-
-               az testbase test-type show --resource-group "contoso-rg" --test-base-account-name \
-"contoso-testBaseAccount" --test-type-resource-name "Functional-Test"
+               az testbase test-type show --resource-group "contoso-rg" --account-name "contoso-testBaseAccount" \
+--test-type-resource-name "Functional-Test"
 """
 
 helps['testbase package'] = """
@@ -237,8 +217,7 @@ helps['testbase package list'] = """
     examples:
       - name: PackagesList
         text: |-
-               az testbase package list --resource-group "contoso-rg1" --test-base-account-name \
-"contoso-testBaseAccount1"
+               az testbase package list --resource-group "contoso-rg1" --account-name "contoso-testBaseAccount1"
 """
 
 helps['testbase package show'] = """
@@ -247,8 +226,8 @@ helps['testbase package show'] = """
     examples:
       - name: PackageGet
         text: |-
-               az testbase package show --name "contoso-package2" --resource-group "contoso-rg1" \
---test-base-account-name "contoso-testBaseAccount1"
+               az testbase package show --name "contoso-package2" --resource-group "contoso-rg1" --account-name \
+"contoso-testBaseAccount1"
 """
 
 helps['testbase package create'] = """
@@ -281,7 +260,7 @@ Before\\":false,\\"content\\":\\"app/scripts/close/job.ps1\\",\\"contentType\\":
 tartAfter\\":false,\\"runAsInteractive\\":true,\\"runElevated\\":true},{\\"name\\":\\"Uninstall\\",\\"action\\":\\"Unin\
 stall\\",\\"alwaysRun\\":true,\\"applyUpdateBefore\\":false,\\"content\\":\\"app/scripts/uninstall/job.ps1\\",\\"conten\
 tType\\":\\"Path\\",\\"maxRunTime\\":1800,\\"restartAfter\\":false,\\"runAsInteractive\\":true,\\"runElevated\\":true}]\
-}]" --version "1.0.0" --resource-group "contoso-rg1" --test-base-account-name "contoso-testBaseAccount1"
+}]" --version "1.0.0" --resource-group "contoso-rg1" --account-name "contoso-testBaseAccount1"
 """
 
 helps['testbase package update'] = """
@@ -313,8 +292,8 @@ lose\\",\\"action\\":\\"Close\\",\\"alwaysRun\\":false,\\"applyUpdateBefore\\":f
 /job.ps1\\",\\"contentType\\":\\"Path\\",\\"maxRunTime\\":1800,\\"restartAfter\\":false,\\"runAsInteractive\\":true,\\"\
 runElevated\\":true},{\\"name\\":\\"Uninstall\\",\\"action\\":\\"Uninstall\\",\\"alwaysRun\\":true,\\"applyUpdateBefore\
 \\":false,\\"content\\":\\"app/scripts/uninstall/job.ps1\\",\\"contentType\\":\\"Path\\",\\"maxRunTime\\":1800,\\"resta\
-rtAfter\\":false,\\"runAsInteractive\\":true,\\"runElevated\\":true}]}]" --resource-group "contoso-rg1" \
---test-base-account-name "contoso-testBaseAccount1"
+rtAfter\\":false,\\"runAsInteractive\\":true,\\"runElevated\\":true}]}]" --resource-group "contoso-rg1" --account-name \
+"contoso-testBaseAccount1"
 """
 
 helps['testbase package delete'] = """
@@ -323,8 +302,8 @@ helps['testbase package delete'] = """
     examples:
       - name: PackageDelete
         text: |-
-               az testbase package delete --name "contoso-package2" --resource-group "contoso-rg1" \
---test-base-account-name "contoso-testBaseAccount1"
+               az testbase package delete --name "contoso-package2" --resource-group "contoso-rg1" --account-name \
+"contoso-testBaseAccount1"
 """
 
 helps['testbase package get-download-url'] = """
@@ -334,7 +313,7 @@ helps['testbase package get-download-url'] = """
       - name: PackageGetDownloadURL
         text: |-
                az testbase package get-download-url --name "contoso-package2" --resource-group "contoso-rg1" \
---test-base-account-name "contoso-testBaseAccount1"
+--account-name "contoso-testBaseAccount1"
 """
 
 helps['testbase package hard-delete'] = """
@@ -343,8 +322,8 @@ helps['testbase package hard-delete'] = """
     examples:
       - name: PackageHardDelete
         text: |-
-               az testbase package hard-delete --name "contoso-package2" --resource-group "contoso-rg1" \
---test-base-account-name "contoso-testBaseAccount1"
+               az testbase package hard-delete --name "contoso-package2" --resource-group "contoso-rg1" --account-name \
+"contoso-testBaseAccount1"
 """
 
 helps['testbase package wait'] = """
@@ -353,16 +332,16 @@ helps['testbase package wait'] = """
     examples:
       - name: Pause executing next line of CLI script until the testbase package is successfully created.
         text: |-
-               az testbase package wait --name "contoso-package2" --resource-group "contoso-rg1" \
---test-base-account-name "contoso-testBaseAccount1" --created
+               az testbase package wait --name "contoso-package2" --resource-group "contoso-rg1" --account-name \
+"contoso-testBaseAccount1" --created
       - name: Pause executing next line of CLI script until the testbase package is successfully updated.
         text: |-
-               az testbase package wait --name "contoso-package2" --resource-group "contoso-rg1" \
---test-base-account-name "contoso-testBaseAccount1" --updated
+               az testbase package wait --name "contoso-package2" --resource-group "contoso-rg1" --account-name \
+"contoso-testBaseAccount1" --updated
       - name: Pause executing next line of CLI script until the testbase package is successfully deleted.
         text: |-
-               az testbase package wait --name "contoso-package2" --resource-group "contoso-rg1" \
---test-base-account-name "contoso-testBaseAccount1" --deleted
+               az testbase package wait --name "contoso-package2" --resource-group "contoso-rg1" --account-name \
+"contoso-testBaseAccount1" --deleted
 """
 
 helps['testbase test-summary'] = """
@@ -376,8 +355,7 @@ helps['testbase test-summary list'] = """
     examples:
       - name: TestSummariesList
         text: |-
-               az testbase test-summary list --resource-group "contoso-rg1" --test-base-account-name \
-"contoso-testBaseAccount1"
+               az testbase test-summary list --resource-group "contoso-rg1" --account-name "contoso-testBaseAccount1"
 """
 
 helps['testbase test-summary show'] = """
@@ -387,8 +365,8 @@ Test Base Account."
     examples:
       - name: TestSummaryGet
         text: |-
-               az testbase test-summary show --resource-group "contoso-rg1" --test-base-account-name \
-"contoso-testBaseAccount1" --name "contoso-package2-096bffb5-5d3d-4305-a66a-953372ed6e88"
+               az testbase test-summary show --resource-group "contoso-rg1" --account-name "contoso-testBaseAccount1" \
+--name "contoso-package2-096bffb5-5d3d-4305-a66a-953372ed6e88"
 """
 
 helps['testbase test-result'] = """
@@ -404,8 +382,8 @@ by osName, releaseName, flightingRing, buildVersion, buildRevision."
       - name: TestResultsList
         text: |-
                az testbase test-result list --filter "osName eq \'Windows 10 2004\' and releaseName eq \'2020.11B\'" \
---os-update-type "SecurityUpdate" --package-name "contoso-package2" --resource-group "contoso-rg1" \
---test-base-account-name "contoso-testBaseAccount1"
+--os-update-type "SecurityUpdate" --package-name "contoso-package2" --resource-group "contoso-rg1" --account-name \
+"contoso-testBaseAccount1"
 """
 
 helps['testbase test-result show'] = """
@@ -415,7 +393,7 @@ helps['testbase test-result show'] = """
       - name: TestResultGet
         text: |-
                az testbase test-result show --package-name "contoso-package2" --resource-group "contoso-rg1" \
---test-base-account-name "contoso-testBaseAccount1" --name "Windows-10-1909-99b1f80d-03a9-4148-997f-806ba5bac8e0"
+--account-name "contoso-testBaseAccount1" --name "Windows-10-1909-99b1f80d-03a9-4148-997f-806ba5bac8e0"
 """
 
 helps['testbase test-result get-download-url'] = """
@@ -425,8 +403,7 @@ helps['testbase test-result get-download-url'] = """
       - name: TestResultGetDownloadURL
         text: |-
                az testbase test-result get-download-url --package-name "contoso-package2" --resource-group \
-"contoso-rg1" --test-base-account-name "contoso-testBaseAccount1" --name "Windows-10-1909-99b1f80d-03a9-4148-997f-806ba\
-5bac8e0"
+"contoso-rg1" --account-name "contoso-testBaseAccount1" --name "Windows-10-1909-99b1f80d-03a9-4148-997f-806ba5bac8e0"
 """
 
 helps['testbase test-result get-video-download-url'] = """
@@ -436,8 +413,7 @@ helps['testbase test-result get-video-download-url'] = """
       - name: TestResultGetVideoDownloadURL
         text: |-
                az testbase test-result get-video-download-url --package-name "contoso-package2" --resource-group \
-"contoso-rg1" --test-base-account-name "contoso-testBaseAccount1" --name "Windows-10-1909-99b1f80d-03a9-4148-997f-806ba\
-5bac8e0"
+"contoso-rg1" --account-name "contoso-testBaseAccount1" --name "Windows-10-1909-99b1f80d-03a9-4148-997f-806ba5bac8e0"
 """
 
 helps['testbase os-update'] = """
@@ -452,7 +428,7 @@ helps['testbase os-update list'] = """
       - name: OSUpdatesList
         text: |-
                az testbase os-update list --os-update-type "SecurityUpdate" --package-name "contoso-package2" \
---resource-group "contoso-rg1" --test-base-account-name "contoso-testBaseAccount1"
+--resource-group "contoso-rg1" --account-name "contoso-testBaseAccount1"
 """
 
 helps['testbase os-update show'] = """
@@ -462,7 +438,7 @@ helps['testbase os-update show'] = """
       - name: OSUpdateGet
         text: |-
                az testbase os-update show --os-update-resource-name "Windows-10-2004-2020-12-B-505" --package-name \
-"contoso-package2" --resource-group "contoso-rg1" --test-base-account-name "contoso-testBaseAccount1"
+"contoso-package2" --resource-group "contoso-rg1" --account-name "contoso-testBaseAccount1"
 """
 
 helps['testbase favorite-process'] = """
@@ -477,7 +453,7 @@ helps['testbase favorite-process list'] = """
       - name: FavoriteProcessesList
         text: |-
                az testbase favorite-process list --package-name "contoso-package2" --resource-group "contoso-rg1" \
---test-base-account-name "contoso-testBaseAccount1"
+--account-name "contoso-testBaseAccount1"
 """
 
 helps['testbase favorite-process show'] = """
@@ -486,8 +462,8 @@ helps['testbase favorite-process show'] = """
     examples:
       - name: FavoriteProcessGet
         text: |-
-               az testbase favorite-process show --favorite-process-resource-name "testAppProcess" --package-name \
-"contoso-package2" --resource-group "contoso-rg1" --test-base-account-name "contoso-testBaseAccount1"
+               az testbase favorite-process show --name "testAppProcess" --package-name "contoso-package2" \
+--resource-group "contoso-rg1" --account-name "contoso-testBaseAccount1"
 """
 
 helps['testbase favorite-process create'] = """
@@ -496,9 +472,8 @@ helps['testbase favorite-process create'] = """
     examples:
       - name: FavoriteProcessCreate
         text: |-
-               az testbase favorite-process create --favorite-process-resource-name "testAppProcess" --package-name \
-"contoso-package2" --actual-process-name "testApp&.exe" --resource-group "contoso-rg1" --test-base-account-name \
-"contoso-testBaseAccount1"
+               az testbase favorite-process create --name "testAppProcess" --package-name "contoso-package2" \
+--actual-process-name "testApp&.exe" --resource-group "contoso-rg1" --account-name "contoso-testBaseAccount1"
 """
 
 helps['testbase favorite-process delete'] = """
@@ -507,8 +482,8 @@ helps['testbase favorite-process delete'] = """
     examples:
       - name: FavoriteProcessDelete
         text: |-
-               az testbase favorite-process delete --favorite-process-resource-name "testAppProcess" --package-name \
-"contoso-package2" --resource-group "contoso-rg1" --test-base-account-name "contoso-testBaseAccount1"
+               az testbase favorite-process delete --name "testAppProcess" --package-name "contoso-package2" \
+--resource-group "contoso-rg1" --account-name "contoso-testBaseAccount1"
 """
 
 helps['testbase analysis-result'] = """
@@ -524,23 +499,23 @@ as all the data will be nested in a singleton object."
       - name: CPURegressionAnalysisResultsList
         text: |-
                az testbase analysis-result list --analysis-result-type "CPURegression" --package-name \
-"contoso-package2" --resource-group "contoso-rg1" --test-base-account-name "contoso-testBaseAccount1" \
---test-result-name "Windows-10-1909-Test-Id"
+"contoso-package2" --resource-group "contoso-rg1" --account-name "contoso-testBaseAccount1" --test-result-name \
+"Windows-10-1909-Test-Id"
       - name: CPUUtilizationAnalysisResultsList
         text: |-
                az testbase analysis-result list --analysis-result-type "CPUUtilization" --package-name \
-"contoso-package2" --resource-group "contoso-rg1" --test-base-account-name "contoso-testBaseAccount1" \
---test-result-name "Windows-10-1909-Test-Id"
+"contoso-package2" --resource-group "contoso-rg1" --account-name "contoso-testBaseAccount1" --test-result-name \
+"Windows-10-1909-Test-Id"
       - name: MemoryRegressionAnalysisResultsList
         text: |-
                az testbase analysis-result list --analysis-result-type "MemoryRegression" --package-name \
-"contoso-package2" --resource-group "contoso-rg1" --test-base-account-name "contoso-testBaseAccount1" \
---test-result-name "Windows-10-1909-Test-Id"
+"contoso-package2" --resource-group "contoso-rg1" --account-name "contoso-testBaseAccount1" --test-result-name \
+"Windows-10-1909-Test-Id"
       - name: MemoryUtilizationAnalysisResultsList
         text: |-
                az testbase analysis-result list --analysis-result-type "MemoryUtilization" --package-name \
-"contoso-package2" --resource-group "contoso-rg1" --test-base-account-name "contoso-testBaseAccount1" \
---test-result-name "Windows-10-1909-Test-Id"
+"contoso-package2" --resource-group "contoso-rg1" --account-name "contoso-testBaseAccount1" --test-result-name \
+"Windows-10-1909-Test-Id"
 """
 
 helps['testbase analysis-result show'] = """
@@ -550,23 +525,19 @@ helps['testbase analysis-result show'] = """
       - name: CPURegressionAnalysisResultGet
         text: |-
                az testbase analysis-result show --name "cpuRegression" --package-name "contoso-package2" \
---resource-group "contoso-rg1" --test-base-account-name "contoso-testBaseAccount1" --test-result-name \
-"Windows-10-1909-Test-Id"
+--resource-group "contoso-rg1" --account-name "contoso-testBaseAccount1" --test-result-name "Windows-10-1909-Test-Id"
       - name: CPUUtilizationAnalysisResultGet
         text: |-
                az testbase analysis-result show --name "cpuUtilization" --package-name "contoso-package2" \
---resource-group "contoso-rg1" --test-base-account-name "contoso-testBaseAccount1" --test-result-name \
-"Windows-10-1909-Test-Id"
+--resource-group "contoso-rg1" --account-name "contoso-testBaseAccount1" --test-result-name "Windows-10-1909-Test-Id"
       - name: MemoryRegressionAnalysisResultGet
         text: |-
                az testbase analysis-result show --name "memoryRegression" --package-name "contoso-package2" \
---resource-group "contoso-rg1" --test-base-account-name "contoso-testBaseAccount1" --test-result-name \
-"Windows-10-1909-Test-Id"
+--resource-group "contoso-rg1" --account-name "contoso-testBaseAccount1" --test-result-name "Windows-10-1909-Test-Id"
       - name: MemoryUtilizationAnalysisResultGet
         text: |-
                az testbase analysis-result show --name "memoryUtilization" --package-name "contoso-package2" \
---resource-group "contoso-rg1" --test-base-account-name "contoso-testBaseAccount1" --test-result-name \
-"Windows-10-1909-Test-Id"
+--resource-group "contoso-rg1" --account-name "contoso-testBaseAccount1" --test-result-name "Windows-10-1909-Test-Id"
 """
 
 helps['testbase email-event'] = """
@@ -580,8 +551,7 @@ helps['testbase email-event list'] = """
     examples:
       - name: EmailEventsList
         text: |-
-               az testbase email-event list --resource-group "contoso-rg" --test-base-account-name \
-"contoso-testBaseAccount"
+               az testbase email-event list --resource-group "contoso-rg" --account-name "contoso-testBaseAccount"
 """
 
 helps['testbase email-event show'] = """
@@ -591,7 +561,7 @@ helps['testbase email-event show'] = """
       - name: EmailEventGet
         text: |-
                az testbase email-event show --email-event-resource-name "weekly-summary" --resource-group "contoso-rg" \
---test-base-account-name "contoso-testBaseAccount"
+--account-name "contoso-testBaseAccount"
 """
 
 helps['testbase customer-event'] = """
@@ -605,7 +575,7 @@ helps['testbase customer-event list'] = """
     examples:
       - name: CustomerEventsList
         text: |-
-               az testbase customer-event list --resource-group "contoso-rg1" --test-base-account-name \
+               az testbase customer-event list --resource-group "contoso-rg1" --account-name \
 "contoso-testBaseAccount1"
 """
 
@@ -615,8 +585,8 @@ helps['testbase customer-event show'] = """
     examples:
       - name: CustomerEventGet
         text: |-
-               az testbase customer-event show --name "WeeklySummary" --resource-group "contoso-rg1" \
---test-base-account-name "contoso-testBaseAccount1"
+               az testbase customer-event show --name "WeeklySummary" --resource-group "contoso-rg1" --account-name \
+"contoso-testBaseAccount1"
 """
 
 helps['testbase customer-event create'] = """
@@ -629,7 +599,7 @@ helps['testbase customer-event create'] = """
 "[{\\"receiverType\\":\\"UserObjects\\",\\"receiverValue\\":{\\"userObjectReceiverValue\\":{\\"userObjectIds\\":[\\"245\
 245245245325\\",\\"365365365363565\\"]}}},{\\"receiverType\\":\\"DistributionGroup\\",\\"receiverValue\\":{\\"distribut\
 ionGroupListReceiverValue\\":{\\"distributionGroups\\":[\\"test@microsoft.com\\"]}}}]" --resource-group "contoso-rg1" \
---test-base-account-name "contoso-testBaseAccount1"
+--account-name "contoso-testBaseAccount1"
 """
 
 helps['testbase customer-event delete'] = """
@@ -638,8 +608,8 @@ helps['testbase customer-event delete'] = """
     examples:
       - name: CustomerEventDelete
         text: |-
-               az testbase customer-event delete --name "WeeklySummary" --resource-group "contoso-rg1" \
---test-base-account-name "contoso-testBaseAccount1"
+               az testbase customer-event delete --name "WeeklySummary" --resource-group "contoso-rg1" --account-name \
+"contoso-testBaseAccount1"
 """
 
 helps['testbase customer-event wait'] = """
@@ -648,10 +618,10 @@ helps['testbase customer-event wait'] = """
     examples:
       - name: Pause executing next line of CLI script until the testbase customer-event is successfully created.
         text: |-
-               az testbase customer-event wait --name "WeeklySummary" --resource-group "contoso-rg1" \
---test-base-account-name "contoso-testBaseAccount1" --created
+               az testbase customer-event wait --name "WeeklySummary" --resource-group "contoso-rg1" --account-name \
+"contoso-testBaseAccount1" --created
       - name: Pause executing next line of CLI script until the testbase customer-event is successfully deleted.
         text: |-
-               az testbase customer-event wait --name "WeeklySummary" --resource-group "contoso-rg1" \
---test-base-account-name "contoso-testBaseAccount1" --deleted
+               az testbase customer-event wait --name "WeeklySummary" --resource-group "contoso-rg1" --account-name \
+"contoso-testBaseAccount1" --deleted
 """

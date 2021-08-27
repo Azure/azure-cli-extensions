@@ -31,6 +31,14 @@ from azext_testbase.generated._client_factory import (
 )
 
 
+testbase_test_base_account = CliCommandType(
+    operations_tmpl=(
+        'azext_testbase.vendored_sdks.testbase.operations._test_base_accounts_operations#TestBaseAccountsOperations.{}'
+    ),
+    client_factory=cf_test_base_account,
+)
+
+
 testbase_analysis_result = CliCommandType(
     operations_tmpl=(
         'azext_testbase.vendored_sdks.testbase.operations._analysis_results_operations#AnalysisResultsOperations.{}'
@@ -97,14 +105,6 @@ testbase_sku = CliCommandType(
 )
 
 
-testbase_test_base_account = CliCommandType(
-    operations_tmpl=(
-        'azext_testbase.vendored_sdks.testbase.operations._test_base_accounts_operations#TestBaseAccountsOperations.{}'
-    ),
-    client_factory=cf_test_base_account,
-)
-
-
 testbase_test_result = CliCommandType(
     operations_tmpl=(
         'azext_testbase.vendored_sdks.testbase.operations._test_results_operations#TestResultsOperations.{}'
@@ -134,6 +134,16 @@ testbase_usage = CliCommandType(
 
 
 def load_command_table(self, _):
+
+    with self.command_group('testbase account', testbase_test_base_account, client_factory=cf_test_base_account) as g:
+        g.custom_command('list', 'testbase_account_list')
+        g.custom_show_command('show', 'testbase_account_show')
+        g.custom_command('create', 'testbase_account_create', supports_no_wait=True)
+        g.custom_command('update', 'testbase_account_update', supports_no_wait=True)
+        g.custom_command('check-package-name', 'testbase_account_check_package_name')
+        g.custom_command('get-package-blob-path', 'testbase_account_get_package_blob_path')
+        g.custom_command('soft-delete', 'testbase_account_soft_delete', supports_no_wait=True)
+        g.custom_wait_command('wait', 'testbase_account_show')
 
     with self.command_group(
         'testbase analysis-result', testbase_analysis_result, client_factory=cf_analysis_result
@@ -184,21 +194,6 @@ def load_command_table(self, _):
 
     with self.command_group('testbase sku', testbase_sku, client_factory=cf_sku) as g:
         g.custom_command('list', 'testbase_sku_list')
-
-    with self.command_group(
-        'testbase test-base-account', testbase_test_base_account, client_factory=cf_test_base_account
-    ) as g:
-        g.custom_command('list', 'testbase_test_base_account_list')
-        g.custom_show_command('show', 'testbase_test_base_account_show')
-        g.custom_command('create', 'testbase_test_base_account_create', supports_no_wait=True)
-        g.custom_command('update', 'testbase_test_base_account_update', supports_no_wait=True)
-        g.custom_command('delete', 'testbase_test_base_account_delete', supports_no_wait=True, confirmation=True)
-        g.custom_command(
-            'check-package-name-availability', 'testbase_test_base_account_check_package_name_availability'
-        )
-        g.custom_command('get-file-upload-url', 'testbase_test_base_account_get_file_upload_url')
-        g.custom_command('offboard', 'testbase_test_base_account_offboard', supports_no_wait=True)
-        g.custom_wait_command('wait', 'testbase_test_base_account_show')
 
     with self.command_group('testbase test-result', testbase_test_result, client_factory=cf_test_result) as g:
         g.custom_command('list', 'testbase_test_result_list')

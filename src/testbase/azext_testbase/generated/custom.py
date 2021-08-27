@@ -16,32 +16,32 @@ def testbase_sku_list(client):
     return client.list()
 
 
-def testbase_test_base_account_list(client,
-                                    resource_group_name=None,
-                                    get_deleted=None):
+def testbase_account_list(client,
+                          resource_group_name=None,
+                          get_deleted=None):
     if resource_group_name:
         return client.list_by_resource_group(resource_group_name=resource_group_name,
                                              get_deleted=get_deleted)
     return client.list_by_subscription(get_deleted=get_deleted)
 
 
-def testbase_test_base_account_show(client,
-                                    resource_group_name,
-                                    test_base_account_name):
+def testbase_account_show(client,
+                          resource_group_name,
+                          name):
     return client.get(resource_group_name=resource_group_name,
-                      test_base_account_name=test_base_account_name)
+                      test_base_account_name=name)
 
 
-def testbase_test_base_account_create(client,
-                                      resource_group_name,
-                                      test_base_account_name,
-                                      location,
-                                      restore=None,
-                                      tags=None,
-                                      resource_type=None,
-                                      name=None,
-                                      locations=None,
-                                      no_wait=False):
+def testbase_account_create(client,
+                            resource_group_name,
+                            name,
+                            location,
+                            restore=None,
+                            tags=None,
+                            resource_type=None,
+                            sku_name=None,
+                            locations=None,
+                            no_wait=False):
     parameters = {}
     if tags is not None:
         parameters['tags'] = tags
@@ -49,8 +49,8 @@ def testbase_test_base_account_create(client,
     parameters['sku'] = {}
     if resource_type is not None:
         parameters['sku']['resource_type'] = resource_type
-    if name is not None:
-        parameters['sku']['name'] = name
+    if sku_name is not None:
+        parameters['sku']['name'] = sku_name
     parameters['sku']['tier'] = "Standard"
     if locations is not None:
         parameters['sku']['locations'] = locations
@@ -59,27 +59,25 @@ def testbase_test_base_account_create(client,
     return sdk_no_wait(no_wait,
                        client.begin_create,
                        resource_group_name=resource_group_name,
-                       test_base_account_name=test_base_account_name,
+                       test_base_account_name=name,
                        restore=restore,
                        parameters=parameters)
 
 
-def testbase_test_base_account_update(client,
-                                      resource_group_name,
-                                      test_base_account_name,
-                                      tags=None,
-                                      resource_type=None,
-                                      name=None,
-                                      locations=None,
-                                      no_wait=False):
+def testbase_account_update(client,
+                            resource_group_name,
+                            name,
+                            tags=None,
+                            resource_type=None,
+                            locations=None,
+                            no_wait=False):
     parameters = {}
     if tags is not None:
         parameters['tags'] = tags
     parameters['sku'] = {}
     if resource_type is not None:
         parameters['sku']['resource_type'] = resource_type
-    if name is not None:
-        parameters['sku']['name'] = name
+    parameters['sku']['name'] = name
     parameters['sku']['tier'] = "Standard"
     if locations is not None:
         parameters['sku']['locations'] = locations
@@ -88,137 +86,127 @@ def testbase_test_base_account_update(client,
     return sdk_no_wait(no_wait,
                        client.begin_update,
                        resource_group_name=resource_group_name,
-                       test_base_account_name=test_base_account_name,
+                       test_base_account_name=name,
                        parameters=parameters)
 
 
-def testbase_test_base_account_delete(client,
-                                      resource_group_name,
-                                      test_base_account_name,
-                                      no_wait=False):
-    return sdk_no_wait(no_wait,
-                       client.begin_delete,
-                       resource_group_name=resource_group_name,
-                       test_base_account_name=test_base_account_name)
-
-
-def testbase_test_base_account_check_package_name_availability(client,
-                                                               resource_group_name,
-                                                               test_base_account_name,
-                                                               name,
-                                                               application_name,
-                                                               version,
-                                                               type_):
+def testbase_account_check_package_name(client,
+                                        resource_group_name,
+                                        application_name,
+                                        version,
+                                        type_,
+                                        name=None):
     parameters = {}
-    parameters['name'] = name
+    if name is not None:
+        parameters['name'] = name
     parameters['application_name'] = application_name
     parameters['version'] = version
     parameters['type'] = type_
     return client.check_package_name_availability(resource_group_name=resource_group_name,
-                                                  test_base_account_name=test_base_account_name,
+                                                  test_base_account_name=name,
                                                   parameters=parameters)
 
 
-def testbase_test_base_account_get_file_upload_url(client,
-                                                   resource_group_name,
-                                                   test_base_account_name,
-                                                   blob_name=None):
+def testbase_account_get_package_blob_path(client,
+                                           resource_group_name,
+                                           name,
+                                           file_name=None):
     parameters = {}
-    if blob_name is not None:
-        parameters['blob_name'] = blob_name
+    if file_name is not None:
+        parameters['blob_name'] = file_name
     return client.get_file_upload_url(resource_group_name=resource_group_name,
-                                      test_base_account_name=test_base_account_name,
+                                      test_base_account_name=name,
                                       parameters=parameters)
 
 
-def testbase_test_base_account_offboard(client,
-                                        resource_group_name,
-                                        test_base_account_name,
-                                        no_wait=False):
+def testbase_account_soft_delete(client,
+                                 resource_group_name,
+                                 name,
+                                 no_wait=False):
     return sdk_no_wait(no_wait,
                        client.begin_offboard,
                        resource_group_name=resource_group_name,
-                       test_base_account_name=test_base_account_name)
+                       test_base_account_name=name)
 
 
 def testbase_usage_list(client,
                         resource_group_name,
-                        test_base_account_name,
+                        account_name,
                         filter_=None):
     return client.list(resource_group_name=resource_group_name,
-                       test_base_account_name=test_base_account_name,
+                       test_base_account_name=account_name,
                        filter=filter_)
 
 
 def testbase_available_os_list(client,
                                resource_group_name,
-                               test_base_account_name,
+                               account_name,
                                os_update_type):
     return client.list(resource_group_name=resource_group_name,
-                       test_base_account_name=test_base_account_name,
+                       test_base_account_name=account_name,
                        os_update_type=os_update_type)
 
 
 def testbase_available_os_show(client,
                                resource_group_name,
-                               test_base_account_name,
+                               account_name,
                                available_os_resource_name):
     return client.get(resource_group_name=resource_group_name,
-                      test_base_account_name=test_base_account_name,
+                      test_base_account_name=account_name,
                       available_os_resource_name=available_os_resource_name)
 
 
 def testbase_flighting_ring_list(client,
                                  resource_group_name,
-                                 test_base_account_name):
+                                 account_name):
     return client.list(resource_group_name=resource_group_name,
-                       test_base_account_name=test_base_account_name)
+                       test_base_account_name=account_name)
 
 
 def testbase_flighting_ring_show(client,
                                  resource_group_name,
-                                 test_base_account_name,
+                                 account_name,
                                  flighting_ring_resource_name):
     return client.get(resource_group_name=resource_group_name,
-                      test_base_account_name=test_base_account_name,
+                      test_base_account_name=account_name,
                       flighting_ring_resource_name=flighting_ring_resource_name)
 
 
 def testbase_test_type_list(client,
                             resource_group_name,
-                            test_base_account_name):
+                            account_name):
     return client.list(resource_group_name=resource_group_name,
-                       test_base_account_name=test_base_account_name)
+                       test_base_account_name=account_name)
 
 
 def testbase_test_type_show(client,
                             resource_group_name,
-                            test_base_account_name,
+                            account_name,
                             test_type_resource_name):
     return client.get(resource_group_name=resource_group_name,
-                      test_base_account_name=test_base_account_name,
+                      test_base_account_name=account_name,
                       test_type_resource_name=test_type_resource_name)
 
 
 def testbase_package_list(client,
                           resource_group_name,
-                          test_base_account_name):
+                          account_name):
     return client.list_by_test_base_account(resource_group_name=resource_group_name,
-                                            test_base_account_name=test_base_account_name)
+                                            test_base_account_name=account_name)
 
 
 def testbase_package_show(client,
                           resource_group_name,
-                          test_base_account_name,
+                          account_name,
                           package_name):
     return client.get(resource_group_name=resource_group_name,
-                      test_base_account_name=test_base_account_name,
+                      test_base_account_name=account_name,
                       package_name=package_name)
 
 
 def testbase_package_create(client,
                             resource_group_name,
-                            test_base_account_name,
+                            account_name,
                             package_name,
                             location,
                             tags=None,
@@ -248,14 +236,14 @@ def testbase_package_create(client,
     return sdk_no_wait(no_wait,
                        client.begin_create,
                        resource_group_name=resource_group_name,
-                       test_base_account_name=test_base_account_name,
+                       test_base_account_name=account_name,
                        package_name=package_name,
                        parameters=parameters)
 
 
 def testbase_package_update(client,
                             resource_group_name,
-                            test_base_account_name,
+                            account_name,
                             package_name,
                             tags=None,
                             target_os_list=None,
@@ -280,68 +268,68 @@ def testbase_package_update(client,
     return sdk_no_wait(no_wait,
                        client.begin_update,
                        resource_group_name=resource_group_name,
-                       test_base_account_name=test_base_account_name,
+                       test_base_account_name=account_name,
                        package_name=package_name,
                        parameters=parameters)
 
 
 def testbase_package_delete(client,
                             resource_group_name,
-                            test_base_account_name,
+                            account_name,
                             package_name,
                             no_wait=False):
     return sdk_no_wait(no_wait,
                        client.begin_delete,
                        resource_group_name=resource_group_name,
-                       test_base_account_name=test_base_account_name,
+                       test_base_account_name=account_name,
                        package_name=package_name)
 
 
 def testbase_package_get_download_url(client,
                                       resource_group_name,
-                                      test_base_account_name,
+                                      account_name,
                                       package_name):
     return client.get_download_url(resource_group_name=resource_group_name,
-                                   test_base_account_name=test_base_account_name,
+                                   test_base_account_name=account_name,
                                    package_name=package_name)
 
 
 def testbase_package_hard_delete(client,
                                  resource_group_name,
-                                 test_base_account_name,
+                                 account_name,
                                  package_name,
                                  no_wait=False):
     return sdk_no_wait(no_wait,
                        client.begin_hard_delete,
                        resource_group_name=resource_group_name,
-                       test_base_account_name=test_base_account_name,
+                       test_base_account_name=account_name,
                        package_name=package_name)
 
 
 def testbase_test_summary_list(client,
                                resource_group_name,
-                               test_base_account_name):
+                               account_name):
     return client.list(resource_group_name=resource_group_name,
-                       test_base_account_name=test_base_account_name)
+                       test_base_account_name=account_name)
 
 
 def testbase_test_summary_show(client,
                                resource_group_name,
-                               test_base_account_name,
+                               account_name,
                                test_summary_name):
     return client.get(resource_group_name=resource_group_name,
-                      test_base_account_name=test_base_account_name,
+                      test_base_account_name=account_name,
                       test_summary_name=test_summary_name)
 
 
 def testbase_test_result_list(client,
                               resource_group_name,
-                              test_base_account_name,
+                              account_name,
                               package_name,
                               os_update_type,
                               filter_=None):
     return client.list(resource_group_name=resource_group_name,
-                       test_base_account_name=test_base_account_name,
+                       test_base_account_name=account_name,
                        package_name=package_name,
                        os_update_type=os_update_type,
                        filter=filter_)
@@ -349,114 +337,114 @@ def testbase_test_result_list(client,
 
 def testbase_test_result_show(client,
                               resource_group_name,
-                              test_base_account_name,
+                              account_name,
                               package_name,
                               test_result_name):
     return client.get(resource_group_name=resource_group_name,
-                      test_base_account_name=test_base_account_name,
+                      test_base_account_name=account_name,
                       package_name=package_name,
                       test_result_name=test_result_name)
 
 
 def testbase_test_result_get_download_url(client,
                                           resource_group_name,
-                                          test_base_account_name,
+                                          account_name,
                                           package_name,
                                           test_result_name):
     return client.get_download_url(resource_group_name=resource_group_name,
-                                   test_base_account_name=test_base_account_name,
+                                   test_base_account_name=account_name,
                                    package_name=package_name,
                                    test_result_name=test_result_name)
 
 
 def testbase_test_result_get_video_download_url(client,
                                                 resource_group_name,
-                                                test_base_account_name,
+                                                account_name,
                                                 package_name,
                                                 test_result_name):
     return client.get_video_download_url(resource_group_name=resource_group_name,
-                                         test_base_account_name=test_base_account_name,
+                                         test_base_account_name=account_name,
                                          package_name=package_name,
                                          test_result_name=test_result_name)
 
 
 def testbase_os_update_list(client,
                             resource_group_name,
-                            test_base_account_name,
+                            account_name,
                             package_name,
                             os_update_type):
     return client.list(resource_group_name=resource_group_name,
-                       test_base_account_name=test_base_account_name,
+                       test_base_account_name=account_name,
                        package_name=package_name,
                        os_update_type=os_update_type)
 
 
 def testbase_os_update_show(client,
                             resource_group_name,
-                            test_base_account_name,
+                            account_name,
                             package_name,
                             os_update_resource_name):
     return client.get(resource_group_name=resource_group_name,
-                      test_base_account_name=test_base_account_name,
+                      test_base_account_name=account_name,
                       package_name=package_name,
                       os_update_resource_name=os_update_resource_name)
 
 
 def testbase_favorite_process_list(client,
                                    resource_group_name,
-                                   test_base_account_name,
+                                   account_name,
                                    package_name):
     return client.list(resource_group_name=resource_group_name,
-                       test_base_account_name=test_base_account_name,
+                       test_base_account_name=account_name,
                        package_name=package_name)
 
 
 def testbase_favorite_process_show(client,
                                    resource_group_name,
-                                   test_base_account_name,
+                                   account_name,
                                    package_name,
-                                   favorite_process_resource_name):
+                                   name):
     return client.get(resource_group_name=resource_group_name,
-                      test_base_account_name=test_base_account_name,
+                      test_base_account_name=account_name,
                       package_name=package_name,
-                      favorite_process_resource_name=favorite_process_resource_name)
+                      favorite_process_resource_name=name)
 
 
 def testbase_favorite_process_create(client,
                                      resource_group_name,
-                                     test_base_account_name,
+                                     account_name,
                                      package_name,
-                                     favorite_process_resource_name,
+                                     name,
                                      actual_process_name=None):
     parameters = {}
     if actual_process_name is not None:
         parameters['actual_process_name'] = actual_process_name
     return client.create(resource_group_name=resource_group_name,
-                         test_base_account_name=test_base_account_name,
+                         test_base_account_name=account_name,
                          package_name=package_name,
-                         favorite_process_resource_name=favorite_process_resource_name,
+                         favorite_process_resource_name=name,
                          parameters=parameters)
 
 
 def testbase_favorite_process_delete(client,
                                      resource_group_name,
-                                     test_base_account_name,
+                                     account_name,
                                      package_name,
-                                     favorite_process_resource_name):
+                                     name):
     return client.delete(resource_group_name=resource_group_name,
-                         test_base_account_name=test_base_account_name,
+                         test_base_account_name=account_name,
                          package_name=package_name,
-                         favorite_process_resource_name=favorite_process_resource_name)
+                         favorite_process_resource_name=name)
 
 
 def testbase_analysis_result_list(client,
                                   resource_group_name,
-                                  test_base_account_name,
+                                  account_name,
                                   package_name,
                                   test_result_name,
                                   analysis_result_type):
     return client.list(resource_group_name=resource_group_name,
-                       test_base_account_name=test_base_account_name,
+                       test_base_account_name=account_name,
                        package_name=package_name,
                        test_result_name=test_result_name,
                        analysis_result_type=analysis_result_type)
@@ -464,12 +452,12 @@ def testbase_analysis_result_list(client,
 
 def testbase_analysis_result_show(client,
                                   resource_group_name,
-                                  test_base_account_name,
+                                  account_name,
                                   package_name,
                                   test_result_name,
                                   analysis_result_name):
     return client.get(resource_group_name=resource_group_name,
-                      test_base_account_name=test_base_account_name,
+                      test_base_account_name=account_name,
                       package_name=package_name,
                       test_result_name=test_result_name,
                       analysis_result_name=analysis_result_name)
@@ -477,39 +465,39 @@ def testbase_analysis_result_show(client,
 
 def testbase_email_event_list(client,
                               resource_group_name,
-                              test_base_account_name):
+                              account_name):
     return client.list(resource_group_name=resource_group_name,
-                       test_base_account_name=test_base_account_name)
+                       test_base_account_name=account_name)
 
 
 def testbase_email_event_show(client,
                               resource_group_name,
-                              test_base_account_name,
+                              account_name,
                               email_event_resource_name):
     return client.get(resource_group_name=resource_group_name,
-                      test_base_account_name=test_base_account_name,
+                      test_base_account_name=account_name,
                       email_event_resource_name=email_event_resource_name)
 
 
 def testbase_customer_event_list(client,
                                  resource_group_name,
-                                 test_base_account_name):
+                                 account_name):
     return client.list_by_test_base_account(resource_group_name=resource_group_name,
-                                            test_base_account_name=test_base_account_name)
+                                            test_base_account_name=account_name)
 
 
 def testbase_customer_event_show(client,
                                  resource_group_name,
-                                 test_base_account_name,
+                                 account_name,
                                  customer_event_name):
     return client.get(resource_group_name=resource_group_name,
-                      test_base_account_name=test_base_account_name,
+                      test_base_account_name=account_name,
                       customer_event_name=customer_event_name)
 
 
 def testbase_customer_event_create(client,
                                    resource_group_name,
-                                   test_base_account_name,
+                                   account_name,
                                    customer_event_name,
                                    event_name=None,
                                    receivers=None,
@@ -522,18 +510,18 @@ def testbase_customer_event_create(client,
     return sdk_no_wait(no_wait,
                        client.begin_create,
                        resource_group_name=resource_group_name,
-                       test_base_account_name=test_base_account_name,
+                       test_base_account_name=account_name,
                        customer_event_name=customer_event_name,
                        parameters=parameters)
 
 
 def testbase_customer_event_delete(client,
                                    resource_group_name,
-                                   test_base_account_name,
+                                   account_name,
                                    customer_event_name,
                                    no_wait=False):
     return sdk_no_wait(no_wait,
                        client.begin_delete,
                        resource_group_name=resource_group_name,
-                       test_base_account_name=test_base_account_name,
+                       test_base_account_name=account_name,
                        customer_event_name=customer_event_name)
