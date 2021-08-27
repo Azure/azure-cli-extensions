@@ -6,16 +6,13 @@
 
 from azure.cli.core.commands.validators import validate_tags
 from azure.cli.core.commands.parameters import (file_type, get_enum_type, get_three_state_flag)
-from azure.cli.core.local_context import LocalContextAttribute, LocalContextAction
 
 from ._validators import (validate_metadata, get_permission_validator, get_permission_help_string,
                           validate_blob_type, validate_included_datasets_v2,
                           add_download_progress_callback, add_upload_progress_callback,
-                          validate_storage_data_plane_list, as_user_validator, blob_tier_validator,
-                          validate_container_delete_retention_days, validate_delete_retention_days,
-                          process_resource_group)
+                          validate_storage_data_plane_list, as_user_validator, blob_tier_validator)
 
-from .profiles import CUSTOM_DATA_STORAGE_BLOB, CUSTOM_MGMT_STORAGE
+from .profiles import CUSTOM_DATA_STORAGE_BLOB
 
 
 def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statements, too-many-lines
@@ -23,16 +20,8 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
 
     from knack.arguments import ignore_type, CLIArgumentType
 
-    from azure.cli.core.commands.parameters import get_resource_name_completion_list
-
     from .sdkutil import get_table_data_type
     from .completers import get_storage_name_completion_list
-
-    acct_name_type = CLIArgumentType(options_list=['--account-name', '-n'], help='The storage account name.',
-                                     id_part='name',
-                                     completer=get_resource_name_completion_list('Microsoft.Storage/storageAccounts'),
-                                     local_context_attribute=LocalContextAttribute(
-                                         name='storage_account_name', actions=[LocalContextAction.GET]))
 
     t_base_blob_service = self.get_sdk('blob.baseblobservice#BaseBlobService')
     t_file_service = self.get_sdk('file#FileService')
@@ -145,58 +134,6 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                    help='Metadata in space-separated key=value pairs. This overwrites any existing metadata.',
                    validator=validate_metadata)
         c.argument('timeout', help='Request timeout in seconds. Applies to each call to the service.', type=int)
-
-    with self.argument_context('storage account blob-service-properties show',
-                               resource_type=CUSTOM_MGMT_STORAGE) as c:
-        c.argument('account_name', acct_name_type, id_part=None)
-        c.argument('resource_group_name', required=False, validator=process_resource_group)
-
-    with self.argument_context('storage account blob-service-properties update',
-                               resource_type=CUSTOM_MGMT_STORAGE) as c:
-        from azure.cli.command_modules.storage._validators import get_api_version_type, \
-            validator_change_feed_retention_days
-        c.argument('account_name', acct_name_type, id_part=None)
-        c.argument('resource_group_name', required=False, validator=process_resource_group)
-        c.argument('enable_change_feed', arg_type=get_three_state_flag(), min_api='2019-04-01',
-                   arg_group='Change Feed Policy')
-        c.argument('change_feed_retention_days', is_preview=True,
-                   options_list=['--change-feed-retention-days', '--change-feed-days'],
-                   type=int, min_api='2019-06-01', arg_group='Change Feed Policy',
-                   validator=validator_change_feed_retention_days,
-                   help='Indicate the duration of changeFeed retention in days. '
-                        'Minimum value is 1 day and maximum value is 146000 days (400 years). '
-                        'A null value indicates an infinite retention of the change feed.'
-                        '(Use `--enable-change-feed` without `--change-feed-days` to indicate null)')
-        c.argument('enable_container_delete_retention',
-                   arg_type=get_three_state_flag(),
-                   options_list=['--enable-container-delete-retention', '--container-retention'],
-                   arg_group='Container Delete Retention Policy', min_api='2019-06-01',
-                   help='Enable container delete retention policy for container soft delete when set to true. '
-                        'Disable container delete retention policy when set to false.')
-        c.argument('container_delete_retention_days',
-                   options_list=['--container-delete-retention-days', '--container-days'],
-                   type=int, arg_group='Container Delete Retention Policy',
-                   min_api='2019-06-01', validator=validate_container_delete_retention_days,
-                   help='Indicate the number of days that the deleted container should be retained. The minimum '
-                        'specified value can be 1 and the maximum value can be 365.')
-        c.argument('enable_delete_retention', arg_type=get_three_state_flag(), arg_group='Delete Retention Policy',
-                   min_api='2018-07-01')
-        c.argument('delete_retention_days', type=int, arg_group='Delete Retention Policy',
-                   validator=validate_delete_retention_days, min_api='2018-07-01')
-        c.argument('enable_restore_policy', arg_type=get_three_state_flag(), arg_group='Restore Policy',
-                   min_api='2019-06-01', help="Enable blob restore policy when it set to true.")
-        c.argument('restore_days', type=int, arg_group='Restore Policy',
-                   min_api='2019-06-01', help="The number of days for the blob can be restored. It should be greater "
-                   "than zero and less than Delete Retention Days.")
-        c.argument('enable_versioning', arg_type=get_three_state_flag(), help='Versioning is enabled if set to true.',
-                   min_api='2019-06-01')
-        c.argument('enable_last_access_tracking', arg_type=get_three_state_flag(), min_api='2019-06-01',
-                   options_list=['--enable-last-access-tracking', '-t'],
-                   help='When set to true last access time based tracking policy is enabled.')
-        c.argument('default_service_version', options_list=['--default-service-version', '-d'],
-                   type=get_api_version_type(), min_api='2018-07-01',
-                   help="Indicate the default version to use for requests to the Blob service if an incoming request's "
-                        "version is not specified.")
 
     with self.argument_context('storage blob') as c:
         c.argument('blob_name', options_list=('--name', '-n'), arg_type=blob_name_type)
