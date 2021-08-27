@@ -6,7 +6,7 @@ Release History
 0.5.29
 +++++
 * Fix update (failed due to "ERROR: (BadRequest) Feature Microsoft.ContainerService/AutoUpgradePreview is not enabled" even when autoupgrade was not specified)
-* Add podMaxPids argument for node config
+* Add podMaxPids argument for kubelet-config
 
 0.5.28
 +++++
