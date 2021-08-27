@@ -35,7 +35,7 @@ class DefaultExtension(PartnerExtensionModel):
                 scope_namespace = ScopeNamespace(target_namespace=target_namespace)
                 ext_scope = Scope(namespace=scope_namespace, cluster=None)
 
-        create_identity = False
+        create_identity = True
         extension_instance = ExtensionInstance(
             extension_type=extension_type,
             auto_upgrade_minor_version=auto_upgrade_minor_version,
