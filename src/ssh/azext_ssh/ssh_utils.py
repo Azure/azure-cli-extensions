@@ -16,7 +16,7 @@ logger = log.get_logger(__name__)
 def start_ssh_connection(port, ssh_args, ip, username, cert_file, private_key_file):
     ssh_arg_list = []
     if ssh_args:
-        ssh_arg_list = shlex.split(ssh_args)
+        ssh_arg_list = ssh_args
     command = [_get_ssh_path(), _get_host(username, ip)]
     command = command + _build_args(cert_file, private_key_file, port) + ssh_arg_list
     logger.debug("Running ssh command %s", ' '.join(command))

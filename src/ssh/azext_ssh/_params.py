@@ -15,7 +15,7 @@ def load_arguments(self, _):
         c.argument('use_private_ip', options_list=['--prefer-private-ip'],
                    help='Will prefer private IP.  Requires connectivity to the private IP.')
         c.argument('port', options_list=['--port'], help='SSH port')
-        c.argument('ssh_args', options_list=['--ssh-args'], help='SSH Additional arguments')
+        c.positional('ssh_args', nargs='*', help='Additional arguments passed to OpenSSH')
 
     with self.argument_context('ssh config') as c:
         c.argument('config_path', options_list=['--file', '-f'], help='The file path to write the SSH config to')
