@@ -89,8 +89,21 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'globalreachconnection_show')
 
     with self.command_group('vmware cloud-link', vmware_sdk, client_factory=cf_vmware) as g:
-        g.custom_command('create', 'cloud_link_create_or_update')
-        g.custom_command('update', 'cloud_link_create_or_update')
+        g.custom_command('create', 'cloud_link_create')
         g.custom_command('list', 'cloud_link_list')
         g.custom_command('delete', 'cloud_link_delete')
         g.custom_show_command('show', 'cloud_link_show')
+
+    with self.command_group('vmware script-cmdlet', vmware_sdk, client_factory=cf_vmware) as g:
+        g.custom_command('list', 'script_cmdlet_list')
+        g.custom_show_command('show', 'script_cmdlet_show')
+
+    with self.command_group('vmware script-package', vmware_sdk, client_factory=cf_vmware) as g:
+        g.custom_command('list', 'script_package_list')
+        g.custom_show_command('show', 'script_package_show')
+
+    with self.command_group('vmware script-execution', vmware_sdk, client_factory=cf_vmware) as g:
+        g.custom_command('create', 'script_execution_create')
+        g.custom_command('list', 'script_execution_list')
+        g.custom_command('delete', 'script_execution_delete')
+        g.custom_show_command('show', 'script_execution_show')

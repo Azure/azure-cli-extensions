@@ -114,13 +114,14 @@ def load_arguments(self, _):
         c.argument('enable_private_cluster', action='store_true')
         c.argument('private_dns_zone')
         c.argument('fqdn_subdomain')
-        c.argument('enable_public_fqdn', action='store_true', is_preview=True)
+        c.argument('disable_public_fqdn', action='store_true')
         c.argument('enable_managed_identity', action='store_true')
         c.argument('assign_identity', type=str, validator=validate_assign_identity)
         c.argument('enable_sgxquotehelper', action='store_true')
         c.argument('auto_upgrade_channel', arg_type=get_enum_type([CONST_RAPID_UPGRADE_CHANNEL, CONST_STABLE_UPGRADE_CHANNEL, CONST_PATCH_UPGRADE_CHANNEL, CONST_NODE_IMAGE_UPGRADE_CHANNEL, CONST_NONE_UPGRADE_CHANNEL]))
         c.argument('kubelet_config', type=str)
         c.argument('linux_os_config', type=str)
+        c.argument('http_proxy_config', options_list=['--http-proxy-config'], type=str)
         c.argument('enable_pod_identity', action='store_true')
         c.argument('appgw_name', options_list=['--appgw-name'], arg_group='Application Gateway')
         c.argument('appgw_subnet_prefix', options_list=['--appgw-subnet-prefix'], arg_group='Application Gateway', deprecate_info=c.deprecate(redirect='--appgw-subnet-cidr', hide=True))
@@ -153,8 +154,8 @@ def load_arguments(self, _):
         c.argument('api_server_authorized_ip_ranges', type=str, validator=validate_ip_ranges)
         c.argument('enable_pod_security_policy', action='store_true')
         c.argument('disable_pod_security_policy', action='store_true')
-        c.argument('enable_public_fqdn', action='store_true', is_preview=True)
-        c.argument('disable_public_fqdn', action='store_true', is_preview=True)
+        c.argument('enable_public_fqdn', action='store_true')
+        c.argument('disable_public_fqdn', action='store_true')
         c.argument('attach_acr', acr_arg_type, validator=validate_acr)
         c.argument('detach_acr', acr_arg_type, validator=validate_acr)
         c.argument('aks_custom_headers')
@@ -195,13 +196,6 @@ def load_arguments(self, _):
     with self.argument_context('aks nodepool') as c:
         c.argument('cluster_name', type=str, help='The cluster name.')
 
-    with self.argument_context('aks command invoke') as c:
-        c.argument('command_string', type=str, options_list=["--command", "-c"], help='the command to run')
-        c.argument('command_files', options_list=["--file", "-f"], required=False, action="append", help='attach any files the command may use, or use \'.\' to upload the current folder.')
-
-    with self.argument_context('aks command result') as c:
-        c.argument('command_id', type=str, options_list=["--command-id", "-i"], help='the command ID from "aks command invoke"')
-
     for scope in ['aks nodepool add']:
         with self.argument_context(scope) as c:
             c.argument('nodepool_name', type=str, options_list=['--name', '-n'], validator=validate_nodepool_name, help='The node pool name.')
@@ -238,6 +232,7 @@ def load_arguments(self, _):
 
     with self.argument_context('aks nodepool upgrade') as c:
         c.argument('max_surge', type=str, validator=validate_max_surge)
+        c.argument('aks_custom_headers')
 
     with self.argument_context('aks nodepool update') as c:
         c.argument('enable_cluster_autoscaler', options_list=["--enable-cluster-autoscaler", "-e"], action='store_true')
@@ -272,7 +267,7 @@ def load_arguments(self, _):
         c.argument('user', options_list=['--user', '-u'], default='clusterUser', validator=validate_user)
         c.argument('path', options_list=['--file', '-f'], type=file_type, completer=FilesCompleter(),
                    default=os.path.join(os.path.expanduser('~'), '.kube', 'config'))
-        c.argument('public_fqdn', default=False, action='store_true', is_preview=True)
+        c.argument('public_fqdn', default=False, action='store_true')
 
     with self.argument_context('aks pod-identity') as c:
         c.argument('cluster_name', type=str, help='The cluster name.')

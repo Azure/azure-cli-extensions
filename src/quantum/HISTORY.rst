@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.6.1
+++++++
+* [2021-07-22] Reduced the lenghth of the user agent reported by the tool.
+
 0.6.0
 ++++++
 * [2021-07-20] Version intended to work with QDK version v0.18.2106.148911

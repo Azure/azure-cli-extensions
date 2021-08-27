@@ -28,7 +28,7 @@ class TriggersOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~data_factory_management_client.models
+    :type models: ~azure.mgmt.datafactory.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -57,7 +57,7 @@ class TriggersOperations:
         :type factory_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either TriggerListResponse or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~data_factory_management_client.models.TriggerListResponse]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.datafactory.models.TriggerListResponse]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.TriggerListResponse"]
@@ -131,10 +131,10 @@ class TriggersOperations:
         :param factory_name: The factory name.
         :type factory_name: str
         :param filter_parameters: Parameters to filter the triggers.
-        :type filter_parameters: ~data_factory_management_client.models.TriggerFilterParameters
+        :type filter_parameters: ~azure.mgmt.datafactory.models.TriggerFilterParameters
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: TriggerQueryResponse, or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.TriggerQueryResponse
+        :rtype: ~azure.mgmt.datafactory.models.TriggerQueryResponse
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.TriggerQueryResponse"]
@@ -201,13 +201,13 @@ class TriggersOperations:
         :param trigger_name: The trigger name.
         :type trigger_name: str
         :param trigger: Trigger resource definition.
-        :type trigger: ~data_factory_management_client.models.TriggerResource
+        :type trigger: ~azure.mgmt.datafactory.models.TriggerResource
         :param if_match: ETag of the trigger entity.  Should only be specified for update, for which it
          should match existing entity or can be * for unconditional update.
         :type if_match: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: TriggerResource, or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.TriggerResource
+        :rtype: ~azure.mgmt.datafactory.models.TriggerResource
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.TriggerResource"]
@@ -280,7 +280,7 @@ class TriggersOperations:
         :type if_none_match: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: TriggerResource, or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.TriggerResource or None
+        :rtype: ~azure.mgmt.datafactory.models.TriggerResource or None
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType[Optional["models.TriggerResource"]]
@@ -461,7 +461,7 @@ class TriggersOperations:
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either TriggerSubscriptionOperationStatus or the result of cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~data_factory_management_client.models.TriggerSubscriptionOperationStatus]
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.datafactory.models.TriggerSubscriptionOperationStatus]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
@@ -528,7 +528,7 @@ class TriggersOperations:
         :type trigger_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: TriggerSubscriptionOperationStatus, or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.TriggerSubscriptionOperationStatus
+        :rtype: ~azure.mgmt.datafactory.models.TriggerSubscriptionOperationStatus
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.TriggerSubscriptionOperationStatus"]
@@ -646,7 +646,7 @@ class TriggersOperations:
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either TriggerSubscriptionOperationStatus or the result of cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~data_factory_management_client.models.TriggerSubscriptionOperationStatus]
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.datafactory.models.TriggerSubscriptionOperationStatus]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]

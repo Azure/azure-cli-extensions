@@ -3,10 +3,7 @@
 # check var
 # specify the version of python3, e.g. 3.6
 [[ -z "${PYTHON_VERSION}" ]] && (echo "PYTHON_VERSION is empty"; exit 1)
-
-patchImageTools(){
-    apt install -y curl
-}
+[[ -z "${ACS_BASE_DIR}" ]] && (echo "ACS_BASE_DIR is empty"; exit 1)
 
 setupVenv(){
     # delete existing venv
@@ -110,6 +107,19 @@ setupAKSPreview(){
     source azEnv/bin/activate
 }
 
+createSSHKey(){
+    # create ssh-key in advance to avoid the race condition that is prone to occur when key creation is handled by
+    # azure-cli when performing test cases concurrently, this command will not overwrite the existing ssh-key
+    custom_ssh_dir=${1:-"${ACS_BASE_DIR}/tests/latest/data/.ssh"}
+    # remove dir if exists (clean up), otherwise create it
+    if [[ -d ${custom_ssh_dir} ]]; then
+        rm -rf ${custom_ssh_dir}
+    else
+        mkdir -p ${custom_ssh_dir}
+    fi
+    ssh-keygen -t rsa -b 2048 -C "azcli_aks_live_test@example.com" -f ${custom_ssh_dir}/id_rsa -N "" -q <<< n
+}
+
 setup_option=${1:-""}
 if [[ -n ${setup_option} ]]; then
     # bash options
@@ -117,9 +127,6 @@ if [[ -n ${setup_option} ]]; then
     set -o nounset
     set -o pipefail
     set -o xtrace
-
-    # install missing tools in the image
-    patchImageTools
 
     # create new venv if second arg is not "n"
     new_venv=${2:-"n"}
@@ -149,6 +156,7 @@ if [[ -n ${setup_option} ]]; then
         ext_repo=${4:-""}
         setupAZ "${cli_repo}" "${ext_repo}"
         installTestPackages
+        createSSHKey
     elif [[ ${setup_option} == "setup-akspreview" ]]; then
         echo "Start to setup aks-preview!"
         setupAKSPreview
