@@ -286,7 +286,7 @@ helps['network manager group create'] = """
         text: |-
                az network manager group create --name "TestNetworkGroup" --network-manager-name "testNetworkManager" \
 --description "A sample group" --conditional-membership "" --display-name "My Network Group" --group-members \
-resource-id="/subscriptions/subscriptionC/resourceGroup/rg1/providers/Microsoft.Network/virtualnetworks/vnet1" \
+vnet-id="/subscriptions/subscriptionC/resourceGroup/rg1/providers/Microsoft.Network/virtualnetworks/vnet1" subnet-id="" \
 --member-type "VirtualNetwork" --resource-group "rg1"
 """
 
@@ -314,123 +314,108 @@ helps['network manager group delete'] = """
 --resource-group "rg1"
 """
 
-helps['network manager security-config'] = """
+helps['network manager security-user-config'] = """
     type: group
-    short-summary: Manage securityconfiguration with network
+    short-summary: Manage securityuserconfiguration with network
 """
 
-helps['network manager security-config list'] = """
+helps['network manager security-user-config list'] = """
     type: command
-    short-summary: "Lists all the network manager security configurations in a network manager, in a paginated \
+    short-summary: "Lists all the network manager security user configurations in a network manager, in a paginated \
 format."
     examples:
-      - name: List security configurations in a network manager
+      - name: List security user configurations in a network manager
         text: |-
-               az network manager security-config list --network-manager-name "testNetworkManager" --resource-group \
+               az network manager security-user-config list --network-manager-name "testNetworkManager" --resource-group \
 "rg1"
 """
 
-helps['network manager security-config show'] = """
+helps['network manager security-user-config show'] = """
     type: command
-    short-summary: "Retrieves a network manager security Configuration."
+    short-summary: "Retrieves a network manager security user Configuration."
     examples:
-      - name: Get security configurations
+      - name: Get security user configurations
         text: |-
-               az network manager security-config show --configuration-name "myTestSecurityConfig" \
+               az network manager security-user-config show --configuration-name "myTestSecurityConfig" \
 --network-manager-name "testNetworkManager" --resource-group "rg1"
 """
 
-helps['network manager security-config create'] = """
+helps['network manager security-user-config create'] = """
     type: command
-    short-summary: "Create a network manager security Configuration."
-    parameters:
-      - name: --applies-to-groups
-        short-summary: "Groups for configuration"
-        long-summary: |
-            Usage: --applies-to-groups network-group-id=XX
-
-            network-group-id: Network manager group Id.
-
-            Multiple actions can be specified by using more than one --applies-to-groups argument.
+    short-summary: "Create a network manager security user Configuration."
     examples:
-      - name: Create network manager security Configuration
+      - name: Create network manager security user Configuration
         text: |-
-               az network manager security-config create --configuration-name "myTestSecurityConfig" \
---network-manager-name "testNetworkManager" --resource-group "rg1" --description "A sample policy" --applies-to-groups \
-network-group-id="/subscriptions/subId/resourceGroups/rg1/providers/Microsoft.Network/networkManagers/testNetworkManage\
-r/networkGroups/testGroup" --delete-existing-ns-gs true --security-type "UserPolicy"
+               az network manager security-user-config create --configuration-name "myTestSecurityConfig" \
+--network-manager-name "testNetworkManager" --resource-group "rg1" --description "A sample policy" \
+--delete-existing-ns-gs true --security-type "UserPolicy"
 """
 
-helps['network manager security-config update'] = """
+helps['network manager security-user-config update'] = """
     type: command
-    short-summary: "Update a network manager security Configuration."
-    parameters:
-      - name: --applies-to-groups
-        short-summary: "Groups for configuration"
-        long-summary: |
-            Usage: --applies-to-groups network-group-id=XX
-
-            network-group-id: Network manager group Id.
-
-            Multiple actions can be specified by using more than one --applies-to-groups argument.
+    short-summary: "Update a network manager security user Configuration."
 """
 
-helps['network manager security-config delete'] = """
+helps['network manager security-user-config delete'] = """
     type: command
-    short-summary: "Deletes a network manager security Configuration."
+    short-summary: "Deletes a network manager security user Configuration."
     examples:
-      - name: Delete network manager security Configuration
+      - name: Delete network manager security user Configuration
         text: |-
-               az network manager security-config delete --configuration-name "myTestSecurityConfig" \
+               az network manager security-user-config delete --configuration-name "myTestSecurityConfig" \
 --network-manager-name "testNetworkManager" --resource-group "rg1"
 """
 
-helps['network manager security-config evaluate-import'] = """
-    type: command
-    short-summary: "The operation to evaluate import NSG to security configurations."
-    parameters:
-      - name: --network-security-group-imports
-        short-summary: "List of nsg uris."
-        long-summary: |
-            Usage: --network-security-group-imports network-security-group-uri=XX
-
-            network-security-group-uri: Network Security Group Uri.
-
-            Multiple actions can be specified by using more than one --network-security-group-imports argument.
-    examples:
-      - name: Evaluate import NSG Rules
-        text: |-
-               az network manager security-config evaluate-import --configuration-name "myTestConfig" \
---network-manager-name "testNetworkManager" --admin-security-configuration-uri "/subscriptions/subId/resourceGroups/rg1\
-/providers/Microsoft.Network/networkManagers/testNetworkManager/securityConfigurations/adminConfig" \
---import-deny-rules-as-admin-rules true --network-security-group-imports network-security-group-uri="/subscriptions/sub\
-id/resourceGroups/rg1/providers/Microsoft.Network/networkSecurityGroups/testnsg/securityRules/rule1" \
---remove-allow-azure-load-balancer-inbound-rule true --remove-allow-internet-outbound-rule true \
---remove-allow-vnet-inbound-rule true --remove-allow-vnet-outbound-rule true --resource-group "rg1"
+helps['network manager security-admin-config'] = """
+    type: group
+    short-summary: Manage securityadminconfiguration with network
 """
 
-helps['network manager security-config import'] = """
+helps['network manager security-admin-config list'] = """
     type: command
-    short-summary: "Imports network security rules to network manager security rules."
-    parameters:
-      - name: --network-security-group-imports
-        short-summary: "List of nsg uris."
-        long-summary: |
-            Usage: --network-security-group-imports network-security-group-uri=XX
-
-            network-security-group-uri: Network Security Group Uri.
-
-            Multiple actions can be specified by using more than one --network-security-group-imports argument.
+    short-summary: "Lists all the network manager security admin configurations in a network manager, in a paginated \
+format."
     examples:
-      - name: Import NSG Rules
+      - name: List security admin configurations in a network manager
         text: |-
-               az network manager security-config import --configuration-name "myTestConfig" --network-manager-name \
-"testNetworkManager" --admin-security-configuration-uri "/subscriptions/subId/resourceGroups/rg1/providers/Microsoft.Ne\
-twork/networkManagers/testNetworkManager/securityConfigurations/adminConfig" --import-deny-rules-as-admin-rules true \
---network-security-group-imports network-security-group-uri="/subscriptions/subid/resourceGroups/rg1/providers/Microsof\
-t.Network/networkSecurityGroups/testnsg/securityRules/rule1" --remove-allow-azure-load-balancer-inbound-rule true \
---remove-allow-internet-outbound-rule true --remove-allow-vnet-inbound-rule true --remove-allow-vnet-outbound-rule \
-true --resource-group "rg1"
+               az network manager security-admin-config list --network-manager-name "testNetworkManager" --resource-group \
+"rg1"
+"""
+
+helps['network manager security-admin-config show'] = """
+    type: command
+    short-summary: "Retrieves a network manager security admin Configuration."
+    examples:
+      - name: Get security admin configurations
+        text: |-
+               az network manager security-admin-config show --configuration-name "myTestSecurityConfig" \
+--network-manager-name "testNetworkManager" --resource-group "rg1"
+"""
+
+helps['network manager security-admin-config create'] = """
+    type: command
+    short-summary: "Create a network manager security admin Configuration."
+    examples:
+      - name: Create network manager security admin Configuration
+        text: |-
+               az network manager security-admin-config create --configuration-name "myTestSecurityConfig" \
+--network-manager-name "testNetworkManager" --resource-group "rg1" --description "A sample policy" \
+--delete-existing-ns-gs true --security-type "AdminPolicy"
+"""
+
+helps['network manager security-admin-config update'] = """
+    type: command
+    short-summary: "Update a network manager security admin Configuration."
+"""
+
+helps['network manager security-admin-config delete'] = """
+    type: command
+    short-summary: "Deletes a network manager security admin Configuration."
+    examples:
+      - name: Delete network manager security admin Configuration
+        text: |-
+               az network manager security-admin-config delete --configuration-name "myTestSecurityConfig" \
+--network-manager-name "testNetworkManager" --resource-group "rg1"
 """
 
 helps['network manager admin-rule'] = """

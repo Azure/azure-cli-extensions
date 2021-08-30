@@ -47,8 +47,12 @@ def cf_networkgroup(cli_ctx, *_):
     return cf_network_cl(cli_ctx).network_groups
 
 
-def cf_securityconfiguration(cli_ctx, *_):
-    return cf_network_cl(cli_ctx).security_configurations
+def cf_securityuserconfiguration(cli_ctx, *_):
+    return cf_network_cl(cli_ctx).security_user_configurations
+
+
+def cf_securityadminconfiguration(cli_ctx, *_):
+    return cf_network_cl(cli_ctx).security_admin_configurations
 
 
 def cf_adminrule(cli_ctx, *_):

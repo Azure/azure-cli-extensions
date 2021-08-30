@@ -28,8 +28,6 @@ from azext_network_manager.action import (
     AddDestination
 )
 
-from azext_network_manager.vendored_sdks.models import ScopeAccesses
-
 
 def load_arguments(self, _):
 
@@ -60,7 +58,8 @@ def load_arguments(self, _):
         c.argument('description', type=str, help='A description of the network manager.')
         c.argument('network_manager_scopes', action=AddNetworkManagerScopes, nargs='+', help='Scope of Network '
                    'Manager.')
-        c.argument('network_manager_scope_accesses', nargs='+', help='Scope Access.', arg_type=get_enum_type(ScopeAccesses))
+        c.argument('network_manager_scope_accesses', nargs='+', help='Scope Access. Available value: SecurityAdmin, '
+                   'SecurityUser, Connectivity.')
 
     with self.argument_context('network manager update') as c:
         c.argument('network_manager_name', options_list=['--name', '-n', '--network-manager-name'], type=str,
@@ -72,7 +71,8 @@ def load_arguments(self, _):
         c.argument('description', type=str, help='A description of the network manager.')
         c.argument('network_manager_scopes', action=AddNetworkManagerScopes, nargs='+', help='Scope of Network '
                    'Manager.')
-        c.argument('network_manager_scope_accesses', nargs='+', help='Scope Access.')
+        c.argument('network_manager_scope_accesses', nargs='+', help='Scope Access. Available value: SecurityAdmin, '
+                   'SecurityUser, Connectivity.')
         c.ignore('parameters')
 
     with self.argument_context('network manager delete') as c:
@@ -194,7 +194,7 @@ def load_arguments(self, _):
 
     with self.argument_context('network manager group list') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('network_manager_name', type=str, help='The name of the network manager.')
+        c.argument('network_manager_name', options_list=['--network-manager-name'], type=str, help='The name of the network manager.')
         c.argument('top', type=int, help='An optional query parameter which specifies the maximum number of records to '
                    'be returned by the server.')
         c.argument('skip_token', type=str, help='SkipToken is only used if a previous operation returned a partial '
@@ -203,13 +203,13 @@ def load_arguments(self, _):
 
     with self.argument_context('network manager group show') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part='name')
+        c.argument('network_manager_name', options_list=['--network-manager-name'], type=str, help='The name of the network manager.', id_part='name')
         c.argument('network_group_name', options_list=['--name', '-n', '--network-group-name'], type=str, help='The '
                    'name of the network group to get.', id_part='child_name_1')
 
     with self.argument_context('network manager group create') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('network_manager_name', type=str, help='The name of the network manager.')
+        c.argument('network_manager_name', options_list=['--network-manager-name'], type=str, help='The name of the network manager.')
         c.argument('network_group_name', options_list=['--name', '-n', '--network-group-name'], type=str, help='The '
                    'name of the network group to get.')
         c.argument('if_match', type=str, help='The ETag of the transformation. Omit this value to always overwrite the '
@@ -223,7 +223,7 @@ def load_arguments(self, _):
 
     with self.argument_context('network manager group update') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part='name')
+        c.argument('network_manager_name', options_list=['--network-manager-name'], type=str, help='The name of the network manager.', id_part='name')
         c.argument('network_group_name', options_list=['--name', '-n', '--network-group-name'], type=str, help='The '
                    'name of the network group to get.', id_part='child_name_1')
         c.argument('if_match', type=str, help='The ETag of the transformation. Omit this value to always overwrite the '
@@ -238,11 +238,11 @@ def load_arguments(self, _):
 
     with self.argument_context('network manager group delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part='name')
+        c.argument('network_manager_name', options_list=['--network-manager-name'], type=str, help='The name of the network manager.', id_part='name')
         c.argument('network_group_name', options_list=['--name', '-n', '--network-group-name'], type=str, help='The '
                    'name of the network group to get.', id_part='child_name_1')
 
-    with self.argument_context('network manager security-config list') as c:
+    with self.argument_context('network manager security-user-config list') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('network_manager_name', type=str, help='The name of the network manager.')
         c.argument('top', type=int, help='An optional query parameter which specifies the maximum number of records to '
@@ -251,13 +251,13 @@ def load_arguments(self, _):
                    'result. If a previous response contains a nextLink element, the value of the nextLink element will '
                    'include a skipToken parameter that specifies a starting point to use for subsequent calls.')
 
-    with self.argument_context('network manager security-config show') as c:
+    with self.argument_context('network manager security-user-config show') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part='name')
         c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.',
                    id_part='child_name_1')
 
-    with self.argument_context('network manager security-config create') as c:
+    with self.argument_context('network manager security-user-config create') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('network_manager_name', type=str, help='The name of the network manager.')
         c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.')
@@ -266,10 +266,8 @@ def load_arguments(self, _):
         c.argument('security_type', arg_type=get_enum_type(['AdminPolicy', 'UserPolicy']), help='Security Type.')
         c.argument('delete_existing_ns_gs', arg_type=get_three_state_flag(), help='Flag if need to delete existing '
                    'network security groups.')
-        c.argument('applies_to_groups', action=AddSecurityconfigurationsAppliesToGroups, nargs='+', help='Groups for '
-                   'configuration')
 
-    with self.argument_context('network manager security-config update') as c:
+    with self.argument_context('network manager security-user-config update') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part='name')
         c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.',
@@ -279,58 +277,13 @@ def load_arguments(self, _):
         c.argument('security_type', arg_type=get_enum_type(['AdminPolicy', 'UserPolicy']), help='Security Type.')
         c.argument('delete_existing_ns_gs', arg_type=get_three_state_flag(), help='Flag if need to delete existing '
                    'network security groups.')
-        c.argument('applies_to_groups', action=AddSecurityconfigurationsAppliesToGroups, nargs='+', help='Groups for '
-                   'configuration')
         c.ignore('security_configuration')
 
-    with self.argument_context('network manager security-config delete') as c:
+    with self.argument_context('network manager security-user-config delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part='name')
         c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.',
                    id_part='child_name_1')
-
-    with self.argument_context('network manager security-config evaluate-import') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part='name')
-        c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.',
-                   id_part='child_name_1')
-        c.argument('top', type=int, help='An optional query parameter which specifies the maximum number of records to '
-                   'be returned by the server.')
-        c.argument('skip_token', type=str, help='SkipToken is only used if a previous operation returned a partial '
-                   'result. If a previous response contains a nextLink element, the value of the nextLink element will '
-                   'include a skipToken parameter that specifies a starting point to use for subsequent calls.')
-        c.argument('network_security_group_imports', action=AddNetworkSecurityGroupImports, nargs='+', help='List of '
-                   'nsg uris.')
-        c.argument('import_deny_rules_as_admin_rules', arg_type=get_three_state_flag(), help='Flag if import deny '
-                   'rules as admin rules.')
-        c.argument('admin_security_configuration_uri', type=str, help='Admin security configuration Uri.')
-        c.argument('remove_allow_vnet_inbound_rule', arg_type=get_three_state_flag(), help='Flag if need to remove '
-                   'allow vnet inbound rule.')
-        c.argument('remove_allow_azure_load_balancer_inbound_rule', arg_type=get_three_state_flag(), help='Flag if '
-                   'need to remove allow azure load balancer inbound rule.')
-        c.argument('remove_allow_vnet_outbound_rule', arg_type=get_three_state_flag(), help='Flag if need to remove '
-                   'allow vnet outbound rule.')
-        c.argument('remove_allow_internet_outbound_rule', arg_type=get_three_state_flag(), help='Flag if need to '
-                   'remove allow Internet outbound rule.')
-
-    with self.argument_context('network manager security-config import') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part='name')
-        c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.',
-                   id_part='child_name_1')
-        c.argument('network_security_group_imports', action=AddNetworkSecurityGroupImports, nargs='+', help='List of '
-                   'nsg uris.')
-        c.argument('import_deny_rules_as_admin_rules', arg_type=get_three_state_flag(), help='Flag if import deny '
-                   'rules as admin rules.')
-        c.argument('admin_security_configuration_uri', type=str, help='Admin security configuration Uri.')
-        c.argument('remove_allow_vnet_inbound_rule', arg_type=get_three_state_flag(), help='Flag if need to remove '
-                   'allow vnet inbound rule.')
-        c.argument('remove_allow_azure_load_balancer_inbound_rule', arg_type=get_three_state_flag(), help='Flag if '
-                   'need to remove allow azure load balancer inbound rule.')
-        c.argument('remove_allow_vnet_outbound_rule', arg_type=get_three_state_flag(), help='Flag if need to remove '
-                   'allow vnet outbound rule.')
-        c.argument('remove_allow_internet_outbound_rule', arg_type=get_three_state_flag(), help='Flag if need to '
-                   'remove allow Internet outbound rule.')
 
     with self.argument_context('network manager admin-rule list') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -341,6 +294,49 @@ def load_arguments(self, _):
         c.argument('skip_token', type=str, help='SkipToken is only used if a previous operation returned a partial '
                    'result. If a previous response contains a nextLink element, the value of the nextLink element will '
                    'include a skipToken parameter that specifies a starting point to use for subsequent calls.')
+
+    with self.argument_context('network manager security-admin-config list') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('network_manager_name', type=str, help='The name of the network manager.')
+        c.argument('top', type=int, help='An optional query parameter which specifies the maximum number of records to '
+                   'be returned by the server.')
+        c.argument('skip_token', type=str, help='SkipToken is only used if a previous operation returned a partial '
+                   'result. If a previous response contains a nextLink element, the value of the nextLink element will '
+                   'include a skipToken parameter that specifies a starting point to use for subsequent calls.')
+
+    with self.argument_context('network manager security-admin-config show') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part='name')
+        c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.',
+                   id_part='child_name_1')
+
+    with self.argument_context('network manager security-admin-config create') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('network_manager_name', type=str, help='The name of the network manager.')
+        c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.')
+        c.argument('display_name', type=str, help='A display name of the security Configuration.')
+        c.argument('description', type=str, help='A description of the security Configuration.')
+        c.argument('security_type', arg_type=get_enum_type(['AdminPolicy', 'UserPolicy']), help='Security Type.')
+        c.argument('delete_existing_ns_gs', arg_type=get_three_state_flag(), help='Flag if need to delete existing '
+                   'network security groups.')
+
+    with self.argument_context('network manager security-admin-config update') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part='name')
+        c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.',
+                   id_part='child_name_1')
+        c.argument('display_name', type=str, help='A display name of the security Configuration.')
+        c.argument('description', type=str, help='A description of the security Configuration.')
+        c.argument('security_type', arg_type=get_enum_type(['AdminPolicy', 'UserPolicy']), help='Security Type.')
+        c.argument('delete_existing_ns_gs', arg_type=get_three_state_flag(), help='Flag if need to delete existing '
+                   'network security groups.')
+        c.ignore('security_configuration')
+
+    with self.argument_context('network manager security-admin-config delete') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part='name')
+        c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.',
+                   id_part='child_name_1')
 
     with self.argument_context('network manager admin-rule show') as c:
         c.argument('resource_group_name', resource_group_name_type)

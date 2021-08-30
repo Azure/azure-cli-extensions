@@ -10,6 +10,7 @@
 # pylint: disable=line-too-long
 
 import os
+import unittest
 
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk import ResourceGroupPreparer
@@ -32,14 +33,12 @@ class NetworkScenarioTest(ScenarioTest):
             'name': 'TestNetworkManager',
             'description': '"My Test Network Manager"',
             'display_name': 'TestNetworkManager',
-            'mg': '/providers/Microsoft.Management/managementGroups/azure-cli-management-groupxk66tmjjbhwp72',
             'sub': '/subscriptions/{}'.format(self.get_subscription_id())
         })
 
         self.cmd('network manager create --name {name} --description {description} --display-name {display_name} '
                  '--network-manager-scope-accesses "Routing" "Connectivity" '
                  '--network-manager-scopes '
-                 # 'management-groups={mg} '
                  ' subscriptions={sub} '
                  '-l jioindiawest '
                  '--resource-group {rg}')
@@ -50,4 +49,87 @@ class NetworkScenarioTest(ScenarioTest):
         self.cmd('network manager list --resource-group {rg}')
 
         self.cmd('network manager delete --resource-group {rg} --name {name} --yes')
+
+    @ResourceGroupPreparer(name_prefix='test_network_manager_group', location='jioindiawest')
+    @VirtualNetworkPreparer()
+    def test_network_manager_group_crud(self, virtual_network, resource_group):
+
+        self.kwargs.update({
+            'name': 'TestNetworkGroup',
+            'manager_name': 'TestNetworkManager',
+            'description': '"A sample group"',
+            'display_name': 'MyNetworkGroup',
+            'member_type': 'VirtualNetwork',
+            'sub': '/subscriptions/{}'.format(self.get_subscription_id()),
+            'virtual_network': virtual_network
+        })
+
+        self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" --display-name "TestNetworkManager" '
+                 '--network-manager-scope-accesses "Routing" "Connectivity" '
+                 '--network-manager-scopes '
+                 ' subscriptions={sub} '
+                 '-l jioindiawest '
+                 '--resource-group {rg}')
+
+        self.cmd('network manager group create --name {name} --network-manager-name {manager_name} --description {description} '
+                 '--conditional-membership "" --display-name {display_name} --member-type {member_type}  -g {rg} '
+                 '--group-members vnet-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}" '
+                 'subnet-id=""')
+
+        self.cmd('network manager group update -g {rg} --name {name} --network-manager-name {manager_name} --description "Desc changed."')
+        self.cmd('network manager group show -g {rg} --name {name} --network-manager-name {manager_name}')
+        self.cmd('network manager group list -g {rg} --network-manager-name {manager_name}')
+        self.cmd('network manager group delete -g {rg} --name {name} --network-manager-name {manager_name} --yes')
+
+    @ResourceGroupPreparer(name_prefix='test_network_manager_security_user_config', location='jioindiawest')
+    def test_network_manager_security_user_config_crud(self, resource_group):
+
+        self.kwargs.update({
+            'name': 'myTestSecurityConfig',
+            'manager_name': 'TestNetworkManager',
+            'description': '"A sample policy"',
+            'sub': '/subscriptions/{}'.format(self.get_subscription_id()),
+        })
+
+        self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" --display-name "TestNetworkManager" '
+                 '--network-manager-scope-accesses "SecurityUser" "Connectivity" '
+                 '--network-manager-scopes '
+                 ' subscriptions={sub} '
+                 '-l jioindiawest '
+                 '--resource-group {rg}')
+
+        self.cmd('network manager security-user-config create --configuration-name {name} --network-manager-name {manager_name} -g {rg} '
+                 '--description {description} --delete-existing-ns-gs true --security-type "UserPolicy" --display-name MyTestConfig')
+
+        self.cmd('network manager security-user-config update --configuration-name {name} --network-manager-name {manager_name} -g {rg} '
+                 '--description "test_description"')
+        self.cmd('network manager security-user-config list --network-manager-name {manager_name} -g {rg}')
+        self.cmd('network manager security-user-config show --configuration-name {name} --network-manager-name {manager_name} -g {rg}')
+        self.cmd('network manager security-user-config delete --configuration-name {name} --network-manager-name {manager_name} -g {rg} --yes')
+
+    @ResourceGroupPreparer(name_prefix='test_network_manager_security_admin_config', location='jioindiawest')
+    def test_network_manager_security_admin_config_crud(self, resource_group):
+
+        self.kwargs.update({
+            'name': 'myTestSecurityConfig',
+            'manager_name': 'TestNetworkManager',
+            'description': '"A sample policy"',
+            'sub': '/subscriptions/{}'.format(self.get_subscription_id()),
+        })
+
+        self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" --display-name "TestNetworkManager" '
+                 '--network-manager-scope-accesses "SecurityAdmin" "Connectivity" '
+                 '--network-manager-scopes '
+                 ' subscriptions={sub} '
+                 '-l jioindiawest '
+                 '--resource-group {rg}')
+
+        self.cmd('network manager security-admin-config create --configuration-name {name} --network-manager-name {manager_name} -g {rg} '
+                 '--description {description} --delete-existing-ns-gs true --security-type "AdminPolicy" --display-name MyTestConfig')
+
+        self.cmd('network manager security-admin-config update --configuration-name {name} --network-manager-name {manager_name} -g {rg} '
+                 '--description "test_description"')
+        self.cmd('network manager security-admin-config list --network-manager-name {manager_name} -g {rg}')
+        self.cmd('network manager security-admin-config show --configuration-name {name} --network-manager-name {manager_name} -g {rg}')
+        self.cmd('network manager security-admin-config delete --configuration-name {name} --network-manager-name {manager_name} -g {rg} --yes')
 

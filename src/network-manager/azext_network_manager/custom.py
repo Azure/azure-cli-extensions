@@ -325,56 +325,53 @@ def network_manager_group_delete(client,
                          network_group_name=network_group_name)
 
 
-def network_manager_security_config_list(client,
-                                         resource_group_name,
-                                         network_manager_name,
-                                         top=None,
-                                         skip_token=None):
+def network_manager_security_user_config_list(client,
+                                              resource_group_name,
+                                              network_manager_name,
+                                              top=None,
+                                              skip_token=None):
     return client.list(resource_group_name=resource_group_name,
                        network_manager_name=network_manager_name,
                        top=top,
                        skip_token=skip_token)
 
 
-def network_manager_security_config_show(client,
-                                         resource_group_name,
-                                         network_manager_name,
-                                         configuration_name):
+def network_manager_security_user_config_show(client,
+                                              resource_group_name,
+                                              network_manager_name,
+                                              configuration_name):
     return client.get(resource_group_name=resource_group_name,
                       network_manager_name=network_manager_name,
                       configuration_name=configuration_name)
 
 
-def network_manager_security_config_create(client,
-                                           resource_group_name,
-                                           network_manager_name,
-                                           configuration_name,
-                                           display_name=None,
-                                           description=None,
-                                           security_type=None,
-                                           delete_existing_ns_gs=None,
-                                           applies_to_groups=None):
+def network_manager_security_user_config_create(client,
+                                                resource_group_name,
+                                                network_manager_name,
+                                                configuration_name,
+                                                display_name=None,
+                                                description=None,
+                                                security_type=None,
+                                                delete_existing_ns_gs=None):
     security_configuration = {}
     security_configuration['display_name'] = display_name
     security_configuration['description'] = description
     security_configuration['security_type'] = security_type
     security_configuration['delete_existing_ns_gs'] = delete_existing_ns_gs
-    security_configuration['applies_to_groups'] = applies_to_groups
     return client.create_or_update(resource_group_name=resource_group_name,
                                    network_manager_name=network_manager_name,
                                    configuration_name=configuration_name,
-                                   security_configuration=security_configuration)
+                                   security_user_configuration=security_configuration)
 
 
-def network_manager_security_config_update(instance,
-                                           resource_group_name,
-                                           network_manager_name,
-                                           configuration_name,
-                                           display_name=None,
-                                           description=None,
-                                           security_type=None,
-                                           delete_existing_ns_gs=None,
-                                           applies_to_groups=None):
+def network_manager_security_user_config_update(instance,
+                                                resource_group_name,
+                                                network_manager_name,
+                                                configuration_name,
+                                                display_name=None,
+                                                description=None,
+                                                security_type=None,
+                                                delete_existing_ns_gs=None):
     if display_name is not None:
         instance.display_name = display_name
     if description is not None:
@@ -383,72 +380,83 @@ def network_manager_security_config_update(instance,
         instance.security_type = security_type
     if delete_existing_ns_gs is not None:
         instance.delete_existing_ns_gs = delete_existing_ns_gs
-    if applies_to_groups is not None:
-        instance.applies_to_groups = applies_to_groups
     return instance
 
 
-def network_manager_security_config_delete(client,
-                                           resource_group_name,
-                                           network_manager_name,
-                                           configuration_name):
+def network_manager_security_user_config_delete(client,
+                                                resource_group_name,
+                                                network_manager_name,
+                                                configuration_name):
     return client.delete(resource_group_name=resource_group_name,
                          network_manager_name=network_manager_name,
                          configuration_name=configuration_name)
 
 
-def network_manager_security_config_evaluate_import(client,
-                                                    resource_group_name,
-                                                    network_manager_name,
-                                                    configuration_name,
-                                                    top=None,
-                                                    skip_token=None,
-                                                    network_security_group_imports=None,
-                                                    import_deny_rules_as_admin_rules=None,
-                                                    admin_security_configuration_uri=None,
-                                                    remove_allow_vnet_inbound_rule=None,
-                                                    remove_allow_azure_load_balancer_inbound_rule=None,
-                                                    remove_allow_vnet_outbound_rule=None,
-                                                    remove_allow_internet_outbound_rule=None):
-    parameters = {}
-    parameters['network_security_group_imports'] = network_security_group_imports
-    parameters['import_deny_rules_as_admin_rules'] = import_deny_rules_as_admin_rules
-    parameters['admin_security_configuration_uri'] = admin_security_configuration_uri
-    parameters['remove_allow_vnet_inbound_rule'] = remove_allow_vnet_inbound_rule
-    parameters['remove_allow_azure_load_balancer_inbound_rule'] = remove_allow_azure_load_balancer_inbound_rule
-    parameters['remove_allow_vnet_outbound_rule'] = remove_allow_vnet_outbound_rule
-    parameters['remove_allow_internet_outbound_rule'] = remove_allow_internet_outbound_rule
-    return client.evaluate_import(resource_group_name=resource_group_name,
-                                  network_manager_name=network_manager_name,
-                                  configuration_name=configuration_name,
-                                  top=top,
-                                  skip_token=skip_token,
-                                  parameters=parameters)
+def network_manager_security_admin_config_list(client,
+                                               resource_group_name,
+                                               network_manager_name,
+                                               top=None,
+                                               skip_token=None):
+    return client.list(resource_group_name=resource_group_name,
+                       network_manager_name=network_manager_name,
+                       top=top,
+                       skip_token=skip_token)
 
 
-def network_manager_security_config_import(client,
-                                           resource_group_name,
-                                           network_manager_name,
-                                           configuration_name,
-                                           network_security_group_imports=None,
-                                           import_deny_rules_as_admin_rules=None,
-                                           admin_security_configuration_uri=None,
-                                           remove_allow_vnet_inbound_rule=None,
-                                           remove_allow_azure_load_balancer_inbound_rule=None,
-                                           remove_allow_vnet_outbound_rule=None,
-                                           remove_allow_internet_outbound_rule=None):
-    parameters = {}
-    parameters['network_security_group_imports'] = network_security_group_imports
-    parameters['import_deny_rules_as_admin_rules'] = import_deny_rules_as_admin_rules
-    parameters['admin_security_configuration_uri'] = admin_security_configuration_uri
-    parameters['remove_allow_vnet_inbound_rule'] = remove_allow_vnet_inbound_rule
-    parameters['remove_allow_azure_load_balancer_inbound_rule'] = remove_allow_azure_load_balancer_inbound_rule
-    parameters['remove_allow_vnet_outbound_rule'] = remove_allow_vnet_outbound_rule
-    parameters['remove_allow_internet_outbound_rule'] = remove_allow_internet_outbound_rule
-    return client.import_method(resource_group_name=resource_group_name,
-                                network_manager_name=network_manager_name,
-                                configuration_name=configuration_name,
-                                parameters=parameters)
+def network_manager_security_admin_config_show(client,
+                                               resource_group_name,
+                                               network_manager_name,
+                                               configuration_name):
+    return client.get(resource_group_name=resource_group_name,
+                      network_manager_name=network_manager_name,
+                      configuration_name=configuration_name)
+
+
+def network_manager_security_admin_config_create(client,
+                                                 resource_group_name,
+                                                 network_manager_name,
+                                                 configuration_name,
+                                                 display_name=None,
+                                                 description=None,
+                                                 security_type=None,
+                                                 delete_existing_ns_gs=None):
+    security_configuration = {}
+    security_configuration['display_name'] = display_name
+    security_configuration['description'] = description
+    security_configuration['security_type'] = security_type
+    security_configuration['delete_existing_ns_gs'] = delete_existing_ns_gs
+    return client.create_or_update(resource_group_name=resource_group_name,
+                                   network_manager_name=network_manager_name,
+                                   configuration_name=configuration_name,
+                                   security_admin_configuration=security_configuration)
+
+
+def network_manager_security_admin_config_update(instance,
+                                                 resource_group_name,
+                                                 network_manager_name,
+                                                 configuration_name,
+                                                 display_name=None,
+                                                 description=None,
+                                                 security_type=None,
+                                                 delete_existing_ns_gs=None):
+    if display_name is not None:
+        instance.display_name = display_name
+    if description is not None:
+        instance.description = description
+    if security_type is not None:
+        instance.security_type = security_type
+    if delete_existing_ns_gs is not None:
+        instance.delete_existing_ns_gs = delete_existing_ns_gs
+    return instance
+
+
+def network_manager_security_admin_config_delete(client,
+                                                 resource_group_name,
+                                                 network_manager_name,
+                                                 configuration_name):
+    return client.delete(resource_group_name=resource_group_name,
+                         network_manager_name=network_manager_name,
+                         configuration_name=configuration_name)
 
 
 def network_manager_admin_rule_list(client,

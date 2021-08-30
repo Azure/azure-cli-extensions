@@ -14,7 +14,7 @@ from azure.cli.core.commands import CliCommandType
 from azext_network_manager._client_factory import (
     cf_networkmanager, cf_networkmanagercommit, cf_networkmanagerdeploymentstatus, cf_effectivevirtualnetwork,
     cf_activeconfiguration, cf_connectivityconfiguration, cf_effectiveconfiguration, cf_networkgroup, cf_userrule,
-    cf_adminrule, cf_securityconfiguration)
+    cf_adminrule, cf_securityadminconfiguration, cf_securityuserconfiguration)
 
 
 def load_command_table(self, _):
@@ -57,9 +57,14 @@ def load_command_table(self, _):
         client_factory=cf_networkgroup
     )
 
-    network_securityconfiguration = CliCommandType(
-        operations_tmpl='azext_network_manager.vendored_sdks.operations._security_configurations_operations#SecurityConfigurationsOperations.{}',
-        client_factory=cf_securityconfiguration
+    network_securityuserconfiguration = CliCommandType(
+        operations_tmpl='azext_network_manager.vendored_sdks.operations._security_user_configurations_operations#SecurityUserConfigurationsOperations.{}',
+        client_factory=cf_securityuserconfiguration
+    )
+
+    network_securityadminconfiguration = CliCommandType(
+        operations_tmpl='azext_network_manager.vendored_sdks.operations._security_admin_configurations_operations#SecurityAdminConfigurationsOperations.{}',
+        client_factory=cf_securityadminconfiguration
     )
 
     network_adminrule = CliCommandType(
@@ -110,14 +115,19 @@ def load_command_table(self, _):
         g.generic_update_command('update', custom_func_name='network_manager_group_update')
         g.custom_command('delete', 'network_manager_group_delete', confirmation=True)
 
-    with self.command_group('network manager security-config', network_securityconfiguration, client_factory=cf_securityconfiguration) as g:
-        g.custom_command('list', 'network_manager_security_config_list')
-        g.custom_show_command('show', 'network_manager_security_config_show')
-        g.custom_command('create', 'network_manager_security_config_create')
-        g.generic_update_command('update', setter_arg_name='security_configuration', custom_func_name='network_manager_security_config_update')
-        g.custom_command('delete', 'network_manager_security_config_delete', confirmation=True)
-        g.custom_command('evaluate-import', 'network_manager_security_config_evaluate_import')
-        g.custom_command('import', 'network_manager_security_config_import')
+    with self.command_group('network manager security-user-config', network_securityuserconfiguration, client_factory=cf_securityuserconfiguration) as g:
+        g.custom_command('list', 'network_manager_security_user_config_list')
+        g.custom_show_command('show', 'network_manager_security_user_config_show')
+        g.custom_command('create', 'network_manager_security_user_config_create')
+        g.generic_update_command('update', setter_arg_name='security_user_configuration', custom_func_name='network_manager_security_user_config_update')
+        g.custom_command('delete', 'network_manager_security_user_config_delete', confirmation=True)
+
+    with self.command_group('network manager security-admin-config', network_securityadminconfiguration, client_factory=cf_securityadminconfiguration) as g:
+        g.custom_command('list', 'network_manager_security_admin_config_list')
+        g.custom_show_command('show', 'network_manager_security_admin_config_show')
+        g.custom_command('create', 'network_manager_security_admin_config_create')
+        g.generic_update_command('update', setter_arg_name='security_admin_configuration', custom_func_name='network_manager_security_admin_config_update')
+        g.custom_command('delete', 'network_manager_security_admin_config_delete', confirmation=True)
 
     with self.command_group('network manager admin-rule', network_adminrule, client_factory=cf_adminrule) as g:
         g.custom_command('list', 'network_manager_admin_rule_list')
