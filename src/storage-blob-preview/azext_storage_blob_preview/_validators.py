@@ -1288,7 +1288,8 @@ def validate_text_configuration(cmd, ns):
             has_header=ns.in_has_header)
     if ns.input_format == 'json':
         ns.input_config = DelimitedJsonDialect(delimiter=ns.in_line_separator)
-
+    if ns.input_format == 'parquet':
+        ns.input_config = "ParquetDialect"
     if ns.output_format == 'csv':
         ns.output_config = DelimitedTextDialect(
             delimiter=ns.out_column_separator,

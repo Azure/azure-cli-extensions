@@ -491,7 +491,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.argument('query_expression', help='The query expression in SQL. The maximum size of the query expression '
                    'is 256KiB. For more information about the expression syntax, please see '
                    'https://docs.microsoft.com/azure/storage/blobs/query-acceleration-sql-reference')
-        c.extra('input_format', arg_type=get_enum_type(['csv', 'json']), validator=validate_text_configuration,
+        c.extra('input_format', arg_type=get_enum_type(['csv', 'json', 'parquet']), validator=validate_text_configuration,
                 help='Serialization type of the data currently stored in the blob. '
                 'The default is to treat the blob data as CSV data formatted in the default dialect.'
                 'The blob data will be reformatted according to that profile when blob format is specified. '
@@ -502,7 +502,8 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                 'By default the data will be returned as it is represented in the blob. '
                 'By providing an output format, the blob data will be reformatted according to that profile. '
                 'If you choose `json`, please specify `Output Json Text Configuration Arguments` accordingly; '
-                'If you choose `csv`, please specify `Output Delimited Text Configuration Arguments`.')
+                'If you choose `csv`, please specify `Output Delimited Text Configuration Arguments`.'
+                'By default data with input_format of `parquet` will have the output_format of `csv`')
         c.extra('in_line_separator',
                 arg_group='Input Json Text Configuration',
                 arg_type=line_separator)

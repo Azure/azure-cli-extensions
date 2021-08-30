@@ -710,4 +710,6 @@ def query_blob(client, query_expression, input_config=None, output_config=None, 
         stream.close()
         return None
 
+    if input_config and input_config == 'ParquetDialect':
+        return reader.readall().decode("cp1252")
     return reader.readall().decode("utf-8")

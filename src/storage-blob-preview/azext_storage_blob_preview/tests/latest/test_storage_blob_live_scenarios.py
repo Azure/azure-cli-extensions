@@ -203,10 +203,9 @@ class StorageBlobURLScenarioTest(StorageScenarioMixin, LiveScenarioTest):
             JMESPathCheck('length(@)', 1))
 
 
-@api_version_constraint(ResourceType.DATA_STORAGE_BLOB, min_api='2019-12-12')
 class StorageBlobQueryExtensionTests(StorageScenarioMixin, LiveScenarioTest):
     @ResourceGroupPreparer()
-    @StorageAccountPreparer(kind='StorageV2')
+    @StorageAccountPreparer(kind='StorageV2', location='canadacentral')
     def test_storage_blob_query_scenario(self, resource_group, storage_account):
         account_info = self.get_account_info(group=resource_group, name=storage_account)
         container = self.create_container(account_info)
@@ -237,4 +236,14 @@ class StorageBlobQueryExtensionTests(StorageScenarioMixin, LiveScenarioTest):
         query_string = "SELECT latitude FROM BlobStorage[*].warehouses[*]"
         result = self.storage_cmd('storage blob query -c {} -n {} --query-expression "{}" --input-format json',
                                   account_info, container, json_blob, query_string).output
+        self.assertIsNotNone(result)
+
+        # test parquet
+        parquet_blob = self.create_random_name(prefix='parquet', length=12)
+        parquet_file = os.path.join(curr_dir, 'quick_query.parquet').replace('\\', '\\\\')
+
+        self.storage_cmd('storage blob upload -f "{}" -c {} -n {}', account_info, parquet_file, container, parquet_blob)
+        query_string = "SELECT * FROM BlobStorage where id=0"
+        result = self.storage_cmd('storage blob query -c {} -n {} --query-expression "{}" --input-format parquet',
+                                  account_info, container, parquet_blob, query_string).output
         self.assertIsNotNone(result)
