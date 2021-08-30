@@ -1218,7 +1218,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         nat_gateway_idle_timeout)
 
     outbound_type = _set_outbound_type(
-        outbound_type, network_plugin, load_balancer_sku, load_balancer_profile)
+        outbound_type, vnet_subnet_id, load_balancer_sku, load_balancer_profile)
 
     network_profile = None
     if any([network_plugin,
