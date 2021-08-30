@@ -26,7 +26,7 @@ class NetworkGroupsOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.network.v2021_02_preview.models
+    :type models: ~azure.mgmt.network.v2021_02_01_preview.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -46,7 +46,7 @@ class NetworkGroupsOperations:
         resource_group_name: str,
         network_manager_name: str,
         network_group_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> "_models.NetworkGroup":
         """Gets the specified network group.
 
@@ -58,7 +58,7 @@ class NetworkGroupsOperations:
         :type network_group_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: NetworkGroup, or the result of cls(response)
-        :rtype: ~azure.mgmt.network.v2021_02_preview.models.NetworkGroup
+        :rtype: ~azure.mgmt.network.v2021_02_01_preview.models.NetworkGroup
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.NetworkGroup"]
@@ -110,7 +110,7 @@ class NetworkGroupsOperations:
         network_group_name: str,
         parameters: "_models.NetworkGroup",
         if_match: Optional[str] = None,
-        **kwargs
+        **kwargs: Any
     ) -> "_models.NetworkGroup":
         """Creates or updates a network group.
 
@@ -121,14 +121,14 @@ class NetworkGroupsOperations:
         :param network_group_name: The name of the network group to get.
         :type network_group_name: str
         :param parameters: Parameters supplied to the specify which network group need to create.
-        :type parameters: ~azure.mgmt.network.v2021_02_preview.models.NetworkGroup
+        :type parameters: ~azure.mgmt.network.v2021_02_01_preview.models.NetworkGroup
         :param if_match: The ETag of the transformation. Omit this value to always overwrite the
          current resource. Specify the last-seen ETag value to prevent accidentally overwriting
          concurrent changes.
         :type if_match: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: NetworkGroup, or the result of cls(response)
-        :rtype: ~azure.mgmt.network.v2021_02_preview.models.NetworkGroup
+        :rtype: ~azure.mgmt.network.v2021_02_01_preview.models.NetworkGroup
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.NetworkGroup"]
@@ -192,7 +192,7 @@ class NetworkGroupsOperations:
         resource_group_name: str,
         network_manager_name: str,
         network_group_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> None:
         """Deletes a network group.
 
@@ -252,7 +252,7 @@ class NetworkGroupsOperations:
         network_manager_name: str,
         top: Optional[int] = None,
         skip_token: Optional[str] = None,
-        **kwargs
+        **kwargs: Any
     ) -> AsyncIterable["_models.NetworkGroupListResult"]:
         """Lists the specified network group.
 
@@ -269,7 +269,7 @@ class NetworkGroupsOperations:
         :type skip_token: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either NetworkGroupListResult or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.network.v2021_02_preview.models.NetworkGroupListResult]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.network.v2021_02_01_preview.models.NetworkGroupListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.NetworkGroupListResult"]

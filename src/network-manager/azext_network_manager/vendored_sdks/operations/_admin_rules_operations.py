@@ -30,7 +30,7 @@ class AdminRulesOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.network.v2021_02_preview.models
+    :type models: ~azure.mgmt.network.v2021_02_01_preview.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -50,12 +50,13 @@ class AdminRulesOperations(object):
         resource_group_name,  # type: str
         network_manager_name,  # type: str
         configuration_name,  # type: str
+        rule_collection_name,  # type: str
         top=None,  # type: Optional[int]
         skip_token=None,  # type: Optional[str]
         **kwargs  # type: Any
     ):
         # type: (...) -> Iterable["_models.AdminRuleListResult"]
-        """Retrieves a network manager security configuration admin rule.
+        """List all network manager security configuration admin rules.
 
         :param resource_group_name: The name of the resource group.
         :type resource_group_name: str
@@ -63,6 +64,9 @@ class AdminRulesOperations(object):
         :type network_manager_name: str
         :param configuration_name: The name of the network manager security Configuration.
         :type configuration_name: str
+        :param rule_collection_name: The name of the network manager security Configuration rule
+         collection.
+        :type rule_collection_name: str
         :param top: An optional query parameter which specifies the maximum number of records to be
          returned by the server.
         :type top: int
@@ -72,7 +76,7 @@ class AdminRulesOperations(object):
         :type skip_token: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either AdminRuleListResult or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.network.v2021_02_preview.models.AdminRuleListResult]
+        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.network.v2021_02_01_preview.models.AdminRuleListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.AdminRuleListResult"]
@@ -96,6 +100,7 @@ class AdminRulesOperations(object):
                     'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
                     'networkManagerName': self._serialize.url("network_manager_name", network_manager_name, 'str'),
                     'configurationName': self._serialize.url("configuration_name", configuration_name, 'str'),
+                    'ruleCollectionName': self._serialize.url("rule_collection_name", rule_collection_name, 'str'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
@@ -135,18 +140,19 @@ class AdminRulesOperations(object):
         return ItemPaged(
             get_next, extract_data
         )
-    list.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}/securityConfigurations/{configurationName}/adminRules'}  # type: ignore
+    list.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}/securityAdminConfigurations/{configurationName}/ruleCollections/{ruleCollectionName}/rules'}  # type: ignore
 
     def get(
         self,
         resource_group_name,  # type: str
         network_manager_name,  # type: str
         configuration_name,  # type: str
+        rule_collection_name,  # type: str
         rule_name,  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> "_models.AdminRule"
-        """Gets a network manager security configuration admin rule in a subscription.
+        # type: (...) -> "_models.BaseAdminRule"
+        """Gets a network manager security configuration admin rule.
 
         :param resource_group_name: The name of the resource group.
         :type resource_group_name: str
@@ -154,14 +160,17 @@ class AdminRulesOperations(object):
         :type network_manager_name: str
         :param configuration_name: The name of the network manager security Configuration.
         :type configuration_name: str
+        :param rule_collection_name: The name of the network manager security Configuration rule
+         collection.
+        :type rule_collection_name: str
         :param rule_name: The name of the rule.
         :type rule_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: AdminRule, or the result of cls(response)
-        :rtype: ~azure.mgmt.network.v2021_02_preview.models.AdminRule
+        :return: BaseAdminRule, or the result of cls(response)
+        :rtype: ~azure.mgmt.network.v2021_02_01_preview.models.BaseAdminRule
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.AdminRule"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.BaseAdminRule"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -176,6 +185,7 @@ class AdminRulesOperations(object):
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
             'networkManagerName': self._serialize.url("network_manager_name", network_manager_name, 'str'),
             'configurationName': self._serialize.url("configuration_name", configuration_name, 'str'),
+            'ruleCollectionName': self._serialize.url("rule_collection_name", rule_collection_name, 'str'),
             'ruleName': self._serialize.url("rule_name", rule_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -196,24 +206,25 @@ class AdminRulesOperations(object):
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('AdminRule', pipeline_response)
+        deserialized = self._deserialize('BaseAdminRule', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}/securityConfigurations/{configurationName}/adminRules/{ruleName}'}  # type: ignore
+    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}/securityAdminConfigurations/{configurationName}/ruleCollections/{ruleCollectionName}/rules/{ruleName}'}  # type: ignore
 
     def create_or_update(
         self,
         resource_group_name,  # type: str
         network_manager_name,  # type: str
         configuration_name,  # type: str
+        rule_collection_name,  # type: str
         rule_name,  # type: str
-        admin_rule,  # type: "_models.AdminRule"
+        admin_rule,  # type: "_models.BaseAdminRule"
         **kwargs  # type: Any
     ):
-        # type: (...) -> "_models.AdminRule"
+        # type: (...) -> "_models.BaseAdminRule"
         """Creates or updates an admin rule.
 
         :param resource_group_name: The name of the resource group.
@@ -222,16 +233,19 @@ class AdminRulesOperations(object):
         :type network_manager_name: str
         :param configuration_name: The name of the network manager security Configuration.
         :type configuration_name: str
+        :param rule_collection_name: The name of the network manager security Configuration rule
+         collection.
+        :type rule_collection_name: str
         :param rule_name: The name of the rule.
         :type rule_name: str
         :param admin_rule: The admin rule to create or update.
-        :type admin_rule: ~azure.mgmt.network.v2021_02_preview.models.AdminRule
+        :type admin_rule: ~azure.mgmt.network.v2021_02_01_preview.models.BaseAdminRule
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: AdminRule, or the result of cls(response)
-        :rtype: ~azure.mgmt.network.v2021_02_preview.models.AdminRule
+        :return: BaseAdminRule, or the result of cls(response)
+        :rtype: ~azure.mgmt.network.v2021_02_01_preview.models.BaseAdminRule
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.AdminRule"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.BaseAdminRule"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -247,6 +261,7 @@ class AdminRulesOperations(object):
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
             'networkManagerName': self._serialize.url("network_manager_name", network_manager_name, 'str'),
             'configurationName': self._serialize.url("configuration_name", configuration_name, 'str'),
+            'ruleCollectionName': self._serialize.url("rule_collection_name", rule_collection_name, 'str'),
             'ruleName': self._serialize.url("rule_name", rule_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -261,7 +276,7 @@ class AdminRulesOperations(object):
         header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(admin_rule, 'AdminRule')
+        body_content = self._serialize.body(admin_rule, 'BaseAdminRule')
         body_content_kwargs['content'] = body_content
         request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
@@ -272,22 +287,23 @@ class AdminRulesOperations(object):
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         if response.status_code == 200:
-            deserialized = self._deserialize('AdminRule', pipeline_response)
+            deserialized = self._deserialize('BaseAdminRule', pipeline_response)
 
         if response.status_code == 201:
-            deserialized = self._deserialize('AdminRule', pipeline_response)
+            deserialized = self._deserialize('BaseAdminRule', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}/securityConfigurations/{configurationName}/adminRules/{ruleName}'}  # type: ignore
+    create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}/securityAdminConfigurations/{configurationName}/ruleCollections/{ruleCollectionName}/rules/{ruleName}'}  # type: ignore
 
     def delete(
         self,
         resource_group_name,  # type: str
         network_manager_name,  # type: str
         configuration_name,  # type: str
+        rule_collection_name,  # type: str
         rule_name,  # type: str
         **kwargs  # type: Any
     ):
@@ -300,6 +316,9 @@ class AdminRulesOperations(object):
         :type network_manager_name: str
         :param configuration_name: The name of the network manager security Configuration.
         :type configuration_name: str
+        :param rule_collection_name: The name of the network manager security Configuration rule
+         collection.
+        :type rule_collection_name: str
         :param rule_name: The name of the rule.
         :type rule_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
@@ -322,6 +341,7 @@ class AdminRulesOperations(object):
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
             'networkManagerName': self._serialize.url("network_manager_name", network_manager_name, 'str'),
             'configurationName': self._serialize.url("configuration_name", configuration_name, 'str'),
+            'ruleCollectionName': self._serialize.url("rule_collection_name", rule_collection_name, 'str'),
             'ruleName': self._serialize.url("rule_name", rule_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -345,4 +365,4 @@ class AdminRulesOperations(object):
         if cls:
             return cls(pipeline_response, None, {})
 
-    delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}/securityConfigurations/{configurationName}/adminRules/{ruleName}'}  # type: ignore
+    delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}/securityAdminConfigurations/{configurationName}/ruleCollections/{ruleCollectionName}/rules/{ruleName}'}  # type: ignore

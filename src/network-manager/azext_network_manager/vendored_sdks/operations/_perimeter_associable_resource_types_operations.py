@@ -22,8 +22,8 @@ if TYPE_CHECKING:
     T = TypeVar('T')
     ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
 
-class NetworkManagerCommitsOperations(object):
-    """NetworkManagerCommitsOperations operations.
+class PerimeterAssociableResourceTypesOperations(object):
+    """PerimeterAssociableResourceTypesOperations operations.
 
     You should not instantiate this class directly. Instead, you should create a Client instance that
     instantiates it for you and attaches it as an attribute.
@@ -44,42 +44,35 @@ class NetworkManagerCommitsOperations(object):
         self._deserialize = deserializer
         self._config = config
 
-    def post(
+    def get(
         self,
-        resource_group_name,  # type: str
-        network_manager_name,  # type: str
-        parameters,  # type: "_models.NetworkManagerCommit"
+        location,  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> "_models.NetworkManagerCommit"
-        """Post a Network Manager Commit.
+        # type: (...) -> "_models.PerimeterAssociableResourcesListResult"
+        """Gets the list of resources that are onboarded with NSP. These resources can be associated with
+        a network security perimeter.
 
-        :param resource_group_name: The name of the resource group.
-        :type resource_group_name: str
-        :param network_manager_name: The name of the network manager.
-        :type network_manager_name: str
-        :param parameters: Parameters supplied to specify which Managed Network commit is.
-        :type parameters: ~azure.mgmt.network.v2021_02_01_preview.models.NetworkManagerCommit
+        :param location: The location of the where the association is present.
+        :type location: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: NetworkManagerCommit, or the result of cls(response)
-        :rtype: ~azure.mgmt.network.v2021_02_01_preview.models.NetworkManagerCommit
+        :return: PerimeterAssociableResourcesListResult, or the result of cls(response)
+        :rtype: ~azure.mgmt.network.v2021_02_01_preview.models.PerimeterAssociableResourcesListResult
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.NetworkManagerCommit"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.PerimeterAssociableResourcesListResult"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2021-02-01-preview"
-        content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
         # Construct URL
-        url = self.post.metadata['url']  # type: ignore
+        url = self.get.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'networkManagerName': self._serialize.url("network_manager_name", network_manager_name, 'str'),
+            'location': self._serialize.url("location", location, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -89,24 +82,20 @@ class NetworkManagerCommitsOperations(object):
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
         header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
-        body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(parameters, 'NetworkManagerCommit')
-        body_content_kwargs['content'] = body_content
-        request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
+        request = self._client.get(url, query_parameters, header_parameters)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
-        if response.status_code not in [202]:
+        if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('NetworkManagerCommit', pipeline_response)
+        deserialized = self._deserialize('PerimeterAssociableResourcesListResult', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    post.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}/commit'}  # type: ignore
+    get.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Network/locations/{location}/perimeterAssociableResourceTypes'}  # type: ignore

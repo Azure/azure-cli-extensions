@@ -9,7 +9,6 @@ from typing import TYPE_CHECKING
 import warnings
 
 from azure.core.exceptions import ClientAuthenticationError, HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
-from azure.core.paging import ItemPaged
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import HttpRequest, HttpResponse
 from azure.mgmt.core.exceptions import ARMErrorFormat
@@ -18,7 +17,7 @@ from .. import models as _models
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
-    from typing import Any, Callable, Dict, Generic, Iterable, Optional, TypeVar
+    from typing import Any, Callable, Dict, Generic, Optional, TypeVar
 
     T = TypeVar('T')
     ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
@@ -30,7 +29,7 @@ class NetworkManagerDeploymentStatusOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.network.v2021_02_preview.models
+    :type models: ~azure.mgmt.network.v2021_02_01_preview.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -50,29 +49,20 @@ class NetworkManagerDeploymentStatusOperations(object):
         resource_group_name,  # type: str
         network_manager_name,  # type: str
         parameters,  # type: "_models.NetworkManagerDeploymentStatusParameter"
-        top=None,  # type: Optional[int]
-        skip_token=None,  # type: Optional[str]
         **kwargs  # type: Any
     ):
-        # type: (...) -> Iterable["_models.NetworkManagerDeploymentStatusListResult"]
-        """Post List of Network Manager Deployment Status.
+        # type: (...) -> "_models.NetworkManagerDeploymentStatusListResult"
+        """Post to List of Network Manager Deployment Status.
 
         :param resource_group_name: The name of the resource group.
         :type resource_group_name: str
         :param network_manager_name: The name of the network manager.
         :type network_manager_name: str
         :param parameters: Parameters supplied to specify which Managed Network deployment status is.
-        :type parameters: ~azure.mgmt.network.v2021_02_preview.models.NetworkManagerDeploymentStatusParameter
-        :param top: An optional query parameter which specifies the maximum number of records to be
-         returned by the server.
-        :type top: int
-        :param skip_token: SkipToken is only used if a previous operation returned a partial result. If
-         a previous response contains a nextLink element, the value of the nextLink element will include
-         a skipToken parameter that specifies a starting point to use for subsequent calls.
-        :type skip_token: str
+        :type parameters: ~azure.mgmt.network.v2021_02_01_preview.models.NetworkManagerDeploymentStatusParameter
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either NetworkManagerDeploymentStatusListResult or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.network.v2021_02_preview.models.NetworkManagerDeploymentStatusListResult]
+        :return: NetworkManagerDeploymentStatusListResult, or the result of cls(response)
+        :rtype: ~azure.mgmt.network.v2021_02_01_preview.models.NetworkManagerDeploymentStatusListResult
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.NetworkManagerDeploymentStatusListResult"]
@@ -81,65 +71,42 @@ class NetworkManagerDeploymentStatusOperations(object):
         }
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2021-02-01-preview"
-        content_type = "application/json"
+        content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
-        def prepare_request(next_link=None):
-            # Construct headers
-            header_parameters = {}  # type: Dict[str, Any]
-            header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
-            header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+        # Construct URL
+        url = self.list.metadata['url']  # type: ignore
+        path_format_arguments = {
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'networkManagerName': self._serialize.url("network_manager_name", network_manager_name, 'str'),
+        }
+        url = self._client.format_url(url, **path_format_arguments)
 
-            if not next_link:
-                # Construct URL
-                url = self.list.metadata['url']  # type: ignore
-                path_format_arguments = {
-                    'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-                    'networkManagerName': self._serialize.url("network_manager_name", network_manager_name, 'str'),
-                }
-                url = self._client.format_url(url, **path_format_arguments)
-                # Construct parameters
-                query_parameters = {}  # type: Dict[str, Any]
-                query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
-                if top is not None:
-                    query_parameters['$top'] = self._serialize.query("top", top, 'int', maximum=20, minimum=1)
-                if skip_token is not None:
-                    query_parameters['$skipToken'] = self._serialize.query("skip_token", skip_token, 'str')
+        # Construct parameters
+        query_parameters = {}  # type: Dict[str, Any]
+        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
-                body_content_kwargs = {}  # type: Dict[str, Any]
-                body_content = self._serialize.body(parameters, 'NetworkManagerDeploymentStatusParameter')
-                body_content_kwargs['content'] = body_content
-                request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
-            else:
-                url = next_link
-                query_parameters = {}  # type: Dict[str, Any]
-                body_content_kwargs = {}  # type: Dict[str, Any]
-                body_content = self._serialize.body(parameters, 'NetworkManagerDeploymentStatusParameter')
-                body_content_kwargs['content'] = body_content
-                request = self._client.get(url, query_parameters, header_parameters, **body_content_kwargs)
-            return request
+        # Construct headers
+        header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
-        def extract_data(pipeline_response):
-            deserialized = self._deserialize('NetworkManagerDeploymentStatusListResult', pipeline_response)
-            list_of_elem = deserialized.value
-            if cls:
-                list_of_elem = cls(list_of_elem)
-            return deserialized.next_link or None, iter(list_of_elem)
+        body_content_kwargs = {}  # type: Dict[str, Any]
+        body_content = self._serialize.body(parameters, 'NetworkManagerDeploymentStatusParameter')
+        body_content_kwargs['content'] = body_content
+        request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
+        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+        response = pipeline_response.http_response
 
-        def get_next(next_link=None):
-            request = prepare_request(next_link)
+        if response.status_code not in [200]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-            pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
-            response = pipeline_response.http_response
+        deserialized = self._deserialize('NetworkManagerDeploymentStatusListResult', pipeline_response)
 
-            if response.status_code not in [200]:
-                map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+        if cls:
+            return cls(pipeline_response, deserialized, {})
 
-            return pipeline_response
-
-        return ItemPaged(
-            get_next, extract_data
-        )
+        return deserialized
     list.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}/listDeploymentStatus'}  # type: ignore

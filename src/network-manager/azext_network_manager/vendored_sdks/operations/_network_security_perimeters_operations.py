@@ -23,8 +23,8 @@ if TYPE_CHECKING:
     T = TypeVar('T')
     ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
 
-class NetworkManagersOperations(object):
-    """NetworkManagersOperations operations.
+class NetworkSecurityPerimetersOperations(object):
+    """NetworkSecurityPerimetersOperations operations.
 
     You should not instantiate this class directly. Instead, you should create a Client instance that
     instantiates it for you and attaches it as an attribute.
@@ -48,22 +48,22 @@ class NetworkManagersOperations(object):
     def get(
         self,
         resource_group_name,  # type: str
-        network_manager_name,  # type: str
+        network_security_perimeter_name,  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> "_models.NetworkManager"
-        """Gets the specified Network Manager.
+        # type: (...) -> "_models.NetworkSecurityPerimeter"
+        """Gets the specified network security perimeter by the name.
 
         :param resource_group_name: The name of the resource group.
         :type resource_group_name: str
-        :param network_manager_name: The name of the network manager.
-        :type network_manager_name: str
+        :param network_security_perimeter_name: The name of the network security perimeter.
+        :type network_security_perimeter_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: NetworkManager, or the result of cls(response)
-        :rtype: ~azure.mgmt.network.v2021_02_01_preview.models.NetworkManager
+        :return: NetworkSecurityPerimeter, or the result of cls(response)
+        :rtype: ~azure.mgmt.network.v2021_02_01_preview.models.NetworkSecurityPerimeter
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.NetworkManager"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.NetworkSecurityPerimeter"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -76,7 +76,7 @@ class NetworkManagersOperations(object):
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'networkManagerName': self._serialize.url("network_manager_name", network_manager_name, 'str'),
+            'networkSecurityPerimeterName': self._serialize.url("network_security_perimeter_name", network_security_perimeter_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -96,36 +96,36 @@ class NetworkManagersOperations(object):
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('NetworkManager', pipeline_response)
+        deserialized = self._deserialize('NetworkSecurityPerimeter', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}'}  # type: ignore
+    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkSecurityPerimeters/{networkSecurityPerimeterName}'}  # type: ignore
 
     def create_or_update(
         self,
         resource_group_name,  # type: str
-        network_manager_name,  # type: str
-        parameters,  # type: "_models.NetworkManager"
+        network_security_perimeter_name,  # type: str
+        parameters,  # type: "_models.NetworkSecurityPerimeter"
         **kwargs  # type: Any
     ):
-        # type: (...) -> "_models.NetworkManager"
-        """Creates or updates a Network Manager.
+        # type: (...) -> "_models.NetworkSecurityPerimeter"
+        """Creates or updates a Network Security Perimeter.
 
         :param resource_group_name: The name of the resource group.
         :type resource_group_name: str
-        :param network_manager_name: The name of the network manager.
-        :type network_manager_name: str
-        :param parameters: Parameters supplied to specify which network manager is.
-        :type parameters: ~azure.mgmt.network.v2021_02_01_preview.models.NetworkManager
+        :param network_security_perimeter_name: The name of the network security perimeter.
+        :type network_security_perimeter_name: str
+        :param parameters: Parameter supplied to create or update the network security perimeter.
+        :type parameters: ~azure.mgmt.network.v2021_02_01_preview.models.NetworkSecurityPerimeter
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: NetworkManager, or the result of cls(response)
-        :rtype: ~azure.mgmt.network.v2021_02_01_preview.models.NetworkManager
+        :return: NetworkSecurityPerimeter, or the result of cls(response)
+        :rtype: ~azure.mgmt.network.v2021_02_01_preview.models.NetworkSecurityPerimeter
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.NetworkManager"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.NetworkSecurityPerimeter"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -139,7 +139,7 @@ class NetworkManagersOperations(object):
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'networkManagerName': self._serialize.url("network_manager_name", network_manager_name, 'str'),
+            'networkSecurityPerimeterName': self._serialize.url("network_security_perimeter_name", network_security_perimeter_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -153,7 +153,7 @@ class NetworkManagersOperations(object):
         header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(parameters, 'NetworkManager')
+        body_content = self._serialize.body(parameters, 'NetworkSecurityPerimeter')
         body_content_kwargs['content'] = body_content
         request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
@@ -164,30 +164,30 @@ class NetworkManagersOperations(object):
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         if response.status_code == 200:
-            deserialized = self._deserialize('NetworkManager', pipeline_response)
+            deserialized = self._deserialize('NetworkSecurityPerimeter', pipeline_response)
 
         if response.status_code == 201:
-            deserialized = self._deserialize('NetworkManager', pipeline_response)
+            deserialized = self._deserialize('NetworkSecurityPerimeter', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}'}  # type: ignore
+    create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkSecurityPerimeters/{networkSecurityPerimeterName}'}  # type: ignore
 
     def delete(
         self,
         resource_group_name,  # type: str
-        network_manager_name,  # type: str
+        network_security_perimeter_name,  # type: str
         **kwargs  # type: Any
     ):
         # type: (...) -> None
-        """Deletes a network manager.
+        """Deletes a network security perimeter.
 
         :param resource_group_name: The name of the resource group.
         :type resource_group_name: str
-        :param network_manager_name: The name of the network manager.
-        :type network_manager_name: str
+        :param network_security_perimeter_name: The name of the network security perimeter.
+        :type network_security_perimeter_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: None, or the result of cls(response)
         :rtype: None
@@ -206,7 +206,7 @@ class NetworkManagersOperations(object):
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'networkManagerName': self._serialize.url("network_manager_name", network_manager_name, 'str'),
+            'networkSecurityPerimeterName': self._serialize.url("network_security_perimeter_name", network_security_perimeter_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -229,74 +229,7 @@ class NetworkManagersOperations(object):
         if cls:
             return cls(pipeline_response, None, {})
 
-    delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}'}  # type: ignore
-
-    def patch_tags(
-        self,
-        resource_group_name,  # type: str
-        network_manager_name,  # type: str
-        parameters,  # type: "_models.TagsObject"
-        **kwargs  # type: Any
-    ):
-        # type: (...) -> "_models.NetworkManager"
-        """Patch a NetworkManager Tags.
-
-        :param resource_group_name: The name of the resource group.
-        :type resource_group_name: str
-        :param network_manager_name: The name of the network manager.
-        :type network_manager_name: str
-        :param parameters: Parameters supplied to update network manager tags.
-        :type parameters: ~azure.mgmt.network.v2021_02_01_preview.models.TagsObject
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: NetworkManager, or the result of cls(response)
-        :rtype: ~azure.mgmt.network.v2021_02_01_preview.models.NetworkManager
-        :raises: ~azure.core.exceptions.HttpResponseError
-        """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.NetworkManager"]
-        error_map = {
-            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
-        }
-        error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-02-01-preview"
-        content_type = kwargs.pop("content_type", "application/json")
-        accept = "application/json"
-
-        # Construct URL
-        url = self.patch_tags.metadata['url']  # type: ignore
-        path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'networkManagerName': self._serialize.url("network_manager_name", network_manager_name, 'str'),
-        }
-        url = self._client.format_url(url, **path_format_arguments)
-
-        # Construct parameters
-        query_parameters = {}  # type: Dict[str, Any]
-        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
-
-        # Construct headers
-        header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
-        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
-
-        body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(parameters, 'TagsObject')
-        body_content_kwargs['content'] = body_content
-        request = self._client.patch(url, query_parameters, header_parameters, **body_content_kwargs)
-        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
-        response = pipeline_response.http_response
-
-        if response.status_code not in [200]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
-
-        deserialized = self._deserialize('NetworkManager', pipeline_response)
-
-        if cls:
-            return cls(pipeline_response, deserialized, {})
-
-        return deserialized
-    patch_tags.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}'}  # type: ignore
+    delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkSecurityPerimeters/{networkSecurityPerimeterName}'}  # type: ignore
 
     def list_by_subscription(
         self,
@@ -304,8 +237,8 @@ class NetworkManagersOperations(object):
         skip_token=None,  # type: Optional[str]
         **kwargs  # type: Any
     ):
-        # type: (...) -> Iterable["_models.NetworkManagerListResult"]
-        """List all network managers in a subscription.
+        # type: (...) -> Iterable["_models.NetworkSecurityPerimeterListResult"]
+        """List all network security perimeters in a subscription.
 
         :param top: An optional query parameter which specifies the maximum number of records to be
          returned by the server.
@@ -315,11 +248,11 @@ class NetworkManagersOperations(object):
          a skipToken parameter that specifies a starting point to use for subsequent calls.
         :type skip_token: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either NetworkManagerListResult or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.network.v2021_02_01_preview.models.NetworkManagerListResult]
+        :return: An iterator like instance of either NetworkSecurityPerimeterListResult or the result of cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.network.v2021_02_01_preview.models.NetworkSecurityPerimeterListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.NetworkManagerListResult"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.NetworkSecurityPerimeterListResult"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -355,7 +288,7 @@ class NetworkManagersOperations(object):
             return request
 
         def extract_data(pipeline_response):
-            deserialized = self._deserialize('NetworkManagerListResult', pipeline_response)
+            deserialized = self._deserialize('NetworkSecurityPerimeterListResult', pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
@@ -376,7 +309,7 @@ class NetworkManagersOperations(object):
         return ItemPaged(
             get_next, extract_data
         )
-    list_by_subscription.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Network/networkManagers'}  # type: ignore
+    list_by_subscription.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Network/networkSecurityPerimeters'}  # type: ignore
 
     def list(
         self,
@@ -385,8 +318,8 @@ class NetworkManagersOperations(object):
         skip_token=None,  # type: Optional[str]
         **kwargs  # type: Any
     ):
-        # type: (...) -> Iterable["_models.NetworkManagerListResult"]
-        """List network managers in a resource group.
+        # type: (...) -> Iterable["_models.NetworkSecurityPerimeterListResult"]
+        """List network security perimeters in a resource group.
 
         :param resource_group_name: The name of the resource group.
         :type resource_group_name: str
@@ -398,11 +331,11 @@ class NetworkManagersOperations(object):
          a skipToken parameter that specifies a starting point to use for subsequent calls.
         :type skip_token: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either NetworkManagerListResult or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.network.v2021_02_01_preview.models.NetworkManagerListResult]
+        :return: An iterator like instance of either NetworkSecurityPerimeterListResult or the result of cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.network.v2021_02_01_preview.models.NetworkSecurityPerimeterListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.NetworkManagerListResult"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.NetworkSecurityPerimeterListResult"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -439,7 +372,7 @@ class NetworkManagersOperations(object):
             return request
 
         def extract_data(pipeline_response):
-            deserialized = self._deserialize('NetworkManagerListResult', pipeline_response)
+            deserialized = self._deserialize('NetworkSecurityPerimeterListResult', pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
@@ -460,4 +393,4 @@ class NetworkManagersOperations(object):
         return ItemPaged(
             get_next, extract_data
         )
-    list.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers'}  # type: ignore
+    list.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkSecurityPerimeters'}  # type: ignore

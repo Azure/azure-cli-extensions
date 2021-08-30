@@ -26,13 +26,6 @@ class _CaseInsensitiveEnumMeta(EnumMeta):
             raise AttributeError(name)
 
 
-class Access(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """Access to be allowed or denied.
-    """
-
-    ALLOW = "Allow"
-    DENY = "Deny"
-
 class AddressPrefixType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Address prefix type.
     """
@@ -40,36 +33,27 @@ class AddressPrefixType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     IP_PREFIX = "IPPrefix"
     SERVICE_TAG = "ServiceTag"
 
-class AuthenticationMethod(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """VPN client authentication method.
+class AdminRuleKind(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Whether the rule is custom or default.
     """
 
-    EAPTLS = "EAPTLS"
-    EAPMSCHA_PV2 = "EAPMSCHAPv2"
+    CUSTOM = "Custom"
+    DEFAULT = "Default"
 
-class CommitType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """Commit Type.
+class ConfigurationType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Configuration Deployment Type.
     """
 
-    ADMIN_POLICY = "AdminPolicy"
-    USER_POLICY = "UserPolicy"
-    ROUTING = "Routing"
-    CONNECTIVITY = "Connectivity"
-
-class ConfigType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """Effective configuration.
-    """
-
-    ADMIN_POLICY = "AdminPolicy"
-    USER_POLICY = "UserPolicy"
+    SECURITY_ADMIN = "SecurityAdmin"
+    SECURITY_USER = "SecurityUser"
     CONNECTIVITY = "Connectivity"
 
 class ConnectivityTopology(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Connectivity topology type.
     """
 
-    HUB_AND_SPOKE_TOPOLOGY = "HubAndSpokeTopology"
-    MESH_TOPOLOGY = "MeshTopology"
+    HUB_AND_SPOKE = "HubAndSpoke"
+    MESH = "Mesh"
 
 class CreatedByType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The type of identity that created the resource.
@@ -80,6 +64,20 @@ class CreatedByType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     MANAGED_IDENTITY = "ManagedIdentity"
     KEY = "Key"
 
+class DeleteExistingNSGs(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Flag if need to delete existing network security groups.
+    """
+
+    FALSE = "False"
+    TRUE = "True"
+
+class DeleteExistingPeering(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Flag if need to remove current existing peerings.
+    """
+
+    FALSE = "False"
+    TRUE = "True"
+
 class DeploymentStatus(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Deployment Status.
     """
@@ -89,21 +87,19 @@ class DeploymentStatus(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     DEPLOYED = "Deployed"
     FAILED = "Failed"
 
-class DeploymentType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """Configuration Deployment Type.
+class EffectiveAdminRuleKind(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Whether the rule is custom or default.
     """
 
-    ADMIN_POLICY = "AdminPolicy"
-    USER_POLICY = "UserPolicy"
-    ROUTING = "Routing"
-    CONNECTIVITY = "Connectivity"
+    CUSTOM = "Custom"
+    DEFAULT = "Default"
 
-class ExtendedLocationTypes(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """The supported ExtendedLocation types. Currently only EdgeZone is supported in Microsoft.Network
-    resources.
+class EffectiveUserRuleKind(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Whether the rule is custom or default.
     """
 
-    EDGE_ZONE = "EdgeZone"
+    CUSTOM = "Custom"
+    DEFAULT = "Default"
 
 class GroupConnectivity(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Group connectivity type.
@@ -112,19 +108,12 @@ class GroupConnectivity(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     NONE = "None"
     DIRECTLY_CONNECTED = "DirectlyConnected"
 
-class IPAllocationMethod(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """IP address allocation method.
+class IsGlobal(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Flag if global mesh is supported.
     """
 
-    STATIC = "Static"
-    DYNAMIC = "Dynamic"
-
-class IPVersion(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """IP address version.
-    """
-
-    I_PV4 = "IPv4"
-    I_PV6 = "IPv6"
+    FALSE = "False"
+    TRUE = "True"
 
 class MembershipType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Membership Type.
@@ -140,14 +129,6 @@ class MemberType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     VIRTUAL_NETWORK = "VirtualNetwork"
     SUBNET = "Subnet"
 
-class NetworkOperationStatus(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """Status of the Azure async operation.
-    """
-
-    IN_PROGRESS = "InProgress"
-    SUCCEEDED = "Succeeded"
-    FAILED = "Failed"
-
 class ProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The current provisioning state.
     """
@@ -156,23 +137,6 @@ class ProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     UPDATING = "Updating"
     DELETING = "Deleting"
     FAILED = "Failed"
-
-class ResourceIdentityType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """The type of identity used for the resource. The type 'SystemAssigned, UserAssigned' includes
-    both an implicitly created identity and a set of user assigned identities. The type 'None' will
-    remove any identities from the virtual machine.
-    """
-
-    SYSTEM_ASSIGNED = "SystemAssigned"
-    USER_ASSIGNED = "UserAssigned"
-    SYSTEM_ASSIGNED_USER_ASSIGNED = "SystemAssigned, UserAssigned"
-    NONE = "None"
-
-class ScopeAccesses(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-
-    SECURITY = "Security"
-    ROUTING = "Routing"
-    CONNECTIVITY = "Connectivity"
 
 class SecurityConfigurationRuleAccess(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Whether network traffic is allowed or denied.
@@ -207,3 +171,17 @@ class SecurityType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
 
     ADMIN_POLICY = "AdminPolicy"
     USER_POLICY = "UserPolicy"
+
+class UseHubGateway(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Flag if need to use hub gateway.
+    """
+
+    FALSE = "False"
+    TRUE = "True"
+
+class UserRuleKind(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Whether the rule is custom or default.
+    """
+
+    CUSTOM = "Custom"
+    DEFAULT = "Default"

@@ -26,7 +26,7 @@ class UserRulesOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.network.v2021_02_preview.models
+    :type models: ~azure.mgmt.network.v2021_02_01_preview.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -46,11 +46,12 @@ class UserRulesOperations:
         resource_group_name: str,
         network_manager_name: str,
         configuration_name: str,
+        rule_collection_name: str,
         top: Optional[int] = None,
         skip_token: Optional[str] = None,
-        **kwargs
+        **kwargs: Any
     ) -> AsyncIterable["_models.UserRuleListResult"]:
-        """Lists all user rules in a security configuration.
+        """Lists all user rules in a rule collection.
 
         :param resource_group_name: The name of the resource group.
         :type resource_group_name: str
@@ -58,6 +59,9 @@ class UserRulesOperations:
         :type network_manager_name: str
         :param configuration_name: The name of the network manager security Configuration.
         :type configuration_name: str
+        :param rule_collection_name: The name of the network manager security Configuration rule
+         collection.
+        :type rule_collection_name: str
         :param top: An optional query parameter which specifies the maximum number of records to be
          returned by the server.
         :type top: int
@@ -67,7 +71,7 @@ class UserRulesOperations:
         :type skip_token: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either UserRuleListResult or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.network.v2021_02_preview.models.UserRuleListResult]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.network.v2021_02_01_preview.models.UserRuleListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.UserRuleListResult"]
@@ -91,6 +95,7 @@ class UserRulesOperations:
                     'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
                     'networkManagerName': self._serialize.url("network_manager_name", network_manager_name, 'str'),
                     'configurationName': self._serialize.url("configuration_name", configuration_name, 'str'),
+                    'ruleCollectionName': self._serialize.url("rule_collection_name", rule_collection_name, 'str'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
@@ -130,16 +135,17 @@ class UserRulesOperations:
         return AsyncItemPaged(
             get_next, extract_data
         )
-    list.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}/securityConfigurations/{configurationName}/userRules'}  # type: ignore
+    list.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}/securityUserConfigurations/{configurationName}/ruleCollections/{ruleCollectionName}/rules'}  # type: ignore
 
     async def get(
         self,
         resource_group_name: str,
         network_manager_name: str,
         configuration_name: str,
+        rule_collection_name: str,
         rule_name: str,
-        **kwargs
-    ) -> "_models.UserRule":
+        **kwargs: Any
+    ) -> "_models.BaseUserRule":
         """Gets a user rule.
 
         :param resource_group_name: The name of the resource group.
@@ -148,14 +154,17 @@ class UserRulesOperations:
         :type network_manager_name: str
         :param configuration_name: The name of the network manager security Configuration.
         :type configuration_name: str
+        :param rule_collection_name: The name of the network manager security Configuration rule
+         collection.
+        :type rule_collection_name: str
         :param rule_name: The name of the rule.
         :type rule_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: UserRule, or the result of cls(response)
-        :rtype: ~azure.mgmt.network.v2021_02_preview.models.UserRule
+        :return: BaseUserRule, or the result of cls(response)
+        :rtype: ~azure.mgmt.network.v2021_02_01_preview.models.BaseUserRule
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.UserRule"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.BaseUserRule"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -170,6 +179,7 @@ class UserRulesOperations:
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
             'networkManagerName': self._serialize.url("network_manager_name", network_manager_name, 'str'),
             'configurationName': self._serialize.url("configuration_name", configuration_name, 'str'),
+            'ruleCollectionName': self._serialize.url("rule_collection_name", rule_collection_name, 'str'),
             'ruleName': self._serialize.url("rule_name", rule_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -190,23 +200,24 @@ class UserRulesOperations:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('UserRule', pipeline_response)
+        deserialized = self._deserialize('BaseUserRule', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}/securityConfigurations/{configurationName}/userRules/{ruleName}'}  # type: ignore
+    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}/securityUserConfigurations/{configurationName}/ruleCollections/{ruleCollectionName}/rules/{ruleName}'}  # type: ignore
 
     async def create_or_update(
         self,
         resource_group_name: str,
         network_manager_name: str,
         configuration_name: str,
+        rule_collection_name: str,
         rule_name: str,
-        user_rule: "_models.UserRule",
-        **kwargs
-    ) -> "_models.UserRule":
+        user_rule: "_models.BaseUserRule",
+        **kwargs: Any
+    ) -> "_models.BaseUserRule":
         """Creates or updates a user rule.
 
         :param resource_group_name: The name of the resource group.
@@ -215,16 +226,19 @@ class UserRulesOperations:
         :type network_manager_name: str
         :param configuration_name: The name of the network manager security Configuration.
         :type configuration_name: str
+        :param rule_collection_name: The name of the network manager security Configuration rule
+         collection.
+        :type rule_collection_name: str
         :param rule_name: The name of the rule.
         :type rule_name: str
         :param user_rule: The user rule to create or update.
-        :type user_rule: ~azure.mgmt.network.v2021_02_preview.models.UserRule
+        :type user_rule: ~azure.mgmt.network.v2021_02_01_preview.models.BaseUserRule
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: UserRule, or the result of cls(response)
-        :rtype: ~azure.mgmt.network.v2021_02_preview.models.UserRule
+        :return: BaseUserRule, or the result of cls(response)
+        :rtype: ~azure.mgmt.network.v2021_02_01_preview.models.BaseUserRule
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.UserRule"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.BaseUserRule"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -240,6 +254,7 @@ class UserRulesOperations:
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
             'networkManagerName': self._serialize.url("network_manager_name", network_manager_name, 'str'),
             'configurationName': self._serialize.url("configuration_name", configuration_name, 'str'),
+            'ruleCollectionName': self._serialize.url("rule_collection_name", rule_collection_name, 'str'),
             'ruleName': self._serialize.url("rule_name", rule_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -254,7 +269,7 @@ class UserRulesOperations:
         header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(user_rule, 'UserRule')
+        body_content = self._serialize.body(user_rule, 'BaseUserRule')
         body_content_kwargs['content'] = body_content
         request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
@@ -265,24 +280,25 @@ class UserRulesOperations:
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         if response.status_code == 200:
-            deserialized = self._deserialize('UserRule', pipeline_response)
+            deserialized = self._deserialize('BaseUserRule', pipeline_response)
 
         if response.status_code == 201:
-            deserialized = self._deserialize('UserRule', pipeline_response)
+            deserialized = self._deserialize('BaseUserRule', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}/securityConfigurations/{configurationName}/userRules/{ruleName}'}  # type: ignore
+    create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}/securityUserConfigurations/{configurationName}/ruleCollections/{ruleCollectionName}/rules/{ruleName}'}  # type: ignore
 
     async def delete(
         self,
         resource_group_name: str,
         network_manager_name: str,
         configuration_name: str,
+        rule_collection_name: str,
         rule_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> None:
         """Deletes a user rule.
 
@@ -292,6 +308,9 @@ class UserRulesOperations:
         :type network_manager_name: str
         :param configuration_name: The name of the network manager security Configuration.
         :type configuration_name: str
+        :param rule_collection_name: The name of the network manager security Configuration rule
+         collection.
+        :type rule_collection_name: str
         :param rule_name: The name of the rule.
         :type rule_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
@@ -314,6 +333,7 @@ class UserRulesOperations:
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
             'networkManagerName': self._serialize.url("network_manager_name", network_manager_name, 'str'),
             'configurationName': self._serialize.url("configuration_name", configuration_name, 'str'),
+            'ruleCollectionName': self._serialize.url("rule_collection_name", rule_collection_name, 'str'),
             'ruleName': self._serialize.url("rule_name", rule_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -337,4 +357,4 @@ class UserRulesOperations:
         if cls:
             return cls(pipeline_response, None, {})
 
-    delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}/securityConfigurations/{configurationName}/userRules/{ruleName}'}  # type: ignore
+    delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}/securityUserConfigurations/{configurationName}/ruleCollections/{ruleCollectionName}/rules/{ruleName}'}  # type: ignore

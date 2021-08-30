@@ -8,6 +8,7 @@
 
 from typing import Any, Optional, TYPE_CHECKING
 
+from azure.core.pipeline.transport import AsyncHttpResponse, HttpRequest
 from azure.mgmt.core import AsyncARMPipelineClient
 from msrest import Deserializer, Serializer
 
@@ -20,13 +21,21 @@ from .operations import NetworkManagersOperations
 from .operations import NetworkManagerCommitsOperations
 from .operations import NetworkManagerDeploymentStatusOperations
 from .operations import EffectiveVirtualNetworksOperations
-from .operations import ActiveConfigurationsOperations
+from .operations import ActiveConnectivityConfigurationsOperations
+from .operations import ActiveSecurityAdminRulesOperations
+from .operations import ActiveSecurityUserRulesOperations
 from .operations import ConnectivityConfigurationsOperations
-from .operations import EffectiveConfigurationsOperations
+from .operations import EffectiveConnectivityConfigurationsOperations
+from .operations import NetworkManagerEffectiveSecurityAdminRulesOperations
 from .operations import NetworkGroupsOperations
-from .operations import SecurityConfigurationsOperations
-from .operations import AdminRulesOperations
+from .operations import SecurityUserConfigurationsOperations
+from .operations import UserRuleCollectionsOperations
 from .operations import UserRulesOperations
+from .operations import SecurityAdminConfigurationsOperations
+from .operations import AdminRuleCollectionsOperations
+from .operations import AdminRulesOperations
+from .operations import NetworkSecurityPerimetersOperations
+from .operations import PerimeterAssociableResourceTypesOperations
 from .. import models
 
 
@@ -34,27 +43,43 @@ class NetworkManagementClient(object):
     """Network Client.
 
     :ivar network_managers: NetworkManagersOperations operations
-    :vartype network_managers: azure.mgmt.network.v2021_02_preview.aio.operations.NetworkManagersOperations
+    :vartype network_managers: azure.mgmt.network.v2021_02_01_preview.aio.operations.NetworkManagersOperations
     :ivar network_manager_commits: NetworkManagerCommitsOperations operations
-    :vartype network_manager_commits: azure.mgmt.network.v2021_02_preview.aio.operations.NetworkManagerCommitsOperations
+    :vartype network_manager_commits: azure.mgmt.network.v2021_02_01_preview.aio.operations.NetworkManagerCommitsOperations
     :ivar network_manager_deployment_status: NetworkManagerDeploymentStatusOperations operations
-    :vartype network_manager_deployment_status: azure.mgmt.network.v2021_02_preview.aio.operations.NetworkManagerDeploymentStatusOperations
+    :vartype network_manager_deployment_status: azure.mgmt.network.v2021_02_01_preview.aio.operations.NetworkManagerDeploymentStatusOperations
     :ivar effective_virtual_networks: EffectiveVirtualNetworksOperations operations
-    :vartype effective_virtual_networks: azure.mgmt.network.v2021_02_preview.aio.operations.EffectiveVirtualNetworksOperations
-    :ivar active_configurations: ActiveConfigurationsOperations operations
-    :vartype active_configurations: azure.mgmt.network.v2021_02_preview.aio.operations.ActiveConfigurationsOperations
+    :vartype effective_virtual_networks: azure.mgmt.network.v2021_02_01_preview.aio.operations.EffectiveVirtualNetworksOperations
+    :ivar active_connectivity_configurations: ActiveConnectivityConfigurationsOperations operations
+    :vartype active_connectivity_configurations: azure.mgmt.network.v2021_02_01_preview.aio.operations.ActiveConnectivityConfigurationsOperations
+    :ivar active_security_admin_rules: ActiveSecurityAdminRulesOperations operations
+    :vartype active_security_admin_rules: azure.mgmt.network.v2021_02_01_preview.aio.operations.ActiveSecurityAdminRulesOperations
+    :ivar active_security_user_rules: ActiveSecurityUserRulesOperations operations
+    :vartype active_security_user_rules: azure.mgmt.network.v2021_02_01_preview.aio.operations.ActiveSecurityUserRulesOperations
     :ivar connectivity_configurations: ConnectivityConfigurationsOperations operations
-    :vartype connectivity_configurations: azure.mgmt.network.v2021_02_preview.aio.operations.ConnectivityConfigurationsOperations
-    :ivar effective_configurations: EffectiveConfigurationsOperations operations
-    :vartype effective_configurations: azure.mgmt.network.v2021_02_preview.aio.operations.EffectiveConfigurationsOperations
+    :vartype connectivity_configurations: azure.mgmt.network.v2021_02_01_preview.aio.operations.ConnectivityConfigurationsOperations
+    :ivar effective_connectivity_configurations: EffectiveConnectivityConfigurationsOperations operations
+    :vartype effective_connectivity_configurations: azure.mgmt.network.v2021_02_01_preview.aio.operations.EffectiveConnectivityConfigurationsOperations
+    :ivar network_manager_effective_security_admin_rules: NetworkManagerEffectiveSecurityAdminRulesOperations operations
+    :vartype network_manager_effective_security_admin_rules: azure.mgmt.network.v2021_02_01_preview.aio.operations.NetworkManagerEffectiveSecurityAdminRulesOperations
     :ivar network_groups: NetworkGroupsOperations operations
-    :vartype network_groups: azure.mgmt.network.v2021_02_preview.aio.operations.NetworkGroupsOperations
-    :ivar security_configurations: SecurityConfigurationsOperations operations
-    :vartype security_configurations: azure.mgmt.network.v2021_02_preview.aio.operations.SecurityConfigurationsOperations
-    :ivar admin_rules: AdminRulesOperations operations
-    :vartype admin_rules: azure.mgmt.network.v2021_02_preview.aio.operations.AdminRulesOperations
+    :vartype network_groups: azure.mgmt.network.v2021_02_01_preview.aio.operations.NetworkGroupsOperations
+    :ivar security_user_configurations: SecurityUserConfigurationsOperations operations
+    :vartype security_user_configurations: azure.mgmt.network.v2021_02_01_preview.aio.operations.SecurityUserConfigurationsOperations
+    :ivar user_rule_collections: UserRuleCollectionsOperations operations
+    :vartype user_rule_collections: azure.mgmt.network.v2021_02_01_preview.aio.operations.UserRuleCollectionsOperations
     :ivar user_rules: UserRulesOperations operations
-    :vartype user_rules: azure.mgmt.network.v2021_02_preview.aio.operations.UserRulesOperations
+    :vartype user_rules: azure.mgmt.network.v2021_02_01_preview.aio.operations.UserRulesOperations
+    :ivar security_admin_configurations: SecurityAdminConfigurationsOperations operations
+    :vartype security_admin_configurations: azure.mgmt.network.v2021_02_01_preview.aio.operations.SecurityAdminConfigurationsOperations
+    :ivar admin_rule_collections: AdminRuleCollectionsOperations operations
+    :vartype admin_rule_collections: azure.mgmt.network.v2021_02_01_preview.aio.operations.AdminRuleCollectionsOperations
+    :ivar admin_rules: AdminRulesOperations operations
+    :vartype admin_rules: azure.mgmt.network.v2021_02_01_preview.aio.operations.AdminRulesOperations
+    :ivar network_security_perimeters: NetworkSecurityPerimetersOperations operations
+    :vartype network_security_perimeters: azure.mgmt.network.v2021_02_01_preview.aio.operations.NetworkSecurityPerimetersOperations
+    :ivar perimeter_associable_resource_types: PerimeterAssociableResourceTypesOperations operations
+    :vartype perimeter_associable_resource_types: azure.mgmt.network.v2021_02_01_preview.aio.operations.PerimeterAssociableResourceTypesOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials_async.AsyncTokenCredential
     :param subscription_id: The subscription credentials which uniquely identify the Microsoft Azure subscription. The subscription ID forms part of the URI for every service call.
@@ -76,6 +101,7 @@ class NetworkManagementClient(object):
 
         client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
         self._serialize = Serializer(client_models)
+        self._serialize.client_side_validation = False
         self._deserialize = Deserializer(client_models)
 
         self.network_managers = NetworkManagersOperations(
@@ -86,20 +112,53 @@ class NetworkManagementClient(object):
             self._client, self._config, self._serialize, self._deserialize)
         self.effective_virtual_networks = EffectiveVirtualNetworksOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.active_configurations = ActiveConfigurationsOperations(
+        self.active_connectivity_configurations = ActiveConnectivityConfigurationsOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.active_security_admin_rules = ActiveSecurityAdminRulesOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.active_security_user_rules = ActiveSecurityUserRulesOperations(
             self._client, self._config, self._serialize, self._deserialize)
         self.connectivity_configurations = ConnectivityConfigurationsOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.effective_configurations = EffectiveConfigurationsOperations(
+        self.effective_connectivity_configurations = EffectiveConnectivityConfigurationsOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.network_manager_effective_security_admin_rules = NetworkManagerEffectiveSecurityAdminRulesOperations(
             self._client, self._config, self._serialize, self._deserialize)
         self.network_groups = NetworkGroupsOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.security_configurations = SecurityConfigurationsOperations(
+        self.security_user_configurations = SecurityUserConfigurationsOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.admin_rules = AdminRulesOperations(
+        self.user_rule_collections = UserRuleCollectionsOperations(
             self._client, self._config, self._serialize, self._deserialize)
         self.user_rules = UserRulesOperations(
             self._client, self._config, self._serialize, self._deserialize)
+        self.security_admin_configurations = SecurityAdminConfigurationsOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.admin_rule_collections = AdminRuleCollectionsOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.admin_rules = AdminRulesOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.network_security_perimeters = NetworkSecurityPerimetersOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.perimeter_associable_resource_types = PerimeterAssociableResourceTypesOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+
+    async def _send_request(self, http_request: HttpRequest, **kwargs: Any) -> AsyncHttpResponse:
+        """Runs the network request through the client's chained policies.
+
+        :param http_request: The network request you want to make. Required.
+        :type http_request: ~azure.core.pipeline.transport.HttpRequest
+        :keyword bool stream: Whether the response payload will be streamed. Defaults to True.
+        :return: The response of your network call. Does not do error handling on your response.
+        :rtype: ~azure.core.pipeline.transport.AsyncHttpResponse
+        """
+        path_format_arguments = {
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+        }
+        http_request.url = self._client.format_url(http_request.url, **path_format_arguments)
+        stream = kwargs.pop("stream", True)
+        pipeline_response = await self._client._pipeline.run(http_request, stream=stream, **kwargs)
+        return pipeline_response.http_response
 
     async def close(self) -> None:
         await self._client.close()

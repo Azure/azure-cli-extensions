@@ -26,7 +26,7 @@ class ConnectivityConfigurationsOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.network.v2021_02_preview.models
+    :type models: ~azure.mgmt.network.v2021_02_01_preview.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -46,7 +46,7 @@ class ConnectivityConfigurationsOperations:
         resource_group_name: str,
         network_manager_name: str,
         configuration_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> "_models.ConnectivityConfiguration":
         """Gets a Network Connectivity Configuration, specified by the resource group, network manager
         name, and connectivity Configuration name.
@@ -59,7 +59,7 @@ class ConnectivityConfigurationsOperations:
         :type configuration_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ConnectivityConfiguration, or the result of cls(response)
-        :rtype: ~azure.mgmt.network.v2021_02_preview.models.ConnectivityConfiguration
+        :rtype: ~azure.mgmt.network.v2021_02_01_preview.models.ConnectivityConfiguration
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.ConnectivityConfiguration"]
@@ -110,7 +110,7 @@ class ConnectivityConfigurationsOperations:
         network_manager_name: str,
         configuration_name: str,
         connectivity_configuration: "_models.ConnectivityConfiguration",
-        **kwargs
+        **kwargs: Any
     ) -> "_models.ConnectivityConfiguration":
         """Creates/Updates a new network manager connectivity configuration.
 
@@ -122,10 +122,10 @@ class ConnectivityConfigurationsOperations:
         :type configuration_name: str
         :param connectivity_configuration: Parameters supplied to create/update a network manager
          connectivity configuration.
-        :type connectivity_configuration: ~azure.mgmt.network.v2021_02_preview.models.ConnectivityConfiguration
+        :type connectivity_configuration: ~azure.mgmt.network.v2021_02_01_preview.models.ConnectivityConfiguration
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ConnectivityConfiguration, or the result of cls(response)
-        :rtype: ~azure.mgmt.network.v2021_02_preview.models.ConnectivityConfiguration
+        :rtype: ~azure.mgmt.network.v2021_02_01_preview.models.ConnectivityConfiguration
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.ConnectivityConfiguration"]
@@ -184,7 +184,7 @@ class ConnectivityConfigurationsOperations:
         resource_group_name: str,
         network_manager_name: str,
         configuration_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> None:
         """Deletes a network manager connectivity configuration, specified by the resource group, network
         manager name, and connectivity configuration name.
@@ -245,7 +245,7 @@ class ConnectivityConfigurationsOperations:
         network_manager_name: str,
         top: Optional[int] = None,
         skip_token: Optional[str] = None,
-        **kwargs
+        **kwargs: Any
     ) -> AsyncIterable["_models.ConnectivityConfigurationListResult"]:
         """Lists all the network manager connectivity configuration in a specified network manager.
 
@@ -262,7 +262,7 @@ class ConnectivityConfigurationsOperations:
         :type skip_token: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either ConnectivityConfigurationListResult or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.network.v2021_02_preview.models.ConnectivityConfigurationListResult]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.network.v2021_02_01_preview.models.ConnectivityConfigurationListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.ConnectivityConfigurationListResult"]

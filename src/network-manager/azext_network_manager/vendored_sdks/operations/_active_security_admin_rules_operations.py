@@ -22,8 +22,8 @@ if TYPE_CHECKING:
     T = TypeVar('T')
     ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
 
-class NetworkManagerCommitsOperations(object):
-    """NetworkManagerCommitsOperations operations.
+class ActiveSecurityAdminRulesOperations(object):
+    """ActiveSecurityAdminRulesOperations operations.
 
     You should not instantiate this class directly. Instead, you should create a Client instance that
     instantiates it for you and attaches it as an attribute.
@@ -44,28 +44,28 @@ class NetworkManagerCommitsOperations(object):
         self._deserialize = deserializer
         self._config = config
 
-    def post(
+    def list(
         self,
         resource_group_name,  # type: str
         network_manager_name,  # type: str
-        parameters,  # type: "_models.NetworkManagerCommit"
+        parameters,  # type: "_models.ActiveConfigurationParameter"
         **kwargs  # type: Any
     ):
-        # type: (...) -> "_models.NetworkManagerCommit"
-        """Post a Network Manager Commit.
+        # type: (...) -> "_models.ActiveSecurityAdminRulesListResult"
+        """Lists active security admin rules in a network manager.
 
         :param resource_group_name: The name of the resource group.
         :type resource_group_name: str
         :param network_manager_name: The name of the network manager.
         :type network_manager_name: str
-        :param parameters: Parameters supplied to specify which Managed Network commit is.
-        :type parameters: ~azure.mgmt.network.v2021_02_01_preview.models.NetworkManagerCommit
+        :param parameters: Active Configuration Parameter.
+        :type parameters: ~azure.mgmt.network.v2021_02_01_preview.models.ActiveConfigurationParameter
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: NetworkManagerCommit, or the result of cls(response)
-        :rtype: ~azure.mgmt.network.v2021_02_01_preview.models.NetworkManagerCommit
+        :return: ActiveSecurityAdminRulesListResult, or the result of cls(response)
+        :rtype: ~azure.mgmt.network.v2021_02_01_preview.models.ActiveSecurityAdminRulesListResult
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.NetworkManagerCommit"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.ActiveSecurityAdminRulesListResult"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -75,7 +75,7 @@ class NetworkManagerCommitsOperations(object):
         accept = "application/json"
 
         # Construct URL
-        url = self.post.metadata['url']  # type: ignore
+        url = self.list.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
@@ -93,20 +93,20 @@ class NetworkManagerCommitsOperations(object):
         header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(parameters, 'NetworkManagerCommit')
+        body_content = self._serialize.body(parameters, 'ActiveConfigurationParameter')
         body_content_kwargs['content'] = body_content
         request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
-        if response.status_code not in [202]:
+        if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('NetworkManagerCommit', pipeline_response)
+        deserialized = self._deserialize('ActiveSecurityAdminRulesListResult', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    post.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}/commit'}  # type: ignore
+    list.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}/listActiveSecurityAdminRules'}  # type: ignore

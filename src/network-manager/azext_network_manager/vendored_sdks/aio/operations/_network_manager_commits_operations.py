@@ -25,7 +25,7 @@ class NetworkManagerCommitsOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.network.v2021_02_preview.models
+    :type models: ~azure.mgmt.network.v2021_02_01_preview.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -45,8 +45,8 @@ class NetworkManagerCommitsOperations:
         resource_group_name: str,
         network_manager_name: str,
         parameters: "_models.NetworkManagerCommit",
-        **kwargs
-    ) -> None:
+        **kwargs: Any
+    ) -> "_models.NetworkManagerCommit":
         """Post a Network Manager Commit.
 
         :param resource_group_name: The name of the resource group.
@@ -54,13 +54,13 @@ class NetworkManagerCommitsOperations:
         :param network_manager_name: The name of the network manager.
         :type network_manager_name: str
         :param parameters: Parameters supplied to specify which Managed Network commit is.
-        :type parameters: ~azure.mgmt.network.v2021_02_preview.models.NetworkManagerCommit
+        :type parameters: ~azure.mgmt.network.v2021_02_01_preview.models.NetworkManagerCommit
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: None, or the result of cls(response)
-        :rtype: None
+        :return: NetworkManagerCommit, or the result of cls(response)
+        :rtype: ~azure.mgmt.network.v2021_02_01_preview.models.NetworkManagerCommit
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType[None]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.NetworkManagerCommit"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -94,11 +94,14 @@ class NetworkManagerCommitsOperations:
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
-        if response.status_code not in [200]:
+        if response.status_code not in [202]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        if cls:
-            return cls(pipeline_response, None, {})
+        deserialized = self._deserialize('NetworkManagerCommit', pipeline_response)
 
+        if cls:
+            return cls(pipeline_response, deserialized, {})
+
+        return deserialized
     post.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}/commit'}  # type: ignore

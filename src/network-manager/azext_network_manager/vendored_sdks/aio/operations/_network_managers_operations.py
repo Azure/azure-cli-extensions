@@ -26,7 +26,7 @@ class NetworkManagersOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.network.v2021_02_preview.models
+    :type models: ~azure.mgmt.network.v2021_02_01_preview.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -45,7 +45,7 @@ class NetworkManagersOperations:
         self,
         resource_group_name: str,
         network_manager_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> "_models.NetworkManager":
         """Gets the specified Network Manager.
 
@@ -55,7 +55,7 @@ class NetworkManagersOperations:
         :type network_manager_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: NetworkManager, or the result of cls(response)
-        :rtype: ~azure.mgmt.network.v2021_02_preview.models.NetworkManager
+        :rtype: ~azure.mgmt.network.v2021_02_01_preview.models.NetworkManager
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.NetworkManager"]
@@ -104,7 +104,7 @@ class NetworkManagersOperations:
         resource_group_name: str,
         network_manager_name: str,
         parameters: "_models.NetworkManager",
-        **kwargs
+        **kwargs: Any
     ) -> "_models.NetworkManager":
         """Creates or updates a Network Manager.
 
@@ -113,10 +113,10 @@ class NetworkManagersOperations:
         :param network_manager_name: The name of the network manager.
         :type network_manager_name: str
         :param parameters: Parameters supplied to specify which network manager is.
-        :type parameters: ~azure.mgmt.network.v2021_02_preview.models.NetworkManager
+        :type parameters: ~azure.mgmt.network.v2021_02_01_preview.models.NetworkManager
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: NetworkManager, or the result of cls(response)
-        :rtype: ~azure.mgmt.network.v2021_02_preview.models.NetworkManager
+        :rtype: ~azure.mgmt.network.v2021_02_01_preview.models.NetworkManager
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.NetworkManager"]
@@ -173,7 +173,7 @@ class NetworkManagersOperations:
         self,
         resource_group_name: str,
         network_manager_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> None:
         """Deletes a network manager.
 
@@ -229,7 +229,7 @@ class NetworkManagersOperations:
         resource_group_name: str,
         network_manager_name: str,
         parameters: "_models.TagsObject",
-        **kwargs
+        **kwargs: Any
     ) -> "_models.NetworkManager":
         """Patch a NetworkManager Tags.
 
@@ -238,10 +238,10 @@ class NetworkManagersOperations:
         :param network_manager_name: The name of the network manager.
         :type network_manager_name: str
         :param parameters: Parameters supplied to update network manager tags.
-        :type parameters: ~azure.mgmt.network.v2021_02_preview.models.TagsObject
+        :type parameters: ~azure.mgmt.network.v2021_02_01_preview.models.TagsObject
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: NetworkManager, or the result of cls(response)
-        :rtype: ~azure.mgmt.network.v2021_02_preview.models.NetworkManager
+        :rtype: ~azure.mgmt.network.v2021_02_01_preview.models.NetworkManager
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.NetworkManager"]
@@ -294,7 +294,7 @@ class NetworkManagersOperations:
         self,
         top: Optional[int] = None,
         skip_token: Optional[str] = None,
-        **kwargs
+        **kwargs: Any
     ) -> AsyncIterable["_models.NetworkManagerListResult"]:
         """List all network managers in a subscription.
 
@@ -307,7 +307,7 @@ class NetworkManagersOperations:
         :type skip_token: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either NetworkManagerListResult or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.network.v2021_02_preview.models.NetworkManagerListResult]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.network.v2021_02_01_preview.models.NetworkManagerListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.NetworkManagerListResult"]
@@ -374,7 +374,7 @@ class NetworkManagersOperations:
         resource_group_name: str,
         top: Optional[int] = None,
         skip_token: Optional[str] = None,
-        **kwargs
+        **kwargs: Any
     ) -> AsyncIterable["_models.NetworkManagerListResult"]:
         """List network managers in a resource group.
 
@@ -389,7 +389,7 @@ class NetworkManagersOperations:
         :type skip_token: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either NetworkManagerListResult or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.network.v2021_02_preview.models.NetworkManagerListResult]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.network.v2021_02_01_preview.models.NetworkManagerListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.NetworkManagerListResult"]
