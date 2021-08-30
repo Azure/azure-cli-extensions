@@ -13,7 +13,6 @@ from azure.core.exceptions import ResourceNotFoundError
 from msrestazure.azure_exceptions import CloudError
 from msrest.exceptions import ValidationError as MSRestValidationError
 from msrest.exceptions import AuthenticationError, HttpOperationError, TokenExpiredError
-from azext_connectedk8s._client_factory import _resource_providers_client
 from azext_connectedk8s._client_factory import cf_resource_groups
 import azext_connectedk8s._constants as consts
 from azext_connectedk8s._client_factory import _resource_client_factory
@@ -22,9 +21,8 @@ from azext_connectedk8s._client_factory import _resource_client_factory
 logger = get_logger(__name__)
 
 
-def check_provider_registrations(cli_ctx):
+def check_provider_registrations(rp_client):
     try:
-        rp_client = _resource_providers_client(cli_ctx)
         cc_registration_state = rp_client.get(consts.Connected_Cluster_Provider_Namespace).registration_state
         if cc_registration_state != "Registered":
             telemetry.set_exception(exception="{} provider is not registered"
@@ -134,10 +132,12 @@ def arm_exception_handler(ex, fault_type, summary, return_if_not_found=False):
     raise ClientRequestError("Error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
 
 
-def validate_location(cmd, location):
+def get_resource_client(cmd):
     subscription_id = get_subscription_id(cmd.cli_ctx)
-    rp_locations = []
-    resourceClient = _resource_client_factory(cmd.cli_ctx, subscription_id=subscription_id)
+    return _resource_client_factory(cmd.cli_ctx, subscription_id=subscription_id)
+
+
+def validate_location(location, resourceClient):
     try:
         providerDetails = resourceClient.providers.get('Microsoft.Kubernetes')
     except Exception as e:  # pylint: disable=broad-except

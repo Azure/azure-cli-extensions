@@ -23,8 +23,6 @@ from .vendored_sdks.models import ConnectedCluster, ConnectedClusterIdentity
 
 logger = get_logger(__name__)
 
-# pylint: disable=bare-except
-
 
 class TimeoutHTTPAdapter(HTTPAdapter):
     def __init__(self, *args, **kwargs):
@@ -172,31 +170,6 @@ def generate_request_payload(location, public_key, tags, kubernetes_distro, kube
 def initial_log_warning():
     logger.warning("Ensure that you have the latest helm version installed before proceeding.")
     logger.warning("This operation might take a while...\n")
-
-
-def add_telemetry_extenstion_event(connected_cluster, configuration):
-    # Get kubernetes cluster info for telemetry
-    kubernetes_version = kube_core_utils.get_server_version(configuration)
-    if hasattr(connected_cluster, 'distribution') and (connected_cluster.distribution is not None):
-        kubernetes_distro = connected_cluster.distribution
-    else:
-        kubernetes_distro = kube_core_utils.get_kubernetes_distro(configuration)
-
-    if hasattr(connected_cluster, 'infrastructure') and (connected_cluster.infrastructure is not None):
-        kubernetes_infra = connected_cluster.infrastructure
-    else:
-        kubernetes_infra = kube_core_utils.get_kubernetes_infra(configuration)
-
-    add_telemetry_extenstion_event_raw(kubernetes_version, kubernetes_distro, kubernetes_infra)
-
-
-def add_telemetry_extenstion_event_raw(kubernetes_version, kubernetes_distro, kubernetes_infra):
-    kubernetes_properties = {
-        'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version,
-        'Context.Default.AzureCLI.KubernetesDistro': kubernetes_distro,
-        'Context.Default.AzureCLI.KubernetesInfra': kubernetes_infra
-    }
-    telemetry.add_extension_event('connectedk8s', kubernetes_properties)
 
 
 def generate_public_private_key():

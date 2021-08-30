@@ -121,7 +121,7 @@ def check_faulty_helm_version(helm_core_utils):
                                  recommendation="Please upgrade helm to a stable version and try again.")
 
 
-def validate_helm_environment(cmd, values_file, values_file_provided):
+def validate_helm_environment_file(cmd, values_file, values_file_provided):
     # Validate the helm environment file for Dogfood.
     dp_endpoint_dogfood = None
     release_train_dogfood = None

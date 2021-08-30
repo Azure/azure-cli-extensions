@@ -21,10 +21,10 @@ from azure.cli.core.azclierror import CLIInternalError, FileOperationError, Vali
 from msrest.exceptions import ValidationError
 from kubernetes.client.rest import ApiException
 import azext_connectedk8s._constants as consts
+import azext_connectedk8s._kube_core_utils as kube_core_utils
+
 
 logger = get_logger(__name__)
-
-# pylint: disable=too-many-return-statements
 
 
 def kubernetes_exception_handler(ex, fault_type,
@@ -299,3 +299,28 @@ def insert_token_in_kubeconfig(data, token):
     kubeconfig = yaml.dump(dict_yaml).encode("utf-8")
     b64kubeconfig = b64encode(kubeconfig).decode("utf-8")
     return b64kubeconfig
+
+
+def add_kubernetes_telemetry_extenstion_event(connected_cluster, configuration):
+    # Get kubernetes cluster info for telemetry
+    kubernetes_version = kube_core_utils.get_server_version(configuration)
+    if hasattr(connected_cluster, 'distribution') and (connected_cluster.distribution is not None):
+        kubernetes_distro = connected_cluster.distribution
+    else:
+        kubernetes_distro = kube_core_utils.get_kubernetes_distro(configuration)
+
+    if hasattr(connected_cluster, 'infrastructure') and (connected_cluster.infrastructure is not None):
+        kubernetes_infra = connected_cluster.infrastructure
+    else:
+        kubernetes_infra = kube_core_utils.get_kubernetes_infra(configuration)
+
+    add_kubernetes_telemetry_extenstion_event_raw(kubernetes_version, kubernetes_distro, kubernetes_infra)
+
+
+def add_kubernetes_telemetry_extenstion_event_raw(kubernetes_version, kubernetes_distro, kubernetes_infra):
+    kubernetes_properties = {
+        'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version,
+        'Context.Default.AzureCLI.KubernetesDistro': kubernetes_distro,
+        'Context.Default.AzureCLI.KubernetesInfra': kubernetes_infra
+    }
+    telemetry.add_extension_event('connectedk8s', kubernetes_properties)

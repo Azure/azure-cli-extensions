@@ -47,7 +47,7 @@ def try_list_node_fix():
             self._names = names
 
         V1ContainerImage.names = V1ContainerImage.names.setter(names)
-    except Exception as ex:
+    except Exception as ex: # pylint: disable=broad-except
         logger.debug("Error while trying to monkey patch the fix for list_node(): {}".format(str(ex)))
 
 
@@ -113,24 +113,22 @@ def get_kubernetes_infra(configuration):  # Heuristic
         api_response = api_instance.list_node()
         if api_response.items:
             provider_id = str(api_response.items[0].spec.provider_id)
-            infra = provider_id.split(':')[0]
-            if infra == "k3s" or infra == "kind":
-                return "generic"
+            infra = provider_id.split(':', maxsplit=1)[0]
+            # Todo: ask from aks hci team for more reliable identifier in node labels,etc
+            if infra in ["k3s", "kind", "moc"]:
+                return "generic" # return "azure_stack_hci"
             if infra == "azure":
                 return "azure"
             if infra == "gce":
                 return "gcp"
             if infra == "aws":
                 return "aws"
-            if infra == "moc":    # Todo: ask from aks hci team for more reliable identifier in node labels,etc
-                return "generic"  # return "azure_stack_hci"
             return validate_infrastructure_type(infra)
-        return "generic"
     except Exception as e:  # pylint: disable=broad-except
         logger.debug("Error occured while trying to fetch kubernetes infrastructure: " + str(e))
         kube_utils.kubernetes_exception_handler(e, consts.Get_Kubernetes_Infra_Fault_Type,
                                                 'Unable to fetch kubernetes infrastructure', raise_error=False)
-        return "generic"
+    return "generic"
 
 
 def validate_infrastructure_type(infra):
@@ -168,7 +166,7 @@ def can_create_clusterrolebindings(configuration):
         })
         response = api_instance.create_self_subject_access_review(access_review)
         return response.status.allowed
-    except Exception as ex:
+    except Exception as ex: # pylint: disable=broad-except
         logger.warning("Couldn't check for the permission to create clusterrolebindings" +
                        " on this k8s cluster. Error: {}".format(str(ex)))
         return "Unknown"

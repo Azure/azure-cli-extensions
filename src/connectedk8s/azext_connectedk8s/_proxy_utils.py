@@ -25,20 +25,6 @@ def create_proxy_details(https_proxy=None, http_proxy=None, no_proxy=None, proxy
     proxy_details['https_proxy'] = escape_proxy_settings(https_proxy)
     proxy_details['http_proxy'] = escape_proxy_settings(http_proxy)
     proxy_details['no_proxy'] = escape_proxy_settings(no_proxy)
-    proxy_details['proxy_cert'] = proxy_cert.replace('\\', r'\\\\')
-    proxy_details['disable_proxy'] = disable_proxy
-    return proxy_details
-
-
-def escape_proxy_details(https_proxy, http_proxy, no_proxy, proxy_cert):
-    # Escaping comma, forward slash present in https proxy urls, needed for helm params.
-    https_proxy = escape_proxy_settings(https_proxy)
-
-    # Escaping comma, forward slash present in http proxy urls, needed for helm params.
-    http_proxy = escape_proxy_settings(http_proxy)
-
-    # Escaping comma, forward slash present in no proxy urls, needed for helm params.
-    no_proxy = escape_proxy_settings(no_proxy)
 
     # check whether proxy cert path exists
     if proxy_cert != "" and (not os.path.exists(proxy_cert)):
@@ -47,9 +33,9 @@ def escape_proxy_details(https_proxy, http_proxy, no_proxy, proxy_cert):
                                 summary='Proxy cert path does not exist')
         raise InvalidArgumentValueError(str.format(consts.Proxy_Cert_Path_Does_Not_Exist_Error, proxy_cert))
 
-    proxy_cert = proxy_cert.replace('\\', r'\\\\')
-
-    return https_proxy, http_proxy, no_proxy, proxy_cert
+    proxy_details['proxy_cert'] = proxy_cert.replace('\\', r'\\\\')
+    proxy_details['disable_proxy'] = disable_proxy
+    return proxy_details
 
 
 def escape_proxy_settings(proxy_setting):

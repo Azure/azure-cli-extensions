@@ -5,6 +5,7 @@
 
 import json
 import os
+from enum import Enum
 from subprocess import Popen, PIPE
 import yaml
 
@@ -16,9 +17,13 @@ import azext_connectedk8s._constants as consts
 logger = get_logger(__name__)
 
 
-class HelmCoreUtils:
+class Command(Enum):
+    HELM_VERSION = 1
+    HELM_GET_VALUES = 2
+    HELM_GET_RELEASE = 3
 
-    HELM_VERSION_COMMAND = 'Helm Version'
+
+class HelmCoreUtils:
 
     def __init__(self, kube_config=None, kube_context=None):
         os.environ['HELM_EXPERIMENTAL_OCI'] = '1'
@@ -73,7 +78,7 @@ class HelmCoreUtils:
         return self.__execute_helm_command(cmd_helm_version, consts.Check_HelmVersion_Fault_Type,
                                            'Unable to determine helm version',
                                            "Unable to determine helm version: ",
-                                           self.HELM_VERSION_COMMAND)
+                                           Command.HELM_VERSION)
 
     def get_release_namespace(self):
         cmd_helm_release = ["helm", "list", "-a", "--all-namespaces", "--output", "json"]
@@ -82,7 +87,8 @@ class HelmCoreUtils:
 
         output_helm_release = self.__execute_helm_command(cmd_helm_release, consts.List_HelmRelease_Fault_Type,
                                                           'Unable to list helm release',
-                                                          "Helm list release failed: ")
+                                                          "Helm list release failed: ",
+                                                          Command.HELM_GET_RELEASE)
         try:
             output_helm_release = json.loads(output_helm_release)
         except json.decoder.JSONDecodeError:
@@ -101,8 +107,9 @@ class HelmCoreUtils:
         output_helm_values = self.__execute_helm_command(cmd_helm_values,
                                                          consts.Get_Helm_Values_Failed,
                                                          'Error while doing helm get values azure-arc',
-                                                         "Error while getting the helm values in the" +
-                                                         " azure-arc namespace: ")
+                                                         "Error while getting the helm values in the"
+                                                         " azure-arc namespace: ",
+                                                         Command.HELM_GET_VALUES)
         try:
             existing_values = yaml.safe_load(output_helm_values)
             return existing_values
@@ -117,17 +124,18 @@ class HelmCoreUtils:
         response_helm = Popen(helm_cmd, stdout=PIPE, stderr=PIPE)
         output, error_helm = response_helm.communicate()
         if response_helm.returncode != 0:
-            if 'forbidden' in error_helm.decode("ascii"):
+            if cmd_type is not None and cmd_type in [Command.HELM_GET_VALUES, Command.HELM_GET_RELEASE] and \
+            'forbidden' in error_helm.decode("ascii"):
                 telemetry.set_user_fault()
             telemetry.set_exception(exception=error_helm.decode("ascii"),
                                     fault_type=fault_type, summary=error_summary)
             raise CLIInternalError(error_string + error_helm.decode("ascii"))
 
-        if cmd_type is not None and cmd_type is self.HELM_VERSION_COMMAND and "v2" in output.decode("ascii"):
+        if cmd_type is not None and cmd_type is Command.HELM_VERSION and "v2" in output.decode("ascii"):
             telemetry.set_exception(exception='Helm 3 not found', fault_type=consts.Helm_Version_Fault_Type,
                                     summary='Helm3 not found on the machine')
             raise ValidationError("Helm version 3+ is required.",
-                                  recommendation="Ensure that you have installed the latest version of Helm. " +
+                                  recommendation="Ensure that you have installed the latest version of Helm. "
                                   "Learn more at https://aka.ms/arc/k8s/onboarding-helm-install")
 
         return output.decode('ascii')
