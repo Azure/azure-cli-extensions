@@ -72,17 +72,17 @@ def call_scenario(test):
         test.check('length(@)', 1),
     ])
     step_backup_instance_create(test, checks=[
+        test.check("friendlyName", "harshitbi2", case_sensitive=False),
+        test.check("objectType", "BackupInstance", case_sensitive=False),
+        test.check("policyInfo.policyId", "/subscriptions/{subscription_id}/resourceGroups/{rg_2}/providers/Microsoft.D"
+                   "ataProtection/Backupvaults/{myBackupVault}/backupPolicies/{myBackupPolicy2}",
+                   case_sensitive=False),
         test.check("policyInfo.policyParameters.dataStoreParametersList[0].dataStoreType", "OperationalStore",
                    case_sensitive=False),
         test.check("policyInfo.policyParameters.dataStoreParametersList[0].objectType",
                    "AzureOperationalStoreParameters", case_sensitive=False),
         test.check("policyInfo.policyParameters.dataStoreParametersList[0].resourceGroupId",
                    "/subscriptions/{subscription_id}/resourceGroups/{rg_3}", case_sensitive=False),
-        test.check("friendlyName", "harshitbi2", case_sensitive=False),
-        test.check("objectType", "BackupInstance", case_sensitive=False),
-        test.check("policyInfo.policyId", "/subscriptions/{subscription_id}/resourceGroups/{rg_2}/providers/Microsoft.D"
-                   "ataProtection/Backupvaults/{myBackupVault}/backupPolicies/{myBackupPolicy2}",
-                   case_sensitive=False),
     ])
     step_backup_instance_list(test, checks=[
         test.check('length(@)', 1),
