@@ -136,7 +136,7 @@ class BackupPoliciesOperations(object):
         :type vault_name: str
         :param resource_group_name: The name of the resource group where the backup vault is present.
         :type resource_group_name: str
-        :param backup_policy_name:
+        :param backup_policy_name: Name of the policy.
         :type backup_policy_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: BaseBackupPolicyResource, or the result of cls(response)
@@ -274,7 +274,7 @@ class BackupPoliciesOperations(object):
         :type vault_name: str
         :param resource_group_name: The name of the resource group where the backup vault is present.
         :type resource_group_name: str
-        :param backup_policy_name:
+        :param backup_policy_name: Name of the policy.
         :type backup_policy_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: None, or the result of cls(response)

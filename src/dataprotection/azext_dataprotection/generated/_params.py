@@ -69,8 +69,8 @@ def load_arguments(self, _):
     with self.argument_context('dataprotection backup-policy show') as c:
         c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('backup_policy_name', options_list=['--name', '-n', '--backup-policy-name'], type=str, help='',
-                   id_part='child_name_1')
+        c.argument('backup_policy_name', options_list=['--name', '-n', '--backup-policy-name'], type=str, help='Name '
+                   'of the policy', id_part='child_name_1')
 
     with self.argument_context('dataprotection backup-policy create') as c:
         c.argument('vault_name', type=str, help='The name of the backup vault.')
@@ -83,8 +83,8 @@ def load_arguments(self, _):
     with self.argument_context('dataprotection backup-policy delete') as c:
         c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('backup_policy_name', options_list=['--name', '-n', '--backup-policy-name'], type=str, help='',
-                   id_part='child_name_1')
+        c.argument('backup_policy_name', options_list=['--name', '-n', '--backup-policy-name'], type=str, help='Name '
+                   'of the policy', id_part='child_name_1')
 
     with self.argument_context('dataprotection backup-instance list') as c:
         c.argument('vault_name', type=str, help='The name of the backup vault.')
@@ -124,8 +124,9 @@ def load_arguments(self, _):
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('backup_instance_name', options_list=['--name', '-n', '--backup-instance-name'], type=str,
                    help='The name of the backup instance', id_part='child_name_1')
-        c.argument('rule_name', type=str, help='', arg_group='Backup Rule Options')
-        c.argument('retention_tag_override', type=str, help='', arg_group='Backup Rule Options Trigger Option')
+        c.argument('rule_name', type=str, help='Specify backup policy rule name.', arg_group='Backup Rule Options')
+        c.argument('retention_tag_override', type=str, help='Specify retention override tag.', arg_group='Backup Rule '
+                   'Options Trigger Option')
 
     with self.argument_context('dataprotection backup-instance restore trigger') as c:
         c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')
@@ -176,7 +177,7 @@ def load_arguments(self, _):
         c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('backup_instance_name', type=str, help='The name of the backup instance', id_part='child_name_1')
-        c.argument('recovery_point_id', type=str, help='', id_part='child_name_2')
+        c.argument('recovery_point_id', type=str, help='Id of the recovery point.', id_part='child_name_2')
 
     with self.argument_context('dataprotection job list') as c:
         c.argument('resource_group_name', resource_group_name_type)

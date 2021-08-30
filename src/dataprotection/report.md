@@ -152,8 +152,8 @@ az dataprotection backup-instance adhoc-backup --name "testInstance1" --rule-nam
 |**--vault-name**|string|The name of the backup vault.|vault_name|vaultName|
 |**--resource-group-name**|string|The name of the resource group where the backup vault is present.|resource_group_name|resourceGroupName|
 |**--backup-instance-name**|string|The name of the backup instance|backup_instance_name|backupInstanceName|
-|**--rule-name**|string||rule_name|ruleName|
-|**--retention-tag-override**|string||retention_tag_override|retentionTagOverride|
+|**--rule-name**|string|Specify backup policy rule name.|rule_name|ruleName|
+|**--retention-tag-override**|string|Specify retention override tag.|retention_tag_override|retentionTagOverride|
 
 #### <a name="BackupInstancesTriggerRestore">Command `az dataprotection backup-instance restore trigger`</a>
 
@@ -288,7 +288,7 @@ az dataprotection backup-policy show --name "OSSDBPolicy" --resource-group "000p
 |------|----|-----------|----------|------------|
 |**--vault-name**|string|The name of the backup vault.|vault_name|vaultName|
 |**--resource-group-name**|string|The name of the resource group where the backup vault is present.|resource_group_name|resourceGroupName|
-|**--backup-policy-name**|string||backup_policy_name|backupPolicyName|
+|**--backup-policy-name**|string|Name of the policy|backup_policy_name|backupPolicyName|
 
 #### <a name="BackupPoliciesCreateOrUpdate#Create">Command `az dataprotection backup-policy create`</a>
 
@@ -329,7 +329,7 @@ az dataprotection backup-policy delete --name "OSSDBPolicy" --resource-group "00
 |------|----|-----------|----------|------------|
 |**--vault-name**|string|The name of the backup vault.|vault_name|vaultName|
 |**--resource-group-name**|string|The name of the resource group where the backup vault is present.|resource_group_name|resourceGroupName|
-|**--backup-policy-name**|string||backup_policy_name|backupPolicyName|
+|**--backup-policy-name**|string|Name of the policy|backup_policy_name|backupPolicyName|
 
 ### group `az dataprotection backup-vault`
 #### <a name="BackupVaultsGet">Command `az dataprotection backup-vault show`</a>
@@ -456,7 +456,7 @@ az dataprotection recovery-point show --backup-instance-name "testInstance1" --r
 |**--vault-name**|string|The name of the backup vault.|vault_name|vaultName|
 |**--resource-group-name**|string|The name of the resource group where the backup vault is present.|resource_group_name|resourceGroupName|
 |**--backup-instance-name**|string|The name of the backup instance|backup_instance_name|backupInstanceName|
-|**--recovery-point-id**|string||recovery_point_id|recoveryPointId|
+|**--recovery-point-id**|string|Id of the recovery point.|recovery_point_id|recoveryPointId|
 
 ### group `az dataprotection restorable-time-range`
 #### <a name="RestorableTimeRangesFind">Command `az dataprotection restorable-time-range find`</a>
