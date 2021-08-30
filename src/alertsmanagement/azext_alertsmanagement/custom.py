@@ -114,7 +114,7 @@ def create_alertsmanagement_action_rule(cmd, client,
     properties['suppressionConfig'] = {
         'recurrenceType': suppression_recurrence_type
     }
-    if suppression_recurrence_type not in ['Always', 'Once']:
+    if suppression_recurrence_type not in ['Always']:
         properties['suppressionConfig']['schedule'] = {
             'startDate': suppression_start_date,
             'endDate': suppression_end_date,

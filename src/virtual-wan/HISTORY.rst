@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.2.8
+++++++
+* bugfix: `az network vpn-gateway connection ipsec-policy add ` ipsec_policies is NoneType.
+
 0.2.7
 ++++++
 * bugfix: `az network vhub get-effective-routes` always returns empty value list.
