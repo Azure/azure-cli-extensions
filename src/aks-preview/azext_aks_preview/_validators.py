@@ -264,11 +264,13 @@ def validate_load_balancer_idle_timeout(namespace):
         if namespace.load_balancer_idle_timeout < 4 or namespace.load_balancer_idle_timeout > 100:
             raise CLIError("--load-balancer-idle-timeout must be in the range [4,100]")
 
+
 def validate_nat_gateway_idle_timeout(namespace):
     """validate NAT gateway profile idle timeout"""
     if namespace.nat_gateway_idle_timeout is not None:
         if namespace.nat_gateway_idle_timeout < 4 or namespace.nat_gateway_idle_timeout > 120:
             raise CLIError("--nat-gateway-idle-timeout must be in the range [4,120]")
+
 
 def validate_nodepool_tags(ns):
     """ Extracts multiple space-separated tags in key[=value] format """
