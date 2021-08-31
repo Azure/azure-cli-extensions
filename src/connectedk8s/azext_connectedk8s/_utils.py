@@ -18,7 +18,6 @@ from azure.cli.core import telemetry
 from azure.cli.core.azclierror import CLIInternalError
 from azure.cli.core.azclierror import ManualInterrupt
 import azext_connectedk8s._constants as consts
-import azext_connectedk8s._kube_core_utils as kube_core_utils
 from .vendored_sdks.models import ConnectedCluster, ConnectedClusterIdentity
 
 logger = get_logger(__name__)

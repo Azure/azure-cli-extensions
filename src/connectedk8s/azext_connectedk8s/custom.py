@@ -77,7 +77,10 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     kube_core_utils.check_kube_connection(configuration)
 
     kube_core_utils.try_list_node_fix()
-    required_node_exists = kube_core_utils.check_linux_amd64_node(configuration)
+    api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
+    node_api_response = utils.validate_node_api_response(api_instance, None)
+    required_node_exists = kube_core_utils.check_linux_amd64_node(node_api_response)
+
     if not required_node_exists:
         telemetry.set_user_fault()
         telemetry.set_exception(exception="Couldn't find any node on the kubernetes cluster with the architecture"
@@ -100,13 +103,12 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
 
     # Get kubernetes cluster info
     kubernetes_version = kube_core_utils.get_server_version(configuration)
-
     if distribution == 'auto':
-        kubernetes_distro = kube_core_utils.get_kubernetes_distro(configuration)  # (cluster heuristics)
+        kubernetes_distro = kube_core_utils.get_kubernetes_distro(node_api_response)  # (cluster heuristics)
     else:
         kubernetes_distro = distribution
     if infrastructure == 'auto':
-        kubernetes_infra = kube_core_utils.get_kubernetes_infra(configuration)  # (cluster heuristics)
+        kubernetes_infra = kube_core_utils.get_kubernetes_infra(node_api_response)  # (cluster heuristics)
     else:
         kubernetes_infra = infrastructure
     kube_utils.add_kubernetes_telemetry_extenstion_event_raw(kubernetes_version, kubernetes_distro, kubernetes_infra)
@@ -400,9 +402,9 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
 
     # Fetch Connected Cluster for agent version
     connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
+    api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
 
-    kube_utils.add_kubernetes_telemetry_extenstion_event(connected_cluster, configuration)
-
+    kube_utils.add_kubernetes_telemetry_extenstion_event(connected_cluster, configuration, api_instance)
     registry_path = helm_utils.get_helm_registry_path(cmd, connected_cluster.location, helm_core_utils,
                                                       connected_cluster.agent_version, dp_endpoint_dogfood,
                                                       release_train_dogfood)
@@ -443,6 +445,7 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
     kube_core_utils.check_kube_connection(configuration)
 
     kube_core_utils.try_list_node_fix()
+    api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
 
     helm_core_utils = HelmCoreUtils(kube_config, kube_context)
     # Checking helm installation
@@ -503,7 +506,7 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
     # Fetch Connected Cluster for agent version
     connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
 
-    kube_utils.add_kubernetes_telemetry_extenstion_event(connected_cluster, configuration)
+    kube_utils.add_kubernetes_telemetry_extenstion_event(connected_cluster, configuration, api_instance)
 
     registry_path = helm_utils.get_helm_registry_path(cmd, connected_cluster.location, helm_core_utils,
                                                       arc_agent_version, dp_endpoint_dogfood, release_train_dogfood)
@@ -576,6 +579,7 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
     kube_core_utils.check_kube_connection(configuration)
 
     kube_core_utils.try_list_node_fix()
+    api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
 
     helm_core_utils = HelmCoreUtils(kube_config, kube_context)
     # Checking helm installation
@@ -589,7 +593,7 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
     # Fetch Connected Cluster for agent version
     connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
 
-    kube_utils.add_kubernetes_telemetry_extenstion_event(connected_cluster, configuration)
+    kube_utils.add_kubernetes_telemetry_extenstion_event(connected_cluster, configuration, api_instance)
 
     # Adding helm repo
     if os.getenv('HELMREPONAME') and os.getenv('HELMREPOURL'):
@@ -643,8 +647,9 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
     # This check was added to avoid large timeouts when connecting to AAD Enabled AKS clusters
     # if the user had not logged in.
     kube_core_utils.check_kube_connection(configuration)
-
     kube_core_utils.try_list_node_fix()
+    api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
+
 
     helm_core_utils = HelmCoreUtils(kube_config, kube_context)
     # Checking helm installation
@@ -658,7 +663,7 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
     # Fetch Connected Cluster for agent version
     connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
 
-    kube_utils.add_kubernetes_telemetry_extenstion_event(connected_cluster, configuration)
+    kube_utils.add_kubernetes_telemetry_extenstion_event(connected_cluster, configuration, api_instance)
 
     helm_core_utils = HelmCoreUtils(kube_config, kube_context)
     if disable_cluster_connect:

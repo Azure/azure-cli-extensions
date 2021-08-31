@@ -871,6 +871,9 @@ helps['aks nodepool add'] = """
         - name: --max-count
           type: int
           short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 100]
+        - name: --scale-down-mode
+          type: string
+          short-summary: "Describes how VMs are added to or removed from nodepools."
         - name: --node-taints
           type: string
           short-summary: The node taints for the node pool. You can't change the node taints through CLI after the node pool is created.
@@ -968,6 +971,9 @@ helps['aks nodepool update'] = """
         - name: --max-count
           type: int
           short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 100]
+        - name: --scale-down-mode
+          type: string
+          short-summary: "Describes how VMs are added to or removed from nodepools."
         - name: --max-surge
           type: string
           short-summary: Extra nodes used to speed upgrade. When specified, it represents the number or percent used, eg. 5 or 33%
