@@ -36,10 +36,10 @@ async def connect(url):
             print(await ws.recv())
 
 
-def start_client(client, resource_group_name, webpubsub_name, hub_name):
+def start_client(client, resource_group_name, webpubsub_name, hub_name, user_id=None):
     keys = client.list_keys(resource_group_name, webpubsub_name)
     connection_string = keys.primary_connection_string
-    token = build_authentication_token(connection_string, hub_name, roles=['webpubsub.sendToGroup', 'webpubsub.joinLeaveGroup'])
+    token = build_authentication_token(connection_string, hub_name, roles=['webpubsub.sendToGroup', 'webpubsub.joinLeaveGroup'], user=user_id)
     asyncio.get_event_loop().run_until_complete(connect(token['url']))
 
 
@@ -57,7 +57,7 @@ class Publisher(threading.Thread):
         new_loop = asyncio.new_event_loop()
         asyncio.set_event_loop(new_loop)
         while True:
-            input_line = sys.stdin.readline().strip()
+            input_line = input('>>>')
             asyncio.get_event_loop().run_until_complete(self._parse(input_line))
 
     def join(self, timeout=None):
