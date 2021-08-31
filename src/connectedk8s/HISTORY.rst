@@ -4,6 +4,11 @@ Release History
 ===============
 
 
+1.1.8
+++++++
+* Improve kubernetes distro and infra detection
+
+
 1.1.7
 ++++++
 * Add non-existing namespace deploy check
