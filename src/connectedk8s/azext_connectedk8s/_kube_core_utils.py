@@ -72,14 +72,14 @@ def get_server_version(configuration):
                                                 'Unable to fetch kubernetes version', raise_error=False)
 
 
-def get_kubernetes_distro(configuration):  # Heuristic
-    api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
+def get_kubernetes_distro(api_response):  # Heuristic
+    if api_response is None:
+        return "generic"
     try:
-        api_response = api_instance.list_node()
-        if api_response.items:
-            labels = api_response.items[0].metadata.labels
-            provider_id = str(api_response.items[0].spec.provider_id)
-            annotations = list(api_response.items)[0].metadata.annotations
+        for node in api_response.items:
+            labels = node.metadata.labels
+            provider_id = str(node.spec.provider_id)
+            annotations = node.metadata.annotations
             if labels.get("node.openshift.io/os_id"):
                 return "openshift"
             if labels.get("kubernetes.azure.com/node-image-version"):
@@ -96,39 +96,40 @@ def get_kubernetes_distro(configuration):  # Heuristic
                 return "k3s"
             if annotations.get("rke.cattle.io/external-ip") or annotations.get("rke.cattle.io/internal-ip"):
                 return "rancher_rke"
-            # Todo: ask from aks hci team for more reliable identifier in node labels,etc
-            if provider_id.startswith("moc://"):
-                return "generic"                   # return "aks_hci"
         return "generic"
     except Exception as e:  # pylint: disable=broad-except
         logger.debug("Error occured while trying to fetch kubernetes distribution: " + str(e))
         kube_utils.kubernetes_exception_handler(e, consts.Get_Kubernetes_Distro_Fault_Type,
-                                                'Unable to fetch kubernetes distribution', raise_error=False)
+                                                'Unable to fetch kubernetes distribution',
+                                                raise_error=False)
         return "generic"
 
 
-def get_kubernetes_infra(configuration):  # Heuristic
-    api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
+def get_kubernetes_infra(api_response):  # Heuristic
+    if api_response is None:
+        return "generic"
     try:
-        api_response = api_instance.list_node()
-        if api_response.items:
-            provider_id = str(api_response.items[0].spec.provider_id)
-            infra = provider_id.split(':', maxsplit=1)[0]
-            # Todo: ask from aks hci team for more reliable identifier in node labels,etc
-            if infra in ["k3s", "kind", "moc"]:
-                return "generic" # return "azure_stack_hci"
+        for node in api_response.items:
+            provider_id = str(node.spec.provider_id)
+            infra = provider_id.split(':')[0]
+            if infra == "k3s" or infra == "kind":
+                return "generic"
             if infra == "azure":
                 return "azure"
             if infra == "gce":
                 return "gcp"
             if infra == "aws":
                 return "aws"
-            return validate_infrastructure_type(infra)
+            k8s_infra = validate_infrastructure_type(infra)
+            if k8s_infra is not None:
+                return k8s_infra
+        return "generic"
     except Exception as e:  # pylint: disable=broad-except
         logger.debug("Error occured while trying to fetch kubernetes infrastructure: " + str(e))
         kube_utils.kubernetes_exception_handler(e, consts.Get_Kubernetes_Infra_Fault_Type,
-                                                'Unable to fetch kubernetes infrastructure', raise_error=False)
-    return "generic"
+                                                'Unable to fetch kubernetes infrastructure',
+                                                raise_error=False)
+        return "generic"
 
 
 def validate_infrastructure_type(infra):
@@ -138,10 +139,8 @@ def validate_infrastructure_type(infra):
     return "generic"
 
 
-def check_linux_amd64_node(configuration):
-    api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
+def check_linux_amd64_node(api_response):
     try:
-        api_response = api_instance.list_node()
         for item in api_response.items:
             node_arch = item.metadata.labels.get("kubernetes.io/arch")
             node_os = item.metadata.labels.get("kubernetes.io/os")
@@ -150,7 +149,8 @@ def check_linux_amd64_node(configuration):
     except Exception as e:  # pylint: disable=broad-except
         logger.debug("Error occured while trying to find a linux/amd64 node: " + str(e))
         kube_utils.kubernetes_exception_handler(e, consts.Kubernetes_Node_Type_Fetch_Fault,
-                                                'Unable to find a linux/amd64 node', raise_error=False)
+                                                'Unable to find a linux/amd64 node',
+                                                raise_error=False)
     return False
 
 

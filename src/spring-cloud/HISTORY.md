@@ -1,5 +1,8 @@
 Release History
 ===============
+2.7.1
+-----
+* Fix source code deployment build log issues
 
 2.7.0
 -----
