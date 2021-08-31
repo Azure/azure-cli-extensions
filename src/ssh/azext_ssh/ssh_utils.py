@@ -7,16 +7,17 @@ import platform
 import subprocess
 
 from knack import log
-from knack import util
-
-from . import file_utils
+from azure.cli.core import azclierror
 
 logger = log.get_logger(__name__)
 
 
-def start_ssh_connection(ip, username, cert_file, private_key_file):
+def start_ssh_connection(port, ssh_args, ip, username, cert_file, private_key_file):
+    ssh_arg_list = []
+    if ssh_args:
+        ssh_arg_list = ssh_args
     command = [_get_ssh_path(), _get_host(username, ip)]
-    command = command + _build_args(cert_file, private_key_file)
+    command = command + _build_args(cert_file, private_key_file, port) + ssh_arg_list
     logger.debug("Running ssh command %s", ' '.join(command))
     subprocess.call(command, shell=platform.system() == 'Windows')
 
@@ -51,7 +52,6 @@ def get_ssh_cert_principals(cert_file):
 
 def write_ssh_config(config_path, resource_group, vm_name, overwrite,
                      ip, username, cert_file, private_key_file):
-    file_utils.make_dirs_for_file(config_path)
 
     lines = [""]
 
@@ -97,7 +97,9 @@ def _get_ssh_path(ssh_command="ssh"):
         logger.debug("Attempting to run ssh from path %s", ssh_path)
 
         if not os.path.isfile(ssh_path):
-            raise util.CLIError("Could not find " + ssh_command + ".exe. Is the OpenSSH client installed?")
+            raise azclierror.UnclassifiedUserFault(
+                "Could not find " + ssh_command + ".exe.",
+                "https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse")
 
     return ssh_path
 
@@ -106,9 +108,12 @@ def _get_host(username, ip):
     return username + "@" + ip
 
 
-def _build_args(cert_file, private_key_file):
+def _build_args(cert_file, private_key_file, port):
     private_key = []
+    port_arg = []
     if private_key_file:
         private_key = ["-i", private_key_file]
+    if port:
+        port_arg = ["-p", port]
     certificate = ["-o", "CertificateFile=" + cert_file]
-    return private_key + certificate
+    return private_key + certificate + port_arg
