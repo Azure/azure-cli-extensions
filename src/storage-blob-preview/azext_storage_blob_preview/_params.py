@@ -492,6 +492,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                    'is 256KiB. For more information about the expression syntax, please see '
                    'https://docs.microsoft.com/azure/storage/blobs/query-acceleration-sql-reference')
         c.extra('input_format', arg_type=get_enum_type(['csv', 'json', 'parquet']), validator=validate_text_configuration,
+                min_api='2020-10-02',
                 help='Serialization type of the data currently stored in the blob. '
                 'The default is to treat the blob data as CSV data formatted in the default dialect.'
                 'The blob data will be reformatted according to that profile when blob format is specified. '

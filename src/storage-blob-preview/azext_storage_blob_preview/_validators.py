@@ -1278,6 +1278,7 @@ def get_source_file_or_blob_service_client(cmd, namespace):
 def validate_text_configuration(cmd, ns):
     DelimitedTextDialect = cmd.get_models('_models#DelimitedTextDialect', resource_type=CUSTOM_DATA_STORAGE_BLOB)
     DelimitedJsonDialect = cmd.get_models('_models#DelimitedJsonDialect', resource_type=CUSTOM_DATA_STORAGE_BLOB)
+    QuickQueryDialect = cmd.get_models('_models#QuickQueryDialect', resource_type=CUSTOM_DATA_STORAGE_BLOB)
 
     if ns.input_format == 'csv':
         ns.input_config = DelimitedTextDialect(
@@ -1289,7 +1290,7 @@ def validate_text_configuration(cmd, ns):
     if ns.input_format == 'json':
         ns.input_config = DelimitedJsonDialect(delimiter=ns.in_line_separator)
     if ns.input_format == 'parquet':
-        ns.input_config = "ParquetDialect"
+        ns.input_config = QuickQueryDialect.ParquetDialect
     if ns.output_format == 'csv':
         ns.output_config = DelimitedTextDialect(
             delimiter=ns.out_column_separator,

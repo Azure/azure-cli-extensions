@@ -699,10 +699,11 @@ def renew_blob_lease(client, **kwargs):
     return client.id
 
 
-def query_blob(client, query_expression, input_config=None, output_config=None, result_file=None, **kwargs):
+def query_blob(cmd, client, query_expression, input_config=None, output_config=None, result_file=None, **kwargs):
 
     reader = client.query_blob(query_expression=query_expression, blob_format=input_config, output_format=output_config,
                                **kwargs)
+    QuickQueryDialect = cmd.get_models('_models#QuickQueryDialect', resource_type=CUSTOM_DATA_STORAGE_BLOB)
 
     if result_file is not None:
         with open(result_file, 'wb') as stream:
@@ -710,6 +711,6 @@ def query_blob(client, query_expression, input_config=None, output_config=None, 
         stream.close()
         return None
 
-    if input_config and input_config == 'ParquetDialect':
+    if input_config and input_config == QuickQueryDialect.ParquetDialect:
         return reader.readall().decode("cp1252")
     return reader.readall().decode("utf-8")
