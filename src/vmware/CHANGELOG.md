@@ -1,7 +1,10 @@
 # Release History
 
-## 3.1.0 (2021-07)
+## 3.1.0 (2021-08)
 - Add `az vmware cloud-link` command group
+- Add `az vmware script-cmdlet` command group
+- Add `az vmware script-execution` command group
+- Add `az vmware script-package` command group
 
 ## 3.0.0 (2021-07)
 - [BREAKING CHANGE] `az vmware datastore create` has been removed. Please use `az vmware datastore netapp-volume create` or `az vmware datastore disk-pool-volume create` instead.

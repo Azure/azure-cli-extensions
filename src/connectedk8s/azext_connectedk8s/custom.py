@@ -72,6 +72,9 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     graph_client = _graph_client_factory(cmd.cli_ctx)
     onboarding_tenant_id = graph_client.config.tenant_id
 
+    # Checking provider registration status
+    utils.check_provider_registrations(cmd.cli_ctx)
+
     # Setting kubeconfig
     kube_config = set_kube_config(kube_config)
 
@@ -112,22 +115,31 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     check_kube_connection(configuration)
 
     utils.try_list_node_fix()
-    required_node_exists = check_linux_amd64_node(configuration)
+    api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
+    node_api_response = utils.validate_node_api_response(api_instance, None)
+
+    required_node_exists = check_linux_amd64_node(node_api_response)
     if not required_node_exists:
         telemetry.set_user_fault()
         telemetry.set_exception(exception="Couldn't find any node on the kubernetes cluster with the architecture type 'amd64' and OS 'linux'", fault_type=consts.Linux_Amd64_Node_Not_Exists,
                                 summary="Couldn't find any node on the kubernetes cluster with the architecture type 'amd64' and OS 'linux'")
         logger.warning("Please ensure that this Kubernetes cluster have any nodes with OS 'linux' and architecture 'amd64', for scheduling the Arc-Agents onto and connecting to Azure. Learn more at {}".format("https://aka.ms/ArcK8sSupportedOSArchitecture"))
 
+    crb_permission = utils.can_create_clusterrolebindings(configuration)
+    if not crb_permission:
+        telemetry.set_exception(exception="Your credentials doesn't have permission to create clusterrolebindings on this kubernetes cluster.", fault_type=consts.Cannot_Create_ClusterRoleBindings_Fault_Type,
+                                summary="Your credentials doesn't have permission to create clusterrolebindings on this kubernetes cluster.")
+        raise ValidationError("Your credentials doesn't have permission to create clusterrolebindings on this kubernetes cluster. Please check your permissions.")
+
     # Get kubernetes cluster info
     kubernetes_version = get_server_version(configuration)
 
     if distribution == 'auto':
-        kubernetes_distro = get_kubernetes_distro(configuration)  # (cluster heuristics)
+        kubernetes_distro = get_kubernetes_distro(node_api_response)  # (cluster heuristics)
     else:
         kubernetes_distro = distribution
     if infrastructure == 'auto':
-        kubernetes_infra = get_kubernetes_infra(configuration)  # (cluster heuristics)
+        kubernetes_infra = get_kubernetes_infra(node_api_response)  # (cluster heuristics)
     else:
         kubernetes_infra = infrastructure
 
@@ -199,6 +211,36 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
                                      "in the resource group {} ".format(resource_group_name) +
                                      "and corresponds to a different Kubernetes cluster.", recommendation="To onboard this Kubernetes cluster " +
                                      "to Azure, specify different resource name or resource group name.")
+
+    try:
+        k8s_contexts = config.list_kube_config_contexts()  # returns tuple of (all_contexts, current_context)
+        if kube_context:  # if custom kube-context is specified
+            if k8s_contexts[1].get('name') == kube_context:
+                current_k8s_context = k8s_contexts[1]
+            else:
+                for context in k8s_contexts[0]:
+                    if context.get('name') == kube_context:
+                        current_k8s_context = context
+                        break
+        else:
+            current_k8s_context = k8s_contexts[1]
+
+        current_k8s_namespace = current_k8s_context.get('context').get('namespace', "default")  # Take "default" namespace, if not specified in the kube-config
+        namespace_exists = False
+        k8s_v1 = kube_client.CoreV1Api()
+        k8s_ns = k8s_v1.list_namespace()
+        for ns in k8s_ns.items:
+            if ns.metadata.name == current_k8s_namespace:
+                namespace_exists = True
+                break
+        if namespace_exists is False:
+            telemetry.set_exception(exception="Namespace doesn't exist", fault_type=consts.Default_Namespace_Does_Not_Exist_Fault_Type,
+                                    summary="The default namespace defined in the kubeconfig doesn't exist on the kubernetes cluster.")
+            raise ValidationError("The default namespace '{}' defined in the kubeconfig doesn't exist on the kubernetes cluster.".format(current_k8s_namespace))
+    except ValidationError as e:
+        raise e
+    except Exception as e:
+        logger.warning("Failed to validate if the active namespace exists on the kubernetes cluster. Exception: {}".format(str(e)))
 
     # Resource group Creation
     if resource_group_exists(cmd.cli_ctx, resource_group_name, subscription_id) is False:
@@ -437,14 +479,14 @@ def get_server_version(configuration):
                                            raise_error=False)
 
 
-def get_kubernetes_distro(configuration):  # Heuristic
-    api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
+def get_kubernetes_distro(api_response):  # Heuristic
+    if api_response is None:
+        return "generic"
     try:
-        api_response = api_instance.list_node()
-        if api_response.items:
-            labels = api_response.items[0].metadata.labels
-            provider_id = str(api_response.items[0].spec.provider_id)
-            annotations = list(api_response.items)[0].metadata.annotations
+        for node in api_response.items:
+            labels = node.metadata.labels
+            provider_id = str(node.spec.provider_id)
+            annotations = node.metadata.annotations
             if labels.get("node.openshift.io/os_id"):
                 return "openshift"
             if labels.get("kubernetes.azure.com/node-image-version"):
@@ -461,8 +503,6 @@ def get_kubernetes_distro(configuration):  # Heuristic
                 return "k3s"
             if annotations.get("rke.cattle.io/external-ip") or annotations.get("rke.cattle.io/internal-ip"):
                 return "rancher_rke"
-            if provider_id.startswith("moc://"):   # Todo: ask from aks hci team for more reliable identifier in node labels,etc
-                return "generic"                   # return "aks_hci"
         return "generic"
     except Exception as e:  # pylint: disable=broad-except
         logger.debug("Error occured while trying to fetch kubernetes distribution: " + str(e))
@@ -471,12 +511,12 @@ def get_kubernetes_distro(configuration):  # Heuristic
         return "generic"
 
 
-def get_kubernetes_infra(configuration):  # Heuristic
-    api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
+def get_kubernetes_infra(api_response):  # Heuristic
+    if api_response is None:
+        return "generic"
     try:
-        api_response = api_instance.list_node()
-        if api_response.items:
-            provider_id = str(api_response.items[0].spec.provider_id)
+        for node in api_response.items:
+            provider_id = str(node.spec.provider_id)
             infra = provider_id.split(':')[0]
             if infra == "k3s" or infra == "kind":
                 return "generic"
@@ -486,9 +526,9 @@ def get_kubernetes_infra(configuration):  # Heuristic
                 return "gcp"
             if infra == "aws":
                 return "aws"
-            if infra == "moc":                  # Todo: ask from aks hci team for more reliable identifier in node labels,etc
-                return "generic"                # return "azure_stack_hci"
-            return utils.validate_infrastructure_type(infra)
+            k8s_infra = utils.validate_infrastructure_type(infra)
+            if k8s_infra is not None:
+                return k8s_infra
         return "generic"
     except Exception as e:  # pylint: disable=broad-except
         logger.debug("Error occured while trying to fetch kubernetes infrastructure: " + str(e))
@@ -497,10 +537,8 @@ def get_kubernetes_infra(configuration):  # Heuristic
         return "generic"
 
 
-def check_linux_amd64_node(configuration):
-    api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
+def check_linux_amd64_node(api_response):
     try:
-        api_response = api_instance.list_node()
         for item in api_response.items:
             node_arch = item.metadata.labels.get("kubernetes.io/arch")
             node_os = item.metadata.labels.get("kubernetes.io/os")
@@ -795,16 +833,20 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
 
     # Fetch Connected Cluster for agent version
     connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
+    api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
+    node_api_response = None
 
     if hasattr(connected_cluster, 'distribution') and (connected_cluster.distribution is not None):
         kubernetes_distro = connected_cluster.distribution
     else:
-        kubernetes_distro = get_kubernetes_distro(configuration)
+        node_api_response = utils.validate_node_api_response(api_instance, node_api_response)
+        kubernetes_distro = get_kubernetes_distro(node_api_response)
 
     if hasattr(connected_cluster, 'infrastructure') and (connected_cluster.infrastructure is not None):
         kubernetes_infra = connected_cluster.infrastructure
     else:
-        kubernetes_infra = get_kubernetes_infra(configuration)
+        node_api_response = utils.validate_node_api_response(api_instance, node_api_response)
+        kubernetes_infra = get_kubernetes_infra(node_api_response)
 
     kubernetes_properties = {
         'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version,
@@ -900,6 +942,8 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
     check_kube_connection(configuration)
 
     utils.try_list_node_fix()
+    api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
+    node_api_response = None
 
     # Get kubernetes cluster info for telemetry
     kubernetes_version = get_server_version(configuration)
@@ -961,12 +1005,14 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
     if hasattr(connected_cluster, 'distribution') and (connected_cluster.distribution is not None):
         kubernetes_distro = connected_cluster.distribution
     else:
-        kubernetes_distro = get_kubernetes_distro(configuration)
+        node_api_response = utils.validate_node_api_response(api_instance, node_api_response)
+        kubernetes_distro = get_kubernetes_distro(node_api_response)
 
     if hasattr(connected_cluster, 'infrastructure') and (connected_cluster.infrastructure is not None):
         kubernetes_infra = connected_cluster.infrastructure
     else:
-        kubernetes_infra = get_kubernetes_infra(configuration)
+        node_api_response = utils.validate_node_api_response(api_instance, node_api_response)
+        kubernetes_infra = get_kubernetes_infra(node_api_response)
 
     kubernetes_properties = {
         'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version,
@@ -1182,6 +1228,8 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
     check_kube_connection(configuration)
 
     utils.try_list_node_fix()
+    api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
+    node_api_response = None
 
     # Get kubernetes cluster info for telemetry
     kubernetes_version = get_server_version(configuration)
@@ -1205,12 +1253,14 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
     if hasattr(connected_cluster, 'distribution') and (connected_cluster.distribution is not None):
         kubernetes_distro = connected_cluster.distribution
     else:
-        kubernetes_distro = get_kubernetes_distro(configuration)
+        node_api_response = utils.validate_node_api_response(api_instance, node_api_response)
+        kubernetes_distro = get_kubernetes_distro(node_api_response)
 
     if hasattr(connected_cluster, 'infrastructure') and (connected_cluster.infrastructure is not None):
         kubernetes_infra = connected_cluster.infrastructure
     else:
-        kubernetes_infra = get_kubernetes_infra(configuration)
+        node_api_response = utils.validate_node_api_response(api_instance, node_api_response)
+        kubernetes_infra = get_kubernetes_infra(node_api_response)
 
     kubernetes_properties = {
         'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version,
@@ -1310,6 +1360,8 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
     check_kube_connection(configuration)
 
     utils.try_list_node_fix()
+    api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
+    node_api_response = None
 
     # Get kubernetes cluster info for telemetry
     kubernetes_version = get_server_version(configuration)
@@ -1333,12 +1385,14 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
     if hasattr(connected_cluster, 'distribution') and (connected_cluster.distribution is not None):
         kubernetes_distro = connected_cluster.distribution
     else:
-        kubernetes_distro = get_kubernetes_distro(configuration)
+        node_api_response = utils.validate_node_api_response(api_instance, node_api_response)
+        kubernetes_distro = get_kubernetes_distro(node_api_response)
 
     if hasattr(connected_cluster, 'infrastructure') and (connected_cluster.infrastructure is not None):
         kubernetes_infra = connected_cluster.infrastructure
     else:
-        kubernetes_infra = get_kubernetes_infra(configuration)
+        node_api_response = utils.validate_node_api_response(api_instance, node_api_response)
+        kubernetes_infra = get_kubernetes_infra(node_api_response)
 
     kubernetes_properties = {
         'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version,

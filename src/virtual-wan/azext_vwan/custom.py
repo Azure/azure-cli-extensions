@@ -282,7 +282,7 @@ def reset_hub_routes(cmd, resource_group_name, virtual_hub_name, no_wait=False):
     hub = client.get(resource_group_name, virtual_hub_name)
     if hub.routing_state == 'Failed':
         logger.warning('Reset virtual hub')
-        poller = sdk_no_wait(no_wait, client.create_or_update,
+        poller = sdk_no_wait(no_wait, client.begin_create_or_update,
                              resource_group_name, virtual_hub_name, hub)
         try:
             return poller.result().route_table.routes
@@ -299,7 +299,7 @@ def remove_hub_route(cmd, resource_group_name, virtual_hub_name, index, no_wait=
         hub.route_table.routes.pop(index - 1)
     except IndexError:
         raise CLIError('invalid index: {}. Index can range from 1 to {}'.format(index, len(hub.route_table.routes)))
-    poller = sdk_no_wait(no_wait, client.create_or_update,
+    poller = sdk_no_wait(no_wait, client.begin_create_or_update,
                          resource_group_name, virtual_hub_name, hub)
     try:
         return poller.result().route_table.routes
@@ -588,6 +588,9 @@ def add_vpn_gateway_connection_ipsec_policy(cmd, resource_group_name, gateway_na
     client = network_client_factory(cmd.cli_ctx).vpn_gateways
     gateway = client.get(resource_group_name, gateway_name)
     conn = _find_item_at_path(gateway, 'connections.{}'.format(connection_name))
+
+    if conn.ipsec_policies is None:
+        conn.ipsec_policies = []
     conn.ipsec_policies.append(
         IpsecPolicy(
             sa_life_time_seconds=sa_life_time_seconds,
@@ -600,8 +603,9 @@ def add_vpn_gateway_connection_ipsec_policy(cmd, resource_group_name, gateway_na
             pfs_group=pfs_group
         )
     )
+
     _upsert(gateway, 'connections', conn, 'name', warn=False)
-    poller = sdk_no_wait(no_wait, client.create_or_update,
+    poller = sdk_no_wait(no_wait, client.begin_create_or_update,
                          resource_group_name, gateway_name, gateway)
     try:
         return _get_property(poller.result().connections, connection_name)
@@ -626,7 +630,7 @@ def remove_vpn_conn_ipsec_policy(cmd, resource_group_name, gateway_name, connect
     except IndexError:
         raise CLIError('invalid index: {}. Index can range from 1 to {}'.format(index, len(conn.ipsec_policies)))
     _upsert(gateway, 'connections', conn, 'name', warn=False)
-    poller = sdk_no_wait(no_wait, client.create_or_update,
+    poller = sdk_no_wait(no_wait, client.begin_create_or_update,
                          resource_group_name, gateway_name, gateway)
     try:
         return _get_property(poller.result().connections, connection_name)
