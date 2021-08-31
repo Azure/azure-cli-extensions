@@ -6,7 +6,7 @@ Release History
 
 1.1.8
 ++++++
-* Improve skubernetes distro/infra detection
+* Improve kubernetes distro/infra detection
 
 
 1.1.7
