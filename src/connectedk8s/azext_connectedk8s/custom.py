@@ -366,12 +366,12 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
     proxy_details = proxy_utils.create_proxy_details(https_proxy, http_proxy, no_proxy, proxy_cert, disable_proxy)
 
     if (proxy_details and proxy_details.get('https_proxy') == "" and proxy_details.get('http_proxy') == "" and
-    proxy_details.get('no_proxy') == "" and proxy_details.get('proxy_cert') == "" and not
-    proxy_details.get('disable_proxy') and not auto_upgrade):
+        proxy_details.get('no_proxy') == "" and proxy_details.get('proxy_cert') == "" and not
+        proxy_details.get('disable_proxy') and not auto_upgrade):
         raise RequiredArgumentMissingError(consts.No_Param_Error)
 
     if ((proxy_details.get('https_proxy') or proxy_details.get('http_proxy') or proxy_details.get('no_proxy') or
-    proxy_details.get('proxy_cert')) and proxy_details.get('disable_proxy')):
+         proxy_details.get('proxy_cert')) and proxy_details.get('disable_proxy')):
         raise MutuallyExclusiveArgumentError(consts.EnableProxy_Conflict_Error)
 
     # Checking whether optional extra values file has been provided.
@@ -669,10 +669,10 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
         try:
             helm_values = helm_core_utils.get_all_helm_values(release_namespace)
             if (not disable_cl and
-            helm_values.get('systemDefaultValues').get('customLocations').get('enabled') is True and
-            helm_values.get('systemDefaultValues').get('customLocations').get('oid') != ""):
-                raise Exception("Disabling 'cluster-connect' feature is not allowed when 'custom-locations' feature "
-                                "is enabled.")
+                helm_values.get('systemDefaultValues').get('customLocations').get('enabled') is True and
+                helm_values.get('systemDefaultValues').get('customLocations').get('oid') != ""):
+                    raise Exception("Disabling 'cluster-connect' feature is not allowed when 'custom-locations' feature "
+                                    "is enabled.")
         except AttributeError as e:
             pass
         except Exception as ex:
