@@ -3,6 +3,11 @@
 Release History
 ===============
 
+1.2.0
+++++++
+* Added support for custom container registry
+* `az connectedk8s connect`: Added registry repository, registry username, registry password, agent version parameters
+* `az connectedk8s update`: Added registry repository, registry username, registry password, use default registry, anonymous pull parameters
 
 1.1.7
 ++++++

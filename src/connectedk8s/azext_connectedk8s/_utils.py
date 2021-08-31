@@ -69,9 +69,14 @@ def validate_location(cmd, location):
             break
 
 
-def get_chart_path(registry_path, kube_config, kube_context):
+def get_chart_path(registry_path, kube_config, kube_context, container_registry_username=None, container_registry_password=None):
+
     # Pulling helm chart from registry
     os.environ['HELM_EXPERIMENTAL_OCI'] = '1'
+
+    if container_registry_username and container_registry_password:
+        helm_login(registry_path, container_registry_username, container_registry_password)
+
     pull_helm_chart(registry_path, kube_config, kube_context)
 
     # Exporting helm chart after cleanup
@@ -289,9 +294,27 @@ def delete_arc_agents(release_namespace, kube_config, kube_context, configuratio
     ensure_namespace_cleanup(configuration)
 
 
+def get_container_registry(container_registry_repository):
+    return container_registry_repository.split('/')[0]
+
+
+def helm_login(container_registry_repository, container_registry_username, container_registry_password):
+    container_registry = get_container_registry(container_registry_repository)
+    cmd_helm_login = ["helm", "registry", "login", container_registry, "--username", container_registry_username, "--password", container_registry_password]
+    response_helm_install = Popen(cmd_helm_login, stdout=PIPE, stderr=PIPE)
+    _, error_helm_install = response_helm_install.communicate()
+    if response_helm_install.returncode != 0:
+        telemetry.set_user_fault()
+        telemetry.set_exception(exception=error_helm_install.decode("ascii"), fault_type=consts.Install_HelmLogin_Fault_Type, summary='Unable to helm login registry')
+        raise CLIInternalError("Unable to helm login registry: " + error_helm_install.decode("ascii"))
+
+
 def helm_install_release(chart_path, subscription_id, kubernetes_distro, kubernetes_infra, resource_group_name, cluster_name,
                          location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, proxy_cert, private_key_pem,
-                         kube_config, kube_context, no_wait, values_file_provided, values_file, cloud_name, disable_auto_upgrade, enable_custom_locations, custom_locations_oid, onboarding_timeout="300"):
+                         kube_config, kube_context, no_wait, values_file_provided, values_file, cloud_name, auto_upgrade,
+                         enable_custom_locations, custom_locations_oid, onboarding_timeout="300", container_registry_repository="",
+                         container_registry_username="", container_registry_password=""):
+
     cmd_helm_install = ["helm", "upgrade", "--install", "azure-arc", chart_path,
                         "--set", "global.subscriptionId={}".format(subscription_id),
                         "--set", "global.kubernetesDistro={}".format(kubernetes_distro),
@@ -312,8 +335,8 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, kuberne
     # To set some other helm parameters through file
     if values_file_provided:
         cmd_helm_install.extend(["-f", values_file])
-    if disable_auto_upgrade:
-        cmd_helm_install.extend(["--set", "systemDefaultValues.azureArcAgents.autoUpdate={}".format("false")])
+    if auto_upgrade is not None:
+        cmd_helm_install.extend(["--set", "systemDefaultValues.azureArcAgents.autoUpdate={}".format(auto_upgrade)])
     if https_proxy:
         cmd_helm_install.extend(["--set", "global.httpsProxy={}".format(https_proxy)])
     if http_proxy:
@@ -332,6 +355,14 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, kuberne
         # Change --timeout format for helm client to understand
         onboarding_timeout = onboarding_timeout + "s"
         cmd_helm_install.extend(["--wait", "--timeout", "{}".format(onboarding_timeout)])
+    if container_registry_repository:
+        cmd_helm_install.extend(["--set", "global.isCustomRegistryEnabled={}".format(True)])
+        cmd_helm_install.extend(["--set", "systemDefaultValues.image.repository={}".format(container_registry_repository)])
+        cmd_helm_install.extend(["--set", "systemDefaultValues.image.releaseName={}".format("azurearck8s")])
+        if container_registry_username and container_registry_password:
+            cmd_helm_install.extend(["--set", "systemDefaultValues.image.username={}".format(container_registry_username)])
+            cmd_helm_install.extend(["--set", "systemDefaultValues.image.password={}".format(container_registry_password)])
+
     response_helm_install = Popen(cmd_helm_install, stdout=PIPE, stderr=PIPE)
     _, error_helm_install = response_helm_install.communicate()
     if response_helm_install.returncode != 0:
