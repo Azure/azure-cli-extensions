@@ -17,43 +17,12 @@ from knack.log import get_logger
 from knack.prompting import prompt_y_n
 from knack.prompting import NoTTYException
 from azure.cli.core import telemetry
-from azure.cli.core.azclierror import CLIInternalError, FileOperationError, ValidationError
-from msrest.exceptions import ValidationError
-from kubernetes.client.rest import ApiException
+from azure.cli.core.azclierror import CLIInternalError, FileOperationError
 import azext_connectedk8s._constants as consts
 import azext_connectedk8s._kube_core_utils as kube_core_utils
 
 
 logger = get_logger(__name__)
-
-
-def kubernetes_exception_handler(ex, fault_type,
-                                 summary, error_message='Error occured while connecting to' +
-                                 ' the kubernetes cluster: ',
-                                 message_for_unauthorized_request='The user does not have' +
-                                 ' required privileges on the kubernetes cluster to deploy' +
-                                 ' Azure Arc enabled Kubernetes agents. Please ensure you have' +
-                                 ' cluster admin privileges on the cluster to onboard.',
-                                 message_for_not_found='The requested kubernetes resource was not found.',
-                                 raise_error=True):
-    telemetry.set_user_fault()
-    if isinstance(ex, ApiException):
-        status_code = ex.status
-        if status_code == 403:
-            logger.warning(message_for_unauthorized_request)
-        elif status_code == 404:
-            logger.warning(message_for_not_found)
-        else:
-            logger.debug("Kubernetes Exception: " + str(ex))
-        if raise_error:
-            telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
-            raise ValidationError(error_message + "\nError Response: " + str(ex.body))
-    else:
-        if raise_error:
-            telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
-            raise ValidationError(error_message + "\nError: " + str(ex))
-        else:
-            logger.debug("Kubernetes Exception: " + str(ex))
 
 
 def load_kubernetes_configuration(filename):

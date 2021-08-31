@@ -187,7 +187,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
             current_k8s_context = k8s_contexts[1]
 
         # Take "default" namespace, if not specified in the kube-config
-        current_k8s_namespace = current_k8s_context.get('context').get('namespace', "default")  
+        current_k8s_namespace = current_k8s_context.get('context').get('namespace', "default")
         namespace_exists = False
         k8s_v1 = kube_client.CoreV1Api()
         k8s_ns = k8s_v1.list_namespace()
@@ -256,7 +256,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     arc_agent_utils.set_values_file(values_file)
 
     # Set autoupgrade
-    auto_upgrade = not disable_auto_upgrade # If disable_auto_upgrade is False auto_upgrade is True
+    auto_upgrade = not disable_auto_upgrade  # If disable_auto_upgrade is False auto_upgrade is True
     arc_agent_utils.set_auto_upgrade(auto_upgrade)
 
     # Install azure-arc agents
@@ -314,7 +314,7 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
     subscription_id = get_subscription_id(cmd.cli_ctx)
 
     if (configmap.data["AZURE_RESOURCE_GROUP"].lower() == resource_group_name.lower() and
-            configmap.data["AZURE_RESOURCE_NAME"].lower() == cluster_name.lower() and 
+            configmap.data["AZURE_RESOURCE_NAME"].lower() == cluster_name.lower() and
             configmap.data["AZURE_SUBSCRIPTION_ID"].lower() == subscription_id.lower()):
 
         armid = "/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Kubernetes/connectedClusters/{}" \
@@ -365,13 +365,13 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
 
     proxy_details = proxy_utils.create_proxy_details(https_proxy, http_proxy, no_proxy, proxy_cert, disable_proxy)
 
-    if proxy_details and proxy_details.get('https_proxy') == "" and proxy_details.get('http_proxy') == "" and \
-    proxy_details.get('no_proxy') == "" and proxy_details.get('proxy_cert') == "" and not \
-    proxy_details.get('disable_proxy') and not auto_upgrade:
+    if (proxy_details and proxy_details.get('https_proxy') == "" and proxy_details.get('http_proxy') == "" and
+    proxy_details.get('no_proxy') == "" and proxy_details.get('proxy_cert') == "" and not
+    proxy_details.get('disable_proxy') and not auto_upgrade):
         raise RequiredArgumentMissingError(consts.No_Param_Error)
 
-    if (proxy_details.get('https_proxy') or proxy_details.get('http_proxy') or proxy_details.get('no_proxy') or \
-    proxy_details.get('proxy_cert')) and proxy_details.get('disable_proxy'):
+    if ((proxy_details.get('https_proxy') or proxy_details.get('http_proxy') or proxy_details.get('no_proxy') or
+    proxy_details.get('proxy_cert')) and proxy_details.get('disable_proxy')):
         raise MutuallyExclusiveArgumentError(consts.EnableProxy_Conflict_Error)
 
     # Checking whether optional extra values file has been provided.
@@ -650,7 +650,6 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
     kube_core_utils.try_list_node_fix()
     api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
 
-
     helm_core_utils = HelmCoreUtils(kube_config, kube_context)
     # Checking helm installation
     helm_core_utils.check_helm_install()
@@ -669,9 +668,9 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
     if disable_cluster_connect:
         try:
             helm_values = helm_core_utils.get_all_helm_values(release_namespace)
-            if not disable_cl and \
-            helm_values.get('systemDefaultValues').get('customLocations').get('enabled') is True and \
-            helm_values.get('systemDefaultValues').get('customLocations').get('oid') != "":
+            if (not disable_cl and
+            helm_values.get('systemDefaultValues').get('customLocations').get('enabled') is True and
+            helm_values.get('systemDefaultValues').get('customLocations').get('oid') != ""):
                 raise Exception("Disabling 'cluster-connect' feature is not allowed when 'custom-locations' feature "
                                 "is enabled.")
         except AttributeError as e:
