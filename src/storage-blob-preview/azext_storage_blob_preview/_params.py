@@ -495,8 +495,8 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                 help='Serialization type of the data currently stored in the blob. '
                 'The default is to treat the blob data as CSV data formatted in the default dialect.'
                 'The blob data will be reformatted according to that profile when blob format is specified. '
-                'If you choose `json`, please specify `Output Json Text Configuration Arguments` accordingly; '
-                'If you choose `csv`, please specify `Output Delimited Text Configuration Arguments`.')
+                'If you choose `json`, please specify `Input Json Text Configuration Arguments` accordingly; '
+                'If you choose `csv`, please specify `Input Delimited Text Configuration Arguments`.')
         c.extra('output_format', arg_type=get_enum_type(['csv', 'json']),
                 help='Output serialization type for the data stream. '
                 'By default the data will be returned as it is represented in the blob. '
