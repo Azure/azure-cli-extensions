@@ -22,7 +22,7 @@ helps['k8s-configuration create'] = """
             --cluster-type connectedClusters --name MyGitConfig --operator-instance-name OperatorInst01 \\
             --operator-namespace OperatorNamespace01 --operator-type flux --operator-params "'--git-readonly'" \\
             --repository-url git://github.com/fluxHowTo/flux-get-started --enable-helm-operator  \\
-            --helm-operator-chart-version 1.2.0 --scope namespace --helm-operator-params '--set helm.versions=v3' \\
+            --helm-operator-chart-version 1.4.0 --scope namespace --helm-operator-params '--set helm.versions=v3' \\
             --ssh-private-key '' --ssh-private-key-file '' --https-user '' --https-key '' \\
             --ssh-known-hosts '' --ssh-known-hosts-file ''
 """
@@ -66,5 +66,5 @@ helps['k8s-configuration update'] = """
             az k8s-configuration update --resource-group MyResourceGroup --cluster-name MyClusterName \\
             --cluster-type connectedClusters --name MyConfigurationName --enable-helm-operator \\
             --repository-url git://github.com/fluxHowTo/flux-get-started --operator-params "'--git-readonly'" \\
-            --helm-operator-chart-version 1.2.0 --helm-operator-params '--set helm.versions=v3'
+            --helm-operator-chart-version 1.4.0 --helm-operator-params '--set helm.versions=v3'
 """
