@@ -160,10 +160,10 @@ def validate_tracing_parameters(namespace):
         raise InvalidArgumentValueError("Conflict detected: '--disable-app-insights' can not be set with '--disable-distributed-tracing'.")
     if (namespace.app_insights or namespace.app_insights_key) and namespace.disable_app_insights:
         raise InvalidArgumentValueError("Conflict detected: '--app-insights' or '--app-insights-key'"
-                       "can not be set with '--disable-app-insights'.")
+                                        "can not be set with '--disable-app-insights'.")
     if (namespace.app_insights or namespace.app_insights_key) and namespace.disable_distributed_tracing:
         raise InvalidArgumentValueError("Conflict detected: '--app-insights' or '--app-insights-key'"
-                       "can not be set with '--disable-distributed-tracing'.")
+                                        "can not be set with '--disable-distributed-tracing'.")
     if namespace.app_insights and namespace.app_insights_key:
         raise InvalidArgumentValueError("Conflict detected: '--app-insights' and '--app-insights-key' can not be set at the same time.")
     if namespace.app_insights == "":
@@ -178,7 +178,7 @@ def validate_java_agent_parameters(namespace):
 def validate_app_insights_parameters(namespace):
     if (namespace.app_insights or namespace.app_insights_key or namespace.sampling_rate) and namespace.disable:
         raise InvalidArgumentValueError("Conflict detected: '--app-insights' or '--app-insights-key' or '--sampling-rate'"
-                       "can not be set with '--disable'.")
+                                        "can not be set with '--disable'.")
     if namespace.app_insights and namespace.app_insights_key:
         raise InvalidArgumentValueError("Conflict detected: '--app-insights' and '--app-insights-key' can not be set at the same time.")
     if namespace.sampling_rate and (namespace.sampling_rate < 0 or namespace.sampling_rate > 100):
@@ -325,7 +325,8 @@ def _next_range(ip, prefix):
         return ip_network('{0}/{1}'.format(address, prefix), strict=False)
     except ValueError:
         raise InvalidArgumentValueError('Cannot set "reserved-cidr-range" automatically.'
-                       'Please specify "--reserved-cidr-range" with 3 unused CIDR ranges in your network environment.')
+                                        'Please specify "--reserved-cidr-range" with 3 unused CIDR ranges in your '
+                                        'network environment.')
 
 
 def _parse_vnet_id_from_subnet(subnet_id):
@@ -372,8 +373,9 @@ def _validate_cidr_range(namespace):
     for i, item in enumerate(ipv4):
         for j in range(i + 1, len(ipv4)):
             if item.overlaps(ipv4[j]):
-                raise InvalidArgumentValueError('--reserved-cidr-range should not overlap each other, but {0} and {1} overlapping.'
-                               .format(ranges[i], ranges[j]))
+                raise InvalidArgumentValueError(
+                    '--reserved-cidr-range should not overlap each other, but {0} and {1} overlapping.'
+                    .format(ranges[i], ranges[j]))
     namespace.reserved_cidr_range = ','.join(ranges)
 
 
@@ -469,24 +471,27 @@ def validate_jar(namespace):
     # validate spring boot version
     if spring_boot_version and spring_boot_version.startswith('1'):
         telemetry.set_user_fault("old_spring_boot_version")
-        raise InvalidArgumentValueError("The spring boot {} you are using is not supported. To get the latest supported "
-                       "versions please refer to: https://aka.ms/ascspringversion".format(spring_boot_version))
+        raise InvalidArgumentValueError(
+            "The spring boot {} you are using is not supported. To get the latest supported "
+            "versions please refer to: https://aka.ms/ascspringversion".format(spring_boot_version))
 
     # old spring cloud version, need to import ms sdk <= 2.2.1
     if spring_cloud_version:
         if spring_cloud_version < "2.2.5":
             if not ms_sdk_version or ms_sdk_version > "2.2.1":
                 telemetry.set_user_fault("old_spring_cloud_version")
-                raise InvalidArgumentValueError("The spring cloud {} you are using is not supported. To get the latest supported "
-                               "versions please refer to: https://aka.ms/ascspringversion".format(spring_cloud_version))
+                raise InvalidArgumentValueError(
+                    "The spring cloud {} you are using is not supported. To get the latest supported "
+                    "versions please refer to: https://aka.ms/ascspringversion".format(spring_cloud_version))
         else:
             if ms_sdk_version and ms_sdk_version <= "2.2.1":
                 telemetry.set_user_fault("old_ms_sdk_version")
-                raise InvalidArgumentValueError("The spring-cloud-starter-azure-spring-cloud-client version {} is no longer "
-                               "supported, please remove it or upgrade to a higher version, to get the latest "
-                               "supported versions please refer to: "
-                               "https://mvnrepository.com/artifact/com.microsoft.azure/spring-cloud-starter-azure"
-                               "-spring-cloud-client".format(ms_sdk_version))
+                raise InvalidArgumentValueError(
+                    "The spring-cloud-starter-azure-spring-cloud-client version {} is no longer "
+                    "supported, please remove it or upgrade to a higher version, to get the latest "
+                    "supported versions please refer to: "
+                    "https://mvnrepository.com/artifact/com.microsoft.azure/spring-cloud-starter-azure"
+                    "-spring-cloud-client".format(ms_sdk_version))
 
     if not has_actuator:
         telemetry.set_user_fault("no_spring_actuator")
