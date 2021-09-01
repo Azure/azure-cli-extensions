@@ -32,6 +32,7 @@ from azure.cli.core.util import sdk_no_wait
 from azure.cli.core.profiles import ResourceType, get_sdk
 from azure.mgmt.applicationinsights import ApplicationInsightsManagementClient
 from azure.cli.core.commands import cached_put
+from azure.core.exceptions import ResourceNotFoundError
 from ._utils import _get_rg_location
 from ._utils import _get_sku_name
 from ._resource_quantity import validate_cpu, validate_memory
@@ -1593,12 +1594,13 @@ def domain_unbind(cmd, client, resource_group, service, app, domain_name):
     return client.custom_domains.begin_delete(resource_group, service, app, domain_name)
 
 
-def get_app_insights_key(cli_ctx, resource_group, name):
+def get_app_insights_connection_string(cli_ctx, resource_group, name):
     appinsights_client = get_mgmt_service_client(cli_ctx, ApplicationInsightsManagementClient)
     appinsights = appinsights_client.components.get(resource_group, name)
-    if appinsights is None or appinsights.instrumentation_key is None:
-        raise CLIError("App Insights {} under resource group {} was not found.".format(name, resource_group))
-    return appinsights.instrumentation_key
+    if appinsights is None or appinsights.connection_string is None:
+        raise ResourceNotFoundError("App Insights {} under resource group {} was not found."
+                                    .format(name, resource_group))
+    return appinsights.connection_string
 
 
 def update_java_agent_config(cmd, resource_group, service_name, location, app_insights_key, app_insights):
@@ -1610,23 +1612,23 @@ def update_java_agent_config(cmd, resource_group, service_name, location, app_in
     elif app_insights:
         if is_valid_resource_id(app_insights):
             resource_id_dict = parse_resource_id(app_insights)
-            instrumentation_key = get_app_insights_key(cmd.cli_ctx, resource_id_dict['resource_group'],
-                                                       resource_id_dict['resource_name'])
+            connection_string = get_app_insights_connection_string(
+                cmd.cli_ctx, resource_id_dict['resource_group'], resource_id_dict['resource_name'])
             monitoring_setting_properties = models_20201101preview.MonitoringSettingProperties(
-                trace_enabled=True, app_insights_instrumentation_key=instrumentation_key)
+                trace_enabled=True, app_insights_instrumentation_key=connection_string)
         else:
-            instrumentation_key = get_app_insights_key(cmd.cli_ctx, resource_group, app_insights)
+            connection_string = get_app_insights_connection_string(cmd.cli_ctx, resource_group, app_insights)
             monitoring_setting_properties = models_20201101preview.MonitoringSettingProperties(
-                trace_enabled=True, app_insights_instrumentation_key=instrumentation_key)
+                trace_enabled=True, app_insights_instrumentation_key=connection_string)
     else:
         create_app_insights = True
 
     if create_app_insights is True:
         try:
-            instrumentation_key = try_create_application_insights(cmd, resource_group, service_name, location)
-            if instrumentation_key:
+            created_app_insights = try_create_application_insights(cmd, resource_group, service_name, location)
+            if created_app_insights:
                 monitoring_setting_properties = models_20201101preview.MonitoringSettingProperties(
-                    trace_enabled=True, app_insights_instrumentation_key=instrumentation_key)
+                    trace_enabled=True, app_insights_instrumentation_key=created_app_insights.connection_string)
         except Exception:  # pylint: disable=broad-except
             logger.warning(
                 'Error while trying to create and configure an Application Insights for the Azure Spring Cloud. '
@@ -1654,7 +1656,7 @@ def try_create_application_insights(cmd, resource_group, name, location):
         }
     }
     appinsights = app_insights_client.components.create_or_update(ai_resource_group_name, ai_name, ai_properties)
-    if appinsights is None or appinsights.instrumentation_key is None:
+    if appinsights is None or appinsights.connection_string is None:
         logger.warning(creation_failed_warn)
         return None
 
@@ -1664,12 +1666,15 @@ def try_create_application_insights(cmd, resource_group, name, location):
                    'You can visit %s/#resource%s/overview to view your '
                    'Application Insights component', appinsights.name, portal_url, appinsights.id)
 
-    return appinsights.instrumentation_key
+    return appinsights
 
 
-def app_insights_update(cmd, client, resource_group, name, app_insights_key=None, app_insights=None, sampling_rate=None, disable=None, no_wait=False):
+def app_insights_update(cmd, client, resource_group, name,
+                        app_insights_key=None, app_insights=None, sampling_rate=None,
+                        disable=None, no_wait=False):
     """
     :param app_insights_key: Connection string or Instrumentation key
+    :param sampling_rate: float from 0.0 to 100.0, both included
     """
     if disable:
         monitoring_setting_properties = models_20201101preview.MonitoringSettingProperties(trace_enabled=False)
@@ -1678,25 +1683,25 @@ def app_insights_update(cmd, client, resource_group, name, app_insights_key=None
         if not monitoring_setting_properties.app_insights_instrumentation_key and not app_insights_key and not app_insights and sampling_rate:
             CLIError("Can't set '--sampling-rate' without connecting to Application Insights. Please provide '--app-insights' or '--app-insights-key'.")
         if app_insights_key:
-            instrumentation_key = app_insights_key
+            connection_string = app_insights_key
         elif app_insights:
             if is_valid_resource_id(app_insights):
                 resource_id_dict = parse_resource_id(app_insights)
-                instrumentation_key = get_app_insights_key(cmd.cli_ctx, resource_id_dict['resource_group'],
-                                                           resource_id_dict['resource_name'])
+                connection_string = get_app_insights_connection_string(
+                    cmd.cli_ctx, resource_id_dict['resource_group'], resource_id_dict['resource_name'])
             else:
-                instrumentation_key = get_app_insights_key(cmd.cli_ctx, resource_group, app_insights)
+                connection_string = get_app_insights_connection_string(cmd.cli_ctx, resource_group, app_insights)
         else:
-            instrumentation_key = monitoring_setting_properties.app_insights_instrumentation_key
-        if sampling_rate:
+            connection_string = monitoring_setting_properties.app_insights_instrumentation_key
+        if sampling_rate is not None:
             monitoring_setting_properties = models_20201101preview.MonitoringSettingProperties(
                 trace_enabled=True,
-                app_insights_instrumentation_key=instrumentation_key,
+                app_insights_instrumentation_key=connection_string,
                 app_insights_sampling_rate=sampling_rate)
         elif monitoring_setting_properties.app_insights_sampling_rate:
             monitoring_setting_properties = models_20201101preview.MonitoringSettingProperties(
                 trace_enabled=True,
-                app_insights_instrumentation_key=instrumentation_key,
+                app_insights_instrumentation_key=connection_string,
                 app_insights_sampling_rate=monitoring_setting_properties.app_insights_sampling_rate)
     if monitoring_setting_properties is not None:
         monitoring_setting_resource = models.MonitoringSettingResource(properties=monitoring_setting_properties)
