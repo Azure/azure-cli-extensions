@@ -25,7 +25,7 @@ event <event-name> <message>        : Send event to event handler
         """
 
 
-class bcolors: # pylint: disable=too-few-public-methods
+class bcolors:  # pylint: disable=too-few-public-methods
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
     OKCYAN = '\033[96m'
