@@ -54,11 +54,6 @@ def load_arguments(self, _):
             c.argument('app_insights',
                        help="Name of the existing Application Insights in the same Resource Group. Or Resource ID of the existing Application Insights in a different Resource Group.",
                        validator=validate_tracing_parameters)
-            c.argument('disable_distributed_tracing',
-                       arg_type=get_three_state_flag(),
-                       help="Disable distributed tracing, if not disabled and no existing Application Insights specified with --app-insights-key or --app-insights, will create a new Application Insights instance in the same resource group.",
-                       validator=validate_tracing_parameters,
-                       deprecate_info=c.deprecate(target='--disable-distributed-tracing', redirect='--disable-app-insights', hide=True))
             c.argument('disable_app_insights',
                        arg_type=get_three_state_flag(),
                        help="Disable Application Insights, if not disabled and no existing Application Insights specified with --app-insights-key or --app-insights, will create a new Application Insights instance in the same resource group.",
