@@ -64,6 +64,9 @@ def spring_cloud_create(cmd, client, resource_group, name, location=None, app_in
     will still create an application insights and enable application insights.
     :param enable_java_agent: (TODO) In deprecation process, ignore the value now. Will delete this.
     """
+    if enable_java_agent is not None:
+        logger.warn("Java in process agent is now GA-ed and used by default when Application Insights enabled. "
+                    "The parameter '--enable-java-agent' is no longer needed and will be removed in future release.")
     if location is None:
         location = _get_rg_location(cmd.cli_ctx, resource_group)
     properties = models.ClusterResourceProperties()
