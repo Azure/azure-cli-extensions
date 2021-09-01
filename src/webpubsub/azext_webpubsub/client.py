@@ -3,7 +3,6 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long
-# pylint: disable=broad-except
 
 import asyncio
 import sys
@@ -25,6 +24,18 @@ event <event-name> <message>        : Send event to event handler
 --------------------------
         """
 
+class bcolors: # pylint: disable=too-few-public-methods
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKCYAN = '\033[96m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    ITALICS = '\x1B[3m'
+    ITENDS = '\x1B[0m'
+    UNDERLINE = '\033[4m'
 
 async def connect(url):
     async with websockets.connect(url, subprotocols=['json.webpubsub.azure.v1']) as ws:
@@ -35,7 +46,7 @@ async def connect(url):
         publisher.start()
         while True:
             received = await ws.recv()
-            print('Received:  ' + received)
+            print(bcolors.ITALICS + bcolors.OKGREEN + received + bcolors.ENDC + bcolors.ITENDS)
 
 
 def start_client(client, resource_group_name, webpubsub_name, hub_name, user_id=None):
