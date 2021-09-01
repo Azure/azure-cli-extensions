@@ -17,10 +17,6 @@ from azure.cli.core.commands.parameters import (
     get_location_type
 )
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
-from azext_purview.action import (
-    AddSku,
-    AddPrivateLinkServiceConnectionState
-)
 
 
 def load_arguments(self, _):
@@ -41,7 +37,6 @@ def load_arguments(self, _):
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
         c.argument('tags', tags_type)
-        c.argument('sku', action=AddSku, nargs='+', help='Gets or sets the Sku.')
         c.argument('managed_resource_group_name', type=str, help='Gets or sets the managed resource group name')
         c.argument('public_network_access', arg_type=get_enum_type(['NotSpecified', 'Enabled', 'Disabled']),
                    help='Gets or sets the public network access.')
@@ -91,7 +86,8 @@ def load_arguments(self, _):
                    'then it is the ID of that subscription.')
 
     with self.argument_context('purview default-account set') as c:
-        c.argument('account_name', type=str, help='The name of the account that is set as the default.')
+        c.argument('account_name', options_list=['--name', '-n', '--account-name'], type=str,
+                   help='The name of the account that is set as the default.')
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('scope', type=str, help='The scope object ID. For example, sub ID or tenant ID.')
         c.argument('scope_tenant_id', type=str, help='The scope tenant in which the default account is set.')
@@ -99,54 +95,55 @@ def load_arguments(self, _):
                    'account is set.')
         c.argument('subscription_id', type=str, help='The subscription ID of the account that is set as the default.')
 
-    with self.argument_context('purview private-endpoint-connection list') as c:
+    with self.argument_context('purview connect-endpoint list') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('account_name', type=str, help='The name of the account.')
         c.argument('skip_token', type=str, help='The skip token.')
 
-    with self.argument_context('purview private-endpoint-connection show') as c:
+    with self.argument_context('purview connect-endpoint show') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('account_name', type=str, help='The name of the account.', id_part='name')
-        c.argument('private_endpoint_connection_name', options_list=['--name', '-n', '--private-endpoint-connection-nam'
-                                                                     'e'], type=str, help='Name of the private '
-                   'endpoint connection.', id_part='child_name_1')
+        c.argument('endpoint_name', options_list=['--name', '-n', '--endpoint-name'],
+                   type=str, help='Name of the private endpoint connection.', id_part='child_name_1')
 
-    with self.argument_context('purview private-endpoint-connection create') as c:
+    with self.argument_context('purview connect-endpoint create') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('account_name', type=str, help='The name of the account.')
-        c.argument('private_endpoint_connection_name', options_list=['--name', '-n', '--private-endpoint-connection-nam'
-                                                                     'e'], type=str, help='Name of the private '
+        c.argument('endpoint_name', options_list=['--name', '-n', '--endpoint-name'],
+                   type=str, help='Name of the private '
                    'endpoint connection.')
-        c.argument('private_link_service_connection_state', action=AddPrivateLinkServiceConnectionState, nargs='+',
-                   help='The private link service connection state.')
+        c.argument('required_actions', help='The required actions.')
+        c.argument('description', help='The description.')
+        c.argument('status', arg_type=get_enum_type(['Unknown', 'Pending', 'Approved', 'Rejected', 'Disconnected']),
+                   help='The status. Possible values include: Unknown, Pending, Approved, Rejected, Disconnected.')
         c.argument('id_', options_list=['--id'], type=str, help='The private endpoint identifier.', arg_group='Private '
                    'Endpoint')
 
-    with self.argument_context('purview private-endpoint-connection update') as c:
+    with self.argument_context('purview connect-endpoint update') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('account_name', type=str, help='The name of the account.', id_part='name')
-        c.argument('private_endpoint_connection_name', options_list=['--name', '-n', '--private-endpoint-connection-nam'
-                                                                     'e'], type=str, help='Name of the private '
-                   'endpoint connection.', id_part='child_name_1')
-        c.argument('private_link_service_connection_state', action=AddPrivateLinkServiceConnectionState, nargs='+',
-                   help='The private link service connection state.')
+        c.argument('endpoint_name', options_list=['--name', '-n', '--endpoint-name'], type=str,
+                   help='Name of the private endpoint connection.', id_part='child_name_1')
+        c.argument('required_actions', help='The required actions.')
+        c.argument('description', help='The description.')
+        c.argument('status', arg_type=get_enum_type(['Unknown', 'Pending', 'Approved', 'Rejected', 'Disconnected']),
+                   help='The status. Possible values include: Unknown, Pending, Approved, Rejected, Disconnected.')
         c.argument('id_', options_list=['--id'], type=str, help='The private endpoint identifier.', arg_group='Private '
                    'Endpoint')
         c.ignore('request')
 
-    with self.argument_context('purview private-endpoint-connection delete') as c:
+    with self.argument_context('purview connect-endpoint delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('account_name', type=str, help='The name of the account.', id_part='name')
-        c.argument('private_endpoint_connection_name', options_list=['--name', '-n', '--private-endpoint-connection-nam'
-                                                                     'e'], type=str, help='Name of the private '
+        c.argument('endpoint_name', options_list=['--name', '-n', '--endpoint-name'],
+                   type=str, help='Name of the private '
                    'endpoint connection.', id_part='child_name_1')
 
-    with self.argument_context('purview private-endpoint-connection wait') as c:
+    with self.argument_context('purview connect-endpoint wait') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('account_name', type=str, help='The name of the account.', id_part='name')
-        c.argument('private_endpoint_connection_name', options_list=['--name', '-n', '--private-endpoint-connection-nam'
-                                                                     'e'], type=str, help='Name of the private '
-                   'endpoint connection.', id_part='child_name_1')
+        c.argument('endpoint_name', options_list=['--name', '-n', '--endpoint-name'], type=str,
+                   help='Name of the private endpoint connection.', id_part='child_name_1')
 
     with self.argument_context('purview private-link-resource list') as c:
         c.argument('resource_group_name', resource_group_name_type)

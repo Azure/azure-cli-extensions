@@ -10,115 +10,178 @@
 
 import os
 from azure.cli.testsdk import ScenarioTest
-from azure.cli.testsdk import ResourceGroupPreparer
-from .example_steps import step_account_create
-from .example_steps import step_account_show
-from .example_steps import step_account_list
-from .example_steps import step_account_list2
-from .example_steps import step_account_update
-from .example_steps import step_account_add_root_collection_admin
-from .example_steps import step_account_list_key
-from .example_steps import step_default_account_show
-from .example_steps import step_default_account_remove
-from .example_steps import step_default_account_set
-from .example_steps import step_private_endpoint_connection_create
-from .example_steps import step_private_endpoint_connection_show
-from .example_steps import step_private_endpoint_connection_list
-from .example_steps import step_private_endpoint_connection_delete
-from .example_steps import step_private_link_resource_show
-from .example_steps import step_private_link_resource_list
-from .example_steps import step_account_delete
-from .. import (
-    try_manual,
-    raise_if,
-    calc_coverage
-)
+from azure.cli.testsdk import ResourceGroupPreparer, VirtualNetworkPreparer
 
 
-TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
+class TestPurviewScenario(ScenarioTest):
 
-
-# Env setup_scenario
-@try_manual
-def setup_scenario(test):
-    pass
-
-
-# Env cleanup_scenario
-@try_manual
-def cleanup_scenario(test):
-    pass
-
-
-# Testcase: Scenario
-@try_manual
-def call_scenario(test):
-    setup_scenario(test)
-    step_account_create(test, checks=[
-        test.check("location", "West US 2", case_sensitive=False),
-        test.check("managedResourceGroupName", "custom-rgname", case_sensitive=False),
-        test.check("name", "{myAccount}", case_sensitive=False),
-    ])
-    step_account_show(test, checks=[
-        test.check("location", "West US 2", case_sensitive=False),
-        test.check("sku.name", "Standard", case_sensitive=False),
-        test.check("sku.capacity", 4),
-        test.check("name", "{myAccount}", case_sensitive=False),
-    ])
-    step_account_list(test, checks=[
-        test.check('length(@)', 1),
-    ])
-    step_account_list2(test, checks=[
-        test.check('length(@)', 1),
-    ])
-    step_account_update(test, checks=[
-        test.check("location", "West US 2", case_sensitive=False),
-        test.check("sku.name", "Standard", case_sensitive=False),
-        test.check("sku.capacity", 4),
-        test.check("name", "{myAccount}", case_sensitive=False),
-        test.check("tags.newTag", "New tag value.", case_sensitive=False),
-    ])
-    step_account_add_root_collection_admin(test, checks=[])
-    step_account_list_key(test, checks=[])
-    step_default_account_show(test, checks=[])
-    step_default_account_remove(test, checks=[])
-    step_default_account_set(test, checks=[])
-    step_private_endpoint_connection_create(test, checks=[
-        test.check("name", "{myPrivateEndpointConnection}", case_sensitive=False),
-        test.check("privateLinkServiceConnectionState.description", "Approved by johndoe@company.com",
-                   case_sensitive=False),
-        test.check("privateLinkServiceConnectionState.status", "Approved", case_sensitive=False),
-    ])
-    step_private_endpoint_connection_show(test, checks=[
-        test.check("name", "{myPrivateEndpointConnection}", case_sensitive=False),
-        test.check("privateLinkServiceConnectionState.description", "Approved by johndoe@company.com",
-                   case_sensitive=False),
-        test.check("privateLinkServiceConnectionState.status", "Approved", case_sensitive=False),
-    ])
-    step_private_endpoint_connection_list(test, checks=[
-        test.check('length(@)', 1),
-    ])
-    step_private_endpoint_connection_delete(test, checks=[])
-    step_private_link_resource_show(test, checks=[])
-    step_private_link_resource_list(test, checks=[])
-    step_account_delete(test, checks=[])
-    cleanup_scenario(test)
-
-
-# Test class for Scenario
-@try_manual
-class PurviewScenarioTest(ScenarioTest):
-    def __init__(self, *args, **kwargs):
-        super(PurviewScenarioTest, self).__init__(*args, **kwargs)
+    @ResourceGroupPreparer(name_prefix='cli_test_purview', location='eastus2')
+    def test_purview_account(self, resource_group):
         self.kwargs.update({
-            'myAccount': 'account1',
-            'myAccount2': 'myDefaultAccount',
-            'myPrivateEndpointConnection': 'privateEndpointConnection1',
+            'purview': self.create_random_name('pv-', 10)
         })
 
-    @ResourceGroupPreparer(name_prefix='clitestpurview_SampleResourceGroup'[:7], key='rg', parameter_name='rg')
-    @ResourceGroupPreparer(name_prefix='clitestpurview_rg-1'[:7], key='rg_2', parameter_name='rg_2')
-    def test_purview_Scenario(self, rg, rg_2):
-        call_scenario(self)
-        calc_coverage(__file__)
-        raise_if()
+        purview_account = self.cmd('purview account create -n {purview} -g {rg}',checks=[
+            self.check('friendlyName', '{purview}'),
+            self.check("contains(id, 'resourceGroups/{rg}/providers/Microsoft.Purview/accounts/{purview}')", True),
+            self.check('name', '{purview}'),
+            self.check('tags', None),
+            self.check('location', 'eastus2'),
+            self.check('resourceGroup', '{rg}'),
+            self.check('provisioningState', 'Creating')
+        ]).get_output_in_json()
+
+        self.cmd('purview account wait --created -g {rg} -n {purview}')
+        self.cmd('purview account update -n {purview} -g {rg} --tags tag=test', checks=[
+            self.check('friendlyName', '{purview}'),
+            self.check("contains(id, 'resourceGroups/{rg}/providers/Microsoft.Purview/accounts/{purview}')", True),
+            self.check('name', '{purview}'),
+            self.check('tags', {'tag':'test'})
+        ])
+
+        self.kwargs.update({
+            'purview_id': purview_account['createdByObjectId']
+        })
+
+        self.cmd('purview account add-root-collection-admin -n {purview} -g {rg} --object-id {purview_id}')
+        self.cmd('purview account list-key -n {purview} -g {rg}', checks=[
+            self.check("length(@)", 2),
+        ])
+
+        self.cmd('purview account show -n {purview} -g {rg}', checks=[
+            self.check('createdByObjectId', purview_account['createdByObjectId']),
+            self.check('friendlyName', '{purview}'),
+            self.check("contains(id, 'resourceGroups/{rg}/providers/Microsoft.Purview/accounts/{purview}')", True),
+            self.check('name', '{purview}')
+        ])
+        self.cmd('purview account list', checks=[
+            self.check('type(@)', 'array')
+        ])
+        self.cmd('purview account delete -g {rg} -n {purview} --y')
+
+
+    @ResourceGroupPreparer(name_prefix='cli_test_purview', location='eastus2')
+    def test_purview_default_account(self, resource_group):
+        self.kwargs.update({
+            'purview': self.create_random_name('pv-', 10)
+        })
+
+        purview_account = self.cmd('purview account create -n {purview} -g {rg}', checks=[
+            self.check('friendlyName', '{purview}'),
+            self.check("contains(id, 'resourceGroups/{rg}/providers/Microsoft.Purview/accounts/{purview}')", True),
+            self.check('name', '{purview}'),
+            self.check('tags', None),
+            self.check('location', 'eastus2'),
+            self.check('resourceGroup', '{rg}'),
+            self.check('provisioningState', 'Creating')
+        ]).get_output_in_json()
+        self.cmd('purview account wait --created -g {rg} -n {purview}')
+        self.kwargs.update({
+            'tenant_id': purview_account['identity']['tenantId']
+        })
+
+        self.cmd('purview default-account set -n {purview} -g {rg} '
+                 '--subscription-id 0b1f6471-1bf0-4dda-aec3-cb9272f09590 --scope-tenant-id {tenant_id}', checks=[
+            self.check('accountName', '{purview}'),
+            self.check('resourceGroupName', '{rg}'),
+            self.check('scopeTenantId', purview_account['identity']['tenantId']),
+            self.check('scopeType', 'Tenant')
+        ])
+
+        self.cmd('purview default-account show --scope-tenant-id {tenant_id} --scope-type Tenant',checks=[
+            self.check('accountName', '{purview}'),
+            self.check('resourceGroupName', '{rg}'),
+            self.check('scopeTenantId', purview_account['identity']['tenantId']),
+            self.check('scopeType', 'Tenant')
+        ])
+
+        self.cmd('purview default-account remove --scope-tenant-id {tenant_id} --scope-type Tenant')
+        self.cmd('purview account delete -g {rg} -n {purview} --y')
+
+
+    @ResourceGroupPreparer(name_prefix='cli_test_purview', location='eastus2')
+    def test_purview_private_endpoint_connection(self, resource_group, vnet):
+        self.kwargs.update({
+            'purview': self.create_random_name('pv-', 10),
+            'lb': self.create_random_name('lb-', 10),
+            'pub_ip': self.create_random_name('ip-', 10),
+            'vnet': self.create_random_name('vnet-', 10),
+            'subnet': self.create_random_name('subnet-', 10),
+            'link_service': self.create_random_name('lks-', 10),
+            'endpoint': self.create_random_name('pe-', 10)
+        })
+        purview_account = self.cmd('purview account create -n {purview} -g {rg}', checks=[
+            self.check('friendlyName', '{purview}'),
+            self.check("contains(id, 'resourceGroups/{rg}/providers/Microsoft.Purview/accounts/{purview}')", True),
+            self.check('name', '{purview}'),
+            self.check('tags', None),
+            self.check('location', 'eastus2'),
+            self.check('resourceGroup', '{rg}'),
+            self.check('provisioningState', 'Creating')
+        ]).get_output_in_json()
+        self.cmd('purview account wait --created -g {rg} -n {purview}')
+        self.cmd('network lb create -g {rg} -n {lb} --sku standard --public-ip-address {pub_ip}', checks=[
+
+        ])
+        self.cmd('network vnet create -g {rg} -n {vnet} --subnet-name {subnet}')
+        self.cmd('az network vnet subnet update -g pvtest -n {subnet} --vnet-name {vnet}'
+                 ' --disable-private-link-service-network-policies'
+                 ' --disable-private-endpoint-network-policies', checks=[
+            self.check('privateEndpointNetworkPolicies', 'Disabled'),
+            self.check('privateLinkServiceNetworkPolicies', 'Disabled')
+        ])
+        servicec = self.cmd('az network private-link-service create -g {rg} -n {link_service}'
+                 '  --vnet-name {vnet} --subnet {subnet} --lb-name {lb}'
+                 ' --lb-frontend-ip-configs LoadBalancerFrontEnd', checks=[
+            self.check('name', '{link_service}')
+        ]).get_output_in_json()
+        self.kwargs.update({
+            'point_id': servicec['id'],
+            'connect_name': self.create_random_name('ctn-', 10)
+        })
+        self.cmd('az network private-endpoint create -g {rg} -n {endpoint} --vnet-name {vnet} --subnet {subnet}'
+                 ' --private-connection-resource-id {point_id} --connection-name {connect_name}', checks=[
+            self.check('name', '{connect_name}')
+        ])
+
+        self.cmd('purview connect-endpoint create',checks=[
+
+        ])
+        self.cmd('purview connect-endpoint update', checks=[
+
+        ])
+        self.cmd('purview connect-endpoint list -g {rg} --account-name {purview}', checks=[
+
+        ])
+        self.cmd('purview connect-endpoint show', checks=[
+
+        ])
+        self.cmd('purview connect-endpoint delete', checks=[
+
+        ])
+        self.cmd('purview account delete -g {rg} -n {purview} --y')
+
+
+    @ResourceGroupPreparer(name_prefix='cli_test_purview', location='eastus2')
+    def test_purview_private_link_resource(self, resource_group):
+        self.kwargs.update({
+            'purview': self.create_random_name('pv-', 10)
+        })
+        self.cmd('purview account create -n {purview} -g {rg}', checks=[
+            self.check('friendlyName', '{purview}'),
+            self.check('name', '{purview}'),
+            self.check('tags', None),
+            self.check('location', 'eastus2'),
+            self.check('resourceGroup', '{rg}'),
+            self.check('provisioningState', 'Creating')
+        ])
+        self.cmd('purview account wait --created -g {rg} -n {purview}')
+        self.cmd('purview private-link-resource list -g {rg} --account-name {purview}', checks=[
+            self.check('type(@)', 'array')
+        ])
+        self.cmd('purview private-link-resource show -g {rg} --account-name {purview} --group-id account', checks=[
+            self.check('name', 'account')
+        ])
+        self.cmd('purview private-link-resource show -g {rg} --account-name {purview} --group-id portal', checks=[
+            self.check('name', 'portal')
+        ])

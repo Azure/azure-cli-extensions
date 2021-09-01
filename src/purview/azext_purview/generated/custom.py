@@ -34,7 +34,6 @@ def purview_account_create(client,
                            account_name,
                            location=None,
                            tags=None,
-                           sku=None,
                            managed_resource_group_name=None,
                            public_network_access=None,
                            no_wait=False):
@@ -47,8 +46,7 @@ def purview_account_create(client,
     account['identity']['type'] = "SystemAssigned"
     if len(account['identity']) == 0:
         del account['identity']
-    if sku is not None:
-        account['sku'] = sku
+    account['sku'] = {'name': 'Standard'}
     if managed_resource_group_name is not None:
         account['managed_resource_group_name'] = managed_resource_group_name
     if public_network_access is not None:
@@ -136,12 +134,12 @@ def purview_default_account_remove(client,
 
 
 def purview_default_account_set(client,
+                                subscription_id,
+                                scope_tenant_id,
                                 account_name=None,
                                 resource_group_name=None,
                                 scope=None,
-                                scope_tenant_id=None,
-                                scope_type=None,
-                                subscription_id=None):
+                                scope_type=None):
     default_account_payload = {}
     if account_name is not None:
         default_account_payload['account_name'] = account_name
@@ -149,80 +147,93 @@ def purview_default_account_set(client,
         default_account_payload['resource_group_name'] = resource_group_name
     if scope is not None:
         default_account_payload['scope'] = scope
-    if scope_tenant_id is not None:
-        default_account_payload['scope_tenant_id'] = scope_tenant_id
+    default_account_payload['scope_tenant_id'] = scope_tenant_id
     if scope_type is not None:
         default_account_payload['scope_type'] = scope_type
-    if subscription_id is not None:
-        default_account_payload['subscription_id'] = subscription_id
+    default_account_payload['subscription_id'] = subscription_id
     return client.set(default_account_payload=default_account_payload)
 
 
-def purview_private_endpoint_connection_list(client,
-                                             resource_group_name,
-                                             account_name,
-                                             skip_token=None):
+def purview_connect_endpoint_list(client,
+                                  resource_group_name,
+                                  account_name,
+                                  skip_token=None):
     return client.list_by_account(resource_group_name=resource_group_name,
                                   account_name=account_name,
                                   skip_token=skip_token)
 
 
-def purview_private_endpoint_connection_show(client,
-                                             resource_group_name,
-                                             account_name,
-                                             private_endpoint_connection_name):
+def purview_connect_endpoint_show(client,
+                                  resource_group_name,
+                                  account_name,
+                                  private_endpoint_connection_name):
     return client.get(resource_group_name=resource_group_name,
                       account_name=account_name,
                       private_endpoint_connection_name=private_endpoint_connection_name)
 
 
-def purview_private_endpoint_connection_create(client,
-                                               resource_group_name,
-                                               account_name,
-                                               private_endpoint_connection_name,
-                                               private_link_service_connection_state=None,
-                                               id_=None,
-                                               no_wait=False):
+def purview_connect_endpoint_create(client,
+                                    resource_group_name,
+                                    account_name,
+                                    endpoint_name,
+                                    required_actions=None,
+                                    description=None,
+                                    status=None,
+                                    id_=None,
+                                    provison_state=None,
+                                    no_wait=False):
     request = {}
-    if private_link_service_connection_state is not None:
-        request['private_link_service_connection_state'] = private_link_service_connection_state
+    request['private_link_service_connection_state'] = {}
+    if required_actions is not None:
+        request['private_link_service_connection_state']["actions_required"] = required_actions
+    if status is not None:
+        request['private_link_service_connection_state']["status"] = status
+    if description is not None:
+        request['private_link_service_connection_state']["description"] = description
     request['private_endpoint'] = {}
     if id_ is not None:
         request['private_endpoint']['id'] = id_
     if len(request['private_endpoint']) == 0:
         del request['private_endpoint']
+    print(request)
     return sdk_no_wait(no_wait,
                        client.begin_create_or_update,
                        resource_group_name=resource_group_name,
                        account_name=account_name,
-                       private_endpoint_connection_name=private_endpoint_connection_name,
+                       private_endpoint_connection_name=endpoint_name,
                        request=request)
 
 
-def purview_private_endpoint_connection_update(instance,
-                                               resource_group_name,
-                                               account_name,
-                                               private_endpoint_connection_name,
-                                               private_link_service_connection_state=None,
-                                               id_=None,
-                                               no_wait=False):
-    if private_link_service_connection_state is not None:
-        instance.private_link_service_connection_state = private_link_service_connection_state
+def purview_connect_endpoint_update(instance,
+                                    resource_group_name,
+                                    account_name,
+                                    endpoint_name,
+                                    required_actions=None,
+                                    description=None,
+                                    status=None,
+                                    id_=None,
+                                    no_wait=False):
+    if required_actions is not None:
+        instance.private_link_service_connection_state.actions_required = required_actions
+    if description is not None:
+        instance.private_link_service_connection_state.description = description
+    if status is not None:
+        instance.private_link_service_connection_state.status = status
     if id_ is not None:
         instance.private_endpoint.id = id_
     return instance
 
 
-def purview_private_endpoint_connection_delete(client,
-                                               resource_group_name,
-                                               account_name,
-                                               private_endpoint_connection_name,
-                                               no_wait=False):
+def purview_connect_endpoint_delete(client,
+                                    resource_group_name,
+                                    account_name,
+                                    endpoint_name,
+                                    no_wait=False):
     return sdk_no_wait(no_wait,
                        client.begin_delete,
                        resource_group_name=resource_group_name,
                        account_name=account_name,
-                       private_endpoint_connection_name=private_endpoint_connection_name)
+                       private_endpoint_connection_name=endpoint_name)
 
 
 def purview_private_link_resource_list(client,

@@ -16,7 +16,7 @@ from azure.cli.core.commands import CliCommandType
 from azext_purview.generated._client_factory import (
     cf_account,
     cf_default_account,
-    cf_private_endpoint_connection,
+    cf_connect_endpoint,
     cf_private_link_resource,
 )
 
@@ -35,9 +35,9 @@ purview_default_account = CliCommandType(
 )
 
 
-purview_private_endpoint_connection = CliCommandType(
+purview_connect_endpoint = CliCommandType(
     operations_tmpl='azext_purview.vendored_sdks.purview.operations._private_endpoint_connections_operations#PrivateEndpointConnectionsOperations.{}',
-    client_factory=cf_private_endpoint_connection,
+    client_factory=cf_connect_endpoint,
 )
 
 
@@ -64,25 +64,22 @@ def load_command_table(self, _):
         g.custom_command('remove', 'purview_default_account_remove')
         g.custom_command('set', 'purview_default_account_set')
 
-    with self.command_group(
-        'purview private-endpoint-connection',
-        purview_private_endpoint_connection,
-        client_factory=cf_private_endpoint_connection,
-    ) as g:
-        g.custom_command('list', 'purview_private_endpoint_connection_list')
-        g.custom_show_command('show', 'purview_private_endpoint_connection_show')
-        g.custom_command('create', 'purview_private_endpoint_connection_create', supports_no_wait=True)
+    with self.command_group('purview connect-endpoint', purview_connect_endpoint,
+                            client_factory=cf_connect_endpoint) as g:
+        g.custom_command('list', 'purview_connect_endpoint_list')
+        g.custom_show_command('show', 'purview_connect_endpoint_show')
+        g.custom_command('create', 'purview_connect_endpoint_create', supports_no_wait=True)
         g.generic_update_command(
             'update',
             supports_no_wait=True,
-            custom_func_name='purview_private_endpoint_connection_update',
+            custom_func_name='purview_connect_endpoint_update',
             setter_arg_name='request',
             setter_name='begin_create_or_update',
         )
         g.custom_command(
-            'delete', 'purview_private_endpoint_connection_delete', supports_no_wait=True, confirmation=True
+            'delete', 'purview_connect_endpoint_delete', supports_no_wait=True, confirmation=True
         )
-        g.custom_wait_command('wait', 'purview_private_endpoint_connection_show')
+        g.custom_wait_command('wait', 'purview_connect_endpoint_show')
 
     with self.command_group(
         'purview private-link-resource', purview_private_link_resource, client_factory=cf_private_link_resource
