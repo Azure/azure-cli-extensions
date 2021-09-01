@@ -17,8 +17,8 @@ class K8sExtensionCommandsLoader(AzCommandsLoader):
         k8s_extension_custom = CliCommandType(
             operations_tmpl=consts.EXTENSION_PACKAGE_NAME + '.custom#{}',
             client_factory=cf_k8s_extension)
-        super(K8sExtensionCommandsLoader, self).__init__(cli_ctx=cli_ctx,
-                                                         custom_command_type=k8s_extension_custom)
+        super().__init__(cli_ctx=cli_ctx,
+                         custom_command_type=k8s_extension_custom)
 
     def load_command_table(self, args):
         from .commands import load_command_table
