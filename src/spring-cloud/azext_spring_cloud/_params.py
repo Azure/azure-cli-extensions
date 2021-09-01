@@ -289,7 +289,8 @@ def load_arguments(self, _):
                    help="Connection string (recommended) or Instrumentation key of the existing Application Insights.",
                    validator=validate_app_insights_parameters)
         c.argument('app_insights',
-                   help="Name of the existing Application Insights in the same Resource Group. Or Resource ID of the existing Application Insights in a different Resource Group.",
+                   help="Name of the existing Application Insights in the same Resource Group. "
+                        "Or Resource ID of the existing Application Insights in a different Resource Group.",
                    validator=validate_app_insights_parameters)
         c.argument('sampling_rate',
                    type=float,
