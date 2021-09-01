@@ -461,7 +461,7 @@ helps['spring-cloud app-insights update'] = """
     type: command
     short-summary: Update Application Insights settings.
     examples:
-        - name: Enable Application Insights and Java In-process Agent.
+        - name: Enable Application Insights.
           text: az spring-cloud app-insights update -n MyService -g MyResourceGroup --app-insights-key MyInstrumentationKey --sampling-rate 100
         - name: Disable Application Insights.
           text: az spring-cloud app-insights update -n MyService -g MyResourceGroup --disable
