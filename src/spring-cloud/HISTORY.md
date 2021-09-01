@@ -1,5 +1,11 @@
 Release History
 ===============
+2.8.0
+-----
+* Java In-Process Agent is moved from public review to GA state
+* Add support for `connection_string` when integrating with Application Insights
+* By default, enable In-Process Agent when enable application insights
+
 2.7.1
 -----
 * Fix source code deployment build log issues
