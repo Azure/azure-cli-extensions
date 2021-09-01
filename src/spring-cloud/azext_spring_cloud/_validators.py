@@ -13,7 +13,7 @@ from azure.cli.core import telemetry
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.commands.validators import validate_tag
 from azure.cli.core.azclierror import InvalidArgumentValueError
-from ._utils import _get_upload_local_file
+from ._utils import _get_file_type
 from msrestazure.tools import is_valid_resource_id
 from msrestazure.tools import parse_resource_id
 from msrestazure.tools import resource_id
@@ -448,7 +448,7 @@ def validate_jar(namespace):
     if namespace.disable_validation:
         telemetry.set_user_fault("jar validation is disabled")
         return
-    file_type, file_path = _get_upload_local_file(namespace.runtime_version, namespace.artifact_path)
+    file_type = _get_file_type(namespace.runtime_version, namespace.artifact_path)
     if file_type != "Jar":
         return
     values = _parse_jar_file(namespace.artifact_path)

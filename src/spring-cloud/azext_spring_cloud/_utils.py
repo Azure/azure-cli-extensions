@@ -33,6 +33,14 @@ def _get_upload_local_file(runtime_version, artifact_path=None):
     return file_type, file_path
 
 
+def _get_file_type(runtime_version, artifact_path=None):
+    file_type = "NetCoreZip" if runtime_version == AppPlatformEnums.RuntimeVersion.NET_CORE31 else "Jar"
+
+    if artifact_path is None:
+        file_type = "Source"
+    return file_type
+
+
 def _pack_source_code(source_location, tar_file_path):
     logger.info("Packing source code into tar to upload...")
 
