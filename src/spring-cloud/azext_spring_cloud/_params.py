@@ -49,7 +49,7 @@ def load_arguments(self, _):
     for scope in ['spring-cloud create', 'spring-cloud update']:
         with self.argument_context(scope) as c:
             c.argument('app_insights_key',
-                       help="Connection string (recommended) or Instrumentation key of the existing Application Insights.",
+                       help="Connection string (recommended) or Connection string (recommended) or Instrumentation key of the existing Application Insights.",
                        validator=validate_tracing_parameters)
             c.argument('app_insights',
                        help="Name of the existing Application Insights in the same Resource Group. Or Resource ID of the existing Application Insights in a different Resource Group.",
@@ -260,7 +260,7 @@ def load_arguments(self, _):
 
     with self.argument_context('spring-cloud app-insights update') as c:
         c.argument('app_insights_key',
-                   help="Connection string (recommended) or Instrumentation key of the existing Application Insights.",
+                   help="Connection string (recommended) or Connection string (recommended) or Instrumentation key of the existing Application Insights.",
                    validator=validate_app_insights_parameters)
         c.argument('app_insights',
                    help="Name of the existing Application Insights in the same Resource Group. Or Resource ID of the existing Application Insights in a different Resource Group.",
