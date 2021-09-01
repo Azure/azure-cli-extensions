@@ -35,8 +35,6 @@ helps['spring-cloud update'] = """
     examples:
     - name: Update pricing tier.
       text: az spring-cloud update -n MyService --sku Standard -g MyResourceGroup
-    - name: Enable the Application Insights of the existing Azure Spring Cloud.
-      text: az spring-cloud update -n MyService -g MyResourceGroup --disable-app-insights false
     - name: Update the tags of the existing Azure Spring Cloud.
       text: az spring-cloud update -n MyService -g MyResourceGroup --tags key1=value1 key2=value2
 """
