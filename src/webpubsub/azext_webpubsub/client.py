@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long
+# pylint: disable=broad-except
 
 import asyncio
 import sys
@@ -120,7 +121,7 @@ class Publisher(threading.Thread):
 
                 else:
                     eprint('Invalid input "{}", use help to show usage'.format(input_line))
-        except:
+        except Exception:
             eprint('Invalid input "{}", use help to show usage'.format(input_line))
 
     def _get_ack_id(self):
