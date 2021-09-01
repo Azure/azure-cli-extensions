@@ -59,6 +59,9 @@ def spring_cloud_create(cmd, client, resource_group, name, location=None, app_in
                         service_runtime_network_resource_group=None, app_network_resource_group=None,
                         disable_app_insights=None, enable_java_agent=None,
                         sku='Standard', tags=None, no_wait=False):
+    """
+    :param enable_java_agent: (TODO) In deprecation process, ignore the value now. Will delete this.
+    """
     if location is None:
         location = _get_rg_location(cmd.cli_ctx, resource_group)
     properties = models.ClusterResourceProperties()
@@ -84,24 +87,14 @@ def spring_cloud_create(cmd, client, resource_group, name, location=None, app_in
 
     monitoring_setting_resource = models.MonitoringSettingResource()
     if disable_app_insights is not True:
-        if enable_java_agent:
-            client_preview = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20201101preview)
-            logger.warning("Start configure Application Insights")
-            trace_properties = update_java_agent_config(cmd, resource_group, name, location, app_insights_key, app_insights,
-                                                        enable_java_agent)
-            if trace_properties is not None:
-                monitoring_setting_resource.properties = trace_properties
-                sdk_no_wait(no_wait, client_preview.monitoring_settings.begin_update_put,
-                            resource_group_name=resource_group, service_name=name,
-                            monitoring_setting_resource=monitoring_setting_resource)
-        else:
-            logger.warning("Start configure Application Insights")
-            trace_properties = update_tracing_config(cmd, resource_group, name, location, app_insights_key, app_insights,
-                                                     disable_app_insights)
-            if trace_properties is not None:
-                monitoring_setting_resource.properties = trace_properties
-                sdk_no_wait(no_wait, client.monitoring_settings.begin_update_put, resource_group_name=resource_group,
-                            service_name=name, monitoring_setting_resource=monitoring_setting_resource)
+        client_preview = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20201101preview)
+        logger.warning("Start configure Application Insights")
+        trace_properties = update_java_agent_config(cmd, resource_group, name, location, app_insights_key, app_insights)
+        if trace_properties is not None:
+            monitoring_setting_resource.properties = trace_properties
+            sdk_no_wait(no_wait, client_preview.monitoring_settings.begin_update_put,
+                        resource_group_name=resource_group, service_name=name,
+                        monitoring_setting_resource=monitoring_setting_resource)
     return poller
 
 
@@ -1621,8 +1614,7 @@ def update_tracing_config(cmd, resource_group, service_name, location, app_insig
     return trace_properties
 
 
-def update_java_agent_config(cmd, resource_group, service_name, location, app_insights_key,
-                             app_insights, enable_java_agent):
+def update_java_agent_config(cmd, resource_group, service_name, location, app_insights_key, app_insights):
     create_app_insights = False
     trace_properties = None
     if app_insights_key:
@@ -1639,7 +1631,7 @@ def update_java_agent_config(cmd, resource_group, service_name, location, app_in
             instrumentation_key = get_app_insights_key(cmd.cli_ctx, resource_group, app_insights)
             trace_properties = models_20201101preview.MonitoringSettingProperties(
                 trace_enabled=True, app_insights_instrumentation_key=instrumentation_key)
-    elif enable_java_agent is True:
+    else:
         create_app_insights = True
 
     if create_app_insights is True:

@@ -19,8 +19,8 @@ helps['spring-cloud create'] = """
       text: az spring-cloud create -n MyService -g MyResourceGroup -l westus
     - name: Create a new Azure Spring Cloud in westus with an existing Application Insights by using the instrumentation key.
       text: az spring-cloud create -n MyService -g MyResourceGroup -l westus --app-insights-key MyInstrumentationKey
-    - name: Create a new Azure Spring Cloud in westus with an existing Application Insights and enable Java In-Process Agent.
-      text: az spring-cloud create -n MyService -g MyResourceGroup -l westus --enable-java-agent true --app-insights MyInstrumentationName
+    - name: Create a new Azure Spring Cloud in westus with an existing Application Insights.
+      text: az spring-cloud create -n MyService -g MyResourceGroup -l westus --app-insights appInsightsName
     - name: Create a new Azure Spring Cloud with Application Insights disabled.
       text: az spring-cloud create -n MyService -g MyResourceGroup --disable-app-insights
     - name: Create a new Azure Spring Cloud with VNet-injected via giving VNet name in current resource group
