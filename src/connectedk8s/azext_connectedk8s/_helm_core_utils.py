@@ -125,7 +125,7 @@ class HelmCoreUtils:
         output, error_helm = response_helm.communicate()
         if response_helm.returncode != 0:
             if (cmd_type is not None and cmd_type in [Command.HELM_GET_VALUES, Command.HELM_GET_RELEASE] and
-                'forbidden' in error_helm.decode("ascii")):
+                    'forbidden' in error_helm.decode("ascii")):
                 telemetry.set_user_fault()
             telemetry.set_exception(exception=error_helm.decode("ascii"),
                                     fault_type=fault_type, summary=error_summary)

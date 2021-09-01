@@ -111,7 +111,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
         kubernetes_infra = kube_core_utils.get_kubernetes_infra(node_api_response)  # (cluster heuristics)
     else:
         kubernetes_infra = infrastructure
-    kube_utils.add_kubernetes_telemetry_extenstion_event_raw(kubernetes_version, kubernetes_distro, kubernetes_infra)
+    kube_utils.add_kubernetes_telemetry_extension_event_raw(kubernetes_version, kubernetes_distro, kubernetes_infra)
 
     # Checking if it is an AKS cluster
     is_aks_cluster = kube_utils.check_aks_cluster(config, kube_config, kube_context)
@@ -366,8 +366,8 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
     proxy_details = proxy_utils.create_proxy_details(https_proxy, http_proxy, no_proxy, proxy_cert, disable_proxy)
 
     if (proxy_details and proxy_details.get('https_proxy') == "" and proxy_details.get('http_proxy') == "" and
-        proxy_details.get('no_proxy') == "" and proxy_details.get('proxy_cert') == "" and not
-        proxy_details.get('disable_proxy') and not auto_upgrade):
+            proxy_details.get('no_proxy') == "" and proxy_details.get('proxy_cert') == "" and not
+            proxy_details.get('disable_proxy') and not auto_upgrade):
         raise RequiredArgumentMissingError(consts.No_Param_Error)
 
     if ((proxy_details.get('https_proxy') or proxy_details.get('http_proxy') or proxy_details.get('no_proxy') or
@@ -404,7 +404,7 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
     connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
     api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
 
-    kube_utils.add_kubernetes_telemetry_extenstion_event(connected_cluster, configuration, api_instance)
+    kube_utils.add_kubernetes_telemetry_extension_event(connected_cluster, configuration, api_instance)
     registry_path = helm_utils.get_helm_registry_path(cmd, connected_cluster.location, helm_core_utils,
                                                       connected_cluster.agent_version, dp_endpoint_dogfood,
                                                       release_train_dogfood)
@@ -506,7 +506,7 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
     # Fetch Connected Cluster for agent version
     connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
 
-    kube_utils.add_kubernetes_telemetry_extenstion_event(connected_cluster, configuration, api_instance)
+    kube_utils.add_kubernetes_telemetry_extension_event(connected_cluster, configuration, api_instance)
 
     registry_path = helm_utils.get_helm_registry_path(cmd, connected_cluster.location, helm_core_utils,
                                                       arc_agent_version, dp_endpoint_dogfood, release_train_dogfood)
@@ -593,7 +593,7 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
     # Fetch Connected Cluster for agent version
     connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
 
-    kube_utils.add_kubernetes_telemetry_extenstion_event(connected_cluster, configuration, api_instance)
+    kube_utils.add_kubernetes_telemetry_extension_event(connected_cluster, configuration, api_instance)
 
     # Adding helm repo
     if os.getenv('HELMREPONAME') and os.getenv('HELMREPOURL'):
@@ -662,17 +662,17 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
     # Fetch Connected Cluster for agent version
     connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
 
-    kube_utils.add_kubernetes_telemetry_extenstion_event(connected_cluster, configuration, api_instance)
+    kube_utils.add_kubernetes_telemetry_extension_event(connected_cluster, configuration, api_instance)
 
     helm_core_utils = HelmCoreUtils(kube_config, kube_context)
     if disable_cluster_connect:
         try:
             helm_values = helm_core_utils.get_all_helm_values(release_namespace)
             if (not disable_cl and
-                helm_values.get('systemDefaultValues').get('customLocations').get('enabled') is True and
-                helm_values.get('systemDefaultValues').get('customLocations').get('oid') != ""):
-                    raise Exception("Disabling 'cluster-connect' feature is not allowed when 'custom-locations' feature "
-                                    "is enabled.")
+                    helm_values.get('systemDefaultValues').get('customLocations').get('enabled') is True and
+                    helm_values.get('systemDefaultValues').get('customLocations').get('oid') != ""):
+                raise Exception("Disabling 'cluster-connect' feature is not allowed when 'custom-locations' feature "
+                                "is enabled.")
         except AttributeError as e:
             pass
         except Exception as ex:

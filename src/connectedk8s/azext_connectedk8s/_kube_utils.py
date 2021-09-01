@@ -270,7 +270,7 @@ def insert_token_in_kubeconfig(data, token):
     return b64kubeconfig
 
 
-def add_kubernetes_telemetry_extenstion_event(connected_cluster, configuration, api_instance):
+def add_kubernetes_telemetry_extension_event(connected_cluster, configuration, api_instance):
     # Get kubernetes cluster info for telemetry
     node_api_response = None
     kubernetes_version = kube_core_utils.get_server_version(configuration)
@@ -286,10 +286,10 @@ def add_kubernetes_telemetry_extenstion_event(connected_cluster, configuration, 
         node_api_response = validate_node_api_response(api_instance, node_api_response)
         kubernetes_infra = kube_core_utils.get_kubernetes_infra(node_api_response)
 
-    add_kubernetes_telemetry_extenstion_event_raw(kubernetes_version, kubernetes_distro, kubernetes_infra)
+    add_kubernetes_telemetry_extension_event_raw(kubernetes_version, kubernetes_distro, kubernetes_infra)
 
 
-def add_kubernetes_telemetry_extenstion_event_raw(kubernetes_version, kubernetes_distro, kubernetes_infra):
+def add_kubernetes_telemetry_extension_event_raw(kubernetes_version, kubernetes_distro, kubernetes_infra):
     kubernetes_properties = {
         'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version,
         'Context.Default.AzureCLI.KubernetesDistro': kubernetes_distro,
