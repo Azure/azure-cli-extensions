@@ -33,7 +33,8 @@ async def connect(url):
         publisher.daemon = True
         publisher.start()
         while True:
-            print(await ws.recv())
+            received = await ws.recv()
+            print('Received:  ' + received)
 
 
 def start_client(client, resource_group_name, webpubsub_name, hub_name, user_id=None):
@@ -57,67 +58,70 @@ class Publisher(threading.Thread):
         new_loop = asyncio.new_event_loop()
         asyncio.set_event_loop(new_loop)
         while True:
-            input_line = input('>>>')
+            input_line = sys.stdin.readline().strip()
             asyncio.get_event_loop().run_until_complete(self._parse(input_line))
 
     def join(self, timeout=None):
         super().join()
 
     async def _parse(self, input_line):
-        if input_line:
-            if input_line.strip() == 'help':
-                eprint(HELP_MESSAGE)
-                return
+        try:
+            if input_line:
+                if input_line.strip() == 'help':
+                    eprint(HELP_MESSAGE)
+                    return
 
-            arr = input_line.split(maxsplit=1)
-            if len(arr) != 2:
-                eprint('Invalid input "{}", use help to show usage'.format(input_line))
-                return
+                arr = input_line.split(maxsplit=1)
+                if len(arr) != 2:
+                    eprint('Invalid input "{}", use help to show usage'.format(input_line))
+                    return
 
-            command = arr[0]
-            if command.lower() == 'joingroup':
-                group = arr[1]
-                payload = json.dumps({
-                    'type': 'joinGroup',
-                    'group': group,
-                    'ackId': self._get_ack_id()
-                })
-                await self.ws.send(payload)
+                command = arr[0]
+                if command.lower() == 'joingroup':
+                    group = arr[1]
+                    payload = json.dumps({
+                        'type': 'joinGroup',
+                        'group': group,
+                        'ackId': self._get_ack_id()
+                    })
+                    await self.ws.send(payload)
 
-            elif command.lower() == 'leavegroup':
-                group = arr[1]
-                payload = json.dumps({
-                    'type': 'leaveGroup',
-                    'group': group,
-                    'ackId': self._get_ack_id()
-                })
-                await self.ws.send(payload)
+                elif command.lower() == 'leavegroup':
+                    group = arr[1]
+                    payload = json.dumps({
+                        'type': 'leaveGroup',
+                        'group': group,
+                        'ackId': self._get_ack_id()
+                    })
+                    await self.ws.send(payload)
 
-            elif command.lower() == 'sendtogroup':
-                arr = arr[1].split(maxsplit=1)
-                group = arr[0]
-                data = arr[1]
-                payload = json.dumps({
-                    'type': 'sendToGroup',
-                    'group': group,
-                    'data': data,
-                    'ackId': self._get_ack_id()
-                })
-                await self.ws.send(payload)
+                elif command.lower() == 'sendtogroup':
+                    arr = arr[1].split(maxsplit=1)
+                    group = arr[0]
+                    data = arr[1]
+                    payload = json.dumps({
+                        'type': 'sendToGroup',
+                        'group': group,
+                        'data': data,
+                        'ackId': self._get_ack_id()
+                    })
+                    await self.ws.send(payload)
 
-            elif command.lower() == 'event':
-                arr = arr[1].split(maxsplit=1)
-                event = arr[0]
-                data = arr[1]
-                payload = json.dumps({
-                    'type': 'event',
-                    'event': event,
-                    'data': data
-                })
-                await self.ws.send(payload)
+                elif command.lower() == 'event':
+                    arr = arr[1].split(maxsplit=1)
+                    event = arr[0]
+                    data = arr[1]
+                    payload = json.dumps({
+                        'type': 'event',
+                        'event': event,
+                        'data': data
+                    })
+                    await self.ws.send(payload)
 
-            else:
-                eprint('Invalid input "{}", use help to show usage'.format(input_line))
+                else:
+                    eprint('Invalid input "{}", use help to show usage'.format(input_line))
+        except:
+            eprint('Invalid input "{}", use help to show usage'.format(input_line))
 
     def _get_ack_id(self):
         self.id = self.id + 1
