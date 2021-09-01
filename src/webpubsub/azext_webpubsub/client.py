@@ -121,7 +121,7 @@ class Publisher(threading.Thread):
 
                 else:
                     eprint('Invalid input "{}", use help to show usage'.format(input_line))
-        except Exception:
+        except IndexError:
             eprint('Invalid input "{}", use help to show usage'.format(input_line))
 
     def _get_ack_id(self):
