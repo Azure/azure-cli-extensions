@@ -151,7 +151,17 @@ def validate_jvm_options(namespace):
         namespace.jvm_options = namespace.jvm_options.strip('\'')
 
 
-def validate_tracing_parameters(namespace):
+def validate_tracing_parameters_asc_create(namespace):
+    if (namespace.app_insights or namespace.app_insights_key) and namespace.disable_app_insights:
+        raise CLIError("Conflict detected: '--app-insights' or '--app-insights-key'"
+                       "can not be set with '--disable-app-insights'.")
+    if namespace.app_insights and namespace.app_insights_key:
+        raise CLIError("Conflict detected: '--app-insights' and '--app-insights-key' can not be set at the same time.")
+    if namespace.app_insights == "":
+        raise CLIError("Conflict detected: '--app-insights' can not be empty.")
+
+
+def validate_tracing_parameters_asc_update(namespace):
     if (namespace.app_insights or namespace.app_insights_key) and namespace.disable_app_insights:
         raise CLIError("Conflict detected: '--app-insights' or '--app-insights-key'"
                        "can not be set with '--disable-app-insights'.")
