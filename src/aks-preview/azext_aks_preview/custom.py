@@ -108,6 +108,7 @@ from ._consts import CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID, CONST_INGRESS_A
 from ._consts import CONST_INGRESS_APPGW_SUBNET_CIDR, CONST_INGRESS_APPGW_SUBNET_ID
 from ._consts import CONST_INGRESS_APPGW_WATCH_NAMESPACE
 from ._consts import CONST_SCALE_SET_PRIORITY_REGULAR, CONST_SCALE_SET_PRIORITY_SPOT, CONST_SPOT_EVICTION_POLICY_DELETE
+from ._consts import CONST_SCALE_DOWN_MODE_DELETE
 from ._consts import CONST_CONFCOM_ADDON_NAME, CONST_ACC_SGX_QUOTE_HELPER_ENABLED
 from ._consts import CONST_OPEN_SERVICE_MESH_ADDON_NAME
 from ._consts import CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME, CONST_SECRET_ROTATION_ENABLED
@@ -1790,10 +1791,9 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
             raise ArgumentUsageError('--disable-public-fqdn cannot be applied for none mode private dns zone cluster')
         instance.api_server_access_profile.enable_private_cluster_public_fqdn = False
 
-    if instance.auto_upgrade_profile is None:
-        instance.auto_upgrade_profile = ManagedClusterAutoUpgradeProfile()
-
     if auto_upgrade_channel is not None:
+        if instance.auto_upgrade_profile is None:
+            instance.auto_upgrade_profile = ManagedClusterAutoUpgradeProfile()
         instance.auto_upgrade_profile.upgrade_channel = auto_upgrade_channel
 
     if not enable_managed_identity and assign_identity:
@@ -3081,6 +3081,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
                       min_count=None,
                       max_count=None,
                       enable_cluster_autoscaler=False,
+                      scale_down_mode=CONST_SCALE_DOWN_MODE_DELETE,
                       node_taints=None,
                       priority=CONST_SCALE_SET_PRIORITY_REGULAR,
                       eviction_policy=CONST_SPOT_EVICTION_POLICY_DELETE,
@@ -3142,6 +3143,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
         node_public_ip_prefix_id=node_public_ip_prefix_id,
         node_taints=taints_array,
         scale_set_priority=priority,
+        scale_down_mode=scale_down_mode,
         upgrade_settings=upgradeSettings,
         enable_encryption_at_host=enable_encryption_at_host,
         enable_ultra_ssd=enable_ultra_ssd,
@@ -3243,6 +3245,7 @@ def aks_agentpool_update(cmd,   # pylint: disable=unused-argument
                          enable_cluster_autoscaler=False,
                          disable_cluster_autoscaler=False,
                          update_cluster_autoscaler=False,
+                         scale_down_mode=None,
                          min_count=None, max_count=None,
                          max_surge=None,
                          mode=None,
@@ -3251,11 +3254,11 @@ def aks_agentpool_update(cmd,   # pylint: disable=unused-argument
     update_autoscaler = enable_cluster_autoscaler + \
         disable_cluster_autoscaler + update_cluster_autoscaler
 
-    if (update_autoscaler != 1 and not tags and not mode and not max_surge):
+    if (update_autoscaler != 1 and not tags and not scale_down_mode and not mode and not max_surge):
         raise CLIError('Please specify one or more of "--enable-cluster-autoscaler" or '
                        '"--disable-cluster-autoscaler" or '
                        '"--update-cluster-autoscaler" or '
-                       '"--tags" or "--mode" or "--max-surge"')
+                       '"--tags" or "--mode" or "--max-surge" or "--scale-down-mode"')
 
     instance = client.get(resource_group_name, cluster_name, nodepool_name)
 
@@ -3302,6 +3305,10 @@ def aks_agentpool_update(cmd,   # pylint: disable=unused-argument
         instance.max_count = None
 
     instance.tags = tags
+
+    if scale_down_mode is not None:
+        instance.scale_down_mode = scale_down_mode
+
     if mode is not None:
         instance.mode = mode
 
@@ -3988,6 +3995,8 @@ def _get_kubelet_config(file_path):
         "containerLogMaxFiles", None)
     config_object.container_log_max_size_mb = kubelet_config.get(
         "containerLogMaxSizeMB", None)
+    config_object.pod_max_pids = kubelet_config.get(
+        "podMaxPids", None)
 
     return config_object
 
