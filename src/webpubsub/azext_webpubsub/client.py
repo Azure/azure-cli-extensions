@@ -24,6 +24,7 @@ event <event-name> <message>        : Send event to event handler
 --------------------------
         """
 
+
 class bcolors: # pylint: disable=too-few-public-methods
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
@@ -36,6 +37,7 @@ class bcolors: # pylint: disable=too-few-public-methods
     ITALICS = '\x1B[3m'
     ITENDS = '\x1B[0m'
     UNDERLINE = '\033[4m'
+
 
 async def connect(url):
     async with websockets.connect(url, subprotocols=['json.webpubsub.azure.v1']) as ws:
