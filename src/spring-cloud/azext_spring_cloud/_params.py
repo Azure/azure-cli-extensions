@@ -53,6 +53,10 @@ def load_arguments(self, _):
                    help="Name of the existing Application Insights in the same Resource Group. "
                         "Or Resource ID of the existing Application Insights in a different Resource Group.",
                    validator=validate_tracing_parameters_asc_create)
+        c.argument('sampling_rate',
+                   type=float,
+                   help="Sampling Rate of application insights. Minimum is 0, maximum is 100.",
+                   validator=validate_tracing_parameters_asc_create)
         c.argument('disable_app_insights',
                    arg_type=get_three_state_flag(),
                    help="Disable Application Insights, "

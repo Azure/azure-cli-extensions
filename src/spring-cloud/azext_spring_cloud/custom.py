@@ -55,20 +55,22 @@ DELETE_PRODUCTION_DEPLOYMENT_WARNING = "You are going to delete production deplo
 LOG_RUNNING_PROMPT = "This command usually takes minutes to run. Add '--verbose' parameter if needed."
 
 
-def spring_cloud_create(cmd, client, resource_group, name, location=None, app_insights_key=None, app_insights=None,
+def spring_cloud_create(cmd, client, resource_group, name, location=None,
                         vnet=None, service_runtime_subnet=None, app_subnet=None, reserved_cidr_range=None,
                         service_runtime_network_resource_group=None, app_network_resource_group=None,
+                        app_insights_key=None, app_insights=None, sampling_rate=None,
                         disable_app_insights=None, enable_java_agent=None,
                         sku='Standard', tags=None, no_wait=False):
     """
     If app_insights_key, app_insights and disable_app_insights are all None,
     will still create an application insights and enable application insights.
     :param enable_java_agent: (TODO) In deprecation process, ignore the value now. Will delete this.
+    :param app_insights: application insights name or its resource id
     :param app_insights_key: Connection string or Instrumentation key
     """
-    if enable_java_agent is not None:
-        logger.warn("Java in process agent is now GA-ed and used by default when Application Insights enabled. "
-                    "The parameter '--enable-java-agent' is no longer needed and will be removed in future release.")
+    # TODO (jiec) Deco this method when we deco parameter "--enable-java-agent"
+    _warn_enable_java_agent(enable_java_agent)
+
     if location is None:
         location = _get_rg_location(cmd.cli_ctx, resource_group)
     properties = models.ClusterResourceProperties()
@@ -92,17 +94,32 @@ def spring_cloud_create(cmd, client, resource_group, name, location=None, app_in
     while poller.done() is False:
         sleep(5)
 
+    _update_application_insights_asc_create(cmd, resource_group, name, location,
+                                            app_insights_key, app_insights, sampling_rate,
+                                            disable_app_insights, no_wait)
+    return poller
+
+
+def _warn_enable_java_agent(enable_java_agent):
+    if enable_java_agent is not None:
+        logger.warn("Java in process agent is now GA-ed and used by default when Application Insights enabled. "
+                    "The parameter '--enable-java-agent' is no longer needed and will be removed in future release.")
+
+
+def _update_application_insights_asc_create(cmd, resource_group, name, location,
+                                            app_insights_key, app_insights, sampling_rate,
+                                            disable_app_insights, no_wait):
     monitoring_setting_resource = models.MonitoringSettingResource()
     if disable_app_insights is not True:
         client_preview = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20201101preview)
         logger.warning("Start configure Application Insights")
-        monitoring_setting_properties = update_java_agent_config(cmd, resource_group, name, location, app_insights_key, app_insights)
+        monitoring_setting_properties = update_java_agent_config(
+            cmd, resource_group, name, location, app_insights_key, app_insights, sampling_rate)
         if monitoring_setting_properties is not None:
             monitoring_setting_resource.properties = monitoring_setting_properties
             sdk_no_wait(no_wait, client_preview.monitoring_settings.begin_update_put,
                         resource_group_name=resource_group, service_name=name,
                         monitoring_setting_resource=monitoring_setting_resource)
-    return poller
 
 
 def spring_cloud_update(cmd, client, resource_group, name, app_insights_key=None, app_insights=None,
@@ -126,8 +143,8 @@ def spring_cloud_update(cmd, client, resource_group, name, app_insights_key=None
     location = resource.location
     updated_resource_properties = models.ClusterResourceProperties()
 
-    _update_application_insights(cmd, resource_group, name, location,
-                                 app_insights_key, app_insights, disable_app_insights, no_wait)
+    _update_application_insights_asc_update(cmd, resource_group, name, location,
+                                            app_insights_key, app_insights, disable_app_insights, no_wait)
 
     # update service tags
     if tags is not None:
@@ -142,8 +159,8 @@ def spring_cloud_update(cmd, client, resource_group, name, app_insights_key=None
                        resource_group_name=resource_group, service_name=name, resource=updated_resource)
 
 
-def _update_application_insights(cmd, resource_group, name, location,
-                                 app_insights_key, app_insights, disable_app_insights, no_wait):
+def _update_application_insights_asc_update(cmd, resource_group, name, location,
+                                            app_insights_key, app_insights, disable_app_insights, no_wait):
     """If app_insights_key, app_insights and disable_app_insights are all None, do nothing here
     """
     update_app_insights = False
@@ -173,7 +190,7 @@ def _update_application_insights(cmd, resource_group, name, location,
             monitoring_setting_properties.trace_enabled = app_insights_target_status
         else:
             monitoring_setting_properties = update_java_agent_config(
-                cmd, resource_group, name, location, app_insights_key, app_insights)
+                cmd, resource_group, name, location, app_insights_key, app_insights, None)
         if monitoring_setting_properties is not None:
             monitoring_setting_resource = models.MonitoringSettingResource(properties=monitoring_setting_properties)
             sdk_no_wait(no_wait, client_preview.monitoring_settings.begin_update_put,
@@ -1603,23 +1620,16 @@ def get_app_insights_connection_string(cli_ctx, resource_group, name):
     return appinsights.connection_string
 
 
-def update_java_agent_config(cmd, resource_group, service_name, location, app_insights_key, app_insights):
+def update_java_agent_config(cmd, resource_group, service_name, location,
+                             app_insights_key, app_insights, sampling_rate):
+    """
+    :param sampling_rate: None safe, backend will use default value.
+    """
     create_app_insights = False
     monitoring_setting_properties = None
-    if app_insights_key:
-        monitoring_setting_properties = models_20201101preview.MonitoringSettingProperties(
-            trace_enabled=True, app_insights_instrumentation_key=app_insights_key)
-    elif app_insights:
-        if is_valid_resource_id(app_insights):
-            resource_id_dict = parse_resource_id(app_insights)
-            connection_string = get_app_insights_connection_string(
-                cmd.cli_ctx, resource_id_dict['resource_group'], resource_id_dict['resource_name'])
-            monitoring_setting_properties = models_20201101preview.MonitoringSettingProperties(
-                trace_enabled=True, app_insights_instrumentation_key=connection_string)
-        else:
-            connection_string = get_app_insights_connection_string(cmd.cli_ctx, resource_group, app_insights)
-            monitoring_setting_properties = models_20201101preview.MonitoringSettingProperties(
-                trace_enabled=True, app_insights_instrumentation_key=connection_string)
+
+    if app_insights_key or app_insights:
+        monitoring_setting_properties = _get_monitoring_setting(cmd, resource_group, app_insights_key, app_insights)
     else:
         create_app_insights = True
 
@@ -1634,7 +1644,39 @@ def update_java_agent_config(cmd, resource_group, service_name, location, app_in
                 'Error while trying to create and configure an Application Insights for the Azure Spring Cloud. '
                 'Please use the Azure Portal to create and configure the Application Insights, if needed.')
             return None
+    if monitoring_setting_properties:
+        monitoring_setting_properties.app_insights_sampling_rate = sampling_rate
     return monitoring_setting_properties
+
+
+def _get_monitoring_setting(cmd, resource_group, app_insights_key, app_insights):
+    monitoring_setting_properties = None
+    if app_insights_key:
+        monitoring_setting_properties = models_20201101preview.MonitoringSettingProperties(
+            trace_enabled=True,
+            app_insights_instrumentation_key=app_insights_key)
+    elif app_insights:
+        connection_string = _get_connection_string_from_app_insights(cmd, resource_group, app_insights)
+        monitoring_setting_properties = models_20201101preview.MonitoringSettingProperties(
+            trace_enabled=True,
+            app_insights_instrumentation_key=connection_string)
+    return monitoring_setting_properties
+
+
+def _get_connection_string_from_app_insights(cmd, resource_group, app_insights):
+    """Get connection string from:
+    1) application insights name
+    2) application insights resource id
+    """
+    if is_valid_resource_id(app_insights):
+        resource_id_dict = parse_resource_id(app_insights)
+        connection_string = get_app_insights_connection_string(
+            cmd.cli_ctx, resource_id_dict['resource_group'], resource_id_dict['resource_name'])
+    else:
+        connection_string = get_app_insights_connection_string(cmd.cli_ctx, resource_group, app_insights)
+    if not connection_string:
+        raise CLIError("Cannot find Connection string from application insights:{}".format(app_insights))
+    return connection_string
 
 
 def try_create_application_insights(cmd, resource_group, name, location):

@@ -152,13 +152,11 @@ def validate_jvm_options(namespace):
 
 
 def validate_tracing_parameters_asc_create(namespace):
-    if (namespace.app_insights or namespace.app_insights_key) and namespace.disable_app_insights:
-        raise CLIError("Conflict detected: '--app-insights' or '--app-insights-key'"
+    if (namespace.app_insights or namespace.app_insights_key or namespace.sampling_rate is not None) \
+            and namespace.disable_app_insights:
+        raise CLIError("Conflict detected: '--app-insights' or '--app-insights-key' or '--sampling-rate' "
                        "can not be set with '--disable-app-insights'.")
-    if namespace.app_insights and namespace.app_insights_key:
-        raise CLIError("Conflict detected: '--app-insights' and '--app-insights-key' can not be set at the same time.")
-    if namespace.app_insights == "":
-        raise CLIError("Conflict detected: '--app-insights' can not be empty.")
+    _validate_app_insights_parameters(namespace)
 
 
 def validate_tracing_parameters_asc_update(namespace):
@@ -172,14 +170,22 @@ def validate_tracing_parameters_asc_update(namespace):
 
 
 def validate_app_insights_parameters(namespace):
-    if (namespace.app_insights or namespace.app_insights_key or namespace.sampling_rate) and namespace.disable:
+    if (namespace.app_insights or namespace.app_insights_key or namespace.sampling_rate is not None) \
+            and namespace.disable:
         raise CLIError("Conflict detected: '--app-insights' or '--app-insights-key' or '--sampling-rate'"
                        "can not be set with '--disable'.")
+    _validate_app_insights_parameters(namespace)
+
+
+def _validate_app_insights_parameters(namespace):
     if namespace.app_insights and namespace.app_insights_key:
         raise CLIError("Conflict detected: '--app-insights' and '--app-insights-key' can not be set at the same time.")
-    if namespace.sampling_rate and (namespace.sampling_rate < 0 or namespace.sampling_rate > 100):
-        raise CLIError("Sampling Rate must be in the range [0,100].")
-
+    if namespace.app_insights == "":
+        raise CLIError("Invalid value: '--app-insights' can not be empty.")
+    if namespace.app_insights_key == "":
+        raise CLIError("Invalid value: '--app-insights-key' can not be empty.")
+    if namespace.sampling_rate is not None and (namespace.sampling_rate < 0 or namespace.sampling_rate > 100):
+        raise CLIError("Invalid value: Sampling Rate must be in the range [0,100].")
 
 def validate_vnet(cmd, namespace):
     if not namespace.vnet and not namespace.app_subnet and \
