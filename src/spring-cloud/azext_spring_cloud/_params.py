@@ -12,7 +12,7 @@ from ._validators import (validate_env, validate_cosmos_type, validate_resource_
                           validate_log_limit, validate_log_since, validate_sku, validate_jvm_options,
                           validate_vnet, validate_vnet_required_parameters, validate_node_resource_group,
                           validate_tracing_parameters_asc_create, validate_tracing_parameters_asc_update,
-                          validate_app_insights_parameters, validate_instance_count)
+                          validate_app_insights_parameters, validate_instance_count, validate_java_agent_parameters)
 from ._utils import ApiType
 
 from .vendored_sdks.appplatform.v2020_07_01.models import RuntimeVersion, TestKeyType
@@ -45,6 +45,7 @@ def load_arguments(self, _):
                    arg_type=get_three_state_flag(),
                    help="Java in process agent is now GA-ed and used by default when Application Insights enabled. "
                         "This parameter is no longer needed and will be removed in future release.",
+                   validator=validate_java_agent_parameters,
                    deprecate_info=c.deprecate(target='--enable-java-agent', hide=True))
         c.argument('app_insights_key',
                    help="Connection string (recommended) or Instrumentation key of the existing Application Insights.",

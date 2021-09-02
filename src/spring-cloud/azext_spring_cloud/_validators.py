@@ -169,6 +169,14 @@ def validate_tracing_parameters_asc_update(namespace):
         raise CLIError("Conflict detected: '--app-insights' can not be empty.")
 
 
+def validate_java_agent_parameters(namespace):
+    """TODO (jiec) Deco this function when 'enable-java-agent' is decommissioned.
+    """
+    if namespace.disable_app_insights and namespace.enable_java_agent:
+        raise CLIError("Conflict detected: '--enable-java-agent' and '--disable-app-insights' "
+                       "can not be set at the same time.")
+
+
 def validate_app_insights_parameters(namespace):
     if (namespace.app_insights or namespace.app_insights_key or namespace.sampling_rate is not None) \
             and namespace.disable:
