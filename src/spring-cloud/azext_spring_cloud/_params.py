@@ -148,7 +148,9 @@ def load_arguments(self, _):
         with self.argument_context(scope) as c:
             c.argument(
                 'artifact_path', options_list=[
-                    '--artifact-path', '--jar-path', '-p'], help='If provided, deploy pre-built artifact (jar or netcore zip), otherwise deploy current folder as tar.')
+                    '--artifact-path', '--jar-path'], help='If provided, deploy pre-built artifact (jar or netcore zip), otherwise need to assign source_path.')
+            c.argument(
+                'source_path', nargs='?', const='.', help="If provided, deploy current or designative folder as tar, otherwise need to assign artifact-path.")
             c.argument(
                 'main_entry', options_list=[
                     '--main-entry', '-m'], help="A string containing the path to the .NET executable relative to zip root.")
