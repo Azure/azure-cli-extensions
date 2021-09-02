@@ -283,6 +283,7 @@ def app_create(cmd, client, resource_group, service, name,
     logger.warning("App create succeeded")
     return app
 
+
 def _default_deployment_resource_builder(cpu, memory, env, jvm_options, runtime_version, instance_count):
     resource_requests = models_20210601preview.ResourceRequests(cpu=cpu, memory=memory)
 
@@ -306,6 +307,7 @@ def _default_deployment_resource_builder(cpu, memory, env, jvm_options, runtime_
     sku = models_20210601preview.Sku(name="S0", tier="STANDARD", capacity=instance_count)
     deployment_resource = models.DeploymentResource(properties=properties, sku=sku)
     return deployment_resource
+
 
 def _check_active_deployment_exist(client, resource_group, service, app):
     active_deployment_name = client.apps.get(resource_group, service, app).properties.active_deployment_name
