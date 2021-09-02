@@ -1722,8 +1722,11 @@ def app_insights_update(cmd, client, resource_group, name,
         monitoring_setting_properties = models_20201101preview.MonitoringSettingProperties(trace_enabled=False)
     else:
         monitoring_setting_properties = client.monitoring_settings.get(resource_group, name).properties
-        if not monitoring_setting_properties.app_insights_instrumentation_key and not app_insights_key and not app_insights and sampling_rate:
-            CLIError("Can't set '--sampling-rate' without connecting to Application Insights. Please provide '--app-insights' or '--app-insights-key'.")
+        if not monitoring_setting_properties.app_insights_instrumentation_key \
+                and not app_insights_key \
+                and not app_insights:
+            CLIError("Can't update application insights without connecting to Application Insights. "
+                     "Please provide '--app-insights' or '--app-insights-key'.")
         if app_insights_key:
             connection_string = app_insights_key
         elif app_insights:
@@ -1740,7 +1743,7 @@ def app_insights_update(cmd, client, resource_group, name,
                 trace_enabled=True,
                 app_insights_instrumentation_key=connection_string,
                 app_insights_sampling_rate=sampling_rate)
-        elif monitoring_setting_properties.app_insights_sampling_rate:
+        elif monitoring_setting_properties.app_insights_sampling_rate is not None:
             monitoring_setting_properties = models_20201101preview.MonitoringSettingProperties(
                 trace_enabled=True,
                 app_insights_instrumentation_key=connection_string,

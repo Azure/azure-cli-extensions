@@ -182,6 +182,11 @@ def validate_app_insights_parameters(namespace):
             and namespace.disable:
         raise CLIError("Conflict detected: '--app-insights' or '--app-insights-key' or '--sampling-rate' "
                        "can not be set with '--disable'.")
+    if not namespace.app_insights \
+            and not namespace.app_insights_key \
+            and namespace.sampling_rate is None \
+            and not namespace.disable:
+        raise CLIError("Invalid value: nothing is updated for application insights.")
     _validate_app_insights_parameters(namespace)
 
 
@@ -194,6 +199,7 @@ def _validate_app_insights_parameters(namespace):
         raise CLIError("Invalid value: '--app-insights-key' can not be empty.")
     if namespace.sampling_rate is not None and (namespace.sampling_rate < 0 or namespace.sampling_rate > 100):
         raise CLIError("Invalid value: Sampling Rate must be in the range [0,100].")
+
 
 def validate_vnet(cmd, namespace):
     if not namespace.vnet and not namespace.app_subnet and \
