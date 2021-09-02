@@ -218,12 +218,14 @@ def get_vm_sizes(cli_ctx, location):
     return cf_compute_service(cli_ctx).virtual_machine_sizes.list(location)
 
 
-def _get_kube_env_from_custom_location(cmd, custom_location):
+def _get_kube_env_from_custom_location(cmd, custom_location, resource_group):
     kube_environment_id = ""
+    custom_location_name = custom_location
 
     if is_valid_resource_id(custom_location):
         parsed_custom_location = parse_resource_id(custom_location)
-        custom_location = parsed_custom_location.get("name")
+        custom_location_name = parsed_custom_location.get("name")
+        resource_group = parsed_custom_location.get("resource_group")
 
     kube_envs = cf_kube_environments(cmd.cli_ctx).list_by_subscription()
     for kube in kube_envs:
@@ -234,7 +236,9 @@ def _get_kube_env_from_custom_location(cmd, custom_location):
         elif kube.extended_location and kube.extended_location.custom_location:
             parsed_custom_location_2 = parse_resource_id(kube.extended_location.custom_location)
 
-        if parsed_custom_location_2 and parsed_custom_location_2.get("name").lower() == custom_location.lower():
+        if parsed_custom_location_2 and (
+            parsed_custom_location_2.get("name").lower() == custom_location_name.lower()) and (
+                parsed_custom_location_2.get("resource_group").lower() == resource_group.lower()):
             kube_environment_id = kube.id
             break
 
@@ -244,11 +248,11 @@ def _get_kube_env_from_custom_location(cmd, custom_location):
     return kube_environment_id
 
 
-def _get_custom_location_id_from_custom_location(cmd, custom_location_name):
+def _get_custom_location_id_from_custom_location(cmd, custom_location_name, resource_group_name):
     if is_valid_resource_id(custom_location_name):
         return custom_location_name
 
-    kube_envs = cf_kube_environments(cmd.cli_ctx).list_by_subscription()
+    kube_envs = cf_kube_environments(cmd.cli_ctx).list_by_resource_group(resource_group_name)
     for kube in kube_envs:
         parsed_custom_location = None
         custom_location_id = None
@@ -290,7 +294,7 @@ def create_app_service_plan_inner(cmd, resource_group_name, name, is_linux, hype
     client = web_client_factory(cmd.cli_ctx)
 
     if custom_location:
-        kube_environment = _get_kube_env_from_custom_location(cmd, custom_location)
+        kube_environment = _get_kube_env_from_custom_location(cmd, custom_location, resource_group_name)
 
     if app_service_environment:
         if hyper_v:
@@ -368,7 +372,7 @@ def _validate_asp_and_custom_location_kube_envs_match(cmd, resource_group_name, 
         raise CLIError("The plan '{}' doesn't exist in the resource group '{}".format(plan, resource_group_name))
 
     plan_kube_env_id = ""
-    custom_location_kube_env_id = _get_kube_env_from_custom_location(cmd, custom_location)
+    custom_location_kube_env_id = _get_kube_env_from_custom_location(cmd, custom_location, resource_group_name)
     if plan_info.kube_environment_profile:
         plan_kube_env_id = plan_info.kube_environment_profile.id
 
@@ -480,7 +484,7 @@ def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custo
             webapp_def.kind = KUBE_APP_KIND
 
         if custom_location:  # if Custom Location provided, use that for Extended Location Envelope. Otherwise, get Custom Location from ASP
-            custom_location_id = _get_custom_location_id_from_custom_location(cmd, custom_location)
+            custom_location_id = _get_custom_location_id_from_custom_location(cmd, custom_location, resource_group_name)
             if custom_location_id:
                 webapp_def.extended_location = ExtendedLocationEnvelope(name=custom_location_id, type="CustomLocation")
         else:
@@ -738,7 +742,7 @@ def create_function(cmd, resource_group_name, name, storage_account, plan=None, 
 
     if is_kube:
         if custom_location:  # if Custom Location provided, use that for Extended Location Envelope. Otherwise, get Custom Location from ASP
-            custom_location_id = _get_custom_location_id_from_custom_location(cmd, custom_location)
+            custom_location_id = _get_custom_location_id_from_custom_location(cmd, custom_location, resource_group_name)
             if custom_location_id:
                 functionapp_def.extended_location = ExtendedLocationEnvelope(name=custom_location_id, type="CustomLocation")
         else:
