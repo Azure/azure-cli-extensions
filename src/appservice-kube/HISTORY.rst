@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.2.2
+++++++
+* Fix wrong custom location being used if multiple custom locations of the same name in different RG
+
 0.2.1
 ++++++
 * Fix AppService plan creation
