@@ -11,8 +11,6 @@
 |---------|------------|--------|
 |az purview account|Accounts|[commands](#CommandsInAccounts)|
 |az purview default-account|DefaultAccounts|[commands](#CommandsInDefaultAccounts)|
-|az purview private-endpoint-connection|PrivateEndpointConnections|[commands](#CommandsInPrivateEndpointConnections)|
-|az purview private-link-resource|PrivateLinkResources|[commands](#CommandsInPrivateLinkResources)|
 
 ## COMMANDS
 ### <a name="CommandsInAccounts">Commands in `az purview account` group</a>
@@ -33,21 +31,6 @@
 |[az purview default-account show](#DefaultAccountsGet)|Get|[Parameters](#ParametersDefaultAccountsGet)|[Example](#ExamplesDefaultAccountsGet)|
 |[az purview default-account remove](#DefaultAccountsRemove)|Remove|[Parameters](#ParametersDefaultAccountsRemove)|[Example](#ExamplesDefaultAccountsRemove)|
 |[az purview default-account set](#DefaultAccountsSet)|Set|[Parameters](#ParametersDefaultAccountsSet)|[Example](#ExamplesDefaultAccountsSet)|
-
-### <a name="CommandsInPrivateEndpointConnections">Commands in `az purview private-endpoint-connection` group</a>
-|CLI Command|Operation Swagger name|Parameters|Examples|
-|---------|------------|--------|-----------|
-|[az purview private-endpoint-connection list](#PrivateEndpointConnectionsListByAccount)|ListByAccount|[Parameters](#ParametersPrivateEndpointConnectionsListByAccount)|[Example](#ExamplesPrivateEndpointConnectionsListByAccount)|
-|[az purview private-endpoint-connection show](#PrivateEndpointConnectionsGet)|Get|[Parameters](#ParametersPrivateEndpointConnectionsGet)|[Example](#ExamplesPrivateEndpointConnectionsGet)|
-|[az purview private-endpoint-connection create](#PrivateEndpointConnectionsCreateOrUpdate#Create)|CreateOrUpdate#Create|[Parameters](#ParametersPrivateEndpointConnectionsCreateOrUpdate#Create)|[Example](#ExamplesPrivateEndpointConnectionsCreateOrUpdate#Create)|
-|[az purview private-endpoint-connection update](#PrivateEndpointConnectionsCreateOrUpdate#Update)|CreateOrUpdate#Update|[Parameters](#ParametersPrivateEndpointConnectionsCreateOrUpdate#Update)|Not Found|
-|[az purview private-endpoint-connection delete](#PrivateEndpointConnectionsDelete)|Delete|[Parameters](#ParametersPrivateEndpointConnectionsDelete)|[Example](#ExamplesPrivateEndpointConnectionsDelete)|
-
-### <a name="CommandsInPrivateLinkResources">Commands in `az purview private-link-resource` group</a>
-|CLI Command|Operation Swagger name|Parameters|Examples|
-|---------|------------|--------|-----------|
-|[az purview private-link-resource list](#PrivateLinkResourcesListByAccount)|ListByAccount|[Parameters](#ParametersPrivateLinkResourcesListByAccount)|[Example](#ExamplesPrivateLinkResourcesListByAccount)|
-|[az purview private-link-resource show](#PrivateLinkResourcesGetByGroupId)|GetByGroupId|[Parameters](#ParametersPrivateLinkResourcesGetByGroupId)|[Example](#ExamplesPrivateLinkResourcesGetByGroupId)|
 
 
 ## COMMAND DETAILS
@@ -204,101 +187,3 @@ az purview default-account set --account-name "myDefaultAccount" --resource-grou
 |**--scope-tenant-id**|string|The scope tenant in which the default account is set.|scope_tenant_id|scopeTenantId|
 |**--scope-type**|choice|The scope where the default account is set.|scope_type|scopeType|
 |**--subscription-id**|string|The subscription ID of the account that is set as the default.|subscription_id|subscriptionId|
-
-### group `az purview private-endpoint-connection`
-#### <a name="PrivateEndpointConnectionsListByAccount">Command `az purview private-endpoint-connection list`</a>
-
-##### <a name="ExamplesPrivateEndpointConnectionsListByAccount">Example</a>
-```
-az purview private-endpoint-connection list --account-name "account1" --resource-group "SampleResourceGroup"
-```
-##### <a name="ParametersPrivateEndpointConnectionsListByAccount">Parameters</a> 
-|Option|Type|Description|Path (SDK)|Swagger name|
-|------|----|-----------|----------|------------|
-|**--resource-group-name**|string|The resource group name.|resource_group_name|resourceGroupName|
-|**--account-name**|string|The name of the account.|account_name|accountName|
-|**--skip-token**|string|The skip token.|skip_token|$skipToken|
-
-#### <a name="PrivateEndpointConnectionsGet">Command `az purview private-endpoint-connection show`</a>
-
-##### <a name="ExamplesPrivateEndpointConnectionsGet">Example</a>
-```
-az purview private-endpoint-connection show --account-name "account1" --name "privateEndpointConnection1" \
---resource-group "SampleResourceGroup"
-```
-##### <a name="ParametersPrivateEndpointConnectionsGet">Parameters</a> 
-|Option|Type|Description|Path (SDK)|Swagger name|
-|------|----|-----------|----------|------------|
-|**--resource-group-name**|string|The resource group name.|resource_group_name|resourceGroupName|
-|**--account-name**|string|The name of the account.|account_name|accountName|
-|**--private-endpoint-connection-name**|string|Name of the private endpoint connection.|private_endpoint_connection_name|privateEndpointConnectionName|
-
-#### <a name="PrivateEndpointConnectionsCreateOrUpdate#Create">Command `az purview private-endpoint-connection create`</a>
-
-##### <a name="ExamplesPrivateEndpointConnectionsCreateOrUpdate#Create">Example</a>
-```
-az purview private-endpoint-connection create --account-name "account1" --name "privateEndpointConnection1" \
---resource-group "SampleResourceGroup" --private-link-service-connection-state description="Approved by \
-johndoe@company.com" status="Approved"
-```
-##### <a name="ParametersPrivateEndpointConnectionsCreateOrUpdate#Create">Parameters</a> 
-|Option|Type|Description|Path (SDK)|Swagger name|
-|------|----|-----------|----------|------------|
-|**--resource-group-name**|string|The resource group name.|resource_group_name|resourceGroupName|
-|**--account-name**|string|The name of the account.|account_name|accountName|
-|**--private-endpoint-connection-name**|string|Name of the private endpoint connection.|private_endpoint_connection_name|privateEndpointConnectionName|
-|**--private-link-service-connection-state**|object|The private link service connection state.|private_link_service_connection_state|privateLinkServiceConnectionState|
-|**--id**|string|The private endpoint identifier.|id|id|
-
-#### <a name="PrivateEndpointConnectionsCreateOrUpdate#Update">Command `az purview private-endpoint-connection update`</a>
-
-
-##### <a name="ParametersPrivateEndpointConnectionsCreateOrUpdate#Update">Parameters</a> 
-|Option|Type|Description|Path (SDK)|Swagger name|
-|------|----|-----------|----------|------------|
-|**--resource-group-name**|string|The resource group name.|resource_group_name|resourceGroupName|
-|**--account-name**|string|The name of the account.|account_name|accountName|
-|**--private-endpoint-connection-name**|string|Name of the private endpoint connection.|private_endpoint_connection_name|privateEndpointConnectionName|
-|**--private-link-service-connection-state**|object|The private link service connection state.|private_link_service_connection_state|privateLinkServiceConnectionState|
-|**--id**|string|The private endpoint identifier.|id|id|
-
-#### <a name="PrivateEndpointConnectionsDelete">Command `az purview private-endpoint-connection delete`</a>
-
-##### <a name="ExamplesPrivateEndpointConnectionsDelete">Example</a>
-```
-az purview private-endpoint-connection delete --account-name "account1" --name "privateEndpointConnection1" \
---resource-group "SampleResourceGroup"
-```
-##### <a name="ParametersPrivateEndpointConnectionsDelete">Parameters</a> 
-|Option|Type|Description|Path (SDK)|Swagger name|
-|------|----|-----------|----------|------------|
-|**--resource-group-name**|string|The resource group name.|resource_group_name|resourceGroupName|
-|**--account-name**|string|The name of the account.|account_name|accountName|
-|**--private-endpoint-connection-name**|string|Name of the private endpoint connection.|private_endpoint_connection_name|privateEndpointConnectionName|
-
-### group `az purview private-link-resource`
-#### <a name="PrivateLinkResourcesListByAccount">Command `az purview private-link-resource list`</a>
-
-##### <a name="ExamplesPrivateLinkResourcesListByAccount">Example</a>
-```
-az purview private-link-resource list --account-name "account1" --resource-group "SampleResourceGroup"
-```
-##### <a name="ParametersPrivateLinkResourcesListByAccount">Parameters</a> 
-|Option|Type|Description|Path (SDK)|Swagger name|
-|------|----|-----------|----------|------------|
-|**--resource-group-name**|string|The resource group name.|resource_group_name|resourceGroupName|
-|**--account-name**|string|The name of the account.|account_name|accountName|
-
-#### <a name="PrivateLinkResourcesGetByGroupId">Command `az purview private-link-resource show`</a>
-
-##### <a name="ExamplesPrivateLinkResourcesGetByGroupId">Example</a>
-```
-az purview private-link-resource show --account-name "account1" --group-id "group1" --resource-group \
-"SampleResourceGroup"
-```
-##### <a name="ParametersPrivateLinkResourcesGetByGroupId">Parameters</a> 
-|Option|Type|Description|Path (SDK)|Swagger name|
-|------|----|-----------|----------|------------|
-|**--resource-group-name**|string|The resource group name.|resource_group_name|resourceGroupName|
-|**--account-name**|string|The name of the account.|account_name|accountName|
-|**--group-id**|string|The group identifier.|group_id|groupId|

@@ -46,19 +46,11 @@ helps['purview account show'] = """
 helps['purview account create'] = """
     type: command
     short-summary: "Create an account."
-    parameters:
-      - name: --sku
-        short-summary: "Gets or sets the Sku."
-        long-summary: |
-            Usage: --sku capacity=XX name=XX
-
-            capacity: Gets or sets the sku capacity. Possible values include: 4, 16
-            name: Gets or sets the sku name.
     examples:
       - name: Accounts_CreateOrUpdate
         text: |-
-               az purview account create --location "West US 2" --managed-resource-group-name "custom-rgname" --sku \
-name="Standard" capacity=4 --name "account1" --resource-group "SampleResourceGroup"
+               az purview account create --location "WestUS2" --managed-group-name "custom-rgname" \
+               --name "account1" --resource-group "SampleResourceGroup"
 """
 
 helps['purview account update'] = """

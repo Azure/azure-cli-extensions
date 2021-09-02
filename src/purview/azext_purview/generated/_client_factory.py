@@ -22,11 +22,3 @@ def cf_account(cli_ctx, *_):
 
 def cf_default_account(cli_ctx, *_):
     return cf_purview_cl(cli_ctx).default_accounts
-
-
-def cf_connect_endpoint(cli_ctx, *_):
-    return cf_purview_cl(cli_ctx).private_endpoint_connections
-
-
-def cf_private_link_resource(cli_ctx, *_):
-    return cf_purview_cl(cli_ctx).private_link_resources

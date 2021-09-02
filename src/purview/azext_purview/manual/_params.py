@@ -17,7 +17,6 @@ from azure.cli.core.commands.parameters import (
     get_location_type
 )
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
-from azext_purview.action import AddSku
 
 
 def load_arguments(self, _):
@@ -38,8 +37,7 @@ def load_arguments(self, _):
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
         c.argument('tags', tags_type)
-        c.argument('sku', action=AddSku, nargs='+', help='Gets or sets the Sku.')
-        c.argument('managed_resource_group_name', type=str, help='Gets or sets the managed resource group name')
+        c.argument('managed_group_name', type=str, help='Gets or sets the managed resource group name')
         c.argument('public_network_access', arg_type=get_enum_type(['NotSpecified', 'Enabled', 'Disabled']),
                    help='Gets or sets the public network access.')
 
@@ -48,7 +46,7 @@ def load_arguments(self, _):
         c.argument('account_name', options_list=['--name', '-n', '--account-name'], type=str, help='The name of the '
                    'account.', id_part='name')
         c.argument('tags', tags_type)
-        c.argument('managed_resource_group_name', type=str, help='Gets or sets the managed resource group name')
+        c.argument('managed_group_name', type=str, help='Gets or sets the managed resource group name')
         c.argument('public_network_access', arg_type=get_enum_type(['NotSpecified', 'Enabled', 'Disabled']),
                    help='Gets or sets the public network access.')
 
@@ -88,7 +86,8 @@ def load_arguments(self, _):
                    'then it is the ID of that subscription.')
 
     with self.argument_context('purview default-account set') as c:
-        c.argument('account_name', type=str, help='The name of the account that is set as the default.')
+        c.argument('account_name', options_list=['--name', '-n', '--account-name'], type=str,
+                   help='The name of the account that is set as the default.')
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('scope', type=str, help='The scope object ID. For example, sub ID or tenant ID.')
         c.argument('scope_tenant_id', type=str, help='The scope tenant in which the default account is set.')

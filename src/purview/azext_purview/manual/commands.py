@@ -9,11 +9,13 @@
 # --------------------------------------------------------------------------
 # pylint: disable=too-many-statements
 # pylint: disable=too-many-locals
-# pylint: disable=bad-continuation
 # pylint: disable=line-too-long
 
 from azure.cli.core.commands import CliCommandType
-from azext_purview.generated._client_factory import cf_account, cf_default_account
+from azext_purview.generated._client_factory import (
+    cf_account,
+    cf_default_account,
+)
 
 
 purview_account = CliCommandType(
@@ -46,6 +48,3 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'purview_default_account_show')
         g.custom_command('remove', 'purview_default_account_remove')
         g.custom_command('set', 'purview_default_account_set')
-
-    with self.command_group('purview', is_experimental=True):
-        pass
