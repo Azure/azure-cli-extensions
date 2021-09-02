@@ -458,22 +458,23 @@ def validate_jar(namespace):
 
     file_size, spring_boot_version, spring_cloud_version, has_actuator, has_manifest, has_jar, has_class, ms_sdk_version = values
 
+    tips = ", if you choose to ignore these errors, turn validation off with --disable-validation"
     if not has_jar and not has_class:
         telemetry.set_user_fault("invalid_jar_no_class_jar")
-        raise InvalidArgumentValueError("Do not find any class or jar file, please check if your artifact is a valid fat jar")
+        raise InvalidArgumentValueError("Do not find any class or jar file, please check if your artifact is a valid fat jar" + tips)
     if not has_manifest:
         telemetry.set_user_fault("invalid_jar_no_manifest")
-        raise InvalidArgumentValueError("Do not find MANIFEST.MF, please check if your artifact is a valid fat jar")
+        raise InvalidArgumentValueError("Do not find MANIFEST.MF, please check if your artifact is a valid fat jar" + tips)
     if file_size / 1024 / 1024 < 10:
         telemetry.set_user_fault("invalid_jar_thin_jar")
-        raise InvalidArgumentValueError("Thin jar detected, please check if your artifact is a valid fat jar")
+        raise InvalidArgumentValueError("Thin jar detected, please check if your artifact is a valid fat jar" + tips)
 
     # validate spring boot version
     if spring_boot_version and spring_boot_version.startswith('1'):
         telemetry.set_user_fault("old_spring_boot_version")
         raise InvalidArgumentValueError(
             "The spring boot {} you are using is not supported. To get the latest supported "
-            "versions please refer to: https://aka.ms/ascspringversion".format(spring_boot_version))
+            "versions please refer to: https://aka.ms/ascspringversion".format(spring_boot_version) + tips)
 
     # old spring cloud version, need to import ms sdk <= 2.2.1
     if spring_cloud_version:
@@ -482,7 +483,7 @@ def validate_jar(namespace):
                 telemetry.set_user_fault("old_spring_cloud_version")
                 raise InvalidArgumentValueError(
                     "The spring cloud {} you are using is not supported. To get the latest supported "
-                    "versions please refer to: https://aka.ms/ascspringversion".format(spring_cloud_version))
+                    "versions please refer to: https://aka.ms/ascspringversion".format(spring_cloud_version) + tips)
         else:
             if ms_sdk_version and ms_sdk_version <= "2.2.1":
                 telemetry.set_user_fault("old_ms_sdk_version")
@@ -491,7 +492,7 @@ def validate_jar(namespace):
                     "supported, please remove it or upgrade to a higher version, to get the latest "
                     "supported versions please refer to: "
                     "https://mvnrepository.com/artifact/com.microsoft.azure/spring-cloud-starter-azure"
-                    "-spring-cloud-client".format(ms_sdk_version))
+                    "-spring-cloud-client".format(ms_sdk_version) + tips)
 
     if not has_actuator:
         telemetry.set_user_fault("no_spring_actuator")
