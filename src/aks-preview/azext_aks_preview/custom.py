@@ -95,6 +95,7 @@ from ._helpers import (_populate_api_server_access_profile, _set_vm_set_type,
                        _trim_fqdn_name_containing_hcp)
 from ._loadbalancer import (set_load_balancer_sku, is_load_balancer_profile_provided,
                             update_load_balancer_profile, create_load_balancer_profile)
+from ._natgateway import (create_nat_gateway_profile, update_nat_gateway_profile, is_nat_gateway_profile_provided)
 from ._consts import CONST_HTTP_APPLICATION_ROUTING_ADDON_NAME
 from ._consts import CONST_MONITORING_ADDON_NAME
 from ._consts import CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID
@@ -982,6 +983,8 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                load_balancer_outbound_ip_prefixes=None,
                load_balancer_outbound_ports=None,
                load_balancer_idle_timeout=None,
+               nat_gateway_managed_outbound_ip_count=None,
+               nat_gateway_idle_timeout=None,
                outbound_type=None,
                enable_addons=None,
                workspace_resource_id=None,
@@ -1210,8 +1213,12 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         load_balancer_outbound_ports,
         load_balancer_idle_timeout)
 
+    nat_gateway_profile = create_nat_gateway_profile(
+        nat_gateway_managed_outbound_ip_count,
+        nat_gateway_idle_timeout)
+
     outbound_type = _set_outbound_type(
-        outbound_type, network_plugin, load_balancer_sku, load_balancer_profile)
+        outbound_type, vnet_subnet_id, load_balancer_sku, load_balancer_profile)
 
     network_profile = None
     if any([network_plugin,
@@ -1234,14 +1241,16 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
             network_policy=network_policy,
             load_balancer_sku=load_balancer_sku.lower(),
             load_balancer_profile=load_balancer_profile,
+            nat_gateway_profile=nat_gateway_profile,
             outbound_type=outbound_type
         )
     else:
-        if load_balancer_sku.lower() == "standard" or load_balancer_profile:
+        if load_balancer_sku.lower() == "standard" or load_balancer_profile or nat_gateway_profile:
             network_profile = ContainerServiceNetworkProfile(
                 network_plugin="kubenet",
                 load_balancer_sku=load_balancer_sku.lower(),
                 load_balancer_profile=load_balancer_profile,
+                nat_gateway_profile=nat_gateway_profile,
                 outbound_type=outbound_type,
             )
         if load_balancer_sku.lower() == "basic":
@@ -1507,6 +1516,8 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                load_balancer_outbound_ip_prefixes=None,
                load_balancer_outbound_ports=None,
                load_balancer_idle_timeout=None,
+               nat_gateway_managed_outbound_ip_count=None,
+               nat_gateway_idle_timeout=None,
                api_server_authorized_ip_ranges=None,
                enable_pod_security_policy=False,
                disable_pod_security_policy=False,
@@ -1545,6 +1556,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                                                           load_balancer_outbound_ip_prefixes,
                                                           load_balancer_outbound_ports,
                                                           load_balancer_idle_timeout)
+    update_natgw_profile = is_nat_gateway_profile_provided(nat_gateway_managed_outbound_ip_count, nat_gateway_idle_timeout)
     update_aad_profile = not (
         aad_tenant_id is None and aad_admin_group_object_ids is None and not enable_azure_rbac and not disable_azure_rbac)
     # pylint: disable=too-many-boolean-expressions
@@ -1555,6 +1567,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
        and api_server_authorized_ip_ranges is None and \
        not update_pod_security and \
        not update_lb_profile and \
+       not update_natgw_profile and \
        not uptime_sla and \
        not no_uptime_sla and \
        not enable_aad and \
@@ -1588,6 +1601,8 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                        '"--load-balancer-managed-outbound-ip-count" or '
                        '"--load-balancer-outbound-ips" or '
                        '"--load-balancer-outbound-ip-prefixes" or '
+                       '"--nat-gateway-managed-outbound-ip-count" or '
+                       '"--nat-gateway-idle-timeout" or '
                        '"--enable-aad" or '
                        '"--aad-tenant-id" or '
                        '"--aad-admin-group-object-ids" or '
@@ -1688,6 +1703,12 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
             load_balancer_outbound_ports,
             load_balancer_idle_timeout,
             instance.network_profile.load_balancer_profile)
+
+    if update_natgw_profile:
+        instance.network_profile.nat_gateway_profile = update_nat_gateway_profile(
+            nat_gateway_managed_outbound_ip_count,
+            nat_gateway_idle_timeout,
+            instance.network_profile.nat_gateway_profile)
 
     if attach_acr and detach_acr:
         raise CLIError(

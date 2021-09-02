@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.5.31
++++++
+* Add support for new outbound types: 'managedNATGateway' and 'userAssignedNATGateway'
+
 0.5.30
 +++++
 * Add preview support for setting scaleDownMode field on nodepools. Requires registering the feature flag "Microsoft.ContainerService/AKS-ScaleDownModePreview" for setting the value to "Deallocate".
