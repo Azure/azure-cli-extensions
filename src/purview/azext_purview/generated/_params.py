@@ -37,7 +37,7 @@ def load_arguments(self, _):
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
         c.argument('tags', tags_type)
-        c.argument('managed_resource_group_name', type=str, help='Gets or sets the managed resource group name')
+        c.argument('managed_group_name', type=str, help='Gets or sets the managed resource group name')
         c.argument('public_network_access', arg_type=get_enum_type(['NotSpecified', 'Enabled', 'Disabled']),
                    help='Gets or sets the public network access.')
 
@@ -46,7 +46,7 @@ def load_arguments(self, _):
         c.argument('account_name', options_list=['--name', '-n', '--account-name'], type=str, help='The name of the '
                    'account.', id_part='name')
         c.argument('tags', tags_type)
-        c.argument('managed_resource_group_name', type=str, help='Gets or sets the managed resource group name')
+        c.argument('managed_group_name', type=str, help='Gets or sets the managed resource group name')
         c.argument('public_network_access', arg_type=get_enum_type(['NotSpecified', 'Enabled', 'Disabled']),
                    help='Gets or sets the public network access.')
 
@@ -109,7 +109,7 @@ def load_arguments(self, _):
     with self.argument_context('purview connect-endpoint create') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('account_name', type=str, help='The name of the account.')
-        c.argument('endpoint_name', options_list=['--name', '-n', '--endpoint-name'],
+        c.argument('private_endpoint_connection_name', options_list=['--name', '-n', '--endpoint-name'],
                    type=str, help='Name of the private '
                    'endpoint connection.')
         c.argument('required_actions', help='The required actions.')
@@ -122,7 +122,7 @@ def load_arguments(self, _):
     with self.argument_context('purview connect-endpoint update') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('account_name', type=str, help='The name of the account.', id_part='name')
-        c.argument('endpoint_name', options_list=['--name', '-n', '--endpoint-name'], type=str,
+        c.argument('private_endpoint_connection_name', options_list=['--name', '-n', '--endpoint-name'], type=str,
                    help='Name of the private endpoint connection.', id_part='child_name_1')
         c.argument('required_actions', help='The required actions.')
         c.argument('description', help='The description.')

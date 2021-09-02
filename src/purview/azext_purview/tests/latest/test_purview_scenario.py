@@ -103,8 +103,6 @@ class TestPurviewScenario(ScenarioTest):
     def test_purview_private_endpoint_connection(self, resource_group, vnet):
         self.kwargs.update({
             'purview': self.create_random_name('pv-', 10),
-            'lb': self.create_random_name('lb-', 10),
-            'pub_ip': self.create_random_name('ip-', 10),
             'vnet': self.create_random_name('vnet-', 10),
             'subnet': self.create_random_name('subnet-', 10),
             'link_service': self.create_random_name('lks-', 10),
@@ -120,27 +118,19 @@ class TestPurviewScenario(ScenarioTest):
             self.check('provisioningState', 'Creating')
         ]).get_output_in_json()
         self.cmd('purview account wait --created -g {rg} -n {purview}')
-        self.cmd('network lb create -g {rg} -n {lb} --sku standard --public-ip-address {pub_ip}', checks=[
 
-        ])
         self.cmd('network vnet create -g {rg} -n {vnet} --subnet-name {subnet}')
-        self.cmd('az network vnet subnet update -g pvtest -n {subnet} --vnet-name {vnet}'
-                 ' --disable-private-link-service-network-policies'
+        self.cmd('network vnet subnet update -g pvtest -n {subnet} --vnet-name {vnet}'
                  ' --disable-private-endpoint-network-policies', checks=[
-            self.check('privateEndpointNetworkPolicies', 'Disabled'),
-            self.check('privateLinkServiceNetworkPolicies', 'Disabled')
+            self.check('privateEndpointNetworkPolicies', 'Disabled')
         ])
-        servicec = self.cmd('az network private-link-service create -g {rg} -n {link_service}'
-                 '  --vnet-name {vnet} --subnet {subnet} --lb-name {lb}'
-                 ' --lb-frontend-ip-configs LoadBalancerFrontEnd', checks=[
-            self.check('name', '{link_service}')
-        ]).get_output_in_json()
         self.kwargs.update({
-            'point_id': servicec['id'],
+            'purview_id': purview_account['id'],
             'connect_name': self.create_random_name('ctn-', 10)
         })
-        self.cmd('az network private-endpoint create -g {rg} -n {endpoint} --vnet-name {vnet} --subnet {subnet}'
-                 ' --private-connection-resource-id {point_id} --connection-name {connect_name}', checks=[
+        self.cmd('network private-endpoint create -g {rg} -n {endpoint} --vnet-name {vnet}'
+                 ' --subnet {subnet} --private-connection-resource-id {purview_id}'
+                 ' --connection-name {connect_name} --group-id account', checks=[
             self.check('name', '{connect_name}')
         ])
 

@@ -49,7 +49,7 @@ helps['purview account create'] = """
     examples:
       - name: Accounts_CreateOrUpdate
         text: |-
-               az purview account create --location "West US 2" --managed-resource-group-name "custom-rgname" \
+               az purview account create --location "WestUS2" --managed-group-name "custom-rgname" \
                --name "account1" --resource-group "SampleResourceGroup"
 """
 
@@ -142,94 +142,74 @@ helps['purview default-account set'] = """
 --subscription-id "12345678-1234-1234-12345678aaa"
 """
 
-helps['purview connect_endpoint'] = """
+helps['purview connect-endpoint'] = """
     type: group
     short-summary: Manage private endpoint connection with purview
 """
 
-helps['purview connect_endpoint list'] = """
+helps['purview connect-endpoint list'] = """
     type: command
     short-summary: "Get private endpoint connections for account."
     examples:
       - name: PrivateEndpointConnections_ListByAccount
         text: |-
-               az purview connect_endpoint list --account-name "account1" --resource-group \
-"SampleResourceGroup"
+               az purview connect-endpoint list --account-name "account1" --resource-group "SampleResourceGroup"
 """
 
-helps['purview connect_endpoint show'] = """
+helps['purview connect-endpoint show'] = """
     type: command
     short-summary: "Get a private endpoint connection."
     examples:
       - name: PrivateEndpointConnections_Get
         text: |-
-               az purview connect_endpoint show --account-name "account1" --name \
+               az purview connect-endpoint show --account-name "account1" --name \
 "privateEndpointConnection1" --resource-group "SampleResourceGroup"
 """
 
-helps['purview connect_endpoint create'] = """
+helps['purview connect-endpoint create'] = """
     type: command
     short-summary: "Create a private endpoint connection."
-    parameters:
-      - name: --private-link-service-connection-state
-        short-summary: "The private link service connection state."
-        long-summary: |
-            Usage: --private-link-service-connection-state actions-required=XX description=XX status=XX
-
-            actions-required: The required actions.
-            description: The description.
-            status: The status.
     examples:
       - name: PrivateEndpointConnections_CreateOrUpdate
         text: |-
-               az purview connect_endpoint create --account-name "account1" --name \
-"privateEndpointConnection1" --resource-group "SampleResourceGroup" --private-link-service-connection-state \
-description="Approved by johndoe@company.com" status="Approved"
+               az purview connect-endpoint create --account-name "account1" --name "privateEndpointConnection1" \
+--resource-group "SampleResourceGroup" --description "Approved by johndoe@company.com" --status "Approved"
 """
 
-helps['purview connect_endpoint update'] = """
+helps['purview connect-endpoint update'] = """
     type: command
     short-summary: "Update a private endpoint connection."
-    parameters:
-      - name: --private-link-service-connection-state
-        short-summary: "The private link service connection state."
-        long-summary: |
-            Usage: --private-link-service-connection-state actions-required=XX description=XX status=XX
-
-            actions-required: The required actions.
-            description: The description.
-            status: The status.
 """
 
-helps['purview connect_endpoint delete'] = """
+helps['purview connect-endpoint delete'] = """
     type: command
     short-summary: "Delete a private endpoint connection."
     examples:
       - name: PrivateEndpointConnections_Delete
         text: |-
-               az purview connect_endpoint delete --account-name "account1" --name \
+               az purview connect-endpoint delete --account-name "account1" --name \
 "privateEndpointConnection1" --resource-group "SampleResourceGroup"
 """
 
-helps['purview connect_endpoint wait'] = """
+helps['purview connect-endpoint wait'] = """
     type: command
-    short-summary: Place the CLI in a waiting state until a condition of the purview connect_endpoint is \
+    short-summary: Place the CLI in a waiting state until a condition of the purview connect-endpoint is \
 met.
     examples:
-      - name: Pause executing next line of CLI script until the purview connect_endpoint is successfully \
+      - name: Pause executing next line of CLI script until the purview connect-endpoint is successfully \
 created.
         text: |-
-               az purview connect_endpoint wait --account-name "account1" --name \
+               az purview connect-endpoint wait --account-name "account1" --name \
 "privateEndpointConnection1" --resource-group "SampleResourceGroup" --created
-      - name: Pause executing next line of CLI script until the purview connect_endpoint is successfully \
+      - name: Pause executing next line of CLI script until the purview connect-endpoint is successfully \
 updated.
         text: |-
-               az purview private-endpoint-connection wait --account-name "account1" --name \
+               az purview connect-endpoint wait --account-name "account1" --name \
 "privateEndpointConnection1" --resource-group "SampleResourceGroup" --updated
-      - name: Pause executing next line of CLI script until the purview connect_endpoint is successfully \
+      - name: Pause executing next line of CLI script until the purview connect-endpoint is successfully \
 deleted.
         text: |-
-               az purview connect_endpoint wait --account-name "account1" --name \
+               az purview connect-endpoint wait --account-name "account1" --name \
 "privateEndpointConnection1" --resource-group "SampleResourceGroup" --deleted
 """
 

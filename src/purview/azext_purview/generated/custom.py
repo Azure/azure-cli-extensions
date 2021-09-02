@@ -34,7 +34,7 @@ def purview_account_create(client,
                            account_name,
                            location=None,
                            tags=None,
-                           managed_resource_group_name=None,
+                           managed_group_name=None,
                            public_network_access=None,
                            no_wait=False):
     account = {}
@@ -47,8 +47,8 @@ def purview_account_create(client,
     if len(account['identity']) == 0:
         del account['identity']
     account['sku'] = {'name': 'Standard'}
-    if managed_resource_group_name is not None:
-        account['managed_resource_group_name'] = managed_resource_group_name
+    if managed_group_name is not None:
+        account['managed_resource_group_name'] = managed_group_name
     if public_network_access is not None:
         account['public_network_access'] = public_network_access
     else:
@@ -64,15 +64,15 @@ def purview_account_update(client,
                            resource_group_name,
                            account_name,
                            tags=None,
-                           managed_resource_group_name=None,
+                           managed_group_name=None,
                            public_network_access=None,
                            no_wait=False):
     account_update_parameters = {}
     if tags is not None:
         account_update_parameters['tags'] = tags
     account_update_parameters['properties'] = {}
-    if managed_resource_group_name is not None:
-        account_update_parameters['properties']['managed_resource_group_name'] = managed_resource_group_name
+    if managed_group_name is not None:
+        account_update_parameters['properties']['managed_resource_group_name'] = managed_group_name
     if public_network_access is not None:
         account_update_parameters['properties']['public_network_access'] = public_network_access
     else:
@@ -166,21 +166,20 @@ def purview_connect_endpoint_list(client,
 def purview_connect_endpoint_show(client,
                                   resource_group_name,
                                   account_name,
-                                  private_endpoint_connection_name):
+                                  endpoint_name):
     return client.get(resource_group_name=resource_group_name,
                       account_name=account_name,
-                      private_endpoint_connection_name=private_endpoint_connection_name)
+                      private_endpoint_connection_name=endpoint_name)
 
 
 def purview_connect_endpoint_create(client,
                                     resource_group_name,
                                     account_name,
-                                    endpoint_name,
+                                    private_endpoint_connection_name,
                                     required_actions=None,
                                     description=None,
                                     status=None,
                                     id_=None,
-                                    provison_state=None,
                                     no_wait=False):
     request = {}
     request['private_link_service_connection_state'] = {}
@@ -195,19 +194,18 @@ def purview_connect_endpoint_create(client,
         request['private_endpoint']['id'] = id_
     if len(request['private_endpoint']) == 0:
         del request['private_endpoint']
-    print(request)
     return sdk_no_wait(no_wait,
                        client.begin_create_or_update,
                        resource_group_name=resource_group_name,
                        account_name=account_name,
-                       private_endpoint_connection_name=endpoint_name,
+                       private_endpoint_connection_name=private_endpoint_connection_name,
                        request=request)
 
 
 def purview_connect_endpoint_update(instance,
                                     resource_group_name,
                                     account_name,
-                                    endpoint_name,
+                                    private_endpoint_connection_name,
                                     required_actions=None,
                                     description=None,
                                     status=None,

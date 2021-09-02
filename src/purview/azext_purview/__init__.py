@@ -21,8 +21,7 @@ class PurviewManagementClientCommandsLoader(AzCommandsLoader):
         purview_custom = CliCommandType(
             operations_tmpl='azext_purview.custom#{}',
             client_factory=cf_purview_cl)
-        parent = super(PurviewManagementClientCommandsLoader, self)
-        parent.__init__(cli_ctx=cli_ctx, custom_command_type=purview_custom)
+        super().__init__(cli_ctx=cli_ctx, custom_command_type=purview_custom)
 
     def load_command_table(self, args):
         from azext_purview.generated.commands import load_command_table
