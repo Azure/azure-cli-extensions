@@ -161,7 +161,7 @@ def validate_tracing_parameters_asc_create(namespace):
 
 def validate_tracing_parameters_asc_update(namespace):
     if (namespace.app_insights or namespace.app_insights_key) and namespace.disable_app_insights:
-        raise CLIError("Conflict detected: '--app-insights' or '--app-insights-key'"
+        raise CLIError("Conflict detected: '--app-insights' or '--app-insights-key' "
                        "can not be set with '--disable-app-insights'.")
     if namespace.app_insights and namespace.app_insights_key:
         raise CLIError("Conflict detected: '--app-insights' and '--app-insights-key' can not be set at the same time.")
@@ -172,7 +172,7 @@ def validate_tracing_parameters_asc_update(namespace):
 def validate_app_insights_parameters(namespace):
     if (namespace.app_insights or namespace.app_insights_key or namespace.sampling_rate is not None) \
             and namespace.disable:
-        raise CLIError("Conflict detected: '--app-insights' or '--app-insights-key' or '--sampling-rate'"
+        raise CLIError("Conflict detected: '--app-insights' or '--app-insights-key' or '--sampling-rate' "
                        "can not be set with '--disable'.")
     _validate_app_insights_parameters(namespace)
 
