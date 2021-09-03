@@ -58,7 +58,7 @@ logger = get_logger(__name__)
 
 def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="", proxy_cert="", location=None,
                         kube_config=None, kube_context=None, no_wait=False, tags=None, distribution='auto', infrastructure='auto',
-                        disable_auto_upgrade=False, cl_oid=None, onboarding_timeout="300"):
+                        disable_auto_upgrade=False, cl_oid=None, onboarding_timeout="600"):
     logger.warning("Ensure that you have the latest helm version installed before proceeding.")
     logger.warning("This operation might take a while...\n")
 
@@ -913,7 +913,7 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
     return str.format(consts.Update_Agent_Success, connected_cluster.name)
 
 
-def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=None, kube_context=None, arc_agent_version=None, upgrade_timeout="300"):
+def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=None, kube_context=None, arc_agent_version=None, upgrade_timeout="600"):
     logger.warning("Ensure that you have the latest helm version installed before proceeding.")
     logger.warning("This operation might take a while...\n")
 
