@@ -131,5 +131,43 @@ class NetworkScenarioTest(ScenarioTest):
                  '--description "test_description"')
         self.cmd('network manager security-admin-config list --network-manager-name {manager_name} -g {rg}')
         self.cmd('network manager security-admin-config show --configuration-name {name} --network-manager-name {manager_name} -g {rg}')
+
+        # test nm commit
+        # self.cmd('network manager commit post --network-manager-name {manager_name} --commit-type "SecurityAdmin" --target-locations "eastus2" -g {rg} '
+        #          '--configuration-ids {sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkManagers/{manager_name}/securityAdminConfigurations/{name}')
+
         self.cmd('network manager security-admin-config delete --configuration-name {name} --network-manager-name {manager_name} -g {rg} --yes')
+
+
+    @ResourceGroupPreparer(name_prefix='test_network_manager_security_admin_rule_collection_crud', location='jioindiawest')
+    @VirtualNetworkPreparer()
+    def test_network_manager_security_admin_rule_collection_crud(self, virtual_network, resource_group):
+
+        self.kwargs.update({
+            'collection_name': '',
+            'config_name': 'myTestSecurityConfig',
+            'manager_name': 'TestNetworkManager',
+            'group_name': 'TestNetworkGroup',
+            'description': '"A sample policy"',
+            'sub': '/subscriptions/{}'.format(self.get_subscription_id()),
+        })
+
+        self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" --display-name "TestNetworkManager" '
+                 '--network-manager-scope-accesses "SecurityAdmin" "Connectivity" '
+                 '--network-manager-scopes '
+                 ' subscriptions={sub} '
+                 '-l jioindiawest '
+                 '--resource-group {rg}')
+
+        self.cmd('network manager group create --name {group_name} --network-manager-name {manager_name} --description {description} '
+                 '--conditional-membership "" --display-name ASampleGroup --member-type VirtualNetwork  -g {rg} '
+                 '--group-members vnet-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}" '
+                 'subnet-id=""')
+
+        self.cmd('network manager security-admin-config create --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} '
+                 '--description {description} --delete-existing-ns-gs true --security-type "AdminPolicy" --display-name MyTestConfig')
+
+        self.cmd('network manager admin-rule collection --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} '
+                 '--role-collection-name {collection_name} --description {description} --display-name ASampleCollection '
+                 '--applies-to-groups  network-group-id={sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkManagers/{manager_name}/networkGroups/{group_name}')
 

@@ -13,8 +13,10 @@
 from azure.cli.core.commands import CliCommandType
 from azext_network_manager._client_factory import (
     cf_networkmanager, cf_networkmanagercommit, cf_networkmanagerdeploymentstatus, cf_effectivevirtualnetwork,
-    cf_activeconfiguration, cf_connectivityconfiguration, cf_effectiveconfiguration, cf_networkgroup, cf_userrule,
-    cf_adminrule, cf_securityadminconfiguration, cf_securityuserconfiguration)
+    cf_activeconnectivityconfiguration, cf_connectivityconfiguration, cf_effectiveconfiguration, cf_networkgroup, cf_userrule,
+    cf_userrulecollection, cf_adminrule, cf_adminrulecollection, cf_securityadminconfiguration, cf_securityuserconfiguration,
+    cf_activesecurityadminrule, cf_activesecurityuserrule, cf_effectiveconnectivityconfiguration, cf_effectivesecurityadminrule,
+    cf_securityperimeter, cf_perimeterassociableresourcetype)
 
 
 def load_command_table(self, _):
@@ -37,9 +39,29 @@ def load_command_table(self, _):
         operations_tmpl='azext_network_manager.vendored_sdks.operations._effective_virtual_networks_operations#EffectiveVirtualNetworksOperations.{}',
         client_factory=cf_effectivevirtualnetwork)
 
-    network_activeconfiguration = CliCommandType(
-        operations_tmpl='azext_network_manager.vendored_sdks.operations._active_configurations_operations#ActiveConfigurationsOperations.{}',
-        client_factory=cf_activeconfiguration
+    network_activeconnectivityconfiguration = CliCommandType(
+        operations_tmpl='azext_network_manager.vendored_sdks.operations._active_connectivity_configurations_operations#ActiveConnetivityConfigurationsOperations.{}',
+        client_factory=cf_activeconnectivityconfiguration
+    )
+
+    network_effectiveconnectivityconfiguration = CliCommandType(
+        operations_tmpl='azext_network_manager.vendored_sdks.operations._effective_connectivity_configurations_operations#EffectiveConnetivityConfigurationsOperations.{}',
+        client_factory=cf_effectiveconnectivityconfiguration
+    )
+
+    network_effectivesecurityadminrule = CliCommandType(
+        operations_tmpl='azext_network_manager.vendored_sdks.operations._effective_security_admin_rules_operations#EffectiveSecurityAdminRulesOperations.{}',
+        client_factory=cf_effectivesecurityadminrule
+    )
+
+    network_activesecurityadminrule = CliCommandType(
+        operations_tmpl='azext_network_manager.vendored_sdks.operations._active_security_admin_rules_operations#ActiveSecurityAdminRulesOperations.{}',
+        client_factory=cf_activesecurityadminrule
+    )
+
+    network_activesecurityuserrule = CliCommandType(
+        operations_tmpl='azext_network_manager.vendored_sdks.operations._active_security_user_rules_operations#ActiveSecurityUserRulesOperations.{}',
+        client_factory=cf_activesecurityuserrule
     )
 
     network_connectivityconfiguration = CliCommandType(
@@ -72,9 +94,29 @@ def load_command_table(self, _):
         client_factory=cf_adminrule
     )
 
+    network_adminrulecollection = CliCommandType(
+        operations_tmpl='azext_network_manager.vendored_sdks.operations._admin_rule_collections_operations#AdminRuleCollectionsOperations.{}',
+        client_factory=cf_adminrulecollection
+    )
+
     network_userrule = CliCommandType(
         operations_tmpl='azext_network_manager.vendored_sdks.operations._user_rules_operations#UserRulesOperations.{}',
         client_factory=cf_userrule
+    )
+
+    network_userrulecollection = CliCommandType(
+        operations_tmpl='azext_network_manager.vendored_sdks.operations._user_rule_collection_operations#UserRuleCollectionsOperations.{}',
+        client_factory=cf_userrulecollection
+    )
+
+    network_securityperimeter = CliCommandType(
+        operations_tmpl='azext_network_manager.vendored_sdks.operations._network_security_perimeters_operations#NetworkSecurityPerimetersOperations.{}',
+        client_factory=cf_securityperimeter
+    )
+
+    network_perimeterassociableresourcetype = CliCommandType(
+        operations_tmpl='azext_network_manager.vendored_sdks.operations._perimeter_associable_resource_types_operations#PerimeterAssociableResourceTypesOperations.{}',
+        client_factory=cf_perimeterassociableresourcetype
     )
 
     with self.command_group('network manager', network_networkmanager, client_factory=cf_networkmanager) as g:
@@ -94,8 +136,30 @@ def load_command_table(self, _):
         g.custom_command('list-by-network-group', 'network_manager_effect_vnet_list_by_network_group')
         g.custom_command('list-by-network-manager', 'network_manager_effect_vnet_list_by_network_manager')
 
-    with self.command_group('network manager active-config', network_activeconfiguration, client_factory=cf_activeconfiguration) as g:
+    with self.command_group('network manager active-config', network_activeconnectivityconfiguration, client_factory=cf_activeconnectivityconfiguration) as g:
         g.custom_command('list', 'network_manager_active_config_list')
+
+    with self.command_group('network manager effective-config', network_effectiveconnectivityconfiguration, client_factory=cf_effectiveconnectivityconfiguration) as g:
+        g.custom_command('list', 'network_manager_effective_config_list')
+
+    with self.command_group('network manager active-security-admin-rule', network_activesecurityadminrule, client_factory=cf_activesecurityadminrule) as g:
+        g.custom_command('list', 'network_manager_active_security_admin_rule_list')
+
+    with self.command_group('network manager active-security-user-rule', network_activesecurityuserrule, client_factory=cf_activesecurityuserrule) as g:
+        g.custom_command('list', 'network_manager_active_security_user_rule_list')
+
+    with self.command_group('network manager effective-security-admin-rule', network_effectivesecurityadminrule, client_factory=cf_effectivesecurityadminrule) as g:
+        g.custom_command('list', 'network_manager_effective_security_admin_rule_list')
+
+    with self.command_group('network manager vnet-security-perimeter', network_securityperimeter, client_factory=cf_securityperimeter) as g:
+        g.custom_command('list', 'network_manager_vnet_security_perimeter_list')
+        g.custom_show_command('show', 'network_manager_vnet_security_perimeter_show')
+        g.custom_command('create', 'network_manager_vnet_security_perimeter_create')
+        g.generic_update_command('update', custom_func_name='network_manager_vnet_security_perimeter_update')
+        g.custom_command('delete', 'network_manager_vnet_security_perimeter_delete', confirmation=True)
+    
+    with self.command_group('network manager perimeter-associable-resource-types', network_perimeterassociableresourcetype, client_factory=cf_perimeterassociableresourcetype) as g:
+        g.custom_command('list', 'network_manager_perimeter_associable_resource_type_list')
 
     with self.command_group('network manager connect-config', network_connectivityconfiguration, client_factory=cf_connectivityconfiguration) as g:
         g.custom_command('list', 'network_manager_connect_config_list')
@@ -130,9 +194,18 @@ def load_command_table(self, _):
         g.custom_command('delete', 'network_manager_security_admin_config_delete', confirmation=True)
 
     with self.command_group('network manager admin-rule', network_adminrule, client_factory=cf_adminrule) as g:
+        g.custom_command('create', 'network_manager_admin_rule_create')
+        g.generic_update_command('update', setter_arg_name='admin_rule', custom_func_name='network_manager_admin_update')
         g.custom_command('list', 'network_manager_admin_rule_list')
         g.custom_show_command('show', 'network_manager_admin_rule_show')
         g.custom_command('delete', 'network_manager_admin_rule_delete', confirmation=True)
+
+    with self.command_group('network manager admin-rule collection', network_adminrulecollection, client_factory=cf_adminrulecollection) as g:
+        g.custom_command('create', 'network_manager_admin_rule_collection_create')
+        g.generic_update_command('update', setter_arg_name='admin_rule_collection', custom_func_name='network_manager_admin_rule_collection_update')
+        g.custom_command('list', 'network_manager_admin_rule_collection_list')
+        g.custom_show_command('show', 'network_manager_admin_rule_collection_show')
+        g.custom_command('delete', 'network_manager_admin_rule_collection_delete', confirmation=True)
 
     with self.command_group('network manager user-rule', network_userrule, client_factory=cf_userrule) as g:
         g.custom_command('list', 'network_manager_user_rule_list')
@@ -141,3 +214,9 @@ def load_command_table(self, _):
         g.generic_update_command('update', setter_arg_name='user_rule', custom_func_name='network_manager_user_rule_update')
         g.custom_command('delete', 'network_manager_user_rule_delete', confirmation=True)
 
+    with self.command_group('network manager user-rule collection', network_userrulecollection, client_factory=cf_userrulecollection) as g:
+        g.custom_command('create', 'network_manager_user_rule_collection_create')
+        g.generic_update_command('update', setter_arg_name='user_rule_collection', custom_func_name='network_manager_user_rule_collection_update')
+        g.custom_command('list', 'network_manager_user_rule_collection_list')
+        g.custom_show_command('show', 'network_manager_user_rule_collection_show')
+        g.custom_command('delete', 'network_manager_user_rule_collection_delete', confirmation=True)

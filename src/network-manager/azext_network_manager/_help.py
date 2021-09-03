@@ -88,9 +88,9 @@ helps['network manager commit post'] = """
     examples:
       - name: Post Azure Virtual Network Manager Commit
         text: |-
-               az network manager commit post --network-manager-name "testNetworkManager" --commit-type "AdminPolicy" \
+               az network manager commit post --network-manager-name "testNetworkManager" --commit-type "SecurityAdmin" \
 --configuration-ids "/subscriptions/subscriptionC/resourceGroups/resoureGroupSample/providers/Microsoft.Network/network\
-Managers/testNetworkManager/securityConfigurations/SampleSecurityConfig" --target-locations "usest" --resource-group \
+Managers/testNetworkManager/securityConfigurations/SampleSecurityConfig" --target-locations "eastus" --resource-group \
 "resoureGroupSample"
 """
 

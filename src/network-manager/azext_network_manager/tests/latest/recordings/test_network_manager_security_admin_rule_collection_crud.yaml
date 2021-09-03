@@ -1,0 +1,57 @@
+interactions:
+- request:
+    body: '{"location": "jioindiawest", "properties": {"displayName": "TestNetworkManager",
+      "description": "My Test Network Manager", "networkManagerScopes": {"subscriptions":
+      ["/subscriptions/00000000-0000-0000-0000-000000000000"]}, "networkManagerScopeAccesses":
+      ["SecurityAdmin", "Connectivity"]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '289'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --description --display-name --network-manager-scope-accesses --network-manager-scopes
+        -l --resource-group
+      User-Agent:
+      - AZURECLI/2.27.2 azsdk-python-mgmt-network/1.0.0b1 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_security_admin_rule_collection_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager?api-version=2021-02-01-preview
+  response:
+    body:
+      string: '{"error":{"code":"BadRequest","message":"Cannot have two Network Managers
+        applied to the same object overlapping scope accesses. Scope id: /subscriptions/00000000-0000-0000-0000-000000000000.
+        Network Manager Id: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_security_admin_rule_collection_crud000001/providers/Microsoft.Network/networkManagers/TestNetworkManager.
+        Overlapping accesses: SecurityAdmin, Connectivity"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '471'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 31 Aug 2021 09:30:44 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 400
+      message: Bad Request
+version: 1
