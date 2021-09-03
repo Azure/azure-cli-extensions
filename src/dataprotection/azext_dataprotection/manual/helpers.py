@@ -42,13 +42,15 @@ def get_datasource_info(datasource_type, resource_id, resource_location):
 
 def get_datasourceset_info(datasource_type, resource_id, resource_location):
     manifest = load_manifest(datasource_type)
+    if len(resource_id.split("/")) < 3:
+        raise CLIError(resource_id + " is not a valid resource id")
     return {
         "datasource_type": manifest["datasourceType"],
         "object_type": "DatasourceSet",
         "resource_name": resource_id.split("/")[-3],
-        "resource_type": manifest["resourceType"].split("/")[:-1],
+        "resource_type": "/".join(manifest["resourceType"].split("/")[:-1]),
         "resource_uri": "",
-        "resource_id": resource_id.split("/")[:-2],
+        "resource_id": "/".join(resource_id.split("/")[:-2]),
         "resource_location": resource_location
     }
 
