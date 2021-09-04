@@ -185,7 +185,7 @@ def _update_application_insights_asc_update(cmd, resource_group, name, location,
     # update application insights
     if update_app_insights is True:
         if app_insights_target_status is False:
-            monitoring_setting_properties.trace_enabled = app_insights_target_status
+            monitoring_setting_properties = models_20201101preview.MonitoringSettingProperties(trace_enabled=False)
         elif monitoring_setting_properties.app_insights_instrumentation_key and not app_insights and not app_insights_key:
             monitoring_setting_properties.trace_enabled = app_insights_target_status
         else:
