@@ -38,7 +38,7 @@ from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyE
 logger = get_logger(__name__)
 
 
-def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, unlock_encrypted_vm=False, enable_nested=False, associate_public_ip=False):
+def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, unlock_encrypted_vm=False, enable_nested=False, associate_public_ip=False, distro='ubuntu'):
     # Init command helper object
     command = command_helper(logger, cmd, 'vm repair create')
     # Main command calling block
@@ -54,8 +54,20 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
 
         # Fetch OS image urn and set OS type for disk create
         if is_linux:
-            os_image_urn = "UbuntuLTS"
+            #os_image_urn = "UbuntuLTS"
             os_type = 'Linux'
+            if distro == 'rhel':
+                os_image_urn = 'RedHat:RHEL:7-RAW:latest'
+            elif distro == 'suse':
+                os_image_urn = 'SUSE:sles-15-sp2:gen1:latest'
+            elif distro == 'centos':
+                os_image_urn = 'OpenLogic:CentOS:7_9:latest'
+            elif distro == 'oracle':
+                os_image_urn = 'Oracle:Oracle-Linux:ol79:latest'
+            elif distro == 'ubuntu':
+                os_image_urn = "UbuntuLTS"
+            else:
+                os_image_urn = "UbuntuLTS"
         else:
             os_image_urn = _fetch_compatible_windows_os_urn(source_vm)
             os_type = 'Windows'
