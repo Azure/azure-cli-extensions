@@ -2,6 +2,11 @@
 
 Release History
 ===============
+0.6.0
+++++++
+* Remove `az storage account blob-service-properties` since all the preview arguments are supported in main azure cli
+* Add `parquet` option to `az storage blob query --input-format`
+
 0.5.2
 ++++++
 * Apply v2020-06-12 api version for blob operations

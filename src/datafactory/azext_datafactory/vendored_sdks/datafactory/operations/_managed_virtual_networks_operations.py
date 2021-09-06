@@ -30,7 +30,7 @@ class ManagedVirtualNetworksOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~data_factory_management_client.models
+    :type models: ~azure.mgmt.datafactory.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -60,7 +60,7 @@ class ManagedVirtualNetworksOperations(object):
         :type factory_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either ManagedVirtualNetworkListResponse or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~data_factory_management_client.models.ManagedVirtualNetworkListResponse]
+        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.datafactory.models.ManagedVirtualNetworkListResponse]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ManagedVirtualNetworkListResponse"]
@@ -139,13 +139,13 @@ class ManagedVirtualNetworksOperations(object):
         :param managed_virtual_network_name: Managed virtual network name.
         :type managed_virtual_network_name: str
         :param managed_virtual_network: Managed Virtual Network resource definition.
-        :type managed_virtual_network: ~data_factory_management_client.models.ManagedVirtualNetworkResource
+        :type managed_virtual_network: ~azure.mgmt.datafactory.models.ManagedVirtualNetworkResource
         :param if_match: ETag of the managed Virtual Network entity. Should only be specified for
          update, for which it should match existing entity or can be * for unconditional update.
         :type if_match: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ManagedVirtualNetworkResource, or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.ManagedVirtualNetworkResource
+        :rtype: ~azure.mgmt.datafactory.models.ManagedVirtualNetworkResource
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ManagedVirtualNetworkResource"]
@@ -220,7 +220,7 @@ class ManagedVirtualNetworksOperations(object):
         :type if_none_match: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ManagedVirtualNetworkResource, or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.ManagedVirtualNetworkResource
+        :rtype: ~azure.mgmt.datafactory.models.ManagedVirtualNetworkResource
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ManagedVirtualNetworkResource"]

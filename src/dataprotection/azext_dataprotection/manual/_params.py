@@ -31,7 +31,9 @@ from azext_dataprotection.manual.enums import (
     get_tag_name_values,
     get_job_status_values,
     get_job_operation_values,
-    get_datasource_types
+    get_datasource_types,
+    get_rehydration_priority_values,
+    get_secret_store_type_values
 )
 
 
@@ -49,6 +51,8 @@ def load_arguments(self, _):
         c.argument('datasource_id', type=str, help="ARM Id of the resource to be backed up")
         c.argument('datasource_location', options_list=['--datasource-location', '-l'], arg_type=get_location_type(self.cli_ctx))
         c.argument('policy_id', type=str, help="Id of the backup policy the datasource will be associated")
+        c.argument('secret_store_type', arg_type=get_enum_type(get_secret_store_type_values()), help="Specify the secret store type to use for authentication")
+        c.argument('secret_store_uri', type=str, help="specify the secret store uri to use for authentication")
 
     with self.argument_context('dataprotection backup-instance update-policy') as c:
         c.argument('backup_instance_name', type=str, help="Backup instance name.")
@@ -137,7 +141,22 @@ def load_arguments(self, _):
         c.argument('point_in_time', type=datetime_type, help="specify the point in time which will be used for restoring the data in UTC (yyyy-mm-ddTHH:MM:SS)")
         c.argument('datasource_type', arg_type=get_enum_type(get_datasource_types()), help="Specify the datasource type")
         c.argument('source_datastore', arg_type=get_enum_type(get_datastore_type_values()), help="Specify the datastore type of the given recovery point or point in time.")
+        c.argument('restore_location', type=str, help="Specify the restore location.")
+        c.argument('secret_store_type', arg_type=get_enum_type(get_secret_store_type_values()), help="Specify the secret store type to use for authentication")
+        c.argument('secret_store_uri', type=str, help="Specify the secret store uri to use for authentication")
+        c.argument('rehydration_priority', arg_type=get_enum_type(get_rehydration_priority_values()), help="Specify the rehydration priority for rehydrate restore.")
+        c.argument('rehydration_duration', type=int, help="Specify the rehydration duration for rehydrate restore.")
+
+    with self.argument_context('dataprotection backup-instance restore initialize-for-data-recovery-as-files') as c:
+        c.argument('target_blob_container_url', type=str, help="specify the blob container url to which the data will be restored.")
+        c.argument('target_file_name', type=str, help="specify the file name to which the data will be restored.")
+        c.argument('recovery_point_id', type=str, help="specify the recovery point ID which will be used for restoring the data.")
+        c.argument('point_in_time', type=datetime_type, help="specify the point in time which will be used for restoring the data in UTC (yyyy-mm-ddTHH:MM:SS)")
+        c.argument('datasource_type', arg_type=get_enum_type(get_datasource_types()), help="Specify the datasource type")
+        c.argument('source_datastore', arg_type=get_enum_type(get_datastore_type_values()), help="Specify the datastore type of the given recovery point or point in time.")
         c.argument('restore_location', type=str, help="specify the restore location.")
+        c.argument('rehydration_priority', arg_type=get_enum_type(get_rehydration_priority_values()), help="Specify the rehydration priority for rehydrate restore.")
+        c.argument('rehydration_duration', type=int, help="Specify the rehydration duration for rehydrate restore.")
 
     with self.argument_context('dataprotection backup-instance restore initialize-for-item-recovery') as c:
         c.argument('restore_location', type=str, help="specify the restore location.")

@@ -30,7 +30,7 @@ class FactoriesOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~data_factory_management_client.models
+    :type models: ~azure.mgmt.datafactory.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -54,7 +54,7 @@ class FactoriesOperations(object):
 
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either FactoryListResponse or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~data_factory_management_client.models.FactoryListResponse]
+        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.datafactory.models.FactoryListResponse]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.FactoryListResponse"]
@@ -124,10 +124,10 @@ class FactoriesOperations(object):
         :param location_id: The location identifier.
         :type location_id: str
         :param factory_repo_update: Update factory repo request definition.
-        :type factory_repo_update: ~data_factory_management_client.models.FactoryRepoUpdate
+        :type factory_repo_update: ~azure.mgmt.datafactory.models.FactoryRepoUpdate
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: Factory, or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.Factory
+        :rtype: ~azure.mgmt.datafactory.models.Factory
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.Factory"]
@@ -187,7 +187,7 @@ class FactoriesOperations(object):
         :type resource_group_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either FactoryListResponse or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~data_factory_management_client.models.FactoryListResponse]
+        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.datafactory.models.FactoryListResponse]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.FactoryListResponse"]
@@ -262,13 +262,13 @@ class FactoriesOperations(object):
         :param factory_name: The factory name.
         :type factory_name: str
         :param factory: Factory resource definition.
-        :type factory: ~data_factory_management_client.models.Factory
+        :type factory: ~azure.mgmt.datafactory.models.Factory
         :param if_match: ETag of the factory entity. Should only be specified for update, for which it
          should match existing entity or can be * for unconditional update.
         :type if_match: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: Factory, or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.Factory
+        :rtype: ~azure.mgmt.datafactory.models.Factory
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.Factory"]
@@ -334,10 +334,10 @@ class FactoriesOperations(object):
         :param factory_name: The factory name.
         :type factory_name: str
         :param factory_update_parameters: The parameters for updating a factory.
-        :type factory_update_parameters: ~data_factory_management_client.models.FactoryUpdateParameters
+        :type factory_update_parameters: ~azure.mgmt.datafactory.models.FactoryUpdateParameters
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: Factory, or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.Factory
+        :rtype: ~azure.mgmt.datafactory.models.Factory
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.Factory"]
@@ -405,7 +405,7 @@ class FactoriesOperations(object):
         :type if_none_match: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: Factory, or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.Factory or None
+        :rtype: ~azure.mgmt.datafactory.models.Factory or None
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType[Optional["models.Factory"]]
@@ -524,10 +524,10 @@ class FactoriesOperations(object):
         :param factory_name: The factory name.
         :type factory_name: str
         :param git_hub_access_token_request: Get GitHub access token request definition.
-        :type git_hub_access_token_request: ~data_factory_management_client.models.GitHubAccessTokenRequest
+        :type git_hub_access_token_request: ~azure.mgmt.datafactory.models.GitHubAccessTokenRequest
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: GitHubAccessTokenResponse, or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.GitHubAccessTokenResponse
+        :rtype: ~azure.mgmt.datafactory.models.GitHubAccessTokenResponse
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.GitHubAccessTokenResponse"]
@@ -591,10 +591,10 @@ class FactoriesOperations(object):
         :param factory_name: The factory name.
         :type factory_name: str
         :param policy: Data Plane user access policy definition.
-        :type policy: ~data_factory_management_client.models.UserAccessPolicy
+        :type policy: ~azure.mgmt.datafactory.models.UserAccessPolicy
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: AccessPolicyResponse, or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.AccessPolicyResponse
+        :rtype: ~azure.mgmt.datafactory.models.AccessPolicyResponse
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.AccessPolicyResponse"]
