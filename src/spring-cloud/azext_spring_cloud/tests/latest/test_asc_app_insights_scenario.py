@@ -83,7 +83,7 @@ class AzureSpringCloudCreateTests(ScenarioTest):
             "--sampling-rate 101",
             "--sampling-rate 200",
         ]
-        cmd_base = 'az spring-cloud create -n {serviceName} --sku {SKU} -l {location}'
+        cmd_base = 'az spring-cloud create -g {rg} -n {serviceName} --sku {SKU} -l {location}'
         for suffix in negative_cmd_suffixes:
             cmd = '{} {}'.format(cmd_base, suffix)
             self.cmd(cmd, expect_failure=True)
@@ -114,8 +114,6 @@ class AzureSpringCloudCreateTests(ScenarioTest):
     def test_negative_asc_update(self):
         self.kwargs.update({
             'serviceName': 'cli-unittest-10',
-            'SKU': 'Basic',
-            'location': 'eastus',
             'rg': 'cli',
             'anyString': 'anyString'
         })
@@ -125,7 +123,7 @@ class AzureSpringCloudCreateTests(ScenarioTest):
             "--disable-app-insights true --app-insights {anyString}",
             "--app-insights-key {anyString} --app-insights {anyString}",
         ]
-        cmd_base = 'az spring-cloud update -n {serviceName}'
+        cmd_base = 'az spring-cloud update -g {rg} -n {serviceName}'
         for suffix in negative_cmd_suffixes:
             cmd = '{} {}'.format(cmd_base, suffix)
             self.cmd(cmd, expect_failure=True)
@@ -151,6 +149,45 @@ class AzureSpringCloudCreateTests(ScenarioTest):
 
         self._test_asc_app_insights_update_with_suffix(
             rg, service_name, True, '--app-insights-key {}'.format(ai_c_string))
+
+    def test_negative_asc_app_insights_update(self):
+        self.kwargs.update({
+            'serviceName': 'cli-unittest-10',
+            'SKU': 'Basic',
+            'location': 'eastus',
+            'rg': 'cli',
+            'anyString': 'anyString'
+        })
+        negative_cmd_suffixes = [
+            # Conflict
+            "--app-insights $(anyString) --app-insights-key $(anyString)",
+            "--app-insights $(anyString) --app-insights-key $(anyString) --sampling-rate 50",
+            "--app-insights $(anyString) --app-insights-key $(anyString) --disable",
+            "--app-insights $(anyString) --app-insights-key $(anyString) --disable true",
+            "--app-insights $(anyString) --app-insights-key $(anyString) --disable --sampling-rate 50",
+            "--app-insights $(anyString) --app-insights-key $(anyString) --disable true --sampling-rate 50",
+            "--app-insights $(anyString)  --disable",
+            "--app-insights $(anyString)  --disable true",
+            "--app-insights $(anyString)  --disable --sampling-rate 50",
+            "--app-insights $(anyString)  --disable true --sampling-rate 50",
+            "--app-insights-key $(anyString)  --disable",
+            "--app-insights-key $(anyString)  --disable true",
+            "--disable --sampling-rate 50",
+            "--disable true --sampling-rate 50",
+            # Invalid sampling-rate
+            "--app-insights $(anyString) --sampling-rate -1000",
+            "--app-insights $(anyString) --sampling-rate -100",
+            "--app-insights $(anyString) --sampling-rate -10",
+            "--app-insights $(anyString) --sampling-rate -1",
+            "--app-insights $(anyString) --sampling-rate -0.1",
+            "--app-insights $(anyString) --sampling-rate 101",
+            "--app-insights $(anyString) --sampling-rate 110",
+            "--app-insights $(anyString) --sampling-rate 1000",
+        ]
+        cmd_base = 'az spring-cloud app-insights update -g {rg} -n {serviceName}'
+        for suffix in negative_cmd_suffixes:
+            cmd = '{} {}'.format(cmd_base, suffix)
+            self.cmd(cmd, expect_failure=True)
 
     def _test_asc_app_insights_update_with_suffix(self, rg, service_name, target_ai_status, cmd_suffix):
         self._asc_app_insights_update_disable_ai(rg, service_name)
