@@ -111,6 +111,25 @@ class AzureSpringCloudCreateTests(ScenarioTest):
         self._test_asc_update_with_suffix(
             rg, service_name, True, '--app-insights-key "{}"'.format(ai_c_string))
 
+    def test_negative_asc_update(self):
+        self.kwargs.update({
+            'serviceName': 'cli-unittest-10',
+            'SKU': 'Basic',
+            'location': 'eastus',
+            'rg': 'cli',
+            'anyString': 'anyString'
+        })
+        negative_cmd_suffixes = [
+            "--disable-app-insights --app-insights-key {anyString}",
+            "--disable-app-insights --app-insights {anyString}",
+            "--disable-app-insights true --app-insights {anyString}",
+            "--app-insights-key {anyString} --app-insights {anyString}",
+        ]
+        cmd_base = 'az spring-cloud update -n {serviceName}'
+        for suffix in negative_cmd_suffixes:
+            cmd = '{} {}'.format(cmd_base, suffix)
+            self.cmd(cmd, expect_failure=True)
+
     def test_asc_app_insights_update(self):
         self.kwargs.update({
             'serviceName': 'cli-unittest10',
