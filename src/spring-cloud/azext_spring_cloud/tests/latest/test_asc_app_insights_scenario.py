@@ -42,20 +42,45 @@ class AzureSpringCloudCreateTests(ScenarioTest):
         ai_id, ai_i_key, ai_c_string = self._get_ai_info(rg, self.kwargs['shared_ai_name'])
 
         self._test_asc_update_with_suffix(
-            rg, service_name, True,
-            '--app-insights {}'.format(self.kwargs['shared_ai_name']))
+            rg, service_name, True, '--app-insights {}'.format(self.kwargs['shared_ai_name']))
 
         self._test_asc_update_with_suffix(
-            rg, service_name, True,
-            '--app-insights {}'.format(ai_id))
+            rg, service_name, True, '--app-insights {}'.format(ai_id))
 
         self._test_asc_update_with_suffix(
-            rg, service_name, True,
-            '--app-insights-key {}'.format(ai_i_key))
+            rg, service_name, True, '--app-insights-key {}'.format(ai_i_key))
 
         self._test_asc_update_with_suffix(
-            rg, service_name, True,
-            '--app-insights-key "{}"'.format(ai_c_string))
+            rg, service_name, True, '--app-insights-key "{}"'.format(ai_c_string))
+
+    def test_asc_app_insights_update(self):
+        self.kwargs.update({
+            'serviceName': 'cli-unittest10',
+            'rg': 'cli',
+            'shared_ai_name': 'cli_scenario_test_20210906102205'
+        })
+        rg = self.kwargs['rg']
+        service_name = self.kwargs['serviceName']
+        ai_id, ai_i_key, ai_c_string = self._get_ai_info(rg, self.kwargs['shared_ai_name'])
+
+        self._test_asc_app_insights_update_with_suffix(
+            rg, service_name, True, '--app-insights {}'.format(self.kwargs['shared_ai_name']))
+
+        self._test_asc_app_insights_update_with_suffix(
+            rg, service_name, True, '--app-insights {}'.format(ai_id))
+
+        self._test_asc_app_insights_update_with_suffix(
+            rg, service_name, True, '--app-insights-key {}'.format(ai_i_key))
+
+        self._test_asc_app_insights_update_with_suffix(
+            rg, service_name, True, '--app-insights-key {}'.format(ai_c_string))
+
+    def _test_asc_app_insights_update_with_suffix(self, rg, service_name, target_ai_status, cmd_suffix):
+        self._asc_app_insights_update_disable_ai(rg, service_name)
+        self.cmd('spring-cloud app-insights update -g {} -n {} --no-wait {}'
+                 .format(rg, service_name, cmd_suffix))
+        self._wait_ai(rg, service_name)
+        self._test_app_insights_enable_status(rg, service_name, target_ai_status)
 
     def _clean_service(self, rg, service_name):
         self.cmd('spring-cloud delete -n {} -g {} --no-wait'
@@ -72,7 +97,7 @@ class AzureSpringCloudCreateTests(ScenarioTest):
             time.sleep(sleep_in_seconds)
 
     def _test_asc_update_with_suffix(self, rg, service_name, target_ai_status, cmd_suffix):
-        self._disable_ai(rg, service_name)
+        self._asc_update_disable_ai(rg, service_name)
         self.cmd('spring-cloud update -g {} -n {} --no-wait {}'
                  .format(rg, service_name, cmd_suffix))
         self._wait_ai(rg, service_name)
@@ -82,8 +107,13 @@ class AzureSpringCloudCreateTests(ScenarioTest):
         result = self.cmd('spring-cloud app-insights show -n {} -g {}'.format(service_name, rg)).get_output_in_json()
         self.assertEquals(result['traceEnabled'], target_status)
 
-    def _disable_ai(self, rg, service_name):
+    def _asc_update_disable_ai(self, rg, service_name):
         self.cmd('spring-cloud update -g {} -n {} --disable-app-insights --no-wait'.format(rg, service_name))
+        self._wait_ai(rg, service_name)
+        self._test_app_insights_enable_status(rg, service_name, False)
+
+    def _asc_app_insights_update_disable_ai(self, rg, service_name):
+        self.cmd('spring-cloud app-insights update -g {} -n {} --disable --no-wait'.format(rg, service_name))
         self._wait_ai(rg, service_name)
         self._test_app_insights_enable_status(rg, service_name, False)
 
