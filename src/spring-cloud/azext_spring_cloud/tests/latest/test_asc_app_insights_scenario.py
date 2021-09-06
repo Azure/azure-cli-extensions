@@ -14,6 +14,13 @@ from azure.cli.testsdk import (ScenarioTest, record_only)
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
+"""
+Due to limitation of this testing framework, not able to 
+check the error message for negative cases. However, this
+is a good place to hold these negative cases.
+"""
+
+
 @record_only()
 class AzureSpringCloudCreateTests(ScenarioTest):
 
@@ -29,6 +36,57 @@ class AzureSpringCloudCreateTests(ScenarioTest):
         self._wait_service(self.kwargs['rg'], self.kwargs['serviceName'])
         self._test_app_insights_enable_status(self.kwargs['rg'], self.kwargs['serviceName'], True)
         self._clean_service(self.kwargs['rg'], self.kwargs['serviceName'])
+
+    def test_negative_create_asc(self):
+        self.kwargs.update({
+            'serviceName': 'cli-unittest-10',
+            'SKU': 'Basic',
+            'location': 'eastus',
+            'rg': 'cli',
+            'anyString': 'anyString'
+        })
+        negative_cmd_suffixes = [
+            "--disable-app-insights --app-insights {anyString}",
+            "--disable-app-insights true --app-insights {anyString}",
+            "--disable-app-insights --app-insights-key {anyString}",
+            "--disable-app-insights true --app-insights-key {anyString}",
+            "--disable-app-insights --sampling-rate 50",
+            "--disable-app-insights true --sampling-rate 50",
+            "--disable-app-insights --enable-java-agent",
+            "--disable-app-insights true --enable-java-agent",
+            "--disable-app-insights --enable-java-agent true",
+            "--disable-app-insights true --enable-java-agent true",
+            "--disable-app-insights --app-insights {anyString} --app-insights-key {anyString}",
+            "--disable-app-insights true --app-insights {anyString} --app-insights-key {anyString}",
+
+            "--disable-app-insights --app-insights {anyString} --sampling-rate 50",
+            "--disable-app-insights true --app-insights {anyString} --sampling-rate 50",
+
+            "--disable-app-insights --app-insights {anyString} --enable-java-agent",
+            "--disable-app-insights --app-insights {anyString} --enable-java-agent true",
+            "--disable-app-insights true --app-insights {anyString} --enable-java-agent",
+            "--disable-app-insights true --app-insights {anyString} --enable-java-agent true",
+
+            "--disable-app-insights --app-insights {anyString} --app-insights-key {anyString} --sampling-rate 50",
+            "--disable-app-insights true --app-insights {anyString} --app-insights-key {anyString} --sampling-rate 50",
+
+            "--disable-app-insights --app-insights-key {anyString} --sampling-rate 50",
+            "--disable-app-insights true --app-insights-key {anyString} --sampling-rate 50",
+
+            "--app-insights-key {anyString} --app-insights {anyString}",
+
+            "--sampling-rate -100",
+            "--sampling-rate -10",
+            "--sampling-rate -1",
+            "--sampling-rate -0.1",
+            "--sampling-rate 100.1",
+            "--sampling-rate 101",
+            "--sampling-rate 200",
+        ]
+        cmd_base = 'az spring-cloud create -n {serviceName} --sku {SKU} -l {location}'
+        for suffix in negative_cmd_suffixes:
+            cmd = '{} {}'.format(cmd_base, suffix)
+            self.cmd(cmd, expect_failure=True)
 
     def test_asc_update(self):
         self.kwargs.update({
