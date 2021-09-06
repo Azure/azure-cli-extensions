@@ -12,6 +12,7 @@ manifest = '''
     "allowedRestoreModes": [ "RecoveryPointBased" ],
     "allowedRestoreTargetTypes": [ "AlternateLocation" ],
     "itemLevelRecoveyEnabled": false,
+    "supportSecretStoreAuthentication": false,
     "policySettings": {
         "supportedRetentionTags": [ "Daily", "Weekly" ],
         "supportedDatastoreTypes": [ "OperationalStore" ],

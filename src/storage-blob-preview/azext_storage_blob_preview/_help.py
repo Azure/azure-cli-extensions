@@ -171,3 +171,15 @@ examples:
     text: |
         echo $data | az storage blob upload --data @- -c mycontainer -n myblob --account-name mystorageaccount --account-key 0000-0000
 """
+
+helps['storage blob query'] = """
+type: command
+short-summary: Enable users to select/project on blob or blob snapshot data by providing simple query expressions.
+examples:
+  - name: Enable users to select/project on blob by providing simple query expressions.
+    text: az storage blob query -c mycontainer -n myblob --query-expression "SELECT _2 from BlobStorage"
+  - name: Enable users to select/project on blob by providing simple query expressions and save in target file.
+    text: az storage blob query -c mycontainer -n myblob --query-expression "SELECT _2 from BlobStorage" --result-file result.csv
+  - name: Enable users to select/project on blob by providing simple query expressions and an input format
+    text: az storage blob query -c mycontainer -n myblob --query-expression "SELECT _2 from BlobStorage" --input-format parquet
+"""

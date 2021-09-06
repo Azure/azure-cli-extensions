@@ -12,7 +12,7 @@ from ._validators import (validate_env, validate_cosmos_type, validate_resource_
                           validate_log_limit, validate_log_since, validate_sku, validate_jvm_options,
                           validate_vnet, validate_vnet_required_parameters, validate_node_resource_group,
                           validate_tracing_parameters, validate_app_insights_parameters, validate_java_agent_parameters,
-                          validate_instance_count)
+                          validate_instance_count, validate_jar)
 from ._utils import ApiType
 
 from .vendored_sdks.appplatform.v2020_07_01.models import RuntimeVersion, TestKeyType
@@ -149,9 +149,12 @@ def load_arguments(self, _):
             c.argument(
                 'artifact_path', options_list=['--artifact-path',
                     c.deprecate(target='--jar-path', redirect='--artifact-path', hide=True),c.deprecate(target='-p', redirect='--artifact-path', hide=True)],
-                        help='Deploy the specified pre-built artifact (jar or netcore zip).')
+                        help='Deploy the specified pre-built artifact (jar or netcore zip).', validator=validate_jar)
             c.argument(
                 'source_path', nargs='?', const='.', help="Upload the specified source folder to build and deploy. Default to the current folder.")
+            c.argument(
+                'disable_validation', arg_type=get_three_state_flag(),
+                help='If true, disable jar validation.')
             c.argument(
                 'main_entry', options_list=[
                     '--main-entry', '-m'], help="A string containing the path to the .NET executable relative to zip root.")

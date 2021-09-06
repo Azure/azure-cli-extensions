@@ -201,3 +201,49 @@ class StorageBlobURLScenarioTest(StorageScenarioMixin, LiveScenarioTest):
         self.cmd('storage blob undelete --blob-url {} '.format(blob_uri))
         self.storage_cmd('storage blob list -c {}', account_info, container).assert_with_checks(
             JMESPathCheck('length(@)', 1))
+
+
+class StorageBlobQueryExtensionTests(StorageScenarioMixin, LiveScenarioTest):
+    @ResourceGroupPreparer()
+    @StorageAccountPreparer(kind='StorageV2', location='canadacentral')
+    def test_storage_blob_query_scenario(self, resource_group, storage_account):
+        account_info = self.get_account_info(group=resource_group, name=storage_account)
+        container = self.create_container(account_info)
+        csv_blob = self.create_random_name(prefix='csvblob', length=12)
+        curr_dir = os.path.dirname(os.path.realpath(__file__))
+        csv_file = os.path.join(curr_dir, 'quick_query.csv').replace('\\', '\\\\')
+
+        # test csv input
+        self.storage_cmd('storage blob upload -f "{}" -c {} -n {}', account_info, csv_file, container, csv_blob)
+        query_string = "SELECT _2 from BlobStorage"
+        result = self.storage_cmd('storage blob query -c {} -n {} --query-expression "{}"',
+                                  account_info, container, csv_blob, query_string).output
+        self.assertIsNotNone(result)
+
+        # test csv output
+        temp_dir = self.create_temp_dir()
+        result_file = os.path.join(temp_dir, 'result.csv')
+        self.assertFalse(os.path.exists(result_file))
+        self.storage_cmd('storage blob query -c {} -n {} --query-expression "{}" --result-file "{}"',
+                         account_info, container, csv_blob, query_string, result_file)
+        self.assertTrue(os.path.exists(result_file))
+
+        json_blob = self.create_random_name(prefix='jsonblob', length=12)
+        json_file = os.path.join(curr_dir, 'quick_query.json').replace('\\', '\\\\')
+
+        # test json input
+        self.storage_cmd('storage blob upload -f "{}" -c {} -n {}', account_info, json_file, container, json_blob)
+        query_string = "SELECT latitude FROM BlobStorage[*].warehouses[*]"
+        result = self.storage_cmd('storage blob query -c {} -n {} --query-expression "{}" --input-format json',
+                                  account_info, container, json_blob, query_string).output
+        self.assertIsNotNone(result)
+
+        # test parquet
+        parquet_blob = self.create_random_name(prefix='parquet', length=12)
+        parquet_file = os.path.join(curr_dir, 'quick_query.parquet').replace('\\', '\\\\')
+
+        self.storage_cmd('storage blob upload -f "{}" -c {} -n {}', account_info, parquet_file, container, parquet_blob)
+        query_string = "SELECT * FROM BlobStorage where id=0"
+        result = self.storage_cmd('storage blob query -c {} -n {} --query-expression "{}" --input-format parquet',
+                                  account_info, container, parquet_blob, query_string).output
+        self.assertIsNotNone(result)

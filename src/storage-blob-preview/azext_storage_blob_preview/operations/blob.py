@@ -697,3 +697,17 @@ def acquire_blob_lease(client, lease_duration=-1, **kwargs):
 def renew_blob_lease(client, **kwargs):
     client.renew(**kwargs)
     return client.id
+
+
+def query_blob(cmd, client, query_expression, input_config=None, output_config=None, result_file=None, **kwargs):
+
+    reader = client.query_blob(query_expression=query_expression, blob_format=input_config, output_format=output_config,
+                               **kwargs)
+
+    if result_file is not None:
+        with open(result_file, 'wb') as stream:
+            reader.readinto(stream)
+        stream.close()
+        return None
+
+    return reader.readall().decode("utf-8")
