@@ -29,7 +29,6 @@ from azure.cli.core._profile import Profile
 from azure.cli.core.util import sdk_no_wait
 from azure.cli.core import telemetry
 from azure.cli.core.azclierror import ManualInterrupt, InvalidArgumentValueError, UnclassifiedUserFault, CLIInternalError, FileOperationError, ClientRequestError, DeploymentError, ValidationError, ArgumentUsageError, MutuallyExclusiveArgumentError, RequiredArgumentMissingError, ResourceNotFoundError
-from msrestazure.azure_exceptions import CloudError
 from kubernetes import client as kube_client, config
 from Crypto.IO import PEM
 from Crypto.PublicKey import RSA
@@ -736,7 +735,7 @@ def create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait):
     try:
         return sdk_no_wait(no_wait, client.begin_create, resource_group_name=resource_group_name,
                            cluster_name=cluster_name, connected_cluster=cc)
-    except CloudError as e:
+    except Exception as e:
         utils.arm_exception_handler(e, consts.Create_ConnectedCluster_Fault_Type, 'Unable to create connected cluster resource')
 
 
@@ -745,7 +744,7 @@ def delete_cc_resource(client, resource_group_name, cluster_name, no_wait):
         sdk_no_wait(no_wait, client.begin_delete,
                     resource_group_name=resource_group_name,
                     cluster_name=cluster_name)
-    except CloudError as e:
+    except Exception as e:
         utils.arm_exception_handler(e, consts.Delete_ConnectedCluster_Fault_Type, 'Unable to delete connected cluster resource')
 
 
