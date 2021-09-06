@@ -23,6 +23,7 @@ is a good place to hold these negative cases.
 
 @record_only()
 class AzureSpringCloudCreateTests(ScenarioTest):
+    default_sampling_rate = 10.0
 
     def test_create_asc_with_ai_basic_case(self):
         self.kwargs.update({
@@ -150,6 +151,41 @@ class AzureSpringCloudCreateTests(ScenarioTest):
         self._test_asc_app_insights_update_with_suffix(
             rg, service_name, True, '--app-insights-key {}'.format(ai_c_string))
 
+        sampling_rate = 0.0
+        self._test_asc_app_insights_update_with_suffix(
+            rg, service_name, True, '--sampling-rate {}'.format(sampling_rate),
+            target_sampling_rate=sampling_rate, disable_ai_first=False)
+
+        sampling_rate = 0.1
+        self._test_asc_app_insights_update_with_suffix(
+            rg, service_name, True, '--sampling-rate {}'.format(sampling_rate),
+            target_sampling_rate=sampling_rate, disable_ai_first=False)
+
+        sampling_rate = 1.0
+        self._test_asc_app_insights_update_with_suffix(
+            rg, service_name, True, '--sampling-rate {}'.format(sampling_rate),
+            target_sampling_rate=sampling_rate, disable_ai_first=False)
+
+        sampling_rate = 10.0
+        self._test_asc_app_insights_update_with_suffix(
+            rg, service_name, True, '--sampling-rate {}'.format(sampling_rate),
+            target_sampling_rate=sampling_rate, disable_ai_first=False)
+
+        sampling_rate = 50.0
+        self._test_asc_app_insights_update_with_suffix(
+            rg, service_name, True, '--sampling-rate {}'.format(sampling_rate),
+            target_sampling_rate=sampling_rate, disable_ai_first=False)
+
+        sampling_rate = 99.0
+        self._test_asc_app_insights_update_with_suffix(
+            rg, service_name, True, '--sampling-rate {}'.format(sampling_rate),
+            target_sampling_rate=sampling_rate, disable_ai_first=False)
+
+        sampling_rate = 100.0
+        self._test_asc_app_insights_update_with_suffix(
+            rg, service_name, True, '--sampling-rate {}'.format(sampling_rate),
+            target_sampling_rate=sampling_rate, disable_ai_first=False)
+
     def test_negative_asc_app_insights_update(self):
         self.kwargs.update({
             'serviceName': 'cli-unittest-10',
@@ -189,12 +225,16 @@ class AzureSpringCloudCreateTests(ScenarioTest):
             cmd = '{} {}'.format(cmd_base, suffix)
             self.cmd(cmd, expect_failure=True)
 
-    def _test_asc_app_insights_update_with_suffix(self, rg, service_name, target_ai_status, cmd_suffix):
-        self._asc_app_insights_update_disable_ai(rg, service_name)
+    def _test_asc_app_insights_update_with_suffix(self, rg, service_name, target_ai_status, cmd_suffix,
+                                                  target_sampling_rate=default_sampling_rate,
+                                                  disable_ai_first=True):
+        if disable_ai_first:
+            self._asc_app_insights_update_disable_ai(rg, service_name)
         self.cmd('spring-cloud app-insights update -g {} -n {} --no-wait {}'
                  .format(rg, service_name, cmd_suffix))
         self._wait_ai(rg, service_name)
         self._test_app_insights_enable_status(rg, service_name, target_ai_status)
+        self._test_sampling_rate(rg, service_name, target_sampling_rate)
 
     def _clean_service(self, rg, service_name):
         self.cmd('spring-cloud delete -n {} -g {} --no-wait'
@@ -220,6 +260,10 @@ class AzureSpringCloudCreateTests(ScenarioTest):
     def _test_app_insights_enable_status(self, rg, service_name, target_status):
         result = self.cmd('spring-cloud app-insights show -n {} -g {}'.format(service_name, rg)).get_output_in_json()
         self.assertEquals(result['traceEnabled'], target_status)
+
+    def _test_sampling_rate(self, rg, service_name, target_sampling_rate):
+        result = self.cmd('spring-cloud app-insights show -n {} -g {}'.format(service_name, rg)).get_output_in_json()
+        self.assertEquals(result['appInsightsSamplingRate'], target_sampling_rate)
 
     def _asc_update_disable_ai(self, rg, service_name):
         self.cmd('spring-cloud update -g {} -n {} --disable-app-insights --no-wait'.format(rg, service_name))
