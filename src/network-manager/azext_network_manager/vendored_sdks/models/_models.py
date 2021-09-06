@@ -161,7 +161,7 @@ class ActiveConfigurationParameter(msrest.serialization.Model):
 
     _attribute_map = {
         'regions': {'key': 'regions', 'type': '[str]'},
-        'skip_token': {'key': '$skipToken', 'type': 'str'},
+        'skip_token': {'key': 'skipToken', 'type': 'str'},
     }
 
     def __init__(
@@ -191,8 +191,8 @@ class EffectiveConnectivityConfiguration(msrest.serialization.Model):
      "HubAndSpoke", "Mesh".
     :type connectivity_topology: str or
      ~azure.mgmt.network.v2021_02_01_preview.models.ConnectivityTopology
-    :param hub_id: The hub vnet Id.
-    :type hub_id: str
+    :param hubs: List of hubItems.
+    :type hubs: list[~azure.mgmt.network.v2021_02_01_preview.models.Hub]
     :param is_global: Flag if global mesh is supported. Possible values include: "False", "True".
     :type is_global: str or ~azure.mgmt.network.v2021_02_01_preview.models.IsGlobal
     :param applies_to_groups: Groups for configuration.
@@ -218,7 +218,7 @@ class EffectiveConnectivityConfiguration(msrest.serialization.Model):
         'display_name': {'key': 'properties.displayName', 'type': 'str'},
         'description': {'key': 'properties.description', 'type': 'str'},
         'connectivity_topology': {'key': 'properties.connectivityTopology', 'type': 'str'},
-        'hub_id': {'key': 'properties.hubId', 'type': 'str'},
+        'hubs': {'key': 'properties.hubs', 'type': '[Hub]'},
         'is_global': {'key': 'properties.isGlobal', 'type': 'str'},
         'applies_to_groups': {'key': 'properties.appliesToGroups', 'type': '[ConnectivityGroupItem]'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
@@ -235,7 +235,7 @@ class EffectiveConnectivityConfiguration(msrest.serialization.Model):
         self.display_name = kwargs.get('display_name', None)
         self.description = kwargs.get('description', None)
         self.connectivity_topology = kwargs.get('connectivity_topology', None)
-        self.hub_id = kwargs.get('hub_id', None)
+        self.hubs = kwargs.get('hubs', None)
         self.is_global = kwargs.get('is_global', None)
         self.applies_to_groups = kwargs.get('applies_to_groups', None)
         self.provisioning_state = None
@@ -260,8 +260,8 @@ class ActiveConnectivityConfiguration(EffectiveConnectivityConfiguration):
      "HubAndSpoke", "Mesh".
     :type connectivity_topology: str or
      ~azure.mgmt.network.v2021_02_01_preview.models.ConnectivityTopology
-    :param hub_id: The hub vnet Id.
-    :type hub_id: str
+    :param hubs: List of hubItems.
+    :type hubs: list[~azure.mgmt.network.v2021_02_01_preview.models.Hub]
     :param is_global: Flag if global mesh is supported. Possible values include: "False", "True".
     :type is_global: str or ~azure.mgmt.network.v2021_02_01_preview.models.IsGlobal
     :param applies_to_groups: Groups for configuration.
@@ -291,7 +291,7 @@ class ActiveConnectivityConfiguration(EffectiveConnectivityConfiguration):
         'display_name': {'key': 'properties.displayName', 'type': 'str'},
         'description': {'key': 'properties.description', 'type': 'str'},
         'connectivity_topology': {'key': 'properties.connectivityTopology', 'type': 'str'},
-        'hub_id': {'key': 'properties.hubId', 'type': 'str'},
+        'hubs': {'key': 'properties.hubs', 'type': '[Hub]'},
         'is_global': {'key': 'properties.isGlobal', 'type': 'str'},
         'applies_to_groups': {'key': 'properties.appliesToGroups', 'type': '[ConnectivityGroupItem]'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
@@ -322,7 +322,7 @@ class ActiveConnectivityConfigurationsListResult(msrest.serialization.Model):
 
     _attribute_map = {
         'value': {'key': 'value', 'type': '[ActiveConnectivityConfiguration]'},
-        'skip_token': {'key': '$skipToken', 'type': 'str'},
+        'skip_token': {'key': 'skipToken', 'type': 'str'},
     }
 
     def __init__(
@@ -694,7 +694,7 @@ class ActiveSecurityAdminRulesListResult(msrest.serialization.Model):
 
     _attribute_map = {
         'value': {'key': 'value', 'type': '[ActiveBaseSecurityAdminRule]'},
-        'skip_token': {'key': '$skipToken', 'type': 'str'},
+        'skip_token': {'key': 'skipToken', 'type': 'str'},
     }
 
     def __init__(
@@ -817,7 +817,7 @@ class ActiveSecurityUserRulesListResult(msrest.serialization.Model):
 
     _attribute_map = {
         'value': {'key': 'value', 'type': '[ActiveBaseSecurityUserRule]'},
-        'skip_token': {'key': '$skipToken', 'type': 'str'},
+        'skip_token': {'key': 'skipToken', 'type': 'str'},
     }
 
     def __init__(
@@ -1178,8 +1178,8 @@ class ConfigurationGroup(msrest.serialization.Model):
     :type display_name: str
     :param description: A description of the network group.
     :type description: str
-    :param member_type: Group member type. Possible values include: "VirtualNetwork", "Subnet".
-    :type member_type: str or ~azure.mgmt.network.v2021_02_01_preview.models.MemberType
+    :param member_type: Group member type.
+    :type member_type: str
     :param group_members: Group members of network group.
     :type group_members: list[~azure.mgmt.network.v2021_02_01_preview.models.GroupMembersItem]
     :param conditional_membership: Network group conditional filter.
@@ -1241,8 +1241,8 @@ class ConnectivityConfiguration(ProxyResource):
      "HubAndSpoke", "Mesh".
     :type connectivity_topology: str or
      ~azure.mgmt.network.v2021_02_01_preview.models.ConnectivityTopology
-    :param hub_id: The hub vnet Id.
-    :type hub_id: str
+    :param hubs: List of hubItems.
+    :type hubs: list[~azure.mgmt.network.v2021_02_01_preview.models.Hub]
     :param is_global: Flag if global mesh is supported. Possible values include: "False", "True".
     :type is_global: str or ~azure.mgmt.network.v2021_02_01_preview.models.IsGlobal
     :param applies_to_groups: Groups for configuration.
@@ -1276,7 +1276,7 @@ class ConnectivityConfiguration(ProxyResource):
         'display_name': {'key': 'properties.displayName', 'type': 'str'},
         'description': {'key': 'properties.description', 'type': 'str'},
         'connectivity_topology': {'key': 'properties.connectivityTopology', 'type': 'str'},
-        'hub_id': {'key': 'properties.hubId', 'type': 'str'},
+        'hubs': {'key': 'properties.hubs', 'type': '[Hub]'},
         'is_global': {'key': 'properties.isGlobal', 'type': 'str'},
         'applies_to_groups': {'key': 'properties.appliesToGroups', 'type': '[ConnectivityGroupItem]'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
@@ -1292,7 +1292,7 @@ class ConnectivityConfiguration(ProxyResource):
         self.display_name = kwargs.get('display_name', None)
         self.description = kwargs.get('description', None)
         self.connectivity_topology = kwargs.get('connectivity_topology', None)
-        self.hub_id = kwargs.get('hub_id', None)
+        self.hubs = kwargs.get('hubs', None)
         self.is_global = kwargs.get('is_global', None)
         self.applies_to_groups = kwargs.get('applies_to_groups', None)
         self.provisioning_state = None
@@ -1902,7 +1902,7 @@ class EffectiveVirtualNetworksListResult(msrest.serialization.Model):
 
     _attribute_map = {
         'value': {'key': 'value', 'type': '[EffectiveVirtualNetwork]'},
-        'skip_token': {'key': '$skipToken', 'type': 'str'},
+        'skip_token': {'key': 'skipToken', 'type': 'str'},
     }
 
     def __init__(
@@ -1926,7 +1926,7 @@ class EffectiveVirtualNetworksParameter(msrest.serialization.Model):
 
     _attribute_map = {
         'conditional_members': {'key': 'conditionalMembers', 'type': 'str'},
-        'skip_token': {'key': '$skipToken', 'type': 'str'},
+        'skip_token': {'key': 'skipToken', 'type': 'str'},
     }
 
     def __init__(
@@ -1941,15 +1941,12 @@ class EffectiveVirtualNetworksParameter(msrest.serialization.Model):
 class GroupMembersItem(msrest.serialization.Model):
     """GroupMembers Item.
 
-    :param vnet_id: Vnet Id.
-    :type vnet_id: str
-    :param subnet_id: Subnet Id.
-    :type subnet_id: str
+    :param resource_id: Resource Id.
+    :type resource_id: str
     """
 
     _attribute_map = {
-        'vnet_id': {'key': 'vnetId', 'type': 'str'},
-        'subnet_id': {'key': 'subnetId', 'type': 'str'},
+        'resource_id': {'key': 'resourceId', 'type': 'str'},
     }
 
     def __init__(
@@ -1957,8 +1954,30 @@ class GroupMembersItem(msrest.serialization.Model):
         **kwargs
     ):
         super(GroupMembersItem, self).__init__(**kwargs)
-        self.vnet_id = kwargs.get('vnet_id', None)
-        self.subnet_id = kwargs.get('subnet_id', None)
+        self.resource_id = kwargs.get('resource_id', None)
+
+
+class Hub(msrest.serialization.Model):
+    """Hub Item.
+
+    :param resource_id: Resource Id.
+    :type resource_id: str
+    :param resource_type: Resource Type.
+    :type resource_type: str
+    """
+
+    _attribute_map = {
+        'resource_id': {'key': 'resourceId', 'type': 'str'},
+        'resource_type': {'key': 'resourceType', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(Hub, self).__init__(**kwargs)
+        self.resource_id = kwargs.get('resource_id', None)
+        self.resource_type = kwargs.get('resource_type', None)
 
 
 class NetworkGroup(ProxyResource):
@@ -1980,8 +1999,8 @@ class NetworkGroup(ProxyResource):
     :type display_name: str
     :param description: A description of the network group.
     :type description: str
-    :param member_type: Group member type. Possible values include: "VirtualNetwork", "Subnet".
-    :type member_type: str or ~azure.mgmt.network.v2021_02_01_preview.models.MemberType
+    :param member_type: Group member type.
+    :type member_type: str
     :param group_members: Group members of network group.
     :type group_members: list[~azure.mgmt.network.v2021_02_01_preview.models.GroupMembersItem]
     :param conditional_membership: Network group conditional filter.
@@ -2258,7 +2277,7 @@ class NetworkManagerDeploymentStatusListResult(msrest.serialization.Model):
 
     _attribute_map = {
         'value': {'key': 'value', 'type': '[NetworkManagerDeploymentStatus]'},
-        'skip_token': {'key': '$skipToken', 'type': 'str'},
+        'skip_token': {'key': 'skipToken', 'type': 'str'},
     }
 
     def __init__(
@@ -2286,7 +2305,7 @@ class NetworkManagerDeploymentStatusParameter(msrest.serialization.Model):
     _attribute_map = {
         'regions': {'key': 'regions', 'type': '[str]'},
         'deployment_types': {'key': 'deploymentTypes', 'type': '[str]'},
-        'skip_token': {'key': '$skipToken', 'type': 'str'},
+        'skip_token': {'key': 'skipToken', 'type': 'str'},
     }
 
     def __init__(
@@ -2312,7 +2331,7 @@ class NetworkManagerEffectiveConnectivityConfigurationListResult(msrest.serializ
 
     _attribute_map = {
         'value': {'key': 'value', 'type': '[EffectiveConnectivityConfiguration]'},
-        'skip_token': {'key': '$skipToken', 'type': 'str'},
+        'skip_token': {'key': 'skipToken', 'type': 'str'},
     }
 
     def __init__(
@@ -2337,7 +2356,7 @@ class NetworkManagerEffectiveSecurityAdminRulesListResult(msrest.serialization.M
 
     _attribute_map = {
         'value': {'key': 'value', 'type': '[EffectiveBaseSecurityAdminRule]'},
-        'skip_token': {'key': '$skipToken', 'type': 'str'},
+        'skip_token': {'key': 'skipToken', 'type': 'str'},
     }
 
     def __init__(
@@ -2578,7 +2597,7 @@ class QueryRequestOptions(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'skip_token': {'key': '$skipToken', 'type': 'str'},
+        'skip_token': {'key': 'skipToken', 'type': 'str'},
     }
 
     def __init__(

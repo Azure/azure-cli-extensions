@@ -38,6 +38,7 @@ try:
     from ._models_py3 import EffectiveVirtualNetworksListResult
     from ._models_py3 import EffectiveVirtualNetworksParameter
     from ._models_py3 import GroupMembersItem
+    from ._models_py3 import Hub
     from ._models_py3 import NetworkGroup
     from ._models_py3 import NetworkGroupListResult
     from ._models_py3 import NetworkManager
@@ -97,6 +98,7 @@ except (SyntaxError, ImportError):
     from ._models import EffectiveVirtualNetworksListResult  # type: ignore
     from ._models import EffectiveVirtualNetworksParameter  # type: ignore
     from ._models import GroupMembersItem  # type: ignore
+    from ._models import Hub  # type: ignore
     from ._models import NetworkGroup  # type: ignore
     from ._models import NetworkGroupListResult  # type: ignore
     from ._models import NetworkManager  # type: ignore
@@ -138,7 +140,6 @@ from ._network_management_client_enums import (
     EffectiveUserRuleKind,
     GroupConnectivity,
     IsGlobal,
-    MemberType,
     MembershipType,
     ProvisioningState,
     SecurityConfigurationRuleAccess,
@@ -181,6 +182,7 @@ __all__ = [
     'EffectiveVirtualNetworksListResult',
     'EffectiveVirtualNetworksParameter',
     'GroupMembersItem',
+    'Hub',
     'NetworkGroup',
     'NetworkGroupListResult',
     'NetworkManager',
@@ -220,7 +222,6 @@ __all__ = [
     'EffectiveUserRuleKind',
     'GroupConnectivity',
     'IsGlobal',
-    'MemberType',
     'MembershipType',
     'ProvisioningState',
     'SecurityConfigurationRuleAccess',

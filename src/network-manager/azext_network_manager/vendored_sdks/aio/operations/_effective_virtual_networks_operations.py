@@ -44,9 +44,9 @@ class EffectiveVirtualNetworksOperations:
         self,
         resource_group_name: str,
         network_manager_name: str,
+        parameters: "_models.EffectiveVirtualNetworksParameter",
         top: Optional[int] = None,
         skip_token: Optional[str] = None,
-        parameters: Optional["_models.EffectiveVirtualNetworksParameter"] = None,
         **kwargs: Any
     ) -> "_models.EffectiveVirtualNetworksListResult":
         """List effective virtual networks in a network manager.
@@ -55,6 +55,8 @@ class EffectiveVirtualNetworksOperations:
         :type resource_group_name: str
         :param network_manager_name: The name of the network manager.
         :type network_manager_name: str
+        :param parameters: Effective Virtual Networks Parameter.
+        :type parameters: ~azure.mgmt.network.v2021_02_01_preview.models.EffectiveVirtualNetworksParameter
         :param top: An optional query parameter which specifies the maximum number of records to be
          returned by the server.
         :type top: int
@@ -62,8 +64,6 @@ class EffectiveVirtualNetworksOperations:
          a previous response contains a nextLink element, the value of the nextLink element will include
          a skipToken parameter that specifies a starting point to use for subsequent calls.
         :type skip_token: str
-        :param parameters: Effective Virtual Networks Parameter.
-        :type parameters: ~azure.mgmt.network.v2021_02_01_preview.models.EffectiveVirtualNetworksParameter
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: EffectiveVirtualNetworksListResult, or the result of cls(response)
         :rtype: ~azure.mgmt.network.v2021_02_01_preview.models.EffectiveVirtualNetworksListResult
@@ -101,10 +101,7 @@ class EffectiveVirtualNetworksOperations:
         header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        if parameters is not None:
-            body_content = self._serialize.body(parameters, 'EffectiveVirtualNetworksParameter')
-        else:
-            body_content = None
+        body_content = self._serialize.body(parameters, 'EffectiveVirtualNetworksParameter')
         body_content_kwargs['content'] = body_content
         request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)

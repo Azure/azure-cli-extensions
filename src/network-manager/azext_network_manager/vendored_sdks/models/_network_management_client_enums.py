@@ -122,13 +122,6 @@ class MembershipType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     STATIC = "Static"
     DYNAMIC = "Dynamic"
 
-class MemberType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """Group member type.
-    """
-
-    VIRTUAL_NETWORK = "VirtualNetwork"
-    SUBNET = "Subnet"
-
 class ProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The current provisioning state.
     """
