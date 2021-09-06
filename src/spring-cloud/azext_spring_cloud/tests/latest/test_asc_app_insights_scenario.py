@@ -38,6 +38,51 @@ class AzureSpringCloudCreateTests(ScenarioTest):
         self._test_app_insights_enable_status(self.kwargs['rg'], self.kwargs['serviceName'], True)
         self._clean_service(self.kwargs['rg'], self.kwargs['serviceName'])
 
+    def test_create_asc_heavy_cases(self):
+        self.kwargs.update({
+            'serviceName': 'cli-unittest',
+            'SKU': 'Basic',
+            'location': 'eastus',
+            'rg': 'cli',
+            'shared_ai_name': 'cli_scenario_test_20210906102205'
+        })
+        rg = self.kwargs['rg']
+        ai_id, ai_i_key, ai_c_string = self._get_ai_info(rg, self.kwargs['shared_ai_name'])
+
+        case_idx = 0
+
+        case_idx += 1
+        service_name = "{}-{}".format(self.kwargs['serviceName'], case_idx)
+        self._test_create_asc_with_suffix(self.kwargs['SKU'], self.kwargs['location'],
+                                          rg, service_name, True,
+                                          '--app-insights {}'.format(ai_id))
+
+        case_idx += 1
+        service_name = "{}-{}".format(self.kwargs['serviceName'], case_idx)
+        sampling_rate = 0.1
+        self._test_create_asc_with_suffix(self.kwargs['SKU'], self.kwargs['location'],
+                                          rg, service_name, True,
+                                          '--app-insights {} --sampling-rate {}'.format(
+                                              self.kwargs['shared_ai_name'], sampling_rate),
+                                          target_sampling_rate=sampling_rate)
+
+        case_idx += 1
+        service_name = "{}-{}".format(self.kwargs['serviceName'], case_idx)
+        sampling_rate = 1.0
+        self._test_create_asc_with_suffix(self.kwargs['SKU'], self.kwargs['location'],
+                                          rg, service_name, True,
+                                          '--app-insights-key {} --sampling-rate {}'.format(ai_i_key, sampling_rate),
+                                          target_sampling_rate=sampling_rate)
+
+        case_idx += 1
+        service_name = "{}-{}".format(self.kwargs['serviceName'], case_idx)
+        sampling_rate = 10.0
+        self._test_create_asc_with_suffix(self.kwargs['SKU'], self.kwargs['location'],
+                                          rg, service_name, True,
+                                          '--app-insights-key "{}" --sampling-rate {}'
+                                          .format(ai_c_string, sampling_rate),
+                                          target_sampling_rate=sampling_rate)
+
     def test_negative_create_asc(self):
         self.kwargs.update({
             'serviceName': 'cli-unittest-10',
@@ -47,6 +92,7 @@ class AzureSpringCloudCreateTests(ScenarioTest):
             'anyString': 'anyString'
         })
         negative_cmd_suffixes = [
+            # Conflict
             "--disable-app-insights --app-insights {anyString}",
             "--disable-app-insights true --app-insights {anyString}",
             "--disable-app-insights --app-insights-key {anyString}",
@@ -75,7 +121,7 @@ class AzureSpringCloudCreateTests(ScenarioTest):
             "--disable-app-insights true --app-insights-key {anyString} --sampling-rate 50",
 
             "--app-insights-key {anyString} --app-insights {anyString}",
-
+            # Invalid sampling rate
             "--sampling-rate -100",
             "--sampling-rate -10",
             "--sampling-rate -1",
@@ -119,6 +165,7 @@ class AzureSpringCloudCreateTests(ScenarioTest):
             'anyString': 'anyString'
         })
         negative_cmd_suffixes = [
+            # Conflict
             "--disable-app-insights --app-insights-key {anyString}",
             "--disable-app-insights --app-insights {anyString}",
             "--disable-app-insights true --app-insights {anyString}",
@@ -224,6 +271,18 @@ class AzureSpringCloudCreateTests(ScenarioTest):
         for suffix in negative_cmd_suffixes:
             cmd = '{} {}'.format(cmd_base, suffix)
             self.cmd(cmd, expect_failure=True)
+
+    def _test_create_asc_with_suffix(self, sku, location,
+                                     rg, service_name, target_ai_status, cmd_suffix,
+                                     target_sampling_rate=default_sampling_rate):
+        cmd_base = 'spring-cloud create -n {} -g {} --sku {} -l {} --no-wait'.format(service_name, rg, sku, location)
+        cmd = '{} {}'.format(cmd_base, cmd_suffix)
+        self.cmd(cmd)
+        self._wait_service(rg, service_name)
+        self._test_app_insights_enable_status(rg, service_name, target_ai_status)
+        if target_ai_status:
+            self._test_sampling_rate(rg, service_name, target_sampling_rate)
+        self._clean_service(rg, service_name)
 
     def _test_asc_app_insights_update_with_suffix(self, rg, service_name, target_ai_status, cmd_suffix,
                                                   target_sampling_rate=default_sampling_rate,
