@@ -83,6 +83,22 @@ class AzureSpringCloudCreateTests(ScenarioTest):
                                           .format(ai_c_string, sampling_rate),
                                           target_sampling_rate=sampling_rate)
 
+    def test_create_asc_without_ai_cases(self):
+        self.kwargs.update({
+            'serviceName': 'cli-unittest',
+            'SKU': 'Basic',
+            'location': 'eastus',
+            'rg': 'cli',
+        })
+        rg = self.kwargs['rg']
+
+        case_idx = 0
+        case_idx += 1
+        service_name = "{}-{}".format(self.kwargs['serviceName'], case_idx)
+        self._test_create_asc_with_suffix(self.kwargs['SKU'], self.kwargs['location'],
+                                          rg, service_name, False,
+                                          '--disable-app-insights')
+
     def test_negative_create_asc(self):
         self.kwargs.update({
             'serviceName': 'cli-unittest-10',
