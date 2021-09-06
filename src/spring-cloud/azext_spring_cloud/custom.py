@@ -1285,10 +1285,10 @@ def _app_deploy(client, resource_group, service, app, name, version, path, runti
     if file_type is None:
         # update means command is az spring-cloud app deploy xxx
         if update:
-            raise RequiredArgumentMissingError("Miss argument artifact-path or source-path")
+            raise RequiredArgumentMissingError("Miss argument '--artifact-path' or '--source-path'")
         # if command is az spring-cloud app deployment create xxx, create default deployment
         else:
-            logger.warning("[1/1] Without artifact-path or source-path, creating default deployment")
+            logger.warning("Creating default deployment. If you need to build from source, specify the --source-path argument explicitly.")
             default_deployment_resource = _default_deployment_resource_builder(cpu, memory, env, jvm_options, runtime_version, instance_count)
             return sdk_no_wait(no_wait, client.deployments.begin_create_or_update,
                                resource_group, service, app, name, default_deployment_resource)

@@ -147,10 +147,11 @@ def load_arguments(self, _):
     for scope in ['spring-cloud app deploy', 'spring-cloud app deployment create']:
         with self.argument_context(scope) as c:
             c.argument(
-                'artifact_path', options_list=[
-                    '--artifact-path', '--jar-path'], help='If provided, deploy pre-built artifact (jar or netcore zip), otherwise need to assign source_path.')
+                'artifact_path', options_list=['--artifact-path',
+                    c.deprecate(target='--jar-path', redirect='--artifact-path', hide=True),c.deprecate(target='-p', redirect='--artifact-path', hide=True)],
+                        help='Deploy the specified pre-built artifact (jar or netcore zip).')
             c.argument(
-                'source_path', nargs='?', const='.', help="If provided, deploy current or designative folder as tar, otherwise need to assign artifact-path.")
+                'source_path', nargs='?', const='.', help="Upload the specified source folder to build and deploy. Default to the current folder.")
             c.argument(
                 'main_entry', options_list=[
                     '--main-entry', '-m'], help="A string containing the path to the .NET executable relative to zip root.")
