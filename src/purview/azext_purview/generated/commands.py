@@ -47,5 +47,5 @@ def load_command_table(self, _):
         g.custom_command('remove', 'purview_default_account_remove')
         g.custom_command('set', 'purview_default_account_set')
 
-    with self.command_group('purview', is_experimental=True):
+    with self.command_group('purview', is_preview=True):
         pass
