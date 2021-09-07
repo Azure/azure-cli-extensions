@@ -21,15 +21,6 @@ from azure.cli.core.commands.validators import get_default_location_from_resourc
 
 def load_arguments(self, _):
 
-    with self.argument_context('purview account list') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('skip_token', type=str, help='The skip token.')
-
-    with self.argument_context('purview account show') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('account_name', options_list=['--name', '-n', '--account-name'], type=str, help='The name of the '
-                   'account.', id_part='name')
-
     with self.argument_context('purview account create') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('account_name', options_list=['--name', '-n', '--account-name'], type=str, help='The name of the '
@@ -49,41 +40,6 @@ def load_arguments(self, _):
         c.argument('managed_group_name', type=str, help='Gets or sets the managed resource group name')
         c.argument('public_network_access', arg_type=get_enum_type(['NotSpecified', 'Enabled', 'Disabled']),
                    help='Gets or sets the public network access.')
-
-    with self.argument_context('purview account delete') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('account_name', options_list=['--name', '-n', '--account-name'], type=str, help='The name of the '
-                   'account.', id_part='name')
-
-    with self.argument_context('purview account add-root-collection-admin') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('account_name', options_list=['--name', '-n', '--account-name'], type=str, help='The name of the '
-                   'account.', id_part='name')
-        c.argument('object_id', type=str, help='Gets or sets the object identifier of the admin.')
-
-    with self.argument_context('purview account list-key') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('account_name', options_list=['--name', '-n', '--account-name'], type=str, help='The name of the '
-                   'account.')
-
-    with self.argument_context('purview account wait') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('account_name', options_list=['--name', '-n', '--account-name'], type=str, help='The name of the '
-                   'account.', id_part='name')
-
-    with self.argument_context('purview default-account show') as c:
-        c.argument('scope_tenant_id', help='The tenant ID.')
-        c.argument('scope_type', arg_type=get_enum_type(['Tenant', 'Subscription']), help='The scope for the default '
-                   'account.')
-        c.argument('scope', type=str, help='The Id of the scope object, for example if the scope is "Subscription" '
-                   'then it is the ID of that subscription.')
-
-    with self.argument_context('purview default-account remove') as c:
-        c.argument('scope_tenant_id', help='The tenant ID.')
-        c.argument('scope_type', arg_type=get_enum_type(['Tenant', 'Subscription']), help='The scope for the default '
-                   'account.')
-        c.argument('scope', type=str, help='The Id of the scope object, for example if the scope is "Subscription" '
-                   'then it is the ID of that subscription.')
 
     with self.argument_context('purview default-account set') as c:
         c.argument('account_name', options_list=['--name', '-n', '--account-name'], type=str,

@@ -14,22 +14,6 @@
 from azure.cli.core.util import sdk_no_wait
 
 
-def purview_account_list(client,
-                         resource_group_name=None,
-                         skip_token=None):
-    if resource_group_name:
-        return client.list_by_resource_group(resource_group_name=resource_group_name,
-                                             skip_token=skip_token)
-    return client.list_by_subscription(skip_token=skip_token)
-
-
-def purview_account_show(client,
-                         resource_group_name,
-                         account_name):
-    return client.get(resource_group_name=resource_group_name,
-                      account_name=account_name)
-
-
 def purview_account_create(client,
                            resource_group_name,
                            account_name,
@@ -76,8 +60,6 @@ def purview_account_update(client,
         account_update_parameters['properties']['managed_resource_group_name'] = managed_group_name
     if public_network_access is not None:
         account_update_parameters['properties']['public_network_access'] = public_network_access
-    else:
-        account_update_parameters['properties']['public_network_access'] = "Enabled"
     if len(account_update_parameters['properties']) == 0:
         del account_update_parameters['properties']
     return sdk_no_wait(no_wait,
@@ -85,53 +67,6 @@ def purview_account_update(client,
                        resource_group_name=resource_group_name,
                        account_name=account_name,
                        account_update_parameters=account_update_parameters)
-
-
-def purview_account_delete(client,
-                           resource_group_name,
-                           account_name,
-                           no_wait=False):
-    return sdk_no_wait(no_wait,
-                       client.begin_delete,
-                       resource_group_name=resource_group_name,
-                       account_name=account_name)
-
-
-def purview_account_add_root_collection_admin(client,
-                                              resource_group_name,
-                                              account_name,
-                                              object_id=None):
-    collection_admin_update = {}
-    if object_id is not None:
-        collection_admin_update['object_id'] = object_id
-    return client.add_root_collection_admin(resource_group_name=resource_group_name,
-                                            account_name=account_name,
-                                            collection_admin_update=collection_admin_update)
-
-
-def purview_account_list_key(client,
-                             resource_group_name,
-                             account_name):
-    return client.list_keys(resource_group_name=resource_group_name,
-                            account_name=account_name)
-
-
-def purview_default_account_show(client,
-                                 scope_tenant_id,
-                                 scope_type,
-                                 scope=None):
-    return client.get(scope_tenant_id=scope_tenant_id,
-                      scope_type=scope_type,
-                      scope=scope)
-
-
-def purview_default_account_remove(client,
-                                   scope_tenant_id,
-                                   scope_type,
-                                   scope=None):
-    return client.remove(scope_tenant_id=scope_tenant_id,
-                         scope_type=scope_type,
-                         scope=scope)
 
 
 def purview_default_account_set(client,
