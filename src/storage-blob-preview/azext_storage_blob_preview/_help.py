@@ -201,7 +201,7 @@ examples:
 
 helps['storage blob immutability-policy delete'] = """
 type: command
-short-summary: delete blob's immutability policy.
+short-summary: Delete blob's immutability policy.
 examples:
   - name: Delete an unlocked immutability policy.
     text: az storage blob immutability-policy delete -c mycontainer -n myblob --account-name mystorageaccount --account-key 0000-0000
