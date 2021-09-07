@@ -148,11 +148,12 @@ def load_arguments(self, _):
         with self.argument_context(scope) as c:
             c.argument(
                 'artifact_path', options_list=['--artifact-path',
-                    c.deprecate(target='--jar-path', redirect='--artifact-path', hide=True),c.deprecate(target='-p', redirect='--artifact-path', hide=True)],
-                        help='Deploy the specified pre-built artifact (jar or netcore zip).', validator=validate_jar)
+                                               c.deprecate(target='--jar-path', redirect='--artifact-path', hide=True),
+                                               c.deprecate(target='-p', redirect='--artifact-path', hide=True)],
+                help='Deploy the specified pre-built artifact (jar or netcore zip).', validator=validate_jar)
             c.argument(
                 'source_path', nargs='?', const='.',
-                    help="Deploy the specified source folder. The folder will be packed into tar, uploaded, and built using kpack. Default to the current folder if no value provided.")
+                help="Deploy the specified source folder. The folder will be packed into tar, uploaded, and built using kpack. Default to the current folder if no value provided.")
             c.argument(
                 'disable_validation', arg_type=get_three_state_flag(),
                 help='If true, disable jar validation.')
