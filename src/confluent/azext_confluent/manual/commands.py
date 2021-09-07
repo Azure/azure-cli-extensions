@@ -25,3 +25,13 @@ def load_command_table(self, _):
 
     with self.command_group('confluent offer-detail') as g:
         g.custom_show_command('show', 'confluent_offer_detail_show')
+
+    from azext_confluent.generated._client_factory import cf_marketplace_agreement
+
+    confluent_marketplace_agreement = CliCommandType(
+        operations_tmpl='azext_confluent.vendored_sdks.confluent.operations._marketplace_agreements_operations#Marketpl'
+        'aceAgreementsOperations.{}',
+        client_factory=cf_marketplace_agreement)
+    with self.command_group('confluent terms', confluent_marketplace_agreement,
+                            client_factory=cf_marketplace_agreement, deprecate_info=g.deprecate(redirect='az term', hide=True)) as g:
+        g.custom_command('list', 'confluent_terms_list')
