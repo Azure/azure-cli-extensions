@@ -11,8 +11,8 @@ az extension add --name purview
 #### purview account ####
 ##### Create #####
 ```
-az purview account create --location "West US 2" --managed-resource-group-name "custom-rgname" \
-    --sku name="Standard" capacity=4 --name "account1" --resource-group "SampleResourceGroup" 
+az purview account create --location "WestUS2" --managed-group-name "custom-rgname" \
+     --name "account1" --resource-group "SampleResourceGroup" 
 
 az purview account wait --created --name "{myAccount}" --resource-group "{rg}"
 ```
@@ -44,17 +44,15 @@ az purview account delete --name "account1" --resource-group "SampleResourceGrou
 #### purview default-account ####
 ##### Show #####
 ```
-az purview default-account show --scope "12345678-1234-1234-12345678abc" \
-    --scope-tenant-id "12345678-1234-1234-12345678abc" --scope-type "Tenant" 
+az purview default-account show --subscription-id "12345678-1234-1234-12345678abc" \
+    --scope-tenant-id "12345678-1234-1234-12345678abc" 
 ```
 ##### Remove #####
 ```
-az purview default-account remove --scope "12345678-1234-1234-12345678abc" \
-    --scope-tenant-id "12345678-1234-1234-12345678abc" --scope-type "Tenant" 
+az purview default-account remove --scope-tenant-id "12345678-1234-1234-12345678abc" --scope-type "Tenant" 
 ```
 ##### Set #####
 ```
 az purview default-account set --account-name "myDefaultAccount" --resource-group "rg-1" \
-    --scope "12345678-1234-1234-12345678abc" --scope-tenant-id "12345678-1234-1234-12345678abc" --scope-type "Tenant" \
-    --subscription-id "12345678-1234-1234-12345678aaa" 
+     --scope-tenant-id "12345678-1234-1234-12345678abc" --scope-type "Tenant" 
 ```
