@@ -3,6 +3,11 @@
 Release History
 ===============
 
+1.1.10
+++++++
+
+* Fixed ARM exception telemetry
+
 1.1.9
 ++++++
 
