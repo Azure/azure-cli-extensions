@@ -16,7 +16,6 @@ class VmwareDhcpScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='cli_test_vmware_dhcp')
     def test_vmware_dhcp(self):
         self.kwargs.update({
-            # 'loc': 'westcentralus',
             'privatecloud': 'cloud1',
             'dhcp_id': 'dhcp1',
             'display_name': 'dhcpConfigurations1',
@@ -25,8 +24,6 @@ class VmwareDhcpScenarioTest(ScenarioTest):
             'lease_time': '86400',
             'server_addresses': '40.1.5.1/24'
         })
-
-        # self.cmd('az vmware private-cloud create -g {rg} -n {privatecloud} --location {loc} --sku av20 --cluster-size 4 --network-block 192.168.48.0/22 --nsxt-password 5rqdLj4GF3cePUe6( --vcenter-password UpfBXae9ZquZSDXk( --accept-eula')
         
         count = len(self.cmd('az vmware workload-network dhcp list --resource-group {rg} --private-cloud {privatecloud}').get_output_in_json())
         self.assertEqual(count, 1, 'count expected to be 1')
