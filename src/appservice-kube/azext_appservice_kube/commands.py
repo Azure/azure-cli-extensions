@@ -44,24 +44,18 @@ def ex_handler_factory(creating_plan=False):
 
 
 def load_command_table(self, _):
-
-    kube_environments_sdk = CliCommandType(
-        operations_tmpl='azext_appservice_kube.vendored_sdks.azure_mgmt_web.operations#KubeEnvironmentsOperations.{}',
-        client_factory=cf_kube_environments
-    )
-
     appservice_plan_sdk = CliCommandType(
-        operations_tmpl='azext_appservice_kube.vendored_sdks.azure_mgmt_web.operations#AppServicePlansOperations.{}',
+        operations_tmpl='azure.mgmt.web.operations#AppServicePlansOperations.{}',
         client_factory=cf_plans
     )
 
-    with self.command_group('appservice kube', kube_environments_sdk, is_preview=True) as g:
-        g.show_command('show')
-        g.wait_command('wait')
-        g.custom_command('list', 'list_kube_environments', client_factory=cf_kube_environments)
-        g.custom_command('create', 'create_kube_environment', client_factory=cf_kube_environments, supports_no_wait=True)
-        g.custom_command('update', 'update_kube_environment', client_factory=cf_kube_environments, supports_no_wait=True)
-        g.command('delete', 'delete', supports_no_wait=True, confirmation=True)
+    with self.command_group('appservice kube', is_preview=True) as g:
+        g.custom_command('show', 'show_kube_environments')
+        g.custom_command('wait', 'wait_kube_environment')
+        g.custom_command('list', 'list_kube_environments')
+        g.custom_command('create', 'create_kube_environment', supports_no_wait=True)
+        g.custom_command('update', 'update_kube_environment', supports_no_wait=True)
+        g.custom_command('delete', 'delete_kube_environment', supports_no_wait=True, confirmation=True)
 
     with self.command_group('appservice plan', appservice_plan_sdk) as g:
         g.custom_command('create', 'create_app_service_plan', supports_no_wait=True,

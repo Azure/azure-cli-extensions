@@ -7,20 +7,17 @@ from azure.cli.core import AzCommandsLoader
 from azure.cli.core.profiles import register_resource_type
 
 from azext_appservice_kube._help import helps  # pylint: disable=unused-import
-from azext_appservice_kube._client_factory import CUSTOM_MGMT_APPSERVICE
 
 
 class AppserviceCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        register_resource_type('latest', CUSTOM_MGMT_APPSERVICE, '2020-12-01')
-
-        appservice_kube_custom = CliCommandType(
-            operations_tmpl='azext_appservice_kube.custom#{}')
+        from azure.cli.core.profiles import ResourceType
+        appservice_custom = CliCommandType(operations_tmpl='azext_appservice_kube.custom#{}')
         super(AppserviceCommandsLoader, self).__init__(cli_ctx=cli_ctx,
-                                                       custom_command_type=appservice_kube_custom,
-                                                       resource_type=CUSTOM_MGMT_APPSERVICE)
+                                                       custom_command_type=appservice_custom,
+                                                       resource_type=ResourceType.MGMT_APPSERVICE)
 
     def load_command_table(self, args):
         super(AppserviceCommandsLoader, self).load_command_table(args)
@@ -39,3 +36,5 @@ class AppserviceCommandsLoader(AzCommandsLoader):
 
 
 COMMAND_LOADER_CLS = AppserviceCommandsLoader
+
+

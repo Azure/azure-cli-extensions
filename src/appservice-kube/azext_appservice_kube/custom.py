@@ -12,6 +12,9 @@ import ssl
 import sys
 import platform
 
+from azure.cli.core.util import send_raw_request
+from azure.cli.core.commands.client_factory import get_subscription_id
+
 try:
     from urllib.parse import urlparse
 except ImportError:
@@ -99,45 +102,111 @@ logger = get_logger(__name__)
 
 # pylint: disable=too-many-locals,too-many-lines
 
-def create_kube_environment(cmd, client, name, resource_group_name, custom_location, static_ip=None, location=None,
+# TODO remove and replace with calls to KubeEnvironmentsOperations once the SDK gets updated 
+class KubeEnvironmentClient():
+    @classmethod
+    def create(cls, cmd, resource_group_name, name, kube_environment_envelope, **kwargs):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        api_version = "2020-12-01"
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        request_url = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/kubeEnvironments/{}?api-version={}".format(
+            management_hostname.strip('/'), 
+            sub_id, 
+            resource_group_name, 
+            name, 
+            api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(kube_environment_envelope))
+        return r.json()
+
+    # TODO 
+    @classmethod
+    def show(cls):
+        raise NotImplementedError()  
+
+    # TODO
+    @classmethod
+    def wait(cls):
+        raise NotImplementedError() 
+
+    # TODO
+    @classmethod
+    def delete(cls):
+        raise NotImplementedError() 
+
+    # TODO
+    @classmethod
+    def list(cls):
+        raise NotImplementedError() 
+
+    # TODO 
+    @classmethod
+    def update(cls):
+        raise NotImplementedError() 
+      
+
+#TODO implement
+def show_kube_environments(*args, **kwargs):
+    raise NotImplementedError() 
+
+# TODO implement
+def wait_kube_environment(*args, **kwargs):
+    raise NotImplementedError() 
+
+# TODO implement 
+def delete_kube_environment(*args, **kwargs):
+    raise NotImplementedError() 
+
+def create_kube_environment(cmd, name, resource_group_name, custom_location, static_ip=None, location=None,
                             tags=None, no_wait=False):
-    KubeEnvironment, ExtendedLocation, ArcConfiguration, FrontEndConfiguration = cmd.get_models('KubeEnvironment',
-        'ExtendedLocation', 'ArcConfiguration', 'FrontEndConfiguration')
+    # TODO replace some of this validation from the original method VVVV 
+    
+    # custom_location_client = customlocation_client_factory(cmd.cli_ctx)
+    # custom_location_object = None
 
-    custom_location_client = customlocation_client_factory(cmd.cli_ctx)
-    custom_location_object = None
+    # if is_valid_resource_id(custom_location):
+    #     parsed_custom_location = parse_resource_id(custom_location)
+    #     if parsed_custom_location['resource_type'].lower() != 'customlocations':
+    #         raise CLIError('Invalid custom location')
 
-    if is_valid_resource_id(custom_location):
-        parsed_custom_location = parse_resource_id(custom_location)
-        if parsed_custom_location['resource_type'].lower() != 'customlocations':
-            raise CLIError('Invalid custom location')
+    #     custom_location_object = custom_location_client.custom_locations.get(
+    #         parsed_custom_location['resource_group'],
+    #         parsed_custom_location['name'])
+    # else:
+    #     custom_location_object = custom_location_client.custom_locations.get(resource_group_name, custom_location)
+    #     custom_location = custom_location_object.id
 
-        custom_location_object = custom_location_client.custom_locations.get(
-            parsed_custom_location['resource_group'],
-            parsed_custom_location['name'])
-    else:
-        custom_location_object = custom_location_client.custom_locations.get(resource_group_name, custom_location)
-        custom_location = custom_location_object.id
+    # if not location:
+    #     location = custom_location_object.location
 
-    if not location:
-        location = custom_location_object.location
-
-    front_end_configuration = FrontEndConfiguration(kind="LoadBalancer")
-    extended_location = ExtendedLocation(custom_location=custom_location)
-    arc_configuration = ArcConfiguration(
-        artifacts_storage_type="NetworkFileSystem", artifact_storage_class_name="default", front_end_service_configuration=front_end_configuration)
-    kube_environment = KubeEnvironment(
-        name=name,
-        location=location,
-        kind="null",
-        tags=tags,
-        plan=None,
-        extended_location=extended_location,
-        static_ip=static_ip,
-        arc_configuration=arc_configuration)
+    # TODO replace with a FrontEndConfiguration model from the SDK 
+    front_end_configuration = {"kind": "LoadBalancer"}
+    
+    # TODO replace with an ExtendedLocation model from the SDK 
+    # TODO may need to make this a custom location ID 
+    extended_location = {"customLocation":custom_location}
+    
+    # TODO replace with an ArcConfiguration model from the SDK
+    arc_configuration = {
+        "artifactsStorageType": "NetworkFileSystem", 
+        "artifactStorageClassName": "default", 
+        "frontEndServiceConfiguration": front_end_configuration
+    }
+    
+    # TODO replace with a KubeEnvironmentEnvelope model from the SDK 
+    kube_environment = {
+        "kind": None, 
+        "location": location, 
+        "properties": {
+            "extendedLocation": extended_location, 
+            "staticIp": static_ip, 
+            "arcConfiguration": arc_configuration
+        }
+    }
 
     try:
-        return sdk_no_wait(no_wait, client.create, resource_group_name=resource_group_name, name=name, kube_environment_envelope=kube_environment, polling=False)
+        # TODO add support for wait/no_wait polling behavior 
+        return KubeEnvironmentClient.create(cmd=cmd, resource_group_name=resource_group_name, name=name, kube_environment_envelope=kube_environment)
     except Exception as e:
         try:
             import json
@@ -146,13 +215,13 @@ def create_kube_environment(cmd, client, name, resource_group_name, custom_locat
             raise e
     raise ValidationError(msg)
 
-
+# TODO fix 
 def list_kube_environments(client, resource_group_name=None):
     if resource_group_name is None:
         return client.list_by_subscription()
     return client.list_by_resource_group(resource_group_name)
 
-
+# TODO fix 
 def update_kube_environment(cmd,
                             kube_name,
                             resource_group_name,
