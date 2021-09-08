@@ -121,8 +121,19 @@ class KubeEnvironmentClient():
 
     # TODO 
     @classmethod
-    def show(cls):
-        raise NotImplementedError()  
+    def show(cls, cmd, resource_group_name, name):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        api_version = "2020-12-01"
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        request_url = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/kubeEnvironments/{}?api-version={}".format(
+            management_hostname.strip('/'), 
+            sub_id, 
+            resource_group_name, 
+            name, 
+            api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+        return r.json()
 
     # TODO
     @classmethod
@@ -136,8 +147,8 @@ class KubeEnvironmentClient():
 
     # TODO
     @classmethod
-    def list(cls):
-        raise NotImplementedError() 
+    def list(cls, cmd, resource_group_name):
+        raise NotImplementedError()
 
     # TODO 
     @classmethod
@@ -146,8 +157,8 @@ class KubeEnvironmentClient():
       
 
 #TODO implement
-def show_kube_environments(*args, **kwargs):
-    raise NotImplementedError() 
+def show_kube_environments(cmd, name, resource_group_name):
+    return KubeEnvironmentClient.show(cmd=cmd, name=name, resource_group_name=resource_group_name)
 
 # TODO implement
 def wait_kube_environment(*args, **kwargs):
@@ -168,7 +179,6 @@ def create_kube_environment(cmd, name, resource_group_name, custom_location, sta
     #     parsed_custom_location = parse_resource_id(custom_location)
     #     if parsed_custom_location['resource_type'].lower() != 'customlocations':
     #         raise CLIError('Invalid custom location')
-
     #     custom_location_object = custom_location_client.custom_locations.get(
     #         parsed_custom_location['resource_group'],
     #         parsed_custom_location['name'])
@@ -216,10 +226,11 @@ def create_kube_environment(cmd, name, resource_group_name, custom_location, sta
     raise ValidationError(msg)
 
 # TODO fix 
-def list_kube_environments(client, resource_group_name=None):
-    if resource_group_name is None:
-        return client.list_by_subscription()
-    return client.list_by_resource_group(resource_group_name)
+def list_kube_environments(cmd, resource_group_name=None):
+    # if resource_group_name is None:
+    #     return client.list_by_subscription()
+    # return client.list_by_resource_group(resource_group_name)
+    return KubeEnvironmentClient.list(cmd, resource_group_name)
 
 # TODO fix 
 def update_kube_environment(cmd,
