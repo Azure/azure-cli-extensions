@@ -140,10 +140,20 @@ class KubeEnvironmentClient():
     def wait(cls):
         raise NotImplementedError() 
 
-    # TODO
     @classmethod
-    def delete(cls):
-        raise NotImplementedError() 
+    def delete(cls, cmd, resource_group_name, name):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        api_version = "2020-12-01"
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        request_url = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/kubeEnvironments/{}?api-version={}".format(
+            management_hostname.strip('/'), 
+            sub_id, 
+            resource_group_name, 
+            name, 
+            api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "DELETE", request_url)
+        return None # API doesn't return JSON for some reason 
 
     @classmethod
     def list_by_subscription(cls, cmd):
@@ -185,9 +195,8 @@ def show_kube_environments(cmd, name, resource_group_name):
 def wait_kube_environment(*args, **kwargs):
     raise NotImplementedError() 
 
-# TODO implement 
-def delete_kube_environment(*args, **kwargs):
-    raise NotImplementedError() 
+def delete_kube_environment(cmd, name, resource_group_name):
+    return KubeEnvironmentClient.delete(cmd=cmd, name=name, resource_group_name=resource_group_name)
 
 def create_kube_environment(cmd, name, resource_group_name, custom_location, static_ip=None, location=None,
                             tags=None, no_wait=False):
