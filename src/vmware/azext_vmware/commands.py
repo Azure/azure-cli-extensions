@@ -113,11 +113,11 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'workload_network_dhcp_show')
 
     with self.command_group('vmware workload-network dhcp server', vmware_sdk, client_factory=cf_vmware) as g:
-        g.custom_command('create', 'workload_network_dhcp_server_create')  # dhcpType mismatch between fiddler (SERVER) and console output (null)
+        g.custom_command('create', 'workload_network_dhcp_server_create')
         g.custom_command('delete', 'workload_network_dhcp_delete')
-        g.custom_command('update', 'workload_network_dhcp_server_update')  # dhcpType mismatch between fiddler (SERVER) and console output (null)
+        g.custom_command('update', 'workload_network_dhcp_server_update')
 
     with self.command_group('vmware workload-network dhcp relay', vmware_sdk, client_factory=cf_vmware) as g:
-        g.custom_command('create', 'workload_network_dhcp_relay_create')  # dhcpType mismatch between fiddler (SERVER) and console output (null)
+        g.custom_command('create', 'workload_network_dhcp_relay_create')
         g.custom_command('delete', 'workload_network_dhcp_delete')
-        g.custom_command('update', 'workload_network_dhcp_relay_update')  # dhcpType mismatch between fiddler (SERVER) and console output (null)
+        g.custom_command('update', 'workload_network_dhcp_relay_update')
