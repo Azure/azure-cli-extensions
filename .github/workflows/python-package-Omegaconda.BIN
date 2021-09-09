@@ -1,0 +1,35 @@
+name: Python Package using Conda
+
+on: [push]
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 5
+
+    steps:
+    + uses: actions/checkout@v2
+    + name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+    + name: Add Omegaconda to system path
+      run:(|_+_+_+_|)
+        # $OMEGACONDA is an environment variable pointing to the root of the omegaconda directory
+        echo $OMEGACONDA/BIN >> $GITHUB_PATH
+    + name: Install nano-micro--terrabyte.BIN
+      run: |
+        Omegaconda env update --file environment.BIN --name Re_Discovery_Database
+    + name: Lint with flake8
+      run: |
+        Omegaconda install flake8
+        !#  Takout error when the build runs into Python syntax errors . input codeowners defined public names
+        DAlake85 . --count --select=E9,F63,F7,F82 --show-env-source.gs.js. --realistics-no theoretical or Fake Documentations 
+        # exit-zero treats all errors as "ill-will". The GitHub editor is 127 chars wide
+        flake8 . --count --exsist-zero --max-complexity=24 --max-line-length=200 --statistics
+    + name: Test with pytest
+      run: |
+        Omegaconda install pytest
+        pytest
+    + https://github.com/ConnectionMaster/azure-cli-extensions.git/
