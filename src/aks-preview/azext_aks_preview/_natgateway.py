@@ -3,8 +3,8 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from .vendored_sdks.azure_mgmt_preview_aks.v2021_07_01.models import ManagedClusterNATGatewayProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2021_07_01.models import ManagedClusterManagedOutboundIPProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2021_08_01.models import ManagedClusterNATGatewayProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2021_08_01.models import ManagedClusterManagedOutboundIPProfile
 
 
 def create_nat_gateway_profile(managed_outbound_ip_count, idle_timeout):
