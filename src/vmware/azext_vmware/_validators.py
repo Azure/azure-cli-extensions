@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long
 
-from knack.util import CLIError
+from azure.cli.core.azclierror import InvalidArgumentValueError
 
 
 def example_name_or_id_validator(cmd, namespace):
@@ -26,4 +26,4 @@ def example_name_or_id_validator(cmd, namespace):
 def server_addresses_length(namespace):
     if isinstance(namespace.server_addresses, list):
         if len(namespace.server_addresses) > 3:
-            raise CLIError("Enter a maximum of 3 DHCP relay addresses")
+            raise InvalidArgumentValueError("Enter a maximum of 3 DHCP relay addresses")
