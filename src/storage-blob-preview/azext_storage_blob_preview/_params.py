@@ -8,7 +8,7 @@ from azure.cli.core.commands.validators import validate_tags
 from azure.cli.core.commands.parameters import (file_type, get_enum_type, get_three_state_flag)
 
 from ._validators import (validate_metadata, get_permission_validator, get_permission_help_string,
-                          validate_blob_type, validate_included_datasets_v2,
+                          validate_blob_type, validate_included_datasets_v2, get_datetime_type,
                           add_download_progress_callback, add_upload_progress_callback,
                           validate_storage_data_plane_list, as_user_validator, blob_tier_validator)
 
@@ -247,6 +247,20 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
 
     with self.argument_context('storage blob exists') as c:
         c.register_blob_arguments()
+
+    with self.argument_context('storage blob set-legal-hold') as c:
+        c.register_blob_arguments()
+        c.argument('legal_hold', arg_type=get_three_state_flag(),
+                   help='Specified if a legal hold should be set on the blob.')
+
+    with self.argument_context('storage blob immutability-policy delete') as c:
+        c.register_blob_arguments()
+
+    with self.argument_context('storage blob immutability-policy set') as c:
+        c.register_blob_arguments()
+        c.argument('expiry_time', type=get_datetime_type(False),
+                   help='expiration UTC datetime in (Y-m-d\'T\'H:M:S\'Z\')')
+        c.argument('policy_mode', arg_type=get_enum_type(['Locked', 'Unlocked']), help='Lock or Unlock the policy')
 
     with self.argument_context('storage blob filter') as c:
         c.argument('filter_expression', options_list=['--tag-filter'])
