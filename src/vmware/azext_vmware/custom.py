@@ -373,3 +373,27 @@ def workload_network_dhcp_list(client: AVSClient, resource_group_name, private_c
 
 def workload_network_dhcp_show(client: AVSClient, resource_group_name, private_cloud, dhcp_id: str):
     return client.workload_networks.get_dhcp(resource_group_name=resource_group_name, private_cloud_name=private_cloud, dhcp_id=dhcp_id)
+
+
+def workload_network_dns_services_list(client: AVSClient, resource_group_name, private_cloud):
+    return client.workload_networks.list_dns_services(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
+
+
+def workload_network_dns_services_get(client: AVSClient, resource_group_name, private_cloud, dns_service_id):
+    return client.workload_networks.get_dns_service(resource_group_name=resource_group_name, private_cloud_name=private_cloud, dns_service_id=dns_service_id)
+
+
+def workload_network_dns_services_create(client: AVSClient, resource_group_name, private_cloud, dns_service_id, display_name, dns_service_ip, default_dns_zone, fqdn_zones, log_level, revision):
+    from azext_vmware.vendored_sdks.avs_client.models import WorkloadNetworkDnsService
+    properties = WorkloadNetworkDnsService(display_name=display_name, dns_service_ip=dns_service_ip, default_dns_zone=default_dns_zone, log_level=log_level, revision=revision, fqdn_zones=fqdn_zones)
+    return client.workload_networks.begin_create_dns_service(resource_group_name=resource_group_name, private_cloud_name=private_cloud, dns_service_id=dns_service_id, workload_network_dns_service=properties)
+
+
+def workload_network_dns_services_update(client: AVSClient, resource_group_name, private_cloud, dns_service_id, display_name, dns_service_ip, default_dns_zone, fqdn_zones, log_level, revision):
+    from azext_vmware.vendored_sdks.avs_client.models import WorkloadNetworkDnsService
+    properties = WorkloadNetworkDnsService(display_name=display_name, dns_service_ip=dns_service_ip, default_dns_zone=default_dns_zone, fqdn_zones=fqdn_zones, log_level=log_level, revision=revision)
+    return client.workload_networks.begin_update_dns_service(resource_group_name=resource_group_name, private_cloud_name=private_cloud, dns_service_id=dns_service_id, workload_network_dns_service=properties)
+
+
+def workload_network_dns_services_delete(client: AVSClient, resource_group_name, private_cloud, dns_service_id):
+    return client.workload_networks.begin_delete_dns_service(resource_group_name=resource_group_name, private_cloud_name=private_cloud, dns_service_id=dns_service_id)

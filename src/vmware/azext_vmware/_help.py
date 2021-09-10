@@ -575,3 +575,50 @@ helps['vmware workload-network dhcp server update'] = """
     - name: Create or update dhcp by id in a workload network.
       text: az vmware workload-network dhcp server update --resource-group group1 --private-cloud cloud1 --dhcp-id dhcp1 --display-name dhcpConfigurations1 --revision 1 --server-address 40.1.5.1/24 --lease-time 86400
 """
+
+
+helps['vmware workload-network dns-service'] = """
+    type: group
+    short-summary: Commands to manage a DNS Service workload-network.
+"""
+
+
+helps['vmware workload-network dns-service list'] = """
+    type: command
+    short-summary: List of DNS services in a private cloud workload network.
+    examples:
+    - name: List of DNS services in a workload network.
+      text: az vmware workload-network dns-service list --resource-group group1 --private-cloud cloud1
+"""
+
+helps['vmware workload-network dns-service show'] = """
+    type: command
+    short-summary: Get a DNS service by id in a private cloud workload network.
+    examples:
+    - name: Get a DNS service by id in a workload network.
+      text: az vmware workload-network dns-service show --resource-group group1 --private-cloud cloud1 --dns-service-id dnsService1
+"""
+
+helps['vmware workload-network dns-service create'] = """
+    type: command
+    short-summary: Create a DNS service by id in a private cloud workload network.
+    examples:
+    - name: Create a DNS service by id in a workload network.
+      text: az vmware workload-network dns-service create --resource-group group1 --private-cloud cloud1 --dns-service-id dnsService1 --display-name dnsService1 --dns-service-ip 5.5.5.5 --default-dns-zone defaultDnsZone1 --fqdn-zones fqdnZone1 --log-level INFO --revision 1
+"""
+
+helps['vmware workload-network dns-service update'] = """
+    type: command
+    short-summary: Create or update a DNS service by id in a private cloud workload network.
+    examples:
+    - name: Create or update a DNS service by id in a workload network.
+      text: az vmware workload-network dns-service update --resource-group group1 --private-cloud cloud1 --dns-service-id dnsService1 --display-name dnsService1 --dns-service-ip 5.5.5.5 --default-dns-zone defaultDnsZone1 --fqdn-zones fqdnZone1 --log-level INFO --revision 1
+"""
+
+helps['vmware workload-network dns-service delete'] = """
+    type: command
+    short-summary: Delete a DNS service by id in a private cloud workload network.
+    examples:
+    - name: Delete a DNS service by id in a workload network.
+      text: az vmware workload-network dns-service delete --resource-group group1 --private-cloud cloud1 --dns-service-id dnsService1
+"""

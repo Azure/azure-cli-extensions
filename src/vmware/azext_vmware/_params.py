@@ -6,6 +6,7 @@
 
 
 from azext_vmware.action import ScriptExecutionNamedOutputAction, ScriptExecutionParameterAction
+from azure.cli.core.commands.parameters import get_enum_type
 from ._validators import server_addresses_length
 
 
@@ -147,3 +148,12 @@ def load_arguments(self, _):
 
     with self.argument_context('vmware workload-network dhcp relay') as c:
         c.argument('server_addresses', nargs='+', validator=server_addresses_length, help='DHCP Relay Addresses. Max 3.')
+
+    with self.argument_context('vmware workload-network dns-service') as c:
+        c.argument('dns_service_id', help="NSX DNS Service identifier. Generally the same as the DNS Service's display name.")
+        c.argument('display_name', help='Display name of the DNS Service.')
+        c.argument('dns_service_ip', help='DNS service IP of the DNS Service.')
+        c.argument('default_dns_zone', help='Default DNS zone of the DNS Service.')
+        c.argument('fqdn_zones', nargs='+', help='FQDN zones of the DNS Service.')
+        c.argument('log_level', arg_type=get_enum_type(["DEBUG", "INFO", "WARNING", "ERROR", "FATAL"]), help='DNS Service log level. Possible values include: "DEBUG", "INFO", "WARNING", "ERROR", "FATAL".')
+        c.argument('revision', help='NSX revision number.')
