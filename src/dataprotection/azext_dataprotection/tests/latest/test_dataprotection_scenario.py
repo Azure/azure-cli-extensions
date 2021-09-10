@@ -46,22 +46,22 @@ from .. import (
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
-# Env setup_scenario
-@try_manual
-def setup_scenario(test):
-    pass
+# # Env setup_scenario
+# @try_manual
+# def setup_scenario(test):
+#     pass
 
 
-# Env cleanup_scenario
-@try_manual
-def cleanup_scenario(test):
-    pass
+# # Env cleanup_scenario
+# @try_manual
+# def cleanup_scenario(test):
+#     pass
 
 
 # Testcase: Scenario
 @try_manual
 def call_scenario(test):
-    setup_scenario(test)
+    # setup_scenario(test)
     step_backup_policy_create(test, checks=[
         test.check("name", "{myBackupPolicy}", case_sensitive=False),
     ])
@@ -72,17 +72,17 @@ def call_scenario(test):
         test.check('length(@)', 1),
     ])
     step_backup_instance_create(test, checks=[
-        test.check("friendlyName", "harshitbi2", case_sensitive=False),
-        test.check("objectType", "BackupInstance", case_sensitive=False),
-        test.check("policyInfo.policyId", "/subscriptions/{subscription_id}/resourceGroups/{rg_2}/providers/Microsoft.D"
-                   "ataProtection/Backupvaults/{myBackupVault}/backupPolicies/{myBackupPolicy2}",
-                   case_sensitive=False),
         test.check("policyInfo.policyParameters.dataStoreParametersList[0].dataStoreType", "OperationalStore",
                    case_sensitive=False),
         test.check("policyInfo.policyParameters.dataStoreParametersList[0].objectType",
                    "AzureOperationalStoreParameters", case_sensitive=False),
         test.check("policyInfo.policyParameters.dataStoreParametersList[0].resourceGroupId",
                    "/subscriptions/{subscription_id}/resourceGroups/{rg_3}", case_sensitive=False),
+        test.check("friendlyName", "harshitbi2", case_sensitive=False),
+        test.check("objectType", "BackupInstance", case_sensitive=False),
+        test.check("policyInfo.policyId", "/subscriptions/{subscription_id}/resourceGroups/{rg_2}/providers/Microsoft.D"
+                   "ataProtection/Backupvaults/{myBackupVault}/backupPolicies/{myBackupPolicy2}",
+                   case_sensitive=False),
     ])
     step_backup_instance_list(test, checks=[
         test.check('length(@)', 1),
@@ -107,7 +107,7 @@ def call_scenario(test):
     step_recovery_point_show(test, checks=[])
     step_recovery_point_list(test, checks=[])
     step_restorable_time_range_find(test, checks=[])
-    cleanup_scenario(test)
+    # cleanup_scenario(test)
 
 
 # Test class for Scenario
@@ -132,7 +132,7 @@ class DataprotectionScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='clitestdataprotection_SampleResourceGroup'[:7], key='rg', parameter_name='rg')
     @ResourceGroupPreparer(name_prefix='clitestdataprotection_BugBash1'[:7], key='rg_4', parameter_name='rg_4')
     @ResourceGroupPreparer(name_prefix='clitestdataprotection_Blob-Backup'[:7], key='rg_5', parameter_name='rg_5')
-    def test_dataprotection_Scenario(self, rg_3, rg_2, rg, rg_4, rg_5):
+    def test_dataprotection_Scenario(self):
         call_scenario(self)
         calc_coverage(__file__)
         raise_if()
