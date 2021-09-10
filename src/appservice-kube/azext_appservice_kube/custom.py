@@ -205,7 +205,9 @@ def wait_kube_environment(*args, **kwargs):
     raise NotImplementedError() 
 
 def delete_kube_environment(cmd, name, resource_group_name):
-    # TODO raise error if kube environment doesn't exist 
+    # Raises an exception if the kube environment doesn't exist 
+    KubeEnvironmentClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+
     return KubeEnvironmentClient.delete(cmd=cmd, name=name, resource_group_name=resource_group_name)
 
 def create_kube_environment(cmd, name, resource_group_name, custom_location, static_ip=None, location=None,
@@ -255,7 +257,7 @@ def create_kube_environment(cmd, name, resource_group_name, custom_location, sta
 
     try:
         # TODO add support for wait/no_wait polling behavior 
-        return KubeEnvironmentClient.create(cmd=cmd, resource_group_name=resource_group_name, name=name, kube_environment_envelope=kube_environment)
+        return sdk_no_wait(no_wait, KubeEnvironmentClient.create, cmd=cmd, resource_group_name=resource_group_name, name=name, kube_environment_envelope=kube_environment)
     except Exception as e:
         try:
             import json
@@ -269,11 +271,13 @@ def list_kube_environments(cmd, resource_group_name=None):
         return KubeEnvironmentClient.list_by_subscription(cmd)
     return KubeEnvironmentClient.list_by_resource_group(cmd, resource_group_name)
 
-# TODO debug 
-# TODO support no_wait
+# TODO follow up with Lima team on whether the update API is functional or not and if the CLI needs to support `az appservice kube update`
 def update_kube_environment(cmd, name, resource_group_name, custom_location=None, static_ip=None, location=None,
                             tags=None, no_wait=False):
-    # TODO raise an error if the kube environment doesn't exist 
+    raise CLIError("Update is not yet supported for Kubernetes Environments.")
+    
+    # Raises an exception if the kube environment doesn't exist 
+    KubeEnvironmentClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
 
     # TODO replace with a FrontEndConfiguration model from the SDK 
     front_end_configuration = {"kind": "LoadBalancer"}
@@ -303,7 +307,7 @@ def update_kube_environment(cmd, name, resource_group_name, custom_location=None
     if tags is not None:
         kube_environment["tags"] = tags 
 
-    return KubeEnvironmentClient.update(cmd=cmd, resource_group_name=resource_group_name, name=name, kube_environment_envelope=kube_environment)
+    return sdk_no_wait(no_wait, KubeEnvironmentClient.update, cmd=cmd, resource_group_name=resource_group_name, name=name, kube_environment_envelope=kube_environment)
 
 
 def list_app_service_plans(cmd, resource_group_name=None):
