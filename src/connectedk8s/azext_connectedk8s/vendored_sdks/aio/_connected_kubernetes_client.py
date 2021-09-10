@@ -6,30 +6,25 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from typing import TYPE_CHECKING
+from typing import Any, Optional
 
-from azure.core import PipelineClient
+from azure.core import AsyncPipelineClient
+from azure.core.pipeline.transport import AsyncHttpResponse, HttpRequest
 from msrest import Deserializer, Serializer
-
-if TYPE_CHECKING:
-    # pylint: disable=unused-import,ungrouped-imports
-    from typing import Any, Optional
-
-    from azure.core.pipeline.transport import HttpRequest, HttpResponse
 
 from ._configuration import ConnectedKubernetesClientConfiguration
 from .operations import ConnectedClusterOperations
 from .operations import Operations
-from . import models
+from .. import models
 
 
 class ConnectedKubernetesClient(object):
     """Azure Connected Cluster Resource Provider API for adopting any Kubernetes Cluster.
 
     :ivar connected_cluster: ConnectedClusterOperations operations
-    :vartype connected_cluster: connected_kubernetes_client.operations.ConnectedClusterOperations
+    :vartype connected_cluster: connected_kubernetes_client.aio.operations.ConnectedClusterOperations
     :ivar operations: Operations operations
-    :vartype operations: connected_kubernetes_client.operations.Operations
+    :vartype operations: connected_kubernetes_client.aio.operations.Operations
     :param subscription_id: The ID of the target subscription.
     :type subscription_id: str
     :param str base_url: Service URL
@@ -38,15 +33,14 @@ class ConnectedKubernetesClient(object):
 
     def __init__(
         self,
-        subscription_id,  # type: str
-        base_url=None,  # type: Optional[str]
-        **kwargs  # type: Any
-    ):
-        # type: (...) -> None
+        subscription_id: str,
+        base_url: Optional[str] = None,
+        **kwargs: Any
+    ) -> None:
         if not base_url:
             base_url = 'https://management.azure.com'
         self._config = ConnectedKubernetesClientConfiguration(subscription_id, **kwargs)
-        self._client = PipelineClient(base_url=base_url, config=self._config, **kwargs)
+        self._client = AsyncPipelineClient(base_url=base_url, config=self._config, **kwargs)
 
         client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
         self._serialize = Serializer(client_models)
@@ -58,33 +52,29 @@ class ConnectedKubernetesClient(object):
         self.operations = Operations(
             self._client, self._config, self._serialize, self._deserialize)
 
-    def _send_request(self, http_request, **kwargs):
-        # type: (HttpRequest, Any) -> HttpResponse
+    async def _send_request(self, http_request: HttpRequest, **kwargs: Any) -> AsyncHttpResponse:
         """Runs the network request through the client's chained policies.
 
         :param http_request: The network request you want to make. Required.
         :type http_request: ~azure.core.pipeline.transport.HttpRequest
         :keyword bool stream: Whether the response payload will be streamed. Defaults to True.
         :return: The response of your network call. Does not do error handling on your response.
-        :rtype: ~azure.core.pipeline.transport.HttpResponse
+        :rtype: ~azure.core.pipeline.transport.AsyncHttpResponse
         """
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
         }
         http_request.url = self._client.format_url(http_request.url, **path_format_arguments)
         stream = kwargs.pop("stream", True)
-        pipeline_response = self._client._pipeline.run(http_request, stream=stream, **kwargs)
+        pipeline_response = await self._client._pipeline.run(http_request, stream=stream, **kwargs)
         return pipeline_response.http_response
 
-    def close(self):
-        # type: () -> None
-        self._client.close()
+    async def close(self) -> None:
+        await self._client.close()
 
-    def __enter__(self):
-        # type: () -> ConnectedKubernetesClient
-        self._client.__enter__()
+    async def __aenter__(self) -> "ConnectedKubernetesClient":
+        await self._client.__aenter__()
         return self
 
-    def __exit__(self, *exc_details):
-        # type: (Any) -> None
-        self._client.__exit__(*exc_details)
+    async def __aexit__(self, *exc_details) -> None:
+        await self._client.__aexit__(*exc_details)

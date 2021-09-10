@@ -6,4 +6,10 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-VERSION = "1.0.0b1"
+from ._connected_cluster_operations import ConnectedClusterOperations
+from ._operations import Operations
+
+__all__ = [
+    'ConnectedClusterOperations',
+    'Operations',
+]
