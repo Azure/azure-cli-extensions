@@ -9,12 +9,14 @@
 try:
     from ._models_py3 import ARMProxyResource
     from ._models_py3 import ARMResourceProperties
+    from ._models_py3 import AnalyticalStorageConfiguration
     from ._models_py3 import ApiProperties
     from ._models_py3 import AutoUpgradePolicyResource
     from ._models_py3 import AutoscaleSettings
     from ._models_py3 import AutoscaleSettingsResource
     from ._models_py3 import BackupInformation
     from ._models_py3 import BackupPolicy
+    from ._models_py3 import BackupPolicyMigrationState
     from ._models_py3 import BackupResource
     from ._models_py3 import BackupResourceProperties
     from ._models_py3 import Capability
@@ -32,6 +34,12 @@ try:
     from ._models_py3 import CassandraTableGetResults
     from ._models_py3 import CassandraTableListResult
     from ._models_py3 import CassandraTableResource
+    from ._models_py3 import CassandraViewCreateUpdateParameters
+    from ._models_py3 import CassandraViewGetPropertiesOptions
+    from ._models_py3 import CassandraViewGetPropertiesResource
+    from ._models_py3 import CassandraViewGetResults
+    from ._models_py3 import CassandraViewListResult
+    from ._models_py3 import CassandraViewResource
     from ._models_py3 import Certificate
     from ._models_py3 import ClusterKey
     from ._models_py3 import ClusterNodeStatus
@@ -66,11 +74,21 @@ try:
     from ._models_py3 import DatabaseAccountsListResult
     from ._models_py3 import DatabaseRestoreResource
     from ._models_py3 import DefaultRequestDatabaseAccountCreateUpdateProperties
+    from ._models_py3 import DiagnosticLogSettings
     from ._models_py3 import ErrorResponse
     from ._models_py3 import ExcludedPath
     from ._models_py3 import ExtendedResourceProperties
     from ._models_py3 import FailoverPolicies
     from ._models_py3 import FailoverPolicy
+    from ._models_py3 import GraphAPIComputeRegionalServiceResource
+    from ._models_py3 import GraphAPIComputeServiceResource
+    from ._models_py3 import GraphAPIComputeServiceResourceProperties
+    from ._models_py3 import GraphResource
+    from ._models_py3 import GraphResourceCreateUpdateParameters
+    from ._models_py3 import GraphResourceGetPropertiesOptions
+    from ._models_py3 import GraphResourceGetPropertiesResource
+    from ._models_py3 import GraphResourceGetResults
+    from ._models_py3 import GraphResourcesListResult
     from ._models_py3 import GremlinDatabaseCreateUpdateParameters
     from ._models_py3 import GremlinDatabaseGetPropertiesOptions
     from ._models_py3 import GremlinDatabaseGetPropertiesResource
@@ -166,9 +184,9 @@ try:
     from ._models_py3 import RestorableSqlDatabasesListResult
     from ._models_py3 import RestorableSqlResourcesListResult
     from ._models_py3 import RestoreParameters
-    from ._models_py3 import RestoreReqeustDatabaseAccountCreateUpdateProperties
     from ._models_py3 import SeedNode
     from ._models_py3 import ServiceResource
+    from ._models_py3 import ServiceResourceCreateUpdateParameters
     from ._models_py3 import ServiceResourceListResult
     from ._models_py3 import ServiceResourceProperties
     from ._models_py3 import SpatialSpec
@@ -228,12 +246,14 @@ try:
 except (SyntaxError, ImportError):
     from ._models import ARMProxyResource  # type: ignore
     from ._models import ARMResourceProperties  # type: ignore
+    from ._models import AnalyticalStorageConfiguration  # type: ignore
     from ._models import ApiProperties  # type: ignore
     from ._models import AutoUpgradePolicyResource  # type: ignore
     from ._models import AutoscaleSettings  # type: ignore
     from ._models import AutoscaleSettingsResource  # type: ignore
     from ._models import BackupInformation  # type: ignore
     from ._models import BackupPolicy  # type: ignore
+    from ._models import BackupPolicyMigrationState  # type: ignore
     from ._models import BackupResource  # type: ignore
     from ._models import BackupResourceProperties  # type: ignore
     from ._models import Capability  # type: ignore
@@ -251,6 +271,12 @@ except (SyntaxError, ImportError):
     from ._models import CassandraTableGetResults  # type: ignore
     from ._models import CassandraTableListResult  # type: ignore
     from ._models import CassandraTableResource  # type: ignore
+    from ._models import CassandraViewCreateUpdateParameters  # type: ignore
+    from ._models import CassandraViewGetPropertiesOptions  # type: ignore
+    from ._models import CassandraViewGetPropertiesResource  # type: ignore
+    from ._models import CassandraViewGetResults  # type: ignore
+    from ._models import CassandraViewListResult  # type: ignore
+    from ._models import CassandraViewResource  # type: ignore
     from ._models import Certificate  # type: ignore
     from ._models import ClusterKey  # type: ignore
     from ._models import ClusterNodeStatus  # type: ignore
@@ -285,11 +311,21 @@ except (SyntaxError, ImportError):
     from ._models import DatabaseAccountsListResult  # type: ignore
     from ._models import DatabaseRestoreResource  # type: ignore
     from ._models import DefaultRequestDatabaseAccountCreateUpdateProperties  # type: ignore
+    from ._models import DiagnosticLogSettings  # type: ignore
     from ._models import ErrorResponse  # type: ignore
     from ._models import ExcludedPath  # type: ignore
     from ._models import ExtendedResourceProperties  # type: ignore
     from ._models import FailoverPolicies  # type: ignore
     from ._models import FailoverPolicy  # type: ignore
+    from ._models import GraphAPIComputeRegionalServiceResource  # type: ignore
+    from ._models import GraphAPIComputeServiceResource  # type: ignore
+    from ._models import GraphAPIComputeServiceResourceProperties  # type: ignore
+    from ._models import GraphResource  # type: ignore
+    from ._models import GraphResourceCreateUpdateParameters  # type: ignore
+    from ._models import GraphResourceGetPropertiesOptions  # type: ignore
+    from ._models import GraphResourceGetPropertiesResource  # type: ignore
+    from ._models import GraphResourceGetResults  # type: ignore
+    from ._models import GraphResourcesListResult  # type: ignore
     from ._models import GremlinDatabaseCreateUpdateParameters  # type: ignore
     from ._models import GremlinDatabaseGetPropertiesOptions  # type: ignore
     from ._models import GremlinDatabaseGetPropertiesResource  # type: ignore
@@ -385,9 +421,9 @@ except (SyntaxError, ImportError):
     from ._models import RestorableSqlDatabasesListResult  # type: ignore
     from ._models import RestorableSqlResourcesListResult  # type: ignore
     from ._models import RestoreParameters  # type: ignore
-    from ._models import RestoreReqeustDatabaseAccountCreateUpdateProperties  # type: ignore
     from ._models import SeedNode  # type: ignore
     from ._models import ServiceResource  # type: ignore
+    from ._models import ServiceResourceCreateUpdateParameters  # type: ignore
     from ._models import ServiceResourceListResult  # type: ignore
     from ._models import ServiceResourceProperties  # type: ignore
     from ._models import SpatialSpec  # type: ignore
@@ -446,8 +482,10 @@ except (SyntaxError, ImportError):
     from ._models import VirtualNetworkRule  # type: ignore
 
 from ._cosmos_db_management_client_enums import (
+    AnalyticalStorageSchemaType,
     ApiType,
     AuthenticationMethod,
+    BackupPolicyMigrationStatus,
     BackupPolicyType,
     BackupStorageRedundancy,
     CompositePathSortOrder,
@@ -458,6 +496,7 @@ from ._cosmos_db_management_client_enums import (
     DataType,
     DatabaseAccountKind,
     DefaultConsistencyLevel,
+    EnableFullTextQuery,
     IndexKind,
     IndexingMode,
     KeyKind,
@@ -486,12 +525,14 @@ from ._cosmos_db_management_client_enums import (
 __all__ = [
     'ARMProxyResource',
     'ARMResourceProperties',
+    'AnalyticalStorageConfiguration',
     'ApiProperties',
     'AutoUpgradePolicyResource',
     'AutoscaleSettings',
     'AutoscaleSettingsResource',
     'BackupInformation',
     'BackupPolicy',
+    'BackupPolicyMigrationState',
     'BackupResource',
     'BackupResourceProperties',
     'Capability',
@@ -509,6 +550,12 @@ __all__ = [
     'CassandraTableGetResults',
     'CassandraTableListResult',
     'CassandraTableResource',
+    'CassandraViewCreateUpdateParameters',
+    'CassandraViewGetPropertiesOptions',
+    'CassandraViewGetPropertiesResource',
+    'CassandraViewGetResults',
+    'CassandraViewListResult',
+    'CassandraViewResource',
     'Certificate',
     'ClusterKey',
     'ClusterNodeStatus',
@@ -543,11 +590,21 @@ __all__ = [
     'DatabaseAccountsListResult',
     'DatabaseRestoreResource',
     'DefaultRequestDatabaseAccountCreateUpdateProperties',
+    'DiagnosticLogSettings',
     'ErrorResponse',
     'ExcludedPath',
     'ExtendedResourceProperties',
     'FailoverPolicies',
     'FailoverPolicy',
+    'GraphAPIComputeRegionalServiceResource',
+    'GraphAPIComputeServiceResource',
+    'GraphAPIComputeServiceResourceProperties',
+    'GraphResource',
+    'GraphResourceCreateUpdateParameters',
+    'GraphResourceGetPropertiesOptions',
+    'GraphResourceGetPropertiesResource',
+    'GraphResourceGetResults',
+    'GraphResourcesListResult',
     'GremlinDatabaseCreateUpdateParameters',
     'GremlinDatabaseGetPropertiesOptions',
     'GremlinDatabaseGetPropertiesResource',
@@ -643,9 +700,9 @@ __all__ = [
     'RestorableSqlDatabasesListResult',
     'RestorableSqlResourcesListResult',
     'RestoreParameters',
-    'RestoreReqeustDatabaseAccountCreateUpdateProperties',
     'SeedNode',
     'ServiceResource',
+    'ServiceResourceCreateUpdateParameters',
     'ServiceResourceListResult',
     'ServiceResourceProperties',
     'SpatialSpec',
@@ -702,8 +759,10 @@ __all__ = [
     'Usage',
     'UsagesResult',
     'VirtualNetworkRule',
+    'AnalyticalStorageSchemaType',
     'ApiType',
     'AuthenticationMethod',
+    'BackupPolicyMigrationStatus',
     'BackupPolicyType',
     'BackupStorageRedundancy',
     'CompositePathSortOrder',
@@ -714,6 +773,7 @@ __all__ = [
     'DataType',
     'DatabaseAccountKind',
     'DefaultConsistencyLevel',
+    'EnableFullTextQuery',
     'IndexKind',
     'IndexingMode',
     'KeyKind',

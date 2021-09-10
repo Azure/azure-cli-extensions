@@ -26,6 +26,13 @@ class _CaseInsensitiveEnumMeta(EnumMeta):
             raise AttributeError(name)
 
 
+class AnalyticalStorageSchemaType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Describes the types of schema for analytical storage.
+    """
+
+    WELL_DEFINED = "WellDefined"
+    FULL_FIDELITY = "FullFidelity"
+
 class ApiType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Enum to indicate the API type of the restorable database account.
     """
@@ -45,6 +52,15 @@ class AuthenticationMethod(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
 
     NONE = "None"
     CASSANDRA = "Cassandra"
+
+class BackupPolicyMigrationStatus(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Describes the status of migration between backup policy types.
+    """
+
+    INVALID = "Invalid"
+    IN_PROGRESS = "InProgress"
+    COMPLETED = "Completed"
+    FAILED = "Failed"
 
 class BackupPolicyType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Describes the mode of backups.
@@ -125,6 +141,14 @@ class DefaultConsistencyLevel(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum
     BOUNDED_STALENESS = "BoundedStaleness"
     STRONG = "Strong"
     CONSISTENT_PREFIX = "ConsistentPrefix"
+
+class EnableFullTextQuery(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Describe the level of detail with which queries are to be logged.
+    """
+
+    NONE = "None"
+    TRUE = "True"
+    FALSE = "False"
 
 class IndexingMode(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Indicates the indexing mode.
@@ -283,6 +307,7 @@ class ServiceType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
 
     SQL_DEDICATED_GATEWAY = "SqlDedicatedGateway"
     DATA_TRANSFER = "DataTransfer"
+    GRAPH_API_COMPUTE = "GraphAPICompute"
 
 class SpatialType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Indicates the spatial type of index.
