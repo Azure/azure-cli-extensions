@@ -51,7 +51,7 @@ def load_command_table(self, _):
 
     with self.command_group('appservice kube', is_preview=True) as g:
         g.custom_command('show', 'show_kube_environments')
-        g.custom_command('wait', 'wait_kube_environment')
+        g.custom_wait_command('wait', 'show_kube_environments')
         g.custom_command('list', 'list_kube_environments')
         g.custom_command('create', 'create_kube_environment', supports_no_wait=True)
         g.custom_command('update', 'update_kube_environment', supports_no_wait=True)

@@ -200,10 +200,6 @@ class KubeEnvironmentClient():
 def show_kube_environments(cmd, name, resource_group_name):
     return KubeEnvironmentClient.show(cmd=cmd, name=name, resource_group_name=resource_group_name)
 
-# TODO implement
-def wait_kube_environment(*args, **kwargs):
-    raise NotImplementedError() 
-
 def delete_kube_environment(cmd, name, resource_group_name):
     # Raises an exception if the kube environment doesn't exist 
     KubeEnvironmentClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
