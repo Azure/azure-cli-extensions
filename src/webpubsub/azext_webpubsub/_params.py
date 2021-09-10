@@ -83,7 +83,8 @@ def load_arguments(self, _):
         with self.argument_context(scope) as c:
             c.argument('group_name', help='The group name.')
 
-    for scope in ['webpubsub service group add-user',
+    for scope in ['webpubsub client',
+                  'webpubsub service group add-user',
                   'webpubsub service group remove-user',
                   'webpubsub service user']:
         with self.argument_context(scope) as c:

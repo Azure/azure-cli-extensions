@@ -21,7 +21,7 @@ def get_duration_type_values():
 
 
 def get_copy_option_values():
-    return ['CustomCopyOption', 'ImmediateCopyOption']
+    return ['CustomCopyOption', 'ImmediateCopyOption', 'CopyOnExpiryOption']
 
 
 def get_retention_rule_name_values():
@@ -55,6 +55,14 @@ def get_job_status_values():
 
 def get_job_operation_values():
     return ['OnDemandBackup', 'ScheduledBackup', 'Restore']
+
+
+def get_rehydration_priority_values():
+    return ['Standard']
+
+
+def get_secret_store_type_values():
+    return ['AzureKeyVault']
 
 
 def get_datasource_types():

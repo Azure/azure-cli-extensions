@@ -8,7 +8,7 @@ from azure.cli.core.commands.validators import validate_tags
 from azure.cli.core.commands.parameters import (file_type, get_enum_type, get_three_state_flag)
 
 from ._validators import (validate_metadata, get_permission_validator, get_permission_help_string,
-                          validate_blob_type, validate_included_datasets_v2,
+                          validate_blob_type, validate_included_datasets_v2, get_datetime_type,
                           add_download_progress_callback, add_upload_progress_callback,
                           validate_storage_data_plane_list, as_user_validator, blob_tier_validator)
 
@@ -248,6 +248,20 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
     with self.argument_context('storage blob exists') as c:
         c.register_blob_arguments()
 
+    with self.argument_context('storage blob set-legal-hold') as c:
+        c.register_blob_arguments()
+        c.argument('legal_hold', arg_type=get_three_state_flag(),
+                   help='Specified if a legal hold should be set on the blob.')
+
+    with self.argument_context('storage blob immutability-policy delete') as c:
+        c.register_blob_arguments()
+
+    with self.argument_context('storage blob immutability-policy set') as c:
+        c.register_blob_arguments()
+        c.argument('expiry_time', type=get_datetime_type(False),
+                   help='expiration UTC datetime in (Y-m-d\'T\'H:M:S\'Z\')')
+        c.argument('policy_mode', arg_type=get_enum_type(['Locked', 'Unlocked']), help='Lock or Unlock the policy')
+
     with self.argument_context('storage blob filter') as c:
         c.argument('filter_expression', options_list=['--tag-filter'])
 
@@ -471,6 +485,69 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.extra('no_progress', progress_type)
         c.extra('tier', tier_type, is_preview=True)
         c.extra('overwrite', overwrite_type, is_preview=True)
+
+    with self.argument_context('storage blob query') as c:
+        from ._validators import validate_text_configuration
+        c.register_blob_arguments()
+        c.register_precondition_options()
+        line_separator = CLIArgumentType(help="The string used to separate records.", default='\n')
+        column_separator = CLIArgumentType(help="The string used to separate columns.", default=',')
+        quote_char = CLIArgumentType(help="The string used to quote a specific field.", default='"')
+        record_separator = CLIArgumentType(help="The string used to separate records.", default='\n')
+        escape_char = CLIArgumentType(help="The string used as an escape character. Default to empty.", default="")
+        has_header = CLIArgumentType(
+            arg_type=get_three_state_flag(),
+            help="Whether the blob data includes headers in the first line. "
+            "The default value is False, meaning that the data will be returned inclusive of the first line. "
+            "If set to True, the data will be returned exclusive of the first line.", default=False)
+        c.extra('lease', options_list='--lease-id',
+                help='Required if the blob has an active lease.')
+        c.argument('query_expression', help='The query expression in SQL. The maximum size of the query expression '
+                   'is 256KiB. For more information about the expression syntax, please see '
+                   'https://docs.microsoft.com/azure/storage/blobs/query-acceleration-sql-reference')
+        c.extra('input_format', arg_type=get_enum_type(['csv', 'json', 'parquet']), validator=validate_text_configuration,
+                min_api='2020-10-02',
+                help='Serialization type of the data currently stored in the blob. '
+                'The default is to treat the blob data as CSV data formatted in the default dialect.'
+                'The blob data will be reformatted according to that profile when blob format is specified. '
+                'If you choose `json`, please specify `Input Json Text Configuration Arguments` accordingly; '
+                'If you choose `csv`, please specify `Input Delimited Text Configuration Arguments`.')
+        c.extra('output_format', arg_type=get_enum_type(['csv', 'json']),
+                help='Output serialization type for the data stream. '
+                'By default the data will be returned as it is represented in the blob. '
+                'By providing an output format, the blob data will be reformatted according to that profile. '
+                'If you choose `json`, please specify `Output Json Text Configuration Arguments` accordingly; '
+                'If you choose `csv`, please specify `Output Delimited Text Configuration Arguments`.'
+                'By default data with input_format of `parquet` will have the output_format of `csv`')
+        c.extra('in_line_separator',
+                arg_group='Input Json Text Configuration',
+                arg_type=line_separator)
+        c.extra('in_column_separator', arg_group='Input Delimited Text Configuration',
+                arg_type=column_separator)
+        c.extra('in_quote_char', arg_group='Input Delimited Text Configuration',
+                arg_type=quote_char)
+        c.extra('in_record_separator', arg_group='Input Delimited Text Configuration',
+                arg_type=record_separator)
+        c.extra('in_escape_char', arg_group='Input Delimited Text Configuration',
+                arg_type=escape_char)
+        c.extra('in_has_header', arg_group='Input Delimited Text Configuration',
+                arg_type=has_header)
+        c.extra('out_line_separator',
+                arg_group='Output Json Text Configuration',
+                arg_type=line_separator)
+        c.extra('out_column_separator', arg_group='Output Delimited Text Configuration',
+                arg_type=column_separator)
+        c.extra('out_quote_char', arg_group='Output Delimited Text Configuration',
+                arg_type=quote_char)
+        c.extra('out_record_separator', arg_group='Output Delimited Text Configuration',
+                arg_type=record_separator)
+        c.extra('out_escape_char', arg_group='Output Delimited Text Configuration',
+                arg_type=escape_char)
+        c.extra('out_has_header', arg_group='Output Delimited Text Configuration',
+                arg_type=has_header)
+        c.extra('result_file', help='Specify the file path to save result.')
+        c.ignore('input_config')
+        c.ignore('output_config')
 
     with self.argument_context('storage container') as c:
         c.argument('container_name', container_name_type, options_list=('--name', '-n'))

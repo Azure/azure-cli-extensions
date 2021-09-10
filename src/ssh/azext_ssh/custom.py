@@ -9,7 +9,7 @@ import hashlib
 import json
 import tempfile
 
-from knack import util
+from azure.cli.core import azclierror
 
 from . import ip_utils
 from . import rsa_parser
@@ -17,9 +17,10 @@ from . import ssh_utils
 
 
 def ssh_vm(cmd, resource_group_name=None, vm_name=None, ssh_ip=None, public_key_file=None,
-           private_key_file=None, use_private_ip=False):
+           private_key_file=None, use_private_ip=False, port=None, ssh_args=None):
+    op_call = functools.partial(ssh_utils.start_ssh_connection, port, ssh_args)
     _do_ssh_op(cmd, resource_group_name, vm_name, ssh_ip,
-               public_key_file, private_key_file, use_private_ip, ssh_utils.start_ssh_connection)
+               public_key_file, private_key_file, use_private_ip, op_call)
 
 
 def ssh_config(cmd, config_path, resource_group_name=None, vm_name=None, ssh_ip=None,
@@ -41,21 +42,41 @@ def _do_ssh_op(cmd, resource_group, vm_name, ssh_ip, public_key_file, private_ke
 
     if not ssh_ip:
         if not use_private_ip:
-            raise util.CLIError(f"VM '{vm_name}' does not have a public IP address to SSH to")
+            raise azclierror.ResourceNotFoundError(f"VM '{vm_name}' does not have a public IP address to SSH to")
 
-        raise util.CLIError(f"VM '{vm_name}' does not have a public or private IP address to SSH to")
+        raise azclierror.ResourceNotFoundError(f"VM '{vm_name}' does not have a public or private IP address to SSH to")
 
     cert_file, username = _get_and_write_certificate(cmd, public_key_file, None)
     op_call(ssh_ip, username, cert_file, private_key_file)
 
 
 def _get_and_write_certificate(cmd, public_key_file, cert_file):
-    scopes = ["https://pas.windows.net/CheckMyAccess/Linux/.default"]
+    cloudtoscope = {
+        "azurecloud": "https://pas.windows.net/CheckMyAccess/Linux/.default",
+        "azurechinacloud": "https://pas.chinacloudapi.cn/CheckMyAccess/Linux/.default",
+        "azureusgovernment": "https://pasff.usgovcloudapi.net/CheckMyAccess/Linux/.default"
+    }
+    scope = cloudtoscope.get(cmd.cli_ctx.cloud.name.lower(), None)
+    if not scope:
+        raise azclierror.InvalidArgumentValueError(
+            f"Unsupported cloud {cmd.cli_ctx.cloud.name.lower()}",
+            "Supported clouds include azurecloud,azurechinacloud,azureusgovernment")
+
+    scopes = [scope]
     data = _prepare_jwk_data(public_key_file)
     from azure.cli.core._profile import Profile
     profile = Profile(cli_ctx=cmd.cli_ctx)
-    # we used to use the username from the token but now we throw it away
-    _, certificate = profile.get_msal_token(scopes, data)
+
+    # We currently are using the presence of get_msal_token to detect if we are running on an older azure cli client
+    # TODO: Remove when adal has been deprecated for a while
+    if hasattr(profile, "get_msal_token"):
+        # we used to use the username from the token but now we throw it away
+        _, certificate = profile.get_msal_token(scopes, data)
+    else:
+        credential, _, _ = profile.get_login_credentials(subscription_id=profile.get_subscription()["id"])
+        certificatedata = credential.get_token(*scopes, data=data)
+        certificate = certificatedata.token
+
     if not cert_file:
         cert_file = public_key_file + "-aadcert.pub"
     _write_cert_file(certificate, cert_file)
@@ -87,13 +108,16 @@ def _prepare_jwk_data(public_key_file):
 
 def _assert_args(resource_group, vm_name, ssh_ip):
     if not (resource_group or vm_name or ssh_ip):
-        raise util.CLIError("The VM must be specified by --ip or --resource-group and --vm-name/--name")
+        raise azclierror.RequiredArgumentMissingError(
+            "The VM must be specified by --ip or --resource-group and --vm-name/--name")
 
     if resource_group and not vm_name or vm_name and not resource_group:
-        raise util.CLIError("--resource-group and --vm-name/--name must be provided together")
+        raise azclierror.MutuallyExclusiveArgumentError(
+            "--resource-group and --vm-name/--name must be provided together")
 
     if ssh_ip and (vm_name or resource_group):
-        raise util.CLIError("--ip cannot be used with --resource-group or --vm-name/--name")
+        raise azclierror.MutuallyExclusiveArgumentError(
+            "--ip cannot be used with --resource-group or --vm-name/--name")
 
 
 def _check_or_create_public_private_files(public_key_file, private_key_file):
@@ -105,16 +129,19 @@ def _check_or_create_public_private_files(public_key_file, private_key_file):
         ssh_utils.create_ssh_keyfile(private_key_file)
 
     if not public_key_file:
-        raise util.CLIError(f"Public key file not specified")
+        if private_key_file:
+            public_key_file = private_key_file + ".pub"
+        else:
+            raise azclierror.RequiredArgumentMissingError("Public key file not specified")
 
     if not os.path.isfile(public_key_file):
-        raise util.CLIError(f"Public key file {public_key_file} not found")
+        raise azclierror.FileOperationError(f"Public key file {public_key_file} not found")
 
     # The private key is not required as the user may be using a keypair
     # stored in ssh-agent (and possibly in a hardware token)
     if private_key_file:
         if not os.path.isfile(private_key_file):
-            raise util.CLIError(f"Private key file {private_key_file} not found")
+            raise azclierror.FileOperationError(f"Private key file {private_key_file} not found")
 
     return public_key_file, private_key_file
 
@@ -128,7 +155,7 @@ def _write_cert_file(certificate_contents, cert_file):
 
 def _get_modulus_exponent(public_key_file):
     if not os.path.isfile(public_key_file):
-        raise util.CLIError(f"Public key file '{public_key_file}' was not found")
+        raise azclierror.FileOperationError(f"Public key file '{public_key_file}' was not found")
 
     with open(public_key_file, 'r') as f:
         public_key_text = f.read()
@@ -137,7 +164,7 @@ def _get_modulus_exponent(public_key_file):
     try:
         parser.parse(public_key_text)
     except Exception as e:
-        raise util.CLIError(f"Could not parse public key. Error: {str(e)}")
+        raise azclierror.FileOperationError(f"Could not parse public key. Error: {str(e)}")
     modulus = parser.modulus
     exponent = parser.exponent
 
