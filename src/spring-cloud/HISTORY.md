@@ -1,5 +1,17 @@
 Release History
 ===============
+2.8.0
+-----
+* Add support to validate jar before create/update deployment
+* Add support to delete deployment with no-wait
+
+2.7.1
+-----
+* Fix source code deployment build log issues
+
+2.7.0
+-----
+* Migrate to track2 SDK
 
 2.6.0
 -----

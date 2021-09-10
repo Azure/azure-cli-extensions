@@ -5,6 +5,8 @@
 
 # pylint: disable=unused-argument
 
+from azure.cli.core.util import user_confirmation
+
 from ..vendored_sdks.models import ExtensionInstance
 from ..vendored_sdks.models import ExtensionInstanceUpdate
 from ..vendored_sdks.models import ScopeCluster
@@ -33,7 +35,7 @@ class DefaultExtension(PartnerExtensionModel):
                 scope_namespace = ScopeNamespace(target_namespace=target_namespace)
                 ext_scope = Scope(namespace=scope_namespace, cluster=None)
 
-        create_identity = False
+        create_identity = True
         extension_instance = ExtensionInstance(
             extension_type=extension_type,
             auto_upgrade_minor_version=auto_upgrade_minor_version,
@@ -56,5 +58,11 @@ class DefaultExtension(PartnerExtensionModel):
             version=version
         )
 
-    def Delete(self, client, resource_group_name, cluster_name, name, cluster_type):
-        pass
+    def Delete(self, cmd, client, resource_group_name, cluster_name, name, cluster_type, yes):
+        user_confirmation_factory(cmd, yes)
+
+
+def user_confirmation_factory(cmd, yes, message="Are you sure you want to perform this operation?"):
+    if cmd.cli_ctx.config.getboolean('core', 'disable_confirm_prompt', fallback=False):
+        return
+    user_confirmation(message, yes=yes)

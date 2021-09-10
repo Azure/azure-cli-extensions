@@ -31,7 +31,7 @@ class IntegrationRuntimeObjectMetadataOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~data_factory_management_client.models
+    :type models: ~azure.mgmt.datafactory.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -121,7 +121,7 @@ class IntegrationRuntimeObjectMetadataOperations(object):
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of LROPoller that returns either SsisObjectMetadataStatusResponse or the result of cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~data_factory_management_client.models.SsisObjectMetadataStatusResponse]
+        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.datafactory.models.SsisObjectMetadataStatusResponse]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
@@ -190,10 +190,10 @@ class IntegrationRuntimeObjectMetadataOperations(object):
         :param integration_runtime_name: The integration runtime name.
         :type integration_runtime_name: str
         :param get_metadata_request: The parameters for getting a SSIS object metadata.
-        :type get_metadata_request: ~data_factory_management_client.models.GetSsisObjectMetadataRequest
+        :type get_metadata_request: ~azure.mgmt.datafactory.models.GetSsisObjectMetadataRequest
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: SsisObjectMetadataListResponse, or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.SsisObjectMetadataListResponse
+        :rtype: ~azure.mgmt.datafactory.models.SsisObjectMetadataListResponse
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.SsisObjectMetadataListResponse"]

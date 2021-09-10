@@ -5,6 +5,7 @@
 
 # pylint: disable=protected-access
 
+import os
 import argparse
 
 from azure.cli.core.commands.validators import validate_key_value_pairs
@@ -19,7 +20,7 @@ from azure.cli.command_modules.storage.oauth_token_util import TokenUpdater
 from knack.log import get_logger
 from knack.util import CLIError
 from .profiles import CUSTOM_DATA_STORAGE_BLOB
-from ._client_factory import cf_blob_client
+from ._client_factory import cf_blob_service
 
 storage_account_key_options = {'primary': 'key1', 'secondary': 'key2'}
 logger = get_logger(__name__)
@@ -342,7 +343,6 @@ def validate_source_url(cmd, namespace):  # pylint: disable=too-many-statements
     if not source_sas:
         # generate a sas token even in the same account when the source and destination are not the same kind.
         if valid_file_source and (ns.get('container_name', None) or not same_account):
-            import os
             dir_name, file_name = os.path.split(path) if path else (None, '')
             source_sas = create_short_lived_file_sas(cmd, source_account_name, source_account_key, share,
                                                      dir_name, file_name)
@@ -409,16 +409,12 @@ def get_content_setting_validator(settings_class, update, guess_from_file=None, 
                 container = ns.get('container_name')
                 blob = ns.get('blob_name')
                 lease_id = ns.get('lease_id')
-                client_kwargs = {
-                    'connection_string': cs,
-                    'account_name': account,
-                    'account_key': key,
-                    'token_credential': token_credential,
-                    'sas_token': sas,
-                    'container_name': container,
-                    'blob_name': blob}
-                client = cf_blob_client(cmd.cli_ctx, client_kwargs)
-
+                account_kwargs = {'connection_string': cs,
+                                  'account_name': account,
+                                  'account_key': key,
+                                  'token_credential': token_credential,
+                                  'sas_token': sas}
+                client = cf_blob_service(cmd.cli_ctx, account_kwargs).get_blob_client(container=container, blob=blob)
                 props = client.get_blob_properties(lease=lease_id).content_settings
 
         # create new properties
@@ -551,7 +547,6 @@ def get_file_path_validator(default_file_param=None):
     Allows another path-type parameter to be named which can supply a default filename. """
 
     def validator(namespace):
-        import os
         if not hasattr(namespace, 'path'):
             return
 
@@ -679,7 +674,30 @@ def add_progress_callback(cmd, namespace):
     del namespace.no_progress
 
 
-def add_progress_callback_v2(cmd, namespace):
+def add_download_progress_callback(cmd, namespace):
+    def _update_progress(response):
+        if response.http_response.status_code not in [200, 201, 206]:
+            return
+
+        message = getattr(_update_progress, 'message', 'Alive')
+        reuse = getattr(_update_progress, 'reuse', False)
+        current = response.context['download_stream_current']
+        total = response.context['data_stream_total']
+
+        if total:
+            hook.add(message=message, value=current, total_val=total)
+            if total == current and not reuse:
+                hook.end()
+
+    hook = cmd.cli_ctx.get_progress_controller(det=True)
+    _update_progress.hook = hook
+
+    if not namespace.no_progress:
+        namespace.progress_callback = _update_progress
+    del namespace.no_progress
+
+
+def add_upload_progress_callback(cmd, namespace):
     def _update_progress(response):
         if response.http_response.status_code not in [200, 201]:
             return
@@ -717,8 +735,6 @@ def process_container_delete_parameters(cmd, namespace):
 
 
 def process_file_download_namespace(namespace):
-    import os
-
     get_file_path_validator()(namespace)
 
     dest = namespace.file_path
@@ -1059,3 +1075,232 @@ def validate_upload_blob(namespace):
         raise InvalidArgumentValueError("usage error: please only specify one of --file and --data to upload.")
     if not namespace.file_path and not namespace.data:
         raise InvalidArgumentValueError("usage error: please specify one of --file and --data to upload.")
+
+
+def _match_path(path, pattern):
+    from fnmatch import fnmatch
+    return fnmatch(path, pattern)
+
+
+def glob_files_locally(folder_path, pattern):
+    """glob files in local folder based on the given pattern"""
+
+    pattern = os.path.join(folder_path, pattern.lstrip('/')) if pattern else None
+
+    len_folder_path = len(folder_path) + 1
+    for root, _, files in os.walk(folder_path):
+        for f in files:
+            full_path = os.path.join(root, f)
+            if not pattern or _match_path(full_path, pattern):
+                yield (full_path, full_path[len_folder_path:])
+
+
+def process_blob_download_batch_parameters(cmd, namespace):
+    """Process the parameters for storage blob download command"""
+    from azure.cli.core.azclierror import InvalidArgumentValueError
+    # 1. quick check
+    if not os.path.exists(namespace.destination) or not os.path.isdir(namespace.destination):
+        raise InvalidArgumentValueError('incorrect usage: destination must be an existing directory')
+
+    # 2. try to extract account name and container name from source string
+    _process_blob_batch_container_parameters(cmd, namespace)
+
+    # 3. Call validators
+    add_download_progress_callback(cmd, namespace)
+
+
+def process_blob_upload_batch_parameters(cmd, namespace):
+    """Process the source and destination of storage blob upload command"""
+    # 1. quick check
+    if not os.path.exists(namespace.source) or not os.path.isdir(namespace.source):
+        raise ValueError('incorrect usage: source must be an existing directory')
+
+    # 2. try to extract account name and container name from destination string
+    _process_blob_batch_container_parameters(cmd, namespace, source=False)
+
+    # 3. collect the files to be uploaded
+    namespace.source = os.path.realpath(namespace.source)
+    namespace.source_files = [c for c in glob_files_locally(namespace.source, namespace.pattern)]
+
+    # 4. determine blob type
+    if namespace.blob_type is None:
+        vhd_files = [f for f in namespace.source_files if f[0].endswith('.vhd')]
+        if any(vhd_files) and len(vhd_files) == len(namespace.source_files):
+            # when all the listed files are vhd files use page
+            namespace.blob_type = 'page'
+        elif any(vhd_files):
+            from azure.cli.core.azclierror import ArgumentUsageError
+            # source files contain vhd files but not all of them
+            raise ArgumentUsageError("""Fail to guess the required blob type. Type of the files to be
+            uploaded are not consistent. Default blob type for .vhd files is "page", while
+            others are "block". You can solve this problem by either explicitly set the blob
+            type or ensure the pattern matches a correct set of files.""")
+        else:
+            namespace.blob_type = 'block'
+
+    # 5. call other validators
+    validate_metadata(namespace)
+    t_blob_content_settings = get_sdk(cmd.cli_ctx, CUSTOM_DATA_STORAGE_BLOB, '_models#ContentSettings')
+    get_content_setting_validator(t_blob_content_settings, update=False)(cmd, namespace)
+    add_upload_progress_callback(cmd, namespace)
+    blob_tier_validator(cmd, namespace)
+
+
+def process_blob_delete_batch_parameters(cmd, namespace):
+    _process_blob_batch_container_parameters(cmd, namespace)
+
+
+def _process_blob_batch_container_parameters(cmd, namespace, source=True):
+    """Process the container parameters for storage blob batch commands before populating args from environment."""
+    if source:
+        container_arg, container_name_arg = 'source', 'container_name'
+    else:
+        # destination
+        container_arg, container_name_arg = 'destination', 'container_name'
+
+    # try to extract account name and container name from source string
+    from .storage_url_helpers import StorageResourceIdentifier
+    container_arg_val = getattr(namespace, container_arg)  # either a url or name
+    identifier = StorageResourceIdentifier(cmd.cli_ctx.cloud, container_arg_val)
+
+    if not identifier.is_url():
+        setattr(namespace, container_name_arg, container_arg_val)
+    elif identifier.blob:
+        raise ValueError('incorrect usage: {} should be either a container URL or name'.format(container_arg))
+    else:
+        setattr(namespace, container_name_arg, identifier.container)
+        if namespace.account_name is None:
+            namespace.account_name = identifier.account_name
+        elif namespace.account_name != identifier.account_name:
+            raise ValueError('The given storage account name is not consistent with the '
+                             'account name in the destination URL')
+
+        # if no sas-token is given and the container url contains one, use it
+        if not namespace.sas_token and identifier.sas_token:
+            namespace.sas_token = identifier.sas_token
+
+    # Finally, grab missing storage connection parameters from environment variables
+    validate_client_parameters(cmd, namespace)
+
+
+def get_source_file_or_blob_service_client(cmd, namespace):
+    """
+    Create the second file service or blob service client for batch copy command, which is used to
+    list the source files or blobs. If both the source account and source URI are omitted, it
+    indicates that user want to copy files or blobs in the same storage account, therefore the
+    destination client will be set None hence the command will use destination client.
+    """
+
+    usage_string = 'invalid usage: supply only one of the following argument sets:' + \
+                   '\n\t   --source-uri  [--source-sas]' + \
+                   '\n\tOR --source-container' + \
+                   '\n\tOR --source-container --source-account-name --source-account-key' + \
+                   '\n\tOR --source-container --source-account-name --source-sas' + \
+                   '\n\tOR --source-share --source-account-name --source-account-key' + \
+                   '\n\tOR --source-share --source-account-name --source-account-sas'
+
+    ns = vars(namespace)
+    source_account = ns.pop('source_account_name', None)
+    source_key = ns.pop('source_account_key', None)
+    source_uri = ns.pop('source_uri', None)
+    source_sas = ns.get('source_sas', None)
+    source_container = ns.get('source_container', None)
+    source_share = ns.get('source_share', None)
+
+    if source_uri and source_account:
+        raise ValueError(usage_string)
+    if not source_uri and bool(source_container) == bool(source_share):  # must be container or share
+        raise ValueError(usage_string)
+
+    if (not source_account) and (not source_uri):
+        # Set the source_client to None if neither source_account or source_uri is given. This
+        # indicates the command that the source files share or blob container is in the same storage
+        # account as the destination file share or blob container.
+        #
+        # The command itself should create the source service client since the validator can't
+        # access the destination client through the namespace.
+        #
+        # A few arguments check will be made as well so as not to cause ambiguity.
+        if source_key or source_sas:
+            raise ValueError('invalid usage: --source-account-name is missing; the source account is assumed to be the'
+                             ' same as the destination account. Do not provide --source-sas or --source-account-key')
+
+        source_account, source_key, source_sas = ns['account_name'], ns['account_key'], ns['sas_token']
+
+    if source_account:
+        if not (source_key or source_sas):
+            # when neither storage account key or SAS is given, try to fetch the key in the current
+            # subscription
+            source_key = _query_account_key(cmd.cli_ctx, source_account)
+
+    elif source_uri:
+        if source_key or source_container or source_share:
+            raise ValueError(usage_string)
+
+        from .storage_url_helpers import StorageResourceIdentifier
+        if source_sas:
+            source_uri = '{}{}{}'.format(source_uri, '?', source_sas.lstrip('?'))
+        identifier = StorageResourceIdentifier(cmd.cli_ctx.cloud, source_uri)
+        nor_container_or_share = not identifier.container and not identifier.share
+        if not identifier.is_url():
+            raise ValueError('incorrect usage: --source-uri expects a URI')
+        if identifier.blob or identifier.directory or identifier.filename or nor_container_or_share:
+            raise ValueError('incorrect usage: --source-uri has to be blob container or file share')
+
+        source_account = identifier.account_name
+        source_container = identifier.container
+        source_share = identifier.share
+
+        if identifier.sas_token:
+            source_sas = identifier.sas_token
+        else:
+            source_key = _query_account_key(cmd.cli_ctx, identifier.account_name)
+
+    # config source account credential
+    ns['source_account_name'] = source_account
+    ns['source_account_key'] = source_key
+    ns['source_container'] = source_container
+    ns['source_share'] = source_share
+    # get sas token for source
+    if not source_sas:
+        from .util import create_short_lived_container_sas, create_short_lived_share_sas
+        if source_container:
+            source_sas = create_short_lived_container_sas(cmd, account_name=source_account,
+                                                          account_key=source_key,
+                                                          container=source_container)
+        if source_share:
+            source_sas = create_short_lived_share_sas(cmd, account_name=source_account,
+                                                      account_key=source_key,
+                                                      share=source_share)
+    ns['source_sas'] = source_sas
+
+
+def validate_text_configuration(cmd, ns):
+    DelimitedTextDialect = cmd.get_models('_models#DelimitedTextDialect', resource_type=CUSTOM_DATA_STORAGE_BLOB)
+    DelimitedJsonDialect = cmd.get_models('_models#DelimitedJsonDialect', resource_type=CUSTOM_DATA_STORAGE_BLOB)
+    QuickQueryDialect = cmd.get_models('_models#QuickQueryDialect', resource_type=CUSTOM_DATA_STORAGE_BLOB)
+
+    if ns.input_format == 'csv':
+        ns.input_config = DelimitedTextDialect(
+            delimiter=ns.in_column_separator,
+            quotechar=ns.in_quote_char,
+            lineterminator=ns.in_record_separator,
+            escapechar=ns.in_escape_char,
+            has_header=ns.in_has_header)
+    if ns.input_format == 'json':
+        ns.input_config = DelimitedJsonDialect(delimiter=ns.in_line_separator)
+    if ns.input_format == 'parquet':
+        ns.input_config = QuickQueryDialect.ParquetDialect
+    if ns.output_format == 'csv':
+        ns.output_config = DelimitedTextDialect(
+            delimiter=ns.out_column_separator,
+            quotechar=ns.out_quote_char,
+            lineterminator=ns.out_record_separator,
+            escapechar=ns.out_escape_char,
+            has_header=ns.out_has_header)
+    if ns.output_format == 'json':
+        ns.output_config = DelimitedJsonDialect(delimiter=ns.out_line_separator)
+    del ns.input_format, ns.in_line_separator, ns.in_column_separator, ns.in_quote_char, ns.in_record_separator, \
+        ns.in_escape_char, ns.in_has_header
+    del ns.output_format, ns.out_line_separator, ns.out_column_separator, ns.out_quote_char, ns.out_record_separator, \
+        ns.out_escape_char, ns.out_has_header

@@ -2,6 +2,57 @@
 
 Release History
 ===============
+
+0.5.31
++++++
+* Add support for new outbound types: 'managedNATGateway' and 'userAssignedNATGateway'
+
+0.5.30
++++++
+* Add preview support for setting scaleDownMode field on nodepools. Requires registering the feature flag "Microsoft.ContainerService/AKS-ScaleDownModePreview" for setting the value to "Deallocate".
+
+0.5.29
++++++
+* Fix update (failed due to "ERROR: (BadRequest) Feature Microsoft.ContainerService/AutoUpgradePreview is not enabled" even when autoupgrade was not specified)
+* Add podMaxPids argument for kubelet-config
+
+0.5.28
++++++
+* Update to adopt 2021-07-01 api-version
+
+0.5.27
++++++
+* GA private cluster public FQDN feature, breaking change to replace create parameter `--enable-public-fqdn` with `--disable-public-fqdn` since now it's enabled by default for private cluster during cluster creation.
+
+0.5.26
++++++
+* Correct containerLogMaxSizeMb to containerLogMaxSizeMB in customized kubelet config
+
+0.5.25
++++++
+* Add support for http proxy
+
+0.5.24
++++++
+* * Add "--aks-custom-headers" for "az aks nodepool upgrade"
+
+0.5.23
++++++
+* Fix issue that `maintenanceconfiguration add` subcommand cannot work
+
+0.5.22
++++++
+* Fix issue in dcr template
+
+0.5.21
++++++
+* Fix issue when disable monitoring on an AKS cluster would fail in regions where Data Collection Rules are not enabled
+
+0.5.20
++++++
+* Support enabling monitoring on AKS clusters with msi auth
+* Add `--enable-msi-auth-for-monitoring` option in aks create and aks enable-addons
+
 0.5.19
 +++++
 * Remove azure-defender from list of available addons to install via `az aks enable-addons` command
