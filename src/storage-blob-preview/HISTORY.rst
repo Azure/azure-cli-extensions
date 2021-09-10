@@ -2,6 +2,26 @@
 
 Release History
 ===============
+0.6.1
+++++++
+* `az storage blob immutability-policy set/delete`: Extend/Lock/Unlock/Delete blob's immutability policy
+* `az storage blob set-legal-hold`: Configure/Clear blob legal hold
+
+0.6.0
+++++++
+* Remove `az storage account blob-service-properties` since all the preview arguments are supported in main azure cli
+* Add `parquet` option to `az storage blob query --input-format`
+
+0.5.2
+++++++
+* Apply v2020-06-12 api version for blob operations
+* Add `az storage blob download-batch/upload-batch/delete-batch/copy start-batch` commands
+
+0.5.1
+++++++
+* Fix issue #3460
+* Remove commands supported in azure cli
+
 0.5.0
 ++++++
 * `az storage blob upload`: Refine help message

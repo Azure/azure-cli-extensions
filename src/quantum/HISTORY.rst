@@ -3,6 +3,25 @@
 Release History
 ===============
 
+0.7.0
+++++++
+* [2021-08-31] Version intended to work with QDK version v0.18.2108.160310
+* Provide compiler output to users in case of error for easier troubleshooting.
+* Fixed bug in which retrieving output from workspaces in a location different to another set as default failed.
+* Processing jobs that produce no output is allowed.
+* Simplification of resources used in extension tests and allowing overrides via environment variables.
+
+0.6.1
+++++++
+* [2021-07-22] Reduced the lenghth of the user agent reported by the tool.
+
+0.6.0
+++++++
+* [2021-07-20] Version intended to work with QDK version v0.18.2106.148911
+* Adding command to request job cancellation: `az quantum job cancel`.
+* Fixed a bug in which job submissions in Azure Quantum that emit standard output were reported as failed, even if the job succeeded.
+* Fixed issue with job submissions from a different directory.
+
 0.5.0
 ++++++
 * [2021-05-25] Version intended to work with QDK version v0.17.2105.143879

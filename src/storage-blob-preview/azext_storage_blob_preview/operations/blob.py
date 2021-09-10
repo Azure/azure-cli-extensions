@@ -9,16 +9,15 @@ import os
 from datetime import datetime
 
 from azure.cli.core.util import sdk_no_wait
-from azure.cli.command_modules.storage.url_quote_util import encode_for_url, make_encoded_file_url_and_params
-from azure.cli.command_modules.storage.util import (create_blob_service_from_storage_client,
-                                                    create_file_share_from_storage_client,
-                                                    create_short_lived_share_sas,
-                                                    create_short_lived_container_sas,
-                                                    filter_none, collect_blobs, collect_blob_objects, collect_files,
-                                                    mkdir_p, guess_content_type, normalize_blob_file_path,
-                                                    check_precondition_success)
+from azure.cli.command_modules.storage.url_quote_util import make_encoded_file_url_and_params
 from knack.log import get_logger
 from knack.util import CLIError
+
+from ..util import (create_file_share_from_storage_client,
+                    create_short_lived_share_sas,
+                    filter_none, collect_blobs, collect_blob_objects, collect_files,
+                    mkdir_p, guess_content_type, normalize_blob_file_path,
+                    check_precondition_success)
 from ..profiles import CUSTOM_DATA_STORAGE_BLOB
 
 logger = get_logger(__name__)
@@ -97,9 +96,19 @@ def set_service_properties(client, delete_retention=None, delete_retention_perio
     return client.get_service_properties()
 
 
+def set_blob_immutability_policy(cmd, client, expiry_time=None, policy_mode=None, **kwargs):
+    ImmutabilityPolicy = cmd.get_models("_models#ImmutabilityPolicy", resource_type=CUSTOM_DATA_STORAGE_BLOB)
+    if not expiry_time and not policy_mode:
+        from azure.cli.core.azclierror import InvalidArgumentValueError
+        raise InvalidArgumentValueError('Please specify --expiry-time | --policy-mode')
+    immutability_policy = ImmutabilityPolicy(expiry_time=expiry_time, policy_mode=policy_mode)
+    return client.set_immutability_policy(immutability_policy=immutability_policy, **kwargs)
+
+
 def storage_blob_copy_batch(cmd, client, source_client, container_name=None,
                             destination_path=None, source_container=None, source_share=None,
-                            source_sas=None, pattern=None, dryrun=False):
+                            source_sas=None, pattern=None, dryrun=False, source_account_name=None,
+                            source_account_key=None):
     """Copy a group of blob or files to a blob container."""
     if dryrun:
         logger.warning('copy files or blobs to blob container')
@@ -112,20 +121,26 @@ def storage_blob_copy_batch(cmd, client, source_client, container_name=None,
 
     if source_container:
         # copy blobs for blob container
-
-        # if the source client is None, recreate one from the destination client.
-        source_client = source_client or create_blob_service_from_storage_client(cmd, client)
-        if not source_sas:
-            source_sas = create_short_lived_container_sas(cmd, source_client.account_name, source_client.account_key,
-                                                          source_container)
+        if source_account_name != client.account_name:
+            from .._client_factory import cf_blob_service
+            account_kwargs = {'account_name': source_account_name,
+                              'account_key': source_account_key,
+                              'sas_token': source_sas}
+            source_client = cf_blob_service(cmd.cli_ctx, account_kwargs)
+        else:
+            source_client = client
 
         # pylint: disable=inconsistent-return-statements
         def action_blob_copy(blob_name):
             if dryrun:
                 logger.warning('  - copy blob %s', blob_name)
             else:
-                return _copy_blob_to_blob_container(client, source_client, container_name, destination_path,
-                                                    source_container, source_sas, blob_name)
+                return _copy_blob_to_blob_container(cmd, blob_service=client, source_blob_service=source_client,
+                                                    destination_container=container_name,
+                                                    destination_path=destination_path,
+                                                    source_container=source_container,
+                                                    source_blob_name=blob_name,
+                                                    source_sas=source_sas)
 
         return list(filter_none(action_blob_copy(blob) for blob in collect_blobs(source_client,
                                                                                  source_container,
@@ -135,7 +150,9 @@ def storage_blob_copy_batch(cmd, client, source_client, container_name=None,
         # copy blob from file share
 
         # if the source client is None, recreate one from the destination client.
-        source_client = source_client or create_file_share_from_storage_client(cmd, client)
+        source_client = source_client or create_file_share_from_storage_client(cmd, account_name=source_account_name,
+                                                                               account_key=source_account_key,
+                                                                               sas_token=source_sas)
 
         if not source_sas:
             source_sas = create_short_lived_share_sas(cmd, source_client.account_name, source_client.account_key,
@@ -157,22 +174,10 @@ def storage_blob_copy_batch(cmd, client, source_client, container_name=None,
     raise ValueError('Fail to find source. Neither blob container or file share is specified')
 
 
-# pylint: disable=unused-argument
-def storage_blob_download_batch(client, source, destination, source_container_name, pattern=None, dryrun=False,
-                                progress_callback=None, max_connections=2):
-
-    def _download_blob(blob_service, container, destination_folder, normalized_blob_name, blob_name):
-        # TODO: try catch IO exception
-        destination_path = os.path.join(destination_folder, normalized_blob_name)
-        destination_folder = os.path.dirname(destination_path)
-        if not os.path.exists(destination_folder):
-            mkdir_p(destination_folder)
-
-        blob = blob_service.get_blob_to_path(container, blob_name, destination_path, max_connections=max_connections,
-                                             progress_callback=progress_callback)
-        return blob.name
-
-    source_blobs = collect_blobs(client, source_container_name, pattern)
+# pylint: disable=unused-argument, too-many-locals
+def storage_blob_download_batch(client, source, destination, container_name, pattern=None, dryrun=False,
+                                progress_callback=None, socket_timeout=None, **kwargs):
+    source_blobs = collect_blobs(client, container_name, pattern)
     blobs_to_download = {}
     for blob_name in source_blobs:
         # remove starting path seperator and normalize
@@ -183,64 +188,87 @@ def storage_blob_download_batch(client, source, destination, source_container_na
                            'command instead to download individual blobs.'.format(normalized_blob_name))
         blobs_to_download[normalized_blob_name] = blob_name
 
+    results = []
     if dryrun:
+        # download_blobs = _blob_precondition_check(source_blobs, if_modified_since=if_modified_since,
+        #                                           if_unmodified_since=if_unmodified_since)
         logger.warning('download action: from %s to %s', source, destination)
         logger.warning('    pattern %s', pattern)
-        logger.warning('  container %s', source_container_name)
+        logger.warning('  container %s', container_name)
         logger.warning('      total %d', len(source_blobs))
         logger.warning(' operations')
         for b in source_blobs:
             logger.warning('  - %s', b)
-        return []
 
-    # Tell progress reporter to reuse the same hook
-    if progress_callback:
-        progress_callback.reuse = True
+    else:
+        @check_precondition_success
+        def _download_blob(*args, **kwargs):
+            blob = download_blob(*args, **kwargs)
+            return blob.name
 
-    results = []
-    for index, blob_normed in enumerate(blobs_to_download):
-        # add blob name and number to progress message
+        # Tell progress reporter to reuse the same hook
         if progress_callback:
-            progress_callback.message = '{}/{}: "{}"'.format(
-                index + 1, len(blobs_to_download), blobs_to_download[blob_normed])
-        results.append(_download_blob(
-            client, source_container_name, destination, blob_normed, blobs_to_download[blob_normed]))
+            progress_callback.reuse = True
 
-    # end progress hook
-    if progress_callback:
-        progress_callback.hook.end()
+        for index, blob_normed in enumerate(blobs_to_download):
+            from azure.cli.core.azclierror import FileOperationError
+            # add blob name and number to progress message
+            if progress_callback:
+                progress_callback.message = '{}/{}: "{}"'.format(
+                    index + 1, len(blobs_to_download), blobs_to_download[blob_normed])
+            blob_client = client.get_blob_client(container=container_name,
+                                                 blob=blobs_to_download[blob_normed])
+            destination_path = os.path.join(destination, os.path.normpath(blob_normed))
+            destination_folder = os.path.dirname(destination_path)
+            # Failed when there is same name for file and folder
+            if os.path.isfile(destination_path) and os.path.exists(destination_folder):
+                raise FileOperationError("%s already exists in %s. Please rename existing file or choose another "
+                                         "destination folder. ")
+            if not os.path.exists(destination_folder):
+                mkdir_p(destination_folder)
+            include, result = _download_blob(client=blob_client, file_path=destination_path,
+                                             progress_callback=progress_callback, **kwargs)
+            if include:
+                results.append(result)
 
+        # end progress hook
+        if progress_callback:
+            progress_callback.hook.end()
+        num_failures = len(blobs_to_download) - len(results)
+        if num_failures:
+            logger.warning('%s of %s files not downloaded due to "Failed Precondition"',
+                           num_failures, len(blobs_to_download))
     return results
 
 
 def storage_blob_upload_batch(cmd, client, source, destination, pattern=None,  # pylint: disable=too-many-locals
                               source_files=None, destination_path=None,
-                              destination_container_name=None, blob_type=None,
+                              container_name=None, blob_type=None,
                               content_settings=None, metadata=None, validate_content=False,
                               maxsize_condition=None, max_connections=2, lease_id=None, progress_callback=None,
                               if_modified_since=None, if_unmodified_since=None, if_match=None,
-                              if_none_match=None, timeout=None, dryrun=False):
-    def _create_return_result(blob_name, blob_content_settings, upload_result=None):
-        blob_name = normalize_blob_file_path(destination_path, blob_name)
+                              if_none_match=None, timeout=None, dryrun=False, socket_timeout=None, **kwargs):
+    def _create_return_result(blob_content_settings, upload_result=None):
         return {
-            'Blob': client.make_blob_url(destination_container_name, blob_name),
+            'Blob': client.url,
             'Type': blob_content_settings.content_type,
-            'Last Modified': upload_result.last_modified if upload_result else None,
-            'eTag': upload_result.etag if upload_result else None}
+            'Last Modified': upload_result['last_modified'] if upload_result else None,
+            'eTag': upload_result['etag'] if upload_result else None}
 
     source_files = source_files or []
-    t_content_settings = cmd.get_models('blob.models#ContentSettings')
+    t_content_settings = cmd.get_models('_models#ContentSettings', resource_type=cmd.command_kwargs['resource_type'])
 
     results = []
     if dryrun:
         logger.info('upload action: from %s to %s', source, destination)
         logger.info('    pattern %s', pattern)
-        logger.info('  container %s', destination_container_name)
+        logger.info('  container %s', container_name)
         logger.info('       type %s', blob_type)
         logger.info('      total %d', len(source_files))
         results = []
         for src, dst in source_files:
-            results.append(_create_return_result(dst, guess_content_type(src, content_settings, t_content_settings)))
+            results.append(_create_return_result(blob_content_settings=guess_content_type(src, content_settings,
+                                                                                          t_content_settings)))
     else:
         @check_precondition_success
         def _upload_blob(*args, **kwargs):
@@ -259,18 +287,19 @@ def storage_blob_upload_batch(cmd, client, source, destination, pattern=None,  #
             if progress_callback:
                 progress_callback.message = '{}/{}: "{}"'.format(
                     index + 1, len(source_files), normalize_blob_file_path(destination_path, dst))
-
-            include, result = _upload_blob(cmd, client, destination_container_name,
-                                           normalize_blob_file_path(destination_path, dst), src,
+            blob_client = client.get_blob_client(container=container_name,
+                                                 blob=normalize_blob_file_path(destination_path, dst))
+            include, result = _upload_blob(cmd, blob_client, file_path=src,
                                            blob_type=blob_type, content_settings=guessed_content_settings,
                                            metadata=metadata, validate_content=validate_content,
                                            maxsize_condition=maxsize_condition, max_connections=max_connections,
                                            lease_id=lease_id, progress_callback=progress_callback,
                                            if_modified_since=if_modified_since,
                                            if_unmodified_since=if_unmodified_since, if_match=if_match,
-                                           if_none_match=if_none_match, timeout=timeout)
+                                           if_none_match=if_none_match, timeout=timeout, **kwargs)
             if include:
-                results.append(_create_return_result(dst, guessed_content_settings, result))
+                results.append(_create_return_result(blob_content_settings=guessed_content_settings,
+                                                     upload_result=result))
         # end progress hook
         if progress_callback:
             progress_callback.hook.end()
@@ -314,15 +343,26 @@ def show_blob(cmd, client, container_name, blob_name, snapshot=None, lease_id=No
     return blob
 
 
-def storage_blob_delete_batch(client, source, source_container_name, pattern=None, lease_id=None,
+def _blob_precondition_check(source_blobs, if_modified_since=None, if_unmodified_since=None):
+    from datetime import timezone
+    if_modified_since_utc = if_modified_since.replace(tzinfo=timezone.utc) if if_modified_since else None
+    if_unmodified_since_utc = if_unmodified_since.replace(tzinfo=timezone.utc) if if_unmodified_since else None
+    result = []
+    for blob in source_blobs:
+        if not if_modified_since or blob[1].last_modified >= if_modified_since_utc:
+            if not if_unmodified_since or blob[1].last_modified <= if_unmodified_since_utc:
+                result.append(blob[0])
+    return result
+
+
+def storage_blob_delete_batch(client, source, container_name, pattern=None, lease_id=None,
                               delete_snapshots=None, if_modified_since=None, if_unmodified_since=None, if_match=None,
-                              if_none_match=None, timeout=None, dryrun=False):
+                              if_none_match=None, timeout=None, dryrun=False, **kwargs):
     @check_precondition_success
     def _delete_blob(blob_name):
+        blob_client = client.get_blob_client(container=container_name, blob=blob_name)
         delete_blob_args = {
-            'container_name': source_container_name,
-            'blob_name': blob_name,
-            'lease_id': lease_id,
+            'lease': lease_id,
             'delete_snapshots': delete_snapshots,
             'if_modified_since': if_modified_since,
             'if_unmodified_since': if_unmodified_since,
@@ -330,22 +370,16 @@ def storage_blob_delete_batch(client, source, source_container_name, pattern=Non
             'if_none_match': if_none_match,
             'timeout': timeout
         }
-        return client.delete_blob(**delete_blob_args)
+        return blob_client.delete_blob(**delete_blob_args)
 
-    source_blobs = list(collect_blob_objects(client, source_container_name, pattern))
+    source_blobs = list(collect_blob_objects(client, container_name, pattern))
 
     if dryrun:
-        from datetime import timezone
-        delete_blobs = []
-        if_modified_since_utc = if_modified_since.replace(tzinfo=timezone.utc) if if_modified_since else None
-        if_unmodified_since_utc = if_unmodified_since.replace(tzinfo=timezone.utc) if if_unmodified_since else None
-        for blob in source_blobs:
-            if not if_modified_since or blob[1].properties.last_modified >= if_modified_since_utc:
-                if not if_unmodified_since or blob[1].properties.last_modified <= if_unmodified_since_utc:
-                    delete_blobs.append(blob[0])
+        delete_blobs = _blob_precondition_check(source_blobs, if_modified_since=if_modified_since,
+                                                if_unmodified_since=if_unmodified_since)
         logger.warning('delete action: from %s', source)
         logger.warning('    pattern %s', pattern)
-        logger.warning('  container %s', source_container_name)
+        logger.warning('  container %s', container_name)
         logger.warning('      total %d', len(delete_blobs))
         logger.warning(' operations')
         for blob in delete_blobs:
@@ -380,23 +414,27 @@ def create_blob_url(client, container_name, blob_name, protocol=None, snapshot=N
         container_name, blob_name, protocol=protocol, snapshot=snapshot, sas_token=client.sas_token)
 
 
-def _copy_blob_to_blob_container(blob_service, source_blob_service, destination_container, destination_path,
-                                 source_container, source_sas, source_blob_name):
-    from azure.common import AzureException
-    source_blob_url = source_blob_service.make_blob_url(source_container, encode_for_url(source_blob_name),
-                                                        sas_token=source_sas)
+def _copy_blob_to_blob_container(cmd, blob_service, source_blob_service, destination_container, destination_path,
+                                 source_container, source_blob_name, source_sas):
+    from azure.core.exceptions import HttpResponseError
+    t_blob_client = cmd.get_models('_blob_client#BlobClient', resource_type=CUSTOM_DATA_STORAGE_BLOB)
+    source_client = t_blob_client(account_url=source_blob_service.url, container_name=source_container,
+                                  blob_name=source_blob_name, credential=source_sas)
+    source_blob_url = source_client.url
+
     destination_blob_name = normalize_blob_file_path(destination_path, source_blob_name)
     try:
-        blob_service.copy_blob(destination_container, destination_blob_name, source_blob_url)
-        return blob_service.make_blob_url(destination_container, destination_blob_name)
-    except AzureException:
-        error_template = 'Failed to copy blob {} to container {}.'
-        raise CLIError(error_template.format(source_blob_name, destination_container))
+        blob_client = blob_service.get_blob_client(container=destination_container, blob=destination_blob_name)
+        blob_client.start_copy_from_url(source_url=source_blob_url, incremental_copy=False)
+        return blob_client.url
+    except HttpResponseError as ex:
+        error_template = 'Failed to copy blob {} to container {}. {}'
+        raise CLIError(error_template.format(source_blob_name, destination_container, ex))
 
 
 def _copy_file_to_blob_container(blob_service, source_file_service, destination_container, destination_path,
                                  source_share, source_sas, source_file_dir, source_file_name):
-    from azure.common import AzureException
+    from azure.core.exceptions import HttpResponseError
     file_url, source_file_dir, source_file_name = \
         make_encoded_file_url_and_params(source_file_service, source_share, source_file_dir,
                                          source_file_name, source_sas)
@@ -405,9 +443,10 @@ def _copy_file_to_blob_container(blob_service, source_file_service, destination_
     destination_blob_name = normalize_blob_file_path(destination_path, source_path)
 
     try:
-        blob_service.copy_blob(destination_container, destination_blob_name, file_url)
-        return blob_service.make_blob_url(destination_container, destination_blob_name)
-    except AzureException as ex:
+        blob_client = blob_service.get_blob_client(container=destination_container, blob=destination_blob_name)
+        blob_client.start_copy_from_url(source_url=file_url, incremental_copy=False)
+        return blob_client.url
+    except HttpResponseError as ex:
         error_template = 'Failed to copy file {} to container {}. {}'
         raise CLIError(error_template.format(source_file_name, destination_container, ex))
 
@@ -434,8 +473,8 @@ def download_blob(client, file_path, open_mode='wb', progress_callback=None, soc
         kwargs['raw_response_hook'] = progress_callback
     download_stream = client.download_blob(**kwargs)
     with open(file_path, open_mode) as stream:
-        blob = download_stream.readinto(stream)
-    return blob
+        download_stream.readinto(stream)
+    return client.get_blob_properties()
 
 
 def generate_sas_blob_uri(client, cmd, container_name, blob_name, permission=None,
@@ -611,18 +650,16 @@ def upload_blob(cmd, client, file_path=None, container_name=None, blob_name=None
         upload_args['raw_response_hook'] = progress_callback
 
     check_blob_args = {
-        'lease': lease_id,
         'if_modified_since': if_modified_since,
         'if_unmodified_since': if_unmodified_since,
         'if_match': if_match,
         'if_none_match': if_none_match,
-        'timeout': timeout
     }
 
     # used to check for the preconditions as upload_append_blob() cannot
     if blob_type == 'append':
         if client.exists(timeout=timeout):
-            client.get_blob_properties(**check_blob_args)
+            client.get_blob_properties(lease=lease_id, timeout=timeout, **check_blob_args)
 
     # Because the contents of the uploaded file may be too large, it should be passed into the a stream object,
     # upload_blob() read file data in batches to avoid OOM problems
@@ -669,3 +706,17 @@ def acquire_blob_lease(client, lease_duration=-1, **kwargs):
 def renew_blob_lease(client, **kwargs):
     client.renew(**kwargs)
     return client.id
+
+
+def query_blob(cmd, client, query_expression, input_config=None, output_config=None, result_file=None, **kwargs):
+
+    reader = client.query_blob(query_expression=query_expression, blob_format=input_config, output_format=output_config,
+                               **kwargs)
+
+    if result_file is not None:
+        with open(result_file, 'wb') as stream:
+            reader.readinto(stream)
+        stream.close()
+        return None
+
+    return reader.readall().decode("utf-8")

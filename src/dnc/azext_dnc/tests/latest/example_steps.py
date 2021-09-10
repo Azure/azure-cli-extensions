@@ -14,7 +14,7 @@ from .. import try_manual
 
 # EXAMPLE: /Controller/put/Create controller
 @try_manual
-def step_controller_create(test, rg, rg_2, checks=None):
+def step_controller_create(test, rg, checks=None):
     if checks is None:
         checks = []
     test.cmd('az dnc controller create '
@@ -26,7 +26,7 @@ def step_controller_create(test, rg, rg_2, checks=None):
 
 # EXAMPLE: /Controller/get/Get details of a controller
 @try_manual
-def step_controller_show(test, rg, rg_2, checks=None):
+def step_controller_show(test, rg, checks=None):
     if checks is None:
         checks = []
     test.cmd('az dnc controller show '
@@ -37,7 +37,7 @@ def step_controller_show(test, rg, rg_2, checks=None):
 
 # EXAMPLE: /DelegatedSubnetService/put/put delegated subnet
 @try_manual
-def step_delegated_subnet_service_create(test, rg, rg_2, checks=None):
+def step_delegated_subnet_service_create(test, rg, checks=None):
     if checks is None:
         checks = []
     test.cmd('az dnc delegated-subnet-service create '
@@ -51,19 +51,9 @@ def step_delegated_subnet_service_create(test, rg, rg_2, checks=None):
              checks=checks)
 
 
-# EXAMPLE: /DelegatedSubnetService/get/Get DelegatedSubnets resources by subscription
-@try_manual
-def step_delegated_subnet_service_list(test, rg, rg_2, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az dnc delegated-subnet-service list '
-             '-g ""',
-             checks=checks)
-
-
 # EXAMPLE: /DelegatedSubnetService/get/Get details of a delegated subnet
 @try_manual
-def step_delegated_subnet_service_show(test, rg, rg_2, checks=None):
+def step_delegated_subnet_service_show(test, rg, checks=None):
     if checks is None:
         checks = []
     test.cmd('az dnc delegated-subnet-service show '
@@ -72,9 +62,20 @@ def step_delegated_subnet_service_show(test, rg, rg_2, checks=None):
              checks=checks)
 
 
+# EXAMPLE: /DelegatedSubnetService/delete/delete delegated subnet
+@try_manual
+def step_delegated_subnet_service_delete(test, rg, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az dnc delegated-subnet-service delete -y '
+             '--resource-group "{rg}" '
+             '--resource-name "delegated1"',
+             checks=checks)
+
+
 # EXAMPLE: /OrchestratorInstanceService/put/Create orchestrator instance
 @try_manual
-def step_orchestrator_instance_service_create(test, rg, rg_2, checks=None):
+def step_orchestrator_instance_service_create(test, rg, checks=None):
     if checks is None:
         checks = []
     test.cmd('az dnc orchestrator-instance-service create '
@@ -95,7 +96,7 @@ def step_orchestrator_instance_service_create(test, rg, rg_2, checks=None):
 
 # EXAMPLE: /OrchestratorInstanceService/get/Get details of a orchestratorInstance
 @try_manual
-def step_orchestrator_instance_service_show(test, rg, rg_2, checks=None):
+def step_orchestrator_instance_service_show(test, rg, checks=None):
     if checks is None:
         checks = []
     test.cmd('az dnc orchestrator-instance-service show '
@@ -104,29 +105,9 @@ def step_orchestrator_instance_service_show(test, rg, rg_2, checks=None):
              checks=checks)
 
 
-# EXAMPLE: /OrchestratorInstanceService/get/Get OrchestratorInstance resources by resource group
-@try_manual
-def step_orchestrator_instance_service_list(test, rg, rg_2, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az dnc orchestrator-instance-service list '
-             '--resource-group "{rg_2}"',
-             checks=checks)
-
-
-# EXAMPLE: /OrchestratorInstanceService/get/Get orchestratorInstance resources by subscription
-@try_manual
-def step_orchestrator_instance_service_list2(test, rg, rg_2, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az dnc orchestrator-instance-service list '
-             '-g ""',
-             checks=checks)
-
-
 # EXAMPLE: /OrchestratorInstanceService/delete/Delete Orchestrator Instance
 @try_manual
-def step_orchestrator_instance_service_delete(test, rg, rg_2, checks=None):
+def step_orchestrator_instance_service_delete(test, rg, checks=None):
     if checks is None:
         checks = []
     test.cmd('az dnc orchestrator-instance-service delete -y '
@@ -137,52 +118,11 @@ def step_orchestrator_instance_service_delete(test, rg, rg_2, checks=None):
 
 # EXAMPLE: /Controller/delete/Delete controller
 @try_manual
-def step_controller_delete(test, rg, rg_2, checks=None):
+def step_controller_delete(test, rg, checks=None):
     if checks is None:
         checks = []
     test.cmd('az dnc controller delete -y '
              '--resource-group "{rg}" '
              '--resource-name "{myController}"',
-             checks=checks)
-
-
-# EXAMPLE: /DelegatedNetwork/get/Get DelegatedController resources by subscription
-@try_manual
-def step_delegated_network_list(test, rg, rg_2, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az dnc delegated-network list '
-             '-g ""',
-             checks=checks)
-
-
-# EXAMPLE: /DelegatedNetwork/get/Get DelegatedNetwork resources by resource group
-@try_manual
-def step_delegated_network_list2(test, rg, rg_2, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az dnc delegated-network list '
-             '--resource-group "{rg_2}"',
-             checks=checks)
-
-
-# EXAMPLE: /DelegatedSubnetService/get/Get DelegatedSubnets resources by resource group
-@try_manual
-def step_delegated_subnet_service_list2(test, rg, rg_2, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az dnc delegated-subnet-service list '
-             '--resource-group "{rg_2}"',
-             checks=checks)
-
-
-# EXAMPLE: /DelegatedSubnetService/delete/delete delegated subnet
-@try_manual
-def step_delegated_subnet_service_delete(test, rg, rg_2, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az dnc delegated-subnet-service delete -y '
-             '--resource-group "{rg}" '
-             '--resource-name "delegated1"',
              checks=checks)
 

@@ -26,7 +26,10 @@ helps['monitor action-rule create'] = """
                az monitor action-rule create --resource-group rg --name rule --location Global --status Enabled --rule-type Suppression --suppression-recurrence-type Always --alert-context Contains Computer-01 --monitor-service Equals "Log Analytics"
       - name: Create an action rule to suppress notifications in a resource group
         text: |-
-               az monitor action-rule create --resource-group rg --name rule --location Global --status Enabled --rule-type Suppression --scope-type ResourceGroup --scope /subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/resourceGroups/rg --suppression-recurrence-type Always --alert-context Contains Computer-01 --monitor-service Equals "Log Analytics"
+               az monitor action-rule create --resource-group rg --name rule --location Global --status Enabled --rule-type Suppression --scope-type ResourceGroup --scope /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg --suppression-recurrence-type Always --alert-context Contains Computer-01 --monitor-service Equals "Log Analytics"
+      - name: Create an action rule with a recurrenceType of Once
+        text: |-
+               az monitor action-rule create --resource-group rg --name rule --location Global --status Enabled --rule-type Suppression --scope-type ResourceGroup --scope /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg --severity Equals Sev0 Sev2 --monitor-service Equals Platform "Application Insights" --monitor-condition Equals Fired --target-resource-type NotEquals Microsoft.Compute/VirtualMachines --suppression-recurrence-type Once --suppression-start-date 08/09/2021 --suppression-end-date 08/10/2021 --suppression-start-time 06:00:00 --suppression-end-time 14:00:00
 """
 
 helps['monitor action-rule update'] = """

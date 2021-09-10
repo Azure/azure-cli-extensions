@@ -28,7 +28,7 @@ class IntegrationRuntimesOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~data_factory_management_client.models
+    :type models: ~azure.mgmt.datafactory.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -57,7 +57,7 @@ class IntegrationRuntimesOperations:
         :type factory_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either IntegrationRuntimeListResponse or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~data_factory_management_client.models.IntegrationRuntimeListResponse]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.datafactory.models.IntegrationRuntimeListResponse]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationRuntimeListResponse"]
@@ -135,13 +135,13 @@ class IntegrationRuntimesOperations:
         :param integration_runtime_name: The integration runtime name.
         :type integration_runtime_name: str
         :param integration_runtime: Integration runtime resource definition.
-        :type integration_runtime: ~data_factory_management_client.models.IntegrationRuntimeResource
+        :type integration_runtime: ~azure.mgmt.datafactory.models.IntegrationRuntimeResource
         :param if_match: ETag of the integration runtime entity. Should only be specified for update,
          for which it should match existing entity or can be * for unconditional update.
         :type if_match: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: IntegrationRuntimeResource, or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.IntegrationRuntimeResource
+        :rtype: ~azure.mgmt.datafactory.models.IntegrationRuntimeResource
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationRuntimeResource"]
@@ -215,7 +215,7 @@ class IntegrationRuntimesOperations:
         :type if_none_match: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: IntegrationRuntimeResource, or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.IntegrationRuntimeResource or None
+        :rtype: ~azure.mgmt.datafactory.models.IntegrationRuntimeResource or None
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType[Optional["models.IntegrationRuntimeResource"]]
@@ -281,10 +281,10 @@ class IntegrationRuntimesOperations:
         :param integration_runtime_name: The integration runtime name.
         :type integration_runtime_name: str
         :param update_integration_runtime_request: The parameters for updating an integration runtime.
-        :type update_integration_runtime_request: ~data_factory_management_client.models.UpdateIntegrationRuntimeRequest
+        :type update_integration_runtime_request: ~azure.mgmt.datafactory.models.UpdateIntegrationRuntimeRequest
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: IntegrationRuntimeResource, or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.IntegrationRuntimeResource
+        :rtype: ~azure.mgmt.datafactory.models.IntegrationRuntimeResource
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationRuntimeResource"]
@@ -410,7 +410,7 @@ class IntegrationRuntimesOperations:
         :type integration_runtime_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: IntegrationRuntimeStatusResponse, or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.IntegrationRuntimeStatusResponse
+        :rtype: ~azure.mgmt.datafactory.models.IntegrationRuntimeStatusResponse
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationRuntimeStatusResponse"]
@@ -455,6 +455,68 @@ class IntegrationRuntimesOperations:
         return deserialized
     get_status.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/integrationRuntimes/{integrationRuntimeName}/getStatus'}  # type: ignore
 
+    async def list_outbound_network_dependencies_endpoints(
+        self,
+        resource_group_name: str,
+        factory_name: str,
+        integration_runtime_name: str,
+        **kwargs
+    ) -> "models.IntegrationRuntimeOutboundNetworkDependenciesEndpointsResponse":
+        """Gets the list of outbound network dependencies for a given Azure-SSIS integration runtime.
+
+        :param resource_group_name: The resource group name.
+        :type resource_group_name: str
+        :param factory_name: The factory name.
+        :type factory_name: str
+        :param integration_runtime_name: The integration runtime name.
+        :type integration_runtime_name: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :return: IntegrationRuntimeOutboundNetworkDependenciesEndpointsResponse, or the result of cls(response)
+        :rtype: ~azure.mgmt.datafactory.models.IntegrationRuntimeOutboundNetworkDependenciesEndpointsResponse
+        :raises: ~azure.core.exceptions.HttpResponseError
+        """
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationRuntimeOutboundNetworkDependenciesEndpointsResponse"]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
+        api_version = "2018-06-01"
+        accept = "application/json"
+
+        # Construct URL
+        url = self.list_outbound_network_dependencies_endpoints.metadata['url']  # type: ignore
+        path_format_arguments = {
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
+            'integrationRuntimeName': self._serialize.url("integration_runtime_name", integration_runtime_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
+        }
+        url = self._client.format_url(url, **path_format_arguments)
+
+        # Construct parameters
+        query_parameters = {}  # type: Dict[str, Any]
+        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+
+        # Construct headers
+        header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+
+        request = self._client.get(url, query_parameters, header_parameters)
+        pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+
+        deserialized = self._deserialize('IntegrationRuntimeOutboundNetworkDependenciesEndpointsResponse', pipeline_response)
+
+        if cls:
+            return cls(pipeline_response, deserialized, {})
+
+        return deserialized
+    list_outbound_network_dependencies_endpoints.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/integrationRuntimes/{integrationRuntimeName}/outboundNetworkDependenciesEndpoints'}  # type: ignore
+
     async def get_connection_info(
         self,
         resource_group_name: str,
@@ -473,7 +535,7 @@ class IntegrationRuntimesOperations:
         :type integration_runtime_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: IntegrationRuntimeConnectionInfo, or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.IntegrationRuntimeConnectionInfo
+        :rtype: ~azure.mgmt.datafactory.models.IntegrationRuntimeConnectionInfo
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationRuntimeConnectionInfo"]
@@ -536,10 +598,10 @@ class IntegrationRuntimesOperations:
         :type integration_runtime_name: str
         :param regenerate_key_parameters: The parameters for regenerating integration runtime
          authentication key.
-        :type regenerate_key_parameters: ~data_factory_management_client.models.IntegrationRuntimeRegenerateKeyParameters
+        :type regenerate_key_parameters: ~azure.mgmt.datafactory.models.IntegrationRuntimeRegenerateKeyParameters
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: IntegrationRuntimeAuthKeys, or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.IntegrationRuntimeAuthKeys
+        :rtype: ~azure.mgmt.datafactory.models.IntegrationRuntimeAuthKeys
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationRuntimeAuthKeys"]
@@ -606,7 +668,7 @@ class IntegrationRuntimesOperations:
         :type integration_runtime_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: IntegrationRuntimeAuthKeys, or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.IntegrationRuntimeAuthKeys
+        :rtype: ~azure.mgmt.datafactory.models.IntegrationRuntimeAuthKeys
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationRuntimeAuthKeys"]
@@ -724,7 +786,7 @@ class IntegrationRuntimesOperations:
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either IntegrationRuntimeStatusResponse or the result of cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~data_factory_management_client.models.IntegrationRuntimeStatusResponse]
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.datafactory.models.IntegrationRuntimeStatusResponse]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
@@ -969,7 +1031,7 @@ class IntegrationRuntimesOperations:
         :type integration_runtime_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: IntegrationRuntimeMonitoringData, or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.IntegrationRuntimeMonitoringData
+        :rtype: ~azure.mgmt.datafactory.models.IntegrationRuntimeMonitoringData
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationRuntimeMonitoringData"]
@@ -1092,7 +1154,7 @@ class IntegrationRuntimesOperations:
         :type integration_runtime_name: str
         :param linked_integration_runtime_request: The data factory name for the linked integration
          runtime.
-        :type linked_integration_runtime_request: ~data_factory_management_client.models.LinkedIntegrationRuntimeRequest
+        :type linked_integration_runtime_request: ~azure.mgmt.datafactory.models.LinkedIntegrationRuntimeRequest
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: None, or the result of cls(response)
         :rtype: None
@@ -1159,10 +1221,10 @@ class IntegrationRuntimesOperations:
         :param integration_runtime_name: The integration runtime name.
         :type integration_runtime_name: str
         :param create_linked_integration_runtime_request: The linked integration runtime properties.
-        :type create_linked_integration_runtime_request: ~data_factory_management_client.models.CreateLinkedIntegrationRuntimeRequest
+        :type create_linked_integration_runtime_request: ~azure.mgmt.datafactory.models.CreateLinkedIntegrationRuntimeRequest
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: IntegrationRuntimeStatusResponse, or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.IntegrationRuntimeStatusResponse
+        :rtype: ~azure.mgmt.datafactory.models.IntegrationRuntimeStatusResponse
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationRuntimeStatusResponse"]

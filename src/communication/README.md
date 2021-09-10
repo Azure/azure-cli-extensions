@@ -49,7 +49,3 @@ az communication regenerate-key --name "MyCommunicationResource" --key-type "Pri
 ```
 az communication delete --name "MyCommunicationResource" --resource-group "MyResourceGroup"
 ```
-##### Show-status #####
-```
-az communication show-status --operation-id "db5f291f-284d-46e9-9152-d5c83f7c14b8" --location "westus2"
-```

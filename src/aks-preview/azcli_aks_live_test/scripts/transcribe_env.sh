@@ -8,12 +8,15 @@ set -o xtrace
 
 # check var
 # from variable group
+# client id, secret and tenant id of sp 'azcli-aks-live-test'
 [[ -z "${AZCLI_ALT_CLIENT_ID}" ]] && (echo "AZCLI_ALT_CLIENT_ID is empty"; exit 1)
 [[ -z "${AZCLI_ALT_SUBSCRIPTION_ID}" ]] && (echo "AZCLI_ALT_SUBSCRIPTION_ID is empty"; exit 1)
 [[ -z "${TENANT_ID}" ]] && (echo "TENANT_ID is empty"; exit 1)
+# basic ubuntu image with python3 pre-installed, hosted on some container registry
 [[ -z "${IMAGE_PREFIX}" ]] && (echo "IMAGE_PREFIX is empty"; exit 1)
 [[ -z "${IMAGE_NAME}" ]] && (echo "IMAGE_NAME is empty"; exit 1)
 [[ -z "${IMAGE_TAG}" ]] && (echo "IMAGE_TAG is empty"; exit 1)
+# specify the version of python3
 [[ -z "${PYTHON_VERSION}" ]] && (echo "PYTHON_VERSION is empty"; exit 1)
 
 # from azure devops
@@ -36,6 +39,10 @@ set -o xtrace
 [[ -z "${CLI_BRANCH}" ]] && (echo "CLI_BRANCH is empty"; exit 1)
 [[ -z "${EXT_REPO}" ]] && (echo "EXT_REPO is empty"; exit 1)
 [[ -z "${EXT_BRANCH}" ]] && (echo "EXT_BRANCH is empty"; exit 1)
+# base directories for acs, aks-preview and live test
+[[ -z "${ACS_BASE_DIR}" ]] && (echo "ACS_BASE_DIR is empty"; exit 1)
+[[ -z "${AKS_PREVIEW_BASE_DIR}" ]] && (echo "AKS_PREVIEW_BASE_DIR is empty"; exit 1)
+[[ -z "${LIVE_TEST_BASE_DIR}" ]] && (echo "LIVE_TEST_BASE_DIR is empty"; exit 1)
 
 # clear
 cat /dev/null > env.list
@@ -56,6 +63,11 @@ echo "SYSTEM_PULLREQUEST_TARGETBRANCH=${SYSTEM_PULLREQUEST_TARGETBRANCH}" >> env
 
 # python version
 echo "PYTHON_VERSION=${PYTHON_VERSION}" >> env.list
+
+# base directories
+echo "ACS_BASE_DIR=${ACS_BASE_DIR}" >> env.list
+echo "AKS_PREVIEW_BASE_DIR=${AKS_PREVIEW_BASE_DIR}" >> env.list
+echo "LIVE_TEST_BASE_DIR=${LIVE_TEST_BASE_DIR}" >> env.list
 
 # azdev env
 echo "AZURE_CLI_TEST_DEV_SP_NAME=${AZCLI_ALT_CLIENT_ID}" >> env.list

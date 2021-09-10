@@ -3,6 +3,12 @@
 Release History
 ===============
 
+0.12.0
+++++++
+* `az network firewall policy rule-collection-group collection add-filter-collection`: Add parameter `--destination-fqdns`
+* `az network firewall policy rule-collection-group collection rule add`: Add parameters `--destination-fqdns` and `--translated-fqdn`
+* `az network firewall policy rule-collection-group collection rule update`: Add parameters `--destination-fqdns` and `--translated-fqdn`
+
 0.11.0
 ++++++
 * Fix issue: `create_or_update` not found

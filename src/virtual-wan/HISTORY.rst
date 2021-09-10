@@ -2,6 +2,20 @@
 
 Release History
 ===============
+
+0.2.9
+++++++
+* bugfix: `az network vpn-gateway connection ipsec-policy add/remove` doesn't migrate to track2.
+* bugfix: `network vhub route reset/remove` doesn't migrate to track2.
+
+0.2.8
+++++++
+* bugfix: `az network vpn-gateway connection ipsec-policy add ` ipsec_policies is NoneType.
+
+0.2.7
+++++++
+* bugfix: `az network vhub get-effective-routes` always returns empty value list.
+
 0.2.6
 ++++++
 * `az network vhub get-effective-routes` support `-o table` outputs.

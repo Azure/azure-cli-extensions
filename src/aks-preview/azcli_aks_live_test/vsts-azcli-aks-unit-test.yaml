@@ -1,4 +1,4 @@
-name: $(Date:yyyyMMdd)$(Rev:.r)_Python$(PYTHON_VERSION)_Coverage-$(COVERAGE)_Mode-$(TEST_MODE)_Branch-$(Build.SourceBranchName)
+name: $(Date:yyyyMMdd)$(Rev:.r)_Python$(PYTHON_VERSION)_Coverage-$(COVERAGE)_Mode-$(TEST_MODE)
 
 trigger: none
 
@@ -14,8 +14,14 @@ variables:
   - group: azcli-aks-tool
   - name: ContainerName
     value: "azcli-aks-unit-test"
+  - name: REPO_NAME
+    value: "azure-cli-extensions"
   - name: LIVE_TEST_BASE_DIR
     value: "azure-cli-extensions/src/aks-preview/azcli_aks_live_test"
+  - name: ACS_BASE_DIR
+    value: "azure-cli/src/azure-cli/azure/cli/command_modules/acs"
+  - name: AKS_PREVIEW_BASE_DIR
+    value: "azure-cli-extensions/src/aks-preview/azext_aks_preview"
 
 jobs:
 - job: UnitTest
@@ -25,18 +31,15 @@ jobs:
   displayName: "Unit Test with Python"
   steps:
     - bash: |
-        pwd
-        ls -alh
-        mkdir azure-cli-extensions
+        mkdir $(REPO_NAME)
         shopt -s extglob dotglob
-        mv !(azure-cli-extensions) azure-cli-extensions
+        mv !($(REPO_NAME)) $(REPO_NAME)
         shopt -u extglob dotglob
-        ls -alh
-      displayName: "Move All Checkout Files to the Newly Created 'azure-cli-extensions' Directory"
+      displayName: "Move All Files to a Subdirectory"
     - bash: |
         $(LIVE_TEST_BASE_DIR)/scripts/clone_repo.sh
       condition: succeeded()
-      displayName: "Clone GitHub Repo and Move Test Related Files"
+      displayName: "Clone GitHub Repo(s) and Extract Test Scripts"
     - bash: |
         ./scripts/prepare_image.sh
       condition: succeeded()
@@ -68,6 +71,7 @@ jobs:
         flattenFolders: true
         targetFolder: $(Build.ArtifactStagingDirectory)
       condition: succeededOrFailed()
+      displayName: "Copy Reports & Logs"
     - task: PublishBuildArtifacts@1
       inputs:
         pathToPublish: $(Build.ArtifactStagingDirectory)
