@@ -41,8 +41,7 @@ from azext_connectedk8s._client_factory import get_graph_client_service_principa
 import azext_connectedk8s._constants as consts
 import azext_connectedk8s._utils as utils
 from glob import glob
-from .vendored_sdks.models import ConnectedCluster, ConnectedClusterIdentity
-from .vendored_sdks.preview_2021_04_01.models import ListClusterUserCredentialsProperties
+from .vendored_sdks.models import ConnectedCluster, ConnectedClusterIdentity, ListClusterUserCredentialProperties
 from threading import Timer, Thread
 import sys
 import hashlib
@@ -1874,11 +1873,11 @@ def client_side_proxy(cmd,
 
     # Fetching hybrid connection details from Userrp
     try:
-        list_prop = ListClusterUserCredentialsProperties(
+        list_prop = ListClusterUserCredentialProperties(
             authentication_method=auth_method,
             client_proxy=True
         )
-        response = client.list_cluster_user_credentials(resource_group_name, cluster_name, list_prop)
+        response = client.list_cluster_user_credential(resource_group_name, cluster_name, list_prop)
     except Exception as e:
         if flag == 1:
             clientproxy_process.terminate()
