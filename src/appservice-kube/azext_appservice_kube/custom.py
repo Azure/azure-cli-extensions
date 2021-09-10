@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import re
 import time
 
 from binascii import hexlify
@@ -89,7 +90,7 @@ from ._create_util import (zip_contents_from_dir, get_runtime_version_details, c
                            should_create_new_rg, set_location, get_site_availability, does_app_already_exist, get_profile_username,
                            get_plan_to_use,get_kube_plan_to_use, get_lang_from_content, get_rg_to_use, get_sku_to_use,
                            detect_os_form_src, get_current_stack_from_runtime, generate_default_app_service_plan_name)
-from ._client_factory import web_client_factory, cf_kube_environments, ex_handler_factory, customlocation_client_factory
+from ._client_factory import web_client_factory, ex_handler_factory, customlocation_client_factory
 
 import subprocess
 from subprocess import PIPE
@@ -171,6 +172,8 @@ class KubeEnvironmentClient():
 
     @classmethod
     def list_by_subscription(cls, cmd):
+        kube_list = []
+
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         api_version = "2020-12-01"
         sub_id = get_subscription_id(cmd.cli_ctx)
@@ -178,12 +181,25 @@ class KubeEnvironmentClient():
             management_hostname.strip('/'), 
             sub_id,
             api_version)
-
+        
         r = send_raw_request(cmd.cli_ctx, "GET", request_url)
-        return r.json()
+        j = r.json()
+        for kube in j["value"]:
+            kube_list.append(kube)
+        
+        while j["nextLink"] is not None:
+            request_url = j["nextLink"]
+            r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+            j = r.json()
+            for kube in j["value"]:
+                kube_list.append(kube)
+
+        return kube_list
 
     @classmethod
     def list_by_resource_group(cls, cmd, resource_group_name):
+        kube_list = []
+        
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         api_version = "2020-12-01"
         sub_id = get_subscription_id(cmd.cli_ctx)
@@ -194,8 +210,19 @@ class KubeEnvironmentClient():
             api_version)
 
         r = send_raw_request(cmd.cli_ctx, "GET", request_url)
-        return r.json()
-      
+        j = r.json()
+        for kube in j["value"]:
+            kube_list.append(kube)
+        
+        while j["nextLink"] is not None:
+            request_url = j["nextLink"]
+            r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+            j = r.json()
+            for kube in j["value"]:
+                kube_list.append(kube)
+
+        return kube_list
+
 
 def show_kube_environments(cmd, name, resource_group_name):
     return KubeEnvironmentClient.show(cmd=cmd, name=name, resource_group_name=resource_group_name)
@@ -262,6 +289,7 @@ def create_kube_environment(cmd, name, resource_group_name, custom_location, sta
             raise e
     raise ValidationError(msg)
 
+# TODO check returned data format 
 def list_kube_environments(cmd, resource_group_name=None):
     if resource_group_name is None:
         return KubeEnvironmentClient.list_by_subscription(cmd)
@@ -363,6 +391,7 @@ def get_vm_sizes(cli_ctx, location):
     return cf_compute_service(cli_ctx).virtual_machine_sizes.list(location)
 
 
+# TODO test
 def _get_kube_env_from_custom_location(cmd, custom_location, resource_group):
     kube_environment_id = ""
     custom_location_name = custom_location
@@ -372,8 +401,14 @@ def _get_kube_env_from_custom_location(cmd, custom_location, resource_group):
         custom_location_name = parsed_custom_location.get("name")
         resource_group = parsed_custom_location.get("resource_group")
 
-    kube_envs = cf_kube_environments(cmd.cli_ctx).list_by_subscription()
+    # kube_envs =  # cf_kube_environments(cmd.cli_ctx).list_by_subscription()
+    kube_envs = KubeEnvironmentClient.list_by_subscription(cmd=cmd)
+    print(kube_envs)
+    print(type(kube_envs))
+
     for kube in kube_envs:
+        print(kube)
+        print(type(kube))
         parsed_custom_location_2 = None
 
         if kube.additional_properties and 'extendedLocation' in kube.additional_properties:
@@ -393,11 +428,14 @@ def _get_kube_env_from_custom_location(cmd, custom_location, resource_group):
     return kube_environment_id
 
 
+# TODO test
 def _get_custom_location_id_from_custom_location(cmd, custom_location_name, resource_group_name):
     if is_valid_resource_id(custom_location_name):
         return custom_location_name
 
-    kube_envs = cf_kube_environments(cmd.cli_ctx).list_by_resource_group(resource_group_name)
+    # kube_envs = cf_kube_environments(cmd.cli_ctx).list_by_resource_group(resource_group_name)
+    kube_envs = KubeEnvironmentClient.list_by_subscription(cmd=cmd, resource_group_name=resource_group_name)
+    
     for kube in kube_envs:
         parsed_custom_location = None
         custom_location_id = None
@@ -414,6 +452,7 @@ def _get_custom_location_id_from_custom_location(cmd, custom_location_name, reso
     return None
 
 
+# TODO fix; test  
 def _get_custom_location_id_from_kube_env(kube):
     if kube.additional_properties and 'extendedLocation' in kube.additional_properties:
         return kube.additional_properties['extendedLocation'].get('name')
@@ -422,6 +461,7 @@ def _get_custom_location_id_from_kube_env(kube):
     raise CLIError("Could not get custom location from kube environment")
 
 
+# TODO fix; test
 def create_app_service_plan_inner(cmd, resource_group_name, name, is_linux, hyper_v, per_site_scaling=False, custom_location=None,
                             app_service_environment=None, sku=None,
                             number_of_workers=None, location=None, tags=None, no_wait=False):

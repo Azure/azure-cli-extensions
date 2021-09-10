@@ -42,8 +42,8 @@ def resource_client_factory(cli_ctx, **_):
     return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES)
 
 
-def cf_kube_environments(cli_ctx, *_):
-    return web_client_factory(cli_ctx).kube_environments
+# def cf_kube_environments(cli_ctx, *_):
+#     return web_client_factory(cli_ctx).kube_environments
 
 
 def cf_plans(cli_ctx, *_):

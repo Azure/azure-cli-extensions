@@ -6,7 +6,7 @@
 # pylint: disable=line-too-long
 from azure.cli.core.commands import CliCommandType
 
-from ._client_factory import cf_kube_environments, cf_plans
+from ._client_factory import cf_plans
 from ._validators import validate_asp_sku, validate_app_or_slot_exists_in_rg
 
 
