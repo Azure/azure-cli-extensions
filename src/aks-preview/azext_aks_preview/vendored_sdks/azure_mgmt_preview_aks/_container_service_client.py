@@ -198,6 +198,7 @@ class ContainerServiceClient(MultiApiClientMixin, _SDKClient):
             return models
         elif api_version == '2021-07-01':
             from .v2021_07_01 import models
+            return models
         elif api_version == '2021-08-01':
             from .v2021_08_01 import models
             return models
@@ -594,6 +595,19 @@ class ContainerServiceClient(MultiApiClientMixin, _SDKClient):
             from .v2021_08_01.operations import ResolvePrivateLinkServiceIdOperations as OperationClass
         else:
             raise ValueError("API version {} does not have operation group 'resolve_private_link_service_id'".format(api_version))
+        return OperationClass(self._client, self._config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def snapshots(self):
+        """Instance depends on the API version:
+
+           * 2021-08-01: :class:`SnapshotsOperations<azure.mgmt.containerservice.v2021_08_01.operations.SnapshotsOperations>`
+        """
+        api_version = self._get_api_version('snapshots')
+        if api_version == '2021-08-01':
+            from .v2021_08_01.operations import SnapshotsOperations as OperationClass
+        else:
+            raise ValueError("API version {} does not have operation group 'snapshots'".format(api_version))
         return OperationClass(self._client, self._config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
 
     def close(self):
