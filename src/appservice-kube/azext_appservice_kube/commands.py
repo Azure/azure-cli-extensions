@@ -60,8 +60,9 @@ def load_command_table(self, _):
     with self.command_group('appservice plan', appservice_plan_sdk) as g:
         g.custom_command('create', 'create_app_service_plan', supports_no_wait=True,
                          exception_handler=ex_handler_factory(creating_plan=True))
-        g.generic_update_command('update', custom_func_name='update_app_service_plan', setter_arg_name='app_service_plan',
-                                 validator=validate_asp_sku, supports_no_wait=True)
+
+        g.custom_command('update', 'update_app_service_plan', supports_no_wait=True)
+
         g.show_command('show', 'get')
         g.custom_command('list', 'list_app_service_plans')
 

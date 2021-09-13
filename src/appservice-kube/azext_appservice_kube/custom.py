@@ -241,6 +241,38 @@ class AppServiceClient():
         r = send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(appservice_json))
         return r.json()
 
+    @classmethod
+    def update(cls, cmd, name, resource_group_name, appservice_json):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        api_version = "2020-12-01"
+        sub_id = get_subscription_id(cmd.cli_ctx)
+
+        request_url = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/serverfarms/{}?api-version={}".format(
+            management_hostname.strip('/'), 
+            sub_id, 
+            resource_group_name, 
+            name, 
+            api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(appservice_json))
+        return r.json()
+
+    @classmethod
+    def show(cls, cmd, name, resource_group_name):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        api_version = "2020-12-01"
+        sub_id = get_subscription_id(cmd.cli_ctx)
+
+        request_url = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/serverfarms/{}?api-version={}".format(
+            management_hostname.strip('/'), 
+            sub_id, 
+            resource_group_name, 
+            name, 
+            api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+        return r.json()
+
 
 
 def show_kube_environments(cmd, name, resource_group_name):
@@ -479,7 +511,7 @@ def _ensure_kube_settings_in_json(appservice_plan_json, extended_location=None, 
     if appservice_plan_json.get("extendedLocation") is None and extended_location is not None:
         appservice_plan_json["extendedLocation"] = extended_location
 
-# TODO test with an ASE 
+# TODO test with an ASE, non-kube plan 
 def create_app_service_plan_inner(cmd, resource_group_name, name, is_linux, hyper_v, per_site_scaling=False, custom_location=None,
                             app_service_environment=None, sku=None,
                             number_of_workers=None, location=None, tags=None, no_wait=False):
@@ -555,22 +587,28 @@ def create_app_service_plan_inner(cmd, resource_group_name, name, is_linux, hype
     return sdk_no_wait(no_wait, AppServiceClient.create, cmd=cmd, name=name,
                        resource_group_name=resource_group_name, appservice_json=plan_json)
 
+# TODO test; test with non-kube plans 
+def update_app_service_plan(cmd, resource_group_name, name, sku=None, number_of_workers=None, no_wait=False):
+    client = web_client_factory(cmd.cli_ctx)
+    plan = client.app_service_plans.get(resource_group_name, name).serialize()
+    plan_with_kube_env = AppServiceClient.show(cmd=cmd, name=name, resource_group_name=resource_group_name)
 
-def update_app_service_plan(instance, sku=None, number_of_workers=None):
     if number_of_workers is None and sku is None:
-        logger.warning(
-            'No update is done. Specify --sku and/or --kube-sku and/or --number-of-workers.')
-    sku_def = instance.sku
+        logger.warning('No update is done. Specify --sku and/or --number-of-workers.')
+    sku_def = plan["sku"]
     if sku is not None:
         sku = _normalize_sku(sku)
-        sku_def.tier = get_sku_name(sku)
-        sku_def.name = sku
+        sku_def["tier"] = get_sku_name(sku)
+        sku_def["name"] = sku
 
     if number_of_workers is not None:
-        sku_def.capacity = number_of_workers
-    instance.sku = sku_def
-    return instance
+        sku_def["capacity"] = number_of_workers
 
+    plan["sku"] = sku_def
+
+    _ensure_kube_settings_in_json(appservice_plan_json=plan, extended_location=plan_with_kube_env.get("extendedLocation"), kube_env=plan_with_kube_env["properties"].get("kubeEnvironmentProfile"))
+
+    return sdk_no_wait(no_wait, AppServiceClient.update, cmd=cmd, name=name, resource_group_name=resource_group_name, appservice_json=plan)
 
 def _validate_asp_and_custom_location_kube_envs_match(cmd, resource_group_name, custom_location, plan):
     client = web_client_factory(cmd.cli_ctx)
