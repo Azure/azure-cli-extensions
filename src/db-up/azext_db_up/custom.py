@@ -396,7 +396,7 @@ def _run_sql_commands(host, user, password, database):
     _ensure_pymssql()
     import pymssql
     with pymssql.connect(host, user, password, database, tds_version='7.0') as connection:
-        logger.warning('Successfully Connected to PostgreSQL.')
+        logger.warning('Successfully Connected to Azure SQL.')
         with connection.cursor() as cursor:
             try:
                 db_password = _create_db_password(database)
