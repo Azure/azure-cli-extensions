@@ -7,6 +7,7 @@
 
 import json
 from knack.log import get_logger
+from urllib.parse import urlparse
 
 from azure.cli.core.azclierror import ResourceNotFoundError, MutuallyExclusiveArgumentError, \
     InvalidArgumentValueError, CommandNotFoundError, RequiredArgumentMissingError
@@ -138,7 +139,7 @@ def create_k8s_extension(cmd, client, resource_group_name, cluster_name, name, c
 
     # Create identity, if required
     # We don't create the identity if we are in DF
-    if create_identity and not __is_dogfood_cluster(cmd):
+    if create_identity and not is_dogfood_cluster(cmd):
         extension_instance.identity, extension_instance.location = \
             __create_identity(cmd, resource_group_name, cluster_name, cluster_type, cluster_rp)
 
@@ -291,5 +292,5 @@ def __read_config_settings_file(file_path):
         raise Exception("File {} is not a valid JSON file".format(file_path)) from ex
 
 
-def __is_dogfood_cluster(cmd):
-    return cmd.cli_ctx.cloud.endpoints.resource_manager == consts.DF_RM_ENDPOINT
+def is_dogfood_cluster(cmd):
+    return urlparse(cmd.cli_ctx.cloud.endpoints.resource_manager).hostname == consts.DF_RM_HOSTNAME
