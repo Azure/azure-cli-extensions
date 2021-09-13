@@ -1304,3 +1304,8 @@ def validate_text_configuration(cmd, ns):
         ns.in_escape_char, ns.in_has_header
     del ns.output_format, ns.out_line_separator, ns.out_column_separator, ns.out_quote_char, ns.out_record_separator, \
         ns.out_escape_char, ns.out_has_header
+
+
+def validate_blob_name_for_upload(namespace):
+    if not namespace.blob_name:
+        namespace.blob_name = namespace.file_path.split('/')[-1].split('\\')[-1]

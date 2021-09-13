@@ -329,6 +329,16 @@ class StorageBlobScenarioTest(StorageScenarioMixin, ScenarioTest):
             .assert_with_checks(JMESPathCheck('name', blob_name),
                                 JMESPathCheck('properties.blobType', 'BlockBlob'),
                                 JMESPathCheck('properties.contentLength', 128 * 1024))
+
+        # test without specifying file name
+        self.storage_cmd('storage blob upload -c {} -f "{}" ', account_info,
+                         container, local_file)
+        file_name = local_file.split('/')[-1].split('\\')[-1]
+        self.storage_cmd('storage blob show -c {} -n {} ', account_info, container, file_name) \
+            .assert_with_checks(JMESPathCheck('name', file_name),
+                                JMESPathCheck('properties.blobType', 'BlockBlob'),
+                                JMESPathCheck('properties.contentLength', 128 * 1024))
+
         # test with data
         test_string = "testupload"
         length = len(test_string)
