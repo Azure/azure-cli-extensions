@@ -467,6 +467,14 @@ class PrivateEndpointConnectionProvisioningState(with_metaclass(_CaseInsensitive
     DELETING = "Deleting"
     FAILED = "Failed"
 
+class PublicNetworkAccess(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Default value is 'Enabled' (case insensitive). Could be set to 'Disabled' to enable private
+    cluster
+    """
+
+    ENABLED = "Enabled"
+    DISABLED = "Disabled"
+
 class ResourceIdentityType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """For more information see `use managed identities in AKS
     <https://docs.microsoft.com/azure/aks/use-managed-identity>`_.
@@ -517,6 +525,13 @@ class ScaleSetPriority(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     #: Regular VMs will be used.
     REGULAR = "Regular"
 
+class SnapshotType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """The type of a snapshot. The default is NodePool.
+    """
+
+    #: The snapshot is a snapshot of a node pool.
+    NODE_POOL = "NodePool"
+
 class UpgradeChannel(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """For more information see `setting the AKS cluster auto-upgrade channel
     <https://docs.microsoft.com/azure/aks/upgrade-cluster#set-auto-upgrade-channel>`_.
@@ -558,3 +573,12 @@ class WeekDay(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     THURSDAY = "Thursday"
     FRIDAY = "Friday"
     SATURDAY = "Saturday"
+
+class WorkloadRuntime(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Determines the type of workload a node can run.
+    """
+
+    #: Nodes will use Kubelet to run standard OCI container workloads.
+    OCI_CONTAINER = "OCIContainer"
+    #: Nodes will use Krustlet to run WASM workloads using the WASI provider (Preview).
+    WASM_WASI = "WasmWasi"

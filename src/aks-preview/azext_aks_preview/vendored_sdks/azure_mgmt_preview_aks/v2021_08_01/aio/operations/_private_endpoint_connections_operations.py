@@ -27,7 +27,7 @@ class PrivateEndpointConnectionsOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.containerservice.v2021_07_01.models
+    :type models: ~azure.mgmt.containerservice.v2021_08_01.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -59,7 +59,7 @@ class PrivateEndpointConnectionsOperations:
         :type resource_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: PrivateEndpointConnectionListResult, or the result of cls(response)
-        :rtype: ~azure.mgmt.containerservice.v2021_07_01.models.PrivateEndpointConnectionListResult
+        :rtype: ~azure.mgmt.containerservice.v2021_08_01.models.PrivateEndpointConnectionListResult
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.PrivateEndpointConnectionListResult"]
@@ -67,7 +67,7 @@ class PrivateEndpointConnectionsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-07-01"
+        api_version = "2021-08-01"
         accept = "application/json"
 
         # Construct URL
@@ -123,7 +123,7 @@ class PrivateEndpointConnectionsOperations:
         :type private_endpoint_connection_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: PrivateEndpointConnection, or the result of cls(response)
-        :rtype: ~azure.mgmt.containerservice.v2021_07_01.models.PrivateEndpointConnection
+        :rtype: ~azure.mgmt.containerservice.v2021_08_01.models.PrivateEndpointConnection
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.PrivateEndpointConnection"]
@@ -131,7 +131,7 @@ class PrivateEndpointConnectionsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-07-01"
+        api_version = "2021-08-01"
         accept = "application/json"
 
         # Construct URL
@@ -187,10 +187,10 @@ class PrivateEndpointConnectionsOperations:
         :param private_endpoint_connection_name: The name of the private endpoint connection.
         :type private_endpoint_connection_name: str
         :param parameters: The updated private endpoint connection.
-        :type parameters: ~azure.mgmt.containerservice.v2021_07_01.models.PrivateEndpointConnection
+        :type parameters: ~azure.mgmt.containerservice.v2021_08_01.models.PrivateEndpointConnection
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: PrivateEndpointConnection, or the result of cls(response)
-        :rtype: ~azure.mgmt.containerservice.v2021_07_01.models.PrivateEndpointConnection
+        :rtype: ~azure.mgmt.containerservice.v2021_08_01.models.PrivateEndpointConnection
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.PrivateEndpointConnection"]
@@ -198,7 +198,7 @@ class PrivateEndpointConnectionsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-07-01"
+        api_version = "2021-08-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -252,7 +252,7 @@ class PrivateEndpointConnectionsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-07-01"
+        api_version = "2021-08-01"
         accept = "application/json"
 
         # Construct URL

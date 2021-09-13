@@ -22,6 +22,7 @@ try:
     from ._models_py3 import ContainerServiceSshConfiguration
     from ._models_py3 import ContainerServiceSshPublicKey
     from ._models_py3 import ContainerServiceVMDiagnostics
+    from ._models_py3 import CreationData
     from ._models_py3 import CredentialResult
     from ._models_py3 import CredentialResults
     from ._models_py3 import EndpointDependency
@@ -82,6 +83,8 @@ try:
     from ._models_py3 import ResourceReference
     from ._models_py3 import RunCommandRequest
     from ._models_py3 import RunCommandResult
+    from ._models_py3 import Snapshot
+    from ._models_py3 import SnapshotListResult
     from ._models_py3 import SubResource
     from ._models_py3 import SysctlConfig
     from ._models_py3 import SystemData
@@ -105,6 +108,7 @@ except (SyntaxError, ImportError):
     from ._models import ContainerServiceSshConfiguration  # type: ignore
     from ._models import ContainerServiceSshPublicKey  # type: ignore
     from ._models import ContainerServiceVMDiagnostics  # type: ignore
+    from ._models import CreationData  # type: ignore
     from ._models import CredentialResult  # type: ignore
     from ._models import CredentialResults  # type: ignore
     from ._models import EndpointDependency  # type: ignore
@@ -165,6 +169,8 @@ except (SyntaxError, ImportError):
     from ._models import ResourceReference  # type: ignore
     from ._models import RunCommandRequest  # type: ignore
     from ._models import RunCommandResult  # type: ignore
+    from ._models import Snapshot  # type: ignore
+    from ._models import SnapshotListResult  # type: ignore
     from ._models import SubResource  # type: ignore
     from ._models import SysctlConfig  # type: ignore
     from ._models import SystemData  # type: ignore
@@ -199,12 +205,15 @@ from ._container_service_client_enums import (
     OSType,
     OutboundType,
     PrivateEndpointConnectionProvisioningState,
+    PublicNetworkAccess,
     ResourceIdentityType,
     ScaleDownMode,
     ScaleSetEvictionPolicy,
     ScaleSetPriority,
+    SnapshotType,
     UpgradeChannel,
     WeekDay,
+    WorkloadRuntime,
 )
 
 __all__ = [
@@ -223,6 +232,7 @@ __all__ = [
     'ContainerServiceSshConfiguration',
     'ContainerServiceSshPublicKey',
     'ContainerServiceVMDiagnostics',
+    'CreationData',
     'CredentialResult',
     'CredentialResults',
     'EndpointDependency',
@@ -283,6 +293,8 @@ __all__ = [
     'ResourceReference',
     'RunCommandRequest',
     'RunCommandResult',
+    'Snapshot',
+    'SnapshotListResult',
     'SubResource',
     'SysctlConfig',
     'SystemData',
@@ -315,10 +327,13 @@ __all__ = [
     'OSType',
     'OutboundType',
     'PrivateEndpointConnectionProvisioningState',
+    'PublicNetworkAccess',
     'ResourceIdentityType',
     'ScaleDownMode',
     'ScaleSetEvictionPolicy',
     'ScaleSetPriority',
+    'SnapshotType',
     'UpgradeChannel',
     'WeekDay',
+    'WorkloadRuntime',
 ]

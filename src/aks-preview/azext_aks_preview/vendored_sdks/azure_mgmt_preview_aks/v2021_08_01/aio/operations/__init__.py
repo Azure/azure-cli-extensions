@@ -13,6 +13,7 @@ from ._agent_pools_operations import AgentPoolsOperations
 from ._private_endpoint_connections_operations import PrivateEndpointConnectionsOperations
 from ._private_link_resources_operations import PrivateLinkResourcesOperations
 from ._resolve_private_link_service_id_operations import ResolvePrivateLinkServiceIdOperations
+from ._snapshots_operations import SnapshotsOperations
 
 __all__ = [
     'Operations',
@@ -22,4 +23,5 @@ __all__ = [
     'PrivateEndpointConnectionsOperations',
     'PrivateLinkResourcesOperations',
     'ResolvePrivateLinkServiceIdOperations',
+    'SnapshotsOperations',
 ]
