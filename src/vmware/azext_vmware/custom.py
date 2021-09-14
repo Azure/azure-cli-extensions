@@ -375,13 +375,13 @@ def workload_network_dns_services_get(client: AVSClient, resource_group_name, pr
     return client.workload_networks.get_dns_service(resource_group_name=resource_group_name, private_cloud_name=private_cloud, dns_service_id=dns_service_id)
 
 
-def workload_network_dns_services_create(client: AVSClient, resource_group_name, private_cloud, dns_service_id, display_name, dns_service_ip, default_dns_zone, fqdn_zones, log_level, revision):
+def workload_network_dns_services_create(client: AVSClient, resource_group_name, private_cloud, dns_service_id, display_name=None, dns_service_ip=None, default_dns_zone=None, fqdn_zones=None, log_level=None, revision=None):
     from azext_vmware.vendored_sdks.avs_client.models import WorkloadNetworkDnsService
     prop = WorkloadNetworkDnsService(display_name=display_name, dns_service_ip=dns_service_ip, default_dns_zone=default_dns_zone, log_level=log_level, revision=revision, fqdn_zones=fqdn_zones)
     return client.workload_networks.begin_create_dns_service(resource_group_name=resource_group_name, private_cloud_name=private_cloud, dns_service_id=dns_service_id, workload_network_dns_service=prop)
 
 
-def workload_network_dns_services_update(client: AVSClient, resource_group_name, private_cloud, dns_service_id, display_name, dns_service_ip, default_dns_zone, fqdn_zones, log_level, revision):
+def workload_network_dns_services_update(client: AVSClient, resource_group_name, private_cloud, dns_service_id, display_name=None, dns_service_ip=None, default_dns_zone=None, fqdn_zones=None, log_level=None, revision=None):
     from azext_vmware.vendored_sdks.avs_client.models import WorkloadNetworkDnsService
     prop = WorkloadNetworkDnsService(display_name=display_name, dns_service_ip=dns_service_ip, default_dns_zone=default_dns_zone, fqdn_zones=fqdn_zones, log_level=log_level, revision=revision)
     return client.workload_networks.begin_update_dns_service(resource_group_name=resource_group_name, private_cloud_name=private_cloud, dns_service_id=dns_service_id, workload_network_dns_service=prop)

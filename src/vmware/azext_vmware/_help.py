@@ -628,12 +628,6 @@ helps['vmware workload-network dns-zone'] = """
     short-summary: Commands to manage a DNS Zone workload-network.
 """
 
-# list_dns_zones
-# get_dns_zone
-# begin_create_dns_zone
-# begin_update_dns_zone
-# begin_delete_dns_zone
-
 helps['vmware workload-network dns-zone list'] = """
     type: command
     short-summary: List of DNS zones in a private cloud workload network.
