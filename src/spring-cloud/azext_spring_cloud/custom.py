@@ -465,6 +465,7 @@ def app_get(cmd, client,
 def app_deploy(cmd, client, resource_group, service, name,
                version=None,
                deployment=None,
+               disable_validation=None,
                artifact_path=None,
                target_module=None,
                runtime_version=None,
@@ -714,6 +715,7 @@ def deployment_create(cmd, client, resource_group, service, app, name,
                       skip_clone_settings=False,
                       version=None,
                       artifact_path=None,
+                      disable_validation=None,
                       target_module=None,
                       runtime_version=None,
                       jvm_options=None,
@@ -788,12 +790,12 @@ def deployment_get(cmd, client, resource_group, service, app, name):
     return client.deployments.get(resource_group, service, app, name)
 
 
-def deployment_delete(cmd, client, resource_group, service, app, name):
+def deployment_delete(cmd, client, resource_group, service, app, name, no_wait=False):
     active_deployment_name = client.apps.get(resource_group, service, app).properties.active_deployment_name
     if active_deployment_name == name:
         logger.warning(DELETE_PRODUCTION_DEPLOYMENT_WARNING)
     client.deployments.get(resource_group, service, app, name)
-    return client.deployments.begin_delete(resource_group, service, app, name)
+    return sdk_no_wait(no_wait, client.deployments.begin_delete, resource_group, service, app, name)
 
 
 def is_valid_git_uri(uri):

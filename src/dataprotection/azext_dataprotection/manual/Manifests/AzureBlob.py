@@ -12,6 +12,7 @@ manifest = '''
   "allowedRestoreModes": [ "PointInTimeBased" ],
   "allowedRestoreTargetTypes": [ "OriginalLocation" ],
   "itemLevelRecoveyEnabled": true,
+  "supportSecretStoreAuthentication": false,
   "policySettings": {
     "supportedRetentionTags": [],
     "supportedDatastoreTypes": [ "OperationalStore" ],

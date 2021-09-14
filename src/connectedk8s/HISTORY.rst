@@ -3,6 +3,27 @@
 Release History
 ===============
 
+1.1.10
+++++++
+
+* Fixed ARM exception telemetry
+
+1.1.9
+++++++
+
+* Increase onboarding and upgrade timeout
+
+1.1.8
+++++++
+* Improve kubernetes distro and infra detection
+
+
+1.1.7
+++++++
+* Add non-existing namespace deploy check
+* Improve some error and warning experiences
+
+
 1.1.6
 ++++++
 * Moved to track2 SDK

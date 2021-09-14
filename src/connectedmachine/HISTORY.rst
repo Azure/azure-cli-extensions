@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.4.0	
++++++	
+* Add private link scope and private endpoint connection commands	
+
 0.3.0	
 +++++	
 * Renamed machine-extension subgroup to extension

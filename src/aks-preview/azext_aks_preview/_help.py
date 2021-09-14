@@ -150,10 +150,18 @@ helps['aks create'] = """
           type: int
           short-summary: Load balancer idle timeout in minutes.
           long-summary: Desired idle timeout for load balancer outbound flows, default is 30 minutes. Please specify a value in the range of [4, 100].
+        - name: --nat-gateway-managed-outbound-ip-count
+          type: int
+          short-summary: NAT gateway managed outbound IP count.
+          long-summary: Desired number of managed outbound IPs for NAT gateway outbound connection. Please specify a value in the range of [1, 16]. Valid for Standard SKU load balancer cluster with managedNATGateway outbound type only.
+        - name: --nat-gateway-idle-timeout
+          type: int
+          short-summary: NAT gateway idle timeout in minutes.
+          long-summary: Desired idle timeout for NAT gateway outbound flows, default is 4 minutes. Please specify a value in the range of [4, 120]. Valid for Standard SKU load balancer cluster with managedNATGateway outbound type only.
         - name: --outbound-type
           type: string
           short-summary: How outbound traffic will be configured for a cluster.
-          long-summary: Select between loadBalancer and userDefinedRouting. If not set, defaults to type loadBalancer. Requires --vnet-subnet-id to be provided with a preconfigured route table and --load-balancer-sku to be Standard.
+          long-summary: Select between loadBalancer, userDefinedRouting, managedNATGateway and userAssignedNATGateway. If not set, defaults to type loadBalancer. Requires --vnet-subnet-id to be provided with a preconfigured route table and --load-balancer-sku to be Standard.
         - name: --enable-addons -a
           type: string
           short-summary: Enable the Kubernetes addons in a comma-separated list.
@@ -263,9 +271,9 @@ helps['aks create'] = """
         - name: --fqdn-subdomain
           type: string
           short-summary: Prefix for FQDN that is created for private cluster with custom private dns zone scenario.
-        - name: --enable-public-fqdn
+        - name: --disable-public-fqdn
           type: bool
-          short-summary: (Preview) Enable public fqdn feature for private cluster.
+          short-summary: Disable public fqdn feature for private cluster.
         - name: --enable-node-public-ip
           type: bool
           short-summary: Enable VMSS node public IP.
@@ -365,6 +373,8 @@ helps['aks create'] = """
           text: az aks create -g MyResourceGroup -n MyManagedCluster --load-balancer-outbound-ip-prefixes <ip-prefix-resource-id-1,ip-prefix-resource-id-2>
         - name: Create a kubernetes cluster with a standard SKU load balancer, with two outbound AKS managed IPs an idle flow timeout of 5 minutes and 8000 allocated ports per machine
           text: az aks create -g MyResourceGroup -n MyManagedCluster --load-balancer-managed-outbound-ip-count 2 --load-balancer-idle-timeout 5 --load-balancer-outbound-ports 8000
+        - name: Create a kubernetes cluster with a AKS managed NAT gateway, with two outbound AKS managed IPs an idle flow timeout of 4 minutes
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --nat-gateway-managed-outbound-ip-count 2 --nat-gateway-idle-timeout 4
         - name: Create a kubernetes cluster with basic SKU load balancer and AvailabilitySet vm set type.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --load-balancer-sku basic --vm-set-type AvailabilitySet
         - name: Create a kubernetes cluster with authorized apiserver IP ranges.
@@ -471,6 +481,14 @@ helps['aks update'] = """
           type: int
           short-summary: Load balancer idle timeout in minutes.
           long-summary: Desired idle timeout for load balancer outbound flows, default is 30 minutes. Please specify a value in the range of [4, 100].
+        - name: --nat-gateway-managed-outbound-ip-count
+          type: int
+          short-summary: NAT gateway managed outbound IP count.
+          long-summary: Desired number of managed outbound IPs for NAT gateway outbound connection. Please specify a value in the range of [1, 16]. Valid for Standard SKU load balancer cluster with managedNATGateway outbound type only.
+        - name: --nat-gateway-idle-timeout
+          type: int
+          short-summary: NAT gateway idle timeout in minutes.
+          long-summary: Desired idle timeout for NAT gateway outbound flows, default is 4 minutes. Please specify a value in the range of [4, 120]. Valid for Standard SKU load balancer cluster with managedNATGateway outbound type only.
         - name: --enable-pod-security-policy
           type: bool
           short-summary: (PREVIEW) Enable pod security policy.
@@ -559,10 +577,10 @@ helps['aks update'] = """
           short-summary: (Preview) If set to true, will enable getting static credential for this cluster.
         - name: --enable-public-fqdn
           type: bool
-          short-summary: (Preview) Enable public fqdn feature for private cluster.
+          short-summary: Enable public fqdn feature for private cluster.
         - name: --disable-public-fqdn
           type: bool
-          short-summary: (Preview) Disable public fqdn feature for private cluster.
+          short-summary: Disable public fqdn feature for private cluster.
     examples:
       - name: Enable cluster-autoscaler within node count range [1,5]
         text: az aks update --enable-cluster-autoscaler --min-count 1 --max-count 5 -g MyResourceGroup -n MyManagedCluster
@@ -582,6 +600,8 @@ helps['aks update'] = """
         text: az aks update -g MyResourceGroup -n MyManagedCluster --load-balancer-outbound-ip-prefixes <ip-prefix-resource-id-1,ip-prefix-resource-id-2>
       - name: Update a kubernetes cluster with two outbound AKS managed IPs an idle flow timeout of 5 minutes and 8000 allocated ports per machine
         text: az aks update -g MyResourceGroup -n MyManagedCluster --load-balancer-managed-outbound-ip-count 2 --load-balancer-idle-timeout 5 --load-balancer-outbound-ports 8000
+      - name: Update a kubernetes cluster of managedNATGateway outbound type with two outbound AKS managed IPs an idle flow timeout of 4 minutes
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --nat-gateway-managed-outbound-ip-count 2 --nat-gateway-idle-timeout 4
       - name: Update a kubernetes cluster with authorized apiserver ip ranges.
         text: az aks update -g MyResourceGroup -n MyManagedCluster --api-server-authorized-ip-ranges 193.168.1.0/24,194.168.1.0/24
       - name: Disable authorized apiserver ip ranges feature for a kubernetes cluster.
@@ -871,6 +891,9 @@ helps['aks nodepool add'] = """
         - name: --max-count
           type: int
           short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 100]
+        - name: --scale-down-mode
+          type: string
+          short-summary: "Describes how VMs are added to or removed from nodepools."
         - name: --node-taints
           type: string
           short-summary: The node taints for the node pool. You can't change the node taints through CLI after the node pool is created.
@@ -968,6 +991,9 @@ helps['aks nodepool update'] = """
         - name: --max-count
           type: int
           short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 100]
+        - name: --scale-down-mode
+          type: string
+          short-summary: "Describes how VMs are added to or removed from nodepools."
         - name: --max-surge
           type: string
           short-summary: Extra nodes used to speed upgrade. When specified, it represents the number or percent used, eg. 5 or 33%
@@ -1106,7 +1132,7 @@ parameters:
     long-summary: Credentials are always in YAML format, so this argument is effectively ignored.
   - name: --public-fqdn
     type: bool
-    short-summary: (Preview) Get private cluster credential with server address to be public fqdn.
+    short-summary: Get private cluster credential with server address to be public fqdn.
 examples:
   - name: Get access credentials for a managed Kubernetes cluster. (autogenerated)
     text: az aks get-credentials --name MyManagedCluster --resource-group MyResourceGroup
