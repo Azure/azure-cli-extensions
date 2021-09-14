@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.6.2
+++++++
+* `az storage blob upload`: Make --name optional
+
 0.6.1
 ++++++
 * `az storage blob immutability-policy set/delete`: Extend/Lock/Unlock/Delete blob's immutability policy
