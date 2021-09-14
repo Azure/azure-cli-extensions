@@ -20,7 +20,8 @@ class MicrosoftServiceLinkerCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        from azext_connection.generated._client_factory import cf_connection_cl
+        # from azext_connection.generated._client_factory import cf_connection_cl
+        from azext_connection.manual._client_factory import cf_connection_cl
         connection_custom = CliCommandType(
             operations_tmpl='azext_connection.custom#{}',
             client_factory=cf_connection_cl)
