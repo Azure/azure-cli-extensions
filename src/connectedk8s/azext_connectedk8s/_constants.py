@@ -107,14 +107,14 @@ Proxy_Kubeconfig_During_Deletion_Fault_Type = 'Encountered proxy kubeconfig duri
 Cannot_Create_ClusterRoleBindings_Fault_Type = 'Cannot create cluster role bindings on this Kubernets cluster'
 CC_Provider_Namespace_Not_Registered_Fault_Type = "Connected Cluster Provider MS.K8 namespace not registered"
 Default_Namespace_Does_Not_Exist_Fault_Type = "The default namespace defined in the kubeconfig doesn't exist on the kubernetes cluster."
-CLIENT_PROXY_VERSION = '1.1.0'
+CLIENT_PROXY_VERSION = '1.3.016682'
 API_SERVER_PORT = 47011
 CLIENT_PROXY_PORT = 47010
 CLIENTPROXY_CLIENT_ID = '04b07795-8ddb-461a-bbee-02f9e1bf7b46'
 API_CALL_RETRIES = 200
 DEFAULT_REQUEST_TIMEOUT = 10  # seconds
-RELEASE_DATE_WINDOWS = 'release12-03-21'
-RELEASE_DATE_LINUX = 'release12-03-21'
+RELEASE_DATE_WINDOWS = 'release03-08-21'
+RELEASE_DATE_LINUX = 'release03-08-21'
 CSP_REFRESH_TIME = 300
 # URL constants
 CSP_Storage_Url = "https://k8sconnectcsp.blob.core.windows.net"
