@@ -124,7 +124,14 @@ def load_command_table(self, _):
 
     with self.command_group('vmware workload-network dns-service', vmware_sdk, client_factory=cf_vmware) as g:
         g.custom_command('list', 'workload_network_dns_services_list')
-        g.custom_command('show', 'workload_network_dns_services_get')
+        g.custom_show_command('show', 'workload_network_dns_services_get')
         g.custom_command('create', 'workload_network_dns_services_create')
         g.custom_command('update', 'workload_network_dns_services_update')
         g.custom_command('delete', 'workload_network_dns_services_delete')
+
+    with self.command_group('vmware workload-network dns-zone', vmware_sdk, client_factory=cf_vmware) as g:
+        g.custom_command('list', 'workload_network_dns_zone_list')
+        g.custom_show_command('show', 'workload_network_dns_zone_get')
+        g.custom_command('create', 'workload_network_dns_zone_create')
+        g.custom_command('update', 'workload_network_dns_zone_update')
+        g.custom_command('delete', 'workload_network_dns_zone_delete')

@@ -622,3 +622,54 @@ helps['vmware workload-network dns-service delete'] = """
     - name: Delete a DNS service by id in a workload network.
       text: az vmware workload-network dns-service delete --resource-group group1 --private-cloud cloud1 --dns-service-id dnsService1
 """
+
+helps['vmware workload-network dns-zone'] = """
+    type: group
+    short-summary: Commands to manage a DNS Zone workload-network.
+"""
+
+# list_dns_zones
+# get_dns_zone
+# begin_create_dns_zone
+# begin_update_dns_zone
+# begin_delete_dns_zone
+
+helps['vmware workload-network dns-zone list'] = """
+    type: command
+    short-summary: List of DNS zones in a private cloud workload network.
+    examples:
+    - name: List of DNS zones in a workload network.
+      text: az vmware workload-network dns-zone list --resource-group group1 --private-cloud cloud1
+"""
+
+helps['vmware workload-network dns-zone show'] = """
+    type: command
+    short-summary: Get a DNS zone by id in a private cloud workload network.
+    examples:
+    - name: Get a DNS zone by id in a workload network.
+      text: az vmware workload-network dns-zone show --resource-group group1 --private-cloud cloud1 --dns-zone-id dnsZone1
+"""
+
+helps['vmware workload-network dns-zone create'] = """
+    type: command
+    short-summary: Create a DNS zone by id in a private cloud workload network.
+    examples:
+    - name: Create a DNS zone by id in a workload network.
+      text: az vmware workload-network dns-zone create --resource-group group1 --private-cloud cloud1 --dns-zone-id dnsZone1 --display-name dnsZone1 --domain domain1 --dns-server-ips 1.1.1.1 --source-ip 8.8.8.8 --dns-services 1 --revision 1
+"""
+
+helps['vmware workload-network dns-zone update'] = """
+    type: command
+    short-summary: Create or update a DNS zone by id in a private cloud workload network.
+    examples:
+    - name: Create or update a DNS zone by id in a workload network.
+      text: az vmware workload-network dns-zone update --resource-group group1 --private-cloud cloud1 --dns-zone-id dnsZone1 --display-name dnsZone1 --domain domain1 --dns-server-ips 1.1.1.1 --source-ip 8.8.8.8 --dns-services 1 --revision 1
+"""
+
+helps['vmware workload-network dns-zone delete'] = """
+    type: command
+    short-summary: Delete a DNS zone by id in a private cloud workload network.
+    examples:
+    - name: Delete a DNS zone by id in a workload network.
+      text: az vmware workload-network dns-zone delete --resource-group group1 --private-cloud cloud1 --dns-zone-id dnsZone1
+"""

@@ -157,3 +157,12 @@ def load_arguments(self, _):
         c.argument('fqdn_zones', nargs='+', help='FQDN zones of the DNS Service.')
         c.argument('log_level', arg_type=get_enum_type(["DEBUG", "INFO", "WARNING", "ERROR", "FATAL"]), help='DNS Service log level. Possible values include: "DEBUG", "INFO", "WARNING", "ERROR", "FATAL".')
         c.argument('revision', help='NSX revision number.')
+
+    with self.argument_context('vmware workload-network dns-zone') as c:
+        c.argument('dns_zone_id', help="NSX DNS Zone identifier. Generally the same as the DNS Zone's display name.")
+        c.argument('display_name', help='Display name of the DNS Zone.')
+        c.argument('domain', nargs='+', help='Domain names of the DNS Zone.')
+        c.argument('dns_server_ips', nargs='+', help='DNS Server IP array of the DNS Zone.')
+        c.argument('source_ip', help='Source IP of the DNS Zone.')
+        c.argument('dns_services', help='Number of DNS Services using the DNS zone.')
+        c.argument('revision', help='NSX revision number.')
