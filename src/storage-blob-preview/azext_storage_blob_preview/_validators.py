@@ -1308,4 +1308,7 @@ def validate_text_configuration(cmd, ns):
 
 def validate_blob_name_for_upload(namespace):
     if not namespace.blob_name:
-        namespace.blob_name = namespace.file_path.split('/')[-1].split('\\')[-1]
+        namespace.blob_name = os.path.basename(namespace.file_path)
+        if namespace.blob_name == '':
+            from azure.cli.core.azclierror import FileOperationError
+            raise FileOperationError('Directory passed as a file path.', recommendation='File is expected, not a directory.')
