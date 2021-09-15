@@ -23,6 +23,18 @@ def cf_virtual_hub_connection(cli_ctx, _):
     return network_client_factory(cli_ctx).hub_virtual_network_connections
 
 
+def cf_virtual_hub_bgpconnection(cli_ctx, _):
+    from azure.cli.core.commands.client_factory import get_mgmt_service_client
+    from .profiles import CUSTOM_VWAN_2021_02_01
+    return get_mgmt_service_client(cli_ctx, CUSTOM_VWAN_2021_02_01, api_version='2021-02-01').virtual_hub_bgp_connection
+
+
+def cf_virtual_hub_bgpconnections(cli_ctx, _):
+    from azure.cli.core.commands.client_factory import get_mgmt_service_client
+    from .profiles import CUSTOM_VWAN_2021_02_01
+    return get_mgmt_service_client(cli_ctx, CUSTOM_VWAN_2021_02_01, api_version='2021-02-01').virtual_hub_bgp_connections
+
+
 def cf_virtual_hub_route_table_v2s(cli_ctx, _):
     return network_client_factory(cli_ctx).virtual_hub_route_table_v2_s
 
