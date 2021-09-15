@@ -2,7 +2,7 @@
 
 ## 3.2.0
 
-- add `az vmware workload-network dhcp` command group
+- Add `az vmware workload-network dhcp` command group
 
 ## 3.1.0 (2021-08)
 

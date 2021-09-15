@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.7.1
+++++++++++++++++++
+* Fix DF resource manager endpoint check
+
 0.7.0
 ++++++++++++++++++
 * Enable identity by default for extensions
