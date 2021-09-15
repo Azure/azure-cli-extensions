@@ -7,11 +7,11 @@ import unittest
 
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 
-class VmwareDhcpScenarioTest(ScenarioTest):
+class VmwareWorkloadNetworkScenarioTest(ScenarioTest):
     def setUp(self):
         # https://vcrpy.readthedocs.io/en/latest/configuration.html#request-matching
         self.vcr.match_on = ['scheme', 'method', 'path', 'query']  # not 'host', 'port'
-        super(VmwareDhcpScenarioTest, self).setUp()
+        super(VmwareWorkloadNetworkScenarioTest, self).setUp()
 
     @ResourceGroupPreparer(name_prefix='cli_test_vmware_dhcp')
     def test_vmware_dhcp(self):
