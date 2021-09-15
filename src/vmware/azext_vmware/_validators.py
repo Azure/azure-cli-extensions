@@ -4,6 +4,8 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long
 
+from azure.cli.core.azclierror import InvalidArgumentValueError
+
 
 def example_name_or_id_validator(cmd, namespace):
     # Example of a storage account name or ID validator.
@@ -19,3 +21,9 @@ def example_name_or_id_validator(cmd, namespace):
                 type='storageAccounts',
                 name=namespace.storage_account
             )
+
+
+def server_addresses_length(namespace):
+    if isinstance(namespace.server_addresses, list):
+        if len(namespace.server_addresses) > 3:
+            raise InvalidArgumentValueError("Enter a maximum of 3 DHCP relay addresses")

@@ -492,3 +492,86 @@ helps['vmware script-execution delete'] = """
     - name: Delete a script execution.
       text: az vmware script-execution delete --resource-group group1 --private-cloud cloud1 --name addSsoServer
 """
+helps['vmware workload-network'] = """
+    type: group
+    short-summary: Commands to manage workload-networks in a private cloud.
+"""
+
+helps['vmware workload-network dhcp'] = """
+    type: group
+    short-summary: Commands to manage a DHCP (Data Host Configuration Protocol) workload-network.
+"""
+
+helps['vmware workload-network dhcp list'] = """
+    type: command
+    short-summary: List dhcp in a private cloud workload network.
+    examples:
+    - name: List dhcp in a workload network.
+      text: az vmware workload-network dhcp list --resource-group group1 --private-cloud cloud1
+"""
+
+helps['vmware workload-network dhcp show'] = """
+    type: command
+    short-summary: Get dhcp by id in a private cloud workload network.
+    examples:
+    - name: Get dhcp by id in a workload network.
+      text: az vmware workload-network dhcp show --resource-group group1 --private-cloud cloud1 --dhcp-id dhcp1
+"""
+
+helps['vmware workload-network dhcp relay'] = """
+    type: group
+    short-summary: Commands to manage a DHCP (Data Host Configuration Protocol) workload-network.
+"""
+
+helps['vmware workload-network dhcp relay create'] = """
+    type: command
+    short-summary: Create dhcp by id in a private cloud workload network.
+    examples:
+    - name: Create dhcp by id in a workload network.
+      text: az vmware workload-network dhcp relay create --resource-group group1 --private-cloud cloud1 --dhcp-id dhcp1 --display-name dhcpConfigurations1 --revision 1 --server-addresses 40.1.5.1/24
+"""
+
+helps['vmware workload-network dhcp relay delete'] = """
+    type: command
+    short-summary: Delete dhcp by id in a private cloud workload network.
+    examples:
+    - name: Delete dhcp by id in a workload network.
+      text: az vmware workload-network dhcp relay delete --resource-group group1 --private-cloud cloud1 --dhcp-id dhcp1
+"""
+
+helps['vmware workload-network dhcp relay update'] = """
+    type: command
+    short-summary: Create or update dhcp by id in a private cloud workload network.
+    examples:
+    - name: Create or update dhcp by id in a workload network.
+      text: az vmware workload-network dhcp relay update --resource-group group1 --private-cloud cloud1 --dhcp-id dhcp1 --display-name dhcpConfigurations1 --revision 1 --server-addresses 40.1.5.1/24
+"""
+
+helps['vmware workload-network dhcp server'] = """
+    type: group
+    short-summary: Commands to manage a DHCP (Data Host Configuration Protocol) workload-network.
+"""
+
+helps['vmware workload-network dhcp server create'] = """
+    type: command
+    short-summary: Create dhcp by id in a private cloud workload network.
+    examples:
+    - name: Create dhcp by id in a workload network.
+      text: az vmware workload-network dhcp server create --resource-group group1 --private-cloud cloud1 --dhcp-id dhcp1 --display-name dhcpConfigurations1 --revision 1 --server-address 40.1.5.1/24 --lease-time 86400
+"""
+
+helps['vmware workload-network dhcp server delete'] = """
+    type: command
+    short-summary: Delete dhcp by id in a private cloud workload network.
+    examples:
+    - name: Delete dhcp by id in a workload network.
+      text: az vmware workload-network dhcp server delete --resource-group group1 --private-cloud cloud1 --dhcp-id dhcp1
+"""
+
+helps['vmware workload-network dhcp server update'] = """
+    type: command
+    short-summary: Create or update dhcp by id in a private cloud workload network.
+    examples:
+    - name: Create or update dhcp by id in a workload network.
+      text: az vmware workload-network dhcp server update --resource-group group1 --private-cloud cloud1 --dhcp-id dhcp1 --display-name dhcpConfigurations1 --revision 1 --server-address 40.1.5.1/24 --lease-time 86400
+"""
