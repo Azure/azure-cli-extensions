@@ -150,21 +150,21 @@ def load_arguments(self, _):
         c.argument('server_addresses', nargs='+', validator=server_addresses_length, help='DHCP Relay Addresses. Max 3.')
 
     with self.argument_context('vmware workload-network dns-service') as c:
-        c.argument('dns_service_id', help="NSX DNS Service identifier. Generally the same as the DNS Service's display name.")
-        c.argument('display_name', help='Display name of the DNS Service.')
-        c.argument('dns_service_ip', help='DNS service IP of the DNS Service.')
-        c.argument('default_dns_zone', help='Default DNS zone of the DNS Service.')
-        c.argument('fqdn_zones', nargs='+', help='FQDN zones of the DNS Service.')
-        c.argument('log_level', arg_type=get_enum_type(["DEBUG", "INFO", "WARNING", "ERROR", "FATAL"]), help='DNS Service log level. Possible values include: "DEBUG", "INFO", "WARNING", "ERROR", "FATAL".')
+        c.argument('dns_service_id', help="NSX DNS service identifier. Generally the same as the DNS service's display name.")
+        c.argument('display_name', help='Display name of the DNS service.')
+        c.argument('dns_service_ip', help='DNS service IP of the DNS service.')
+        c.argument('default_dns_zone', help='Default DNS zone of the DNS service.')
+        c.argument('fqdn_zones', nargs='+', help='FQDN zones of the DNS service.')
+        c.argument('log_level', arg_type=get_enum_type(["DEBUG", "INFO", "WARNING", "ERROR", "FATAL"]), help='DNS service log level. Possible values include: "DEBUG", "INFO", "WARNING", "ERROR", "FATAL".')
         c.argument('revision', help='NSX revision number.')
 
     with self.argument_context('vmware workload-network dns-zone') as c:
-        c.argument('dns_zone_id', help="NSX DNS Zone identifier. Generally the same as the DNS Zone's display name.")
-        c.argument('display_name', help='Display name of the DNS Zone.')
-        c.argument('domain', nargs='+', help='Domain names of the DNS Zone.')
-        c.argument('dns_server_ips', nargs='+', help='DNS Server IP array of the DNS Zone.')
-        c.argument('source_ip', help='Source IP of the DNS Zone.')
-        c.argument('dns_services', help='Number of DNS Services using the DNS zone.')
+        c.argument('dns_zone_id', help="NSX DNS zone identifier. Generally the same as the DNS zone's display name.")
+        c.argument('display_name', help='Display name of the DNS zone.')
+        c.argument('domain', nargs='+', help='Domain names of the DNS zone.')
+        c.argument('dns_server_ips', nargs='+', help='DNS Server IP array of the DNS zone.')
+        c.argument('source_ip', help='Source IP of the DNS zone.')
+        c.argument('dns_services', help='Number of DNS services using the DNS zone.')
         c.argument('revision', help='NSX revision number.')
 
     with self.argument_context('vmware workload-network port-mirroring') as c:
