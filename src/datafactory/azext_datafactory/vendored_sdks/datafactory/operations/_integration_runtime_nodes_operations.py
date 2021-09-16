@@ -29,7 +29,7 @@ class IntegrationRuntimeNodesOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~data_factory_management_client.models
+    :type models: ~azure.mgmt.datafactory.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -65,7 +65,7 @@ class IntegrationRuntimeNodesOperations(object):
         :type node_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: SelfHostedIntegrationRuntimeNode, or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.SelfHostedIntegrationRuntimeNode
+        :rtype: ~azure.mgmt.datafactory.models.SelfHostedIntegrationRuntimeNode
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.SelfHostedIntegrationRuntimeNode"]
@@ -197,10 +197,10 @@ class IntegrationRuntimeNodesOperations(object):
         :type node_name: str
         :param update_integration_runtime_node_request: The parameters for updating an integration
          runtime node.
-        :type update_integration_runtime_node_request: ~data_factory_management_client.models.UpdateIntegrationRuntimeNodeRequest
+        :type update_integration_runtime_node_request: ~azure.mgmt.datafactory.models.UpdateIntegrationRuntimeNodeRequest
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: SelfHostedIntegrationRuntimeNode, or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.SelfHostedIntegrationRuntimeNode
+        :rtype: ~azure.mgmt.datafactory.models.SelfHostedIntegrationRuntimeNode
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.SelfHostedIntegrationRuntimeNode"]
@@ -272,7 +272,7 @@ class IntegrationRuntimeNodesOperations(object):
         :type node_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: IntegrationRuntimeNodeIpAddress, or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.IntegrationRuntimeNodeIpAddress
+        :rtype: ~azure.mgmt.datafactory.models.IntegrationRuntimeNodeIpAddress
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationRuntimeNodeIpAddress"]

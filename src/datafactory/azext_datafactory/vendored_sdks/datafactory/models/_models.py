@@ -13,7 +13,7 @@ class AccessPolicyResponse(msrest.serialization.Model):
     """Get Data Plane read only token response definition.
 
     :param policy: The user access policy.
-    :type policy: ~data_factory_management_client.models.UserAccessPolicy
+    :type policy: ~azure.mgmt.datafactory.models.UserAccessPolicy
     :param access_token: Data Plane read only access token.
     :type access_token: str
     :param data_plane_url: Data Plane service base URL.
@@ -54,9 +54,9 @@ class Activity(msrest.serialization.Model):
     :param description: Activity description.
     :type description: str
     :param depends_on: Activity depends on condition.
-    :type depends_on: list[~data_factory_management_client.models.ActivityDependency]
+    :type depends_on: list[~azure.mgmt.datafactory.models.ActivityDependency]
     :param user_properties: Activity user properties.
-    :type user_properties: list[~data_factory_management_client.models.UserProperty]
+    :type user_properties: list[~azure.mgmt.datafactory.models.UserProperty]
     """
 
     _validation = {
@@ -101,8 +101,7 @@ class ActivityDependency(msrest.serialization.Model):
     :param activity: Required. Activity name.
     :type activity: str
     :param dependency_conditions: Required. Match-Condition for the dependency.
-    :type dependency_conditions: list[str or
-     ~data_factory_management_client.models.DependencyCondition]
+    :type dependency_conditions: list[str or ~azure.mgmt.datafactory.models.DependencyCondition]
     """
 
     _validation = {
@@ -272,7 +271,7 @@ class ActivityRunsQueryResponse(msrest.serialization.Model):
     All required parameters must be populated in order to send to Azure.
 
     :param value: Required. List of activity runs.
-    :type value: list[~data_factory_management_client.models.ActivityRun]
+    :type value: list[~azure.mgmt.datafactory.models.ActivityRun]
     :param continuation_token: The continuation token for getting the next page of results, if any
      remaining results exist, null otherwise.
     :type continuation_token: str
@@ -352,11 +351,11 @@ class LinkedService(msrest.serialization.Model):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     """
@@ -402,11 +401,11 @@ class AmazonMwsLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param endpoint: Required. The endpoint of the Amazon MWS server, (i.e.
@@ -419,11 +418,11 @@ class AmazonMwsLinkedService(LinkedService):
     :param seller_id: Required. The Amazon seller ID.
     :type seller_id: object
     :param mws_auth_token: The Amazon MWS authentication token.
-    :type mws_auth_token: ~data_factory_management_client.models.SecretBase
+    :type mws_auth_token: ~azure.mgmt.datafactory.models.SecretBase
     :param access_key_id: Required. The access key id used to access data.
     :type access_key_id: object
     :param secret_key: The secret key used to access data.
-    :type secret_key: ~data_factory_management_client.models.SecretBase
+    :type secret_key: ~azure.mgmt.datafactory.models.SecretBase
     :param use_encrypted_endpoints: Specifies whether the data source endpoints are encrypted using
      HTTPS. The default value is true.
     :type use_encrypted_endpoints: object
@@ -507,14 +506,14 @@ class Dataset(msrest.serialization.Model):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     """
 
     _validation = {
@@ -573,14 +572,14 @@ class AmazonMwsObjectDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param table_name: The table name. Type: string (or Expression with resultType string).
     :type table_name: object
     """
@@ -634,6 +633,9 @@ class CopySource(msrest.serialization.Model):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     """
 
     _validation = {
@@ -646,6 +648,7 @@ class CopySource(msrest.serialization.Model):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
     }
 
     _subtype_map = {
@@ -662,6 +665,7 @@ class CopySource(msrest.serialization.Model):
         self.source_retry_count = kwargs.get('source_retry_count', None)
         self.source_retry_wait = kwargs.get('source_retry_wait', None)
         self.max_concurrent_connections = kwargs.get('max_concurrent_connections', None)
+        self.disable_metrics_collection = kwargs.get('disable_metrics_collection', None)
 
 
 class TabularSource(CopySource):
@@ -686,12 +690,15 @@ class TabularSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     """
 
     _validation = {
@@ -704,8 +711,9 @@ class TabularSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
     }
 
     _subtype_map = {
@@ -741,12 +749,15 @@ class AmazonMwsSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: object
@@ -762,8 +773,9 @@ class AmazonMwsSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
     }
 
@@ -787,11 +799,11 @@ class AmazonRedshiftLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param server: Required. The name of the Amazon Redshift server. Type: string (or Expression
@@ -801,7 +813,7 @@ class AmazonRedshiftLinkedService(LinkedService):
      resultType string).
     :type username: object
     :param password: The password of the Amazon Redshift source.
-    :type password: ~data_factory_management_client.models.SecretBase
+    :type password: ~azure.mgmt.datafactory.models.SecretBase
     :param database: Required. The database name of the Amazon Redshift source. Type: string (or
      Expression with resultType string).
     :type database: object
@@ -868,18 +880,21 @@ class AmazonRedshiftSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     :param query: Database query. Type: string (or Expression with resultType string).
     :type query: object
     :param redshift_unload_settings: The Amazon S3 settings needed for the interim Amazon S3 when
      copying from Amazon Redshift with unload. With this, data from Amazon Redshift source will be
      unloaded into S3 first and then copied into the targeted sink from the interim S3.
-    :type redshift_unload_settings: ~data_factory_management_client.models.RedshiftUnloadSettings
+    :type redshift_unload_settings: ~azure.mgmt.datafactory.models.RedshiftUnloadSettings
     """
 
     _validation = {
@@ -892,8 +907,9 @@ class AmazonRedshiftSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
         'redshift_unload_settings': {'key': 'redshiftUnloadSettings', 'type': 'RedshiftUnloadSettings'},
     }
@@ -927,14 +943,14 @@ class AmazonRedshiftTableDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param table_name: This property will be retired. Please consider using schema + table
      properties instead.
     :type table_name: object
@@ -988,11 +1004,11 @@ class AmazonS3CompatibleLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param access_key_id: The access key identifier of the Amazon S3 Compatible Identity and Access
@@ -1000,7 +1016,7 @@ class AmazonS3CompatibleLinkedService(LinkedService):
     :type access_key_id: object
     :param secret_access_key: The secret access key of the Amazon S3 Compatible Identity and Access
      Management (IAM) user.
-    :type secret_access_key: ~data_factory_management_client.models.SecretBase
+    :type secret_access_key: ~azure.mgmt.datafactory.models.SecretBase
     :param service_url: This value specifies the endpoint to access with the Amazon S3 Compatible
      Connector. This is an optional property; change it only if you want to try a different service
      endpoint or want to switch between https and http. Type: string (or Expression with resultType
@@ -1156,6 +1172,9 @@ class StoreReadSettings(msrest.serialization.Model):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     """
 
     _validation = {
@@ -1166,6 +1185,7 @@ class StoreReadSettings(msrest.serialization.Model):
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
     }
 
     _subtype_map = {
@@ -1180,6 +1200,7 @@ class StoreReadSettings(msrest.serialization.Model):
         self.additional_properties = kwargs.get('additional_properties', None)
         self.type = 'StoreReadSettings'  # type: str
         self.max_concurrent_connections = kwargs.get('max_concurrent_connections', None)
+        self.disable_metrics_collection = kwargs.get('disable_metrics_collection', None)
 
 
 class AmazonS3CompatibleReadSettings(StoreReadSettings):
@@ -1195,6 +1216,9 @@ class AmazonS3CompatibleReadSettings(StoreReadSettings):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param recursive: If true, files under the folder path will be read recursively. Default is
      true. Type: boolean (or Expression with resultType boolean).
     :type recursive: object
@@ -1235,6 +1259,7 @@ class AmazonS3CompatibleReadSettings(StoreReadSettings):
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'recursive': {'key': 'recursive', 'type': 'object'},
         'wildcard_folder_path': {'key': 'wildcardFolderPath', 'type': 'object'},
         'wildcard_file_name': {'key': 'wildcardFileName', 'type': 'object'},
@@ -1284,14 +1309,14 @@ class AmazonS3Dataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param bucket_name: Required. The name of the Amazon S3 bucket. Type: string (or Expression
      with resultType string).
     :type bucket_name: object
@@ -1311,9 +1336,9 @@ class AmazonS3Dataset(Dataset):
      Expression with resultType string).
     :type modified_datetime_end: object
     :param format: The format of files.
-    :type format: ~data_factory_management_client.models.DatasetStorageFormat
+    :type format: ~azure.mgmt.datafactory.models.DatasetStorageFormat
     :param compression: The data compression method used for the Amazon S3 object.
-    :type compression: ~data_factory_management_client.models.DatasetCompression
+    :type compression: ~azure.mgmt.datafactory.models.DatasetCompression
     """
 
     _validation = {
@@ -1369,11 +1394,11 @@ class AmazonS3LinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param authentication_type: The authentication type of S3. Allowed value: AccessKey (default)
@@ -1384,13 +1409,13 @@ class AmazonS3LinkedService(LinkedService):
     :type access_key_id: object
     :param secret_access_key: The secret access key of the Amazon S3 Identity and Access Management
      (IAM) user.
-    :type secret_access_key: ~data_factory_management_client.models.SecretBase
+    :type secret_access_key: ~azure.mgmt.datafactory.models.SecretBase
     :param service_url: This value specifies the endpoint to access with the S3 Connector. This is
      an optional property; change it only if you want to try a different service endpoint or want to
      switch between https and http. Type: string (or Expression with resultType string).
     :type service_url: object
     :param session_token: The session token for the S3 temporary security credential.
-    :type session_token: ~data_factory_management_client.models.SecretBase
+    :type session_token: ~azure.mgmt.datafactory.models.SecretBase
     :param encrypted_credential: The encrypted credential used for authentication. Credentials are
      encrypted using the integration runtime credential manager. Type: string (or Expression with
      resultType string).
@@ -1490,6 +1515,9 @@ class AmazonS3ReadSettings(StoreReadSettings):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param recursive: If true, files under the folder path will be read recursively. Default is
      true. Type: boolean (or Expression with resultType boolean).
     :type recursive: object
@@ -1530,6 +1558,7 @@ class AmazonS3ReadSettings(StoreReadSettings):
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'recursive': {'key': 'recursive', 'type': 'object'},
         'wildcard_folder_path': {'key': 'wildcardFolderPath', 'type': 'object'},
         'wildcard_file_name': {'key': 'wildcardFileName', 'type': 'object'},
@@ -1575,9 +1604,9 @@ class AppendVariableActivity(Activity):
     :param description: Activity description.
     :type description: str
     :param depends_on: Activity depends on condition.
-    :type depends_on: list[~data_factory_management_client.models.ActivityDependency]
+    :type depends_on: list[~azure.mgmt.datafactory.models.ActivityDependency]
     :param user_properties: Activity user properties.
-    :type user_properties: list[~data_factory_management_client.models.UserProperty]
+    :type user_properties: list[~azure.mgmt.datafactory.models.UserProperty]
     :param variable_name: Name of the variable whose value needs to be appended to.
     :type variable_name: str
     :param value: Value to be appended. Could be a static value or Expression.
@@ -1654,20 +1683,19 @@ class AvroDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param location: The location of the avro storage.
-    :type location: ~data_factory_management_client.models.DatasetLocation
-    :param avro_compression_codec:  Possible values include: "none", "deflate", "snappy", "xz",
-     "bzip2".
-    :type avro_compression_codec: str or
-     ~data_factory_management_client.models.AvroCompressionCodec
+    :type location: ~azure.mgmt.datafactory.models.DatasetLocation
+    :param avro_compression_codec: The data avroCompressionCodec. Type: string (or Expression with
+     resultType string).
+    :type avro_compression_codec: object
     :param avro_compression_level:
     :type avro_compression_level: int
     """
@@ -1689,7 +1717,7 @@ class AvroDataset(Dataset):
         'annotations': {'key': 'annotations', 'type': '[object]'},
         'folder': {'key': 'folder', 'type': 'DatasetFolder'},
         'location': {'key': 'typeProperties.location', 'type': 'DatasetLocation'},
-        'avro_compression_codec': {'key': 'typeProperties.avroCompressionCodec', 'type': 'str'},
+        'avro_compression_codec': {'key': 'typeProperties.avroCompressionCodec', 'type': 'object'},
         'avro_compression_level': {'key': 'typeProperties.avroCompressionLevel', 'type': 'int'},
     }
 
@@ -1788,7 +1816,7 @@ class CopySink(msrest.serialization.Model):
     """A copy activity sink.
 
     You probably want to use the sub-classes and not this class directly. Known
-    sub-classes are: AvroSink, AzureBlobFsSink, AzureDataExplorerSink, AzureDataLakeStoreSink, AzureDatabricksDeltaLakeSink, AzureMySqlSink, AzurePostgreSqlSink, AzureQueueSink, AzureSearchIndexSink, AzureSqlSink, AzureTableSink, BinarySink, BlobSink, CommonDataServiceForAppsSink, CosmosDbMongoDbApiSink, CosmosDbSqlApiSink, DelimitedTextSink, DocumentDbCollectionSink, DynamicsCrmSink, DynamicsSink, FileSystemSink, InformixSink, JsonSink, MicrosoftAccessSink, OdbcSink, OracleSink, OrcSink, ParquetSink, RestSink, SalesforceServiceCloudSink, SalesforceSink, SapCloudForCustomerSink, SnowflakeSink, SqlDwSink, SqlMiSink, SqlServerSink, SqlSink.
+    sub-classes are: AvroSink, AzureBlobFsSink, AzureDataExplorerSink, AzureDataLakeStoreSink, AzureDatabricksDeltaLakeSink, AzureMySqlSink, AzurePostgreSqlSink, AzureQueueSink, AzureSearchIndexSink, AzureSqlSink, AzureTableSink, BinarySink, BlobSink, CommonDataServiceForAppsSink, CosmosDbMongoDbApiSink, CosmosDbSqlApiSink, DelimitedTextSink, DocumentDbCollectionSink, DynamicsCrmSink, DynamicsSink, FileSystemSink, InformixSink, JsonSink, MicrosoftAccessSink, MongoDbAtlasSink, MongoDbV2Sink, OdbcSink, OracleSink, OrcSink, ParquetSink, RestSink, SalesforceServiceCloudSink, SalesforceSink, SapCloudForCustomerSink, SnowflakeSink, SqlDwSink, SqlMiSink, SqlServerSink, SqlSink.
 
     All required parameters must be populated in order to send to Azure.
 
@@ -1812,6 +1840,9 @@ class CopySink(msrest.serialization.Model):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     """
 
     _validation = {
@@ -1826,10 +1857,11 @@ class CopySink(msrest.serialization.Model):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
     }
 
     _subtype_map = {
-        'type': {'AvroSink': 'AvroSink', 'AzureBlobFSSink': 'AzureBlobFsSink', 'AzureDataExplorerSink': 'AzureDataExplorerSink', 'AzureDataLakeStoreSink': 'AzureDataLakeStoreSink', 'AzureDatabricksDeltaLakeSink': 'AzureDatabricksDeltaLakeSink', 'AzureMySqlSink': 'AzureMySqlSink', 'AzurePostgreSqlSink': 'AzurePostgreSqlSink', 'AzureQueueSink': 'AzureQueueSink', 'AzureSearchIndexSink': 'AzureSearchIndexSink', 'AzureSqlSink': 'AzureSqlSink', 'AzureTableSink': 'AzureTableSink', 'BinarySink': 'BinarySink', 'BlobSink': 'BlobSink', 'CommonDataServiceForAppsSink': 'CommonDataServiceForAppsSink', 'CosmosDbMongoDbApiSink': 'CosmosDbMongoDbApiSink', 'CosmosDbSqlApiSink': 'CosmosDbSqlApiSink', 'DelimitedTextSink': 'DelimitedTextSink', 'DocumentDbCollectionSink': 'DocumentDbCollectionSink', 'DynamicsCrmSink': 'DynamicsCrmSink', 'DynamicsSink': 'DynamicsSink', 'FileSystemSink': 'FileSystemSink', 'InformixSink': 'InformixSink', 'JsonSink': 'JsonSink', 'MicrosoftAccessSink': 'MicrosoftAccessSink', 'OdbcSink': 'OdbcSink', 'OracleSink': 'OracleSink', 'OrcSink': 'OrcSink', 'ParquetSink': 'ParquetSink', 'RestSink': 'RestSink', 'SalesforceServiceCloudSink': 'SalesforceServiceCloudSink', 'SalesforceSink': 'SalesforceSink', 'SapCloudForCustomerSink': 'SapCloudForCustomerSink', 'SnowflakeSink': 'SnowflakeSink', 'SqlDWSink': 'SqlDwSink', 'SqlMISink': 'SqlMiSink', 'SqlServerSink': 'SqlServerSink', 'SqlSink': 'SqlSink'}
+        'type': {'AvroSink': 'AvroSink', 'AzureBlobFSSink': 'AzureBlobFsSink', 'AzureDataExplorerSink': 'AzureDataExplorerSink', 'AzureDataLakeStoreSink': 'AzureDataLakeStoreSink', 'AzureDatabricksDeltaLakeSink': 'AzureDatabricksDeltaLakeSink', 'AzureMySqlSink': 'AzureMySqlSink', 'AzurePostgreSqlSink': 'AzurePostgreSqlSink', 'AzureQueueSink': 'AzureQueueSink', 'AzureSearchIndexSink': 'AzureSearchIndexSink', 'AzureSqlSink': 'AzureSqlSink', 'AzureTableSink': 'AzureTableSink', 'BinarySink': 'BinarySink', 'BlobSink': 'BlobSink', 'CommonDataServiceForAppsSink': 'CommonDataServiceForAppsSink', 'CosmosDbMongoDbApiSink': 'CosmosDbMongoDbApiSink', 'CosmosDbSqlApiSink': 'CosmosDbSqlApiSink', 'DelimitedTextSink': 'DelimitedTextSink', 'DocumentDbCollectionSink': 'DocumentDbCollectionSink', 'DynamicsCrmSink': 'DynamicsCrmSink', 'DynamicsSink': 'DynamicsSink', 'FileSystemSink': 'FileSystemSink', 'InformixSink': 'InformixSink', 'JsonSink': 'JsonSink', 'MicrosoftAccessSink': 'MicrosoftAccessSink', 'MongoDbAtlasSink': 'MongoDbAtlasSink', 'MongoDbV2Sink': 'MongoDbV2Sink', 'OdbcSink': 'OdbcSink', 'OracleSink': 'OracleSink', 'OrcSink': 'OrcSink', 'ParquetSink': 'ParquetSink', 'RestSink': 'RestSink', 'SalesforceServiceCloudSink': 'SalesforceServiceCloudSink', 'SalesforceSink': 'SalesforceSink', 'SapCloudForCustomerSink': 'SapCloudForCustomerSink', 'SnowflakeSink': 'SnowflakeSink', 'SqlDWSink': 'SqlDwSink', 'SqlMISink': 'SqlMiSink', 'SqlServerSink': 'SqlServerSink', 'SqlSink': 'SqlSink'}
     }
 
     def __init__(
@@ -1844,6 +1876,7 @@ class CopySink(msrest.serialization.Model):
         self.sink_retry_count = kwargs.get('sink_retry_count', None)
         self.sink_retry_wait = kwargs.get('sink_retry_wait', None)
         self.max_concurrent_connections = kwargs.get('max_concurrent_connections', None)
+        self.disable_metrics_collection = kwargs.get('disable_metrics_collection', None)
 
 
 class AvroSink(CopySink):
@@ -1871,10 +1904,13 @@ class AvroSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param store_settings: Avro store settings.
-    :type store_settings: ~data_factory_management_client.models.StoreWriteSettings
+    :type store_settings: ~azure.mgmt.datafactory.models.StoreWriteSettings
     :param format_settings: Avro format settings.
-    :type format_settings: ~data_factory_management_client.models.AvroWriteSettings
+    :type format_settings: ~azure.mgmt.datafactory.models.AvroWriteSettings
     """
 
     _validation = {
@@ -1889,6 +1925,7 @@ class AvroSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'store_settings': {'key': 'storeSettings', 'type': 'StoreWriteSettings'},
         'format_settings': {'key': 'formatSettings', 'type': 'AvroWriteSettings'},
     }
@@ -1922,11 +1959,14 @@ class AvroSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param store_settings: Avro store settings.
-    :type store_settings: ~data_factory_management_client.models.StoreReadSettings
+    :type store_settings: ~azure.mgmt.datafactory.models.StoreReadSettings
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     """
 
     _validation = {
@@ -1939,8 +1979,9 @@ class AvroSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'store_settings': {'key': 'storeSettings', 'type': 'StoreReadSettings'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
     }
 
     def __init__(
@@ -2111,18 +2152,18 @@ class AzureBatchLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param account_name: Required. The Azure Batch account name. Type: string (or Expression with
      resultType string).
     :type account_name: object
     :param access_key: The Azure Batch account access key.
-    :type access_key: ~data_factory_management_client.models.SecretBase
+    :type access_key: ~azure.mgmt.datafactory.models.SecretBase
     :param batch_uri: Required. The Azure Batch URI. Type: string (or Expression with resultType
      string).
     :type batch_uri: object
@@ -2130,11 +2171,13 @@ class AzureBatchLinkedService(LinkedService):
      resultType string).
     :type pool_name: object
     :param linked_service_name: Required. The Azure Storage linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param encrypted_credential: The encrypted credential used for authentication. Credentials are
      encrypted using the integration runtime credential manager. Type: string (or Expression with
      resultType string).
     :type encrypted_credential: object
+    :param credential: The credential reference containing authentication information.
+    :type credential: ~azure.mgmt.datafactory.models.CredentialReference
     """
 
     _validation = {
@@ -2158,6 +2201,7 @@ class AzureBatchLinkedService(LinkedService):
         'pool_name': {'key': 'typeProperties.poolName', 'type': 'object'},
         'linked_service_name': {'key': 'typeProperties.linkedServiceName', 'type': 'LinkedServiceReference'},
         'encrypted_credential': {'key': 'typeProperties.encryptedCredential', 'type': 'object'},
+        'credential': {'key': 'typeProperties.credential', 'type': 'CredentialReference'},
     }
 
     def __init__(
@@ -2172,6 +2216,7 @@ class AzureBatchLinkedService(LinkedService):
         self.pool_name = kwargs['pool_name']
         self.linked_service_name = kwargs['linked_service_name']
         self.encrypted_credential = kwargs.get('encrypted_credential', None)
+        self.credential = kwargs.get('credential', None)
 
 
 class AzureBlobDataset(Dataset):
@@ -2193,14 +2238,14 @@ class AzureBlobDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param folder_path: The path of the Azure Blob storage. Type: string (or Expression with
      resultType string).
     :type folder_path: object
@@ -2217,9 +2262,9 @@ class AzureBlobDataset(Dataset):
      Expression with resultType string).
     :type modified_datetime_end: object
     :param format: The format of the Azure Blob storage.
-    :type format: ~data_factory_management_client.models.DatasetStorageFormat
+    :type format: ~azure.mgmt.datafactory.models.DatasetStorageFormat
     :param compression: The data compression method used for the blob storage.
-    :type compression: ~data_factory_management_client.models.DatasetCompression
+    :type compression: ~azure.mgmt.datafactory.models.DatasetCompression
     """
 
     _validation = {
@@ -2280,14 +2325,14 @@ class AzureBlobFsDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param folder_path: The path of the Azure Data Lake Storage Gen2 storage. Type: string (or
      Expression with resultType string).
     :type folder_path: object
@@ -2295,9 +2340,9 @@ class AzureBlobFsDataset(Dataset):
      with resultType string).
     :type file_name: object
     :param format: The format of the Azure Data Lake Storage Gen2 storage.
-    :type format: ~data_factory_management_client.models.DatasetStorageFormat
+    :type format: ~azure.mgmt.datafactory.models.DatasetStorageFormat
     :param compression: The data compression method used for the blob storage.
-    :type compression: ~data_factory_management_client.models.DatasetCompression
+    :type compression: ~azure.mgmt.datafactory.models.DatasetCompression
     """
 
     _validation = {
@@ -2344,11 +2389,11 @@ class AzureBlobFsLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param url: Required. Endpoint for the Azure Data Lake Storage Gen2 service. Type: string (or
@@ -2362,7 +2407,7 @@ class AzureBlobFsLinkedService(LinkedService):
     :type service_principal_id: object
     :param service_principal_key: The Key of the application used to authenticate against the Azure
      Data Lake Storage Gen2 account.
-    :type service_principal_key: ~data_factory_management_client.models.SecretBase
+    :type service_principal_key: ~azure.mgmt.datafactory.models.SecretBase
     :param tenant: The name or ID of the tenant to which the service principal belongs. Type:
      string (or Expression with resultType string).
     :type tenant: object
@@ -2374,6 +2419,8 @@ class AzureBlobFsLinkedService(LinkedService):
      encrypted using the integration runtime credential manager. Type: string (or Expression with
      resultType string).
     :type encrypted_credential: object
+    :param credential: The credential reference containing authentication information.
+    :type credential: ~azure.mgmt.datafactory.models.CredentialReference
     """
 
     _validation = {
@@ -2395,6 +2442,7 @@ class AzureBlobFsLinkedService(LinkedService):
         'tenant': {'key': 'typeProperties.tenant', 'type': 'object'},
         'azure_cloud_type': {'key': 'typeProperties.azureCloudType', 'type': 'object'},
         'encrypted_credential': {'key': 'typeProperties.encryptedCredential', 'type': 'object'},
+        'credential': {'key': 'typeProperties.credential', 'type': 'CredentialReference'},
     }
 
     def __init__(
@@ -2410,6 +2458,7 @@ class AzureBlobFsLinkedService(LinkedService):
         self.tenant = kwargs.get('tenant', None)
         self.azure_cloud_type = kwargs.get('azure_cloud_type', None)
         self.encrypted_credential = kwargs.get('encrypted_credential', None)
+        self.credential = kwargs.get('credential', None)
 
 
 class AzureBlobFsLocation(DatasetLocation):
@@ -2467,6 +2516,9 @@ class AzureBlobFsReadSettings(StoreReadSettings):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param recursive: If true, files under the folder path will be read recursively. Default is
      true. Type: boolean (or Expression with resultType boolean).
     :type recursive: object
@@ -2504,6 +2556,7 @@ class AzureBlobFsReadSettings(StoreReadSettings):
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'recursive': {'key': 'recursive', 'type': 'object'},
         'wildcard_folder_path': {'key': 'wildcardFolderPath', 'type': 'object'},
         'wildcard_file_name': {'key': 'wildcardFileName', 'type': 'object'},
@@ -2557,8 +2610,14 @@ class AzureBlobFsSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param copy_behavior: The type of copy behavior for copy sink.
     :type copy_behavior: object
+    :param metadata: Specify the custom metadata to be added to sink data. Type: array of objects
+     (or Expression with resultType array of objects).
+    :type metadata: list[~azure.mgmt.datafactory.models.MetadataItem]
     """
 
     _validation = {
@@ -2573,7 +2632,9 @@ class AzureBlobFsSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'copy_behavior': {'key': 'copyBehavior', 'type': 'object'},
+        'metadata': {'key': 'metadata', 'type': '[MetadataItem]'},
     }
 
     def __init__(
@@ -2583,6 +2644,7 @@ class AzureBlobFsSink(CopySink):
         super(AzureBlobFsSink, self).__init__(**kwargs)
         self.type = 'AzureBlobFSSink'  # type: str
         self.copy_behavior = kwargs.get('copy_behavior', None)
+        self.metadata = kwargs.get('metadata', None)
 
 
 class AzureBlobFsSource(CopySource):
@@ -2604,6 +2666,9 @@ class AzureBlobFsSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param treat_empty_as_null: Treat empty as null. Type: boolean (or Expression with resultType
      boolean).
     :type treat_empty_as_null: object
@@ -2625,6 +2690,7 @@ class AzureBlobFsSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'treat_empty_as_null': {'key': 'treatEmptyAsNull', 'type': 'object'},
         'skip_header_line_count': {'key': 'skipHeaderLineCount', 'type': 'object'},
         'recursive': {'key': 'recursive', 'type': 'object'},
@@ -2657,6 +2723,9 @@ class StoreWriteSettings(msrest.serialization.Model):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param copy_behavior: The type of copy behavior for copy sink.
     :type copy_behavior: object
     """
@@ -2669,6 +2738,7 @@ class StoreWriteSettings(msrest.serialization.Model):
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'copy_behavior': {'key': 'copyBehavior', 'type': 'object'},
     }
 
@@ -2684,6 +2754,7 @@ class StoreWriteSettings(msrest.serialization.Model):
         self.additional_properties = kwargs.get('additional_properties', None)
         self.type = 'StoreWriteSettings'  # type: str
         self.max_concurrent_connections = kwargs.get('max_concurrent_connections', None)
+        self.disable_metrics_collection = kwargs.get('disable_metrics_collection', None)
         self.copy_behavior = kwargs.get('copy_behavior', None)
 
 
@@ -2700,6 +2771,9 @@ class AzureBlobFsWriteSettings(StoreWriteSettings):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param copy_behavior: The type of copy behavior for copy sink.
     :type copy_behavior: object
     :param block_size_in_mb: Indicates the block size(MB) when writing data to blob. Type: integer
@@ -2715,6 +2789,7 @@ class AzureBlobFsWriteSettings(StoreWriteSettings):
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'copy_behavior': {'key': 'copyBehavior', 'type': 'object'},
         'block_size_in_mb': {'key': 'blockSizeInMB', 'type': 'object'},
     }
@@ -2739,24 +2814,24 @@ class AzureBlobStorageLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param connection_string: The connection string. It is mutually exclusive with sasUri,
      serviceEndpoint property. Type: string, SecureString or AzureKeyVaultSecretReference.
     :type connection_string: object
     :param account_key: The Azure key vault secret reference of accountKey in connection string.
-    :type account_key: ~data_factory_management_client.models.AzureKeyVaultSecretReference
+    :type account_key: ~azure.mgmt.datafactory.models.AzureKeyVaultSecretReference
     :param sas_uri: SAS URI of the Azure Blob Storage resource. It is mutually exclusive with
      connectionString, serviceEndpoint property. Type: string, SecureString or
      AzureKeyVaultSecretReference.
     :type sas_uri: object
     :param sas_token: The Azure key vault secret reference of sasToken in sas uri.
-    :type sas_token: ~data_factory_management_client.models.AzureKeyVaultSecretReference
+    :type sas_token: ~azure.mgmt.datafactory.models.AzureKeyVaultSecretReference
     :param service_endpoint: Blob service endpoint of the Azure Blob Storage resource. It is
      mutually exclusive with connectionString, sasUri property.
     :type service_endpoint: str
@@ -2765,7 +2840,7 @@ class AzureBlobStorageLinkedService(LinkedService):
     :type service_principal_id: object
     :param service_principal_key: The key of the service principal used to authenticate against
      Azure SQL Data Warehouse.
-    :type service_principal_key: ~data_factory_management_client.models.SecretBase
+    :type service_principal_key: ~azure.mgmt.datafactory.models.SecretBase
     :param tenant: The name or ID of the tenant to which the service principal belongs. Type:
      string (or Expression with resultType string).
     :type tenant: object
@@ -2781,6 +2856,8 @@ class AzureBlobStorageLinkedService(LinkedService):
      encrypted using the integration runtime credential manager. Type: string (or Expression with
      resultType string).
     :type encrypted_credential: str
+    :param credential: The credential reference containing authentication information.
+    :type credential: ~azure.mgmt.datafactory.models.CredentialReference
     """
 
     _validation = {
@@ -2805,6 +2882,7 @@ class AzureBlobStorageLinkedService(LinkedService):
         'azure_cloud_type': {'key': 'typeProperties.azureCloudType', 'type': 'object'},
         'account_kind': {'key': 'typeProperties.accountKind', 'type': 'str'},
         'encrypted_credential': {'key': 'typeProperties.encryptedCredential', 'type': 'str'},
+        'credential': {'key': 'typeProperties.credential', 'type': 'CredentialReference'},
     }
 
     def __init__(
@@ -2824,6 +2902,7 @@ class AzureBlobStorageLinkedService(LinkedService):
         self.azure_cloud_type = kwargs.get('azure_cloud_type', None)
         self.account_kind = kwargs.get('account_kind', None)
         self.encrypted_credential = kwargs.get('encrypted_credential', None)
+        self.credential = kwargs.get('credential', None)
 
 
 class AzureBlobStorageLocation(DatasetLocation):
@@ -2881,6 +2960,9 @@ class AzureBlobStorageReadSettings(StoreReadSettings):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param recursive: If true, files under the folder path will be read recursively. Default is
      true. Type: boolean (or Expression with resultType boolean).
     :type recursive: object
@@ -2921,6 +3003,7 @@ class AzureBlobStorageReadSettings(StoreReadSettings):
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'recursive': {'key': 'recursive', 'type': 'object'},
         'wildcard_folder_path': {'key': 'wildcardFolderPath', 'type': 'object'},
         'wildcard_file_name': {'key': 'wildcardFileName', 'type': 'object'},
@@ -2964,6 +3047,9 @@ class AzureBlobStorageWriteSettings(StoreWriteSettings):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param copy_behavior: The type of copy behavior for copy sink.
     :type copy_behavior: object
     :param block_size_in_mb: Indicates the block size(MB) when writing data to blob. Type: integer
@@ -2979,6 +3065,7 @@ class AzureBlobStorageWriteSettings(StoreWriteSettings):
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'copy_behavior': {'key': 'copyBehavior', 'type': 'object'},
         'block_size_in_mb': {'key': 'blockSizeInMB', 'type': 'object'},
     }
@@ -3011,14 +3098,14 @@ class AzureDatabricksDeltaLakeDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param table: The name of delta table. Type: string (or Expression with resultType string).
     :type table: object
     :param database: The database name of delta table. Type: string (or Expression with resultType
@@ -3218,11 +3305,11 @@ class AzureDatabricksDeltaLakeLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param domain: Required. :code:`<REGION>`.azuredatabricks.net, domain name of your Databricks
@@ -3231,7 +3318,7 @@ class AzureDatabricksDeltaLakeLinkedService(LinkedService):
     :param access_token: Access token for databricks REST API. Refer to
      https://docs.azuredatabricks.net/api/latest/authentication.html. Type: string, SecureString or
      AzureKeyVaultSecretReference.
-    :type access_token: ~data_factory_management_client.models.SecretBase
+    :type access_token: ~azure.mgmt.datafactory.models.SecretBase
     :param cluster_id: The id of an existing interactive cluster that will be used for all runs of
      this job. Type: string (or Expression with resultType string).
     :type cluster_id: object
@@ -3296,12 +3383,14 @@ class AzureDatabricksDeltaLakeSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param pre_copy_script: SQL pre-copy script. Type: string (or Expression with resultType
      string).
     :type pre_copy_script: object
     :param import_settings: Azure Databricks Delta Lake import settings.
-    :type import_settings:
-     ~data_factory_management_client.models.AzureDatabricksDeltaLakeImportCommand
+    :type import_settings: ~azure.mgmt.datafactory.models.AzureDatabricksDeltaLakeImportCommand
     """
 
     _validation = {
@@ -3316,6 +3405,7 @@ class AzureDatabricksDeltaLakeSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'pre_copy_script': {'key': 'preCopyScript', 'type': 'object'},
         'import_settings': {'key': 'importSettings', 'type': 'AzureDatabricksDeltaLakeImportCommand'},
     }
@@ -3349,12 +3439,14 @@ class AzureDatabricksDeltaLakeSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query: Azure Databricks Delta Lake Sql query. Type: string (or Expression with
      resultType string).
     :type query: object
     :param export_settings: Azure Databricks Delta Lake export settings.
-    :type export_settings:
-     ~data_factory_management_client.models.AzureDatabricksDeltaLakeExportCommand
+    :type export_settings: ~azure.mgmt.datafactory.models.AzureDatabricksDeltaLakeExportCommand
     """
 
     _validation = {
@@ -3367,6 +3459,7 @@ class AzureDatabricksDeltaLakeSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
         'export_settings': {'key': 'exportSettings', 'type': 'AzureDatabricksDeltaLakeExportCommand'},
     }
@@ -3392,11 +3485,11 @@ class AzureDatabricksLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param domain: Required. :code:`<REGION>`.azuredatabricks.net, domain name of your Databricks
@@ -3405,7 +3498,7 @@ class AzureDatabricksLinkedService(LinkedService):
     :param access_token: Access token for databricks REST API. Refer to
      https://docs.azuredatabricks.net/api/latest/authentication.html. Type: string (or Expression
      with resultType string).
-    :type access_token: ~data_factory_management_client.models.SecretBase
+    :type access_token: ~azure.mgmt.datafactory.models.SecretBase
     :param authentication: Required to specify MSI, if using Workspace resource id for databricks
      REST API. Type: string (or Expression with resultType string).
     :type authentication: object
@@ -3464,6 +3557,8 @@ class AzureDatabricksLinkedService(LinkedService):
     :param policy_id: The policy id for limiting the ability to configure clusters based on a user
      defined set of rules. Type: string (or Expression with resultType string).
     :type policy_id: object
+    :param credential: The credential reference containing authentication information.
+    :type credential: ~azure.mgmt.datafactory.models.CredentialReference
     """
 
     _validation = {
@@ -3496,6 +3591,7 @@ class AzureDatabricksLinkedService(LinkedService):
         'new_cluster_enable_elastic_disk': {'key': 'typeProperties.newClusterEnableElasticDisk', 'type': 'object'},
         'encrypted_credential': {'key': 'typeProperties.encryptedCredential', 'type': 'object'},
         'policy_id': {'key': 'typeProperties.policyId', 'type': 'object'},
+        'credential': {'key': 'typeProperties.credential', 'type': 'CredentialReference'},
     }
 
     def __init__(
@@ -3522,6 +3618,7 @@ class AzureDatabricksLinkedService(LinkedService):
         self.new_cluster_enable_elastic_disk = kwargs.get('new_cluster_enable_elastic_disk', None)
         self.encrypted_credential = kwargs.get('encrypted_credential', None)
         self.policy_id = kwargs.get('policy_id', None)
+        self.credential = kwargs.get('credential', None)
 
 
 class ExecutionActivity(Activity):
@@ -3542,13 +3639,13 @@ class ExecutionActivity(Activity):
     :param description: Activity description.
     :type description: str
     :param depends_on: Activity depends on condition.
-    :type depends_on: list[~data_factory_management_client.models.ActivityDependency]
+    :type depends_on: list[~azure.mgmt.datafactory.models.ActivityDependency]
     :param user_properties: Activity user properties.
-    :type user_properties: list[~data_factory_management_client.models.UserProperty]
+    :type user_properties: list[~azure.mgmt.datafactory.models.UserProperty]
     :param linked_service_name: Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param policy: Activity policy.
-    :type policy: ~data_factory_management_client.models.ActivityPolicy
+    :type policy: ~azure.mgmt.datafactory.models.ActivityPolicy
     """
 
     _validation = {
@@ -3596,13 +3693,13 @@ class AzureDataExplorerCommandActivity(ExecutionActivity):
     :param description: Activity description.
     :type description: str
     :param depends_on: Activity depends on condition.
-    :type depends_on: list[~data_factory_management_client.models.ActivityDependency]
+    :type depends_on: list[~azure.mgmt.datafactory.models.ActivityDependency]
     :param user_properties: Activity user properties.
-    :type user_properties: list[~data_factory_management_client.models.UserProperty]
+    :type user_properties: list[~azure.mgmt.datafactory.models.UserProperty]
     :param linked_service_name: Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param policy: Activity policy.
-    :type policy: ~data_factory_management_client.models.ActivityPolicy
+    :type policy: ~azure.mgmt.datafactory.models.ActivityPolicy
     :param command: Required. A control command, according to the Azure Data Explorer command
      syntax. Type: string (or Expression with resultType string).
     :type command: object
@@ -3651,11 +3748,11 @@ class AzureDataExplorerLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param endpoint: Required. The endpoint of Azure Data Explorer (the engine's endpoint). URL
@@ -3667,13 +3764,15 @@ class AzureDataExplorerLinkedService(LinkedService):
     :type service_principal_id: object
     :param service_principal_key: The key of the service principal used to authenticate against
      Kusto.
-    :type service_principal_key: ~data_factory_management_client.models.SecretBase
+    :type service_principal_key: ~azure.mgmt.datafactory.models.SecretBase
     :param database: Required. Database name for connection. Type: string (or Expression with
      resultType string).
     :type database: object
     :param tenant: The name or ID of the tenant to which the service principal belongs. Type:
      string (or Expression with resultType string).
     :type tenant: object
+    :param credential: The credential reference containing authentication information.
+    :type credential: ~azure.mgmt.datafactory.models.CredentialReference
     """
 
     _validation = {
@@ -3694,6 +3793,7 @@ class AzureDataExplorerLinkedService(LinkedService):
         'service_principal_key': {'key': 'typeProperties.servicePrincipalKey', 'type': 'SecretBase'},
         'database': {'key': 'typeProperties.database', 'type': 'object'},
         'tenant': {'key': 'typeProperties.tenant', 'type': 'object'},
+        'credential': {'key': 'typeProperties.credential', 'type': 'CredentialReference'},
     }
 
     def __init__(
@@ -3707,6 +3807,7 @@ class AzureDataExplorerLinkedService(LinkedService):
         self.service_principal_key = kwargs.get('service_principal_key', None)
         self.database = kwargs['database']
         self.tenant = kwargs.get('tenant', None)
+        self.credential = kwargs.get('credential', None)
 
 
 class AzureDataExplorerSink(CopySink):
@@ -3734,6 +3835,9 @@ class AzureDataExplorerSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param ingestion_mapping_name: A name of a pre-created csv mapping that was defined on the
      target Kusto table. Type: string.
     :type ingestion_mapping_name: object
@@ -3757,6 +3861,7 @@ class AzureDataExplorerSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'ingestion_mapping_name': {'key': 'ingestionMappingName', 'type': 'object'},
         'ingestion_mapping_as_json': {'key': 'ingestionMappingAsJson', 'type': 'object'},
         'flush_immediately': {'key': 'flushImmediately', 'type': 'object'},
@@ -3792,6 +3897,9 @@ class AzureDataExplorerSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query: Required. Database query. Should be a Kusto Query Language (KQL) query. Type:
      string (or Expression with resultType string).
     :type query: object
@@ -3802,8 +3910,8 @@ class AzureDataExplorerSource(CopySource):
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9]))..
     :type query_timeout: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     """
 
     _validation = {
@@ -3817,10 +3925,11 @@ class AzureDataExplorerSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
         'no_truncation': {'key': 'noTruncation', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
     }
 
     def __init__(
@@ -3854,14 +3963,14 @@ class AzureDataExplorerTableDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param table: The table name of the Azure Data Explorer database. Type: string (or Expression
      with resultType string).
     :type table: object
@@ -3905,11 +4014,11 @@ class AzureDataLakeAnalyticsLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param account_name: Required. The Azure Data Lake Analytics account name. Type: string (or
@@ -3920,7 +4029,7 @@ class AzureDataLakeAnalyticsLinkedService(LinkedService):
     :type service_principal_id: object
     :param service_principal_key: The Key of the application used to authenticate against the Azure
      Data Lake Analytics account.
-    :type service_principal_key: ~data_factory_management_client.models.SecretBase
+    :type service_principal_key: ~azure.mgmt.datafactory.models.SecretBase
     :param tenant: Required. The name or ID of the tenant to which the service principal belongs.
      Type: string (or Expression with resultType string).
     :type tenant: object
@@ -3997,14 +4106,14 @@ class AzureDataLakeStoreDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param folder_path: Path to the folder in the Azure Data Lake Store. Type: string (or
      Expression with resultType string).
     :type folder_path: object
@@ -4012,10 +4121,10 @@ class AzureDataLakeStoreDataset(Dataset):
      Expression with resultType string).
     :type file_name: object
     :param format: The format of the Data Lake Store.
-    :type format: ~data_factory_management_client.models.DatasetStorageFormat
+    :type format: ~azure.mgmt.datafactory.models.DatasetStorageFormat
     :param compression: The data compression method used for the item(s) in the Azure Data Lake
      Store.
-    :type compression: ~data_factory_management_client.models.DatasetCompression
+    :type compression: ~azure.mgmt.datafactory.models.DatasetCompression
     """
 
     _validation = {
@@ -4062,11 +4171,11 @@ class AzureDataLakeStoreLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param data_lake_store_uri: Required. Data Lake Store service URI. Type: string (or Expression
@@ -4077,7 +4186,7 @@ class AzureDataLakeStoreLinkedService(LinkedService):
     :type service_principal_id: object
     :param service_principal_key: The Key of the application used to authenticate against the Azure
      Data Lake Store account.
-    :type service_principal_key: ~data_factory_management_client.models.SecretBase
+    :type service_principal_key: ~azure.mgmt.datafactory.models.SecretBase
     :param tenant: The name or ID of the tenant to which the service principal belongs. Type:
      string (or Expression with resultType string).
     :type tenant: object
@@ -4098,6 +4207,8 @@ class AzureDataLakeStoreLinkedService(LinkedService):
      encrypted using the integration runtime credential manager. Type: string (or Expression with
      resultType string).
     :type encrypted_credential: object
+    :param credential: The credential reference containing authentication information.
+    :type credential: ~azure.mgmt.datafactory.models.CredentialReference
     """
 
     _validation = {
@@ -4121,6 +4232,7 @@ class AzureDataLakeStoreLinkedService(LinkedService):
         'subscription_id': {'key': 'typeProperties.subscriptionId', 'type': 'object'},
         'resource_group_name': {'key': 'typeProperties.resourceGroupName', 'type': 'object'},
         'encrypted_credential': {'key': 'typeProperties.encryptedCredential', 'type': 'object'},
+        'credential': {'key': 'typeProperties.credential', 'type': 'CredentialReference'},
     }
 
     def __init__(
@@ -4138,6 +4250,7 @@ class AzureDataLakeStoreLinkedService(LinkedService):
         self.subscription_id = kwargs.get('subscription_id', None)
         self.resource_group_name = kwargs.get('resource_group_name', None)
         self.encrypted_credential = kwargs.get('encrypted_credential', None)
+        self.credential = kwargs.get('credential', None)
 
 
 class AzureDataLakeStoreLocation(DatasetLocation):
@@ -4190,6 +4303,9 @@ class AzureDataLakeStoreReadSettings(StoreReadSettings):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param recursive: If true, files under the folder path will be read recursively. Default is
      true. Type: boolean (or Expression with resultType boolean).
     :type recursive: object
@@ -4235,6 +4351,7 @@ class AzureDataLakeStoreReadSettings(StoreReadSettings):
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'recursive': {'key': 'recursive', 'type': 'object'},
         'wildcard_folder_path': {'key': 'wildcardFolderPath', 'type': 'object'},
         'wildcard_file_name': {'key': 'wildcardFileName', 'type': 'object'},
@@ -4292,6 +4409,9 @@ class AzureDataLakeStoreSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param copy_behavior: The type of copy behavior for copy sink.
     :type copy_behavior: object
     :param enable_adls_single_file_parallel: Single File Parallel.
@@ -4310,6 +4430,7 @@ class AzureDataLakeStoreSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'copy_behavior': {'key': 'copyBehavior', 'type': 'object'},
         'enable_adls_single_file_parallel': {'key': 'enableAdlsSingleFileParallel', 'type': 'object'},
     }
@@ -4343,6 +4464,9 @@ class AzureDataLakeStoreSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param recursive: If true, files under the folder path will be read recursively. Default is
      true. Type: boolean (or Expression with resultType boolean).
     :type recursive: object
@@ -4358,6 +4482,7 @@ class AzureDataLakeStoreSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'recursive': {'key': 'recursive', 'type': 'object'},
     }
 
@@ -4383,6 +4508,9 @@ class AzureDataLakeStoreWriteSettings(StoreWriteSettings):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param copy_behavior: The type of copy behavior for copy sink.
     :type copy_behavior: object
     :param expiry_date_time: Specifies the expiry time of the written files. The time is applied to
@@ -4399,6 +4527,7 @@ class AzureDataLakeStoreWriteSettings(StoreWriteSettings):
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'copy_behavior': {'key': 'copyBehavior', 'type': 'object'},
         'expiry_date_time': {'key': 'expiryDateTime', 'type': 'object'},
     }
@@ -4423,11 +4552,11 @@ class AzureFileStorageLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param host: Host name of the server. Type: string (or Expression with resultType string).
@@ -4436,17 +4565,17 @@ class AzureFileStorageLinkedService(LinkedService):
      string).
     :type user_id: object
     :param password: Password to logon the server.
-    :type password: ~data_factory_management_client.models.SecretBase
+    :type password: ~azure.mgmt.datafactory.models.SecretBase
     :param connection_string: The connection string. It is mutually exclusive with sasUri property.
      Type: string, SecureString or AzureKeyVaultSecretReference.
     :type connection_string: object
     :param account_key: The Azure key vault secret reference of accountKey in connection string.
-    :type account_key: ~data_factory_management_client.models.AzureKeyVaultSecretReference
+    :type account_key: ~azure.mgmt.datafactory.models.AzureKeyVaultSecretReference
     :param sas_uri: SAS URI of the Azure File resource. It is mutually exclusive with
      connectionString property. Type: string, SecureString or AzureKeyVaultSecretReference.
     :type sas_uri: object
     :param sas_token: The Azure key vault secret reference of sasToken in sas uri.
-    :type sas_token: ~data_factory_management_client.models.AzureKeyVaultSecretReference
+    :type sas_token: ~azure.mgmt.datafactory.models.AzureKeyVaultSecretReference
     :param file_share: The azure file share name. It is required when auth with
      accountKey/sasToken. Type: string (or Expression with resultType string).
     :type file_share: object
@@ -4550,6 +4679,9 @@ class AzureFileStorageReadSettings(StoreReadSettings):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param recursive: If true, files under the folder path will be read recursively. Default is
      true. Type: boolean (or Expression with resultType boolean).
     :type recursive: object
@@ -4590,6 +4722,7 @@ class AzureFileStorageReadSettings(StoreReadSettings):
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'recursive': {'key': 'recursive', 'type': 'object'},
         'wildcard_folder_path': {'key': 'wildcardFolderPath', 'type': 'object'},
         'wildcard_file_name': {'key': 'wildcardFileName', 'type': 'object'},
@@ -4633,6 +4766,9 @@ class AzureFileStorageWriteSettings(StoreWriteSettings):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param copy_behavior: The type of copy behavior for copy sink.
     :type copy_behavior: object
     """
@@ -4645,6 +4781,7 @@ class AzureFileStorageWriteSettings(StoreWriteSettings):
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'copy_behavior': {'key': 'copyBehavior', 'type': 'object'},
     }
 
@@ -4671,16 +4808,16 @@ class AzureFunctionActivity(ExecutionActivity):
     :param description: Activity description.
     :type description: str
     :param depends_on: Activity depends on condition.
-    :type depends_on: list[~data_factory_management_client.models.ActivityDependency]
+    :type depends_on: list[~azure.mgmt.datafactory.models.ActivityDependency]
     :param user_properties: Activity user properties.
-    :type user_properties: list[~data_factory_management_client.models.UserProperty]
+    :type user_properties: list[~azure.mgmt.datafactory.models.UserProperty]
     :param linked_service_name: Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param policy: Activity policy.
-    :type policy: ~data_factory_management_client.models.ActivityPolicy
+    :type policy: ~azure.mgmt.datafactory.models.ActivityPolicy
     :param method: Required. Rest API method for target endpoint. Possible values include: "GET",
      "POST", "PUT", "DELETE", "OPTIONS", "HEAD", "TRACE".
-    :type method: str or ~data_factory_management_client.models.AzureFunctionActivityMethod
+    :type method: str or ~azure.mgmt.datafactory.models.AzureFunctionActivityMethod
     :param function_name: Required. Name of the Function that the Azure Function Activity will
      call. Type: string (or Expression with resultType string).
     :type function_name: object
@@ -4738,22 +4875,29 @@ class AzureFunctionLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param function_app_url: Required. The endpoint of the Azure Function App. URL will be in the
      format https://:code:`<accountName>`.azurewebsites.net.
     :type function_app_url: object
     :param function_key: Function or Host key for Azure Function App.
-    :type function_key: ~data_factory_management_client.models.SecretBase
+    :type function_key: ~azure.mgmt.datafactory.models.SecretBase
     :param encrypted_credential: The encrypted credential used for authentication. Credentials are
      encrypted using the integration runtime credential manager. Type: string (or Expression with
      resultType string).
     :type encrypted_credential: object
+    :param credential: The credential reference containing authentication information.
+    :type credential: ~azure.mgmt.datafactory.models.CredentialReference
+    :param resource_id: Allowed token audiences for azure function.
+    :type resource_id: object
+    :param authentication: Type of authentication (Required to specify MSI) used to connect to
+     AzureFunction. Type: string (or Expression with resultType string).
+    :type authentication: object
     """
 
     _validation = {
@@ -4771,6 +4915,9 @@ class AzureFunctionLinkedService(LinkedService):
         'function_app_url': {'key': 'typeProperties.functionAppUrl', 'type': 'object'},
         'function_key': {'key': 'typeProperties.functionKey', 'type': 'SecretBase'},
         'encrypted_credential': {'key': 'typeProperties.encryptedCredential', 'type': 'object'},
+        'credential': {'key': 'typeProperties.credential', 'type': 'CredentialReference'},
+        'resource_id': {'key': 'typeProperties.resourceId', 'type': 'object'},
+        'authentication': {'key': 'typeProperties.authentication', 'type': 'object'},
     }
 
     def __init__(
@@ -4782,6 +4929,9 @@ class AzureFunctionLinkedService(LinkedService):
         self.function_app_url = kwargs['function_app_url']
         self.function_key = kwargs.get('function_key', None)
         self.encrypted_credential = kwargs.get('encrypted_credential', None)
+        self.credential = kwargs.get('credential', None)
+        self.resource_id = kwargs.get('resource_id', None)
+        self.authentication = kwargs.get('authentication', None)
 
 
 class AzureKeyVaultLinkedService(LinkedService):
@@ -4795,16 +4945,18 @@ class AzureKeyVaultLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param base_url: Required. The base URL of the Azure Key Vault. e.g.
      https://myakv.vault.azure.net Type: string (or Expression with resultType string).
     :type base_url: object
+    :param credential: The credential reference containing authentication information.
+    :type credential: ~azure.mgmt.datafactory.models.CredentialReference
     """
 
     _validation = {
@@ -4820,6 +4972,7 @@ class AzureKeyVaultLinkedService(LinkedService):
         'parameters': {'key': 'parameters', 'type': '{ParameterSpecification}'},
         'annotations': {'key': 'annotations', 'type': '[object]'},
         'base_url': {'key': 'typeProperties.baseUrl', 'type': 'object'},
+        'credential': {'key': 'typeProperties.credential', 'type': 'CredentialReference'},
     }
 
     def __init__(
@@ -4829,6 +4982,7 @@ class AzureKeyVaultLinkedService(LinkedService):
         super(AzureKeyVaultLinkedService, self).__init__(**kwargs)
         self.type = 'AzureKeyVault'  # type: str
         self.base_url = kwargs['base_url']
+        self.credential = kwargs.get('credential', None)
 
 
 class SecretBase(msrest.serialization.Model):
@@ -4871,7 +5025,7 @@ class AzureKeyVaultSecretReference(SecretBase):
     :param type: Required. Type of the secret.Constant filled by server.
     :type type: str
     :param store: Required. The Azure Key Vault linked service reference.
-    :type store: ~data_factory_management_client.models.LinkedServiceReference
+    :type store: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param secret_name: Required. The name of the secret in Azure Key Vault. Type: string (or
      Expression with resultType string).
     :type secret_name: object
@@ -4915,18 +5069,18 @@ class AzureMariaDbLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param connection_string: An ODBC connection string. Type: string, SecureString or
      AzureKeyVaultSecretReference.
     :type connection_string: object
     :param pwd: The Azure key vault secret reference of password in connection string.
-    :type pwd: ~data_factory_management_client.models.AzureKeyVaultSecretReference
+    :type pwd: ~azure.mgmt.datafactory.models.AzureKeyVaultSecretReference
     :param encrypted_credential: The encrypted credential used for authentication. Credentials are
      encrypted using the integration runtime credential manager. Type: string (or Expression with
      resultType string).
@@ -4979,12 +5133,15 @@ class AzureMariaDbSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: object
@@ -5000,8 +5157,9 @@ class AzureMariaDbSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
     }
 
@@ -5033,14 +5191,14 @@ class AzureMariaDbTableDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param table_name: The table name. Type: string (or Expression with resultType string).
     :type table_name: object
     """
@@ -5087,13 +5245,13 @@ class AzureMlBatchExecutionActivity(ExecutionActivity):
     :param description: Activity description.
     :type description: str
     :param depends_on: Activity depends on condition.
-    :type depends_on: list[~data_factory_management_client.models.ActivityDependency]
+    :type depends_on: list[~azure.mgmt.datafactory.models.ActivityDependency]
     :param user_properties: Activity user properties.
-    :type user_properties: list[~data_factory_management_client.models.UserProperty]
+    :type user_properties: list[~azure.mgmt.datafactory.models.UserProperty]
     :param linked_service_name: Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param policy: Activity policy.
-    :type policy: ~data_factory_management_client.models.ActivityPolicy
+    :type policy: ~azure.mgmt.datafactory.models.ActivityPolicy
     :param global_parameters: Key,Value pairs to be passed to the Azure ML Batch Execution Service
      endpoint. Keys must match the names of web service parameters defined in the published Azure ML
      web service. Values will be passed in the GlobalParameters property of the Azure ML batch
@@ -5103,14 +5261,12 @@ class AzureMlBatchExecutionActivity(ExecutionActivity):
      Service Outputs to AzureMLWebServiceFile objects specifying the output Blob locations. This
      information will be passed in the WebServiceOutputs property of the Azure ML batch execution
      request.
-    :type web_service_outputs: dict[str,
-     ~data_factory_management_client.models.AzureMlWebServiceFile]
+    :type web_service_outputs: dict[str, ~azure.mgmt.datafactory.models.AzureMlWebServiceFile]
     :param web_service_inputs: Key,Value pairs, mapping the names of Azure ML endpoint's Web
      Service Inputs to AzureMLWebServiceFile objects specifying the input Blob locations.. This
      information will be passed in the WebServiceInputs property of the Azure ML batch execution
      request.
-    :type web_service_inputs: dict[str,
-     ~data_factory_management_client.models.AzureMlWebServiceFile]
+    :type web_service_inputs: dict[str, ~azure.mgmt.datafactory.models.AzureMlWebServiceFile]
     """
 
     _validation = {
@@ -5158,13 +5314,13 @@ class AzureMlExecutePipelineActivity(ExecutionActivity):
     :param description: Activity description.
     :type description: str
     :param depends_on: Activity depends on condition.
-    :type depends_on: list[~data_factory_management_client.models.ActivityDependency]
+    :type depends_on: list[~azure.mgmt.datafactory.models.ActivityDependency]
     :param user_properties: Activity user properties.
-    :type user_properties: list[~data_factory_management_client.models.UserProperty]
+    :type user_properties: list[~azure.mgmt.datafactory.models.UserProperty]
     :param linked_service_name: Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param policy: Activity policy.
-    :type policy: ~data_factory_management_client.models.ActivityPolicy
+    :type policy: ~azure.mgmt.datafactory.models.ActivityPolicy
     :param ml_pipeline_id: ID of the published Azure ML pipeline. Type: string (or Expression with
      resultType string).
     :type ml_pipeline_id: object
@@ -5249,18 +5405,18 @@ class AzureMlLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param ml_endpoint: Required. The Batch Execution REST URL for an Azure ML Studio Web Service
      endpoint. Type: string (or Expression with resultType string).
     :type ml_endpoint: object
     :param api_key: Required. The API key for accessing the Azure ML model endpoint.
-    :type api_key: ~data_factory_management_client.models.SecretBase
+    :type api_key: ~azure.mgmt.datafactory.models.SecretBase
     :param update_resource_endpoint: The Update Resource REST URL for an Azure ML Studio Web
      Service endpoint. Type: string (or Expression with resultType string).
     :type update_resource_endpoint: object
@@ -5270,7 +5426,7 @@ class AzureMlLinkedService(LinkedService):
     :type service_principal_id: object
     :param service_principal_key: The key of the service principal used to authenticate against the
      ARM-based updateResourceEndpoint of an Azure ML Studio web service.
-    :type service_principal_key: ~data_factory_management_client.models.SecretBase
+    :type service_principal_key: ~azure.mgmt.datafactory.models.SecretBase
     :param tenant: The name or ID of the tenant to which the service principal belongs. Type:
      string (or Expression with resultType string).
     :type tenant: object
@@ -5278,6 +5434,9 @@ class AzureMlLinkedService(LinkedService):
      encrypted using the integration runtime credential manager. Type: string (or Expression with
      resultType string).
     :type encrypted_credential: object
+    :param authentication: Type of authentication (Required to specify MSI) used to connect to
+     AzureML. Type: string (or Expression with resultType string).
+    :type authentication: object
     """
 
     _validation = {
@@ -5300,6 +5459,7 @@ class AzureMlLinkedService(LinkedService):
         'service_principal_key': {'key': 'typeProperties.servicePrincipalKey', 'type': 'SecretBase'},
         'tenant': {'key': 'typeProperties.tenant', 'type': 'object'},
         'encrypted_credential': {'key': 'typeProperties.encryptedCredential', 'type': 'object'},
+        'authentication': {'key': 'typeProperties.authentication', 'type': 'object'},
     }
 
     def __init__(
@@ -5315,6 +5475,7 @@ class AzureMlLinkedService(LinkedService):
         self.service_principal_key = kwargs.get('service_principal_key', None)
         self.tenant = kwargs.get('tenant', None)
         self.encrypted_credential = kwargs.get('encrypted_credential', None)
+        self.authentication = kwargs.get('authentication', None)
 
 
 class AzureMlServiceLinkedService(LinkedService):
@@ -5328,11 +5489,11 @@ class AzureMlServiceLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param subscription_id: Required. Azure ML Service workspace subscription ID. Type: string (or
@@ -5350,7 +5511,7 @@ class AzureMlServiceLinkedService(LinkedService):
     :type service_principal_id: object
     :param service_principal_key: The key of the service principal used to authenticate against the
      endpoint of a published Azure ML Service pipeline.
-    :type service_principal_key: ~data_factory_management_client.models.SecretBase
+    :type service_principal_key: ~azure.mgmt.datafactory.models.SecretBase
     :param tenant: The name or ID of the tenant to which the service principal belongs. Type:
      string (or Expression with resultType string).
     :type tenant: object
@@ -5413,20 +5574,19 @@ class AzureMlUpdateResourceActivity(ExecutionActivity):
     :param description: Activity description.
     :type description: str
     :param depends_on: Activity depends on condition.
-    :type depends_on: list[~data_factory_management_client.models.ActivityDependency]
+    :type depends_on: list[~azure.mgmt.datafactory.models.ActivityDependency]
     :param user_properties: Activity user properties.
-    :type user_properties: list[~data_factory_management_client.models.UserProperty]
+    :type user_properties: list[~azure.mgmt.datafactory.models.UserProperty]
     :param linked_service_name: Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param policy: Activity policy.
-    :type policy: ~data_factory_management_client.models.ActivityPolicy
+    :type policy: ~azure.mgmt.datafactory.models.ActivityPolicy
     :param trained_model_name: Required. Name of the Trained Model module in the Web Service
      experiment to be updated. Type: string (or Expression with resultType string).
     :type trained_model_name: object
     :param trained_model_linked_service_name: Required. Name of Azure Storage linked service
      holding the .ilearner file that will be uploaded by the update operation.
-    :type trained_model_linked_service_name:
-     ~data_factory_management_client.models.LinkedServiceReference
+    :type trained_model_linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param trained_model_file_path: Required. The relative file path in trainedModelLinkedService
      to represent the .ilearner file that will be uploaded by the update operation.  Type: string
      (or Expression with resultType string).
@@ -5476,7 +5636,7 @@ class AzureMlWebServiceFile(msrest.serialization.Model):
     :type file_path: object
     :param linked_service_name: Required. Reference to an Azure Storage LinkedService, where Azure
      ML WebService Input/Output file located.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     """
 
     _validation = {
@@ -5509,18 +5669,18 @@ class AzureMySqlLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param connection_string: Required. The connection string. Type: string, SecureString or
      AzureKeyVaultSecretReference.
     :type connection_string: object
     :param password: The Azure key vault secret reference of password in connection string.
-    :type password: ~data_factory_management_client.models.AzureKeyVaultSecretReference
+    :type password: ~azure.mgmt.datafactory.models.AzureKeyVaultSecretReference
     :param encrypted_credential: The encrypted credential used for authentication. Credentials are
      encrypted using the integration runtime credential manager. Type: string (or Expression with
      resultType string).
@@ -5580,6 +5740,9 @@ class AzureMySqlSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param pre_copy_script: A query to execute before starting the copy. Type: string (or
      Expression with resultType string).
     :type pre_copy_script: object
@@ -5597,6 +5760,7 @@ class AzureMySqlSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'pre_copy_script': {'key': 'preCopyScript', 'type': 'object'},
     }
 
@@ -5628,12 +5792,15 @@ class AzureMySqlSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     :param query: Database query. Type: string (or Expression with resultType string).
     :type query: object
     """
@@ -5648,8 +5815,9 @@ class AzureMySqlSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
     }
 
@@ -5681,14 +5849,14 @@ class AzureMySqlTableDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param table_name: The Azure MySQL database table name. Type: string (or Expression with
      resultType string).
     :type table_name: object
@@ -5737,18 +5905,18 @@ class AzurePostgreSqlLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param connection_string: An ODBC connection string. Type: string, SecureString or
      AzureKeyVaultSecretReference.
     :type connection_string: object
     :param password: The Azure key vault secret reference of password in connection string.
-    :type password: ~data_factory_management_client.models.AzureKeyVaultSecretReference
+    :type password: ~azure.mgmt.datafactory.models.AzureKeyVaultSecretReference
     :param encrypted_credential: The encrypted credential used for authentication. Credentials are
      encrypted using the integration runtime credential manager. Type: string (or Expression with
      resultType string).
@@ -5807,6 +5975,9 @@ class AzurePostgreSqlSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param pre_copy_script: A query to execute before starting the copy. Type: string (or
      Expression with resultType string).
     :type pre_copy_script: object
@@ -5824,6 +5995,7 @@ class AzurePostgreSqlSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'pre_copy_script': {'key': 'preCopyScript', 'type': 'object'},
     }
 
@@ -5855,12 +6027,15 @@ class AzurePostgreSqlSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: object
@@ -5876,8 +6051,9 @@ class AzurePostgreSqlSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
     }
 
@@ -5909,14 +6085,14 @@ class AzurePostgreSqlTableDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param table_name: The table name of the Azure PostgreSQL database which includes both schema
      and table. Type: string (or Expression with resultType string).
     :type table_name: object
@@ -5984,6 +6160,9 @@ class AzureQueueSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     """
 
     _validation = {
@@ -5998,6 +6177,7 @@ class AzureQueueSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
     }
 
     def __init__(
@@ -6027,14 +6207,14 @@ class AzureSearchIndexDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param index_name: Required. The name of the Azure Search Index. Type: string (or Expression
      with resultType string).
     :type index_name: object
@@ -6093,10 +6273,12 @@ class AzureSearchIndexSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param write_behavior: Specify the write behavior when upserting documents into Azure Search
      Index. Possible values include: "Merge", "Upload".
-    :type write_behavior: str or
-     ~data_factory_management_client.models.AzureSearchIndexWriteBehaviorType
+    :type write_behavior: str or ~azure.mgmt.datafactory.models.AzureSearchIndexWriteBehaviorType
     """
 
     _validation = {
@@ -6111,6 +6293,7 @@ class AzureSearchIndexSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'write_behavior': {'key': 'writeBehavior', 'type': 'str'},
     }
 
@@ -6134,18 +6317,18 @@ class AzureSearchLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param url: Required. URL for Azure Search service. Type: string (or Expression with resultType
      string).
     :type url: object
     :param key: Admin Key for Azure Search service.
-    :type key: ~data_factory_management_client.models.SecretBase
+    :type key: ~azure.mgmt.datafactory.models.SecretBase
     :param encrypted_credential: The encrypted credential used for authentication. Credentials are
      encrypted using the integration runtime credential manager. Type: string (or Expression with
      resultType string).
@@ -6191,24 +6374,24 @@ class AzureSqlDatabaseLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param connection_string: Required. The connection string. Type: string, SecureString or
      AzureKeyVaultSecretReference.
     :type connection_string: object
     :param password: The Azure key vault secret reference of password in connection string.
-    :type password: ~data_factory_management_client.models.AzureKeyVaultSecretReference
+    :type password: ~azure.mgmt.datafactory.models.AzureKeyVaultSecretReference
     :param service_principal_id: The ID of the service principal used to authenticate against Azure
      SQL Database. Type: string (or Expression with resultType string).
     :type service_principal_id: object
     :param service_principal_key: The key of the service principal used to authenticate against
      Azure SQL Database.
-    :type service_principal_key: ~data_factory_management_client.models.SecretBase
+    :type service_principal_key: ~azure.mgmt.datafactory.models.SecretBase
     :param tenant: The name or ID of the tenant to which the service principal belongs. Type:
      string (or Expression with resultType string).
     :type tenant: object
@@ -6221,8 +6404,9 @@ class AzureSqlDatabaseLinkedService(LinkedService):
      resultType string).
     :type encrypted_credential: object
     :param always_encrypted_settings: Sql always encrypted properties.
-    :type always_encrypted_settings:
-     ~data_factory_management_client.models.SqlAlwaysEncryptedProperties
+    :type always_encrypted_settings: ~azure.mgmt.datafactory.models.SqlAlwaysEncryptedProperties
+    :param credential: The credential reference containing authentication information.
+    :type credential: ~azure.mgmt.datafactory.models.CredentialReference
     """
 
     _validation = {
@@ -6245,6 +6429,7 @@ class AzureSqlDatabaseLinkedService(LinkedService):
         'azure_cloud_type': {'key': 'typeProperties.azureCloudType', 'type': 'object'},
         'encrypted_credential': {'key': 'typeProperties.encryptedCredential', 'type': 'object'},
         'always_encrypted_settings': {'key': 'typeProperties.alwaysEncryptedSettings', 'type': 'SqlAlwaysEncryptedProperties'},
+        'credential': {'key': 'typeProperties.credential', 'type': 'CredentialReference'},
     }
 
     def __init__(
@@ -6261,6 +6446,7 @@ class AzureSqlDatabaseLinkedService(LinkedService):
         self.azure_cloud_type = kwargs.get('azure_cloud_type', None)
         self.encrypted_credential = kwargs.get('encrypted_credential', None)
         self.always_encrypted_settings = kwargs.get('always_encrypted_settings', None)
+        self.credential = kwargs.get('credential', None)
 
 
 class AzureSqlDwLinkedService(LinkedService):
@@ -6274,24 +6460,24 @@ class AzureSqlDwLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param connection_string: Required. The connection string. Type: string, SecureString or
      AzureKeyVaultSecretReference. Type: string, SecureString or AzureKeyVaultSecretReference.
     :type connection_string: object
     :param password: The Azure key vault secret reference of password in connection string.
-    :type password: ~data_factory_management_client.models.AzureKeyVaultSecretReference
+    :type password: ~azure.mgmt.datafactory.models.AzureKeyVaultSecretReference
     :param service_principal_id: The ID of the service principal used to authenticate against Azure
      SQL Data Warehouse. Type: string (or Expression with resultType string).
     :type service_principal_id: object
     :param service_principal_key: The key of the service principal used to authenticate against
      Azure SQL Data Warehouse.
-    :type service_principal_key: ~data_factory_management_client.models.SecretBase
+    :type service_principal_key: ~azure.mgmt.datafactory.models.SecretBase
     :param tenant: The name or ID of the tenant to which the service principal belongs. Type:
      string (or Expression with resultType string).
     :type tenant: object
@@ -6303,6 +6489,8 @@ class AzureSqlDwLinkedService(LinkedService):
      encrypted using the integration runtime credential manager. Type: string (or Expression with
      resultType string).
     :type encrypted_credential: object
+    :param credential: The credential reference containing authentication information.
+    :type credential: ~azure.mgmt.datafactory.models.CredentialReference
     """
 
     _validation = {
@@ -6324,6 +6512,7 @@ class AzureSqlDwLinkedService(LinkedService):
         'tenant': {'key': 'typeProperties.tenant', 'type': 'object'},
         'azure_cloud_type': {'key': 'typeProperties.azureCloudType', 'type': 'object'},
         'encrypted_credential': {'key': 'typeProperties.encryptedCredential', 'type': 'object'},
+        'credential': {'key': 'typeProperties.credential', 'type': 'CredentialReference'},
     }
 
     def __init__(
@@ -6339,6 +6528,7 @@ class AzureSqlDwLinkedService(LinkedService):
         self.tenant = kwargs.get('tenant', None)
         self.azure_cloud_type = kwargs.get('azure_cloud_type', None)
         self.encrypted_credential = kwargs.get('encrypted_credential', None)
+        self.credential = kwargs.get('credential', None)
 
 
 class AzureSqlDwTableDataset(Dataset):
@@ -6360,14 +6550,14 @@ class AzureSqlDwTableDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param table_name: This property will be retired. Please consider using schema + table
      properties instead.
     :type table_name: object
@@ -6421,24 +6611,24 @@ class AzureSqlMiLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param connection_string: Required. The connection string. Type: string, SecureString or
      AzureKeyVaultSecretReference.
     :type connection_string: object
     :param password: The Azure key vault secret reference of password in connection string.
-    :type password: ~data_factory_management_client.models.AzureKeyVaultSecretReference
+    :type password: ~azure.mgmt.datafactory.models.AzureKeyVaultSecretReference
     :param service_principal_id: The ID of the service principal used to authenticate against Azure
      SQL Managed Instance. Type: string (or Expression with resultType string).
     :type service_principal_id: object
     :param service_principal_key: The key of the service principal used to authenticate against
      Azure SQL Managed Instance.
-    :type service_principal_key: ~data_factory_management_client.models.SecretBase
+    :type service_principal_key: ~azure.mgmt.datafactory.models.SecretBase
     :param tenant: The name or ID of the tenant to which the service principal belongs. Type:
      string (or Expression with resultType string).
     :type tenant: object
@@ -6451,8 +6641,9 @@ class AzureSqlMiLinkedService(LinkedService):
      resultType string).
     :type encrypted_credential: object
     :param always_encrypted_settings: Sql always encrypted properties.
-    :type always_encrypted_settings:
-     ~data_factory_management_client.models.SqlAlwaysEncryptedProperties
+    :type always_encrypted_settings: ~azure.mgmt.datafactory.models.SqlAlwaysEncryptedProperties
+    :param credential: The credential reference containing authentication information.
+    :type credential: ~azure.mgmt.datafactory.models.CredentialReference
     """
 
     _validation = {
@@ -6475,6 +6666,7 @@ class AzureSqlMiLinkedService(LinkedService):
         'azure_cloud_type': {'key': 'typeProperties.azureCloudType', 'type': 'object'},
         'encrypted_credential': {'key': 'typeProperties.encryptedCredential', 'type': 'object'},
         'always_encrypted_settings': {'key': 'typeProperties.alwaysEncryptedSettings', 'type': 'SqlAlwaysEncryptedProperties'},
+        'credential': {'key': 'typeProperties.credential', 'type': 'CredentialReference'},
     }
 
     def __init__(
@@ -6491,6 +6683,7 @@ class AzureSqlMiLinkedService(LinkedService):
         self.azure_cloud_type = kwargs.get('azure_cloud_type', None)
         self.encrypted_credential = kwargs.get('encrypted_credential', None)
         self.always_encrypted_settings = kwargs.get('always_encrypted_settings', None)
+        self.credential = kwargs.get('credential', None)
 
 
 class AzureSqlMiTableDataset(Dataset):
@@ -6512,14 +6705,14 @@ class AzureSqlMiTableDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param table_name: This property will be retired. Please consider using schema + table
      properties instead.
     :type table_name: object
@@ -6587,6 +6780,9 @@ class AzureSqlSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param sql_writer_stored_procedure_name: SQL writer stored procedure name. Type: string (or
      Expression with resultType string).
     :type sql_writer_stored_procedure_name: object
@@ -6598,13 +6794,21 @@ class AzureSqlSink(CopySink):
     :type pre_copy_script: object
     :param stored_procedure_parameters: SQL stored procedure parameters.
     :type stored_procedure_parameters: dict[str,
-     ~data_factory_management_client.models.StoredProcedureParameter]
+     ~azure.mgmt.datafactory.models.StoredProcedureParameter]
     :param stored_procedure_table_type_parameter_name: The stored procedure parameter name of the
      table type. Type: string (or Expression with resultType string).
     :type stored_procedure_table_type_parameter_name: object
     :param table_option: The option to handle sink table, such as autoCreate. For now only
      'autoCreate' value is supported. Type: string (or Expression with resultType string).
     :type table_option: object
+    :param sql_writer_use_table_lock: Whether to use table lock during bulk copy. Type: boolean (or
+     Expression with resultType boolean).
+    :type sql_writer_use_table_lock: object
+    :param write_behavior: Write behavior when copying data into Azure SQL. Type:
+     SqlWriteBehaviorEnum (or Expression with resultType SqlWriteBehaviorEnum).
+    :type write_behavior: object
+    :param upsert_settings: SQL upsert settings.
+    :type upsert_settings: ~azure.mgmt.datafactory.models.SqlUpsertSettings
     """
 
     _validation = {
@@ -6619,12 +6823,16 @@ class AzureSqlSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'sql_writer_stored_procedure_name': {'key': 'sqlWriterStoredProcedureName', 'type': 'object'},
         'sql_writer_table_type': {'key': 'sqlWriterTableType', 'type': 'object'},
         'pre_copy_script': {'key': 'preCopyScript', 'type': 'object'},
         'stored_procedure_parameters': {'key': 'storedProcedureParameters', 'type': '{StoredProcedureParameter}'},
         'stored_procedure_table_type_parameter_name': {'key': 'storedProcedureTableTypeParameterName', 'type': 'object'},
         'table_option': {'key': 'tableOption', 'type': 'object'},
+        'sql_writer_use_table_lock': {'key': 'sqlWriterUseTableLock', 'type': 'object'},
+        'write_behavior': {'key': 'writeBehavior', 'type': 'object'},
+        'upsert_settings': {'key': 'upsertSettings', 'type': 'SqlUpsertSettings'},
     }
 
     def __init__(
@@ -6639,6 +6847,9 @@ class AzureSqlSink(CopySink):
         self.stored_procedure_parameters = kwargs.get('stored_procedure_parameters', None)
         self.stored_procedure_table_type_parameter_name = kwargs.get('stored_procedure_table_type_parameter_name', None)
         self.table_option = kwargs.get('table_option', None)
+        self.sql_writer_use_table_lock = kwargs.get('sql_writer_use_table_lock', None)
+        self.write_behavior = kwargs.get('write_behavior', None)
+        self.upsert_settings = kwargs.get('upsert_settings', None)
 
 
 class AzureSqlSource(TabularSource):
@@ -6660,12 +6871,15 @@ class AzureSqlSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     :param sql_reader_query: SQL reader query. Type: string (or Expression with resultType string).
     :type sql_reader_query: object
     :param sql_reader_stored_procedure_name: Name of the stored procedure for a SQL Database
@@ -6675,14 +6889,14 @@ class AzureSqlSource(TabularSource):
     :param stored_procedure_parameters: Value and type setting for stored procedure parameters.
      Example: "{Parameter1: {value: "1", type: "int"}}".
     :type stored_procedure_parameters: dict[str,
-     ~data_factory_management_client.models.StoredProcedureParameter]
+     ~azure.mgmt.datafactory.models.StoredProcedureParameter]
     :param produce_additional_types: Which additional types to produce.
     :type produce_additional_types: object
     :param partition_option: The partition mechanism that will be used for Sql read in parallel.
      Possible values include: "None", "PhysicalPartitionsOfTable", "DynamicRange".
     :type partition_option: object
     :param partition_settings: The settings that will be leveraged for Sql source partitioning.
-    :type partition_settings: ~data_factory_management_client.models.SqlPartitionSettings
+    :type partition_settings: ~azure.mgmt.datafactory.models.SqlPartitionSettings
     """
 
     _validation = {
@@ -6695,8 +6909,9 @@ class AzureSqlSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
         'sql_reader_query': {'key': 'sqlReaderQuery', 'type': 'object'},
         'sql_reader_stored_procedure_name': {'key': 'sqlReaderStoredProcedureName', 'type': 'object'},
         'stored_procedure_parameters': {'key': 'storedProcedureParameters', 'type': '{StoredProcedureParameter}'},
@@ -6738,14 +6953,14 @@ class AzureSqlTableDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param table_name: This property will be retired. Please consider using schema + table
      properties instead.
     :type table_name: object
@@ -6799,23 +7014,23 @@ class AzureStorageLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param connection_string: The connection string. It is mutually exclusive with sasUri property.
      Type: string, SecureString or AzureKeyVaultSecretReference.
     :type connection_string: object
     :param account_key: The Azure key vault secret reference of accountKey in connection string.
-    :type account_key: ~data_factory_management_client.models.AzureKeyVaultSecretReference
+    :type account_key: ~azure.mgmt.datafactory.models.AzureKeyVaultSecretReference
     :param sas_uri: SAS URI of the Azure Storage resource. It is mutually exclusive with
      connectionString property. Type: string, SecureString or AzureKeyVaultSecretReference.
     :type sas_uri: object
     :param sas_token: The Azure key vault secret reference of sasToken in sas uri.
-    :type sas_token: ~data_factory_management_client.models.AzureKeyVaultSecretReference
+    :type sas_token: ~azure.mgmt.datafactory.models.AzureKeyVaultSecretReference
     :param encrypted_credential: The encrypted credential used for authentication. Credentials are
      encrypted using the integration runtime credential manager. Type: string (or Expression with
      resultType string).
@@ -6872,14 +7087,14 @@ class AzureTableDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param table_name: Required. The table name of the Azure Table storage. Type: string (or
      Expression with resultType string).
     :type table_name: object
@@ -6938,6 +7153,9 @@ class AzureTableSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param azure_table_default_partition_key_value: Azure Table default partition key value. Type:
      string (or Expression with resultType string).
     :type azure_table_default_partition_key_value: object
@@ -6964,6 +7182,7 @@ class AzureTableSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'azure_table_default_partition_key_value': {'key': 'azureTableDefaultPartitionKeyValue', 'type': 'object'},
         'azure_table_partition_key_name': {'key': 'azureTablePartitionKeyName', 'type': 'object'},
         'azure_table_row_key_name': {'key': 'azureTableRowKeyName', 'type': 'object'},
@@ -7001,12 +7220,15 @@ class AzureTableSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     :param azure_table_source_query: Azure Table source query. Type: string (or Expression with
      resultType string).
     :type azure_table_source_query: object
@@ -7025,8 +7247,9 @@ class AzureTableSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
         'azure_table_source_query': {'key': 'azureTableSourceQuery', 'type': 'object'},
         'azure_table_source_ignore_table_not_found': {'key': 'azureTableSourceIgnoreTableNotFound', 'type': 'object'},
     }
@@ -7052,23 +7275,23 @@ class AzureTableStorageLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param connection_string: The connection string. It is mutually exclusive with sasUri property.
      Type: string, SecureString or AzureKeyVaultSecretReference.
     :type connection_string: object
     :param account_key: The Azure key vault secret reference of accountKey in connection string.
-    :type account_key: ~data_factory_management_client.models.AzureKeyVaultSecretReference
+    :type account_key: ~azure.mgmt.datafactory.models.AzureKeyVaultSecretReference
     :param sas_uri: SAS URI of the Azure Storage resource. It is mutually exclusive with
      connectionString property. Type: string, SecureString or AzureKeyVaultSecretReference.
     :type sas_uri: object
     :param sas_token: The Azure key vault secret reference of sasToken in sas uri.
-    :type sas_token: ~data_factory_management_client.models.AzureKeyVaultSecretReference
+    :type sas_token: ~azure.mgmt.datafactory.models.AzureKeyVaultSecretReference
     :param encrypted_credential: The encrypted credential used for authentication. Credentials are
      encrypted using the integration runtime credential manager. Type: string (or Expression with
      resultType string).
@@ -7125,18 +7348,18 @@ class BinaryDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param location: The location of the Binary storage.
-    :type location: ~data_factory_management_client.models.DatasetLocation
+    :type location: ~azure.mgmt.datafactory.models.DatasetLocation
     :param compression: The data compression method used for the binary dataset.
-    :type compression: ~data_factory_management_client.models.DatasetCompression
+    :type compression: ~azure.mgmt.datafactory.models.DatasetCompression
     """
 
     _validation = {
@@ -7216,7 +7439,7 @@ class BinaryReadSettings(FormatReadSettings):
     :param type: Required. The read setting type.Constant filled by server.
     :type type: str
     :param compression_properties: Compression settings.
-    :type compression_properties: ~data_factory_management_client.models.CompressionReadSettings
+    :type compression_properties: ~azure.mgmt.datafactory.models.CompressionReadSettings
     """
 
     _validation = {
@@ -7263,8 +7486,11 @@ class BinarySink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param store_settings: Binary store settings.
-    :type store_settings: ~data_factory_management_client.models.StoreWriteSettings
+    :type store_settings: ~azure.mgmt.datafactory.models.StoreWriteSettings
     """
 
     _validation = {
@@ -7279,6 +7505,7 @@ class BinarySink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'store_settings': {'key': 'storeSettings', 'type': 'StoreWriteSettings'},
     }
 
@@ -7310,10 +7537,13 @@ class BinarySource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param store_settings: Binary store settings.
-    :type store_settings: ~data_factory_management_client.models.StoreReadSettings
+    :type store_settings: ~azure.mgmt.datafactory.models.StoreReadSettings
     :param format_settings: Binary format settings.
-    :type format_settings: ~data_factory_management_client.models.BinaryReadSettings
+    :type format_settings: ~azure.mgmt.datafactory.models.BinaryReadSettings
     """
 
     _validation = {
@@ -7326,6 +7556,7 @@ class BinarySource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'store_settings': {'key': 'storeSettings', 'type': 'StoreReadSettings'},
         'format_settings': {'key': 'formatSettings', 'type': 'BinaryReadSettings'},
     }
@@ -7359,7 +7590,7 @@ class Trigger(msrest.serialization.Model):
     :type description: str
     :ivar runtime_state: Indicates if trigger is running or not. Updated when Start/Stop APIs are
      called on the Trigger. Possible values include: "Started", "Stopped", "Disabled".
-    :vartype runtime_state: str or ~data_factory_management_client.models.TriggerRuntimeState
+    :vartype runtime_state: str or ~azure.mgmt.datafactory.models.TriggerRuntimeState
     :param annotations: List of tags that can be used for describing the trigger.
     :type annotations: list[object]
     """
@@ -7412,11 +7643,11 @@ class MultiplePipelineTrigger(Trigger):
     :type description: str
     :ivar runtime_state: Indicates if trigger is running or not. Updated when Start/Stop APIs are
      called on the Trigger. Possible values include: "Started", "Stopped", "Disabled".
-    :vartype runtime_state: str or ~data_factory_management_client.models.TriggerRuntimeState
+    :vartype runtime_state: str or ~azure.mgmt.datafactory.models.TriggerRuntimeState
     :param annotations: List of tags that can be used for describing the trigger.
     :type annotations: list[object]
     :param pipelines: Pipelines that need to be started.
-    :type pipelines: list[~data_factory_management_client.models.TriggerPipelineReference]
+    :type pipelines: list[~azure.mgmt.datafactory.models.TriggerPipelineReference]
     """
 
     _validation = {
@@ -7462,11 +7693,11 @@ class BlobEventsTrigger(MultiplePipelineTrigger):
     :type description: str
     :ivar runtime_state: Indicates if trigger is running or not. Updated when Start/Stop APIs are
      called on the Trigger. Possible values include: "Started", "Stopped", "Disabled".
-    :vartype runtime_state: str or ~data_factory_management_client.models.TriggerRuntimeState
+    :vartype runtime_state: str or ~azure.mgmt.datafactory.models.TriggerRuntimeState
     :param annotations: List of tags that can be used for describing the trigger.
     :type annotations: list[object]
     :param pipelines: Pipelines that need to be started.
-    :type pipelines: list[~data_factory_management_client.models.TriggerPipelineReference]
+    :type pipelines: list[~azure.mgmt.datafactory.models.TriggerPipelineReference]
     :param blob_path_begins_with: The blob path must begin with the pattern provided for trigger to
      fire. For example, '/records/blobs/december/' will only fire the trigger for blobs in the
      december folder under the records container. At least one of these must be provided:
@@ -7479,7 +7710,7 @@ class BlobEventsTrigger(MultiplePipelineTrigger):
     :param ignore_empty_blobs: If set to true, blobs with zero bytes will be ignored.
     :type ignore_empty_blobs: bool
     :param events: Required. The type of events that cause this trigger to fire.
-    :type events: list[str or ~data_factory_management_client.models.BlobEventTypes]
+    :type events: list[str or ~azure.mgmt.datafactory.models.BlobEventTypes]
     :param scope: Required. The ARM resource ID of the Storage Account.
     :type scope: str
     """
@@ -7543,6 +7774,9 @@ class BlobSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param blob_writer_overwrite_files: Blob writer overwrite files. Type: boolean (or Expression
      with resultType boolean).
     :type blob_writer_overwrite_files: object
@@ -7554,6 +7788,9 @@ class BlobSink(CopySink):
     :type blob_writer_add_header: object
     :param copy_behavior: The type of copy behavior for copy sink.
     :type copy_behavior: object
+    :param metadata: Specify the custom metadata to be added to sink data. Type: array of objects
+     (or Expression with resultType array of objects).
+    :type metadata: list[~azure.mgmt.datafactory.models.MetadataItem]
     """
 
     _validation = {
@@ -7568,10 +7805,12 @@ class BlobSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'blob_writer_overwrite_files': {'key': 'blobWriterOverwriteFiles', 'type': 'object'},
         'blob_writer_date_time_format': {'key': 'blobWriterDateTimeFormat', 'type': 'object'},
         'blob_writer_add_header': {'key': 'blobWriterAddHeader', 'type': 'object'},
         'copy_behavior': {'key': 'copyBehavior', 'type': 'object'},
+        'metadata': {'key': 'metadata', 'type': '[MetadataItem]'},
     }
 
     def __init__(
@@ -7584,6 +7823,7 @@ class BlobSink(CopySink):
         self.blob_writer_date_time_format = kwargs.get('blob_writer_date_time_format', None)
         self.blob_writer_add_header = kwargs.get('blob_writer_add_header', None)
         self.copy_behavior = kwargs.get('copy_behavior', None)
+        self.metadata = kwargs.get('metadata', None)
 
 
 class BlobSource(CopySource):
@@ -7605,6 +7845,9 @@ class BlobSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param treat_empty_as_null: Treat empty as null. Type: boolean (or Expression with resultType
      boolean).
     :type treat_empty_as_null: object
@@ -7626,6 +7869,7 @@ class BlobSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'treat_empty_as_null': {'key': 'treatEmptyAsNull', 'type': 'object'},
         'skip_header_line_count': {'key': 'skipHeaderLineCount', 'type': 'object'},
         'recursive': {'key': 'recursive', 'type': 'object'},
@@ -7658,18 +7902,18 @@ class BlobTrigger(MultiplePipelineTrigger):
     :type description: str
     :ivar runtime_state: Indicates if trigger is running or not. Updated when Start/Stop APIs are
      called on the Trigger. Possible values include: "Started", "Stopped", "Disabled".
-    :vartype runtime_state: str or ~data_factory_management_client.models.TriggerRuntimeState
+    :vartype runtime_state: str or ~azure.mgmt.datafactory.models.TriggerRuntimeState
     :param annotations: List of tags that can be used for describing the trigger.
     :type annotations: list[object]
     :param pipelines: Pipelines that need to be started.
-    :type pipelines: list[~data_factory_management_client.models.TriggerPipelineReference]
+    :type pipelines: list[~azure.mgmt.datafactory.models.TriggerPipelineReference]
     :param folder_path: Required. The path of the container/folder that will trigger the pipeline.
     :type folder_path: str
     :param max_concurrency: Required. The max number of parallel files to handle when it is
      triggered.
     :type max_concurrency: int
     :param linked_service: Required. The Azure Storage linked service reference.
-    :type linked_service: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service: ~azure.mgmt.datafactory.models.LinkedServiceReference
     """
 
     _validation = {
@@ -7714,11 +7958,11 @@ class CassandraLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param host: Required. Host name for connection. Type: string (or Expression with resultType
@@ -7734,7 +7978,7 @@ class CassandraLinkedService(LinkedService):
      string).
     :type username: object
     :param password: Password for authentication.
-    :type password: ~data_factory_management_client.models.SecretBase
+    :type password: ~azure.mgmt.datafactory.models.SecretBase
     :param encrypted_credential: The encrypted credential used for authentication. Credentials are
      encrypted using the integration runtime credential manager. Type: string (or Expression with
      resultType string).
@@ -7794,12 +8038,15 @@ class CassandraSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     :param query: Database query. Should be a SQL-92 query expression or Cassandra Query Language
      (CQL) command. Type: string (or Expression with resultType string).
     :type query: object
@@ -7810,7 +8057,7 @@ class CassandraSource(TabularSource):
      Possible values include: "ALL", "EACH_QUORUM", "QUORUM", "LOCAL_QUORUM", "ONE", "TWO", "THREE",
      "LOCAL_ONE", "SERIAL", "LOCAL_SERIAL".
     :type consistency_level: str or
-     ~data_factory_management_client.models.CassandraSourceReadConsistencyLevels
+     ~azure.mgmt.datafactory.models.CassandraSourceReadConsistencyLevels
     """
 
     _validation = {
@@ -7823,8 +8070,9 @@ class CassandraSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
         'consistency_level': {'key': 'consistencyLevel', 'type': 'str'},
     }
@@ -7858,14 +8106,14 @@ class CassandraTableDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param table_name: The table name of the Cassandra database. Type: string (or Expression with
      resultType string).
     :type table_name: object
@@ -7919,14 +8167,14 @@ class ChainingTrigger(Trigger):
     :type description: str
     :ivar runtime_state: Indicates if trigger is running or not. Updated when Start/Stop APIs are
      called on the Trigger. Possible values include: "Started", "Stopped", "Disabled".
-    :vartype runtime_state: str or ~data_factory_management_client.models.TriggerRuntimeState
+    :vartype runtime_state: str or ~azure.mgmt.datafactory.models.TriggerRuntimeState
     :param annotations: List of tags that can be used for describing the trigger.
     :type annotations: list[object]
     :param pipeline: Required. Pipeline for which runs are created when all upstream pipelines
      complete successfully.
-    :type pipeline: ~data_factory_management_client.models.TriggerPipelineReference
+    :type pipeline: ~azure.mgmt.datafactory.models.TriggerPipelineReference
     :param depends_on: Required. Upstream Pipelines.
-    :type depends_on: list[~data_factory_management_client.models.PipelineReference]
+    :type depends_on: list[~azure.mgmt.datafactory.models.PipelineReference]
     :param run_dimension: Required. Run Dimension property that needs to be emitted by upstream
      pipelines.
     :type run_dimension: str
@@ -7974,7 +8222,7 @@ class CloudError(msrest.serialization.Model):
     :param target: Property name/path in request associated with error.
     :type target: str
     :param details: Array with additional error details.
-    :type details: list[~data_factory_management_client.models.CloudError]
+    :type details: list[~azure.mgmt.datafactory.models.CloudError]
     """
 
     _validation = {
@@ -8012,7 +8260,7 @@ class CmdkeySetup(CustomSetupBase):
     :param user_name: Required. The user name of data source access.
     :type user_name: object
     :param password: Required. The password of data source access.
-    :type password: ~data_factory_management_client.models.SecretBase
+    :type password: ~azure.mgmt.datafactory.models.SecretBase
     """
 
     _validation = {
@@ -8079,14 +8327,14 @@ class CommonDataServiceForAppsEntityDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param entity_name: The logical name of the entity. Type: string (or Expression with resultType
      string).
     :type entity_name: object
@@ -8130,18 +8378,18 @@ class CommonDataServiceForAppsLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param deployment_type: Required. The deployment type of the Common Data Service for Apps
      instance. 'Online' for Common Data Service for Apps Online and 'OnPremisesWithIfd' for Common
      Data Service for Apps on-premises with Ifd. Type: string (or Expression with resultType
-     string). Possible values include: "Online", "OnPremisesWithIfd".
-    :type deployment_type: str or ~data_factory_management_client.models.DynamicsDeploymentType
+     string).
+    :type deployment_type: object
     :param host_name: The host name of the on-premises Common Data Service for Apps server. The
      property is required for on-prem and not allowed for online. Type: string (or Expression with
      resultType string).
@@ -8162,30 +8410,26 @@ class CommonDataServiceForAppsLinkedService(LinkedService):
     :param authentication_type: Required. The authentication type to connect to Common Data Service
      for Apps server. 'Office365' for online scenario, 'Ifd' for on-premises with Ifd scenario.
      'AADServicePrincipal' for Server-To-Server authentication in online scenario. Type: string (or
-     Expression with resultType string). Possible values include: "Office365", "Ifd",
-     "AADServicePrincipal".
-    :type authentication_type: str or
-     ~data_factory_management_client.models.DynamicsAuthenticationType
+     Expression with resultType string).
+    :type authentication_type: object
     :param username: User name to access the Common Data Service for Apps instance. Type: string
      (or Expression with resultType string).
     :type username: object
     :param password: Password to access the Common Data Service for Apps instance.
-    :type password: ~data_factory_management_client.models.SecretBase
+    :type password: ~azure.mgmt.datafactory.models.SecretBase
     :param service_principal_id: The client ID of the application in Azure Active Directory used
      for Server-To-Server authentication. Type: string (or Expression with resultType string).
     :type service_principal_id: object
     :param service_principal_credential_type: The service principal credential type to use in
      Server-To-Server authentication. 'ServicePrincipalKey' for key/secret, 'ServicePrincipalCert'
-     for certificate. Type: string (or Expression with resultType string). Possible values include:
-     "ServicePrincipalKey", "ServicePrincipalCert".
-    :type service_principal_credential_type: str or
-     ~data_factory_management_client.models.DynamicsServicePrincipalCredentialType
+     for certificate. Type: string (or Expression with resultType string).
+    :type service_principal_credential_type: object
     :param service_principal_credential: The credential of the service principal object in Azure
      Active Directory. If servicePrincipalCredentialType is 'ServicePrincipalKey',
      servicePrincipalCredential can be SecureString or AzureKeyVaultSecretReference. If
      servicePrincipalCredentialType is 'ServicePrincipalCert', servicePrincipalCredential can only
      be AzureKeyVaultSecretReference.
-    :type service_principal_credential: ~data_factory_management_client.models.SecretBase
+    :type service_principal_credential: ~azure.mgmt.datafactory.models.SecretBase
     :param encrypted_credential: The encrypted credential used for authentication. Credentials are
      encrypted using the integration runtime credential manager. Type: string (or Expression with
      resultType string).
@@ -8205,16 +8449,16 @@ class CommonDataServiceForAppsLinkedService(LinkedService):
         'description': {'key': 'description', 'type': 'str'},
         'parameters': {'key': 'parameters', 'type': '{ParameterSpecification}'},
         'annotations': {'key': 'annotations', 'type': '[object]'},
-        'deployment_type': {'key': 'typeProperties.deploymentType', 'type': 'str'},
+        'deployment_type': {'key': 'typeProperties.deploymentType', 'type': 'object'},
         'host_name': {'key': 'typeProperties.hostName', 'type': 'object'},
         'port': {'key': 'typeProperties.port', 'type': 'object'},
         'service_uri': {'key': 'typeProperties.serviceUri', 'type': 'object'},
         'organization_name': {'key': 'typeProperties.organizationName', 'type': 'object'},
-        'authentication_type': {'key': 'typeProperties.authenticationType', 'type': 'str'},
+        'authentication_type': {'key': 'typeProperties.authenticationType', 'type': 'object'},
         'username': {'key': 'typeProperties.username', 'type': 'object'},
         'password': {'key': 'typeProperties.password', 'type': 'SecretBase'},
         'service_principal_id': {'key': 'typeProperties.servicePrincipalId', 'type': 'object'},
-        'service_principal_credential_type': {'key': 'typeProperties.servicePrincipalCredentialType', 'type': 'str'},
+        'service_principal_credential_type': {'key': 'typeProperties.servicePrincipalCredentialType', 'type': 'object'},
         'service_principal_credential': {'key': 'typeProperties.servicePrincipalCredential', 'type': 'SecretBase'},
         'encrypted_credential': {'key': 'typeProperties.encryptedCredential', 'type': 'object'},
     }
@@ -8264,9 +8508,12 @@ class CommonDataServiceForAppsSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param write_behavior: Required. The write behavior for the operation. Possible values include:
      "Upsert".
-    :type write_behavior: str or ~data_factory_management_client.models.DynamicsSinkWriteBehavior
+    :type write_behavior: str or ~azure.mgmt.datafactory.models.DynamicsSinkWriteBehavior
     :param ignore_null_values: The flag indicating whether to ignore null values from input dataset
      (except key fields) during write operation. Default is false. Type: boolean (or Expression with
      resultType boolean).
@@ -8289,6 +8536,7 @@ class CommonDataServiceForAppsSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'write_behavior': {'key': 'writeBehavior', 'type': 'str'},
         'ignore_null_values': {'key': 'ignoreNullValues', 'type': 'object'},
         'alternate_key_name': {'key': 'alternateKeyName', 'type': 'object'},
@@ -8324,12 +8572,15 @@ class CommonDataServiceForAppsSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query: FetchXML is a proprietary query language that is used in Microsoft Common Data
      Service for Apps (online & on-premises). Type: string (or Expression with resultType string).
     :type query: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     """
 
     _validation = {
@@ -8342,8 +8593,9 @@ class CommonDataServiceForAppsSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
     }
 
     def __init__(
@@ -8366,7 +8618,7 @@ class ComponentSetup(CustomSetupBase):
     :param component_name: Required. The name of the 3rd party component.
     :type component_name: str
     :param license_key: The license key to activate the component.
-    :type license_key: ~data_factory_management_client.models.SecretBase
+    :type license_key: ~azure.mgmt.datafactory.models.SecretBase
     """
 
     _validation = {
@@ -8438,11 +8690,11 @@ class ConcurLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param connection_properties: Properties used to connect to Concur. It is mutually exclusive
@@ -8454,7 +8706,7 @@ class ConcurLinkedService(LinkedService):
     :type username: object
     :param password: The password corresponding to the user name that you provided in the username
      field.
-    :type password: ~data_factory_management_client.models.SecretBase
+    :type password: ~azure.mgmt.datafactory.models.SecretBase
     :param use_encrypted_endpoints: Specifies whether the data source endpoints are encrypted using
      HTTPS. The default value is true.
     :type use_encrypted_endpoints: object
@@ -8529,14 +8781,14 @@ class ConcurObjectDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param table_name: The table name. Type: string (or Expression with resultType string).
     :type table_name: object
     """
@@ -8587,12 +8839,15 @@ class ConcurSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: object
@@ -8608,8 +8863,9 @@ class ConcurSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
     }
 
@@ -8672,9 +8928,9 @@ class ControlActivity(Activity):
     :param description: Activity description.
     :type description: str
     :param depends_on: Activity depends on condition.
-    :type depends_on: list[~data_factory_management_client.models.ActivityDependency]
+    :type depends_on: list[~azure.mgmt.datafactory.models.ActivityDependency]
     :param user_properties: Activity user properties.
-    :type user_properties: list[~data_factory_management_client.models.UserProperty]
+    :type user_properties: list[~azure.mgmt.datafactory.models.UserProperty]
     """
 
     _validation = {
@@ -8714,28 +8970,28 @@ class CopyActivity(ExecutionActivity):
     :param description: Activity description.
     :type description: str
     :param depends_on: Activity depends on condition.
-    :type depends_on: list[~data_factory_management_client.models.ActivityDependency]
+    :type depends_on: list[~azure.mgmt.datafactory.models.ActivityDependency]
     :param user_properties: Activity user properties.
-    :type user_properties: list[~data_factory_management_client.models.UserProperty]
+    :type user_properties: list[~azure.mgmt.datafactory.models.UserProperty]
     :param linked_service_name: Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param policy: Activity policy.
-    :type policy: ~data_factory_management_client.models.ActivityPolicy
+    :type policy: ~azure.mgmt.datafactory.models.ActivityPolicy
     :param inputs: List of inputs for the activity.
-    :type inputs: list[~data_factory_management_client.models.DatasetReference]
+    :type inputs: list[~azure.mgmt.datafactory.models.DatasetReference]
     :param outputs: List of outputs for the activity.
-    :type outputs: list[~data_factory_management_client.models.DatasetReference]
+    :type outputs: list[~azure.mgmt.datafactory.models.DatasetReference]
     :param source: Required. Copy activity source.
-    :type source: ~data_factory_management_client.models.CopySource
+    :type source: ~azure.mgmt.datafactory.models.CopySource
     :param sink: Required. Copy activity sink.
-    :type sink: ~data_factory_management_client.models.CopySink
+    :type sink: ~azure.mgmt.datafactory.models.CopySink
     :param translator: Copy activity translator. If not specified, tabular translator is used.
     :type translator: object
     :param enable_staging: Specifies whether to copy data via an interim staging. Default value is
      false. Type: boolean (or Expression with resultType boolean).
     :type enable_staging: object
     :param staging_settings: Specifies interim staging settings when EnableStaging is true.
-    :type staging_settings: ~data_factory_management_client.models.StagingSettings
+    :type staging_settings: ~azure.mgmt.datafactory.models.StagingSettings
     :param parallel_copies: Maximum number of concurrent sessions opened on the source or sink to
      avoid overloading the data store. Type: integer (or Expression with resultType integer),
      minimum: 0.
@@ -8749,12 +9005,12 @@ class CopyActivity(ExecutionActivity):
     :param redirect_incompatible_row_settings: Redirect incompatible row settings when
      EnableSkipIncompatibleRow is true.
     :type redirect_incompatible_row_settings:
-     ~data_factory_management_client.models.RedirectIncompatibleRowSettings
+     ~azure.mgmt.datafactory.models.RedirectIncompatibleRowSettings
     :param log_storage_settings: (Deprecated. Please use LogSettings) Log storage settings customer
      need to provide when enabling session log.
-    :type log_storage_settings: ~data_factory_management_client.models.LogStorageSettings
+    :type log_storage_settings: ~azure.mgmt.datafactory.models.LogStorageSettings
     :param log_settings: Log settings customer needs provide when enabling log.
-    :type log_settings: ~data_factory_management_client.models.LogSettings
+    :type log_settings: ~azure.mgmt.datafactory.models.LogSettings
     :param preserve_rules: Preserve Rules.
     :type preserve_rules: list[object]
     :param preserve: Preserve rules.
@@ -8763,7 +9019,7 @@ class CopyActivity(ExecutionActivity):
      (or Expression with resultType boolean).
     :type validate_data_consistency: object
     :param skip_error_file: Specify the fault tolerance for data consistency.
-    :type skip_error_file: ~data_factory_management_client.models.SkipErrorFile
+    :type skip_error_file: ~azure.mgmt.datafactory.models.SkipErrorFile
     """
 
     _validation = {
@@ -8899,11 +9155,11 @@ class CosmosDbLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param connection_string: The connection string. Type: string, SecureString or
@@ -8916,7 +9172,7 @@ class CosmosDbLinkedService(LinkedService):
     :type database: object
     :param account_key: The account key of the Azure CosmosDB account. Type: SecureString or
      AzureKeyVaultSecretReference.
-    :type account_key: ~data_factory_management_client.models.SecretBase
+    :type account_key: ~azure.mgmt.datafactory.models.SecretBase
     :param service_principal_id: The client ID of the application in Azure Active Directory used
      for Server-To-Server authentication. Type: string (or Expression with resultType string).
     :type service_principal_id: object
@@ -8925,13 +9181,13 @@ class CosmosDbLinkedService(LinkedService):
      for certificate. Type: string (or Expression with resultType string). Possible values include:
      "ServicePrincipalKey", "ServicePrincipalCert".
     :type service_principal_credential_type: str or
-     ~data_factory_management_client.models.CosmosDbServicePrincipalCredentialType
+     ~azure.mgmt.datafactory.models.CosmosDbServicePrincipalCredentialType
     :param service_principal_credential: The credential of the service principal object in Azure
      Active Directory. If servicePrincipalCredentialType is 'ServicePrincipalKey',
      servicePrincipalCredential can be SecureString or AzureKeyVaultSecretReference. If
      servicePrincipalCredentialType is 'ServicePrincipalCert', servicePrincipalCredential can only
      be AzureKeyVaultSecretReference.
-    :type service_principal_credential: ~data_factory_management_client.models.SecretBase
+    :type service_principal_credential: ~azure.mgmt.datafactory.models.SecretBase
     :param tenant: The name or ID of the tenant to which the service principal belongs. Type:
      string (or Expression with resultType string).
     :type tenant: object
@@ -8941,7 +9197,7 @@ class CosmosDbLinkedService(LinkedService):
     :type azure_cloud_type: object
     :param connection_mode: The connection mode used to access CosmosDB account. Type: string (or
      Expression with resultType string). Possible values include: "Gateway", "Direct".
-    :type connection_mode: str or ~data_factory_management_client.models.CosmosDbConnectionMode
+    :type connection_mode: str or ~azure.mgmt.datafactory.models.CosmosDbConnectionMode
     :param encrypted_credential: The encrypted credential used for authentication. Credentials are
      encrypted using the integration runtime credential manager. Type: string (or Expression with
      resultType string).
@@ -9010,14 +9266,14 @@ class CosmosDbMongoDbApiCollectionDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param collection: Required. The collection name of the CosmosDB (MongoDB API) database. Type:
      string (or Expression with resultType string).
     :type collection: object
@@ -9062,13 +9318,16 @@ class CosmosDbMongoDbApiLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
+    :param is_server_version_above32: Whether the CosmosDB (MongoDB API) server version is higher
+     than 3.2. The default value is false. Type: boolean (or Expression with resultType boolean).
+    :type is_server_version_above32: object
     :param connection_string: Required. The CosmosDB (MongoDB API) connection string. Type: string,
      SecureString or AzureKeyVaultSecretReference. Type: string, SecureString or
      AzureKeyVaultSecretReference.
@@ -9091,6 +9350,7 @@ class CosmosDbMongoDbApiLinkedService(LinkedService):
         'description': {'key': 'description', 'type': 'str'},
         'parameters': {'key': 'parameters', 'type': '{ParameterSpecification}'},
         'annotations': {'key': 'annotations', 'type': '[object]'},
+        'is_server_version_above32': {'key': 'typeProperties.isServerVersionAbove32', 'type': 'object'},
         'connection_string': {'key': 'typeProperties.connectionString', 'type': 'object'},
         'database': {'key': 'typeProperties.database', 'type': 'object'},
     }
@@ -9101,6 +9361,7 @@ class CosmosDbMongoDbApiLinkedService(LinkedService):
     ):
         super(CosmosDbMongoDbApiLinkedService, self).__init__(**kwargs)
         self.type = 'CosmosDbMongoDbApi'  # type: str
+        self.is_server_version_above32 = kwargs.get('is_server_version_above32', None)
         self.connection_string = kwargs['connection_string']
         self.database = kwargs['database']
 
@@ -9130,6 +9391,9 @@ class CosmosDbMongoDbApiSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param write_behavior: Specifies whether the document with same key to be overwritten (upsert)
      rather than throw exception (insert). The default value is "insert". Type: string (or
      Expression with resultType string). Type: string (or Expression with resultType string).
@@ -9148,6 +9412,7 @@ class CosmosDbMongoDbApiSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'write_behavior': {'key': 'writeBehavior', 'type': 'object'},
     }
 
@@ -9179,12 +9444,15 @@ class CosmosDbMongoDbApiSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param filter: Specifies selection filter using query operators. To return all documents in a
      collection, omit this parameter or pass an empty document ({}). Type: string (or Expression
      with resultType string).
     :type filter: object
     :param cursor_methods: Cursor methods for Mongodb query.
-    :type cursor_methods: ~data_factory_management_client.models.MongoDbCursorMethodsProperties
+    :type cursor_methods: ~azure.mgmt.datafactory.models.MongoDbCursorMethodsProperties
     :param batch_size: Specifies the number of documents to return in each batch of the response
      from MongoDB instance. In most cases, modifying the batch size will not affect the user or the
      application. This property's main purpose is to avoid hit the limitation of response size.
@@ -9194,8 +9462,8 @@ class CosmosDbMongoDbApiSource(CopySource):
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     """
 
     _validation = {
@@ -9208,11 +9476,12 @@ class CosmosDbMongoDbApiSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'filter': {'key': 'filter', 'type': 'object'},
         'cursor_methods': {'key': 'cursorMethods', 'type': 'MongoDbCursorMethodsProperties'},
         'batch_size': {'key': 'batchSize', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
     }
 
     def __init__(
@@ -9247,14 +9516,14 @@ class CosmosDbSqlApiCollectionDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param collection_name: Required. CosmosDB (SQL API) collection name. Type: string (or
      Expression with resultType string).
     :type collection_name: object
@@ -9313,6 +9582,9 @@ class CosmosDbSqlApiSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param write_behavior: Describes how to write data to Azure Cosmos DB. Type: string (or
      Expression with resultType string). Allowed values: insert and upsert.
     :type write_behavior: object
@@ -9330,6 +9602,7 @@ class CosmosDbSqlApiSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'write_behavior': {'key': 'writeBehavior', 'type': 'object'},
     }
 
@@ -9361,6 +9634,9 @@ class CosmosDbSqlApiSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query: SQL API query. Type: string (or Expression with resultType string).
     :type query: object
     :param page_size: Page size of the result. Type: integer (or Expression with resultType
@@ -9373,8 +9649,8 @@ class CosmosDbSqlApiSource(CopySource):
      Expression with resultType boolean).
     :type detect_datetime: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     """
 
     _validation = {
@@ -9387,11 +9663,12 @@ class CosmosDbSqlApiSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
         'page_size': {'key': 'pageSize', 'type': 'object'},
         'preferred_regions': {'key': 'preferredRegions', 'type': 'object'},
         'detect_datetime': {'key': 'detectDatetime', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
     }
 
     def __init__(
@@ -9418,18 +9695,18 @@ class CouchbaseLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param connection_string: An ODBC connection string. Type: string, SecureString or
      AzureKeyVaultSecretReference.
     :type connection_string: object
     :param cred_string: The Azure key vault secret reference of credString in connection string.
-    :type cred_string: ~data_factory_management_client.models.AzureKeyVaultSecretReference
+    :type cred_string: ~azure.mgmt.datafactory.models.AzureKeyVaultSecretReference
     :param encrypted_credential: The encrypted credential used for authentication. Credentials are
      encrypted using the integration runtime credential manager. Type: string (or Expression with
      resultType string).
@@ -9482,12 +9759,15 @@ class CouchbaseSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: object
@@ -9503,8 +9783,9 @@ class CouchbaseSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
     }
 
@@ -9536,14 +9817,14 @@ class CouchbaseTableDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param table_name: The table name. Type: string (or Expression with resultType string).
     :type table_name: object
     """
@@ -9587,8 +9868,7 @@ class CreateDataFlowDebugSessionRequest(msrest.serialization.Model):
     :param time_to_live: Time to live setting of the cluster in minutes.
     :type time_to_live: int
     :param integration_runtime: Set to use integration runtime setting for data flow debug session.
-    :type integration_runtime:
-     ~data_factory_management_client.models.IntegrationRuntimeDebugResource
+    :type integration_runtime: ~azure.mgmt.datafactory.models.IntegrationRuntimeDebugResource
     """
 
     _attribute_map = {
@@ -9691,6 +9971,172 @@ class CreateRunResponse(msrest.serialization.Model):
         self.run_id = kwargs['run_id']
 
 
+class Credential(msrest.serialization.Model):
+    """The Azure Data Factory nested object which contains the information and credential which can be used to connect with related store or compute resource.
+
+    You probably want to use the sub-classes and not this class directly. Known
+    sub-classes are: ManagedIdentityCredential, ServicePrincipalCredential.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param additional_properties: Unmatched properties from the message are deserialized to this
+     collection.
+    :type additional_properties: dict[str, object]
+    :param type: Required. Type of credential.Constant filled by server.
+    :type type: str
+    :param description: Credential description.
+    :type description: str
+    :param annotations: List of tags that can be used for describing the Credential.
+    :type annotations: list[object]
+    """
+
+    _validation = {
+        'type': {'required': True},
+    }
+
+    _attribute_map = {
+        'additional_properties': {'key': '', 'type': '{object}'},
+        'type': {'key': 'type', 'type': 'str'},
+        'description': {'key': 'description', 'type': 'str'},
+        'annotations': {'key': 'annotations', 'type': '[object]'},
+    }
+
+    _subtype_map = {
+        'type': {'ManagedIdentity': 'ManagedIdentityCredential', 'ServicePrincipal': 'ServicePrincipalCredential'}
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(Credential, self).__init__(**kwargs)
+        self.additional_properties = kwargs.get('additional_properties', None)
+        self.type = 'Credential'  # type: str
+        self.description = kwargs.get('description', None)
+        self.annotations = kwargs.get('annotations', None)
+
+
+class CredentialReference(msrest.serialization.Model):
+    """Credential reference type.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param additional_properties: Unmatched properties from the message are deserialized to this
+     collection.
+    :type additional_properties: dict[str, object]
+    :ivar type: Required. Credential reference type. Default value: "CredentialReference".
+    :vartype type: str
+    :param reference_name: Required. Reference credential name.
+    :type reference_name: str
+    """
+
+    _validation = {
+        'type': {'required': True, 'constant': True},
+        'reference_name': {'required': True},
+    }
+
+    _attribute_map = {
+        'additional_properties': {'key': '', 'type': '{object}'},
+        'type': {'key': 'type', 'type': 'str'},
+        'reference_name': {'key': 'referenceName', 'type': 'str'},
+    }
+
+    type = "CredentialReference"
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(CredentialReference, self).__init__(**kwargs)
+        self.additional_properties = kwargs.get('additional_properties', None)
+        self.reference_name = kwargs['reference_name']
+
+
+class SubResource(msrest.serialization.Model):
+    """Azure Data Factory nested resource, which belongs to a factory.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: The resource identifier.
+    :vartype id: str
+    :ivar name: The resource name.
+    :vartype name: str
+    :ivar type: The resource type.
+    :vartype type: str
+    :ivar etag: Etag identifies change in the resource.
+    :vartype etag: str
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+        'etag': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'etag': {'key': 'etag', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(SubResource, self).__init__(**kwargs)
+        self.id = None
+        self.name = None
+        self.type = None
+        self.etag = None
+
+
+class CredentialResource(SubResource):
+    """Credential resource type.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :ivar id: The resource identifier.
+    :vartype id: str
+    :ivar name: The resource name.
+    :vartype name: str
+    :ivar type: The resource type.
+    :vartype type: str
+    :ivar etag: Etag identifies change in the resource.
+    :vartype etag: str
+    :param properties: Required. Properties of credentials.
+    :type properties: ~azure.mgmt.datafactory.models.Credential
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+        'etag': {'readonly': True},
+        'properties': {'required': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'etag': {'key': 'etag', 'type': 'str'},
+        'properties': {'key': 'properties', 'type': 'Credential'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(CredentialResource, self).__init__(**kwargs)
+        self.properties = kwargs['properties']
+
+
 class CustomActivity(ExecutionActivity):
     """Custom activity type.
 
@@ -9706,23 +10152,23 @@ class CustomActivity(ExecutionActivity):
     :param description: Activity description.
     :type description: str
     :param depends_on: Activity depends on condition.
-    :type depends_on: list[~data_factory_management_client.models.ActivityDependency]
+    :type depends_on: list[~azure.mgmt.datafactory.models.ActivityDependency]
     :param user_properties: Activity user properties.
-    :type user_properties: list[~data_factory_management_client.models.UserProperty]
+    :type user_properties: list[~azure.mgmt.datafactory.models.UserProperty]
     :param linked_service_name: Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param policy: Activity policy.
-    :type policy: ~data_factory_management_client.models.ActivityPolicy
+    :type policy: ~azure.mgmt.datafactory.models.ActivityPolicy
     :param command: Required. Command for custom activity Type: string (or Expression with
      resultType string).
     :type command: object
     :param resource_linked_service: Resource linked service reference.
-    :type resource_linked_service: ~data_factory_management_client.models.LinkedServiceReference
+    :type resource_linked_service: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param folder_path: Folder path for resource files Type: string (or Expression with resultType
      string).
     :type folder_path: object
     :param reference_objects: Reference objects.
-    :type reference_objects: ~data_factory_management_client.models.CustomActivityReferenceObject
+    :type reference_objects: ~azure.mgmt.datafactory.models.CustomActivityReferenceObject
     :param extended_properties: User defined property bag. There is no restriction on the keys or
      values that can be used. The user specified custom activity has the full responsibility to
      consume and interpret the content defined.
@@ -9778,9 +10224,9 @@ class CustomActivityReferenceObject(msrest.serialization.Model):
     """Reference objects for custom activity.
 
     :param linked_services: Linked service references.
-    :type linked_services: list[~data_factory_management_client.models.LinkedServiceReference]
+    :type linked_services: list[~azure.mgmt.datafactory.models.LinkedServiceReference]
     :param datasets: Dataset references.
-    :type datasets: list[~data_factory_management_client.models.DatasetReference]
+    :type datasets: list[~azure.mgmt.datafactory.models.DatasetReference]
     """
 
     _attribute_map = {
@@ -9816,14 +10262,14 @@ class CustomDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param type_properties: Custom dataset properties.
     :type type_properties: object
     """
@@ -9866,11 +10312,11 @@ class CustomDataSourceLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param type_properties: Required. Custom linked service properties.
@@ -9917,11 +10363,11 @@ class CustomEventsTrigger(MultiplePipelineTrigger):
     :type description: str
     :ivar runtime_state: Indicates if trigger is running or not. Updated when Start/Stop APIs are
      called on the Trigger. Possible values include: "Started", "Stopped", "Disabled".
-    :vartype runtime_state: str or ~data_factory_management_client.models.TriggerRuntimeState
+    :vartype runtime_state: str or ~azure.mgmt.datafactory.models.TriggerRuntimeState
     :param annotations: List of tags that can be used for describing the trigger.
     :type annotations: list[object]
     :param pipelines: Pipelines that need to be started.
-    :type pipelines: list[~data_factory_management_client.models.TriggerPipelineReference]
+    :type pipelines: list[~azure.mgmt.datafactory.models.TriggerPipelineReference]
     :param subject_begins_with: The event subject must begin with the pattern provided for trigger
      to fire. At least one of these must be provided: subjectBeginsWith, subjectEndsWith.
     :type subject_begins_with: str
@@ -9981,13 +10427,13 @@ class DatabricksNotebookActivity(ExecutionActivity):
     :param description: Activity description.
     :type description: str
     :param depends_on: Activity depends on condition.
-    :type depends_on: list[~data_factory_management_client.models.ActivityDependency]
+    :type depends_on: list[~azure.mgmt.datafactory.models.ActivityDependency]
     :param user_properties: Activity user properties.
-    :type user_properties: list[~data_factory_management_client.models.UserProperty]
+    :type user_properties: list[~azure.mgmt.datafactory.models.UserProperty]
     :param linked_service_name: Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param policy: Activity policy.
-    :type policy: ~data_factory_management_client.models.ActivityPolicy
+    :type policy: ~azure.mgmt.datafactory.models.ActivityPolicy
     :param notebook_path: Required. The absolute path of the notebook to be run in the Databricks
      Workspace. This path must begin with a slash. Type: string (or Expression with resultType
      string).
@@ -10045,13 +10491,13 @@ class DatabricksSparkJarActivity(ExecutionActivity):
     :param description: Activity description.
     :type description: str
     :param depends_on: Activity depends on condition.
-    :type depends_on: list[~data_factory_management_client.models.ActivityDependency]
+    :type depends_on: list[~azure.mgmt.datafactory.models.ActivityDependency]
     :param user_properties: Activity user properties.
-    :type user_properties: list[~data_factory_management_client.models.UserProperty]
+    :type user_properties: list[~azure.mgmt.datafactory.models.UserProperty]
     :param linked_service_name: Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param policy: Activity policy.
-    :type policy: ~data_factory_management_client.models.ActivityPolicy
+    :type policy: ~azure.mgmt.datafactory.models.ActivityPolicy
     :param main_class_name: Required. The full name of the class containing the main method to be
      executed. This class must be contained in a JAR provided as a library. Type: string (or
      Expression with resultType string).
@@ -10108,13 +10554,13 @@ class DatabricksSparkPythonActivity(ExecutionActivity):
     :param description: Activity description.
     :type description: str
     :param depends_on: Activity depends on condition.
-    :type depends_on: list[~data_factory_management_client.models.ActivityDependency]
+    :type depends_on: list[~azure.mgmt.datafactory.models.ActivityDependency]
     :param user_properties: Activity user properties.
-    :type user_properties: list[~data_factory_management_client.models.UserProperty]
+    :type user_properties: list[~azure.mgmt.datafactory.models.UserProperty]
     :param linked_service_name: Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param policy: Activity policy.
-    :type policy: ~data_factory_management_client.models.ActivityPolicy
+    :type policy: ~azure.mgmt.datafactory.models.ActivityPolicy
     :param python_file: Required. The URI of the Python file to be executed. DBFS paths are
      supported. Type: string (or Expression with resultType string).
     :type python_file: object
@@ -10161,7 +10607,9 @@ class DataFlow(msrest.serialization.Model):
     You probably want to use the sub-classes and not this class directly. Known
     sub-classes are: MappingDataFlow.
 
-    :param type: Type of data flow.Constant filled by server.
+    All required parameters must be populated in order to send to Azure.
+
+    :param type: Required. Type of data flow.Constant filled by server.
     :type type: str
     :param description: The description of the data flow.
     :type description: str
@@ -10169,8 +10617,12 @@ class DataFlow(msrest.serialization.Model):
     :type annotations: list[object]
     :param folder: The folder that this data flow is in. If not specified, Data flow will appear at
      the root level.
-    :type folder: ~data_factory_management_client.models.DataFlowFolder
+    :type folder: ~azure.mgmt.datafactory.models.DataFlowFolder
     """
+
+    _validation = {
+        'type': {'required': True},
+    }
 
     _attribute_map = {
         'type': {'key': 'type', 'type': 'str'},
@@ -10238,9 +10690,9 @@ class DataFlowDebugCommandRequest(msrest.serialization.Model):
     :type session_id: str
     :param command: The command type. Possible values include: "executePreviewQuery",
      "executeStatisticsQuery", "executeExpressionQuery".
-    :type command: str or ~data_factory_management_client.models.DataFlowDebugCommandType
+    :type command: str or ~azure.mgmt.datafactory.models.DataFlowDebugCommandType
     :param command_payload: The command payload object.
-    :type command_payload: ~data_factory_management_client.models.DataFlowDebugCommandPayload
+    :type command_payload: ~azure.mgmt.datafactory.models.DataFlowDebugCommandPayload
     """
 
     _attribute_map = {
@@ -10291,15 +10743,15 @@ class DataFlowDebugPackage(msrest.serialization.Model):
     :param session_id: The ID of data flow debug session.
     :type session_id: str
     :param data_flow: Data flow instance.
-    :type data_flow: ~data_factory_management_client.models.DataFlowDebugResource
+    :type data_flow: ~azure.mgmt.datafactory.models.DataFlowDebugResource
     :param datasets: List of datasets.
-    :type datasets: list[~data_factory_management_client.models.DatasetDebugResource]
+    :type datasets: list[~azure.mgmt.datafactory.models.DatasetDebugResource]
     :param linked_services: List of linked services.
-    :type linked_services: list[~data_factory_management_client.models.LinkedServiceDebugResource]
+    :type linked_services: list[~azure.mgmt.datafactory.models.LinkedServiceDebugResource]
     :param staging: Staging info for debug session.
-    :type staging: ~data_factory_management_client.models.DataFlowStagingInfo
+    :type staging: ~azure.mgmt.datafactory.models.DataFlowStagingInfo
     :param debug_settings: Data flow debug settings.
-    :type debug_settings: ~data_factory_management_client.models.DataFlowDebugPackageDebugSettings
+    :type debug_settings: ~azure.mgmt.datafactory.models.DataFlowDebugPackageDebugSettings
     """
 
     _attribute_map = {
@@ -10330,7 +10782,7 @@ class DataFlowDebugPackageDebugSettings(msrest.serialization.Model):
     """Data flow debug settings.
 
     :param source_settings: Source setting for data flow debug.
-    :type source_settings: list[~data_factory_management_client.models.DataFlowSourceSetting]
+    :type source_settings: list[~azure.mgmt.datafactory.models.DataFlowSourceSetting]
     :param parameters: Data flow parameters.
     :type parameters: dict[str, object]
     :param dataset_parameters: Parameters for dataset.
@@ -10380,7 +10832,7 @@ class DataFlowDebugResource(SubResourceDebugResource):
     :param name: The resource name.
     :type name: str
     :param properties: Required. Data flow properties.
-    :type properties: ~data_factory_management_client.models.DataFlow
+    :type properties: ~azure.mgmt.datafactory.models.DataFlow
     """
 
     _validation = {
@@ -10481,7 +10933,7 @@ class DataFlowListResponse(msrest.serialization.Model):
     All required parameters must be populated in order to send to Azure.
 
     :param value: Required. List of data flows.
-    :type value: list[~data_factory_management_client.models.DataFlowResource]
+    :type value: list[~azure.mgmt.datafactory.models.DataFlowResource]
     :param next_link: The link to the next page of results, if any remaining results exist.
     :type next_link: str
     """
@@ -10546,46 +10998,6 @@ class DataFlowReference(msrest.serialization.Model):
         self.dataset_parameters = kwargs.get('dataset_parameters', None)
 
 
-class SubResource(msrest.serialization.Model):
-    """Azure Data Factory nested resource, which belongs to a factory.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    :ivar id: The resource identifier.
-    :vartype id: str
-    :ivar name: The resource name.
-    :vartype name: str
-    :ivar type: The resource type.
-    :vartype type: str
-    :ivar etag: Etag identifies change in the resource.
-    :vartype etag: str
-    """
-
-    _validation = {
-        'id': {'readonly': True},
-        'name': {'readonly': True},
-        'type': {'readonly': True},
-        'etag': {'readonly': True},
-    }
-
-    _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'str'},
-        'etag': {'key': 'etag', 'type': 'str'},
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        super(SubResource, self).__init__(**kwargs)
-        self.id = None
-        self.name = None
-        self.type = None
-        self.etag = None
-
-
 class DataFlowResource(SubResource):
     """Data flow resource type.
 
@@ -10602,7 +11014,7 @@ class DataFlowResource(SubResource):
     :ivar etag: Etag identifies change in the resource.
     :vartype etag: str
     :param properties: Required. Data flow properties.
-    :type properties: ~data_factory_management_client.models.DataFlow
+    :type properties: ~azure.mgmt.datafactory.models.DataFlow
     """
 
     _validation = {
@@ -10668,11 +11080,11 @@ class DataFlowSink(Transformation):
     :param description: Transformation description.
     :type description: str
     :param dataset: Dataset reference.
-    :type dataset: ~data_factory_management_client.models.DatasetReference
+    :type dataset: ~azure.mgmt.datafactory.models.DatasetReference
     :param linked_service: Linked service reference.
-    :type linked_service: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param schema_linked_service: Schema linked service reference.
-    :type schema_linked_service: ~data_factory_management_client.models.LinkedServiceReference
+    :type schema_linked_service: ~azure.mgmt.datafactory.models.LinkedServiceReference
     """
 
     _validation = {
@@ -10707,11 +11119,11 @@ class DataFlowSource(Transformation):
     :param description: Transformation description.
     :type description: str
     :param dataset: Dataset reference.
-    :type dataset: ~data_factory_management_client.models.DatasetReference
+    :type dataset: ~azure.mgmt.datafactory.models.DatasetReference
     :param linked_service: Linked service reference.
-    :type linked_service: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param schema_linked_service: Schema linked service reference.
-    :type schema_linked_service: ~data_factory_management_client.models.LinkedServiceReference
+    :type schema_linked_service: ~azure.mgmt.datafactory.models.LinkedServiceReference
     """
 
     _validation = {
@@ -10768,7 +11180,7 @@ class DataFlowStagingInfo(msrest.serialization.Model):
     """Staging info for execute data flow activity.
 
     :param linked_service: Staging linked service reference.
-    :type linked_service: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param folder_path: Folder path for staging blob. Type: string (or Expression with resultType
      string).
     :type folder_path: object
@@ -10803,18 +11215,18 @@ class DataLakeAnalyticsUsqlActivity(ExecutionActivity):
     :param description: Activity description.
     :type description: str
     :param depends_on: Activity depends on condition.
-    :type depends_on: list[~data_factory_management_client.models.ActivityDependency]
+    :type depends_on: list[~azure.mgmt.datafactory.models.ActivityDependency]
     :param user_properties: Activity user properties.
-    :type user_properties: list[~data_factory_management_client.models.UserProperty]
+    :type user_properties: list[~azure.mgmt.datafactory.models.UserProperty]
     :param linked_service_name: Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param policy: Activity policy.
-    :type policy: ~data_factory_management_client.models.ActivityPolicy
+    :type policy: ~azure.mgmt.datafactory.models.ActivityPolicy
     :param script_path: Required. Case-sensitive path to folder that contains the U-SQL script.
      Type: string (or Expression with resultType string).
     :type script_path: object
     :param script_linked_service: Required. Script linked service reference.
-    :type script_linked_service: ~data_factory_management_client.models.LinkedServiceReference
+    :type script_linked_service: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param degree_of_parallelism: The maximum number of nodes simultaneously used to run the job.
      Default value is 1. Type: integer (or Expression with resultType integer), minimum: 1.
     :type degree_of_parallelism: object
@@ -10883,8 +11295,9 @@ class DatasetCompression(msrest.serialization.Model):
     :param additional_properties: Unmatched properties from the message are deserialized to this
      collection.
     :type additional_properties: dict[str, object]
-    :param type: Required. Type of dataset compression.Constant filled by server.
-    :type type: str
+    :param type: Required. Type of dataset compression. Type: string (or Expression with resultType
+     string).Constant filled by server.
+    :type type: object
     """
 
     _validation = {
@@ -10893,7 +11306,7 @@ class DatasetCompression(msrest.serialization.Model):
 
     _attribute_map = {
         'additional_properties': {'key': '', 'type': '{object}'},
-        'type': {'key': 'type', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'object'},
     }
 
     _subtype_map = {
@@ -10917,8 +11330,9 @@ class DatasetBZip2Compression(DatasetCompression):
     :param additional_properties: Unmatched properties from the message are deserialized to this
      collection.
     :type additional_properties: dict[str, object]
-    :param type: Required. Type of dataset compression.Constant filled by server.
-    :type type: str
+    :param type: Required. Type of dataset compression. Type: string (or Expression with resultType
+     string).Constant filled by server.
+    :type type: object
     """
 
     _validation = {
@@ -10927,7 +11341,7 @@ class DatasetBZip2Compression(DatasetCompression):
 
     _attribute_map = {
         'additional_properties': {'key': '', 'type': '{object}'},
-        'type': {'key': 'type', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'object'},
     }
 
     def __init__(
@@ -10969,7 +11383,7 @@ class DatasetDebugResource(SubResourceDebugResource):
     :param name: The resource name.
     :type name: str
     :param properties: Required. Dataset properties.
-    :type properties: ~data_factory_management_client.models.Dataset
+    :type properties: ~azure.mgmt.datafactory.models.Dataset
     """
 
     _validation = {
@@ -10997,10 +11411,11 @@ class DatasetDeflateCompression(DatasetCompression):
     :param additional_properties: Unmatched properties from the message are deserialized to this
      collection.
     :type additional_properties: dict[str, object]
-    :param type: Required. Type of dataset compression.Constant filled by server.
-    :type type: str
-    :param level: The Deflate compression level. Possible values include: "Optimal", "Fastest".
-    :type level: str or ~data_factory_management_client.models.DatasetCompressionLevel
+    :param type: Required. Type of dataset compression. Type: string (or Expression with resultType
+     string).Constant filled by server.
+    :type type: object
+    :param level: The Deflate compression level.
+    :type level: object
     """
 
     _validation = {
@@ -11009,8 +11424,8 @@ class DatasetDeflateCompression(DatasetCompression):
 
     _attribute_map = {
         'additional_properties': {'key': '', 'type': '{object}'},
-        'type': {'key': 'type', 'type': 'str'},
-        'level': {'key': 'level', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'object'},
+        'level': {'key': 'level', 'type': 'object'},
     }
 
     def __init__(
@@ -11049,10 +11464,11 @@ class DatasetGZipCompression(DatasetCompression):
     :param additional_properties: Unmatched properties from the message are deserialized to this
      collection.
     :type additional_properties: dict[str, object]
-    :param type: Required. Type of dataset compression.Constant filled by server.
-    :type type: str
-    :param level: The GZip compression level. Possible values include: "Optimal", "Fastest".
-    :type level: str or ~data_factory_management_client.models.DatasetCompressionLevel
+    :param type: Required. Type of dataset compression. Type: string (or Expression with resultType
+     string).Constant filled by server.
+    :type type: object
+    :param level: The GZip compression level.
+    :type level: object
     """
 
     _validation = {
@@ -11061,8 +11477,8 @@ class DatasetGZipCompression(DatasetCompression):
 
     _attribute_map = {
         'additional_properties': {'key': '', 'type': '{object}'},
-        'type': {'key': 'type', 'type': 'str'},
-        'level': {'key': 'level', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'object'},
+        'level': {'key': 'level', 'type': 'object'},
     }
 
     def __init__(
@@ -11080,7 +11496,7 @@ class DatasetListResponse(msrest.serialization.Model):
     All required parameters must be populated in order to send to Azure.
 
     :param value: Required. List of datasets.
-    :type value: list[~data_factory_management_client.models.DatasetResource]
+    :type value: list[~azure.mgmt.datafactory.models.DatasetResource]
     :param next_link: The link to the next page of results, if any remaining results exist.
     :type next_link: str
     """
@@ -11156,7 +11572,7 @@ class DatasetResource(SubResource):
     :ivar etag: Etag identifies change in the resource.
     :vartype etag: str
     :param properties: Required. Dataset properties.
-    :type properties: ~data_factory_management_client.models.Dataset
+    :type properties: ~azure.mgmt.datafactory.models.Dataset
     """
 
     _validation = {
@@ -11219,8 +11635,9 @@ class DatasetTarCompression(DatasetCompression):
     :param additional_properties: Unmatched properties from the message are deserialized to this
      collection.
     :type additional_properties: dict[str, object]
-    :param type: Required. Type of dataset compression.Constant filled by server.
-    :type type: str
+    :param type: Required. Type of dataset compression. Type: string (or Expression with resultType
+     string).Constant filled by server.
+    :type type: object
     """
 
     _validation = {
@@ -11229,7 +11646,7 @@ class DatasetTarCompression(DatasetCompression):
 
     _attribute_map = {
         'additional_properties': {'key': '', 'type': '{object}'},
-        'type': {'key': 'type', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'object'},
     }
 
     def __init__(
@@ -11248,10 +11665,11 @@ class DatasetTarGZipCompression(DatasetCompression):
     :param additional_properties: Unmatched properties from the message are deserialized to this
      collection.
     :type additional_properties: dict[str, object]
-    :param type: Required. Type of dataset compression.Constant filled by server.
-    :type type: str
-    :param level: The TarGZip compression level. Possible values include: "Optimal", "Fastest".
-    :type level: str or ~data_factory_management_client.models.DatasetCompressionLevel
+    :param type: Required. Type of dataset compression. Type: string (or Expression with resultType
+     string).Constant filled by server.
+    :type type: object
+    :param level: The TarGZip compression level.
+    :type level: object
     """
 
     _validation = {
@@ -11260,8 +11678,8 @@ class DatasetTarGZipCompression(DatasetCompression):
 
     _attribute_map = {
         'additional_properties': {'key': '', 'type': '{object}'},
-        'type': {'key': 'type', 'type': 'str'},
-        'level': {'key': 'level', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'object'},
+        'level': {'key': 'level', 'type': 'object'},
     }
 
     def __init__(
@@ -11281,10 +11699,11 @@ class DatasetZipDeflateCompression(DatasetCompression):
     :param additional_properties: Unmatched properties from the message are deserialized to this
      collection.
     :type additional_properties: dict[str, object]
-    :param type: Required. Type of dataset compression.Constant filled by server.
-    :type type: str
-    :param level: The ZipDeflate compression level. Possible values include: "Optimal", "Fastest".
-    :type level: str or ~data_factory_management_client.models.DatasetCompressionLevel
+    :param type: Required. Type of dataset compression. Type: string (or Expression with resultType
+     string).Constant filled by server.
+    :type type: object
+    :param level: The ZipDeflate compression level.
+    :type level: object
     """
 
     _validation = {
@@ -11293,8 +11712,8 @@ class DatasetZipDeflateCompression(DatasetCompression):
 
     _attribute_map = {
         'additional_properties': {'key': '', 'type': '{object}'},
-        'type': {'key': 'type', 'type': 'str'},
-        'level': {'key': 'level', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'object'},
+        'level': {'key': 'level', 'type': 'object'},
     }
 
     def __init__(
@@ -11317,11 +11736,11 @@ class Db2LinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param connection_string: The connection string. It is mutually exclusive with server,
@@ -11336,12 +11755,12 @@ class Db2LinkedService(LinkedService):
     :type database: object
     :param authentication_type: AuthenticationType to be used for connection. It is mutually
      exclusive with connectionString property. Possible values include: "Basic".
-    :type authentication_type: str or ~data_factory_management_client.models.Db2AuthenticationType
+    :type authentication_type: str or ~azure.mgmt.datafactory.models.Db2AuthenticationType
     :param username: Username for authentication. It is mutually exclusive with connectionString
      property. Type: string (or Expression with resultType string).
     :type username: object
     :param password: Password for authentication.
-    :type password: ~data_factory_management_client.models.SecretBase
+    :type password: ~azure.mgmt.datafactory.models.SecretBase
     :param package_collection: Under where packages are created when querying database. It is
      mutually exclusive with connectionString property. Type: string (or Expression with resultType
      string).
@@ -11413,12 +11832,15 @@ class Db2Source(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     :param query: Database query. Type: string (or Expression with resultType string).
     :type query: object
     """
@@ -11433,8 +11855,9 @@ class Db2Source(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
     }
 
@@ -11466,14 +11889,14 @@ class Db2TableDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param table_name: This property will be retired. Please consider using schema + table
      properties instead.
     :type table_name: object
@@ -11530,13 +11953,13 @@ class DeleteActivity(ExecutionActivity):
     :param description: Activity description.
     :type description: str
     :param depends_on: Activity depends on condition.
-    :type depends_on: list[~data_factory_management_client.models.ActivityDependency]
+    :type depends_on: list[~azure.mgmt.datafactory.models.ActivityDependency]
     :param user_properties: Activity user properties.
-    :type user_properties: list[~data_factory_management_client.models.UserProperty]
+    :type user_properties: list[~azure.mgmt.datafactory.models.UserProperty]
     :param linked_service_name: Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param policy: Activity policy.
-    :type policy: ~data_factory_management_client.models.ActivityPolicy
+    :type policy: ~azure.mgmt.datafactory.models.ActivityPolicy
     :param recursive: If true, files or sub-folders under current folder path will be deleted
      recursively. Default is false. Type: boolean (or Expression with resultType boolean).
     :type recursive: object
@@ -11548,11 +11971,11 @@ class DeleteActivity(ExecutionActivity):
     :type enable_logging: object
     :param log_storage_settings: Log storage settings customer need to provide when enableLogging
      is true.
-    :type log_storage_settings: ~data_factory_management_client.models.LogStorageSettings
+    :type log_storage_settings: ~azure.mgmt.datafactory.models.LogStorageSettings
     :param dataset: Required. Delete activity dataset reference.
-    :type dataset: ~data_factory_management_client.models.DatasetReference
+    :type dataset: ~azure.mgmt.datafactory.models.DatasetReference
     :param store_settings: Delete activity store settings.
-    :type store_settings: ~data_factory_management_client.models.StoreReadSettings
+    :type store_settings: ~azure.mgmt.datafactory.models.StoreReadSettings
     """
 
     _validation = {
@@ -11631,16 +12054,16 @@ class DelimitedTextDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param location: The location of the delimited text storage.
-    :type location: ~data_factory_management_client.models.DatasetLocation
+    :type location: ~azure.mgmt.datafactory.models.DatasetLocation
     :param column_delimiter: The column delimiter. Type: string (or Expression with resultType
      string).
     :type column_delimiter: object
@@ -11652,12 +12075,11 @@ class DelimitedTextDataset(Dataset):
      https://msdn.microsoft.com/library/system.text.encoding.aspx. Type: string (or Expression with
      resultType string).
     :type encoding_name: object
-    :param compression_codec:  Possible values include: "none", "gzip", "snappy", "lzo", "bzip2",
-     "deflate", "zipDeflate", "lz4", "tar", "tarGZip".
-    :type compression_codec: str or ~data_factory_management_client.models.CompressionCodec
-    :param compression_level: The data compression method used for DelimitedText. Possible values
-     include: "Optimal", "Fastest".
-    :type compression_level: str or ~data_factory_management_client.models.DatasetCompressionLevel
+    :param compression_codec: The data compressionCodec. Type: string (or Expression with
+     resultType string).
+    :type compression_codec: object
+    :param compression_level: The data compression method used for DelimitedText.
+    :type compression_level: object
     :param quote_char: The quote character. Type: string (or Expression with resultType string).
     :type quote_char: object
     :param escape_char: The escape character. Type: string (or Expression with resultType string).
@@ -11689,8 +12111,8 @@ class DelimitedTextDataset(Dataset):
         'column_delimiter': {'key': 'typeProperties.columnDelimiter', 'type': 'object'},
         'row_delimiter': {'key': 'typeProperties.rowDelimiter', 'type': 'object'},
         'encoding_name': {'key': 'typeProperties.encodingName', 'type': 'object'},
-        'compression_codec': {'key': 'typeProperties.compressionCodec', 'type': 'str'},
-        'compression_level': {'key': 'typeProperties.compressionLevel', 'type': 'str'},
+        'compression_codec': {'key': 'typeProperties.compressionCodec', 'type': 'object'},
+        'compression_level': {'key': 'typeProperties.compressionLevel', 'type': 'object'},
         'quote_char': {'key': 'typeProperties.quoteChar', 'type': 'object'},
         'escape_char': {'key': 'typeProperties.escapeChar', 'type': 'object'},
         'first_row_as_header': {'key': 'typeProperties.firstRowAsHeader', 'type': 'object'},
@@ -11729,7 +12151,7 @@ class DelimitedTextReadSettings(FormatReadSettings):
      input files. Type: integer (or Expression with resultType integer).
     :type skip_line_count: object
     :param compression_properties: Compression settings.
-    :type compression_properties: ~data_factory_management_client.models.CompressionReadSettings
+    :type compression_properties: ~azure.mgmt.datafactory.models.CompressionReadSettings
     """
 
     _validation = {
@@ -11778,10 +12200,13 @@ class DelimitedTextSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param store_settings: DelimitedText store settings.
-    :type store_settings: ~data_factory_management_client.models.StoreWriteSettings
+    :type store_settings: ~azure.mgmt.datafactory.models.StoreWriteSettings
     :param format_settings: DelimitedText format settings.
-    :type format_settings: ~data_factory_management_client.models.DelimitedTextWriteSettings
+    :type format_settings: ~azure.mgmt.datafactory.models.DelimitedTextWriteSettings
     """
 
     _validation = {
@@ -11796,6 +12221,7 @@ class DelimitedTextSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'store_settings': {'key': 'storeSettings', 'type': 'StoreWriteSettings'},
         'format_settings': {'key': 'formatSettings', 'type': 'DelimitedTextWriteSettings'},
     }
@@ -11829,13 +12255,16 @@ class DelimitedTextSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param store_settings: DelimitedText store settings.
-    :type store_settings: ~data_factory_management_client.models.StoreReadSettings
+    :type store_settings: ~azure.mgmt.datafactory.models.StoreReadSettings
     :param format_settings: DelimitedText format settings.
-    :type format_settings: ~data_factory_management_client.models.DelimitedTextReadSettings
+    :type format_settings: ~azure.mgmt.datafactory.models.DelimitedTextReadSettings
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     """
 
     _validation = {
@@ -11848,9 +12277,10 @@ class DelimitedTextSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'store_settings': {'key': 'storeSettings', 'type': 'StoreReadSettings'},
         'format_settings': {'key': 'formatSettings', 'type': 'DelimitedTextReadSettings'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
     }
 
     def __init__(
@@ -12004,14 +12434,14 @@ class DocumentDbCollectionDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param collection_name: Required. Document Database collection name. Type: string (or
      Expression with resultType string).
     :type collection_name: object
@@ -12070,6 +12500,9 @@ class DocumentDbCollectionSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param nesting_separator: Nested properties separator. Default is . (dot). Type: string (or
      Expression with resultType string).
     :type nesting_separator: object
@@ -12090,6 +12523,7 @@ class DocumentDbCollectionSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'nesting_separator': {'key': 'nestingSeparator', 'type': 'object'},
         'write_behavior': {'key': 'writeBehavior', 'type': 'object'},
     }
@@ -12123,6 +12557,9 @@ class DocumentDbCollectionSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query: Documents query. Type: string (or Expression with resultType string).
     :type query: object
     :param nesting_separator: Nested properties separator. Type: string (or Expression with
@@ -12132,8 +12569,8 @@ class DocumentDbCollectionSource(CopySource):
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     """
 
     _validation = {
@@ -12146,10 +12583,11 @@ class DocumentDbCollectionSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
         'nesting_separator': {'key': 'nestingSeparator', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
     }
 
     def __init__(
@@ -12175,18 +12613,18 @@ class DrillLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param connection_string: An ODBC connection string. Type: string, SecureString or
      AzureKeyVaultSecretReference.
     :type connection_string: object
     :param pwd: The Azure key vault secret reference of password in connection string.
-    :type pwd: ~data_factory_management_client.models.AzureKeyVaultSecretReference
+    :type pwd: ~azure.mgmt.datafactory.models.AzureKeyVaultSecretReference
     :param encrypted_credential: The encrypted credential used for authentication. Credentials are
      encrypted using the integration runtime credential manager. Type: string (or Expression with
      resultType string).
@@ -12239,12 +12677,15 @@ class DrillSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: object
@@ -12260,8 +12701,9 @@ class DrillSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
     }
 
@@ -12293,14 +12735,14 @@ class DrillTableDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param table_name: This property will be retired. Please consider using schema + table
      properties instead.
     :type table_name: object
@@ -12373,7 +12815,7 @@ class DwCopyCommandSettings(msrest.serialization.Model):
      default values in the property overwrite the DEFAULT constraint set in the DB, and identity
      column cannot have a default value. Type: array of objects (or Expression with resultType array
      of objects).
-    :type default_values: list[~data_factory_management_client.models.DwCopyCommandDefaultValue]
+    :type default_values: list[~azure.mgmt.datafactory.models.DwCopyCommandDefaultValue]
     :param additional_options: Additional options directly passed to SQL DW in Copy Command. Type:
      key value pairs (value should be string type) (or Expression with resultType object). Example:
      "additionalOptions": { "MAXERRORS": "1000", "DATEFORMAT": "'ymd'" }.
@@ -12405,11 +12847,11 @@ class DynamicsAxLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param url: Required. The Dynamics AX (or Dynamics 365 Finance and Operations) instance OData
@@ -12421,7 +12863,7 @@ class DynamicsAxLinkedService(LinkedService):
     :param service_principal_key: Required. Specify the application's key. Mark this field as a
      SecureString to store it securely in Data Factory, or reference a secret stored in Azure Key
      Vault. Type: string (or Expression with resultType string).
-    :type service_principal_key: ~data_factory_management_client.models.SecretBase
+    :type service_principal_key: ~azure.mgmt.datafactory.models.SecretBase
     :param tenant: Required. Specify the tenant information (domain name or tenant ID) under which
      your application resides. Retrieve it by hovering the mouse in the top-right corner of the
      Azure portal. Type: string (or Expression with resultType string).
@@ -12492,14 +12934,14 @@ class DynamicsAxResourceDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param path: Required. The path of the Dynamics AX OData entity. Type: string (or Expression
      with resultType string).
     :type path: object
@@ -12552,12 +12994,15 @@ class DynamicsAxSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: object
@@ -12578,8 +13023,9 @@ class DynamicsAxSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
         'http_request_timeout': {'key': 'httpRequestTimeout', 'type': 'object'},
     }
@@ -12613,14 +13059,14 @@ class DynamicsCrmEntityDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param entity_name: The logical name of the entity. Type: string (or Expression with resultType
      string).
     :type entity_name: object
@@ -12664,18 +13110,17 @@ class DynamicsCrmLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param deployment_type: Required. The deployment type of the Dynamics CRM instance. 'Online'
      for Dynamics CRM Online and 'OnPremisesWithIfd' for Dynamics CRM on-premises with Ifd. Type:
-     string (or Expression with resultType string). Possible values include: "Online",
-     "OnPremisesWithIfd".
-    :type deployment_type: str or ~data_factory_management_client.models.DynamicsDeploymentType
+     string (or Expression with resultType string).
+    :type deployment_type: object
     :param host_name: The host name of the on-premises Dynamics CRM server. The property is
      required for on-prem and not allowed for online. Type: string (or Expression with resultType
      string).
@@ -12694,30 +13139,26 @@ class DynamicsCrmLinkedService(LinkedService):
     :param authentication_type: Required. The authentication type to connect to Dynamics CRM
      server. 'Office365' for online scenario, 'Ifd' for on-premises with Ifd scenario,
      'AADServicePrincipal' for Server-To-Server authentication in online scenario. Type: string (or
-     Expression with resultType string). Possible values include: "Office365", "Ifd",
-     "AADServicePrincipal".
-    :type authentication_type: str or
-     ~data_factory_management_client.models.DynamicsAuthenticationType
+     Expression with resultType string).
+    :type authentication_type: object
     :param username: User name to access the Dynamics CRM instance. Type: string (or Expression
      with resultType string).
     :type username: object
     :param password: Password to access the Dynamics CRM instance.
-    :type password: ~data_factory_management_client.models.SecretBase
+    :type password: ~azure.mgmt.datafactory.models.SecretBase
     :param service_principal_id: The client ID of the application in Azure Active Directory used
      for Server-To-Server authentication. Type: string (or Expression with resultType string).
     :type service_principal_id: object
     :param service_principal_credential_type: The service principal credential type to use in
      Server-To-Server authentication. 'ServicePrincipalKey' for key/secret, 'ServicePrincipalCert'
-     for certificate. Type: string (or Expression with resultType string). Possible values include:
-     "ServicePrincipalKey", "ServicePrincipalCert".
-    :type service_principal_credential_type: str or
-     ~data_factory_management_client.models.DynamicsServicePrincipalCredentialType
+     for certificate. Type: string (or Expression with resultType string).
+    :type service_principal_credential_type: object
     :param service_principal_credential: The credential of the service principal object in Azure
      Active Directory. If servicePrincipalCredentialType is 'ServicePrincipalKey',
      servicePrincipalCredential can be SecureString or AzureKeyVaultSecretReference. If
      servicePrincipalCredentialType is 'ServicePrincipalCert', servicePrincipalCredential can only
      be AzureKeyVaultSecretReference.
-    :type service_principal_credential: ~data_factory_management_client.models.SecretBase
+    :type service_principal_credential: ~azure.mgmt.datafactory.models.SecretBase
     :param encrypted_credential: The encrypted credential used for authentication. Credentials are
      encrypted using the integration runtime credential manager. Type: string (or Expression with
      resultType string).
@@ -12737,16 +13178,16 @@ class DynamicsCrmLinkedService(LinkedService):
         'description': {'key': 'description', 'type': 'str'},
         'parameters': {'key': 'parameters', 'type': '{ParameterSpecification}'},
         'annotations': {'key': 'annotations', 'type': '[object]'},
-        'deployment_type': {'key': 'typeProperties.deploymentType', 'type': 'str'},
+        'deployment_type': {'key': 'typeProperties.deploymentType', 'type': 'object'},
         'host_name': {'key': 'typeProperties.hostName', 'type': 'object'},
         'port': {'key': 'typeProperties.port', 'type': 'object'},
         'service_uri': {'key': 'typeProperties.serviceUri', 'type': 'object'},
         'organization_name': {'key': 'typeProperties.organizationName', 'type': 'object'},
-        'authentication_type': {'key': 'typeProperties.authenticationType', 'type': 'str'},
+        'authentication_type': {'key': 'typeProperties.authenticationType', 'type': 'object'},
         'username': {'key': 'typeProperties.username', 'type': 'object'},
         'password': {'key': 'typeProperties.password', 'type': 'SecretBase'},
         'service_principal_id': {'key': 'typeProperties.servicePrincipalId', 'type': 'object'},
-        'service_principal_credential_type': {'key': 'typeProperties.servicePrincipalCredentialType', 'type': 'str'},
+        'service_principal_credential_type': {'key': 'typeProperties.servicePrincipalCredentialType', 'type': 'object'},
         'service_principal_credential': {'key': 'typeProperties.servicePrincipalCredential', 'type': 'SecretBase'},
         'encrypted_credential': {'key': 'typeProperties.encryptedCredential', 'type': 'object'},
     }
@@ -12796,9 +13237,12 @@ class DynamicsCrmSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param write_behavior: Required. The write behavior for the operation. Possible values include:
      "Upsert".
-    :type write_behavior: str or ~data_factory_management_client.models.DynamicsSinkWriteBehavior
+    :type write_behavior: str or ~azure.mgmt.datafactory.models.DynamicsSinkWriteBehavior
     :param ignore_null_values: The flag indicating whether to ignore null values from input dataset
      (except key fields) during write operation. Default is false. Type: boolean (or Expression with
      resultType boolean).
@@ -12821,6 +13265,7 @@ class DynamicsCrmSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'write_behavior': {'key': 'writeBehavior', 'type': 'str'},
         'ignore_null_values': {'key': 'ignoreNullValues', 'type': 'object'},
         'alternate_key_name': {'key': 'alternateKeyName', 'type': 'object'},
@@ -12856,12 +13301,15 @@ class DynamicsCrmSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query: FetchXML is a proprietary query language that is used in Microsoft Dynamics CRM
      (online & on-premises). Type: string (or Expression with resultType string).
     :type query: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     """
 
     _validation = {
@@ -12874,8 +13322,9 @@ class DynamicsCrmSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
     }
 
     def __init__(
@@ -12907,14 +13356,14 @@ class DynamicsEntityDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param entity_name: The logical name of the entity. Type: string (or Expression with resultType
      string).
     :type entity_name: object
@@ -12958,17 +13407,17 @@ class DynamicsLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param deployment_type: Required. The deployment type of the Dynamics instance. 'Online' for
      Dynamics Online and 'OnPremisesWithIfd' for Dynamics on-premises with Ifd. Type: string (or
-     Expression with resultType string). Possible values include: "Online", "OnPremisesWithIfd".
-    :type deployment_type: str or ~data_factory_management_client.models.DynamicsDeploymentType
+     Expression with resultType string).
+    :type deployment_type: object
     :param host_name: The host name of the on-premises Dynamics server. The property is required
      for on-prem and not allowed for online. Type: string (or Expression with resultType string).
     :type host_name: object
@@ -12986,29 +13435,26 @@ class DynamicsLinkedService(LinkedService):
     :param authentication_type: Required. The authentication type to connect to Dynamics server.
      'Office365' for online scenario, 'Ifd' for on-premises with Ifd scenario, 'AADServicePrincipal'
      for Server-To-Server authentication in online scenario. Type: string (or Expression with
-     resultType string). Possible values include: "Office365", "Ifd", "AADServicePrincipal".
-    :type authentication_type: str or
-     ~data_factory_management_client.models.DynamicsAuthenticationType
+     resultType string).
+    :type authentication_type: object
     :param username: User name to access the Dynamics instance. Type: string (or Expression with
      resultType string).
     :type username: object
     :param password: Password to access the Dynamics instance.
-    :type password: ~data_factory_management_client.models.SecretBase
+    :type password: ~azure.mgmt.datafactory.models.SecretBase
     :param service_principal_id: The client ID of the application in Azure Active Directory used
      for Server-To-Server authentication. Type: string (or Expression with resultType string).
     :type service_principal_id: object
     :param service_principal_credential_type: The service principal credential type to use in
      Server-To-Server authentication. 'ServicePrincipalKey' for key/secret, 'ServicePrincipalCert'
-     for certificate. Type: string (or Expression with resultType string). Possible values include:
-     "ServicePrincipalKey", "ServicePrincipalCert".
-    :type service_principal_credential_type: str or
-     ~data_factory_management_client.models.DynamicsServicePrincipalCredentialType
+     for certificate. Type: string (or Expression with resultType string).
+    :type service_principal_credential_type: str
     :param service_principal_credential: The credential of the service principal object in Azure
      Active Directory. If servicePrincipalCredentialType is 'ServicePrincipalKey',
      servicePrincipalCredential can be SecureString or AzureKeyVaultSecretReference. If
      servicePrincipalCredentialType is 'ServicePrincipalCert', servicePrincipalCredential can only
      be AzureKeyVaultSecretReference.
-    :type service_principal_credential: ~data_factory_management_client.models.SecretBase
+    :type service_principal_credential: ~azure.mgmt.datafactory.models.SecretBase
     :param encrypted_credential: The encrypted credential used for authentication. Credentials are
      encrypted using the integration runtime credential manager. Type: string (or Expression with
      resultType string).
@@ -13028,12 +13474,12 @@ class DynamicsLinkedService(LinkedService):
         'description': {'key': 'description', 'type': 'str'},
         'parameters': {'key': 'parameters', 'type': '{ParameterSpecification}'},
         'annotations': {'key': 'annotations', 'type': '[object]'},
-        'deployment_type': {'key': 'typeProperties.deploymentType', 'type': 'str'},
+        'deployment_type': {'key': 'typeProperties.deploymentType', 'type': 'object'},
         'host_name': {'key': 'typeProperties.hostName', 'type': 'object'},
         'port': {'key': 'typeProperties.port', 'type': 'object'},
         'service_uri': {'key': 'typeProperties.serviceUri', 'type': 'object'},
         'organization_name': {'key': 'typeProperties.organizationName', 'type': 'object'},
-        'authentication_type': {'key': 'typeProperties.authenticationType', 'type': 'str'},
+        'authentication_type': {'key': 'typeProperties.authenticationType', 'type': 'object'},
         'username': {'key': 'typeProperties.username', 'type': 'object'},
         'password': {'key': 'typeProperties.password', 'type': 'SecretBase'},
         'service_principal_id': {'key': 'typeProperties.servicePrincipalId', 'type': 'object'},
@@ -13087,9 +13533,12 @@ class DynamicsSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param write_behavior: Required. The write behavior for the operation. Possible values include:
      "Upsert".
-    :type write_behavior: str or ~data_factory_management_client.models.DynamicsSinkWriteBehavior
+    :type write_behavior: str or ~azure.mgmt.datafactory.models.DynamicsSinkWriteBehavior
     :param ignore_null_values: The flag indicating whether ignore null values from input dataset
      (except key fields) during write operation. Default is false. Type: boolean (or Expression with
      resultType boolean).
@@ -13112,6 +13561,7 @@ class DynamicsSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'write_behavior': {'key': 'writeBehavior', 'type': 'str'},
         'ignore_null_values': {'key': 'ignoreNullValues', 'type': 'object'},
         'alternate_key_name': {'key': 'alternateKeyName', 'type': 'object'},
@@ -13147,12 +13597,15 @@ class DynamicsSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query: FetchXML is a proprietary query language that is used in Microsoft Dynamics
      (online & on-premises). Type: string (or Expression with resultType string).
     :type query: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     """
 
     _validation = {
@@ -13165,8 +13618,9 @@ class DynamicsSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
     }
 
     def __init__(
@@ -13190,11 +13644,11 @@ class EloquaLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param endpoint: Required. The endpoint of the Eloqua server. (i.e. eloqua.example.com).
@@ -13203,7 +13657,7 @@ class EloquaLinkedService(LinkedService):
      sitename/username. (i.e. Eloqua/Alice).
     :type username: object
     :param password: The password corresponding to the user name.
-    :type password: ~data_factory_management_client.models.SecretBase
+    :type password: ~azure.mgmt.datafactory.models.SecretBase
     :param use_encrypted_endpoints: Specifies whether the data source endpoints are encrypted using
      HTTPS. The default value is true.
     :type use_encrypted_endpoints: object
@@ -13276,14 +13730,14 @@ class EloquaObjectDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param table_name: The table name. Type: string (or Expression with resultType string).
     :type table_name: object
     """
@@ -13334,12 +13788,15 @@ class EloquaSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: object
@@ -13355,8 +13812,9 @@ class EloquaSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
     }
 
@@ -13384,7 +13842,7 @@ class EncryptionConfiguration(msrest.serialization.Model):
     :type key_version: str
     :param identity: User assigned identity to use to authenticate to customer's key vault. If not
      provided Managed Service Identity will be used.
-    :type identity: ~data_factory_management_client.models.CmkIdentityDefinition
+    :type identity: ~azure.mgmt.datafactory.models.CmkIdentityDefinition
     """
 
     _validation = {
@@ -13415,7 +13873,7 @@ class EntityReference(msrest.serialization.Model):
 
     :param type: The type of this referenced entity. Possible values include:
      "IntegrationRuntimeReference", "LinkedServiceReference".
-    :type type: str or ~data_factory_management_client.models.IntegrationRuntimeEntityReferenceType
+    :type type: str or ~azure.mgmt.datafactory.models.IntegrationRuntimeEntityReferenceType
     :param reference_name: The name of this referenced entity.
     :type reference_name: str
     """
@@ -13488,19 +13946,22 @@ class ExcelDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param location: The location of the excel storage.
-    :type location: ~data_factory_management_client.models.DatasetLocation
-    :param sheet_name: The sheet of excel file. Type: string (or Expression with resultType
+    :type location: ~azure.mgmt.datafactory.models.DatasetLocation
+    :param sheet_name: The sheet name of excel file. Type: string (or Expression with resultType
      string).
     :type sheet_name: object
+    :param sheet_index: The sheet index of excel file and default value is 0. Type: integer (or
+     Expression with resultType integer).
+    :type sheet_index: object
     :param range: The partial data of one sheet. Type: string (or Expression with resultType
      string).
     :type range: object
@@ -13509,7 +13970,7 @@ class ExcelDataset(Dataset):
      false. Type: boolean (or Expression with resultType boolean).
     :type first_row_as_header: object
     :param compression: The data compression method used for the json dataset.
-    :type compression: ~data_factory_management_client.models.DatasetCompression
+    :type compression: ~azure.mgmt.datafactory.models.DatasetCompression
     :param null_value: The null value string. Type: string (or Expression with resultType string).
     :type null_value: object
     """
@@ -13531,6 +13992,7 @@ class ExcelDataset(Dataset):
         'folder': {'key': 'folder', 'type': 'DatasetFolder'},
         'location': {'key': 'typeProperties.location', 'type': 'DatasetLocation'},
         'sheet_name': {'key': 'typeProperties.sheetName', 'type': 'object'},
+        'sheet_index': {'key': 'typeProperties.sheetIndex', 'type': 'object'},
         'range': {'key': 'typeProperties.range', 'type': 'object'},
         'first_row_as_header': {'key': 'typeProperties.firstRowAsHeader', 'type': 'object'},
         'compression': {'key': 'typeProperties.compression', 'type': 'DatasetCompression'},
@@ -13545,6 +14007,7 @@ class ExcelDataset(Dataset):
         self.type = 'Excel'  # type: str
         self.location = kwargs.get('location', None)
         self.sheet_name = kwargs.get('sheet_name', None)
+        self.sheet_index = kwargs.get('sheet_index', None)
         self.range = kwargs.get('range', None)
         self.first_row_as_header = kwargs.get('first_row_as_header', None)
         self.compression = kwargs.get('compression', None)
@@ -13570,11 +14033,14 @@ class ExcelSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param store_settings: Excel store settings.
-    :type store_settings: ~data_factory_management_client.models.StoreReadSettings
+    :type store_settings: ~azure.mgmt.datafactory.models.StoreReadSettings
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     """
 
     _validation = {
@@ -13587,8 +14053,9 @@ class ExcelSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'store_settings': {'key': 'storeSettings', 'type': 'StoreReadSettings'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
     }
 
     def __init__(
@@ -13616,22 +14083,21 @@ class ExecuteDataFlowActivity(ExecutionActivity):
     :param description: Activity description.
     :type description: str
     :param depends_on: Activity depends on condition.
-    :type depends_on: list[~data_factory_management_client.models.ActivityDependency]
+    :type depends_on: list[~azure.mgmt.datafactory.models.ActivityDependency]
     :param user_properties: Activity user properties.
-    :type user_properties: list[~data_factory_management_client.models.UserProperty]
+    :type user_properties: list[~azure.mgmt.datafactory.models.UserProperty]
     :param linked_service_name: Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param policy: Activity policy.
-    :type policy: ~data_factory_management_client.models.ActivityPolicy
+    :type policy: ~azure.mgmt.datafactory.models.ActivityPolicy
     :param data_flow: Required. Data flow reference.
-    :type data_flow: ~data_factory_management_client.models.DataFlowReference
+    :type data_flow: ~azure.mgmt.datafactory.models.DataFlowReference
     :param staging: Staging info for execute data flow activity.
-    :type staging: ~data_factory_management_client.models.DataFlowStagingInfo
+    :type staging: ~azure.mgmt.datafactory.models.DataFlowStagingInfo
     :param integration_runtime: The integration runtime reference.
-    :type integration_runtime: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type integration_runtime: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param compute: Compute properties for data flow activity.
-    :type compute:
-     ~data_factory_management_client.models.ExecuteDataFlowActivityTypePropertiesCompute
+    :type compute: ~azure.mgmt.datafactory.models.ExecuteDataFlowActivityTypePropertiesCompute
     :param trace_level: Trace level setting used for data flow monitoring output. Supported values
      are: 'coarse', 'fine', and 'none'. Type: string (or Expression with resultType string).
     :type trace_level: object
@@ -13724,11 +14190,11 @@ class ExecutePipelineActivity(Activity):
     :param description: Activity description.
     :type description: str
     :param depends_on: Activity depends on condition.
-    :type depends_on: list[~data_factory_management_client.models.ActivityDependency]
+    :type depends_on: list[~azure.mgmt.datafactory.models.ActivityDependency]
     :param user_properties: Activity user properties.
-    :type user_properties: list[~data_factory_management_client.models.UserProperty]
+    :type user_properties: list[~azure.mgmt.datafactory.models.UserProperty]
     :param pipeline: Required. Pipeline reference.
-    :type pipeline: ~data_factory_management_client.models.PipelineReference
+    :type pipeline: ~azure.mgmt.datafactory.models.PipelineReference
     :param parameters: Pipeline parameters.
     :type parameters: dict[str, object]
     :param wait_on_completion: Defines whether activity execution will wait for the dependent
@@ -13780,15 +14246,15 @@ class ExecuteSsisPackageActivity(ExecutionActivity):
     :param description: Activity description.
     :type description: str
     :param depends_on: Activity depends on condition.
-    :type depends_on: list[~data_factory_management_client.models.ActivityDependency]
+    :type depends_on: list[~azure.mgmt.datafactory.models.ActivityDependency]
     :param user_properties: Activity user properties.
-    :type user_properties: list[~data_factory_management_client.models.UserProperty]
+    :type user_properties: list[~azure.mgmt.datafactory.models.UserProperty]
     :param linked_service_name: Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param policy: Activity policy.
-    :type policy: ~data_factory_management_client.models.ActivityPolicy
+    :type policy: ~azure.mgmt.datafactory.models.ActivityPolicy
     :param package_location: Required. SSIS package location.
-    :type package_location: ~data_factory_management_client.models.SsisPackageLocation
+    :type package_location: ~azure.mgmt.datafactory.models.SsisPackageLocation
     :param runtime: Specifies the runtime to execute SSIS package. The value should be "x86" or
      "x64". Type: string (or Expression with resultType string).
     :type runtime: object
@@ -13799,15 +14265,13 @@ class ExecuteSsisPackageActivity(ExecutionActivity):
      Expression with resultType string).
     :type environment_path: object
     :param execution_credential: The package execution credential.
-    :type execution_credential: ~data_factory_management_client.models.SsisExecutionCredential
+    :type execution_credential: ~azure.mgmt.datafactory.models.SsisExecutionCredential
     :param connect_via: Required. The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param project_parameters: The project level parameters to execute the SSIS package.
-    :type project_parameters: dict[str,
-     ~data_factory_management_client.models.SsisExecutionParameter]
+    :type project_parameters: dict[str, ~azure.mgmt.datafactory.models.SsisExecutionParameter]
     :param package_parameters: The package level parameters to execute the SSIS package.
-    :type package_parameters: dict[str,
-     ~data_factory_management_client.models.SsisExecutionParameter]
+    :type package_parameters: dict[str, ~azure.mgmt.datafactory.models.SsisExecutionParameter]
     :param project_connection_managers: The project level connection managers to execute the SSIS
      package.
     :type project_connection_managers: dict[str, object]
@@ -13815,10 +14279,9 @@ class ExecuteSsisPackageActivity(ExecutionActivity):
      package.
     :type package_connection_managers: dict[str, object]
     :param property_overrides: The property overrides to execute the SSIS package.
-    :type property_overrides: dict[str,
-     ~data_factory_management_client.models.SsisPropertyOverride]
+    :type property_overrides: dict[str, ~azure.mgmt.datafactory.models.SsisPropertyOverride]
     :param log_location: SSIS package execution log location.
-    :type log_location: ~data_factory_management_client.models.SsisLogLocation
+    :type log_location: ~azure.mgmt.datafactory.models.SsisLogLocation
     """
 
     _validation = {
@@ -13877,8 +14340,7 @@ class ExposureControlBatchRequest(msrest.serialization.Model):
     All required parameters must be populated in order to send to Azure.
 
     :param exposure_control_requests: Required. List of exposure control features.
-    :type exposure_control_requests:
-     list[~data_factory_management_client.models.ExposureControlRequest]
+    :type exposure_control_requests: list[~azure.mgmt.datafactory.models.ExposureControlRequest]
     """
 
     _validation = {
@@ -13903,8 +14365,7 @@ class ExposureControlBatchResponse(msrest.serialization.Model):
     All required parameters must be populated in order to send to Azure.
 
     :param exposure_control_responses: Required. List of exposure control feature values.
-    :type exposure_control_responses:
-     list[~data_factory_management_client.models.ExposureControlResponse]
+    :type exposure_control_responses: list[~azure.mgmt.datafactory.models.ExposureControlResponse]
     """
 
     _validation = {
@@ -14078,7 +14539,7 @@ class Factory(Resource):
      collection.
     :type additional_properties: dict[str, object]
     :param identity: Managed service identity of the factory.
-    :type identity: ~data_factory_management_client.models.FactoryIdentity
+    :type identity: ~azure.mgmt.datafactory.models.FactoryIdentity
     :ivar provisioning_state: Factory provisioning state, example Succeeded.
     :vartype provisioning_state: str
     :ivar create_time: Time the factory was created in ISO8601 format.
@@ -14086,15 +14547,14 @@ class Factory(Resource):
     :ivar version: Version of the factory.
     :vartype version: str
     :param repo_configuration: Git repo information of the factory.
-    :type repo_configuration: ~data_factory_management_client.models.FactoryRepoConfiguration
+    :type repo_configuration: ~azure.mgmt.datafactory.models.FactoryRepoConfiguration
     :param global_parameters: List of parameters for factory.
-    :type global_parameters: dict[str,
-     ~data_factory_management_client.models.GlobalParameterSpecification]
+    :type global_parameters: dict[str, ~azure.mgmt.datafactory.models.GlobalParameterSpecification]
     :param encryption: Properties to enable Customer Managed Key for the factory.
-    :type encryption: ~data_factory_management_client.models.EncryptionConfiguration
+    :type encryption: ~azure.mgmt.datafactory.models.EncryptionConfiguration
     :param public_network_access: Whether or not public network access is allowed for the data
      factory. Possible values include: "Enabled", "Disabled".
-    :type public_network_access: str or ~data_factory_management_client.models.PublicNetworkAccess
+    :type public_network_access: str or ~azure.mgmt.datafactory.models.PublicNetworkAccess
     """
 
     _validation = {
@@ -14254,7 +14714,7 @@ class FactoryIdentity(msrest.serialization.Model):
 
     :param type: Required. The identity type. Possible values include: "SystemAssigned",
      "UserAssigned", "SystemAssigned,UserAssigned".
-    :type type: str or ~data_factory_management_client.models.FactoryIdentityType
+    :type type: str or ~azure.mgmt.datafactory.models.FactoryIdentityType
     :ivar principal_id: The principal id of the identity.
     :vartype principal_id: str
     :ivar tenant_id: The client tenant id of the identity.
@@ -14293,7 +14753,7 @@ class FactoryListResponse(msrest.serialization.Model):
     All required parameters must be populated in order to send to Azure.
 
     :param value: Required. List of factories.
-    :type value: list[~data_factory_management_client.models.Factory]
+    :type value: list[~azure.mgmt.datafactory.models.Factory]
     :param next_link: The link to the next page of results, if any remaining results exist.
     :type next_link: str
     """
@@ -14322,7 +14782,7 @@ class FactoryRepoUpdate(msrest.serialization.Model):
     :param factory_resource_id: The factory resource id.
     :type factory_resource_id: str
     :param repo_configuration: Git repo information of the factory.
-    :type repo_configuration: ~data_factory_management_client.models.FactoryRepoConfiguration
+    :type repo_configuration: ~azure.mgmt.datafactory.models.FactoryRepoConfiguration
     """
 
     _attribute_map = {
@@ -14345,7 +14805,7 @@ class FactoryUpdateParameters(msrest.serialization.Model):
     :param tags: A set of tags. The resource tags.
     :type tags: dict[str, str]
     :param identity: Managed service identity of the factory.
-    :type identity: ~data_factory_management_client.models.FactoryIdentity
+    :type identity: ~azure.mgmt.datafactory.models.FactoryIdentity
     """
 
     _attribute_map = {
@@ -14426,11 +14886,11 @@ class FileServerLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param host: Required. Host name of the server. Type: string (or Expression with resultType
@@ -14440,7 +14900,7 @@ class FileServerLinkedService(LinkedService):
      string).
     :type user_id: object
     :param password: Password to logon the server.
-    :type password: ~data_factory_management_client.models.SecretBase
+    :type password: ~azure.mgmt.datafactory.models.SecretBase
     :param encrypted_credential: The encrypted credential used for authentication. Credentials are
      encrypted using the integration runtime credential manager. Type: string (or Expression with
      resultType string).
@@ -14527,6 +14987,9 @@ class FileServerReadSettings(StoreReadSettings):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param recursive: If true, files under the folder path will be read recursively. Default is
      true. Type: boolean (or Expression with resultType boolean).
     :type recursive: object
@@ -14567,6 +15030,7 @@ class FileServerReadSettings(StoreReadSettings):
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'recursive': {'key': 'recursive', 'type': 'object'},
         'wildcard_folder_path': {'key': 'wildcardFolderPath', 'type': 'object'},
         'wildcard_file_name': {'key': 'wildcardFileName', 'type': 'object'},
@@ -14610,6 +15074,9 @@ class FileServerWriteSettings(StoreWriteSettings):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param copy_behavior: The type of copy behavior for copy sink.
     :type copy_behavior: object
     """
@@ -14622,6 +15089,7 @@ class FileServerWriteSettings(StoreWriteSettings):
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'copy_behavior': {'key': 'copyBehavior', 'type': 'object'},
     }
 
@@ -14652,14 +15120,14 @@ class FileShareDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param folder_path: The path of the on-premises file system. Type: string (or Expression with
      resultType string).
     :type folder_path: object
@@ -14673,12 +15141,12 @@ class FileShareDataset(Dataset):
      with resultType string).
     :type modified_datetime_end: object
     :param format: The format of the files.
-    :type format: ~data_factory_management_client.models.DatasetStorageFormat
+    :type format: ~azure.mgmt.datafactory.models.DatasetStorageFormat
     :param file_filter: Specify a filter to be used to select a subset of files in the folderPath
      rather than all files. Type: string (or Expression with resultType string).
     :type file_filter: object
     :param compression: The data compression method used for the file system.
-    :type compression: ~data_factory_management_client.models.DatasetCompression
+    :type compression: ~azure.mgmt.datafactory.models.DatasetCompression
     """
 
     _validation = {
@@ -14745,6 +15213,9 @@ class FileSystemSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param copy_behavior: The type of copy behavior for copy sink.
     :type copy_behavior: object
     """
@@ -14761,6 +15232,7 @@ class FileSystemSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'copy_behavior': {'key': 'copyBehavior', 'type': 'object'},
     }
 
@@ -14792,12 +15264,15 @@ class FileSystemSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param recursive: If true, files under the folder path will be read recursively. Default is
      true. Type: boolean (or Expression with resultType boolean).
     :type recursive: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     """
 
     _validation = {
@@ -14810,8 +15285,9 @@ class FileSystemSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'recursive': {'key': 'recursive', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
     }
 
     def __init__(
@@ -14839,13 +15315,13 @@ class FilterActivity(Activity):
     :param description: Activity description.
     :type description: str
     :param depends_on: Activity depends on condition.
-    :type depends_on: list[~data_factory_management_client.models.ActivityDependency]
+    :type depends_on: list[~azure.mgmt.datafactory.models.ActivityDependency]
     :param user_properties: Activity user properties.
-    :type user_properties: list[~data_factory_management_client.models.UserProperty]
+    :type user_properties: list[~azure.mgmt.datafactory.models.UserProperty]
     :param items: Required. Input array on which filter should be applied.
-    :type items: ~data_factory_management_client.models.Expression
+    :type items: ~azure.mgmt.datafactory.models.Expression
     :param condition: Required. Condition to be used for filtering the input.
-    :type condition: ~data_factory_management_client.models.Expression
+    :type condition: ~azure.mgmt.datafactory.models.Expression
     """
 
     _validation = {
@@ -14891,18 +15367,18 @@ class ForEachActivity(Activity):
     :param description: Activity description.
     :type description: str
     :param depends_on: Activity depends on condition.
-    :type depends_on: list[~data_factory_management_client.models.ActivityDependency]
+    :type depends_on: list[~azure.mgmt.datafactory.models.ActivityDependency]
     :param user_properties: Activity user properties.
-    :type user_properties: list[~data_factory_management_client.models.UserProperty]
+    :type user_properties: list[~azure.mgmt.datafactory.models.UserProperty]
     :param is_sequential: Should the loop be executed in sequence or in parallel (max 50).
     :type is_sequential: bool
     :param batch_count: Batch count to be used for controlling the number of parallel execution
      (when isSequential is set to false).
     :type batch_count: int
     :param items: Required. Collection to iterate.
-    :type items: ~data_factory_management_client.models.Expression
+    :type items: ~azure.mgmt.datafactory.models.Expression
     :param activities: Required. List of activities to execute .
-    :type activities: list[~data_factory_management_client.models.Activity]
+    :type activities: list[~azure.mgmt.datafactory.models.Activity]
     """
 
     _validation = {
@@ -14951,6 +15427,9 @@ class FtpReadSettings(StoreReadSettings):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param recursive: If true, files under the folder path will be read recursively. Default is
      true. Type: boolean (or Expression with resultType boolean).
     :type recursive: object
@@ -14984,6 +15463,7 @@ class FtpReadSettings(StoreReadSettings):
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'recursive': {'key': 'recursive', 'type': 'object'},
         'wildcard_folder_path': {'key': 'wildcardFolderPath', 'type': 'object'},
         'wildcard_file_name': {'key': 'wildcardFileName', 'type': 'object'},
@@ -15021,11 +15501,11 @@ class FtpServerLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param host: Required. Host name of the FTP server. Type: string (or Expression with resultType
@@ -15036,12 +15516,12 @@ class FtpServerLinkedService(LinkedService):
     :type port: object
     :param authentication_type: The authentication type to be used to connect to the FTP server.
      Possible values include: "Basic", "Anonymous".
-    :type authentication_type: str or ~data_factory_management_client.models.FtpAuthenticationType
+    :type authentication_type: str or ~azure.mgmt.datafactory.models.FtpAuthenticationType
     :param user_name: Username to logon the FTP server. Type: string (or Expression with resultType
      string).
     :type user_name: object
     :param password: Password to logon the FTP server.
-    :type password: ~data_factory_management_client.models.SecretBase
+    :type password: ~azure.mgmt.datafactory.models.SecretBase
     :param encrypted_credential: The encrypted credential used for authentication. Credentials are
      encrypted using the integration runtime credential manager. Type: string (or Expression with
      resultType string).
@@ -15169,21 +15649,21 @@ class GetMetadataActivity(ExecutionActivity):
     :param description: Activity description.
     :type description: str
     :param depends_on: Activity depends on condition.
-    :type depends_on: list[~data_factory_management_client.models.ActivityDependency]
+    :type depends_on: list[~azure.mgmt.datafactory.models.ActivityDependency]
     :param user_properties: Activity user properties.
-    :type user_properties: list[~data_factory_management_client.models.UserProperty]
+    :type user_properties: list[~azure.mgmt.datafactory.models.UserProperty]
     :param linked_service_name: Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param policy: Activity policy.
-    :type policy: ~data_factory_management_client.models.ActivityPolicy
+    :type policy: ~azure.mgmt.datafactory.models.ActivityPolicy
     :param dataset: Required. GetMetadata activity dataset reference.
-    :type dataset: ~data_factory_management_client.models.DatasetReference
+    :type dataset: ~azure.mgmt.datafactory.models.DatasetReference
     :param field_list: Fields of metadata to get from dataset.
     :type field_list: list[object]
     :param store_settings: GetMetadata activity store settings.
-    :type store_settings: ~data_factory_management_client.models.StoreReadSettings
+    :type store_settings: ~azure.mgmt.datafactory.models.StoreReadSettings
     :param format_settings: GetMetadata activity format settings.
-    :type format_settings: ~data_factory_management_client.models.FormatReadSettings
+    :type format_settings: ~azure.mgmt.datafactory.models.FormatReadSettings
     """
 
     _validation = {
@@ -15247,6 +15727,8 @@ class GitHubAccessTokenRequest(msrest.serialization.Model):
     :type git_hub_access_code: str
     :param git_hub_client_id: GitHub application client ID.
     :type git_hub_client_id: str
+    :param git_hub_client_secret: GitHub bring your own app client secret information.
+    :type git_hub_client_secret: ~azure.mgmt.datafactory.models.GitHubClientSecret
     :param git_hub_access_token_base_url: Required. GitHub access token base URL.
     :type git_hub_access_token_base_url: str
     """
@@ -15259,6 +15741,7 @@ class GitHubAccessTokenRequest(msrest.serialization.Model):
     _attribute_map = {
         'git_hub_access_code': {'key': 'gitHubAccessCode', 'type': 'str'},
         'git_hub_client_id': {'key': 'gitHubClientId', 'type': 'str'},
+        'git_hub_client_secret': {'key': 'gitHubClientSecret', 'type': 'GitHubClientSecret'},
         'git_hub_access_token_base_url': {'key': 'gitHubAccessTokenBaseUrl', 'type': 'str'},
     }
 
@@ -15269,6 +15752,7 @@ class GitHubAccessTokenRequest(msrest.serialization.Model):
         super(GitHubAccessTokenRequest, self).__init__(**kwargs)
         self.git_hub_access_code = kwargs['git_hub_access_code']
         self.git_hub_client_id = kwargs.get('git_hub_client_id', None)
+        self.git_hub_client_secret = kwargs.get('git_hub_client_secret', None)
         self.git_hub_access_token_base_url = kwargs['git_hub_access_token_base_url']
 
 
@@ -15291,6 +15775,29 @@ class GitHubAccessTokenResponse(msrest.serialization.Model):
         self.git_hub_access_token = kwargs.get('git_hub_access_token', None)
 
 
+class GitHubClientSecret(msrest.serialization.Model):
+    """Client secret information for factory's bring your own app repository configuration.
+
+    :param byoa_secret_akv_url: Bring your own app client secret AKV URL.
+    :type byoa_secret_akv_url: str
+    :param byoa_secret_name: Bring your own app client secret name in AKV.
+    :type byoa_secret_name: str
+    """
+
+    _attribute_map = {
+        'byoa_secret_akv_url': {'key': 'byoaSecretAkvUrl', 'type': 'str'},
+        'byoa_secret_name': {'key': 'byoaSecretName', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(GitHubClientSecret, self).__init__(**kwargs)
+        self.byoa_secret_akv_url = kwargs.get('byoa_secret_akv_url', None)
+        self.byoa_secret_name = kwargs.get('byoa_secret_name', None)
+
+
 class GlobalParameterSpecification(msrest.serialization.Model):
     """Definition of a single parameter for an entity.
 
@@ -15298,7 +15805,7 @@ class GlobalParameterSpecification(msrest.serialization.Model):
 
     :param type: Required. Global Parameter type. Possible values include: "Object", "String",
      "Int", "Float", "Bool", "Array".
-    :type type: str or ~data_factory_management_client.models.GlobalParameterType
+    :type type: str or ~azure.mgmt.datafactory.models.GlobalParameterType
     :param value: Required. Value of parameter.
     :type value: object
     """
@@ -15333,11 +15840,11 @@ class GoogleAdWordsLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param client_customer_id: Required. The Client customer ID of the AdWords account that you
@@ -15345,21 +15852,21 @@ class GoogleAdWordsLinkedService(LinkedService):
     :type client_customer_id: object
     :param developer_token: Required. The developer token associated with the manager account that
      you use to grant access to the AdWords API.
-    :type developer_token: ~data_factory_management_client.models.SecretBase
+    :type developer_token: ~azure.mgmt.datafactory.models.SecretBase
     :param authentication_type: Required. The OAuth 2.0 authentication mechanism used for
      authentication. ServiceAuthentication can only be used on self-hosted IR. Possible values
      include: "ServiceAuthentication", "UserAuthentication".
     :type authentication_type: str or
-     ~data_factory_management_client.models.GoogleAdWordsAuthenticationType
+     ~azure.mgmt.datafactory.models.GoogleAdWordsAuthenticationType
     :param refresh_token: The refresh token obtained from Google for authorizing access to AdWords
      for UserAuthentication.
-    :type refresh_token: ~data_factory_management_client.models.SecretBase
+    :type refresh_token: ~azure.mgmt.datafactory.models.SecretBase
     :param client_id: The client id of the google application used to acquire the refresh token.
      Type: string (or Expression with resultType string).
     :type client_id: object
     :param client_secret: The client secret of the google application used to acquire the refresh
      token.
-    :type client_secret: ~data_factory_management_client.models.SecretBase
+    :type client_secret: ~azure.mgmt.datafactory.models.SecretBase
     :param email: The service account email ID that is used for ServiceAuthentication and can only
      be used on self-hosted IR.
     :type email: object
@@ -15444,14 +15951,14 @@ class GoogleAdWordsObjectDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param table_name: The table name. Type: string (or Expression with resultType string).
     :type table_name: object
     """
@@ -15502,12 +16009,15 @@ class GoogleAdWordsSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: object
@@ -15523,8 +16033,9 @@ class GoogleAdWordsSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
     }
 
@@ -15548,11 +16059,11 @@ class GoogleBigQueryLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param project: Required. The default BigQuery project to query against.
@@ -15567,16 +16078,16 @@ class GoogleBigQueryLinkedService(LinkedService):
      authentication. ServiceAuthentication can only be used on self-hosted IR. Possible values
      include: "ServiceAuthentication", "UserAuthentication".
     :type authentication_type: str or
-     ~data_factory_management_client.models.GoogleBigQueryAuthenticationType
+     ~azure.mgmt.datafactory.models.GoogleBigQueryAuthenticationType
     :param refresh_token: The refresh token obtained from Google for authorizing access to BigQuery
      for UserAuthentication.
-    :type refresh_token: ~data_factory_management_client.models.SecretBase
+    :type refresh_token: ~azure.mgmt.datafactory.models.SecretBase
     :param client_id: The client id of the google application used to acquire the refresh token.
      Type: string (or Expression with resultType string).
     :type client_id: object
     :param client_secret: The client secret of the google application used to acquire the refresh
      token.
-    :type client_secret: ~data_factory_management_client.models.SecretBase
+    :type client_secret: ~azure.mgmt.datafactory.models.SecretBase
     :param email: The service account email ID that is used for ServiceAuthentication and can only
      be used on self-hosted IR.
     :type email: object
@@ -15662,14 +16173,14 @@ class GoogleBigQueryObjectDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param table_name: This property will be retired. Please consider using database + table
      properties instead.
     :type table_name: object
@@ -15731,12 +16242,15 @@ class GoogleBigQuerySource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: object
@@ -15752,8 +16266,9 @@ class GoogleBigQuerySource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
     }
 
@@ -15777,11 +16292,11 @@ class GoogleCloudStorageLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param access_key_id: The access key identifier of the Google Cloud Storage Identity and Access
@@ -15789,7 +16304,7 @@ class GoogleCloudStorageLinkedService(LinkedService):
     :type access_key_id: object
     :param secret_access_key: The secret access key of the Google Cloud Storage Identity and Access
      Management (IAM) user.
-    :type secret_access_key: ~data_factory_management_client.models.SecretBase
+    :type secret_access_key: ~azure.mgmt.datafactory.models.SecretBase
     :param service_url: This value specifies the endpoint to access with the Google Cloud Storage
      Connector. This is an optional property; change it only if you want to try a different service
      endpoint or want to switch between https and http. Type: string (or Expression with resultType
@@ -15890,6 +16405,9 @@ class GoogleCloudStorageReadSettings(StoreReadSettings):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param recursive: If true, files under the folder path will be read recursively. Default is
      true. Type: boolean (or Expression with resultType boolean).
     :type recursive: object
@@ -15930,6 +16448,7 @@ class GoogleCloudStorageReadSettings(StoreReadSettings):
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'recursive': {'key': 'recursive', 'type': 'object'},
         'wildcard_folder_path': {'key': 'wildcardFolderPath', 'type': 'object'},
         'wildcard_file_name': {'key': 'wildcardFileName', 'type': 'object'},
@@ -15971,18 +16490,18 @@ class GreenplumLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param connection_string: An ODBC connection string. Type: string, SecureString or
      AzureKeyVaultSecretReference.
     :type connection_string: object
     :param pwd: The Azure key vault secret reference of password in connection string.
-    :type pwd: ~data_factory_management_client.models.AzureKeyVaultSecretReference
+    :type pwd: ~azure.mgmt.datafactory.models.AzureKeyVaultSecretReference
     :param encrypted_credential: The encrypted credential used for authentication. Credentials are
      encrypted using the integration runtime credential manager. Type: string (or Expression with
      resultType string).
@@ -16035,12 +16554,15 @@ class GreenplumSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: object
@@ -16056,8 +16578,9 @@ class GreenplumSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
     }
 
@@ -16089,14 +16612,14 @@ class GreenplumTableDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param table_name: This property will be retired. Please consider using schema + table
      properties instead.
     :type table_name: object
@@ -16149,11 +16672,11 @@ class HBaseLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param host: Required. The IP address or host name of the HBase server. (i.e. 192.168.222.160).
@@ -16166,12 +16689,11 @@ class HBaseLinkedService(LinkedService):
     :type http_path: object
     :param authentication_type: Required. The authentication mechanism to use to connect to the
      HBase server. Possible values include: "Anonymous", "Basic".
-    :type authentication_type: str or
-     ~data_factory_management_client.models.HBaseAuthenticationType
+    :type authentication_type: str or ~azure.mgmt.datafactory.models.HBaseAuthenticationType
     :param username: The user name used to connect to the HBase instance.
     :type username: object
     :param password: The password corresponding to the user name.
-    :type password: ~data_factory_management_client.models.SecretBase
+    :type password: ~azure.mgmt.datafactory.models.SecretBase
     :param enable_ssl: Specifies whether the connections to the server are encrypted using SSL. The
      default value is false.
     :type enable_ssl: object
@@ -16255,14 +16777,14 @@ class HBaseObjectDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param table_name: The table name. Type: string (or Expression with resultType string).
     :type table_name: object
     """
@@ -16313,12 +16835,15 @@ class HBaseSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: object
@@ -16334,8 +16859,9 @@ class HBaseSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
     }
 
@@ -16359,11 +16885,11 @@ class HdfsLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param url: Required. The URL of the HDFS service endpoint, e.g.
@@ -16380,7 +16906,7 @@ class HdfsLinkedService(LinkedService):
      resultType string).
     :type user_name: object
     :param password: Password for Windows authentication.
-    :type password: ~data_factory_management_client.models.SecretBase
+    :type password: ~azure.mgmt.datafactory.models.SecretBase
     """
 
     _validation = {
@@ -16465,6 +16991,9 @@ class HdfsReadSettings(StoreReadSettings):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param recursive: If true, files under the folder path will be read recursively. Default is
      true. Type: boolean (or Expression with resultType boolean).
     :type recursive: object
@@ -16490,7 +17019,7 @@ class HdfsReadSettings(StoreReadSettings):
      with resultType string).
     :type modified_datetime_end: object
     :param distcp_settings: Specifies Distcp-related settings.
-    :type distcp_settings: ~data_factory_management_client.models.DistcpSettings
+    :type distcp_settings: ~azure.mgmt.datafactory.models.DistcpSettings
     :param delete_files_after_completion: Indicates whether the source files need to be deleted
      after copy completion. Default is false. Type: boolean (or Expression with resultType boolean).
     :type delete_files_after_completion: object
@@ -16504,6 +17033,7 @@ class HdfsReadSettings(StoreReadSettings):
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'recursive': {'key': 'recursive', 'type': 'object'},
         'wildcard_folder_path': {'key': 'wildcardFolderPath', 'type': 'object'},
         'wildcard_file_name': {'key': 'wildcardFileName', 'type': 'object'},
@@ -16553,11 +17083,14 @@ class HdfsSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param recursive: If true, files under the folder path will be read recursively. Default is
      true. Type: boolean (or Expression with resultType boolean).
     :type recursive: object
     :param distcp_settings: Specifies Distcp-related settings.
-    :type distcp_settings: ~data_factory_management_client.models.DistcpSettings
+    :type distcp_settings: ~azure.mgmt.datafactory.models.DistcpSettings
     """
 
     _validation = {
@@ -16570,6 +17103,7 @@ class HdfsSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'recursive': {'key': 'recursive', 'type': 'object'},
         'distcp_settings': {'key': 'distcpSettings', 'type': 'DistcpSettings'},
     }
@@ -16599,25 +17133,23 @@ class HdInsightHiveActivity(ExecutionActivity):
     :param description: Activity description.
     :type description: str
     :param depends_on: Activity depends on condition.
-    :type depends_on: list[~data_factory_management_client.models.ActivityDependency]
+    :type depends_on: list[~azure.mgmt.datafactory.models.ActivityDependency]
     :param user_properties: Activity user properties.
-    :type user_properties: list[~data_factory_management_client.models.UserProperty]
+    :type user_properties: list[~azure.mgmt.datafactory.models.UserProperty]
     :param linked_service_name: Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param policy: Activity policy.
-    :type policy: ~data_factory_management_client.models.ActivityPolicy
+    :type policy: ~azure.mgmt.datafactory.models.ActivityPolicy
     :param storage_linked_services: Storage linked service references.
-    :type storage_linked_services:
-     list[~data_factory_management_client.models.LinkedServiceReference]
+    :type storage_linked_services: list[~azure.mgmt.datafactory.models.LinkedServiceReference]
     :param arguments: User specified arguments to HDInsightActivity.
     :type arguments: list[object]
     :param get_debug_info: Debug info option. Possible values include: "None", "Always", "Failure".
-    :type get_debug_info: str or
-     ~data_factory_management_client.models.HdInsightActivityDebugInfoOption
+    :type get_debug_info: str or ~azure.mgmt.datafactory.models.HdInsightActivityDebugInfoOption
     :param script_path: Script path. Type: string (or Expression with resultType string).
     :type script_path: object
     :param script_linked_service: Script linked service reference.
-    :type script_linked_service: ~data_factory_management_client.models.LinkedServiceReference
+    :type script_linked_service: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param defines: Allows user to specify defines for Hive job request.
     :type defines: dict[str, object]
     :param variables: User specified arguments under hivevar namespace.
@@ -16678,11 +17210,11 @@ class HdInsightLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param cluster_uri: Required. HDInsight cluster URI. Type: string (or Expression with
@@ -16692,13 +17224,12 @@ class HdInsightLinkedService(LinkedService):
      string).
     :type user_name: object
     :param password: HDInsight cluster password.
-    :type password: ~data_factory_management_client.models.SecretBase
+    :type password: ~azure.mgmt.datafactory.models.SecretBase
     :param linked_service_name: The Azure Storage linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param hcatalog_linked_service_name: A reference to the Azure SQL linked service that points to
      the HCatalog database.
-    :type hcatalog_linked_service_name:
-     ~data_factory_management_client.models.LinkedServiceReference
+    :type hcatalog_linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param encrypted_credential: The encrypted credential used for authentication. Credentials are
      encrypted using the integration runtime credential manager. Type: string (or Expression with
      resultType string).
@@ -16764,27 +17295,25 @@ class HdInsightMapReduceActivity(ExecutionActivity):
     :param description: Activity description.
     :type description: str
     :param depends_on: Activity depends on condition.
-    :type depends_on: list[~data_factory_management_client.models.ActivityDependency]
+    :type depends_on: list[~azure.mgmt.datafactory.models.ActivityDependency]
     :param user_properties: Activity user properties.
-    :type user_properties: list[~data_factory_management_client.models.UserProperty]
+    :type user_properties: list[~azure.mgmt.datafactory.models.UserProperty]
     :param linked_service_name: Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param policy: Activity policy.
-    :type policy: ~data_factory_management_client.models.ActivityPolicy
+    :type policy: ~azure.mgmt.datafactory.models.ActivityPolicy
     :param storage_linked_services: Storage linked service references.
-    :type storage_linked_services:
-     list[~data_factory_management_client.models.LinkedServiceReference]
+    :type storage_linked_services: list[~azure.mgmt.datafactory.models.LinkedServiceReference]
     :param arguments: User specified arguments to HDInsightActivity.
     :type arguments: list[object]
     :param get_debug_info: Debug info option. Possible values include: "None", "Always", "Failure".
-    :type get_debug_info: str or
-     ~data_factory_management_client.models.HdInsightActivityDebugInfoOption
+    :type get_debug_info: str or ~azure.mgmt.datafactory.models.HdInsightActivityDebugInfoOption
     :param class_name: Required. Class name. Type: string (or Expression with resultType string).
     :type class_name: object
     :param jar_file_path: Required. Jar path. Type: string (or Expression with resultType string).
     :type jar_file_path: object
     :param jar_linked_service: Jar linked service reference.
-    :type jar_linked_service: ~data_factory_management_client.models.LinkedServiceReference
+    :type jar_linked_service: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param jar_libs: Jar libs.
     :type jar_libs: list[object]
     :param defines: Allows user to specify defines for the MapReduce job request.
@@ -16844,11 +17373,11 @@ class HdInsightOnDemandLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param cluster_size: Required. Number of worker/data nodes in the cluster. Suggestion value: 4.
@@ -16864,7 +17393,7 @@ class HdInsightOnDemandLinkedService(LinkedService):
     :type version: object
     :param linked_service_name: Required. Azure Storage linked service to be used by the on-demand
      cluster for storing and processing data.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param host_subscription_id: Required. The customer’s subscription to host the cluster. Type:
      string (or Expression with resultType string).
     :type host_subscription_id: object
@@ -16872,7 +17401,7 @@ class HdInsightOnDemandLinkedService(LinkedService):
      (or Expression with resultType string).
     :type service_principal_id: object
     :param service_principal_key: The key for the service principal id.
-    :type service_principal_key: ~data_factory_management_client.models.SecretBase
+    :type service_principal_key: ~azure.mgmt.datafactory.models.SecretBase
     :param tenant: Required. The Tenant id/name to which the service principal belongs. Type:
      string (or Expression with resultType string).
     :type tenant: object
@@ -16886,21 +17415,20 @@ class HdInsightOnDemandLinkedService(LinkedService):
      resultType string).
     :type cluster_user_name: object
     :param cluster_password: The password to access the cluster.
-    :type cluster_password: ~data_factory_management_client.models.SecretBase
+    :type cluster_password: ~azure.mgmt.datafactory.models.SecretBase
     :param cluster_ssh_user_name: The username to SSH remotely connect to cluster’s node (for
      Linux). Type: string (or Expression with resultType string).
     :type cluster_ssh_user_name: object
     :param cluster_ssh_password: The password to SSH remotely connect cluster’s node (for Linux).
-    :type cluster_ssh_password: ~data_factory_management_client.models.SecretBase
+    :type cluster_ssh_password: ~azure.mgmt.datafactory.models.SecretBase
     :param additional_linked_service_names: Specifies additional storage accounts for the HDInsight
      linked service so that the Data Factory service can register them on your behalf.
     :type additional_linked_service_names:
-     list[~data_factory_management_client.models.LinkedServiceReference]
+     list[~azure.mgmt.datafactory.models.LinkedServiceReference]
     :param hcatalog_linked_service_name: The name of Azure SQL linked service that point to the
      HCatalog database. The on-demand HDInsight cluster is created by using the Azure SQL database
      as the metastore.
-    :type hcatalog_linked_service_name:
-     ~data_factory_management_client.models.LinkedServiceReference
+    :type hcatalog_linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param cluster_type: The cluster type. Type: string (or Expression with resultType string).
     :type cluster_type: object
     :param spark_version: The version of spark if the cluster type is 'spark'. Type: string (or
@@ -16945,13 +17473,15 @@ class HdInsightOnDemandLinkedService(LinkedService):
      Please refer to https://docs.microsoft.com/en-us/azure/hdinsight/hdinsight-hadoop-customize-
      cluster-linux?toc=%2Fen-us%2Fazure%2Fhdinsight%2Fr-server%2FTOC.json&bc=%2Fen-
      us%2Fazure%2Fbread%2Ftoc.json#understanding-script-actions.
-    :type script_actions: list[~data_factory_management_client.models.ScriptAction]
+    :type script_actions: list[~azure.mgmt.datafactory.models.ScriptAction]
     :param virtual_network_id: The ARM resource ID for the vNet to which the cluster should be
      joined after creation. Type: string (or Expression with resultType string).
     :type virtual_network_id: object
     :param subnet_name: The ARM resource ID for the subnet in the vNet. If virtualNetworkId was
      specified, then this property is required. Type: string (or Expression with resultType string).
     :type subnet_name: object
+    :param credential: The credential reference containing authentication information.
+    :type credential: ~azure.mgmt.datafactory.models.CredentialReference
     """
 
     _validation = {
@@ -17005,6 +17535,7 @@ class HdInsightOnDemandLinkedService(LinkedService):
         'script_actions': {'key': 'typeProperties.scriptActions', 'type': '[ScriptAction]'},
         'virtual_network_id': {'key': 'typeProperties.virtualNetworkId', 'type': 'object'},
         'subnet_name': {'key': 'typeProperties.subnetName', 'type': 'object'},
+        'credential': {'key': 'typeProperties.credential', 'type': 'CredentialReference'},
     }
 
     def __init__(
@@ -17046,6 +17577,7 @@ class HdInsightOnDemandLinkedService(LinkedService):
         self.script_actions = kwargs.get('script_actions', None)
         self.virtual_network_id = kwargs.get('virtual_network_id', None)
         self.subnet_name = kwargs.get('subnet_name', None)
+        self.credential = kwargs.get('credential', None)
 
 
 class HdInsightPigActivity(ExecutionActivity):
@@ -17063,26 +17595,24 @@ class HdInsightPigActivity(ExecutionActivity):
     :param description: Activity description.
     :type description: str
     :param depends_on: Activity depends on condition.
-    :type depends_on: list[~data_factory_management_client.models.ActivityDependency]
+    :type depends_on: list[~azure.mgmt.datafactory.models.ActivityDependency]
     :param user_properties: Activity user properties.
-    :type user_properties: list[~data_factory_management_client.models.UserProperty]
+    :type user_properties: list[~azure.mgmt.datafactory.models.UserProperty]
     :param linked_service_name: Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param policy: Activity policy.
-    :type policy: ~data_factory_management_client.models.ActivityPolicy
+    :type policy: ~azure.mgmt.datafactory.models.ActivityPolicy
     :param storage_linked_services: Storage linked service references.
-    :type storage_linked_services:
-     list[~data_factory_management_client.models.LinkedServiceReference]
+    :type storage_linked_services: list[~azure.mgmt.datafactory.models.LinkedServiceReference]
     :param arguments: User specified arguments to HDInsightActivity. Type: array (or Expression
      with resultType array).
     :type arguments: object
     :param get_debug_info: Debug info option. Possible values include: "None", "Always", "Failure".
-    :type get_debug_info: str or
-     ~data_factory_management_client.models.HdInsightActivityDebugInfoOption
+    :type get_debug_info: str or ~azure.mgmt.datafactory.models.HdInsightActivityDebugInfoOption
     :param script_path: Script path. Type: string (or Expression with resultType string).
     :type script_path: object
     :param script_linked_service: Script linked service reference.
-    :type script_linked_service: ~data_factory_management_client.models.LinkedServiceReference
+    :type script_linked_service: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param defines: Allows user to specify defines for Pig job request.
     :type defines: dict[str, object]
     """
@@ -17138,13 +17668,13 @@ class HdInsightSparkActivity(ExecutionActivity):
     :param description: Activity description.
     :type description: str
     :param depends_on: Activity depends on condition.
-    :type depends_on: list[~data_factory_management_client.models.ActivityDependency]
+    :type depends_on: list[~azure.mgmt.datafactory.models.ActivityDependency]
     :param user_properties: Activity user properties.
-    :type user_properties: list[~data_factory_management_client.models.UserProperty]
+    :type user_properties: list[~azure.mgmt.datafactory.models.UserProperty]
     :param linked_service_name: Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param policy: Activity policy.
-    :type policy: ~data_factory_management_client.models.ActivityPolicy
+    :type policy: ~azure.mgmt.datafactory.models.ActivityPolicy
     :param root_path: Required. The root path in 'sparkJobLinkedService' for all the job’s files.
      Type: string (or Expression with resultType string).
     :type root_path: object
@@ -17154,11 +17684,10 @@ class HdInsightSparkActivity(ExecutionActivity):
     :param arguments: The user-specified arguments to HDInsightSparkActivity.
     :type arguments: list[object]
     :param get_debug_info: Debug info option. Possible values include: "None", "Always", "Failure".
-    :type get_debug_info: str or
-     ~data_factory_management_client.models.HdInsightActivityDebugInfoOption
+    :type get_debug_info: str or ~azure.mgmt.datafactory.models.HdInsightActivityDebugInfoOption
     :param spark_job_linked_service: The storage linked service for uploading the entry file and
      dependencies, and for receiving logs.
-    :type spark_job_linked_service: ~data_factory_management_client.models.LinkedServiceReference
+    :type spark_job_linked_service: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param class_name: The application's Java/Spark main class.
     :type class_name: str
     :param proxy_user: The user to impersonate that will execute the job. Type: string (or
@@ -17225,21 +17754,19 @@ class HdInsightStreamingActivity(ExecutionActivity):
     :param description: Activity description.
     :type description: str
     :param depends_on: Activity depends on condition.
-    :type depends_on: list[~data_factory_management_client.models.ActivityDependency]
+    :type depends_on: list[~azure.mgmt.datafactory.models.ActivityDependency]
     :param user_properties: Activity user properties.
-    :type user_properties: list[~data_factory_management_client.models.UserProperty]
+    :type user_properties: list[~azure.mgmt.datafactory.models.UserProperty]
     :param linked_service_name: Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param policy: Activity policy.
-    :type policy: ~data_factory_management_client.models.ActivityPolicy
+    :type policy: ~azure.mgmt.datafactory.models.ActivityPolicy
     :param storage_linked_services: Storage linked service references.
-    :type storage_linked_services:
-     list[~data_factory_management_client.models.LinkedServiceReference]
+    :type storage_linked_services: list[~azure.mgmt.datafactory.models.LinkedServiceReference]
     :param arguments: User specified arguments to HDInsightActivity.
     :type arguments: list[object]
     :param get_debug_info: Debug info option. Possible values include: "None", "Always", "Failure".
-    :type get_debug_info: str or
-     ~data_factory_management_client.models.HdInsightActivityDebugInfoOption
+    :type get_debug_info: str or ~azure.mgmt.datafactory.models.HdInsightActivityDebugInfoOption
     :param mapper: Required. Mapper executable name. Type: string (or Expression with resultType
      string).
     :type mapper: object
@@ -17253,7 +17780,7 @@ class HdInsightStreamingActivity(ExecutionActivity):
     :param file_paths: Required. Paths to streaming job files. Can be directories.
     :type file_paths: list[object]
     :param file_linked_service: Linked service reference where the files are located.
-    :type file_linked_service: ~data_factory_management_client.models.LinkedServiceReference
+    :type file_linked_service: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param combiner: Combiner executable name. Type: string (or Expression with resultType string).
     :type combiner: object
     :param command_environment: Command line environment values.
@@ -17326,11 +17853,11 @@ class HiveLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param host: Required. IP address or host name of the Hive server, separated by ';' for
@@ -17340,15 +17867,15 @@ class HiveLinkedService(LinkedService):
     :type port: object
     :param server_type: The type of Hive server. Possible values include: "HiveServer1",
      "HiveServer2", "HiveThriftServer".
-    :type server_type: str or ~data_factory_management_client.models.HiveServerType
+    :type server_type: str or ~azure.mgmt.datafactory.models.HiveServerType
     :param thrift_transport_protocol: The transport protocol to use in the Thrift layer. Possible
      values include: "Binary", "SASL", "HTTP ".
     :type thrift_transport_protocol: str or
-     ~data_factory_management_client.models.HiveThriftTransportProtocol
+     ~azure.mgmt.datafactory.models.HiveThriftTransportProtocol
     :param authentication_type: Required. The authentication method used to access the Hive server.
      Possible values include: "Anonymous", "Username", "UsernameAndPassword",
      "WindowsAzureHDInsightService".
-    :type authentication_type: str or ~data_factory_management_client.models.HiveAuthenticationType
+    :type authentication_type: str or ~azure.mgmt.datafactory.models.HiveAuthenticationType
     :param service_discovery_mode: true to indicate using the ZooKeeper service, false not.
     :type service_discovery_mode: object
     :param zoo_keeper_name_space: The namespace on ZooKeeper under which Hive Server 2 nodes are
@@ -17361,7 +17888,7 @@ class HiveLinkedService(LinkedService):
     :type username: object
     :param password: The password corresponding to the user name that you provided in the Username
      field.
-    :type password: ~data_factory_management_client.models.SecretBase
+    :type password: ~azure.mgmt.datafactory.models.SecretBase
     :param http_path: The partial URL corresponding to the Hive server.
     :type http_path: object
     :param enable_ssl: Specifies whether the connections to the server are encrypted using SSL. The
@@ -17462,14 +17989,14 @@ class HiveObjectDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param table_name: This property will be retired. Please consider using schema + table
      properties instead.
     :type table_name: object
@@ -17530,12 +18057,15 @@ class HiveSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: object
@@ -17551,8 +18081,9 @@ class HiveSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
     }
 
@@ -17584,14 +18115,14 @@ class HttpDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param relative_url: The relative URL based on the URL in the HttpLinkedService refers to an
      HTTP file Type: string (or Expression with resultType string).
     :type relative_url: object
@@ -17608,9 +18139,9 @@ class HttpDataset(Dataset):
      string).
     :type additional_headers: object
     :param format: The format of files.
-    :type format: ~data_factory_management_client.models.DatasetStorageFormat
+    :type format: ~azure.mgmt.datafactory.models.DatasetStorageFormat
     :param compression: The data compression method used on files.
-    :type compression: ~data_factory_management_client.models.DatasetCompression
+    :type compression: ~azure.mgmt.datafactory.models.DatasetCompression
     """
 
     _validation = {
@@ -17661,11 +18192,11 @@ class HttpLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param url: Required. The base URL of the HTTP endpoint, e.g. http://www.microsoft.com. Type:
@@ -17673,13 +18204,13 @@ class HttpLinkedService(LinkedService):
     :type url: object
     :param authentication_type: The authentication type to be used to connect to the HTTP server.
      Possible values include: "Basic", "Anonymous", "Digest", "Windows", "ClientCertificate".
-    :type authentication_type: str or ~data_factory_management_client.models.HttpAuthenticationType
+    :type authentication_type: str or ~azure.mgmt.datafactory.models.HttpAuthenticationType
     :param user_name: User name for Basic, Digest, or Windows authentication. Type: string (or
      Expression with resultType string).
     :type user_name: object
     :param password: Password for Basic, Digest, Windows, or ClientCertificate with
      EmbeddedCertData authentication.
-    :type password: ~data_factory_management_client.models.SecretBase
+    :type password: ~azure.mgmt.datafactory.models.SecretBase
     :param auth_headers: The additional HTTP headers in the request to RESTful API used for
      authorization. Type: object (or Expression with resultType object).
     :type auth_headers: object
@@ -17755,6 +18286,9 @@ class HttpReadSettings(StoreReadSettings):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param request_method: The HTTP method used to call the RESTful API. The default is GET. Type:
      string (or Expression with resultType string).
     :type request_method: object
@@ -17782,6 +18316,7 @@ class HttpReadSettings(StoreReadSettings):
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'request_method': {'key': 'requestMethod', 'type': 'object'},
         'request_body': {'key': 'requestBody', 'type': 'object'},
         'additional_headers': {'key': 'additionalHeaders', 'type': 'object'},
@@ -17865,6 +18400,9 @@ class HttpSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param http_request_timeout: Specifies the timeout for a HTTP client to get HTTP response from
      HTTP server. The default value is equivalent to System.Net.HttpWebRequest.Timeout. Type: string
      (or Expression with resultType string), pattern:
@@ -17882,6 +18420,7 @@ class HttpSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'http_request_timeout': {'key': 'httpRequestTimeout', 'type': 'object'},
     }
 
@@ -17905,23 +18444,23 @@ class HubspotLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param client_id: Required. The client ID associated with your Hubspot application.
     :type client_id: object
     :param client_secret: The client secret associated with your Hubspot application.
-    :type client_secret: ~data_factory_management_client.models.SecretBase
+    :type client_secret: ~azure.mgmt.datafactory.models.SecretBase
     :param access_token: The access token obtained when initially authenticating your OAuth
      integration.
-    :type access_token: ~data_factory_management_client.models.SecretBase
+    :type access_token: ~azure.mgmt.datafactory.models.SecretBase
     :param refresh_token: The refresh token obtained when initially authenticating your OAuth
      integration.
-    :type refresh_token: ~data_factory_management_client.models.SecretBase
+    :type refresh_token: ~azure.mgmt.datafactory.models.SecretBase
     :param use_encrypted_endpoints: Specifies whether the data source endpoints are encrypted using
      HTTPS. The default value is true.
     :type use_encrypted_endpoints: object
@@ -17995,14 +18534,14 @@ class HubspotObjectDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param table_name: The table name. Type: string (or Expression with resultType string).
     :type table_name: object
     """
@@ -18053,12 +18592,15 @@ class HubspotSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: object
@@ -18074,8 +18616,9 @@ class HubspotSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
     }
 
@@ -18103,19 +18646,19 @@ class IfConditionActivity(Activity):
     :param description: Activity description.
     :type description: str
     :param depends_on: Activity depends on condition.
-    :type depends_on: list[~data_factory_management_client.models.ActivityDependency]
+    :type depends_on: list[~azure.mgmt.datafactory.models.ActivityDependency]
     :param user_properties: Activity user properties.
-    :type user_properties: list[~data_factory_management_client.models.UserProperty]
+    :type user_properties: list[~azure.mgmt.datafactory.models.UserProperty]
     :param expression: Required. An expression that would evaluate to Boolean. This is used to
      determine the block of activities (ifTrueActivities or ifFalseActivities) that will be
      executed.
-    :type expression: ~data_factory_management_client.models.Expression
+    :type expression: ~azure.mgmt.datafactory.models.Expression
     :param if_true_activities: List of activities to execute if expression is evaluated to true.
      This is an optional property and if not provided, the activity will exit without any action.
-    :type if_true_activities: list[~data_factory_management_client.models.Activity]
+    :type if_true_activities: list[~azure.mgmt.datafactory.models.Activity]
     :param if_false_activities: List of activities to execute if expression is evaluated to false.
      This is an optional property and if not provided, the activity will exit without any action.
-    :type if_false_activities: list[~data_factory_management_client.models.Activity]
+    :type if_false_activities: list[~azure.mgmt.datafactory.models.Activity]
     """
 
     _validation = {
@@ -18158,11 +18701,11 @@ class ImpalaLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param host: Required. The IP address or host name of the Impala server. (i.e.
@@ -18173,13 +18716,12 @@ class ImpalaLinkedService(LinkedService):
     :type port: object
     :param authentication_type: Required. The authentication type to use. Possible values include:
      "Anonymous", "SASLUsername", "UsernameAndPassword".
-    :type authentication_type: str or
-     ~data_factory_management_client.models.ImpalaAuthenticationType
+    :type authentication_type: str or ~azure.mgmt.datafactory.models.ImpalaAuthenticationType
     :param username: The user name used to access the Impala server. The default value is anonymous
      when using SASLUsername.
     :type username: object
     :param password: The password corresponding to the user name when using UsernameAndPassword.
-    :type password: ~data_factory_management_client.models.SecretBase
+    :type password: ~azure.mgmt.datafactory.models.SecretBase
     :param enable_ssl: Specifies whether the connections to the server are encrypted using SSL. The
      default value is false.
     :type enable_ssl: object
@@ -18266,14 +18808,14 @@ class ImpalaObjectDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param table_name: This property will be retired. Please consider using schema + table
      properties instead.
     :type table_name: object
@@ -18335,12 +18877,15 @@ class ImpalaSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: object
@@ -18356,8 +18901,9 @@ class ImpalaSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
     }
 
@@ -18381,11 +18927,11 @@ class InformixLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param connection_string: Required. The non-access credential portion of the connection string
@@ -18398,12 +18944,12 @@ class InformixLinkedService(LinkedService):
     :type authentication_type: object
     :param credential: The access credential portion of the connection string specified in driver-
      specific property-value format.
-    :type credential: ~data_factory_management_client.models.SecretBase
+    :type credential: ~azure.mgmt.datafactory.models.SecretBase
     :param user_name: User name for Basic authentication. Type: string (or Expression with
      resultType string).
     :type user_name: object
     :param password: Password for Basic authentication.
-    :type password: ~data_factory_management_client.models.SecretBase
+    :type password: ~azure.mgmt.datafactory.models.SecretBase
     :param encrypted_credential: The encrypted credential used for authentication. Credentials are
      encrypted using the integration runtime credential manager. Type: string (or Expression with
      resultType string).
@@ -18469,6 +19015,9 @@ class InformixSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param pre_copy_script: A query to execute before starting the copy. Type: string (or
      Expression with resultType string).
     :type pre_copy_script: object
@@ -18486,6 +19035,7 @@ class InformixSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'pre_copy_script': {'key': 'preCopyScript', 'type': 'object'},
     }
 
@@ -18517,12 +19067,15 @@ class InformixSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     :param query: Database query. Type: string (or Expression with resultType string).
     :type query: object
     """
@@ -18537,8 +19090,9 @@ class InformixSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
     }
 
@@ -18570,14 +19124,14 @@ class InformixTableDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param table_name: The Informix table name. Type: string (or Expression with resultType
      string).
     :type table_name: object
@@ -18623,7 +19177,7 @@ class IntegrationRuntime(msrest.serialization.Model):
     :type additional_properties: dict[str, object]
     :param type: Required. Type of integration runtime.Constant filled by server.  Possible values
      include: "Managed", "SelfHosted".
-    :type type: str or ~data_factory_management_client.models.IntegrationRuntimeType
+    :type type: str or ~azure.mgmt.datafactory.models.IntegrationRuntimeType
     :param description: Integration runtime description.
     :type description: str
     """
@@ -18693,10 +19247,9 @@ class IntegrationRuntimeComputeProperties(msrest.serialization.Model):
      integration runtime.
     :type max_parallel_executions_per_node: int
     :param data_flow_properties: Data flow properties for managed integration runtime.
-    :type data_flow_properties:
-     ~data_factory_management_client.models.IntegrationRuntimeDataFlowProperties
+    :type data_flow_properties: ~azure.mgmt.datafactory.models.IntegrationRuntimeDataFlowProperties
     :param v_net_properties: VNet properties for managed integration runtime.
-    :type v_net_properties: ~data_factory_management_client.models.IntegrationRuntimeVNetProperties
+    :type v_net_properties: ~azure.mgmt.datafactory.models.IntegrationRuntimeVNetProperties
     """
 
     _validation = {
@@ -18793,7 +19346,7 @@ class IntegrationRuntimeCustomSetupScriptProperties(msrest.serialization.Model):
      script.
     :type blob_container_uri: str
     :param sas_token: The SAS token of the Azure blob container.
-    :type sas_token: ~data_factory_management_client.models.SecureString
+    :type sas_token: ~azure.mgmt.datafactory.models.SecureString
     """
 
     _attribute_map = {
@@ -18818,13 +19371,16 @@ class IntegrationRuntimeDataFlowProperties(msrest.serialization.Model):
     :type additional_properties: dict[str, object]
     :param compute_type: Compute type of the cluster which will execute data flow job. Possible
      values include: "General", "MemoryOptimized", "ComputeOptimized".
-    :type compute_type: str or ~data_factory_management_client.models.DataFlowComputeType
+    :type compute_type: str or ~azure.mgmt.datafactory.models.DataFlowComputeType
     :param core_count: Core count of the cluster which will execute data flow job. Supported values
      are: 8, 16, 32, 48, 80, 144 and 272.
     :type core_count: int
     :param time_to_live: Time to live (in minutes) setting of the cluster which will execute data
      flow job.
     :type time_to_live: int
+    :param cleanup: Cluster will not be recycled and it will be used in next data flow activity run
+     until TTL (time to live) is reached if this is set as false. Default is true.
+    :type cleanup: bool
     """
 
     _validation = {
@@ -18836,6 +19392,7 @@ class IntegrationRuntimeDataFlowProperties(msrest.serialization.Model):
         'compute_type': {'key': 'computeType', 'type': 'str'},
         'core_count': {'key': 'coreCount', 'type': 'int'},
         'time_to_live': {'key': 'timeToLive', 'type': 'int'},
+        'cleanup': {'key': 'cleanup', 'type': 'bool'},
     }
 
     def __init__(
@@ -18847,15 +19404,16 @@ class IntegrationRuntimeDataFlowProperties(msrest.serialization.Model):
         self.compute_type = kwargs.get('compute_type', None)
         self.core_count = kwargs.get('core_count', None)
         self.time_to_live = kwargs.get('time_to_live', None)
+        self.cleanup = kwargs.get('cleanup', None)
 
 
 class IntegrationRuntimeDataProxyProperties(msrest.serialization.Model):
     """Data proxy properties for a managed dedicated integration runtime.
 
     :param connect_via: The self-hosted integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.EntityReference
+    :type connect_via: ~azure.mgmt.datafactory.models.EntityReference
     :param staging_linked_service: The staging linked service reference.
-    :type staging_linked_service: ~data_factory_management_client.models.EntityReference
+    :type staging_linked_service: ~azure.mgmt.datafactory.models.EntityReference
     :param path: The path to contain the staged data in the Blob storage.
     :type path: str
     """
@@ -18884,7 +19442,7 @@ class IntegrationRuntimeDebugResource(SubResourceDebugResource):
     :param name: The resource name.
     :type name: str
     :param properties: Required. Integration runtime properties.
-    :type properties: ~data_factory_management_client.models.IntegrationRuntime
+    :type properties: ~azure.mgmt.datafactory.models.IntegrationRuntime
     """
 
     _validation = {
@@ -18910,7 +19468,7 @@ class IntegrationRuntimeListResponse(msrest.serialization.Model):
     All required parameters must be populated in order to send to Azure.
 
     :param value: Required. List of integration runtimes.
-    :type value: list[~data_factory_management_client.models.IntegrationRuntimeResource]
+    :type value: list[~azure.mgmt.datafactory.models.IntegrationRuntimeResource]
     :param next_link: The link to the next page of results, if any remaining results exist.
     :type next_link: str
     """
@@ -18939,7 +19497,7 @@ class IntegrationRuntimeMonitoringData(msrest.serialization.Model):
     :param name: Integration runtime name.
     :type name: str
     :param nodes: Integration runtime node monitoring data.
-    :type nodes: list[~data_factory_management_client.models.IntegrationRuntimeNodeMonitoringData]
+    :type nodes: list[~azure.mgmt.datafactory.models.IntegrationRuntimeNodeMonitoringData]
     """
 
     _attribute_map = {
@@ -19047,6 +19605,93 @@ class IntegrationRuntimeNodeMonitoringData(msrest.serialization.Model):
         self.received_bytes = None
 
 
+class IntegrationRuntimeOutboundNetworkDependenciesCategoryEndpoint(msrest.serialization.Model):
+    """Azure-SSIS integration runtime outbound network dependency endpoints for one category.
+
+    :param category: The category of outbound network dependency.
+    :type category: str
+    :param endpoints: The endpoints for outbound network dependency.
+    :type endpoints:
+     list[~azure.mgmt.datafactory.models.IntegrationRuntimeOutboundNetworkDependenciesEndpoint]
+    """
+
+    _attribute_map = {
+        'category': {'key': 'category', 'type': 'str'},
+        'endpoints': {'key': 'endpoints', 'type': '[IntegrationRuntimeOutboundNetworkDependenciesEndpoint]'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(IntegrationRuntimeOutboundNetworkDependenciesCategoryEndpoint, self).__init__(**kwargs)
+        self.category = kwargs.get('category', None)
+        self.endpoints = kwargs.get('endpoints', None)
+
+
+class IntegrationRuntimeOutboundNetworkDependenciesEndpoint(msrest.serialization.Model):
+    """The endpoint for Azure-SSIS integration runtime outbound network dependency.
+
+    :param domain_name: The domain name of endpoint.
+    :type domain_name: str
+    :param endpoint_details: The details of endpoint.
+    :type endpoint_details:
+     list[~azure.mgmt.datafactory.models.IntegrationRuntimeOutboundNetworkDependenciesEndpointDetails]
+    """
+
+    _attribute_map = {
+        'domain_name': {'key': 'domainName', 'type': 'str'},
+        'endpoint_details': {'key': 'endpointDetails', 'type': '[IntegrationRuntimeOutboundNetworkDependenciesEndpointDetails]'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(IntegrationRuntimeOutboundNetworkDependenciesEndpoint, self).__init__(**kwargs)
+        self.domain_name = kwargs.get('domain_name', None)
+        self.endpoint_details = kwargs.get('endpoint_details', None)
+
+
+class IntegrationRuntimeOutboundNetworkDependenciesEndpointDetails(msrest.serialization.Model):
+    """The details of Azure-SSIS integration runtime outbound network dependency endpoint.
+
+    :param port: The port of endpoint.
+    :type port: int
+    """
+
+    _attribute_map = {
+        'port': {'key': 'port', 'type': 'int'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(IntegrationRuntimeOutboundNetworkDependenciesEndpointDetails, self).__init__(**kwargs)
+        self.port = kwargs.get('port', None)
+
+
+class IntegrationRuntimeOutboundNetworkDependenciesEndpointsResponse(msrest.serialization.Model):
+    """Azure-SSIS integration runtime outbound network dependency endpoints.
+
+    :param value: The list of outbound network dependency endpoints.
+    :type value:
+     list[~azure.mgmt.datafactory.models.IntegrationRuntimeOutboundNetworkDependenciesCategoryEndpoint]
+    """
+
+    _attribute_map = {
+        'value': {'key': 'value', 'type': '[IntegrationRuntimeOutboundNetworkDependenciesCategoryEndpoint]'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(IntegrationRuntimeOutboundNetworkDependenciesEndpointsResponse, self).__init__(**kwargs)
+        self.value = kwargs.get('value', None)
+
+
 class IntegrationRuntimeReference(msrest.serialization.Model):
     """Integration runtime reference type.
 
@@ -19090,7 +19735,7 @@ class IntegrationRuntimeRegenerateKeyParameters(msrest.serialization.Model):
 
     :param key_name: The name of the authentication key to regenerate. Possible values include:
      "authKey1", "authKey2".
-    :type key_name: str or ~data_factory_management_client.models.IntegrationRuntimeAuthKeyName
+    :type key_name: str or ~azure.mgmt.datafactory.models.IntegrationRuntimeAuthKeyName
     """
 
     _attribute_map = {
@@ -19121,7 +19766,7 @@ class IntegrationRuntimeResource(SubResource):
     :ivar etag: Etag identifies change in the resource.
     :vartype etag: str
     :param properties: Required. Integration runtime properties.
-    :type properties: ~data_factory_management_client.models.IntegrationRuntime
+    :type properties: ~azure.mgmt.datafactory.models.IntegrationRuntime
     """
 
     _validation = {
@@ -19160,12 +19805,12 @@ class IntegrationRuntimeSsisCatalogInfo(msrest.serialization.Model):
     :type catalog_admin_user_name: str
     :param catalog_admin_password: The password of the administrator user account of the catalog
      database.
-    :type catalog_admin_password: ~data_factory_management_client.models.SecureString
+    :type catalog_admin_password: ~azure.mgmt.datafactory.models.SecureString
     :param catalog_pricing_tier: The pricing tier for the catalog database. The valid values could
      be found in https://azure.microsoft.com/en-us/pricing/details/sql-database/. Possible values
      include: "Basic", "Standard", "Premium", "PremiumRS".
     :type catalog_pricing_tier: str or
-     ~data_factory_management_client.models.IntegrationRuntimeSsisCatalogPricingTier
+     ~azure.mgmt.datafactory.models.IntegrationRuntimeSsisCatalogPricingTier
     :param dual_standby_pair_name: The dual standby pair name of Azure-SSIS Integration Runtimes to
      support SSISDB failover.
     :type dual_standby_pair_name: str
@@ -19204,27 +19849,28 @@ class IntegrationRuntimeSsisProperties(msrest.serialization.Model):
      collection.
     :type additional_properties: dict[str, object]
     :param catalog_info: Catalog information for managed dedicated integration runtime.
-    :type catalog_info: ~data_factory_management_client.models.IntegrationRuntimeSsisCatalogInfo
+    :type catalog_info: ~azure.mgmt.datafactory.models.IntegrationRuntimeSsisCatalogInfo
     :param license_type: License type for bringing your own license scenario. Possible values
      include: "BasePrice", "LicenseIncluded".
-    :type license_type: str or ~data_factory_management_client.models.IntegrationRuntimeLicenseType
+    :type license_type: str or ~azure.mgmt.datafactory.models.IntegrationRuntimeLicenseType
     :param custom_setup_script_properties: Custom setup script properties for a managed dedicated
      integration runtime.
     :type custom_setup_script_properties:
-     ~data_factory_management_client.models.IntegrationRuntimeCustomSetupScriptProperties
+     ~azure.mgmt.datafactory.models.IntegrationRuntimeCustomSetupScriptProperties
     :param data_proxy_properties: Data proxy properties for a managed dedicated integration
      runtime.
     :type data_proxy_properties:
-     ~data_factory_management_client.models.IntegrationRuntimeDataProxyProperties
+     ~azure.mgmt.datafactory.models.IntegrationRuntimeDataProxyProperties
     :param edition: The edition for the SSIS Integration Runtime. Possible values include:
      "Standard", "Enterprise".
-    :type edition: str or ~data_factory_management_client.models.IntegrationRuntimeEdition
+    :type edition: str or ~azure.mgmt.datafactory.models.IntegrationRuntimeEdition
     :param express_custom_setup_properties: Custom setup without script properties for a SSIS
      integration runtime.
-    :type express_custom_setup_properties:
-     list[~data_factory_management_client.models.CustomSetupBase]
+    :type express_custom_setup_properties: list[~azure.mgmt.datafactory.models.CustomSetupBase]
     :param package_stores: Package stores for the SSIS Integration Runtime.
-    :type package_stores: list[~data_factory_management_client.models.PackageStore]
+    :type package_stores: list[~azure.mgmt.datafactory.models.PackageStore]
+    :param credential: The credential reference containing authentication information.
+    :type credential: ~azure.mgmt.datafactory.models.CredentialReference
     """
 
     _attribute_map = {
@@ -19236,6 +19882,7 @@ class IntegrationRuntimeSsisProperties(msrest.serialization.Model):
         'edition': {'key': 'edition', 'type': 'str'},
         'express_custom_setup_properties': {'key': 'expressCustomSetupProperties', 'type': '[CustomSetupBase]'},
         'package_stores': {'key': 'packageStores', 'type': '[PackageStore]'},
+        'credential': {'key': 'credential', 'type': 'CredentialReference'},
     }
 
     def __init__(
@@ -19251,6 +19898,7 @@ class IntegrationRuntimeSsisProperties(msrest.serialization.Model):
         self.edition = kwargs.get('edition', None)
         self.express_custom_setup_properties = kwargs.get('express_custom_setup_properties', None)
         self.package_stores = kwargs.get('package_stores', None)
+        self.credential = kwargs.get('credential', None)
 
 
 class IntegrationRuntimeStatus(msrest.serialization.Model):
@@ -19268,13 +19916,13 @@ class IntegrationRuntimeStatus(msrest.serialization.Model):
     :type additional_properties: dict[str, object]
     :param type: Required. Type of integration runtime.Constant filled by server.  Possible values
      include: "Managed", "SelfHosted".
-    :type type: str or ~data_factory_management_client.models.IntegrationRuntimeType
+    :type type: str or ~azure.mgmt.datafactory.models.IntegrationRuntimeType
     :ivar data_factory_name: The data factory name which the integration runtime belong to.
     :vartype data_factory_name: str
     :ivar state: The state of integration runtime. Possible values include: "Initial", "Stopped",
      "Started", "Starting", "Stopping", "NeedRegistration", "Online", "Limited", "Offline",
      "AccessDenied".
-    :vartype state: str or ~data_factory_management_client.models.IntegrationRuntimeState
+    :vartype state: str or ~azure.mgmt.datafactory.models.IntegrationRuntimeState
     """
 
     _validation = {
@@ -19311,7 +19959,7 @@ class IntegrationRuntimeStatusListResponse(msrest.serialization.Model):
     All required parameters must be populated in order to send to Azure.
 
     :param value: Required. List of integration runtime status.
-    :type value: list[~data_factory_management_client.models.IntegrationRuntimeStatusResponse]
+    :type value: list[~azure.mgmt.datafactory.models.IntegrationRuntimeStatusResponse]
     :param next_link: The link to the next page of results, if any remaining results exist.
     :type next_link: str
     """
@@ -19344,7 +19992,7 @@ class IntegrationRuntimeStatusResponse(msrest.serialization.Model):
     :ivar name: The integration runtime name.
     :vartype name: str
     :param properties: Required. Integration runtime properties.
-    :type properties: ~data_factory_management_client.models.IntegrationRuntimeStatus
+    :type properties: ~azure.mgmt.datafactory.models.IntegrationRuntimeStatus
     """
 
     _validation = {
@@ -19379,6 +20027,9 @@ class IntegrationRuntimeVNetProperties(msrest.serialization.Model):
     :param public_i_ps: Resource IDs of the public IP addresses that this integration runtime will
      use.
     :type public_i_ps: list[str]
+    :param subnet_id: The ID of subnet, to which this Azure-SSIS integration runtime will be
+     joined.
+    :type subnet_id: str
     """
 
     _attribute_map = {
@@ -19386,6 +20037,7 @@ class IntegrationRuntimeVNetProperties(msrest.serialization.Model):
         'v_net_id': {'key': 'vNetId', 'type': 'str'},
         'subnet': {'key': 'subnet', 'type': 'str'},
         'public_i_ps': {'key': 'publicIPs', 'type': '[str]'},
+        'subnet_id': {'key': 'subnetId', 'type': 'str'},
     }
 
     def __init__(
@@ -19397,6 +20049,7 @@ class IntegrationRuntimeVNetProperties(msrest.serialization.Model):
         self.v_net_id = kwargs.get('v_net_id', None)
         self.subnet = kwargs.get('subnet', None)
         self.public_i_ps = kwargs.get('public_i_ps', None)
+        self.subnet_id = kwargs.get('subnet_id', None)
 
 
 class JiraLinkedService(LinkedService):
@@ -19410,11 +20063,11 @@ class JiraLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param host: Required. The IP address or host name of the Jira service. (e.g.
@@ -19427,7 +20080,7 @@ class JiraLinkedService(LinkedService):
     :type username: object
     :param password: The password corresponding to the user name that you provided in the username
      field.
-    :type password: ~data_factory_management_client.models.SecretBase
+    :type password: ~azure.mgmt.datafactory.models.SecretBase
     :param use_encrypted_endpoints: Specifies whether the data source endpoints are encrypted using
      HTTPS. The default value is true.
     :type use_encrypted_endpoints: object
@@ -19502,14 +20155,14 @@ class JiraObjectDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param table_name: The table name. Type: string (or Expression with resultType string).
     :type table_name: object
     """
@@ -19560,12 +20213,15 @@ class JiraSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: object
@@ -19581,8 +20237,9 @@ class JiraSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
     }
 
@@ -19614,16 +20271,16 @@ class JsonDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param location: The location of the json data storage.
-    :type location: ~data_factory_management_client.models.DatasetLocation
+    :type location: ~azure.mgmt.datafactory.models.DatasetLocation
     :param encoding_name: The code page name of the preferred encoding. If not specified, the
      default value is UTF-8, unless BOM denotes another Unicode encoding. Refer to the name column
      of the table in the following link to set supported values:
@@ -19631,7 +20288,7 @@ class JsonDataset(Dataset):
      resultType string).
     :type encoding_name: object
     :param compression: The data compression method used for the json dataset.
-    :type compression: ~data_factory_management_client.models.DatasetCompression
+    :type compression: ~azure.mgmt.datafactory.models.DatasetCompression
     """
 
     _validation = {
@@ -19680,9 +20337,8 @@ class JsonFormat(DatasetStorageFormat):
     :param deserializer: Deserializer. Type: string (or Expression with resultType string).
     :type deserializer: object
     :param file_pattern: File pattern of JSON. To be more specific, the way of separating a
-     collection of JSON objects. The default value is 'setOfObjects'. It is case-sensitive. Possible
-     values include: "setOfObjects", "arrayOfObjects".
-    :type file_pattern: str or ~data_factory_management_client.models.JsonFormatFilePattern
+     collection of JSON objects. The default value is 'setOfObjects'. It is case-sensitive.
+    :type file_pattern: object
     :param nesting_separator: The character used to separate nesting levels. Default value is '.'
      (dot). Type: string (or Expression with resultType string).
     :type nesting_separator: object
@@ -19712,7 +20368,7 @@ class JsonFormat(DatasetStorageFormat):
         'type': {'key': 'type', 'type': 'str'},
         'serializer': {'key': 'serializer', 'type': 'object'},
         'deserializer': {'key': 'deserializer', 'type': 'object'},
-        'file_pattern': {'key': 'filePattern', 'type': 'str'},
+        'file_pattern': {'key': 'filePattern', 'type': 'object'},
         'nesting_separator': {'key': 'nestingSeparator', 'type': 'object'},
         'encoding_name': {'key': 'encodingName', 'type': 'object'},
         'json_node_reference': {'key': 'jsonNodeReference', 'type': 'object'},
@@ -19743,7 +20399,7 @@ class JsonReadSettings(FormatReadSettings):
     :param type: Required. The read setting type.Constant filled by server.
     :type type: str
     :param compression_properties: Compression settings.
-    :type compression_properties: ~data_factory_management_client.models.CompressionReadSettings
+    :type compression_properties: ~azure.mgmt.datafactory.models.CompressionReadSettings
     """
 
     _validation = {
@@ -19790,10 +20446,13 @@ class JsonSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param store_settings: Json store settings.
-    :type store_settings: ~data_factory_management_client.models.StoreWriteSettings
+    :type store_settings: ~azure.mgmt.datafactory.models.StoreWriteSettings
     :param format_settings: Json format settings.
-    :type format_settings: ~data_factory_management_client.models.JsonWriteSettings
+    :type format_settings: ~azure.mgmt.datafactory.models.JsonWriteSettings
     """
 
     _validation = {
@@ -19808,6 +20467,7 @@ class JsonSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'store_settings': {'key': 'storeSettings', 'type': 'StoreWriteSettings'},
         'format_settings': {'key': 'formatSettings', 'type': 'JsonWriteSettings'},
     }
@@ -19841,13 +20501,16 @@ class JsonSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param store_settings: Json store settings.
-    :type store_settings: ~data_factory_management_client.models.StoreReadSettings
+    :type store_settings: ~azure.mgmt.datafactory.models.StoreReadSettings
     :param format_settings: Json format settings.
-    :type format_settings: ~data_factory_management_client.models.JsonReadSettings
+    :type format_settings: ~azure.mgmt.datafactory.models.JsonReadSettings
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     """
 
     _validation = {
@@ -19860,9 +20523,10 @@ class JsonSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'store_settings': {'key': 'storeSettings', 'type': 'StoreReadSettings'},
         'format_settings': {'key': 'formatSettings', 'type': 'JsonReadSettings'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
     }
 
     def __init__(
@@ -19887,9 +20551,8 @@ class JsonWriteSettings(FormatWriteSettings):
     :param type: Required. The write setting type.Constant filled by server.
     :type type: str
     :param file_pattern: File pattern of JSON. This setting controls the way a collection of JSON
-     objects will be treated. The default value is 'setOfObjects'. It is case-sensitive. Possible
-     values include: "setOfObjects", "arrayOfObjects".
-    :type file_pattern: str or ~data_factory_management_client.models.JsonWriteFilePattern
+     objects will be treated. The default value is 'setOfObjects'. It is case-sensitive.
+    :type file_pattern: object
     """
 
     _validation = {
@@ -19899,7 +20562,7 @@ class JsonWriteSettings(FormatWriteSettings):
     _attribute_map = {
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
-        'file_pattern': {'key': 'filePattern', 'type': 'str'},
+        'file_pattern': {'key': 'filePattern', 'type': 'object'},
     }
 
     def __init__(
@@ -20000,7 +20663,7 @@ class LinkedIntegrationRuntimeKeyAuthorization(LinkedIntegrationRuntimeType):
      sharing.Constant filled by server.
     :type authorization_type: str
     :param key: Required. The key used for authorization.
-    :type key: ~data_factory_management_client.models.SecureString
+    :type key: ~azure.mgmt.datafactory.models.SecureString
     """
 
     _validation = {
@@ -20086,7 +20749,7 @@ class LinkedServiceDebugResource(SubResourceDebugResource):
     :param name: The resource name.
     :type name: str
     :param properties: Required. Properties of linked service.
-    :type properties: ~data_factory_management_client.models.LinkedService
+    :type properties: ~azure.mgmt.datafactory.models.LinkedService
     """
 
     _validation = {
@@ -20112,7 +20775,7 @@ class LinkedServiceListResponse(msrest.serialization.Model):
     All required parameters must be populated in order to send to Azure.
 
     :param value: Required. List of linked services.
-    :type value: list[~data_factory_management_client.models.LinkedServiceResource]
+    :type value: list[~azure.mgmt.datafactory.models.LinkedServiceResource]
     :param next_link: The link to the next page of results, if any remaining results exist.
     :type next_link: str
     """
@@ -20188,7 +20851,7 @@ class LinkedServiceResource(SubResource):
     :ivar etag: Etag identifies change in the resource.
     :vartype etag: str
     :param properties: Required. Properties of linked service.
-    :type properties: ~data_factory_management_client.models.LinkedService
+    :type properties: ~azure.mgmt.datafactory.models.LinkedService
     """
 
     _validation = {
@@ -20221,7 +20884,7 @@ class LogLocationSettings(msrest.serialization.Model):
     All required parameters must be populated in order to send to Azure.
 
     :param linked_service_name: Required. Log storage linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param path: The path to storage for storing detailed logs of activity execution. Type: string
      (or Expression with resultType string).
     :type path: object
@@ -20254,11 +20917,10 @@ class LogSettings(msrest.serialization.Model):
      (or Expression with resultType boolean).
     :type enable_copy_activity_log: object
     :param copy_activity_log_settings: Specifies settings for copy activity log.
-    :type copy_activity_log_settings:
-     ~data_factory_management_client.models.CopyActivityLogSettings
+    :type copy_activity_log_settings: ~azure.mgmt.datafactory.models.CopyActivityLogSettings
     :param log_location_settings: Required. Log location settings customer needs to provide when
      enabling log.
-    :type log_location_settings: ~data_factory_management_client.models.LogLocationSettings
+    :type log_location_settings: ~azure.mgmt.datafactory.models.LogLocationSettings
     """
 
     _validation = {
@@ -20290,7 +20952,7 @@ class LogStorageSettings(msrest.serialization.Model):
      collection.
     :type additional_properties: dict[str, object]
     :param linked_service_name: Required. Log storage linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param path: The path to storage for storing detailed logs of activity execution. Type: string
      (or Expression with resultType string).
     :type path: object
@@ -20341,17 +21003,17 @@ class LookupActivity(ExecutionActivity):
     :param description: Activity description.
     :type description: str
     :param depends_on: Activity depends on condition.
-    :type depends_on: list[~data_factory_management_client.models.ActivityDependency]
+    :type depends_on: list[~azure.mgmt.datafactory.models.ActivityDependency]
     :param user_properties: Activity user properties.
-    :type user_properties: list[~data_factory_management_client.models.UserProperty]
+    :type user_properties: list[~azure.mgmt.datafactory.models.UserProperty]
     :param linked_service_name: Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param policy: Activity policy.
-    :type policy: ~data_factory_management_client.models.ActivityPolicy
+    :type policy: ~azure.mgmt.datafactory.models.ActivityPolicy
     :param source: Required. Dataset-specific source properties, same as copy activity source.
-    :type source: ~data_factory_management_client.models.CopySource
+    :type source: ~azure.mgmt.datafactory.models.CopySource
     :param dataset: Required. Lookup activity dataset reference.
-    :type dataset: ~data_factory_management_client.models.DatasetReference
+    :type dataset: ~azure.mgmt.datafactory.models.DatasetReference
     :param first_row_only: Whether to return first row or all rows. Default value is true. Type:
      boolean (or Expression with resultType boolean).
     :type first_row_only: object
@@ -20400,17 +21062,17 @@ class MagentoLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param host: Required. The URL of the Magento instance. (i.e. 192.168.222.110/magento3).
     :type host: object
     :param access_token: The access token from Magento.
-    :type access_token: ~data_factory_management_client.models.SecretBase
+    :type access_token: ~azure.mgmt.datafactory.models.SecretBase
     :param use_encrypted_endpoints: Specifies whether the data source endpoints are encrypted using
      HTTPS. The default value is true.
     :type use_encrypted_endpoints: object
@@ -20480,14 +21142,14 @@ class MagentoObjectDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param table_name: The table name. Type: string (or Expression with resultType string).
     :type table_name: object
     """
@@ -20538,12 +21200,15 @@ class MagentoSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: object
@@ -20559,8 +21224,9 @@ class MagentoSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
     }
 
@@ -20571,6 +21237,45 @@ class MagentoSource(TabularSource):
         super(MagentoSource, self).__init__(**kwargs)
         self.type = 'MagentoSource'  # type: str
         self.query = kwargs.get('query', None)
+
+
+class ManagedIdentityCredential(Credential):
+    """Managed identity credential.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param additional_properties: Unmatched properties from the message are deserialized to this
+     collection.
+    :type additional_properties: dict[str, object]
+    :param type: Required. Type of credential.Constant filled by server.
+    :type type: str
+    :param description: Credential description.
+    :type description: str
+    :param annotations: List of tags that can be used for describing the Credential.
+    :type annotations: list[object]
+    :param resource_id: The resource id of user assigned managed identity.
+    :type resource_id: str
+    """
+
+    _validation = {
+        'type': {'required': True},
+    }
+
+    _attribute_map = {
+        'additional_properties': {'key': '', 'type': '{object}'},
+        'type': {'key': 'type', 'type': 'str'},
+        'description': {'key': 'description', 'type': 'str'},
+        'annotations': {'key': 'annotations', 'type': '[object]'},
+        'resource_id': {'key': 'typeProperties.resourceId', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(ManagedIdentityCredential, self).__init__(**kwargs)
+        self.type = 'ManagedIdentity'  # type: str
+        self.resource_id = kwargs.get('resource_id', None)
 
 
 class ManagedIntegrationRuntime(IntegrationRuntime):
@@ -20585,21 +21290,19 @@ class ManagedIntegrationRuntime(IntegrationRuntime):
     :type additional_properties: dict[str, object]
     :param type: Required. Type of integration runtime.Constant filled by server.  Possible values
      include: "Managed", "SelfHosted".
-    :type type: str or ~data_factory_management_client.models.IntegrationRuntimeType
+    :type type: str or ~azure.mgmt.datafactory.models.IntegrationRuntimeType
     :param description: Integration runtime description.
     :type description: str
     :ivar state: Integration runtime state, only valid for managed dedicated integration runtime.
      Possible values include: "Initial", "Stopped", "Started", "Starting", "Stopping",
      "NeedRegistration", "Online", "Limited", "Offline", "AccessDenied".
-    :vartype state: str or ~data_factory_management_client.models.IntegrationRuntimeState
+    :vartype state: str or ~azure.mgmt.datafactory.models.IntegrationRuntimeState
     :param managed_virtual_network: Managed Virtual Network reference.
-    :type managed_virtual_network:
-     ~data_factory_management_client.models.ManagedVirtualNetworkReference
+    :type managed_virtual_network: ~azure.mgmt.datafactory.models.ManagedVirtualNetworkReference
     :param compute_properties: The compute resource for managed integration runtime.
-    :type compute_properties:
-     ~data_factory_management_client.models.IntegrationRuntimeComputeProperties
+    :type compute_properties: ~azure.mgmt.datafactory.models.IntegrationRuntimeComputeProperties
     :param ssis_properties: SSIS properties for managed integration runtime.
-    :type ssis_properties: ~data_factory_management_client.models.IntegrationRuntimeSsisProperties
+    :type ssis_properties: ~azure.mgmt.datafactory.models.IntegrationRuntimeSsisProperties
     """
 
     _validation = {
@@ -20686,10 +21389,9 @@ class ManagedIntegrationRuntimeNode(msrest.serialization.Model):
     :vartype node_id: str
     :ivar status: The managed integration runtime node status. Possible values include: "Starting",
      "Available", "Recycling", "Unavailable".
-    :vartype status: str or
-     ~data_factory_management_client.models.ManagedIntegrationRuntimeNodeStatus
+    :vartype status: str or ~azure.mgmt.datafactory.models.ManagedIntegrationRuntimeNodeStatus
     :param errors: The errors that occurred on this integration runtime node.
-    :type errors: list[~data_factory_management_client.models.ManagedIntegrationRuntimeError]
+    :type errors: list[~azure.mgmt.datafactory.models.ManagedIntegrationRuntimeError]
     """
 
     _validation = {
@@ -20782,23 +21484,22 @@ class ManagedIntegrationRuntimeStatus(IntegrationRuntimeStatus):
     :type additional_properties: dict[str, object]
     :param type: Required. Type of integration runtime.Constant filled by server.  Possible values
      include: "Managed", "SelfHosted".
-    :type type: str or ~data_factory_management_client.models.IntegrationRuntimeType
+    :type type: str or ~azure.mgmt.datafactory.models.IntegrationRuntimeType
     :ivar data_factory_name: The data factory name which the integration runtime belong to.
     :vartype data_factory_name: str
     :ivar state: The state of integration runtime. Possible values include: "Initial", "Stopped",
      "Started", "Starting", "Stopping", "NeedRegistration", "Online", "Limited", "Offline",
      "AccessDenied".
-    :vartype state: str or ~data_factory_management_client.models.IntegrationRuntimeState
+    :vartype state: str or ~azure.mgmt.datafactory.models.IntegrationRuntimeState
     :ivar create_time: The time at which the integration runtime was created, in ISO8601 format.
     :vartype create_time: ~datetime.datetime
     :ivar nodes: The list of nodes for managed integration runtime.
-    :vartype nodes: list[~data_factory_management_client.models.ManagedIntegrationRuntimeNode]
+    :vartype nodes: list[~azure.mgmt.datafactory.models.ManagedIntegrationRuntimeNode]
     :ivar other_errors: The errors that occurred on this integration runtime.
-    :vartype other_errors:
-     list[~data_factory_management_client.models.ManagedIntegrationRuntimeError]
+    :vartype other_errors: list[~azure.mgmt.datafactory.models.ManagedIntegrationRuntimeError]
     :ivar last_operation: The last operation result that occurred on this integration runtime.
     :vartype last_operation:
-     ~data_factory_management_client.models.ManagedIntegrationRuntimeOperationResult
+     ~azure.mgmt.datafactory.models.ManagedIntegrationRuntimeOperationResult
     """
 
     _validation = {
@@ -20843,7 +21544,7 @@ class ManagedPrivateEndpoint(msrest.serialization.Model):
      collection.
     :type additional_properties: dict[str, object]
     :param connection_state: The managed private endpoint connection state.
-    :type connection_state: ~data_factory_management_client.models.ConnectionStateProperties
+    :type connection_state: ~azure.mgmt.datafactory.models.ConnectionStateProperties
     :param fqdns: Fully qualified domain names.
     :type fqdns: list[str]
     :param group_id: The groupId to which the managed private endpoint is created.
@@ -20892,7 +21593,7 @@ class ManagedPrivateEndpointListResponse(msrest.serialization.Model):
     All required parameters must be populated in order to send to Azure.
 
     :param value: Required. List of managed private endpoints.
-    :type value: list[~data_factory_management_client.models.ManagedPrivateEndpointResource]
+    :type value: list[~azure.mgmt.datafactory.models.ManagedPrivateEndpointResource]
     :param next_link: The link to the next page of results, if any remaining results exist.
     :type next_link: str
     """
@@ -20931,7 +21632,7 @@ class ManagedPrivateEndpointResource(SubResource):
     :ivar etag: Etag identifies change in the resource.
     :vartype etag: str
     :param properties: Required. Managed private endpoint properties.
-    :type properties: ~data_factory_management_client.models.ManagedPrivateEndpoint
+    :type properties: ~azure.mgmt.datafactory.models.ManagedPrivateEndpoint
     """
 
     _validation = {
@@ -20999,7 +21700,7 @@ class ManagedVirtualNetworkListResponse(msrest.serialization.Model):
     All required parameters must be populated in order to send to Azure.
 
     :param value: Required. List of managed Virtual Networks.
-    :type value: list[~data_factory_management_client.models.ManagedVirtualNetworkResource]
+    :type value: list[~azure.mgmt.datafactory.models.ManagedVirtualNetworkResource]
     :param next_link: The link to the next page of results, if any remaining results exist.
     :type next_link: str
     """
@@ -21072,7 +21773,7 @@ class ManagedVirtualNetworkResource(SubResource):
     :ivar etag: Etag identifies change in the resource.
     :vartype etag: str
     :param properties: Required. Managed Virtual Network properties.
-    :type properties: ~data_factory_management_client.models.ManagedVirtualNetwork
+    :type properties: ~azure.mgmt.datafactory.models.ManagedVirtualNetwork
     """
 
     _validation = {
@@ -21102,7 +21803,9 @@ class ManagedVirtualNetworkResource(SubResource):
 class MappingDataFlow(DataFlow):
     """Mapping data flow.
 
-    :param type: Type of data flow.Constant filled by server.
+    All required parameters must be populated in order to send to Azure.
+
+    :param type: Required. Type of data flow.Constant filled by server.
     :type type: str
     :param description: The description of the data flow.
     :type description: str
@@ -21110,16 +21813,20 @@ class MappingDataFlow(DataFlow):
     :type annotations: list[object]
     :param folder: The folder that this data flow is in. If not specified, Data flow will appear at
      the root level.
-    :type folder: ~data_factory_management_client.models.DataFlowFolder
+    :type folder: ~azure.mgmt.datafactory.models.DataFlowFolder
     :param sources: List of sources in data flow.
-    :type sources: list[~data_factory_management_client.models.DataFlowSource]
+    :type sources: list[~azure.mgmt.datafactory.models.DataFlowSource]
     :param sinks: List of sinks in data flow.
-    :type sinks: list[~data_factory_management_client.models.DataFlowSink]
+    :type sinks: list[~azure.mgmt.datafactory.models.DataFlowSink]
     :param transformations: List of transformations in data flow.
-    :type transformations: list[~data_factory_management_client.models.Transformation]
+    :type transformations: list[~azure.mgmt.datafactory.models.Transformation]
     :param script: DataFlow script.
     :type script: str
     """
+
+    _validation = {
+        'type': {'required': True},
+    }
 
     _attribute_map = {
         'type': {'key': 'type', 'type': 'str'},
@@ -21155,18 +21862,18 @@ class MariaDbLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param connection_string: An ODBC connection string. Type: string, SecureString or
      AzureKeyVaultSecretReference.
     :type connection_string: object
     :param pwd: The Azure key vault secret reference of password in connection string.
-    :type pwd: ~data_factory_management_client.models.AzureKeyVaultSecretReference
+    :type pwd: ~azure.mgmt.datafactory.models.AzureKeyVaultSecretReference
     :param encrypted_credential: The encrypted credential used for authentication. Credentials are
      encrypted using the integration runtime credential manager. Type: string (or Expression with
      resultType string).
@@ -21219,12 +21926,15 @@ class MariaDbSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: object
@@ -21240,8 +21950,9 @@ class MariaDbSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
     }
 
@@ -21273,14 +21984,14 @@ class MariaDbTableDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param table_name: The table name. Type: string (or Expression with resultType string).
     :type table_name: object
     """
@@ -21323,11 +22034,11 @@ class MarketoLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param endpoint: Required. The endpoint of the Marketo server. (i.e. 123-ABC-321.mktorest.com).
@@ -21335,7 +22046,7 @@ class MarketoLinkedService(LinkedService):
     :param client_id: Required. The client Id of your Marketo service.
     :type client_id: object
     :param client_secret: The client secret of your Marketo service.
-    :type client_secret: ~data_factory_management_client.models.SecretBase
+    :type client_secret: ~azure.mgmt.datafactory.models.SecretBase
     :param use_encrypted_endpoints: Specifies whether the data source endpoints are encrypted using
      HTTPS. The default value is true.
     :type use_encrypted_endpoints: object
@@ -21408,14 +22119,14 @@ class MarketoObjectDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param table_name: The table name. Type: string (or Expression with resultType string).
     :type table_name: object
     """
@@ -21466,12 +22177,15 @@ class MarketoSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: object
@@ -21487,8 +22201,9 @@ class MarketoSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
     }
 
@@ -21499,6 +22214,29 @@ class MarketoSource(TabularSource):
         super(MarketoSource, self).__init__(**kwargs)
         self.type = 'MarketoSource'  # type: str
         self.query = kwargs.get('query', None)
+
+
+class MetadataItem(msrest.serialization.Model):
+    """Specify the name and value of custom metadata item.
+
+    :param name: Metadata item key name. Type: string (or Expression with resultType string).
+    :type name: object
+    :param value: Metadata item value. Type: string (or Expression with resultType string).
+    :type value: object
+    """
+
+    _attribute_map = {
+        'name': {'key': 'name', 'type': 'object'},
+        'value': {'key': 'value', 'type': 'object'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(MetadataItem, self).__init__(**kwargs)
+        self.name = kwargs.get('name', None)
+        self.value = kwargs.get('value', None)
 
 
 class MicrosoftAccessLinkedService(LinkedService):
@@ -21512,11 +22250,11 @@ class MicrosoftAccessLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param connection_string: Required. The non-access credential portion of the connection string
@@ -21529,12 +22267,12 @@ class MicrosoftAccessLinkedService(LinkedService):
     :type authentication_type: object
     :param credential: The access credential portion of the connection string specified in driver-
      specific property-value format.
-    :type credential: ~data_factory_management_client.models.SecretBase
+    :type credential: ~azure.mgmt.datafactory.models.SecretBase
     :param user_name: User name for Basic authentication. Type: string (or Expression with
      resultType string).
     :type user_name: object
     :param password: Password for Basic authentication.
-    :type password: ~data_factory_management_client.models.SecretBase
+    :type password: ~azure.mgmt.datafactory.models.SecretBase
     :param encrypted_credential: The encrypted credential used for authentication. Credentials are
      encrypted using the integration runtime credential manager. Type: string (or Expression with
      resultType string).
@@ -21600,6 +22338,9 @@ class MicrosoftAccessSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param pre_copy_script: A query to execute before starting the copy. Type: string (or
      Expression with resultType string).
     :type pre_copy_script: object
@@ -21617,6 +22358,7 @@ class MicrosoftAccessSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'pre_copy_script': {'key': 'preCopyScript', 'type': 'object'},
     }
 
@@ -21648,11 +22390,14 @@ class MicrosoftAccessSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query: Database query. Type: string (or Expression with resultType string).
     :type query: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     """
 
     _validation = {
@@ -21665,8 +22410,9 @@ class MicrosoftAccessSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
     }
 
     def __init__(
@@ -21698,14 +22444,14 @@ class MicrosoftAccessTableDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param table_name: The Microsoft Access table name. Type: string (or Expression with resultType
      string).
     :type table_name: object
@@ -21757,14 +22503,14 @@ class MongoDbAtlasCollectionDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param collection: Required. The collection name of the MongoDB Atlas database. Type: string
      (or Expression with resultType string).
     :type collection: object
@@ -21809,11 +22555,11 @@ class MongoDbAtlasLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param connection_string: Required. The MongoDB Atlas connection string. Type: string,
@@ -21852,6 +22598,65 @@ class MongoDbAtlasLinkedService(LinkedService):
         self.database = kwargs['database']
 
 
+class MongoDbAtlasSink(CopySink):
+    """A copy activity MongoDB Atlas sink.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param additional_properties: Unmatched properties from the message are deserialized to this
+     collection.
+    :type additional_properties: dict[str, object]
+    :param type: Required. Copy sink type.Constant filled by server.
+    :type type: str
+    :param write_batch_size: Write batch size. Type: integer (or Expression with resultType
+     integer), minimum: 0.
+    :type write_batch_size: object
+    :param write_batch_timeout: Write batch timeout. Type: string (or Expression with resultType
+     string), pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
+    :type write_batch_timeout: object
+    :param sink_retry_count: Sink retry count. Type: integer (or Expression with resultType
+     integer).
+    :type sink_retry_count: object
+    :param sink_retry_wait: Sink retry wait. Type: string (or Expression with resultType string),
+     pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
+    :type sink_retry_wait: object
+    :param max_concurrent_connections: The maximum concurrent connection count for the sink data
+     store. Type: integer (or Expression with resultType integer).
+    :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
+    :param write_behavior: Specifies whether the document with same key to be overwritten (upsert)
+     rather than throw exception (insert). The default value is "insert". Type: string (or
+     Expression with resultType string). Type: string (or Expression with resultType string).
+    :type write_behavior: object
+    """
+
+    _validation = {
+        'type': {'required': True},
+    }
+
+    _attribute_map = {
+        'additional_properties': {'key': '', 'type': '{object}'},
+        'type': {'key': 'type', 'type': 'str'},
+        'write_batch_size': {'key': 'writeBatchSize', 'type': 'object'},
+        'write_batch_timeout': {'key': 'writeBatchTimeout', 'type': 'object'},
+        'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
+        'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
+        'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
+        'write_behavior': {'key': 'writeBehavior', 'type': 'object'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(MongoDbAtlasSink, self).__init__(**kwargs)
+        self.type = 'MongoDbAtlasSink'  # type: str
+        self.write_behavior = kwargs.get('write_behavior', None)
+
+
 class MongoDbAtlasSource(CopySource):
     """A copy activity source for a MongoDB Atlas database.
 
@@ -21871,12 +22676,15 @@ class MongoDbAtlasSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param filter: Specifies selection filter using query operators. To return all documents in a
      collection, omit this parameter or pass an empty document ({}). Type: string (or Expression
      with resultType string).
     :type filter: object
     :param cursor_methods: Cursor methods for Mongodb query.
-    :type cursor_methods: ~data_factory_management_client.models.MongoDbCursorMethodsProperties
+    :type cursor_methods: ~azure.mgmt.datafactory.models.MongoDbCursorMethodsProperties
     :param batch_size: Specifies the number of documents to return in each batch of the response
      from MongoDB Atlas instance. In most cases, modifying the batch size will not affect the user
      or the application. This property's main purpose is to avoid hit the limitation of response
@@ -21886,8 +22694,8 @@ class MongoDbAtlasSource(CopySource):
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     """
 
     _validation = {
@@ -21900,11 +22708,12 @@ class MongoDbAtlasSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'filter': {'key': 'filter', 'type': 'object'},
         'cursor_methods': {'key': 'cursorMethods', 'type': 'MongoDbCursorMethodsProperties'},
         'batch_size': {'key': 'batchSize', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
     }
 
     def __init__(
@@ -21939,14 +22748,14 @@ class MongoDbCollectionDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param collection_name: Required. The table name of the MongoDB database. Type: string (or
      Expression with resultType string).
     :type collection_name: object
@@ -22034,11 +22843,11 @@ class MongoDbLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param server: Required. The IP address or server name of the MongoDB server. Type: string (or
@@ -22046,8 +22855,7 @@ class MongoDbLinkedService(LinkedService):
     :type server: object
     :param authentication_type: The authentication type to be used to connect to the MongoDB
      database. Possible values include: "Basic", "Anonymous".
-    :type authentication_type: str or
-     ~data_factory_management_client.models.MongoDbAuthenticationType
+    :type authentication_type: str or ~azure.mgmt.datafactory.models.MongoDbAuthenticationType
     :param database_name: Required. The name of the MongoDB database that you want to access. Type:
      string (or Expression with resultType string).
     :type database_name: object
@@ -22055,7 +22863,7 @@ class MongoDbLinkedService(LinkedService):
      string).
     :type username: object
     :param password: Password for authentication.
-    :type password: ~data_factory_management_client.models.SecretBase
+    :type password: ~azure.mgmt.datafactory.models.SecretBase
     :param auth_source: Database to verify the username and password. Type: string (or Expression
      with resultType string).
     :type auth_source: object
@@ -22136,12 +22944,15 @@ class MongoDbSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query: Database query. Should be a SQL-92 query expression. Type: string (or Expression
      with resultType string).
     :type query: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     """
 
     _validation = {
@@ -22154,8 +22965,9 @@ class MongoDbSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
     }
 
     def __init__(
@@ -22187,14 +22999,14 @@ class MongoDbV2CollectionDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param collection: Required. The collection name of the MongoDB database. Type: string (or
      Expression with resultType string).
     :type collection: object
@@ -22239,11 +23051,11 @@ class MongoDbV2LinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param connection_string: Required. The MongoDB connection string. Type: string, SecureString
@@ -22281,6 +23093,65 @@ class MongoDbV2LinkedService(LinkedService):
         self.database = kwargs['database']
 
 
+class MongoDbV2Sink(CopySink):
+    """A copy activity MongoDB sink.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param additional_properties: Unmatched properties from the message are deserialized to this
+     collection.
+    :type additional_properties: dict[str, object]
+    :param type: Required. Copy sink type.Constant filled by server.
+    :type type: str
+    :param write_batch_size: Write batch size. Type: integer (or Expression with resultType
+     integer), minimum: 0.
+    :type write_batch_size: object
+    :param write_batch_timeout: Write batch timeout. Type: string (or Expression with resultType
+     string), pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
+    :type write_batch_timeout: object
+    :param sink_retry_count: Sink retry count. Type: integer (or Expression with resultType
+     integer).
+    :type sink_retry_count: object
+    :param sink_retry_wait: Sink retry wait. Type: string (or Expression with resultType string),
+     pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
+    :type sink_retry_wait: object
+    :param max_concurrent_connections: The maximum concurrent connection count for the sink data
+     store. Type: integer (or Expression with resultType integer).
+    :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
+    :param write_behavior: Specifies whether the document with same key to be overwritten (upsert)
+     rather than throw exception (insert). The default value is "insert". Type: string (or
+     Expression with resultType string). Type: string (or Expression with resultType string).
+    :type write_behavior: object
+    """
+
+    _validation = {
+        'type': {'required': True},
+    }
+
+    _attribute_map = {
+        'additional_properties': {'key': '', 'type': '{object}'},
+        'type': {'key': 'type', 'type': 'str'},
+        'write_batch_size': {'key': 'writeBatchSize', 'type': 'object'},
+        'write_batch_timeout': {'key': 'writeBatchTimeout', 'type': 'object'},
+        'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
+        'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
+        'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
+        'write_behavior': {'key': 'writeBehavior', 'type': 'object'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(MongoDbV2Sink, self).__init__(**kwargs)
+        self.type = 'MongoDbV2Sink'  # type: str
+        self.write_behavior = kwargs.get('write_behavior', None)
+
+
 class MongoDbV2Source(CopySource):
     """A copy activity source for a MongoDB database.
 
@@ -22300,12 +23171,15 @@ class MongoDbV2Source(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param filter: Specifies selection filter using query operators. To return all documents in a
      collection, omit this parameter or pass an empty document ({}). Type: string (or Expression
      with resultType string).
     :type filter: object
     :param cursor_methods: Cursor methods for Mongodb query.
-    :type cursor_methods: ~data_factory_management_client.models.MongoDbCursorMethodsProperties
+    :type cursor_methods: ~azure.mgmt.datafactory.models.MongoDbCursorMethodsProperties
     :param batch_size: Specifies the number of documents to return in each batch of the response
      from MongoDB instance. In most cases, modifying the batch size will not affect the user or the
      application. This property's main purpose is to avoid hit the limitation of response size.
@@ -22315,8 +23189,8 @@ class MongoDbV2Source(CopySource):
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     """
 
     _validation = {
@@ -22329,11 +23203,12 @@ class MongoDbV2Source(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'filter': {'key': 'filter', 'type': 'object'},
         'cursor_methods': {'key': 'cursorMethods', 'type': 'MongoDbCursorMethodsProperties'},
         'batch_size': {'key': 'batchSize', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
     }
 
     def __init__(
@@ -22360,17 +23235,17 @@ class MySqlLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param connection_string: Required. The connection string.
     :type connection_string: object
     :param password: The Azure key vault secret reference of password in connection string.
-    :type password: ~data_factory_management_client.models.AzureKeyVaultSecretReference
+    :type password: ~azure.mgmt.datafactory.models.AzureKeyVaultSecretReference
     :param encrypted_credential: The encrypted credential used for authentication. Credentials are
      encrypted using the integration runtime credential manager. Type: string (or Expression with
      resultType string).
@@ -22424,12 +23299,15 @@ class MySqlSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     :param query: Database query. Type: string (or Expression with resultType string).
     :type query: object
     """
@@ -22444,8 +23322,9 @@ class MySqlSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
     }
 
@@ -22477,14 +23356,14 @@ class MySqlTableDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param table_name: The MySQL table name. Type: string (or Expression with resultType string).
     :type table_name: object
     """
@@ -22527,18 +23406,18 @@ class NetezzaLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param connection_string: An ODBC connection string. Type: string, SecureString or
      AzureKeyVaultSecretReference.
     :type connection_string: object
     :param pwd: The Azure key vault secret reference of password in connection string.
-    :type pwd: ~data_factory_management_client.models.AzureKeyVaultSecretReference
+    :type pwd: ~azure.mgmt.datafactory.models.AzureKeyVaultSecretReference
     :param encrypted_credential: The encrypted credential used for authentication. Credentials are
      encrypted using the integration runtime credential manager. Type: string (or Expression with
      resultType string).
@@ -22623,12 +23502,15 @@ class NetezzaSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: object
@@ -22636,7 +23518,7 @@ class NetezzaSource(TabularSource):
      parallel. Possible values include: "None", "DataSlice", "DynamicRange".
     :type partition_option: object
     :param partition_settings: The settings that will be leveraged for Netezza source partitioning.
-    :type partition_settings: ~data_factory_management_client.models.NetezzaPartitionSettings
+    :type partition_settings: ~azure.mgmt.datafactory.models.NetezzaPartitionSettings
     """
 
     _validation = {
@@ -22649,8 +23531,9 @@ class NetezzaSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
         'partition_option': {'key': 'partitionOption', 'type': 'object'},
         'partition_settings': {'key': 'partitionSettings', 'type': 'NetezzaPartitionSettings'},
@@ -22686,14 +23569,14 @@ class NetezzaTableDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param table_name: This property will be retired. Please consider using schema + table
      properties instead.
     :type table_name: object
@@ -22747,11 +23630,11 @@ class ODataLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param url: Required. The URL of the OData service endpoint. Type: string (or Expression with
@@ -22760,13 +23643,12 @@ class ODataLinkedService(LinkedService):
     :param authentication_type: Type of authentication used to connect to the OData service.
      Possible values include: "Basic", "Anonymous", "Windows", "AadServicePrincipal",
      "ManagedServiceIdentity".
-    :type authentication_type: str or
-     ~data_factory_management_client.models.ODataAuthenticationType
+    :type authentication_type: str or ~azure.mgmt.datafactory.models.ODataAuthenticationType
     :param user_name: User name of the OData service. Type: string (or Expression with resultType
      string).
     :type user_name: object
     :param password: Password of the OData service.
-    :type password: ~data_factory_management_client.models.SecretBase
+    :type password: ~azure.mgmt.datafactory.models.SecretBase
     :param auth_headers: The additional HTTP headers in the request to RESTful API used for
      authorization. Type: object (or Expression with resultType object).
     :type auth_headers: object
@@ -22786,19 +23668,18 @@ class ODataLinkedService(LinkedService):
     :param aad_service_principal_credential_type: Specify the credential type (key or cert) is used
      for service principal. Possible values include: "ServicePrincipalKey", "ServicePrincipalCert".
     :type aad_service_principal_credential_type: str or
-     ~data_factory_management_client.models.ODataAadServicePrincipalCredentialType
+     ~azure.mgmt.datafactory.models.ODataAadServicePrincipalCredentialType
     :param service_principal_key: Specify the secret of your application registered in Azure Active
      Directory. Type: string (or Expression with resultType string).
-    :type service_principal_key: ~data_factory_management_client.models.SecretBase
+    :type service_principal_key: ~azure.mgmt.datafactory.models.SecretBase
     :param service_principal_embedded_cert: Specify the base64 encoded certificate of your
      application registered in Azure Active Directory. Type: string (or Expression with resultType
      string).
-    :type service_principal_embedded_cert: ~data_factory_management_client.models.SecretBase
+    :type service_principal_embedded_cert: ~azure.mgmt.datafactory.models.SecretBase
     :param service_principal_embedded_cert_password: Specify the password of your certificate if
      your certificate has a password and you are using AadServicePrincipal authentication. Type:
      string (or Expression with resultType string).
-    :type service_principal_embedded_cert_password:
-     ~data_factory_management_client.models.SecretBase
+    :type service_principal_embedded_cert_password: ~azure.mgmt.datafactory.models.SecretBase
     :param encrypted_credential: The encrypted credential used for authentication. Credentials are
      encrypted using the integration runtime credential manager. Type: string (or Expression with
      resultType string).
@@ -22874,14 +23755,14 @@ class ODataResourceDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param path: The OData resource path. Type: string (or Expression with resultType string).
     :type path: object
     """
@@ -22932,6 +23813,9 @@ class ODataSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query: OData query. For example, "$top=1". Type: string (or Expression with resultType
      string).
     :type query: object
@@ -22941,8 +23825,8 @@ class ODataSource(CopySource):
      ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type http_request_timeout: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     """
 
     _validation = {
@@ -22955,9 +23839,10 @@ class ODataSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
         'http_request_timeout': {'key': 'httpRequestTimeout', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
     }
 
     def __init__(
@@ -22982,11 +23867,11 @@ class OdbcLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param connection_string: Required. The non-access credential portion of the connection string
@@ -22998,12 +23883,12 @@ class OdbcLinkedService(LinkedService):
     :type authentication_type: object
     :param credential: The access credential portion of the connection string specified in driver-
      specific property-value format.
-    :type credential: ~data_factory_management_client.models.SecretBase
+    :type credential: ~azure.mgmt.datafactory.models.SecretBase
     :param user_name: User name for Basic authentication. Type: string (or Expression with
      resultType string).
     :type user_name: object
     :param password: Password for Basic authentication.
-    :type password: ~data_factory_management_client.models.SecretBase
+    :type password: ~azure.mgmt.datafactory.models.SecretBase
     :param encrypted_credential: The encrypted credential used for authentication. Credentials are
      encrypted using the integration runtime credential manager. Type: string (or Expression with
      resultType string).
@@ -23069,6 +23954,9 @@ class OdbcSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param pre_copy_script: A query to execute before starting the copy. Type: string (or
      Expression with resultType string).
     :type pre_copy_script: object
@@ -23086,6 +23974,7 @@ class OdbcSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'pre_copy_script': {'key': 'preCopyScript', 'type': 'object'},
     }
 
@@ -23117,12 +24006,15 @@ class OdbcSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     :param query: Database query. Type: string (or Expression with resultType string).
     :type query: object
     """
@@ -23137,8 +24029,9 @@ class OdbcSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
     }
 
@@ -23170,14 +24063,14 @@ class OdbcTableDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param table_name: The ODBC table name. Type: string (or Expression with resultType string).
     :type table_name: object
     """
@@ -23228,14 +24121,14 @@ class Office365Dataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param table_name: Required. Name of the dataset to extract from Office 365. Type: string (or
      Expression with resultType string).
     :type table_name: object
@@ -23285,11 +24178,11 @@ class Office365LinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param office365_tenant_id: Required. Azure tenant ID to which the Office 365 account belongs.
@@ -23302,7 +24195,7 @@ class Office365LinkedService(LinkedService):
      Expression with resultType string).
     :type service_principal_id: object
     :param service_principal_key: Required. Specify the application's key.
-    :type service_principal_key: ~data_factory_management_client.models.SecretBase
+    :type service_principal_key: ~azure.mgmt.datafactory.models.SecretBase
     :param encrypted_credential: The encrypted credential used for authentication. Credentials are
      encrypted using the integration runtime credential manager. Type: string (or Expression with
      resultType string).
@@ -23363,6 +24256,9 @@ class Office365Source(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param allowed_groups: The groups containing all the users. Type: array of strings (or
      Expression with resultType array of strings).
     :type allowed_groups: object
@@ -23394,6 +24290,7 @@ class Office365Source(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'allowed_groups': {'key': 'allowedGroups', 'type': 'object'},
         'user_scope_filter_uri': {'key': 'userScopeFilterUri', 'type': 'object'},
         'date_filter_column': {'key': 'dateFilterColumn', 'type': 'object'},
@@ -23424,10 +24321,9 @@ class Operation(msrest.serialization.Model):
     :param origin: The intended executor of the operation.
     :type origin: str
     :param display: Metadata associated with the operation.
-    :type display: ~data_factory_management_client.models.OperationDisplay
+    :type display: ~azure.mgmt.datafactory.models.OperationDisplay
     :param service_specification: Details about a service operation.
-    :type service_specification:
-     ~data_factory_management_client.models.OperationServiceSpecification
+    :type service_specification: ~azure.mgmt.datafactory.models.OperationServiceSpecification
     """
 
     _attribute_map = {
@@ -23483,7 +24379,7 @@ class OperationListResponse(msrest.serialization.Model):
     """A list of operations that can be performed by the Data Factory service.
 
     :param value: List of Data Factory operations supported by the Data Factory resource provider.
-    :type value: list[~data_factory_management_client.models.Operation]
+    :type value: list[~azure.mgmt.datafactory.models.Operation]
     :param next_link: The link to the next page of results, if any remaining results exist.
     :type next_link: str
     """
@@ -23599,9 +24495,9 @@ class OperationMetricSpecification(msrest.serialization.Model):
     :param source_mdm_namespace: The name of the MDM namespace.
     :type source_mdm_namespace: str
     :param availabilities: Defines how often data for metrics becomes available.
-    :type availabilities: list[~data_factory_management_client.models.OperationMetricAvailability]
+    :type availabilities: list[~azure.mgmt.datafactory.models.OperationMetricAvailability]
     :param dimensions: Defines the metric dimension.
-    :type dimensions: list[~data_factory_management_client.models.OperationMetricDimension]
+    :type dimensions: list[~azure.mgmt.datafactory.models.OperationMetricDimension]
     """
 
     _attribute_map = {
@@ -23638,11 +24534,9 @@ class OperationServiceSpecification(msrest.serialization.Model):
     """Details about a service operation.
 
     :param log_specifications: Details about operations related to logs.
-    :type log_specifications:
-     list[~data_factory_management_client.models.OperationLogSpecification]
+    :type log_specifications: list[~azure.mgmt.datafactory.models.OperationLogSpecification]
     :param metric_specifications: Details about operations related to metrics.
-    :type metric_specifications:
-     list[~data_factory_management_client.models.OperationMetricSpecification]
+    :type metric_specifications: list[~azure.mgmt.datafactory.models.OperationMetricSpecification]
     """
 
     _attribute_map = {
@@ -23670,11 +24564,11 @@ class OracleCloudStorageLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param access_key_id: The access key identifier of the Oracle Cloud Storage Identity and Access
@@ -23682,7 +24576,7 @@ class OracleCloudStorageLinkedService(LinkedService):
     :type access_key_id: object
     :param secret_access_key: The secret access key of the Oracle Cloud Storage Identity and Access
      Management (IAM) user.
-    :type secret_access_key: ~data_factory_management_client.models.SecretBase
+    :type secret_access_key: ~azure.mgmt.datafactory.models.SecretBase
     :param service_url: This value specifies the endpoint to access with the Oracle Cloud Storage
      Connector. This is an optional property; change it only if you want to try a different service
      endpoint or want to switch between https and http. Type: string (or Expression with resultType
@@ -23783,6 +24677,9 @@ class OracleCloudStorageReadSettings(StoreReadSettings):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param recursive: If true, files under the folder path will be read recursively. Default is
      true. Type: boolean (or Expression with resultType boolean).
     :type recursive: object
@@ -23823,6 +24720,7 @@ class OracleCloudStorageReadSettings(StoreReadSettings):
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'recursive': {'key': 'recursive', 'type': 'object'},
         'wildcard_folder_path': {'key': 'wildcardFolderPath', 'type': 'object'},
         'wildcard_file_name': {'key': 'wildcardFileName', 'type': 'object'},
@@ -23864,18 +24762,18 @@ class OracleLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param connection_string: Required. The connection string. Type: string, SecureString or
      AzureKeyVaultSecretReference.
     :type connection_string: object
     :param password: The Azure key vault secret reference of password in connection string.
-    :type password: ~data_factory_management_client.models.AzureKeyVaultSecretReference
+    :type password: ~azure.mgmt.datafactory.models.AzureKeyVaultSecretReference
     :param encrypted_credential: The encrypted credential used for authentication. Credentials are
      encrypted using the integration runtime credential manager. Type: string (or Expression with
      resultType string).
@@ -23957,11 +24855,11 @@ class OracleServiceCloudLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param host: Required. The URL of the Oracle Service Cloud instance.
@@ -23970,7 +24868,7 @@ class OracleServiceCloudLinkedService(LinkedService):
     :type username: object
     :param password: Required. The password corresponding to the user name that you provided in the
      username key.
-    :type password: ~data_factory_management_client.models.SecretBase
+    :type password: ~azure.mgmt.datafactory.models.SecretBase
     :param use_encrypted_endpoints: Specifies whether the data source endpoints are encrypted using
      HTTPS. The default value is true. Type: boolean (or Expression with resultType boolean).
     :type use_encrypted_endpoints: object
@@ -24045,14 +24943,14 @@ class OracleServiceCloudObjectDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param table_name: The table name. Type: string (or Expression with resultType string).
     :type table_name: object
     """
@@ -24103,12 +25001,15 @@ class OracleServiceCloudSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: object
@@ -24124,8 +25025,9 @@ class OracleServiceCloudSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
     }
 
@@ -24163,6 +25065,9 @@ class OracleSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param pre_copy_script: SQL pre-copy script. Type: string (or Expression with resultType
      string).
     :type pre_copy_script: object
@@ -24180,6 +25085,7 @@ class OracleSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'pre_copy_script': {'key': 'preCopyScript', 'type': 'object'},
     }
 
@@ -24211,6 +25117,9 @@ class OracleSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param oracle_reader_query: Oracle reader query. Type: string (or Expression with resultType
      string).
     :type oracle_reader_query: object
@@ -24221,10 +25130,10 @@ class OracleSource(CopySource):
      Possible values include: "None", "PhysicalPartitionsOfTable", "DynamicRange".
     :type partition_option: object
     :param partition_settings: The settings that will be leveraged for Oracle source partitioning.
-    :type partition_settings: ~data_factory_management_client.models.OraclePartitionSettings
+    :type partition_settings: ~azure.mgmt.datafactory.models.OraclePartitionSettings
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     """
 
     _validation = {
@@ -24237,11 +25146,12 @@ class OracleSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'oracle_reader_query': {'key': 'oracleReaderQuery', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'partition_option': {'key': 'partitionOption', 'type': 'object'},
         'partition_settings': {'key': 'partitionSettings', 'type': 'OraclePartitionSettings'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
     }
 
     def __init__(
@@ -24276,14 +25186,14 @@ class OracleTableDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param table_name: This property will be retired. Please consider using schema + table
      properties instead.
     :type table_name: object
@@ -24345,18 +25255,19 @@ class OrcDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param location: The location of the ORC data storage.
-    :type location: ~data_factory_management_client.models.DatasetLocation
-    :param orc_compression_codec:  Possible values include: "none", "zlib", "snappy", "lzo".
-    :type orc_compression_codec: str or ~data_factory_management_client.models.OrcCompressionCodec
+    :type location: ~azure.mgmt.datafactory.models.DatasetLocation
+    :param orc_compression_codec: The data orcCompressionCodec. Type: string (or Expression with
+     resultType string).
+    :type orc_compression_codec: object
     """
 
     _validation = {
@@ -24375,7 +25286,7 @@ class OrcDataset(Dataset):
         'annotations': {'key': 'annotations', 'type': '[object]'},
         'folder': {'key': 'folder', 'type': 'DatasetFolder'},
         'location': {'key': 'typeProperties.location', 'type': 'DatasetLocation'},
-        'orc_compression_codec': {'key': 'typeProperties.orcCompressionCodec', 'type': 'str'},
+        'orc_compression_codec': {'key': 'typeProperties.orcCompressionCodec', 'type': 'object'},
     }
 
     def __init__(
@@ -24448,10 +25359,13 @@ class OrcSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param store_settings: ORC store settings.
-    :type store_settings: ~data_factory_management_client.models.StoreWriteSettings
+    :type store_settings: ~azure.mgmt.datafactory.models.StoreWriteSettings
     :param format_settings: ORC format settings.
-    :type format_settings: ~data_factory_management_client.models.OrcWriteSettings
+    :type format_settings: ~azure.mgmt.datafactory.models.OrcWriteSettings
     """
 
     _validation = {
@@ -24466,6 +25380,7 @@ class OrcSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'store_settings': {'key': 'storeSettings', 'type': 'StoreWriteSettings'},
         'format_settings': {'key': 'formatSettings', 'type': 'OrcWriteSettings'},
     }
@@ -24499,11 +25414,14 @@ class OrcSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param store_settings: ORC store settings.
-    :type store_settings: ~data_factory_management_client.models.StoreReadSettings
+    :type store_settings: ~azure.mgmt.datafactory.models.StoreReadSettings
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     """
 
     _validation = {
@@ -24516,8 +25434,9 @@ class OrcSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'store_settings': {'key': 'storeSettings', 'type': 'StoreReadSettings'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
     }
 
     def __init__(
@@ -24578,7 +25497,7 @@ class PackageStore(msrest.serialization.Model):
     :param name: Required. The name of the package store.
     :type name: str
     :param package_store_linked_service: Required. The package store linked service reference.
-    :type package_store_linked_service: ~data_factory_management_client.models.EntityReference
+    :type package_store_linked_service: ~azure.mgmt.datafactory.models.EntityReference
     """
 
     _validation = {
@@ -24607,7 +25526,7 @@ class ParameterSpecification(msrest.serialization.Model):
 
     :param type: Required. Parameter type. Possible values include: "Object", "String", "Int",
      "Float", "Bool", "Array", "SecureString".
-    :type type: str or ~data_factory_management_client.models.ParameterType
+    :type type: str or ~azure.mgmt.datafactory.models.ParameterType
     :param default_value: Default value of parameter.
     :type default_value: object
     """
@@ -24649,19 +25568,19 @@ class ParquetDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param location: The location of the parquet storage.
-    :type location: ~data_factory_management_client.models.DatasetLocation
-    :param compression_codec:  Possible values include: "none", "gzip", "snappy", "lzo", "bzip2",
-     "deflate", "zipDeflate", "lz4", "tar", "tarGZip".
-    :type compression_codec: str or ~data_factory_management_client.models.CompressionCodec
+    :type location: ~azure.mgmt.datafactory.models.DatasetLocation
+    :param compression_codec: The data compressionCodec. Type: string (or Expression with
+     resultType string).
+    :type compression_codec: object
     """
 
     _validation = {
@@ -24680,7 +25599,7 @@ class ParquetDataset(Dataset):
         'annotations': {'key': 'annotations', 'type': '[object]'},
         'folder': {'key': 'folder', 'type': 'DatasetFolder'},
         'location': {'key': 'typeProperties.location', 'type': 'DatasetLocation'},
-        'compression_codec': {'key': 'typeProperties.compressionCodec', 'type': 'str'},
+        'compression_codec': {'key': 'typeProperties.compressionCodec', 'type': 'object'},
     }
 
     def __init__(
@@ -24753,10 +25672,13 @@ class ParquetSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param store_settings: Parquet store settings.
-    :type store_settings: ~data_factory_management_client.models.StoreWriteSettings
+    :type store_settings: ~azure.mgmt.datafactory.models.StoreWriteSettings
     :param format_settings: Parquet format settings.
-    :type format_settings: ~data_factory_management_client.models.ParquetWriteSettings
+    :type format_settings: ~azure.mgmt.datafactory.models.ParquetWriteSettings
     """
 
     _validation = {
@@ -24771,6 +25693,7 @@ class ParquetSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'store_settings': {'key': 'storeSettings', 'type': 'StoreWriteSettings'},
         'format_settings': {'key': 'formatSettings', 'type': 'ParquetWriteSettings'},
     }
@@ -24804,11 +25727,14 @@ class ParquetSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param store_settings: Parquet store settings.
-    :type store_settings: ~data_factory_management_client.models.StoreReadSettings
+    :type store_settings: ~azure.mgmt.datafactory.models.StoreReadSettings
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     """
 
     _validation = {
@@ -24821,8 +25747,9 @@ class ParquetSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'store_settings': {'key': 'storeSettings', 'type': 'StoreReadSettings'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
     }
 
     def __init__(
@@ -24886,11 +25813,11 @@ class PaypalLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param host: Required. The URL of the PayPal instance. (i.e. api.sandbox.paypal.com).
@@ -24898,7 +25825,7 @@ class PaypalLinkedService(LinkedService):
     :param client_id: Required. The client ID associated with your PayPal application.
     :type client_id: object
     :param client_secret: The client secret associated with your PayPal application.
-    :type client_secret: ~data_factory_management_client.models.SecretBase
+    :type client_secret: ~azure.mgmt.datafactory.models.SecretBase
     :param use_encrypted_endpoints: Specifies whether the data source endpoints are encrypted using
      HTTPS. The default value is true.
     :type use_encrypted_endpoints: object
@@ -24971,14 +25898,14 @@ class PaypalObjectDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param table_name: The table name. Type: string (or Expression with resultType string).
     :type table_name: object
     """
@@ -25029,12 +25956,15 @@ class PaypalSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: object
@@ -25050,8 +25980,9 @@ class PaypalSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
     }
 
@@ -25075,11 +26006,11 @@ class PhoenixLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param host: Required. The IP address or host name of the Phoenix server. (i.e.
@@ -25095,12 +26026,11 @@ class PhoenixLinkedService(LinkedService):
     :param authentication_type: Required. The authentication mechanism used to connect to the
      Phoenix server. Possible values include: "Anonymous", "UsernameAndPassword",
      "WindowsAzureHDInsightService".
-    :type authentication_type: str or
-     ~data_factory_management_client.models.PhoenixAuthenticationType
+    :type authentication_type: str or ~azure.mgmt.datafactory.models.PhoenixAuthenticationType
     :param username: The user name used to connect to the Phoenix server.
     :type username: object
     :param password: The password corresponding to the user name.
-    :type password: ~data_factory_management_client.models.SecretBase
+    :type password: ~azure.mgmt.datafactory.models.SecretBase
     :param enable_ssl: Specifies whether the connections to the server are encrypted using SSL. The
      default value is false.
     :type enable_ssl: object
@@ -25189,14 +26119,14 @@ class PhoenixObjectDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param table_name: This property will be retired. Please consider using schema + table
      properties instead.
     :type table_name: object
@@ -25258,12 +26188,15 @@ class PhoenixSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: object
@@ -25279,8 +26212,9 @@ class PhoenixSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
     }
 
@@ -25337,7 +26271,7 @@ class PipelineListResponse(msrest.serialization.Model):
     All required parameters must be populated in order to send to Azure.
 
     :param value: Required. List of pipelines.
-    :type value: list[~data_factory_management_client.models.PipelineResource]
+    :type value: list[~azure.mgmt.datafactory.models.PipelineResource]
     :param next_link: The link to the next page of results, if any remaining results exist.
     :type next_link: str
     """
@@ -25364,8 +26298,7 @@ class PipelinePolicy(msrest.serialization.Model):
     """Pipeline Policy.
 
     :param elapsed_time_metric: Pipeline ElapsedTime Metric Policy.
-    :type elapsed_time_metric:
-     ~data_factory_management_client.models.PipelineElapsedTimeMetricPolicy
+    :type elapsed_time_metric: ~azure.mgmt.datafactory.models.PipelineElapsedTimeMetricPolicy
     """
 
     _attribute_map = {
@@ -25436,11 +26369,11 @@ class PipelineResource(SubResource):
     :param description: The description of the pipeline.
     :type description: str
     :param activities: List of activities in pipeline.
-    :type activities: list[~data_factory_management_client.models.Activity]
+    :type activities: list[~azure.mgmt.datafactory.models.Activity]
     :param parameters: List of parameters for pipeline.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param variables: List of variables for pipeline.
-    :type variables: dict[str, ~data_factory_management_client.models.VariableSpecification]
+    :type variables: dict[str, ~azure.mgmt.datafactory.models.VariableSpecification]
     :param concurrency: The max number of concurrent runs for the pipeline.
     :type concurrency: int
     :param annotations: List of tags that can be used for describing the Pipeline.
@@ -25449,9 +26382,9 @@ class PipelineResource(SubResource):
     :type run_dimensions: dict[str, object]
     :param folder: The folder that this Pipeline is in. If not specified, Pipeline will appear at
      the root level.
-    :type folder: ~data_factory_management_client.models.PipelineFolder
+    :type folder: ~azure.mgmt.datafactory.models.PipelineFolder
     :param policy: Pipeline Policy.
-    :type policy: ~data_factory_management_client.models.PipelinePolicy
+    :type policy: ~azure.mgmt.datafactory.models.PipelinePolicy
     """
 
     _validation = {
@@ -25518,7 +26451,7 @@ class PipelineRun(msrest.serialization.Model):
     :ivar run_dimensions: Run dimensions emitted by Pipeline run.
     :vartype run_dimensions: dict[str, str]
     :ivar invoked_by: Entity that started the pipeline run.
-    :vartype invoked_by: ~data_factory_management_client.models.PipelineRunInvokedBy
+    :vartype invoked_by: ~azure.mgmt.datafactory.models.PipelineRunInvokedBy
     :ivar last_updated: The last updated timestamp for the pipeline run event in ISO8601 format.
     :vartype last_updated: ~datetime.datetime
     :ivar run_start: The start time of a pipeline run in ISO8601 format.
@@ -25598,18 +26531,26 @@ class PipelineRunInvokedBy(msrest.serialization.Model):
     :vartype id: str
     :ivar invoked_by_type: The type of the entity that started the run.
     :vartype invoked_by_type: str
+    :ivar pipeline_name: The name of the pipeline that triggered the run, if any.
+    :vartype pipeline_name: str
+    :ivar pipeline_run_id: The run id of the pipeline that triggered the run, if any.
+    :vartype pipeline_run_id: str
     """
 
     _validation = {
         'name': {'readonly': True},
         'id': {'readonly': True},
         'invoked_by_type': {'readonly': True},
+        'pipeline_name': {'readonly': True},
+        'pipeline_run_id': {'readonly': True},
     }
 
     _attribute_map = {
         'name': {'key': 'name', 'type': 'str'},
         'id': {'key': 'id', 'type': 'str'},
         'invoked_by_type': {'key': 'invokedByType', 'type': 'str'},
+        'pipeline_name': {'key': 'pipelineName', 'type': 'str'},
+        'pipeline_run_id': {'key': 'pipelineRunId', 'type': 'str'},
     }
 
     def __init__(
@@ -25620,6 +26561,8 @@ class PipelineRunInvokedBy(msrest.serialization.Model):
         self.name = None
         self.id = None
         self.invoked_by_type = None
+        self.pipeline_name = None
+        self.pipeline_run_id = None
 
 
 class PipelineRunsQueryResponse(msrest.serialization.Model):
@@ -25628,7 +26571,7 @@ class PipelineRunsQueryResponse(msrest.serialization.Model):
     All required parameters must be populated in order to send to Azure.
 
     :param value: Required. List of pipeline runs.
-    :type value: list[~data_factory_management_client.models.PipelineRun]
+    :type value: list[~azure.mgmt.datafactory.models.PipelineRun]
     :param continuation_token: The continuation token for getting the next page of results, if any
      remaining results exist, null otherwise.
     :type continuation_token: str
@@ -25659,7 +26602,7 @@ class PolybaseSettings(msrest.serialization.Model):
      collection.
     :type additional_properties: dict[str, object]
     :param reject_type: Reject type. Possible values include: "value", "percentage".
-    :type reject_type: str or ~data_factory_management_client.models.PolybaseSettingsRejectType
+    :type reject_type: str or ~azure.mgmt.datafactory.models.PolybaseSettingsRejectType
     :param reject_value: Specifies the value or the percentage of rows that can be rejected before
      the query fails. Type: number (or Expression with resultType number), minimum: 0.
     :type reject_value: object
@@ -25704,17 +26647,17 @@ class PostgreSqlLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param connection_string: Required. The connection string.
     :type connection_string: object
     :param password: The Azure key vault secret reference of password in connection string.
-    :type password: ~data_factory_management_client.models.AzureKeyVaultSecretReference
+    :type password: ~azure.mgmt.datafactory.models.AzureKeyVaultSecretReference
     :param encrypted_credential: The encrypted credential used for authentication. Credentials are
      encrypted using the integration runtime credential manager. Type: string (or Expression with
      resultType string).
@@ -25768,12 +26711,15 @@ class PostgreSqlSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     :param query: Database query. Type: string (or Expression with resultType string).
     :type query: object
     """
@@ -25788,8 +26734,9 @@ class PostgreSqlSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
     }
 
@@ -25821,14 +26768,14 @@ class PostgreSqlTableDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param table_name: This property will be retired. Please consider using schema + table
      properties instead.
     :type table_name: object
@@ -25881,11 +26828,11 @@ class PrestoLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param host: Required. The IP address or host name of the Presto server. (i.e.
@@ -25900,12 +26847,11 @@ class PrestoLinkedService(LinkedService):
     :type port: object
     :param authentication_type: Required. The authentication mechanism used to connect to the
      Presto server. Possible values include: "Anonymous", "LDAP".
-    :type authentication_type: str or
-     ~data_factory_management_client.models.PrestoAuthenticationType
+    :type authentication_type: str or ~azure.mgmt.datafactory.models.PrestoAuthenticationType
     :param username: The user name used to connect to the Presto server.
     :type username: object
     :param password: The password corresponding to the user name.
-    :type password: ~data_factory_management_client.models.SecretBase
+    :type password: ~azure.mgmt.datafactory.models.SecretBase
     :param enable_ssl: Specifies whether the connections to the server are encrypted using SSL. The
      default value is false.
     :type enable_ssl: object
@@ -26003,14 +26949,14 @@ class PrestoObjectDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param table_name: This property will be retired. Please consider using schema + table
      properties instead.
     :type table_name: object
@@ -26072,12 +27018,15 @@ class PrestoSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: object
@@ -26093,8 +27042,9 @@ class PrestoSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
     }
 
@@ -26113,7 +27063,7 @@ class PrivateEndpointConnectionListResponse(msrest.serialization.Model):
     All required parameters must be populated in order to send to Azure.
 
     :param value: Required. List of Private Endpoint Connections.
-    :type value: list[~data_factory_management_client.models.PrivateEndpointConnectionResource]
+    :type value: list[~azure.mgmt.datafactory.models.PrivateEndpointConnectionResource]
     :param next_link: The link to the next page of results, if any remaining results exist.
     :type next_link: str
     """
@@ -26150,7 +27100,7 @@ class PrivateEndpointConnectionResource(SubResource):
     :ivar etag: Etag identifies change in the resource.
     :vartype etag: str
     :param properties: Core resource properties.
-    :type properties: ~data_factory_management_client.models.RemotePrivateEndpointConnection
+    :type properties: ~azure.mgmt.datafactory.models.RemotePrivateEndpointConnection
     """
 
     _validation = {
@@ -26181,7 +27131,7 @@ class PrivateLinkConnectionApprovalRequest(msrest.serialization.Model):
 
     :param private_link_service_connection_state: The state of a private link connection.
     :type private_link_service_connection_state:
-     ~data_factory_management_client.models.PrivateLinkConnectionState
+     ~azure.mgmt.datafactory.models.PrivateLinkConnectionState
     """
 
     _attribute_map = {
@@ -26210,7 +27160,7 @@ class PrivateLinkConnectionApprovalRequestResource(SubResource):
     :ivar etag: Etag identifies change in the resource.
     :vartype etag: str
     :param properties: Core resource properties.
-    :type properties: ~data_factory_management_client.models.PrivateLinkConnectionApprovalRequest
+    :type properties: ~azure.mgmt.datafactory.models.PrivateLinkConnectionApprovalRequest
     """
 
     _validation = {
@@ -26277,7 +27227,7 @@ class PrivateLinkResource(SubResource):
     :ivar etag: Etag identifies change in the resource.
     :vartype etag: str
     :param properties: Core resource properties.
-    :type properties: ~data_factory_management_client.models.PrivateLinkResourceProperties
+    :type properties: ~azure.mgmt.datafactory.models.PrivateLinkResourceProperties
     """
 
     _validation = {
@@ -26344,7 +27294,7 @@ class PrivateLinkResourcesWrapper(msrest.serialization.Model):
     All required parameters must be populated in order to send to Azure.
 
     :param value: Required.
-    :type value: list[~data_factory_management_client.models.PrivateLinkResource]
+    :type value: list[~azure.mgmt.datafactory.models.PrivateLinkResource]
     """
 
     _validation = {
@@ -26367,7 +27317,7 @@ class QueryDataFlowDebugSessionsResponse(msrest.serialization.Model):
     """A list of active debug sessions.
 
     :param value: Array with all active debug sessions.
-    :type value: list[~data_factory_management_client.models.DataFlowDebugSessionInfo]
+    :type value: list[~azure.mgmt.datafactory.models.DataFlowDebugSessionInfo]
     :param next_link: The link to the next page of results, if any remaining results exist.
     :type next_link: str
     """
@@ -26397,11 +27347,11 @@ class QuickBooksLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param connection_properties: Properties used to connect to QuickBooks. It is mutually
@@ -26414,11 +27364,11 @@ class QuickBooksLinkedService(LinkedService):
     :param consumer_key: The consumer key for OAuth 1.0 authentication.
     :type consumer_key: object
     :param consumer_secret: The consumer secret for OAuth 1.0 authentication.
-    :type consumer_secret: ~data_factory_management_client.models.SecretBase
+    :type consumer_secret: ~azure.mgmt.datafactory.models.SecretBase
     :param access_token: The access token for OAuth 1.0 authentication.
-    :type access_token: ~data_factory_management_client.models.SecretBase
+    :type access_token: ~azure.mgmt.datafactory.models.SecretBase
     :param access_token_secret: The access token secret for OAuth 1.0 authentication.
-    :type access_token_secret: ~data_factory_management_client.models.SecretBase
+    :type access_token_secret: ~azure.mgmt.datafactory.models.SecretBase
     :param use_encrypted_endpoints: Specifies whether the data source endpoints are encrypted using
      HTTPS. The default value is true.
     :type use_encrypted_endpoints: object
@@ -26486,14 +27436,14 @@ class QuickBooksObjectDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param table_name: The table name. Type: string (or Expression with resultType string).
     :type table_name: object
     """
@@ -26544,12 +27494,15 @@ class QuickBooksSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: object
@@ -26565,8 +27518,9 @@ class QuickBooksSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
     }
 
@@ -26590,12 +27544,11 @@ class RecurrenceSchedule(msrest.serialization.Model):
     :param hours: The hours.
     :type hours: list[int]
     :param week_days: The days of the week.
-    :type week_days: list[str or ~data_factory_management_client.models.DaysOfWeek]
+    :type week_days: list[str or ~azure.mgmt.datafactory.models.DaysOfWeek]
     :param month_days: The month days.
     :type month_days: list[int]
     :param monthly_occurrences: The monthly occurrences.
-    :type monthly_occurrences:
-     list[~data_factory_management_client.models.RecurrenceScheduleOccurrence]
+    :type monthly_occurrences: list[~azure.mgmt.datafactory.models.RecurrenceScheduleOccurrence]
     """
 
     _attribute_map = {
@@ -26628,7 +27581,7 @@ class RecurrenceScheduleOccurrence(msrest.serialization.Model):
     :type additional_properties: dict[str, object]
     :param day: The day of the week. Possible values include: "Sunday", "Monday", "Tuesday",
      "Wednesday", "Thursday", "Friday", "Saturday".
-    :type day: str or ~data_factory_management_client.models.DayOfWeek
+    :type day: str or ~azure.mgmt.datafactory.models.DayOfWeek
     :param occurrence: The occurrence.
     :type occurrence: int
     """
@@ -26694,7 +27647,7 @@ class RedshiftUnloadSettings(msrest.serialization.Model):
 
     :param s3_linked_service_name: Required. The name of the Amazon S3 linked service which will be
      used for the unload operation when copying from the Amazon Redshift source.
-    :type s3_linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type s3_linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param bucket_name: Required. The bucket of the interim Amazon S3 which will be used to store
      the unloaded data from Amazon Redshift source. The bucket must be in the same region as the
      Amazon Redshift source. Type: string (or Expression with resultType string).
@@ -26739,11 +27692,14 @@ class RelationalSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query: Database query. Type: string (or Expression with resultType string).
     :type query: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     """
 
     _validation = {
@@ -26756,8 +27712,9 @@ class RelationalSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
     }
 
     def __init__(
@@ -26789,14 +27746,14 @@ class RelationalTableDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param table_name: The relational table name. Type: string (or Expression with resultType
      string).
     :type table_name: object
@@ -26837,10 +27794,10 @@ class RemotePrivateEndpointConnection(msrest.serialization.Model):
     :ivar provisioning_state:
     :vartype provisioning_state: str
     :param private_endpoint: PrivateEndpoint of a remote private endpoint connection.
-    :type private_endpoint: ~data_factory_management_client.models.ArmIdWrapper
+    :type private_endpoint: ~azure.mgmt.datafactory.models.ArmIdWrapper
     :param private_link_service_connection_state: The state of a private link connection.
     :type private_link_service_connection_state:
-     ~data_factory_management_client.models.PrivateLinkConnectionState
+     ~azure.mgmt.datafactory.models.PrivateLinkConnectionState
     """
 
     _validation = {
@@ -26879,7 +27836,7 @@ class RerunTumblingWindowTrigger(Trigger):
     :type description: str
     :ivar runtime_state: Indicates if trigger is running or not. Updated when Start/Stop APIs are
      called on the Trigger. Possible values include: "Started", "Stopped", "Disabled".
-    :vartype runtime_state: str or ~data_factory_management_client.models.TriggerRuntimeState
+    :vartype runtime_state: str or ~azure.mgmt.datafactory.models.TriggerRuntimeState
     :param annotations: List of tags that can be used for describing the trigger.
     :type annotations: list[object]
     :param parent_trigger: Required. The parent trigger reference.
@@ -26939,11 +27896,11 @@ class ResponsysLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param endpoint: Required. The endpoint of the Responsys server.
@@ -26953,7 +27910,7 @@ class ResponsysLinkedService(LinkedService):
     :type client_id: object
     :param client_secret: The client secret associated with the Responsys application. Type: string
      (or Expression with resultType string).
-    :type client_secret: ~data_factory_management_client.models.SecretBase
+    :type client_secret: ~azure.mgmt.datafactory.models.SecretBase
     :param use_encrypted_endpoints: Specifies whether the data source endpoints are encrypted using
      HTTPS. The default value is true. Type: boolean (or Expression with resultType boolean).
     :type use_encrypted_endpoints: object
@@ -27027,14 +27984,14 @@ class ResponsysObjectDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param table_name: The table name. Type: string (or Expression with resultType string).
     :type table_name: object
     """
@@ -27085,12 +28042,15 @@ class ResponsysSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: object
@@ -27106,8 +28066,9 @@ class ResponsysSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
     }
 
@@ -27139,14 +28100,14 @@ class RestResourceDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param relative_url: The relative URL to the resource that the RESTful API provides. Type:
      string (or Expression with resultType string).
     :type relative_url: object
@@ -27210,11 +28171,11 @@ class RestServiceLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param url: Required. The base URL of the REST service.
@@ -27226,12 +28187,11 @@ class RestServiceLinkedService(LinkedService):
     :param authentication_type: Required. Type of authentication used to connect to the REST
      service. Possible values include: "Anonymous", "Basic", "AadServicePrincipal",
      "ManagedServiceIdentity".
-    :type authentication_type: str or
-     ~data_factory_management_client.models.RestServiceAuthenticationType
+    :type authentication_type: str or ~azure.mgmt.datafactory.models.RestServiceAuthenticationType
     :param user_name: The user name used in Basic authentication type.
     :type user_name: object
     :param password: The password used in Basic authentication type.
-    :type password: ~data_factory_management_client.models.SecretBase
+    :type password: ~azure.mgmt.datafactory.models.SecretBase
     :param auth_headers: The additional HTTP headers in the request to RESTful API used for
      authorization. Type: object (or Expression with resultType object).
     :type auth_headers: object
@@ -27240,7 +28200,7 @@ class RestServiceLinkedService(LinkedService):
     :type service_principal_id: object
     :param service_principal_key: The application's key used in AadServicePrincipal authentication
      type.
-    :type service_principal_key: ~data_factory_management_client.models.SecretBase
+    :type service_principal_key: ~azure.mgmt.datafactory.models.SecretBase
     :param tenant: The tenant information (domain name or tenant ID) used in AadServicePrincipal
      authentication type under which your application resides.
     :type tenant: object
@@ -27254,6 +28214,8 @@ class RestServiceLinkedService(LinkedService):
      encrypted using the integration runtime credential manager. Type: string (or Expression with
      resultType string).
     :type encrypted_credential: object
+    :param credential: The credential reference containing authentication information.
+    :type credential: ~azure.mgmt.datafactory.models.CredentialReference
     """
 
     _validation = {
@@ -27281,6 +28243,7 @@ class RestServiceLinkedService(LinkedService):
         'azure_cloud_type': {'key': 'typeProperties.azureCloudType', 'type': 'object'},
         'aad_resource_id': {'key': 'typeProperties.aadResourceId', 'type': 'object'},
         'encrypted_credential': {'key': 'typeProperties.encryptedCredential', 'type': 'object'},
+        'credential': {'key': 'typeProperties.credential', 'type': 'CredentialReference'},
     }
 
     def __init__(
@@ -27301,6 +28264,7 @@ class RestServiceLinkedService(LinkedService):
         self.azure_cloud_type = kwargs.get('azure_cloud_type', None)
         self.aad_resource_id = kwargs.get('aad_resource_id', None)
         self.encrypted_credential = kwargs.get('encrypted_credential', None)
+        self.credential = kwargs.get('credential', None)
 
 
 class RestSink(CopySink):
@@ -27328,6 +28292,9 @@ class RestSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param request_method: The HTTP method used to call the RESTful API. The default is POST. Type:
      string (or Expression with resultType string).
     :type request_method: object
@@ -27358,6 +28325,7 @@ class RestSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'request_method': {'key': 'requestMethod', 'type': 'object'},
         'additional_headers': {'key': 'additionalHeaders', 'type': 'object'},
         'http_request_timeout': {'key': 'httpRequestTimeout', 'type': 'object'},
@@ -27397,6 +28365,9 @@ class RestSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param request_method: The HTTP method used to call the RESTful API. The default is GET. Type:
      string (or Expression with resultType string).
     :type request_method: object
@@ -27417,8 +28388,8 @@ class RestSource(CopySource):
     :param request_interval: The time to await before sending next page request.
     :type request_interval: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     """
 
     _validation = {
@@ -27431,13 +28402,14 @@ class RestSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'request_method': {'key': 'requestMethod', 'type': 'object'},
         'request_body': {'key': 'requestBody', 'type': 'object'},
         'additional_headers': {'key': 'additionalHeaders', 'type': 'object'},
         'pagination_rules': {'key': 'paginationRules', 'type': 'object'},
         'http_request_timeout': {'key': 'httpRequestTimeout', 'type': 'object'},
         'request_interval': {'key': 'requestInterval', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
     }
 
     def __init__(
@@ -27498,9 +28470,9 @@ class RunFilterParameters(msrest.serialization.Model):
      'ISO 8601' format.
     :type last_updated_before: ~datetime.datetime
     :param filters: List of filters.
-    :type filters: list[~data_factory_management_client.models.RunQueryFilter]
+    :type filters: list[~azure.mgmt.datafactory.models.RunQueryFilter]
     :param order_by: List of OrderBy option.
-    :type order_by: list[~data_factory_management_client.models.RunQueryOrderBy]
+    :type order_by: list[~azure.mgmt.datafactory.models.RunQueryOrderBy]
     """
 
     _validation = {
@@ -27539,10 +28511,10 @@ class RunQueryFilter(msrest.serialization.Model):
      runs are TriggerName, TriggerRunTimestamp and Status. Possible values include: "PipelineName",
      "Status", "RunStart", "RunEnd", "ActivityName", "ActivityRunStart", "ActivityRunEnd",
      "ActivityType", "TriggerName", "TriggerRunTimestamp", "RunGroupId", "LatestOnly".
-    :type operand: str or ~data_factory_management_client.models.RunQueryFilterOperand
+    :type operand: str or ~azure.mgmt.datafactory.models.RunQueryFilterOperand
     :param operator: Required. Operator to be used for filter. Possible values include: "Equals",
      "NotEquals", "In", "NotIn".
-    :type operator: str or ~data_factory_management_client.models.RunQueryFilterOperator
+    :type operator: str or ~azure.mgmt.datafactory.models.RunQueryFilterOperator
     :param values: Required. List of filter values.
     :type values: list[str]
     """
@@ -27580,9 +28552,9 @@ class RunQueryOrderBy(msrest.serialization.Model):
      TriggerRunTimestamp and Status. Possible values include: "RunStart", "RunEnd", "PipelineName",
      "Status", "ActivityName", "ActivityRunStart", "ActivityRunEnd", "TriggerName",
      "TriggerRunTimestamp".
-    :type order_by: str or ~data_factory_management_client.models.RunQueryOrderByField
+    :type order_by: str or ~azure.mgmt.datafactory.models.RunQueryOrderByField
     :param order: Required. Sorting order of the parameter. Possible values include: "ASC", "DESC".
-    :type order: str or ~data_factory_management_client.models.RunQueryOrder
+    :type order: str or ~azure.mgmt.datafactory.models.RunQueryOrder
     """
 
     _validation = {
@@ -27615,11 +28587,11 @@ class SalesforceLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param environment_url: The URL of Salesforce instance. Default is
@@ -27631,9 +28603,9 @@ class SalesforceLinkedService(LinkedService):
      (or Expression with resultType string).
     :type username: object
     :param password: The password for Basic authentication of the Salesforce instance.
-    :type password: ~data_factory_management_client.models.SecretBase
+    :type password: ~azure.mgmt.datafactory.models.SecretBase
     :param security_token: The security token is optional to remotely access Salesforce instance.
-    :type security_token: ~data_factory_management_client.models.SecretBase
+    :type security_token: ~azure.mgmt.datafactory.models.SecretBase
     :param api_version: The Salesforce API version used in ADF. Type: string (or Expression with
      resultType string).
     :type api_version: object
@@ -27687,11 +28659,11 @@ class SalesforceMarketingCloudLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param connection_properties: Properties used to connect to Salesforce Marketing Cloud. It is
@@ -27702,7 +28674,7 @@ class SalesforceMarketingCloudLinkedService(LinkedService):
     :type client_id: object
     :param client_secret: The client secret associated with the Salesforce Marketing Cloud
      application. Type: string (or Expression with resultType string).
-    :type client_secret: ~data_factory_management_client.models.SecretBase
+    :type client_secret: ~azure.mgmt.datafactory.models.SecretBase
     :param use_encrypted_endpoints: Specifies whether the data source endpoints are encrypted using
      HTTPS. The default value is true. Type: boolean (or Expression with resultType boolean).
     :type use_encrypted_endpoints: object
@@ -27774,14 +28746,14 @@ class SalesforceMarketingCloudObjectDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param table_name: The table name. Type: string (or Expression with resultType string).
     :type table_name: object
     """
@@ -27832,12 +28804,15 @@ class SalesforceMarketingCloudSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: object
@@ -27853,8 +28828,9 @@ class SalesforceMarketingCloudSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
     }
 
@@ -27886,14 +28862,14 @@ class SalesforceObjectDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param object_api_name: The Salesforce object API name. Type: string (or Expression with
      resultType string).
     :type object_api_name: object
@@ -27937,11 +28913,11 @@ class SalesforceServiceCloudLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param environment_url: The URL of Salesforce Service Cloud instance. Default is
@@ -27953,9 +28929,9 @@ class SalesforceServiceCloudLinkedService(LinkedService):
      (or Expression with resultType string).
     :type username: object
     :param password: The password for Basic authentication of the Salesforce instance.
-    :type password: ~data_factory_management_client.models.SecretBase
+    :type password: ~azure.mgmt.datafactory.models.SecretBase
     :param security_token: The security token is optional to remotely access Salesforce instance.
-    :type security_token: ~data_factory_management_client.models.SecretBase
+    :type security_token: ~azure.mgmt.datafactory.models.SecretBase
     :param api_version: The Salesforce API version used in ADF. Type: string (or Expression with
      resultType string).
     :type api_version: object
@@ -28022,14 +28998,14 @@ class SalesforceServiceCloudObjectDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param object_api_name: The Salesforce Service Cloud object API name. Type: string (or
      Expression with resultType string).
     :type object_api_name: object
@@ -28087,9 +29063,12 @@ class SalesforceServiceCloudSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param write_behavior: The write behavior for the operation. Default is Insert. Possible values
      include: "Insert", "Upsert".
-    :type write_behavior: str or ~data_factory_management_client.models.SalesforceSinkWriteBehavior
+    :type write_behavior: str or ~azure.mgmt.datafactory.models.SalesforceSinkWriteBehavior
     :param external_id_field_name: The name of the external ID field for upsert operation. Default
      value is 'Id' column. Type: string (or Expression with resultType string).
     :type external_id_field_name: object
@@ -28114,6 +29093,7 @@ class SalesforceServiceCloudSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'write_behavior': {'key': 'writeBehavior', 'type': 'str'},
         'external_id_field_name': {'key': 'externalIdFieldName', 'type': 'object'},
         'ignore_null_values': {'key': 'ignoreNullValues', 'type': 'object'},
@@ -28149,14 +29129,17 @@ class SalesforceServiceCloudSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query: Database query. Type: string (or Expression with resultType string).
     :type query: object
     :param read_behavior: The read behavior for the operation. Default is Query. Possible values
      include: "Query", "QueryAll".
-    :type read_behavior: str or ~data_factory_management_client.models.SalesforceSourceReadBehavior
+    :type read_behavior: str or ~azure.mgmt.datafactory.models.SalesforceSourceReadBehavior
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     """
 
     _validation = {
@@ -28169,9 +29152,10 @@ class SalesforceServiceCloudSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
         'read_behavior': {'key': 'readBehavior', 'type': 'str'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
     }
 
     def __init__(
@@ -28210,9 +29194,12 @@ class SalesforceSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param write_behavior: The write behavior for the operation. Default is Insert. Possible values
      include: "Insert", "Upsert".
-    :type write_behavior: str or ~data_factory_management_client.models.SalesforceSinkWriteBehavior
+    :type write_behavior: str or ~azure.mgmt.datafactory.models.SalesforceSinkWriteBehavior
     :param external_id_field_name: The name of the external ID field for upsert operation. Default
      value is 'Id' column. Type: string (or Expression with resultType string).
     :type external_id_field_name: object
@@ -28237,6 +29224,7 @@ class SalesforceSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'write_behavior': {'key': 'writeBehavior', 'type': 'str'},
         'external_id_field_name': {'key': 'externalIdFieldName', 'type': 'object'},
         'ignore_null_values': {'key': 'ignoreNullValues', 'type': 'object'},
@@ -28272,17 +29260,20 @@ class SalesforceSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     :param query: Database query. Type: string (or Expression with resultType string).
     :type query: object
     :param read_behavior: The read behavior for the operation. Default is Query. Possible values
      include: "Query", "QueryAll".
-    :type read_behavior: str or ~data_factory_management_client.models.SalesforceSourceReadBehavior
+    :type read_behavior: str or ~azure.mgmt.datafactory.models.SalesforceSourceReadBehavior
     """
 
     _validation = {
@@ -28295,8 +29286,9 @@ class SalesforceSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
         'read_behavior': {'key': 'readBehavior', 'type': 'str'},
     }
@@ -28330,14 +29322,14 @@ class SapBwCubeDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     """
 
     _validation = {
@@ -28376,11 +29368,11 @@ class SapBwLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param server: Required. Host name of the SAP BW instance. Type: string (or Expression with
@@ -28396,7 +29388,7 @@ class SapBwLinkedService(LinkedService):
      resultType string).
     :type user_name: object
     :param password: Password to access the SAP BW server.
-    :type password: ~data_factory_management_client.models.SecretBase
+    :type password: ~azure.mgmt.datafactory.models.SecretBase
     :param encrypted_credential: The encrypted credential used for authentication. Credentials are
      encrypted using the integration runtime credential manager. Type: string (or Expression with
      resultType string).
@@ -28458,12 +29450,15 @@ class SapBwSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     :param query: MDX query. Type: string (or Expression with resultType string).
     :type query: object
     """
@@ -28478,8 +29473,9 @@ class SapBwSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
     }
 
@@ -28503,11 +29499,11 @@ class SapCloudForCustomerLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param url: Required. The URL of SAP Cloud for Customer OData API. For example,
@@ -28518,7 +29514,7 @@ class SapCloudForCustomerLinkedService(LinkedService):
      resultType string).
     :type username: object
     :param password: The password for Basic authentication.
-    :type password: ~data_factory_management_client.models.SecretBase
+    :type password: ~azure.mgmt.datafactory.models.SecretBase
     :param encrypted_credential: The encrypted credential used for authentication. Credentials are
      encrypted using the integration runtime credential manager. Either encryptedCredential or
      username/password must be provided. Type: string (or Expression with resultType string).
@@ -28574,14 +29570,14 @@ class SapCloudForCustomerResourceDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param path: Required. The path of the SAP Cloud for Customer OData entity. Type: string (or
      Expression with resultType string).
     :type path: object
@@ -28640,10 +29636,13 @@ class SapCloudForCustomerSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param write_behavior: The write behavior for the operation. Default is 'Insert'. Possible
      values include: "Insert", "Update".
     :type write_behavior: str or
-     ~data_factory_management_client.models.SapCloudForCustomerSinkWriteBehavior
+     ~azure.mgmt.datafactory.models.SapCloudForCustomerSinkWriteBehavior
     :param http_request_timeout: The timeout (TimeSpan) to get an HTTP response. It is the timeout
      to get a response, not the timeout to read response data. Default value: 00:05:00. Type: string
      (or Expression with resultType string), pattern:
@@ -28663,6 +29662,7 @@ class SapCloudForCustomerSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'write_behavior': {'key': 'writeBehavior', 'type': 'str'},
         'http_request_timeout': {'key': 'httpRequestTimeout', 'type': 'object'},
     }
@@ -28696,12 +29696,15 @@ class SapCloudForCustomerSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     :param query: SAP Cloud for Customer OData query. For example, "$top=1". Type: string (or
      Expression with resultType string).
     :type query: object
@@ -28722,8 +29725,9 @@ class SapCloudForCustomerSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
         'http_request_timeout': {'key': 'httpRequestTimeout', 'type': 'object'},
     }
@@ -28749,11 +29753,11 @@ class SapEccLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param url: Required. The URL of SAP ECC OData API. For example,
@@ -28764,7 +29768,7 @@ class SapEccLinkedService(LinkedService):
      resultType string).
     :type username: str
     :param password: The password for Basic authentication.
-    :type password: ~data_factory_management_client.models.SecretBase
+    :type password: ~azure.mgmt.datafactory.models.SecretBase
     :param encrypted_credential: The encrypted credential used for authentication. Credentials are
      encrypted using the integration runtime credential manager. Either encryptedCredential or
      username/password must be provided. Type: string (or Expression with resultType string).
@@ -28820,14 +29824,14 @@ class SapEccResourceDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param path: Required. The path of the SAP ECC OData entity. Type: string (or Expression with
      resultType string).
     :type path: object
@@ -28880,12 +29884,15 @@ class SapEccSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     :param query: SAP ECC OData query. For example, "$top=1". Type: string (or Expression with
      resultType string).
     :type query: object
@@ -28906,8 +29913,9 @@ class SapEccSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
         'http_request_timeout': {'key': 'httpRequestTimeout', 'type': 'object'},
     }
@@ -28933,11 +29941,11 @@ class SapHanaLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param connection_string: SAP HANA ODBC connection string. Type: string, SecureString or
@@ -28948,13 +29956,12 @@ class SapHanaLinkedService(LinkedService):
     :type server: object
     :param authentication_type: The authentication type to be used to connect to the SAP HANA
      server. Possible values include: "Basic", "Windows".
-    :type authentication_type: str or
-     ~data_factory_management_client.models.SapHanaAuthenticationType
+    :type authentication_type: str or ~azure.mgmt.datafactory.models.SapHanaAuthenticationType
     :param user_name: Username to access the SAP HANA server. Type: string (or Expression with
      resultType string).
     :type user_name: object
     :param password: Password to access the SAP HANA server.
-    :type password: ~data_factory_management_client.models.SecretBase
+    :type password: ~azure.mgmt.datafactory.models.SecretBase
     :param encrypted_credential: The encrypted credential used for authentication. Credentials are
      encrypted using the integration runtime credential manager. Type: string (or Expression with
      resultType string).
@@ -29033,12 +30040,15 @@ class SapHanaSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     :param query: SAP HANA Sql query. Type: string (or Expression with resultType string).
     :type query: object
     :param packet_size: The packet size of data read from SAP HANA. Type: integer(or Expression
@@ -29049,7 +30059,7 @@ class SapHanaSource(TabularSource):
     :type partition_option: object
     :param partition_settings: The settings that will be leveraged for SAP HANA source
      partitioning.
-    :type partition_settings: ~data_factory_management_client.models.SapHanaPartitionSettings
+    :type partition_settings: ~azure.mgmt.datafactory.models.SapHanaPartitionSettings
     """
 
     _validation = {
@@ -29062,8 +30072,9 @@ class SapHanaSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
         'packet_size': {'key': 'packetSize', 'type': 'object'},
         'partition_option': {'key': 'partitionOption', 'type': 'object'},
@@ -29101,14 +30112,14 @@ class SapHanaTableDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param schema_type_properties_schema: The schema name of SAP HANA. Type: string (or Expression
      with resultType string).
     :type schema_type_properties_schema: object
@@ -29156,11 +30167,11 @@ class SapOpenHubLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param server: Host name of the SAP BW instance where the open hub destination is located.
@@ -29185,7 +30196,7 @@ class SapOpenHubLinkedService(LinkedService):
     :type user_name: object
     :param password: Password to access the SAP BW server where the open hub destination is
      located.
-    :type password: ~data_factory_management_client.models.SecretBase
+    :type password: ~azure.mgmt.datafactory.models.SecretBase
     :param message_server: The hostname of the SAP Message Server. Type: string (or Expression with
      resultType string).
     :type message_server: object
@@ -29263,12 +30274,15 @@ class SapOpenHubSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     :param exclude_last_request: Whether to exclude the records of the last request. The default
      value is true. Type: boolean (or Expression with resultType boolean).
     :type exclude_last_request: object
@@ -29295,8 +30309,9 @@ class SapOpenHubSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
         'exclude_last_request': {'key': 'excludeLastRequest', 'type': 'object'},
         'base_request_id': {'key': 'baseRequestId', 'type': 'object'},
         'custom_rfc_read_table_function_module': {'key': 'customRfcReadTableFunctionModule', 'type': 'object'},
@@ -29334,14 +30349,14 @@ class SapOpenHubTableDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param open_hub_destination_name: Required. The name of the Open Hub Destination with
      destination type as Database Table. Type: string (or Expression with resultType string).
     :type open_hub_destination_name: object
@@ -29397,11 +30412,11 @@ class SapTableLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param server: Host name of the SAP instance where the table is located. Type: string (or
@@ -29425,7 +30440,7 @@ class SapTableLinkedService(LinkedService):
      (or Expression with resultType string).
     :type user_name: object
     :param password: Password to access the SAP server where the table is located.
-    :type password: ~data_factory_management_client.models.SecretBase
+    :type password: ~azure.mgmt.datafactory.models.SecretBase
     :param message_server: The hostname of the SAP Message Server. Type: string (or Expression with
      resultType string).
     :type message_server: object
@@ -29565,14 +30580,14 @@ class SapTableResourceDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param table_name: Required. The name of the SAP Table. Type: string (or Expression with
      resultType string).
     :type table_name: object
@@ -29625,12 +30640,15 @@ class SapTableSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     :param row_count: The number of rows to be retrieved. Type: integer(or Expression with
      resultType integer).
     :type row_count: object
@@ -29659,7 +30677,7 @@ class SapTableSource(TabularSource):
     :type partition_option: object
     :param partition_settings: The settings that will be leveraged for SAP table source
      partitioning.
-    :type partition_settings: ~data_factory_management_client.models.SapTablePartitionSettings
+    :type partition_settings: ~azure.mgmt.datafactory.models.SapTablePartitionSettings
     """
 
     _validation = {
@@ -29672,8 +30690,9 @@ class SapTableSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
         'row_count': {'key': 'rowCount', 'type': 'object'},
         'row_skips': {'key': 'rowSkips', 'type': 'object'},
         'rfc_table_fields': {'key': 'rfcTableFields', 'type': 'object'},
@@ -29718,13 +30737,13 @@ class ScheduleTrigger(MultiplePipelineTrigger):
     :type description: str
     :ivar runtime_state: Indicates if trigger is running or not. Updated when Start/Stop APIs are
      called on the Trigger. Possible values include: "Started", "Stopped", "Disabled".
-    :vartype runtime_state: str or ~data_factory_management_client.models.TriggerRuntimeState
+    :vartype runtime_state: str or ~azure.mgmt.datafactory.models.TriggerRuntimeState
     :param annotations: List of tags that can be used for describing the trigger.
     :type annotations: list[object]
     :param pipelines: Pipelines that need to be started.
-    :type pipelines: list[~data_factory_management_client.models.TriggerPipelineReference]
+    :type pipelines: list[~azure.mgmt.datafactory.models.TriggerPipelineReference]
     :param recurrence: Required. Recurrence schedule configuration.
-    :type recurrence: ~data_factory_management_client.models.ScheduleTriggerRecurrence
+    :type recurrence: ~azure.mgmt.datafactory.models.ScheduleTriggerRecurrence
     """
 
     _validation = {
@@ -29760,7 +30779,7 @@ class ScheduleTriggerRecurrence(msrest.serialization.Model):
     :type additional_properties: dict[str, object]
     :param frequency: The frequency. Possible values include: "NotSpecified", "Minute", "Hour",
      "Day", "Week", "Month", "Year".
-    :type frequency: str or ~data_factory_management_client.models.RecurrenceFrequency
+    :type frequency: str or ~azure.mgmt.datafactory.models.RecurrenceFrequency
     :param interval: The interval.
     :type interval: int
     :param start_time: The start time.
@@ -29770,7 +30789,7 @@ class ScheduleTriggerRecurrence(msrest.serialization.Model):
     :param time_zone: The time zone.
     :type time_zone: str
     :param schedule: The recurrence schedule.
-    :type schedule: ~data_factory_management_client.models.RecurrenceSchedule
+    :type schedule: ~azure.mgmt.datafactory.models.RecurrenceSchedule
     """
 
     _attribute_map = {
@@ -29806,9 +30825,8 @@ class ScriptAction(msrest.serialization.Model):
     :type name: str
     :param uri: Required. The URI for the script action.
     :type uri: str
-    :param roles: Required. The node types on which the script action should be executed. Possible
-     values include: "Headnode", "Workernode", "Zookeeper".
-    :type roles: str or ~data_factory_management_client.models.HdiNodeTypes
+    :param roles: Required. The node types on which the script action should be executed.
+    :type roles: str
     :param parameters: The parameters for the script action.
     :type parameters: str
     """
@@ -29914,11 +30932,11 @@ class SelfHostedIntegrationRuntime(IntegrationRuntime):
     :type additional_properties: dict[str, object]
     :param type: Required. Type of integration runtime.Constant filled by server.  Possible values
      include: "Managed", "SelfHosted".
-    :type type: str or ~data_factory_management_client.models.IntegrationRuntimeType
+    :type type: str or ~azure.mgmt.datafactory.models.IntegrationRuntimeType
     :param description: Integration runtime description.
     :type description: str
     :param linked_info: The base definition of a linked integration runtime.
-    :type linked_info: ~data_factory_management_client.models.LinkedIntegrationRuntimeType
+    :type linked_info: ~azure.mgmt.datafactory.models.LinkedIntegrationRuntimeType
     """
 
     _validation = {
@@ -29958,8 +30976,7 @@ class SelfHostedIntegrationRuntimeNode(msrest.serialization.Model):
     :ivar status: Status of the integration runtime node. Possible values include:
      "NeedRegistration", "Online", "Limited", "Offline", "Upgrading", "Initializing",
      "InitializeFailed".
-    :vartype status: str or
-     ~data_factory_management_client.models.SelfHostedIntegrationRuntimeNodeStatus
+    :vartype status: str or ~azure.mgmt.datafactory.models.SelfHostedIntegrationRuntimeNodeStatus
     :ivar capabilities: The integration runtime capabilities dictionary.
     :vartype capabilities: dict[str, str]
     :ivar version_status: Status of the integration runtime node version.
@@ -29981,7 +30998,7 @@ class SelfHostedIntegrationRuntimeNode(msrest.serialization.Model):
     :ivar last_update_result: The result of the last integration runtime node update. Possible
      values include: "None", "Succeed", "Fail".
     :vartype last_update_result: str or
-     ~data_factory_management_client.models.IntegrationRuntimeUpdateResult
+     ~azure.mgmt.datafactory.models.IntegrationRuntimeUpdateResult
     :ivar last_start_update_time: The last time for the integration runtime node update start.
     :vartype last_start_update_time: ~datetime.datetime
     :ivar last_end_update_time: The last time for the integration runtime node update end.
@@ -30076,13 +31093,13 @@ class SelfHostedIntegrationRuntimeStatus(IntegrationRuntimeStatus):
     :type additional_properties: dict[str, object]
     :param type: Required. Type of integration runtime.Constant filled by server.  Possible values
      include: "Managed", "SelfHosted".
-    :type type: str or ~data_factory_management_client.models.IntegrationRuntimeType
+    :type type: str or ~azure.mgmt.datafactory.models.IntegrationRuntimeType
     :ivar data_factory_name: The data factory name which the integration runtime belong to.
     :vartype data_factory_name: str
     :ivar state: The state of integration runtime. Possible values include: "Initial", "Stopped",
      "Started", "Starting", "Stopping", "NeedRegistration", "Online", "Limited", "Offline",
      "AccessDenied".
-    :vartype state: str or ~data_factory_management_client.models.IntegrationRuntimeState
+    :vartype state: str or ~azure.mgmt.datafactory.models.IntegrationRuntimeState
     :ivar create_time: The time at which the integration runtime was created, in ISO8601 format.
     :vartype create_time: ~datetime.datetime
     :ivar task_queue_id: The task queue id of the integration runtime.
@@ -30091,11 +31108,11 @@ class SelfHostedIntegrationRuntimeStatus(IntegrationRuntimeStatus):
      communication channel (when more than 2 self-hosted integration runtime nodes exist). Possible
      values include: "NotSet", "SslEncrypted", "NotEncrypted".
     :vartype internal_channel_encryption: str or
-     ~data_factory_management_client.models.IntegrationRuntimeInternalChannelEncryptionMode
+     ~azure.mgmt.datafactory.models.IntegrationRuntimeInternalChannelEncryptionMode
     :ivar version: Version of the integration runtime.
     :vartype version: str
     :param nodes: The list of nodes for this integration runtime.
-    :type nodes: list[~data_factory_management_client.models.SelfHostedIntegrationRuntimeNode]
+    :type nodes: list[~azure.mgmt.datafactory.models.SelfHostedIntegrationRuntimeNode]
     :ivar scheduled_update_date: The date at which the integration runtime will be scheduled to
      update, in ISO8601 format.
     :vartype scheduled_update_date: ~datetime.datetime
@@ -30110,13 +31127,12 @@ class SelfHostedIntegrationRuntimeStatus(IntegrationRuntimeStatus):
     :vartype service_urls: list[str]
     :ivar auto_update: Whether Self-hosted integration runtime auto update has been turned on.
      Possible values include: "On", "Off".
-    :vartype auto_update: str or
-     ~data_factory_management_client.models.IntegrationRuntimeAutoUpdate
+    :vartype auto_update: str or ~azure.mgmt.datafactory.models.IntegrationRuntimeAutoUpdate
     :ivar version_status: Status of the integration runtime version.
     :vartype version_status: str
     :param links: The list of linked integration runtimes that are created to share with this
      integration runtime.
-    :type links: list[~data_factory_management_client.models.LinkedIntegrationRuntime]
+    :type links: list[~azure.mgmt.datafactory.models.LinkedIntegrationRuntime]
     :ivar pushed_version: The version that the integration runtime is going to update to.
     :vartype pushed_version: str
     :ivar latest_version: The latest version on download center.
@@ -30204,11 +31220,11 @@ class ServiceNowLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param endpoint: Required. The endpoint of the ServiceNow server. (i.e.
@@ -30216,18 +31232,17 @@ class ServiceNowLinkedService(LinkedService):
     :type endpoint: object
     :param authentication_type: Required. The authentication type to use. Possible values include:
      "Basic", "OAuth2".
-    :type authentication_type: str or
-     ~data_factory_management_client.models.ServiceNowAuthenticationType
+    :type authentication_type: str or ~azure.mgmt.datafactory.models.ServiceNowAuthenticationType
     :param username: The user name used to connect to the ServiceNow server for Basic and OAuth2
      authentication.
     :type username: object
     :param password: The password corresponding to the user name for Basic and OAuth2
      authentication.
-    :type password: ~data_factory_management_client.models.SecretBase
+    :type password: ~azure.mgmt.datafactory.models.SecretBase
     :param client_id: The client id for OAuth2 authentication.
     :type client_id: object
     :param client_secret: The client secret for OAuth2 authentication.
-    :type client_secret: ~data_factory_management_client.models.SecretBase
+    :type client_secret: ~azure.mgmt.datafactory.models.SecretBase
     :param use_encrypted_endpoints: Specifies whether the data source endpoints are encrypted using
      HTTPS. The default value is true.
     :type use_encrypted_endpoints: object
@@ -30306,14 +31321,14 @@ class ServiceNowObjectDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param table_name: The table name. Type: string (or Expression with resultType string).
     :type table_name: object
     """
@@ -30364,12 +31379,15 @@ class ServiceNowSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: object
@@ -30385,8 +31403,9 @@ class ServiceNowSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
     }
 
@@ -30397,6 +31416,53 @@ class ServiceNowSource(TabularSource):
         super(ServiceNowSource, self).__init__(**kwargs)
         self.type = 'ServiceNowSource'  # type: str
         self.query = kwargs.get('query', None)
+
+
+class ServicePrincipalCredential(Credential):
+    """Service principal credential.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param additional_properties: Unmatched properties from the message are deserialized to this
+     collection.
+    :type additional_properties: dict[str, object]
+    :param type: Required. Type of credential.Constant filled by server.
+    :type type: str
+    :param description: Credential description.
+    :type description: str
+    :param annotations: List of tags that can be used for describing the Credential.
+    :type annotations: list[object]
+    :param service_principal_id: The app ID of the service principal used to authenticate.
+    :type service_principal_id: object
+    :param service_principal_key: The key of the service principal used to authenticate.
+    :type service_principal_key: ~azure.mgmt.datafactory.models.AzureKeyVaultSecretReference
+    :param tenant: The ID of the tenant to which the service principal belongs.
+    :type tenant: object
+    """
+
+    _validation = {
+        'type': {'required': True},
+    }
+
+    _attribute_map = {
+        'additional_properties': {'key': '', 'type': '{object}'},
+        'type': {'key': 'type', 'type': 'str'},
+        'description': {'key': 'description', 'type': 'str'},
+        'annotations': {'key': 'annotations', 'type': '[object]'},
+        'service_principal_id': {'key': 'typeProperties.servicePrincipalId', 'type': 'object'},
+        'service_principal_key': {'key': 'typeProperties.servicePrincipalKey', 'type': 'AzureKeyVaultSecretReference'},
+        'tenant': {'key': 'typeProperties.tenant', 'type': 'object'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(ServicePrincipalCredential, self).__init__(**kwargs)
+        self.type = 'ServicePrincipal'  # type: str
+        self.service_principal_id = kwargs.get('service_principal_id', None)
+        self.service_principal_key = kwargs.get('service_principal_key', None)
+        self.tenant = kwargs.get('tenant', None)
 
 
 class SetVariableActivity(Activity):
@@ -30414,9 +31480,9 @@ class SetVariableActivity(Activity):
     :param description: Activity description.
     :type description: str
     :param depends_on: Activity depends on condition.
-    :type depends_on: list[~data_factory_management_client.models.ActivityDependency]
+    :type depends_on: list[~azure.mgmt.datafactory.models.ActivityDependency]
     :param user_properties: Activity user properties.
-    :type user_properties: list[~data_factory_management_client.models.UserProperty]
+    :type user_properties: list[~azure.mgmt.datafactory.models.UserProperty]
     :param variable_name: Name of the variable whose value needs to be set.
     :type variable_name: str
     :param value: Value to be set. Could be a static value or Expression.
@@ -30499,6 +31565,9 @@ class SftpReadSettings(StoreReadSettings):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param recursive: If true, files under the folder path will be read recursively. Default is
      true. Type: boolean (or Expression with resultType boolean).
     :type recursive: object
@@ -30536,6 +31605,7 @@ class SftpReadSettings(StoreReadSettings):
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'recursive': {'key': 'recursive', 'type': 'object'},
         'wildcard_folder_path': {'key': 'wildcardFolderPath', 'type': 'object'},
         'wildcard_file_name': {'key': 'wildcardFileName', 'type': 'object'},
@@ -30575,11 +31645,11 @@ class SftpServerLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param host: Required. The SFTP server host name. Type: string (or Expression with resultType
@@ -30590,12 +31660,12 @@ class SftpServerLinkedService(LinkedService):
     :type port: object
     :param authentication_type: The authentication type to be used to connect to the FTP server.
      Possible values include: "Basic", "SshPublicKey", "MultiFactor".
-    :type authentication_type: str or ~data_factory_management_client.models.SftpAuthenticationType
+    :type authentication_type: str or ~azure.mgmt.datafactory.models.SftpAuthenticationType
     :param user_name: The username used to log on to the SFTP server. Type: string (or Expression
      with resultType string).
     :type user_name: object
     :param password: Password to logon the SFTP server for Basic authentication.
-    :type password: ~data_factory_management_client.models.SecretBase
+    :type password: ~azure.mgmt.datafactory.models.SecretBase
     :param encrypted_credential: The encrypted credential used for authentication. Credentials are
      encrypted using the integration runtime credential manager. Type: string (or Expression with
      resultType string).
@@ -30608,10 +31678,10 @@ class SftpServerLinkedService(LinkedService):
     :param private_key_content: Base64 encoded SSH private key content for SshPublicKey
      authentication. For on-premises copy with SshPublicKey authentication, either PrivateKeyPath or
      PrivateKeyContent should be specified. SSH private key should be OpenSSH format.
-    :type private_key_content: ~data_factory_management_client.models.SecretBase
+    :type private_key_content: ~azure.mgmt.datafactory.models.SecretBase
     :param pass_phrase: The password to decrypt the SSH private key if the SSH private key is
      encrypted.
-    :type pass_phrase: ~data_factory_management_client.models.SecretBase
+    :type pass_phrase: ~azure.mgmt.datafactory.models.SecretBase
     :param skip_host_key_validation: If true, skip the SSH host key validation. Default value is
      false. Type: boolean (or Expression with resultType boolean).
     :type skip_host_key_validation: object
@@ -30678,6 +31748,9 @@ class SftpWriteSettings(StoreWriteSettings):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param copy_behavior: The type of copy behavior for copy sink.
     :type copy_behavior: object
     :param operation_timeout: Specifies the timeout for writing each chunk to SFTP server. Default
@@ -30697,6 +31770,7 @@ class SftpWriteSettings(StoreWriteSettings):
         'additional_properties': {'key': '', 'type': '{object}'},
         'type': {'key': 'type', 'type': 'str'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'copy_behavior': {'key': 'copyBehavior', 'type': 'object'},
         'operation_timeout': {'key': 'operationTimeout', 'type': 'object'},
         'use_temp_file_rename': {'key': 'useTempFileRename', 'type': 'object'},
@@ -30723,11 +31797,11 @@ class SharePointOnlineListLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param site_url: Required. The URL of the SharePoint Online site. For example,
@@ -30744,7 +31818,7 @@ class SharePointOnlineListLinkedService(LinkedService):
     :type service_principal_id: object
     :param service_principal_key: Required. The client secret of your application registered in
      Azure Active Directory. Type: string (or Expression with resultType string).
-    :type service_principal_key: ~data_factory_management_client.models.SecretBase
+    :type service_principal_key: ~azure.mgmt.datafactory.models.SecretBase
     :param encrypted_credential: The encrypted credential used for authentication. Credentials are
      encrypted using the integration runtime credential manager. Type: string (or Expression with
      resultType string).
@@ -30805,14 +31879,14 @@ class SharePointOnlineListResourceDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param list_name: The name of the SharePoint Online list. Type: string (or Expression with
      resultType string).
     :type list_name: object
@@ -30864,6 +31938,9 @@ class SharePointOnlineListSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query: The OData query to filter the data in SharePoint Online list. For example,
      "$top=1". Type: string (or Expression with resultType string).
     :type query: object
@@ -30883,6 +31960,7 @@ class SharePointOnlineListSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
         'http_request_timeout': {'key': 'httpRequestTimeout', 'type': 'object'},
     }
@@ -30908,18 +31986,18 @@ class ShopifyLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param host: Required. The endpoint of the Shopify server. (i.e. mystore.myshopify.com).
     :type host: object
     :param access_token: The API access token that can be used to access Shopify’s data. The token
      won't expire if it is offline mode.
-    :type access_token: ~data_factory_management_client.models.SecretBase
+    :type access_token: ~azure.mgmt.datafactory.models.SecretBase
     :param use_encrypted_endpoints: Specifies whether the data source endpoints are encrypted using
      HTTPS. The default value is true.
     :type use_encrypted_endpoints: object
@@ -30989,14 +32067,14 @@ class ShopifyObjectDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param table_name: The table name. Type: string (or Expression with resultType string).
     :type table_name: object
     """
@@ -31047,12 +32125,15 @@ class ShopifySource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: object
@@ -31068,8 +32149,9 @@ class ShopifySource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
     }
 
@@ -31126,14 +32208,14 @@ class SnowflakeDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param schema_type_properties_schema: The schema name of the Snowflake database. Type: string
      (or Expression with resultType string).
     :type schema_type_properties_schema: object
@@ -31268,18 +32350,18 @@ class SnowflakeLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param connection_string: Required. The connection string of snowflake. Type: string,
      SecureString.
     :type connection_string: object
     :param password: The Azure key vault secret reference of password in connection string.
-    :type password: ~data_factory_management_client.models.AzureKeyVaultSecretReference
+    :type password: ~azure.mgmt.datafactory.models.AzureKeyVaultSecretReference
     :param encrypted_credential: The encrypted credential used for authentication. Credentials are
      encrypted using the integration runtime credential manager. Type: string (or Expression with
      resultType string).
@@ -31339,11 +32421,14 @@ class SnowflakeSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param pre_copy_script: SQL pre-copy script. Type: string (or Expression with resultType
      string).
     :type pre_copy_script: object
     :param import_settings: Snowflake import settings.
-    :type import_settings: ~data_factory_management_client.models.SnowflakeImportCopyCommand
+    :type import_settings: ~azure.mgmt.datafactory.models.SnowflakeImportCopyCommand
     """
 
     _validation = {
@@ -31358,6 +32443,7 @@ class SnowflakeSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'pre_copy_script': {'key': 'preCopyScript', 'type': 'object'},
         'import_settings': {'key': 'importSettings', 'type': 'SnowflakeImportCopyCommand'},
     }
@@ -31391,10 +32477,13 @@ class SnowflakeSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query: Snowflake Sql query. Type: string (or Expression with resultType string).
     :type query: object
     :param export_settings: Snowflake export settings.
-    :type export_settings: ~data_factory_management_client.models.SnowflakeExportCopyCommand
+    :type export_settings: ~azure.mgmt.datafactory.models.SnowflakeExportCopyCommand
     """
 
     _validation = {
@@ -31407,6 +32496,7 @@ class SnowflakeSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
         'export_settings': {'key': 'exportSettings', 'type': 'SnowflakeExportCopyCommand'},
     }
@@ -31432,11 +32522,11 @@ class SparkLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param host: Required. IP address or host name of the Spark server.
@@ -31446,21 +32536,20 @@ class SparkLinkedService(LinkedService):
     :type port: object
     :param server_type: The type of Spark server. Possible values include: "SharkServer",
      "SharkServer2", "SparkThriftServer".
-    :type server_type: str or ~data_factory_management_client.models.SparkServerType
+    :type server_type: str or ~azure.mgmt.datafactory.models.SparkServerType
     :param thrift_transport_protocol: The transport protocol to use in the Thrift layer. Possible
      values include: "Binary", "SASL", "HTTP ".
     :type thrift_transport_protocol: str or
-     ~data_factory_management_client.models.SparkThriftTransportProtocol
+     ~azure.mgmt.datafactory.models.SparkThriftTransportProtocol
     :param authentication_type: Required. The authentication method used to access the Spark
      server. Possible values include: "Anonymous", "Username", "UsernameAndPassword",
      "WindowsAzureHDInsightService".
-    :type authentication_type: str or
-     ~data_factory_management_client.models.SparkAuthenticationType
+    :type authentication_type: str or ~azure.mgmt.datafactory.models.SparkAuthenticationType
     :param username: The user name that you use to access Spark Server.
     :type username: object
     :param password: The password corresponding to the user name that you provided in the Username
      field.
-    :type password: ~data_factory_management_client.models.SecretBase
+    :type password: ~azure.mgmt.datafactory.models.SecretBase
     :param http_path: The partial URL corresponding to the Spark server.
     :type http_path: object
     :param enable_ssl: Specifies whether the connections to the server are encrypted using SSL. The
@@ -31556,14 +32645,14 @@ class SparkObjectDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param table_name: This property will be retired. Please consider using schema + table
      properties instead.
     :type table_name: object
@@ -31624,12 +32713,15 @@ class SparkSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: object
@@ -31645,8 +32737,9 @@ class SparkSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
     }
 
@@ -31668,13 +32761,13 @@ class SqlAlwaysEncryptedProperties(msrest.serialization.Model):
      Type: string (or Expression with resultType string). Possible values include:
      "ServicePrincipal", "ManagedIdentity".
     :type always_encrypted_akv_auth_type: str or
-     ~data_factory_management_client.models.SqlAlwaysEncryptedAkvAuthType
+     ~azure.mgmt.datafactory.models.SqlAlwaysEncryptedAkvAuthType
     :param service_principal_id: The client ID of the application in Azure Active Directory used
      for Azure Key Vault authentication. Type: string (or Expression with resultType string).
     :type service_principal_id: object
     :param service_principal_key: The key of the service principal used to authenticate against
      Azure Key Vault.
-    :type service_principal_key: ~data_factory_management_client.models.SecretBase
+    :type service_principal_key: ~azure.mgmt.datafactory.models.SecretBase
     """
 
     _validation = {
@@ -31722,6 +32815,9 @@ class SqlDwSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param pre_copy_script: SQL pre-copy script. Type: string (or Expression with resultType
      string).
     :type pre_copy_script: object
@@ -31729,16 +32825,24 @@ class SqlDwSink(CopySink):
      applicable. Type: boolean (or Expression with resultType boolean).
     :type allow_poly_base: object
     :param poly_base_settings: Specifies PolyBase-related settings when allowPolyBase is true.
-    :type poly_base_settings: ~data_factory_management_client.models.PolybaseSettings
+    :type poly_base_settings: ~azure.mgmt.datafactory.models.PolybaseSettings
     :param allow_copy_command: Indicates to use Copy Command to copy data into SQL Data Warehouse.
      Type: boolean (or Expression with resultType boolean).
     :type allow_copy_command: object
     :param copy_command_settings: Specifies Copy Command related settings when allowCopyCommand is
      true.
-    :type copy_command_settings: ~data_factory_management_client.models.DwCopyCommandSettings
+    :type copy_command_settings: ~azure.mgmt.datafactory.models.DwCopyCommandSettings
     :param table_option: The option to handle sink table, such as autoCreate. For now only
      'autoCreate' value is supported. Type: string (or Expression with resultType string).
     :type table_option: object
+    :param sql_writer_use_table_lock: Whether to use table lock during bulk copy. Type: boolean (or
+     Expression with resultType boolean).
+    :type sql_writer_use_table_lock: object
+    :param write_behavior: Write behavior when copying data into azure SQL DW. Type:
+     SqlDWWriteBehaviorEnum (or Expression with resultType SqlDWWriteBehaviorEnum).
+    :type write_behavior: object
+    :param upsert_settings: SQL DW upsert settings.
+    :type upsert_settings: ~azure.mgmt.datafactory.models.SqlDwUpsertSettings
     """
 
     _validation = {
@@ -31753,12 +32857,16 @@ class SqlDwSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'pre_copy_script': {'key': 'preCopyScript', 'type': 'object'},
         'allow_poly_base': {'key': 'allowPolyBase', 'type': 'object'},
         'poly_base_settings': {'key': 'polyBaseSettings', 'type': 'PolybaseSettings'},
         'allow_copy_command': {'key': 'allowCopyCommand', 'type': 'object'},
         'copy_command_settings': {'key': 'copyCommandSettings', 'type': 'DwCopyCommandSettings'},
         'table_option': {'key': 'tableOption', 'type': 'object'},
+        'sql_writer_use_table_lock': {'key': 'sqlWriterUseTableLock', 'type': 'object'},
+        'write_behavior': {'key': 'writeBehavior', 'type': 'object'},
+        'upsert_settings': {'key': 'upsertSettings', 'type': 'SqlDwUpsertSettings'},
     }
 
     def __init__(
@@ -31773,6 +32881,9 @@ class SqlDwSink(CopySink):
         self.allow_copy_command = kwargs.get('allow_copy_command', None)
         self.copy_command_settings = kwargs.get('copy_command_settings', None)
         self.table_option = kwargs.get('table_option', None)
+        self.sql_writer_use_table_lock = kwargs.get('sql_writer_use_table_lock', None)
+        self.write_behavior = kwargs.get('write_behavior', None)
+        self.upsert_settings = kwargs.get('upsert_settings', None)
 
 
 class SqlDwSource(TabularSource):
@@ -31794,12 +32905,15 @@ class SqlDwSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     :param sql_reader_query: SQL Data Warehouse reader query. Type: string (or Expression with
      resultType string).
     :type sql_reader_query: object
@@ -31815,7 +32929,7 @@ class SqlDwSource(TabularSource):
      Possible values include: "None", "PhysicalPartitionsOfTable", "DynamicRange".
     :type partition_option: object
     :param partition_settings: The settings that will be leveraged for Sql source partitioning.
-    :type partition_settings: ~data_factory_management_client.models.SqlPartitionSettings
+    :type partition_settings: ~azure.mgmt.datafactory.models.SqlPartitionSettings
     """
 
     _validation = {
@@ -31828,8 +32942,9 @@ class SqlDwSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
         'sql_reader_query': {'key': 'sqlReaderQuery', 'type': 'object'},
         'sql_reader_stored_procedure_name': {'key': 'sqlReaderStoredProcedureName', 'type': 'object'},
         'stored_procedure_parameters': {'key': 'storedProcedureParameters', 'type': 'object'},
@@ -31848,6 +32963,31 @@ class SqlDwSource(TabularSource):
         self.stored_procedure_parameters = kwargs.get('stored_procedure_parameters', None)
         self.partition_option = kwargs.get('partition_option', None)
         self.partition_settings = kwargs.get('partition_settings', None)
+
+
+class SqlDwUpsertSettings(msrest.serialization.Model):
+    """Sql DW upsert option settings.
+
+    :param interim_schema_name: Schema name for interim table. Type: string (or Expression with
+     resultType string).
+    :type interim_schema_name: object
+    :param keys: Key column names for unique row identification. Type: array of strings (or
+     Expression with resultType array of strings).
+    :type keys: object
+    """
+
+    _attribute_map = {
+        'interim_schema_name': {'key': 'interimSchemaName', 'type': 'object'},
+        'keys': {'key': 'keys', 'type': 'object'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(SqlDwUpsertSettings, self).__init__(**kwargs)
+        self.interim_schema_name = kwargs.get('interim_schema_name', None)
+        self.keys = kwargs.get('keys', None)
 
 
 class SqlMiSink(CopySink):
@@ -31875,6 +33015,9 @@ class SqlMiSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param sql_writer_stored_procedure_name: SQL writer stored procedure name. Type: string (or
      Expression with resultType string).
     :type sql_writer_stored_procedure_name: object
@@ -31886,13 +33029,21 @@ class SqlMiSink(CopySink):
     :type pre_copy_script: object
     :param stored_procedure_parameters: SQL stored procedure parameters.
     :type stored_procedure_parameters: dict[str,
-     ~data_factory_management_client.models.StoredProcedureParameter]
+     ~azure.mgmt.datafactory.models.StoredProcedureParameter]
     :param stored_procedure_table_type_parameter_name: The stored procedure parameter name of the
      table type. Type: string (or Expression with resultType string).
     :type stored_procedure_table_type_parameter_name: object
     :param table_option: The option to handle sink table, such as autoCreate. For now only
      'autoCreate' value is supported. Type: string (or Expression with resultType string).
     :type table_option: object
+    :param sql_writer_use_table_lock: Whether to use table lock during bulk copy. Type: boolean (or
+     Expression with resultType boolean).
+    :type sql_writer_use_table_lock: object
+    :param write_behavior: White behavior when copying data into azure SQL MI. Type:
+     SqlWriteBehaviorEnum (or Expression with resultType SqlWriteBehaviorEnum).
+    :type write_behavior: object
+    :param upsert_settings: SQL upsert settings.
+    :type upsert_settings: ~azure.mgmt.datafactory.models.SqlUpsertSettings
     """
 
     _validation = {
@@ -31907,12 +33058,16 @@ class SqlMiSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'sql_writer_stored_procedure_name': {'key': 'sqlWriterStoredProcedureName', 'type': 'object'},
         'sql_writer_table_type': {'key': 'sqlWriterTableType', 'type': 'object'},
         'pre_copy_script': {'key': 'preCopyScript', 'type': 'object'},
         'stored_procedure_parameters': {'key': 'storedProcedureParameters', 'type': '{StoredProcedureParameter}'},
         'stored_procedure_table_type_parameter_name': {'key': 'storedProcedureTableTypeParameterName', 'type': 'object'},
         'table_option': {'key': 'tableOption', 'type': 'object'},
+        'sql_writer_use_table_lock': {'key': 'sqlWriterUseTableLock', 'type': 'object'},
+        'write_behavior': {'key': 'writeBehavior', 'type': 'object'},
+        'upsert_settings': {'key': 'upsertSettings', 'type': 'SqlUpsertSettings'},
     }
 
     def __init__(
@@ -31927,6 +33082,9 @@ class SqlMiSink(CopySink):
         self.stored_procedure_parameters = kwargs.get('stored_procedure_parameters', None)
         self.stored_procedure_table_type_parameter_name = kwargs.get('stored_procedure_table_type_parameter_name', None)
         self.table_option = kwargs.get('table_option', None)
+        self.sql_writer_use_table_lock = kwargs.get('sql_writer_use_table_lock', None)
+        self.write_behavior = kwargs.get('write_behavior', None)
+        self.upsert_settings = kwargs.get('upsert_settings', None)
 
 
 class SqlMiSource(TabularSource):
@@ -31948,12 +33106,15 @@ class SqlMiSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     :param sql_reader_query: SQL reader query. Type: string (or Expression with resultType string).
     :type sql_reader_query: object
     :param sql_reader_stored_procedure_name: Name of the stored procedure for a Azure SQL Managed
@@ -31963,14 +33124,14 @@ class SqlMiSource(TabularSource):
     :param stored_procedure_parameters: Value and type setting for stored procedure parameters.
      Example: "{Parameter1: {value: "1", type: "int"}}".
     :type stored_procedure_parameters: dict[str,
-     ~data_factory_management_client.models.StoredProcedureParameter]
+     ~azure.mgmt.datafactory.models.StoredProcedureParameter]
     :param produce_additional_types: Which additional types to produce.
     :type produce_additional_types: object
     :param partition_option: The partition mechanism that will be used for Sql read in parallel.
      Possible values include: "None", "PhysicalPartitionsOfTable", "DynamicRange".
     :type partition_option: object
     :param partition_settings: The settings that will be leveraged for Sql source partitioning.
-    :type partition_settings: ~data_factory_management_client.models.SqlPartitionSettings
+    :type partition_settings: ~azure.mgmt.datafactory.models.SqlPartitionSettings
     """
 
     _validation = {
@@ -31983,8 +33144,9 @@ class SqlMiSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
         'sql_reader_query': {'key': 'sqlReaderQuery', 'type': 'object'},
         'sql_reader_stored_procedure_name': {'key': 'sqlReaderStoredProcedureName', 'type': 'object'},
         'stored_procedure_parameters': {'key': 'storedProcedureParameters', 'type': '{StoredProcedureParameter}'},
@@ -32053,11 +33215,11 @@ class SqlServerLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param connection_string: Required. The connection string. Type: string, SecureString or
@@ -32067,14 +33229,13 @@ class SqlServerLinkedService(LinkedService):
      with resultType string).
     :type user_name: object
     :param password: The on-premises Windows authentication password.
-    :type password: ~data_factory_management_client.models.SecretBase
+    :type password: ~azure.mgmt.datafactory.models.SecretBase
     :param encrypted_credential: The encrypted credential used for authentication. Credentials are
      encrypted using the integration runtime credential manager. Type: string (or Expression with
      resultType string).
     :type encrypted_credential: object
     :param always_encrypted_settings: Sql always encrypted properties.
-    :type always_encrypted_settings:
-     ~data_factory_management_client.models.SqlAlwaysEncryptedProperties
+    :type always_encrypted_settings: ~azure.mgmt.datafactory.models.SqlAlwaysEncryptedProperties
     """
 
     _validation = {
@@ -32134,6 +33295,9 @@ class SqlServerSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param sql_writer_stored_procedure_name: SQL writer stored procedure name. Type: string (or
      Expression with resultType string).
     :type sql_writer_stored_procedure_name: object
@@ -32145,13 +33309,21 @@ class SqlServerSink(CopySink):
     :type pre_copy_script: object
     :param stored_procedure_parameters: SQL stored procedure parameters.
     :type stored_procedure_parameters: dict[str,
-     ~data_factory_management_client.models.StoredProcedureParameter]
+     ~azure.mgmt.datafactory.models.StoredProcedureParameter]
     :param stored_procedure_table_type_parameter_name: The stored procedure parameter name of the
      table type. Type: string (or Expression with resultType string).
     :type stored_procedure_table_type_parameter_name: object
     :param table_option: The option to handle sink table, such as autoCreate. For now only
      'autoCreate' value is supported. Type: string (or Expression with resultType string).
     :type table_option: object
+    :param sql_writer_use_table_lock: Whether to use table lock during bulk copy. Type: boolean (or
+     Expression with resultType boolean).
+    :type sql_writer_use_table_lock: object
+    :param write_behavior: Write behavior when copying data into sql server. Type:
+     SqlWriteBehaviorEnum (or Expression with resultType SqlWriteBehaviorEnum).
+    :type write_behavior: object
+    :param upsert_settings: SQL upsert settings.
+    :type upsert_settings: ~azure.mgmt.datafactory.models.SqlUpsertSettings
     """
 
     _validation = {
@@ -32166,12 +33338,16 @@ class SqlServerSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'sql_writer_stored_procedure_name': {'key': 'sqlWriterStoredProcedureName', 'type': 'object'},
         'sql_writer_table_type': {'key': 'sqlWriterTableType', 'type': 'object'},
         'pre_copy_script': {'key': 'preCopyScript', 'type': 'object'},
         'stored_procedure_parameters': {'key': 'storedProcedureParameters', 'type': '{StoredProcedureParameter}'},
         'stored_procedure_table_type_parameter_name': {'key': 'storedProcedureTableTypeParameterName', 'type': 'object'},
         'table_option': {'key': 'tableOption', 'type': 'object'},
+        'sql_writer_use_table_lock': {'key': 'sqlWriterUseTableLock', 'type': 'object'},
+        'write_behavior': {'key': 'writeBehavior', 'type': 'object'},
+        'upsert_settings': {'key': 'upsertSettings', 'type': 'SqlUpsertSettings'},
     }
 
     def __init__(
@@ -32186,6 +33362,9 @@ class SqlServerSink(CopySink):
         self.stored_procedure_parameters = kwargs.get('stored_procedure_parameters', None)
         self.stored_procedure_table_type_parameter_name = kwargs.get('stored_procedure_table_type_parameter_name', None)
         self.table_option = kwargs.get('table_option', None)
+        self.sql_writer_use_table_lock = kwargs.get('sql_writer_use_table_lock', None)
+        self.write_behavior = kwargs.get('write_behavior', None)
+        self.upsert_settings = kwargs.get('upsert_settings', None)
 
 
 class SqlServerSource(TabularSource):
@@ -32207,12 +33386,15 @@ class SqlServerSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     :param sql_reader_query: SQL reader query. Type: string (or Expression with resultType string).
     :type sql_reader_query: object
     :param sql_reader_stored_procedure_name: Name of the stored procedure for a SQL Database
@@ -32222,14 +33404,14 @@ class SqlServerSource(TabularSource):
     :param stored_procedure_parameters: Value and type setting for stored procedure parameters.
      Example: "{Parameter1: {value: "1", type: "int"}}".
     :type stored_procedure_parameters: dict[str,
-     ~data_factory_management_client.models.StoredProcedureParameter]
+     ~azure.mgmt.datafactory.models.StoredProcedureParameter]
     :param produce_additional_types: Which additional types to produce.
     :type produce_additional_types: object
     :param partition_option: The partition mechanism that will be used for Sql read in parallel.
      Possible values include: "None", "PhysicalPartitionsOfTable", "DynamicRange".
     :type partition_option: object
     :param partition_settings: The settings that will be leveraged for Sql source partitioning.
-    :type partition_settings: ~data_factory_management_client.models.SqlPartitionSettings
+    :type partition_settings: ~azure.mgmt.datafactory.models.SqlPartitionSettings
     """
 
     _validation = {
@@ -32242,8 +33424,9 @@ class SqlServerSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
         'sql_reader_query': {'key': 'sqlReaderQuery', 'type': 'object'},
         'sql_reader_stored_procedure_name': {'key': 'sqlReaderStoredProcedureName', 'type': 'object'},
         'stored_procedure_parameters': {'key': 'storedProcedureParameters', 'type': '{StoredProcedureParameter}'},
@@ -32281,20 +33464,20 @@ class SqlServerStoredProcedureActivity(ExecutionActivity):
     :param description: Activity description.
     :type description: str
     :param depends_on: Activity depends on condition.
-    :type depends_on: list[~data_factory_management_client.models.ActivityDependency]
+    :type depends_on: list[~azure.mgmt.datafactory.models.ActivityDependency]
     :param user_properties: Activity user properties.
-    :type user_properties: list[~data_factory_management_client.models.UserProperty]
+    :type user_properties: list[~azure.mgmt.datafactory.models.UserProperty]
     :param linked_service_name: Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param policy: Activity policy.
-    :type policy: ~data_factory_management_client.models.ActivityPolicy
+    :type policy: ~azure.mgmt.datafactory.models.ActivityPolicy
     :param stored_procedure_name: Required. Stored procedure name. Type: string (or Expression with
      resultType string).
     :type stored_procedure_name: object
     :param stored_procedure_parameters: Value and type setting for stored procedure parameters.
      Example: "{Parameter1: {value: "1", type: "int"}}".
     :type stored_procedure_parameters: dict[str,
-     ~data_factory_management_client.models.StoredProcedureParameter]
+     ~azure.mgmt.datafactory.models.StoredProcedureParameter]
     """
 
     _validation = {
@@ -32345,14 +33528,14 @@ class SqlServerTableDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param table_name: This property will be retired. Please consider using schema + table
      properties instead.
     :type table_name: object
@@ -32420,6 +33603,9 @@ class SqlSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param sql_writer_stored_procedure_name: SQL writer stored procedure name. Type: string (or
      Expression with resultType string).
     :type sql_writer_stored_procedure_name: object
@@ -32431,13 +33617,21 @@ class SqlSink(CopySink):
     :type pre_copy_script: object
     :param stored_procedure_parameters: SQL stored procedure parameters.
     :type stored_procedure_parameters: dict[str,
-     ~data_factory_management_client.models.StoredProcedureParameter]
+     ~azure.mgmt.datafactory.models.StoredProcedureParameter]
     :param stored_procedure_table_type_parameter_name: The stored procedure parameter name of the
      table type. Type: string (or Expression with resultType string).
     :type stored_procedure_table_type_parameter_name: object
     :param table_option: The option to handle sink table, such as autoCreate. For now only
      'autoCreate' value is supported. Type: string (or Expression with resultType string).
     :type table_option: object
+    :param sql_writer_use_table_lock: Whether to use table lock during bulk copy. Type: boolean (or
+     Expression with resultType boolean).
+    :type sql_writer_use_table_lock: object
+    :param write_behavior: Write behavior when copying data into sql. Type: SqlWriteBehaviorEnum
+     (or Expression with resultType SqlWriteBehaviorEnum).
+    :type write_behavior: object
+    :param upsert_settings: SQL upsert settings.
+    :type upsert_settings: ~azure.mgmt.datafactory.models.SqlUpsertSettings
     """
 
     _validation = {
@@ -32452,12 +33646,16 @@ class SqlSink(CopySink):
         'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
         'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'sql_writer_stored_procedure_name': {'key': 'sqlWriterStoredProcedureName', 'type': 'object'},
         'sql_writer_table_type': {'key': 'sqlWriterTableType', 'type': 'object'},
         'pre_copy_script': {'key': 'preCopyScript', 'type': 'object'},
         'stored_procedure_parameters': {'key': 'storedProcedureParameters', 'type': '{StoredProcedureParameter}'},
         'stored_procedure_table_type_parameter_name': {'key': 'storedProcedureTableTypeParameterName', 'type': 'object'},
         'table_option': {'key': 'tableOption', 'type': 'object'},
+        'sql_writer_use_table_lock': {'key': 'sqlWriterUseTableLock', 'type': 'object'},
+        'write_behavior': {'key': 'writeBehavior', 'type': 'object'},
+        'upsert_settings': {'key': 'upsertSettings', 'type': 'SqlUpsertSettings'},
     }
 
     def __init__(
@@ -32472,6 +33670,9 @@ class SqlSink(CopySink):
         self.stored_procedure_parameters = kwargs.get('stored_procedure_parameters', None)
         self.stored_procedure_table_type_parameter_name = kwargs.get('stored_procedure_table_type_parameter_name', None)
         self.table_option = kwargs.get('table_option', None)
+        self.sql_writer_use_table_lock = kwargs.get('sql_writer_use_table_lock', None)
+        self.write_behavior = kwargs.get('write_behavior', None)
+        self.upsert_settings = kwargs.get('upsert_settings', None)
 
 
 class SqlSource(TabularSource):
@@ -32493,12 +33694,15 @@ class SqlSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     :param sql_reader_query: SQL reader query. Type: string (or Expression with resultType string).
     :type sql_reader_query: object
     :param sql_reader_stored_procedure_name: Name of the stored procedure for a SQL Database
@@ -32508,7 +33712,7 @@ class SqlSource(TabularSource):
     :param stored_procedure_parameters: Value and type setting for stored procedure parameters.
      Example: "{Parameter1: {value: "1", type: "int"}}".
     :type stored_procedure_parameters: dict[str,
-     ~data_factory_management_client.models.StoredProcedureParameter]
+     ~azure.mgmt.datafactory.models.StoredProcedureParameter]
     :param isolation_level: Specifies the transaction locking behavior for the SQL source. Allowed
      values: ReadCommitted/ReadUncommitted/RepeatableRead/Serializable/Snapshot. The default value
      is ReadCommitted. Type: string (or Expression with resultType string).
@@ -32517,7 +33721,7 @@ class SqlSource(TabularSource):
      Possible values include: "None", "PhysicalPartitionsOfTable", "DynamicRange".
     :type partition_option: object
     :param partition_settings: The settings that will be leveraged for Sql source partitioning.
-    :type partition_settings: ~data_factory_management_client.models.SqlPartitionSettings
+    :type partition_settings: ~azure.mgmt.datafactory.models.SqlPartitionSettings
     """
 
     _validation = {
@@ -32530,8 +33734,9 @@ class SqlSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
         'sql_reader_query': {'key': 'sqlReaderQuery', 'type': 'object'},
         'sql_reader_stored_procedure_name': {'key': 'sqlReaderStoredProcedureName', 'type': 'object'},
         'stored_procedure_parameters': {'key': 'storedProcedureParameters', 'type': '{StoredProcedureParameter}'},
@@ -32554,6 +33759,36 @@ class SqlSource(TabularSource):
         self.partition_settings = kwargs.get('partition_settings', None)
 
 
+class SqlUpsertSettings(msrest.serialization.Model):
+    """Sql upsert option settings.
+
+    :param use_temp_db: Specifies whether to use temp db for upsert interim table. Type: boolean
+     (or Expression with resultType boolean).
+    :type use_temp_db: object
+    :param interim_schema_name: Schema name for interim table. Type: string (or Expression with
+     resultType string).
+    :type interim_schema_name: object
+    :param keys: Key column names for unique row identification. Type: array of strings (or
+     Expression with resultType array of strings).
+    :type keys: object
+    """
+
+    _attribute_map = {
+        'use_temp_db': {'key': 'useTempDB', 'type': 'object'},
+        'interim_schema_name': {'key': 'interimSchemaName', 'type': 'object'},
+        'keys': {'key': 'keys', 'type': 'object'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(SqlUpsertSettings, self).__init__(**kwargs)
+        self.use_temp_db = kwargs.get('use_temp_db', None)
+        self.interim_schema_name = kwargs.get('interim_schema_name', None)
+        self.keys = kwargs.get('keys', None)
+
+
 class SquareLinkedService(LinkedService):
     """Square Service linked service.
 
@@ -32565,11 +33800,11 @@ class SquareLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param connection_properties: Properties used to connect to Square. It is mutually exclusive
@@ -32580,7 +33815,7 @@ class SquareLinkedService(LinkedService):
     :param client_id: The client ID associated with your Square application.
     :type client_id: object
     :param client_secret: The client secret associated with your Square application.
-    :type client_secret: ~data_factory_management_client.models.SecretBase
+    :type client_secret: ~azure.mgmt.datafactory.models.SecretBase
     :param redirect_uri: The redirect URL assigned in the Square application dashboard. (i.e.
      http://localhost:2500).
     :type redirect_uri: object
@@ -32658,14 +33893,14 @@ class SquareObjectDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param table_name: The table name. Type: string (or Expression with resultType string).
     :type table_name: object
     """
@@ -32716,12 +33951,15 @@ class SquareSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: object
@@ -32737,8 +33975,9 @@ class SquareSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
     }
 
@@ -32761,7 +34000,7 @@ class SsisAccessCredential(msrest.serialization.Model):
     :param user_name: Required. UseName for windows authentication.
     :type user_name: object
     :param password: Required. Password for windows authentication.
-    :type password: ~data_factory_management_client.models.SecretBase
+    :type password: ~azure.mgmt.datafactory.models.SecretBase
     """
 
     _validation = {
@@ -32836,7 +34075,7 @@ class SsisObjectMetadata(msrest.serialization.Model):
 
     :param type: Required. Type of metadata.Constant filled by server.  Possible values include:
      "Folder", "Project", "Package", "Environment".
-    :type type: str or ~data_factory_management_client.models.SsisObjectMetadataType
+    :type type: str or ~azure.mgmt.datafactory.models.SsisObjectMetadataType
     :param id: Metadata id.
     :type id: long
     :param name: Metadata name.
@@ -32878,7 +34117,7 @@ class SsisEnvironment(SsisObjectMetadata):
 
     :param type: Required. Type of metadata.Constant filled by server.  Possible values include:
      "Folder", "Project", "Package", "Environment".
-    :type type: str or ~data_factory_management_client.models.SsisObjectMetadataType
+    :type type: str or ~azure.mgmt.datafactory.models.SsisObjectMetadataType
     :param id: Metadata id.
     :type id: long
     :param name: Metadata name.
@@ -32888,7 +34127,7 @@ class SsisEnvironment(SsisObjectMetadata):
     :param folder_id: Folder id which contains environment.
     :type folder_id: long
     :param variables: Variable in environment.
-    :type variables: list[~data_factory_management_client.models.SsisVariable]
+    :type variables: list[~azure.mgmt.datafactory.models.SsisVariable]
     """
 
     _validation = {
@@ -32955,7 +34194,7 @@ class SsisExecutionCredential(msrest.serialization.Model):
     :param user_name: Required. UseName for windows authentication.
     :type user_name: object
     :param password: Required. Password for windows authentication.
-    :type password: ~data_factory_management_client.models.SecureString
+    :type password: ~azure.mgmt.datafactory.models.SecureString
     """
 
     _validation = {
@@ -33013,7 +34252,7 @@ class SsisFolder(SsisObjectMetadata):
 
     :param type: Required. Type of metadata.Constant filled by server.  Possible values include:
      "Folder", "Project", "Package", "Environment".
-    :type type: str or ~data_factory_management_client.models.SsisObjectMetadataType
+    :type type: str or ~azure.mgmt.datafactory.models.SsisObjectMetadataType
     :param id: Metadata id.
     :type id: long
     :param name: Metadata name.
@@ -33050,9 +34289,9 @@ class SsisLogLocation(msrest.serialization.Model):
      with resultType string).
     :type log_path: object
     :param type: Required. The type of SSIS log location. Possible values include: "File".
-    :type type: str or ~data_factory_management_client.models.SsisLogLocationType
+    :type type: str or ~azure.mgmt.datafactory.models.SsisLogLocationType
     :param access_credential: The package execution log access credential.
-    :type access_credential: ~data_factory_management_client.models.SsisAccessCredential
+    :type access_credential: ~azure.mgmt.datafactory.models.SsisAccessCredential
     :param log_refresh_interval: Specifies the interval to refresh log. The default interval is 5
      minutes. Type: string (or Expression with resultType string), pattern:
      ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
@@ -33086,7 +34325,7 @@ class SsisObjectMetadataListResponse(msrest.serialization.Model):
     """A list of SSIS object metadata.
 
     :param value: List of SSIS object metadata.
-    :type value: list[~data_factory_management_client.models.SsisObjectMetadata]
+    :type value: list[~azure.mgmt.datafactory.models.SsisObjectMetadata]
     :param next_link: The link to the next page of results, if any remaining results exist.
     :type next_link: str
     """
@@ -33143,7 +34382,7 @@ class SsisPackage(SsisObjectMetadata):
 
     :param type: Required. Type of metadata.Constant filled by server.  Possible values include:
      "Folder", "Project", "Package", "Environment".
-    :type type: str or ~data_factory_management_client.models.SsisObjectMetadataType
+    :type type: str or ~azure.mgmt.datafactory.models.SsisObjectMetadataType
     :param id: Metadata id.
     :type id: long
     :param name: Metadata name.
@@ -33157,7 +34396,7 @@ class SsisPackage(SsisObjectMetadata):
     :param project_id: Project id which contains package.
     :type project_id: long
     :param parameters: Parameters in package.
-    :type parameters: list[~data_factory_management_client.models.SsisParameter]
+    :type parameters: list[~azure.mgmt.datafactory.models.SsisParameter]
     """
 
     _validation = {
@@ -33195,17 +34434,16 @@ class SsisPackageLocation(msrest.serialization.Model):
     :type package_path: object
     :param type: The type of SSIS package location. Possible values include: "SSISDB", "File",
      "InlinePackage", "PackageStore".
-    :type type: str or ~data_factory_management_client.models.SsisPackageLocationType
+    :type type: str or ~azure.mgmt.datafactory.models.SsisPackageLocationType
     :param package_password: Password of the package.
-    :type package_password: ~data_factory_management_client.models.SecretBase
+    :type package_password: ~azure.mgmt.datafactory.models.SecretBase
     :param access_credential: The package access credential.
-    :type access_credential: ~data_factory_management_client.models.SsisAccessCredential
+    :type access_credential: ~azure.mgmt.datafactory.models.SsisAccessCredential
     :param configuration_path: The configuration file of the package execution. Type: string (or
      Expression with resultType string).
     :type configuration_path: object
     :param configuration_access_credential: The configuration file access credential.
-    :type configuration_access_credential:
-     ~data_factory_management_client.models.SsisAccessCredential
+    :type configuration_access_credential: ~azure.mgmt.datafactory.models.SsisAccessCredential
     :param package_name: The package name.
     :type package_name: str
     :param package_content: The embedded package content. Type: string (or Expression with
@@ -33214,7 +34452,7 @@ class SsisPackageLocation(msrest.serialization.Model):
     :param package_last_modified_date: The embedded package last modified date.
     :type package_last_modified_date: str
     :param child_packages: The embedded child package list.
-    :type child_packages: list[~data_factory_management_client.models.SsisChildPackage]
+    :type child_packages: list[~azure.mgmt.datafactory.models.SsisChildPackage]
     """
 
     _attribute_map = {
@@ -33317,7 +34555,7 @@ class SsisProject(SsisObjectMetadata):
 
     :param type: Required. Type of metadata.Constant filled by server.  Possible values include:
      "Folder", "Project", "Package", "Environment".
-    :type type: str or ~data_factory_management_client.models.SsisObjectMetadataType
+    :type type: str or ~azure.mgmt.datafactory.models.SsisObjectMetadataType
     :param id: Metadata id.
     :type id: long
     :param name: Metadata name.
@@ -33329,9 +34567,9 @@ class SsisProject(SsisObjectMetadata):
     :param version: Project version.
     :type version: long
     :param environment_refs: Environment reference in project.
-    :type environment_refs: list[~data_factory_management_client.models.SsisEnvironmentReference]
+    :type environment_refs: list[~azure.mgmt.datafactory.models.SsisEnvironmentReference]
     :param parameters: Parameters in project.
-    :type parameters: list[~data_factory_management_client.models.SsisParameter]
+    :type parameters: list[~azure.mgmt.datafactory.models.SsisParameter]
     """
 
     _validation = {
@@ -33444,7 +34682,7 @@ class StagingSettings(msrest.serialization.Model):
      collection.
     :type additional_properties: dict[str, object]
     :param linked_service_name: Required. Staging linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param path: The path to storage for storing the interim data. Type: string (or Expression with
      resultType string).
     :type path: object
@@ -33483,7 +34721,7 @@ class StoredProcedureParameter(msrest.serialization.Model):
     :type value: object
     :param type: Stored procedure parameter type. Possible values include: "String", "Int",
      "Int64", "Decimal", "Guid", "Boolean", "Date".
-    :type type: str or ~data_factory_management_client.models.StoredProcedureParameterType
+    :type type: str or ~azure.mgmt.datafactory.models.StoredProcedureParameterType
     """
 
     _attribute_map = {
@@ -33515,19 +34753,19 @@ class SwitchActivity(Activity):
     :param description: Activity description.
     :type description: str
     :param depends_on: Activity depends on condition.
-    :type depends_on: list[~data_factory_management_client.models.ActivityDependency]
+    :type depends_on: list[~azure.mgmt.datafactory.models.ActivityDependency]
     :param user_properties: Activity user properties.
-    :type user_properties: list[~data_factory_management_client.models.UserProperty]
+    :type user_properties: list[~azure.mgmt.datafactory.models.UserProperty]
     :param on: Required. An expression that would evaluate to a string or integer. This is used to
      determine the block of activities in cases that will be executed.
-    :type on: ~data_factory_management_client.models.Expression
+    :type on: ~azure.mgmt.datafactory.models.Expression
     :param cases: List of cases that correspond to expected values of the 'on' property. This is an
      optional property and if not provided, the activity will execute activities provided in
      defaultActivities.
-    :type cases: list[~data_factory_management_client.models.SwitchCase]
+    :type cases: list[~azure.mgmt.datafactory.models.SwitchCase]
     :param default_activities: List of activities to execute if no case condition is satisfied.
      This is an optional property and if not provided, the activity will exit without any action.
-    :type default_activities: list[~data_factory_management_client.models.Activity]
+    :type default_activities: list[~azure.mgmt.datafactory.models.Activity]
     """
 
     _validation = {
@@ -33565,7 +34803,7 @@ class SwitchCase(msrest.serialization.Model):
     :param value: Expected value that satisfies the expression result of the 'on' property.
     :type value: str
     :param activities: List of activities to execute for satisfied case condition.
-    :type activities: list[~data_factory_management_client.models.Activity]
+    :type activities: list[~azure.mgmt.datafactory.models.Activity]
     """
 
     _attribute_map = {
@@ -33593,11 +34831,11 @@ class SybaseLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param server: Required. Server name for connection. Type: string (or Expression with
@@ -33610,13 +34848,12 @@ class SybaseLinkedService(LinkedService):
     :type schema: object
     :param authentication_type: AuthenticationType to be used for connection. Possible values
      include: "Basic", "Windows".
-    :type authentication_type: str or
-     ~data_factory_management_client.models.SybaseAuthenticationType
+    :type authentication_type: str or ~azure.mgmt.datafactory.models.SybaseAuthenticationType
     :param username: Username for authentication. Type: string (or Expression with resultType
      string).
     :type username: object
     :param password: Password for authentication.
-    :type password: ~data_factory_management_client.models.SecretBase
+    :type password: ~azure.mgmt.datafactory.models.SecretBase
     :param encrypted_credential: The encrypted credential used for authentication. Credentials are
      encrypted using the integration runtime credential manager. Type: string (or Expression with
      resultType string).
@@ -33679,12 +34916,15 @@ class SybaseSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     :param query: Database query. Type: string (or Expression with resultType string).
     :type query: object
     """
@@ -33699,8 +34939,9 @@ class SybaseSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
     }
 
@@ -33732,14 +34973,14 @@ class SybaseTableDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param table_name: The Sybase table name. Type: string (or Expression with resultType string).
     :type table_name: object
     """
@@ -33806,7 +35047,7 @@ class TabularTranslator(CopyTranslator):
      activity. Type: boolean (or Expression with resultType boolean).
     :type type_conversion: object
     :param type_conversion_settings: Type conversion settings.
-    :type type_conversion_settings: ~data_factory_management_client.models.TypeConversionSettings
+    :type type_conversion_settings: ~azure.mgmt.datafactory.models.TypeConversionSettings
     """
 
     _validation = {
@@ -33919,11 +35160,11 @@ class TeradataLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param connection_string: Teradata ODBC connection string. Type: string, SecureString or
@@ -33933,13 +35174,12 @@ class TeradataLinkedService(LinkedService):
     :type server: object
     :param authentication_type: AuthenticationType to be used for connection. Possible values
      include: "Basic", "Windows".
-    :type authentication_type: str or
-     ~data_factory_management_client.models.TeradataAuthenticationType
+    :type authentication_type: str or ~azure.mgmt.datafactory.models.TeradataAuthenticationType
     :param username: Username for authentication. Type: string (or Expression with resultType
      string).
     :type username: object
     :param password: Password for authentication.
-    :type password: ~data_factory_management_client.models.SecretBase
+    :type password: ~azure.mgmt.datafactory.models.SecretBase
     :param encrypted_credential: The encrypted credential used for authentication. Credentials are
      encrypted using the integration runtime credential manager. Type: string (or Expression with
      resultType string).
@@ -34030,12 +35270,15 @@ class TeradataSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     :param query: Teradata query. Type: string (or Expression with resultType string).
     :type query: object
     :param partition_option: The partition mechanism that will be used for teradata read in
@@ -34043,7 +35286,7 @@ class TeradataSource(TabularSource):
     :type partition_option: object
     :param partition_settings: The settings that will be leveraged for teradata source
      partitioning.
-    :type partition_settings: ~data_factory_management_client.models.TeradataPartitionSettings
+    :type partition_settings: ~azure.mgmt.datafactory.models.TeradataPartitionSettings
     """
 
     _validation = {
@@ -34056,8 +35299,9 @@ class TeradataSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
         'partition_option': {'key': 'partitionOption', 'type': 'object'},
         'partition_settings': {'key': 'partitionSettings', 'type': 'TeradataPartitionSettings'},
@@ -34093,14 +35337,14 @@ class TeradataTableDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param database: The database name of Teradata. Type: string (or Expression with resultType
      string).
     :type database: object
@@ -34228,7 +35472,7 @@ class TriggerDependencyReference(DependencyReference):
     :param type: Required. The type of dependency reference.Constant filled by server.
     :type type: str
     :param reference_trigger: Required. Referenced trigger.
-    :type reference_trigger: ~data_factory_management_client.models.TriggerReference
+    :type reference_trigger: ~azure.mgmt.datafactory.models.TriggerReference
     """
 
     _validation = {
@@ -34285,7 +35529,7 @@ class TriggerListResponse(msrest.serialization.Model):
     All required parameters must be populated in order to send to Azure.
 
     :param value: Required. List of triggers.
-    :type value: list[~data_factory_management_client.models.TriggerResource]
+    :type value: list[~azure.mgmt.datafactory.models.TriggerResource]
     :param next_link: The link to the next page of results, if any remaining results exist.
     :type next_link: str
     """
@@ -34312,7 +35556,7 @@ class TriggerPipelineReference(msrest.serialization.Model):
     """Pipeline that needs to be triggered with the given parameters.
 
     :param pipeline_reference: Pipeline reference.
-    :type pipeline_reference: ~data_factory_management_client.models.PipelineReference
+    :type pipeline_reference: ~azure.mgmt.datafactory.models.PipelineReference
     :param parameters: Pipeline parameters.
     :type parameters: dict[str, object]
     """
@@ -34337,7 +35581,7 @@ class TriggerQueryResponse(msrest.serialization.Model):
     All required parameters must be populated in order to send to Azure.
 
     :param value: Required. List of triggers.
-    :type value: list[~data_factory_management_client.models.TriggerResource]
+    :type value: list[~azure.mgmt.datafactory.models.TriggerResource]
     :param continuation_token: The continuation token for getting the next page of results, if any
      remaining results exist, null otherwise.
     :type continuation_token: str
@@ -34410,7 +35654,7 @@ class TriggerResource(SubResource):
     :ivar etag: Etag identifies change in the resource.
     :vartype etag: str
     :param properties: Required. Properties of the trigger.
-    :type properties: ~data_factory_management_client.models.Trigger
+    :type properties: ~azure.mgmt.datafactory.models.Trigger
     """
 
     _validation = {
@@ -34454,7 +35698,7 @@ class TriggerRun(msrest.serialization.Model):
     :ivar trigger_run_timestamp: Trigger run start time.
     :vartype trigger_run_timestamp: ~datetime.datetime
     :ivar status: Trigger run status. Possible values include: "Succeeded", "Failed", "Inprogress".
-    :vartype status: str or ~data_factory_management_client.models.TriggerRunStatus
+    :vartype status: str or ~azure.mgmt.datafactory.models.TriggerRunStatus
     :ivar message: Trigger error message.
     :vartype message: str
     :ivar properties: List of property name and value related to trigger run. Name, value pair
@@ -34519,7 +35763,7 @@ class TriggerRunsQueryResponse(msrest.serialization.Model):
     All required parameters must be populated in order to send to Azure.
 
     :param value: Required. List of trigger runs.
-    :type value: list[~data_factory_management_client.models.TriggerRun]
+    :type value: list[~azure.mgmt.datafactory.models.TriggerRun]
     :param continuation_token: The continuation token for getting the next page of results, if any
      remaining results exist, null otherwise.
     :type continuation_token: str
@@ -34552,7 +35796,7 @@ class TriggerSubscriptionOperationStatus(msrest.serialization.Model):
     :vartype trigger_name: str
     :ivar status: Event Subscription Status. Possible values include: "Enabled", "Provisioning",
      "Deprovisioning", "Disabled", "Unknown".
-    :vartype status: str or ~data_factory_management_client.models.EventSubscriptionStatus
+    :vartype status: str or ~azure.mgmt.datafactory.models.EventSubscriptionStatus
     """
 
     _validation = {
@@ -34590,15 +35834,15 @@ class TumblingWindowTrigger(Trigger):
     :type description: str
     :ivar runtime_state: Indicates if trigger is running or not. Updated when Start/Stop APIs are
      called on the Trigger. Possible values include: "Started", "Stopped", "Disabled".
-    :vartype runtime_state: str or ~data_factory_management_client.models.TriggerRuntimeState
+    :vartype runtime_state: str or ~azure.mgmt.datafactory.models.TriggerRuntimeState
     :param annotations: List of tags that can be used for describing the trigger.
     :type annotations: list[object]
     :param pipeline: Required. Pipeline for which runs are created when an event is fired for
      trigger window that is ready.
-    :type pipeline: ~data_factory_management_client.models.TriggerPipelineReference
+    :type pipeline: ~azure.mgmt.datafactory.models.TriggerPipelineReference
     :param frequency: Required. The frequency of the time windows. Possible values include:
      "Minute", "Hour", "Month".
-    :type frequency: str or ~data_factory_management_client.models.TumblingWindowFrequency
+    :type frequency: str or ~azure.mgmt.datafactory.models.TumblingWindowFrequency
     :param interval: Required. The interval of the time windows. The minimum interval allowed is 15
      Minutes.
     :type interval: int
@@ -34616,10 +35860,10 @@ class TumblingWindowTrigger(Trigger):
      for which a new run is triggered.
     :type max_concurrency: int
     :param retry_policy: Retry policy that will be applied for failed pipeline runs.
-    :type retry_policy: ~data_factory_management_client.models.RetryPolicy
+    :type retry_policy: ~azure.mgmt.datafactory.models.RetryPolicy
     :param depends_on: Triggers that this trigger depends on. Only tumbling window triggers are
      supported.
-    :type depends_on: list[~data_factory_management_client.models.DependencyReference]
+    :type depends_on: list[~azure.mgmt.datafactory.models.DependencyReference]
     """
 
     _validation = {
@@ -34674,7 +35918,7 @@ class TumblingWindowTriggerDependencyReference(TriggerDependencyReference):
     :param type: Required. The type of dependency reference.Constant filled by server.
     :type type: str
     :param reference_trigger: Required. Referenced trigger.
-    :type reference_trigger: ~data_factory_management_client.models.TriggerReference
+    :type reference_trigger: ~azure.mgmt.datafactory.models.TriggerReference
     :param offset: Timespan applied to the start time of a tumbling window when evaluating
      dependency.
     :type offset: str
@@ -34767,12 +36011,12 @@ class UntilActivity(Activity):
     :param description: Activity description.
     :type description: str
     :param depends_on: Activity depends on condition.
-    :type depends_on: list[~data_factory_management_client.models.ActivityDependency]
+    :type depends_on: list[~azure.mgmt.datafactory.models.ActivityDependency]
     :param user_properties: Activity user properties.
-    :type user_properties: list[~data_factory_management_client.models.UserProperty]
+    :type user_properties: list[~azure.mgmt.datafactory.models.UserProperty]
     :param expression: Required. An expression that would evaluate to Boolean. The loop will
      continue until this expression evaluates to true.
-    :type expression: ~data_factory_management_client.models.Expression
+    :type expression: ~azure.mgmt.datafactory.models.Expression
     :param timeout: Specifies the timeout for the activity to run. If there is no value specified,
      it takes the value of TimeSpan.FromDays(7) which is 1 week as default. Type: string (or
      Expression with resultType string), pattern:
@@ -34780,7 +36024,7 @@ class UntilActivity(Activity):
      resultType string), pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type timeout: object
     :param activities: Required. List of activities to execute.
-    :type activities: list[~data_factory_management_client.models.Activity]
+    :type activities: list[~azure.mgmt.datafactory.models.Activity]
     """
 
     _validation = {
@@ -34843,7 +36087,7 @@ class UpdateIntegrationRuntimeRequest(msrest.serialization.Model):
     :param auto_update: Enables or disables the auto-update feature of the self-hosted integration
      runtime. See https://go.microsoft.com/fwlink/?linkid=854189. Possible values include: "On",
      "Off".
-    :type auto_update: str or ~data_factory_management_client.models.IntegrationRuntimeAutoUpdate
+    :type auto_update: str or ~azure.mgmt.datafactory.models.IntegrationRuntimeAutoUpdate
     :param update_delay_offset: The time offset (in hours) in the day, e.g., PT03H is 3 hours. The
      integration runtime auto update will happen on that time.
     :type update_delay_offset: str
@@ -34948,9 +36192,9 @@ class ValidationActivity(Activity):
     :param description: Activity description.
     :type description: str
     :param depends_on: Activity depends on condition.
-    :type depends_on: list[~data_factory_management_client.models.ActivityDependency]
+    :type depends_on: list[~azure.mgmt.datafactory.models.ActivityDependency]
     :param user_properties: Activity user properties.
-    :type user_properties: list[~data_factory_management_client.models.UserProperty]
+    :type user_properties: list[~azure.mgmt.datafactory.models.UserProperty]
     :param timeout: Specifies the timeout for the activity to run. If there is no value specified,
      it takes the value of TimeSpan.FromDays(7) which is 1 week as default. Type: string (or
      Expression with resultType string), pattern:
@@ -34967,7 +36211,7 @@ class ValidationActivity(Activity):
      with resultType boolean).
     :type child_items: object
     :param dataset: Required. Validation activity dataset reference.
-    :type dataset: ~data_factory_management_client.models.DatasetReference
+    :type dataset: ~azure.mgmt.datafactory.models.DatasetReference
     """
 
     _validation = {
@@ -35009,7 +36253,7 @@ class VariableSpecification(msrest.serialization.Model):
     All required parameters must be populated in order to send to Azure.
 
     :param type: Required. Variable type. Possible values include: "String", "Bool", "Array".
-    :type type: str or ~data_factory_management_client.models.VariableType
+    :type type: str or ~azure.mgmt.datafactory.models.VariableType
     :param default_value: Default value of variable.
     :type default_value: object
     """
@@ -35043,18 +36287,18 @@ class VerticaLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param connection_string: An ODBC connection string. Type: string, SecureString or
      AzureKeyVaultSecretReference.
     :type connection_string: object
     :param pwd: The Azure key vault secret reference of password in connection string.
-    :type pwd: ~data_factory_management_client.models.AzureKeyVaultSecretReference
+    :type pwd: ~azure.mgmt.datafactory.models.AzureKeyVaultSecretReference
     :param encrypted_credential: The encrypted credential used for authentication. Credentials are
      encrypted using the integration runtime credential manager. Type: string (or Expression with
      resultType string).
@@ -35107,12 +36351,15 @@ class VerticaSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: object
@@ -35128,8 +36375,9 @@ class VerticaSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
     }
 
@@ -35161,14 +36409,14 @@ class VerticaTableDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param table_name: This property will be retired. Please consider using schema + table
      properties instead.
     :type table_name: object
@@ -35226,9 +36474,9 @@ class WaitActivity(Activity):
     :param description: Activity description.
     :type description: str
     :param depends_on: Activity depends on condition.
-    :type depends_on: list[~data_factory_management_client.models.ActivityDependency]
+    :type depends_on: list[~azure.mgmt.datafactory.models.ActivityDependency]
     :param user_properties: Activity user properties.
-    :type user_properties: list[~data_factory_management_client.models.UserProperty]
+    :type user_properties: list[~azure.mgmt.datafactory.models.UserProperty]
     :param wait_time_in_seconds: Required. Duration in seconds.
     :type wait_time_in_seconds: object
     """
@@ -35273,16 +36521,16 @@ class WebActivity(ExecutionActivity):
     :param description: Activity description.
     :type description: str
     :param depends_on: Activity depends on condition.
-    :type depends_on: list[~data_factory_management_client.models.ActivityDependency]
+    :type depends_on: list[~azure.mgmt.datafactory.models.ActivityDependency]
     :param user_properties: Activity user properties.
-    :type user_properties: list[~data_factory_management_client.models.UserProperty]
+    :type user_properties: list[~azure.mgmt.datafactory.models.UserProperty]
     :param linked_service_name: Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param policy: Activity policy.
-    :type policy: ~data_factory_management_client.models.ActivityPolicy
+    :type policy: ~azure.mgmt.datafactory.models.ActivityPolicy
     :param method: Required. Rest API method for target endpoint. Possible values include: "GET",
      "POST", "PUT", "DELETE".
-    :type method: str or ~data_factory_management_client.models.WebActivityMethod
+    :type method: str or ~azure.mgmt.datafactory.models.WebActivityMethod
     :param url: Required. Web activity target endpoint and path. Type: string (or Expression with
      resultType string).
     :type url: object
@@ -35294,13 +36542,13 @@ class WebActivity(ExecutionActivity):
      method, not allowed for GET method Type: string (or Expression with resultType string).
     :type body: object
     :param authentication: Authentication method used for calling the endpoint.
-    :type authentication: ~data_factory_management_client.models.WebActivityAuthentication
+    :type authentication: ~azure.mgmt.datafactory.models.WebActivityAuthentication
     :param datasets: List of datasets passed to web endpoint.
-    :type datasets: list[~data_factory_management_client.models.DatasetReference]
+    :type datasets: list[~azure.mgmt.datafactory.models.DatasetReference]
     :param linked_services: List of linked services passed to web endpoint.
-    :type linked_services: list[~data_factory_management_client.models.LinkedServiceReference]
+    :type linked_services: list[~azure.mgmt.datafactory.models.LinkedServiceReference]
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     """
 
     _validation = {
@@ -35348,31 +36596,26 @@ class WebActivity(ExecutionActivity):
 class WebActivityAuthentication(msrest.serialization.Model):
     """Web activity authentication properties.
 
-    All required parameters must be populated in order to send to Azure.
-
-    :param type: Required. Web activity authentication
-     (Basic/ClientCertificate/MSI/ServicePrincipal).
+    :param type: Web activity authentication (Basic/ClientCertificate/MSI/ServicePrincipal).
     :type type: str
     :param pfx: Base64-encoded contents of a PFX file or Certificate when used for
      ServicePrincipal.
-    :type pfx: ~data_factory_management_client.models.SecretBase
+    :type pfx: ~azure.mgmt.datafactory.models.SecretBase
     :param username: Web activity authentication user name for basic authentication or ClientID
      when used for ServicePrincipal. Type: string (or Expression with resultType string).
     :type username: object
     :param password: Password for the PFX file or basic authentication / Secret when used for
      ServicePrincipal.
-    :type password: ~data_factory_management_client.models.SecretBase
+    :type password: ~azure.mgmt.datafactory.models.SecretBase
     :param resource: Resource for which Azure Auth token will be requested when using MSI
      Authentication. Type: string (or Expression with resultType string).
     :type resource: object
     :param user_tenant: TenantId for which Azure Auth token will be requested when using
      ServicePrincipal Authentication. Type: string (or Expression with resultType string).
     :type user_tenant: object
+    :param credential: The credential reference containing authentication information.
+    :type credential: ~azure.mgmt.datafactory.models.CredentialReference
     """
-
-    _validation = {
-        'type': {'required': True},
-    }
 
     _attribute_map = {
         'type': {'key': 'type', 'type': 'str'},
@@ -35381,6 +36624,7 @@ class WebActivityAuthentication(msrest.serialization.Model):
         'password': {'key': 'password', 'type': 'SecretBase'},
         'resource': {'key': 'resource', 'type': 'object'},
         'user_tenant': {'key': 'userTenant', 'type': 'object'},
+        'credential': {'key': 'credential', 'type': 'CredentialReference'},
     }
 
     def __init__(
@@ -35388,12 +36632,13 @@ class WebActivityAuthentication(msrest.serialization.Model):
         **kwargs
     ):
         super(WebActivityAuthentication, self).__init__(**kwargs)
-        self.type = kwargs['type']
+        self.type = kwargs.get('type', None)
         self.pfx = kwargs.get('pfx', None)
         self.username = kwargs.get('username', None)
         self.password = kwargs.get('password', None)
         self.resource = kwargs.get('resource', None)
         self.user_tenant = kwargs.get('user_tenant', None)
+        self.credential = kwargs.get('credential', None)
 
 
 class WebLinkedServiceTypeProperties(msrest.serialization.Model):
@@ -35410,7 +36655,7 @@ class WebLinkedServiceTypeProperties(msrest.serialization.Model):
     :param authentication_type: Required. Type of authentication used to connect to the web table
      source.Constant filled by server.  Possible values include: "Basic", "Anonymous",
      "ClientCertificate".
-    :type authentication_type: str or ~data_factory_management_client.models.WebAuthenticationType
+    :type authentication_type: str or ~azure.mgmt.datafactory.models.WebAuthenticationType
     """
 
     _validation = {
@@ -35447,7 +36692,7 @@ class WebAnonymousAuthentication(WebLinkedServiceTypeProperties):
     :param authentication_type: Required. Type of authentication used to connect to the web table
      source.Constant filled by server.  Possible values include: "Basic", "Anonymous",
      "ClientCertificate".
-    :type authentication_type: str or ~data_factory_management_client.models.WebAuthenticationType
+    :type authentication_type: str or ~azure.mgmt.datafactory.models.WebAuthenticationType
     """
 
     _validation = {
@@ -35479,12 +36724,12 @@ class WebBasicAuthentication(WebLinkedServiceTypeProperties):
     :param authentication_type: Required. Type of authentication used to connect to the web table
      source.Constant filled by server.  Possible values include: "Basic", "Anonymous",
      "ClientCertificate".
-    :type authentication_type: str or ~data_factory_management_client.models.WebAuthenticationType
+    :type authentication_type: str or ~azure.mgmt.datafactory.models.WebAuthenticationType
     :param username: Required. User name for Basic authentication. Type: string (or Expression with
      resultType string).
     :type username: object
     :param password: Required. The password for Basic authentication.
-    :type password: ~data_factory_management_client.models.SecretBase
+    :type password: ~azure.mgmt.datafactory.models.SecretBase
     """
 
     _validation = {
@@ -35522,11 +36767,11 @@ class WebClientCertificateAuthentication(WebLinkedServiceTypeProperties):
     :param authentication_type: Required. Type of authentication used to connect to the web table
      source.Constant filled by server.  Possible values include: "Basic", "Anonymous",
      "ClientCertificate".
-    :type authentication_type: str or ~data_factory_management_client.models.WebAuthenticationType
+    :type authentication_type: str or ~azure.mgmt.datafactory.models.WebAuthenticationType
     :param pfx: Required. Base64-encoded contents of a PFX file.
-    :type pfx: ~data_factory_management_client.models.SecretBase
+    :type pfx: ~azure.mgmt.datafactory.models.SecretBase
     :param password: Required. Password for the PFX file.
-    :type password: ~data_factory_management_client.models.SecretBase
+    :type password: ~azure.mgmt.datafactory.models.SecretBase
     """
 
     _validation = {
@@ -35568,11 +36813,11 @@ class WebHookActivity(Activity):
     :param description: Activity description.
     :type description: str
     :param depends_on: Activity depends on condition.
-    :type depends_on: list[~data_factory_management_client.models.ActivityDependency]
+    :type depends_on: list[~azure.mgmt.datafactory.models.ActivityDependency]
     :param user_properties: Activity user properties.
-    :type user_properties: list[~data_factory_management_client.models.UserProperty]
+    :type user_properties: list[~azure.mgmt.datafactory.models.UserProperty]
     :param method: Required. Rest API method for target endpoint. Possible values include: "POST".
-    :type method: str or ~data_factory_management_client.models.WebHookActivityMethod
+    :type method: str or ~azure.mgmt.datafactory.models.WebHookActivityMethod
     :param url: Required. WebHook activity target endpoint and path. Type: string (or Expression
      with resultType string).
     :type url: object
@@ -35588,7 +36833,7 @@ class WebHookActivity(Activity):
      method, not allowed for GET method Type: string (or Expression with resultType string).
     :type body: object
     :param authentication: Authentication method used for calling the endpoint.
-    :type authentication: ~data_factory_management_client.models.WebActivityAuthentication
+    :type authentication: ~azure.mgmt.datafactory.models.WebActivityAuthentication
     :param report_status_on_call_back: When set to true, statusCode, output and error in callback
      request body will be consumed by activity. The activity can be marked as failed by setting
      statusCode >= 400 in callback request. Default is false. Type: boolean (or Expression with
@@ -35645,15 +36890,15 @@ class WebLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param type_properties: Required. Web linked service properties.
-    :type type_properties: ~data_factory_management_client.models.WebLinkedServiceTypeProperties
+    :type type_properties: ~azure.mgmt.datafactory.models.WebLinkedServiceTypeProperties
     """
 
     _validation = {
@@ -35699,9 +36944,12 @@ class WebSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     """
 
     _validation = {
@@ -35714,7 +36962,8 @@ class WebSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
     }
 
     def __init__(
@@ -35745,14 +36994,14 @@ class WebTableDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param index: Required. The zero-based index of the table in the web page. Type: integer (or
      Expression with resultType integer), minimum: 0.
     :type index: object
@@ -35802,11 +37051,11 @@ class XeroLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param connection_properties: Properties used to connect to Xero. It is mutually exclusive with
@@ -35815,11 +37064,11 @@ class XeroLinkedService(LinkedService):
     :param host: The endpoint of the Xero server. (i.e. api.xero.com).
     :type host: object
     :param consumer_key: The consumer key associated with the Xero application.
-    :type consumer_key: ~data_factory_management_client.models.SecretBase
+    :type consumer_key: ~azure.mgmt.datafactory.models.SecretBase
     :param private_key: The private key from the .pem file that was generated for your Xero private
      application. You must include all the text from the .pem file, including the Unix line endings(
      ).
-    :type private_key: ~data_factory_management_client.models.SecretBase
+    :type private_key: ~azure.mgmt.datafactory.models.SecretBase
     :param use_encrypted_endpoints: Specifies whether the data source endpoints are encrypted using
      HTTPS. The default value is true.
     :type use_encrypted_endpoints: object
@@ -35892,14 +37141,14 @@ class XeroObjectDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param table_name: The table name. Type: string (or Expression with resultType string).
     :type table_name: object
     """
@@ -35950,12 +37199,15 @@ class XeroSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: object
@@ -35971,8 +37223,9 @@ class XeroSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
     }
 
@@ -36004,16 +37257,16 @@ class XmlDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param location: The location of the json data storage.
-    :type location: ~data_factory_management_client.models.DatasetLocation
+    :type location: ~azure.mgmt.datafactory.models.DatasetLocation
     :param encoding_name: The code page name of the preferred encoding. If not specified, the
      default value is UTF-8, unless BOM denotes another Unicode encoding. Refer to the name column
      of the table in the following link to set supported values:
@@ -36023,7 +37276,7 @@ class XmlDataset(Dataset):
     :param null_value: The null value string. Type: string (or Expression with resultType string).
     :type null_value: object
     :param compression: The data compression method used for the json dataset.
-    :type compression: ~data_factory_management_client.models.DatasetCompression
+    :type compression: ~azure.mgmt.datafactory.models.DatasetCompression
     """
 
     _validation = {
@@ -36070,7 +37323,7 @@ class XmlReadSettings(FormatReadSettings):
     :param type: Required. The read setting type.Constant filled by server.
     :type type: str
     :param compression_properties: Compression settings.
-    :type compression_properties: ~data_factory_management_client.models.CompressionReadSettings
+    :type compression_properties: ~azure.mgmt.datafactory.models.CompressionReadSettings
     :param validation_mode: Indicates what validation method is used when reading the xml files.
      Allowed values: 'none', 'xsd', or 'dtd'. Type: string (or Expression with resultType string).
     :type validation_mode: object
@@ -36133,13 +37386,16 @@ class XmlSource(CopySource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param store_settings: Xml store settings.
-    :type store_settings: ~data_factory_management_client.models.StoreReadSettings
+    :type store_settings: ~azure.mgmt.datafactory.models.StoreReadSettings
     :param format_settings: Xml format settings.
-    :type format_settings: ~data_factory_management_client.models.XmlReadSettings
+    :type format_settings: ~azure.mgmt.datafactory.models.XmlReadSettings
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     """
 
     _validation = {
@@ -36152,9 +37408,10 @@ class XmlSource(CopySource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'store_settings': {'key': 'storeSettings', 'type': 'StoreReadSettings'},
         'format_settings': {'key': 'formatSettings', 'type': 'XmlReadSettings'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
     }
 
     def __init__(
@@ -36213,11 +37470,11 @@ class ZohoLinkedService(LinkedService):
     :param type: Required. Type of linked service.Constant filled by server.
     :type type: str
     :param connect_via: The integration runtime reference.
-    :type connect_via: ~data_factory_management_client.models.IntegrationRuntimeReference
+    :type connect_via: ~azure.mgmt.datafactory.models.IntegrationRuntimeReference
     :param description: Linked service description.
     :type description: str
     :param parameters: Parameters for linked service.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
     :param connection_properties: Properties used to connect to Zoho. It is mutually exclusive with
@@ -36226,7 +37483,7 @@ class ZohoLinkedService(LinkedService):
     :param endpoint: The endpoint of the Zoho server. (i.e. crm.zoho.com/crm/private).
     :type endpoint: object
     :param access_token: The access token for Zoho authentication.
-    :type access_token: ~data_factory_management_client.models.SecretBase
+    :type access_token: ~azure.mgmt.datafactory.models.SecretBase
     :param use_encrypted_endpoints: Specifies whether the data source endpoints are encrypted using
      HTTPS. The default value is true.
     :type use_encrypted_endpoints: object
@@ -36297,14 +37554,14 @@ class ZohoObjectDataset(Dataset):
      Expression with resultType array), itemType: DatasetSchemaDataElement.
     :type schema: object
     :param linked_service_name: Required. Linked service reference.
-    :type linked_service_name: ~data_factory_management_client.models.LinkedServiceReference
+    :type linked_service_name: ~azure.mgmt.datafactory.models.LinkedServiceReference
     :param parameters: Parameters for dataset.
-    :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
+    :type parameters: dict[str, ~azure.mgmt.datafactory.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the Dataset.
     :type annotations: list[object]
     :param folder: The folder that this Dataset is in. If not specified, Dataset will appear at the
      root level.
-    :type folder: ~data_factory_management_client.models.DatasetFolder
+    :type folder: ~azure.mgmt.datafactory.models.DatasetFolder
     :param table_name: The table name. Type: string (or Expression with resultType string).
     :type table_name: object
     """
@@ -36355,12 +37612,15 @@ class ZohoSource(TabularSource):
     :param max_concurrent_connections: The maximum concurrent connection count for the source data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
+    :param disable_metrics_collection: If true, disable data store metrics collection. Default is
+     false. Type: boolean (or Expression with resultType boolean).
+    :type disable_metrics_collection: object
     :param query_timeout: Query timeout. Type: string (or Expression with resultType string),
      pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
     :type query_timeout: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
-     array of objects (or Expression with resultType array of objects).
-    :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
+     array of objects(AdditionalColumns) (or Expression with resultType array of objects).
+    :type additional_columns: object
     :param query: A query to retrieve data from source. Type: string (or Expression with resultType
      string).
     :type query: object
@@ -36376,8 +37636,9 @@ class ZohoSource(TabularSource):
         'source_retry_count': {'key': 'sourceRetryCount', 'type': 'object'},
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'disable_metrics_collection': {'key': 'disableMetricsCollection', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
-        'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
+        'additional_columns': {'key': 'additionalColumns', 'type': 'object'},
         'query': {'key': 'query', 'type': 'object'},
     }
 

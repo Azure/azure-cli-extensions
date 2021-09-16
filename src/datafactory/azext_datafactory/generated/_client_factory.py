@@ -54,3 +54,11 @@ def cf_trigger(cli_ctx, *_):
 
 def cf_trigger_run(cli_ctx, *_):
     return cf_datafactory_cl(cli_ctx).trigger_runs
+
+
+def cf_managed_virtual_network(cli_ctx, *_):
+    return cf_datafactory_cl(cli_ctx).managed_virtual_networks
+
+
+def cf_managed_private_endpoint(cli_ctx, *_):
+    return cf_datafactory_cl(cli_ctx).managed_private_endpoints

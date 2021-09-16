@@ -107,3 +107,17 @@ def load_command_table(self, _):
         g.custom_command('list', 'script_execution_list')
         g.custom_command('delete', 'script_execution_delete')
         g.custom_show_command('show', 'script_execution_show')
+
+    with self.command_group('vmware workload-network dhcp', vmware_sdk, client_factory=cf_vmware) as g:
+        g.custom_command('list', 'workload_network_dhcp_list')
+        g.custom_show_command('show', 'workload_network_dhcp_show')
+
+    with self.command_group('vmware workload-network dhcp server', vmware_sdk, client_factory=cf_vmware) as g:
+        g.custom_command('create', 'workload_network_dhcp_server_create')
+        g.custom_command('delete', 'workload_network_dhcp_delete')
+        g.custom_command('update', 'workload_network_dhcp_server_update')
+
+    with self.command_group('vmware workload-network dhcp relay', vmware_sdk, client_factory=cf_vmware) as g:
+        g.custom_command('create', 'workload_network_dhcp_relay_create')
+        g.custom_command('delete', 'workload_network_dhcp_delete')
+        g.custom_command('update', 'workload_network_dhcp_relay_update')

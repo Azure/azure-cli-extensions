@@ -54,14 +54,11 @@ from azure.graphrbac.models import (ApplicationCreateParameters,
                                     KeyCredential,
                                     ServicePrincipalCreateParameters,
                                     GetObjectsParameters)
-from .vendored_sdks.azure_mgmt_preview_aks.v2021_05_01.models import (ContainerServiceLinuxProfile,
+from .vendored_sdks.azure_mgmt_preview_aks.v2021_08_01.models import (ContainerServiceLinuxProfile,
                                                                       ManagedClusterWindowsProfile,
                                                                       ContainerServiceNetworkProfile,
                                                                       ManagedClusterServicePrincipalProfile,
                                                                       ContainerServiceSshConfiguration,
-                                                                      MaintenanceConfiguration,
-                                                                      TimeInWeek,
-                                                                      TimeSpan,
                                                                       ContainerServiceSshPublicKey,
                                                                       ManagedCluster,
                                                                       ManagedClusterAADProfile,
@@ -73,7 +70,7 @@ from .vendored_sdks.azure_mgmt_preview_aks.v2021_05_01.models import (ContainerS
                                                                       ManagedClusterIdentity,
                                                                       ManagedClusterAPIServerAccessProfile,
                                                                       ManagedClusterSKU,
-                                                                      Components1Umhcm8SchemasManagedclusteridentityPropertiesUserassignedidentitiesAdditionalproperties,
+                                                                      ManagedServiceIdentityUserAssignedIdentitiesValue,
                                                                       ManagedClusterAutoUpgradeProfile,
                                                                       KubeletConfig,
                                                                       LinuxOSConfig,
@@ -82,8 +79,7 @@ from .vendored_sdks.azure_mgmt_preview_aks.v2021_05_01.models import (ContainerS
                                                                       ManagedClusterPodIdentityProfile,
                                                                       ManagedClusterPodIdentity,
                                                                       ManagedClusterPodIdentityException,
-                                                                      UserAssignedIdentity,
-                                                                      ComponentsQit0EtSchemasManagedclusterpropertiesPropertiesIdentityprofileAdditionalproperties)
+                                                                      UserAssignedIdentity)
 from ._client_factory import cf_resource_groups
 from ._client_factory import get_auth_management_client
 from ._client_factory import get_graph_rbac_management_client
@@ -99,6 +95,7 @@ from ._helpers import (_populate_api_server_access_profile, _set_vm_set_type,
                        _trim_fqdn_name_containing_hcp)
 from ._loadbalancer import (set_load_balancer_sku, is_load_balancer_profile_provided,
                             update_load_balancer_profile, create_load_balancer_profile)
+from ._natgateway import (create_nat_gateway_profile, update_nat_gateway_profile, is_nat_gateway_profile_provided)
 from ._consts import CONST_HTTP_APPLICATION_ROUTING_ADDON_NAME
 from ._consts import CONST_MONITORING_ADDON_NAME
 from ._consts import CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID
@@ -112,6 +109,7 @@ from ._consts import CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID, CONST_INGRESS_A
 from ._consts import CONST_INGRESS_APPGW_SUBNET_CIDR, CONST_INGRESS_APPGW_SUBNET_ID
 from ._consts import CONST_INGRESS_APPGW_WATCH_NAMESPACE
 from ._consts import CONST_SCALE_SET_PRIORITY_REGULAR, CONST_SCALE_SET_PRIORITY_SPOT, CONST_SPOT_EVICTION_POLICY_DELETE
+from ._consts import CONST_SCALE_DOWN_MODE_DELETE
 from ._consts import CONST_CONFCOM_ADDON_NAME, CONST_ACC_SGX_QUOTE_HELPER_ENABLED
 from ._consts import CONST_OPEN_SERVICE_MESH_ADDON_NAME
 from ._consts import CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME, CONST_SECRET_ROTATION_ENABLED
@@ -985,6 +983,8 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                load_balancer_outbound_ip_prefixes=None,
                load_balancer_outbound_ports=None,
                load_balancer_idle_timeout=None,
+               nat_gateway_managed_outbound_ip_count=None,
+               nat_gateway_idle_timeout=None,
                outbound_type=None,
                enable_addons=None,
                workspace_resource_id=None,
@@ -1012,7 +1012,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                private_dns_zone=None,
                enable_managed_identity=True,
                fqdn_subdomain=None,
-               enable_public_fqdn=False,
+               disable_public_fqdn=False,
                api_server_authorized_ip_ranges=None,
                aks_custom_headers=None,
                appgw_name=None,
@@ -1213,8 +1213,12 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         load_balancer_outbound_ports,
         load_balancer_idle_timeout)
 
+    nat_gateway_profile = create_nat_gateway_profile(
+        nat_gateway_managed_outbound_ip_count,
+        nat_gateway_idle_timeout)
+
     outbound_type = _set_outbound_type(
-        outbound_type, network_plugin, load_balancer_sku, load_balancer_profile)
+        outbound_type, vnet_subnet_id, load_balancer_sku, load_balancer_profile)
 
     network_profile = None
     if any([network_plugin,
@@ -1237,14 +1241,16 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
             network_policy=network_policy,
             load_balancer_sku=load_balancer_sku.lower(),
             load_balancer_profile=load_balancer_profile,
+            nat_gateway_profile=nat_gateway_profile,
             outbound_type=outbound_type
         )
     else:
-        if load_balancer_sku.lower() == "standard" or load_balancer_profile:
+        if load_balancer_sku.lower() == "standard" or load_balancer_profile or nat_gateway_profile:
             network_profile = ContainerServiceNetworkProfile(
                 network_plugin="kubenet",
                 load_balancer_sku=load_balancer_sku.lower(),
                 load_balancer_profile=load_balancer_profile,
+                nat_gateway_profile=nat_gateway_profile,
                 outbound_type=outbound_type,
             )
         if load_balancer_sku.lower() == "basic":
@@ -1344,7 +1350,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         )
     elif enable_managed_identity and assign_identity:
         user_assigned_identity = {
-            assign_identity: Components1Umhcm8SchemasManagedclusteridentityPropertiesUserassignedidentitiesAdditionalproperties()
+            assign_identity: ManagedServiceIdentityUserAssignedIdentitiesValue()
         }
         identity = ManagedClusterIdentity(
             type="UserAssigned",
@@ -1357,7 +1363,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
             raise CLIError('--assign-kubelet-identity can only be specified when --assign-identity is specified')
         kubelet_identity = _get_user_assigned_identity(cmd.cli_ctx, assign_kubelet_identity)
         identity_profile = {
-            'kubeletidentity': ComponentsQit0EtSchemasManagedclusterpropertiesPropertiesIdentityprofileAdditionalproperties(
+            'kubeletidentity': UserAssignedIdentity(
                 resource_id=assign_kubelet_identity,
                 client_id=kubelet_identity.client_id,
                 object_id=kubelet_identity.principal_id
@@ -1411,8 +1417,8 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         mc.node_resource_group = node_resource_group
 
     use_custom_private_dns_zone = False
-    if not enable_private_cluster and enable_public_fqdn:
-        raise ArgumentUsageError("--enable-public-fqdn should only be used with --enable-private-cluster")
+    if not enable_private_cluster and disable_public_fqdn:
+        raise ArgumentUsageError("--disable_public_fqdn should only be used with --enable-private-cluster")
     if enable_private_cluster:
         if load_balancer_sku.lower() != "standard":
             raise ArgumentUsageError(
@@ -1420,8 +1426,8 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         mc.api_server_access_profile = ManagedClusterAPIServerAccessProfile(
             enable_private_cluster=True
         )
-        if enable_public_fqdn:
-            mc.api_server_access_profile.enable_private_cluster_public_fqdn = True
+        if disable_public_fqdn:
+            mc.api_server_access_profile.enable_private_cluster_public_fqdn = False
 
     if private_dns_zone:
         if not enable_private_cluster:
@@ -1510,6 +1516,8 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                load_balancer_outbound_ip_prefixes=None,
                load_balancer_outbound_ports=None,
                load_balancer_idle_timeout=None,
+               nat_gateway_managed_outbound_ip_count=None,
+               nat_gateway_idle_timeout=None,
                api_server_authorized_ip_ranges=None,
                enable_pod_security_policy=False,
                disable_pod_security_policy=False,
@@ -1548,6 +1556,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                                                           load_balancer_outbound_ip_prefixes,
                                                           load_balancer_outbound_ports,
                                                           load_balancer_idle_timeout)
+    update_natgw_profile = is_nat_gateway_profile_provided(nat_gateway_managed_outbound_ip_count, nat_gateway_idle_timeout)
     update_aad_profile = not (
         aad_tenant_id is None and aad_admin_group_object_ids is None and not enable_azure_rbac and not disable_azure_rbac)
     # pylint: disable=too-many-boolean-expressions
@@ -1558,6 +1567,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
        and api_server_authorized_ip_ranges is None and \
        not update_pod_security and \
        not update_lb_profile and \
+       not update_natgw_profile and \
        not uptime_sla and \
        not no_uptime_sla and \
        not enable_aad and \
@@ -1591,6 +1601,8 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                        '"--load-balancer-managed-outbound-ip-count" or '
                        '"--load-balancer-outbound-ips" or '
                        '"--load-balancer-outbound-ip-prefixes" or '
+                       '"--nat-gateway-managed-outbound-ip-count" or '
+                       '"--nat-gateway-idle-timeout" or '
                        '"--enable-aad" or '
                        '"--aad-tenant-id" or '
                        '"--aad-admin-group-object-ids" or '
@@ -1691,6 +1703,12 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
             load_balancer_outbound_ports,
             load_balancer_idle_timeout,
             instance.network_profile.load_balancer_profile)
+
+    if update_natgw_profile:
+        instance.network_profile.nat_gateway_profile = update_nat_gateway_profile(
+            nat_gateway_managed_outbound_ip_count,
+            nat_gateway_idle_timeout,
+            instance.network_profile.nat_gateway_profile)
 
     if attach_acr and detach_acr:
         raise CLIError(
@@ -1794,10 +1812,9 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
             raise ArgumentUsageError('--disable-public-fqdn cannot be applied for none mode private dns zone cluster')
         instance.api_server_access_profile.enable_private_cluster_public_fqdn = False
 
-    if instance.auto_upgrade_profile is None:
-        instance.auto_upgrade_profile = ManagedClusterAutoUpgradeProfile()
-
     if auto_upgrade_channel is not None:
+        if instance.auto_upgrade_profile is None:
+            instance.auto_upgrade_profile = ManagedClusterAutoUpgradeProfile()
         instance.auto_upgrade_profile.upgrade_channel = auto_upgrade_channel
 
     if not enable_managed_identity and assign_identity:
@@ -1834,7 +1851,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
             )
         elif goal_identity_type == "userassigned":
             user_assigned_identity = {
-                assign_identity: Components1Umhcm8SchemasManagedclusteridentityPropertiesUserassignedidentitiesAdditionalproperties()
+                assign_identity: ManagedServiceIdentityUserAssignedIdentitiesValue()
             }
             instance.identity = ManagedClusterIdentity(
                 type="UserAssigned",
@@ -3085,6 +3102,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
                       min_count=None,
                       max_count=None,
                       enable_cluster_autoscaler=False,
+                      scale_down_mode=CONST_SCALE_DOWN_MODE_DELETE,
                       node_taints=None,
                       priority=CONST_SCALE_SET_PRIORITY_REGULAR,
                       eviction_policy=CONST_SPOT_EVICTION_POLICY_DELETE,
@@ -3146,6 +3164,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
         node_public_ip_prefix_id=node_public_ip_prefix_id,
         node_taints=taints_array,
         scale_set_priority=priority,
+        scale_down_mode=scale_down_mode,
         upgrade_settings=upgradeSettings,
         enable_encryption_at_host=enable_encryption_at_host,
         enable_ultra_ssd=enable_ultra_ssd,
@@ -3247,6 +3266,7 @@ def aks_agentpool_update(cmd,   # pylint: disable=unused-argument
                          enable_cluster_autoscaler=False,
                          disable_cluster_autoscaler=False,
                          update_cluster_autoscaler=False,
+                         scale_down_mode=None,
                          min_count=None, max_count=None,
                          max_surge=None,
                          mode=None,
@@ -3255,11 +3275,11 @@ def aks_agentpool_update(cmd,   # pylint: disable=unused-argument
     update_autoscaler = enable_cluster_autoscaler + \
         disable_cluster_autoscaler + update_cluster_autoscaler
 
-    if (update_autoscaler != 1 and not tags and not mode and not max_surge):
+    if (update_autoscaler != 1 and not tags and not scale_down_mode and not mode and not max_surge):
         raise CLIError('Please specify one or more of "--enable-cluster-autoscaler" or '
                        '"--disable-cluster-autoscaler" or '
                        '"--update-cluster-autoscaler" or '
-                       '"--tags" or "--mode" or "--max-surge"')
+                       '"--tags" or "--mode" or "--max-surge" or "--scale-down-mode"')
 
     instance = client.get(resource_group_name, cluster_name, nodepool_name)
 
@@ -3306,6 +3326,10 @@ def aks_agentpool_update(cmd,   # pylint: disable=unused-argument
         instance.max_count = None
 
     instance.tags = tags
+
+    if scale_down_mode is not None:
+        instance.scale_down_mode = scale_down_mode
+
     if mode is not None:
         instance.mode = mode
 
@@ -3992,6 +4016,8 @@ def _get_kubelet_config(file_path):
         "containerLogMaxFiles", None)
     config_object.container_log_max_size_mb = kubelet_config.get(
         "containerLogMaxSizeMB", None)
+    config_object.pod_max_pids = kubelet_config.get(
+        "podMaxPids", None)
 
     return config_object
 
@@ -4158,15 +4184,25 @@ def _ensure_managed_identity_operator_permission(cli_ctx, instance, scope):
 
     factory = get_auth_management_client(cli_ctx, scope)
     assignments_client = factory.role_assignments
+    cluster_identity_object_id = cluster_identity_object_id.lower()
+    scope = scope.lower()
 
-    for i in assignments_client.list_for_scope(scope=scope, filter='atScope()'):
-        if i.scope.lower() != scope.lower():
-            continue
+    # list all assignments of the target identity (scope) that assigned to the cluster identity
+    filter_query = "atScope() and assignedTo('{}')".format(cluster_identity_object_id)
+    for i in assignments_client.list_for_scope(scope=scope, filter=filter_query):
         if not i.role_definition_id.lower().endswith(CONST_MANAGED_IDENTITY_OPERATOR_ROLE_ID):
             continue
-        if i.principal_id.lower() != cluster_identity_object_id.lower():
+
+        # sanity checks to make sure we see the correct assignments
+        if i.principal_id.lower() != cluster_identity_object_id:
+            # assignedTo() should return the assignment to cluster identity
             continue
+        if not scope.startswith(i.scope.lower()):
+            # atScope() should return the assignments in subscription / resource group / resource level
+            continue
+
         # already assigned
+        logger.debug('Managed Identity Opereator role has been assigned to {}'.format(i.scope))
         return
 
     if not _add_role_assignment(cli_ctx, CONST_MANAGED_IDENTITY_OPERATOR_ROLE, cluster_identity_object_id,
