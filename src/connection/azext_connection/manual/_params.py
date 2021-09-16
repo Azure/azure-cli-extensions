@@ -51,7 +51,7 @@ def load_arguments(self, _):
         for auth_type in AUTH_TYPE_PARAMS:
             if auth_type in support_auth_types:
                 for arg, params in AUTH_TYPE_PARAMS.get(auth_type).items():
-                    context.argument(arg, options_list=params.get('options'), action=params.get('action'), nargs='+',
+                    context.argument(arg, options_list=params.get('options'), action=params.get('action'), nargs='*',
                                      help=params.get('help'), arg_group='AuthType')
             else:
                 for arg in AUTH_TYPE_PARAMS.get(auth_type):
@@ -77,7 +77,7 @@ def load_arguments(self, _):
 
     def add_connection_name_argument(context, source):
         context.argument('connection_name', options_list=['--name', '-n', '--connection-name'], type=str, 
-                         help='Name of the {} connection'.format(source.value), validator=validate_params)
+                         help='Name of the {} connection.'.format(source.value), validator=validate_params)
 
 
     def add_client_type_argument(context, source):

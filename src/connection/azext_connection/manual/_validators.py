@@ -6,6 +6,7 @@
 
 
 import re
+from knack.log import get_logger
 from knack.prompting import prompt, prompt_pass
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.azclierror import (
@@ -19,6 +20,9 @@ from ._resource_config import (
     AUTH_TYPE_PARAMS,
     SUPPORTED_AUTH_TYPE
 )
+
+
+logger = get_logger(__name__)
 
 
 def get_source_resource_name(cmd):
@@ -69,6 +73,12 @@ def generate_connection_name(cmd, namespace):
     return '{}_{}_{}'.format(source, target, randstr)
 
 
+def get_client_type(namespace):
+    # get client type from source resource
+    # TODO
+    return 'python'
+
+
 def interactive_input(arg, hint):
     # get interactive inputs from users
     value = None
@@ -109,7 +119,7 @@ def intelligent_experience(cmd, missing_args):
             value = context_arg_values[arg]
             param_str += '{} {}, '.format(option, value)
         if param_str:
-            print(Fore.GREEN + 'Apply local context arguments: {}'.format(param_str.strip(', ')) + Style.RESET_ALL)
+            logger.warning('Apply local context arguments: {}'.format(param_str.strip(', ')))
             cmd_arg_values.update(context_arg_values)
 
     # arguments from interactive inputs
@@ -199,7 +209,15 @@ def get_missing_auth_args(cmd, namespace):
     target = get_target_resource_name(cmd)
     missing_args = dict()
 
-    if source and target:
+    # check if there are auth_info related params
+    auth_param_exist = False
+    for _, params in AUTH_TYPE_PARAMS.items():
+        for arg in params:
+            if getattr(namespace, arg, None):
+                auth_param_exist = True
+                break
+
+    if source and target and not auth_param_exist:
         default_auth_type = SUPPORTED_AUTH_TYPE.get(source, {}).get(target, {})[0]
         for arg, content in AUTH_TYPE_PARAMS.get(default_auth_type).items():
             if getattr(namespace, arg, None) is None:
@@ -327,12 +345,14 @@ def validate_params(cmd, namespace):
             apply_list_params(cmd, namespace, arg_values)
     # for command: 'create'
     elif 'create' in cmd.name:
-        if getattr(namespace, 'connection_name', None) is None:
-            namespace.connection_name = generate_connection_name(cmd, namespace)
         missing_args = validate_create_params(cmd, namespace)
         if missing_args:
             arg_values = intelligent_experience(cmd, missing_args)
             apply_create_params(cmd, namespace, arg_values)
+        if getattr(namespace, 'connection_name', None) is None:
+            namespace.connection_name = generate_connection_name(cmd, namespace)
+        if getattr(namespace, 'client_type', None) is None:
+            namespace.client_type = get_client_type(namespace)
     # for command: all others
     else:
         missing_args = validate_default_params(cmd, namespace)

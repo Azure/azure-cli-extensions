@@ -10,7 +10,11 @@ from azure.cli.core.azclierror import (
     ValidationError
 )
 from ._resource_config import SUPPORTED_AUTH_TYPE, TARGET_RESOURCES
-from ._validators import get_source_resource_name
+from ._validators import (
+    get_source_resource_name,
+    get_target_resource_name
+)
+from ._addon_factory import AddonFactory
 
 
 err_msg = 'Required argument missing, please provide the prompt info or the arguments: {}'
@@ -145,11 +149,11 @@ def connection_create(client,
         raise ValidationError('at most one of secret_auth_info, user_identity_auth_info, '
                               'system_identity_auth_info, service_principal_auth_info is needed for auth_info!')
     auth_info = all_auth_info[0] if len(all_auth_info) == 1 else None
-    parameters = {}
+    parameters = dict()
     parameters['target_id'] = target_id
     parameters['auth_info'] = auth_info
     parameters['client_type'] = client_type
-    print(parameters)
+
     return sdk_no_wait(no_wait,
                        client.begin_create_or_update,
                        resource_uri=source_id,
@@ -157,20 +161,30 @@ def connection_create(client,
                        parameters=parameters)
 
 
-def connection_addons(client,
+def connection_addons(cmd, client,
                       connection_name=None,
                       source_resource_group=None,
                       source_id=None,
                       client_type=None,
                       target_resource_group=None,
-                      target_id=None,
                       secret_auth_info=None,
                       user_identity_auth_info=None,
                       system_identity_auth_info=None,
                       service_principal_auth_info=None,
                       no_wait=False,
                       webapp=None,
-                      spring_cloud=None,
-                      postgres=None,
-                      database=None):
-    return True
+                      spring_cloud=None):
+
+    target_type = get_target_resource_name(cmd)
+    addon_factory = AddonFactory(target_type, source_id)
+    target_id, auth_info = addon_factory.create()
+
+    parameters = dict()
+    parameters['target_id'] = target_id
+    parameters['auth_info'] = auth_info
+    parameters['client_type'] = client_type
+    return sdk_no_wait(no_wait,
+                       client.begin_create_or_update,
+                       resource_uri=source_id,
+                       linker_name=connection_name,
+                       parameters=parameters)

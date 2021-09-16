@@ -66,10 +66,10 @@ TARGET_RESOURCES = {
     RESOURCE.CosmosSql: '/subscriptions/{subscription}/resourceGroups/{target_resource_group}/providers/Microsoft.DocumentDB/databaseAccounts/{cosmos_account_name}/sqlDatabases/{db_name}',
     RESOURCE.CosmosTable: '/subscriptions/{subscription}/resourceGroups/{target_resource_group}/providers/Microsoft.DocumentDB/databaseAccounts/{cosmos_account_name}/tables/{table_name}',
     
-    RESOURCE.StorageBlob: '/subscriptions/{subscription}/resourceGroups/{target_resource_group}/providers/Microsoft.Storage/storageAccounts/{storage_account_name}/blobServices/{}',
-    RESOURCE.StorageQueue: '/subscriptions/{subscription}/resourceGroups/{target_resource_group}/providers/Microsoft.Storage/storageAccounts/{storage_account_name}/fileServices/{}',
-    RESOURCE.StorageFile: '/subscriptions/{subscription}/resourceGroups/{target_resource_group}/providers/Microsoft.Storage/storageAccounts/{storage_account_name}/queueServices/{}',
-    RESOURCE.StorageTable: '/subscriptions/{subscription}/resourceGroups/{target_resource_group}/providers/Microsoft.Storage/storageAccounts/{storage_account_name}/tableServices/{}',
+    RESOURCE.StorageBlob: '/subscriptions/{subscription}/resourceGroups/{target_resource_group}/providers/Microsoft.Storage/storageAccounts/{storage_account_name}/blobServices/default',
+    RESOURCE.StorageQueue: '/subscriptions/{subscription}/resourceGroups/{target_resource_group}/providers/Microsoft.Storage/storageAccounts/{storage_account_name}/fileServices/default',
+    RESOURCE.StorageFile: '/subscriptions/{subscription}/resourceGroups/{target_resource_group}/providers/Microsoft.Storage/storageAccounts/{storage_account_name}/queueServices/default',
+    RESOURCE.StorageTable: '/subscriptions/{subscription}/resourceGroups/{target_resource_group}/providers/Microsoft.Storage/storageAccounts/{storage_account_name}/tableServices/default',
 
     RESOURCE.KeyVault: '/subscriptions/{subscription}/resourceGroups/{target_resource_group}/providers/Microsoft.KeyVault/vaults/{vault_name}',
     RESOURCE.AppConfig: '/subscriptions/{subscription}/resourceGroups/{target_resource_group}/providers/Microsoft.AppConfiguration/configurationStores/{app_config}',
@@ -123,7 +123,7 @@ TARGET_RESOURCES_PARAMS = {
         },
         'postgres': {
             'options': ['--postgres'],
-            'help': 'Name of postgres service'
+            'help': 'Name of postgres server'
         },
         'database': {
             'options': ['--database'],
@@ -137,7 +137,7 @@ TARGET_RESOURCES_PARAMS = {
         },
         'postgres': {
             'options': ['--postgres'],
-            'help': 'Name of flexible postgres service'
+            'help': 'Name of flexible postgres server'
         },
         'database': {
             'options': ['--database'],
@@ -346,14 +346,14 @@ AUTH_TYPE_PARAMS = {
         'system_identity_auth_info': {
             'options': ['--system-identity'],
             'help': 'The system assigned identity auth info',
-            'action': AddUserAssignedIdentityAuthInfo
+            'action': AddSystemAssignedIdentityAuthInfo
         }
     },
     AUTH_TYPE.UserIdentity: {
         'user_identity_auth_info': {
             'options': ['--user-identity'],
             'help': 'The user assigned identity auth info',
-            'action': AddSystemAssignedIdentityAuthInfo
+            'action': AddUserAssignedIdentityAuthInfo
         }
     },
     AUTH_TYPE.ServicePrincipal: {

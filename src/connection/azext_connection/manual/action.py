@@ -40,7 +40,7 @@ class AddSecretAuthInfo(argparse.Action):
 class AddUserAssignedIdentityAuthInfo(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
-        namespace.user_assigned_identity_auth_info = action
+        namespace.user_identity_auth_info = action
 
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
@@ -57,7 +57,7 @@ class AddUserAssignedIdentityAuthInfo(argparse.Action):
             if kl == 'id':
                 d['id'] = v[0]
             else:
-                raise CLIError('Unsupported Key {} is provided for parameter user_assigned_identity_auth_info. All '
+                raise CLIError('Unsupported Key {} is provided for parameter user_identity_auth_info. All '
                                'possible keys are: id'.format(k))
         d['auth_type'] = 'userAssignedIdentity'
         return d
@@ -66,7 +66,7 @@ class AddUserAssignedIdentityAuthInfo(argparse.Action):
 class AddSystemAssignedIdentityAuthInfo(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
-        namespace.system_assigned_identity_auth_info = action
+        namespace.system_identity_auth_info = action
 
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:

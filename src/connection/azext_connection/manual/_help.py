@@ -136,5 +136,5 @@ for source in SOURCE_RESOURCES:
                      az {source} connection {target} create
             - name: Create a connection between {source} and {target}
               text: |-
-                     az {source} connection {target} create --name "ConnectionName" --source-id "SourceResourceId" --target-id "TargetResourceId" --secret-auth-info name=XX secret=XX
+                     az {source} connection {target} create --name "ConnectionName" --source-id "SourceResourceId" --target-id "TargetResourceId" --secret-auth-info name=XX secret=XX --client-type python
         """.format(source=source.value, target=target.value)
