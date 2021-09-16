@@ -809,6 +809,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                disable_local_accounts=False,
                no_wait=False,
                assign_kubelet_identity=None,
+               workload_runtime=None,
                yes=False):
     if not no_ssh_key:
         try:
@@ -868,7 +869,8 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         enable_encryption_at_host=enable_encryption_at_host,
         enable_ultra_ssd=enable_ultra_ssd,
         max_pods=int(max_pods) if max_pods else None,
-        type=vm_set_type
+        type=vm_set_type,
+        workload_runtime=workload_runtime
     )
 
     if node_osdisk_size:
@@ -2375,6 +2377,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
                       linux_os_config=None,
                       enable_encryption_at_host=False,
                       enable_ultra_ssd=False,
+                      workload_runtime=None,
                       no_wait=False):
     instances = client.list(resource_group_name, cluster_name)
     for agentpool_profile in instances:
@@ -2428,7 +2431,8 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
         upgrade_settings=upgradeSettings,
         enable_encryption_at_host=enable_encryption_at_host,
         enable_ultra_ssd=enable_ultra_ssd,
-        mode=mode
+        mode=mode,
+        workload_runtime=workload_runtime
     )
 
     if priority == CONST_SCALE_SET_PRIORITY_SPOT:
