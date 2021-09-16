@@ -810,6 +810,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                no_wait=False,
                assign_kubelet_identity=None,
                workload_runtime=None,
+               gpu_instance_profile=None,
                yes=False):
     if not no_ssh_key:
         try:
@@ -871,6 +872,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         max_pods=int(max_pods) if max_pods else None,
         type=vm_set_type,
         workload_runtime=workload_runtime
+        gpu_instance_profile=gpu_instance_profile,
     )
 
     if node_osdisk_size:
@@ -2378,6 +2380,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
                       enable_encryption_at_host=False,
                       enable_ultra_ssd=False,
                       workload_runtime=None,
+                      gpu_instance_profile=None,
                       no_wait=False):
     instances = client.list(resource_group_name, cluster_name)
     for agentpool_profile in instances:
@@ -2433,6 +2436,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
         enable_ultra_ssd=enable_ultra_ssd,
         mode=mode,
         workload_runtime=workload_runtime
+        gpu_instance_profile=gpu_instance_profile
     )
 
     if priority == CONST_SCALE_SET_PRIORITY_SPOT:
