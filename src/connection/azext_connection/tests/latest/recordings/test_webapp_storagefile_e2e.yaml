@@ -1,0 +1,58 @@
+interactions:
+- request:
+    body: '{"properties": {"targetId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/servicelinker-test-linux-group/providers/Microsoft.Storage/storageAccounts/servicelinkerteststorage/queueServices/default",
+      "authInfo": {"authType": "secret"}, "clientType": "python"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - webapp connection create storage-file
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '280'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --source-id --target-id --secret --client-type
+      User-Agent:
+      - AZURECLI/2.27.0 azsdk-python-microsoftservicelinker/unknown Python/3.8.2 (Windows-10-10.0.19041-SP0)
+      x-ms-cupertino-test-token:
+      - eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6Imwzc1EtNTBjQ0g0eEJWWkxIVEd3blNSNzY4MCIsImtpZCI6Imwzc1EtNTBjQ0g0eEJWWkxIVEd3blNSNzY4MCJ9.eyJhdWQiOiJodHRwczovL21hbmFnZW1lbnQuY29yZS53aW5kb3dzLm5ldC8iLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC83MmY5ODhiZi04NmYxLTQxYWYtOTFhYi0yZDdjZDAxMWRiNDcvIiwiaWF0IjoxNjMxNzY5MzQ0LCJuYmYiOjE2MzE3NjkzNDQsImV4cCI6MTYzMTc3NDE5MSwiX2NsYWltX25hbWVzIjp7Imdyb3VwcyI6InNyYzEifSwiX2NsYWltX3NvdXJjZXMiOnsic3JjMSI6eyJlbmRwb2ludCI6Imh0dHBzOi8vZ3JhcGgud2luZG93cy5uZXQvNzJmOTg4YmYtODZmMS00MWFmLTkxYWItMmQ3Y2QwMTFkYjQ3L3VzZXJzL2QzZmU4YjA0LWJiNTMtNDMzYS1hYWU4LWRmZWVmNDE3OGI1My9nZXRNZW1iZXJPYmplY3RzIn19LCJhY3IiOiIxIiwiYWlvIjoiQVZRQXEvOFRBQUFBZEtBRVlEVFhOYW9NZDZ0bnBqRktvYnZMalk2UERRZ1V0VmEzMlN4SkVIZThDWThieDN5V3lxMmRmVVFPMk15MStNL3RWMU53UU40WWxIeVg0QjFxMmRqWmNKVkVsVWhKOXY2eXZ4U3p0anM9IiwiYW1yIjpbInJzYSIsIndpYSIsIm1mYSJdLCJhcHBpZCI6IjA0YjA3Nzk1LThkZGItNDYxYS1iYmVlLTAyZjllMWJmN2I0NiIsImFwcGlkYWNyIjoiMCIsImRldmljZWlkIjoiYjExMDRmY2ItMjA2MS00Njk2LWFiZDUtZjE4N2MxOTRiNzE2IiwiZmFtaWx5X25hbWUiOiJDaGVuIiwiZ2l2ZW5fbmFtZSI6IkhvdWsiLCJpbl9jb3JwIjoidHJ1ZSIsImlwYWRkciI6IjE2Ny4yMjAuMjU1Ljg2IiwibmFtZSI6IkhvdWsgQ2hlbiIsIm9pZCI6ImQzZmU4YjA0LWJiNTMtNDMzYS1hYWU4LWRmZWVmNDE3OGI1MyIsIm9ucHJlbV9zaWQiOiJTLTEtNS0yMS0yMTQ2NzczMDg1LTkwMzM2MzI4NS03MTkzNDQ3MDctMjYxMTYyNCIsInB1aWQiOiIxMDAzMjAwMEE4NzIwRDU4IiwicmgiOiIwLkFRRUF2NGo1Y3ZHR3IwR1JxeTE4MEJIYlI1VjNzQVRialJwR3UtNEMtZUdfZTBZYUFBUS4iLCJzY3AiOiJ1c2VyX2ltcGVyc29uYXRpb24iLCJzdWIiOiJvZWtIWkliUjFlYmZFVmh0ZzluQmU2T1pLcU1kLUplRnJVOVh2Y0oxNHdnIiwidGlkIjoiNzJmOTg4YmYtODZmMS00MWFmLTkxYWItMmQ3Y2QwMTFkYjQ3IiwidW5pcXVlX25hbWUiOiJob25jQG1pY3Jvc29mdC5jb20iLCJ1cG4iOiJob25jQG1pY3Jvc29mdC5jb20iLCJ1dGkiOiJreVZucktQYWVVLW1YbWpEQklrSUFBIiwidmVyIjoiMS4wIiwid2lkcyI6WyJiNzlmYmY0ZC0zZWY5LTQ2ODktODE0My03NmIxOTRlODU1MDkiXSwieG1zX3RjZHQiOjEyODkyNDE1NDd9.TbjmRVjYPo6TwKmRLMWNJUJx2WLe0SxjW7HBOqBsWf72U4rRu8vh31l0eD-lFM6qIPSmqB4xjKhK02MjC4e6sERx9G0t0h8d84NGjZP1RXp-Gi4APCW_L0CnFiFShhvUHnT4mJKiwBR0fxNomD0yugw74CgU8Yv8de1IsYWJBH2kXo-G949GdNF-4Hy04ct66fW26hmrWOn8_aPEUXMPLNREafnGgGrqmOEYklysDp4aE9cPjyhCUCu7tg3RbVHWcihqb7-3Rr_GOl-6oD6DAI_850BztnubR1XSUT-bs4uWLkySO0-YfSS0XyslRfwU5McOSLrUN1P-btlF8Th7sw
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/servicelinker-test-linux-group/providers/Microsoft.Web/sites/servicelinker-storage-app/providers/Microsoft.ServiceLinker/linkers/webapp_storagefile_3i2QU?api-version=2021-01-01-privatepreview
+  response:
+    body:
+      string: '{"error":{"code":"HttpRequestPayloadAPISpecValidationFailed","target":"Microsoft.Web/sites/servicelinker-storage-app/providers/Microsoft.ServiceLinker/linkers/webapp_storagefile_3i2QU","message":"HTTP
+        request payload failed validation against API specification with one or more
+        errors. Please see details for more information.","details":[{"code":"ObjectMissingRequiredProperty","message":"Missing
+        required property: name. Paths in payload: ''$.properties.authInfo.name''"}]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '474'
+      content-type:
+      - application/json
+      date:
+      - Thu, 16 Sep 2021 06:14:10 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - user-api-validation
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 400
+      message: Bad Request
+version: 1

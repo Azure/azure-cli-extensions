@@ -34,7 +34,7 @@ class WebAppConnectionScenarioTest(ScenarioTest):
 
         # prepare params
         source_id = SOURCE_RESOURCES.get(RESOURCE.WebApp).format(**self.kwargs)
-        target_id = TARGET_RESOURCES.get(RESOURCE.StorageBlob).format(**self.kwargs)
+        target_id = TARGET_RESOURCES.get(RESOURCE.AppConfig).format(**self.kwargs)
 
         # create connection
         self.cmd('webapp connection create app-config --source-id {} --target-id {} --system-identity --client-type python'.format(source_id, target_id))
@@ -75,7 +75,7 @@ class WebAppConnectionScenarioTest(ScenarioTest):
 
         # prepare params
         source_id = SOURCE_RESOURCES.get(RESOURCE.WebApp).format(**self.kwargs)
-        target_id = TARGET_RESOURCES.get(RESOURCE.StorageBlob).format(**self.kwargs)
+        target_id = TARGET_RESOURCES.get(RESOURCE.CosmosCassandra).format(**self.kwargs)
 
         # create connection
         self.cmd('webapp connection create cosmos-cassandra --source-id {} --target-id {} --system-identity --client-type python'.format(source_id, target_id))
@@ -117,11 +117,11 @@ class WebAppConnectionScenarioTest(ScenarioTest):
 
         # prepare params
         source_id = SOURCE_RESOURCES.get(RESOURCE.WebApp).format(**self.kwargs)
-        target_id = TARGET_RESOURCES.get(RESOURCE.StorageBlob).format(**self.kwargs)
+        target_id = TARGET_RESOURCES.get(RESOURCE.CosmosGremlin).format(**self.kwargs)
 
         # create connection
         # TODO: provide secret user and pw
-        self.cmd('webapp connection create cosmos-gremlin --source-id {} --target-id {} --secret-auth-info --client-type python'.format(source_id, target_id))
+        self.cmd('webapp connection create cosmos-gremlin --source-id {} --target-id {} --secret --client-type python'.format(source_id, target_id))
         
         # list connection
         connections = self.cmd(
@@ -159,10 +159,10 @@ class WebAppConnectionScenarioTest(ScenarioTest):
 
         # prepare params
         source_id = SOURCE_RESOURCES.get(RESOURCE.WebApp).format(**self.kwargs)
-        target_id = TARGET_RESOURCES.get(RESOURCE.StorageBlob).format(**self.kwargs)
+        target_id = TARGET_RESOURCES.get(RESOURCE.CosmosMongo).format(**self.kwargs)
 
         # create connection
-        self.cmd('webapp connection create cosmos-mongo --source-id {} --target-id {} --secret-auth-info --client-type python'.format(source_id, target_id))
+        self.cmd('webapp connection create cosmos-mongo --source-id {} --target-id {} --secret --client-type python'.format(source_id, target_id))
         
         # list connection
         connections = self.cmd(
@@ -200,10 +200,10 @@ class WebAppConnectionScenarioTest(ScenarioTest):
 
         # prepare params
         source_id = SOURCE_RESOURCES.get(RESOURCE.WebApp).format(**self.kwargs)
-        target_id = TARGET_RESOURCES.get(RESOURCE.StorageBlob).format(**self.kwargs)
+        target_id = TARGET_RESOURCES.get(RESOURCE.CosmosSql).format(**self.kwargs)
 
         # create connection
-        self.cmd('webapp connection create cosmos-sql --source-id {} --target-id {} --secret-auth-info --client-type python'.format(source_id, target_id))
+        self.cmd('webapp connection create cosmos-sql --source-id {} --target-id {} --secret --client-type python'.format(source_id, target_id))
         
         # list connection
         connections = self.cmd(
@@ -241,7 +241,7 @@ class WebAppConnectionScenarioTest(ScenarioTest):
 
         # prepare params
         source_id = SOURCE_RESOURCES.get(RESOURCE.WebApp).format(**self.kwargs)
-        target_id = TARGET_RESOURCES.get(RESOURCE.StorageBlob).format(**self.kwargs)
+        target_id = TARGET_RESOURCES.get(RESOURCE.CosmosTable).format(**self.kwargs)
 
         # create connection
         self.cmd('webapp connection create cosmos-table --source-id {} --target-id {} --system-identity --client-type python'.format(source_id, target_id))
@@ -281,7 +281,7 @@ class WebAppConnectionScenarioTest(ScenarioTest):
 
         # prepare params
         source_id = SOURCE_RESOURCES.get(RESOURCE.WebApp).format(**self.kwargs)
-        target_id = TARGET_RESOURCES.get(RESOURCE.StorageBlob).format(**self.kwargs)
+        target_id = TARGET_RESOURCES.get(RESOURCE.EventHub).format(**self.kwargs)
 
         # create connection
         self.cmd('webapp connection create eventhub --source-id {} --target-id {} --system-identity --client-type python'.format(source_id, target_id))
@@ -322,11 +322,11 @@ class WebAppConnectionScenarioTest(ScenarioTest):
 
         # prepare params
         source_id = SOURCE_RESOURCES.get(RESOURCE.WebApp).format(**self.kwargs)
-        target_id = TARGET_RESOURCES.get(RESOURCE.StorageBlob).format(**self.kwargs)
+        target_id = TARGET_RESOURCES.get(RESOURCE.FlexiblePostgres).format(**self.kwargs)
 
         # create connection
         # TODO: provide secret user and pw
-        self.cmd('webapp connection create flexible-postgres --source-id {} --target-id {} --secret-auth-info --client-type python'.format(source_id, target_id))
+        self.cmd('webapp connection create flexible-postgres --source-id {} --target-id {} --secret --client-type python'.format(source_id, target_id))
         
         # list connection
         connections = self.cmd(
@@ -363,7 +363,7 @@ class WebAppConnectionScenarioTest(ScenarioTest):
 
         # prepare params
         source_id = SOURCE_RESOURCES.get(RESOURCE.WebApp).format(**self.kwargs)
-        target_id = TARGET_RESOURCES.get(RESOURCE.StorageBlob).format(**self.kwargs)
+        target_id = TARGET_RESOURCES.get(RESOURCE.KeyVault).format(**self.kwargs)
 
         # create connection
         self.cmd('webapp connection create keyvault --source-id {} --target-id {} --system-identity --client-type python'.format(source_id, target_id))
@@ -404,11 +404,11 @@ class WebAppConnectionScenarioTest(ScenarioTest):
 
         # prepare params
         source_id = SOURCE_RESOURCES.get(RESOURCE.WebApp).format(**self.kwargs)
-        target_id = TARGET_RESOURCES.get(RESOURCE.StorageBlob).format(**self.kwargs)
+        target_id = TARGET_RESOURCES.get(RESOURCE.Mysql).format(**self.kwargs)
 
         # create connection
         # TODO: provide secret user and pw
-        self.cmd('webapp connection create mysql --source-id {} --target-id {} --secret-auth-info --client-type python'.format(source_id, target_id))
+        self.cmd('webapp connection create mysql --source-id {} --target-id {} --secret --client-type python'.format(source_id, target_id))
         
         # list connection
         connections = self.cmd(
@@ -446,11 +446,11 @@ class WebAppConnectionScenarioTest(ScenarioTest):
 
         # prepare params
         source_id = SOURCE_RESOURCES.get(RESOURCE.WebApp).format(**self.kwargs)
-        target_id = TARGET_RESOURCES.get(RESOURCE.StorageBlob).format(**self.kwargs)
+        target_id = TARGET_RESOURCES.get(RESOURCE.MysqlFlexible).format(**self.kwargs)
 
         # create connection
         # TODO: provide secret user and pw
-        self.cmd('webapp connection create mysql-flexible --source-id {} --target-id {} --secret-auth-info --client-type python'.format(source_id, target_id))
+        self.cmd('webapp connection create mysql-flexible --source-id {} --target-id {} --secret --client-type python'.format(source_id, target_id))
         
         # list connection
         connections = self.cmd(
@@ -488,11 +488,11 @@ class WebAppConnectionScenarioTest(ScenarioTest):
 
         # prepare params
         source_id = SOURCE_RESOURCES.get(RESOURCE.WebApp).format(**self.kwargs)
-        target_id = TARGET_RESOURCES.get(RESOURCE.StorageBlob).format(**self.kwargs)
+        target_id = TARGET_RESOURCES.get(RESOURCE.Postgres).format(**self.kwargs)
 
         # create connection
         # TODO: provide secret user and pw
-        self.cmd('webapp connection create postgres --source-id {} --target-id {} --secret-auth-info --client-type python'.format(source_id, target_id))
+        self.cmd('webapp connection create postgres --source-id {} --target-id {} --secret --client-type python'.format(source_id, target_id))
         
         # list connection
         connections = self.cmd(
@@ -530,11 +530,11 @@ class WebAppConnectionScenarioTest(ScenarioTest):
 
         # prepare params
         source_id = SOURCE_RESOURCES.get(RESOURCE.WebApp).format(**self.kwargs)
-        target_id = TARGET_RESOURCES.get(RESOURCE.StorageBlob).format(**self.kwargs)
+        target_id = TARGET_RESOURCES.get(RESOURCE.Sql).format(**self.kwargs)
 
         # create connection
         # TODO: provide secret user and pw
-        self.cmd('webapp connection create sql --source-id {} --target-id {} --secret-auth-info --client-type python'.format(source_id, target_id))
+        self.cmd('webapp connection create sql --source-id {} --target-id {} --secret --client-type python'.format(source_id, target_id))
         
         # list connection
         connections = self.cmd(
@@ -611,7 +611,7 @@ class WebAppConnectionScenarioTest(ScenarioTest):
 
         # prepare params
         source_id = SOURCE_RESOURCES.get(RESOURCE.WebApp).format(**self.kwargs)
-        target_id = TARGET_RESOURCES.get(RESOURCE.StorageBlob).format(**self.kwargs)
+        target_id = TARGET_RESOURCES.get(RESOURCE.StorageQueue).format(**self.kwargs)
 
         # create connection
         self.cmd('webapp connection create storage-queue --source-id {} --target-id {} --system-identity --client-type python'.format(source_id, target_id))
@@ -651,10 +651,10 @@ class WebAppConnectionScenarioTest(ScenarioTest):
 
         # prepare params
         source_id = SOURCE_RESOURCES.get(RESOURCE.WebApp).format(**self.kwargs)
-        target_id = TARGET_RESOURCES.get(RESOURCE.StorageBlob).format(**self.kwargs)
+        target_id = TARGET_RESOURCES.get(RESOURCE.StorageFile).format(**self.kwargs)
 
         # create connection
-        self.cmd('webapp connection create storage-file --source-id {} --target-id {} --secret-auth-info --client-type python'.format(source_id, target_id))
+        self.cmd('webapp connection create storage-file --source-id {} --target-id {} --secret --client-type python'.format(source_id, target_id))
 
         # list connection
         connections = self.cmd(
@@ -691,10 +691,10 @@ class WebAppConnectionScenarioTest(ScenarioTest):
 
         # prepare params
         source_id = SOURCE_RESOURCES.get(RESOURCE.WebApp).format(**self.kwargs)
-        target_id = TARGET_RESOURCES.get(RESOURCE.StorageBlob).format(**self.kwargs)
+        target_id = TARGET_RESOURCES.get(RESOURCE.StorageTable).format(**self.kwargs)
 
         # create connection
-        self.cmd('webapp connection create storage-table --source-id {} --target-id {} --secret-auth-info --client-type python'.format(source_id, target_id))
+        self.cmd('webapp connection create storage-table --source-id {} --target-id {} --secret --client-type python'.format(source_id, target_id))
 
         # list connection
         connections = self.cmd(

@@ -17,7 +17,7 @@ from ._resource_config import (
 )
 
 
-CLIENT_TYPES = ["none", "dotnet", "dotnetCore", "python", "django", "php", "Nodejs", "java", "go", "springCloudBinding"]
+CLIENT_TYPES = ["dotnet", "dotnetCore", "python", "django", "php", "Nodejs", "java", "go", "springCloudBinding"]
 
 
 def load_arguments(self, _):
