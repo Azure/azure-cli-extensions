@@ -85,6 +85,7 @@ def load_arguments(self, _):
         c.argument('connection_name', help='Name of the bgpconnection.', options_list=['--name', '-n'], id_part='child_name_1')
         c.argument('peer_asn', help='Peer ASN', type=int)
         c.argument('peer_ip', help='Peer IP')
+        c.argument('virtual_hub_connection', options_list='--vhub-conn', help='The resource id of vhub connection.')
 
     with self.argument_context('network vhub route') as c:
         c.argument('virtual_hub_name', vhub_name_type, id_part=None)

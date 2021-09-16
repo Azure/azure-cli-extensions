@@ -4,10 +4,12 @@
 # --------------------------------------------------------------------------------------------
 
 import os
+import time
 from unittest.case import skip
 
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, record_only)
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, VirtualNetworkPreparer, record_only)
 from azure.cli.testsdk.checkers import StringContainCheck
+from azure.core.exceptions import HttpResponseError
 from .credential_replacer import VpnClientGeneratedURLReplacer
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
@@ -363,34 +365,41 @@ class AzureVWanVHubScenario(ScenarioTest):
                      '-n {connection} '
                      '--gateway-name {vpngateway}')
     
-    @skip("Test isn't ready.")
     @ResourceGroupPreparer(name_prefix='cli_test_azure_vwan_vhub_bgpconnection', location='westus')
-    def test_azure_vwan_vhub_bgpconnection(self, resource_group):
+    @VirtualNetworkPreparer()
+    def test_azure_vwan_vhub_bgpconnection(self, virtual_network, resource_group):
         self.kwargs.update({
-            'vnet': 'clitestvnet2', 
+            'vnet': virtual_network,
             'vwan': 'testvwan',
             'vhub': 'myclitestvhub',
             'conn': 'myconnection',
-            'connection': 'clitestvhubconnection2',
-            'rg': resource_group
+            'vhub_conn': 'clitestvhubconnection2',
+            'rg': resource_group,
+            'sub': '/subscriptions/{}'.format(self.get_subscription_id())
         })
 
-        self.cmd('network vnet create -g {rg} -n {vnet}')
         self.cmd('network vwan create -n {vwan} -g {rg} --type Standard')
         self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan}  --address-prefix 10.5.0.0/16 -l westus --sku Standard')
-        # self.cmd('network vhub connection create -g {rg} --vhub-name {vhub} --name {connection} --remote-vnet {vnet}', checks=[
-        #     self.check('provisioningState', 'Succeeded'),
-        #     self.check('name', self.kwargs.get('connection'))
-        # ])
+        self.cmd('network vhub connection create -g {rg} --vhub-name {vhub} --name {vhub_conn} --remote-vnet {vnet}', checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('name', self.kwargs.get('vhub_conn'))
+        ])
 
-        # self.cmd('network vwan create -n {vwan} -g {rg}')
-        # self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan}  --address-prefix 10.0.0.0/24 -l westus')
+        vhub = self.cmd('network vhub show -g {rg} -n {vhub}').get_output_in_json()
+        times = 0
+        while (vhub['routingState'] != 'Provisioned' and times <= 3):
+            time.sleep(60)
+            vhub = self.cmd('network vhub show -g {rg} -n {vhub}').get_output_in_json()
+            times += 1
 
-        self.cmd('network vhub bgpconnection create -n {conn} -g {rg} --vhub-name {vhub} --peer-asn 20000  --peer-ip "10.5.0.3"')
-        self.cmd('network vhub bgpconnection list -g {rg} --vhub-name {vhub}')
-        self.cmd('network vhub bgpconnection update -n {conn} -g {rg} --vhub-name {vhub} --peer-asn 15000  --peer-ip "10.5.0.3"')
-        self.cmd('network vhub bgpconnection show -n {conn} -g {rg} --vhub-name {vhub}')
-        self.cmd('network vhub bgpconnection delete -n {conn} -g {rg} --vhub-name {vhub}')
+        # RoutingState is not Provisioned
+        with self.assertRaises(HttpResponseError):
+            self.cmd('network vhub bgpconnection create -n {conn} -g {rg} --vhub-name {vhub} --peer-asn 20000  --peer-ip "10.5.0.3" '
+                     '--vhub-conn {sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualHubs/{vhub}/hubVirtualNetworkConnections/{vhub_conn}')
+        # self.cmd('network vhub bgpconnection list -g {rg} --vhub-name {vhub}')
+        # self.cmd('network vhub bgpconnection update -n {conn} -g {rg} --vhub-name {vhub} --peer-asn 15000  --peer-ip "10.5.0.3"')
+        # self.cmd('network vhub bgpconnection show -n {conn} -g {rg} --vhub-name {vhub}')
+        # self.cmd('network vhub bgpconnection delete -n {conn} -g {rg} --vhub-name {vhub}')
 
     @record_only()
     @ResourceGroupPreparer(name_prefix='cli_test_azure_vwan_p2s_gateway_routing_configuration', location='westus')

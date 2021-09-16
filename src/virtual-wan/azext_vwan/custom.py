@@ -14,7 +14,7 @@ from knack.log import get_logger
 
 from azure.cli.core.util import sdk_no_wait
 
-from ._client_factory import network_client_factory, cf_virtual_hub_bgpconnections
+from ._client_factory import network_client_factory, cf_virtual_hub_bgpconnections, cf_virtual_hub_connection
 from ._util import _get_property
 
 logger = get_logger(__name__)
@@ -257,16 +257,18 @@ def create_hub_vnet_connection(cmd, resource_group_name, virtual_hub_name, conne
 
 
 def _bgp_connections_client(cli_ctx):
-    return cf_virtual_hub_bgpconnections(cli_ctx=cli_ctx)
+    return cf_virtual_hub_bgpconnections(cli_ctx=cli_ctx, _=None)
 
 
 def create_hub_vnet_bgpconnection(cmd, client, resource_group_name, virtual_hub_name, connection_name,
-                                  peer_asn=None, peer_ip=None, no_wait=False):
-    BgpConnection = cmd.get_models('BgpConnection')
+                                  virtual_hub_connection=None, peer_asn=None, peer_ip=None, no_wait=False):
+
+    BgpConnection, SubResource = cmd.get_models('BgpConnection', 'SubResource')
     connection = BgpConnection(
         name=connection_name,
         peer_asn=peer_asn,
-        peer_ip=peer_ip
+        peer_ip=peer_ip,
+        hub_virtual_network_connection=SubResource(id=virtual_hub_connection) if virtual_hub_connection else None
     )
     return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name,
                        virtual_hub_name, connection_name, connection)
