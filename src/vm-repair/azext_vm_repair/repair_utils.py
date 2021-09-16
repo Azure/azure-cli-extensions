@@ -237,7 +237,7 @@ def _fetch_compatible_sku(source_vm, hyperv):
 
 def _fetch_disk_info(resource_group_name, disk_name):
     """ Returns sku, location, os_type, hyperVgeneration as tuples """
-    show_disk_command = 'az disk show -g {g} -n {name} --query [sku.name,location,osType,hyperVgeneration] -o json'.format(g=resource_group_name, name=disk_name)
+    show_disk_command = 'az disk show -g {g} -n {name} --query [sku.name,location,osType,hyperVGeneration] -o json'.format(g=resource_group_name, name=disk_name)
     disk_info = loads(_call_az_command(show_disk_command))
     # Note that disk_info will always have 4 elements if the command succeeded, if it fails it will cause an exception
     sku, location, os_type, hyper_v_version = disk_info[0], disk_info[1], disk_info[2], disk_info[3]
