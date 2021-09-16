@@ -413,3 +413,27 @@ def workload_network_dns_zone_update(client: AVSClient, resource_group_name, pri
 
 def workload_network_dns_zone_delete(client: AVSClient, resource_group_name, private_cloud, dns_zone_id):
     return client.workload_networks.begin_delete_dns_zone(resource_group_name=resource_group_name, private_cloud_name=private_cloud, dns_zone_id=dns_zone_id)
+
+
+def workload_network_port_mirroring_list(client: AVSClient, resource_group_name, private_cloud):
+    return client.workload_networks.list_port_mirroring(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
+
+
+def workload_network_port_mirroring_get(client: AVSClient, resource_group_name, private_cloud, port_mirroring_id):
+    return client.workload_networks.get_port_mirroring(resource_group_name=resource_group_name, private_cloud_name=private_cloud, port_mirroring_id=port_mirroring_id)
+
+
+def workload_network_port_mirroring_create(client: AVSClient, resource_group_name, private_cloud, port_mirroring_id, display_name=None, direction=None, source=None, destination=None, revision=None):
+    from azext_vmware.vendored_sdks.avs_client.models import WorkloadNetworkPortMirroring
+    prop = WorkloadNetworkPortMirroring(display_name=display_name, direction=direction, source=source, destination=destination, revision=revision)
+    return client.workload_networks.begin_create_port_mirroring(resource_group_name=resource_group_name, private_cloud_name=private_cloud, port_mirroring_id=port_mirroring_id, workload_network_port_mirroring=prop)
+
+
+def workload_network_port_mirroring_update(client: AVSClient, resource_group_name, private_cloud, port_mirroring_id, display_name=None, direction=None, source=None, destination=None, revision=None):
+    from azext_vmware.vendored_sdks.avs_client.models import WorkloadNetworkPortMirroring
+    prop = WorkloadNetworkPortMirroring(display_name=display_name, direction=direction, source=source, destination=destination, revision=revision)
+    return client.workload_networks.begin_update_port_mirroring(resource_group_name=resource_group_name, private_cloud_name=private_cloud, port_mirroring_id=port_mirroring_id, workload_network_port_mirroring=prop)
+
+
+def workload_network_port_mirroring_delete(client: AVSClient, resource_group_name, private_cloud, port_mirroring_id):
+    return client.workload_networks.begin_delete_port_mirroring(resource_group_name=resource_group_name, private_cloud_name=private_cloud, port_mirroring_id=port_mirroring_id)

@@ -667,3 +667,48 @@ helps['vmware workload-network dns-zone delete'] = """
     - name: Delete a DNS zone by id in a workload network.
       text: az vmware workload-network dns-zone delete --resource-group group1 --private-cloud cloud1 --dns-zone-id dnsZone1
 """
+
+helps['vmware workload-network port-mirroring'] = """
+    type: group
+    short-summary: Commands to manage a DNS Zone workload-network.
+"""
+
+helps['vmware workload-network port-mirroring list'] = """
+    type: command
+    short-summary: List of port mirroring profiles in a private cloud workload network.
+    examples:
+    - name: List of port mirroring profiles in a workload network.
+      text: az vmware workload-network port-mirroring list --resource-group group1 --private-cloud cloud1
+"""
+
+helps['vmware workload-network port-mirroring show'] = """
+    type: command
+    short-summary: Get a port mirroring profile by id in a private cloud workload network.
+    examples:
+    - name: Get a port mirroring profile by id in a workload network.
+      text: az vmware workload-network port-mirroring show --resource-group group1 --private-cloud cloud1 --port-mirroring-id portMirroring1
+"""
+
+helps['vmware workload-network port-mirroring create'] = """
+    type: command
+    short-summary: Create a port mirroring profile by id in a private cloud workload network.
+    examples:
+    - name: Create a port mirroring profile by id in a workload network.
+      text: az vmware workload-network port-mirroring create --resource-group group1 --private-cloud cloud1 --port-mirroring-id portMirroring1 --display-name portMirroring1 --direction BIDIRECTIONAL --source vmGroup1 --destination vmGroup2 --revision 1
+"""
+
+helps['vmware workload-network port-mirroring update'] = """
+    type: command
+    short-summary: Create or update a port mirroring profile by id in a private cloud workload network.
+    examples:
+    - name: Create or update a port mirroring profile by id in a workload network.
+      text: az vmware workload-network port-mirroring update --resource-group group1 --private-cloud cloud1 --port-mirroring-id portMirroring1 --display-name portMirroring1 --direction BIDIRECTIONAL --source vmGroup1 --destination vmGroup2 --revision 1
+"""
+
+helps['vmware workload-network port-mirroring delete'] = """
+    type: command
+    short-summary: Delete a port mirroring profile by id in a private cloud workload network.
+    examples:
+    - name: Delete a port mirroring profile by id in a workload network.
+      text: az vmware workload-network port-mirroring delete --resource-group group1 --private-cloud cloud1 --port-mirroring-id portMirroring1
+"""

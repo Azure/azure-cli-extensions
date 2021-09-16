@@ -13,8 +13,8 @@ class VmwareWorkloadNetworkScenarioTest(ScenarioTest):
         self.vcr.match_on = ['scheme', 'method', 'path', 'query']  # not 'host', 'port'
         super(VmwareWorkloadNetworkScenarioTest, self).setUp()
 
-    @ResourceGroupPreparer(name_prefix='cli_test_vmware_dhcp')
-    def test_vmware_dhcp(self):
+    @ResourceGroupPreparer(name_prefix='cli_test_vmware_workload_network')
+    def test_vmware_workload_network(self):
         self.kwargs.update({
             'privatecloud': 'cloud1',
             'dhcp_id': 'dhcp1',
@@ -33,6 +33,10 @@ class VmwareWorkloadNetworkScenarioTest(ScenarioTest):
             'dns_server_ips': '1.1.1.1',
             'source_ip': '8.8.8.8',
             'dns_services': '1',
+            'port_mirroring_id': 'portMirroring1',
+            'direction': 'BIDIRECTIONAL',
+            'source': 'vmGroup1',
+            'destination': 'vmGroup2'
         })
         
         count = len(self.cmd('az vmware workload-network dhcp list --resource-group {rg} --private-cloud {privatecloud}').get_output_in_json())
@@ -88,3 +92,20 @@ class VmwareWorkloadNetworkScenarioTest(ScenarioTest):
 
         dnsZoneDelete = self.cmd('az vmware workload-network dns-zone delete --resource-group {rg} --private-cloud {privatecloud} --dns-zone-id {dns_zone_id}').output
         self.assertEqual(len(dnsZoneDelete), 0)
+
+        portMirroringList = self.cmd('az vmware workload-network port-mirroring list --resource-group {rg} --private-cloud {privatecloud}').get_output_in_json()
+        self.assertEqual(len(portMirroringList), 1, 'count expected to be 1')
+
+        portMirroringGet = self.cmd('az vmware workload-network port-mirroring show --resource-group {rg} --private-cloud {privatecloud} --port-mirroring-id {port_mirroring_id}').get_output_in_json()
+        self.assertEqual(portMirroringGet['name'], 'portMirroring1')
+
+        # Uncomment these unit tests once swagger is fixed
+
+        # portMirroringCreate = self.cmd('az vmware workload-network port-mirroring create --resource-group {rg} --private-cloud {privatecloud} --port-mirroring-id {port_mirroring_id} --display-name {display_name} --direction {direction} --source {source} --destination {destination} --revision {revision}').get_output_in_json()
+        # self.assertEqual(portMirroringCreate['name'], 'portMirroring1')
+
+        # portMirroringUpdate = self.cmd('az vmware workload-network port-mirroring update --resource-group {rg} --private-cloud {privatecloud} --port-mirroring-id {port_mirroring_id} --display-name {display_name} --direction {direction} --source {source} --destination {destination} --revision {revision}').get_output_in_json()
+        # self.assertEqual(portMirroringUpdate['name'], 'portMirroring1')
+
+        portMirroringDelete = self.cmd('az vmware workload-network port-mirroring delete --resource-group {rg} --private-cloud {privatecloud} --port-mirroring-id {port_mirroring_id}').output
+        self.assertEqual(len(portMirroringDelete), 0)

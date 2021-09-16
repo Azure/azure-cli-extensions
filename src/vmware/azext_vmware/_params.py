@@ -166,3 +166,11 @@ def load_arguments(self, _):
         c.argument('source_ip', help='Source IP of the DNS Zone.')
         c.argument('dns_services', help='Number of DNS Services using the DNS zone.')
         c.argument('revision', help='NSX revision number.')
+
+    with self.argument_context('vmware workload-network port-mirroring') as c:
+        c.argument('port_mirroring_id', help="NSX Port Mirroring identifier. Generally the same as the Port Mirroring display name.")
+        c.argument('display_name', help='Display name of the port mirroring profile.')
+        c.argument('direction', help='Direction of port mirroring profile. Possible values include: "INGRESS, EGRESS, BIDIRECTIONAL".')
+        c.argument('source', help='Source VM Group.')
+        c.argument('destination', help='Destination VM Group.')
+        c.argument('revision', help='NSX revision number.')
