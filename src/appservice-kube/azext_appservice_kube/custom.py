@@ -273,6 +273,22 @@ class AppServiceClient():
         r = send_raw_request(cmd.cli_ctx, "GET", request_url)
         return r.json()
 
+class WebAppClient:
+    @classmethod
+    def create(cls, cmd, name, resource_group_name, webapp_json):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        api_version = "2020-12-01"
+        sub_id = get_subscription_id(cmd.cli_ctx)
+
+        request_url = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/sites/{}?api-version={}".format(
+            management_hostname.strip('/'), 
+            sub_id, 
+            resource_group_name, 
+            name, 
+            api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(webapp_json))
+        return r.json()
 
 
 def show_kube_environments(cmd, name, resource_group_name):
@@ -456,11 +472,10 @@ def _get_kube_env_from_custom_location(cmd, custom_location, resource_group):
     for kube in kube_envs:
         parsed_custom_location_2 = None
 
-        if kube.get("properties") and 'extendedLocation' in kube["properties"]:
+        if kube.get("properties") and kube["properties"].get('extendedLocation'):
             parsed_custom_location_2 = parse_resource_id(kube["properties"]['extendedLocation']['customLocation'])
-        elif kube.get("extendedLocation") and kube.get("extendedLocation").get("type") == "customLocation":
+        elif kube.get("extendedLocation") and kube.get("extendedLocation").get("type") == "CustomLocation":
             parsed_custom_location_2 = parse_resource_id(kube["extendedLocation"]["name"])
-
 
         if parsed_custom_location_2 and (
             parsed_custom_location_2.get("name").lower() == custom_location_name.lower()) and (
@@ -498,7 +513,8 @@ def _get_custom_location_id_from_custom_location(cmd, custom_location_name, reso
 
 
 def _get_custom_location_id_from_kube_env(kube):
-    if kube.get("properties") and 'extendedLocation' in kube["properties"]:
+    pprint(kube)
+    if kube.get("properties") and kube["properties"].get("extendedLocation"):
         return kube["properties"]['extendedLocation'].get('customLocation')
     elif kube.get("extendedLocation") and kube["extendedLocation"].get("type") == "CustomLocation":
         return kube["extendedLocation"]["name"]
@@ -512,6 +528,7 @@ def _ensure_kube_settings_in_json(appservice_plan_json, extended_location=None, 
         appservice_plan_json["extendedLocation"] = extended_location
 
 # TODO test with an ASE, non-kube plan 
+# TODO test with new "_get_kube_env_from_custom_location" impl
 def create_app_service_plan_inner(cmd, resource_group_name, name, is_linux, hyper_v, per_site_scaling=False, custom_location=None,
                             app_service_environment=None, sku=None,
                             number_of_workers=None, location=None, tags=None, no_wait=False):
@@ -614,16 +631,16 @@ def _validate_asp_and_custom_location_kube_envs_match(cmd, resource_group_name, 
     client = web_client_factory(cmd.cli_ctx)
     if is_valid_resource_id(plan):
         parse_result = parse_resource_id(plan)
-        plan_info = client.app_service_plans.get(parse_result['resource_group'], parse_result['name'])
+        plan_info = AppServiceClient.show(cmd=cmd, name=parse_result['name'], resource_group_name=parse_result["resource_group"])
     else:
-        plan_info = client.app_service_plans.get(resource_group_name, plan)
+        plan_info = AppServiceClient.show(cmd=cmd, name=plan, resource_group_name=resource_group_name)
     if not plan_info:
         raise CLIError("The plan '{}' doesn't exist in the resource group '{}".format(plan, resource_group_name))
 
     plan_kube_env_id = ""
     custom_location_kube_env_id = _get_kube_env_from_custom_location(cmd, custom_location, resource_group_name)
-    if plan_info.kube_environment_profile:
-        plan_kube_env_id = plan_info.kube_environment_profile.id
+    if plan_info["properties"].get("kubeEnvironmentProfile"):
+        plan_kube_env_id = plan_info["properties"]["kubeEnvironmentProfile"]["id"]
 
     return plan_kube_env_id.lower() == custom_location_kube_env_id.lower()
 
@@ -650,8 +667,8 @@ def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custo
                   multicontainer_config_type=None, multicontainer_config_file=None, tags=None,
                   using_webapp_up=False, language=None, assign_identities=None, role='Contributor', scope=None,
                   min_worker_count=None, max_worker_count=None):
-    SiteConfig, SkuDescription, Site, NameValuePair, ExtendedLocationEnvelope = cmd.get_models(
-        'SiteConfig', 'SkuDescription', 'Site', 'NameValuePair', 'ExtendedLocationEnvelope')
+    SiteConfig, SkuDescription, Site, NameValuePair, AppServicePlan = cmd.get_models(
+        'SiteConfig', 'SkuDescription', 'Site', 'NameValuePair', "AppServicePlan")
     if deployment_source_url and deployment_local_git:
         raise CLIError('usage error: --deployment-source-url <url> | --deployment-local-git')
 
@@ -702,9 +719,9 @@ def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custo
     client = web_client_factory(cmd.cli_ctx)
     if is_valid_resource_id(plan):
         parse_result = parse_resource_id(plan)
-        plan_info = client.app_service_plans.get(parse_result['resource_group'], parse_result['name'])
+        plan_info = AppServicePlan.from_dict(AppServiceClient.show(cmd=cmd, name=parse_result['name'], resource_group_name=parse_result["resource_group"]))
     else:
-        plan_info = client.app_service_plans.get(resource_group_name, plan)
+        plan_info = AppServicePlan.from_dict(AppServiceClient.show(cmd=cmd, name=plan, resource_group_name=resource_group_name))
     if not plan_info:
         raise CLIError("The plan '{}' doesn't exist in the resource group '{}".format(plan, resource_group_name))
 
@@ -733,11 +750,12 @@ def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custo
             webapp_def.kind = KUBE_APP_KIND
 
         if custom_location:  # if Custom Location provided, use that for Extended Location Envelope. Otherwise, get Custom Location from ASP
+            webapp_def.enable_additional_properties_sending()
             custom_location_id = _get_custom_location_id_from_custom_location(cmd, custom_location, resource_group_name)
             if custom_location_id:
-                webapp_def.extended_location = ExtendedLocationEnvelope(name=custom_location_id, type="CustomLocation")
+                webapp_def.additional_properties["extendedLocation"] = {'name': custom_location_id, 'type': 'CustomLocation'}
         else:
-            webapp_def.extended_location = plan_info.extended_location
+            webapp_def.additional_properties["extendedLocation"] = plan_info.additional_properties["extendedLocation"]
 
     if is_kube:
         if min_worker_count is not None:
@@ -824,7 +842,8 @@ def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custo
                                                           value='https://{}.scm.azurewebsites.net/detectors'
                                                           .format(name)))
 
-    poller = client.web_apps.create_or_update(resource_group_name, name, webapp_def)
+    #  WebAppClient.create(cmd=cmd, name=name, resource_group_name=resource_group_name, webapp_json=webapp_def.serialize()) 
+    poller = client.web_apps.begin_create_or_update(resource_group_name, name, webapp_def)
     webapp = LongRunningOperation(cmd.cli_ctx)(poller)
 
     if deployment_container_image_name:
