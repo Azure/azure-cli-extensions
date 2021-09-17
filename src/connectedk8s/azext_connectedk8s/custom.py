@@ -1458,8 +1458,8 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
     return str.format(consts.Successfully_Disabled_Features, features, connected_cluster.name)
 
 
-def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=None, kube_context=None, storage_account=None,
-                 sas_token=None, container_name="connectedk8stroubleshoot", output_file=os.path.join(os.path.expanduser('~'), '.azure', 'az_connectedk8s_troubleshoot_output.tar.gz')):
+def troubleshoot(cmd, client, resource_group_name, cluster_name, storage_account, sas_token=None, container_name="connectedk8stroubleshoot", kube_config=None, kube_context=None, 
+                 output_file=os.path.join(os.path.expanduser('~'), '.azure', 'az_connectedk8s_troubleshoot_output.tar.gz')):
     colorama.init()
     print(f"{colorama.Fore.YELLOW}Troubleshooting the ConnectedCluster for possible issues...")
     utils.check_connectivity()  # Checks internet connectivity
@@ -1533,10 +1533,14 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
         try:
             pod_list = kapi_instance.list_namespaced_pod(consts.Arc_Namespace)
             pods_count = 0
+            pods_pending = 0
             for pod in pod_list.items:
                 pods_count += 1
                 tr_logger.debug("Pod {} is in {} state. Reason: {}. Container statuses: {}".format(pod.metadata.name, pod.status.phase, pod.status.reason, pod.status.container_statuses))
-
+                if pod.status.phase == "Pending":
+                    pods_pending += 1
+            if pods_pending > 0:
+                logger.warning("You have pods stuck in pending state. A possible cause is insuffient resources on the Kubernetes cluster you are trying to onboard to azure-arc. Please run kubectl get pods -n azure-arc to ensure all pods are in running state.")
             if pods_count == 0:
                 tr_logger.warning("No pods found in azure-arc namespace.")
 
