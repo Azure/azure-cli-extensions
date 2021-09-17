@@ -18,9 +18,9 @@ class QuantumCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         super(QuantumCommandsLoader, self).__init__(cli_ctx=cli_ctx)
-        
+
         # Once each day, see if the user is running the latest version of the quantum extension.
-        # If not, recommend upgrading. 
+        # If not, recommend upgrading.
         from datetime import datetime
         from azure.cli.core.extension.operations import list_versions
         from azure.cli.core.util import ConfiguredDefaultSetter
@@ -38,9 +38,11 @@ class QuantumCommandsLoader(AzCommandsLoader):
                 available_versions = list_versions("quantum")
                 latest_version_dict = available_versions[len(available_versions) - 1]
                 latest_version = latest_version_dict['version'].split(' ')[0]
-                
+
                 if CLI_REPORTED_VERSION != latest_version:
-                    _show_tip(f"\nVersion {CLI_REPORTED_VERSION} of the quantum extension is installed locally, but Version {latest_version} is now available.\nYou can use ‘az extension update -n quantum’ to upgrade.\n")
+                    _show_tip(f"\nVersion {CLI_REPORTED_VERSION} of the quantum extension "
+                              f"is installed locally, but version {latest_version} is now available.\n"
+                              "You can use 'az extension update -n quantum' to upgrade.")
         except:
             # If an error occurs, we ignore it!
             return
