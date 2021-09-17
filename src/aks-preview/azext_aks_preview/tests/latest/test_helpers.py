@@ -4,8 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import unittest
-import unittest
-import mock
+from unittest import mock
 
 from knack import CLI
 
