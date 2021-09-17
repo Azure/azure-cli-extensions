@@ -68,8 +68,7 @@ def load_command_table(self, _):
 
     with self.command_group('webapp') as g:
         g.custom_command('create', 'create_webapp', exception_handler=ex_handler_factory())
-        g.custom_show_command('show', 'show_webapp', table_transformer=transform_web_output,
-                              validator=validate_app_or_slot_exists_in_rg)
+        g.custom_show_command('show', 'show_webapp', table_transformer=transform_web_output)
         g.custom_command('scale', 'scale_webapp')
         g.custom_command('restart', 'restart_webapp')
 

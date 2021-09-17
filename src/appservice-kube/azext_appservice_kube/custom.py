@@ -290,6 +290,34 @@ class WebAppClient:
         r = send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(webapp_json))
         return r.json()
 
+    @classmethod
+    def restart(cls, cmd, resource_group_name, name, slot=None):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        api_version = "2020-12-01"
+        sub_id = get_subscription_id(cmd.cli_ctx)
+
+        # f"{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/sites/{}/restart?api-version={}"
+        if slot is not None:
+            request_url = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/sites/{}/slots/{}/restart?api-version={}".format(
+                management_hostname.strip('/'), 
+                sub_id, 
+                resource_group_name, 
+                name, 
+                slot,
+                api_version)
+        else:
+            request_url = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/sites/{}/restart?api-version={}".format(
+                management_hostname.strip('/'), 
+                sub_id, 
+                resource_group_name, 
+                name, 
+                api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "POST", request_url)
+        return 
+        
+
+
 
 def show_kube_environments(cmd, name, resource_group_name):
     return KubeEnvironmentClient.show(cmd=cmd, name=name, resource_group_name=resource_group_name)
@@ -661,6 +689,7 @@ def _should_create_new_appservice_plan_for_k8se(cmd, name, custom_location, plan
         return False
 
 
+# TODO test more; test with slots 
 def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custom_location=None, startup_file=None,  # pylint: disable=too-many-statements,too-many-branches
                   deployment_container_image_name=None, deployment_source_url=None, deployment_source_branch='master',
                   deployment_local_git=None, docker_registry_server_password=None, docker_registry_server_user=None,
@@ -875,12 +904,13 @@ def scale_webapp(cmd, resource_group_name, name, instance_count, slot=None):
                                number_of_workers=instance_count, slot=slot)
 
 
+# TODO test with slots
 def show_webapp(cmd, resource_group_name, name, slot=None, app_instance=None):
     webapp = app_instance
     if not app_instance:  # when the routine is invoked as a help method, not through commands
         webapp = _generic_site_operation(cmd.cli_ctx, resource_group_name, name, 'get', slot)
     if not webapp:
-        raise CLIError("'{}' app doesn't exist".format(name))
+        raise ResourceNotFoundError("WebApp'{}', is not found on RG '{}'.".format(name, resource_group_name))
     webapp.site_config = _generic_site_operation(cmd.cli_ctx, resource_group_name, name, 'get_configuration', slot)
     _rename_server_farm_props(webapp)
 
@@ -1309,7 +1339,7 @@ def list_publish_profiles(cmd, resource_group_name, name, slot=None, xml=False):
     import xmltodict
 
     content = _generic_site_operation(cmd.cli_ctx, resource_group_name, name,
-                                      'list_publishing_profile_xml_with_secrets', slot)
+                                      'list_publishing_profile_xml_with_secrets', slot, {"format": "WebDeploy"})
     full_xml = ''
     for f in content:
         full_xml += f.decode()
@@ -1637,7 +1667,7 @@ def _get_scm_url(cmd, resource_group_name, name, slot=None):
 
 
 def restart_webapp(cmd, resource_group_name, name, slot=None):
-    return _generic_site_operation(cmd.cli_ctx, resource_group_name, name, 'restart', slot)
+    return WebAppClient.restart(cmd=cmd, resource_group_name=resource_group_name, name=name, slot=slot)
 
 
 def _check_zip_deployment_status(cmd, rg_name, name, deployment_status_url, authorization, timeout=None):
