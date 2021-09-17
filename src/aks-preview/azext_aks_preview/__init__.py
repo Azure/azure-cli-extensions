@@ -21,7 +21,12 @@ class ContainerServiceCommandsLoader(AzCommandsLoader):
             CUSTOM_MGMT_AKS_PREVIEW,
             SDKProfile("2021-08-01", {"container_services": "2017-07-01"}),
         )
-
+        
+        register_resource_type(
+            "2020-09-01-hybrid",
+            CUSTOM_MGMT_AKS_PREVIEW,
+            SDKProfile("2020-11-01", {"container_services": "2017-07-01"}),
+        )
         acs_custom = CliCommandType(operations_tmpl='azext_aks_preview.custom#{}')
         super(ContainerServiceCommandsLoader, self).__init__(cli_ctx=cli_ctx,
                                                              custom_command_type=acs_custom,

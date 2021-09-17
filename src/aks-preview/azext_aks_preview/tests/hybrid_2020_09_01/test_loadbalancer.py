@@ -3,17 +3,25 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 import unittest
+import mock
 
-from azure.mgmt.containerservice.v2021_08_01.models import ManagedClusterLoadBalancerProfile
-from azure.mgmt.containerservice.v2021_08_01.models import ManagedClusterLoadBalancerProfileManagedOutboundIPs
-from azure.mgmt.containerservice.v2021_08_01.models import ManagedClusterLoadBalancerProfileOutboundIPPrefixes
-from azure.mgmt.containerservice.v2021_08_01.models import ManagedClusterLoadBalancerProfileOutboundIPs
+from knack import CLI
+
+from azure.cli.core._config import GLOBAL_CONFIG_DIR, ENV_VAR_PREFIX
+from azure.cli.core.cloud import get_active_cloud
+from azure.cli.core.profiles import get_sdk, ResourceType, supported_api_version
+
+from azure.mgmt.containerservice.v2020_11_01.models import ManagedClusterLoadBalancerProfile
+from azure.mgmt.containerservice.v2020_11_01.models import ManagedClusterLoadBalancerProfileManagedOutboundIPs
+from azure.mgmt.containerservice.v2020_11_01.models import ManagedClusterLoadBalancerProfileOutboundIPPrefixes
+from azure.mgmt.containerservice.v2020_11_01.models import ManagedClusterLoadBalancerProfileOutboundIPs
 from azure.cli.core.util import CLIError
 from azext_aks_preview import _loadbalancer as loadbalancer
 
 
 class TestLoadBalancer(unittest.TestCase):
     def test_configure_load_balancer_profile(self):
+        cmd = mock.MagicMock()
         managed_outbound_ip_count = 5
         outbound_ips = None
         outbound_ip_prefixes = None

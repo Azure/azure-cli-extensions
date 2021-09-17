@@ -4,7 +4,6 @@
 # --------------------------------------------------------------------------------------------
 
 import unittest
-import unittest
 import mock
 
 from knack import CLI
@@ -42,10 +41,11 @@ class MockCmd(object):
         return get_sdk(self.cli_ctx, ResourceType.MGMT_CONTAINERSERVICE, 'ManagedClusterAPIServerAccessProfile',
                        mod='models', operation_group='managed_clusters')
 
-class TestPopulateApiServerAccessProfile(unittest.TestCase):
-    def setUp(self):
-            self.cli = MockCLI()
 
+class TestPopulateApiServerAccessProfile(unittest.TestCase):
+     def setUp(self):
+            self.cli = MockCLI()
+        
     def test_single_cidr_with_spaces(self):
         api_server_authorized_ip_ranges = "0.0.0.0/32 "
         profile = helpers._populate_api_server_access_profile(MockCmd(self.cli), api_server_authorized_ip_ranges)

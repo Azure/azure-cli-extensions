@@ -17,7 +17,7 @@ from azure.cli.core.commands.validators import validate_tag
 from azure.cli.core.util import CLIError
 import azure.cli.core.keys as keys
 
-from .vendored_sdks.azure_mgmt_preview_aks.v2021_08_01.models import ManagedClusterPropertiesAutoScalerProfile
+from azure.cli.core.profiles import ResourceType
 
 from ._helpers import (_fuzzy_match)
 
@@ -289,7 +289,7 @@ def validate_nodepool_tags(ns):
         ns.nodepool_tags = tags_dict
 
 
-def validate_cluster_autoscaler_profile(namespace):
+def validate_cluster_autoscaler_profile(cmd, namespace):
     """ Validates that cluster autoscaler profile is acceptable by:
         1. Extracting the key[=value] format to map
         2. Validating that the key isn't empty and that the key is valid
@@ -298,12 +298,15 @@ def validate_cluster_autoscaler_profile(namespace):
     _extract_cluster_autoscaler_params(namespace)
     if namespace.cluster_autoscaler_profile is not None:
         for key in namespace.cluster_autoscaler_profile.keys():
-            _validate_cluster_autoscaler_key(key)
+            _validate_cluster_autoscaler_key(cmd, key)
 
 
-def _validate_cluster_autoscaler_key(key):
+def _validate_cluster_autoscaler_key(cmd, key):
     if not key:
         raise CLIError('Empty key specified for cluster-autoscaler-profile')
+    ManagedClusterPropertiesAutoScalerProfile = cmd.get_models('ManagedClusterPropertiesAutoScalerProfile',
+                                                resource_type=ResourceType.MGMT_CONTAINERSERVICE,
+                                                operation_group='managed_clusters')
     valid_keys = list(k.replace("_", "-") for k, v in ManagedClusterPropertiesAutoScalerProfile._attribute_map.items())  # pylint: disable=protected-access
     if key not in valid_keys:
         raise CLIError('Invalid key specified for cluster-autoscaler-profile: %s' % key)

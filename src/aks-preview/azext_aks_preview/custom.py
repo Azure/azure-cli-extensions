@@ -1214,6 +1214,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         load_balancer_idle_timeout)
 
     nat_gateway_profile = create_nat_gateway_profile(
+        cmd,
         nat_gateway_managed_outbound_ip_count,
         nat_gateway_idle_timeout)
 
@@ -1338,7 +1339,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
     api_server_access_profile = None
     if api_server_authorized_ip_ranges:
         api_server_access_profile = _populate_api_server_access_profile(
-            api_server_authorized_ip_ranges)
+            cmd, api_server_authorized_ip_ranges)
 
     identity = None
     if not enable_managed_identity and assign_identity:
@@ -1697,6 +1698,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
 
     if update_lb_profile:
         instance.network_profile.load_balancer_profile = update_load_balancer_profile(
+            cmd,
             load_balancer_managed_outbound_ip_count,
             load_balancer_outbound_ips,
             load_balancer_outbound_ip_prefixes,
@@ -1706,6 +1708,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
 
     if update_natgw_profile:
         instance.network_profile.nat_gateway_profile = update_nat_gateway_profile(
+            cmd,
             nat_gateway_managed_outbound_ip_count,
             nat_gateway_idle_timeout,
             instance.network_profile.nat_gateway_profile)
@@ -1761,7 +1764,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
     if api_server_authorized_ip_ranges is not None:
         instance.api_server_access_profile = \
             _populate_api_server_access_profile(
-                api_server_authorized_ip_ranges, instance)
+                cmd, api_server_authorized_ip_ranges, instance)
 
     if enable_aad:
         if instance.aad_profile is not None and instance.aad_profile.managed:

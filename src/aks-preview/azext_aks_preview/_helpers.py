@@ -9,14 +9,17 @@ from knack.util import CLIError
 from azure.cli.core.azclierror import ArgumentUsageError
 
 # pylint: disable=no-name-in-module,import-error
-from .vendored_sdks.azure_mgmt_preview_aks.v2021_08_01.models import ManagedClusterAPIServerAccessProfile
+from azure.cli.core.profiles import ResourceType
 from ._consts import CONST_CONTAINER_NAME_MAX_LENGTH
 from ._consts import CONST_OUTBOUND_TYPE_LOAD_BALANCER, CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING, \
     CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY, CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY
 
 
-def _populate_api_server_access_profile(api_server_authorized_ip_ranges, instance=None):
+def _populate_api_server_access_profile(cmd, api_server_authorized_ip_ranges, instance=None):
     if instance is None or instance.api_server_access_profile is None:
+        ManagedClusterAPIServerAccessProfile = cmd.get_models('ManagedClusterAPIServerAccessProfile',
+                                                              resource_type=ResourceType.MGMT_CONTAINERSERVICE,
+                                                              operation_group='managed_clusters')
         profile = ManagedClusterAPIServerAccessProfile()
     else:
         profile = instance.api_server_access_profile

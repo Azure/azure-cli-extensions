@@ -7,8 +7,7 @@ from azure.cli.core.commands.parameters import get_one_of_subscription_locations
 from azure.cli.core.decorators import Completer
 
 # pylint: disable=line-too-long
-from azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks.v2021_08_01.models import ContainerServiceVMSizeTypes
-
+from azure.cli.core.profiles import ResourceType
 
 @Completer
 def get_k8s_upgrades_completion_list(cmd, prefix, namespace, **kwargs):  # pylint: disable=unused-argument
@@ -48,6 +47,9 @@ def get_vm_size_completion_list(cmd, prefix, namespace, **kwargs):  # pylint: di
 
     location = _get_location(cmd.cli_ctx, namespace)
     result = get_vm_sizes(cmd.cli_ctx, location)
+    ContainerServiceVMSizeTypes = cmd.get_models('ContainerServiceVMSizeTypes',
+                                                resource_type=ResourceType.MGMT_CONTAINERSERVICE,
+                                                operation_group='managed_clusters')
     return set(r.name for r in result) & set(c.value for c in ContainerServiceVMSizeTypes)
 
 

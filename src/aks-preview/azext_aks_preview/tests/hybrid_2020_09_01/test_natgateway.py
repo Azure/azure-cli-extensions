@@ -12,8 +12,8 @@ from azure.cli.core.cloud import get_active_cloud
 from azure.cli.core.profiles import get_sdk, ResourceType, supported_api_version
 
 import azext_aks_preview._natgateway as natgateway
-from azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks.v2021_08_01.models import ManagedClusterNATGatewayProfile
-from azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks.v2021_08_01.models import ManagedClusterManagedOutboundIPProfile
+from azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks.v2020_11_01.models import ManagedClusterNATGatewayProfile
+from azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks.v2020_11_01.models import ManagedClusterManagedOutboundIPProfile
 
 class TestCreateNatGatewayProfile(unittest.TestCase):
     def test_empty_arguments(self):
