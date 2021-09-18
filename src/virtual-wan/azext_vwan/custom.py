@@ -282,7 +282,7 @@ def update_hub_vnet_bgpconnection(cmd, instance, resource_group_name, virtual_hu
         instance.peer_ip = peer_ip
     if virtual_hub_connection is not None:
         from .vendored_sdks.v2021_03_01.models import SubResource
-        instance.hub_virtual_network_connection=SubResource(id=virtual_hub_connection)
+        instance.hub_virtual_network_connection = SubResource(id=virtual_hub_connection)
     return instance
 
 
