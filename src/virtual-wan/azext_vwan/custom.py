@@ -263,7 +263,7 @@ def _bgp_connections_client(cli_ctx):
 def create_hub_vnet_bgpconnection(cmd, client, resource_group_name, virtual_hub_name, connection_name,
                                   virtual_hub_connection=None, peer_asn=None, peer_ip=None, no_wait=False):
 
-    BgpConnection, SubResource = cmd.get_models('BgpConnection', 'SubResource')
+    from .vendored_sdks.v2021_03_01.models import BgpConnection, SubResource
     connection = BgpConnection(
         name=connection_name,
         peer_asn=peer_asn,
@@ -275,11 +275,14 @@ def create_hub_vnet_bgpconnection(cmd, client, resource_group_name, virtual_hub_
 
 
 def update_hub_vnet_bgpconnection(cmd, instance, resource_group_name, virtual_hub_name, connection_name,
-                                  peer_asn=None, peer_ip=None):
+                                  virtual_hub_connection=None, peer_asn=None, peer_ip=None):
     if peer_asn is not None:
         instance.peer_asn = peer_asn
     if peer_ip is not None:
         instance.peer_ip = peer_ip
+    if virtual_hub_connection is not None:
+        from .vendored_sdks.v2021_03_01.models import SubResource
+        instance.hub_virtual_network_connection=SubResource(id=virtual_hub_connection)
     return instance
 
 

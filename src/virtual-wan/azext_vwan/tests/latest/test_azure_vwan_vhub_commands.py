@@ -393,9 +393,12 @@ class AzureVWanVHubScenario(ScenarioTest):
         self.cmd('network vhub bgpconnection create -n {conn} -g {rg} --vhub-name {vhub} --peer-asn 20000  --peer-ip "10.5.0.3" '
                     '--vhub-conn {sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualHubs/{vhub}/hubVirtualNetworkConnections/{vhub_conn}')
         self.cmd('network vhub bgpconnection list -g {rg} --vhub-name {vhub}')
-        self.cmd('network vhub bgpconnection update -n {conn} -g {rg} --vhub-name {vhub} --peer-asn 15000  --peer-ip "10.5.0.3"')
+
+        # HubBgpConnectionPeerIpCannotBeUpdated and HubBgpConnectionPeerASNCannotBeUpdated
+        # self.cmd('network vhub bgpconnection update -n {conn} -g {rg} --vhub-name {vhub} --peer-ip "10.5.0.4"')
+
         self.cmd('network vhub bgpconnection show -n {conn} -g {rg} --vhub-name {vhub}')
-        self.cmd('network vhub bgpconnection delete -n {conn} -g {rg} --vhub-name {vhub}')
+        self.cmd('network vhub bgpconnection delete -n {conn} -g {rg} --vhub-name {vhub} -y')
 
     @record_only()
     @ResourceGroupPreparer(name_prefix='cli_test_azure_vwan_p2s_gateway_routing_configuration', location='westus')
