@@ -950,7 +950,7 @@ helps['aks nodepool add'] = """
         - name: Create a nodepool with a specific os-sku
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster  --os-sku Ubuntu
         - name: Create a nodepool which can run wasm workloads.
-          text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster  --workload-runtim WasmWasi
+          text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster  --workload-runtime WasmWasi
 """
 
 helps['aks nodepool scale'] = """
