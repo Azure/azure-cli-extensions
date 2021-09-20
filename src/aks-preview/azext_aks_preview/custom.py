@@ -1215,7 +1215,6 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         load_balancer_idle_timeout)
 
     nat_gateway_profile = create_nat_gateway_profile(
-        cmd,
         nat_gateway_managed_outbound_ip_count,
         nat_gateway_idle_timeout)
 
@@ -1709,7 +1708,6 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
 
     if update_natgw_profile:
         instance.network_profile.nat_gateway_profile = update_nat_gateway_profile(
-            cmd,
             nat_gateway_managed_outbound_ip_count,
             nat_gateway_idle_timeout,
             instance.network_profile.nat_gateway_profile)
