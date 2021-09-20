@@ -43,14 +43,14 @@ class MockCmd(object):
 
 
 class TestPopulateApiServerAccessProfile(unittest.TestCase):
-     def setUp(self):
+    def setUp(self):
             self.cli = MockCLI()
-        
+
     def test_single_cidr_with_spaces(self):
         api_server_authorized_ip_ranges = "0.0.0.0/32 "
         profile = helpers._populate_api_server_access_profile(MockCmd(self.cli), api_server_authorized_ip_ranges)
         self.assertListEqual(profile.authorized_ip_ranges, ["0.0.0.0/32"])
-
+    
     def test_multi_cidr_with_spaces(self):
         api_server_authorized_ip_ranges = " 0.0.0.0/32 , 129.1.1.1/32"
         profile = helpers._populate_api_server_access_profile(MockCmd(self.cli), api_server_authorized_ip_ranges)
