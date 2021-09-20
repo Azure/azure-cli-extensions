@@ -865,6 +865,8 @@ def try_archive_log_file(troubleshoot_log_path, output_file):
     except Exception as ex:
         logger.error("Error occured while archiving the log file: {}".format(str(ex)))
         print(f"{colorama.Style.BRIGHT}{colorama.Fore.GREEN}You can find the unarchived log file at '{troubleshoot_log_path}'.")
+
+
 def validate_node_api_response(api_instance, node_api_response):
     if node_api_response is None:
         try:
