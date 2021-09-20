@@ -846,6 +846,9 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
 
     if hasattr(connected_cluster, 'infrastructure') and (connected_cluster.infrastructure is not None):
         kubernetes_infra = connected_cluster.infrastructure
+    else:
+        node_api_response = utils.validate_node_api_response(api_instance, node_api_response)
+        kubernetes_infra = get_kubernetes_infra(node_api_response)
 
     kubernetes_properties = {
         'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version,
@@ -1253,8 +1256,11 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
         kubernetes_distro = connected_cluster.distribution
     else:
         node_api_response = utils.validate_node_api_response(api_instance, node_api_response)
+        kubernetes_distro = get_kubernetes_distro(node_api_response)
+
     if hasattr(connected_cluster, 'infrastructure') and (connected_cluster.infrastructure is not None):
         kubernetes_infra = connected_cluster.infrastructure
+    else:
         node_api_response = utils.validate_node_api_response(api_instance, node_api_response)
         kubernetes_infra = get_kubernetes_infra(node_api_response)
 
