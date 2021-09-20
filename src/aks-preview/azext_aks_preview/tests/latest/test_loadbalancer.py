@@ -11,10 +11,10 @@ from azure.cli.core._config import GLOBAL_CONFIG_DIR, ENV_VAR_PREFIX
 from azure.cli.core.cloud import get_active_cloud
 from azure.cli.core.profiles import get_sdk, ResourceType, supported_api_version
 
-from azure.mgmt.containerservice.v2021_08_01.models import ManagedClusterLoadBalancerProfile
-from azure.mgmt.containerservice.v2021_08_01.models import ManagedClusterLoadBalancerProfileManagedOutboundIPs
-from azure.mgmt.containerservice.v2021_08_01.models import ManagedClusterLoadBalancerProfileOutboundIPPrefixes
-from azure.mgmt.containerservice.v2021_08_01.models import ManagedClusterLoadBalancerProfileOutboundIPs
+from azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks.v2021_08_01.models import ManagedClusterLoadBalancerProfile
+from azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks.v2021_08_01.models import ManagedClusterLoadBalancerProfileManagedOutboundIPs
+from azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks.v2021_08_01.models import ManagedClusterLoadBalancerProfileOutboundIPPrefixes
+from azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks.v2021_08_01.models import ManagedClusterLoadBalancerProfileOutboundIPs
 from azure.cli.core.util import CLIError
 from azext_aks_preview import _loadbalancer as loadbalancer
 

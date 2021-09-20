@@ -1207,6 +1207,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                                'Are you an Owner on this subscription?')
 
     load_balancer_profile = create_load_balancer_profile(
+        cmd,
         load_balancer_managed_outbound_ip_count,
         load_balancer_outbound_ips,
         load_balancer_outbound_ip_prefixes,

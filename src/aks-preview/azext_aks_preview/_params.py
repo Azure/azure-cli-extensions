@@ -76,8 +76,8 @@ def load_arguments(self, _):
         c.argument('load_balancer_outbound_ip_prefixes', type=str, validator=validate_load_balancer_outbound_ip_prefixes)
         c.argument('load_balancer_outbound_ports', type=int, validator=validate_load_balancer_outbound_ports)
         c.argument('load_balancer_idle_timeout', type=int, validator=validate_load_balancer_idle_timeout)
-        c.argument('nat_gateway_managed_outbound_ip_count', type=int, validator=validate_nat_gateway_managed_outbound_ip_count)
-        c.argument('nat_gateway_idle_timeout', type=int, validator=validate_nat_gateway_idle_timeout)
+        c.argument('nat_gateway_managed_outbound_ip_count', min_api='2021-07-01', type=int, validator=validate_nat_gateway_managed_outbound_ip_count)
+        c.argument('nat_gateway_idle_timeout', min_api='2021-07-01', type=int, validator=validate_nat_gateway_idle_timeout)
         c.argument('outbound_type', arg_type=get_enum_type([CONST_OUTBOUND_TYPE_LOAD_BALANCER,
                                                             CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
                                                             CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY,
