@@ -21,7 +21,6 @@ class ContainerServiceCommandsLoader(AzCommandsLoader):
             CUSTOM_MGMT_AKS_PREVIEW,
             SDKProfile("2021-08-01", {"container_services": "2017-07-01"}),
         )
-        
         register_resource_type(
             "2020-09-01-hybrid",
             CUSTOM_MGMT_AKS_PREVIEW,
