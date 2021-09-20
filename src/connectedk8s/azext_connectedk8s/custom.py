@@ -1252,9 +1252,6 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
     if hasattr(connected_cluster, 'distribution') and (connected_cluster.distribution is not None):
         kubernetes_distro = connected_cluster.distribution
     else:
-<<<<<<< HEAD
-        kubernetes_distro = get_kubernetes_distro(configuration, kubernetes_version)
-=======
         node_api_response = utils.validate_node_api_response(api_instance, node_api_response)
     if hasattr(connected_cluster, 'infrastructure') and (connected_cluster.infrastructure is not None):
         kubernetes_infra = connected_cluster.infrastructure
