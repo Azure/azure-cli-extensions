@@ -9,8 +9,7 @@ import unittest
 from azure_devtools.scenario_tests import AllowLargeResponse, live_only
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 
-from .utils import TEST_WORKSPACE, TEST_RG, TEST_WORKSPACE_LOCATION, TEST_SUBS
-from .utils import TEST_WORKSPACE_JOBS, TEST_RG_JOBS, TEST_WORKSPACE_LOCATION_JOBS
+from .utils import get_test_subscription_id, get_test_resource_group, get_test_workspace, get_test_workspace_location
 from ..._client_factory import _get_data_credentials
 from ...operations.workspace import WorkspaceInfo
 from ...operations.target import TargetInfo
@@ -23,7 +22,7 @@ class QuantumJobsScenarioTest(ScenarioTest):
 
     def test_jobs(self):
         # set current workspace:
-        self.cmd(f'az quantum workspace set -w {TEST_WORKSPACE_JOBS} -g {TEST_RG_JOBS} -l {TEST_WORKSPACE_LOCATION_JOBS}')
+        self.cmd(f'az quantum workspace set -g {get_test_resource_group()} -w {get_test_workspace()} -l {get_test_workspace_location()}')
 
         # list
         targets = self.cmd('az quantum target list -o json').get_output_in_json()
@@ -31,10 +30,13 @@ class QuantumJobsScenarioTest(ScenarioTest):
 
     @live_only()
     def test_submit_args(self):
-        ws = WorkspaceInfo(self, TEST_RG_JOBS, TEST_WORKSPACE_JOBS, TEST_WORKSPACE_LOCATION_JOBS)
+        test_location = get_test_workspace_location()
+        test_workspace = get_test_workspace()
+        test_resource_group = get_test_resource_group()
+        ws = WorkspaceInfo(self, test_resource_group, test_workspace, test_location)
         target = TargetInfo(self, 'ionq.simulator')
 
-        token = _get_data_credentials(self.cli_ctx, TEST_SUBS).get_token().token
+        token = _get_data_credentials(self.cli_ctx, get_test_subscription_id()).get_token().token
         assert len(token) > 0
 
         args = _generate_submit_args(["--foo", "--bar"], ws, target, token, project=None, job_name=None, storage=None, shots=None)
@@ -43,8 +45,8 @@ class QuantumJobsScenarioTest(ScenarioTest):
         self.assertEquals(args[2], "--no-build")
         self.assertIn("--", args)
         self.assertIn("submit", args)
-        self.assertIn(TEST_WORKSPACE_JOBS, args)
-        self.assertIn(TEST_RG_JOBS, args)
+        self.assertIn(test_workspace, args)
+        self.assertIn(test_resource_group, args)
         self.assertIn("ionq.simulator", args)
         self.assertIn("--aad-token", args)
         self.assertIn(token, args)

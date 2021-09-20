@@ -88,7 +88,7 @@ def load_command_table(self, _):
                          table_transformer=transform_spring_cloud_deployment_output)
         g.custom_show_command(
             'show', 'deployment_get', table_transformer=transform_spring_cloud_deployment_output)
-        g.custom_command('delete', 'deployment_delete')
+        g.custom_command('delete', 'deployment_delete', supports_no_wait=True)
 
     with self.command_group('spring-cloud app binding', client_factory=cf_spring_cloud,
                             exception_handler=handle_asc_exception) as g:

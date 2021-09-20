@@ -23,5 +23,5 @@ class PartnerExtensionModel(ABC):
         pass
 
     @abstractmethod
-    def Delete(self, client, resource_group_name: str, cluster_name: str, name: str, cluster_type: str):
+    def Delete(self, cmd, client, resource_group_name: str, cluster_name: str, name: str, cluster_type: str, yes: bool):
         pass

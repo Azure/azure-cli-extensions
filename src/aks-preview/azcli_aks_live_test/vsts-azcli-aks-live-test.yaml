@@ -77,14 +77,14 @@ jobs:
       displayName: "Create Dir for Recordings"
     - task: CopyFiles@2
       inputs:
-        contents: '$(ACS_BASE_DIR)/tests/latest/recordings/**'
+        contents: '$(ACS_BASE_DIR)/tests/latest/recordings/updated/**'
         flattenFolders: true
         targetFolder: $(Build.ArtifactStagingDirectory)/cli-recordings
       condition: and(succeededOrFailed(), in(variables['COVERAGE'], 'cli', 'all'))
       displayName: "Copy CLI Recordings"
     - task: CopyFiles@2
       inputs:
-        contents: '$(AKS_PREVIEW_BASE_DIR)/tests/latest/recordings/**'
+        contents: '$(AKS_PREVIEW_BASE_DIR)/tests/latest/recordings/updated/**'
         flattenFolders: true
         targetFolder: $(Build.ArtifactStagingDirectory)/ext-recordings
       condition: and(succeededOrFailed(), in(variables['COVERAGE'], 'ext', 'all'))
