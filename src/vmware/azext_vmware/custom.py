@@ -401,13 +401,13 @@ def workload_network_dns_zone_get(client: AVSClient, resource_group_name, privat
 
 def workload_network_dns_zone_create(client: AVSClient, resource_group_name, private_cloud, dns_zone_id, display_name=None, domain=None, dns_server_ips=None, source_ip=None, dns_services=None, revision=None):
     from azext_vmware.vendored_sdks.avs_client.models import WorkloadNetworkDnsZone
-    prop = WorkloadNetworkDnsZone(display_name=display_name, domain=domain, dns_server_ips=dns_server_ips, source_ip=source_ip, dns_services=dns_services, revistion=revision)
+    prop = WorkloadNetworkDnsZone(display_name=display_name, domain=domain, dns_server_ips=dns_server_ips, source_ip=source_ip, dns_services=dns_services, revision=revision)
     return client.workload_networks.begin_create_dns_zone(resource_group_name=resource_group_name, private_cloud_name=private_cloud, dns_zone_id=dns_zone_id, workload_network_dns_zone=prop)
 
 
 def workload_network_dns_zone_update(client: AVSClient, resource_group_name, private_cloud, dns_zone_id, display_name=None, domain=None, dns_server_ips=None, source_ip=None, dns_services=None, revision=None):
     from azext_vmware.vendored_sdks.avs_client.models import WorkloadNetworkDnsZone
-    prop = WorkloadNetworkDnsZone(display_name=display_name, domain=domain, dns_server_ips=dns_server_ips, source_ip=source_ip, dns_services=dns_services, revistion=revision)
+    prop = WorkloadNetworkDnsZone(display_name=display_name, domain=domain, dns_server_ips=dns_server_ips, source_ip=source_ip, dns_services=dns_services, revision=revision)
     return client.workload_networks.begin_update_dns_zone(resource_group_name=resource_group_name, private_cloud_name=private_cloud, dns_zone_id=dns_zone_id, workload_network_dns_zone=prop)
 
 
