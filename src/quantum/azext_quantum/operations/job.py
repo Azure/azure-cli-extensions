@@ -299,7 +299,8 @@ def run(cmd, program_args, resource_group_name=None, workspace_name=None, locati
     """
     Submit a job to run on Azure Quantum, and waits for the result.
     """
-    job = submit(cmd, program_args, resource_group_name, workspace_name, location, target_id, project, job_name, shots, storage, no_build, job_params)
+    job = submit(cmd, program_args, resource_group_name, workspace_name, location, target_id,
+                 project, job_name, shots, storage, no_build, job_params)
     logger.warning("Job id: %s", job.id)
     logger.debug(job)
 
