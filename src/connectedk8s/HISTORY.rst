@@ -3,6 +3,11 @@
 Release History
 ===============
 
+1.1.11
+++++++
+
+* Installing helm binary as part of CLI commands
+
 1.1.10
 ++++++
 
