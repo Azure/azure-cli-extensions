@@ -2,13 +2,12 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-# pylint: disable=line-too-long
+# pylint: disable=line-too-long,protected-access
 
 import argparse
 from knack.arguments import CLIArgumentType, CLIError
 
 
-# pylint: disable=protected-access
 class JobParamsAction(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string):
         params = {}
