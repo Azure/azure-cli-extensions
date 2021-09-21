@@ -9,7 +9,7 @@ from knack.arguments import CLIArgumentType, CLIError
 
 
 class JobParamsAction(argparse._AppendAction):
-    def __call__(self, parser, namespace, values, option_string):
+    def __call__(self, parser, namespace, values, option_string=None):
         params = {}
         for item in values:
             try:
@@ -18,6 +18,7 @@ class JobParamsAction(argparse._AppendAction):
             except ValueError:
                 raise CLIError('Usage error: {} KEY=VALUE [KEY=VALUE ...]'.format(option_string))
         namespace.job_params = params
+        return params
 
 
 def load_arguments(self, _):
