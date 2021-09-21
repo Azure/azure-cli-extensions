@@ -7,6 +7,7 @@
 import argparse
 from knack.arguments import CLIArgumentType, CLIError
 
+
 # pylint: disable=protected-access
 class JobParamsAction(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string):
@@ -18,6 +19,7 @@ class JobParamsAction(argparse._AppendAction):
             except ValueError:
                 raise CLIError('Usage error: {} KEY=VALUE [KEY=VALUE ...]'.format(option_string))
         namespace.job_params = params
+
 
 def load_arguments(self, _):
     workspace_name_type = CLIArgumentType(options_list=['--workspace-name', '-w'], help='Name of the Quantum Workspace. You can configure the default workspace using `az quantum workspace set`.', id_part=None, required=False)
