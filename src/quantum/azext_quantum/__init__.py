@@ -4,6 +4,8 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core import AzCommandsLoader
+from datetime import datetime
+from ._version_check_helper import check_version
 
 import azext_quantum._help  # pylint: disable=unused-import
 
@@ -33,32 +35,7 @@ class QuantumCommandsLoader(AzCommandsLoader):
 
         # Once each day, see if the user is running the latest version of the quantum extension.
         # If not, recommend upgrading.
-        from datetime import datetime
-        from azure.cli.core.extension.operations import list_versions
-        from azure.cli.core.util import ConfiguredDefaultSetter
-        from .operations.workspace import _show_tip
-
-        today = str(datetime.today()).split(' ')[0]
-        try:
-            config = self.cli_ctx_config
-            with ConfiguredDefaultSetter(config, False):
-                date_checked = config.get('quantum', 'version_check_date', None)
-
-            if date_checked is None or date_checked != today:
-                with ConfiguredDefaultSetter(config, False):
-                    config.set_value('quantum', 'version_check_date', today)
-
-                available_versions = list_versions("quantum")
-                latest_version_dict = available_versions[len(available_versions) - 1]
-                latest_version = latest_version_dict['version'].split(' ')[0]
-
-                if CLI_REPORTED_VERSION != latest_version:
-                    _show_tip(f"\nVersion {CLI_REPORTED_VERSION} of the quantum extension "
-                              f"is installed locally, but version {latest_version} is now available.\n"
-                              "You can use 'az extension update -n quantum' to upgrade.\n")
-        except:
-            # If an error occurs, we ignore it!
-            return
+        check_version(self.cli_ctx_config, CLI_REPORTED_VERSION, str(datetime.today()).split(' ')[0])
 
 
 COMMAND_LOADER_CLS = QuantumCommandsLoader
