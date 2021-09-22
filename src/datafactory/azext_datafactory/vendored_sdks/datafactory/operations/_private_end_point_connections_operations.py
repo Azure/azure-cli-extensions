@@ -30,7 +30,7 @@ class PrivateEndPointConnectionsOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~data_factory_management_client.models
+    :type models: ~azure.mgmt.datafactory.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -60,7 +60,7 @@ class PrivateEndPointConnectionsOperations(object):
         :type factory_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either PrivateEndpointConnectionListResponse or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~data_factory_management_client.models.PrivateEndpointConnectionListResponse]
+        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.datafactory.models.PrivateEndpointConnectionListResponse]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.PrivateEndpointConnectionListResponse"]

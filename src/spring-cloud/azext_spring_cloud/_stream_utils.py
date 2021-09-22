@@ -86,13 +86,31 @@ def _stream_logs(no_format,  # pylint: disable=too-many-locals, too-many-stateme
     num_fails_for_backoff = 3
     consecutive_sleep_in_sec = 0
 
+    blob_exists = False
+
+    def safe_get_blob_properties():
+        '''
+        In recent storage SDK, the get_blob_properties will output error logs on BlobNotFound (and also raise
+        AzureHttpError(404)). There is no way to suppress the error logging from the callsite.
+        However, in our scenario, such BlobNotFound error is expected before the build actually kicks off.
+        To get rid of the error logging, we only call the get_blob_properties after the blob is created.
+        '''
+        nonlocal blob_exists
+        if not blob_exists:
+            blob_exists = blob_service.exists(
+                container_name=container_name, blob_name=blob_name)
+        if blob_exists:
+            return blob_service.get_blob_properties(
+                container_name=container_name, blob_name=blob_name)
+        return None
+
     # Try to get the initial properties so there's no waiting.
     # If the storage call fails, we'll just sleep and try again after.
     try:
-        props = blob_service.get_blob_properties(
-            container_name=container_name, blob_name=blob_name)
-        metadata = props.metadata
-        available = props.properties.content_length
+        props = safe_get_blob_properties()
+        if props:
+            metadata = props.metadata
+            available = props.properties.content_length
     except (AttributeError, AzureHttpError):
         pass
 
@@ -127,7 +145,7 @@ def _stream_logs(no_format,  # pylint: disable=too-many-locals, too-many-stateme
                         stream.write(curr_bytes[i + 1:])
                         logger_level_func(flush.decode('utf-8', errors='ignore'))
                         break
-                    if curr_bytes[i:i + 1] == b'\r':
+                    if curr_bytes[i:i + 1] == b'\n':
                         flush = curr_bytes[:i + 1]  # won't logger.warning \n
                         stream = BytesIO()
                         stream.write(curr_bytes[i + 1:])
@@ -144,10 +162,10 @@ def _stream_logs(no_format,  # pylint: disable=too-many-locals, too-many-stateme
                 return
 
         try:
-            props = blob_service.get_blob_properties(
-                container_name=container_name, blob_name=blob_name)
-            metadata = props.metadata
-            available = props.properties.content_length
+            props = safe_get_blob_properties()
+            if props:
+                metadata = props.metadata
+                available = props.properties.content_length
         except AzureHttpError as ae:
             if ae.status_code != 404:
                 raise CLIError(ae)
