@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=line-too-long
-from azure.cli.core.commands import CliCommandType, client_factory
+from azure.cli.core.commands import CliCommandType
 from .profiles import CUSTOM_VWAN, CUSTOM_VWAN_2021_03_01
 
 from ._client_factory import (
