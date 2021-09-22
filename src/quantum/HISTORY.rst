@@ -3,6 +3,14 @@
 Release History
 ===============
 
+0.7.0
+++++++
+* [2021-08-31] Version intended to work with QDK version v0.18.2108.160310
+* Provide compiler output to users in case of error for easier troubleshooting.
+* Fixed bug in which retrieving output from workspaces in a location different to another set as default failed.
+* Processing jobs that produce no output is allowed.
+* Simplification of resources used in extension tests and allowing overrides via environment variables.
+
 0.6.1
 ++++++
 * [2021-07-22] Reduced the lenghth of the user agent reported by the tool.

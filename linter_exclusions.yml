@@ -61,6 +61,12 @@ aks create:
     load_balancer_outbound_ports:
       rule_exclusions:
       - option_length_too_long
+    nat_gateway_idle_timeout:
+      rule_exclusions:
+      - option_length_too_long
+    nat_gateway_managed_outbound_ip_count:
+      rule_exclusions:
+      - option_length_too_long
     node_osdisk_diskencryptionset_id:
       rule_exclusions:
       - option_length_too_long
@@ -162,6 +168,12 @@ aks update:
       rule_exclusions:
       - option_length_too_long
     load_balancer_outbound_ports:
+      rule_exclusions:
+      - option_length_too_long
+    nat_gateway_idle_timeout:
+      rule_exclusions:
+      - option_length_too_long
+    nat_gateway_managed_outbound_ip_count:
       rule_exclusions:
       - option_length_too_long
     enable_managed_identity:
@@ -2095,6 +2107,11 @@ spring-cloud update:
     disable_distributed_tracing:
       rule_exclusions:
       - option_length_too_long
+ssh vm:
+  parameters:
+    ssh_args:
+      rule_exclusions:
+        - no_positional_parameters
 storage account create:
   parameters:
     hierarchical_namespace:
