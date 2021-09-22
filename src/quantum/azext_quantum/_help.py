@@ -33,7 +33,7 @@ helps['quantum run'] = """
             az quantum run -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget
       - name: Submit and wait for a Q# program from the current folder with job and program parameters.
         text: |-
-            az quantum execute -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget \\
+            az quantum run -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget \\
                 --job-params key1=value1 key2=value2 -- --n-qubits 3
 """
 
