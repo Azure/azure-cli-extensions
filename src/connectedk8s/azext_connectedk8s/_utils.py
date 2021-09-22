@@ -759,7 +759,7 @@ def collect_periscope_logs(resource_group_name, name, storage_account_name=None,
                                               (base64.b64encode(bytes(storage_account_name, 'ascii'))).decode('ascii'))
     deployment_yaml = deployment_yaml.replace("# <saskey, base64 encoded>",
                                               (base64.b64encode(bytes("?" + sas_token, 'ascii'))).decode('ascii'))
-    deployment_yaml = deployment_yaml.replace("aksrepos.azurecr.io/staging/aks-periscope:v0.4", "aksrepos.azurecr.io/staging/aks-periscope:0.5")
+    deployment_yaml = deployment_yaml.replace("aksrepos.azurecr.io/staging/aks-periscope:v0.4", "mcr.microsoft.com/aks/periscope:v0.6")
     container_logs = "azure-arc"
     kube_objects = "azure-arc/pod azure-arc/service"
     yaml_lines = deployment_yaml.splitlines()
