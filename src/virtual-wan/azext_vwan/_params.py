@@ -87,6 +87,9 @@ def load_arguments(self, _):
         c.argument('peer_ip', help='Peer IP')
         c.argument('virtual_hub_connection', options_list='--vhub-conn', help='The resource id of vhub connection.')
 
+    with self.argument_context('network vhub bgpconnection list') as c:
+        c.argument('virtual_hub_name', id_part=None)
+
     with self.argument_context('network vhub route') as c:
         c.argument('virtual_hub_name', vhub_name_type, id_part=None)
         c.argument('address_prefixes', nargs='+', help='Space-separated list of CIDR prefixes.')
