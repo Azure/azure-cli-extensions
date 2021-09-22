@@ -136,6 +136,9 @@ class NetworkScenarioTest(ScenarioTest):
         # self.cmd('network manager commit post --network-manager-name {manager_name} --commit-type "SecurityAdmin" --target-locations "eastus2" -g {rg} '
         #          '--configuration-ids {sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkManagers/{manager_name}/securityAdminConfigurations/{name}')
 
+        # test nm uncommit
+        # self.cmd('network manager commit post --network-manager-name {manager_name} --commit-type "SecurityAdmin" --target-locations "eastus2" -g {rg} ')
+
         self.cmd('network manager security-admin-config delete --configuration-name {name} --network-manager-name {manager_name} -g {rg} --yes')
 
 
