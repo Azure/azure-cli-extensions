@@ -58,7 +58,6 @@ logger = get_logger(__name__)
 def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="", proxy_cert="", location=None,
                         kube_config=None, kube_context=None, no_wait=False, tags=None, distribution='auto', infrastructure='auto',
                         disable_auto_upgrade=False, cl_oid=None, onboarding_timeout="600"):
-    logger.warning("Ensure that you have the latest helm version installed before proceeding.")
     logger.warning("This operation might take a while...\n")
 
     # Setting subscription id
@@ -374,7 +373,7 @@ def install_helm_client():
     operating_system = platform.system().lower()
     machine_type = platform.machine()
 
-    # Send machine telemetry 
+    # Send machine telemetry
     telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.MachineType': machine_type})
 
     # Set helm binary download & install locations
@@ -390,7 +389,7 @@ def install_helm_client():
         telemetry.set_exception(exception='Unsupported OS for installing helm client', fault_type=consts.Helm_Unsupported_OS_Fault_Type,
                                 summary=f'{operating_system} is not supported for installing helm client')
         raise ClientRequestError(f'The {operating_system} platform is not currently supported for installing helm client.')
-    
+
     download_location = os.path.expanduser(os.path.join('~', download_location_string))
     download_dir = os.path.dirname(download_location)
     install_location = os.path.expanduser(os.path.join('~', install_location_string))
@@ -417,7 +416,7 @@ def install_helm_client():
                 telemetry.set_exception(exception=e, fault_type=consts.Create_Directory_Fault_Type,
                                         summary='Unable to create helm directory')
                 raise ClientRequestError("Failed to create helm directory." + str(e))
-        
+
         # Creating the compressed helm binaries
         try:
             with open(download_location, 'wb') as f:
@@ -427,7 +426,7 @@ def install_helm_client():
                                     summary='Unable to create helm executable')
             raise ClientRequestError("Failed to create helm executable." + str(e), recommendation="Please ensure that you delete the directory '{}' before trying again.".format(download_dir))
 
-    # Extract compressed helm binary 
+    # Extract compressed helm binary
     if not os.path.isfile(install_location):
         try:
             shutil.unpack_archive(download_location, download_dir)
@@ -436,7 +435,7 @@ def install_helm_client():
             telemetry.set_exception(exception=e, fault_type=consts.Extract_HelmExe_Fault_Type,
                                     summary='Unable to extract helm executable')
             raise ClientRequestError("Failed to extract helm executable." + str(e), recommendation="Please ensure that you delete the directory '{}' before trying again.".format(download_dir))
-    
+
     return install_location
 
 
@@ -659,7 +658,6 @@ def list_connectedk8s(cmd, client, resource_group_name=None):
 
 def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
                         kube_config=None, kube_context=None, no_wait=False):
-    logger.warning("Ensure that you have the latest helm version installed before proceeding to avoid unexpected errors.")
     logger.warning("This operation might take a while ...\n")
 
     # Send cloud information to telemetry
@@ -778,7 +776,6 @@ def update_connectedk8s(cmd, instance, tags=None):
 
 def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="", proxy_cert="",
                   disable_proxy=False, kube_config=None, kube_context=None, auto_upgrade=None):
-    logger.warning("Ensure that you have the latest helm version installed before proceeding.")
     logger.warning("This operation might take a while...\n")
 
     # Send cloud information to telemetry
@@ -921,7 +918,6 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
 
 
 def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=None, kube_context=None, arc_agent_version=None, upgrade_timeout="600"):
-    logger.warning("Ensure that you have the latest helm version installed before proceeding.")
     logger.warning("This operation might take a while...\n")
 
     # Send cloud information to telemetry
@@ -1177,7 +1173,6 @@ def get_all_helm_values(release_namespace, kube_config, kube_context, helm_clien
 
 def enable_features(cmd, client, resource_group_name, cluster_name, features, kube_config=None, kube_context=None,
                     azrbac_client_id=None, azrbac_client_secret=None, azrbac_skip_authz_check=None, cl_oid=None):
-    logger.warning("Ensure that you have the latest helm version installed before proceeding.")
     logger.warning("This operation might take a while...\n")
 
     features = [x.lower() for x in features]
@@ -1321,7 +1316,6 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
     confirmation_message = "Disabling few of the features may adversely impact dependent resources. Learn more about this at https://aka.ms/ArcK8sDependentResources. \n" + "Are you sure you want to disable these features: {}".format(features)
     utils.user_confirmation(confirmation_message, yes)
 
-    logger.warning("Ensure that you have the latest helm version installed before proceeding.")
     logger.warning("This operation might take a while...\n")
 
     disable_cluster_connect, disable_azure_rbac, disable_cl = utils.check_features_to_update(features)
