@@ -499,79 +499,216 @@ helps['vmware workload-network'] = """
 
 helps['vmware workload-network dhcp'] = """
     type: group
-    short-summary: Commands to manage a DHCP (Data Host Configuration Protocol) workload-network.
+    short-summary: Commands to manage a DHCP (Data Host Configuration Protocol) workload network.
 """
 
 helps['vmware workload-network dhcp list'] = """
     type: command
-    short-summary: List dhcp in a private cloud workload network.
+    short-summary: List DHCP in a private cloud workload network.
     examples:
-    - name: List dhcp in a workload network.
+    - name: List DHCP in a workload network.
       text: az vmware workload-network dhcp list --resource-group group1 --private-cloud cloud1
 """
 
 helps['vmware workload-network dhcp show'] = """
     type: command
-    short-summary: Get dhcp by id in a private cloud workload network.
+    short-summary: Get DHCP by ID in a private cloud workload network.
     examples:
-    - name: Get dhcp by id in a workload network.
+    - name: Get DHCP by ID in a workload network.
       text: az vmware workload-network dhcp show --resource-group group1 --private-cloud cloud1 --dhcp-id dhcp1
 """
 
 helps['vmware workload-network dhcp relay'] = """
     type: group
-    short-summary: Commands to manage a DHCP (Data Host Configuration Protocol) workload-network.
+    short-summary: Commands to manage a DHCP (Data Host Configuration Protocol) workload network.
 """
 
 helps['vmware workload-network dhcp relay create'] = """
     type: command
-    short-summary: Create dhcp by id in a private cloud workload network.
+    short-summary: Create DHCP by ID in a private cloud workload network.
     examples:
-    - name: Create dhcp by id in a workload network.
+    - name: Create DHCP by ID in a workload network.
       text: az vmware workload-network dhcp relay create --resource-group group1 --private-cloud cloud1 --dhcp-id dhcp1 --display-name dhcpConfigurations1 --revision 1 --server-addresses 40.1.5.1/24
 """
 
 helps['vmware workload-network dhcp relay delete'] = """
     type: command
-    short-summary: Delete dhcp by id in a private cloud workload network.
+    short-summary: Delete DHCP by ID in a private cloud workload network.
     examples:
-    - name: Delete dhcp by id in a workload network.
+    - name: Delete DHCP by ID in a workload network.
       text: az vmware workload-network dhcp relay delete --resource-group group1 --private-cloud cloud1 --dhcp-id dhcp1
 """
 
 helps['vmware workload-network dhcp relay update'] = """
     type: command
-    short-summary: Create or update dhcp by id in a private cloud workload network.
+    short-summary: Update DHCP by ID in a private cloud workload network.
     examples:
-    - name: Create or update dhcp by id in a workload network.
+    - name: Update DHCP by ID in a workload network.
       text: az vmware workload-network dhcp relay update --resource-group group1 --private-cloud cloud1 --dhcp-id dhcp1 --display-name dhcpConfigurations1 --revision 1 --server-addresses 40.1.5.1/24
 """
 
 helps['vmware workload-network dhcp server'] = """
     type: group
-    short-summary: Commands to manage a DHCP (Data Host Configuration Protocol) workload-network.
+    short-summary: Commands to manage a DHCP (Data Host Configuration Protocol) workload network.
 """
 
 helps['vmware workload-network dhcp server create'] = """
     type: command
-    short-summary: Create dhcp by id in a private cloud workload network.
+    short-summary: Create DHCP by ID in a private cloud workload network.
     examples:
-    - name: Create dhcp by id in a workload network.
+    - name: Create DHCP by ID in a workload network.
       text: az vmware workload-network dhcp server create --resource-group group1 --private-cloud cloud1 --dhcp-id dhcp1 --display-name dhcpConfigurations1 --revision 1 --server-address 40.1.5.1/24 --lease-time 86400
 """
 
 helps['vmware workload-network dhcp server delete'] = """
     type: command
-    short-summary: Delete dhcp by id in a private cloud workload network.
+    short-summary: Delete DHCP by ID in a private cloud workload network.
     examples:
-    - name: Delete dhcp by id in a workload network.
+    - name: Delete DHCP by ID in a workload network.
       text: az vmware workload-network dhcp server delete --resource-group group1 --private-cloud cloud1 --dhcp-id dhcp1
 """
 
 helps['vmware workload-network dhcp server update'] = """
     type: command
-    short-summary: Create or update dhcp by id in a private cloud workload network.
+    short-summary: Update DHCP by ID in a private cloud workload network.
     examples:
-    - name: Create or update dhcp by id in a workload network.
+    - name: Update DHCP by ID in a workload network.
       text: az vmware workload-network dhcp server update --resource-group group1 --private-cloud cloud1 --dhcp-id dhcp1 --display-name dhcpConfigurations1 --revision 1 --server-address 40.1.5.1/24 --lease-time 86400
+"""
+
+
+helps['vmware workload-network dns-service'] = """
+    type: group
+    short-summary: Commands to manage a DNS Service workload network.
+"""
+
+
+helps['vmware workload-network dns-service list'] = """
+    type: command
+    short-summary: List of DNS services in a private cloud workload network.
+    examples:
+    - name: List of DNS services in a workload network.
+      text: az vmware workload-network dns-service list --resource-group group1 --private-cloud cloud1
+"""
+
+helps['vmware workload-network dns-service show'] = """
+    type: command
+    short-summary: Get a DNS service by ID in a private cloud workload network.
+    examples:
+    - name: Get a DNS service by ID in a workload network.
+      text: az vmware workload-network dns-service show --resource-group group1 --private-cloud cloud1 --dns-service-id dnsService1
+"""
+
+helps['vmware workload-network dns-service create'] = """
+    type: command
+    short-summary: Create a DNS service by ID in a private cloud workload network.
+    examples:
+    - name: Create a DNS service by ID in a workload network.
+      text: az vmware workload-network dns-service create --resource-group group1 --private-cloud cloud1 --dns-service-id dnsService1 --display-name dnsService1 --dns-service-ip 5.5.5.5 --default-dns-zone defaultDnsZone1 --fqdn-zones fqdnZone1 --log-level INFO --revision 1
+"""
+
+helps['vmware workload-network dns-service update'] = """
+    type: command
+    short-summary: Update a DNS service by ID in a private cloud workload network.
+    examples:
+    - name: Update a DNS service by ID in a workload network.
+      text: az vmware workload-network dns-service update --resource-group group1 --private-cloud cloud1 --dns-service-id dnsService1 --display-name dnsService1 --dns-service-ip 5.5.5.5 --default-dns-zone defaultDnsZone1 --fqdn-zones fqdnZone1 --log-level INFO --revision 1
+"""
+
+helps['vmware workload-network dns-service delete'] = """
+    type: command
+    short-summary: Delete a DNS service by ID in a private cloud workload network.
+    examples:
+    - name: Delete a DNS service by ID in a workload network.
+      text: az vmware workload-network dns-service delete --resource-group group1 --private-cloud cloud1 --dns-service-id dnsService1
+"""
+
+helps['vmware workload-network dns-zone'] = """
+    type: group
+    short-summary: Commands to manage a DNS Zone workload network.
+"""
+
+helps['vmware workload-network dns-zone list'] = """
+    type: command
+    short-summary: List of DNS zones in a private cloud workload network.
+    examples:
+    - name: List of DNS zones in a workload network.
+      text: az vmware workload-network dns-zone list --resource-group group1 --private-cloud cloud1
+"""
+
+helps['vmware workload-network dns-zone show'] = """
+    type: command
+    short-summary: Get a DNS zone by ID in a private cloud workload network.
+    examples:
+    - name: Get a DNS zone by ID in a workload network.
+      text: az vmware workload-network dns-zone show --resource-group group1 --private-cloud cloud1 --dns-zone-id dnsZone1
+"""
+
+helps['vmware workload-network dns-zone create'] = """
+    type: command
+    short-summary: Create a DNS zone by ID in a private cloud workload network.
+    examples:
+    - name: Create a DNS zone by ID in a workload network.
+      text: az vmware workload-network dns-zone create --resource-group group1 --private-cloud cloud1 --dns-zone-id dnsZone1 --display-name dnsZone1 --domain domain1 --dns-server-ips 1.1.1.1 --source-ip 8.8.8.8 --dns-services 1 --revision 1
+"""
+
+helps['vmware workload-network dns-zone update'] = """
+    type: command
+    short-summary: Update a DNS zone by ID in a private cloud workload network.
+    examples:
+    - name: Update a DNS zone by ID in a workload network.
+      text: az vmware workload-network dns-zone update --resource-group group1 --private-cloud cloud1 --dns-zone-id dnsZone1 --display-name dnsZone1 --domain domain1 --dns-server-ips 1.1.1.1 --source-ip 8.8.8.8 --dns-services 1 --revision 1
+"""
+
+helps['vmware workload-network dns-zone delete'] = """
+    type: command
+    short-summary: Delete a DNS zone by ID in a private cloud workload network.
+    examples:
+    - name: Delete a DNS zone by ID in a workload network.
+      text: az vmware workload-network dns-zone delete --resource-group group1 --private-cloud cloud1 --dns-zone-id dnsZone1
+"""
+
+helps['vmware workload-network port-mirroring'] = """
+    type: group
+    short-summary: Commands to manage a Port Mirroring workload network.
+"""
+
+helps['vmware workload-network port-mirroring list'] = """
+    type: command
+    short-summary: List of port mirroring profiles in a private cloud workload network.
+    examples:
+    - name: List of port mirroring profiles in a workload network.
+      text: az vmware workload-network port-mirroring list --resource-group group1 --private-cloud cloud1
+"""
+
+helps['vmware workload-network port-mirroring show'] = """
+    type: command
+    short-summary: Get a port mirroring profile by ID in a private cloud workload network.
+    examples:
+    - name: Get a port mirroring profile by ID in a workload network.
+      text: az vmware workload-network port-mirroring show --resource-group group1 --private-cloud cloud1 --port-mirroring-id portMirroring1
+"""
+
+helps['vmware workload-network port-mirroring create'] = """
+    type: command
+    short-summary: Create a port mirroring profile by ID in a private cloud workload network.
+    examples:
+    - name: Create a port mirroring profile by ID in a workload network.
+      text: az vmware workload-network port-mirroring create --resource-group group1 --private-cloud cloud1 --port-mirroring-id portMirroring1 --display-name portMirroring1 --direction BIDIRECTIONAL --source vmGroup1 --destination vmGroup2 --revision 1
+"""
+
+helps['vmware workload-network port-mirroring update'] = """
+    type: command
+    short-summary: Update a port mirroring profile by ID in a private cloud workload network.
+    examples:
+    - name: Update a port mirroring profile by ID in a workload network.
+      text: az vmware workload-network port-mirroring update --resource-group group1 --private-cloud cloud1 --port-mirroring-id portMirroring1 --display-name portMirroring1 --direction BIDIRECTIONAL --source vmGroup1 --destination vmGroup2 --revision 1
+"""
+
+helps['vmware workload-network port-mirroring delete'] = """
+    type: command
+    short-summary: Delete a port mirroring profile by ID in a private cloud workload network.
+    examples:
+    - name: Delete a port mirroring profile by ID in a workload network.
+      text: az vmware workload-network port-mirroring delete --resource-group group1 --private-cloud cloud1 --port-mirroring-id portMirroring1
 """
