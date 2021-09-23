@@ -174,3 +174,22 @@ def load_arguments(self, _):
         c.argument('source', help='Source VM Group.')
         c.argument('destination', help='Destination VM Group.')
         c.argument('revision', help='NSX revision number.')
+
+    with self.argument_context('vmware workload-network segment') as c:
+        c.argument('segment_id', help="NSX Segment identifier. Generally the same as the Segment's display name.")
+        c.argument('display_name', help='Display name of the segment.')
+        c.argument('connected_gateway', help='Gateway which to connect segment to.')
+        c.argument('revision', help='NSX revision number.')
+        c.argument('dhcp_ranges', nargs='+', help='DHCP Range assigned for subnet.')
+        c.argument('gateway_address', help='Gateway address.')
+
+    with self.argument_context('vmware workload-network public-ip') as c:
+        c.argument('public_ip_id', help="NSX Public IP Block identifier. Generally the same as the Public IP.")
+        c.argument('display_name', help='Display name of the Public IP Block.')
+        c.argument('number_of_public_i_ps', help='Number of Public IPs requested.')
+
+    with self.argument_context('vmware workload-network vm-group') as c:
+        c.argument('vm_group_id', help="NSX VM Group identifier. Generally the same as the VM Group's display name.")
+        c.argument('display_name', help='Display name of the VM group.')
+        c.argument('members', nargs='+', help='Virtual machine members of this group.')
+        c.argument('revision', help='NSX revision number.')
