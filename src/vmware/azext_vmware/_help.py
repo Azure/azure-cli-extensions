@@ -863,7 +863,7 @@ helps['vmware workload-network vm show'] = """
 
 helps['vmware workload-network gateway'] = """
     type: group
-    short-summary: Commands to manage a Virtual Machine workload network.
+    short-summary: Commands to manage a Gateway workload network.
 """
 
 helps['vmware workload-network gateway list'] = """

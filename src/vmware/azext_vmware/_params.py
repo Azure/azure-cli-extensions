@@ -194,8 +194,8 @@ def load_arguments(self, _):
         c.argument('members', nargs='+', help='Virtual machine members of this group.')
         c.argument('revision', help='NSX revision number.')
 
-    with self.argument_context('vmware workload-network vm-group') as c:
+    with self.argument_context('vmware workload-network vm') as c:
         c.argument('virtual_machine_id', help="Virtual Machine identifier.")
 
-    with self.argument_context('vmware workload-network vm-group') as c:
+    with self.argument_context('vmware workload-network gateway') as c:
         c.argument('gateway_id', help="NSX Gateway identifier. Generally the same as the Gateway's display name.")
