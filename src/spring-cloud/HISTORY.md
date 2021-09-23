@@ -1,6 +1,6 @@
 Release History
 ===============
-2.8.0
+2.10.0
 -----
 * Java In-Process Agent is moved from public review to GA state.
 * Add support for `connection_string` when integrating with Application Insights.
@@ -11,6 +11,17 @@ Release History
 * Support `--sampling-rate` in `az spring-cloud create`.
 * Decommissioned `disable-distributed-tracing` parameter.
 * Fix bug for setting `--sampling-rate` to zero.
+
+2.9.0
+-----
+* Add --source-path argument into 'az spring-cloud app deploy' and 'az spring-cloud app deployment create'
+* Deprecate source code deploy without --source-path argument in 'az spring-cloud app deploy' and 'az spring-cloud app deployment create'
+* Add Support to create banner deployment in 'az spring-cloud app deployment create'
+
+2.8.0
+-----
+* Add support to validate jar before create/update deployment
+* Add support to delete deployment with no-wait
 
 2.7.1
 -----

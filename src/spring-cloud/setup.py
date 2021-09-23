@@ -16,8 +16,7 @@ except ImportError:
 
 # TODO: Confirm this is the right version number you want and it matches your
 # HISTORY.rst entry.
-# TODO (jiec) update this before merge
-VERSION = '2.8.0-mason-ipa-ga-0904'
+VERSION = '2.10.0'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers

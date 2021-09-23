@@ -76,6 +76,11 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         g.storage_custom_command_oauth('copy start-batch', 'storage_blob_copy_batch', client_factory=cf_blob_service)
         g.storage_custom_command_oauth('query', 'query_blob',
                                        is_preview=True, min_api='2020-10-02')
+        g.storage_command_oauth('set-legal-hold', 'set_legal_hold', min_api='2020-10-02', is_preview=True)
+        g.storage_custom_command_oauth('immutability-policy set', 'set_blob_immutability_policy',
+                                       min_api='2020-10-02', is_preview=True)
+        g.storage_command_oauth('immutability-policy delete', 'delete_immutability_policy',
+                                min_api='2020-10-02', is_preview=True)
 
     with self.command_group('storage blob', blob_service_sdk, resource_type=CUSTOM_DATA_STORAGE_BLOB,
                             min_api='2019-12-12',

@@ -6,6 +6,7 @@
 
 
 from azext_vmware.action import ScriptExecutionNamedOutputAction, ScriptExecutionParameterAction
+from ._validators import server_addresses_length
 
 
 def load_arguments(self, _):
@@ -134,3 +135,15 @@ def load_arguments(self, _):
         c.argument('out', help='Standard output stream from the powershell execution.')
         c.argument('named_outputs', action=ScriptExecutionNamedOutputAction, nargs='*', help='User-defined dictionary.')
         c.argument('script_cmdlet_id', help='A reference to the script cmdlet resource if user is running a AVS script.')
+
+    with self.argument_context('vmware workload-network dhcp') as c:
+        c.argument('dhcp_id', help='NSX DHCP identifier. Generally the same as the DHCP display name.')
+        c.argument('display_name', help='Display name of the DHCP entity.')
+        c.argument('revision', help='NSX revision number.')
+
+    with self.argument_context('vmware workload-network dhcp server') as c:
+        c.argument('server_address', help='DHCP Server Address.')
+        c.argument('lease_time', help='DHCP Server Lease Time.')
+
+    with self.argument_context('vmware workload-network dhcp relay') as c:
+        c.argument('server_addresses', nargs='+', validator=server_addresses_length, help='DHCP Relay Addresses. Max 3.')

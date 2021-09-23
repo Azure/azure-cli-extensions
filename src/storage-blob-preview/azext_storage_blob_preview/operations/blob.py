@@ -96,6 +96,15 @@ def set_service_properties(client, delete_retention=None, delete_retention_perio
     return client.get_service_properties()
 
 
+def set_blob_immutability_policy(cmd, client, expiry_time=None, policy_mode=None, **kwargs):
+    ImmutabilityPolicy = cmd.get_models("_models#ImmutabilityPolicy", resource_type=CUSTOM_DATA_STORAGE_BLOB)
+    if not expiry_time and not policy_mode:
+        from azure.cli.core.azclierror import InvalidArgumentValueError
+        raise InvalidArgumentValueError('Please specify --expiry-time | --policy-mode')
+    immutability_policy = ImmutabilityPolicy(expiry_time=expiry_time, policy_mode=policy_mode)
+    return client.set_immutability_policy(immutability_policy=immutability_policy, **kwargs)
+
+
 def storage_blob_copy_batch(cmd, client, source_client, container_name=None,
                             destination_path=None, source_container=None, source_share=None,
                             source_sas=None, pattern=None, dryrun=False, source_account_name=None,

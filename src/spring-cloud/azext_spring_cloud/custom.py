@@ -26,7 +26,7 @@ from .vendored_sdks.appplatform.v2020_11_01_preview import (
 )
 from knack.log import get_logger
 from .azure_storage_file import FileService
-from azure.cli.core.azclierror import InvalidArgumentValueError
+from azure.cli.core.azclierror import InvalidArgumentValueError, RequiredArgumentMissingError
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.util import sdk_no_wait
 from azure.cli.core.profiles import ResourceType, get_sdk
@@ -279,35 +279,15 @@ def app_create(cmd, client, resource_group, service, name,
     while poller.done() is False:
         sleep(APP_CREATE_OR_UPDATE_SLEEP_INTERVAL)
 
-    resource_requests = models_20210601preview.ResourceRequests(cpu=cpu, memory=memory)
-
-    deployment_settings = models_20210601preview.DeploymentSettings(
-        resource_requests=resource_requests,
-        environment_variables=env,
-        jvm_options=jvm_options,
-        net_core_main_entry_path=None,
-        runtime_version=runtime_version)
-    deployment_settings.cpu = None
-    deployment_settings.memory_in_gb = None
-
-    file_type = "NetCoreZip" if runtime_version == AppPlatformEnums.RuntimeVersion.NET_CORE31 else "Jar"
-
-    user_source_info = models_20210601preview.UserSourceInfo(
-        relative_path='<default>', type=file_type)
-    properties = models_20210601preview.DeploymentResourceProperties(
-        deployment_settings=deployment_settings,
-        source=user_source_info)
-
     # create default deployment
     logger.warning(
         "[2/4] Creating default deployment with name '{}'".format(DEFAULT_DEPLOYMENT_NAME))
-    sku = models_20210601preview.Sku(name="S0", tier="STANDARD", capacity=instance_count)
-    deployment_resource = models.DeploymentResource(properties=properties, sku=sku)
+    default_deployment_resource = _default_deployment_resource_builder(cpu, memory, env, jvm_options, runtime_version, instance_count)
     poller = client.deployments.begin_create_or_update(resource_group,
                                                        service,
                                                        name,
                                                        DEFAULT_DEPLOYMENT_NAME,
-                                                       deployment_resource)
+                                                       default_deployment_resource)
 
     logger.warning("[3/4] Setting default deployment to production")
     properties = models_20210601preview.AppResourceProperties(
@@ -335,6 +315,31 @@ def app_create(cmd, client, resource_group, service, name,
     app.properties.active_deployment = active_deployment
     logger.warning("App create succeeded")
     return app
+
+
+def _default_deployment_resource_builder(cpu, memory, env, jvm_options, runtime_version, instance_count):
+    resource_requests = models_20210601preview.ResourceRequests(cpu=cpu, memory=memory)
+
+    deployment_settings = models_20210601preview.DeploymentSettings(
+        resource_requests=resource_requests,
+        environment_variables=env,
+        jvm_options=jvm_options,
+        net_core_main_entry_path=None,
+        runtime_version=runtime_version)
+    deployment_settings.cpu = None
+    deployment_settings.memory_in_gb = None
+
+    file_type = "NetCoreZip" if runtime_version == AppPlatformEnums.RuntimeVersion.NET_CORE31 else "Jar"
+
+    user_source_info = models_20210601preview.UserSourceInfo(
+        relative_path='<default>', type=file_type)
+    properties = models_20210601preview.DeploymentResourceProperties(
+        deployment_settings=deployment_settings,
+        source=user_source_info)
+
+    sku = models_20210601preview.Sku(name="S0", tier="STANDARD", capacity=instance_count)
+    deployment_resource = models.DeploymentResource(properties=properties, sku=sku)
+    return deployment_resource
 
 
 def _check_active_deployment_exist(client, resource_group, service, app):
@@ -498,7 +503,9 @@ def app_get(cmd, client,
 def app_deploy(cmd, client, resource_group, service, name,
                version=None,
                deployment=None,
+               disable_validation=None,
                artifact_path=None,
+               source_path=None,
                target_module=None,
                runtime_version=None,
                jvm_options=None,
@@ -515,7 +522,7 @@ def app_deploy(cmd, client, resource_group, service, name,
 
     client.deployments.get(resource_group, service, name, deployment)
 
-    file_type, file_path = _get_upload_local_file(runtime_version, artifact_path)
+    file_type, file_path = _get_upload_local_file(runtime_version, artifact_path, source_path)
 
     return _app_deploy(client,
                        resource_group,
@@ -747,6 +754,8 @@ def deployment_create(cmd, client, resource_group, service, app, name,
                       skip_clone_settings=False,
                       version=None,
                       artifact_path=None,
+                      source_path=None,
+                      disable_validation=None,
                       target_module=None,
                       runtime_version=None,
                       jvm_options=None,
@@ -786,7 +795,7 @@ def deployment_create(cmd, client, resource_group, service, app, name,
         memory = memory or "1Gi"
         instance_count = instance_count or 1
 
-    file_type, file_path = _get_upload_local_file(runtime_version, artifact_path)
+    file_type, file_path = _get_upload_local_file(runtime_version, artifact_path, source_path)
     return _app_deploy(client, resource_group, service, app, name, version, file_path,
                        runtime_version,
                        jvm_options,
@@ -821,12 +830,12 @@ def deployment_get(cmd, client, resource_group, service, app, name):
     return client.deployments.get(resource_group, service, app, name)
 
 
-def deployment_delete(cmd, client, resource_group, service, app, name):
+def deployment_delete(cmd, client, resource_group, service, app, name, no_wait=False):
     active_deployment_name = client.apps.get(resource_group, service, app).properties.active_deployment_name
     if active_deployment_name == name:
         logger.warning(DELETE_PRODUCTION_DEPLOYMENT_WARNING)
     client.deployments.get(resource_group, service, app, name)
-    return client.deployments.begin_delete(resource_group, service, app, name)
+    return sdk_no_wait(no_wait, client.deployments.begin_delete, resource_group, service, app, name)
 
 
 def is_valid_git_uri(uri):
@@ -1306,8 +1315,18 @@ def _app_deploy(client, resource_group, service, app, name, version, path, runti
                 main_entry=None,
                 target_module=None,
                 no_wait=False,
-                file_type="Jar",
+                file_type=None,
                 update=False):
+    if file_type is None:
+        # update means command is az spring-cloud app deploy xxx
+        if update:
+            raise RequiredArgumentMissingError("One of the following arguments are required: '--artifact-path' or '--source-path'")
+        # if command is az spring-cloud app deployment create xxx, create default deployment
+        else:
+            logger.warning("Creating default deployment without artifact/source folder. Please specify the --artifact-path/--source-path argument explicitly if needed.")
+            default_deployment_resource = _default_deployment_resource_builder(cpu, memory, env, jvm_options, runtime_version, instance_count)
+            return sdk_no_wait(no_wait, client.deployments.begin_create_or_update,
+                               resource_group, service, app, name, default_deployment_resource)
     upload_url = None
     relative_path = None
     logger.warning("file_type is {}".format(file_type))
@@ -1341,7 +1360,6 @@ def _app_deploy(client, resource_group, service, app, name, version, path, runti
     properties = models_20210601preview.DeploymentResourceProperties(
         deployment_settings=deployment_settings,
         source=user_source_info)
-
     # upload file
     if not upload_url:
         raise CLIError("Failed to get a SAS URL to upload context.")

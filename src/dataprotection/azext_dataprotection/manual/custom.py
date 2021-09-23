@@ -54,7 +54,8 @@ def dataprotection_backup_instance_validate_for_backup(client, vault_name, resou
                        resource_group_name=resource_group_name, parameters=validate_for_backup_request)
 
 
-def dataprotection_backup_instance_initialize(datasource_type, datasource_id, datasource_location, policy_id):
+def dataprotection_backup_instance_initialize(datasource_type, datasource_id, datasource_location, policy_id,
+                                              secret_store_type=None, secret_store_uri=None):
     datasource_info = helper.get_datasource_info(datasource_type, datasource_id, datasource_location)
     datasourceset_info = None
     manifest = helper.load_manifest(datasource_type)
@@ -74,6 +75,20 @@ def dataprotection_backup_instance_initialize(datasource_type, datasource_id, da
             ]
         }
 
+    datasource_auth_credentials_info = None
+    if manifest["supportSecretStoreAuthentication"]:
+        if secret_store_uri and secret_store_type:
+            datasource_auth_credentials_info = {
+                "secret_store_resource": {
+                    "uri": secret_store_uri,
+                    "value": None,
+                    "secret_store_type": secret_store_type
+                },
+                "object_type": "SecretStoreBasedAuthCredentials"
+            }
+        elif secret_store_uri or secret_store_type:
+            raise CLIError("Either secret store uri or secret store type not provided.")
+
     policy_info = {
         "policy_id": policy_id,
         "policy_parameters": policy_parameters
@@ -92,6 +107,7 @@ def dataprotection_backup_instance_initialize(datasource_type, datasource_id, da
             "data_source_info": datasource_info,
             "data_source_set_info": datasourceset_info,
             "policy_info": policy_info,
+            "datasource_auth_credentials": datasource_auth_credentials_info,
             "object_type": "BackupInstance"
         }
     }
@@ -374,7 +390,8 @@ def dataprotection_backup_policy_tag_remove_in_policy(name, policy):
 
 
 def restore_initialize_for_data_recovery(target_resource_id, datasource_type, source_datastore, restore_location,
-                                         recovery_point_id=None, point_in_time=None):
+                                         recovery_point_id=None, point_in_time=None, secret_store_type=None,
+                                         secret_store_uri=None, rehydration_priority=None, rehydration_duration=15):
 
     restore_request = {}
     restore_mode = None
@@ -399,7 +416,18 @@ def restore_initialize_for_data_recovery(target_resource_id, datasource_type, so
         raise CLIError(restore_mode + " restore mode is not supported for datasource type " + datasource_type +
                        ". Supported restore modes are " + ','.join(manifest["allowedRestoreModes"]))
 
-    restore_request["source_data_store_type"] = source_datastore
+    if source_datastore in manifest["policySettings"]["supportedDatastoreTypes"]:
+        restore_request["source_data_store_type"] = source_datastore
+        if rehydration_priority:
+            if rehydration_duration < 10 or rehydration_duration > 30:
+                raise CLIError("The allowed range of rehydration duration is 10 to 30 days.")
+            restore_request["object_type"] = "AzureBackupRestoreWithRehydrationRequest"
+            restore_request["rehydration_priority"] = rehydration_priority
+            restore_request["rehydration_retention_duration"] = "P" + str(rehydration_duration) + "D"
+    else:
+        raise CLIError(source_datastore + " datastore type is not supported for datasource type " + datasource_type +
+                       ". Supported datastore types are " + ','.join(manifest["policySettings"]["supportedDatastoreTypes"]))
+
     restore_request["restore_target_info"] = {}
     restore_request["restore_target_info"]["object_type"] = "RestoreTargetInfo"
     restore_request["restore_target_info"]["restore_location"] = restore_location
@@ -408,6 +436,70 @@ def restore_initialize_for_data_recovery(target_resource_id, datasource_type, so
 
     if manifest["isProxyResource"]:
         restore_request["restore_target_info"]["datasource_set_info"] = helper.get_datasourceset_info(datasource_type, target_resource_id, restore_location)
+
+    if manifest["supportSecretStoreAuthentication"]:
+        if secret_store_uri and secret_store_type:
+            restore_request["restore_target_info"]["datasource_auth_credentials"] = {
+                "secret_store_resource": {
+                    "uri": secret_store_uri,
+                    "value": None,
+                    "secret_store_type": secret_store_type
+                },
+                "object_type": "SecretStoreBasedAuthCredentials"
+            }
+        elif secret_store_uri or secret_store_type:
+            raise CLIError("Either secret store uri or secret store type not provided.")
+
+    return restore_request
+
+
+def restore_initialize_for_data_recovery_as_files(target_blob_container_url, target_file_name, datasource_type, source_datastore,
+                                                  restore_location, recovery_point_id=None, point_in_time=None,
+                                                  rehydration_priority=None, rehydration_duration=15):
+
+    restore_request = {}
+    restore_mode = None
+    if recovery_point_id is not None and point_in_time is not None:
+        raise CLIError("Please provide either recovery point id or point in time parameter, not both.")
+
+    if recovery_point_id is not None:
+        restore_request["object_type"] = "AzureBackupRecoveryPointBasedRestoreRequest"
+        restore_request["recovery_point_id"] = recovery_point_id
+        restore_mode = "RecoveryPointBased"
+
+    if point_in_time is not None:
+        restore_request["object_type"] = "AzureBackupRecoveryTimeBasedRestoreRequest"
+        restore_request["recovery_point_time"] = point_in_time
+        restore_mode = "PointInTimeBased"
+
+    if recovery_point_id is None and point_in_time is None:
+        raise CLIError("Please provide either recovery point id or point in time parameter.")
+
+    manifest = helper.load_manifest(datasource_type)
+    if manifest is not None and manifest["allowedRestoreModes"] is not None and restore_mode not in manifest["allowedRestoreModes"]:
+        raise CLIError(restore_mode + " restore mode is not supported for datasource type " + datasource_type +
+                       ". Supported restore modes are " + ','.join(manifest["allowedRestoreModes"]))
+
+    if source_datastore in manifest["policySettings"]["supportedDatastoreTypes"]:
+        restore_request["source_data_store_type"] = source_datastore
+        if rehydration_priority:
+            if rehydration_duration < 10 or rehydration_duration > 30:
+                raise CLIError("The allowed range of rehydration duration is 10 to 30 days.")
+            restore_request["object_type"] = "AzureBackupRestoreWithRehydrationRequest"
+            restore_request["rehydration_priority"] = rehydration_priority
+            restore_request["rehydration_retention_duration"] = "P" + str(rehydration_duration) + "D"
+    else:
+        raise CLIError(source_datastore + " datastore type is not supported for datasource type " + datasource_type +
+                       ". Supported datastore types are " + ','.join(manifest["policySettings"]["supportedDatastoreTypes"]))
+
+    restore_request["restore_target_info"] = {}
+    restore_request["restore_target_info"]["object_type"] = "RestoreFilesTargetInfo"
+    restore_request["restore_target_info"]["restore_location"] = restore_location
+    restore_request["restore_target_info"]["recovery_option"] = "FailIfExists"
+    restore_request["restore_target_info"]["target_details"] = {}
+    restore_request["restore_target_info"]["target_details"]["url"] = target_blob_container_url
+    restore_request["restore_target_info"]["target_details"]["file_prefix"] = target_file_name
+    restore_request["restore_target_info"]["target_details"]["restore_target_location_type"] = "AzureBlobs"
 
     return restore_request
 
@@ -473,7 +565,7 @@ def restore_initialize_for_item_recovery(client, datasource_type, source_datasto
                 "equal length and can have a maximum of 10 patterns."
             )
 
-        for index in range(len(from_prefix_pattern)):
+        for index, _ in enumerate(from_prefix_pattern):
             if from_prefix_pattern[index][0] == '$' or to_prefix_pattern[index][0] == '$':
                 raise CLIError(
                     "Prefix patterns should not start with '$'. Please provide valid prefix patterns and try again."
@@ -513,7 +605,7 @@ def restore_initialize_for_item_recovery(client, datasource_type, source_datasto
                         "overlapping ranges are not allowed."
                     )
 
-        for index in range(len(from_prefix_pattern)):
+        for index, _ in enumerate(from_prefix_pattern):
             restore_criteria = {}
             restore_criteria["object_type"] = "RangeBasedItemLevelRestoreCriteria"
             restore_criteria["min_matching_value"] = from_prefix_pattern[index]
