@@ -5,10 +5,11 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import sys
 from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "0.2.5"
+VERSION = "0.2.6"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -27,6 +28,9 @@ DEPENDENCIES = [
     'mysql-connector-python==8.0.14',
     'psycopg2-binary==2.9.1'
 ]
+
+if sys.platform != 'darwin':
+    DEPENDENCIES.append('pymssql==2.2.2')
 
 setup(
     name='db-up',
