@@ -2,6 +2,11 @@
 
 Release History
 ===============
+1.1.11
+++++++
+
+* Updated CSP version to 1.3.017131
+* Updated GA SDK to 2021-10-01
 
 1.1.10
 ++++++
