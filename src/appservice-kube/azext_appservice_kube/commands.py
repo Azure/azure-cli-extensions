@@ -72,9 +72,6 @@ def load_command_table(self, _):
         g.custom_command('scale', 'scale_webapp')
         g.custom_command('restart', 'restart_webapp')
 
-    with self.command_group('webapp config container') as g:
-        g.custom_command('set', 'update_container_settings')
-
     with self.command_group('webapp deployment source') as g:
         g.custom_command('config-zip', 'enable_zip_deploy_webapp')
 

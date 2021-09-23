@@ -25,6 +25,8 @@ from knack.util import CLIError
 from knack.log import get_logger
 
 from azure.cli.command_modules.appservice.custom import (
+    update_container_settings,
+    _build_identities_info,
     list_webapp,
     _rename_server_farm_props,
     _generic_settings_operation,
@@ -541,7 +543,6 @@ def _get_custom_location_id_from_custom_location(cmd, custom_location_name, reso
 
 
 def _get_custom_location_id_from_kube_env(kube):
-    pprint(kube)
     if kube.get("properties") and kube["properties"].get("extendedLocation"):
         return kube["properties"]['extendedLocation'].get('customLocation')
     elif kube.get("extendedLocation") and kube["extendedLocation"].get("type") == "CustomLocation":
@@ -655,6 +656,7 @@ def update_app_service_plan(cmd, resource_group_name, name, sku=None, number_of_
 
     return sdk_no_wait(no_wait, AppServiceClient.update, cmd=cmd, name=name, resource_group_name=resource_group_name, appservice_json=plan)
 
+
 def _validate_asp_and_custom_location_kube_envs_match(cmd, resource_group_name, custom_location, plan):
     client = web_client_factory(cmd.cli_ctx)
     if is_valid_resource_id(plan):
@@ -688,8 +690,8 @@ def _should_create_new_appservice_plan_for_k8se(cmd, name, custom_location, plan
     else:  # plan is not None
         return False
 
-
 # TODO test more; test with slots 
+# TODO test with assigning an identity 
 def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custom_location=None, startup_file=None,  # pylint: disable=too-many-statements,too-many-branches
                   deployment_container_image_name=None, deployment_source_url=None, deployment_source_branch='master',
                   deployment_local_git=None, docker_registry_server_password=None, docker_registry_server_user=None,
@@ -871,7 +873,6 @@ def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custo
                                                           value='https://{}.scm.azurewebsites.net/detectors'
                                                           .format(name)))
 
-    #  WebAppClient.create(cmd=cmd, name=name, resource_group_name=resource_group_name, webapp_json=webapp_def.serialize()) 
     poller = client.web_apps.begin_create_or_update(resource_group_name, name, webapp_def)
     webapp = LongRunningOperation(cmd.cli_ctx)(poller)
 
@@ -899,6 +900,7 @@ def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custo
 
     return webapp
 
+# TODO ask calvin about this 
 def scale_webapp(cmd, resource_group_name, name, instance_count, slot=None):
     return update_site_configs(cmd, resource_group_name, name,
                                number_of_workers=instance_count, slot=slot)
@@ -1158,48 +1160,6 @@ def update_container_settings_functionapp(cmd, resource_group_name, name, docker
                                      docker_custom_image_name, docker_registry_server_user, None,
                                      docker_registry_server_password, multicontainer_config_type=None,
                                      multicontainer_config_file=None, slot=slot)
-
-
-def update_container_settings(cmd, resource_group_name, name, docker_registry_server_url=None,
-                              docker_custom_image_name=None, docker_registry_server_user=None,
-                              websites_enable_app_service_storage=None, docker_registry_server_password=None,
-                              multicontainer_config_type=None, multicontainer_config_file=None, slot=None):
-    settings = []
-    if docker_registry_server_url is not None:
-        settings.append('DOCKER_REGISTRY_SERVER_URL=' + docker_registry_server_url)
-
-    if (not docker_registry_server_user and not docker_registry_server_password and
-            docker_registry_server_url and '.azurecr.io' in docker_registry_server_url):
-        logger.warning('No credential was provided to access Azure Container Registry. Trying to look up...')
-        parsed = urlparse(docker_registry_server_url)
-        registry_name = (parsed.netloc if parsed.scheme else parsed.path).split('.')[0]
-        try:
-            docker_registry_server_user, docker_registry_server_password = _get_acr_cred(cmd.cli_ctx, registry_name)
-        except Exception as ex:  # pylint: disable=broad-except
-            logger.warning("Retrieving credentials failed with an exception:'%s'", ex)  # consider throw if needed
-
-    if docker_registry_server_user is not None:
-        settings.append('DOCKER_REGISTRY_SERVER_USERNAME=' + docker_registry_server_user)
-    if docker_registry_server_password is not None:
-        settings.append('DOCKER_REGISTRY_SERVER_PASSWORD=' + docker_registry_server_password)
-    if docker_custom_image_name is not None:
-        _add_fx_version(cmd, resource_group_name, name, docker_custom_image_name, slot)
-    if websites_enable_app_service_storage:
-        settings.append('WEBSITES_ENABLE_APP_SERVICE_STORAGE=' + websites_enable_app_service_storage)
-
-    if docker_registry_server_user or docker_registry_server_password or docker_registry_server_url or websites_enable_app_service_storage:  # pylint: disable=line-too-long
-        update_app_settings(cmd, resource_group_name, name, settings, slot)
-    settings = get_app_settings(cmd, resource_group_name, name, slot)
-
-    if multicontainer_config_file and multicontainer_config_type:
-        encoded_config_file = _get_linux_multicontainer_encoded_config_from_file(multicontainer_config_file)
-        linux_fx_version = _format_fx_version(encoded_config_file, multicontainer_config_type)
-        update_site_configs(cmd, resource_group_name, name, linux_fx_version=linux_fx_version, slot=slot)
-    elif multicontainer_config_file or multicontainer_config_type:
-        logger.warning('Must change both settings --multicontainer-config-file FILE --multicontainer-config-type TYPE')
-
-    return _mask_creds_related_appsettings(_filter_for_container_settings(cmd, resource_group_name, name, settings,
-                                                                          slot=slot))
 
 
 def try_create_application_insights(cmd, functionapp):
