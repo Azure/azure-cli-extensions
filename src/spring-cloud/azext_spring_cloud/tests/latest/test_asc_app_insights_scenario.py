@@ -14,13 +14,6 @@ from azure.cli.testsdk import (ScenarioTest, record_only)
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
-"""
-Due to limitation of this testing framework, not able to 
-check the error message for negative cases. However, this
-is a good place to hold these negative cases.
-"""
-
-
 @record_only()
 class AzureSpringCloudCreateTests(ScenarioTest):
     default_sampling_rate = 10.0
