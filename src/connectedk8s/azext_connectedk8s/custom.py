@@ -396,6 +396,15 @@ def install_helm_client():
 
     # Download compressed halm binary if not already present
     if not os.path.isfile(download_location):
+        # Creating the helm folder if it doesnt exist
+        if not os.path.exists(download_dir):
+            try:
+                os.makedirs(download_dir)
+            except Exception as e:
+                telemetry.set_exception(exception=e, fault_type=consts.Create_Directory_Fault_Type,
+                                        summary='Unable to create helm directory')
+                raise ClientRequestError("Failed to create helm directory." + str(e))
+
         # Downloading compressed helm client executable
         print("Downloading helm client for first time. This can take few minutes...")
         try:
@@ -407,15 +416,6 @@ def install_helm_client():
 
         responseContent = response.read()
         response.close()
-
-        # Creating the helm folder if it doesnt exist
-        if not os.path.exists(download_dir):
-            try:
-                os.makedirs(download_dir)
-            except Exception as e:
-                telemetry.set_exception(exception=e, fault_type=consts.Create_Directory_Fault_Type,
-                                        summary='Unable to create helm directory')
-                raise ClientRequestError("Failed to create helm directory." + str(e))
 
         # Creating the compressed helm binaries
         try:
