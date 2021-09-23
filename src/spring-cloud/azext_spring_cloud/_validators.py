@@ -158,17 +158,20 @@ def validate_jvm_options(namespace):
 def validate_tracing_parameters_asc_create(namespace):
     if (namespace.app_insights or namespace.app_insights_key or namespace.sampling_rate is not None) \
             and namespace.disable_app_insights:
-        raise InvalidArgumentValueError("Conflict detected: '--app-insights' or '--app-insights-key' or '--sampling-rate' "
-                       "can not be set with '--disable-app-insights'.")
+        raise InvalidArgumentValueError(
+            "Conflict detected: '--app-insights' or '--app-insights-key' or '--sampling-rate' "
+            "can not be set with '--disable-app-insights'.")
     _validate_app_insights_parameters(namespace)
 
 
 def validate_tracing_parameters_asc_update(namespace):
     if (namespace.app_insights or namespace.app_insights_key) and namespace.disable_app_insights:
-        raise InvalidArgumentValueError("Conflict detected: '--app-insights' or '--app-insights-key' "
-                       "can not be set with '--disable-app-insights'.")
+        raise InvalidArgumentValueError(
+            "Conflict detected: '--app-insights' or '--app-insights-key' "
+            "can not be set with '--disable-app-insights'.")
     if namespace.app_insights and namespace.app_insights_key:
-        raise InvalidArgumentValueError("Conflict detected: '--app-insights' and '--app-insights-key' can not be set at the same time.")
+        raise InvalidArgumentValueError(
+            "Conflict detected: '--app-insights' and '--app-insights-key' can not be set at the same time.")
     if namespace.app_insights == "":
         raise InvalidArgumentValueError("Conflict detected: '--app-insights' can not be empty.")
 
@@ -177,15 +180,17 @@ def validate_java_agent_parameters(namespace):
     """TODO (jiec) Deco this function when 'enable-java-agent' is decommissioned.
     """
     if namespace.disable_app_insights and namespace.enable_java_agent:
-        raise InvalidArgumentValueError("Conflict detected: '--enable-java-agent' and '--disable-app-insights' "
-                       "can not be set at the same time.")
+        raise InvalidArgumentValueError(
+            "Conflict detected: '--enable-java-agent' and '--disable-app-insights' "
+            "can not be set at the same time.")
 
 
 def validate_app_insights_parameters(namespace):
     if (namespace.app_insights or namespace.app_insights_key or namespace.sampling_rate is not None) \
             and namespace.disable:
-        raise InvalidArgumentValueError("Conflict detected: '--app-insights' or '--app-insights-key' or '--sampling-rate' "
-                       "can not be set with '--disable'.")
+        raise InvalidArgumentValueError(
+            "Conflict detected: '--app-insights' or '--app-insights-key' or '--sampling-rate' "
+            "can not be set with '--disable'.")
     if not namespace.app_insights \
             and not namespace.app_insights_key \
             and namespace.sampling_rate is None \
@@ -196,7 +201,8 @@ def validate_app_insights_parameters(namespace):
 
 def _validate_app_insights_parameters(namespace):
     if namespace.app_insights and namespace.app_insights_key:
-        raise InvalidArgumentValueError("Conflict detected: '--app-insights' and '--app-insights-key' can not be set at the same time.")
+        raise InvalidArgumentValueError(
+            "Conflict detected: '--app-insights' and '--app-insights-key' can not be set at the same time.")
     if namespace.app_insights == "":
         raise InvalidArgumentValueError("Invalid value: '--app-insights' can not be empty.")
     if namespace.app_insights_key == "":
