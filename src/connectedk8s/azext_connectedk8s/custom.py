@@ -406,7 +406,7 @@ def install_helm_client():
                 raise ClientRequestError("Failed to create helm directory." + str(e))
 
         # Downloading compressed helm client executable
-        print("Downloading helm client for first time. This can take few minutes...")
+        logger.warning("Downloading helm client for first time. This can take few minutes...")
         try:
             response = urllib.request.urlopen(requestUri)
         except Exception as e:
