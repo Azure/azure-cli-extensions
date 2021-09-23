@@ -773,25 +773,25 @@ helps['vmware workload-network public-ip list'] = """
 
 helps['vmware workload-network public-ip show'] = """
     type: command
-    short-summary: Get a Public IP Block by id in a private cloud workload network.
+    short-summary: Get a Public IP Block by ID in a private cloud workload network.
     examples:
-    - name: Get a Public IP Block by id in a workload network.
+    - name: Get a Public IP Block by ID in a workload network.
       text: az vmware workload-network public-ip show --resource-group group1 --private-cloud cloud1 --public-ip-id publicIP1
 """
 
 helps['vmware workload-network public-ip create'] = """
     type: command
-    short-summary: Create a Public IP Block by id in a private cloud workload network.
+    short-summary: Create a Public IP Block by ID in a private cloud workload network.
     examples:
-    - name: Create a Public IP Block by id in a workload network.
+    - name: Create a Public IP Block by ID in a workload network.
       text: az vmware workload-network public-ip create --resource-group group1 --private-cloud cloud1 --public-ip-id publicIP1 --display-name publicIP1 --number-of-public-i-ps 32
 """
 
 helps['vmware workload-network public-ip delete'] = """
     type: command
-    short-summary: Delete a Public IP Block by id in a private cloud workload network.
+    short-summary: Delete a Public IP Block by ID in a private cloud workload network.
     examples:
-    - name: Delete a Public IP Block by id in a workload network.
+    - name: Delete a Public IP Block by ID in a workload network.
       text: az vmware workload-network public-ip delete --resource-group group1 --private-cloud cloud1 --public-ip-id publicIP1
 """
 
@@ -810,32 +810,74 @@ helps['vmware workload-network vm-group list'] = """
 
 helps['vmware workload-network vm-group show'] = """
     type: command
-    short-summary: Get a VM Group by id in a private cloud workload network.
+    short-summary: Get a VM Group by ID in a private cloud workload network.
     examples:
-    - name: Get a VM Group by id in a workload network.
+    - name: Get a VM Group by ID in a workload network.
       text: az vmware workload-network vm-group show --resource-group group1 --private-cloud cloud1 --vm-group-id vmGroup1
 """
 
 helps['vmware workload-network vm-group create'] = """
     type: command
-    short-summary: Create a VM Group by id in a private cloud workload network.
+    short-summary: Create a VM Group by ID in a private cloud workload network.
     examples:
-    - name: Create a VM Group by id in a workload network.
+    - name: Create a VM Group by ID in a workload network.
       text: az vmware workload-network vm-group create --resource-group group1 --private-cloud cloud1 --vm-group-id vmGroup1 --display-name vmGroup1 --members 564d43da-fefc-2a3b-1d92-42855622fa50 --revision 1
 """
 
 helps['vmware workload-network vm-group update'] = """
     type: command
-    short-summary: Update a VM Group by id in a private cloud workload network.
+    short-summary: Update a VM Group by ID in a private cloud workload network.
     examples:
-    - name: Update a VM Group by id in a workload network.
+    - name: Update a VM Group by ID in a workload network.
       text: az vmware workload-network vm-group update --resource-group group1 --private-cloud cloud1 --vm-group-id vmGroup1 --display-name vmGroup1 --members 564d43da-fefc-2a3b-1d92-42855622fa50 --revision 1
 """
 
 helps['vmware workload-network vm-group delete'] = """
     type: command
-    short-summary: Delete a VM Group by id in a private cloud workload network.
+    short-summary: Delete a VM Group by ID in a private cloud workload network.
     examples:
-    - name: Delete a VM Group by id in a private cloud workload network.
+    - name: Delete a VM Group by ID in a private cloud workload network.
       text: az vmware workload-network vm-group delete --resource-group group1 --private-cloud cloud1 --vm-group-id vmGroup1
+"""
+
+helps['vmware workload-network vm'] = """
+    type: group
+    short-summary: Commands to manage a Virtual Machine workload network.
+"""
+
+helps['vmware workload-network vm list'] = """
+    type: command
+    short-summary: List of Virtual Machines in a private cloud workload network.
+    examples:
+    - name: List of Virtual Machines in a workload network.
+      text: az vmware workload-network vm list --resource-group group1 --private-cloud cloud1
+"""
+
+helps['vmware workload-network vm show'] = """
+    type: command
+    short-summary: Get a Virtual Machines by ID in a private cloud workload network.
+    examples:
+    - name: Get a Virtual Machines by ID in a workload network.
+      text: az vmware workload-network vm show --resource-group group1 --private-cloud cloud1 --virtual-machine-id vm1
+"""
+
+helps['vmware workload-network gateway'] = """
+    type: group
+    short-summary: Commands to manage a Virtual Machine workload network.
+"""
+
+helps['vmware workload-network gateway list'] = """
+    type: command
+    short-summary: List of Gateways in a private cloud workload network.
+    examples:
+    - name: List of Gateways in a workload network.
+      text: az vmware workload-network gateway list --resource-group group1 --private-cloud cloud1
+"""
+
+helps['vmware workload-network gateway show'] = """
+    type: command
+    short-summary: Get a Gateway by ID in a private cloud workload network.
+    examples:
+    - name: Get a Gateway by ID in a workload network.
+      text: az vmware workload-network gateway show --resource-group group1 --private-cloud cloud1 --gateway-id gateway1
 """

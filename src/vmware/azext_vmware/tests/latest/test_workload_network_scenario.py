@@ -44,7 +44,9 @@ class VmwareWorkloadNetworkScenarioTest(ScenarioTest):
             'public_ip_id': 'publicIP1',
             'number_of_public_i_ps': '32',
             'vm_group_id': 'vmGroup1',
-            'members': '564d43da-fefc-2a3b-1d92-42855622fa50'
+            'members': '564d43da-fefc-2a3b-1d92-42855622fa50',
+            'virtual_machine_id': 'vm1',
+            'gateway_id': 'gateway1'
         })
         
         count = len(self.cmd('az vmware workload-network dhcp list --resource-group {rg} --private-cloud {privatecloud}').get_output_in_json())
@@ -159,3 +161,15 @@ class VmwareWorkloadNetworkScenarioTest(ScenarioTest):
 
         vmGroupDelete = self.cmd('az vmware workload-network vm-group delete --resource-group {rg} --private-cloud {privatecloud} --vm-group-id {vm_group_id}').output
         self.assertEqual(len(vmGroupDelete), 0)
+
+        vmList = self.cmd('az vmware workload-network vm list --resource-group {rg} --private-cloud {privatecloud}').get_output_in_json()
+        self.assertEqual(len(vmList), 1, 'count expected to be 1')
+
+        vmGet = self.cmd('az vmware workload-network vm show --resource-group {rg} --private-cloud {privatecloud} --virtual-machine-id {virtual_machine_id}').get_output_in_json()
+        self.assertEqual(vmGet['name'], 'vm1')
+
+        gatewayList = self.cmd('az vmware workload-network gateway list --resource-group {rg} --private-cloud {privatecloud}').get_output_in_json()
+        self.assertEqual(len(gatewayList), 1, 'count expected to be 1')
+
+        gatewayGet = self.cmd('az vmware workload-network gateway show --resource-group {rg} --private-cloud {privatecloud} --gateway-id {gateway_id}').get_output_in_json()
+        self.assertEqual(gatewayGet['name'], 'gateway1')

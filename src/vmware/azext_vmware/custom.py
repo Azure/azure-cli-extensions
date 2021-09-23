@@ -505,3 +505,19 @@ def workload_network_vm_group_update(client: AVSClient, resource_group_name, pri
 
 def workload_network_vm_group_delete(client: AVSClient, resource_group_name, private_cloud, vm_group_id):
     return client.workload_networks.begin_delete_vm_group(resource_group_name=resource_group_name, private_cloud_name=private_cloud, vm_group_id=vm_group_id)
+
+
+def workload_network_vm_list(client: AVSClient, resource_group_name, private_cloud):
+    return client.workload_networks.list_virtual_machines(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
+
+
+def workload_network_vm_get(client: AVSClient, resource_group_name, private_cloud, virtual_machine_id):
+    return client.workload_networks.get_virtual_machine(resource_group_name=resource_group_name, private_cloud_name=private_cloud, virtual_machine_id=virtual_machine_id)
+
+
+def workload_network_gateway_list(client: AVSClient, resource_group_name, private_cloud):
+    return client.workload_networks.list_gateways(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
+
+
+def workload_network_gateway_get(client: AVSClient, resource_group_name, private_cloud, gateway_id):
+    return client.workload_networks.get_gateway(resource_group_name=resource_group_name, private_cloud_name=private_cloud, gateway_id=gateway_id)
