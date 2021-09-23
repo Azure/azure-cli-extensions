@@ -6,66 +6,6 @@
 
 from knack.help_files import helps  # pylint: disable=unused-import
 
-helps['cosmosdb sql restorable-database'] = """
-type: group
-short-summary: Manage different versions of sql databases that are restorable in a Azure Cosmos DB account.
-"""
-
-helps['cosmosdb sql restorable-database list'] = """
-type: command
-short-summary: List all the versions of all the sql databases that were created / modified / deleted in the given restorable account.
-"""
-
-helps['cosmosdb sql restorable-container'] = """
-type: group
-short-summary: Manage different versions of sql containers that are restorable in a database of a Azure Cosmos DB account.
-"""
-
-helps['cosmosdb sql restorable-container list'] = """
-type: command
-short-summary: List all the versions of all the sql containers that were created / modified / deleted in the given database and restorable account.
-"""
-
-helps['cosmosdb sql restorable-resource'] = """
-type: group
-short-summary: Manage the databases and its containers that can be restored in the given account at the given timesamp and region.
-"""
-
-helps['cosmosdb sql restorable-resource list'] = """
-type: command
-short-summary: List all the databases and its containers that can be restored in the given account at the given timesamp and region.
-"""
-
-helps['cosmosdb mongodb restorable-database'] = """
-type: group
-short-summary: Manage different versions of mongodb databases that are restorable in a Azure Cosmos DB account.
-"""
-
-helps['cosmosdb mongodb restorable-database list'] = """
-type: command
-short-summary: List all the versions of all the mongodb databases that were created / modified / deleted in the given restorable account.
-"""
-
-helps['cosmosdb mongodb restorable-collection'] = """
-type: group
-short-summary: Manage different versions of mongodb collections that are restorable in a database of a Azure Cosmos DB account.
-"""
-
-helps['cosmosdb mongodb restorable-collection list'] = """
-type: command
-short-summary: List all the versions of all the mongodb collections that were created / modified / deleted in the given database and restorable account.
-"""
-
-helps['cosmosdb mongodb restorable-resource'] = """
-type: group
-short-summary: Manage the databases and its collections that can be restored in the given account at the given timesamp and region.
-"""
-
-helps['cosmosdb mongodb restorable-resource list'] = """
-type: command
-short-summary: List all the databases and its collections that can be restored in the given account at the given timesamp and region.
-"""
-
 helps['managed-cassandra'] = """
 type: group
 short-summary: Azure Managed Cassandra.
@@ -222,8 +162,8 @@ short-summary: Update a cosmosdb service resource.
 examples:
   - name: Update a cosmosdb service resource.
     text: |
-      az cosmosdb service update --resource-group MyResourceGroup --account-name MyAccount --service-name "graphApiCompute" --service-kind "GraphApiCompute" --count 1 
-      az cosmosdb service update --resource-group MyResourceGroup --account-name MyAccount --service-name "sqlDedicatedGateway" --service-kind "SqlDedicatedGateway" --count 3 
+      az cosmosdb service update --resource-group MyResourceGroup --account-name MyAccount --service-name "graphApiCompute" --service-kind "GraphApiCompute" --count 1
+      az cosmosdb service update --resource-group MyResourceGroup --account-name MyAccount --service-name "sqlDedicatedGateway" --service-kind "SqlDedicatedGateway" --count 3
 """
 
 helps['cosmosdb service list'] = """

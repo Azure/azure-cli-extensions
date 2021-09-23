@@ -10,34 +10,6 @@ def cf_cosmosdb_preview(cli_ctx, *_):
     return get_mgmt_service_client(cli_ctx, CosmosDBManagementClient)
 
 
-def cf_restorable_sql_databases(cli_ctx, _):
-    return cf_cosmosdb_preview(cli_ctx).restorable_sql_databases
-
-
-def cf_restorable_sql_containers(cli_ctx, _):
-    return cf_cosmosdb_preview(cli_ctx).restorable_sql_containers
-
-
-def cf_restorable_sql_resources(cli_ctx, _):
-    return cf_cosmosdb_preview(cli_ctx).restorable_sql_resources
-
-
-def cf_restorable_mongodb_databases(cli_ctx, _):
-    return cf_cosmosdb_preview(cli_ctx).restorable_mongodb_databases
-
-
-def cf_restorable_mongodb_collections(cli_ctx, _):
-    return cf_cosmosdb_preview(cli_ctx).restorable_mongodb_collections
-
-
-def cf_restorable_mongodb_resources(cli_ctx, _):
-    return cf_cosmosdb_preview(cli_ctx).restorable_mongodb_resources
-
-
-def cf_sql_resources(cli_ctx, _):
-    return cf_cosmosdb_preview(cli_ctx).sql_resources
-
-
 def cf_graph_resources(cli_ctx, _):
     return cf_cosmosdb_preview(cli_ctx).graph_resources
 

@@ -15,42 +15,6 @@ from azext_cosmosdb_preview._validators import (
 def load_arguments(self, _):
     from azure.cli.core.commands.parameters import tags_type
 
-    # Restorable Sql Databases
-    with self.argument_context('cosmosdb sql restorable-database') as c:
-        c.argument('location', options_list=['--location', '-l'], help="Location", required=True)
-        c.argument('instance_id', options_list=['--instance-id', '-i'], help="InstanceId of the Account", required=True)
-
-    # Restorable Sql Containers
-    with self.argument_context('cosmosdb sql restorable-container') as c:
-        c.argument('location', options_list=['--location', '-l'], help="Location", required=True)
-        c.argument('instance_id', options_list=['--instance-id', '-i'], help="InstanceId of the Account", required=True)
-        c.argument('restorable_sql_database_rid', options_list=['--database-rid', '-d'], help="Rid of the database", required=True)
-
-    # Restorable Sql Resources
-    with self.argument_context('cosmosdb sql restorable-resource') as c:
-        c.argument('location', options_list=['--location', '-l'], help="Azure Location of the account", required=True)
-        c.argument('instance_id', options_list=['--instance-id', '-i'], help="InstanceId of the Account", required=True)
-        c.argument('restore_location', options_list=['--restore-location', '-r'], help="The region of the restore.", required=True)
-        c.argument('restore_timestamp_in_utc', options_list=['--restore-timestamp', '-t'], help="The timestamp of the restore", required=True)
-
-    # Restorable Mongodb Databases
-    with self.argument_context('cosmosdb mongodb restorable-database') as c:
-        c.argument('location', options_list=['--location', '-l'], help="Location", required=True)
-        c.argument('instance_id', options_list=['--instance-id', '-i'], help="InstanceId of the Account", required=True)
-
-    # Restorable Mongodb Collections
-    with self.argument_context('cosmosdb mongodb restorable-collection') as c:
-        c.argument('location', options_list=['--location', '-l'], help="Location", required=True)
-        c.argument('instance_id', options_list=['--instance-id', '-i'], help="InstanceId of the Account", required=True)
-        c.argument('restorable_mongodb_database_rid', options_list=['--database-rid', '-d'], help="Rid of the database", required=True)
-
-    # Restorable mongodb Resources
-    with self.argument_context('cosmosdb mongodb restorable-resource') as c:
-        c.argument('location', options_list=['--location', '-l'], help="Azure Location of the account", required=True)
-        c.argument('instance_id', options_list=['--instance-id', '-i'], help="InstanceId of the Account", required=True)
-        c.argument('restore_location', options_list=['--restore-location', '-r'], help="The region of the restore.", required=True)
-        c.argument('restore_timestamp_in_utc', options_list=['--restore-timestamp', '-t'], help="The timestamp of the restore", required=True)
-
     # Managed Cassandra Cluster
     for scope in [
             'managed-cassandra cluster create',
