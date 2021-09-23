@@ -243,14 +243,18 @@ def output(cmd, job_id, resource_group_name=None, workspace_name=None, location=
 
         if job.target.startswith("microsoft.simulator"):
             result_start_line = len(lines) - 1
-            if lines[-1].endswith('"'):
+            is_result_string = lines[-1].endswith('"')
+            if is_result_string:
                 while result_start_line >= 0 and not lines[result_start_line].startswith('"'):
                     result_start_line -= 1
             if result_start_line < 0:
                 raise CLIError("Job output is malformed, mismatched quote characters.")
 
+            # Print the job output and then the result of the operation as a histogram.
+            # If the result is a string, trim the quotation marks.
             print('\n'.join(lines[:result_start_line]))
-            result = ' '.join(lines[result_start_line:])[1:-1]  # seems the cleanest version to display
+            raw_result = ' '.join(lines[result_start_line:])
+            result = raw_result[1:-1] if is_result_string else raw_result
             print('_' * len(result) + '\n')
 
             json_string = '{ "histogram" : { "' + result + '" : 1 } }'
