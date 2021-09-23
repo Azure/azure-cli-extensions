@@ -39,4 +39,5 @@ class QuantumCommandsLoader(AzCommandsLoader):
         if message is not None:
             _show_tip(message)
 
+
 COMMAND_LOADER_CLS = QuantumCommandsLoader
