@@ -4,8 +4,8 @@
 # --------------------------------------------------------------------------------------------
 
 import ipaddress
-from knack.util import CLIError
 from azure.cli.core.azclierror import InvalidArgumentValueError
+
 
 def validate_gossip_certificates(ns):
     """ Extracts multiple comma-separated certificates """

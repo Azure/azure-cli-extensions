@@ -96,7 +96,7 @@ def load_command_table(self, _):
         g.command('list', 'list')
         g.show_command('show', 'get')
         g.command('delete', 'begin_delete', confirmation=True, supports_no_wait=True)
-        
+
     with self.command_group('cosmosdb graph', cosmosdb_graph_resources_sdk, client_factory=cf_graph_resources, is_preview=True) as g:
         g.custom_command('create', 'cli_cosmosdb_graph_create', supports_no_wait=True)
         g.custom_command('exists', 'cli_cosmosdb_graph_exists', supports_no_wait=True)
@@ -107,7 +107,6 @@ def load_command_table(self, _):
     with self.command_group('cosmosdb service', cosmosdb_service_sdk, client_factory=cf_service, is_preview=True) as g:
         g.custom_command('create', 'cli_cosmosdb_service_create', supports_no_wait=True)
         g.custom_command('update', 'cli_cosmosdb_service_update', supports_no_wait=True)
-        g.custom_command('exists', 'cli_cosmosdb_service_exists', supports_no_wait=True)
         g.command('list', 'list')
         g.show_command('show', 'get')
         g.command('delete', 'begin_delete', confirmation=True, supports_no_wait=True)

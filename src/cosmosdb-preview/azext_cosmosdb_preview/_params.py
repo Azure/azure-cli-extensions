@@ -5,19 +5,11 @@
 # pylint: disable=line-too-long, too-many-statements
 
 
-from azure.cli.core.commands.parameters import (
-    get_resource_name_completion_list, name_type, get_enum_type, get_three_state_flag, get_location_type)
-
 from azext_cosmosdb_preview._validators import (
     validate_gossip_certificates,
     validate_client_certificates,
     validate_seednodes,
     validate_node_count)
-
-from azext_cosmosdb_preview.actions import (
-    CreateLocation, CreateDatabaseRestoreResource, UtcDatetimeAction)
-
-from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import DefaultConsistencyLevel, DatabaseAccountKind, ServerVersion, BackupPolicyType
 
 
 def load_arguments(self, _):
@@ -126,21 +118,15 @@ def load_arguments(self, _):
     # Graph
     with self.argument_context('cosmosdb graph') as c:
         c.argument('account_name', completer=None, options_list=['--account-name', '-a'], help='Name of the Cosmos DB database account.', id_part=None)
-        c.argument('resource_group_name', completer=None, options_list=['--resource-group-name', '-g'], help='Name of the resource group of the database account.', id_part=None)        
-        c.argument('graph_name', options_list=['--name', '-n'], help="Graph name")    # Graph
-    
-    #Services
-    for scope in [
-        'cosmosdb service']:
+        c.argument('resource_group_name', completer=None, options_list=['--resource-group-name', '-g'], help='Name of the resource group of the database account.', id_part=None)
+        c.argument('graph_name', options_list=['--name', '-n'], help="Graph name")
+
+    # Services
+    for scope in ['cosmosdb service']:
         with self.argument_context(scope) as c:
             c.argument('account_name', completer=None, options_list=['--account-name', '-a'], help='Name of the Cosmos DB database account.', id_part=None)
-            c.argument('resource_group_name', completer=None, options_list=['--resource-group-name', '-g'], help='Name of the resource group of the database account.', id_part=None)        
+            c.argument('resource_group_name', completer=None, options_list=['--resource-group-name', '-g'], help='Name of the resource group of the database account.', id_part=None)
             c.argument('service_kind', options_list=['--kind', '-k'], help="Service kind")
             c.argument('service_name', options_list=['--name', '-n'], help="Service Name.")
             c.argument('instance_count', options_list=['--count', '-c'], help="Instance Count.")
             c.argument('instance_size', options_list=['--size'], help="Instance Size.")
-    
-    # with self.argument_context('cosmosdb service exists') as c:
-    #         c.argument('account_name', completer=None, options_list=['--account-name', '-a'], help='Name of the Cosmos DB database account.', id_part=None)
-    #         c.argument('resource_group_name', completer=None, options_list=['--resource-group-name', '-g'], help='Name of the resource group of the database account.', id_part=None)        
-    #         c.argument('service_name', options_list=['--name', '-n'], help="Service Name.")       

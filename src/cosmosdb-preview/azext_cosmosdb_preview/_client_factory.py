@@ -37,14 +37,18 @@ def cf_restorable_mongodb_resources(cli_ctx, _):
 def cf_sql_resources(cli_ctx, _):
     return cf_cosmosdb_preview(cli_ctx).sql_resources
 
+
 def cf_graph_resources(cli_ctx, _):
     return cf_cosmosdb_preview(cli_ctx).graph_resources
-    
+
+
 def cf_service(cli_ctx, _):
     return cf_cosmosdb_preview(cli_ctx).service
 
+
 def cf_cassandra_cluster(cli_ctx, _):
     return cf_cosmosdb_preview(cli_ctx).cassandra_clusters
+
 
 def cf_cassandra_data_center(cli_ctx, _):
     return cf_cosmosdb_preview(cli_ctx).cassandra_data_centers

@@ -5,7 +5,7 @@
 
 from knack.util import CLIError
 from knack.log import get_logger
-from azure.core.exceptions import HttpResponseError, ResourceNotFoundError
+from azure.core.exceptions import HttpResponseError
 from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     ClusterResource,
     ClusterResourceProperties,
@@ -13,9 +13,6 @@ from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     DataCenterResourceProperties,
     GraphResource,
     GraphResourceCreateUpdateParameters,
-    ServiceResource,
-    ServiceResourceProperties,
-    ServiceType,
     ServiceResourceCreateUpdateParameters
 )
 
@@ -220,15 +217,18 @@ def cli_cosmosdb_managed_cassandra_datacenter_update(client, resource_group_name
 
     return client.begin_create_update(resource_group_name, cluster_name, data_center_name, data_center_resource)
 
+
 def _handle_exists_exception(http_response_error):
     if http_response_error.status_code == 404:
         return False
     raise http_response_error
 
+
 def cli_cosmosdb_graph_create(client, account_name, resource_group_name, graph_name):
     graph = GraphResourceCreateUpdateParameters(resource=GraphResource(id=graph_name))
     return client.begin_create_update_graph(resource_group_name, account_name, graph_name, graph)
-    
+
+
 def cli_cosmosdb_graph_exists(client, account_name, resource_group_name, graph_name):
     try:
         client.get_graph(resource_group_name, account_name, graph_name)
@@ -237,6 +237,7 @@ def cli_cosmosdb_graph_exists(client, account_name, resource_group_name, graph_n
 
     return True
 
+
 def cli_cosmosdb_service_exists(client, account_name, resource_group_name, service_name):
     try:
         client.get(resource_group_name, account_name, service_name)
@@ -244,22 +245,35 @@ def cli_cosmosdb_service_exists(client, account_name, resource_group_name, servi
         return _handle_exists_exception(ex)
 
     return True
-    
-def cli_cosmosdb_service_create(client, account_name, resource_group_name, service_kind, service_name, instance_count, instance_size):
-    
-    params = ServiceResourceCreateUpdateParameters(service_type = service_kind,
-            instance_count = instance_count,
-            instance_size = instance_size)
 
-    return client.begin_create(resource_group_name, account_name, service_name, create_update_parameters = params)
 
-def cli_cosmosdb_service_update(client, account_name, resource_group_name, service_name, service_kind, instance_count, instance_size = None):
-    
-    service = ServiceResourceCreateUpdateParameters(service_type = service_kind,
-            instance_count = instance_count,
-            instance_size = instance_size)
+def cli_cosmosdb_service_create(client,
+                                account_name,
+                                resource_group_name,
+                                service_kind,
+                                service_name,
+                                instance_count,
+                                instance_size):
+    params = ServiceResourceCreateUpdateParameters(service_type=service_kind,
+                                                   instance_count=instance_count,
+                                                   instance_size=instance_size)
 
-    return client.begin_create(resource_group_name, account_name, service_name, service)
+    return client.begin_create(resource_group_name, account_name, service_name, create_update_parameters=params)
+
+
+def cli_cosmosdb_service_update(client,
+                                account_name,
+                                resource_group_name,
+                                service_name,
+                                service_kind,
+                                instance_count,
+                                instance_size=None):
+    params = ServiceResourceCreateUpdateParameters(service_type=service_kind,
+                                                   instance_count=instance_count,
+                                                   instance_size=instance_size)
+
+    return client.begin_create(resource_group_name, account_name, service_name, create_update_parameters=params)
+
 
 def _gen_guid():
     import uuid
