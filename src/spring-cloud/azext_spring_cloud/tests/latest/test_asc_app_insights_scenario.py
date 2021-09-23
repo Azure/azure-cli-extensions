@@ -355,10 +355,15 @@ class AzureSpringCloudCreateTests(ScenarioTest):
             sleep_in_seconds = 3
             time.sleep(sleep_in_seconds)
 
+    '''
+    Hard-code the information of application insights.
+    Mask the instrumentation key and connection string. For first run, it will generate the yaml files
+    in ./recording folder, need to use the unmasked ai_instrumentation_key and ai_connection_string.
+    '''
     def _get_ai_info(self, rg, ai_name):
-        response = self.cmd('monitor app-insights component show -g {} --app {}'
-                            .format(rg, ai_name)).get_output_in_json()
-        ai_id = response['id']
-        ai_i_key = response['instrumentationKey']
-        ai_c_string = response['connectionString']
-        return ai_id, ai_i_key, ai_c_string
+        ai_resource_id = '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli' \
+                         '/providers/microsoft.insights/components/cli_scenario_test_20210906102205'
+        ai_instrumentation_key = '00000000-0000-0000-0000-000000000000'
+        ai_connection_string = 'InstrumentationKey=00000000-0000-0000-0000-000000000000;' \
+                               'IngestionEndpoint=https://xxxxxxxxxxxxxxxxxxxxxxxx/'
+        return ai_resource_id, ai_instrumentation_key, ai_connection_string
