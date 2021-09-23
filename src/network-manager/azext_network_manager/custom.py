@@ -300,17 +300,6 @@ def network_manager_connect_config_delete(client,
                          configuration_name=configuration_name)
 
 
-def network_effectiveconfiguration_list(client,
-                                        resource_group_name,
-                                        virtual_network_name,
-                                        top=None,
-                                        skip_token=None):
-    return client.list(resource_group_name=resource_group_name,
-                       virtual_network_name=virtual_network_name,
-                       top=top,
-                       skip_token=skip_token)
-
-
 def network_manager_group_list(client,
                                resource_group_name,
                                network_manager_name,

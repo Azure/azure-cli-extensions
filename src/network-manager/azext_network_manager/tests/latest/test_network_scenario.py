@@ -27,7 +27,7 @@ class NetworkScenarioTest(ScenarioTest):
     def __init__(self, *args, **kwargs):
         super(NetworkScenarioTest, self).__init__(*args, **kwargs)
 
-    @ResourceGroupPreparer(name_prefix='test_network_manager', location='jioindiawest')
+    @ResourceGroupPreparer(name_prefix='test_network_manager', location='eastus2euap')
     def test_network_manager_crud(self, resource_group):
         self.kwargs.update({
             'name': 'TestNetworkManager',
@@ -40,8 +40,10 @@ class NetworkScenarioTest(ScenarioTest):
                  '--network-manager-scope-accesses "Routing" "Connectivity" '
                  '--network-manager-scopes '
                  ' subscriptions={sub} '
-                 '-l jioindiawest '
+                 '-l eastus2euap '
                  '--resource-group {rg}')
+        
+        self.cmd('network manager show --resource-group {rg} --name {name}')
 
         # Update is not allowed for NM.
         # self.cmd('network manager update --resource-group {rg} --name {name} --tags key1=value1')
@@ -50,7 +52,7 @@ class NetworkScenarioTest(ScenarioTest):
 
         self.cmd('network manager delete --resource-group {rg} --name {name} --yes')
 
-    @ResourceGroupPreparer(name_prefix='test_network_manager_group', location='jioindiawest')
+    @ResourceGroupPreparer(name_prefix='test_network_manager_group', location='eastus2euap')
     @VirtualNetworkPreparer()
     def test_network_manager_group_crud(self, virtual_network, resource_group):
 
@@ -68,20 +70,19 @@ class NetworkScenarioTest(ScenarioTest):
                  '--network-manager-scope-accesses "Routing" "Connectivity" '
                  '--network-manager-scopes '
                  ' subscriptions={sub} '
-                 '-l jioindiawest '
+                 '-l eastus2euap '
                  '--resource-group {rg}')
 
         self.cmd('network manager group create --name {name} --network-manager-name {manager_name} --description {description} '
                  '--conditional-membership "" --display-name {display_name} --member-type {member_type}  -g {rg} '
-                 '--group-members vnet-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}" '
-                 'subnet-id=""')
+                 '--group-members resource-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}" ')
 
         self.cmd('network manager group update -g {rg} --name {name} --network-manager-name {manager_name} --description "Desc changed."')
         self.cmd('network manager group show -g {rg} --name {name} --network-manager-name {manager_name}')
         self.cmd('network manager group list -g {rg} --network-manager-name {manager_name}')
         self.cmd('network manager group delete -g {rg} --name {name} --network-manager-name {manager_name} --yes')
 
-    @ResourceGroupPreparer(name_prefix='test_network_manager_security_user_config', location='jioindiawest')
+    @ResourceGroupPreparer(name_prefix='test_network_manager_security_user_config', location='eastus2euap')
     def test_network_manager_security_user_config_crud(self, resource_group):
 
         self.kwargs.update({
@@ -95,7 +96,7 @@ class NetworkScenarioTest(ScenarioTest):
                  '--network-manager-scope-accesses "SecurityUser" "Connectivity" '
                  '--network-manager-scopes '
                  ' subscriptions={sub} '
-                 '-l jioindiawest '
+                 '-l eastus2euap '
                  '--resource-group {rg}')
 
         self.cmd('network manager security-user-config create --configuration-name {name} --network-manager-name {manager_name} -g {rg} '
@@ -107,7 +108,7 @@ class NetworkScenarioTest(ScenarioTest):
         self.cmd('network manager security-user-config show --configuration-name {name} --network-manager-name {manager_name} -g {rg}')
         self.cmd('network manager security-user-config delete --configuration-name {name} --network-manager-name {manager_name} -g {rg} --yes')
 
-    @ResourceGroupPreparer(name_prefix='test_network_manager_security_admin_config', location='jioindiawest')
+    @ResourceGroupPreparer(name_prefix='test_network_manager_security_admin_config', location='eastus2euap')
     def test_network_manager_security_admin_config_crud(self, resource_group):
 
         self.kwargs.update({
@@ -121,7 +122,7 @@ class NetworkScenarioTest(ScenarioTest):
                  '--network-manager-scope-accesses "SecurityAdmin" "Connectivity" '
                  '--network-manager-scopes '
                  ' subscriptions={sub} '
-                 '-l jioindiawest '
+                 '-l eastus2euap '
                  '--resource-group {rg}')
 
         self.cmd('network manager security-admin-config create --configuration-name {name} --network-manager-name {manager_name} -g {rg} '
@@ -133,16 +134,16 @@ class NetworkScenarioTest(ScenarioTest):
         self.cmd('network manager security-admin-config show --configuration-name {name} --network-manager-name {manager_name} -g {rg}')
 
         # test nm commit
-        # self.cmd('network manager commit post --network-manager-name {manager_name} --commit-type "SecurityAdmin" --target-locations "eastus2" -g {rg} '
+        # self.cmd('network manager commit post --network-manager-name {manager_name} --commit-type "SecurityAdmin" --target-locations "eastus2euap" -g {rg} '
         #          '--configuration-ids {sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkManagers/{manager_name}/securityAdminConfigurations/{name}')
 
         # test nm uncommit
-        # self.cmd('network manager commit post --network-manager-name {manager_name} --commit-type "SecurityAdmin" --target-locations "eastus2" -g {rg} ')
+        # self.cmd('network manager commit post --network-manager-name {manager_name} --commit-type "SecurityAdmin" --target-locations "eastus2euap" -g {rg} ')
 
         self.cmd('network manager security-admin-config delete --configuration-name {name} --network-manager-name {manager_name} -g {rg} --yes')
 
 
-    @ResourceGroupPreparer(name_prefix='test_network_manager_security_admin_rule_collection_crud', location='jioindiawest')
+    @ResourceGroupPreparer(name_prefix='test_network_manager_security_admin_rule_collection_crud', location='eastus2euap')
     @VirtualNetworkPreparer()
     def test_network_manager_security_admin_rule_collection_crud(self, virtual_network, resource_group):
 
@@ -153,24 +154,33 @@ class NetworkScenarioTest(ScenarioTest):
             'group_name': 'TestNetworkGroup',
             'description': '"A sample policy"',
             'sub': '/subscriptions/{}'.format(self.get_subscription_id()),
+            'virtual_network': virtual_network
         })
 
         self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" --display-name "TestNetworkManager" '
                  '--network-manager-scope-accesses "SecurityAdmin" "Connectivity" '
                  '--network-manager-scopes '
                  ' subscriptions={sub} '
-                 '-l jioindiawest '
+                 '-l eastus2euap '
                  '--resource-group {rg}')
 
         self.cmd('network manager group create --name {group_name} --network-manager-name {manager_name} --description {description} '
                  '--conditional-membership "" --display-name ASampleGroup --member-type VirtualNetwork  -g {rg} '
-                 '--group-members vnet-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}" '
-                 'subnet-id=""')
+                 '--group-members resource-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}" ')
 
         self.cmd('network manager security-admin-config create --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} '
                  '--description {description} --delete-existing-ns-gs true --security-type "AdminPolicy" --display-name MyTestConfig')
 
-        self.cmd('network manager admin-rule collection --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} '
+        self.cmd('network manager admin-rule collection create --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} '
                  '--role-collection-name {collection_name} --description {description} --display-name ASampleCollection '
                  '--applies-to-groups  network-group-id={sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkManagers/{manager_name}/networkGroups/{group_name}')
+        
+        self.cmd('network manager admin-rule collection show -g {rg} --configuration-name {config_name} --network-manager-name {manager_name} --role-collection-name {collection_name}')
+
+        self.cmd('network manager admin-rule collection update -g {rg} --configuration-name {config_name} --network-manager-name {manager_name} --role-collection-name {collection_name} '
+                 '--display-name ASampleCollection2')
+
+        self.cmd('network manager admin-rule collection list -g {rg} --configuration-name {config_name} --network-manager-name {manager_name}')
+
+        self.cmd('network manager admin-rule collection delete -g {rg} --configuration-name {config_name} --network-manager-name {manager_name} --role-collection-name {collection_name}')
 

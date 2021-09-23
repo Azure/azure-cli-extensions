@@ -230,21 +230,6 @@ manager name, and connectivity configuration name."
 --network-manager-name "testNetworkManager" --resource-group "myResourceGroup"
 """
 
-helps['network effectiveconfiguration'] = """
-    type: group
-    short-summary: Manage effectiveconfiguration with network
-"""
-
-helps['network effectiveconfiguration list'] = """
-    type: command
-    short-summary: "List all configurations in a virtual network."
-    examples:
-      - name: List Azure Virtual Network Manager Effective Configuration
-        text: |-
-               az network effectiveconfiguration list --resource-group "myResourceGroup" --virtual-network-name \
-"testVirtualNetwork"
-"""
-
 helps['network manager group'] = """
     type: group
     short-summary: Manage networkgroup with network

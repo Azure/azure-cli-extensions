@@ -89,13 +89,11 @@ class AddGroupMembers(argparse._AppendAction):
         for k in properties:
             kl = k.lower()
             v = properties[k]
-            if kl == 'vnet-id':
-                d['vnet_id'] = v[0]
-            elif kl == 'subnet-id':
-                d['subnet_id'] = v[0]
+            if kl == 'resource-id':
+                d['resource_id'] = v[0]
             else:
                 raise CLIError('Unsupported Key {} is provided for parameter group_members. All possible keys are: '
-                               'resource-id, subnet-id'.format(k))
+                               'resource-id'.format(k))
         return d
 
 

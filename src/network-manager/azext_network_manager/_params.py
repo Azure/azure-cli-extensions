@@ -183,15 +183,6 @@ def load_arguments(self, _):
         c.argument('configuration_name', type=str, help='The name of the network manager connectivity configuration.',
                    id_part='child_name_1')
 
-    with self.argument_context('network effectiveconfiguration list') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('virtual_network_name', type=str, help='The name of the virtual network.')
-        c.argument('top', type=int, help='An optional query parameter which specifies the maximum number of records to '
-                   'be returned by the server.')
-        c.argument('skip_token', type=str, help='SkipToken is only used if a previous operation returned a partial '
-                   'result. If a previous response contains a nextLink element, the value of the nextLink element will '
-                   'include a skipToken parameter that specifies a starting point to use for subsequent calls.')
-
     with self.argument_context('network manager group list') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('network_manager_name', options_list=['--network-manager-name'], type=str, help='The name of the network manager.')
@@ -343,7 +334,7 @@ def load_arguments(self, _):
         c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part='name')
         c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.',
                    id_part='child_name_1')
-        c.argument('collection_name', type=str, help='The name of the admin rule collection.')
+        c.argument('rule_collection_name', type=str, help='The name of the admin rule collection.')
         c.argument('display_name', type=str, help='A friendly name for the rule.')
         c.argument('description', type=str, help='A description for this rule. Restricted to 140 chars.')
         c.argument('applies_to_groups', action=AddConnectivityconfigurationsAppliesToGroups, nargs='+', help='Groups '
@@ -354,7 +345,7 @@ def load_arguments(self, _):
         c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part='name')
         c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.',
                    id_part='child_name_1')
-        c.argument('collection_name', type=str, help='The name of the admin rule collection.')
+        c.argument('rule_collection_name', type=str, help='The name of the admin rule collection.')
         c.argument('display_name', type=str, help='A friendly name for the rule.')
         c.argument('description', type=str, help='A description for this rule. Restricted to 140 chars.')
         c.argument('applies_to_groups', action=AddConnectivityconfigurationsAppliesToGroups, nargs='+', help='Groups '
@@ -376,14 +367,14 @@ def load_arguments(self, _):
         c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part='name')
         c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.',
                    id_part='child_name_1')
-        c.argument('collection_name', type=str, help='The name of the admin rule collection.')
+        c.argument('rule_collection_name', type=str, help='The name of the admin rule collection.')
 
     with self.argument_context('network manager admin-rule collection delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part='name')
         c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.',
                    id_part='child_name_1')
-        c.argument('collection_name', type=str, help='The name of the admin rule collection.')
+        c.argument('rule_collection_name', type=str, help='The name of the admin rule collection.')
 
     with self.argument_context('network manager admin-rule show') as c:
         c.argument('resource_group_name', resource_group_name_type)

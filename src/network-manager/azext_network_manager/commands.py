@@ -13,7 +13,7 @@
 from azure.cli.core.commands import CliCommandType
 from azext_network_manager._client_factory import (
     cf_networkmanager, cf_networkmanagercommit, cf_networkmanagerdeploymentstatus, cf_effectivevirtualnetwork,
-    cf_activeconnectivityconfiguration, cf_connectivityconfiguration, cf_effectiveconfiguration, cf_networkgroup, cf_userrule,
+    cf_activeconnectivityconfiguration, cf_connectivityconfiguration, cf_networkgroup, cf_userrule,
     cf_userrulecollection, cf_adminrule, cf_adminrulecollection, cf_securityadminconfiguration, cf_securityuserconfiguration,
     cf_activesecurityadminrule, cf_activesecurityuserrule, cf_effectiveconnectivityconfiguration, cf_effectivesecurityadminrule,
     cf_securityperimeter, cf_perimeterassociableresourcetype)
@@ -69,10 +69,10 @@ def load_command_table(self, _):
         client_factory=cf_connectivityconfiguration
     )
 
-    network_effectiveconfiguration = CliCommandType(
-        operations_tmpl='azext_network_manager.vendored_sdks.operations._effective_configurations_operations#EffectiveConfigurationsOperations.{}',
-        client_factory=cf_effectiveconfiguration
-    )
+    # network_effectiveconfiguration = CliCommandType(
+    #     operations_tmpl='azext_network_manager.vendored_sdks.operations._effective_configurations_operations#EffectiveConfigurationsOperations.{}',
+    #     client_factory=cf_effectiveconfiguration
+    # )
 
     network_networkgroup = CliCommandType(
         operations_tmpl='azext_network_manager.vendored_sdks.operations._network_groups_operations#NetworkGroupsOperations.{}',
@@ -168,10 +168,6 @@ def load_command_table(self, _):
         g.generic_update_command('update', setter_arg_name='connectivity_configuration', custom_func_name='network_manager_connect_config_update')
         g.custom_command('delete', 'network_manager_connect_config_delete', confirmation=True)
 
-    with self.command_group('network effectiveconfiguration', network_effectiveconfiguration,
-                            client_factory=cf_effectiveconfiguration) as g:
-        g.custom_command('list', 'network_effectiveconfiguration_list')
-
     with self.command_group('network manager group', network_networkgroup, client_factory=cf_networkgroup) as g:
         g.custom_command('list', 'network_manager_group_list')
         g.custom_show_command('show', 'network_manager_group_show')
@@ -202,7 +198,7 @@ def load_command_table(self, _):
 
     with self.command_group('network manager admin-rule collection', network_adminrulecollection, client_factory=cf_adminrulecollection) as g:
         g.custom_command('create', 'network_manager_admin_rule_collection_create')
-        g.generic_update_command('update', setter_arg_name='admin_rule_collection', custom_func_name='network_manager_admin_rule_collection_update')
+        g.generic_update_command('update', setter_arg_name='rule_collection', custom_func_name='network_manager_admin_rule_collection_update')
         g.custom_command('list', 'network_manager_admin_rule_collection_list')
         g.custom_show_command('show', 'network_manager_admin_rule_collection_show')
         g.custom_command('delete', 'network_manager_admin_rule_collection_delete', confirmation=True)
