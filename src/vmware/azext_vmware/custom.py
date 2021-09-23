@@ -437,3 +437,71 @@ def workload_network_port_mirroring_update(client: AVSClient, resource_group_nam
 
 def workload_network_port_mirroring_delete(client: AVSClient, resource_group_name, private_cloud, port_mirroring_id):
     return client.workload_networks.begin_delete_port_mirroring(resource_group_name=resource_group_name, private_cloud_name=private_cloud, port_mirroring_id=port_mirroring_id)
+
+
+def workload_network_segment_list(client: AVSClient, resource_group_name, private_cloud):
+    return client.workload_networks.list_segments(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
+
+
+def workload_network_segment_get(client: AVSClient, resource_group_name, private_cloud, segment_id):
+    return client.workload_networks.get_segment(resource_group_name=resource_group_name, private_cloud_name=private_cloud, segment_id=segment_id)
+
+
+def workload_network_segment_create(client: AVSClient, resource_group_name, private_cloud, segment_id, display_name=None, connected_gateway=None, revision=None, dhcp_ranges=None, gateway_address=None):
+    from azext_vmware.vendored_sdks.avs_client.models import WorkloadNetworkSegmentSubnet
+    from azext_vmware.vendored_sdks.avs_client.models import WorkloadNetworkSegment
+    subnet = WorkloadNetworkSegmentSubnet(dhcp_ranges=dhcp_ranges, gateway_address=gateway_address)
+    segment = WorkloadNetworkSegment(display_name=display_name, connected_gateway=connected_gateway, subnet=subnet, revision=revision)
+    return client.workload_networks.begin_create_segments(resource_group_name=resource_group_name, private_cloud_name=private_cloud, segment_id=segment_id, workload_network_segment=segment)
+
+
+def workload_network_segment_update(client: AVSClient, resource_group_name, private_cloud, segment_id, display_name=None, connected_gateway=None, revision=None, dhcp_ranges=None, gateway_address=None):
+    from azext_vmware.vendored_sdks.avs_client.models import WorkloadNetworkSegmentSubnet
+    from azext_vmware.vendored_sdks.avs_client.models import WorkloadNetworkSegment
+    subnet = WorkloadNetworkSegmentSubnet(dhcp_ranges=dhcp_ranges, gateway_address=gateway_address)
+    segment = WorkloadNetworkSegment(display_name=display_name, connected_gateway=connected_gateway, subnet=subnet, revision=revision)
+    return client.workload_networks.begin_update_segments(resource_group_name=resource_group_name, private_cloud_name=private_cloud, segment_id=segment_id, workload_network_segment=segment)
+
+
+def workload_network_segment_delete(client: AVSClient, resource_group_name, private_cloud, segment_id):
+    return client.workload_networks.begin_delete_segment(resource_group_name=resource_group_name, private_cloud_name=private_cloud, segment_id=segment_id)
+
+
+def workload_network_public_ip_list(client: AVSClient, resource_group_name, private_cloud):
+    return client.workload_networks.list_public_i_ps(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
+
+
+def workload_network_public_ip_get(client: AVSClient, resource_group_name, private_cloud, public_ip_id):
+    return client.workload_networks.get_public_ip(resource_group_name=resource_group_name, private_cloud_name=private_cloud, public_ip_id=public_ip_id)
+
+
+def workload_network_public_ip_create(client: AVSClient, resource_group_name, private_cloud, public_ip_id, display_name=None, number_of_public_i_ps=None):
+    return client.workload_networks.begin_create_public_ip(resource_group_name=resource_group_name, private_cloud_name=private_cloud, public_ip_id=public_ip_id, display_name=display_name, number_of_public_i_ps=number_of_public_i_ps)
+
+
+def workload_network_public_ip_delete(client: AVSClient, resource_group_name, private_cloud, public_ip_id):
+    return client.workload_networks.begin_delete_public_ip(resource_group_name=resource_group_name, private_cloud_name=private_cloud, public_ip_id=public_ip_id)
+
+
+def workload_network_vm_group_list(client: AVSClient, resource_group_name, private_cloud):
+    return client.workload_networks.list_vm_groups(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
+
+
+def workload_network_vm_group_get(client: AVSClient, resource_group_name, private_cloud, vm_group_id):
+    return client.workload_networks.get_vm_group(resource_group_name=resource_group_name, private_cloud_name=private_cloud, vm_group_id=vm_group_id)
+
+
+def workload_network_vm_group_create(client: AVSClient, resource_group_name, private_cloud, vm_group_id, display_name=None, members=None, revision=None):
+    from azext_vmware.vendored_sdks.avs_client.models import WorkloadNetworkVMGroup
+    vmGroup = WorkloadNetworkVMGroup(display_name=display_name, members=members, revision=revision)
+    return client.workload_networks.begin_create_vm_group(resource_group_name=resource_group_name, private_cloud_name=private_cloud, vm_group_id=vm_group_id, workload_network_vm_group=vmGroup)
+
+
+def workload_network_vm_group_update(client: AVSClient, resource_group_name, private_cloud, vm_group_id, display_name=None, members=None, revision=None):
+    from azext_vmware.vendored_sdks.avs_client.models import WorkloadNetworkVMGroup
+    vmGroup = WorkloadNetworkVMGroup(display_name=display_name, members=members, revision=revision)
+    return client.workload_networks.begin_update_vm_group(resource_group_name=resource_group_name, private_cloud_name=private_cloud, vm_group_id=vm_group_id, workload_network_vm_group=vmGroup)
+
+
+def workload_network_vm_group_delete(client: AVSClient, resource_group_name, private_cloud, vm_group_id):
+    return client.workload_networks.begin_delete_vm_group(resource_group_name=resource_group_name, private_cloud_name=private_cloud, vm_group_id=vm_group_id)

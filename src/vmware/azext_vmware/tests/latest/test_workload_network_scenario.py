@@ -36,7 +36,15 @@ class VmwareWorkloadNetworkScenarioTest(ScenarioTest):
             'port_mirroring_id': 'portMirroring1',
             'direction': 'BIDIRECTIONAL',
             'source': 'vmGroup1',
-            'destination': 'vmGroup2'
+            'segment_id': 'segment1',
+            'destination': 'vmGroup2',
+            'connected_gateway': '/infra/tier-1s/gateway',
+            'dhcp_ranges': '40.20.0.0 40.20.0.1',
+            'gateway_address': '40.20.20.20/16',
+            'public_ip_id': 'publicIP1',
+            'number_of_public_i_ps': '32',
+            'vm_group_id': 'vmGroup1',
+            'members': '564d43da-fefc-2a3b-1d92-42855622fa50'
         })
         
         count = len(self.cmd('az vmware workload-network dhcp list --resource-group {rg} --private-cloud {privatecloud}').get_output_in_json())
@@ -109,3 +117,45 @@ class VmwareWorkloadNetworkScenarioTest(ScenarioTest):
 
         portMirroringDelete = self.cmd('az vmware workload-network port-mirroring delete --resource-group {rg} --private-cloud {privatecloud} --port-mirroring-id {port_mirroring_id}').output
         self.assertEqual(len(portMirroringDelete), 0)
+
+        segmentList = self.cmd('az vmware workload-network segment list --resource-group {rg} --private-cloud {privatecloud}').get_output_in_json()
+        self.assertEqual(len(segmentList), 1, 'count expected to be 1')
+
+        segmentGet = self.cmd('az vmware workload-network segment show --resource-group {rg} --private-cloud {privatecloud} --segment-id {segment_id}').get_output_in_json()
+        self.assertEqual(segmentGet['name'], 'segment1')
+
+        segmentCreate = self.cmd('az vmware workload-network segment create --resource-group {rg} --private-cloud {privatecloud} --segment-id {segment_id} --display-name {display_name} --connected-gateway {connected_gateway} --revision {revision} --dhcp-ranges {dhcp_ranges} --gateway-address {gateway_address}').get_output_in_json()
+        self.assertEqual(segmentCreate['name'], 'segment1')
+
+        segmentUpdate = self.cmd('az vmware workload-network segment update --resource-group {rg} --private-cloud {privatecloud} --segment-id {segment_id} --display-name {display_name} --connected-gateway {connected_gateway} --revision {revision} --dhcp-ranges {dhcp_ranges} --gateway-address {gateway_address}').get_output_in_json()
+        self.assertEqual(segmentUpdate['name'], 'segment1')
+
+        segmentDelete = self.cmd('az vmware workload-network segment delete --resource-group {rg} --private-cloud {privatecloud} --segment-id {segment_id}').output
+        self.assertEqual(len(segmentDelete), 0)
+
+        publicIpList = self.cmd('az vmware workload-network public-ip list --resource-group {rg} --private-cloud {privatecloud}').get_output_in_json()
+        self.assertEqual(len(publicIpList), 1, 'count expected to be 1')
+
+        publicIpGet = self.cmd('az vmware workload-network public-ip show --resource-group {rg} --private-cloud {privatecloud} --public-ip-id {public_ip_id}').get_output_in_json()
+        self.assertEqual(publicIpGet['name'], 'publicIP1')
+
+        publicIpCreate = self.cmd('az vmware workload-network public-ip create --resource-group {rg} --private-cloud {privatecloud} --public-ip-id {public_ip_id}  --display-name {display_name} --number-of-public-i-ps {number_of_public_i_ps}').get_output_in_json()
+        self.assertEqual(publicIpCreate['name'], 'publicIP1')
+
+        publicIpDelete = self.cmd('az vmware workload-network public-ip delete --resource-group {rg} --private-cloud {privatecloud} --public-ip-id {public_ip_id}').output
+        self.assertEqual(len(publicIpDelete), 0)
+
+        vmGroupList = self.cmd('az vmware workload-network vm-group list --resource-group {rg} --private-cloud {privatecloud}').get_output_in_json()
+        self.assertEqual(len(vmGroupList), 1, 'count expected to be 1')
+
+        vmGroupGet = self.cmd('az vmware workload-network vm-group show --resource-group {rg} --private-cloud {privatecloud} --vm-group-id {vm_group_id}').get_output_in_json()
+        self.assertEqual(vmGroupGet['name'], 'cloud1')
+
+        vmGroupCreate = self.cmd('az vmware workload-network vm-group create --resource-group {rg} --private-cloud {privatecloud} --vm-group-id {vm_group_id} --display-name {display_name} --members {members} --revision {revision}').get_output_in_json()
+        self.assertEqual(vmGroupCreate['name'], 'vmGroup1')
+
+        vmGroupUpdate = self.cmd('az vmware workload-network vm-group update --resource-group {rg} --private-cloud {privatecloud} --vm-group-id {vm_group_id} --display-name {display_name} --members {members} --revision {revision}').get_output_in_json()
+        self.assertEqual(vmGroupUpdate['name'], 'cloud1')
+
+        vmGroupDelete = self.cmd('az vmware workload-network vm-group delete --resource-group {rg} --private-cloud {privatecloud} --vm-group-id {vm_group_id}').output
+        self.assertEqual(len(vmGroupDelete), 0)
