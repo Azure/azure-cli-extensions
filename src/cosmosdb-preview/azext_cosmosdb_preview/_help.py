@@ -6,86 +6,6 @@
 
 from knack.help_files import helps  # pylint: disable=unused-import
 
-
-helps['cosmosdb create'] = """
-type: command
-short-summary: Create a new Azure Cosmos DB database account.
-parameters:
-  - name: --locations
-    short-summary: Add a location to the Cosmos DB database account
-    long-summary: |
-        Usage:          --locations KEY=VALUE [KEY=VALUE ...]
-        Required Keys:  regionName, failoverPriority
-        Optional Key:   isZoneRedundant
-        Default:        single region account in the location of the specified resource group.
-        Failover priority values are 0 for write regions and greater than 0 for read regions. A failover priority value must be unique and less than the total number of regions.
-        Multiple locations can be specified by using more than one `--locations` argument.
-  - name: --databases-to-restore
-    short-summary: Add a database and its collection names to restore
-    long-summary: |
-        Usage:          --databases-to-restore name=DatabaseName collections=collection1 [collection2 ...]
-examples:
-  - name: Create a new Azure Cosmos DB database account.
-    text: az cosmosdb create --name MyCosmosDBDatabaseAccount --resource-group MyResourceGroup --subscription MySubscription
-  - name: Create a new Azure Cosmos DB database account with two regions. UK South is zone redundant.
-    text: az cosmosdb create -n myaccount -g mygroup --locations regionName=eastus failoverPriority=0 isZoneRedundant=False --locations regionName=uksouth failoverPriority=1 isZoneRedundant=True --enable-multiple-write-locations
-  - name: Create a new Azure Cosmos DB database account by restoring from an existing account in the given location
-    text: az cosmosdb create -n restoredaccount -g mygroup --is-restore-request true --restore-source /subscriptions/2296c272-5d55-40d9-bc05-4d56dc2d7588/providers/Microsoft.DocumentDB/locations/westus/restorableDatabaseAccounts/d056a4f8-044a-436f-80c8-cd3edbc94c68 --restore-timestamp 2020-07-13T16:03:41+0000 --locations regionName=westus failoverPriority=0 isZoneRedundant=False
-"""
-
-helps['cosmosdb restore'] = """
-type: command
-short-summary: Create a new Azure Cosmos DB database account by restoring from an existing database account.
-parameters:
-  - name: --databases-to-restore
-    short-summary: Add a database and its collection names to restore
-    long-summary: |
-        Usage:          --databases-to-restore name=DatabaseName collections=collection1 [collection2 ...]
-        Multiple databases can be specified by using more than one `--databases-to-restore` argument.
-examples:
-  - name: Create a new Azure Cosmos DB database account by restoring from an existing database account.
-    text: az cosmosdb restore --target-database-account-name MyRestoredCosmosDBDatabaseAccount --account-name MySourceAccount --restore-timestamp 2020-07-13T16:03:41+0000 -g MyResourceGroup --location westus
-  - name: Create a new Azure Cosmos DB database account by restoring only the selected databases and collections from an existing database account.
-    text: az cosmosdb restore -g MyResourceGroup --target-database-account-name MyRestoredCosmosDBDatabaseAccount --account-name MySourceAccount --restore-timestamp 2020-07-13T16:03:41+0000 --location westus --databases-to-restore name=MyDB1 collections=collection1 collection2 --databases-to-restore name=MyDB2 collections=collection3 collection4
-"""
-
-helps['cosmosdb update'] = """
-type: command
-short-summary: Update an Azure Cosmos DB database account.
-parameters:
-  - name: --locations
-    short-summary: Add a location to the Cosmos DB database account
-    long-summary: |
-        Usage:          --locations KEY=VALUE [KEY=VALUE ...]
-        Required Keys:  regionName, failoverPriority
-        Optional Key:   isZoneRedundant
-        Default:        single region account in the location of the specified resource group.
-        Failover priority values are 0 for write regions and greater than 0 for read regions. A failover priority value must be unique and less than the total number of regions.
-        Multiple locations can be specified by using more than one `--locations` argument.
-examples:
-  - name: Update an Azure Cosmos DB database account.
-    text: az cosmosdb update --capabilities EnableGremlin --name MyCosmosDBDatabaseAccount --resource-group MyResourceGroup
-  - name: Update an new Azure Cosmos DB database account with two regions. UK South is zone redundant.
-    text: az cosmosdb update -n myaccount -g mygroup --locations regionName=eastus failoverPriority=0 isZoneRedundant=False --locations regionName=uksouth failoverPriority=1 isZoneRedundant=True --enable-multiple-write-locations
-  - name: Update the backup policy parameters of a database account with Periodic backup type.
-    text: az cosmosdb update -n myaccount -g mygroup --backup-interval 240 --backup-retention 24
-"""
-
-helps['cosmosdb restorable-database-account'] = """
-type: group
-short-summary: Manage restorable Azure Cosmos DB accounts.
-"""
-
-helps['cosmosdb restorable-database-account list'] = """
-type: command
-short-summary: List all the database accounts that can be restored.
-"""
-
-helps['cosmosdb restorable-database-account show'] = """
-type: command
-short-summary: Show the details of a database account that can be restored.
-"""
-
 helps['cosmosdb sql restorable-database'] = """
 type: group
 short-summary: Manage different versions of sql databases that are restorable in a Azure Cosmos DB account.
@@ -284,4 +204,67 @@ examples:
   - name: List all Managed Cassandra DataCenters in a given Cluster.
     text: |
       az managed-cassandra datacenter list --resource-group MyResourceGroup --cluster-name MyCluster
+"""
+
+helps['cosmosdb service create'] = """
+type: command
+short-summary: Create a cosmosdb service resource.
+examples:
+  - name: Create a cosmosdb service resource.
+    text: |
+      az cosmosdb service create --resource-group MyResourceGroup --account-name MyAccount --service-name "graphApiCompute" --service-kind "GraphApiCompute" --count 1 --size "Cosmos.D4s"
+      az cosmosdb service create --resource-group MyResourceGroup --account-name MyAccount --service-name "sqlDedicatedGateway" --service-kind "SqlDedicatedGateway" --count 3 --size "Cosmos.D4s"
+"""
+
+helps['cosmosdb service update'] = """
+type: command
+short-summary: Update a cosmosdb service resource.
+examples:
+  - name: Update a cosmosdb service resource.
+    text: |
+      az cosmosdb service update --resource-group MyResourceGroup --account-name MyAccount --service-name "graphApiCompute" --service-kind "GraphApiCompute" --count 1 
+      az cosmosdb service update --resource-group MyResourceGroup --account-name MyAccount --service-name "sqlDedicatedGateway" --service-kind "SqlDedicatedGateway" --count 3 
+"""
+
+helps['cosmosdb service list'] = """
+type: command
+short-summary: List all cosmosdb service resource under an account.
+examples:
+  - name: List all cosmosdb service resource under an account.
+    text: |
+      az cosmosdb service list --resource-group MyResourceGroup --account-name MyAccount
+"""
+
+helps['cosmosdb service delete'] = """
+type: command
+short-summary: Delete the given cosmosdb service resource.
+examples:
+  - name: Delete the given cosmosdb service resource.
+    text: |
+      az cosmosdb service delete --resource-group MyResourceGroup --account-name MyAccount --service-name "sqlDedicatedGateway"
+"""
+
+helps['cosmosdb graph create'] = """
+type: command
+short-summary: Create a cosmosdb graph resource.
+"""
+
+helps['cosmosdb graph update'] = """
+type: command
+short-summary: Update a cosmosdb graph resource.
+"""
+
+helps['cosmosdb graph list'] = """
+type: command
+short-summary: List all cosmosdb graph resource under an account.
+"""
+
+helps['cosmosdb graph delete'] = """
+type: command
+short-summary: Delete the given cosmosdb graph resource.
+"""
+
+helps['cosmosdb graph exists'] = """
+type: command
+short-summary: Returns if the given cosmosdb graph resource exist.
 """
