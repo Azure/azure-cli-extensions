@@ -424,7 +424,7 @@ def _create_role_assignment(cmd, role, assignee,
 
 def delete_role_assignments(cli_ctx, ids=None, assignee=None, role=None, resource_group_name=None,
                             scope=None, include_inherited=False, yes=None):
-    factory = get_auth_management_client(cmd.cli_ctx, scope)
+    factory = get_auth_management_client(cli_ctx, scope)
     assignments_client = factory.role_assignments
     definitions_client = factory.role_definitions
     ids = ids or []
@@ -592,6 +592,7 @@ def subnet_role_assignment_exists(cmd, scope):
             if i.scope == scope and i.role_definition_id.endswith(network_contributor_role_id):
                 return True
     return False
+
 
 _re_user_assigned_identity_resource_id = re.compile(
     r'/subscriptions/(.*?)/resourcegroups/(.*?)/providers/microsoft.managedidentity/userassignedidentities/(.*)',
@@ -1070,11 +1071,11 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         resource_type=ResourceType.MGMT_CONTAINERSERVICE,
         operation_group='managed_clusters')
     ManagedClusterAPIServerAccessProfile = cmd.get_models('ManagedClusterAPIServerAccessProfile',
-                                            resource_type=ResourceType.MGMT_CONTAINERSERVICE,
-                                            operation_group='managed_clusters')
+                                                          resource_type=ResourceType.MGMT_CONTAINERSERVICE,
+                                                          operation_group='managed_clusters')
     ManagedClusterPodIdentityProfile = cmd.get_models('ManagedClusterPodIdentityProfile',
-                                            resource_type=ResourceType.MGMT_CONTAINERSERVICE,
-                                            operation_group='managed_clusters')
+                                                      resource_type=ResourceType.MGMT_CONTAINERSERVICE,
+                                                      operation_group='managed_clusters')
 
     if not no_ssh_key:
         try:
@@ -1585,12 +1586,21 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                windows_admin_password=None,
                enable_azure_rbac=False,
                disable_azure_rbac=False):
-    ManagedClusterAddonProfile = cmd.get_models('ManagedClusterAddonProfile',
-                                                resource_type=ResourceType.MGMT_CONTAINERSERVICE,
-                                                operation_group='managed_clusters')
     ManagedClusterAADProfile = cmd.get_models('ManagedClusterAADProfile',
                                               resource_type=ResourceType.MGMT_CONTAINERSERVICE,
                                               operation_group='managed_clusters')
+    ManagedClusterSKU = cmd.get_models('ManagedClusterSKU',
+                                       resource_type=ResourceType.MGMT_CONTAINERSERVICE,
+                                       operation_group='managed_clusters')
+    ManagedClusterAutoUpgradeProfile = cmd.get_models('ManagedClusterAutoUpgradeProfile',
+                                       resource_type=ResourceType.MGMT_CONTAINERSERVICE,
+                                       operation_group='managed_clusters')
+    ManagedClusterIdentity = cmd.get_models('ManagedClusterIdentity',
+                                       resource_type=ResourceType.MGMT_CONTAINERSERVICE,
+                                       operation_group='managed_clusters')
+    ManagedServiceIdentityUserAssignedIdentitiesValue = cmd.get_models('ManagedServiceIdentityUserAssignedIdentitiesValue',
+                                                                       resource_type=ResourceType.MGMT_CONTAINERSERVICE,
+                                                                       operation_group='managed_clusters')
     update_autoscaler = enable_cluster_autoscaler or disable_cluster_autoscaler or update_cluster_autoscaler
     update_acr = attach_acr is not None or detach_acr is not None
     update_pod_security = enable_pod_security_policy or disable_pod_security_policy
@@ -1906,12 +1916,12 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
         if not _is_pod_identity_addon_enabled(instance):
             # we only rebuild the pod identity profile if it's disabled before
             _update_addon_pod_identity(
-                instance, enable=True,
+                cmd, instance, enable=True,
                 allow_kubenet_consent=enable_pod_identity_with_kubenet,
             )
 
     if disable_pod_identity:
-        _update_addon_pod_identity(instance, enable=False)
+        _update_addon_pod_identity(cmd, instance, enable=False)
 
     azure_keyvault_secrets_provider_addon_profile = None
     monitoring_addon_enabled = False
@@ -3170,8 +3180,8 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
                                               resource_type=ResourceType.MGMT_CONTAINERSERVICE,
                                               operation_group='agent_pools')
     ContainerServiceStorageProfileTypes = cmd.get_models('ContainerServiceStorageProfileTypes',
-                                              resource_type=ResourceType.MGMT_CONTAINERSERVICE,
-                                              operation_group='agent_pools')
+                                                         resource_type=ResourceType.MGMT_CONTAINERSERVICE,
+                                                         operation_group='agent_pools')
     instances = client.list(resource_group_name, cluster_name)
     for agentpool_profile in instances:
         if agentpool_profile.name == nodepool_name:
@@ -3280,6 +3290,9 @@ def aks_agentpool_upgrade(cmd,  # pylint: disable=unused-argument
                           node_image_only=False,
                           max_surge=None,
                           aks_custom_headers=None):
+    AgentPoolUpgradeSettings = cmd.get_models('AgentPoolUpgradeSettings',
+                                              resource_type=ResourceType.MGMT_CONTAINERSERVICE,
+                                              operation_group='agent_pools')
     if kubernetes_version != '' and node_image_only:
         raise CLIError('Conflicting flags. Upgrading the Kubernetes version will also upgrade node image version.'
                        'If you only want to upgrade the node version please use the "--node-image-only" option only.')
@@ -3327,7 +3340,9 @@ def aks_agentpool_update(cmd,   # pylint: disable=unused-argument
                          max_surge=None,
                          mode=None,
                          no_wait=False):
-
+    AgentPoolUpgradeSettings = cmd.get_models('AgentPoolUpgradeSettings',
+                                              resource_type=ResourceType.MGMT_CONTAINERSERVICE,
+                                              operation_group='agent_pools')
     update_autoscaler = enable_cluster_autoscaler + \
         disable_cluster_autoscaler + update_cluster_autoscaler
 
@@ -4050,8 +4065,8 @@ def _is_msi_cluster(managed_cluster):
 
 def _get_kubelet_config(cmd, file_path):
     KubeletConfig = cmd.get_models('KubeletConfig',
-                               resource_type=ResourceType.MGMT_CONTAINERSERVICE,
-                               operation_group='managed_clusters')
+                                   resource_type=ResourceType.MGMT_CONTAINERSERVICE,
+                                   operation_group='managed_clusters')
     if not os.path.isfile(file_path):
         raise CLIError("{} is not valid file, or not accessable.".format(file_path))
     kubelet_config = get_file_json(file_path)
@@ -4085,11 +4100,8 @@ def _get_kubelet_config(cmd, file_path):
 
 def _get_linux_os_config(cmd, file_path):
     LinuxOSConfig = cmd.get_models('LinuxOSConfig',
-                               resource_type=ResourceType.MGMT_CONTAINERSERVICE,
-                               operation_group='managed_clusters')
-    SysctlConfig = cmd.get_models('SysctlConfig',
-                               resource_type=ResourceType.MGMT_CONTAINERSERVICE,
-                               operation_group='managed_clusters')    
+                                   resource_type=ResourceType.MGMT_CONTAINERSERVICE,
+                                   operation_group='managed_clusters') 
     if not os.path.isfile(file_path):
         raise CLIError("{} is not valid file, or not accessable.".format(file_path))
     os_config = get_file_json(file_path)
@@ -4165,8 +4177,8 @@ def _get_linux_os_config(cmd, file_path):
 
 def _get_http_proxy_config(cmd, file_path):
     ManagedClusterHTTPProxyConfig = cmd.get_models('ManagedClusterHTTPProxyConfig',
-                               resource_type=ResourceType.MGMT_CONTAINERSERVICE,
-                               operation_group='managed_clusters')
+                                                   resource_type=ResourceType.MGMT_CONTAINERSERVICE,
+                                                   operation_group='managed_clusters')
     if not os.path.isfile(file_path):
         raise CLIError("{} is not valid file, or not accessable.".format(file_path))
     hp_config = get_file_json(file_path)
@@ -4215,10 +4227,10 @@ def _ensure_pod_identity_kubenet_consent(network_profile, pod_identity_profile, 
     pod_identity_profile.allow_network_plugin_kubenet = True
 
 
-def _update_addon_pod_identity(instance, enable, pod_identities=None, pod_identity_exceptions=None, allow_kubenet_consent=None):
+def _update_addon_pod_identity(cmd, instance, enable, pod_identities=None, pod_identity_exceptions=None, allow_kubenet_consent=None):
     ManagedClusterPodIdentityProfile = cmd.get_models('ManagedClusterPodIdentityProfile',
-                                            resource_type=ResourceType.MGMT_CONTAINERSERVICE,
-                                            operation_group='managed_clusters')
+                                                      resource_type=ResourceType.MGMT_CONTAINERSERVICE,
+                                                      operation_group='managed_clusters')
     if not enable:
         # when disable, remove previous saved value
         instance.pod_identity_profile = ManagedClusterPodIdentityProfile(
@@ -4294,11 +4306,11 @@ def aks_pod_identity_add(cmd, client, resource_group_name, cluster_name,
                          binding_selector=None,
                          no_wait=False):  # pylint: disable=unused-argument
     ManagedClusterPodIdentity = cmd.get_models('ManagedClusterPodIdentity',
-                                            resource_type=ResourceType.MGMT_CONTAINERSERVICE,
-                                            operation_group='managed_clusters')
+                                               resource_type=ResourceType.MGMT_CONTAINERSERVICE,
+                                               operation_group='managed_clusters')
     UserAssignedIdentity = cmd.get_models('UserAssignedIdentity',
-                                            resource_type=ResourceType.MGMT_CONTAINERSERVICE,
-                                            operation_group='managed_clusters')
+                                          resource_type=ResourceType.MGMT_CONTAINERSERVICE,
+                                          operation_group='managed_clusters')
     instance = client.get(resource_group_name, cluster_name)
     _ensure_pod_identity_addon_is_enabled(instance)
 
@@ -4324,7 +4336,7 @@ def aks_pod_identity_add(cmd, client, resource_group_name, cluster_name,
     pod_identities.append(pod_identity)
 
     _update_addon_pod_identity(
-        instance, enable=True,
+        cmd, instance, enable=True,
         pod_identities=pod_identities,
         pod_identity_exceptions=instance.pod_identity_profile.user_assigned_identity_exceptions,
     )
@@ -4348,7 +4360,7 @@ def aks_pod_identity_delete(cmd, client, resource_group_name, cluster_name,
             pod_identities.append(pod_identity)
 
     _update_addon_pod_identity(
-        instance, enable=True,
+        cmd, instance, enable=True,
         pod_identities=pod_identities,
         pod_identity_exceptions=instance.pod_identity_profile.user_assigned_identity_exceptions,
     )
@@ -4365,8 +4377,8 @@ def aks_pod_identity_list(cmd, client, resource_group_name, cluster_name):  # py
 def aks_pod_identity_exception_add(cmd, client, resource_group_name, cluster_name,
                                    exc_name, exc_namespace, pod_labels, no_wait=False):  # pylint: disable=unused-argument
     ManagedClusterPodIdentityException = cmd.get_models('ManagedClusterPodIdentityException',
-                                            resource_type=ResourceType.MGMT_CONTAINERSERVICE,
-                                            operation_group='managed_clusters')
+                                                        resource_type=ResourceType.MGMT_CONTAINERSERVICE,
+                                                        operation_group='managed_clusters')
     instance = client.get(resource_group_name, cluster_name)
     _ensure_pod_identity_addon_is_enabled(instance)
 
@@ -4378,7 +4390,7 @@ def aks_pod_identity_exception_add(cmd, client, resource_group_name, cluster_nam
     pod_identity_exceptions.append(exc)
 
     _update_addon_pod_identity(
-        instance, enable=True,
+        cmd, instance, enable=True,
         pod_identities=instance.pod_identity_profile.user_assigned_identities,
         pod_identity_exceptions=pod_identity_exceptions,
     )
@@ -4401,7 +4413,7 @@ def aks_pod_identity_exception_delete(cmd, client, resource_group_name, cluster_
             pod_identity_exceptions.append(exc)
 
     _update_addon_pod_identity(
-        instance, enable=True,
+        cmd, instance, enable=True,
         pod_identities=instance.pod_identity_profile.user_assigned_identities,
         pod_identity_exceptions=pod_identity_exceptions,
     )
@@ -4413,8 +4425,8 @@ def aks_pod_identity_exception_delete(cmd, client, resource_group_name, cluster_
 def aks_pod_identity_exception_update(cmd, client, resource_group_name, cluster_name,
                                       exc_name, exc_namespace, pod_labels, no_wait=False):  # pylint: disable=unused-argument
     ManagedClusterPodIdentityException = cmd.get_models('ManagedClusterPodIdentityException',
-                                            resource_type=ResourceType.MGMT_CONTAINERSERVICE,
-                                            operation_group='managed_clusters')                           
+                                                        resource_type=ResourceType.MGMT_CONTAINERSERVICE,
+                                                        operation_group='managed_clusters')                           
     instance = client.get(resource_group_name, cluster_name)
     _ensure_pod_identity_addon_is_enabled(instance)
 
@@ -4435,7 +4447,7 @@ def aks_pod_identity_exception_update(cmd, client, resource_group_name, cluster_
             'pod identity exception {}/{} not found'.format(exc_namespace, exc_name))
 
     _update_addon_pod_identity(
-        instance, enable=True,
+        cmd, instance, enable=True,
         pod_identities=instance.pod_identity_profile.user_assigned_identities,
         pod_identity_exceptions=pod_identity_exceptions,
     )
@@ -4450,7 +4462,7 @@ def aks_pod_identity_exception_list(cmd, client, resource_group_name, cluster_na
 
 
 def _ensure_cluster_identity_permission_on_kubelet_identity(cmd, cluster_identity_object_id, scope):
-    factory = get_auth_management_client(cli_ctx, scope)
+    factory = get_auth_management_client(cmd.cli_ctx, scope)
     assignments_client = factory.role_assignments
 
     for i in assignments_client.list_for_scope(scope=scope, filter='atScope()'):
