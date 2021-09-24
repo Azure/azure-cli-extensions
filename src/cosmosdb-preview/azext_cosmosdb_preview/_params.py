@@ -86,8 +86,7 @@ def load_arguments(self, _):
         c.argument('graph_name', options_list=['--name', '-n'], help="Graph name")
 
     # Services
-    for scope in ['cosmosdb service']:
-        with self.argument_context(scope) as c:
+        with self.argument_context('cosmosdb service') as c:
             c.argument('account_name', completer=None, options_list=['--account-name', '-a'], help='Name of the Cosmos DB database account.', id_part=None)
             c.argument('resource_group_name', completer=None, options_list=['--resource-group-name', '-g'], help='Name of the resource group of the database account.', id_part=None)
             c.argument('service_kind', options_list=['--kind', '-k'], help="Service kind")
