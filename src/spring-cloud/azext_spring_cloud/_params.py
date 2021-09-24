@@ -34,6 +34,8 @@ def load_arguments(self, _):
         c.argument('name', options_list=[
             '--name', '-n'], help='Name of Azure Spring Cloud.')
 
+    # A refactoring work item to move validators to command level to reduce the duplications.
+    # https://dev.azure.com/msazure/AzureDMSS/_workitems/edit/11002857/
     with self.argument_context('spring-cloud create') as c:
         c.argument('location', arg_type=get_location_type(self.cli_ctx), validator=validate_location)
         c.argument('reserved_cidr_range', help='Comma-separated list of IP address ranges in CIDR format. The IP ranges are reserved to host underlying Azure Spring Cloud infrastructure, which should be 3 at least /16 unused IP ranges, must not overlap with any Subnet IP ranges.', validator=validate_vnet_required_parameters)
