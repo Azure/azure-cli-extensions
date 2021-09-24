@@ -1518,9 +1518,9 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
     }
     telemetry.add_extension_event('connectedk8s', kubernetes_properties)
 
+    helm_values = get_all_helm_values(release_namespace, kube_config, kube_context, True)
     if disable_cluster_connect:
         try:
-            helm_values = get_all_helm_values(release_namespace, kube_config, kube_context, True)
             if not disable_cl and helm_values.get('systemDefaultValues').get('customLocations').get('enabled') is True and helm_values.get('systemDefaultValues').get('customLocations').get('oid') != "":
                 raise Exception("Disabling 'cluster-connect' feature is not allowed when 'custom-locations' feature is enabled.")
         except AttributeError as e:
