@@ -1229,6 +1229,14 @@ maintenance assignment create:
     maintenance_configuration_id:
       rule_exclusions:
       - option_length_too_long
+maintenance assignment create-or-update-parent:
+  parameters:
+    configuration_assignment_name:
+      rule_exclusions:
+      - option_length_too_long
+    maintenance_configuration_id:
+      rule_exclusions:
+      - option_length_too_long
 maintenance assignment delete:
   parameters:
     configuration_assignment_name:
