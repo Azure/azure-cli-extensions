@@ -1693,7 +1693,8 @@ def _get_connection_string_from_app_insights(cmd, resource_group, app_insights):
     else:
         connection_string = get_app_insights_connection_string(cmd.cli_ctx, resource_group, app_insights)
     if not connection_string:
-        raise CLIError("Cannot find Connection string from application insights:{}".format(app_insights))
+        raise InvalidArgumentValueError(
+            "Cannot find Connection string from application insights:{}".format(app_insights))
     return connection_string
 
 
@@ -1743,8 +1744,8 @@ def app_insights_update(cmd, client, resource_group, name,
         if not monitoring_setting_properties.app_insights_instrumentation_key \
                 and not app_insights_key \
                 and not app_insights:
-            CLIError("Can't update application insights without connecting to Application Insights. "
-                     "Please provide '--app-insights' or '--app-insights-key'.")
+            InvalidArgumentValueError("Can't update application insights without connecting to Application Insights. "
+                                      "Please provide '--app-insights' or '--app-insights-key'.")
         if app_insights_key:
             connection_string = app_insights_key
         elif app_insights:
