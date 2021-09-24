@@ -199,11 +199,6 @@ type: command
 short-summary: Create a cosmosdb graph resource.
 """
 
-helps['cosmosdb graph update'] = """
-type: command
-short-summary: Update a cosmosdb graph resource.
-"""
-
 helps['cosmosdb graph list'] = """
 type: command
 short-summary: List all cosmosdb graph resource under an account.
