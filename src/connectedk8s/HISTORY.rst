@@ -3,6 +3,25 @@
 Release History
 ===============
 
+1.1.11
+++++++
+
+* Installing helm binary as part of CLI commands
+
+1.1.10
+++++++
+
+* Fixed ARM exception telemetry
+
+1.1.9
+++++++
+
+* Increase onboarding and upgrade timeout
+
+1.1.8
+++++++
+* Improve kubernetes distro and infra detection
+
 
 1.1.7
 ++++++

@@ -1,5 +1,16 @@
 Release History
 ===============
+2.9.0
+-----
+* Add --source-path argument into 'az spring-cloud app deploy' and 'az spring-cloud app deployment create'
+* Deprecate source code deploy without --source-path argument in 'az spring-cloud app deploy' and 'az spring-cloud app deployment create'
+* Add Support to create banner deployment in 'az spring-cloud app deployment create'
+
+2.8.0
+-----
+* Add support to validate jar before create/update deployment
+* Add support to delete deployment with no-wait
+
 2.7.1
 -----
 * Fix source code deployment build log issues

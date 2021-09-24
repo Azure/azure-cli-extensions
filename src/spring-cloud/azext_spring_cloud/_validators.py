@@ -6,10 +6,14 @@
 # pylint: disable=too-few-public-methods, unused-argument, redefined-builtin
 
 from re import match
+from re import search
 from ipaddress import ip_network
+import zipfile
+from azure.cli.core import telemetry
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.commands.validators import validate_tag
-from azure.cli.core.util import CLIError
+from azure.cli.core.azclierror import InvalidArgumentValueError
+from ._utils import _get_file_type
 from msrestazure.tools import is_valid_resource_id
 from msrestazure.tools import parse_resource_id
 from msrestazure.tools import resource_id
@@ -40,20 +44,20 @@ def validate_sku(namespace):
     if namespace.sku is not None:
         namespace.sku = namespace.sku.upper()
         if namespace.sku not in ['BASIC', 'STANDARD']:
-            raise CLIError("The pricing tier only accepts value [Basic, Standard]")
+            raise InvalidArgumentValueError("The pricing tier only accepts value [Basic, Standard]")
 
 
 def validate_instance_count(namespace):
     if namespace.instance_count is not None:
         if namespace.instance_count < 1:
-            raise CLIError("--instance-count must be greater than 0")
+            raise InvalidArgumentValueError("--instance-count must be greater than 0")
 
 
 def validate_name(namespace):
     namespace.name = namespace.name.lower()
     matchObj = match(r'^[a-z][a-z0-9-]{2,30}[a-z0-9]$', namespace.name)
     if matchObj is None:
-        raise CLIError(
+        raise InvalidArgumentValueError(
             '--name should start with lowercase and only contain numbers and lowercases with length [4,31]')
 
 
@@ -62,7 +66,7 @@ def validate_app_name(namespace):
         namespace.app = namespace.app.lower()
         matchObj = match(r'^[a-z][a-z0-9-]{2,30}[a-z0-9]$', namespace.app)
         if matchObj is None:
-            raise CLIError(
+            raise InvalidArgumentValueError(
                 '--app should start with lowercase and only contain numbers and lowercases with length [4,31]')
 
 
@@ -75,13 +79,13 @@ def validate_deployment_name(namespace):
         matchObj = match(
             r'^[a-z][a-z0-9-]{2,30}[a-z0-9]$', namespace.deployment)
         if matchObj is None:
-            raise CLIError(
+            raise InvalidArgumentValueError(
                 '--deployment should start with lowercase and only contain numbers and lowercases with length [4,31]')
 
 
 def validate_resource_id(namespace):
     if not is_valid_resource_id(namespace.resource_id):
-        raise CLIError("Invalid resource id {}".format(namespace.resource_id))
+        raise InvalidArgumentValueError("Invalid resource id {}".format(namespace.resource_id))
 
 
 def validate_cosmos_type(namespace):
@@ -90,17 +94,17 @@ def validate_cosmos_type(namespace):
     type = ApiType(namespace.api_type)
     if type in (ApiType.mongo, ApiType.sql, ApiType.gremlin):
         if namespace.database_name is None:
-            raise CLIError(
+            raise InvalidArgumentValueError(
                 "Cosmosdb with type {} should specify database name".format(type))
 
     if type == ApiType.cassandra:
         if namespace.key_space is None:
-            raise CLIError(
+            raise InvalidArgumentValueError(
                 "Cosmosdb with type {} should specify key space".format(type))
 
     if type == ApiType.gremlin:
         if namespace.key_space is None:
-            raise CLIError(
+            raise InvalidArgumentValueError(
                 "Cosmosdb with type {} should specify collection name".format(type))
 
 
@@ -109,9 +113,9 @@ def validate_log_limit(namespace):
     try:
         temp_limit = namespace.limit
     except:
-        raise CLIError('--limit must contains only digit')
+        raise InvalidArgumentValueError('--limit must contains only digit')
     if temp_limit < 1:
-        raise CLIError('--limit must be in the range [1,2048]')
+        raise InvalidArgumentValueError('--limit must be in the range [1,2048]')
     if temp_limit > 2048:
         temp_limit = 2048
         logger.error("--limit can not be more than 2048, using 2048 instead")
@@ -123,9 +127,9 @@ def validate_log_lines(namespace):
     try:
         temp_lines = namespace.lines
     except:
-        raise CLIError('--lines must contains only digit')
+        raise InvalidArgumentValueError('--lines must contains only digit')
     if temp_lines < 1:
-        raise CLIError('--lines must be in the range [1,10000]')
+        raise InvalidArgumentValueError('--lines must be in the range [1,10000]')
     if temp_lines > 10000:
         temp_lines = 10000
         logger.error("--lines can not be more than 10000, using 10000 instead")
@@ -139,11 +143,11 @@ def validate_log_since(namespace):
             namespace.since = int(
                 namespace.since[:-1]) if last in ("hms") else int(namespace.since)
         except:
-            raise CLIError("--since contains invalid characters")
+            raise InvalidArgumentValueError("--since contains invalid characters")
         namespace.since *= 60 if last == "m" else 1
         namespace.since *= 3600 if last == "h" else 1
         if namespace.since > 3600:
-            raise CLIError("--since can not be more than 1h")
+            raise InvalidArgumentValueError("--since can not be more than 1h")
 
 
 def validate_jvm_options(namespace):
@@ -153,32 +157,32 @@ def validate_jvm_options(namespace):
 
 def validate_tracing_parameters(namespace):
     if namespace.disable_app_insights and namespace.disable_distributed_tracing:
-        raise CLIError("Conflict detected: '--disable-app-insights' can not be set with '--disable-distributed-tracing'.")
+        raise InvalidArgumentValueError("Conflict detected: '--disable-app-insights' can not be set with '--disable-distributed-tracing'.")
     if (namespace.app_insights or namespace.app_insights_key) and namespace.disable_app_insights:
-        raise CLIError("Conflict detected: '--app-insights' or '--app-insights-key'"
-                       "can not be set with '--disable-app-insights'.")
+        raise InvalidArgumentValueError("Conflict detected: '--app-insights' or '--app-insights-key'"
+                                        "can not be set with '--disable-app-insights'.")
     if (namespace.app_insights or namespace.app_insights_key) and namespace.disable_distributed_tracing:
-        raise CLIError("Conflict detected: '--app-insights' or '--app-insights-key'"
-                       "can not be set with '--disable-distributed-tracing'.")
+        raise InvalidArgumentValueError("Conflict detected: '--app-insights' or '--app-insights-key'"
+                                        "can not be set with '--disable-distributed-tracing'.")
     if namespace.app_insights and namespace.app_insights_key:
-        raise CLIError("Conflict detected: '--app-insights' and '--app-insights-key' can not be set at the same time.")
+        raise InvalidArgumentValueError("Conflict detected: '--app-insights' and '--app-insights-key' can not be set at the same time.")
     if namespace.app_insights == "":
-        raise CLIError("Conflict detected: '--app-insights' can not be empty.")
+        raise InvalidArgumentValueError("Conflict detected: '--app-insights' can not be empty.")
 
 
 def validate_java_agent_parameters(namespace):
     if namespace.disable_app_insights and namespace.enable_java_agent:
-        raise CLIError("Conflict detected: '--enable-java-in-process-agent' and '--disable-app-insights' can not be set at the same time.")
+        raise InvalidArgumentValueError("Conflict detected: '--enable-java-in-process-agent' and '--disable-app-insights' can not be set at the same time.")
 
 
 def validate_app_insights_parameters(namespace):
     if (namespace.app_insights or namespace.app_insights_key or namespace.sampling_rate) and namespace.disable:
-        raise CLIError("Conflict detected: '--app-insights' or '--app-insights-key' or '--sampling-rate'"
-                       "can not be set with '--disable'.")
+        raise InvalidArgumentValueError("Conflict detected: '--app-insights' or '--app-insights-key' or '--sampling-rate'"
+                                        "can not be set with '--disable'.")
     if namespace.app_insights and namespace.app_insights_key:
-        raise CLIError("Conflict detected: '--app-insights' and '--app-insights-key' can not be set at the same time.")
+        raise InvalidArgumentValueError("Conflict detected: '--app-insights' and '--app-insights-key' can not be set at the same time.")
     if namespace.sampling_rate and (namespace.sampling_rate < 0 or namespace.sampling_rate > 100):
-        raise CLIError("Sampling Rate must be in the range [0,100].")
+        raise InvalidArgumentValueError("Sampling Rate must be in the range [0,100].")
 
 
 def validate_vnet(cmd, namespace):
@@ -193,7 +197,7 @@ def validate_vnet(cmd, namespace):
         # format the app_subnet and service_runtime_subnet
         if not is_valid_resource_id(vnet_id):
             if vnet_id.count('/') > 0:
-                raise CLIError('--vnet {0} is not a valid name or resource ID'.format(vnet_id))
+                raise InvalidArgumentValueError('--vnet {0} is not a valid name or resource ID'.format(vnet_id))
             vnet_id = resource_id(
                 subscription=get_subscription_id(cmd.cli_ctx),
                 resource_group=namespace.resource_group,
@@ -204,17 +208,17 @@ def validate_vnet(cmd, namespace):
         else:
             vnet = parse_resource_id(vnet_id)
             if vnet['namespace'].lower() != 'microsoft.network' or vnet['type'].lower() != 'virtualnetworks':
-                raise CLIError('--vnet {0} is not a valid VirtualNetwork resource ID'.format(vnet_id))
+                raise InvalidArgumentValueError('--vnet {0} is not a valid VirtualNetwork resource ID'.format(vnet_id))
         namespace.app_subnet = _construct_subnet_id(vnet_id, namespace.app_subnet)
         namespace.service_runtime_subnet = _construct_subnet_id(vnet_id, namespace.service_runtime_subnet)
     else:
         app_vnet_id = _parse_vnet_id_from_subnet(namespace.app_subnet)
         service_runtime_vnet_id = _parse_vnet_id_from_subnet(namespace.service_runtime_subnet)
         if app_vnet_id.lower() != service_runtime_vnet_id.lower():
-            raise CLIError('--app-subnet and --service-runtime-subnet should be in the same Virtual Networks.')
+            raise InvalidArgumentValueError('--app-subnet and --service-runtime-subnet should be in the same Virtual Networks.')
         vnet_id = app_vnet_id
     if namespace.app_subnet.lower() == namespace.service_runtime_subnet.lower():
-        raise CLIError('--app-subnet and --service-runtime-subnet should not be the same.')
+        raise InvalidArgumentValueError('--app-subnet and --service-runtime-subnet should not be the same.')
 
     vnet_obj = _get_vnet(cmd, vnet_id)
     instance_location = namespace.location
@@ -225,7 +229,7 @@ def validate_vnet(cmd, namespace):
         instance_location = "".join([piece.lower()
                                      for piece in instance_location_slice])
     if vnet_obj.location.lower() != instance_location.lower():
-        raise CLIError('--vnet and Azure Spring Cloud instance should be in the same location.')
+        raise InvalidArgumentValueError('--vnet and Azure Spring Cloud instance should be in the same location.')
     for subnet in vnet_obj.subnets:
         _validate_subnet(namespace, subnet)
     _validate_route_table(namespace, vnet_obj)
@@ -250,10 +254,10 @@ def _validate_subnet(namespace, subnet):
     else:
         return
     if subnet.ip_configurations:
-        raise CLIError('--{} should not have connected device.'.format(name))
+        raise InvalidArgumentValueError('--{} should not have connected device.'.format(name))
     address = ip_network(subnet.address_prefix, strict=False)
     if address.prefixlen > limit:
-        raise CLIError('--{0} should contain at least /{1} address, got /{2}'.format(name, limit, address.prefixlen))
+        raise InvalidArgumentValueError('--{0} should contain at least /{1} address, got /{2}'.format(name, limit, address.prefixlen))
 
 
 def _get_vnet(cmd, vnet_id):
@@ -320,18 +324,19 @@ def _next_range(ip, prefix):
             address = address + 268435456
         return ip_network('{0}/{1}'.format(address, prefix), strict=False)
     except ValueError:
-        raise CLIError('Cannot set "reserved-cidr-range" automatically.'
-                       'Please specify "--reserved-cidr-range" with 3 unused CIDR ranges in your network environment.')
+        raise InvalidArgumentValueError('Cannot set "reserved-cidr-range" automatically.'
+                                        'Please specify "--reserved-cidr-range" with 3 unused CIDR ranges in your '
+                                        'network environment.')
 
 
 def _parse_vnet_id_from_subnet(subnet_id):
     if not is_valid_resource_id(subnet_id):
-        raise CLIError('{0} is not a valid subnet resource ID'.format(subnet_id))
+        raise InvalidArgumentValueError('{0} is not a valid subnet resource ID'.format(subnet_id))
     subnet = parse_resource_id(subnet_id)
     if subnet['namespace'].lower() != 'microsoft.network' or \
        subnet['type'].lower() != 'virtualnetworks' or \
        'resource_type' not in subnet or subnet['resource_type'].lower() != 'subnets':
-        raise CLIError('{0} is not a valid subnet resource ID'.format(subnet_id))
+        raise InvalidArgumentValueError('{0} is not a valid subnet resource ID'.format(subnet_id))
     return resource_id(
         subscription=subnet['subscription'],
         resource_group=subnet['resource_group'],
@@ -344,11 +349,11 @@ def _parse_vnet_id_from_subnet(subnet_id):
 def _construct_subnet_id(vnet_id, subnet):
     if not is_valid_resource_id(subnet):
         if subnet.count('/'):
-            raise CLIError('subnet {0} is not a valid name or resource ID'.format(subnet))
+            raise InvalidArgumentValueError('subnet {0} is not a valid name or resource ID'.format(subnet))
         # subnet name is given
         return vnet_id + '/subnets/' + subnet
     if not subnet.lower().startswith(vnet_id.lower()):
-        raise CLIError('subnet {0} is not under virtual network {1}'.format(subnet, vnet_id))
+        raise InvalidArgumentValueError('subnet {0} is not under virtual network {1}'.format(subnet, vnet_id))
     return subnet
 
 
@@ -362,14 +367,15 @@ def _validate_cidr_range(namespace):
     #     namespace.reserved_cidr_range = ranges[0]
     #     return
     if len(ranges) != 3:
-        raise CLIError('--reserved-cidr-range should be 3 unused /16 IP ranges')
+        raise InvalidArgumentValueError('--reserved-cidr-range should be 3 unused /16 IP ranges')
     ipv4 = [_validate_ip(ip, 16) for ip in ranges]
     # check no overlap with each other
     for i, item in enumerate(ipv4):
         for j in range(i + 1, len(ipv4)):
             if item.overlaps(ipv4[j]):
-                raise CLIError('--reserved-cidr-range should not overlap each other, but {0} and {1} overlapping.'
-                               .format(ranges[i], ranges[j]))
+                raise InvalidArgumentValueError(
+                    '--reserved-cidr-range should not overlap each other, but {0} and {1} overlapping.'
+                    .format(ranges[i], ranges[j]))
     namespace.reserved_cidr_range = ','.join(ranges)
 
 
@@ -378,14 +384,14 @@ def _validate_ip(ip, prefix):
         # Host bits set can be non-zero? Here treat it as valid.
         ip_address = ip_network(ip, strict=False)
         if ip_address.version != 4:
-            raise CLIError('{0} is not a valid IPv4 CIDR.'.format(ip))
+            raise InvalidArgumentValueError('{0} is not a valid IPv4 CIDR.'.format(ip))
         if ip_address.prefixlen > prefix:
-            raise CLIError(
+            raise InvalidArgumentValueError(
                 '{0} doesn\'t has valid CIDR prefix. '
                 ' --reserved-cidr-range should be 3 unused /16 IP ranges.'.format(ip))
         return ip_address
     except ValueError:
-        raise CLIError('{0} is not a valid CIDR'.format(ip))
+        raise InvalidArgumentValueError('{0} is not a valid CIDR'.format(ip))
 
 
 def validate_vnet_required_parameters(namespace):
@@ -398,10 +404,10 @@ def validate_vnet_required_parameters(namespace):
        not namespace.vnet:
         return
     if namespace.sku and namespace.sku.lower() == 'basic':
-        raise CLIError('Virtual Network Injection is not supported for Basic tier.')
+        raise InvalidArgumentValueError('Virtual Network Injection is not supported for Basic tier.')
     if not namespace.app_subnet \
        or not namespace.service_runtime_subnet:
-        raise CLIError(
+        raise InvalidArgumentValueError(
             '--app-subnet, --service-runtime-subnet must be set when deploying to VNet')
 
 
@@ -417,7 +423,7 @@ def _validate_resource_group_name(name, message_name):
         return
     matchObj = match(r'^[-\w\._\(\)]+$', name)
     if matchObj is None:
-        raise CLIError('--{0} must conform to the following pattern: \'^[-\\w\\._\\(\\)]+$\'.'.format(message_name))
+        raise InvalidArgumentValueError('--{0} must conform to the following pattern: \'^[-\\w\\._\\(\\)]+$\'.'.format(message_name))
 
 
 def _validate_route_table(namespace, vnet_obj):
@@ -431,8 +437,115 @@ def _validate_route_table(namespace, vnet_obj):
 
     if app_route_table_id and runtime_route_table_id:
         if app_route_table_id == runtime_route_table_id:
-            raise CLIError('--service-runtime-subnet and --app-subnet should associate with different route tables.')
+            raise InvalidArgumentValueError('--service-runtime-subnet and --app-subnet should associate with different route tables.')
     if (app_route_table_id and not runtime_route_table_id) \
             or (not app_route_table_id and runtime_route_table_id):
-        raise CLIError(
+        raise InvalidArgumentValueError(
             '--service-runtime-subnet and --app-subnet should both associate with different route tables or neither.')
+
+
+def validate_jar(namespace):
+    if namespace.disable_validation:
+        telemetry.set_user_fault("jar validation is disabled")
+        return
+    file_type = _get_file_type(namespace.runtime_version, namespace.artifact_path)
+    if file_type != "Jar":
+        return
+    values = _parse_jar_file(namespace.artifact_path)
+    if values is None:
+        # ignore jar_file check
+        return
+
+    file_size, spring_boot_version, spring_cloud_version, has_actuator, has_manifest, has_jar, has_class, ms_sdk_version = values
+
+    tips = ", if you choose to ignore these errors, turn validation off with --disable-validation"
+    if not has_jar and not has_class:
+        telemetry.set_user_fault("invalid_jar_no_class_jar")
+        raise InvalidArgumentValueError("Do not find any class or jar file, please check if your artifact is a valid fat jar" + tips)
+    if not has_manifest:
+        telemetry.set_user_fault("invalid_jar_no_manifest")
+        raise InvalidArgumentValueError("Do not find MANIFEST.MF, please check if your artifact is a valid fat jar" + tips)
+    if file_size / 1024 / 1024 < 10:
+        telemetry.set_user_fault("invalid_jar_thin_jar")
+        raise InvalidArgumentValueError("Thin jar detected, please check if your artifact is a valid fat jar" + tips)
+
+    # validate spring boot version
+    if spring_boot_version and spring_boot_version.startswith('1'):
+        telemetry.set_user_fault("old_spring_boot_version")
+        raise InvalidArgumentValueError(
+            "The spring boot {} you are using is not supported. To get the latest supported "
+            "versions please refer to: https://aka.ms/ascspringversion".format(spring_boot_version) + tips)
+
+    # old spring cloud version, need to import ms sdk <= 2.2.1
+    if spring_cloud_version:
+        if spring_cloud_version < "2.2.5":
+            if not ms_sdk_version or ms_sdk_version > "2.2.1":
+                telemetry.set_user_fault("old_spring_cloud_version")
+                raise InvalidArgumentValueError(
+                    "The spring cloud {} you are using is not supported. To get the latest supported "
+                    "versions please refer to: https://aka.ms/ascspringversion".format(spring_cloud_version) + tips)
+        else:
+            if ms_sdk_version and ms_sdk_version <= "2.2.1":
+                telemetry.set_user_fault("old_ms_sdk_version")
+                raise InvalidArgumentValueError(
+                    "The spring-cloud-starter-azure-spring-cloud-client version {} is no longer "
+                    "supported, please remove it or upgrade to a higher version, to get the latest "
+                    "supported versions please refer to: "
+                    "https://mvnrepository.com/artifact/com.microsoft.azure/spring-cloud-starter-azure"
+                    "-spring-cloud-client".format(ms_sdk_version) + tips)
+
+    if not has_actuator:
+        telemetry.set_user_fault("no_spring_actuator")
+        logger.warning(
+            "Seems you do not import spring actuator, thus metrics are not enabled, please refer to "
+            "https://aka.ms/ascdependencies for more details")
+
+
+def _parse_jar_file(artifact_path):
+    file_size = 0
+    spring_boot_version = ""
+    spring_cloud_version = ""
+    has_actuator = False
+    has_manifest = False
+    has_jar = False
+    has_class = False
+    ms_sdk_version = ""
+
+    spring_boot_pattern = "/spring-boot-[0-9].*jar"
+    spring_boot_actuator_pattern = "/spring-boot-actuator-[0-9].*jar"
+    ms_sdk_pattern = "/spring-cloud-starter-azure-spring-cloud-client-[0-9].*jar"
+    spring_cloud_config_pattern = "/spring-cloud-config-client-[0-9].*jar"
+    spring_cloud_eureka_pattern = "/spring-cloud-netflix-eureka-client-[0-9].*jar"
+
+    try:
+        with zipfile.ZipFile(artifact_path, 'r') as zf:
+            files = zf.infolist()
+        for file in files:
+            file_size += file.file_size
+            file_name = file.filename
+
+            if file_name.lower().endswith('.jar'):
+                has_jar = True
+            if file_name.lower().endswith('.class'):
+                has_class = True
+            if file_name.upper().endswith('MANIFEST.MF'):
+                has_manifest = True
+
+            if search(spring_boot_pattern, file_name):
+                prefix = 'spring-boot-'
+                spring_boot_version = file_name[file_name.index(prefix) + len(prefix):file_name.index('.jar')]
+            if search(spring_boot_actuator_pattern, file_name):
+                has_actuator = True
+            if search(ms_sdk_pattern, file_name):
+                prefix = 'spring-cloud-starter-azure-spring-cloud-client-'
+                ms_sdk_version = file_name[file_name.index(prefix) + len(prefix):file_name.index('.jar')]
+            if search(spring_cloud_config_pattern, file_name):
+                prefix = 'spring-cloud-config-client-'
+                spring_cloud_version = file_name[file_name.index(prefix) + len(prefix):file_name.index('.jar')]
+            if search(spring_cloud_eureka_pattern, file_name):
+                prefix = 'spring-cloud-netflix-eureka-client-'
+                spring_cloud_version = file_name[file_name.index(prefix) + len(prefix):file_name.index('.jar')]
+        return file_size, spring_boot_version, spring_cloud_version, has_actuator, has_manifest, has_jar, has_class, ms_sdk_version
+    except Exception as err:  # pylint: disable=broad-except
+        telemetry.set_exception("parse user jar file failed, " + str(err))
+        return None
