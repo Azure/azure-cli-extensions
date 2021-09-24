@@ -1,0 +1,1211 @@
+interactions:
+- request:
+    body: '{"location": "global"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network private-dns zone create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '22'
+      Content-Type:
+      - application/json
+      If-None-Match:
+      - '*'
+      ParameterSetName:
+      - --resource-group --name
+      User-Agent:
+      - AZURECLI/2.28.1 azsdk-python-mgmt-privatedns/1.0.0 Python/3.7.4 (Windows-10-10.0.19041-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/privateDnsZones/privatelink.westus2.azmk8s.io?api-version=2018-09-01
+  response:
+    body:
+      string: '{}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/privateDnsOperationStatuses/RnJvbnRFbmRBc3luY09wZXJhdGlvbjtVcHNlcnRQcml2YXRlRG5zWm9uZTtiOWY1ODc2Mi0xZWE1LTQyYWMtODFhNC0zZDA5ODFiYWM5NDk=?api-version=2018-09-01
+      cache-control:
+      - private
+      content-length:
+      - '2'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 24 Sep 2021 06:28:05 GMT
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/privateDnsOperationResults/RnJvbnRFbmRBc3luY09wZXJhdGlvbjtVcHNlcnRQcml2YXRlRG5zWm9uZTtiOWY1ODc2Mi0xZWE1LTQyYWMtODFhNC0zZDA5ODFiYWM5NDk=?api-version=2018-09-01
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '11999'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network private-dns zone create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name
+      User-Agent:
+      - AZURECLI/2.28.1 azsdk-python-mgmt-privatedns/1.0.0 Python/3.7.4 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/privateDnsOperationStatuses/RnJvbnRFbmRBc3luY09wZXJhdGlvbjtVcHNlcnRQcml2YXRlRG5zWm9uZTtiOWY1ODc2Mi0xZWE1LTQyYWMtODFhNC0zZDA5ODFiYWM5NDk=?api-version=2018-09-01
+  response:
+    body:
+      string: '{"status":"Succeeded"}'
+    headers:
+      cache-control:
+      - private
+      content-length:
+      - '22'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 24 Sep 2021 06:28:35 GMT
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '499'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network private-dns zone create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name
+      User-Agent:
+      - AZURECLI/2.28.1 azsdk-python-mgmt-privatedns/1.0.0 Python/3.7.4 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/privateDnsZones/privatelink.westus2.azmk8s.io?api-version=2018-09-01
+  response:
+    body:
+      string: '{"id":"\/subscriptions\/00000000-0000-0000-0000-000000000000\/resourceGroups\/clitest000001\/providers\/Microsoft.Network\/privateDnsZones\/privatelink.westus2.azmk8s.io","name":"privatelink.westus2.azmk8s.io","type":"Microsoft.Network\/privateDnsZones","etag":"bf6f0fbf-3d09-4f2a-8b53-27bb2005e666","location":"global","properties":{"maxNumberOfRecordSets":25000,"maxNumberOfVirtualNetworkLinks":1000,"maxNumberOfVirtualNetworkLinksWithRegistration":100,"numberOfRecordSets":1,"numberOfVirtualNetworkLinks":0,"numberOfVirtualNetworkLinksWithRegistration":0,"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - private
+      content-length:
+      - '595'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 24 Sep 2021 06:28:36 GMT
+      etag:
+      - bf6f0fbf-3d09-4f2a-8b53-27bb2005e666
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '499'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.25.1
+    method: GET
+    uri: https://aka.ms/azExtCmdTree
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - max-age=0, no-cache, no-store
+      connection:
+      - keep-alive
+      content-length:
+      - '0'
+      date:
+      - Fri, 24 Sep 2021 06:28:38 GMT
+      expires:
+      - Fri, 24 Sep 2021 06:28:38 GMT
+      location:
+      - https://azurecliextensionsync.blob.core.windows.net/cmd-index/extensionCommandTree.json
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:7d63747b-487e-492a-872d-762362f77974
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000 ; includeSubDomains
+      x-response-cache-status:
+      - 'True'
+    status:
+      code: 301
+      message: Moved Permanently
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.25.1
+    method: GET
+    uri: https://azurecliextensionsync.blob.core.windows.net/cmd-index/extensionCommandTree.json
+  response:
+    body:
+      string: "\uFEFF{\"account\": {\"subscription\": {\"rename\": \"account\", \"cancel\":
+        \"account\", \"enable\": \"account\", \"list\": \"account\", \"show\": \"account\",
+        \"list-location\": \"account\"}, \"tenant\": {\"list\": \"account\"}, \"alias\":
+        {\"list\": \"account\", \"show\": \"account\", \"create\": \"account\", \"delete\":
+        \"account\", \"wait\": \"account\"}, \"create\": \"subscription\"}, \"acr\":
+        {\"import-pipeline\": {\"create\": \"acrtransfer\", \"delete\": \"acrtransfer\",
+        \"list\": \"acrtransfer\", \"show\": \"acrtransfer\"}, \"export-pipeline\":
+        {\"create\": \"acrtransfer\", \"delete\": \"acrtransfer\", \"list\": \"acrtransfer\",
+        \"show\": \"acrtransfer\"}, \"pipeline-run\": {\"create\": \"acrtransfer\",
+        \"delete\": \"acrtransfer\", \"list\": \"acrtransfer\", \"show\": \"acrtransfer\"}},
+        \"ad\": {\"ds\": {\"list\": \"ad\", \"show\": \"ad\", \"create\": \"ad\",
+        \"update\": \"ad\", \"delete\": \"ad\", \"wait\": \"ad\"}}, \"vm\": {\"aem\":
+        {\"set\": \"aem\", \"delete\": \"aem\", \"verify\": \"aem\"}, \"repair\":
+        {\"create\": \"vm-repair\", \"restore\": \"vm-repair\", \"run\": \"vm-repair\",
+        \"list-scripts\": \"vm-repair\"}}, \"ai-examples\": {\"check-connection\":
+        \"ai-examples\"}, \"aks\": {\"kollect\": \"aks-preview\", \"kanalyze\": \"aks-preview\",
+        \"browse\": \"aks-preview\", \"create\": \"aks-preview\", \"update\": \"aks-preview\",
+        \"scale\": \"aks-preview\", \"disable-addons\": \"aks-preview\", \"enable-addons\":
+        \"aks-preview\", \"get-credentials\": \"aks-preview\", \"show\": \"aks-preview\",
+        \"upgrade\": \"aks-preview\", \"get-upgrades\": \"aks-preview\", \"rotate-certs\":
+        \"aks-preview\", \"wait\": \"aks-preview\", \"stop\": \"aks-preview\", \"start\":
+        \"aks-preview\", \"get-os-options\": \"aks-preview\", \"get-versions\": \"aks-preview\",
+        \"maintenanceconfiguration\": {\"list\": \"aks-preview\", \"show\": \"aks-preview\",
+        \"add\": \"aks-preview\", \"update\": \"aks-preview\", \"delete\": \"aks-preview\"},
+        \"nodepool\": {\"list\": \"aks-preview\", \"show\": \"aks-preview\", \"add\":
+        \"aks-preview\", \"scale\": \"aks-preview\", \"upgrade\": \"aks-preview\",
+        \"update\": \"aks-preview\", \"delete\": \"aks-preview\", \"get-upgrades\":
+        \"aks-preview\"}, \"pod-identity\": {\"add\": \"aks-preview\", \"delete\":
+        \"aks-preview\", \"list\": \"aks-preview\", \"exception\": {\"add\": \"aks-preview\",
+        \"delete\": \"aks-preview\", \"update\": \"aks-preview\", \"list\": \"aks-preview\"}},
+        \"egress-endpoints\": {\"list\": \"aks-preview\"}, \"app\": {\"up\": \"deploy-to-azure\"},
+        \"use-dev-spaces\": \"dev-spaces\"}, \"monitor\": {\"action-rule\": {\"create\":
+        \"alertsmanagement\", \"update\": \"alertsmanagement\", \"delete\": \"alertsmanagement\",
+        \"show\": \"alertsmanagement\", \"list\": \"alertsmanagement\"}, \"app-insights\":
+        {\"component\": {\"create\": \"application-insights\", \"update\": \"application-insights\",
+        \"show\": \"application-insights\", \"delete\": \"application-insights\",
+        \"update-tags\": \"application-insights\", \"connect-webapp\": \"application-insights\",
+        \"connect-function\": \"application-insights\", \"billing\": {\"update\":
+        \"application-insights\", \"show\": \"application-insights\"}, \"linked-storage\":
+        {\"show\": \"application-insights\", \"link\": \"application-insights\", \"update\":
+        \"application-insights\", \"unlink\": \"application-insights\"}, \"continues-export\":
+        {\"list\": \"application-insights\", \"show\": \"application-insights\", \"create\":
+        \"application-insights\", \"update\": \"application-insights\", \"delete\":
+        \"application-insights\"}}, \"api-key\": {\"create\": \"application-insights\",
+        \"show\": \"application-insights\", \"delete\": \"application-insights\"},
+        \"metrics\": {\"show\": \"application-insights\", \"get-metadata\": \"application-insights\"},
+        \"events\": {\"show\": \"application-insights\"}, \"query\": \"application-insights\"},
+        \"log-analytics\": {\"query\": \"log-analytics\", \"solution\": {\"create\":
+        \"log-analytics-solution\", \"update\": \"log-analytics-solution\", \"delete\":
+        \"log-analytics-solution\", \"show\": \"log-analytics-solution\", \"list\":
+        \"log-analytics-solution\"}}, \"data-collection\": {\"endpoint\": {\"list\":
+        \"monitor-control-service\", \"show\": \"monitor-control-service\", \"delete\":
+        \"monitor-control-service\", \"create\": \"monitor-control-service\", \"update\":
+        \"monitor-control-service\"}, \"rule\": {\"list\": \"monitor-control-service\",
+        \"show\": \"monitor-control-service\", \"delete\": \"monitor-control-service\",
+        \"association\": {\"list\": \"monitor-control-service\", \"show\": \"monitor-control-service\",
+        \"delete\": \"monitor-control-service\", \"create\": \"monitor-control-service\",
+        \"update\": \"monitor-control-service\"}, \"create\": \"monitor-control-service\",
+        \"update\": \"monitor-control-service\", \"data-flow\": {\"list\": \"monitor-control-service\",
+        \"add\": \"monitor-control-service\"}, \"log-analytics\": {\"list\": \"monitor-control-service\",
+        \"show\": \"monitor-control-service\", \"add\": \"monitor-control-service\",
+        \"delete\": \"monitor-control-service\", \"update\": \"monitor-control-service\"},
+        \"performance-counter\": {\"list\": \"monitor-control-service\", \"show\":
+        \"monitor-control-service\", \"add\": \"monitor-control-service\", \"delete\":
+        \"monitor-control-service\", \"update\": \"monitor-control-service\"}, \"windows-event-log\":
+        {\"list\": \"monitor-control-service\", \"show\": \"monitor-control-service\",
+        \"add\": \"monitor-control-service\", \"delete\": \"monitor-control-service\",
+        \"update\": \"monitor-control-service\"}, \"syslog\": {\"list\": \"monitor-control-service\",
+        \"show\": \"monitor-control-service\", \"add\": \"monitor-control-service\",
+        \"delete\": \"monitor-control-service\", \"update\": \"monitor-control-service\"}}},
+        \"scheduled-query\": {\"create\": \"scheduled-query\", \"delete\": \"scheduled-query\",
+        \"list\": \"scheduled-query\", \"show\": \"scheduled-query\", \"update\":
+        \"scheduled-query\"}}, \"alias\": {\"create\": \"alias\", \"export\": \"alias\",
+        \"import\": \"alias\", \"list\": \"alias\", \"remove\": \"alias\", \"remove-all\":
+        \"alias\"}, \"arcappliance\": {\"show\": \"arcappliance\", \"list\": \"arcappliance\",
+        \"get-credentials\": \"arcappliance\", \"validate\": {\"hci\": \"arcappliance\",
+        \"vmware\": \"arcappliance\", \"scvmm\": \"arcappliance\"}, \"prepare\": {\"hci\":
+        \"arcappliance\", \"vmware\": \"arcappliance\", \"scvmm\": \"arcappliance\"},
+        \"deploy\": {\"hci\": \"arcappliance\", \"vmware\": \"arcappliance\", \"scvmm\":
+        \"arcappliance\"}, \"create\": {\"hci\": \"arcappliance\", \"vmware\": \"arcappliance\",
+        \"scvmm\": \"arcappliance\"}, \"delete\": {\"hci\": \"arcappliance\", \"vmware\":
+        \"arcappliance\", \"scvmm\": \"arcappliance\"}, \"createconfig\": {\"hci\":
+        \"arcappliance\", \"vmware\": \"arcappliance\", \"scvmm\": \"arcappliance\"},
+        \"logs\": {\"hci\": \"arcappliance\", \"vmware\": \"arcappliance\", \"scvmm\":
+        \"arcappliance\"}, \"run\": {\"hci\": \"arcappliance\", \"vmware\": \"arcappliance\",
+        \"scvmm\": \"arcappliance\"}}, \"postgres\": {\"arc-server\": {\"create\":
+        \"arcdata\", \"delete\": \"arcdata\", \"show\": \"arcdata\", \"list\": \"arcdata\",
+        \"edit\": \"arcdata\", \"endpoint\": {\"list\": \"arcdata\"}}, \"up\": \"db-up\",
+        \"down\": \"db-up\", \"show-connection-string\": \"db-up\", \"flexible-server\":
+        {\"connect\": \"rdbms-connect\", \"execute\": \"rdbms-connect\"}}, \"sql\":
+        {\"mi-arc\": {\"create\": \"arcdata\", \"delete\": \"arcdata\", \"show\":
+        \"arcdata\", \"get-mirroring-cert\": \"arcdata\", \"list\": \"arcdata\", \"edit\":
+        \"arcdata\", \"endpoint\": {\"list\": \"arcdata\"}, \"config\": {\"init\":
+        \"arcdata\", \"patch\": \"arcdata\", \"add\": \"arcdata\", \"replace\": \"arcdata\",
+        \"remove\": \"arcdata\"}, \"dag\": {\"create\": \"arcdata\", \"delete\": \"arcdata\",
+        \"get\": \"arcdata\"}}, \"up\": \"db-up\", \"down\": \"db-up\"}, \"arcdata\":
+        {\"dc\": {\"endpoint\": {\"list\": \"arcdata\"}, \"upload\": \"arcdata\",
+        \"create\": \"arcdata\", \"config\": {\"show\": \"arcdata\", \"list\": \"arcdata\",
+        \"init\": \"arcdata\", \"patch\": \"arcdata\", \"add\": \"arcdata\", \"replace\":
+        \"arcdata\", \"remove\": \"arcdata\"}, \"status\": {\"show\": \"arcdata\"},
+        \"delete\": \"arcdata\", \"export\": \"arcdata\", \"debug\": {\"copy-logs\":
+        \"arcdata\"}}, \"resource-kind\": {\"list\": \"arcdata\", \"get\": \"arcdata\"}},
+        \"attestation\": {\"list\": \"attestation\", \"show\": \"attestation\", \"create\":
+        \"attestation\", \"update\": \"attestation\", \"delete\": \"attestation\",
+        \"get-default-by-location\": \"attestation\", \"list-default\": \"attestation\",
+        \"signer\": {\"add\": \"attestation\", \"remove\": \"attestation\", \"list\":
+        \"attestation\"}, \"policy\": {\"set\": \"attestation\", \"reset\": \"attestation\",
+        \"show\": \"attestation\"}}, \"webapp\": {\"auth\": {\"show\": \"authV2\",
+        \"set\": \"authV2\", \"update\": \"authV2\", \"config-version\": {\"show\":
+        \"authV2\", \"revert\": \"authV2\", \"upgrade\": \"authV2\"}, \"microsoft\":
+        {\"show\": \"authV2\", \"update\": \"authV2\"}, \"facebook\": {\"show\": \"authV2\",
+        \"update\": \"authV2\"}, \"github\": {\"show\": \"authV2\", \"update\": \"authV2\"},
+        \"google\": {\"show\": \"authV2\", \"update\": \"authV2\"}, \"twitter\": {\"show\":
+        \"authV2\", \"update\": \"authV2\"}, \"apple\": {\"show\": \"authV2\", \"update\":
+        \"authV2\"}, \"openid-connect\": {\"show\": \"authV2\", \"add\": \"authV2\",
+        \"update\": \"authV2\", \"remove\": \"authV2\"}}, \"auth-classic\": {\"show\":
+        \"authV2\", \"update\": \"authV2\"}, \"scan\": {\"start\": \"webapp\", \"show-result\":
+        \"webapp\", \"track\": \"webapp\", \"list-result\": \"webapp\", \"stop\":
+        \"webapp\"}}, \"automation\": {\"runbook\": {\"list\": \"automation\", \"show\":
+        \"automation\", \"create\": \"automation\", \"update\": \"automation\", \"delete\":
+        \"automation\", \"publish\": \"automation\", \"wait\": \"automation\", \"replace-content\":
+        \"automation\", \"revert-to-published\": \"automation\", \"start\": \"automation\"},
+        \"job\": {\"list\": \"automation\", \"show\": \"automation\", \"resume\":
+        \"automation\", \"stop\": \"automation\", \"suspend\": \"automation\"}, \"account\":
+        {\"list\": \"automation\", \"show\": \"automation\", \"create\": \"automation\",
+        \"update\": \"automation\", \"delete\": \"automation\"}}, \"devops\": {\"admin\":
+        {\"banner\": {\"list\": \"azure-devops\", \"show\": \"azure-devops\", \"add\":
+        \"azure-devops\", \"remove\": \"azure-devops\", \"update\": \"azure-devops\"}},
+        \"login\": \"azure-devops\", \"logout\": \"azure-devops\", \"configure\":
+        \"azure-devops\", \"project\": {\"create\": \"azure-devops\", \"delete\":
+        \"azure-devops\", \"show\": \"azure-devops\", \"list\": \"azure-devops\"},
+        \"service-endpoint\": {\"list\": \"azure-devops\", \"show\": \"azure-devops\",
+        \"create\": \"azure-devops\", \"update\": \"azure-devops\", \"azurerm\": {\"create\":
+        \"azure-devops\"}, \"github\": {\"create\": \"azure-devops\"}, \"delete\":
+        \"azure-devops\"}, \"team\": {\"create\": \"azure-devops\", \"delete\": \"azure-devops\",
+        \"show\": \"azure-devops\", \"list\": \"azure-devops\", \"list-member\": \"azure-devops\",
+        \"update\": \"azure-devops\"}, \"invoke\": \"azure-devops\", \"user\": {\"list\":
+        \"azure-devops\", \"show\": \"azure-devops\", \"remove\": \"azure-devops\",
+        \"update\": \"azure-devops\", \"add\": \"azure-devops\"}, \"extension\": {\"list\":
+        \"azure-devops\", \"uninstall\": \"azure-devops\", \"install\": \"azure-devops\",
+        \"show\": \"azure-devops\", \"enable\": \"azure-devops\", \"disable\": \"azure-devops\",
+        \"search\": \"azure-devops\"}, \"security\": {\"group\": {\"list\": \"azure-devops\",
+        \"show\": \"azure-devops\", \"update\": \"azure-devops\", \"create\": \"azure-devops\",
+        \"delete\": \"azure-devops\", \"membership\": {\"list\": \"azure-devops\",
+        \"add\": \"azure-devops\", \"remove\": \"azure-devops\"}}, \"permission\":
+        {\"list\": \"azure-devops\", \"update\": \"azure-devops\", \"reset-all\":
+        \"azure-devops\", \"reset\": \"azure-devops\", \"show\": \"azure-devops\",
+        \"namespace\": {\"list\": \"azure-devops\", \"show\": \"azure-devops\"}}},
+        \"wiki\": {\"create\": \"azure-devops\", \"list\": \"azure-devops\", \"show\":
+        \"azure-devops\", \"delete\": \"azure-devops\", \"page\": {\"create\": \"azure-devops\",
+        \"update\": \"azure-devops\", \"show\": \"azure-devops\", \"delete\": \"azure-devops\"}}},
+        \"boards\": {\"work-item\": {\"show\": \"azure-devops\", \"create\": \"azure-devops\",
+        \"update\": \"azure-devops\", \"delete\": \"azure-devops\", \"relation\":
+        {\"list-type\": \"azure-devops\", \"add\": \"azure-devops\", \"remove\": \"azure-devops\",
+        \"show\": \"azure-devops\"}}, \"query\": \"azure-devops\", \"iteration\":
+        {\"team\": {\"list\": \"azure-devops\", \"list-work-items\": \"azure-devops\",
+        \"set-default-iteration\": \"azure-devops\", \"set-backlog-iteration\": \"azure-devops\",
+        \"show-default-iteration\": \"azure-devops\", \"show-backlog-iteration\":
+        \"azure-devops\", \"remove\": \"azure-devops\", \"add\": \"azure-devops\"},
+        \"project\": {\"list\": \"azure-devops\", \"update\": \"azure-devops\", \"delete\":
+        \"azure-devops\", \"show\": \"azure-devops\", \"create\": \"azure-devops\"}},
+        \"area\": {\"project\": {\"list\": \"azure-devops\", \"delete\": \"azure-devops\",
+        \"create\": \"azure-devops\", \"update\": \"azure-devops\", \"show\": \"azure-devops\"},
+        \"team\": {\"list\": \"azure-devops\", \"add\": \"azure-devops\", \"remove\":
+        \"azure-devops\", \"update\": \"azure-devops\"}}}, \"pipelines\": {\"create\":
+        \"azure-devops\", \"update\": \"azure-devops\", \"list\": \"azure-devops\",
+        \"show\": \"azure-devops\", \"delete\": \"azure-devops\", \"run\": \"azure-devops\",
+        \"build\": {\"list\": \"azure-devops\", \"queue\": \"azure-devops\", \"show\":
+        \"azure-devops\", \"tag\": {\"list\": \"azure-devops\", \"add\": \"azure-devops\",
+        \"delete\": \"azure-devops\"}, \"definition\": {\"list\": \"azure-devops\",
+        \"show\": \"azure-devops\"}}, \"release\": {\"list\": \"azure-devops\", \"create\":
+        \"azure-devops\", \"show\": \"azure-devops\", \"definition\": {\"list\": \"azure-devops\",
+        \"show\": \"azure-devops\"}}, \"runs\": {\"artifact\": {\"download\": \"azure-devops\",
+        \"list\": \"azure-devops\", \"upload\": \"azure-devops\"}, \"tag\": {\"add\":
+        \"azure-devops\", \"list\": \"azure-devops\", \"delete\": \"azure-devops\"},
+        \"list\": \"azure-devops\", \"show\": \"azure-devops\"}, \"pool\": {\"list\":
+        \"azure-devops\", \"show\": \"azure-devops\"}, \"agent\": {\"list\": \"azure-devops\",
+        \"show\": \"azure-devops\"}, \"queue\": {\"list\": \"azure-devops\", \"show\":
+        \"azure-devops\"}, \"variable-group\": {\"create\": \"azure-devops\", \"show\":
+        \"azure-devops\", \"list\": \"azure-devops\", \"update\": \"azure-devops\",
+        \"delete\": \"azure-devops\", \"variable\": {\"create\": \"azure-devops\",
+        \"list\": \"azure-devops\", \"update\": \"azure-devops\", \"delete\": \"azure-devops\"}},
+        \"variable\": {\"create\": \"azure-devops\", \"update\": \"azure-devops\",
+        \"list\": \"azure-devops\", \"delete\": \"azure-devops\"}, \"folder\": {\"create\":
+        \"azure-devops\", \"delete\": \"azure-devops\", \"list\": \"azure-devops\",
+        \"update\": \"azure-devops\"}}, \"repos\": {\"create\": \"azure-devops\",
+        \"delete\": \"azure-devops\", \"list\": \"azure-devops\", \"show\": \"azure-devops\",
+        \"update\": \"azure-devops\", \"policy\": {\"list\": \"azure-devops\", \"show\":
+        \"azure-devops\", \"delete\": \"azure-devops\", \"create\": \"azure-devops\",
+        \"update\": \"azure-devops\", \"approver-count\": {\"create\": \"azure-devops\",
+        \"update\": \"azure-devops\"}, \"merge-strategy\": {\"create\": \"azure-devops\",
+        \"update\": \"azure-devops\"}, \"build\": {\"create\": \"azure-devops\", \"update\":
+        \"azure-devops\"}, \"comment-required\": {\"create\": \"azure-devops\", \"update\":
+        \"azure-devops\"}, \"work-item-linking\": {\"create\": \"azure-devops\", \"update\":
+        \"azure-devops\"}, \"file-size\": {\"create\": \"azure-devops\", \"update\":
+        \"azure-devops\"}, \"required-reviewer\": {\"create\": \"azure-devops\", \"update\":
+        \"azure-devops\"}, \"case-enforcement\": {\"create\": \"azure-devops\", \"update\":
+        \"azure-devops\"}}, \"pr\": {\"create\": \"azure-devops\", \"update\": \"azure-devops\",
+        \"show\": \"azure-devops\", \"list\": \"azure-devops\", \"checkout\": \"azure-devops\",
+        \"reviewer\": {\"add\": \"azure-devops\", \"list\": \"azure-devops\", \"remove\":
+        \"azure-devops\"}, \"work-item\": {\"add\": \"azure-devops\", \"list\": \"azure-devops\",
+        \"remove\": \"azure-devops\"}, \"set-vote\": \"azure-devops\", \"policy\":
+        {\"list\": \"azure-devops\", \"queue\": \"azure-devops\"}}, \"import\": {\"create\":
+        \"azure-devops\"}, \"ref\": {\"create\": \"azure-devops\", \"delete\": \"azure-devops\",
+        \"list\": \"azure-devops\", \"lock\": \"azure-devops\", \"unlock\": \"azure-devops\"}},
+        \"artifacts\": {\"universal\": {\"publish\": \"azure-devops\", \"download\":
+        \"azure-devops\"}}, \"network\": {\"firewall\": {\"create\": \"azure-firewall\",
+        \"delete\": \"azure-firewall\", \"list\": \"azure-firewall\", \"show\": \"azure-firewall\",
+        \"update\": \"azure-firewall\", \"threat-intel-allowlist\": {\"create\": \"azure-firewall\",
+        \"delete\": \"azure-firewall\", \"show\": \"azure-firewall\", \"update\":
+        \"azure-firewall\"}, \"ip-config\": {\"create\": \"azure-firewall\", \"list\":
+        \"azure-firewall\", \"show\": \"azure-firewall\", \"delete\": \"azure-firewall\"},
+        \"management-ip-config\": {\"show\": \"azure-firewall\", \"update\": \"azure-firewall\"},
+        \"network-rule\": {\"create\": \"azure-firewall\", \"list\": \"azure-firewall\",
+        \"show\": \"azure-firewall\", \"delete\": \"azure-firewall\", \"collection\":
+        {\"list\": \"azure-firewall\", \"show\": \"azure-firewall\", \"delete\": \"azure-firewall\"}},
+        \"nat-rule\": {\"create\": \"azure-firewall\", \"list\": \"azure-firewall\",
+        \"show\": \"azure-firewall\", \"delete\": \"azure-firewall\", \"collection\":
+        {\"list\": \"azure-firewall\", \"show\": \"azure-firewall\", \"delete\": \"azure-firewall\"}},
+        \"application-rule\": {\"create\": \"azure-firewall\", \"list\": \"azure-firewall\",
+        \"show\": \"azure-firewall\", \"delete\": \"azure-firewall\", \"collection\":
+        {\"list\": \"azure-firewall\", \"show\": \"azure-firewall\", \"delete\": \"azure-firewall\"}},
+        \"list-fqdn-tags\": \"azure-firewall\", \"policy\": {\"create\": \"azure-firewall\",
+        \"delete\": \"azure-firewall\", \"list\": \"azure-firewall\", \"show\": \"azure-firewall\",
+        \"update\": \"azure-firewall\", \"intrusion-detection\": {\"add\": \"azure-firewall\",
+        \"remove\": \"azure-firewall\", \"list\": \"azure-firewall\"}, \"rule-collection-group\":
+        {\"create\": \"azure-firewall\", \"update\": \"azure-firewall\", \"delete\":
+        \"azure-firewall\", \"show\": \"azure-firewall\", \"list\": \"azure-firewall\",
+        \"collection\": {\"add-nat-collection\": \"azure-firewall\", \"add-filter-collection\":
+        \"azure-firewall\", \"remove\": \"azure-firewall\", \"list\": \"azure-firewall\",
+        \"rule\": {\"add\": \"azure-firewall\", \"update\": \"azure-firewall\", \"remove\":
+        \"azure-firewall\"}}}}}, \"cross-connection\": {\"show\": \"express-route-cross-connection\",
+        \"list-arp-tables\": \"express-route-cross-connection\", \"list-route-tables\":
+        \"express-route-cross-connection\", \"summarize-route-table\": \"express-route-cross-connection\",
+        \"list\": \"express-route-cross-connection\", \"update\": \"express-route-cross-connection\",
+        \"wait\": \"express-route-cross-connection\", \"peering\": {\"create\": \"express-route-cross-connection\",
+        \"delete\": \"express-route-cross-connection\", \"show\": \"express-route-cross-connection\",
+        \"list\": \"express-route-cross-connection\", \"update\": \"express-route-cross-connection\"}},
+        \"front-door\": {\"show\": \"front-door\", \"create\": \"front-door\", \"delete\":
+        \"front-door\", \"list\": \"front-door\", \"update\": \"front-door\", \"check-custom-domain\":
+        \"front-door\", \"check-name-availability\": \"front-door\", \"wait\": \"front-door\",
+        \"purge-endpoint\": \"front-door\", \"backend-pool\": {\"create\": \"front-door\",
+        \"list\": \"front-door\", \"show\": \"front-door\", \"delete\": \"front-door\",
+        \"backend\": {\"add\": \"front-door\", \"update\": \"front-door\", \"list\":
+        \"front-door\", \"remove\": \"front-door\"}}, \"frontend-endpoint\": {\"create\":
+        \"front-door\", \"list\": \"front-door\", \"show\": \"front-door\", \"delete\":
+        \"front-door\", \"disable-https\": \"front-door\", \"enable-https\": \"front-door\",
+        \"wait\": \"front-door\"}, \"probe\": {\"create\": \"front-door\", \"list\":
+        \"front-door\", \"show\": \"front-door\", \"delete\": \"front-door\", \"update\":
+        \"front-door\"}, \"load-balancing\": {\"create\": \"front-door\", \"list\":
+        \"front-door\", \"show\": \"front-door\", \"delete\": \"front-door\", \"update\":
+        \"front-door\"}, \"routing-rule\": {\"create\": \"front-door\", \"list\":
+        \"front-door\", \"show\": \"front-door\", \"delete\": \"front-door\", \"update\":
+        \"front-door\"}, \"waf-policy\": {\"create\": \"front-door\", \"delete\":
+        \"front-door\", \"list\": \"front-door\", \"show\": \"front-door\", \"update\":
+        \"front-door\", \"managed-rules\": {\"add\": \"front-door\", \"remove\": \"front-door\",
+        \"list\": \"front-door\", \"override\": {\"add\": \"front-door\", \"remove\":
+        \"front-door\", \"list\": \"front-door\"}, \"exclusion\": {\"add\": \"front-door\",
+        \"remove\": \"front-door\", \"list\": \"front-door\"}}, \"managed-rule-definition\":
+        {\"list\": \"front-door\"}, \"rule\": {\"create\": \"front-door\", \"update\":
+        \"front-door\", \"delete\": \"front-door\", \"list\": \"front-door\", \"show\":
+        \"front-door\", \"match-condition\": {\"add\": \"front-door\", \"remove\":
+        \"front-door\", \"list\": \"front-door\"}}}, \"rules-engine\": {\"show\":
+        \"front-door\", \"list\": \"front-door\", \"delete\": \"front-door\", \"rule\":
+        {\"create\": \"front-door\", \"delete\": \"front-door\", \"show\": \"front-door\",
+        \"list\": \"front-door\", \"update\": \"front-door\", \"condition\": {\"add\":
+        \"front-door\", \"remove\": \"front-door\", \"list\": \"front-door\"}, \"action\":
+        {\"add\": \"front-door\", \"remove\": \"front-door\", \"list\": \"front-door\"}}}},
+        \"ip-group\": {\"create\": \"ip-group\", \"update\": \"ip-group\", \"list\":
+        \"ip-group\", \"delete\": \"ip-group\", \"show\": \"ip-group\"}, \"vnet\":
+        {\"tap\": {\"create\": \"virtual-network-tap\", \"delete\": \"virtual-network-tap\",
+        \"list\": \"virtual-network-tap\", \"show\": \"virtual-network-tap\", \"update\":
+        \"virtual-network-tap\"}}, \"nic\": {\"vtap-config\": {\"create\": \"virtual-network-tap\",
+        \"delete\": \"virtual-network-tap\", \"list\": \"virtual-network-tap\", \"show\":
+        \"virtual-network-tap\"}}, \"vwan\": {\"create\": \"virtual-wan\", \"delete\":
+        \"virtual-wan\", \"show\": \"virtual-wan\", \"list\": \"virtual-wan\", \"update\":
+        \"virtual-wan\"}, \"vhub\": {\"create\": \"virtual-wan\", \"delete\": \"virtual-wan\",
+        \"show\": \"virtual-wan\", \"list\": \"virtual-wan\", \"update\": \"virtual-wan\",
+        \"get-effective-routes\": \"virtual-wan\", \"connection\": {\"create\": \"virtual-wan\",
+        \"delete\": \"virtual-wan\", \"show\": \"virtual-wan\", \"list\": \"virtual-wan\",
+        \"update\": \"virtual-wan\", \"wait\": \"virtual-wan\"}, \"route\": {\"add\":
+        \"virtual-wan\", \"list\": \"virtual-wan\", \"remove\": \"virtual-wan\", \"reset\":
+        \"virtual-wan\"}, \"route-table\": {\"create\": \"virtual-wan\", \"update\":
+        \"virtual-wan\", \"show\": \"virtual-wan\", \"list\": \"virtual-wan\", \"delete\":
+        \"virtual-wan\", \"wait\": \"virtual-wan\", \"route\": {\"add\": \"virtual-wan\",
+        \"list\": \"virtual-wan\", \"remove\": \"virtual-wan\"}}}, \"vpn-gateway\":
+        {\"create\": \"virtual-wan\", \"delete\": \"virtual-wan\", \"list\": \"virtual-wan\",
+        \"show\": \"virtual-wan\", \"update\": \"virtual-wan\", \"connection\": {\"create\":
+        \"virtual-wan\", \"list\": \"virtual-wan\", \"show\": \"virtual-wan\", \"delete\":
+        \"virtual-wan\", \"update\": \"virtual-wan\", \"wait\": \"virtual-wan\", \"ipsec-policy\":
+        {\"add\": \"virtual-wan\", \"list\": \"virtual-wan\", \"remove\": \"virtual-wan\"}}},
+        \"vpn-site\": {\"create\": \"virtual-wan\", \"delete\": \"virtual-wan\", \"list\":
+        \"virtual-wan\", \"show\": \"virtual-wan\", \"update\": \"virtual-wan\", \"download\":
+        \"virtual-wan\"}, \"vpn-server-config\": {\"create\": \"virtual-wan\", \"set\":
+        \"virtual-wan\", \"show\": \"virtual-wan\", \"delete\": \"virtual-wan\", \"list\":
+        \"virtual-wan\", \"wait\": \"virtual-wan\", \"ipsec-policy\": {\"add\": \"virtual-wan\",
+        \"list\": \"virtual-wan\", \"remove\": \"virtual-wan\", \"wait\": \"virtual-wan\"}},
+        \"p2s-vpn-gateway\": {\"create\": \"virtual-wan\", \"delete\": \"virtual-wan\",
+        \"list\": \"virtual-wan\", \"show\": \"virtual-wan\", \"update\": \"virtual-wan\",
+        \"wait\": \"virtual-wan\", \"connection\": {\"list\": \"virtual-wan\", \"show\":
+        \"virtual-wan\"}, \"vpn-client\": {\"generate\": \"virtual-wan\"}}}, \"iot\":
+        {\"hub\": {\"query\": \"azure-iot\", \"invoke-device-method\": \"azure-iot\",
+        \"invoke-module-method\": \"azure-iot\", \"generate-sas-token\": \"azure-iot\",
+        \"monitor-events\": \"azure-iot\", \"monitor-feedback\": \"azure-iot\", \"device-identity\":
+        {\"create\": \"azure-iot\", \"show\": \"azure-iot\", \"list\": \"azure-iot\",
+        \"delete\": \"azure-iot\", \"update\": \"azure-iot\", \"renew-key\": \"azure-iot\",
+        \"import\": \"azure-iot\", \"export\": \"azure-iot\", \"children\": {\"add\":
+        \"azure-iot\", \"remove\": \"azure-iot\", \"list\": \"azure-iot\"}, \"parent\":
+        {\"show\": \"azure-iot\", \"set\": \"azure-iot\"}, \"connection-string\":
+        {\"show\": \"azure-iot\"}}, \"module-identity\": {\"create\": \"azure-iot\",
+        \"show\": \"azure-iot\", \"list\": \"azure-iot\", \"delete\": \"azure-iot\",
+        \"update\": \"azure-iot\", \"renew-key\": \"azure-iot\", \"connection-string\":
+        {\"show\": \"azure-iot\"}}, \"module-twin\": {\"show\": \"azure-iot\", \"replace\":
+        \"azure-iot\", \"update\": \"azure-iot\"}, \"device-twin\": {\"show\": \"azure-iot\",
+        \"replace\": \"azure-iot\", \"update\": \"azure-iot\"}, \"configuration\":
+        {\"show-metric\": \"azure-iot\", \"create\": \"azure-iot\", \"show\": \"azure-iot\",
+        \"list\": \"azure-iot\", \"delete\": \"azure-iot\", \"update\": \"azure-iot\"},
+        \"distributed-tracing\": {\"show\": \"azure-iot\", \"update\": \"azure-iot\"},
+        \"connection-string\": {\"show\": \"azure-iot\"}, \"job\": {\"create\": \"azure-iot\",
+        \"show\": \"azure-iot\", \"list\": \"azure-iot\", \"cancel\": \"azure-iot\"},
+        \"digital-twin\": {\"invoke-command\": \"azure-iot\", \"show\": \"azure-iot\",
+        \"update\": \"azure-iot\"}}, \"edge\": {\"set-modules\": \"azure-iot\", \"deployment\":
+        {\"show-metric\": \"azure-iot\", \"create\": \"azure-iot\", \"show\": \"azure-iot\",
+        \"list\": \"azure-iot\", \"delete\": \"azure-iot\", \"update\": \"azure-iot\"}},
+        \"device\": {\"send-d2c-message\": \"azure-iot\", \"simulate\": \"azure-iot\",
+        \"upload-file\": \"azure-iot\", \"c2d-message\": {\"complete\": \"azure-iot\",
+        \"abandon\": \"azure-iot\", \"reject\": \"azure-iot\", \"receive\": \"azure-iot\",
+        \"send\": \"azure-iot\", \"purge\": \"azure-iot\"}}, \"dps\": {\"compute-device-key\":
+        \"azure-iot\", \"enrollment\": {\"create\": \"azure-iot\", \"list\": \"azure-iot\",
+        \"show\": \"azure-iot\", \"update\": \"azure-iot\", \"delete\": \"azure-iot\"},
+        \"enrollment-group\": {\"create\": \"azure-iot\", \"list\": \"azure-iot\",
+        \"show\": \"azure-iot\", \"update\": \"azure-iot\", \"delete\": \"azure-iot\"},
+        \"registration\": {\"list\": \"azure-iot\", \"show\": \"azure-iot\", \"delete\":
+        \"azure-iot\"}}, \"central\": {\"diagnostics\": {\"monitor-events\": \"azure-iot\",
+        \"validate-messages\": \"azure-iot\", \"monitor-properties\": \"azure-iot\",
+        \"validate-properties\": \"azure-iot\", \"registration-summary\": \"azure-iot\"},
+        \"user\": {\"create\": \"azure-iot\", \"list\": \"azure-iot\", \"show\": \"azure-iot\",
+        \"delete\": \"azure-iot\"}, \"api-token\": {\"create\": \"azure-iot\", \"list\":
+        \"azure-iot\", \"show\": \"azure-iot\", \"delete\": \"azure-iot\"}, \"device\":
+        {\"list\": \"azure-iot\", \"show\": \"azure-iot\", \"create\": \"azure-iot\",
+        \"delete\": \"azure-iot\", \"registration-info\": \"azure-iot\", \"show-credentials\":
+        \"azure-iot\", \"compute-device-key\": \"azure-iot\", \"manual-failover\":
+        \"azure-iot\", \"manual-failback\": \"azure-iot\", \"command\": {\"run\":
+        \"azure-iot\", \"history\": \"azure-iot\"}, \"twin\": {\"show\": \"azure-iot\"}},
+        \"device-template\": {\"list\": \"azure-iot\", \"show\": \"azure-iot\", \"create\":
+        \"azure-iot\", \"delete\": \"azure-iot\"}, \"device-group\": {\"list\": \"azure-iot\"},
+        \"role\": {\"show\": \"azure-iot\", \"list\": \"azure-iot\"}}, \"product\":
+        {\"requirement\": {\"list\": \"azure-iot\"}, \"test\": {\"create\": \"azure-iot\",
+        \"update\": \"azure-iot\", \"show\": \"azure-iot\", \"search\": \"azure-iot\",
+        \"case\": {\"list\": \"azure-iot\", \"update\": \"azure-iot\"}, \"task\":
+        {\"create\": \"azure-iot\", \"delete\": \"azure-iot\", \"show\": \"azure-iot\"},
+        \"run\": {\"show\": \"azure-iot\", \"submit\": \"azure-iot\"}}}}, \"dt\":
+        {\"create\": \"azure-iot\", \"show\": \"azure-iot\", \"list\": \"azure-iot\",
+        \"delete\": \"azure-iot\", \"wait\": \"azure-iot\", \"reset\": \"azure-iot\",
+        \"endpoint\": {\"show\": \"azure-iot\", \"list\": \"azure-iot\", \"delete\":
+        \"azure-iot\", \"wait\": \"azure-iot\", \"create\": {\"eventgrid\": \"azure-iot\",
+        \"servicebus\": \"azure-iot\", \"eventhub\": \"azure-iot\"}}, \"route\": {\"show\":
+        \"azure-iot\", \"list\": \"azure-iot\", \"delete\": \"azure-iot\", \"create\":
+        \"azure-iot\"}, \"role-assignment\": {\"create\": \"azure-iot\", \"delete\":
+        \"azure-iot\", \"list\": \"azure-iot\"}, \"twin\": {\"query\": \"azure-iot\",
+        \"create\": \"azure-iot\", \"show\": \"azure-iot\", \"update\": \"azure-iot\",
+        \"delete\": \"azure-iot\", \"delete-all\": \"azure-iot\", \"component\": {\"show\":
+        \"azure-iot\", \"update\": \"azure-iot\"}, \"relationship\": {\"create\":
+        \"azure-iot\", \"show\": \"azure-iot\", \"list\": \"azure-iot\", \"update\":
+        \"azure-iot\", \"delete\": \"azure-iot\", \"delete-all\": \"azure-iot\"},
+        \"telemetry\": {\"send\": \"azure-iot\"}}, \"model\": {\"create\": \"azure-iot\",
+        \"show\": \"azure-iot\", \"list\": \"azure-iot\", \"update\": \"azure-iot\",
+        \"delete\": \"azure-iot\", \"delete-all\": \"azure-iot\"}, \"network\": {\"private-link\":
+        {\"show\": \"azure-iot\", \"list\": \"azure-iot\"}, \"private-endpoint\":
+        {\"connection\": {\"set\": \"azure-iot\", \"show\": \"azure-iot\", \"list\":
+        \"azure-iot\", \"delete\": \"azure-iot\", \"wait\": \"azure-iot\"}}}}, \"baremetalinstance\":
+        {\"list\": \"baremetal-infrastructure\", \"show\": \"baremetal-infrastructure\",
+        \"restart\": \"baremetal-infrastructure\", \"start\": \"baremetal-infrastructure\",
+        \"shutdown\": \"baremetal-infrastructure\", \"update\": \"baremetal-infrastructure\",
+        \"delete\": \"baremetal-infrastructure\"}, \"blockchain\": {\"member\": {\"list\":
+        \"blockchain\", \"show\": \"blockchain\", \"create\": \"blockchain\", \"update\":
+        \"blockchain\", \"delete\": \"blockchain\", \"list-api-key\": \"blockchain\",
+        \"list-consortium-member\": \"blockchain\", \"regenerate-api-key\": \"blockchain\",
+        \"wait\": \"blockchain\"}, \"consortium\": {\"list\": \"blockchain\"}, \"transaction-node\":
+        {\"list\": \"blockchain\", \"show\": \"blockchain\", \"create\": \"blockchain\",
+        \"update\": \"blockchain\", \"delete\": \"blockchain\", \"list-api-key\":
+        \"blockchain\", \"regenerate-api-key\": \"blockchain\", \"wait\": \"blockchain\"}},
+        \"blueprint\": {\"create\": \"blueprint\", \"update\": \"blueprint\", \"delete\":
+        \"blueprint\", \"show\": \"blueprint\", \"list\": \"blueprint\", \"import\":
+        \"blueprint\", \"export\": \"blueprint\", \"resource-group\": {\"add\": \"blueprint\",
+        \"update\": \"blueprint\", \"remove\": \"blueprint\", \"show\": \"blueprint\",
+        \"list\": \"blueprint\"}, \"artifact\": {\"delete\": \"blueprint\", \"show\":
+        \"blueprint\", \"list\": \"blueprint\", \"policy\": {\"create\": \"blueprint\",
+        \"update\": \"blueprint\"}, \"role\": {\"create\": \"blueprint\", \"update\":
+        \"blueprint\"}, \"template\": {\"create\": \"blueprint\", \"update\": \"blueprint\"}},
+        \"publish\": \"blueprint\", \"version\": {\"delete\": \"blueprint\", \"show\":
+        \"blueprint\", \"list\": \"blueprint\", \"artifact\": {\"show\": \"blueprint\",
+        \"list\": \"blueprint\"}}, \"assignment\": {\"create\": \"blueprint\", \"update\":
+        \"blueprint\", \"delete\": \"blueprint\", \"show\": \"blueprint\", \"list\":
+        \"blueprint\", \"wait\": \"blueprint\", \"who\": \"blueprint\"}}, \"cli-translator\":
+        {\"arm\": {\"translate\": \"cli-translator\"}}, \"cloud-service\": {\"role-instance\":
+        {\"list\": \"cloud-service\", \"show\": \"cloud-service\", \"delete\": \"cloud-service\",
+        \"rebuild\": \"cloud-service\", \"reimage\": \"cloud-service\", \"restart\":
+        \"cloud-service\", \"show-instance-view\": \"cloud-service\", \"show-remote-desktop-file\":
+        \"cloud-service\"}, \"role\": {\"list\": \"cloud-service\", \"show\": \"cloud-service\"},
+        \"list\": \"cloud-service\", \"show\": \"cloud-service\", \"create\": \"cloud-service\",
+        \"update\": \"cloud-service\", \"delete\": \"cloud-service\", \"delete-instance\":
+        \"cloud-service\", \"list-all\": \"cloud-service\", \"power-off\": \"cloud-service\",
+        \"rebuild\": \"cloud-service\", \"reimage\": \"cloud-service\", \"restart\":
+        \"cloud-service\", \"show-instance-view\": \"cloud-service\", \"start\": \"cloud-service\",
+        \"wait\": \"cloud-service\", \"update-domain\": {\"list-update-domain\": \"cloud-service\",
+        \"show-update-domain\": \"cloud-service\", \"walk-update-domain\": \"cloud-service\"}},
+        \"codespace\": {\"plan\": {\"list\": \"codespaces\", \"create\": \"codespaces\",
+        \"show\": \"codespaces\", \"delete\": \"codespaces\"}, \"secret\": {\"list\":
+        \"codespaces\", \"update\": \"codespaces\", \"create\": \"codespaces\", \"delete\":
+        \"codespaces\"}, \"list\": \"codespaces\", \"show\": \"codespaces\", \"create\":
+        \"codespaces\", \"open\": \"codespaces\", \"delete\": \"codespaces\", \"resume\":
+        \"codespaces\", \"suspend\": \"codespaces\", \"update\": \"codespaces\", \"location\":
+        {\"list\": \"codespaces\", \"show\": \"codespaces\"}}, \"communication\":
+        {\"list\": \"communication\", \"show\": \"communication\", \"create\": \"communication\",
+        \"update\": \"communication\", \"delete\": \"communication\", \"link-notification-hub\":
+        \"communication\", \"list-key\": \"communication\", \"regenerate-key\": \"communication\",
+        \"wait\": \"communication\"}, \"confluent\": {\"terms\": {\"list\": \"confluent\"},
+        \"organization\": {\"list\": \"confluent\", \"show\": \"confluent\", \"create\":
+        \"confluent\", \"update\": \"confluent\", \"delete\": \"confluent\", \"wait\":
+        \"confluent\"}, \"offer-detail\": {\"show\": \"confluent\"}}, \"connectedk8s\":
+        {\"connect\": \"connectedk8s\", \"update\": \"connectedk8s\", \"upgrade\":
+        \"connectedk8s\", \"delete\": \"connectedk8s\", \"enable-features\": \"connectedk8s\",
+        \"disable-features\": \"connectedk8s\", \"list\": \"connectedk8s\", \"show\":
+        \"connectedk8s\", \"proxy\": \"connectedk8s\"}, \"connectedmachine\": {\"list\":
+        \"connectedmachine\", \"show\": \"connectedmachine\", \"delete\": \"connectedmachine\",
+        \"upgrade-extension\": \"connectedmachine\", \"extension\": {\"list\": \"connectedmachine\",
+        \"show\": \"connectedmachine\", \"create\": \"connectedmachine\", \"update\":
+        \"connectedmachine\", \"delete\": \"connectedmachine\", \"wait\": \"connectedmachine\"},
+        \"private-endpoint-connection\": {\"list\": \"connectedmachine\", \"show\":
+        \"connectedmachine\", \"update\": \"connectedmachine\", \"delete\": \"connectedmachine\",
+        \"wait\": \"connectedmachine\"}, \"private-link-resource\": {\"list\": \"connectedmachine\",
+        \"show\": \"connectedmachine\"}, \"private-link-scope\": {\"list\": \"connectedmachine\",
+        \"show\": \"connectedmachine\", \"create\": \"connectedmachine\", \"update\":
+        \"connectedmachine\", \"delete\": \"connectedmachine\", \"show-validation-detail\":
+        \"connectedmachine\", \"show-validation-detail-for-machine\": \"connectedmachine\",
+        \"update-tag\": \"connectedmachine\", \"wait\": \"connectedmachine\"}}, \"cosmosdb\":
+        {\"restorable-database-account\": {\"show\": \"cosmosdb-preview\", \"list\":
+        \"cosmosdb-preview\"}, \"show\": \"cosmosdb-preview\", \"restore\": \"cosmosdb-preview\",
+        \"create\": \"cosmosdb-preview\", \"update\": \"cosmosdb-preview\", \"list\":
+        \"cosmosdb-preview\", \"sql\": {\"restorable-database\": {\"list\": \"cosmosdb-preview\"},
+        \"restorable-container\": {\"list\": \"cosmosdb-preview\"}, \"restorable-resource\":
+        {\"list\": \"cosmosdb-preview\"}}, \"mongodb\": {\"restorable-database\":
+        {\"list\": \"cosmosdb-preview\"}, \"restorable-collection\": {\"list\": \"cosmosdb-preview\"},
+        \"restorable-resource\": {\"list\": \"cosmosdb-preview\"}}}, \"managed-cassandra\":
+        {\"cluster\": {\"create\": \"cosmosdb-preview\", \"update\": \"cosmosdb-preview\",
+        \"node-status\": \"cosmosdb-preview\", \"list\": \"cosmosdb-preview\", \"show\":
+        \"cosmosdb-preview\", \"delete\": \"cosmosdb-preview\"}, \"datacenter\": {\"create\":
+        \"cosmosdb-preview\", \"update\": \"cosmosdb-preview\", \"list\": \"cosmosdb-preview\",
+        \"show\": \"cosmosdb-preview\", \"delete\": \"cosmosdb-preview\"}}, \"costmanagement\":
+        {\"query\": \"costmanagement\", \"export\": {\"list\": \"costmanagement\",
+        \"show\": \"costmanagement\", \"create\": \"costmanagement\", \"update\":
+        \"costmanagement\", \"delete\": \"costmanagement\"}}, \"csvmware\": {\"vm\":
+        {\"create\": \"csvmware\", \"list\": \"csvmware\", \"show\": \"csvmware\",
+        \"update\": \"csvmware\", \"delete\": \"csvmware\", \"start\": \"csvmware\",
+        \"stop\": \"csvmware\", \"disk\": {\"add\": \"csvmware\", \"show\": \"csvmware\",
+        \"list\": \"csvmware\", \"delete\": \"csvmware\"}, \"nic\": {\"add\": \"csvmware\",
+        \"show\": \"csvmware\", \"list\": \"csvmware\", \"delete\": \"csvmware\"}},
+        \"vm-template\": {\"show\": \"csvmware\", \"list\": \"csvmware\"}, \"virtual-network\":
+        {\"show\": \"csvmware\", \"list\": \"csvmware\"}, \"resource-pool\": {\"show\":
+        \"csvmware\", \"list\": \"csvmware\"}, \"private-cloud\": {\"list\": \"csvmware\",
+        \"show\": \"csvmware\"}}, \"custom-providers\": {\"resource-provider\": {\"create\":
+        \"custom-providers\", \"update\": \"custom-providers\", \"delete\": \"custom-providers\",
+        \"show\": \"custom-providers\", \"list\": \"custom-providers\"}}, \"customlocation\":
+        {\"create\": \"customlocation\", \"show\": \"customlocation\", \"delete\":
+        \"customlocation\", \"list\": \"customlocation\", \"list-enabled-resource-types\":
+        \"customlocation\", \"update\": \"customlocation\", \"patch\": \"customlocation\"},
+        \"databox\": {\"job\": {\"create\": \"databox\", \"update\": \"databox\",
+        \"delete\": \"databox\", \"show\": \"databox\", \"list\": \"databox\", \"cancel\":
+        \"databox\", \"list-credentials\": \"databox\"}}, \"databricks\": {\"workspace\":
+        {\"create\": \"databricks\", \"update\": \"databricks\", \"delete\": \"databricks\",
+        \"show\": \"databricks\", \"list\": \"databricks\", \"wait\": \"databricks\",
+        \"vnet-peering\": {\"create\": \"databricks\", \"update\": \"databricks\",
+        \"delete\": \"databricks\", \"list\": \"databricks\", \"show\": \"databricks\",
+        \"wait\": \"databricks\"}}}, \"datadog\": {\"terms\": {\"list\": \"datadog\",
+        \"create\": \"datadog\", \"update\": \"datadog\"}, \"monitor\": {\"list\":
+        \"datadog\", \"show\": \"datadog\", \"create\": \"datadog\", \"update\": \"datadog\",
+        \"delete\": \"datadog\", \"get-default-key\": \"datadog\", \"list-api-key\":
+        \"datadog\", \"list-host\": \"datadog\", \"list-linked-resource\": \"datadog\",
+        \"list-monitored-resource\": \"datadog\", \"refresh-set-password-link\": \"datadog\",
+        \"set-default-key\": \"datadog\", \"wait\": \"datadog\"}, \"tag-rule\": {\"list\":
+        \"datadog\", \"show\": \"datadog\", \"create\": \"datadog\", \"update\": \"datadog\"},
+        \"sso-config\": {\"list\": \"datadog\", \"show\": \"datadog\", \"create\":
+        \"datadog\", \"update\": \"datadog\", \"wait\": \"datadog\"}}, \"datafactory\":
+        {\"list\": \"datafactory\", \"show\": \"datafactory\", \"create\": \"datafactory\",
+        \"update\": \"datafactory\", \"delete\": \"datafactory\", \"configure-factory-repo\":
+        \"datafactory\", \"get-data-plane-access\": \"datafactory\", \"get-git-hub-access-token\":
+        \"datafactory\", \"activity-run\": {\"query-by-pipeline-run\": \"datafactory\"},
+        \"dataset\": {\"list\": \"datafactory\", \"show\": \"datafactory\", \"create\":
+        \"datafactory\", \"update\": \"datafactory\", \"delete\": \"datafactory\"},
+        \"integration-runtime\": {\"list\": \"datafactory\", \"show\": \"datafactory\",
+        \"linked-integration-runtime\": {\"create\": \"datafactory\"}, \"managed\":
+        {\"create\": \"datafactory\"}, \"self-hosted\": {\"create\": \"datafactory\"},
+        \"update\": \"datafactory\", \"delete\": \"datafactory\", \"get-connection-info\":
+        \"datafactory\", \"get-monitoring-data\": \"datafactory\", \"get-status\":
+        \"datafactory\", \"list-auth-key\": \"datafactory\", \"regenerate-auth-key\":
+        \"datafactory\", \"remove-link\": \"datafactory\", \"start\": \"datafactory\",
+        \"stop\": \"datafactory\", \"sync-credentials\": \"datafactory\", \"upgrade\":
+        \"datafactory\", \"wait\": \"datafactory\"}, \"integration-runtime-node\":
+        {\"show\": \"datafactory\", \"update\": \"datafactory\", \"delete\": \"datafactory\",
+        \"get-ip-address\": \"datafactory\"}, \"linked-service\": {\"list\": \"datafactory\",
+        \"show\": \"datafactory\", \"create\": \"datafactory\", \"update\": \"datafactory\",
+        \"delete\": \"datafactory\"}, \"managed-private-endpoint\": {\"list\": \"datafactory\",
+        \"show\": \"datafactory\", \"create\": \"datafactory\", \"update\": \"datafactory\",
+        \"delete\": \"datafactory\"}, \"managed-virtual-network\": {\"list\": \"datafactory\",
+        \"show\": \"datafactory\", \"create\": \"datafactory\", \"update\": \"datafactory\"},
+        \"pipeline\": {\"list\": \"datafactory\", \"show\": \"datafactory\", \"create\":
+        \"datafactory\", \"update\": \"datafactory\", \"delete\": \"datafactory\",
+        \"create-run\": \"datafactory\"}, \"pipeline-run\": {\"show\": \"datafactory\",
+        \"cancel\": \"datafactory\", \"query-by-factory\": \"datafactory\"}, \"trigger\":
+        {\"list\": \"datafactory\", \"show\": \"datafactory\", \"create\": \"datafactory\",
+        \"update\": \"datafactory\", \"delete\": \"datafactory\", \"get-event-subscription-status\":
+        \"datafactory\", \"query-by-factory\": \"datafactory\", \"start\": \"datafactory\",
+        \"stop\": \"datafactory\", \"subscribe-to-event\": \"datafactory\", \"unsubscribe-from-event\":
+        \"datafactory\", \"wait\": \"datafactory\"}, \"trigger-run\": {\"cancel\":
+        \"datafactory\", \"query-by-factory\": \"datafactory\", \"rerun\": \"datafactory\"}},
+        \"dataprotection\": {\"backup-vault\": {\"show\": \"dataprotection\", \"create\":
+        \"dataprotection\", \"update\": \"dataprotection\", \"delete\": \"dataprotection\",
+        \"wait\": \"dataprotection\", \"list\": \"dataprotection\"}, \"backup-policy\":
+        {\"list\": \"dataprotection\", \"show\": \"dataprotection\", \"create\": \"dataprotection\",
+        \"delete\": \"dataprotection\", \"get-default-policy-template\": \"dataprotection\",
+        \"trigger\": {\"create-schedule\": \"dataprotection\", \"set\": \"dataprotection\"},
+        \"retention-rule\": {\"create-lifecycle\": \"dataprotection\", \"set\": \"dataprotection\",
+        \"remove\": \"dataprotection\"}, \"tag\": {\"create-absolute-criteria\": \"dataprotection\",
+        \"create-generic-criteria\": \"dataprotection\", \"set\": \"dataprotection\",
+        \"remove\": \"dataprotection\"}}, \"backup-instance\": {\"list\": \"dataprotection\",
+        \"show\": \"dataprotection\", \"create\": \"dataprotection\", \"delete\":
+        \"dataprotection\", \"adhoc-backup\": \"dataprotection\", \"restore\": {\"trigger\":
+        \"dataprotection\", \"initialize-for-data-recovery\": \"dataprotection\",
+        \"initialize-for-data-recovery-as-files\": \"dataprotection\", \"initialize-for-item-recovery\":
+        \"dataprotection\"}, \"validate-for-backup\": \"dataprotection\", \"validate-for-restore\":
+        \"dataprotection\", \"wait\": \"dataprotection\", \"initialize\": \"dataprotection\",
+        \"update-policy\": \"dataprotection\", \"list-from-resourcegraph\": \"dataprotection\"},
+        \"recovery-point\": {\"list\": \"dataprotection\", \"show\": \"dataprotection\"},
+        \"job\": {\"list\": \"dataprotection\", \"show\": \"dataprotection\", \"list-from-resourcegraph\":
+        \"dataprotection\"}, \"restorable-time-range\": {\"find\": \"dataprotection\"}},
+        \"datashare\": {\"account\": {\"list\": \"datashare\", \"show\": \"datashare\",
+        \"create\": \"datashare\", \"update\": \"datashare\", \"delete\": \"datashare\",
+        \"wait\": \"datashare\"}, \"consumer\": {\"invitation\": {\"list\": \"datashare\",
+        \"show\": \"datashare\", \"reject\": \"datashare\"}, \"dataset-mapping\":
+        {\"list\": \"datashare\", \"show\": \"datashare\", \"create\": \"datashare\",
+        \"delete\": \"datashare\"}, \"share-subscription\": {\"list\": \"datashare\",
+        \"show\": \"datashare\", \"create\": \"datashare\", \"delete\": \"datashare\",
+        \"list-source-share-synchronization-setting\": \"datashare\", \"wait\": \"datashare\",
+        \"synchronization\": {\"list\": \"datashare\", \"list-detail\": \"datashare\",
+        \"start\": \"datashare\", \"cancel\": \"datashare\", \"wait\": \"datashare\"},
+        \"list-source-dataset\": \"datashare\"}, \"trigger\": {\"list\": \"datashare\",
+        \"show\": \"datashare\", \"create\": \"datashare\", \"delete\": \"datashare\",
+        \"wait\": \"datashare\"}}, \"dataset\": {\"list\": \"datashare\", \"show\":
+        \"datashare\", \"create\": \"datashare\", \"delete\": \"datashare\", \"wait\":
+        \"datashare\"}, \"invitation\": {\"list\": \"datashare\", \"show\": \"datashare\",
+        \"create\": \"datashare\", \"delete\": \"datashare\"}, \"list\": \"datashare\",
+        \"show\": \"datashare\", \"create\": \"datashare\", \"delete\": \"datashare\",
+        \"wait\": \"datashare\", \"synchronization\": {\"list-detail\": \"datashare\",
+        \"list\": \"datashare\"}, \"provider-share-subscription\": {\"list\": \"datashare\",
+        \"show\": \"datashare\", \"revoke\": \"datashare\", \"reinstate\": \"datashare\",
+        \"wait\": \"datashare\"}, \"synchronization-setting\": {\"list\": \"datashare\",
+        \"show\": \"datashare\", \"create\": \"datashare\", \"delete\": \"datashare\",
+        \"wait\": \"datashare\"}}, \"mysql\": {\"up\": \"db-up\", \"down\": \"db-up\",
+        \"show-connection-string\": \"db-up\", \"flexible-server\": {\"connect\":
+        \"rdbms-connect\", \"execute\": \"rdbms-connect\"}}, \"functionapp\": {\"app\":
+        {\"up\": \"deploy-to-azure\"}}, \"container\": {\"app\": {\"up\": \"deploy-to-azure\"}},
+        \"desktopvirtualization\": {\"workspace\": {\"list\": \"desktopvirtualization\",
+        \"show\": \"desktopvirtualization\", \"create\": \"desktopvirtualization\",
+        \"update\": \"desktopvirtualization\", \"delete\": \"desktopvirtualization\"},
+        \"applicationgroup\": {\"list\": \"desktopvirtualization\", \"show\": \"desktopvirtualization\",
+        \"create\": \"desktopvirtualization\", \"update\": \"desktopvirtualization\",
+        \"delete\": \"desktopvirtualization\"}, \"hostpool\": {\"list\": \"desktopvirtualization\",
+        \"show\": \"desktopvirtualization\", \"create\": \"desktopvirtualization\",
+        \"update\": \"desktopvirtualization\", \"delete\": \"desktopvirtualization\"}},
+        \"disk-pool\": {\"list\": \"diskpool\", \"show\": \"diskpool\", \"create\":
+        \"diskpool\", \"update\": \"diskpool\", \"delete\": \"diskpool\", \"list-outbound-network-dependency-endpoint\":
+        \"diskpool\", \"list-skus\": \"diskpool\", \"start\": \"diskpool\", \"stop\":
+        \"diskpool\", \"wait\": \"diskpool\", \"iscsi-target\": {\"list\": \"diskpool\",
+        \"show\": \"diskpool\", \"create\": \"diskpool\", \"update\": \"diskpool\",
+        \"delete\": \"diskpool\", \"wait\": \"diskpool\"}}, \"dms\": {\"project\":
+        {\"create\": \"dms-preview\", \"task\": {\"create\": \"dms-preview\", \"cancel\":
+        \"dms-preview\", \"restart\": \"dms-preview\", \"stop\": \"dms-preview\"}}},
+        \"dnc\": {\"controller\": {\"show\": \"dnc\", \"create\": \"dnc\", \"delete\":
+        \"dnc\", \"wait\": \"dnc\"}, \"orchestrator-instance-service\": {\"show\":
+        \"dnc\", \"create\": \"dnc\", \"delete\": \"dnc\", \"wait\": \"dnc\"}, \"delegated-subnet-service\":
+        {\"show\": \"dnc\", \"create\": \"dnc\", \"delete\": \"dnc\", \"wait\": \"dnc\"}},
+        \"eventgrid\": {\"topic\": {\"show\": \"eventgrid\", \"key\": {\"list\": \"eventgrid\",
+        \"regenerate\": \"eventgrid\"}, \"delete\": \"eventgrid\", \"list\": \"eventgrid\",
+        \"create\": \"eventgrid\", \"update\": \"eventgrid\", \"private-endpoint-connection\":
+        {\"show\": \"eventgrid\", \"list\": \"eventgrid\", \"delete\": \"eventgrid\",
+        \"approve\": \"eventgrid\", \"reject\": \"eventgrid\"}, \"private-link-resource\":
+        {\"show\": \"eventgrid\", \"list\": \"eventgrid\"}}, \"extension-topic\":
+        {\"show\": \"eventgrid\"}, \"domain\": {\"topic\": {\"show\": \"eventgrid\",
+        \"list\": \"eventgrid\", \"delete\": \"eventgrid\", \"create\": \"eventgrid\"},
+        \"show\": \"eventgrid\", \"key\": {\"list\": \"eventgrid\", \"regenerate\":
+        \"eventgrid\"}, \"list\": \"eventgrid\", \"create\": \"eventgrid\", \"delete\":
+        \"eventgrid\", \"update\": \"eventgrid\", \"private-endpoint-connection\":
+        {\"show\": \"eventgrid\", \"list\": \"eventgrid\", \"delete\": \"eventgrid\",
+        \"approve\": \"eventgrid\", \"reject\": \"eventgrid\"}, \"private-link-resource\":
+        {\"show\": \"eventgrid\", \"list\": \"eventgrid\"}}, \"system-topic\": {\"show\":
+        \"eventgrid\", \"delete\": \"eventgrid\", \"list\": \"eventgrid\", \"create\":
+        \"eventgrid\", \"update\": \"eventgrid\", \"event-subscription\": {\"show\":
+        \"eventgrid\", \"delete\": \"eventgrid\", \"list\": \"eventgrid\", \"create\":
+        \"eventgrid\", \"update\": \"eventgrid\"}}, \"partner\": {\"registration\":
+        {\"show\": \"eventgrid\", \"delete\": \"eventgrid\", \"list\": \"eventgrid\",
+        \"create\": \"eventgrid\"}, \"namespace\": {\"show\": \"eventgrid\", \"delete\":
+        \"eventgrid\", \"list\": \"eventgrid\", \"create\": \"eventgrid\", \"key\":
+        {\"list\": \"eventgrid\", \"regenerate\": \"eventgrid\"}, \"event-channel\":
+        {\"show\": \"eventgrid\", \"delete\": \"eventgrid\", \"list\": \"eventgrid\",
+        \"create\": \"eventgrid\"}}, \"topic\": {\"show\": \"eventgrid\", \"delete\":
+        \"eventgrid\", \"activate\": \"eventgrid\", \"deactivate\": \"eventgrid\",
+        \"list\": \"eventgrid\", \"event-subscription\": {\"show\": \"eventgrid\",
+        \"delete\": \"eventgrid\", \"list\": \"eventgrid\", \"create\": \"eventgrid\",
+        \"update\": \"eventgrid\"}}}, \"event-subscription\": {\"create\": \"eventgrid\",
+        \"show\": \"eventgrid\", \"delete\": \"eventgrid\", \"list\": \"eventgrid\",
+        \"update\": \"eventgrid\"}, \"topic-type\": {\"list\": \"eventgrid\", \"show\":
+        \"eventgrid\", \"list-event-types\": \"eventgrid\"}}, \"footprint\": {\"profile\":
+        {\"list\": \"footprint\", \"show\": \"footprint\", \"create\": \"footprint\",
+        \"update\": \"footprint\", \"delete\": \"footprint\"}, \"measurement-endpoint\":
+        {\"list\": \"footprint\", \"show\": \"footprint\", \"create\": \"footprint\",
+        \"update\": \"footprint\", \"delete\": \"footprint\"}, \"measurement-endpoint-condition\":
+        {\"list\": \"footprint\", \"show\": \"footprint\", \"create\": \"footprint\",
+        \"update\": \"footprint\", \"delete\": \"footprint\"}, \"experiment\": {\"list\":
+        \"footprint\", \"show\": \"footprint\", \"create\": \"footprint\", \"update\":
+        \"footprint\", \"delete\": \"footprint\"}}, \"fzf\": {\"install\": \"fzf\",
+        \"group\": \"fzf\", \"location\": \"fzf\", \"subscription\": \"fzf\"}, \"guestconfig\":
+        {\"guest-configuration-assignment\": {\"list\": \"guestconfig\", \"show\":
+        \"guestconfig\", \"create\": \"guestconfig\", \"update\": \"guestconfig\",
+        \"delete\": \"guestconfig\", \"wait\": \"guestconfig\"}, \"guest-configuration-assignment-report\":
+        {\"list\": \"guestconfig\", \"show\": \"guestconfig\"}, \"guest-configuration-hcrp-assignment\":
+        {\"list\": \"guestconfig\", \"show\": \"guestconfig\", \"create\": \"guestconfig\",
+        \"update\": \"guestconfig\", \"delete\": \"guestconfig\", \"wait\": \"guestconfig\"},
+        \"guest-configuration-hcrp-assignment-report\": {\"list\": \"guestconfig\",
+        \"show\": \"guestconfig\"}}, \"dedicated-hsm\": {\"list\": \"hardware-security-modules\",
+        \"show\": \"hardware-security-modules\", \"create\": \"hardware-security-modules\",
+        \"update\": \"hardware-security-modules\", \"delete\": \"hardware-security-modules\",
+        \"wait\": \"hardware-security-modules\"}, \"healthbot\": {\"list\": \"healthbot\",
+        \"show\": \"healthbot\", \"create\": \"healthbot\", \"update\": \"healthbot\",
+        \"delete\": \"healthbot\", \"wait\": \"healthbot\"}, \"healthcareapis\": {\"service\":
+        {\"list\": \"healthcareapis\", \"show\": \"healthcareapis\", \"create\": \"healthcareapis\",
+        \"update\": \"healthcareapis\", \"delete\": \"healthcareapis\", \"wait\":
+        \"healthcareapis\"}, \"acr\": {\"list\": \"healthcareapis\", \"add\": \"healthcareapis\",
+        \"reset\": \"healthcareapis\", \"remove\": \"healthcareapis\"}, \"operation-result\":
+        {\"show\": \"healthcareapis\"}, \"private-endpoint-connection\": {\"list\":
+        \"healthcareapis\", \"show\": \"healthcareapis\", \"create\": \"healthcareapis\",
+        \"update\": \"healthcareapis\", \"delete\": \"healthcareapis\", \"wait\":
+        \"healthcareapis\"}, \"private-link-resource\": {\"list\": \"healthcareapis\",
+        \"show\": \"healthcareapis\"}}, \"hpc-cache\": {\"skus\": {\"list\": \"hpc-cache\"},
+        \"usage-model\": {\"list\": \"hpc-cache\"}, \"create\": \"hpc-cache\", \"update\":
+        \"hpc-cache\", \"delete\": \"hpc-cache\", \"show\": \"hpc-cache\", \"list\":
+        \"hpc-cache\", \"flush\": \"hpc-cache\", \"start\": \"hpc-cache\", \"stop\":
+        \"hpc-cache\", \"upgrade-firmware\": \"hpc-cache\", \"wait\": \"hpc-cache\",
+        \"blob-storage-target\": {\"add\": \"hpc-cache\", \"update\": \"hpc-cache\"},
+        \"storage-target\": {\"remove\": \"hpc-cache\", \"show\": \"hpc-cache\", \"list\":
+        \"hpc-cache\"}, \"nfs-storage-target\": {\"add\": \"hpc-cache\", \"update\":
+        \"hpc-cache\"}}, \"image\": {\"copy\": \"image-copy-extension\"}, \"import-export\":
+        {\"list\": \"import-export\", \"show\": \"import-export\", \"create\": \"import-export\",
+        \"update\": \"import-export\", \"delete\": \"import-export\", \"bit-locker-key\":
+        {\"list\": \"import-export\"}, \"location\": {\"list\": \"import-export\",
+        \"show\": \"import-export\"}}, \"internet-analyzer\": {\"profile\": {\"create\":
+        \"internet-analyzer\", \"update\": \"internet-analyzer\", \"delete\": \"internet-analyzer\",
+        \"list\": \"internet-analyzer\", \"show\": \"internet-analyzer\"}, \"preconfigured-endpoint\":
+        {\"list\": \"internet-analyzer\"}, \"test\": {\"create\": \"internet-analyzer\",
+        \"update\": \"internet-analyzer\", \"delete\": \"internet-analyzer\", \"list\":
+        \"internet-analyzer\", \"show\": \"internet-analyzer\"}, \"show-scorecard\":
+        \"internet-analyzer\", \"show-timeseries\": \"internet-analyzer\"}, \"k8s-configuration\":
+        {\"create\": \"k8s-configuration\", \"update\": \"k8s-configuration\", \"delete\":
+        \"k8s-configuration\", \"list\": \"k8s-configuration\", \"show\": \"k8s-configuration\"},
+        \"k8s-extension\": {\"create\": \"k8s-extension\", \"delete\": \"k8s-extension\",
+        \"list\": \"k8s-extension\", \"show\": \"k8s-extension\"}, \"k8sconfiguration\":
+        {\"create\": \"k8sconfiguration\", \"update\": \"k8sconfiguration\", \"delete\":
+        \"k8sconfiguration\", \"list\": \"k8sconfiguration\", \"show\": \"k8sconfiguration\"},
+        \"kusto\": {\"cluster\": {\"list\": \"kusto\", \"show\": \"kusto\", \"create\":
+        \"kusto\", \"update\": \"kusto\", \"delete\": \"kusto\", \"add-language-extension\":
+        \"kusto\", \"detach-follower-database\": \"kusto\", \"diagnose-virtual-network\":
+        \"kusto\", \"list-follower-database\": \"kusto\", \"list-language-extension\":
+        \"kusto\", \"list-sku\": \"kusto\", \"remove-language-extension\": \"kusto\",
+        \"start\": \"kusto\", \"stop\": \"kusto\", \"wait\": \"kusto\"}, \"cluster-principal-assignment\":
+        {\"list\": \"kusto\", \"show\": \"kusto\", \"create\": \"kusto\", \"update\":
+        \"kusto\", \"delete\": \"kusto\", \"wait\": \"kusto\"}, \"database\": {\"list\":
+        \"kusto\", \"show\": \"kusto\", \"create\": \"kusto\", \"update\": \"kusto\",
+        \"delete\": \"kusto\", \"add-principal\": \"kusto\", \"list-principal\": \"kusto\",
+        \"remove-principal\": \"kusto\", \"wait\": \"kusto\"}, \"database-principal-assignment\":
+        {\"list\": \"kusto\", \"show\": \"kusto\", \"create\": \"kusto\", \"update\":
+        \"kusto\", \"delete\": \"kusto\", \"wait\": \"kusto\"}, \"script\": {\"list\":
+        \"kusto\", \"show\": \"kusto\", \"create\": \"kusto\", \"update\": \"kusto\",
+        \"delete\": \"kusto\", \"wait\": \"kusto\"}, \"attached-database-configuration\":
+        {\"list\": \"kusto\", \"show\": \"kusto\", \"create\": \"kusto\", \"update\":
+        \"kusto\", \"delete\": \"kusto\", \"wait\": \"kusto\"}, \"data-connection\":
+        {\"list\": \"kusto\", \"show\": \"kusto\", \"event-grid\": {\"create\": \"kusto\",
+        \"update\": \"kusto\", \"data-connection-validation\": \"kusto\"}, \"event-hub\":
+        {\"create\": \"kusto\", \"update\": \"kusto\", \"data-connection-validation\":
+        \"kusto\"}, \"iot-hub\": {\"create\": \"kusto\", \"update\": \"kusto\", \"data-connection-validation\":
+        \"kusto\"}, \"delete\": \"kusto\", \"wait\": \"kusto\"}, \"operation-result\":
+        {\"show\": \"kusto\"}}, \"logic\": {\"workflow\": {\"list\": \"logic\", \"show\":
+        \"logic\", \"create\": \"logic\", \"update\": \"logic\", \"delete\": \"logic\"},
+        \"integration-account\": {\"list\": \"logic\", \"show\": \"logic\", \"create\":
+        \"logic\", \"update\": \"logic\", \"delete\": \"logic\", \"import\": \"logic\"}},
+        \"maintenance\": {\"public-configuration\": {\"list\": \"maintenance\", \"show\":
+        \"maintenance\"}, \"applyupdate\": {\"list\": \"maintenance\", \"show\": \"maintenance\",
+        \"create\": \"maintenance\", \"update\": \"maintenance\", \"show-parent\":
+        \"maintenance\", \"get-parent\": \"maintenance\"}, \"assignment\": {\"list\":
+        \"maintenance\", \"create\": \"maintenance\", \"update\": \"maintenance\",
+        \"delete\": \"maintenance\", \"list-parent\": \"maintenance\"}, \"configuration\":
+        {\"list\": \"maintenance\", \"show\": \"maintenance\", \"create\": \"maintenance\",
+        \"update\": \"maintenance\", \"delete\": \"maintenance\"}, \"configuration-for-resource-group\":
+        {\"list\": \"maintenance\"}, \"applyupdate-for-resource-group\": {\"list\":
+        \"maintenance\"}, \"update\": {\"list\": \"maintenance\", \"list-parent\":
+        \"maintenance\"}}, \"managementpartner\": {\"delete\": \"managementpartner\",
+        \"create\": \"managementpartner\", \"update\": \"managementpartner\", \"show\":
+        \"managementpartner\"}, \"mesh\": {\"deployment\": {\"create\": \"mesh\"},
+        \"generate\": {\"armtemplate\": \"mesh\"}, \"app\": {\"list\": \"mesh\", \"show\":
+        \"mesh\", \"delete\": \"mesh\"}, \"service\": {\"list\": \"mesh\", \"show\":
+        \"mesh\"}, \"service-replica\": {\"list\": \"mesh\", \"show\": \"mesh\"},
+        \"code-package-log\": {\"get\": \"mesh\"}, \"network\": {\"show\": \"mesh\",
+        \"delete\": \"mesh\", \"list\": \"mesh\"}, \"volume\": {\"create\": \"mesh\",
+        \"list\": \"mesh\", \"show\": \"mesh\", \"delete\": \"mesh\"}, \"secret\":
+        {\"show\": \"mesh\", \"delete\": \"mesh\", \"list\": \"mesh\"}, \"secretvalue\":
+        {\"show\": \"mesh\", \"delete\": \"mesh\", \"list\": \"mesh\"}, \"gateway\":
+        {\"show\": \"mesh\", \"delete\": \"mesh\", \"list\": \"mesh\"}}, \"spatial-anchors-account\":
+        {\"create\": \"mixed-reality\", \"list\": \"mixed-reality\", \"show\": \"mixed-reality\",
+        \"update\": \"mixed-reality\", \"delete\": \"mixed-reality\", \"key\": {\"show\":
+        \"mixed-reality\", \"renew\": \"mixed-reality\"}}, \"remote-rendering-account\":
+        {\"create\": \"mixed-reality\", \"update\": \"mixed-reality\", \"list\": \"mixed-reality\",
+        \"show\": \"mixed-reality\", \"delete\": \"mixed-reality\", \"key\": {\"show\":
+        \"mixed-reality\", \"renew\": \"mixed-reality\"}}, \"netappfiles\": {\"account\":
+        {\"show\": \"netappfiles-preview\", \"list\": \"netappfiles-preview\", \"delete\":
+        \"netappfiles-preview\", \"create\": \"netappfiles-preview\", \"set\": \"netappfiles-preview\",
+        \"update\": \"netappfiles-preview\"}, \"pool\": {\"show\": \"netappfiles-preview\",
+        \"list\": \"netappfiles-preview\", \"delete\": \"netappfiles-preview\", \"create\":
+        \"netappfiles-preview\", \"update\": \"netappfiles-preview\"}, \"volume\":
+        {\"show\": \"netappfiles-preview\", \"list\": \"netappfiles-preview\", \"delete\":
+        \"netappfiles-preview\", \"create\": \"netappfiles-preview\", \"update\":
+        \"netappfiles-preview\"}, \"mount-target\": {\"list\": \"netappfiles-preview\"},
+        \"snapshot\": {\"show\": \"netappfiles-preview\", \"list\": \"netappfiles-preview\",
+        \"delete\": \"netappfiles-preview\", \"create\": \"netappfiles-preview\"}},
+        \"next\": \"next\", \"notification-hub\": {\"namespace\": {\"create\": \"notification-hub\",
+        \"update\": \"notification-hub\", \"delete\": \"notification-hub\", \"show\":
+        \"notification-hub\", \"list\": \"notification-hub\", \"check-availability\":
+        \"notification-hub\", \"wait\": \"notification-hub\", \"authorization-rule\":
+        {\"show\": \"notification-hub\", \"list\": \"notification-hub\", \"create\":
+        \"notification-hub\", \"delete\": \"notification-hub\", \"list-keys\": \"notification-hub\",
+        \"regenerate-keys\": \"notification-hub\"}}, \"create\": \"notification-hub\",
+        \"update\": \"notification-hub\", \"delete\": \"notification-hub\", \"show\":
+        \"notification-hub\", \"list\": \"notification-hub\", \"check-availability\":
+        \"notification-hub\", \"test-send\": \"notification-hub\", \"authorization-rule\":
+        {\"list\": \"notification-hub\", \"show\": \"notification-hub\", \"create\":
+        \"notification-hub\", \"delete\": \"notification-hub\", \"list-keys\": \"notification-hub\",
+        \"regenerate-keys\": \"notification-hub\"}, \"credential\": {\"list\": \"notification-hub\",
+        \"gcm\": {\"update\": \"notification-hub\"}, \"apns\": {\"update\": \"notification-hub\"},
+        \"wns\": {\"update\": \"notification-hub\"}, \"mpns\": {\"update\": \"notification-hub\"},
+        \"adm\": {\"update\": \"notification-hub\"}, \"baidu\": {\"update\": \"notification-hub\"}}},
+        \"offazure\": {\"hyperv\": {\"cluster\": {\"list\": \"offazure\", \"show\":
+        \"offazure\"}, \"host\": {\"list\": \"offazure\", \"show\": \"offazure\"},
+        \"machine\": {\"list\": \"offazure\", \"show\": \"offazure\"}, \"run-as-account\":
+        {\"list\": \"offazure\", \"show\": \"offazure\"}, \"site\": {\"show\": \"offazure\",
+        \"create\": \"offazure\", \"delete\": \"offazure\"}}, \"vmware\": {\"machine\":
+        {\"list\": \"offazure\", \"show\": \"offazure\"}, \"run-as-account\": {\"list\":
+        \"offazure\", \"show\": \"offazure\"}, \"site\": {\"show\": \"offazure\",
+        \"create\": \"offazure\", \"delete\": \"offazure\"}, \"vcenter\": {\"list\":
+        \"offazure\", \"show\": \"offazure\"}}}, \"peering\": {\"legacy\": {\"list\":
+        \"peering\"}, \"asn\": {\"list\": \"peering\", \"show\": \"peering\", \"create\":
+        \"peering\", \"delete\": \"peering\"}, \"location\": {\"list\": \"peering\"},
+        \"registered-asn\": {\"list\": \"peering\", \"show\": \"peering\", \"create\":
+        \"peering\", \"update\": \"peering\", \"delete\": \"peering\"}, \"registered-prefix\":
+        {\"list\": \"peering\", \"show\": \"peering\", \"create\": \"peering\", \"update\":
+        \"peering\", \"delete\": \"peering\"}, \"peering\": {\"list\": \"peering\",
+        \"show\": \"peering\", \"create\": \"peering\", \"update\": \"peering\", \"delete\":
+        \"peering\"}, \"received-route\": {\"list\": \"peering\"}, \"service\": {\"country\":
+        {\"list\": \"peering\"}, \"location\": {\"list\": \"peering\"}, \"prefix\":
+        {\"list\": \"peering\", \"show\": \"peering\", \"create\": \"peering\", \"update\":
+        \"peering\", \"delete\": \"peering\"}, \"provider\": {\"list\": \"peering\"},
+        \"list\": \"peering\", \"show\": \"peering\", \"create\": \"peering\", \"update\":
+        \"peering\", \"delete\": \"peering\"}}, \"portal\": {\"dashboard\": {\"list\":
+        \"portal\", \"show\": \"portal\", \"create\": \"portal\", \"update\": \"portal\",
+        \"delete\": \"portal\", \"import\": \"portal\"}}, \"powerbi\": {\"embedded-capacity\":
+        {\"create\": \"powerbidedicated\", \"update\": \"powerbidedicated\", \"delete\":
+        \"powerbidedicated\", \"show\": \"powerbidedicated\", \"list\": \"powerbidedicated\",
+        \"wait\": \"powerbidedicated\"}}, \"providerhub\": {\"custom-rollout\": {\"list\":
+        \"providerhub\", \"show\": \"providerhub\", \"create\": \"providerhub\"},
+        \"default-rollout\": {\"list\": \"providerhub\", \"show\": \"providerhub\",
+        \"create\": \"providerhub\", \"delete\": \"providerhub\", \"stop\": \"providerhub\"},
+        \"manifest\": {\"checkin\": \"providerhub\", \"generate\": \"providerhub\"},
+        \"notification-registration\": {\"list\": \"providerhub\", \"show\": \"providerhub\",
+        \"create\": \"providerhub\", \"delete\": \"providerhub\"}, \"operation\":
+        {\"list\": \"providerhub\", \"create\": \"providerhub\", \"delete\": \"providerhub\"},
+        \"provider-registration\": {\"list\": \"providerhub\", \"show\": \"providerhub\",
+        \"create\": \"providerhub\", \"delete\": \"providerhub\", \"generate-operation\":
+        \"providerhub\"}, \"resource-type-registration\": {\"list\": \"providerhub\",
+        \"show\": \"providerhub\", \"create\": \"providerhub\", \"delete\": \"providerhub\"},
+        \"sku\": {\"list\": \"providerhub\", \"show\": \"providerhub\", \"create\":
+        \"providerhub\", \"delete\": \"providerhub\", \"show-nested-resource-type-first\":
+        \"providerhub\", \"show-nested-resource-type-second\": \"providerhub\", \"show-nested-resource-type-third\":
+        \"providerhub\"}}, \"purview\": {\"account\": {\"list\": \"purview\", \"show\":
+        \"purview\", \"create\": \"purview\", \"update\": \"purview\", \"delete\":
+        \"purview\", \"add-root-collection-admin\": \"purview\", \"list-key\": \"purview\",
+        \"wait\": \"purview\"}, \"default-account\": {\"show\": \"purview\", \"remove\":
+        \"purview\", \"set\": \"purview\"}}, \"quantum\": {\"workspace\": {\"create\":
+        \"quantum\", \"delete\": \"quantum\", \"list\": \"quantum\", \"show\": \"quantum\",
+        \"set\": \"quantum\", \"clear\": \"quantum\", \"quotas\": \"quantum\"}, \"target\":
+        {\"list\": \"quantum\", \"show\": \"quantum\", \"set\": \"quantum\", \"clear\":
+        \"quantum\"}, \"job\": {\"list\": \"quantum\", \"show\": \"quantum\", \"submit\":
+        \"quantum\", \"wait\": \"quantum\", \"output\": \"quantum\", \"cancel\": \"quantum\"},
+        \"run\": \"quantum\", \"execute\": \"quantum\", \"offerings\": {\"list\":
+        \"quantum\", \"accept-terms\": \"quantum\", \"show-terms\": \"quantum\"}},
+        \"redisenterprise\": {\"operation-status\": {\"show\": \"redisenterprise\"},
+        \"list\": \"redisenterprise\", \"show\": \"redisenterprise\", \"create\":
+        \"redisenterprise\", \"update\": \"redisenterprise\", \"delete\": \"redisenterprise\",
+        \"wait\": \"redisenterprise\", \"database\": {\"list\": \"redisenterprise\",
+        \"show\": \"redisenterprise\", \"create\": \"redisenterprise\", \"update\":
+        \"redisenterprise\", \"delete\": \"redisenterprise\", \"export\": \"redisenterprise\",
+        \"import\": \"redisenterprise\", \"list-keys\": \"redisenterprise\", \"regenerate-key\":
+        \"redisenterprise\", \"wait\": \"redisenterprise\"}}, \"graph\": {\"query\":
+        \"resource-graph\", \"shared-query\": {\"create\": \"resource-graph\", \"list\":
+        \"resource-graph\", \"delete\": \"resource-graph\", \"show\": \"resource-graph\"}},
+        \"resource-mover\": {\"move-collection\": {\"list\": \"resource-mover\", \"show\":
+        \"resource-mover\", \"create\": \"resource-mover\", \"update\": \"resource-mover\",
+        \"delete\": \"resource-mover\", \"bulk-remove\": \"resource-mover\", \"commit\":
+        \"resource-mover\", \"discard\": \"resource-mover\", \"initiate-move\": \"resource-mover\",
+        \"list-required-for\": \"resource-mover\", \"prepare\": \"resource-mover\",
+        \"resolve-dependency\": \"resource-mover\", \"wait\": \"resource-mover\",
+        \"list-unresolved-dependency\": \"resource-mover\"}, \"move-resource\": {\"list\":
+        \"resource-mover\", \"show\": \"resource-mover\", \"delete\": \"resource-mover\",
+        \"add\": \"resource-mover\", \"wait\": \"resource-mover\"}}, \"hanainstance\":
+        {\"create\": \"sap-hana\", \"list\": \"sap-hana\", \"show\": \"sap-hana\",
+        \"restart\": \"sap-hana\", \"start\": \"sap-hana\", \"shutdown\": \"sap-hana\",
+        \"update\": \"sap-hana\", \"delete\": \"sap-hana\"}, \"sapmonitor\": {\"list\":
+        \"sap-hana\", \"show\": \"sap-hana\", \"create\": \"sap-hana\", \"update\":
+        \"sap-hana\", \"delete\": \"sap-hana\", \"provider-instance\": {\"list\":
+        \"sap-hana\", \"show\": \"sap-hana\", \"create\": \"sap-hana\", \"delete\":
+        \"sap-hana\"}}, \"sentinel\": {\"alert-rule\": {\"list\": \"sentinel\", \"show\":
+        \"sentinel\", \"create\": \"sentinel\", \"update\": \"sentinel\", \"delete\":
+        \"sentinel\", \"get-action\": \"sentinel\"}, \"action\": {\"list\": \"sentinel\"},
+        \"alert-rule-template\": {\"list\": \"sentinel\", \"show\": \"sentinel\"},
+        \"bookmark\": {\"list\": \"sentinel\", \"show\": \"sentinel\", \"create\":
+        \"sentinel\", \"update\": \"sentinel\", \"delete\": \"sentinel\"}, \"data-connector\":
+        {\"list\": \"sentinel\", \"show\": \"sentinel\", \"create\": \"sentinel\",
+        \"update\": \"sentinel\", \"delete\": \"sentinel\"}, \"incident\": {\"list\":
+        \"sentinel\", \"show\": \"sentinel\", \"create\": \"sentinel\", \"update\":
+        \"sentinel\", \"delete\": \"sentinel\"}, \"incident-comment\": {\"list\":
+        \"sentinel\", \"show\": \"sentinel\", \"create\": \"sentinel\"}}, \"serial-console\":
+        {\"connect\": \"serial-console\", \"enable\": \"serial-console\", \"disable\":
+        \"serial-console\", \"send\": {\"nmi\": \"serial-console\", \"reset\": \"serial-console\",
+        \"sysrq\": \"serial-console\"}}, \"spring-cloud\": {\"create\": \"spring-cloud\",
+        \"update\": \"spring-cloud\", \"delete\": \"spring-cloud\", \"list\": \"spring-cloud\",
+        \"show\": \"spring-cloud\", \"test-endpoint\": {\"enable\": \"spring-cloud\",
+        \"disable\": \"spring-cloud\", \"renew-key\": \"spring-cloud\", \"list\":
+        \"spring-cloud\"}, \"config-server\": {\"set\": \"spring-cloud\", \"clear\":
+        \"spring-cloud\", \"show\": \"spring-cloud\", \"git\": {\"set\": \"spring-cloud\",
+        \"repo\": {\"add\": \"spring-cloud\", \"remove\": \"spring-cloud\", \"update\":
+        \"spring-cloud\", \"list\": \"spring-cloud\"}}}, \"app\": {\"create\": \"spring-cloud\",
+        \"update\": \"spring-cloud\", \"deploy\": \"spring-cloud\", \"scale\": \"spring-cloud\",
+        \"show-deploy-log\": \"spring-cloud\", \"set-deployment\": \"spring-cloud\",
+        \"unset-deployment\": \"spring-cloud\", \"delete\": \"spring-cloud\", \"list\":
+        \"spring-cloud\", \"show\": \"spring-cloud\", \"start\": \"spring-cloud\",
+        \"stop\": \"spring-cloud\", \"restart\": \"spring-cloud\", \"logs\": \"spring-cloud\",
+        \"identity\": {\"assign\": \"spring-cloud\", \"remove\": \"spring-cloud\",
+        \"show\": \"spring-cloud\"}, \"log\": {\"tail\": \"spring-cloud\"}, \"deployment\":
+        {\"create\": \"spring-cloud\", \"list\": \"spring-cloud\", \"show\": \"spring-cloud\",
+        \"delete\": \"spring-cloud\"}, \"binding\": {\"list\": \"spring-cloud\", \"show\":
+        \"spring-cloud\", \"cosmos\": {\"add\": \"spring-cloud\", \"update\": \"spring-cloud\"},
+        \"mysql\": {\"add\": \"spring-cloud\", \"update\": \"spring-cloud\"}, \"redis\":
+        {\"add\": \"spring-cloud\", \"update\": \"spring-cloud\"}, \"remove\": \"spring-cloud\"},
+        \"custom-domain\": {\"bind\": \"spring-cloud\", \"show\": \"spring-cloud\",
+        \"list\": \"spring-cloud\", \"update\": \"spring-cloud\", \"unbind\": \"spring-cloud\"}},
+        \"certificate\": {\"add\": \"spring-cloud\", \"show\": \"spring-cloud\", \"list\":
+        \"spring-cloud\", \"remove\": \"spring-cloud\"}, \"app-insights\": {\"update\":
+        \"spring-cloud\", \"show\": \"spring-cloud\"}}, \"ssh\": {\"vm\": \"ssh\",
+        \"config\": \"ssh\", \"cert\": \"ssh\"}, \"stack-hci\": {\"cluster\": {\"list\":
+        \"stack-hci\", \"show\": \"stack-hci\", \"create\": \"stack-hci\", \"update\":
+        \"stack-hci\", \"delete\": \"stack-hci\"}}, \"storage\": {\"blob\": {\"list\":
+        \"storage-blob-preview\", \"delete\": \"storage-blob-preview\", \"download\":
+        \"storage-blob-preview\", \"exists\": \"storage-blob-preview\", \"generate-sas\":
+        \"storage-blob-preview\", \"metadata\": {\"show\": \"storage-blob-preview\",
+        \"update\": \"storage-blob-preview\"}, \"set-tier\": \"storage-blob-preview\",
+        \"snapshot\": \"storage-blob-preview\", \"show\": \"storage-blob-preview\",
+        \"undelete\": \"storage-blob-preview\", \"upload\": \"storage-blob-preview\",
+        \"upload-batch\": \"storage-blob-preview\", \"download-batch\": \"storage-blob-preview\",
+        \"delete-batch\": \"storage-blob-preview\", \"copy\": {\"start-batch\": \"storage-blob-preview\"},
+        \"query\": \"storage-blob-preview\", \"set-legal-hold\": \"storage-blob-preview\",
+        \"immutability-policy\": {\"set\": \"storage-blob-preview\", \"delete\": \"storage-blob-preview\"},
+        \"filter\": \"storage-blob-preview\", \"lease\": {\"acquire\": \"storage-blob-preview\",
+        \"break\": \"storage-blob-preview\", \"change\": \"storage-blob-preview\",
+        \"renew\": \"storage-blob-preview\", \"release\": \"storage-blob-preview\"},
+        \"service-properties\": {\"delete-policy\": {\"show\": \"storage-blob-preview\",
+        \"update\": \"storage-blob-preview\"}, \"show\": \"storage-blob-preview\",
+        \"update\": \"storage-blob-preview\"}, \"tag\": {\"list\": \"storage-blob-preview\",
+        \"set\": \"storage-blob-preview\"}, \"access\": {\"set\": \"storage-preview\",
+        \"update\": \"storage-preview\", \"show\": \"storage-preview\"}, \"directory\":
+        {\"create\": \"storage-preview\", \"delete\": \"storage-preview\", \"move\":
+        \"storage-preview\", \"show\": \"storage-preview\", \"list\": \"storage-preview\",
+        \"exists\": \"storage-preview\", \"metadata\": {\"show\": \"storage-preview\",
+        \"update\": \"storage-preview\"}, \"upload\": \"storage-preview\", \"download\":
+        \"storage-preview\", \"access\": {\"set\": \"storage-preview\", \"update\":
+        \"storage-preview\", \"show\": \"storage-preview\"}}}, \"container\": {\"generate-sas\":
+        \"storage-blob-preview\", \"list\": \"storage-blob-preview\", \"restore\":
+        \"storage-blob-preview\"}, \"account\": {\"blob-inventory-policy\": {\"create\":
+        \"storage-preview\", \"update\": \"storage-preview\", \"delete\": \"storage-preview\",
+        \"show\": \"storage-preview\"}, \"file-service-properties\": {\"show\": \"storage-preview\",
+        \"update\": \"storage-preview\"}, \"network-rule\": {\"add\": \"storage-preview\",
+        \"list\": \"storage-preview\", \"remove\": \"storage-preview\"}}, \"azcopy\":
+        {\"blob\": {\"upload\": \"storage-preview\", \"download\": \"storage-preview\",
+        \"delete\": \"storage-preview\", \"sync\": \"storage-preview\"}, \"run-command\":
+        \"storage-preview\"}, \"file\": {\"upload\": \"storage-preview\", \"upload-batch\":
+        \"storage-preview\"}, \"fs\": {\"service-properties\": {\"show\": \"storage-preview\",
+        \"update\": \"storage-preview\"}, \"list-deleted-path\": \"storage-preview\",
+        \"undelete-path\": \"storage-preview\"}}, \"storagesync\": {\"create\": \"storagesync\",
+        \"delete\": \"storagesync\", \"show\": \"storagesync\", \"list\": \"storagesync\",
+        \"sync-group\": {\"create\": \"storagesync\", \"delete\": \"storagesync\",
+        \"show\": \"storagesync\", \"list\": \"storagesync\", \"cloud-endpoint\":
+        {\"create\": \"storagesync\", \"delete\": \"storagesync\", \"show\": \"storagesync\",
+        \"list\": \"storagesync\", \"wait\": \"storagesync\"}, \"server-endpoint\":
+        {\"create\": \"storagesync\", \"update\": \"storagesync\", \"delete\": \"storagesync\",
+        \"show\": \"storagesync\", \"list\": \"storagesync\", \"wait\": \"storagesync\"}},
+        \"registered-server\": {\"delete\": \"storagesync\", \"show\": \"storagesync\",
+        \"list\": \"storagesync\", \"wait\": \"storagesync\"}}, \"stream-analytics\":
+        {\"job\": {\"create\": \"stream-analytics\", \"update\": \"stream-analytics\",
+        \"delete\": \"stream-analytics\", \"show\": \"stream-analytics\", \"list\":
+        \"stream-analytics\", \"start\": \"stream-analytics\", \"stop\": \"stream-analytics\",
+        \"wait\": \"stream-analytics\"}, \"input\": {\"create\": \"stream-analytics\",
+        \"delete\": \"stream-analytics\", \"show\": \"stream-analytics\", \"list\":
+        \"stream-analytics\", \"test\": \"stream-analytics\"}, \"output\": {\"create\":
+        \"stream-analytics\", \"delete\": \"stream-analytics\", \"show\": \"stream-analytics\",
+        \"list\": \"stream-analytics\", \"test\": \"stream-analytics\"}, \"transformation\":
+        {\"create\": \"stream-analytics\", \"update\": \"stream-analytics\", \"show\":
+        \"stream-analytics\"}, \"function\": {\"create\": \"stream-analytics\", \"delete\":
+        \"stream-analytics\", \"show\": \"stream-analytics\", \"list\": \"stream-analytics\",
+        \"test\": \"stream-analytics\"}, \"quota\": {\"show\": \"stream-analytics\"}},
+        \"support\": {\"services\": {\"list\": \"support\", \"show\": \"support\",
+        \"problem-classifications\": {\"list\": \"support\", \"show\": \"support\"}},
+        \"tickets\": {\"list\": \"support\", \"show\": \"support\", \"create\": \"support\",
+        \"update\": \"support\", \"communications\": {\"list\": \"support\", \"show\":
+        \"support\", \"create\": \"support\"}}}, \"tsi\": {\"environment\": {\"list\":
+        \"timeseriesinsights\", \"show\": \"timeseriesinsights\", \"delete\": \"timeseriesinsights\",
+        \"wait\": \"timeseriesinsights\", \"gen1\": {\"create\": \"timeseriesinsights\",
+        \"update\": \"timeseriesinsights\"}, \"gen2\": {\"create\": \"timeseriesinsights\",
+        \"update\": \"timeseriesinsights\"}}, \"event-source\": {\"list\": \"timeseriesinsights\",
+        \"show\": \"timeseriesinsights\", \"delete\": \"timeseriesinsights\", \"eventhub\":
+        {\"create\": \"timeseriesinsights\", \"update\": \"timeseriesinsights\"},
+        \"iothub\": {\"create\": \"timeseriesinsights\", \"update\": \"timeseriesinsights\"}},
+        \"reference-data-set\": {\"list\": \"timeseriesinsights\", \"show\": \"timeseriesinsights\",
+        \"create\": \"timeseriesinsights\", \"update\": \"timeseriesinsights\", \"delete\":
+        \"timeseriesinsights\"}, \"access-policy\": {\"list\": \"timeseriesinsights\",
+        \"show\": \"timeseriesinsights\", \"create\": \"timeseriesinsights\", \"update\":
+        \"timeseriesinsights\", \"delete\": \"timeseriesinsights\"}}, \"vmware\":
+        {\"private-cloud\": {\"list\": \"vmware\", \"show\": \"vmware\", \"create\":
+        \"vmware\", \"update\": \"vmware\", \"delete\": \"vmware\", \"listadmincredentials\":
+        \"vmware\", \"addidentitysource\": \"vmware\", \"deleteidentitysource\": \"vmware\",
+        \"rotate-vcenter-password\": \"vmware\", \"rotate-nsxt-password\": \"vmware\"},
+        \"cluster\": {\"create\": \"vmware\", \"update\": \"vmware\", \"list\": \"vmware\",
+        \"delete\": \"vmware\", \"show\": \"vmware\"}, \"authorization\": {\"create\":
+        \"vmware\", \"list\": \"vmware\", \"delete\": \"vmware\", \"show\": \"vmware\"},
+        \"hcx-enterprise-site\": {\"create\": \"vmware\", \"list\": \"vmware\", \"delete\":
+        \"vmware\", \"show\": \"vmware\"}, \"location\": {\"checkquotaavailability\":
+        \"vmware\", \"checktrialavailability\": \"vmware\"}, \"datastore\": {\"list\":
+        \"vmware\", \"show\": \"vmware\", \"delete\": \"vmware\", \"netapp-volume\":
+        {\"create\": \"vmware\"}, \"disk-pool-volume\": {\"create\": \"vmware\"}},
+        \"addon\": {\"list\": \"vmware\", \"vr\": {\"create\": \"vmware\", \"show\":
+        \"vmware\", \"update\": \"vmware\", \"delete\": \"vmware\"}, \"hcx\": {\"create\":
+        \"vmware\", \"show\": \"vmware\", \"update\": \"vmware\", \"delete\": \"vmware\"},
+        \"srm\": {\"create\": \"vmware\", \"show\": \"vmware\", \"update\": \"vmware\",
+        \"delete\": \"vmware\"}}, \"global-reach-connection\": {\"create\": \"vmware\",
+        \"list\": \"vmware\", \"delete\": \"vmware\", \"show\": \"vmware\"}, \"cloud-link\":
+        {\"create\": \"vmware\", \"list\": \"vmware\", \"delete\": \"vmware\", \"show\":
+        \"vmware\"}, \"script-cmdlet\": {\"list\": \"vmware\", \"show\": \"vmware\"},
+        \"script-package\": {\"list\": \"vmware\", \"show\": \"vmware\"}, \"script-execution\":
+        {\"create\": \"vmware\", \"list\": \"vmware\", \"delete\": \"vmware\", \"show\":
+        \"vmware\"}}, \"webpubsub\": {\"create\": \"webpubsub\", \"delete\": \"webpubsub\",
+        \"list\": \"webpubsub\", \"show\": \"webpubsub\", \"restart\": \"webpubsub\",
+        \"update\": \"webpubsub\", \"key\": {\"show\": \"webpubsub\", \"regenerate\":
+        \"webpubsub\"}, \"network-rule\": {\"show\": \"webpubsub\", \"update\": \"webpubsub\"},
+        \"event-handler\": {\"show\": \"webpubsub\", \"update\": \"webpubsub\", \"clear\":
+        \"webpubsub\", \"hub\": {\"remove\": \"webpubsub\", \"update\": \"webpubsub\"}},
+        \"client\": {\"start\": \"webpubsub\"}, \"service\": {\"broadcast\": \"webpubsub\",
+        \"connection\": {\"exist\": \"webpubsub\", \"close\": \"webpubsub\", \"send\":
+        \"webpubsub\"}, \"group\": {\"add-connection\": \"webpubsub\", \"remove-connection\":
+        \"webpubsub\", \"send\": \"webpubsub\", \"add-user\": \"webpubsub\", \"remove-user\":
+        \"webpubsub\"}, \"user\": {\"send\": \"webpubsub\", \"exist\": \"webpubsub\"},
+        \"permission\": {\"grant\": \"webpubsub\", \"revoke\": \"webpubsub\", \"check\":
+        \"webpubsub\"}}}}"
+    headers:
+      content-length:
+      - '69379'
+      content-md5:
+      - 6wX0Fz0PerOXV85a5RH+Bw==
+      content-type:
+      - application/octet-stream
+      date:
+      - Fri, 24 Sep 2021 06:28:38 GMT
+      etag:
+      - '0x8D97F10640BAA3F'
+      last-modified:
+      - Fri, 24 Sep 2021 04:04:22 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      x-ms-blob-type:
+      - BlockBlob
+      x-ms-lease-status:
+      - unlocked
+      x-ms-version:
+      - '2009-09-19'
+    status:
+      code: 200
+      message: OK
+version: 1
