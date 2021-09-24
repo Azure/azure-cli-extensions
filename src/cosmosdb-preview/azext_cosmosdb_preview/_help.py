@@ -206,5 +206,5 @@ short-summary: Delete the given cosmosdb graph resource.
 
 helps['cosmosdb graph exists'] = """
 type: command
-short-summary: Returns if the given cosmosdb graph resource exist.
+short-summary: Return if the given cosmosdb graph resource exist.
 """
