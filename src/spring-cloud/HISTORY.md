@@ -2,15 +2,16 @@ Release History
 ===============
 2.10.0
 -----
-* Java In-Process Agent is moved from public review to GA state.
-* Add support for `connection_string` when integrating with Application Insights.
-* For Application Insights configuration, use `connection_string` as default, `instrumentation_key` is also compatible.
-* By default, enable In-Process Agent when enable application insights.
+* Support functions for Java In-Process Agent feature General Available.
+* For Application Insights configuration, support both `connection_string` and `instrumentation_key`,
+  and we recommended to use `connection_string`.
+* Enabling In-Process Agent is equivalent to enabling application insights.
 * Mark `enable-java-agent` as deprecated, since IPA is GA-ed.
-* Mark application insights related parameter as deprecated in `az spring-cloud update`.
+* Mark application insights related parameter as deprecated in `az spring-cloud update`,
+  it's still supported, but will de decommissioned in the future, 
+  and we recommended to use `az spring-cloud app-insights update`.
 * Support `--sampling-rate` in `az spring-cloud create`.
 * Decommissioned `disable-distributed-tracing` parameter.
-* Fix bug for setting `--sampling-rate` to zero.
 
 2.9.0
 -----
