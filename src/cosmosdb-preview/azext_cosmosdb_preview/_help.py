@@ -157,8 +157,8 @@ short-summary: Create a cosmosdb service resource.
 examples:
   - name: Create a cosmosdb service resource.
     text: |
-      az cosmosdb service create --resource-group MyResourceGroup --account-name MyAccount --service-name "graphApiCompute" --service-kind "GraphApiCompute" --count 1 --size "Cosmos.D4s"
-      az cosmosdb service create --resource-group MyResourceGroup --account-name MyAccount --service-name "sqlDedicatedGateway" --service-kind "SqlDedicatedGateway" --count 3 --size "Cosmos.D4s"
+      az cosmosdb service create --resource-group MyResourceGroup --account-name MyAccount --name "graphApiCompute" --kind "GraphApiCompute" --count 1 --size "Cosmos.D4s"
+      az cosmosdb service create --resource-group MyResourceGroup --account-name MyAccount --name "sqlDedicatedGateway" --kind "SqlDedicatedGateway" --count 3 --size "Cosmos.D4s"
 """
 
 helps['cosmosdb service update'] = """
@@ -167,8 +167,8 @@ short-summary: Update a cosmosdb service resource.
 examples:
   - name: Update a cosmosdb service resource.
     text: |
-      az cosmosdb service update --resource-group MyResourceGroup --account-name MyAccount --service-name "graphApiCompute" --service-kind "GraphApiCompute" --count 1
-      az cosmosdb service update --resource-group MyResourceGroup --account-name MyAccount --service-name "sqlDedicatedGateway" --service-kind "SqlDedicatedGateway" --count 3
+      az cosmosdb service update --resource-group MyResourceGroup --account-name MyAccount --name "graphApiCompute" --kind "GraphApiCompute" --count 1
+      az cosmosdb service update --resource-group MyResourceGroup --account-name MyAccount --name "sqlDedicatedGateway" --kind "SqlDedicatedGateway" --count 3
 """
 
 helps['cosmosdb service list'] = """
@@ -186,7 +186,7 @@ short-summary: Delete the given cosmosdb service resource.
 examples:
   - name: Delete the given cosmosdb service resource.
     text: |
-      az cosmosdb service delete --resource-group MyResourceGroup --account-name MyAccount --service-name "sqlDedicatedGateway"
+      az cosmosdb service delete --resource-group MyResourceGroup --account-name MyAccount --name "sqlDedicatedGateway"
 """
 
 helps['cosmosdb graph'] = """
