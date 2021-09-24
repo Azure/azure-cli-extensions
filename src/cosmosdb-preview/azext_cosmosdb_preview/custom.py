@@ -238,22 +238,13 @@ def cli_cosmosdb_graph_exists(client, account_name, resource_group_name, graph_n
     return True
 
 
-def cli_cosmosdb_service_exists(client, account_name, resource_group_name, service_name):
-    try:
-        client.get(resource_group_name, account_name, service_name)
-    except HttpResponseError as ex:
-        return _handle_exists_exception(ex)
-
-    return True
-
-
 def cli_cosmosdb_service_create(client,
                                 account_name,
                                 resource_group_name,
                                 service_kind,
                                 service_name,
-                                instance_count,
-                                instance_size):
+                                instance_count=1,
+                                instance_size="Cosmos.D4s"):
     params = ServiceResourceCreateUpdateParameters(service_type=service_kind,
                                                    instance_count=instance_count,
                                                    instance_size=instance_size)

@@ -146,6 +146,11 @@ examples:
       az managed-cassandra datacenter list --resource-group MyResourceGroup --cluster-name MyCluster
 """
 
+helps['cosmosdb service'] = """
+type: group
+short-summary: Commands to perform operations on Service.
+"""
+
 helps['cosmosdb service create'] = """
 type: command
 short-summary: Create a cosmosdb service resource.
@@ -182,6 +187,11 @@ examples:
   - name: Delete the given cosmosdb service resource.
     text: |
       az cosmosdb service delete --resource-group MyResourceGroup --account-name MyAccount --service-name "sqlDedicatedGateway"
+"""
+
+helps['cosmosdb graph'] = """
+type: group
+short-summary: Commands to perform operations on Graph resources.
 """
 
 helps['cosmosdb graph create'] = """

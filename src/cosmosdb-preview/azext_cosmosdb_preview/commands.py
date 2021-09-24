@@ -51,7 +51,7 @@ def load_command_table(self, _):
 
     with self.command_group('cosmosdb graph', cosmosdb_graph_resources_sdk, client_factory=cf_graph_resources, is_preview=True) as g:
         g.custom_command('create', 'cli_cosmosdb_graph_create', supports_no_wait=True)
-        g.custom_command('exists', 'cli_cosmosdb_graph_exists', supports_no_wait=True)
+        g.custom_command('exists', 'cli_cosmosdb_graph_exists')
         g.command('list', 'list_graphs')
         g.show_command('show', 'get_graph')
         g.command('delete', 'begin_delete_graph_resource', confirmation=True, supports_no_wait=True)

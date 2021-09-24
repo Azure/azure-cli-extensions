@@ -92,4 +92,4 @@ def load_arguments(self, _):
             c.argument('service_kind', options_list=['--kind', '-k'], help="Service kind")
             c.argument('service_name', options_list=['--name', '-n'], help="Service Name.")
             c.argument('instance_count', options_list=['--count', '-c'], help="Instance Count.")
-            c.argument('instance_size', options_list=['--size'], help="Instance Size.")
+            c.argument('instance_size', options_list=['--size'], help="Instance Size. Possible values are: Cosmos.D4s, Cosmos.D8s, Cosmos.D16s etc")
