@@ -79,7 +79,8 @@ from .vendored_sdks.azure_mgmt_preview_aks.v2021_07_01.models import (ContainerS
                                                                       ManagedClusterPodIdentityProfile,
                                                                       ManagedClusterPodIdentity,
                                                                       ManagedClusterPodIdentityException,
-                                                                      UserAssignedIdentity)
+                                                                      UserAssignedIdentity,
+                                                                      PowerState)
 from ._client_factory import cf_resource_groups
 from ._client_factory import get_auth_management_client
 from ._client_factory import get_graph_rbac_management_client
@@ -3324,9 +3325,29 @@ def aks_agentpool_stop(cmd,   # pylint: disable=unused-argument
         raise CLIError("Node pool {} doesnt exist, "
                        "use 'aks nodepool list' to get current node pool list".format(nodepool_name))
     instance = client.get(resource_group_name, cluster_name, nodepool_name)
-    instance.power_state.code = "Stopped"
-
+    ps = PowerState(code = "Stopped")
+    instance.power_state = ps
     return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, cluster_name, nodepool_name,instance)
+
+def aks_agentpool_start(cmd,   # pylint: disable=unused-argument
+                         client,
+                         resource_group_name,
+                         cluster_name,
+                         nodepool_name,
+                         no_wait=False):
+    agentpool_exists = False
+    instances = client.list(resource_group_name, cluster_name)
+    for agentpool_profile in instances:
+        if agentpool_profile.name.lower() == nodepool_name.lower():
+            agentpool_exists = True
+            break
+    if not agentpool_exists:
+        raise CLIError("Node pool {} doesnt exist, "
+                       "use 'aks nodepool list' to get current node pool list".format(nodepool_name))
+    instance = client.get(resource_group_name, cluster_name, nodepool_name)
+    ps = PowerState(code = "Running")
+    instance.power_state = ps
+    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, cluster_name, nodepool_name,instance)    
 
 
 def aks_agentpool_delete(cmd,   # pylint: disable=unused-argument

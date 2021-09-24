@@ -863,8 +863,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
     
     @AllowLargeResponse()
-    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
-    def test_aks_nodepool_stop(self, resource_group, resource_group_location):
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='centraluseuap')
+    def test_aks_nodepool_stop_and_start(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
         nodepool_name = self.create_random_name('c', 6)
         self.kwargs.update({
@@ -873,23 +873,29 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'nodepool_name' : nodepool_name,
             'ssh_key_value': self.generate_ssh_keys()
         })
+        
+        # add feature for start stop agent pool
+        add_feature_cmd = 'az feature register --namespace Microsoft.ContainerService --name PreviewStartStopAgentPool'
+        self.cmd(add_feature_cmd)
+        self.cmd('az provider register -n Microsoft.ContainerService')
 
         # create aks cluster
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --ssh-key-value={ssh_key_value}'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
         ])
-
         # add nodepool
-        self.cmd('aks nodepool add --resource-group={resource_group} --cluster-name={name} --name={nodepool_name} --node-count=1', checks=[
+        self.cmd('aks nodepool add --resource-group={resource_group} --cluster-name={name} --name={nodepool_name} --node-count=2', checks=[
             self.check('provisioningState', 'Succeeded')
         ])
-
         # stop nodepool
-        self.cmd('aks nodepool stop --resource-group={resource_group} --cluster-name={name} --nodepool-name={nodepool_name}', checks=[
+        self.cmd('aks nodepool stop --resource-group={resource_group} --cluster-name={name} --nodepool-name={nodepool_name}', checks=[ 
             self.check('provisioningState', 'Succeeded')
         ])
-
+        #start nodepool
+        self.cmd('aks nodepool start --resource-group={resource_group} --cluster-name={name} --nodepool-name={nodepool_name}', checks=[
+            self.check('provisioningState', 'Succeeded')
+        ])
         # delete AKS cluster
         self.cmd(
             'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
