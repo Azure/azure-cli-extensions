@@ -43,7 +43,8 @@ class QuantumJobsScenarioTest(ScenarioTest):
         job_parameters["key1"] = "value1"
         job_parameters["key2"] = "value2"
 
-        args = _generate_submit_args(["--foo", "--bar"], ws, target, token, project=None, job_name=None, storage=None, shots=None)
+        args = _generate_submit_args(["--foo", "--bar"], ws, target, token, project=None,
+                                     job_name=None, storage=None, shots=None, job_params=None)
         self.assertEquals(args[0], "dotnet")
         self.assertEquals(args[1], "run")
         self.assertEquals(args[2], "--no-build")
