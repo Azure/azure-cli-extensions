@@ -93,3 +93,10 @@ def load_arguments(self, _):
             c.argument('service_name', options_list=['--name', '-n'], help="Service Name.")
             c.argument('instance_count', options_list=['--count', '-c'], help="Instance Count.")
             c.argument('instance_size', options_list=['--size'], help="Instance Size. Possible values are: Cosmos.D4s, Cosmos.D8s, Cosmos.D16s etc")
+
+    # Identity
+    with self.argument_context('cosmosdb identity assign') as c:
+        c.argument('identities', options_list=['--identities'], nargs='*', help="Space-separated identities to assign. Use '[system]' to refer to the system assigned identity. Default: '[system]'")
+
+    with self.argument_context('cosmosdb identity remove') as c:
+        c.argument('identities', options_list=['--identities'], nargs='*', help="Space-separated identities to remove. Use '[system]' to refer to the system assigned identity. Default: '[system]'")

@@ -62,3 +62,8 @@ def load_command_table(self, _):
         g.command('list', 'list')
         g.show_command('show', 'get')
         g.command('delete', 'begin_delete', confirmation=True, supports_no_wait=True)
+
+    with self.command_group('cosmosdb identity', client_factory=cf_db_accounts, is_preview=True) as g:
+        g.custom_show_command('show', 'cli_cosmosdb_identity_show')
+        g.custom_command('assign', 'cli_cosmosdb_identity_assign')
+        g.custom_command('remove', 'cli_cosmosdb_identity_remove')

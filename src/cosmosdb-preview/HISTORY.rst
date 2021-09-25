@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.11.0
+++++++
+* Adding support for commands to manage identity.
+
 0.10.0
 ++++++
 * Adding support for Services APIs and Graph Resources.
