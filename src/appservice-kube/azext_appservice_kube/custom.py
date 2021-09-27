@@ -152,11 +152,6 @@ class KubeEnvironmentClient():
         r = send_raw_request(cmd.cli_ctx, "GET", request_url)
         return r.json()
 
-    # TODO
-    @classmethod
-    def wait(cls):
-        raise NotImplementedError() 
-
     @classmethod
     def delete(cls, cmd, resource_group_name, name):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
@@ -320,7 +315,7 @@ class WebAppClient:
         
 
 
-
+# TODO check return format
 def show_kube_environments(cmd, name, resource_group_name):
     return KubeEnvironmentClient.show(cmd=cmd, name=name, resource_group_name=resource_group_name)
 
@@ -349,21 +344,17 @@ def create_kube_environment(cmd, name, resource_group_name, custom_location, sta
     if not location:
         location = custom_location_object.location
 
-    # TODO replace with a FrontEndConfiguration model from the SDK 
     front_end_configuration = {"kind": "LoadBalancer"}
     
-    # TODO replace with an ExtendedLocation model from the SDK 
-    # TODO may need to make this a custom location ID 
+
     extended_location = {"customLocation":custom_location}
     
-    # TODO replace with an ArcConfiguration model from the SDK
     arc_configuration = {
         "artifactsStorageType": "NetworkFileSystem", 
         "artifactStorageClassName": "default", 
         "frontEndServiceConfiguration": front_end_configuration
     }
     
-    # TODO replace with a KubeEnvironmentEnvelope model from the SDK 
     kube_environment = {
         "kind": None, 
         "location": location,
@@ -376,7 +367,6 @@ def create_kube_environment(cmd, name, resource_group_name, custom_location, sta
     }
 
     try:
-        # TODO add support for wait/no_wait polling behavior 
         return sdk_no_wait(no_wait, KubeEnvironmentClient.create, cmd=cmd, resource_group_name=resource_group_name, name=name, kube_environment_envelope=kube_environment)
     except Exception as e:
         try:
@@ -392,29 +382,24 @@ def list_kube_environments(cmd, resource_group_name=None):
         return KubeEnvironmentClient.list_by_subscription(cmd)
     return KubeEnvironmentClient.list_by_resource_group(cmd, resource_group_name)
 
-# TODO follow up with Lima team on whether the update API is functional or not and if the CLI needs to support `az appservice kube update`
+# TODO should be able to update staticIp and tags -- remove exception once API fixed 
 def update_kube_environment(cmd, name, resource_group_name, custom_location=None, static_ip=None, location=None,
-                            tags=None, no_wait=False):
+                            tags=None, no_wait=False): 
     raise CLIError("Update is not yet supported for Kubernetes Environments.")
     
     # Raises an exception if the kube environment doesn't exist 
     KubeEnvironmentClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
 
-    # TODO replace with a FrontEndConfiguration model from the SDK 
     front_end_configuration = {"kind": "LoadBalancer"}
     
-    # TODO replace with an ExtendedLocation model from the SDK 
-    # TODO may need to make this a custom location ID 
     extended_location = {"customLocation":custom_location}
     
-    # TODO replace with an ArcConfiguration model from the SDK
     arc_configuration = {
         "artifactsStorageType": "NetworkFileSystem", 
         "artifactStorageClassName": "default", 
         "frontEndServiceConfiguration": front_end_configuration
     }
     
-    # TODO replace with a KubeEnvironmentEnvelope model from the SDK 
     kube_environment = {
         "kind": None, 
         "location": location, 
@@ -692,6 +677,7 @@ def _should_create_new_appservice_plan_for_k8se(cmd, name, custom_location, plan
 
 # TODO test more; test with slots 
 # TODO test with assigning an identity 
+# TODO test with normal webapp 
 def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custom_location=None, startup_file=None,  # pylint: disable=too-many-statements,too-many-branches
                   deployment_container_image_name=None, deployment_source_url=None, deployment_source_branch='master',
                   deployment_local_git=None, docker_registry_server_password=None, docker_registry_server_user=None,
@@ -900,7 +886,6 @@ def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custo
 
     return webapp
 
-# TODO ask calvin about this 
 def scale_webapp(cmd, resource_group_name, name, instance_count, slot=None):
     return update_site_configs(cmd, resource_group_name, name,
                                number_of_workers=instance_count, slot=slot)
@@ -998,7 +983,7 @@ def create_function(cmd, resource_group_name, name, storage_account, plan=None, 
         functionapp_def.location = location
 
     is_kube = False
-    if custom_location or plan_info.kind.upper() == KUBE_ASP_KIND.upper() or (isinstance(plan_info.sku, SkuDescription) and plan_info.sku.name.upper() == KUBE_DEFAULT_SKU):
+    if custom_location or plan_info is not None and (plan_info.kind.upper() == KUBE_ASP_KIND.upper() or (isinstance(plan_info.sku, SkuDescription) and plan_info.sku.name.upper() == KUBE_DEFAULT_SKU)):
         is_kube = True
 
     if is_kube:
@@ -1041,12 +1026,13 @@ def create_function(cmd, resource_group_name, name, storage_account, plan=None, 
     con_string = _validate_and_get_connection_string(cmd.cli_ctx, resource_group_name, storage_account)
 
     if is_kube:
+        functionapp_def.enable_additional_properties_sending()
         if custom_location:  # if Custom Location provided, use that for Extended Location Envelope. Otherwise, get Custom Location from ASP
             custom_location_id = _get_custom_location_id_from_custom_location(cmd, custom_location, resource_group_name)
             if custom_location_id:
-                functionapp_def.extended_location = ExtendedLocationEnvelope(name=custom_location_id, type="CustomLocation")
+                functionapp_def.additional_properties["extendedLocation"] = {'name': custom_location_id, 'type': 'CustomLocation'}
         else:
-            functionapp_def.extended_location = plan_info.extended_location
+            functionapp_def.additional_properties["extendedLocation"] = plan_info.additional_properties["extendedLocation"]
 
         functionapp_def.kind = KUBE_FUNCTION_APP_KIND
         functionapp_def.reserved = True
@@ -1127,7 +1113,7 @@ def create_function(cmd, resource_group_name, name, storage_account, plan=None, 
     elif not disable_app_insights:
         create_app_insights = True
 
-    poller = client.web_apps.create_or_update(resource_group_name, name, functionapp_def)
+    poller = client.web_apps.begin_create_or_update(resource_group_name, name, functionapp_def)
     functionapp = LongRunningOperation(cmd.cli_ctx)(poller)
 
     if consumption_plan_location and is_linux:
