@@ -18,14 +18,13 @@ def step_monitor_create(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az elastic monitor create '
-             '--monitor-name "{myMonitor}" '
+             '--name "{myMonitor}" '
              '--location "West US 2" '
              '--user-info "{{\\"companyInfo\\":{{\\"business\\":\\"Technology\\",\\"country\\":\\"US\\",\\"domain\\":\\'
              '"microsoft.com\\",\\"employeeNumber\\":\\"10000\\",\\"state\\":\\"WA\\"}},\\"companyName\\":\\"Microsoft'
              '\\",\\"emailAddress\\":\\"alice@microsoft.com\\",\\"firstName\\":\\"Alice\\",\\"lastName\\":\\"Bob\\"}}" '
              ''
-            #  '--name "free_Monthly" '
-             '--name "ess-monthly-consumption_Monthly" '
+             '--sku "ess-monthly-consumption_Monthly" '
              '--tags Environment="Dev" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -73,7 +72,7 @@ def step_monitor_update(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az elastic monitor update '
-             '--monitor-name "{myMonitor}" '
+             '--name "{myMonitor}" '
              '--tags Environment="Dev" '
              '--resource-group "{rg}"',
              checks=checks)

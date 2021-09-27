@@ -115,10 +115,10 @@ az elastic monitor show --name "myMonitor" --resource-group "myResourceGroup"
 
 ##### <a name="ExamplesMonitorsCreate">Example</a>
 ```
-az elastic monitor create --monitor-name "myMonitor" --location "West US 2" --user-info "{\\"companyInfo\\":{\\"busines\
-s\\":\\"Technology\\",\\"country\\":\\"US\\",\\"domain\\":\\"microsoft.com\\",\\"employeeNumber\\":\\"10000\\",\\"state\
-\\":\\"WA\\"},\\"companyName\\":\\"Microsoft\\",\\"emailAddress\\":\\"alice@microsoft.com\\",\\"firstName\\":\\"Alice\\\
-",\\"lastName\\":\\"Bob\\"}" --name "free_Monthly" --tags Environment="Dev" --resource-group "myResourceGroup"
+az elastic monitor create --name "myMonitor" --location "West US 2" --user-info "{\\"companyInfo\\":{\\"business\\":\\"\
+Technology\\",\\"country\\":\\"US\\",\\"domain\\":\\"microsoft.com\\",\\"employeeNumber\\":\\"10000\\",\\"state\\":\\"W\
+A\\"},\\"companyName\\":\\"Microsoft\\",\\"emailAddress\\":\\"alice@microsoft.com\\",\\"firstName\\":\\"Alice\\",\\"las\
+tName\\":\\"Bob\\"}" --sku "free_Monthly" --tags Environment="Dev" --resource-group "myResourceGroup"
 ```
 ##### <a name="ParametersMonitorsCreate">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -131,7 +131,7 @@ s\\":\\"Technology\\",\\"country\\":\\"US\\",\\"domain\\":\\"microsoft.com\\",\\
 |**--monitoring-status**|choice|Flag specifying if the resource monitoring is enabled or disabled.|monitoring_status|monitoringStatus|
 |**--elastic-properties**|object|Elastic cloud properties.|elastic_properties|elasticProperties|
 |**--user-info**|object|User information.|user_info|userInfo|
-|**--name**|string|Name of the SKU.|name|name|
+|**--sku**|string|Name of the SKU.|sku|name|
 
 #### <a name="MonitorsUpdate">Command `az elastic monitor update`</a>
 

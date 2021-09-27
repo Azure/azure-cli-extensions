@@ -36,7 +36,8 @@ def load_arguments(self, _):
 
     with self.argument_context('elastic monitor create') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('monitor_name', type=str, help='Monitor resource name')
+        c.argument('monitor_name', options_list=['--name', '-n', '--monitor-name'], type=str, help='Monitor resource '
+                   'name')
         c.argument('tags', tags_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
@@ -50,7 +51,7 @@ def load_arguments(self, _):
                    'json-string/json-file/@json-file.')
         c.argument('user_info', type=validate_file_or_dict, help='User information. Expected value: '
                    'json-string/json-file/@json-file.')
-        c.argument('name', type=str, help='Name of the SKU.', arg_group='Sku')
+        c.argument('sku', type=str, help='Name of the SKU.', arg_group='Sku')
 
     with self.argument_context('elastic monitor update') as c:
         c.argument('resource_group_name', resource_group_name_type)

@@ -36,15 +36,14 @@ def elastic_monitor_create(client,
                            monitoring_status=None,
                            elastic_properties=None,
                            user_info=None,
-                           name=None,
+                           sku=None,
                            no_wait=False):
     body = {}
     if tags is not None:
         body['tags'] = tags
     body['location'] = location
     body['identity'] = {}
-    # body['identity']['type'] = "SystemAssigned"
-    # body['identity']['type'] = None
+    body['identity']['type'] = "SystemAssigned"
     if len(body['identity']) == 0:
         del body['identity']
     body['properties'] = {}
@@ -59,8 +58,8 @@ def elastic_monitor_create(client,
     if len(body['properties']) == 0:
         del body['properties']
     body['sku'] = {}
-    if name is not None:
-        body['sku']['name'] = name
+    if sku is not None:
+        body['sku']['name'] = sku
     if len(body['sku']) == 0:
         del body['sku']
     return sdk_no_wait(no_wait,

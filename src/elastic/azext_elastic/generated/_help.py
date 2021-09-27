@@ -50,10 +50,10 @@ helps['elastic monitor create'] = """
     examples:
       - name: Monitors_Create
         text: |-
-               az elastic monitor create --monitor-name "myMonitor" --location "West US 2" --user-info \
+               az elastic monitor create --name "myMonitor" --location "West US 2" --user-info \
 "{\\"companyInfo\\":{\\"business\\":\\"Technology\\",\\"country\\":\\"US\\",\\"domain\\":\\"microsoft.com\\",\\"employe\
 eNumber\\":\\"10000\\",\\"state\\":\\"WA\\"},\\"companyName\\":\\"Microsoft\\",\\"emailAddress\\":\\"alice@microsoft.co\
-m\\",\\"firstName\\":\\"Alice\\",\\"lastName\\":\\"Bob\\"}" --name "free_Monthly" --tags Environment="Dev" \
+m\\",\\"firstName\\":\\"Alice\\",\\"lastName\\":\\"Bob\\"}" --sku "free_Monthly" --tags Environment="Dev" \
 --resource-group "myResourceGroup"
 """
 
