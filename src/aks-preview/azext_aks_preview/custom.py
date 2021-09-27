@@ -54,7 +54,7 @@ from azure.graphrbac.models import (ApplicationCreateParameters,
                                     KeyCredential,
                                     ServicePrincipalCreateParameters,
                                     GetObjectsParameters)
-from .vendored_sdks.azure_mgmt_preview_aks.v2021_07_01.models import (ContainerServiceLinuxProfile,
+from .vendored_sdks.azure_mgmt_preview_aks.v2021_08_01.models import (ContainerServiceLinuxProfile,
                                                                       ManagedClusterWindowsProfile,
                                                                       ContainerServiceNetworkProfile,
                                                                       ManagedClusterServicePrincipalProfile,
@@ -4184,15 +4184,25 @@ def _ensure_managed_identity_operator_permission(cli_ctx, instance, scope):
 
     factory = get_auth_management_client(cli_ctx, scope)
     assignments_client = factory.role_assignments
+    cluster_identity_object_id = cluster_identity_object_id.lower()
+    scope = scope.lower()
 
-    for i in assignments_client.list_for_scope(scope=scope, filter='atScope()'):
-        if i.scope.lower() != scope.lower():
-            continue
+    # list all assignments of the target identity (scope) that assigned to the cluster identity
+    filter_query = "atScope() and assignedTo('{}')".format(cluster_identity_object_id)
+    for i in assignments_client.list_for_scope(scope=scope, filter=filter_query):
         if not i.role_definition_id.lower().endswith(CONST_MANAGED_IDENTITY_OPERATOR_ROLE_ID):
             continue
-        if i.principal_id.lower() != cluster_identity_object_id.lower():
+
+        # sanity checks to make sure we see the correct assignments
+        if i.principal_id.lower() != cluster_identity_object_id:
+            # assignedTo() should return the assignment to cluster identity
             continue
+        if not scope.startswith(i.scope.lower()):
+            # atScope() should return the assignments in subscription / resource group / resource level
+            continue
+
         # already assigned
+        logger.debug('Managed Identity Opereator role has been assigned to {}'.format(i.scope))
         return
 
     if not _add_role_assignment(cli_ctx, CONST_MANAGED_IDENTITY_OPERATOR_ROLE, cluster_identity_object_id,
