@@ -10,6 +10,9 @@ from azure_devtools.scenario_tests import AllowLargeResponse, live_only
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 
 from .utils import get_test_resource_group, get_test_workspace, get_test_workspace_location, get_test_workspace_storage, get_test_workspace_random_name
+from ..._version_check_helper import check_version
+from datetime import datetime
+from ...__init__ import CLI_REPORTED_VERSION 
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
@@ -65,3 +68,22 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
            self.check("provisioningState", "Deleting")
         ])
 
+    @live_only()
+    def test_version_check(self):
+        # initialize values
+        test_old_date = "2021-04-01"
+        test_today = str(datetime.today()).split(' ')[0] 
+        test_old_reported_version = "0.1.0"
+        test_current_reported_version = CLI_REPORTED_VERSION
+        test_none_version = None
+        test_config = None
+
+        message = check_version(test_config, test_current_reported_version, test_old_date)
+        assert test_current_reported_version in message
+
+        message = check_version(test_config, test_old_reported_version, test_old_date)
+        assert test_old_reported_version in message
+
+        message = check_version(test_config, test_none_version, test_today)
+        assert message is None  # Note: list_versions("quantum") fails during these tests
+     

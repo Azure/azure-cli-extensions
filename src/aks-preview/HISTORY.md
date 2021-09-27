@@ -2,6 +2,9 @@
 
 Release History
 ===============
+0.5.32
++++++
+* Update to use 2021-08-01 api-version
 
 0.5.31
 +++++

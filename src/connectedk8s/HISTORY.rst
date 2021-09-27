@@ -2,12 +2,17 @@
 
 Release History
 ===============
-1.1.11
+1.1.12
 ++++++
 
 * Updated CSP version to 1.3.017131
 * Updated GA SDK to 2021-10-01
 * Updated CSP endpoint to CDN
+
+1.1.11
+++++++
+
+* Installing helm binary as part of CLI commands
 
 1.1.10
 ++++++
