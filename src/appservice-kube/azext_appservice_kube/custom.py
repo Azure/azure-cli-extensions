@@ -168,7 +168,7 @@ class KubeEnvironmentClient():
         return None # API doesn't return JSON for some reason 
 
     @classmethod
-    def list_by_subscription(cls, cmd):
+    def list_by_subscription(cls, cmd, formatter=lambda x:x):
         kube_list = []
 
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
@@ -182,19 +182,21 @@ class KubeEnvironmentClient():
         r = send_raw_request(cmd.cli_ctx, "GET", request_url)
         j = r.json()
         for kube in j["value"]:
-            kube_list.append(kube)
+            formatted = formatter(kube)
+            kube_list.append(formatted)
         
         while j["nextLink"] is not None:
             request_url = j["nextLink"]
             r = send_raw_request(cmd.cli_ctx, "GET", request_url)
             j = r.json()
             for kube in j["value"]:
-                kube_list.append(kube)
+                formatted = formatter(kube)
+                kube_list.append(formatted)
 
         return kube_list
 
     @classmethod
-    def list_by_resource_group(cls, cmd, resource_group_name):
+    def list_by_resource_group(cls, cmd, resource_group_name, formatter=lambda x:x):
         kube_list = []
         
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
@@ -209,14 +211,16 @@ class KubeEnvironmentClient():
         r = send_raw_request(cmd.cli_ctx, "GET", request_url)
         j = r.json()
         for kube in j["value"]:
-            kube_list.append(kube)
+            formatted = formatter(kube)
+            kube_list.append(formatted)
         
         while j["nextLink"] is not None:
             request_url = j["nextLink"]
             r = send_raw_request(cmd.cli_ctx, "GET", request_url)
             j = r.json()
             for kube in j["value"]:
-                kube_list.append(kube)
+                formatted = formatter(kube)
+                kube_list.append(formatted)
 
         return kube_list
 
@@ -314,10 +318,22 @@ class WebAppClient:
         return 
         
 
+# rectify the format of the kube environment json returned from API to comply with older version of `az appservice kube sho`
+def format_kube_environment_json(kube_info_raw):
+    kube_info = kube_info_raw["properties"]
+    if kube_info.get("aksResourceID"):
+        kube_info["aksResourceId"] = kube_info["aksResourceID"]
+        del kube_info["aksResourceID"]
+    
+    other_properties = ['id', 'kind', 'kubeEnvironmentType', 'location', 'name', 'resourceGroup', 'tags', 'type', 'extendedLocation']
+    for k in other_properties:
+        kube_info[k] = kube_info_raw.get(k)
+    
+    return kube_info
 
-# TODO check return format
+
 def show_kube_environments(cmd, name, resource_group_name):
-    return KubeEnvironmentClient.show(cmd=cmd, name=name, resource_group_name=resource_group_name)
+    return format_kube_environment_json(KubeEnvironmentClient.show(cmd=cmd, name=name, resource_group_name=resource_group_name))
 
 def delete_kube_environment(cmd, name, resource_group_name):
     # Raises an exception if the kube environment doesn't exist 
@@ -376,11 +392,11 @@ def create_kube_environment(cmd, name, resource_group_name, custom_location, sta
             raise e
     raise ValidationError(msg)
 
-# TODO check returned data format 
+
 def list_kube_environments(cmd, resource_group_name=None):
     if resource_group_name is None:
-        return KubeEnvironmentClient.list_by_subscription(cmd)
-    return KubeEnvironmentClient.list_by_resource_group(cmd, resource_group_name)
+        return KubeEnvironmentClient.list_by_subscription(cmd, formatter=format_kube_environment_json)
+    return KubeEnvironmentClient.list_by_resource_group(cmd, resource_group_name, formatter=format_kube_environment_json)
 
 # TODO should be able to update staticIp and tags -- remove exception once API fixed 
 def update_kube_environment(cmd, name, resource_group_name, custom_location=None, static_ip=None, location=None,
