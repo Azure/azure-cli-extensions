@@ -22,7 +22,7 @@ def elastic_monitor_create(client,
                            monitoring_status=None,
                            elastic_properties=None,
                            user_info=None,
-                           sku =None,
+                           sku=None,
                            identity=None,
                            no_wait=False):
     body = {}
