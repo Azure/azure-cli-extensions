@@ -117,4 +117,4 @@ RELEASE_DATE_WINDOWS = 'release13-09-21'
 RELEASE_DATE_LINUX = 'release13-09-21'
 CSP_REFRESH_TIME = 300
 # URL constants
-CSP_Storage_Url = "https://k8sconnectcsp.blob.core.windows.net"
+CSP_Storage_Url = "https://k8sconnectcsp.azureedge.net"
