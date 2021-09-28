@@ -33,7 +33,7 @@ CLASSIFIERS = [
 ]
 
 # TODO: Add any additional SDK dependencies here
-DEPENDENCIES = []
+DEPENDENCIES = ["azure-functions-devops-build~=0.0.22"]
 
 with open('README.rst', 'r', encoding='utf-8') as f:
     README = f.read()
@@ -52,7 +52,7 @@ setup(
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     classifiers=CLASSIFIERS,
-    packages=find_packages(),
+    packages=find_packages(exclude=["tests"]),
     install_requires=DEPENDENCIES,
     package_data={'azext_functionapp': ['azext_metadata.json']},
 )
