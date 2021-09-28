@@ -1601,6 +1601,8 @@ def client_side_proxy_wrapper(cmd,
     cloud = send_cloud_telemetry(cmd)
     if cloud == consts.Azure_USGovCloudName:
         telemetry.set_debug_info('User tried proxy command in fairfax')
+        telemetry.set_exception(exception='Proxy command is not present yet in fairfax cloud.', fault_type=consts.ClusterConnect_Not_Present_Fault_Type,
+                                summary=f'User tried proxy command in fairfax.')
         raise ClientRequestError(f'Cluster Connect feature is not yet available in {consts.Azure_USGovCloudName}')
 
     client_proxy_port = consts.CLIENT_PROXY_PORT
