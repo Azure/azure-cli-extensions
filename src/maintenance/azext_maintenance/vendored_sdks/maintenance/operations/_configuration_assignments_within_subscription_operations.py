@@ -23,8 +23,8 @@ if TYPE_CHECKING:
     T = TypeVar('T')
     ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
 
-class MaintenanceConfigurationsForResourceGroupOperations(object):
-    """MaintenanceConfigurationsForResourceGroupOperations operations.
+class ConfigurationAssignmentsWithinSubscriptionOperations(object):
+    """ConfigurationAssignmentsWithinSubscriptionOperations operations.
 
     You should not instantiate this class directly. Instead, you should create a Client instance that
     instantiates it for you and attaches it as an attribute.
@@ -47,22 +47,19 @@ class MaintenanceConfigurationsForResourceGroupOperations(object):
 
     def list(
         self,
-        resource_group_name,  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> Iterable["models.ListMaintenanceConfigurationsResult"]
-        """Get Configuration records within a subscription and resource group.
+        # type: (...) -> Iterable["models.ListConfigurationAssignmentsResult"]
+        """Get configuration assignment within a subscription.
 
-        Get Configuration records within a subscription and resource group.
+        Get configuration assignment within a subscription.
 
-        :param resource_group_name: Resource Group Name.
-        :type resource_group_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either ListMaintenanceConfigurationsResult or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~maintenance_management_client.models.ListMaintenanceConfigurationsResult]
+        :return: An iterator like instance of either ListConfigurationAssignmentsResult or the result of cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~maintenance_management_client.models.ListConfigurationAssignmentsResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.ListMaintenanceConfigurationsResult"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.ListConfigurationAssignmentsResult"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -80,7 +77,6 @@ class MaintenanceConfigurationsForResourceGroupOperations(object):
                 url = self.list.metadata['url']  # type: ignore
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
@@ -95,7 +91,7 @@ class MaintenanceConfigurationsForResourceGroupOperations(object):
             return request
 
         def extract_data(pipeline_response):
-            deserialized = self._deserialize('ListMaintenanceConfigurationsResult', pipeline_response)
+            deserialized = self._deserialize('ListConfigurationAssignmentsResult', pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
@@ -117,4 +113,4 @@ class MaintenanceConfigurationsForResourceGroupOperations(object):
         return ItemPaged(
             get_next, extract_data
         )
-    list.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Maintenance/maintenanceConfigurations'}  # type: ignore
+    list.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Maintenance/configurationAssignments'}  # type: ignore
