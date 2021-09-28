@@ -343,12 +343,14 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
     return return_dict
 
 
-def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custom_script_file=None, parameters=None, run_on_repair=False):
+def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custom_script_file=None, parameters=None, run_on_repair=False, preview=None):
 
     # Init command helper object
     command = command_helper(logger, cmd, 'vm repair run')
     LINUX_RUN_SCRIPT_NAME = 'linux-run-driver.sh'
     WINDOWS_RUN_SCRIPT_NAME = 'win-run-driver.ps1'
+    if preview:
+        _set_repair_map_url(preview)
 
     try:
         # Fetch VM data
@@ -373,6 +375,9 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
             # Fetch run path from GitHub
             repair_script_path = _fetch_run_script_path(run_id)
             run_command_params.append('script_path="./{}"'.format(repair_script_path))
+            
+            if preview:
+                run_command_params.append('preview_path="{}"'.format(preview))
         # Custom script scenario for script testers
         else:
             run_command_params.append('script_path=no-op')
@@ -469,10 +474,12 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
     return return_dict
 
 
-def list_scripts(cmd):
+def list_scripts(cmd, preview=None):
 
     # Init command helper object
     command = command_helper(logger, cmd, 'vm repair list-scripts')
+    if preview:
+        _set_repair_map_url(preview)
 
     try:
         run_map = _fetch_run_script_map()

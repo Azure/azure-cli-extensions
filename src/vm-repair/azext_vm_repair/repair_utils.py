@@ -34,6 +34,14 @@ def _get_cloud_init_script():
     rootpath = os.path.dirname(mod.__file__)
     return os.path.join(rootpath, SCRIPTS_DIR_NAME, CLOUD_INIT)
 
+def _set_repair_map_url(url):
+    raw_url = str(url)
+    if("github.com" in raw_url):
+        raw_url = raw_url.replace("github.com", "raw.githubusercontent.com")
+        raw_url = raw_url.replace("/blob/", "/")
+        global REPAIR_MAP_URL 
+        REPAIR_MAP_URL = raw_url
+        print(REPAIR_MAP_URL)
 
 def _uses_managed_disk(vm):
     if vm.storage_profile.os_disk.managed_disk is None:
