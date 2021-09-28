@@ -4,20 +4,28 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long
 
-from knack.arguments import CLIArgumentType
+from azure.cli.core.local_context import LocalContextAttribute, LocalContextAction
+from azure.cli.core.commands.parameters import get_three_state_flag
 
 
 def load_arguments(self, _):
+    # pylint: disable=line-too-long
+    # PARAMETER REGISTRATION
 
-    from azure.cli.core.commands.parameters import tags_type
-    from azure.cli.core.commands.validators import get_default_location_from_resource_group
-
-    name_type = CLIArgumentType(options_list='--name-name', help='Name of the Functionapp.', id_part='name')
-
-    with self.argument_context('functionapp') as c:
-        c.argument('tags', tags_type)
-        c.argument('location', validator=get_default_location_from_resource_group)
-        c.argument('name', name_type, options_list=['--name', '-n'])
-
-    with self.argument_context('functionapp list') as c:
-        c.argument('name', name_type, id_part=None)
+    with self.argument_context('functionapp devops-pipeline') as c:
+        c.argument('functionapp_name', help="Name of the Azure function app that you want to use", required=False,
+                   local_context_attribute=LocalContextAttribute(name='functionapp_name',
+                                                                 actions=[LocalContextAction.GET]))
+        c.argument('organization_name', help="Name of the Azure DevOps organization that you want to use",
+                   required=False)
+        c.argument('project_name', help="Name of the Azure DevOps project that you want to use", required=False)
+        c.argument('repository_name', help="Name of the Azure DevOps repository that you want to use", required=False)
+        c.argument('overwrite_yaml', help="If you have an existing yaml, should it be overwritten?",
+                   arg_type=get_three_state_flag(return_label=True), required=False)
+        c.argument('allow_force_push',
+                   help="If Azure DevOps repository is not clean, should it overwrite remote content?",
+                   arg_type=get_three_state_flag(return_label=True), required=False)
+        c.argument('github_pat', help="Github personal access token for creating pipeline from Github repository",
+                   required=False)
+        c.argument('github_repository', help="Fullname of your Github repository (e.g. Azure/azure-cli)",
+                   required=False)

@@ -7,32 +7,22 @@
 from knack.help_files import helps  # pylint: disable=unused-import
 
 
-helps['functionapp'] = """
-    type: group
-    short-summary: Commands to manage Functionapps.
+helps['functionapp devops-pipeline'] = """
+type: group
+short-summary: Azure Function specific integration with Azure DevOps. Please visit https://aka.ms/functions-azure-devops for more information.
 """
 
-helps['functionapp create'] = """
-    type: command
-    short-summary: Create a Functionapp.
-"""
-
-helps['functionapp list'] = """
-    type: command
-    short-summary: List Functionapps.
-"""
-
-helps['functionapp delete'] = """
-    type: command
-    short-summary: Delete a Functionapp.
-"""
-
-helps['functionapp show'] = """
-    type: command
-    short-summary: Show details of a Functionapp.
-"""
-
-helps['functionapp update'] = """
-    type: command
-    short-summary: Update a Functionapp.
+helps['functionapp devops-pipeline create'] = """
+type: command
+short-summary: Create an Azure DevOps pipeline for a function app.
+examples:
+  - name: create an Azure Pipeline to a function app.
+    text: >
+        az functionapp devops-pipeline create --functionapp-name FunctionApp
+  - name: create an Azure Pipeline from a Github function app repository.
+    text: >
+        az functionapp devops-pipeline create --github-repository GithubOrganization/GithubRepository --github-pat GithubPersonalAccessToken
+  - name: create an Azure Pipeline with specific Azure DevOps organization and project
+    text: >
+        az functionapp devops-pipeline create --organization-name AzureDevOpsOrganization --project-name AzureDevOpsProject
 """
