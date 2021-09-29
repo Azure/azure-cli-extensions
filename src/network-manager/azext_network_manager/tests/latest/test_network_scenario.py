@@ -143,9 +143,16 @@ class NetworkScenarioTest(ScenarioTest):
         self.cmd('network manager security-admin-config delete --configuration-name {name} --network-manager-name {manager_name} -g {rg} --yes')
 
 
-    @ResourceGroupPreparer(name_prefix='test_network_manager_security_admin_rule_collection_crud', location='eastus2euap')
+    @unittest.skip('TODO')
+    @ResourceGroupPreparer(name_prefix='test_network_manager_admin_rule_crud', location='eastus2euap')
     @VirtualNetworkPreparer()
-    def test_network_manager_security_admin_rule_collection_crud(self, virtual_network, resource_group):
+    def test_network_manager_admin_rule_crud(self, virtual_network, resource_group):
+        pass
+
+
+    @ResourceGroupPreparer(name_prefix='test_network_manager_admin_rule_collection_crud', location='eastus2euap')
+    @VirtualNetworkPreparer()
+    def test_network_manager_admin_rule_collection_crud(self, virtual_network, resource_group):
 
         self.kwargs.update({
             'collection_name': 'myTestCollection',
@@ -185,3 +192,49 @@ class NetworkScenarioTest(ScenarioTest):
         self.cmd('network manager admin-rule collection delete -g {rg} --configuration-name {config_name} --network-manager-name {manager_name} --rule-collection-name {collection_name} --yes')
         self.cmd('network manager security-admin-config delete --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} --yes')
         self.cmd('network manager group delete -g {rg} --name {group_name} --network-manager-name {manager_name} --yes')
+
+
+    @unittest.skip('TODO')
+    @ResourceGroupPreparer(name_prefix='test_network_manager_user_rule_crud', location='eastus2euap')
+    @VirtualNetworkPreparer()
+    def test_network_manager_user_rule_crud(self, virtual_network, resource_group):
+        pass
+
+
+    @unittest.skip('TODO')
+    @ResourceGroupPreparer(name_prefix='test_network_manager_user_rule_collection_crud', location='eastus2euap')
+    @VirtualNetworkPreparer()
+    def test_network_manager_user_rule_collection_crud(self, virtual_network, resource_group):
+        pass
+
+
+    @unittest.skip('TODO')
+    @ResourceGroupPreparer(name_prefix='test_network_manager_vnet_security_perimeter_crud', location='eastus2euap')
+    @VirtualNetworkPreparer()
+    def test_network_manager_vnet_security_perimeter_crud(self, virtual_network, resource_group):
+        # TODO: need test other list commands:
+        # manager perimeter-associable-resource-types list
+        pass
+
+
+    @unittest.skip('TODO')
+    @ResourceGroupPreparer(name_prefix='test_network_manager_connect_config_crud', location='eastus2euap')
+    @VirtualNetworkPreparer()
+    def test_network_manager_connect_config_crud(self, virtual_network, resource_group):
+        pass
+ 
+
+    @unittest.skip('TODO')
+    @ResourceGroupPreparer(name_prefix='test_network_manager_list_queries', location='eastus2euap')
+    @VirtualNetworkPreparer()
+    def test_network_manager_list_queries(self, virtual_network, resource_group):
+        # TODO: need test other list commands:
+        # manager deploy-status list
+        # manager effect-vent list-by-network-group
+        # manager effect-vent list-by-network-manager
+        # manager active-config list
+        # manager effective-config list
+        # manager active-security-admin-rule list
+        # manager active-security-user-rule list
+        # manager effective-security-admin-rule list
+        pass
