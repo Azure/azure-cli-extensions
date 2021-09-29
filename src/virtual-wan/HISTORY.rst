@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.2.10
+++++++
+* add new command group: `az network vhub bgpconnection`.
+
 0.2.9
 ++++++
 * bugfix: `az network vpn-gateway connection ipsec-policy add/remove` doesn't migrate to track2.

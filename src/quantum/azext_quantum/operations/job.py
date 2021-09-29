@@ -81,7 +81,7 @@ def build(cmd, target_id=None, project=None):
     raise CLIError("Failed to compile program.")
 
 
-def _generate_submit_args(program_args, ws, target, token, project, job_name, shots, storage):
+def _generate_submit_args(program_args, ws, target, token, project, job_name, shots, storage, job_params):
     """ Generates the list of arguments for calling submit on a Q# project """
 
     args = ["dotnet", "run", "--no-build"]
@@ -126,6 +126,11 @@ def _generate_submit_args(program_args, ws, target, token, project, job_name, sh
     args.append("--location")
     args.append(ws.location)
 
+    if job_params:
+        args.append("--job-params")
+        for k, v in job_params.items():
+            args.append(f"{k}={v}")
+
     args.extend(program_args)
 
     logger.debug("Running project with arguments:")
@@ -150,8 +155,8 @@ def _has_completed(job):
     return job.status in ("Succeeded", "Failed", "Cancelled")
 
 
-def submit(cmd, program_args, resource_group_name=None, workspace_name=None, location=None,
-           target_id=None, project=None, job_name=None, shots=None, storage=None, no_build=False):
+def submit(cmd, program_args, resource_group_name=None, workspace_name=None, location=None, target_id=None,
+           project=None, job_name=None, shots=None, storage=None, no_build=False, job_params=None):
     """
     Submit a Q# project to run on Azure Quantum.
     """
@@ -169,7 +174,7 @@ def submit(cmd, program_args, resource_group_name=None, workspace_name=None, loc
     target = TargetInfo(cmd, target_id)
     token = _get_data_credentials(cmd.cli_ctx, ws.subscription).get_token().token
 
-    args = _generate_submit_args(program_args, ws, target, token, project, job_name, shots, storage)
+    args = _generate_submit_args(program_args, ws, target, token, project, job_name, shots, storage, job_params)
     _set_cli_version()
 
     import subprocess
@@ -294,11 +299,12 @@ def wait(cmd, job_id, resource_group_name=None, workspace_name=None, location=No
 
 
 def run(cmd, program_args, resource_group_name=None, workspace_name=None, location=None, target_id=None,
-        project=None, job_name=None, shots=None, storage=None, no_build=False):
+        project=None, job_name=None, shots=None, storage=None, no_build=False, job_params=None):
     """
     Submit a job to run on Azure Quantum, and waits for the result.
     """
-    job = submit(cmd, program_args, resource_group_name, workspace_name, location, target_id, project, job_name, shots, storage, no_build)
+    job = submit(cmd, program_args, resource_group_name, workspace_name, location, target_id,
+                 project, job_name, shots, storage, no_build, job_params)
     logger.warning("Job id: %s", job.id)
     logger.debug(job)
 

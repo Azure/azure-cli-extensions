@@ -2,6 +2,22 @@
 
 Release History
 ===============
+0.5.34
++++++
+* Add support for WASM nodepools (`--workload-runtime WasmWasi`) in `az aks create`
+and `az aks nodepool add`
+
+0.5.33
++++++
+* Add support for new addon commands
+  * `az aks addon list`
+  * `az aks addon list-available`
+  * `az aks addon show`
+  * `az aks addon enable`
+  * `az aks addon disable`
+  * `az aks addon update`
+* Refactored code to bring addon specific functionality into a separate file.
+
 0.5.32
 +++++
 * Update to use 2021-08-01 api-version
