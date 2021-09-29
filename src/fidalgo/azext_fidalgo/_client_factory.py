@@ -8,7 +8,10 @@ def cf_fidalgo_dataplane(cli_ctx, *_):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
     from azext_fidalgo.vendored_sdks.fidalgo_dataplane import FidalgoDataplaneClient   
 
-    return get_mgmt_service_client(cli_ctx, FidalgoDataplaneClient, subscription_bound=False, base_url_bound=False)
+    return get_mgmt_service_client(cli_ctx, 
+                                   FidalgoDataplaneClient,
+                                   subscription_bound=False,
+                                   base_url_bound=False)
 
 
 def cf_project(cli_ctx, *_):
