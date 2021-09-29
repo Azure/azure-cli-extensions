@@ -1,6 +1,6 @@
 interactions:
 - request:
-    body: '{"location": "jioindiawest", "properties": {"displayName": "TestNetworkManager",
+    body: '{"location": "eastus2euap", "properties": {"displayName": "TestNetworkManager",
       "description": "My Test Network Manager", "networkManagerScopes": {"subscriptions":
       ["/subscriptions/00000000-0000-0000-0000-000000000000"]}, "networkManagerScopeAccesses":
       ["Routing", "Connectivity"]}}'
@@ -14,29 +14,29 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '283'
+      - '282'
       Content-Type:
       - application/json
       ParameterSetName:
       - --name --description --display-name --network-manager-scope-accesses --network-manager-scopes
         -l --resource-group
       User-Agent:
-      - AZURECLI/2.27.2 azsdk-python-mgmt-network/1.0.0b1 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.28.1 azsdk-python-mgmt-network/1.0.0b1 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_group000001/providers/Microsoft.Network/networkManagers/TestNetworkManager?api-version=2021-02-01-preview
   response:
     body:
-      string: '{"name":"TestNetworkManager","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_group000001/providers/Microsoft.Network/networkManagers/TestNetworkManager","location":"jioindiawest","type":"Microsoft.Network/networkManagers","tags":{},"etag":"","properties":{"displayName":"TestNetworkManager","description":"My
-        Test Network Manager","networkManagerScopes":{"managementGroups":[],"subscriptions":["/subscriptions/00000000-0000-0000-0000-000000000000"]},"provisioningState":"Succeeded","networkManagerScopeAccesses":["Routing","Connectivity"],"resourceGuid":"75c61c09-243e-4319-a166-d041ea316bdf"}}'
+      string: '{"name":"TestNetworkManager","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_group000001/providers/Microsoft.Network/networkManagers/TestNetworkManager","location":"eastus2euap","type":"Microsoft.Network/networkManagers","tags":{},"etag":"","properties":{"displayName":"TestNetworkManager","description":"My
+        Test Network Manager","networkManagerScopes":{"managementGroups":[],"subscriptions":["/subscriptions/00000000-0000-0000-0000-000000000000"]},"provisioningState":"Succeeded","networkManagerScopeAccesses":["Routing","Connectivity"],"resourceGuid":"e5468e42-a345-449e-8266-07c29cb2816b"},"systemData":{"createdBy":"v-kaisun@microsoft.com","createdByType":"User","createdAt":"2021-09-29T06:22:33.4413601Z","lastModifiedBy":"v-kaisun@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-09-29T06:22:33.4413601Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '683'
+      - '918'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 30 Aug 2021 03:01:37 GMT
+      - Wed, 29 Sep 2021 06:22:37 GMT
       expires:
       - '-1'
       pragma:
@@ -52,14 +52,14 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1199'
     status:
       code: 200
       message: OK
 - request:
     body: '{"properties": {"displayName": "MyNetworkGroup", "description": "A sample
-      group", "memberType": "VirtualNetwork", "groupMembers": [{"vnetId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_group000001/providers/Microsoft.Network/virtualnetworks/clitest.vn000002",
-      "subnetId": ""}], "conditionalMembership": ""}}'
+      group", "memberType": "VirtualNetwork", "groupMembers": [{"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_group000001/providers/Microsoft.Network/virtualnetworks/clitest.vn000002"}],
+      "conditionalMembership": ""}}'
     headers:
       Accept:
       - application/json
@@ -70,29 +70,29 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '404'
+      - '392'
       Content-Type:
       - application/json
       ParameterSetName:
       - --name --network-manager-name --description --conditional-membership --display-name
         --member-type -g --group-members
       User-Agent:
-      - AZURECLI/2.27.2 azsdk-python-mgmt-network/1.0.0b1 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.28.1 azsdk-python-mgmt-network/1.0.0b1 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_group000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkGroup?api-version=2021-02-01-preview
   response:
     body:
       string: '{"name":"TestNetworkGroup","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_group000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkGroup","type":"Microsoft.Network/networkManagers/networkGroups","etag":"","properties":{"displayName":"MyNetworkGroup","description":"A
-        sample group","groupMembers":[{"vnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_group000001/providers/Microsoft.Network/virtualnetworks/clitest.vn000002"}],"conditionalMembership":"","provisioningState":"Succeeded","resourceGuid":"b3f8201a-4257-469f-a483-03def4f85d32"}}'
+        sample group","groupMembers":[{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_group000001/providers/Microsoft.Network/virtualnetworks/clitest.vn000002"}],"conditionalMembership":"","provisioningState":"Succeeded","resourceGuid":"fa1b0159-09eb-4b1a-ae4a-51d811f26fe8"},"systemData":{"createdBy":"v-kaisun@microsoft.com","createdByType":"User","createdAt":"2021-09-29T06:22:38.7606925Z","lastModifiedBy":"v-kaisun@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-09-29T06:22:38.7606925Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '770'
+      - '1010'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 30 Aug 2021 03:01:40 GMT
+      - Wed, 29 Sep 2021 06:22:41 GMT
       expires:
       - '-1'
       pragma:
@@ -108,7 +108,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
+      - '1199'
     status:
       code: 200
       message: OK
@@ -126,22 +126,24 @@ interactions:
       ParameterSetName:
       - -g --name --network-manager-name --description
       User-Agent:
-      - AZURECLI/2.27.2 azsdk-python-mgmt-network/1.0.0b1 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.28.1 azsdk-python-mgmt-network/1.0.0b1 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_group000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkGroup?api-version=2021-02-01-preview
   response:
     body:
-      string: '{"name":"TestNetworkGroup","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_group000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkGroup","type":"Microsoft.Network/networkManagers/networkGroups","etag":"\"04002901-0000-4e00-0000-612c4a140000\"","properties":{"displayName":"MyNetworkGroup","description":"A
-        sample group","groupMembers":[{"vnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_group000001/providers/Microsoft.Network/virtualnetworks/clitest.vn000002"}],"conditionalMembership":"","provisioningState":"Succeeded","resourceGuid":"b3f8201a-4257-469f-a483-03def4f85d32"}}'
+      string: '{"name":"TestNetworkGroup","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_group000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkGroup","type":"Microsoft.Network/networkManagers/networkGroups","etag":"\"1400a1ab-0000-3400-0000-615406310000\"","properties":{"displayName":"MyNetworkGroup","description":"A
+        sample group","groupMembers":[{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_group000001/providers/Microsoft.Network/virtualnetworks/clitest.vn000002"}],"conditionalMembership":"","provisioningState":"Succeeded","resourceGuid":"fa1b0159-09eb-4b1a-ae4a-51d811f26fe8"},"systemData":{"createdBy":"v-kaisun@microsoft.com","createdByType":"User","createdAt":"09/29/2021
+        06:22:38","lastModifiedBy":"v-kaisun@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"09/29/2021
+        06:22:38"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '810'
+      - '1032'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 30 Aug 2021 03:01:42 GMT
+      - Wed, 29 Sep 2021 06:22:42 GMT
       expires:
       - '-1'
       pragma:
@@ -161,7 +163,7 @@ interactions:
       message: OK
 - request:
     body: '{"properties": {"displayName": "MyNetworkGroup", "description": "Desc changed.",
-      "groupMembers": [{"vnetId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_group000001/providers/Microsoft.Network/virtualnetworks/clitest.vn000002"}],
+      "groupMembers": [{"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_group000001/providers/Microsoft.Network/virtualnetworks/clitest.vn000002"}],
       "conditionalMembership": ""}}'
     headers:
       Accept:
@@ -173,28 +175,29 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '355'
+      - '359'
       Content-Type:
       - application/json
       ParameterSetName:
       - -g --name --network-manager-name --description
       User-Agent:
-      - AZURECLI/2.27.2 azsdk-python-mgmt-network/1.0.0b1 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.28.1 azsdk-python-mgmt-network/1.0.0b1 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_group000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkGroup?api-version=2021-02-01-preview
   response:
     body:
       string: '{"name":"TestNetworkGroup","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_group000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkGroup","type":"Microsoft.Network/networkManagers/networkGroups","etag":"","properties":{"displayName":"MyNetworkGroup","description":"Desc
-        changed.","groupMembers":[{"vnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_group000001/providers/Microsoft.Network/virtualnetworks/clitest.vn000002"}],"conditionalMembership":"","provisioningState":"Succeeded","resourceGuid":"b3f8201a-4257-469f-a483-03def4f85d32"}}'
+        changed.","groupMembers":[{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_group000001/providers/Microsoft.Network/virtualnetworks/clitest.vn000002"}],"conditionalMembership":"","provisioningState":"Succeeded","resourceGuid":"fa1b0159-09eb-4b1a-ae4a-51d811f26fe8"},"systemData":{"createdBy":"v-kaisun@microsoft.com","createdByType":"User","createdAt":"09/29/2021
+        06:22:38","lastModifiedBy":"v-kaisun@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-09-29T06:22:44.2106205Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '769'
+      - '1000'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 30 Aug 2021 03:01:45 GMT
+      - Wed, 29 Sep 2021 06:22:46 GMT
       expires:
       - '-1'
       pragma:
@@ -228,22 +231,24 @@ interactions:
       ParameterSetName:
       - -g --name --network-manager-name
       User-Agent:
-      - AZURECLI/2.27.2 azsdk-python-mgmt-network/1.0.0b1 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.28.1 azsdk-python-mgmt-network/1.0.0b1 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_group000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkGroup?api-version=2021-02-01-preview
   response:
     body:
-      string: '{"name":"TestNetworkGroup","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_group000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkGroup","type":"Microsoft.Network/networkManagers/networkGroups","etag":"\"04003001-0000-4e00-0000-612c4a190000\"","properties":{"displayName":"MyNetworkGroup","description":"Desc
-        changed.","groupMembers":[{"vnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_group000001/providers/Microsoft.Network/virtualnetworks/clitest.vn000002"}],"conditionalMembership":"","provisioningState":"Succeeded","resourceGuid":"b3f8201a-4257-469f-a483-03def4f85d32"}}'
+      string: '{"name":"TestNetworkGroup","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_group000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkGroup","type":"Microsoft.Network/networkManagers/networkGroups","etag":"\"1400a5ab-0000-3400-0000-615406360000\"","properties":{"displayName":"MyNetworkGroup","description":"Desc
+        changed.","groupMembers":[{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_group000001/providers/Microsoft.Network/virtualnetworks/clitest.vn000002"}],"conditionalMembership":"","provisioningState":"Succeeded","resourceGuid":"fa1b0159-09eb-4b1a-ae4a-51d811f26fe8"},"systemData":{"createdBy":"v-kaisun@microsoft.com","createdByType":"User","createdAt":"09/29/2021
+        06:22:38","lastModifiedBy":"v-kaisun@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"09/29/2021
+        06:22:44"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '809'
+      - '1031'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 30 Aug 2021 03:01:47 GMT
+      - Wed, 29 Sep 2021 06:22:50 GMT
       expires:
       - '-1'
       pragma:
@@ -275,22 +280,24 @@ interactions:
       ParameterSetName:
       - -g --network-manager-name
       User-Agent:
-      - AZURECLI/2.27.2 azsdk-python-mgmt-network/1.0.0b1 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.28.1 azsdk-python-mgmt-network/1.0.0b1 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_group000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups?api-version=2021-02-01-preview
   response:
     body:
       string: '{"nextLink":"","value":[{"name":"TestNetworkGroup","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_group000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkGroup","type":"Microsoft.Network/networkManagers/networkGroups","etag":"","properties":{"displayName":"MyNetworkGroup","description":"Desc
-        changed.","groupMembers":[{"vnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_group000001/providers/Microsoft.Network/virtualnetworks/clitest.vn000002"}],"conditionalMembership":"","provisioningState":"Succeeded","resourceGuid":"b3f8201a-4257-469f-a483-03def4f85d32"}}]}'
+        changed.","groupMembers":[{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_group000001/providers/Microsoft.Network/virtualnetworks/clitest.vn000002"}],"conditionalMembership":"","provisioningState":"Succeeded","resourceGuid":"fa1b0159-09eb-4b1a-ae4a-51d811f26fe8"},"systemData":{"createdBy":"v-kaisun@microsoft.com","createdByType":"User","createdAt":"09/29/2021
+        06:22:38","lastModifiedBy":"v-kaisun@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"09/29/2021
+        06:22:44"}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '795'
+      - '1017'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 30 Aug 2021 03:01:50 GMT
+      - Wed, 29 Sep 2021 06:22:53 GMT
       expires:
       - '-1'
       pragma:
@@ -324,7 +331,7 @@ interactions:
       ParameterSetName:
       - -g --name --network-manager-name --yes
       User-Agent:
-      - AZURECLI/2.27.2 azsdk-python-mgmt-network/1.0.0b1 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.28.1 azsdk-python-mgmt-network/1.0.0b1 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: DELETE
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_group000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkGroup?api-version=2021-02-01-preview
   response:
@@ -336,7 +343,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Mon, 30 Aug 2021 03:01:59 GMT
+      - Wed, 29 Sep 2021 06:22:55 GMT
       expires:
       - '-1'
       pragma:

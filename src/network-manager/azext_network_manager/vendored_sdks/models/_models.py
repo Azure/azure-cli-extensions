@@ -2804,10 +2804,13 @@ class SystemData(msrest.serialization.Model):
     _attribute_map = {
         'created_by': {'key': 'createdBy', 'type': 'str'},
         'created_by_type': {'key': 'createdByType', 'type': 'str'},
-        'created_at': {'key': 'createdAt', 'type': 'iso-8601'},
+        # TODO: Datetime Issue will be fixed later
+        # 'created_at': {'key': 'createdAt', 'type': 'iso-8601'},
+        'created_at': {'key': 'createdAt', 'type': 'str'},
         'last_modified_by': {'key': 'lastModifiedBy', 'type': 'str'},
         'last_modified_by_type': {'key': 'lastModifiedByType', 'type': 'str'},
-        'last_modified_at': {'key': 'lastModifiedAt', 'type': 'iso-8601'},
+        # 'last_modified_at': {'key': 'lastModifiedAt', 'type': 'iso-8601'},
+        'last_modified_at': {'key': 'lastModifiedAt', 'type': 'str'},
     }
 
     def __init__(

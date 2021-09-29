@@ -148,7 +148,7 @@ class NetworkScenarioTest(ScenarioTest):
     def test_network_manager_security_admin_rule_collection_crud(self, virtual_network, resource_group):
 
         self.kwargs.update({
-            'collection_name': '',
+            'collection_name': 'myTestCollection',
             'config_name': 'myTestSecurityConfig',
             'manager_name': 'TestNetworkManager',
             'group_name': 'TestNetworkGroup',
@@ -172,15 +172,16 @@ class NetworkScenarioTest(ScenarioTest):
                  '--description {description} --delete-existing-ns-gs true --security-type "AdminPolicy" --display-name MyTestConfig')
 
         self.cmd('network manager admin-rule collection create --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} '
-                 '--role-collection-name {collection_name} --description {description} --display-name ASampleCollection '
+                 '--rule-collection-name {collection_name} --description {description} --display-name ASampleCollection '
                  '--applies-to-groups  network-group-id={sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkManagers/{manager_name}/networkGroups/{group_name}')
         
-        self.cmd('network manager admin-rule collection show -g {rg} --configuration-name {config_name} --network-manager-name {manager_name} --role-collection-name {collection_name}')
+        self.cmd('network manager admin-rule collection show -g {rg} --configuration-name {config_name} --network-manager-name {manager_name} --rule-collection-name {collection_name}')
 
-        self.cmd('network manager admin-rule collection update -g {rg} --configuration-name {config_name} --network-manager-name {manager_name} --role-collection-name {collection_name} '
+        self.cmd('network manager admin-rule collection update -g {rg} --configuration-name {config_name} --network-manager-name {manager_name} --rule-collection-name {collection_name} '
                  '--display-name ASampleCollection2')
 
         self.cmd('network manager admin-rule collection list -g {rg} --configuration-name {config_name} --network-manager-name {manager_name}')
 
-        self.cmd('network manager admin-rule collection delete -g {rg} --configuration-name {config_name} --network-manager-name {manager_name} --role-collection-name {collection_name}')
-
+        self.cmd('network manager admin-rule collection delete -g {rg} --configuration-name {config_name} --network-manager-name {manager_name} --rule-collection-name {collection_name} --yes')
+        self.cmd('network manager security-admin-config delete --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} --yes')
+        self.cmd('network manager group delete -g {rg} --name {group_name} --network-manager-name {manager_name} --yes')
