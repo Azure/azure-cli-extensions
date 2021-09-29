@@ -318,7 +318,7 @@ class WebAppClient:
         return 
         
 
-# rectify the format of the kube environment json returned from API to comply with older version of `az appservice kube sho`
+# rectify the format of the kube environment json returned from API to comply with older version of `az appservice kube show`
 def format_kube_environment_json(kube_info_raw):
     kube_info = kube_info_raw["properties"]
     if kube_info.get("aksResourceID"):
@@ -557,8 +557,7 @@ def _ensure_kube_settings_in_json(appservice_plan_json, extended_location=None, 
     if appservice_plan_json.get("extendedLocation") is None and extended_location is not None:
         appservice_plan_json["extendedLocation"] = extended_location
 
-# TODO test with an ASE, non-kube plan 
-# TODO test with new "_get_kube_env_from_custom_location" impl
+
 def create_app_service_plan_inner(cmd, resource_group_name, name, is_linux, hyper_v, per_site_scaling=False, custom_location=None,
                             app_service_environment=None, sku=None,
                             number_of_workers=None, location=None, tags=None, no_wait=False):
@@ -634,7 +633,7 @@ def create_app_service_plan_inner(cmd, resource_group_name, name, is_linux, hype
     return sdk_no_wait(no_wait, AppServiceClient.create, cmd=cmd, name=name,
                        resource_group_name=resource_group_name, appservice_json=plan_json)
 
-# TODO test; test with non-kube plans 
+
 def update_app_service_plan(cmd, resource_group_name, name, sku=None, number_of_workers=None, no_wait=False):
     client = web_client_factory(cmd.cli_ctx)
     plan = client.app_service_plans.get(resource_group_name, name).serialize()
@@ -691,9 +690,7 @@ def _should_create_new_appservice_plan_for_k8se(cmd, name, custom_location, plan
     else:  # plan is not None
         return False
 
-# TODO test more; test with slots 
-# TODO test with assigning an identity 
-# TODO test with normal webapp 
+
 def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custom_location=None, startup_file=None,  # pylint: disable=too-many-statements,too-many-branches
                   deployment_container_image_name=None, deployment_source_url=None, deployment_source_branch='master',
                   deployment_local_git=None, docker_registry_server_password=None, docker_registry_server_user=None,
@@ -907,7 +904,6 @@ def scale_webapp(cmd, resource_group_name, name, instance_count, slot=None):
                                number_of_workers=instance_count, slot=slot)
 
 
-# TODO test with slots
 def show_webapp(cmd, resource_group_name, name, slot=None, app_instance=None):
     webapp = app_instance
     if not app_instance:  # when the routine is invoked as a help method, not through commands
@@ -917,7 +913,7 @@ def show_webapp(cmd, resource_group_name, name, slot=None, app_instance=None):
     webapp.site_config = _generic_site_operation(cmd.cli_ctx, resource_group_name, name, 'get_configuration', slot)
     _rename_server_farm_props(webapp)
 
-    # TODO: get rid of this conditional once the api's are implemented for kubapps
+    # TODO: get rid of this conditional once the api's are implemented for kubeapps
     if KUBE_APP_KIND.lower() not in webapp.kind.lower():
         _fill_ftp_publishing_url(cmd, webapp, resource_group_name, name, slot)
 
