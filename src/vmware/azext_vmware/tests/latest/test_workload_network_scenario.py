@@ -141,7 +141,7 @@ class VmwareWorkloadNetworkScenarioTest(ScenarioTest):
         publicIpGet = self.cmd('az vmware workload-network public-ip show --resource-group {rg} --private-cloud {privatecloud} --public-ip-id {public_ip_id}').get_output_in_json()
         self.assertEqual(publicIpGet['name'], 'publicIP1')
 
-        publicIpCreate = self.cmd('az vmware workload-network public-ip create --resource-group {rg} --private-cloud {privatecloud} --public-ip-id {public_ip_id}  --display-name {display_name} --number-of-public-i-ps {number_of_public_i_ps}').get_output_in_json()
+        publicIpCreate = self.cmd('az vmware workload-network public-ip create --resource-group {rg} --private-cloud {privatecloud} --public-ip-id {public_ip_id}  --display-name {display_name} --number-of-public-ips {number_of_public_i_ps}').get_output_in_json()
         self.assertEqual(publicIpCreate['name'], 'publicIP1')
 
         publicIpDelete = self.cmd('az vmware workload-network public-ip delete --resource-group {rg} --private-cloud {privatecloud} --public-ip-id {public_ip_id}').output

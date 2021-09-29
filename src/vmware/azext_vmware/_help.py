@@ -784,7 +784,7 @@ helps['vmware workload-network public-ip create'] = """
     short-summary: Create a Public IP Block by ID in a private cloud workload network.
     examples:
     - name: Create a Public IP Block by ID in a workload network.
-      text: az vmware workload-network public-ip create --resource-group group1 --private-cloud cloud1 --public-ip-id publicIP1 --display-name publicIP1 --number-of-public-i-ps 32
+      text: az vmware workload-network public-ip create --resource-group group1 --private-cloud cloud1 --public-ip-id publicIP1 --display-name publicIP1 --number-of-public-ips 32
 """
 
 helps['vmware workload-network public-ip delete'] = """

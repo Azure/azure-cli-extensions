@@ -475,8 +475,8 @@ def workload_network_public_ip_get(client: AVSClient, resource_group_name, priva
     return client.workload_networks.get_public_ip(resource_group_name=resource_group_name, private_cloud_name=private_cloud, public_ip_id=public_ip_id)
 
 
-def workload_network_public_ip_create(client: AVSClient, resource_group_name, private_cloud, public_ip_id, display_name=None, number_of_public_i_ps=None):
-    return client.workload_networks.begin_create_public_ip(resource_group_name=resource_group_name, private_cloud_name=private_cloud, public_ip_id=public_ip_id, display_name=display_name, number_of_public_i_ps=number_of_public_i_ps)
+def workload_network_public_ip_create(client: AVSClient, resource_group_name, private_cloud, public_ip_id, display_name=None, number_of_public_ips=None):
+    return client.workload_networks.begin_create_public_ip(resource_group_name=resource_group_name, private_cloud_name=private_cloud, public_ip_id=public_ip_id, display_name=display_name, number_of_public_i_ps=number_of_public_ips)
 
 
 def workload_network_public_ip_delete(client: AVSClient, resource_group_name, private_cloud, public_ip_id):
