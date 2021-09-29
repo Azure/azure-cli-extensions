@@ -10,7 +10,7 @@ from codecs import open
 from setuptools import setup, find_packages
 
 # HISTORY.rst entry.
-VERSION = '1.2.1'
+VERSION = '1.3.0'
 try:
     from azext_maintenance.manual.version import VERSION
 except ImportError:
@@ -45,7 +45,7 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
 setup(
     name='maintenance',
     version=VERSION,
-    description='Microsoft Azure Command-Line Tools MaintenanceClient Extension',
+    description='Microsoft Azure Command-Line Tools MaintenanceManagementClient Extension',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
     url='https://github.com/Azure/azure-cli-extensions/tree/master/src/maintenance',

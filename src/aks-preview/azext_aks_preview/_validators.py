@@ -414,12 +414,7 @@ def validate_assign_identity(namespace):
             raise CLIError("--assign-identity is not a valid Azure resource ID.")
 
 
-def validate_addons(namespace):
-    if not hasattr(namespace, 'addons'):
-        return
-    addons = namespace.addons
-    addon_args = addons.split(',')
-
+def _recognize_addons(addon_args):
     for addon_arg in addon_args:
         if addon_arg not in ADDONS:
             matches = _fuzzy_match(addon_arg, list(ADDONS))
@@ -432,6 +427,23 @@ def validate_addons(namespace):
 
             raise CLIError(
                 f"The addon \"{addon_arg}\" is not a recognized addon option. Did you mean {matches}? Possible options: {all_addons}")  # pylint:disable=line-too-long
+
+
+def validate_addon(namespace):
+    if not hasattr(namespace, 'addon'):
+        return
+    addon = namespace.addon
+    if ',' in addon:
+        raise CLIError("Please pick only 1 addon.")
+    _recognize_addons([addon])
+
+
+def validate_addons(namespace):
+    if not hasattr(namespace, 'addons'):
+        return
+    addons = namespace.addons
+    addon_args = addons.split(',')
+    _recognize_addons(addon_args)
 
 
 def validate_pod_identity_pod_labels(namespace):
