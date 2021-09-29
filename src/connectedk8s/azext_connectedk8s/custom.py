@@ -1468,7 +1468,7 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
     return str.format(consts.Successfully_Disabled_Features, features, connected_cluster.name)
 
 
-def troubleshoot(cmd, client, resource_group_name, cluster_name, storage_account, sas_token=None, container_name="connectedk8stroubleshoot", kube_config=None, kube_context=None, 
+def troubleshoot(cmd, client, resource_group_name, cluster_name, storage_account, sas_token=None, container_name="connectedk8stroubleshoot", kube_config=None, kube_context=None,
                  output_file=os.path.join(os.path.expanduser('~'), '.azure', 'az_connectedk8s_troubleshoot_output.tar.gz')):
     colorama.init()
     print(f"{colorama.Fore.YELLOW}Troubleshooting the ConnectedCluster for possible issues...")
