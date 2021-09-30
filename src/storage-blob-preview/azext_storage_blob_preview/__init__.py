@@ -6,7 +6,7 @@
 from azure.cli.core import AzCommandsLoader
 from azure.cli.core.profiles import register_resource_type
 from azure.cli.core.commands import AzCommandGroup, AzArgumentContext
-from .profiles import CUSTOM_DATA_STORAGE_BLOB, CUSTOM_MGMT_STORAGE
+from .profiles import CUSTOM_DATA_STORAGE_BLOB
 
 from ._help import helps  # pylint: disable=unused-import
 
@@ -14,8 +14,7 @@ from ._help import helps  # pylint: disable=unused-import
 class StorageCommandsLoader(AzCommandsLoader):
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        register_resource_type('latest', CUSTOM_DATA_STORAGE_BLOB, '2020-06-12')
-        register_resource_type('latest', CUSTOM_MGMT_STORAGE, '2021-01-01')
+        register_resource_type('latest', CUSTOM_DATA_STORAGE_BLOB, '2020-10-02')
         storage_custom = CliCommandType(operations_tmpl='azure.cli.command_modules.storage.custom#{}')
         super(StorageCommandsLoader, self).__init__(cli_ctx=cli_ctx,
                                                     resource_type=CUSTOM_DATA_STORAGE_BLOB,

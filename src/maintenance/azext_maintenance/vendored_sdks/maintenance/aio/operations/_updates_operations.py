@@ -26,7 +26,7 @@ class UpdatesOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~maintenance_client.models
+    :type models: ~maintenance_management_client.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -69,7 +69,7 @@ class UpdatesOperations:
         :type resource_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either ListUpdatesResult or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~maintenance_client.models.ListUpdatesResult]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~maintenance_management_client.models.ListUpdatesResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ListUpdatesResult"]
@@ -77,7 +77,7 @@ class UpdatesOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-05-01"
+        api_version = "2021-09-01-preview"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -156,7 +156,7 @@ class UpdatesOperations:
         :type resource_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either ListUpdatesResult or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~maintenance_client.models.ListUpdatesResult]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~maintenance_management_client.models.ListUpdatesResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ListUpdatesResult"]
@@ -164,7 +164,7 @@ class UpdatesOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-05-01"
+        api_version = "2021-09-01-preview"
         accept = "application/json"
 
         def prepare_request(next_link=None):

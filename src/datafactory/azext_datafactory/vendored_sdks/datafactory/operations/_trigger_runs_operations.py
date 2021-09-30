@@ -29,7 +29,7 @@ class TriggerRunsOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~data_factory_management_client.models
+    :type models: ~azure.mgmt.datafactory.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -187,10 +187,10 @@ class TriggerRunsOperations(object):
         :param factory_name: The factory name.
         :type factory_name: str
         :param filter_parameters: Parameters to filter the pipeline run.
-        :type filter_parameters: ~data_factory_management_client.models.RunFilterParameters
+        :type filter_parameters: ~azure.mgmt.datafactory.models.RunFilterParameters
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: TriggerRunsQueryResponse, or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.TriggerRunsQueryResponse
+        :rtype: ~azure.mgmt.datafactory.models.TriggerRunsQueryResponse
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.TriggerRunsQueryResponse"]

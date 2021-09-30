@@ -165,6 +165,14 @@ helps['dataprotection backup-instance restore initialize-for-data-recovery'] = "
         text: az dataprotection backup-instance restore initialize-for-data-recovery --datasource-type AzureDisk --restore-location centraluseuap --source-datastore OperationalStore --target-resource-id {restore_disk_id} --recovery-point-id b7e6f082-b310-11eb-8f55-9cfce85d4fae
 """
 
+helps['dataprotection backup-instance restore initialize-for-data-recovery-as-files'] = """
+    type: command
+    short-summary: Initialize restore request object to recover all backed up data as files in a backup vault.
+    examples:
+      - name: initialize restore request for azure database as files for postgresql server backup instance
+        text: az dataprotection backup-instance restore initialize-for-data-recovery-as-files --datasource-type AzureDatabaseForPostgreSQL --restore-location centraluseuap --source-datastore VaultStore --target-blob-container-url {target_blob_container_url} --target-file-name {target_file_name} --recovery-point-id 9a4ab128e2d441d6a575ecd85903bd81
+"""
+
 helps['dataprotection backup-instance restore initialize-for-item-recovery'] = """
     type: command
     short-summary: Initialize restore request object to recover specified items of backed up data in a backup vault.

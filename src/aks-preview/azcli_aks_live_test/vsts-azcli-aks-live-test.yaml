@@ -18,6 +18,8 @@ variables:
     value: "azure-cli-extensions"
   - name: LIVE_TEST_BASE_DIR
     value: "azure-cli-extensions/src/aks-preview/azcli_aks_live_test"
+  - name: ACS_BASE_DIR
+    value: "azure-cli/src/azure-cli/azure/cli/command_modules/acs"
   - name: AKS_PREVIEW_BASE_DIR
     value: "azure-cli-extensions/src/aks-preview/azext_aks_preview"
 
@@ -70,16 +72,23 @@ jobs:
         targetFolder: $(Build.ArtifactStagingDirectory)
       condition: succeededOrFailed()
       displayName: "Copy Reports & Logs"
-    - bash: mkdir -p $(Build.ArtifactStagingDirectory)/recordings
+    - bash: mkdir -p $(Build.ArtifactStagingDirectory)/cli-recordings $(Build.ArtifactStagingDirectory)/ext-recordings
       condition: succeededOrFailed()
       displayName: "Create Dir for Recordings"
     - task: CopyFiles@2
       inputs:
-        contents: '$(AKS_PREVIEW_BASE_DIR)/tests/latest/recordings/**'
+        contents: '$(ACS_BASE_DIR)/tests/latest/recordings/updated/**'
         flattenFolders: true
-        targetFolder: $(Build.ArtifactStagingDirectory)/recordings
-      condition: succeededOrFailed()
-      displayName: "Copy Recordings"
+        targetFolder: $(Build.ArtifactStagingDirectory)/cli-recordings
+      condition: and(succeededOrFailed(), in(variables['COVERAGE'], 'cli', 'all'))
+      displayName: "Copy CLI Recordings"
+    - task: CopyFiles@2
+      inputs:
+        contents: '$(AKS_PREVIEW_BASE_DIR)/tests/latest/recordings/updated/**'
+        flattenFolders: true
+        targetFolder: $(Build.ArtifactStagingDirectory)/ext-recordings
+      condition: and(succeededOrFailed(), in(variables['COVERAGE'], 'ext', 'all'))
+      displayName: "Copy EXT Recordings"
     - task: PublishBuildArtifacts@1
       inputs:
         pathToPublish: $(Build.ArtifactStagingDirectory)

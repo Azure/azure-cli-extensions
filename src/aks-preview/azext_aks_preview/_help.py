@@ -150,10 +150,18 @@ helps['aks create'] = """
           type: int
           short-summary: Load balancer idle timeout in minutes.
           long-summary: Desired idle timeout for load balancer outbound flows, default is 30 minutes. Please specify a value in the range of [4, 100].
+        - name: --nat-gateway-managed-outbound-ip-count
+          type: int
+          short-summary: NAT gateway managed outbound IP count.
+          long-summary: Desired number of managed outbound IPs for NAT gateway outbound connection. Please specify a value in the range of [1, 16]. Valid for Standard SKU load balancer cluster with managedNATGateway outbound type only.
+        - name: --nat-gateway-idle-timeout
+          type: int
+          short-summary: NAT gateway idle timeout in minutes.
+          long-summary: Desired idle timeout for NAT gateway outbound flows, default is 4 minutes. Please specify a value in the range of [4, 120]. Valid for Standard SKU load balancer cluster with managedNATGateway outbound type only.
         - name: --outbound-type
           type: string
           short-summary: How outbound traffic will be configured for a cluster.
-          long-summary: Select between loadBalancer and userDefinedRouting. If not set, defaults to type loadBalancer. Requires --vnet-subnet-id to be provided with a preconfigured route table and --load-balancer-sku to be Standard.
+          long-summary: Select between loadBalancer, userDefinedRouting, managedNATGateway and userAssignedNATGateway. If not set, defaults to type loadBalancer. Requires --vnet-subnet-id to be provided with a preconfigured route table and --load-balancer-sku to be Standard.
         - name: --enable-addons -a
           type: string
           short-summary: Enable the Kubernetes addons in a comma-separated list.
@@ -263,9 +271,9 @@ helps['aks create'] = """
         - name: --fqdn-subdomain
           type: string
           short-summary: Prefix for FQDN that is created for private cluster with custom private dns zone scenario.
-        - name: --enable-public-fqdn
+        - name: --disable-public-fqdn
           type: bool
-          short-summary: (Preview) Enable public fqdn feature for private cluster.
+          short-summary: Disable public fqdn feature for private cluster.
         - name: --enable-node-public-ip
           type: bool
           short-summary: Enable VMSS node public IP.
@@ -317,6 +325,9 @@ helps['aks create'] = """
         - name: --linux-os-config
           type: string
           short-summary: OS configurations for Linux agent nodes.
+        - name: --http-proxy-config
+          type: string
+          short-summary: Http Proxy configuration for this cluster.
         - name: --enable-pod-identity
           type: bool
           short-summary: (PREVIEW) Enable pod identity addon.
@@ -341,6 +352,9 @@ helps['aks create'] = """
         - name: --disable-local-accounts
           type: bool
           short-summary: (Preview) If set to true, getting static credential will be disabled for this cluster.
+        - name: --workload-runtime
+          type: string
+          short-summary: Determines the type of workload a node can run. Defaults to OCIContainer.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -362,6 +376,8 @@ helps['aks create'] = """
           text: az aks create -g MyResourceGroup -n MyManagedCluster --load-balancer-outbound-ip-prefixes <ip-prefix-resource-id-1,ip-prefix-resource-id-2>
         - name: Create a kubernetes cluster with a standard SKU load balancer, with two outbound AKS managed IPs an idle flow timeout of 5 minutes and 8000 allocated ports per machine
           text: az aks create -g MyResourceGroup -n MyManagedCluster --load-balancer-managed-outbound-ip-count 2 --load-balancer-idle-timeout 5 --load-balancer-outbound-ports 8000
+        - name: Create a kubernetes cluster with a AKS managed NAT gateway, with two outbound AKS managed IPs an idle flow timeout of 4 minutes
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --nat-gateway-managed-outbound-ip-count 2 --nat-gateway-idle-timeout 4
         - name: Create a kubernetes cluster with basic SKU load balancer and AvailabilitySet vm set type.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --load-balancer-sku basic --vm-set-type AvailabilitySet
         - name: Create a kubernetes cluster with authorized apiserver IP ranges.
@@ -468,6 +484,14 @@ helps['aks update'] = """
           type: int
           short-summary: Load balancer idle timeout in minutes.
           long-summary: Desired idle timeout for load balancer outbound flows, default is 30 minutes. Please specify a value in the range of [4, 100].
+        - name: --nat-gateway-managed-outbound-ip-count
+          type: int
+          short-summary: NAT gateway managed outbound IP count.
+          long-summary: Desired number of managed outbound IPs for NAT gateway outbound connection. Please specify a value in the range of [1, 16]. Valid for Standard SKU load balancer cluster with managedNATGateway outbound type only.
+        - name: --nat-gateway-idle-timeout
+          type: int
+          short-summary: NAT gateway idle timeout in minutes.
+          long-summary: Desired idle timeout for NAT gateway outbound flows, default is 4 minutes. Please specify a value in the range of [4, 120]. Valid for Standard SKU load balancer cluster with managedNATGateway outbound type only.
         - name: --enable-pod-security-policy
           type: bool
           short-summary: (PREVIEW) Enable pod security policy.
@@ -556,10 +580,10 @@ helps['aks update'] = """
           short-summary: (Preview) If set to true, will enable getting static credential for this cluster.
         - name: --enable-public-fqdn
           type: bool
-          short-summary: (Preview) Enable public fqdn feature for private cluster.
+          short-summary: Enable public fqdn feature for private cluster.
         - name: --disable-public-fqdn
           type: bool
-          short-summary: (Preview) Disable public fqdn feature for private cluster.
+          short-summary: Disable public fqdn feature for private cluster.
     examples:
       - name: Enable cluster-autoscaler within node count range [1,5]
         text: az aks update --enable-cluster-autoscaler --min-count 1 --max-count 5 -g MyResourceGroup -n MyManagedCluster
@@ -579,6 +603,8 @@ helps['aks update'] = """
         text: az aks update -g MyResourceGroup -n MyManagedCluster --load-balancer-outbound-ip-prefixes <ip-prefix-resource-id-1,ip-prefix-resource-id-2>
       - name: Update a kubernetes cluster with two outbound AKS managed IPs an idle flow timeout of 5 minutes and 8000 allocated ports per machine
         text: az aks update -g MyResourceGroup -n MyManagedCluster --load-balancer-managed-outbound-ip-count 2 --load-balancer-idle-timeout 5 --load-balancer-outbound-ports 8000
+      - name: Update a kubernetes cluster of managedNATGateway outbound type with two outbound AKS managed IPs an idle flow timeout of 4 minutes
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --nat-gateway-managed-outbound-ip-count 2 --nat-gateway-idle-timeout 4
       - name: Update a kubernetes cluster with authorized apiserver ip ranges.
         text: az aks update -g MyResourceGroup -n MyManagedCluster --api-server-authorized-ip-ranges 193.168.1.0/24,194.168.1.0/24
       - name: Disable authorized apiserver ip ranges feature for a kubernetes cluster.
@@ -662,32 +688,6 @@ helps['aks kollect'] = """
 helps['aks kanalyze'] = """
     type: command
     short-summary: Display diagnostic results for the Kubernetes cluster after kollect is done.
-"""
-
-helps['aks command'] = """
-    type: group
-    short-summary: see detail usage in 'az aks command invoke', 'az aks command result'.
-"""
-
-helps['aks command invoke'] = """
-    type: command
-    short-summary: run a shell command (with kubectl, helm) on your aks cluster, support attaching files as well.
-    parameters:
-        - name: --command -c
-          type: string
-          short-summary: command or shell script you want run.
-        - name: --file -f
-          type: string
-          short-summary: files will be used by the command, use '.' to attach the current folder.
-"""
-
-helps['aks command result'] = """
-    type: command
-    short-summary: fetch result from previously triggered 'aks command invoke'.
-    parameters:
-        - name: --command-id -i
-          type: string
-          short-summary: commandId returned from 'aks command invoke'.
 """
 
 helps['aks maintenanceconfiguration'] = """
@@ -894,6 +894,9 @@ helps['aks nodepool add'] = """
         - name: --max-count
           type: int
           short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 100]
+        - name: --scale-down-mode
+          type: string
+          short-summary: "Describes how VMs are added to or removed from nodepools."
         - name: --node-taints
           type: string
           short-summary: The node taints for the node pool. You can't change the node taints through CLI after the node pool is created.
@@ -936,13 +939,18 @@ helps['aks nodepool add'] = """
         - name: --enable-ultra-ssd
           type: bool
           short-summary: Enable UltraSSD on agent node pool.
+        - name: --workload-runtime
+          type: string
+          short-summary: Determines the type of workload a node can run. Defaults to OCIContainer.
     examples:
         - name: Create a nodepool in an existing AKS cluster with ephemeral os enabled.
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --node-osdisk-type Ephemeral --node-osdisk-size 48
         - name: Create a nodepool with EncryptionAtHost enabled.
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --enable-encryption-at-host
-        - name: Create a nodepool cluster with a specific os-sku
+        - name: Create a nodepool with a specific os-sku
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster  --os-sku Ubuntu
+        - name: Create a nodepool which can run wasm workloads.
+          text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster  --workload-runtime WasmWasi
 """
 
 helps['aks nodepool scale'] = """
@@ -991,6 +999,9 @@ helps['aks nodepool update'] = """
         - name: --max-count
           type: int
           short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 100]
+        - name: --scale-down-mode
+          type: string
+          short-summary: "Describes how VMs are added to or removed from nodepools."
         - name: --max-surge
           type: string
           short-summary: Extra nodes used to speed upgrade. When specified, it represents the number or percent used, eg. 5 or 33%
@@ -1025,6 +1036,164 @@ helps['aks nodepool delete'] = """
     type: command
     short-summary: Delete the agent pool in the managed Kubernetes cluster.
 """
+
+helps['aks addon'] = """
+    type: group
+    short-summary: Commands to manage and view single addon conditions.
+"""
+
+helps['aks addon list-available'] = """
+    type: command
+    short-summary: List available Kubernetes addons.
+"""
+
+helps['aks addon list'] = """
+    type: command
+    short-summary: List status of all Kubernetes addons in given cluster.
+"""
+
+helps['aks addon show'] = """
+    type: command
+    short-summary: Show status and configuration for an enabled Kubernetes addon in a given cluster.
+    parameters:
+      - name: --addon -a
+        type: string
+        short-summary: Specify the Kubernetes addon.
+    examples:
+      - name: Show configuration for "monitoring" addon.
+        text: az aks addon show -g myResourceGroup -n myAKSCluster -a monitoring
+        crafted: true
+"""
+
+helps['aks addon disable'] = """
+    type: command
+    short-summary: Disable an enabled Kubernetes addon in a cluster.
+    parameters:
+      - name: --addon -a
+        type: string
+        short-summary: Specify the Kubernetes addon to disable.
+    examples:
+      - name: Disable the "monitoring" addon.
+        text: az aks addon disable -g myResourceGroup -n myAKSCluster -a monitoring
+        crafted: true
+"""
+
+helps['aks addon enable'] = """
+type: command
+short-summary: Enable a Kubernetes addon.
+long-summary: |-
+    These addons are available:
+        http_application_routing        - configure ingress with automatic public DNS name creation.
+        monitoring                      - turn on Log Analytics monitoring. Uses the Log Analytics Default Workspace if it exists, else creates one. Specify "--workspace-resource-id" to use an existing workspace.
+                                          If monitoring addon is enabled --no-wait argument will have no effect
+        virtual-node                    - enable AKS Virtual Node. Requires --subnet-name to provide the name of an existing subnet for the Virtual Node to use.
+        azure-policy                    - enable Azure policy. The Azure Policy add-on for AKS enables at-scale enforcements and safeguards on your clusters in a centralized, consistent manner.
+                                          Learn more at aka.ms/aks/policy.
+        ingress-appgw                   - enable Application Gateway Ingress Controller addon (PREVIEW).
+        open-service-mesh               - enable Open Service Mesh addon (PREVIEW).
+        gitops                          - enable GitOps (PREVIEW).
+        azure-keyvault-secrets-provider - enable Azure Keyvault Secrets Provider addon (PREVIEW).
+parameters:
+  - name: --addon -a
+    type: string
+    short-summary: Specify the Kubernetes addon to enable.
+  - name: --workspace-resource-id
+    type: string
+    short-summary: The resource ID of an existing Log Analytics Workspace to use for storing monitoring data.
+  - name: --enable-msi-auth-for-monitoring
+    type: bool
+    short-summary: Send monitoring data to Log Analytics using the cluster's assigned identity (instead of the Log Analytics Workspace's shared key).
+  - name: --subnet-name -s
+    type: string
+    short-summary: The subnet name for the virtual node to use.
+  - name: --appgw-name
+    type: string
+    short-summary: Name of the application gateway to create/use in the node resource group. Use with ingress-azure addon.
+  - name: --appgw-subnet-prefix
+    type: string
+    short-summary: Subnet Prefix to use for a new subnet created to deploy the Application Gateway. Use with ingress-azure addon.
+  - name: --appgw-subnet-cidr
+    type: string
+    short-summary: Subnet CIDR to use for a new subnet created to deploy the Application Gateway. Use with ingress-azure addon.
+  - name: --appgw-id
+    type: string
+    short-summary: Resource Id of an existing Application Gateway to use with AGIC. Use with ingress-azure addon.
+  - name: --appgw-subnet-id
+    type: string
+    short-summary: Resource Id of an existing Subnet used to deploy the Application Gateway. Use with ingress-azure addon.
+  - name: --appgw-watch-namespace
+    type: string
+    short-summary: Specify the namespace, which AGIC should watch. This could be a single string value, or a comma-separated list of namespaces. Use with ingress-azure addon.
+  - name: --enable-sgxquotehelper
+    type: bool
+    short-summary: Enable SGX quote helper for confcom addon.
+  - name: --enable-secret-rotation
+    type: bool
+    short-summary: Enable secret rotation. Use with azure-keyvault-secrets-provider addon.
+examples:
+  - name: Enable a Kubernetes addon. (autogenerated)
+    text: az aks addon enable --addon virtual-node --name MyManagedCluster --resource-group MyResourceGroup --subnet-name VirtualNodeSubnet
+    crafted: true
+  - name: Enable ingress-appgw addon with subnet prefix.
+    text: az aks addon enable --name MyManagedCluster --resource-group MyResourceGroup --addon ingress-appgw --appgw-subnet-cidr 10.2.0.0/16 --appgw-name gateway
+    crafted: true
+  - name: Enable open-service-mesh addon.
+    text: az aks addon enable --name MyManagedCluster --resource-group MyResourceGroup -a open-service-mesh
+    crafted: true
+"""
+
+helps['aks addon update'] = """
+type: command
+short-summary: Update an already enabled Kubernetes addon.
+parameters:
+  - name: --addon -a
+    type: string
+    short-summary: Specify the Kubernetes addon to update.
+  - name: --workspace-resource-id
+    type: string
+    short-summary: The resource ID of an existing Log Analytics Workspace to use for storing monitoring data.
+  - name: --enable-msi-auth-for-monitoring
+    type: bool
+    short-summary: Send monitoring data to Log Analytics using the cluster's assigned identity (instead of the Log Analytics Workspace's shared key).
+  - name: --subnet-name -s
+    type: string
+    short-summary: The subnet name for the virtual node to use.
+  - name: --appgw-name
+    type: string
+    short-summary: Name of the application gateway to create/use in the node resource group. Use with ingress-azure addon.
+  - name: --appgw-subnet-prefix
+    type: string
+    short-summary: Subnet Prefix to use for a new subnet created to deploy the Application Gateway. Use with ingress-azure addon.
+  - name: --appgw-subnet-cidr
+    type: string
+    short-summary: Subnet CIDR to use for a new subnet created to deploy the Application Gateway. Use with ingress-azure addon.
+  - name: --appgw-id
+    type: string
+    short-summary: Resource Id of an existing Application Gateway to use with AGIC. Use with ingress-azure addon.
+  - name: --appgw-subnet-id
+    type: string
+    short-summary: Resource Id of an existing Subnet used to deploy the Application Gateway. Use with ingress-azure addon.
+  - name: --appgw-watch-namespace
+    type: string
+    short-summary: Specify the namespace, which AGIC should watch. This could be a single string value, or a comma-separated list of namespaces. Use with ingress-azure addon.
+  - name: --enable-sgxquotehelper
+    type: bool
+    short-summary: Enable SGX quote helper for confcom addon.
+  - name: --enable-secret-rotation
+    type: bool
+    short-summary: Enable secret rotation. Use with azure-keyvault-secrets-provider addon.
+examples:
+  - name: Update a Kubernetes addon. (autogenerated)
+    text: az aks addon update --addon virtual-node --name MyManagedCluster --resource-group MyResourceGroup --subnet-name VirtualNodeSubnet
+    crafted: true
+  - name: Update ingress-appgw addon with subnet prefix.
+    text: az aks addon update --name MyManagedCluster --resource-group MyResourceGroup --addon ingress-appgw --appgw-subnet-cidr 10.2.0.0/16 --appgw-name gateway
+    crafted: true
+  - name: Update monitoring addon with workspace resource id.
+    text: az aks addon update -g $rg -n $cn -a monitoring --workspace-resource-id=/subscriptions/0000000-00000000-00000-000-000/resourcegroups/myresourcegroup/providers/microsoft.operationalinsights/workspaces/defaultlaworkspace
+    crafted: true
+"""
+
 
 helps['aks enable-addons'] = """
 type: command
@@ -1129,7 +1298,7 @@ parameters:
     long-summary: Credentials are always in YAML format, so this argument is effectively ignored.
   - name: --public-fqdn
     type: bool
-    short-summary: (Preview) Get private cluster credential with server address to be public fqdn.
+    short-summary: Get private cluster credential with server address to be public fqdn.
 examples:
   - name: Get access credentials for a managed Kubernetes cluster. (autogenerated)
     text: az aks get-credentials --name MyManagedCluster --resource-group MyResourceGroup

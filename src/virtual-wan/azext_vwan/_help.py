@@ -112,6 +112,62 @@ helps['network vhub connection wait'] = """
     short-summary: Place the CLI in a waiting state until a condition of virtual hub VNet connection is met.
 """
 
+helps['network vhub bgpconnection'] = """
+    type: group
+    short-summary: Manage virtual hub bgpconnections.
+"""
+
+helps['network vhub bgpconnection create'] = """
+    type: command
+    short-summary: Create a virtual hub bgpconnection.
+    examples:
+    - name: Create a virtual hub bgpconnection.
+      text: |
+          az network vhub bgpconnection create -n MyConnection -g MyRG --vhub-name MyHub --peer-asn 20000  --peer-ip "10.5.0.3"
+            --vhub-conn <vhub_connection_resource_id>
+"""
+
+helps['network vhub bgpconnection list'] = """
+    type: command
+    short-summary: List virtual hub bgpconnections.
+    examples:
+    - name: List bgpconnections in a given virtual hub.
+      text: |
+          az network vhub bgpconnection list --vhub-name MyHub -g MyRG
+"""
+
+helps['network vhub bgpconnection show'] = """
+    type: command
+    short-summary: Get the details of a virtual hub bgpconnection.
+    examples:
+    - name: Get the details of a virtual hub bgpconnection.
+      text: |
+          az network vhub bgpconnection show -n MyConnection --vhub-name MyHub -g MyRG
+"""
+
+helps['network vhub bgpconnection delete'] = """
+    type: command
+    short-summary: Delete a virtual hub bgpconnection.
+    examples:
+    - name: Delete a virtual hub bgpconnection.
+      text: |
+          az network vhub bgpconnection delete -n MyConnection --vhub-name MyHub -g MyRG
+"""
+
+helps['network vhub bgpconnection update'] = """
+    type: command
+    short-summary: Update settings of a virtual hub bgpconnection.
+    examples:
+    - name: Update a virtual hub bgpconnection.
+      text: |
+          az network vhub bgpconnection update -n MyConnection --vhub-name MyHub -g MyRG --peer-asn 15000
+"""
+
+helps['network vhub bgpconnection wait'] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of virtual hub bgpconnection is met.
+"""
+
 helps['network vhub route'] = """
     type: group
     short-summary: Manage entries in the virtual hub route table.

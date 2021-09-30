@@ -39,12 +39,9 @@ class ScheduleQueryConditionAction(argparse._AppendAction):
             for item in ['time_aggregation', 'threshold', 'operator']:
                 if not getattr(scheduled_query_condition, item, None):
                     raise InvalidArgumentValueError(usage)
-        except (AttributeError, TypeError, KeyError):
-            raise InvalidArgumentValueError(usage)
-        super(ScheduleQueryConditionAction, self).__call__(parser,
-                                                           namespace,
-                                                           scheduled_query_condition,
-                                                           option_string)
+        except (AttributeError, TypeError, KeyError) as e:
+            raise InvalidArgumentValueError(usage) from e
+        super().__call__(parser, namespace, scheduled_query_condition, option_string)
 
 
 class ScheduleQueryConditionQueryAction(argparse.Action):
@@ -65,9 +62,9 @@ class ScheduleQueryConditionQueryAction(argparse.Action):
 class ScheduleQueryAddAction(argparse._AppendAction):
 
     def __call__(self, parser, namespace, values, option_string=None):
-        from azext_scheduled_query.vendored_sdks.azure_mgmt_scheduled_query.models import Action
-        action = Action(
-            action_group_id=values[0],
-            web_hook_properties=dict(x.split('=', 1) for x in values[1:]) if len(values) > 1 else None
+        from azext_scheduled_query.vendored_sdks.azure_mgmt_scheduled_query.models import Actions
+        action = Actions(
+            action_groups=values[0],
+            custom_properties=dict(x.split('=', 1) for x in values[1:]) if len(values) > 1 else None
         )
-        super(ScheduleQueryAddAction, self).__call__(parser, namespace, action, option_string)
+        super().__call__(parser, namespace, action, option_string)

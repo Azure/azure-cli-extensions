@@ -17,11 +17,13 @@ helps['spring-cloud create'] = """
     examples:
     - name: Create a new Azure Spring Cloud in westus.
       text: az spring-cloud create -n MyService -g MyResourceGroup -l westus
-    - name: Create a new Azure Spring Cloud in westus with an existing Application Insights by using the instrumentation key.
-      text: az spring-cloud create -n MyService -g MyResourceGroup -l westus --app-insights-key MyInstrumentationKey
-    - name: Create a new Azure Spring Cloud in westus with an existing Application Insights and enable Java In-Process Agent.
-      text: az spring-cloud create -n MyService -g MyResourceGroup -l westus --enable-java-agent true --app-insights MyInstrumentationName
-    - name: Create a new Azure Spring Cloud with distributed tracing disabled.
+    - name: Create a new Azure Spring Cloud in westus with an existing Application Insights by using the Connection string (recommended) or Instrumentation key.
+      text: az spring-cloud create -n MyService -g MyResourceGroup -l westus --app-insights-key \"MyConnectionString\"
+    - name: Create a new Azure Spring Cloud in westus with an existing Application Insights.
+      text: az spring-cloud create -n MyService -g MyResourceGroup -l westus --app-insights appInsightsName
+    - name: Create a new Azure Spring Cloud in westus with an existing Application Insights and specify the sampling rate.
+      text: az spring-cloud create -n MyService -g MyResourceGroup -l westus --app-insights appInsightsName --sampling-rate 10
+    - name: Create a new Azure Spring Cloud with Application Insights disabled.
       text: az spring-cloud create -n MyService -g MyResourceGroup --disable-app-insights
     - name: Create a new Azure Spring Cloud with VNet-injected via giving VNet name in current resource group
       text: az spring-cloud create -n MyService -g MyResourceGroup --vnet MyVNet --app-subnet MyAppSubnet --service-runtime-subnet MyServiceRuntimeSubnet
@@ -35,8 +37,6 @@ helps['spring-cloud update'] = """
     examples:
     - name: Update pricing tier.
       text: az spring-cloud update -n MyService --sku Standard -g MyResourceGroup
-    - name: Enable the distributed tracing of the existing Azure Spring Cloud.
-      text: az spring-cloud update -n MyService -g MyResourceGroup --disable-app-insights false
     - name: Update the tags of the existing Azure Spring Cloud.
       text: az spring-cloud update -n MyService -g MyResourceGroup --tags key1=value1 key2=value2
 """
@@ -461,8 +461,8 @@ helps['spring-cloud app-insights update'] = """
     type: command
     short-summary: Update Application Insights settings.
     examples:
-        - name: Enable Application Insights and Java In-process Agent.
-          text: az spring-cloud app-insights update -n MyService -g MyResourceGroup --app-insights-key MyInstrumentationKey --sampling-rate 100
+        - name: Enable Application Insights by using the Connection string (recommended) or Instrumentation key.
+          text: az spring-cloud app-insights update -n MyService -g MyResourceGroup --app-insights-key \"MyConnectionString\" --sampling-rate 100
         - name: Disable Application Insights.
           text: az spring-cloud app-insights update -n MyService -g MyResourceGroup --disable
 """

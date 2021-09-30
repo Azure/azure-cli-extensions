@@ -12,7 +12,7 @@ from ..._validators import (validate_vnet, validate_vnet_required_parameters, _v
 try:
     import unittest.mock as mock
 except ImportError:
-    import mock
+    from unittest import mock
 
 from azure.cli.core.mock import DummyCli
 from azure.cli.core import AzCommandsLoader

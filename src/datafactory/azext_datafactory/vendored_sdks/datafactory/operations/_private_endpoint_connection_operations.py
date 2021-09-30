@@ -29,7 +29,7 @@ class PrivateEndpointConnectionOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~data_factory_management_client.models
+    :type models: ~azure.mgmt.datafactory.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -63,13 +63,13 @@ class PrivateEndpointConnectionOperations(object):
         :param private_endpoint_connection_name: The private endpoint connection name.
         :type private_endpoint_connection_name: str
         :param private_endpoint_wrapper:
-        :type private_endpoint_wrapper: ~data_factory_management_client.models.PrivateLinkConnectionApprovalRequestResource
+        :type private_endpoint_wrapper: ~azure.mgmt.datafactory.models.PrivateLinkConnectionApprovalRequestResource
         :param if_match: ETag of the private endpoint connection entity.  Should only be specified for
          update, for which it should match existing entity or can be * for unconditional update.
         :type if_match: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: PrivateEndpointConnectionResource, or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.PrivateEndpointConnectionResource
+        :rtype: ~azure.mgmt.datafactory.models.PrivateEndpointConnectionResource
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.PrivateEndpointConnectionResource"]
@@ -144,7 +144,7 @@ class PrivateEndpointConnectionOperations(object):
         :type if_none_match: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: PrivateEndpointConnectionResource, or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.PrivateEndpointConnectionResource
+        :rtype: ~azure.mgmt.datafactory.models.PrivateEndpointConnectionResource
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.PrivateEndpointConnectionResource"]

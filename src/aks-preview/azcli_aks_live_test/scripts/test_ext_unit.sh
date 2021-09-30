@@ -35,5 +35,6 @@ mkdir -p reports/ && cp ${aks_preview_base_dir}/coverage_azext_aks_preview.json 
 
 if [[ ${azext_aks_preview_unit_test_failed} == "true" ]]; then
     echo "Unit test failed!"
+    echo "Please refer to this wiki (https://dev.azure.com/msazure/CloudNativeCompute/_wiki/wikis/CloudNativeCompute.wiki/156735/AZCLI-AKS-Live-Unit-Test-Pipeline) for troubleshooting guidelines."
     exit 1
 fi

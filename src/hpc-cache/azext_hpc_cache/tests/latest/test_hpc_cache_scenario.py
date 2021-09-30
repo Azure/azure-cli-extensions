@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-import mock
+from unittest import mock
 
 from azure_devtools.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer, StorageAccountPreparer

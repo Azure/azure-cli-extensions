@@ -36,5 +36,6 @@ mkdir -p reports/ && cp ${acs_base_dir}/coverage_acs.json reports/
 
 if [[ ${acs_unit_test_failed} == "true" ]]; then
     echo "Unit test failed!"
+    echo "Please refer to this wiki (https://dev.azure.com/msazure/CloudNativeCompute/_wiki/wikis/CloudNativeCompute.wiki/156735/AZCLI-AKS-Live-Unit-Test-Pipeline) for troubleshooting guidelines."
     exit 1
 fi

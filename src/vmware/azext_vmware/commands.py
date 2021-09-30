@@ -89,8 +89,56 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'globalreachconnection_show')
 
     with self.command_group('vmware cloud-link', vmware_sdk, client_factory=cf_vmware) as g:
-        g.custom_command('create', 'cloud_link_create_or_update')
-        g.custom_command('update', 'cloud_link_create_or_update')
+        g.custom_command('create', 'cloud_link_create')
         g.custom_command('list', 'cloud_link_list')
         g.custom_command('delete', 'cloud_link_delete')
         g.custom_show_command('show', 'cloud_link_show')
+
+    with self.command_group('vmware script-cmdlet', vmware_sdk, client_factory=cf_vmware) as g:
+        g.custom_command('list', 'script_cmdlet_list')
+        g.custom_show_command('show', 'script_cmdlet_show')
+
+    with self.command_group('vmware script-package', vmware_sdk, client_factory=cf_vmware) as g:
+        g.custom_command('list', 'script_package_list')
+        g.custom_show_command('show', 'script_package_show')
+
+    with self.command_group('vmware script-execution', vmware_sdk, client_factory=cf_vmware) as g:
+        g.custom_command('create', 'script_execution_create')
+        g.custom_command('list', 'script_execution_list')
+        g.custom_command('delete', 'script_execution_delete')
+        g.custom_show_command('show', 'script_execution_show')
+
+    with self.command_group('vmware workload-network dhcp', vmware_sdk, client_factory=cf_vmware) as g:
+        g.custom_command('list', 'workload_network_dhcp_list')
+        g.custom_show_command('show', 'workload_network_dhcp_show')
+
+    with self.command_group('vmware workload-network dhcp server', vmware_sdk, client_factory=cf_vmware) as g:
+        g.custom_command('create', 'workload_network_dhcp_server_create')
+        g.custom_command('delete', 'workload_network_dhcp_delete')
+        g.custom_command('update', 'workload_network_dhcp_server_update')
+
+    with self.command_group('vmware workload-network dhcp relay', vmware_sdk, client_factory=cf_vmware) as g:
+        g.custom_command('create', 'workload_network_dhcp_relay_create')
+        g.custom_command('delete', 'workload_network_dhcp_delete')
+        g.custom_command('update', 'workload_network_dhcp_relay_update')
+
+    with self.command_group('vmware workload-network dns-service', vmware_sdk, client_factory=cf_vmware) as g:
+        g.custom_command('list', 'workload_network_dns_services_list')
+        g.custom_show_command('show', 'workload_network_dns_services_get')
+        g.custom_command('create', 'workload_network_dns_services_create')
+        g.custom_command('update', 'workload_network_dns_services_update')
+        g.custom_command('delete', 'workload_network_dns_services_delete')
+
+    with self.command_group('vmware workload-network dns-zone', vmware_sdk, client_factory=cf_vmware) as g:
+        g.custom_command('list', 'workload_network_dns_zone_list')
+        g.custom_show_command('show', 'workload_network_dns_zone_get')
+        g.custom_command('create', 'workload_network_dns_zone_create')
+        g.custom_command('update', 'workload_network_dns_zone_update')
+        g.custom_command('delete', 'workload_network_dns_zone_delete')
+
+    with self.command_group('vmware workload-network port-mirroring', vmware_sdk, client_factory=cf_vmware) as g:
+        g.custom_command('list', 'workload_network_port_mirroring_list')
+        g.custom_show_command('show', 'workload_network_port_mirroring_get')
+        g.custom_command('create', 'workload_network_port_mirroring_create')
+        g.custom_command('update', 'workload_network_port_mirroring_update')
+        g.custom_command('delete', 'workload_network_port_mirroring_delete')
