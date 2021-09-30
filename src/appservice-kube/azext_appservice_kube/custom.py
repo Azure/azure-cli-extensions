@@ -323,6 +323,8 @@ def delete_kube_environment(cmd, name, resource_group_name):
 
 def create_kube_environment(cmd, name, resource_group_name, custom_location, static_ip=None, location=None,
                             tags=None, no_wait=False):
+    # pylint: disable=broad-except,no-member,protected-access
+
     custom_location_client = customlocation_client_factory(cmd.cli_ctx)
     custom_location_object = None
 

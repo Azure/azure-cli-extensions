@@ -14,12 +14,12 @@ class AppserviceCommandsLoader(AzCommandsLoader):
         from azure.cli.core.commands import CliCommandType
         from azure.cli.core.profiles import ResourceType
         appservice_custom = CliCommandType(operations_tmpl='azext_appservice_kube.custom#{}')
-        super(AppserviceCommandsLoader, self).__init__(cli_ctx=cli_ctx,
-                                                       custom_command_type=appservice_custom,
-                                                       resource_type=ResourceType.MGMT_APPSERVICE)
+        super().__init__(cli_ctx=cli_ctx,
+                         custom_command_type=appservice_custom,
+                         resource_type=ResourceType.MGMT_APPSERVICE)
 
     def load_command_table(self, args):
-        super(AppserviceCommandsLoader, self).load_command_table(args)
+        super().load_command_table(args)
         from azext_appservice_kube.commands import load_command_table
         load_command_table(self, args)
         return self.command_table
@@ -27,7 +27,7 @@ class AppserviceCommandsLoader(AzCommandsLoader):
     def load_arguments(self, command):
         from sys import version_info
         if version_info[0] < 3:
-            super(AppserviceCommandsLoader, self).load_arguments(command)
+            super().load_arguments(command)
         else:
             super().load_arguments(command)
         from azext_appservice_kube._params import load_arguments
