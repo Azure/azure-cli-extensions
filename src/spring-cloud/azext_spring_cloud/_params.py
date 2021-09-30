@@ -119,6 +119,7 @@ def load_arguments(self, _):
                    help='Memory resource quantity. Should be 512Mi or #Gi, e.g., 1Gi, 3Gi.')
         c.argument('instance_count', type=int,
                    default=1, help='Number of instance.', validator=validate_instance_count)
+        c.argument('loaded-certificates-file', help='A json file path for the certificates which would be loaded to app')
 
     with self.argument_context('spring-cloud app update') as c:
         c.argument('assign_endpoint', arg_type=get_three_state_flag(),
@@ -126,6 +127,7 @@ def load_arguments(self, _):
                    options_list=['--assign-endpoint', c.deprecate(target='--is-public', redirect='--assign-endpoint', hide=True)])
         c.argument('https_only', arg_type=get_three_state_flag(), help='If true, access app via https', default=False)
         c.argument('enable_end_to_end_tls', arg_type=get_three_state_flag(), help='If true, enable end to end tls')
+        c.argument('loaded-certificates-file', help='A json file path for the certificates which would be loaded to app')
 
     for scope in ['spring-cloud app update', 'spring-cloud app start', 'spring-cloud app stop', 'spring-cloud app restart', 'spring-cloud app deploy', 'spring-cloud app scale', 'spring-cloud app set-deployment', 'spring-cloud app show-deploy-log']:
         with self.argument_context(scope) as c:
@@ -286,6 +288,9 @@ def load_arguments(self, _):
     with self.argument_context('spring-cloud certificate add') as c:
         c.argument('vault_uri', help='The key vault uri where store the certificate')
         c.argument('vault_certificate_name', help='The certificate name in key vault')
+        c.argument('exclude_private_key', arg_type=get_three_state_flag(),
+                   help='Import private key from key vault or not. Default to be false.', default=False)
+        c.argument('certificate_file', help='A file path for the public certificate to be uploaded')
 
     with self.argument_context('spring-cloud app custom-domain') as c:
         c.argument('service', service_name_type)

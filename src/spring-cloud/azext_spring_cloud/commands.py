@@ -108,6 +108,7 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'certificate_show', table_transformer=transform_spring_cloud_certificate_output)
         g.custom_command('list', 'certificate_list', table_transformer=transform_spring_cloud_certificate_output)
         g.custom_command('remove', 'certificate_remove')
+        g.custom_command('list-reference-app', 'certiticate_list_reference_app', table_transformer=transform_app_table_output)
 
     with self.command_group('spring-cloud app custom-domain', client_factory=cf_spring_cloud,
                             exception_handler=handle_asc_exception) as g:

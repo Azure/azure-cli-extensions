@@ -6,6 +6,7 @@
 # pylint: disable=unused-argument, logging-format-interpolation, protected-access, wrong-import-order, too-many-lines
 import requests
 import re
+import os
 
 from azure.core.exceptions import HttpResponseError
 from azure.mgmt.cosmosdb import CosmosDBManagementClient
@@ -20,9 +21,13 @@ from knack.util import CLIError
 from .vendored_sdks.appplatform.v2020_07_01 import models
 from .vendored_sdks.appplatform.v2020_11_01_preview import models as models_20201101preview
 from .vendored_sdks.appplatform.v2021_06_01_preview import models as models_20210601preview
+from .vendored_sdks.appplatform.v2021_09_01_preview import models as models_20210901preview
 from .vendored_sdks.appplatform.v2020_07_01.models import _app_platform_management_client_enums as AppPlatformEnums
 from .vendored_sdks.appplatform.v2020_11_01_preview import (
     AppPlatformManagementClient as AppPlatformManagementClient_20201101preview
+)
+from .vendored_sdks.appplatform.v2021_09_01_preview import (
+    AppPlatformManagementClient as AppPlatformManagementClient_20210901preview
 )
 from knack.log import get_logger
 from .azure_storage_file import FileService
@@ -41,6 +46,7 @@ from threading import Thread
 from threading import Timer
 import sys
 import json
+import base64
 from collections import defaultdict
 
 logger = get_logger(__name__)
@@ -254,25 +260,38 @@ def app_create(cmd, client, resource_group, service, name,
                jvm_options=None,
                env=None,
                enable_persistent_storage=None,
-               assign_identity=None):
+               assign_identity=None,
+               loaded_certificates_file=None):
+    client = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20210901preview)
     cpu = validate_cpu(cpu)
     memory = validate_memory(memory)
     apps = _get_all_apps(client, resource_group, service)
     if name in apps:
         raise CLIError("App '{}' already exists.".format(name))
     logger.warning("[1/4] Creating app with name '{}'".format(name))
-    properties = models_20210601preview.AppResourceProperties()
-    properties.temporary_disk = models_20210601preview.TemporaryDisk(
+    properties = models_20210901preview.AppResourceProperties()
+    properties.temporary_disk = models_20210901preview.TemporaryDisk(
         size_in_gb=5, mount_path="/tmp")
     resource = client.services.get(resource_group, service)
 
     _validate_instance_count(resource.sku.tier, instance_count)
 
-    app_resource = models_20210601preview.AppResource()
+    if loaded_certificates_file is not None:
+        input_file = open(loaded_certificates_file)
+        data = json.load(input_file)
+        loaded_certificates = []
+
+        for item in data['loadedCertificates']:
+            loaded_certificates.append(models_20210901preview.
+                                       LoadedCertificate(resource_id=item['resourceId'],
+                                                         load_trust_store=item['loadTrustStore']))
+        properties.loaded_certificates=loaded_certificates
+
+    app_resource = models_20210901preview.AppResource()
     app_resource.properties = properties
     app_resource.location = resource.location
     if assign_identity is True:
-        app_resource.identity = models_20210601preview.ManagedIdentityProperties(type="systemassigned")
+        app_resource.identity = models_20210901preview.ManagedIdentityProperties(type="systemassigned")
 
     poller = client.apps.begin_create_or_update(
         resource_group, service, name, app_resource)
@@ -290,14 +309,14 @@ def app_create(cmd, client, resource_group, service, name,
                                                        default_deployment_resource)
 
     logger.warning("[3/4] Setting default deployment to production")
-    properties = models_20210601preview.AppResourceProperties(
+    properties = models_20210901preview.AppResourceProperties(
         active_deployment_name=DEFAULT_DEPLOYMENT_NAME, public=assign_endpoint)
 
     if enable_persistent_storage:
-        properties.persistent_disk = models_20210601preview.PersistentDisk(
+        properties.persistent_disk = models_20210901preview.PersistentDisk(
             size_in_gb=_get_persistent_disk_size(resource.sku.tier), mount_path="/persistent")
     else:
-        properties.persistent_disk = models_20210601preview.PersistentDisk(
+        properties.persistent_disk = models_20210901preview.PersistentDisk(
             size_in_gb=0, mount_path="/persistent")
 
     app_resource.properties = properties
@@ -357,20 +376,33 @@ def app_update(cmd, client, resource_group, service, name,
                env=None,
                enable_persistent_storage=None,
                https_only=None,
-               enable_end_to_end_tls=None):
+               enable_end_to_end_tls=None,
+               loaded_certificates_file=None):
+    client = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20210901preview)
     _check_active_deployment_exist(client, resource_group, service, name)
     resource = client.services.get(resource_group, service)
     location = resource.location
 
-    properties = models_20210601preview.AppResourceProperties(public=assign_endpoint, https_only=https_only,
+    properties = models_20210901preview.AppResourceProperties(public=assign_endpoint, https_only=https_only,
                                                               enable_end_to_end_tls=enable_end_to_end_tls)
     if enable_persistent_storage is True:
-        properties.persistent_disk = models_20210601preview.PersistentDisk(
+        properties.persistent_disk = models_20210901preview.PersistentDisk(
             size_in_gb=_get_persistent_disk_size(resource.sku.tier), mount_path="/persistent")
     if enable_persistent_storage is False:
-        properties.persistent_disk = models_20210601preview.PersistentDisk(size_in_gb=0)
+        properties.persistent_disk = models_20210901preview.PersistentDisk(size_in_gb=0)
 
-    app_resource = models_20210601preview.AppResource()
+    if loaded_certificates_file is not None:
+        input_file = open(loaded_certificates_file)
+        data = json.load(input_file)
+        loaded_certificates = []
+
+        for item in data['loadedCertificates']:
+            loaded_certificates.append(models_20210901preview.
+                                       LoadedCertificate(resource_id=item['resourceId'],
+                                                         load_trust_store=item['loadTrustStore']))
+        properties.loaded_certificates=loaded_certificates
+
+    app_resource = models_20210901preview.AppResource()
     app_resource.properties = properties
     app_resource.location = location
 
@@ -392,14 +424,14 @@ def app_update(cmd, client, resource_group, service, name,
             return app_updated
 
     logger.warning("[2/2] Updating deployment '{}'".format(deployment))
-    deployment_settings = models_20210601preview.DeploymentSettings(
+    deployment_settings = models_20210901preview.DeploymentSettings(
         environment_variables=env,
         jvm_options=jvm_options,
         net_core_main_entry_path=main_entry,
         runtime_version=runtime_version,)
     deployment_settings.cpu = None
     deployment_settings.memory_in_gb = None
-    properties = models_20210601preview.DeploymentResourceProperties(
+    properties = models_20210901preview.DeploymentResourceProperties(
         deployment_settings=deployment_settings)
     deployment_resource = models.DeploymentResource(properties=properties)
     poller = client.deployments.begin_update(
@@ -472,6 +504,7 @@ def app_restart(cmd, client,
 def app_list(cmd, client,
              resource_group,
              service):
+    client = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20210901preview)
     apps = list(client.apps.list(resource_group, service))
     deployments = list(
         client.deployments.list_for_cluster(resource_group, service))
@@ -488,6 +521,7 @@ def app_get(cmd, client,
             resource_group,
             service,
             name):
+    client = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20210901preview)
     app = client.apps.get(resource_group, service, name)
     deployment_name = app.properties.active_deployment_name
     if deployment_name:
@@ -1532,30 +1566,61 @@ def _get_app_log(url, user_name, password, format_json, exceptions):
             exceptions.append(e)
 
 
-def certificate_add(cmd, client, resource_group, service, name, vault_uri, vault_certificate_name):
-    properties = models.CertificateProperties(
-        vault_uri=vault_uri,
-        key_vault_cert_name=vault_certificate_name
-    )
+def certificate_add(cmd, resource_group, service, name, exclude_private_key=None,
+                    vault_uri=None, vault_certificate_name=None, certificate_file=None):
+    client = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20210901preview)
+    if vault_uri is None and certificate_file is None:
+        raise CLIError("Neither vault-uri nor certificate-file is provided")
+    if vault_uri is not None and certificate_file is not None:
+        raise CLIError("Both vault-uri and certificate-file are provided")
+    if vault_uri is not None:
+        if vault_certificate_name is None:
+            raise CLIError("Parameter vault-certificate-name should be provided for Key Vault Certificate")
+        properties = models_20210901preview.KeyVaultCertificateProperties(
+            type="KeyVaultCertificate",
+            vault_uri=vault_uri,
+            key_vault_cert_name=vault_certificate_name,
+            exclude_private_key=exclude_private_key
+        )
+    else:
+        if os.path.exists(certificate_file):
+            try:
+                with open(certificate_file, 'rb') as input_file:
+                    logger.debug("attempting to read file %s as binary", certificate_file)
+                    content = base64.b64encode(input_file.read()).decode("utf-8")
+            except Exception:
+                raise CLIError('Failed to decode file {} - unknown decoding'.format(certificate_file))
+        else:
+            raise CLIError("certificate_file %s could not be found", certificate_file)
+        properties = models_20210901preview.ContentCertificateProperties(
+            type="ContentCertificate",
+            content=content
+        )
     certificate_resource = models.CertificateResource(properties=properties)
     return client.certificates.begin_create_or_update(
         resource_group_name=resource_group,
         service_name=service,
         certificate_name=name,
-        certificate_resource=certificate_resource)
+        certificate_resource=certificate_resource
+    )
 
-
-def certificate_show(cmd, client, resource_group, service, name):
+def certificate_show(cmd, resource_group, service, name):
+    client = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20210901preview)
     return client.certificates.get(resource_group, service, name)
 
 
-def certificate_list(cmd, client, resource_group, service):
+def certificate_list(cmd, resource_group, service):
+    client = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20210901preview)
     return client.certificates.list(resource_group, service)
 
 
-def certificate_remove(cmd, client, resource_group, service, name):
+def certificate_remove(cmd, resource_group, service, name):
+    client = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20210901preview)
     client.certificates.get(resource_group, service, name)
     return client.certificates.begin_delete(resource_group, service, name)
+
+def certificate_list_reference_app():
+    client = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20210901preview)
 
 
 def domain_bind(cmd, client, resource_group, service, app,
