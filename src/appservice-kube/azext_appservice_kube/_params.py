@@ -11,10 +11,9 @@ from azure.cli.core.commands.parameters import (resource_group_name_type, get_lo
                                                 get_resource_name_completion_list,
                                                 get_three_state_flag, get_enum_type, tags_type)
 
-from ._completers import get_kube_sku_completion_list, get_vm_size_completion_list
-from ._constants import (FUNCTIONS_VERSIONS, FUNCTIONS_VERSION_TO_SUPPORTED_RUNTIME_VERSIONS, KUBE_DEFAULT_SKU,
+from ._constants import (FUNCTIONS_VERSIONS, FUNCTIONS_VERSION_TO_SUPPORTED_RUNTIME_VERSIONS,
                          LINUX_RUNTIMES, WINDOWS_RUNTIMES, MULTI_CONTAINER_TYPES, OS_TYPES)
-from ._validators import validate_asp_create, validate_nodes_count, validate_nodepool_name
+from ._validators import validate_asp_create
 
 
 def load_arguments(self, _):
@@ -27,7 +26,7 @@ def load_arguments(self, _):
                                            completer=get_resource_name_completion_list('Microsoft.Web/sites'), id_part='name',
                                            help="name of the web app. You can configure the default using `az configure --defaults web=<name>`")
 
-    K8SENetworkPlugin = self.get_models('K8SENetworkPlugin')
+    self.get_models('K8SENetworkPlugin')
 
     # combine all runtime versions for all functions versions
     functionapp_runtime_to_version = {}

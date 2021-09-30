@@ -9,12 +9,11 @@ from binascii import hexlify
 from os import urandom
 import json
 
-from azure.cli.core.util import send_raw_request
-from azure.cli.core.commands.client_factory import get_subscription_id
-
 from knack.util import CLIError
 from knack.log import get_logger
 
+from azure.cli.core.util import send_raw_request, sdk_no_wait, get_json_object
+from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.command_modules.appservice.custom import (
     update_container_settings,
     _rename_server_farm_props,
@@ -44,15 +43,10 @@ from azure.cli.command_modules.appservice.custom import (
     assign_identity,
     delete_app_settings,
     update_app_settings)
-
 from azure.cli.command_modules.appservice.utils import retryable_method
-
-from azure.cli.core.util import sdk_no_wait, get_json_object
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.commands import LongRunningOperation
-
 from azure.mgmt.applicationinsights import ApplicationInsightsManagementClient
-
 from azure.cli.core.util import get_az_user_agent
 from azure.cli.core.azclierror import (ResourceNotFoundError, RequiredArgumentMissingError, ValidationError,
                                        ArgumentUsageError, MutuallyExclusiveArgumentError)
@@ -74,8 +68,8 @@ from ._client_factory import web_client_factory, ex_handler_factory, customlocat
 
 logger = get_logger(__name__)
 
-
 # pylint: disable=too-many-locals,too-many-lines
+
 
 # TODO remove and replace with calls to KubeEnvironmentsOperations once the SDK gets updated
 class KubeEnvironmentClient():
@@ -84,7 +78,8 @@ class KubeEnvironmentClient():
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         api_version = "2020-12-01"
         sub_id = get_subscription_id(cmd.cli_ctx)
-        request_url = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/kubeEnvironments/{}?api-version={}".format(
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/kubeEnvironments/{}?api-version={}"
+        request_url = url_fmt.format(
             management_hostname.strip('/'),
             sub_id,
             resource_group_name,
@@ -99,7 +94,8 @@ class KubeEnvironmentClient():
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         api_version = "2020-12-01"
         sub_id = get_subscription_id(cmd.cli_ctx)
-        request_url = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/kubeEnvironments/{}?api-version={}".format(
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/kubeEnvironments/{}?api-version={}"
+        request_url = url_fmt.format(
             management_hostname.strip('/'),
             sub_id,
             resource_group_name,
@@ -114,7 +110,8 @@ class KubeEnvironmentClient():
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         api_version = "2020-12-01"
         sub_id = get_subscription_id(cmd.cli_ctx)
-        request_url = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/kubeEnvironments/{}?api-version={}".format(
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/kubeEnvironments/{}?api-version={}"
+        request_url = url_fmt.format(
             management_hostname.strip('/'),
             sub_id,
             resource_group_name,
@@ -129,15 +126,15 @@ class KubeEnvironmentClient():
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         api_version = "2020-12-01"
         sub_id = get_subscription_id(cmd.cli_ctx)
-        request_url = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/kubeEnvironments/{}?api-version={}".format(
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/kubeEnvironments/{}?api-version={}"
+        request_url = url_fmt.format(
             management_hostname.strip('/'),
             sub_id,
             resource_group_name,
             name,
             api_version)
 
-        send_raw_request(cmd.cli_ctx, "DELETE", request_url)
-        return None  # API doesn't return JSON for some reason
+        send_raw_request(cmd.cli_ctx, "DELETE", request_url)  # API doesn't return JSON for some reason
 
     @classmethod
     def list_by_subscription(cls, cmd, formatter=lambda x: x):
@@ -174,7 +171,8 @@ class KubeEnvironmentClient():
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         api_version = "2020-12-01"
         sub_id = get_subscription_id(cmd.cli_ctx)
-        request_url = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/kubeEnvironments?api-version={}".format(
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/kubeEnvironments?api-version={}"
+        request_url = url_fmt.format(
             management_hostname.strip('/'),
             sub_id,
             resource_group_name,
@@ -204,7 +202,8 @@ class AppServiceClient():
         api_version = "2020-12-01"
         sub_id = get_subscription_id(cmd.cli_ctx)
 
-        request_url = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/serverfarms/{}?api-version={}".format(
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/serverfarms/{}?api-version={}"
+        request_url = url_fmt.format(
             management_hostname.strip('/'),
             sub_id,
             resource_group_name,
@@ -220,7 +219,8 @@ class AppServiceClient():
         api_version = "2020-12-01"
         sub_id = get_subscription_id(cmd.cli_ctx)
 
-        request_url = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/serverfarms/{}?api-version={}".format(
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/serverfarms/{}?api-version={}"
+        request_url = url_fmt.format(
             management_hostname.strip('/'),
             sub_id,
             resource_group_name,
@@ -236,7 +236,8 @@ class AppServiceClient():
         api_version = "2020-12-01"
         sub_id = get_subscription_id(cmd.cli_ctx)
 
-        request_url = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/serverfarms/{}?api-version={}".format(
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/serverfarms/{}?api-version={}"
+        request_url = url_fmt.format(
             management_hostname.strip('/'),
             sub_id,
             resource_group_name,
@@ -254,7 +255,8 @@ class WebAppClient:
         api_version = "2020-12-01"
         sub_id = get_subscription_id(cmd.cli_ctx)
 
-        request_url = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/sites/{}?api-version={}".format(
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/sites/{}?api-version={}"
+        request_url = url_fmt.format(
             management_hostname.strip('/'),
             sub_id,
             resource_group_name,
@@ -270,9 +272,10 @@ class WebAppClient:
         api_version = "2020-12-01"
         sub_id = get_subscription_id(cmd.cli_ctx)
 
-        # f"{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/sites/{}/restart?api-version={}"
         if slot is not None:
-            request_url = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/sites/{}/slots/{}/restart?api-version={}".format(
+            url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/"\
+                      "Microsoft.Web/sites/{}/slots/{}/restart?api-version={}"
+            request_url = url_fmt.format(
                 management_hostname.strip('/'),
                 sub_id,
                 resource_group_name,
@@ -280,7 +283,8 @@ class WebAppClient:
                 slot,
                 api_version)
         else:
-            request_url = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/sites/{}/restart?api-version={}".format(
+            url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/sites/{}/restart?api-version={}"
+            request_url = url_fmt.format(
                 management_hostname.strip('/'),
                 sub_id,
                 resource_group_name,
@@ -288,17 +292,17 @@ class WebAppClient:
                 api_version)
 
         send_raw_request(cmd.cli_ctx, "POST", request_url)
-        return
 
 
-# rectify the format of the kube environment json returned from API to comply with older version of `az appservice kube show`
+# rectify the format of the kube env json returned from API to comply with older version of `az appservice kube show`
 def format_kube_environment_json(kube_info_raw):
     kube_info = kube_info_raw["properties"]
     if kube_info.get("aksResourceID"):
         kube_info["aksResourceId"] = kube_info["aksResourceID"]
         del kube_info["aksResourceID"]
 
-    other_properties = ['id', 'kind', 'kubeEnvironmentType', 'location', 'name', 'resourceGroup', 'tags', 'type', 'extendedLocation']
+    other_properties = ['id', 'kind', 'kubeEnvironmentType', 'location', 'name',
+                        'resourceGroup', 'tags', 'type', 'extendedLocation']
     for k in other_properties:
         kube_info[k] = kube_info_raw.get(k)
 
@@ -306,7 +310,8 @@ def format_kube_environment_json(kube_info_raw):
 
 
 def show_kube_environments(cmd, name, resource_group_name):
-    return format_kube_environment_json(KubeEnvironmentClient.show(cmd=cmd, name=name, resource_group_name=resource_group_name))
+    return format_kube_environment_json(KubeEnvironmentClient.show(cmd=cmd,
+                                                                   name=name, resource_group_name=resource_group_name))
 
 
 def delete_kube_environment(cmd, name, resource_group_name):
@@ -357,20 +362,23 @@ def create_kube_environment(cmd, name, resource_group_name, custom_location, sta
     }
 
     try:
-        return sdk_no_wait(no_wait, KubeEnvironmentClient.create, cmd=cmd, resource_group_name=resource_group_name, name=name, kube_environment_envelope=kube_environment)
+        return sdk_no_wait(no_wait, KubeEnvironmentClient.create,
+                           cmd=cmd, resource_group_name=resource_group_name,
+                           name=name, kube_environment_envelope=kube_environment)
     except Exception as e:
         try:
-            import json
             msg = json.loads(e.response._content)['Message']
-        except Exception:
-            raise e
+        except Exception as e2:
+            raise e from e2
     raise ValidationError(msg)
 
 
 def list_kube_environments(cmd, resource_group_name=None):
     if resource_group_name is None:
         return KubeEnvironmentClient.list_by_subscription(cmd, formatter=format_kube_environment_json)
-    return KubeEnvironmentClient.list_by_resource_group(cmd, resource_group_name, formatter=format_kube_environment_json)
+    return KubeEnvironmentClient.list_by_resource_group(cmd,
+                                                        resource_group_name,
+                                                        formatter=format_kube_environment_json)
 
 
 # TODO should be able to update staticIp and tags -- remove exception once API fixed
@@ -379,32 +387,33 @@ def update_kube_environment(cmd, name, resource_group_name, custom_location=None
     raise CLIError("Update is not yet supported for Kubernetes Environments.")
 
     # Raises an exception if the kube environment doesn't exist
-    KubeEnvironmentClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    # KubeEnvironmentClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
 
-    front_end_configuration = {"kind": "LoadBalancer"}
+    # front_end_configuration = {"kind": "LoadBalancer"}
 
-    extended_location = {"customLocation": custom_location}
+    # extended_location = {"customLocation": custom_location}
 
-    arc_configuration = {
-        "artifactsStorageType": "NetworkFileSystem",
-        "artifactStorageClassName": "default",
-        "frontEndServiceConfiguration": front_end_configuration
-    }
+    # arc_configuration = {
+    #     "artifactsStorageType": "NetworkFileSystem",
+    #     "artifactStorageClassName": "default",
+    #     "frontEndServiceConfiguration": front_end_configuration
+    # }
 
-    kube_environment = {
-        "kind": None,
-        "location": location,
-        "properties": {
-            "extendedLocation": extended_location,
-            "staticIp": static_ip,
-            "arcConfiguration": arc_configuration
-        }
-    }
+    # kube_environment = {
+    #     "kind": None,
+    #     "location": location,
+    #     "properties": {
+    #         "extendedLocation": extended_location,
+    #         "staticIp": static_ip,
+    #         "arcConfiguration": arc_configuration
+    #     }
+    # }
 
-    if tags is not None:
-        kube_environment["tags"] = tags
+    # if tags is not None:
+    #     kube_environment["tags"] = tags
 
-    return sdk_no_wait(no_wait, KubeEnvironmentClient.update, cmd=cmd, resource_group_name=resource_group_name, name=name, kube_environment_envelope=kube_environment)
+    # return sdk_no_wait(no_wait, KubeEnvironmentClient.update, cmd=cmd, resource_group_name=resource_group_name,
+    #                    name=name, kube_environment_envelope=kube_environment)
 
 
 def list_app_service_plans(cmd, resource_group_name=None):
@@ -422,7 +431,8 @@ def list_app_service_plans(cmd, resource_group_name=None):
 
 def _validate_asp_sku(app_service_environment, custom_location, sku):
     # Isolated SKU is supported only for ASE
-    if sku.upper() not in ['F1', 'FREE', 'D1', 'SHARED', 'B1', 'B2', 'B3', 'S1', 'S2', 'S3', 'P1V2', 'P2V2', 'P3V2', 'PC2', 'PC3', 'PC4', 'I1', 'I2', 'I3', 'K1']:
+    if sku.upper() not in ['F1', 'FREE', 'D1', 'SHARED', 'B1', 'B2', 'B3', 'S1', 'S2', 'S3', 'P1V2', 'P2V2', 'P3V2',
+                           'PC2', 'PC3', 'PC4', 'I1', 'I2', 'I3', 'K1']:
         raise CLIError('Invalid sku entered: {}'.format(sku))
 
     if sku.upper() in ['I1', 'I2', 'I3', 'I1V2', 'I2V2', 'I3V2']:
@@ -431,14 +441,15 @@ def _validate_asp_sku(app_service_environment, custom_location, sku):
                            "learn more: https://docs.microsoft.com/en-us/azure/app-service/overview-hosting-plans")
     elif app_service_environment:
         raise CLIError("Only pricing tier 'Isolated' is allowed in this app service plan. Use this link to "
-                        "learn more: https://docs.microsoft.com/en-us/azure/app-service/overview-hosting-plans")
+                       "learn more: https://docs.microsoft.com/en-us/azure/app-service/overview-hosting-plans")
     elif custom_location:
         # Custom Location only supports K1
         if sku.upper() != 'K1':
             raise CLIError("Only pricing tier 'K1' is allowed for this type of app service plan.")
 
 
-def create_app_service_plan(cmd, resource_group_name, name, is_linux, hyper_v, per_site_scaling=False, custom_location=None,
+def create_app_service_plan(cmd, resource_group_name, name, is_linux, hyper_v, per_site_scaling=False,
+                            custom_location=None,
                             app_service_environment=None, sku=None,
                             number_of_workers=None, location=None, tags=None, no_wait=False):
     if not sku:
@@ -446,16 +457,19 @@ def create_app_service_plan(cmd, resource_group_name, name, is_linux, hyper_v, p
 
     if custom_location:
         if not per_site_scaling:
-            raise ArgumentUsageError('Per Site Scaling must be true when using Custom Location. Please re-run with --per-site-scaling flag')
+            raise ArgumentUsageError('Per Site Scaling must be true when using Custom Location. '
+                                     'Please re-run with --per-site-scaling flag')
         if app_service_environment:
             raise ArgumentUsageError('App Service Environment is not supported with using Custom Location')
         if hyper_v:
             raise ArgumentUsageError('Hyper V is not supported with using Custom Location')
         if not is_linux:
-            raise ArgumentUsageError('Only Linux is supported with using Custom Location. Please re-run with --is-linux flag.')
+            raise ArgumentUsageError('Only Linux is supported with using Custom Location. '
+                                     'Please re-run with --is-linux flag.')
 
-    return create_app_service_plan_inner(cmd, resource_group_name, name, is_linux, hyper_v, per_site_scaling, custom_location,
-                                         app_service_environment, sku, number_of_workers, location, tags, no_wait)
+    return create_app_service_plan_inner(cmd, resource_group_name, name, is_linux, hyper_v, per_site_scaling,
+                                         custom_location, app_service_environment, sku, number_of_workers, location,
+                                         tags, no_wait)
 
 
 def get_vm_sizes(cli_ctx, location):
@@ -499,8 +513,7 @@ def _get_custom_location_id_from_custom_location(cmd, custom_location_name, reso
     if is_valid_resource_id(custom_location_name):
         return custom_location_name
 
-    # kube_envs = cf_kube_environments(cmd.cli_ctx).list_by_resource_group(resource_group_name)
-    kube_envs = KubeEnvironmentClient.list_by_subscription(cmd=cmd, resource_group_name=resource_group_name)
+    kube_envs = KubeEnvironmentClient.list_by_resource_group(cmd=cmd, resource_group_name=resource_group_name)
 
     for kube in kube_envs:
         parsed_custom_location = None
@@ -521,20 +534,22 @@ def _get_custom_location_id_from_custom_location(cmd, custom_location_name, reso
 def _get_custom_location_id_from_kube_env(kube):
     if kube.get("properties") and kube["properties"].get("extendedLocation"):
         return kube["properties"]['extendedLocation'].get('customLocation')
-    elif kube.get("extendedLocation") and kube["extendedLocation"].get("type") == "CustomLocation":
+    if kube.get("extendedLocation") and kube["extendedLocation"].get("type") == "CustomLocation":
         return kube["extendedLocation"]["name"]
     raise CLIError("Could not get custom location from kube environment")
 
 
 def _ensure_kube_settings_in_json(appservice_plan_json, extended_location=None, kube_env=None):
-    if appservice_plan_json.get("properties") and appservice_plan_json["properties"].get("kubeEnvironmentProfile") is None and kube_env is not None:
+    if appservice_plan_json.get("properties") and (appservice_plan_json["properties"].get("kubeEnvironmentProfile")
+                                                   is None and kube_env is not None):
         appservice_plan_json["properties"]["kubeEnvironmentProfile"] = kube_env
+
     if appservice_plan_json.get("extendedLocation") is None and extended_location is not None:
         appservice_plan_json["extendedLocation"] = extended_location
 
 
-def create_app_service_plan_inner(cmd, resource_group_name, name, is_linux, hyper_v, per_site_scaling=False, custom_location=None,
-                                  app_service_environment=None, sku=None,
+def create_app_service_plan_inner(cmd, resource_group_name, name, is_linux, hyper_v, per_site_scaling=False,
+                                  custom_location=None, app_service_environment=None, sku=None,
                                   number_of_workers=None, location=None, tags=None, no_wait=False):
     HostingEnvironmentProfile, SkuDescription, AppServicePlan = cmd.get_models(
         'HostingEnvironmentProfile', 'SkuDescription', 'AppServicePlan')
@@ -580,10 +595,9 @@ def create_app_service_plan_inner(cmd, resource_group_name, name, is_linux, hype
         kube_name = parsed_id.get("name")
         kube_rg = parsed_id.get("resource_group")
         if kube_name is not None and kube_rg is not None:
-            # kube_env = cf_kube_environments(cmd.cli_ctx).get(kube_rg, kube_name)
             kube_env = KubeEnvironmentClient.show(cmd=cmd, resource_group_name=kube_rg, name=kube_name)
-            # extended_location_envelope = ExtendedLocationEnvelope(name=_get_custom_location_id_from_kube_env(kube_env), type="CustomLocation")
-            extended_location_envelope = {"name": _get_custom_location_id_from_kube_env(kube_env), "type": "CustomLocation"}
+            extended_location_envelope = {"name": _get_custom_location_id_from_kube_env(kube_env),
+                                          "type": "CustomLocation"}
 
             if kube_env is not None:
                 location = kube_env["location"]
@@ -603,7 +617,8 @@ def create_app_service_plan_inner(cmd, resource_group_name, name, is_linux, hype
                               per_site_scaling=per_site_scaling, hosting_environment_profile=ase_def,
                               kube_environment_profile=kube_def, extended_location=extended_location_envelope)
     plan_json = plan_def.serialize()
-    _ensure_kube_settings_in_json(appservice_plan_json=plan_json, extended_location=extended_location_envelope, kube_env=kube_def)
+    _ensure_kube_settings_in_json(appservice_plan_json=plan_json,
+                                  extended_location=extended_location_envelope, kube_env=kube_def)
 
     return sdk_no_wait(no_wait, AppServiceClient.create, cmd=cmd, name=name,
                        resource_group_name=resource_group_name, appservice_json=plan_json)
@@ -627,16 +642,19 @@ def update_app_service_plan(cmd, resource_group_name, name, sku=None, number_of_
 
     plan["sku"] = sku_def
 
-    _ensure_kube_settings_in_json(appservice_plan_json=plan, extended_location=plan_with_kube_env.get("extendedLocation"), kube_env=plan_with_kube_env["properties"].get("kubeEnvironmentProfile"))
+    _ensure_kube_settings_in_json(appservice_plan_json=plan,
+                                  extended_location=plan_with_kube_env.get("extendedLocation"),
+                                  kube_env=plan_with_kube_env["properties"].get("kubeEnvironmentProfile"))
 
-    return sdk_no_wait(no_wait, AppServiceClient.update, cmd=cmd, name=name, resource_group_name=resource_group_name, appservice_json=plan)
+    return sdk_no_wait(no_wait, AppServiceClient.update, cmd=cmd, name=name,
+                       resource_group_name=resource_group_name, appservice_json=plan)
 
 
 def _validate_asp_and_custom_location_kube_envs_match(cmd, resource_group_name, custom_location, plan):
-    client = web_client_factory(cmd.cli_ctx)
     if is_valid_resource_id(plan):
         parse_result = parse_resource_id(plan)
-        plan_info = AppServiceClient.show(cmd=cmd, name=parse_result['name'], resource_group_name=parse_result["resource_group"])
+        plan_info = AppServiceClient.show(cmd=cmd, name=parse_result['name'],
+                                          resource_group_name=parse_result["resource_group"])
     else:
         plan_info = AppServiceClient.show(cmd=cmd, name=plan, resource_group_name=resource_group_name)
     if not plan_info:
@@ -653,17 +671,20 @@ def _validate_asp_and_custom_location_kube_envs_match(cmd, resource_group_name, 
 def _should_create_new_appservice_plan_for_k8se(cmd, name, custom_location, plan, resource_group_name):
     if custom_location and plan:
         return False
-    elif custom_location:
+    if custom_location:
         existing_app_details = get_app_details(cmd, name, resource_group_name)
         if not existing_app_details:
             return True
-        else:
-            if _validate_asp_and_custom_location_kube_envs_match(cmd, resource_group_name, custom_location, existing_app_details.server_farm_id):  # existing app and kube environments match
-                return False
-            else:  # existing app but new custom location
-                return True
-    else:  # plan is not None
-        return False
+        if _validate_asp_and_custom_location_kube_envs_match(cmd, resource_group_name, custom_location,
+                                                             existing_app_details.server_farm_id):
+            return False  # existing app and kube environments match
+        return True  # existing app but new custom location
+    return False  # plan is not None
+
+
+def _is_webapp_kube(custom_location, plan_info, SkuDescription):
+    return custom_location or plan_info.kind.upper() == KUBE_ASP_KIND.upper() or (
+        isinstance(plan_info.sku, SkuDescription) and plan_info.sku.name.upper() == KUBE_DEFAULT_SKU)
 
 
 def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custom_location=None, startup_file=None,  # pylint: disable=too-many-statements,too-many-branches
@@ -704,7 +725,9 @@ def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custo
     else:
         site_config = SiteConfig(app_settings=[])
 
-    _should_create_new_plan = _should_create_new_appservice_plan_for_k8se(cmd, name, custom_location, plan, resource_group_name)
+    _should_create_new_plan = _should_create_new_appservice_plan_for_k8se(cmd,
+                                                                          name, custom_location,
+                                                                          plan, resource_group_name)
     if _should_create_new_plan:
         plan = generate_default_app_service_plan_name(name)
         logger.warning("Plan not specified. Creating Plan '%s' with sku '%s'", plan, KUBE_DEFAULT_SKU)
@@ -714,7 +737,8 @@ def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custo
 
     if custom_location and plan:
         if not _validate_asp_and_custom_location_kube_envs_match(cmd, resource_group_name, custom_location, plan):
-            raise ValidationError("Custom location's kube environment and App Service Plan's kube environment don't match")
+            raise ValidationError("Custom location's kube environment and App Service Plan's "
+                                  "kube environment don't match")
     elif custom_location and not plan:
         app_details = get_app_details(cmd, name, resource_group_name)
         if app_details is not None:
@@ -725,16 +749,15 @@ def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custo
     client = web_client_factory(cmd.cli_ctx)
     if is_valid_resource_id(plan):
         parse_result = parse_resource_id(plan)
-        plan_info = AppServicePlan.from_dict(AppServiceClient.show(cmd=cmd, name=parse_result['name'], resource_group_name=parse_result["resource_group"]))
+        plan_info = AppServicePlan.from_dict(AppServiceClient.show(cmd=cmd, name=parse_result['name'],
+                                                                   resource_group_name=parse_result["resource_group"]))
     else:
-        plan_info = AppServicePlan.from_dict(AppServiceClient.show(cmd=cmd, name=plan, resource_group_name=resource_group_name))
+        plan_info = AppServicePlan.from_dict(AppServiceClient.show(cmd=cmd,
+                                                                   name=plan, resource_group_name=resource_group_name))
     if not plan_info:
         raise CLIError("The plan '{}' doesn't exist in the resource group '{}".format(plan, resource_group_name))
 
     if custom_location:
-        sku_tier = None
-        if isinstance(plan_info.sku, SkuDescription):
-            sku_tier = plan_info.sku.tier
         _validate_asp_sku(app_service_environment=None, custom_location=custom_location, sku=plan_info.sku.name)
 
     is_linux = plan_info.reserved
@@ -747,21 +770,23 @@ def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custo
     webapp_def = Site(location=location, site_config=site_config, server_farm_id=plan_info.id, tags=tags,
                       https_only=using_webapp_up)
 
-    is_kube = False
-    if custom_location or plan_info.kind.upper() == KUBE_ASP_KIND.upper() or (isinstance(plan_info.sku, SkuDescription) and plan_info.sku.name.upper() == KUBE_DEFAULT_SKU):
-        is_kube = True
+    is_kube = _is_webapp_kube(custom_location, plan_info, SkuDescription)
+    if is_kube:
         if deployment_container_image_name:
             webapp_def.kind = KUBE_CONTAINER_APP_KIND
         else:
             webapp_def.kind = KUBE_APP_KIND
 
-        if custom_location:  # if Custom Location provided, use that for Extended Location Envelope. Otherwise, get Custom Location from ASP
+        # if Custom Location provided, use that for Extended Location Envelope. Otherwise, get Custom Location from ASP
+        if custom_location:
             webapp_def.enable_additional_properties_sending()
             custom_location_id = _get_custom_location_id_from_custom_location(cmd, custom_location, resource_group_name)
             if custom_location_id:
-                webapp_def.additional_properties["extendedLocation"] = {'name': custom_location_id, 'type': 'CustomLocation'}
+                extended_loc = {'name': custom_location_id, 'type': 'CustomLocation'}
+                webapp_def.additional_properties["extendedLocation"] = extended_loc
         else:
-            webapp_def.additional_properties["extendedLocation"] = plan_info.additional_properties["extendedLocation"]
+            extended_loc = plan_info.additional_properties["extendedLocation"]
+            webapp_def.additional_properties["extendedLocation"] = extended_loc
 
     if is_kube:
         if min_worker_count is not None:
@@ -771,10 +796,15 @@ def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custo
             site_config.app_settings.append(NameValuePair(name='K8SE_APP_MAX_INSTANCE_COUNT', value=max_worker_count))
 
         if deployment_container_image_name:
-            site_config.app_settings.append(NameValuePair(name='DOCKER_REGISTRY_SERVER_URL', value=docker_registry_server_url))
+            site_config.app_settings.append(NameValuePair(name='DOCKER_REGISTRY_SERVER_URL',
+                                                          value=docker_registry_server_url))
+
             if docker_registry_server_user is not None and docker_registry_server_password is not None:
-                site_config.app_settings.append(NameValuePair(name='DOCKER_REGISTRY_SERVER_USERNAME', value=docker_registry_server_user))
-                site_config.app_settings.append(NameValuePair(name='DOCKER_REGISTRY_SERVER_PASSWORD', value=docker_registry_server_password))
+                site_config.app_settings.append(NameValuePair(name='DOCKER_REGISTRY_SERVER_USERNAME',
+                                                              value=docker_registry_server_user))
+
+                site_config.app_settings.append(NameValuePair(name='DOCKER_REGISTRY_SERVER_PASSWORD',
+                                                              value=docker_registry_server_password))
     helper = _StackRuntimeHelper(cmd, client, linux=(is_linux or is_kube))
     if runtime:
         runtime = helper.remove_delimiters(runtime)
@@ -897,6 +927,12 @@ def show_webapp(cmd, resource_group_name, name, slot=None, app_instance=None):
     return webapp
 
 
+def _is_function_kube(custom_location, plan_info, SkuDescription):
+    return custom_location or plan_info is not None and (
+        plan_info.kind.upper() == KUBE_ASP_KIND.upper() or (
+            isinstance(plan_info.sku, SkuDescription) and plan_info.sku.name.upper() == KUBE_DEFAULT_SKU))
+
+
 def create_function(cmd, resource_group_name, name, storage_account, plan=None, custom_location=None,
                     os_type=None, functions_version=None, runtime=None, runtime_version=None,
                     consumption_plan_location=None, app_insights=None, app_insights_key=None,
@@ -923,7 +959,7 @@ def create_function(cmd, resource_group_name, name, storage_account, plan=None, 
     if consumption_plan_location and plan:
         raise MutuallyExclusiveArgumentError("Consumption Plan and Plan cannot be used together")
 
-    SiteConfig, Site, NameValuePair, ExtendedLocationEnvelope = cmd.get_models('SiteConfig', 'Site', 'NameValuePair', 'ExtendedLocationEnvelope')
+    SiteConfig, Site, NameValuePair = cmd.get_models('SiteConfig', 'Site', 'NameValuePair')
     docker_registry_server_url = parse_docker_image_name(deployment_container_image_name)
 
     site_config = SiteConfig(app_settings=[])
@@ -935,7 +971,7 @@ def create_function(cmd, resource_group_name, name, storage_account, plan=None, 
 
     if consumption_plan_location:
         locations = list_consumption_locations(cmd)
-        location = next((l for l in locations if l['name'].lower() == consumption_plan_location.lower()), None)
+        location = next((loc for loc in locations if loc['name'].lower() == consumption_plan_location.lower()), None)
         if location is None:
             raise CLIError("Location is invalid. Use: az functionapp list-consumption-locations")
         functionapp_def.location = consumption_plan_location
@@ -944,7 +980,9 @@ def create_function(cmd, resource_group_name, name, storage_account, plan=None, 
         is_linux = os_type and os_type.lower() == 'linux'
 
     else:  # apps with SKU based plan
-        _should_create_new_plan = _should_create_new_appservice_plan_for_k8se(cmd, name, custom_location, plan, resource_group_name)
+        _should_create_new_plan = _should_create_new_appservice_plan_for_k8se(cmd,
+                                                                              name, custom_location,
+                                                                              plan, resource_group_name)
         if _should_create_new_plan:
             plan = generate_default_app_service_plan_name(name)
             logger.warning("Plan not specified. Creating Plan '%s' with sku '%s'", plan, KUBE_DEFAULT_SKU)
@@ -954,7 +992,8 @@ def create_function(cmd, resource_group_name, name, storage_account, plan=None, 
 
         if custom_location and plan:
             if not _validate_asp_and_custom_location_kube_envs_match(cmd, resource_group_name, custom_location, plan):
-                raise ValidationError("Custom location's kube environment and App Service Plan's kube environment don't match")
+                raise ValidationError("Custom location's kube environment "
+                                      "and App Service Plan's kube environment don't match")
         elif custom_location and not plan:
             app_details = get_app_details(cmd, name, resource_group_name)
             if app_details is not None:
@@ -972,9 +1011,7 @@ def create_function(cmd, resource_group_name, name, storage_account, plan=None, 
         functionapp_def.server_farm_id = plan_info.id
         functionapp_def.location = location
 
-    is_kube = False
-    if custom_location or plan_info is not None and (plan_info.kind.upper() == KUBE_ASP_KIND.upper() or (isinstance(plan_info.sku, SkuDescription) and plan_info.sku.name.upper() == KUBE_DEFAULT_SKU)):
-        is_kube = True
+    is_kube = _is_function_kube(custom_location, plan_info, SkuDescription)
 
     if is_kube:
         if min_worker_count is not None:
@@ -1017,12 +1054,15 @@ def create_function(cmd, resource_group_name, name, storage_account, plan=None, 
 
     if is_kube:
         functionapp_def.enable_additional_properties_sending()
-        if custom_location:  # if Custom Location provided, use that for Extended Location Envelope. Otherwise, get Custom Location from ASP
+        # if Custom Location provided, use that for Extended Location Envelope. Otherwise, get Custom Location from ASP
+        if custom_location:
             custom_location_id = _get_custom_location_id_from_custom_location(cmd, custom_location, resource_group_name)
             if custom_location_id:
-                functionapp_def.additional_properties["extendedLocation"] = {'name': custom_location_id, 'type': 'CustomLocation'}
+                extended_loc = {'name': custom_location_id, 'type': 'CustomLocation'}
+                functionapp_def.additional_properties["extendedLocation"] = extended_loc
         else:
-            functionapp_def.additional_properties["extendedLocation"] = plan_info.additional_properties["extendedLocation"]
+            extended_loc = plan_info.additional_properties["extendedLocation"]
+            functionapp_def.additional_properties["extendedLocation"] = extended_loc
 
         functionapp_def.kind = KUBE_FUNCTION_APP_KIND
         functionapp_def.reserved = True
@@ -1035,10 +1075,13 @@ def create_function(cmd, resource_group_name, name, storage_account, plan=None, 
                                                           value=deployment_container_image_name))
             site_config.app_settings.append(NameValuePair(name='FUNCTION_APP_EDIT_MODE', value='readOnly'))
             site_config.linux_fx_version = _format_fx_version(deployment_container_image_name)
-            site_config.app_settings.append(NameValuePair(name='DOCKER_REGISTRY_SERVER_URL', value=docker_registry_server_url))
+            site_config.app_settings.append(NameValuePair(name='DOCKER_REGISTRY_SERVER_URL',
+                                            value=docker_registry_server_url))
             if docker_registry_server_user is not None and docker_registry_server_password is not None:
-                site_config.app_settings.append(NameValuePair(name='DOCKER_REGISTRY_SERVER_USERNAME', value=docker_registry_server_user))
-                site_config.app_settings.append(NameValuePair(name='DOCKER_REGISTRY_SERVER_PASSWORD', value=docker_registry_server_password))
+                site_config.app_settings.append(NameValuePair(name='DOCKER_REGISTRY_SERVER_USERNAME',
+                                                value=docker_registry_server_user))
+                site_config.app_settings.append(NameValuePair(name='DOCKER_REGISTRY_SERVER_PASSWORD',
+                                                value=docker_registry_server_password))
         else:
             site_config.app_settings.append(NameValuePair(name='WEBSITES_ENABLE_APP_SERVICE_STORAGE', value='true'))
             site_config.linux_fx_version = _get_linux_fx_kube_functionapp(runtime, runtime_version)
@@ -1269,6 +1312,7 @@ def config_source_control(cmd, resource_group_name, name, repo_url, repository_t
                 raise
             logger.warning('retrying %s/4', i + 1)
             time.sleep(5)   # retry in a moment
+    return None
 
 
 def list_publish_profiles(cmd, resource_group_name, name, slot=None, xml=False):
@@ -1305,7 +1349,6 @@ def _resolve_kube_environment_id(cli_ctx, kube_environment, resource_group_name)
         return kube_environment
 
     from msrestazure.tools import resource_id
-    from azure.cli.core.commands.client_factory import get_subscription_id
     return resource_id(
         subscription=get_subscription_id(cli_ctx),
         resource_group=resource_group_name,
@@ -1549,8 +1592,8 @@ def enable_zip_deploy(cmd, resource_group_name, name, src, timeout=None, slot=No
         time.sleep(7)
     try:
         scm_url = _get_scm_url(cmd, resource_group_name, name, slot)
-    except ValueError:
-        raise CLIError('Failed to fetch scm url for function app')
+    except ValueError as e:
+        raise CLIError('Failed to fetch scm url for function app') from e
 
     zip_url = scm_url + '/api/zipdeploy?isAsync=true'
     deployment_status_url = scm_url + '/api/deployments/latest'
@@ -1573,7 +1616,8 @@ def enable_zip_deploy(cmd, resource_group_name, name, src, timeout=None, slot=No
         logger.warning("Deployment endpoint responded with status code %d", res.status_code)
 
         if is_kube and res.status_code != 202 and res.status_code != 409:
-            logger.warning('Something went wrong. It may take a few seconds for a new deployment to reflect on kube cluster. Retrying deployment...')
+            logger.warning('Something went wrong. It may take a few seconds for a new deployment to reflect'
+                           'on kube cluster. Retrying deployment...')
             time.sleep(10)   # retry in a moment
             res = requests.post(zip_url, data=zip_content, headers=headers,
                                 verify=not should_disable_connection_verify())

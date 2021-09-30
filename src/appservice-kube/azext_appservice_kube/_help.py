@@ -53,7 +53,16 @@ helps['appservice kube create'] = """
     examples:
     - name: Create Kubernetes Environment
       text: |
-          az appservice kube create -n MyKubeEnvironment -g MyResourceGroup --static-ip 0.0.0.0
+          az appservice kube create -n MyKubeEnvironment -g MyResourceGroup --static-ip 0.0.0.0 --custom-location custom_location_id
+"""
+
+helps['appservice kube update'] = """
+    type: command
+    short-summary: Update a Kubernetes Environment. Currently not supported
+    examples:
+    - name: Update Kubernetes Environment
+      text: |
+          az appservice kube update -n MyKubeEnvironment -g MyResourceGroup --static-ip 0.0.0.0
 """
 
 helps['appservice kube show'] = """

@@ -5,7 +5,6 @@
 
 import os
 import zipfile
-from os import path
 from knack.util import CLIError
 from knack.log import get_logger
 from azure.mgmt.web.models import SkuDescription
@@ -125,7 +124,7 @@ def get_lang_from_content(src_path, html=False):
                          fnmatch.fnmatch(file, "*shtml.")):
                 static_html_file = os.path.join(src_path, file)
                 break
-            elif fnmatch.fnmatch(file, "*.csproj"):
+            if fnmatch.fnmatch(file, "*.csproj"):
                 package_netcore_file = os.path.join(src_path, file)
                 break
 
@@ -247,11 +246,11 @@ def detect_node_version_tocreate(detected_ver):
     node_ver = NODE_VERSION_DEFAULT
     if major_ver < 4:
         node_ver = NODE_VERSION_DEFAULT
-    elif major_ver >= 4 and major_ver < 6:
+    elif 4 <= major_ver < 6:
         node_ver = '4.5'
-    elif major_ver >= 6 and major_ver < 8:
+    elif 6 <= major_ver < 8:
         node_ver = '6.9'
-    elif major_ver >= 8 and major_ver < 10:
+    elif 8 <= major_ver < 10:
         node_ver = NODE_VERSION_DEFAULT
     elif major_ver >= 10:
         node_ver = '10.14'
@@ -313,13 +312,13 @@ def does_app_already_exist(cmd, name):
 def get_app_details(cmd, name, resource_group):
     client = web_client_factory(cmd.cli_ctx)
     return client.web_apps.get(resource_group, name)
-    '''
-    data = (list(filter(lambda x: name.lower() in x.name.lower(), client.web_apps.list())))
-    _num_items = len(data)
-    if _num_items > 0:
-        return data[0]
-    return None
-    '''
+    # '''
+    # data = (list(filter(lambda x: name.lower() in x.name.lower(), client.web_apps.list())))
+    # _num_items = len(data)
+    # if _num_items > 0:
+    #     return data[0]
+    # return None
+    # '''
 
 
 def get_rg_to_use(cmd, user, loc, os_name, rg_name=None):
