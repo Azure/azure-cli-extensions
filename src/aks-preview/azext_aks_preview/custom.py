@@ -871,8 +871,8 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         enable_ultra_ssd=enable_ultra_ssd,
         max_pods=int(max_pods) if max_pods else None,
         type=vm_set_type,
-        workload_runtime=workload_runtime
-        gpu_instance_profile=gpu_instance_profile,
+        workload_runtime=workload_runtime,
+        gpu_instance_profile=gpu_instance_profile
     )
 
     if node_osdisk_size:
@@ -2435,7 +2435,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
         enable_encryption_at_host=enable_encryption_at_host,
         enable_ultra_ssd=enable_ultra_ssd,
         mode=mode,
-        workload_runtime=workload_runtime
+        workload_runtime=workload_runtime,
         gpu_instance_profile=gpu_instance_profile
     )
 
