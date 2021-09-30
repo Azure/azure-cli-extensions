@@ -14,7 +14,7 @@ def _normalize_sku(sku):
         return 'F1'
     if sku == 'SHARED':
         return 'D1'
-    if sku == 'ANY' or sku == 'ELASTICANY': # old kube skus
+    if sku in ('ANY', 'ELASTICANY'):  # old kube skus
         return 'K1'
     if sku == 'KUBE':
         return 'K1'

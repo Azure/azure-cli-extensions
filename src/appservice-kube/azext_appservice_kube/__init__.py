@@ -4,7 +4,6 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core import AzCommandsLoader
-from azure.cli.core.profiles import register_resource_type
 
 from azext_appservice_kube._help import helps  # pylint: disable=unused-import
 
@@ -36,5 +35,3 @@ class AppserviceCommandsLoader(AzCommandsLoader):
 
 
 COMMAND_LOADER_CLS = AppserviceCommandsLoader
-
-

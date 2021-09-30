@@ -4,10 +4,6 @@
 # --------------------------------------------------------------------------------------------
 
 from knack.util import CLIError
-from msrestazure.tools import is_valid_resource_id, parse_resource_id
-from azure.cli.command_modules.appservice._validators import (
-    validate_site_create
-)
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from ._client_factory import web_client_factory
 from ._utils import _normalize_sku

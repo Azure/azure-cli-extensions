@@ -8,7 +8,6 @@ import zipfile
 from os import path
 from knack.util import CLIError
 from knack.log import get_logger
-from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.mgmt.web.models import SkuDescription
 
 from ._constants import (NETCORE_VERSION_DEFAULT, NETCORE_VERSIONS, NODE_VERSION_DEFAULT,
@@ -18,7 +17,8 @@ from ._constants import (NETCORE_VERSION_DEFAULT, NETCORE_VERSIONS, NODE_VERSION
 from ._client_factory import web_client_factory, resource_client_factory
 logger = get_logger(__name__)
 
-def get_runtime_version_details(file_path, lang_name, is_kube = False):
+
+def get_runtime_version_details(file_path, lang_name, is_kube=False):
     version_detected = None
     version_to_create = None
     if lang_name.lower() == NETCORE_RUNTIME_NAME:
@@ -46,7 +46,8 @@ def get_runtime_version_details(file_path, lang_name, is_kube = False):
         version_to_create = "-"
     return {'detected': version_detected, 'to_create': version_to_create}
 
-def zip_contents_from_dir(dirPath, lang, is_kube = None):
+
+def zip_contents_from_dir(dirPath, lang, is_kube=None):
     relroot = os.path.abspath(os.path.join(dirPath, os.pardir))
 
     path_and_file = os.path.splitdrive(dirPath)[1]
@@ -70,6 +71,7 @@ def zip_contents_from_dir(dirPath, lang, is_kube = None):
                 arcname = absname[len(abs_src) + 1:]
                 zf.write(absname, arcname)
     return zip_file_path
+
 
 def create_resource_group(cmd, rg_name, location):
     from azure.cli.core.profiles import ResourceType, get_sdk
@@ -369,6 +371,7 @@ def get_plan_to_use(cmd, user, os_name, loc, sku, create_rg, resource_group_name
         return _determine_if_default_plan_to_use(cmd, _default_asp, resource_group_name, loc, sku, create_rg)
     return plan
 
+
 def get_kube_plan_to_use(cmd, kube_environment, loc, sku, create_rg, resource_group_name, plan=None):
     _default_asp = "{}_asp_{}_{}_0".format(kube_environment, sku, resource_group_name)
     if plan is None:  # --plan not provided by user
@@ -426,4 +429,3 @@ def generate_default_app_service_plan_name(webapp_name):
     webapp_name = webapp_name[:222]  # max length for app service plan name is 260
 
     return '{}_plan_{}'.format(webapp_name, random_uuid)
-

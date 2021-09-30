@@ -19,4 +19,3 @@ def _generic_site_operation(cli_ctx, resource_group_name, name, operation_name, 
     return (operation(resource_group_name, name, slot)
             if extra_parameter is None else operation(resource_group_name,
                                                       name, extra_parameter, slot))
-
