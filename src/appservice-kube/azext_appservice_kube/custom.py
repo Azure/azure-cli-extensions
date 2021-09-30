@@ -384,7 +384,7 @@ def list_kube_environments(cmd, resource_group_name=None):
 
 
 # TODO should be able to update staticIp and tags -- remove exception once API fixed
-def update_kube_environment(cmd, name, resource_group_name, custom_location=None, static_ip=None, location=None,
+def update_kube_environment(cmd, name, resource_group_name, custom_location=None, static_ip=None,
                             tags=None, no_wait=False):
     raise CLIError("Update is not yet supported for Kubernetes Environments.")
 

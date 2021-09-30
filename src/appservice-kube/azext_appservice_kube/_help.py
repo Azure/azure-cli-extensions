@@ -7,6 +7,15 @@
 from knack.help_files import helps
 # pylint: disable=line-too-long, too-many-lines
 
+helps['webapp scale'] = """
+type: command
+short-summary: Modify the number of instances of a webapp.
+examples:
+  - name: Change the number of instances of MyApp to 2.
+    text: >
+        az webapp scale -g MyResourceGroup -n MyApp --instance-count 2
+"""
+
 helps['appservice plan create'] = """
 type: command
 short-summary: Create an app service plan.
@@ -62,7 +71,7 @@ helps['appservice kube update'] = """
     examples:
     - name: Update Kubernetes Environment
       text: |
-          az appservice kube update -n MyKubeEnvironment -g MyResourceGroup --static-ip 0.0.0.0
+          az appservice kube update --name MyKubeEnvironment -g MyResourceGroup --static-ip 0.0.0.0
 """
 
 helps['appservice kube show'] = """

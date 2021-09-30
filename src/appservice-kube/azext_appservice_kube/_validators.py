@@ -92,3 +92,10 @@ def validate_app_or_slot_exists_in_rg(cmd, namespace):
         app = client.web_apps.get(resource_group_name, webapp, None, raw=True)
     if app.response.status_code != 200:
         raise CLIError(app.response.text)
+
+
+def validate_timeout_value(namespace):
+    """Validates that zip deployment timeout is set to a reasonable min value"""
+    if isinstance(namespace.timeout, int):
+        if namespace.timeout <= 29:
+            raise CLIError('--timeout value should be a positive value in seconds and should be at least 30')

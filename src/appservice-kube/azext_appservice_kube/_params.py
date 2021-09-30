@@ -13,7 +13,7 @@ from azure.cli.core.commands.parameters import (resource_group_name_type, get_lo
 
 from ._constants import (FUNCTIONS_VERSIONS, FUNCTIONS_VERSION_TO_SUPPORTED_RUNTIME_VERSIONS,
                          LINUX_RUNTIMES, WINDOWS_RUNTIMES, MULTI_CONTAINER_TYPES, OS_TYPES)
-from ._validators import validate_asp_create
+from ._validators import validate_asp_create, validate_timeout_value
 
 
 def load_arguments(self, _):
@@ -78,6 +78,16 @@ def load_arguments(self, _):
         c.argument('slot', options_list=['--slot', '-s'],
                    help="the name of the slot. Default to the productions slot if not specified")
 
+    with self.argument_context('functionapp config container set') as c:
+        c.argument('docker_custom_image_name', options_list=['--docker-custom-image-name', '-c', '-i'],
+                       help='the container custom image name and optionally the tag name')
+        c.argument('docker_registry_server_password', options_list=['--docker-registry-server-password', '-p'],
+                       help='the container registry server password')
+        c.argument('docker_registry_server_url', options_list=['--docker-registry-server-url', '-r'],
+                       help='the container registry server url')
+        c.argument('docker_registry_server_user', options_list=['--docker-registry-server-user', '-u'],
+                       help='the container registry server username')
+
     with self.argument_context('functionapp create') as c:
         c.argument('plan', options_list=['--plan', '-p'], configured_default='appserviceplan',
                    completer=get_resource_name_completion_list('Microsoft.Web/serverFarms'),
@@ -101,6 +111,11 @@ def load_arguments(self, _):
 
     for scope in ['webapp', 'functionapp']:
         with self.argument_context(scope + ' create') as c:
+            c.argument('assign_identities', nargs='*', options_list=['--assign-identity'],
+                       help='accept system or user assigned identities separated by spaces. Use \'[system]\' to refer system assigned identity, or a resource id to refer user assigned identity. Check out help for more examples')
+            c.argument('scope', options_list=['--scope'], help="Scope that the system assigned identity can access")
+            c.argument('role', options_list=['--role'], help="Role name or id the system assigned identity will have")
+
             c.argument('deployment_container_image_name', options_list=['--deployment-container-image-name', '-i'], help='Linux only. Container image name from Docker Hub, e.g. publisher/image-name:tag')
             c.argument('deployment_local_git', action='store_true', options_list=['--deployment-local-git', '-l'], help='enable local git')
             c.argument('deployment_zip', options_list=['--deployment-zip', '-z'], help='perform deployment using zip file')
@@ -109,6 +124,15 @@ def load_arguments(self, _):
             c.argument('min_worker_count', help='Minimum number of workers to be allocated.', type=int, default=None, is_preview=True)
             c.argument('max_worker_count', help='Maximum number of workers to be allocated.', type=int, default=None, is_preview=True)
             c.argument('tags', arg_type=tags_type)
+
+            with self.argument_context(scope + ' deployment source config-zip') as c:
+                c.argument('src', help='a zip file path for deployment')
+                c.argument('build_remote', help='enable remote build during deployment',
+                            arg_type=get_three_state_flag(return_label=True))
+                c.argument('timeout', type=int, options_list=['--timeout', '-t'],
+                            help='Configurable timeout in seconds for checking the status of deployment',
+                            validator=validate_timeout_value)
+                c.argument('is_kube', help='the app is a kubernetes app')
 
     with self.argument_context('appservice') as c:
         c.argument('resource_group_name', arg_type=resource_group_name_type)
@@ -153,8 +177,10 @@ def load_arguments(self, _):
         c.argument('no_wait', help='Do not wait for the create to complete, and return immediately after queuing the create.')
 
     with self.argument_context('appservice kube update') as c:
-        c.argument('kube_name', arg_type=name_arg_type, help='Name of the kubernetes environment.')
+        c.argument('name', arg_type=name_arg_type, help='Name of the kubernetes environment.')
         c.argument('tags', arg_type=tags_type)
+        c.argument('custom_location', options_list=['--custom-location', '-c'], help="ID of the custom location")
+        c.argument('static_ip', help='New Static IP Address.')
 
     with self.argument_context('appservice kube delete') as c:
         c.argument('name', arg_type=name_arg_type, help='Name of the Kubernetes Environment.')
