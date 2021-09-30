@@ -1,5 +1,5 @@
 Microsoft Azure CLI 'appservice-kube' Extension
 ==========================================
 
-This package is for the 'appservice-kube' extension.
-i.e. 'az appservice-kube'
+The appservice-kube extension adds support for controlling App Service Kubernetes Environments.
+See here for more information: https://docs.microsoft.com/en-us/azure/app-service/manage-create-arc-environment?tabs=bash
