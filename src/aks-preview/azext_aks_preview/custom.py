@@ -2019,8 +2019,8 @@ def aks_upgrade(cmd,    # pylint: disable=unused-argument, too-many-return-state
                        'If you only want to upgrade the node version please use the "--node-image-only" option only.')
 
     if node_image_only:
-        msg = "This node image upgrade operation will run across every node pool in the cluster" \
-              "and might take a while, do you wish to continue?"
+        msg = "This node image upgrade operation will run across every node pool in the cluster " \
+              "and might take a while. Do you wish to continue?"
         if not yes and not prompt_y_n(msg, default="n"):
             return None
 
