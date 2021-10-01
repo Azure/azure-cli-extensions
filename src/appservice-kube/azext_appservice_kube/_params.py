@@ -80,13 +80,13 @@ def load_arguments(self, _):
 
     with self.argument_context('functionapp config container set') as c:
         c.argument('docker_custom_image_name', options_list=['--docker-custom-image-name', '-c', '-i'],
-                       help='the container custom image name and optionally the tag name')
+                   help='the container custom image name and optionally the tag name')
         c.argument('docker_registry_server_password', options_list=['--docker-registry-server-password', '-p'],
-                       help='the container registry server password')
+                   help='the container registry server password')
         c.argument('docker_registry_server_url', options_list=['--docker-registry-server-url', '-r'],
-                       help='the container registry server url')
+                   help='the container registry server url')
         c.argument('docker_registry_server_user', options_list=['--docker-registry-server-user', '-u'],
-                       help='the container registry server username')
+                   help='the container registry server username')
 
     with self.argument_context('functionapp create') as c:
         c.argument('plan', options_list=['--plan', '-p'], configured_default='appserviceplan',
@@ -128,10 +128,10 @@ def load_arguments(self, _):
             with self.argument_context(scope + ' deployment source config-zip') as c:
                 c.argument('src', help='a zip file path for deployment')
                 c.argument('build_remote', help='enable remote build during deployment',
-                            arg_type=get_three_state_flag(return_label=True))
+                           arg_type=get_three_state_flag(return_label=True))
                 c.argument('timeout', type=int, options_list=['--timeout', '-t'],
-                            help='Configurable timeout in seconds for checking the status of deployment',
-                            validator=validate_timeout_value)
+                           help='Configurable timeout in seconds for checking the status of deployment',
+                           validator=validate_timeout_value)
                 c.argument('is_kube', help='the app is a kubernetes app')
 
     with self.argument_context('appservice') as c:

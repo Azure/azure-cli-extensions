@@ -9,6 +9,7 @@ from ._client_factory import web_client_factory
 from ._utils import _normalize_sku, _validate_asp_sku
 from ._constants import KUBE_DEFAULT_SKU
 
+
 def validate_asp_sku(cmd, namespace):
     import json
     client = web_client_factory(cmd.cli_ctx)
