@@ -60,7 +60,7 @@ from ._constants import (FUNCTIONS_VERSION_TO_DEFAULT_RUNTIME_VERSION, FUNCTIONS
                          KUBE_CONTAINER_APP_KIND, LINUX_RUNTIMES, WINDOWS_RUNTIMES)
 
 from ._utils import (_normalize_sku, get_sku_name, _generic_site_operation,
-                     _get_location_from_resource_group)
+                     _get_location_from_resource_group, _validate_asp_sku)
 from ._create_util import (get_app_details, get_site_availability, get_current_stack_from_runtime,
                            generate_default_app_service_plan_name)
 from ._client_factory import web_client_factory, ex_handler_factory, customlocation_client_factory
@@ -429,25 +429,6 @@ def list_app_service_plans(cmd, resource_group_name=None):
         del plan.geo_region
         del plan.subscription
     return plans
-
-
-def _validate_asp_sku(app_service_environment, custom_location, sku):
-    # Isolated SKU is supported only for ASE
-    if sku.upper() not in ['F1', 'FREE', 'D1', 'SHARED', 'B1', 'B2', 'B3', 'S1', 'S2', 'S3', 'P1V2', 'P2V2', 'P3V2',
-                           'PC2', 'PC3', 'PC4', 'I1', 'I2', 'I3', 'K1']:
-        raise CLIError('Invalid sku entered: {}'.format(sku))
-
-    if sku.upper() in ['I1', 'I2', 'I3', 'I1V2', 'I2V2', 'I3V2']:
-        if not app_service_environment:
-            raise CLIError("The pricing tier 'Isolated' is not allowed for this app service plan. Use this link to "
-                           "learn more: https://docs.microsoft.com/en-us/azure/app-service/overview-hosting-plans")
-    elif app_service_environment:
-        raise CLIError("Only pricing tier 'Isolated' is allowed in this app service plan. Use this link to "
-                       "learn more: https://docs.microsoft.com/en-us/azure/app-service/overview-hosting-plans")
-    elif custom_location:
-        # Custom Location only supports K1
-        if sku.upper() != 'K1':
-            raise CLIError("Only pricing tier 'K1' is allowed for this type of app service plan.")
 
 
 def create_app_service_plan(cmd, resource_group_name, name, is_linux, hyper_v, per_site_scaling=False,

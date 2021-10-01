@@ -6,8 +6,8 @@
 from knack.util import CLIError
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from ._client_factory import web_client_factory
-from ._utils import _normalize_sku
-
+from ._utils import _normalize_sku, _validate_asp_sku
+from ._constants import KUBE_DEFAULT_SKU
 
 def validate_asp_sku(cmd, namespace):
     import json
@@ -35,6 +35,14 @@ def validate_asp_sku(cmd, namespace):
 def validate_asp_create(cmd, namespace):
     """Validate the SiteName that is being used to create is available
     This API requires that the RG is already created"""
+
+    # need to validate SKU before the general ASP create validation
+    sku = namespace.sku
+    if not sku:
+        sku = 'B1' if not namespace.custom_location else KUBE_DEFAULT_SKU
+    sku = _normalize_sku(sku)
+    _validate_asp_sku(namespace.app_service_environment, namespace.custom_location, sku)
+
     client = web_client_factory(cmd.cli_ctx)
     if isinstance(namespace.name, str) and isinstance(namespace.resource_group_name, str):
         resource_group_name = namespace.resource_group_name
@@ -51,7 +59,7 @@ def validate_asp_create(cmd, namespace):
             "type": "Microsoft.Web/serverfarms",
             "location": location,
             "properties": {
-                "skuName": _normalize_sku(namespace.sku) if namespace.sku else None,
+                "skuName": sku,
                 "capacity": namespace.number_of_workers or 1,
                 "needLinuxWorkers": namespace.is_linux if namespace.custom_location is None else 'false',
                 "isXenon": namespace.hyper_v

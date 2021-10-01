@@ -21,6 +21,25 @@ def _normalize_sku(sku):
     return sku
 
 
+def _validate_asp_sku(app_service_environment, custom_location, sku):
+    # Isolated SKU is supported only for ASE
+    if sku.upper() not in ['F1', 'FREE', 'D1', 'SHARED', 'B1', 'B2', 'B3', 'S1', 'S2', 'S3', 'P1V2', 'P1V3', 'P2V2',
+                            'P3V2','PC2', 'PC3', 'PC4', 'I1', 'I2', 'I3', 'K1']:
+        raise CLIError('Invalid sku entered: {}'.format(sku))
+
+    if sku.upper() in ['I1', 'I2', 'I3', 'I1V2', 'I2V2', 'I3V2']:
+        if not app_service_environment:
+            raise CLIError("The pricing tier 'Isolated' is not allowed for this app service plan. Use this link to "
+                           "learn more: https://docs.microsoft.com/en-us/azure/app-service/overview-hosting-plans")
+    elif app_service_environment:
+        raise CLIError("Only pricing tier 'Isolated' is allowed in this app service plan. Use this link to "
+                       "learn more: https://docs.microsoft.com/en-us/azure/app-service/overview-hosting-plans")
+    elif custom_location:
+        # Custom Location only supports K1
+        if sku.upper() != 'K1':
+            raise CLIError("Only pricing tier 'K1' is allowed for this type of app service plan.")
+
+
 def get_sku_name(tier):  # pylint: disable=too-many-return-statements
     tier = tier.upper()
     if tier in ['F1', 'FREE']:
@@ -35,12 +54,16 @@ def get_sku_name(tier):  # pylint: disable=too-many-return-statements
         return 'PREMIUM'
     if tier in ['P1V2', 'P2V2', 'P3V2']:
         return 'PREMIUMV2'
+    if tier in ['P1V3', 'P2V3', 'P3V3']:
+        return 'PREMIUMV3'
     if tier in ['PC2', 'PC3', 'PC4']:
         return 'PremiumContainer'
     if tier in ['EP1', 'EP2', 'EP3']:
         return 'ElasticPremium'
     if tier in ['I1', 'I2', 'I3']:
         return 'Isolated'
+    if tier in ['I1V2', 'I2V2', 'I3V2']:
+        return 'IsolatedV2'
     if tier in ['K1']:
         return 'Kubernetes'
     raise CLIError("Invalid sku(pricing tier), please refer to command help for valid values")
