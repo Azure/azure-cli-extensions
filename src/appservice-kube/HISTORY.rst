@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.2.3
+++++++
+* Rewrite commands to use the CLI's SDKs
+
 0.2.2
 ++++++
 * Fix wrong custom location being used if multiple custom locations of the same name in different RG
@@ -65,7 +69,7 @@ Release History
 
 0.1.11
 ++++++
-* Oops broke AppService plan create for non-k8se 
+* Oops broke AppService plan create for non-k8se
 
 0.1.10
 ++++++
