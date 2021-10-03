@@ -5,7 +5,7 @@
 # pylint: disable=line-too-long
 
 from knack.arguments import CLIArgumentType
-
+from azure.cli.core.commands.validators import validate_file_or_dict
 
 def load_arguments(self, _):
 
@@ -111,3 +111,86 @@ def load_arguments(self, _):
                    help='The name of a virtual machine.')
         c.argument('devcenter', type=str, help='The Fidalgo DevCenter.')
         c.argument('fidalgo_dns_suffix', type=str, help='Optional DevCenter DNS suffix')
+
+    with self.argument_context('fidalgo environment list') as c:
+        c.argument('dev_center', type=str, help='The DevCenter to operate on.')
+        c.argument('fidalgo_dns_suffix', type=str, help='The DNS suffix used as the base for all fidalgo requests.')
+        c.argument('top', type=int, help='The maximum number of resources to return from the operation. Example: '
+                   '\'$top=10\'.')
+        c.argument('project_name', type=str, help='The Fidalgo Project upon which to execute operations.')
+        c.argument('filter_', options_list=['--filter'], type=str, help='An OData $filter clause to apply to the '
+                   'operation.')
+
+    with self.argument_context('fidalgo environment show') as c:
+        c.argument('dev_center', type=str, help='The DevCenter to operate on.')
+        c.argument('fidalgo_dns_suffix', type=str, help='The DNS suffix used as the base for all fidalgo requests.')
+        c.argument('project_name', type=str, help='The Fidalgo Project upon which to execute operations.')
+        c.argument('environment_name', options_list=['--name', '-n', '--environment-name'], type=str, help='The name '
+                   'of the environment.')
+
+    with self.argument_context('fidalgo environment create') as c:
+        c.argument('dev_center', type=str, help='The DevCenter to operate on.')
+        c.argument('fidalgo_dns_suffix', type=str, help='The DNS suffix used as the base for all fidalgo requests.')
+        c.argument('project_name', type=str, help='The Fidalgo Project upon which to execute operations.')
+        c.argument('environment_name', options_list=['--name', '-n', '--environment-name'], type=str, help='The name '
+                   'of the environment.')
+        c.argument('description', type=str, help='Description of the Environment.')
+        c.argument('catalog_item_name', type=str, help='Name of the catalog item.')
+        c.argument('deployment_parameters', type=validate_file_or_dict, help='Deployment parameters passed to catalog '
+                   'item. Expected value: json-string/json-file/@json-file.')
+        c.argument('environment_type', type=str, help='Environment type.')
+        c.argument('owner', type=str, help='Identifier of the owner of this Environment.')
+        c.argument('tags', tags_type)
+
+    with self.argument_context('fidalgo environment update') as c:
+        c.argument('dev_center', type=str, help='The DevCenter to operate on.')
+        c.argument('fidalgo_dns_suffix', type=str, help='The DNS suffix used as the base for all fidalgo requests.')
+        c.argument('project_name', type=str, help='The Fidalgo Project upon which to execute operations.')
+        c.argument('environment_name', options_list=['--name', '-n', '--environment-name'], type=str, help='The name '
+                   'of the environment.')
+        c.argument('description', type=str, help='Description of the Environment.')
+        c.argument('catalog_item_name', type=str, help='Name of the catalog item.')
+        c.argument('deployment_parameters', type=validate_file_or_dict, help='Deployment parameters passed to catalog '
+                   'item. Expected value: json-string/json-file/@json-file.')
+
+    with self.argument_context('fidalgo environment delete') as c:
+        c.argument('dev_center', type=str, help='The DevCenter to operate on.')
+        c.argument('fidalgo_dns_suffix', type=str, help='The DNS suffix used as the base for all fidalgo requests.')
+        c.argument('project_name', type=str, help='The Fidalgo Project upon which to execute operations.')
+        c.argument('environment_name', options_list=['--name', '-n', '--environment-name'], type=str, help='The name '
+                   'of the environment.')
+
+    with self.argument_context('fidalgo environment deploy') as c:
+        c.argument('dev_center', type=str, help='The DevCenter to operate on.')
+        c.argument('fidalgo_dns_suffix', type=str, help='The DNS suffix used as the base for all fidalgo requests.')
+        c.argument('project_name', type=str, help='The Fidalgo Project upon which to execute operations.')
+        c.argument('environment_name', options_list=['--name', '-n', '--environment-name'], type=str, help='The name '
+                   'of the environment.')
+        c.argument('parameters', type=validate_file_or_dict, help='Deployment parameters. Expected value: '
+                   'json-string/json-file/@json-file.')
+
+    with self.argument_context('fidalgo deployment list') as c:
+        c.argument('dev_center', type=str, help='The DevCenter to operate on.')
+        c.argument('fidalgo_dns_suffix', type=str, help='The DNS suffix used as the base for all fidalgo requests.')
+        c.argument('project_name', type=str, help='The Fidalgo Project upon which to execute operations.')
+        c.argument('environment_name', type=str, help='The name of the environment.')
+        c.argument('top', type=int, help='The maximum number of resources to return from the operation. Example: '
+                   '\'$top=10\'.')
+        c.argument('filter_', options_list=['--filter'], type=str, help='An OData $filter clause to apply to the '
+                   'operation.')
+
+    with self.argument_context('fidalgo catalog-item list') as c:
+        c.argument('dev_center', type=str, help='The DevCenter to operate on.')
+        c.argument('fidalgo_dns_suffix', type=str, help='The DNS suffix used as the base for all fidalgo requests.')
+        c.argument('project_name', type=str, help='The Fidalgo Project upon which to execute operations.')
+        c.argument('top', type=int, help='The maximum number of resources to return from the operation. Example: '
+                   '\'$top=10\'.')
+        c.argument('filter_', options_list=['--filter'], type=str, help='An OData $filter clause to apply to the '
+                   'operation.')
+
+    with self.argument_context('fidalgo environment-type list') as c:
+        c.argument('dev_center', type=str, help='The DevCenter to operate on.')
+        c.argument('fidalgo_dns_suffix', type=str, help='The DNS suffix used as the base for all fidalgo requests.')
+        c.argument('project_name', type=str, help='The Fidalgo Project upon which to execute operations.')
+        c.argument('top', type=int, help='The maximum number of resources to return from the operation. Example: '
+                   '\'$top=10\'.')

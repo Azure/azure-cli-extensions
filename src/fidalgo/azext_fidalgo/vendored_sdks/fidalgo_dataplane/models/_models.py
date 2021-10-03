@@ -33,6 +33,150 @@ class Assignment(msrest.serialization.Model):
         self.new_owner = kwargs.get('new_owner', None)
 
 
+class CatalogItem(msrest.serialization.Model):
+    """A catalog item.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar name: Name of the catalog item.
+    :vartype name: str
+    :ivar description: Description of the catalog item.
+    :vartype description: str
+    :ivar engine: The catalog item engine.
+    :vartype engine: ~azure.fidalgo.models.CatalogItemEngineProperties
+    """
+
+    _validation = {
+        'name': {'readonly': True},
+        'description': {'readonly': True},
+        'engine': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'name': {'key': 'name', 'type': 'str'},
+        'description': {'key': 'description', 'type': 'str'},
+        'engine': {'key': 'engine', 'type': 'CatalogItemEngineProperties'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        """
+        """
+        super(CatalogItem, self).__init__(**kwargs)
+        self.name = None
+        self.description = None
+        self.engine = None
+
+
+class CatalogItemEngineProperties(msrest.serialization.Model):
+    """Properties of a catalog item engine.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar type: The type of catalog item used to deploy the environment. Possible values include:
+     "ARM".
+    :vartype type: str or ~azure.fidalgo.models.CatalogItemType
+    :ivar template_path: Path to the catalog item entrypoint file.
+    :vartype template_path: str
+    :ivar parameters: Parameters that can be provided to the catalog item.
+    :vartype parameters: list[~azure.fidalgo.models.CatalogItemParameterProperties]
+    """
+
+    _validation = {
+        'type': {'readonly': True},
+        'template_path': {'readonly': True},
+        'parameters': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'type': {'key': 'type', 'type': 'str'},
+        'template_path': {'key': 'templatePath', 'type': 'str'},
+        'parameters': {'key': 'parameters', 'type': '[CatalogItemParameterProperties]'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        """
+        """
+        super(CatalogItemEngineProperties, self).__init__(**kwargs)
+        self.type = None
+        self.template_path = None
+        self.parameters = None
+
+
+class CatalogItemListResult(msrest.serialization.Model):
+    """Results of the catalog item list operation.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar value: Current page of results.
+    :vartype value: list[~azure.fidalgo.models.CatalogItem]
+    :ivar next_link: URL to get the next set of results if there are any.
+    :vartype next_link: str
+    """
+
+    _validation = {
+        'value': {'readonly': True},
+        'next_link': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'value': {'key': 'value', 'type': '[CatalogItem]'},
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        """
+        """
+        super(CatalogItemListResult, self).__init__(**kwargs)
+        self.value = None
+        self.next_link = None
+
+
+class CatalogItemParameterProperties(msrest.serialization.Model):
+    """Properties of a catalog item parameter.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar name: The name of the parameter.
+    :vartype name: str
+    :ivar type: The type accepted for the parameter value.
+    :vartype type: str
+    :ivar description: Description of the parameter.
+    :vartype description: str
+    """
+
+    _validation = {
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+        'description': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'description': {'key': 'description', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        """
+        """
+        super(CatalogItemParameterProperties, self).__init__(**kwargs)
+        self.name = None
+        self.type = None
+        self.description = None
+
+
 class CloudError(msrest.serialization.Model):
     """An error response from the Fidalgo service.
 
@@ -101,6 +245,305 @@ class CloudErrorBody(msrest.serialization.Model):
         self.message = kwargs.get('message', None)
         self.target = kwargs.get('target', None)
         self.details = kwargs.get('details', None)
+
+
+class Deployment(msrest.serialization.Model):
+    """Details of a specific deployment of an environment.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar provisioning_state: Current provisioning state of the deployment.
+    :vartype provisioning_state: str
+    :ivar logs: Deployment logs.
+    :vartype logs: str
+    :ivar parameters: Deployment parameters passed to the catalog item.
+    :vartype parameters: any
+    """
+
+    _validation = {
+        'provisioning_state': {'readonly': True},
+        'logs': {'readonly': True},
+        'parameters': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
+        'logs': {'key': 'logs', 'type': 'str'},
+        'parameters': {'key': 'parameters', 'type': 'object'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        """
+        """
+        super(Deployment, self).__init__(**kwargs)
+        self.provisioning_state = None
+        self.logs = None
+        self.parameters = None
+
+
+class DeploymentHistoryResult(msrest.serialization.Model):
+    """Results of the get deployment history operation.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar value: Recent deployment history.
+    :vartype value: list[~azure.fidalgo.models.Deployment]
+    :ivar next_link: URL to get the next set of results if there are any.
+    :vartype next_link: str
+    """
+
+    _validation = {
+        'value': {'readonly': True},
+        'next_link': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'value': {'key': 'value', 'type': '[Deployment]'},
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        """
+        """
+        super(DeploymentHistoryResult, self).__init__(**kwargs)
+        self.value = None
+        self.next_link = None
+
+
+class EnvironmentUpdate(msrest.serialization.Model):
+    """Properties of an environment. These properties can be updated after the resource has been created.
+
+    :ivar description: Description of the Environment.
+    :vartype description: str
+    :ivar catalog_item_name: Name of the catalog item.
+    :vartype catalog_item_name: str
+    :ivar deployment_parameters: Deployment parameters passed to catalog item.
+    :vartype deployment_parameters: any
+    """
+
+    _attribute_map = {
+        'description': {'key': 'description', 'type': 'str'},
+        'catalog_item_name': {'key': 'catalogItemName', 'type': 'str'},
+        'deployment_parameters': {'key': 'deploymentParameters', 'type': 'object'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        """
+        :keyword description: Description of the Environment.
+        :paramtype description: str
+        :keyword catalog_item_name: Name of the catalog item.
+        :paramtype catalog_item_name: str
+        :keyword deployment_parameters: Deployment parameters passed to catalog item.
+        :paramtype deployment_parameters: any
+        """
+        super(EnvironmentUpdate, self).__init__(**kwargs)
+        self.description = kwargs.get('description', None)
+        self.catalog_item_name = kwargs.get('catalog_item_name', None)
+        self.deployment_parameters = kwargs.get('deployment_parameters', None)
+
+
+class Environment(EnvironmentUpdate):
+    """Properties of an environment.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :ivar description: Description of the Environment.
+    :vartype description: str
+    :ivar catalog_item_name: Name of the catalog item.
+    :vartype catalog_item_name: str
+    :ivar deployment_parameters: Deployment parameters passed to catalog item.
+    :vartype deployment_parameters: any
+    :ivar name: Environment name.
+    :vartype name: str
+    :ivar environment_type: Required. Environment type.
+    :vartype environment_type: str
+    :ivar owner: Identifier of the owner of this Environment.
+    :vartype owner: str
+    :ivar provisioning_state: The provisioning state of the environment.
+    :vartype provisioning_state: str
+    :ivar resource_group_id: The identifier of the resource group containing the environment's
+     resources.
+    :vartype resource_group_id: str
+    :ivar outputs: Outputs from the deployment.
+    :vartype outputs: any
+    :ivar tags: A set of tags. Key value pairs that will be applied to resources deployed in this
+     environment as tags.
+    :vartype tags: dict[str, str]
+    """
+
+    _validation = {
+        'name': {'readonly': True},
+        'environment_type': {'required': True},
+        'provisioning_state': {'readonly': True},
+        'resource_group_id': {'readonly': True},
+        'outputs': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'description': {'key': 'description', 'type': 'str'},
+        'catalog_item_name': {'key': 'catalogItemName', 'type': 'str'},
+        'deployment_parameters': {'key': 'deploymentParameters', 'type': 'object'},
+        'name': {'key': 'name', 'type': 'str'},
+        'environment_type': {'key': 'environmentType', 'type': 'str'},
+        'owner': {'key': 'owner', 'type': 'str'},
+        'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
+        'resource_group_id': {'key': 'resourceGroupId', 'type': 'str'},
+        'outputs': {'key': 'outputs', 'type': 'object'},
+        'tags': {'key': 'tags', 'type': '{str}'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        """
+        :keyword description: Description of the Environment.
+        :paramtype description: str
+        :keyword catalog_item_name: Name of the catalog item.
+        :paramtype catalog_item_name: str
+        :keyword deployment_parameters: Deployment parameters passed to catalog item.
+        :paramtype deployment_parameters: any
+        :keyword environment_type: Required. Environment type.
+        :paramtype environment_type: str
+        :keyword owner: Identifier of the owner of this Environment.
+        :paramtype owner: str
+        :keyword tags: A set of tags. Key value pairs that will be applied to resources deployed in
+         this environment as tags.
+        :paramtype tags: dict[str, str]
+        """
+        super(Environment, self).__init__(**kwargs)
+        self.name = None
+        self.environment_type = kwargs['environment_type']
+        self.owner = kwargs.get('owner', None)
+        self.provisioning_state = None
+        self.resource_group_id = None
+        self.outputs = None
+        self.tags = kwargs.get('tags', None)
+
+
+class EnvironmentDeploy(msrest.serialization.Model):
+    """Environment deploymentment request.
+
+    :ivar parameters: Deployment parameters.
+    :vartype parameters: any
+    """
+
+    _attribute_map = {
+        'parameters': {'key': 'parameters', 'type': 'object'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        """
+        :keyword parameters: Deployment parameters.
+        :paramtype parameters: any
+        """
+        super(EnvironmentDeploy, self).__init__(**kwargs)
+        self.parameters = kwargs.get('parameters', None)
+
+
+class EnvironmentListResult(msrest.serialization.Model):
+    """Results of the environment list operation.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar value: Current page of results.
+    :vartype value: list[~azure.fidalgo.models.Environment]
+    :ivar next_link: URL to get the next set of results if there are any.
+    :vartype next_link: str
+    """
+
+    _validation = {
+        'value': {'readonly': True},
+        'next_link': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'value': {'key': 'value', 'type': '[Environment]'},
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        """
+        """
+        super(EnvironmentListResult, self).__init__(**kwargs)
+        self.value = None
+        self.next_link = None
+
+
+class EnvironmentType(msrest.serialization.Model):
+    """Properties of an environment type.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar name: Name of the environment type.
+    :vartype name: str
+    """
+
+    _validation = {
+        'name': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'name': {'key': 'name', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        """
+        """
+        super(EnvironmentType, self).__init__(**kwargs)
+        self.name = None
+
+
+class EnvironmentTypeListResult(msrest.serialization.Model):
+    """Result of the environment type list operation.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar value: Current page of results.
+    :vartype value: list[~azure.fidalgo.models.EnvironmentType]
+    :ivar next_link: URL to get the next set of results if there are any.
+    :vartype next_link: str
+    """
+
+    _validation = {
+        'value': {'readonly': True},
+        'next_link': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'value': {'key': 'value', 'type': '[EnvironmentType]'},
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        """
+        """
+        super(EnvironmentTypeListResult, self).__init__(**kwargs)
+        self.value = None
+        self.next_link = None
 
 
 class Pool(msrest.serialization.Model):

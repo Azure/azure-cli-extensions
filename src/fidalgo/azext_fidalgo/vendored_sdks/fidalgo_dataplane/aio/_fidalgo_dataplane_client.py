@@ -15,7 +15,7 @@ from msrest import Deserializer, Serializer
 
 from .. import models
 from ._configuration import FidalgoDataplaneClientConfiguration
-from .operations import PoolOperations, ProjectOperations, VirtualMachineOperations
+from .operations import CatalogItemOperations, DeploymentsOperations, EnvironmentTypeOperations, EnvironmentsOperations, PoolOperations, ProjectOperations, VirtualMachineOperations
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
@@ -30,6 +30,14 @@ class FidalgoDataplaneClient:
     :vartype pool: azure.fidalgo.aio.operations.PoolOperations
     :ivar virtual_machine: VirtualMachineOperations operations
     :vartype virtual_machine: azure.fidalgo.aio.operations.VirtualMachineOperations
+    :ivar environments: EnvironmentsOperations operations
+    :vartype environments: azure.fidalgo.aio.operations.EnvironmentsOperations
+    :ivar deployments: DeploymentsOperations operations
+    :vartype deployments: azure.fidalgo.aio.operations.DeploymentsOperations
+    :ivar catalog_item: CatalogItemOperations operations
+    :vartype catalog_item: azure.fidalgo.aio.operations.CatalogItemOperations
+    :ivar environment_type: EnvironmentTypeOperations operations
+    :vartype environment_type: azure.fidalgo.aio.operations.EnvironmentTypeOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials_async.AsyncTokenCredential
     """
@@ -49,6 +57,10 @@ class FidalgoDataplaneClient:
         self.project = ProjectOperations(self._client, self._config, self._serialize, self._deserialize)
         self.pool = PoolOperations(self._client, self._config, self._serialize, self._deserialize)
         self.virtual_machine = VirtualMachineOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.environments = EnvironmentsOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.deployments = DeploymentsOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.catalog_item = CatalogItemOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.environment_type = EnvironmentTypeOperations(self._client, self._config, self._serialize, self._deserialize)
 
 
     def _send_request(

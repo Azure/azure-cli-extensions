@@ -23,3 +23,19 @@ def cf_pool(cli_ctx, *_):
 
 def cf_virtual_machine(cli_ctx, *_):
     return cf_fidalgo_dataplane(cli_ctx).virtual_machine
+
+
+def cf_environment(cli_ctx, *_):
+    return cf_fidalgo_dataplane(cli_ctx).environments
+
+
+def cf_deployment(cli_ctx, *_):
+    return cf_fidalgo_dataplane(cli_ctx).deployments
+
+
+def cf_catalog_item(cli_ctx, *_):
+    return cf_fidalgo_dataplane(cli_ctx).catalog_item
+
+
+def cf_environment_type(cli_ctx, *_):
+    return cf_fidalgo_dataplane(cli_ctx).environment_type

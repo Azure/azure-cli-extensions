@@ -8,8 +8,20 @@
 
 try:
     from ._models_py3 import Assignment
+    from ._models_py3 import CatalogItem
+    from ._models_py3 import CatalogItemEngineProperties
+    from ._models_py3 import CatalogItemListResult
+    from ._models_py3 import CatalogItemParameterProperties
     from ._models_py3 import CloudError
     from ._models_py3 import CloudErrorBody
+    from ._models_py3 import Deployment
+    from ._models_py3 import DeploymentHistoryResult
+    from ._models_py3 import Environment
+    from ._models_py3 import EnvironmentDeploy
+    from ._models_py3 import EnvironmentListResult
+    from ._models_py3 import EnvironmentType
+    from ._models_py3 import EnvironmentTypeListResult
+    from ._models_py3 import EnvironmentUpdate
     from ._models_py3 import Pool
     from ._models_py3 import PoolListResult
     from ._models_py3 import Project
@@ -20,8 +32,20 @@ try:
     from ._models_py3 import VirtualMachineListResult
 except (SyntaxError, ImportError):
     from ._models import Assignment  # type: ignore
+    from ._models import CatalogItem  # type: ignore
+    from ._models import CatalogItemEngineProperties  # type: ignore
+    from ._models import CatalogItemListResult  # type: ignore
+    from ._models import CatalogItemParameterProperties  # type: ignore
     from ._models import CloudError  # type: ignore
     from ._models import CloudErrorBody  # type: ignore
+    from ._models import Deployment  # type: ignore
+    from ._models import DeploymentHistoryResult  # type: ignore
+    from ._models import Environment  # type: ignore
+    from ._models import EnvironmentDeploy  # type: ignore
+    from ._models import EnvironmentListResult  # type: ignore
+    from ._models import EnvironmentType  # type: ignore
+    from ._models import EnvironmentTypeListResult  # type: ignore
+    from ._models import EnvironmentUpdate  # type: ignore
     from ._models import Pool  # type: ignore
     from ._models import PoolListResult  # type: ignore
     from ._models import Project  # type: ignore
@@ -32,13 +56,26 @@ except (SyntaxError, ImportError):
     from ._models import VirtualMachineListResult  # type: ignore
 
 from ._fidalgo_dataplane_client_enums import (
+    CatalogItemType,
     OsType,
 )
 
 __all__ = [
     'Assignment',
+    'CatalogItem',
+    'CatalogItemEngineProperties',
+    'CatalogItemListResult',
+    'CatalogItemParameterProperties',
     'CloudError',
     'CloudErrorBody',
+    'Deployment',
+    'DeploymentHistoryResult',
+    'Environment',
+    'EnvironmentDeploy',
+    'EnvironmentListResult',
+    'EnvironmentType',
+    'EnvironmentTypeListResult',
+    'EnvironmentUpdate',
     'Pool',
     'PoolListResult',
     'Project',
@@ -47,5 +84,6 @@ __all__ = [
     'RdpConnection',
     'VirtualMachine',
     'VirtualMachineListResult',
+    'CatalogItemType',
     'OsType',
 ]

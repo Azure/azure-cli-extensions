@@ -5,16 +5,6 @@
 
 from knack.util import CLIError
 
-
-#def create_fidalgo(cmd, resource_group_name, fidalgo_name, location=None, tags=None):
-#    raise CLIError('TODO: Implement `fidalgo create`')
-
-#def update_fidalgo(cmd, instance, tags=None):
-#    with cmd.update_context(instance) as c:
-#        c.set_param('tags', tags)
-#    return instance
-
-
 def list_project(client,
                 dev_center,
                 fidalgo_dns_suffix=None,
@@ -169,6 +159,139 @@ def fidalgo_virtual_machine_stop(client,
                        dev_center=dev_center,
                        fidalgo_dns_suffix=get_dns_suffix(fidalgo_dns_suffix))
 
+def fidalgo_environment_list(client,
+                             dev_center,
+                             fidalgo_dns_suffix,
+                             project_name,
+                             top=None):
+    return client.list_by_project(dev_center=dev_center,
+                                  fidalgo_dns_suffix=get_dns_suffix(fidalgo_dns_suffix),
+                                  top=top,
+                                  project_name=project_name)
+
+
+def fidalgo_environment_show(client,
+                             dev_center,
+                             fidalgo_dns_suffix,
+                             project_name,
+                             environment_name):
+    return client.get(dev_center=dev_center,
+                      fidalgo_dns_suffix=get_dns_suffix(fidalgo_dns_suffix),
+                      project_name=project_name,
+                      environment_name=environment_name)
+
+
+def fidalgo_environment_create(client,
+                               dev_center,
+                               fidalgo_dns_suffix,
+                               project_name,
+                               environment_name,
+                               environment_type,
+                               description=None,
+                               catalog_item_name=None,
+                               deployment_parameters=None,
+                               owner=None,
+                               tags=None):
+    body = {}
+    if description is not None:
+        body['description'] = description
+    if catalog_item_name is not None:
+        body['catalog_item_name'] = catalog_item_name
+    if deployment_parameters is not None:
+        body['deployment_parameters'] = deployment_parameters
+    body['environment_type'] = environment_type
+    if owner is not None:
+        body['owner'] = owner
+    if tags is not None:
+        body['tags'] = tags
+    return client.create_or_update(dev_center=dev_center,
+                                   fidalgo_dns_suffix=get_dns_suffix(fidalgo_dns_suffix),
+                                   project_name=project_name,
+                                   environment_name=environment_name,
+                                   body=body)
+
+
+def fidalgo_environment_update(client,
+                               dev_center,
+                               fidalgo_dns_suffix,
+                               project_name,
+                               environment_name,
+                               description=None,
+                               catalog_item_name=None,
+                               deployment_parameters=None):
+    body = {}
+    if description is not None:
+        body['description'] = description
+    if catalog_item_name is not None:
+        body['catalog_item_name'] = catalog_item_name
+    if deployment_parameters is not None:
+        body['deployment_parameters'] = deployment_parameters
+    return client.update(dev_center=dev_center,
+                         fidalgo_dns_suffix=get_dns_suffix(fidalgo_dns_suffix),
+                         project_name=project_name,
+                         environment_name=environment_name,
+                         body=body)
+
+
+def fidalgo_environment_delete(client,
+                               dev_center,
+                               fidalgo_dns_suffix,
+                               project_name,
+                               environment_name):
+    return client.delete(dev_center=dev_center,
+                         fidalgo_dns_suffix=get_dns_suffix(fidalgo_dns_suffix),
+                         project_name=project_name,
+                         environment_name=environment_name)
+
+
+def fidalgo_environment_deploy(client,
+                               dev_center,
+                               fidalgo_dns_suffix,
+                               project_name,
+                               environment_name,
+                               parameters=None):
+    deployment = {}
+    if parameters is not None:
+        deployment['parameters'] = parameters
+    return client.deploy(dev_center=dev_center,
+                         fidalgo_dns_suffix=get_dns_suffix(fidalgo_dns_suffix),
+                         project_name=project_name,
+                         environment_name=environment_name,
+                         deployment=deployment)
+
+
+def fidalgo_deployment_list(client,
+                            dev_center,
+                            fidalgo_dns_suffix,
+                            project_name,
+                            environment_name,
+                            top=None):
+    return client.list_by_environment(dev_center=dev_center,
+                                      fidalgo_dns_suffix=get_dns_suffix(fidalgo_dns_suffix),
+                                      project_name=project_name,
+                                      environment_name=environment_name,
+                                      top=top)
+
+
+def fidalgo_catalog_item_list(client,
+                              dev_center,
+                              fidalgo_dns_suffix,
+                              project_name,
+                              top=None):
+    return client.list_by_project(dev_center=dev_center,
+                                  fidalgo_dns_suffix=get_dns_suffix(fidalgo_dns_suffix),
+                                  project_name=project_name,
+                                  top=top)
+
+def fidalgo_environment_type_list(client,
+                project_name,
+                dev_center,
+                fidalgo_dns_suffix=None,
+                top=None):
+    return client.list_by_project(dev_center=dev_center,
+                                project_name=project_name,
+                                fidalgo_dns_suffix=get_dns_suffix(fidalgo_dns_suffix),
+                                top=top)
 
 
 # todo: how to pass optional arg so we don't have to redefine the dns suffix here?
