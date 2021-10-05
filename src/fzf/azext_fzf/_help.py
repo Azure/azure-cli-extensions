@@ -53,9 +53,9 @@ helps['fzf group'] = """
           short-summary: Filter string for fzf
           long-summary: |-
               Sets a default resource group for your Azure CLI session.
-  
+
               Filter syntax:
-  
+
               Token    Match type                  Description
               -------  --------------------------  ----------------------------------
               sbtrkt   fuzzy-match                 Items that match sbtrkt
@@ -65,7 +65,7 @@ helps['fzf group'] = """
               !fire    inverse-exact-match         Items that do not include fire
               !^music  inverse-prefix-exact-match  Items that do not start with music
               !.mp3$   inverse-suffix-exact-match  Items that do not end with .mp3
-  
+
               More information about search syntax or fzf in general can be found on
               the fzf project page: https://github.com/junegunn/fzf#search-syntax
     examples:
@@ -90,9 +90,9 @@ helps['fzf location'] = """
               be performed across the name, display name, and regional display name. As
               an example, you could search for "australiaeast", "Australia East", or
               "(Asia Pacific) Australia East" and find the same region.
-      
+
               Filter syntax:
-      
+
               Token    Match type                  Description
               -------  --------------------------  ----------------------------------
               sbtrkt   fuzzy-match                 Items that match sbtrkt
@@ -102,7 +102,7 @@ helps['fzf location'] = """
               !fire    inverse-exact-match         Items that do not include fire
               !^music  inverse-prefix-exact-match  Items that do not start with music
               !.mp3$   inverse-suffix-exact-match  Items that do not end with .mp3
-      
+
               More information about search syntax or fzf in general can be found on
               the fzf project page: https://github.com/junegunn/fzf#search-syntax
     examples:
@@ -125,9 +125,9 @@ helps['fzf subscription'] = """
           text: |-
               Sets a default subscription for your Azure CLI session. Search will be
               performed across the display name, state, and subscription ID.
-      
+
               Filter syntax:
-      
+
               Token    Match type                  Description
               -------  --------------------------  ----------------------------------
               sbtrkt   fuzzy-match                 Items that match sbtrkt
@@ -137,7 +137,7 @@ helps['fzf subscription'] = """
               !fire    inverse-exact-match         Items that do not include fire
               !^music  inverse-prefix-exact-match  Items that do not start with music
               !.mp3$   inverse-suffix-exact-match  Items that do not end with .mp3
-      
+
               More information about search syntax or fzf in general can be found on the
               fzf project page: https://github.com/junegunn/fzf#search-syntax
     examples:
