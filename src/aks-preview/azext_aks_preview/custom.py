@@ -810,6 +810,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                no_wait=False,
                assign_kubelet_identity=None,
                workload_runtime=None,
+               gpu_instance_profile=None,
                yes=False):
     if not no_ssh_key:
         try:
@@ -870,7 +871,8 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         enable_ultra_ssd=enable_ultra_ssd,
         max_pods=int(max_pods) if max_pods else None,
         type=vm_set_type,
-        workload_runtime=workload_runtime
+        workload_runtime=workload_runtime,
+        gpu_instance_profile=gpu_instance_profile
     )
 
     if node_osdisk_size:
@@ -2019,8 +2021,8 @@ def aks_upgrade(cmd,    # pylint: disable=unused-argument, too-many-return-state
                        'If you only want to upgrade the node version please use the "--node-image-only" option only.')
 
     if node_image_only:
-        msg = "This node image upgrade operation will run across every node pool in the cluster" \
-              "and might take a while, do you wish to continue?"
+        msg = "This node image upgrade operation will run across every node pool in the cluster " \
+              "and might take a while. Do you wish to continue?"
         if not yes and not prompt_y_n(msg, default="n"):
             return None
 
@@ -2378,6 +2380,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
                       enable_encryption_at_host=False,
                       enable_ultra_ssd=False,
                       workload_runtime=None,
+                      gpu_instance_profile=None,
                       no_wait=False):
     instances = client.list(resource_group_name, cluster_name)
     for agentpool_profile in instances:
@@ -2432,7 +2435,8 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
         enable_encryption_at_host=enable_encryption_at_host,
         enable_ultra_ssd=enable_ultra_ssd,
         mode=mode,
-        workload_runtime=workload_runtime
+        workload_runtime=workload_runtime,
+        gpu_instance_profile=gpu_instance_profile
     )
 
     if priority == CONST_SCALE_SET_PRIORITY_SPOT:
