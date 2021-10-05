@@ -1864,13 +1864,23 @@ def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
     print()
     print("Starts collecting diag info for cluster %s " % name)
 
+    # Form containerName from fqdn, as it was previosuly jsut the location of code is changed.
+    # https://docs.microsoft.com/en-us/rest/api/storageservices/naming-and-referencing-containers--blobs--and-metadata#container-names 
+    maxContainerNameLength = 63
+    fqdn = mc.fqdn if mc.fqdn is not None else mc.private_fqdn
+    normalized_container_name = fqdn.replace('.', '-')
+    len_of_container_name = normalized_container_name.index("-hcp-")
+ 	if  len_of_container_name == -1 {
+ 		len_of_container_name = maxContainerNameLength
+ 	}
+    containerName = containerName[:len_of_container_name]
+
     sas_token = sas_token.strip('?')
-    deployment_yaml = urlopen(
-        "https://raw.githubusercontent.com/Azure/aks-periscope/latest/deployment/aks-periscope.yaml").read().decode()
-    deployment_yaml = deployment_yaml.replace("# <accountName, base64 encoded>",
-                                              (base64.b64encode(bytes(storage_account_name, 'ascii'))).decode('ascii'))
+    deployment_yaml = _read_periscope_yaml()
+    deployment_yaml = deployment_yaml.replace("# <accountName, base64 encoded>", storage_account_name)
     deployment_yaml = deployment_yaml.replace("# <saskey, base64 encoded>",
                                               (base64.b64encode(bytes("?" + sas_token, 'ascii'))).decode('ascii'))
+    deployment_yaml = deployment_yaml.replace("# <containerName, string>", containerName)
 
     yaml_lines = deployment_yaml.splitlines()
     for index, line in enumerate(yaml_lines):
@@ -1932,11 +1942,10 @@ def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
         os.remove(temp_yaml_path)
 
     print()
-    fqdn = mc.fqdn if mc.fqdn is not None else mc.private_fqdn
-    normalized_fqdn = fqdn.replace('.', '-')
+    
     token_in_storage_account_url = readonly_sas_token if readonly_sas_token is not None else sas_token
     log_storage_account_url = f"https://{storage_account_name}.blob.core.windows.net/" \
-                              f"{_trim_fqdn_name_containing_hcp(normalized_fqdn)}?{token_in_storage_account_url}"
+                              f"{_trim_fqdn_name_containing_hcp(containerName)}?{token_in_storage_account_url}"
 
     print(f'{colorama.Fore.GREEN}Your logs are being uploaded to storage account {format_bright(storage_account_name)}')
 
@@ -1952,6 +1961,16 @@ def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
               f"anytime to check the analysis results.")
     else:
         display_diagnostics_report(temp_kubeconfig_path)
+
+
+def _read_periscope_yaml():
+    with open("./deploymentyaml/aks-periscope.yaml", "r") as stream:   
+        try:
+            data_loaded = yaml.safe_load(stream)
+        except yaml.YAMLError as exc:
+            print(exc)
+
+    return data_loaded
 
 
 def aks_kanalyze(cmd, client, resource_group_name, name):
