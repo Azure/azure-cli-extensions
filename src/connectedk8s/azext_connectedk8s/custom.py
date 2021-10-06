@@ -1495,9 +1495,12 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, storage_account
         except Exception as ex:
             logger.error("Couldn't load kubeconfig. Error: {}".format(str(ex)))
             tr_logger.error("Couldn't load kubeconfig. Error: {}".format(str(ex)))
+        
+        # Install helm client
+        helm_client_location = install_helm_client()
 
         try:
-            validate_release_namespace(client, cluster_name, resource_group_name, configuration, kube_config, kube_context)
+            validate_release_namespace(client, cluster_name, resource_group_name, configuration, kube_config, kube_context, helm_client_location)
         except Exception as e:
             logger.error(str(e))
             tr_logger.error(str(e))
