@@ -130,12 +130,15 @@ def update_component(cmd, client, application, resource_group_name, kind=None, w
         existing_component.public_network_access_for_query = public_network_access_for_query
 
     if hasattr(existing_component, 'workspace_resource_id') and existing_component.workspace_resource_id is not None:
+        from .vendored_sdks.mgmt_applicationinsights.v2020_02_02_preview.models import IngestionMode
         client = applicationinsights_mgmt_plane_client(cmd.cli_ctx, api_version='2020-02-02-preview').components
+        existing_component.ingestion_mode = IngestionMode.LOG_ANALYTICS
         return client.create_or_update(resource_group_name, application, existing_component)
 
-    from .vendored_sdks.mgmt_applicationinsights.v2018_05_01_preview.models import ApplicationInsightsComponent
+    from .vendored_sdks.mgmt_applicationinsights.v2018_05_01_preview.models import ApplicationInsightsComponent, IngestionMode
     if retention_in_days is not None:
         existing_component.retention_in_days = retention_in_days
+    existing_component.ingestion_mode = IngestionMode.APPLICATION_INSIGHTS
     component = ApplicationInsightsComponent(**(vars(existing_component)))
     return client.create_or_update(resource_group_name, application, component)
 
@@ -242,24 +245,41 @@ def update_component_billing(client, application, resource_group_name, cap=None,
         billing_features.data_volume_cap.stop_send_notification_when_hit_cap = stop_sending_notification_when_hitting_cap
     return client.update(resource_group_name=resource_group_name,
                          resource_name=application,
-                         data_volume_cap=billing_features.data_volume_cap,
-                         current_billing_features=billing_features.current_billing_features)
+                         billing_features_properties=billing_features)
 
 
 def get_component_linked_storage_account(client, resource_group_name, application):
-    return client.get(resource_group_name=resource_group_name, resource_name=application)
+    from .vendored_sdks.mgmt_applicationinsights.v2020_03_01_preview.models import StorageType
+    return client.get(resource_group_name=resource_group_name, resource_name=application, storage_type=StorageType.SERVICE_PROFILER)
 
 
 def create_component_linked_storage_account(client, resource_group_name, application, storage_account_id):
-    return client.create_and_update(resource_group_name=resource_group_name, resource_name=application, linked_storage_account=storage_account_id)
+    from .vendored_sdks.mgmt_applicationinsights.v2020_03_01_preview.models import StorageType
+    return client.create_and_update(
+        resource_group_name=resource_group_name,
+        resource_name=application,
+        storage_type=StorageType.SERVICE_PROFILER,
+        linked_storage_accounts_properties={
+            "linked_storage_account": storage_account_id
+        }
+    )
 
 
 def update_component_linked_storage_account(client, resource_group_name, application, storage_account_id):
-    return client.update(resource_group_name=resource_group_name, resource_name=application, linked_storage_account=storage_account_id)
+    from .vendored_sdks.mgmt_applicationinsights.v2020_03_01_preview.models import StorageType
+    return client.update(
+        resource_group_name=resource_group_name,
+        resource_name=application,
+        storage_type=StorageType.SERVICE_PROFILER,
+        linked_storage_accounts_properties={
+            "linked_storage_account": storage_account_id
+        }
+    )
 
 
 def delete_component_linked_storage_account(client, resource_group_name, application):
-    return client.delete(resource_group_name=resource_group_name, resource_name=application)
+    from .vendored_sdks.mgmt_applicationinsights.v2020_03_01_preview.models import StorageType
+    return client.delete(resource_group_name=resource_group_name, resource_name=application, storage_type=StorageType.SERVICE_PROFILER)
 
 
 def list_export_configurations(client, application, resource_group_name):

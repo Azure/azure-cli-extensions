@@ -92,7 +92,7 @@ def load_arguments(self, _):
         c.argument('route_type', arg_type=get_enum_type(RouteType), help='Route type to define how Front Door should handle requests for this route i.e. forward them to a backend or redirect the users to a different URL.')
 
     with self.argument_context('network front-door purge-endpoint') as c:
-        c.argument('content_paths', nargs='+')
+        c.argument('content_paths', nargs='+', help="The path to the content to be purged. Can describe a file path or a wildcard directory.")
 
     with self.argument_context('network front-door check-name-availability') as c:
         c.argument('name', help='The resource name to be validated.')
@@ -129,9 +129,9 @@ def load_arguments(self, _):
             c.argument('https_port', type=int, help='HTTPS TCP port number.')
             c.argument('weight', type=int, help='Weight of this endpoint for load balancing purposes.')
             c.argument('private_link_alias', help='The Alias of the Private Link resource. Populating this optional field indicates that this backend is \'Private\'.')
-            c.argument('private_link_resource_id', help='The Resource Id of the Private Link. Populating this optional field indicates that this backend is \'Private\'.')
+            c.argument('private_link_resource_id', options_list=['--private-link-resource-id', '--resource-id'], help='The Resource Id of the Private Link. Populating this optional field indicates that this backend is \'Private\'.')
             c.argument('private_link_location', help='The location of the Private Link resource. Required only if \'privateLinkResourceId\' is populated.')
-            c.argument('private_link_approval_message', help='A custom message to be included in the approval request to connect to the Private Link.')
+            c.argument('private_link_approval_message', options_list=['--private-link-approval-message', '--approval-message'], help='A custom message to be included in the approval request to connect to the Private Link.')
             c.argument('backend_host_header', help='Host header sent to the backend.')
             c.argument('backend_pool_name', options_list='--pool-name', help='Name of the backend pool.')
             c.argument('index', type=int, help='Index of the backend to remove (starting with 1).')

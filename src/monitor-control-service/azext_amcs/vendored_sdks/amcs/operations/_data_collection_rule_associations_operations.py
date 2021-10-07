@@ -30,7 +30,7 @@ class DataCollectionRuleAssociationsOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~$(python-base-namespace).v2019_11_01_preview.models
+    :type models: ~azure.mgmt.amcs.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -59,7 +59,7 @@ class DataCollectionRuleAssociationsOperations(object):
         :type resource_uri: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either DataCollectionRuleAssociationProxyOnlyResourceListResult or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~$(python-base-namespace).v2019_11_01_preview.models.DataCollectionRuleAssociationProxyOnlyResourceListResult]
+        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.amcs.models.DataCollectionRuleAssociationProxyOnlyResourceListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DataCollectionRuleAssociationProxyOnlyResourceListResult"]
@@ -67,7 +67,7 @@ class DataCollectionRuleAssociationsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2019-11-01-preview"
+        api_version = "2021-04-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -136,7 +136,7 @@ class DataCollectionRuleAssociationsOperations(object):
         :type data_collection_rule_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either DataCollectionRuleAssociationProxyOnlyResourceListResult or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~$(python-base-namespace).v2019_11_01_preview.models.DataCollectionRuleAssociationProxyOnlyResourceListResult]
+        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.amcs.models.DataCollectionRuleAssociationProxyOnlyResourceListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DataCollectionRuleAssociationProxyOnlyResourceListResult"]
@@ -144,7 +144,7 @@ class DataCollectionRuleAssociationsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2019-11-01-preview"
+        api_version = "2021-04-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -158,7 +158,7 @@ class DataCollectionRuleAssociationsOperations(object):
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
                     'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
-                    'dataCollectionRuleName': self._serialize.url("data_collection_rule_name", data_collection_rule_name, 'str', max_length=64, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+                    'dataCollectionRuleName': self._serialize.url("data_collection_rule_name", data_collection_rule_name, 'str'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
@@ -210,11 +210,11 @@ class DataCollectionRuleAssociationsOperations(object):
 
         :param resource_uri: The identifier of the resource.
         :type resource_uri: str
-        :param association_name: The name of the association.
+        :param association_name: The name of the association. The name is case insensitive.
         :type association_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: DataCollectionRuleAssociationProxyOnlyResource, or the result of cls(response)
-        :rtype: ~$(python-base-namespace).v2019_11_01_preview.models.DataCollectionRuleAssociationProxyOnlyResource
+        :rtype: ~azure.mgmt.amcs.models.DataCollectionRuleAssociationProxyOnlyResource
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DataCollectionRuleAssociationProxyOnlyResource"]
@@ -222,14 +222,14 @@ class DataCollectionRuleAssociationsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2019-11-01-preview"
+        api_version = "2021-04-01"
         accept = "application/json"
 
         # Construct URL
         url = self.get.metadata['url']  # type: ignore
         path_format_arguments = {
             'resourceUri': self._serialize.url("resource_uri", resource_uri, 'str', skip_quote=True, min_length=1),
-            'associationName': self._serialize.url("association_name", association_name, 'str', max_length=64, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'associationName': self._serialize.url("association_name", association_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -272,13 +272,13 @@ class DataCollectionRuleAssociationsOperations(object):
 
         :param resource_uri: The identifier of the resource.
         :type resource_uri: str
-        :param association_name: The name of the association.
+        :param association_name: The name of the association. The name is case insensitive.
         :type association_name: str
         :param body: The payload.
-        :type body: ~$(python-base-namespace).v2019_11_01_preview.models.DataCollectionRuleAssociationProxyOnlyResource
+        :type body: ~azure.mgmt.amcs.models.DataCollectionRuleAssociationProxyOnlyResource
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: DataCollectionRuleAssociationProxyOnlyResource, or the result of cls(response)
-        :rtype: ~$(python-base-namespace).v2019_11_01_preview.models.DataCollectionRuleAssociationProxyOnlyResource
+        :rtype: ~azure.mgmt.amcs.models.DataCollectionRuleAssociationProxyOnlyResource
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DataCollectionRuleAssociationProxyOnlyResource"]
@@ -286,7 +286,7 @@ class DataCollectionRuleAssociationsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2019-11-01-preview"
+        api_version = "2021-04-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -294,7 +294,7 @@ class DataCollectionRuleAssociationsOperations(object):
         url = self.create.metadata['url']  # type: ignore
         path_format_arguments = {
             'resourceUri': self._serialize.url("resource_uri", resource_uri, 'str', skip_quote=True, min_length=1),
-            'associationName': self._serialize.url("association_name", association_name, 'str', max_length=64, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'associationName': self._serialize.url("association_name", association_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -347,7 +347,7 @@ class DataCollectionRuleAssociationsOperations(object):
 
         :param resource_uri: The identifier of the resource.
         :type resource_uri: str
-        :param association_name: The name of the association.
+        :param association_name: The name of the association. The name is case insensitive.
         :type association_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: None, or the result of cls(response)
@@ -359,14 +359,14 @@ class DataCollectionRuleAssociationsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2019-11-01-preview"
+        api_version = "2021-04-01"
         accept = "application/json"
 
         # Construct URL
         url = self.delete.metadata['url']  # type: ignore
         path_format_arguments = {
             'resourceUri': self._serialize.url("resource_uri", resource_uri, 'str', skip_quote=True, min_length=1),
-            'associationName': self._serialize.url("association_name", association_name, 'str', max_length=64, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'associationName': self._serialize.url("association_name", association_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 

@@ -16,6 +16,7 @@ from sync_extensions import download_file
 STORAGE_ACCOUNT_KEY = os.getenv('AZURE_EXTENSION_CMD_TREE_STORAGE_ACCOUNT_KEY')
 STORAGE_ACCOUNT = os.getenv('AZURE_EXTENSION_CMD_TREE_STORAGE_ACCOUNT')
 STORAGE_CONTAINER = os.getenv('AZURE_EXTENSION_CMD_TREE_STORAGE_CONTAINER')
+BLOB_PREFIX = os.getenv('AZURE_EXTENSION_CMD_TREE_BLOB_PREFIX')
 
 az_cli = get_default_cli()
 file_name = 'extCmdTreeToUpload.json'
@@ -75,6 +76,8 @@ def update_cmd_tree(ext_name):
 
 def upload_cmd_tree():
     blob_file_name = 'extensionCommandTree.json'
+    if BLOB_PREFIX:
+        blob_file_name = f'{BLOB_PREFIX}/{blob_file_name}'
     downloaded_file_name = 'extCmdTreeDownloaded.json'
     file_path = os.path.expanduser(os.path.join('~', '.azure', file_name))
 

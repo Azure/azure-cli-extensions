@@ -2,7 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-
+import json
 from enum import Enum
 import os
 import codecs
@@ -21,16 +21,26 @@ from ._client_factory import cf_resource_groups
 logger = get_logger(__name__)
 
 
-def _get_upload_local_file(runtime_version, artifact_path=None):
-    file_path = artifact_path
-    file_type = "NetCoreZip" if runtime_version == AppPlatformEnums.RuntimeVersion.net_core_31 else "Jar"
-
-    if file_path is None:
-        file_type = "Source"
+def _get_upload_local_file(runtime_version, artifact_path=None, source_path=None):
+    file_type = None
+    file_path = None
+    if artifact_path is not None:
+        file_path = artifact_path
+        file_type = "NetCoreZip" if runtime_version == AppPlatformEnums.RuntimeVersion.NET_CORE31 else "Jar"
+    elif source_path is not None:
         file_path = os.path.join(tempfile.gettempdir(
         ), 'build_archive_{}.tar.gz'.format(uuid.uuid4().hex))
-        _pack_source_code(os.getcwd(), file_path)
+        _pack_source_code(os.path.abspath(source_path), file_path)
+        file_type = "Source"
     return file_type, file_path
+
+
+def _get_file_type(runtime_version, artifact_path=None):
+    file_type = "NetCoreZip" if runtime_version == AppPlatformEnums.RuntimeVersion.NET_CORE31 else "Jar"
+
+    if artifact_path is None:
+        file_type = "Source"
+    return file_type
 
 
 def _pack_source_code(source_location, tar_file_path):
@@ -229,3 +239,14 @@ def get_portal_uri(cli_ctx):
     except Exception as e:
         logger.debug("Could not get Azure Portal endpoint. Exception: %s", str(e))
         return 'https://portal.azure.com'
+
+
+def handle_asc_exception(ex):
+    try:
+        raise CLIError(ex.inner_exception.error.message)
+    except AttributeError:
+        if hasattr(ex, 'response'):
+            response_dict = json.loads(ex.response.internal_response.text)
+            raise CLIError(response_dict["error"]["message"])
+        else:
+            raise CLIError(ex)

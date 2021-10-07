@@ -2,7 +2,12 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-# pylint: disable=line-too-long
+# pylint: disable=line-too-long,too-many-statements
+
+
+from azext_vmware.action import ScriptExecutionNamedOutputAction, ScriptExecutionParameterAction
+from azure.cli.core.commands.parameters import get_enum_type
+from ._validators import server_addresses_length
 
 
 def load_arguments(self, _):
@@ -74,9 +79,98 @@ def load_arguments(self, _):
     with self.argument_context('vmware datastore') as c:
         c.argument('name', options_list=['--name', '-n'], help='The name of the datastore.')
         c.argument('cluster', help='The name of the cluster.')
+        c.argument('lun_name', help='Name of the LUN to be used.')
 
     with self.argument_context('vmware datastore create') as c:
         c.argument('nfs_provider_ip', help='IP address of the NFS provider.')
         c.argument('nfs_file_path', help='File path through which the NFS volume is exposed by the provider.')
         c.argument('endpoints', nargs='*', help='iSCSI provider target IP address list.')
-        c.argument('lun_name', help='Name of the LUN to be used.')
+
+    with self.argument_context('vmware datastore netapp-volume create') as c:
+        c.argument('volume_id', help='Azure resource ID of the NetApp volume.')
+
+    with self.argument_context('vmware datastore disk-pool-volume create') as c:
+        c.argument('target_id', help='Azure resource ID of the iSCSI target.')
+        c.argument('mount_option', nargs='*', help='Mode that describes whether the LUN has to be mounted as a datastore or attached as a LUN.')
+        c.argument('path', help='Device path.')
+
+    with self.argument_context('vmware addon') as c:
+        c.argument('name', options_list=['--name', '-n'], help='Name of the addon.')
+
+    with self.argument_context('vmware addon vr') as c:
+        c.argument('vrs_count', help='The vSphere Replication Server (VRS) count.')
+
+    with self.argument_context('vmware addon hcx') as c:
+        c.argument('offer', help='The HCX offer, example "VMware MaaS Cloud Provider (Enterprise)".')
+
+    with self.argument_context('vmware addon srm') as c:
+        c.argument('license_key', help='The Site Recovery Manager (SRM) license.')
+
+    with self.argument_context('vmware global-reach-connection') as c:
+        c.argument('name', options_list=['--name', '-n'], help='Name of the global reach connection.')
+
+    with self.argument_context('vmware global-reach-connection create') as c:
+        c.argument('peer_express_route_circuit', help='Identifier of the ExpressRoute Circuit to peer with.')
+        c.argument('authorization_key', help='Authorization key from the peer express route.')
+
+    with self.argument_context('vmware cloud-link') as c:
+        c.argument('name', options_list=['--name', '-n'], help='The name of the cloud link.')
+        c.argument('linked_cloud', help='Identifier of the other private cloud participating in the link.')
+
+    with self.argument_context('vmware script-package') as c:
+        c.argument('name', options_list=['--name', '-n'], help='Name of the script package.')
+
+    with self.argument_context('vmware script-cmdlet') as c:
+        c.argument('script_package', options_list=['--script-package', '-p'], help='Name of the script package.')
+        c.argument('name', options_list=['--name', '-n'], help='Name of the script cmdlet.')
+
+    with self.argument_context('vmware script-execution') as c:
+        c.argument('name', options_list=['--name', '-n'], help='Name of the script execution.')
+
+    with self.argument_context('vmware script-execution create') as c:
+        c.argument('timeout', help='Time limit for execution.')
+        c.argument('parameters', options_list=['--parameter', '-p'], action=ScriptExecutionParameterAction, nargs='*', help='Parameters the script will accept.')
+        c.argument('hidden_parameters', options_list=['--hidden-parameter'], action=ScriptExecutionParameterAction, nargs='*', help='Parameters that will be hidden/not visible to ARM, such as passwords and credentials.')
+        c.argument('failure_reason', help='Error message if the script was able to run, but if the script itself had errors or powershell threw an exception.')
+        c.argument('retention', help='Time to live for the resource. If not provided, will be available for 60 days.')
+        c.argument('out', help='Standard output stream from the powershell execution.')
+        c.argument('named_outputs', action=ScriptExecutionNamedOutputAction, nargs='*', help='User-defined dictionary.')
+        c.argument('script_cmdlet_id', help='A reference to the script cmdlet resource if user is running a AVS script.')
+
+    with self.argument_context('vmware workload-network dhcp') as c:
+        c.argument('dhcp_id', help='NSX DHCP identifier. Generally the same as the DHCP display name.')
+        c.argument('display_name', help='Display name of the DHCP entity.')
+        c.argument('revision', help='NSX revision number.')
+
+    with self.argument_context('vmware workload-network dhcp server') as c:
+        c.argument('server_address', help='DHCP Server Address.')
+        c.argument('lease_time', help='DHCP Server Lease Time.')
+
+    with self.argument_context('vmware workload-network dhcp relay') as c:
+        c.argument('server_addresses', nargs='+', validator=server_addresses_length, help='DHCP Relay Addresses. Max 3.')
+
+    with self.argument_context('vmware workload-network dns-service') as c:
+        c.argument('dns_service_id', help="NSX DNS service identifier. Generally the same as the DNS service's display name.")
+        c.argument('display_name', help='Display name of the DNS service.')
+        c.argument('dns_service_ip', help='DNS service IP of the DNS service.')
+        c.argument('default_dns_zone', help='Default DNS zone of the DNS service.')
+        c.argument('fqdn_zones', nargs='+', help='FQDN zones of the DNS service.')
+        c.argument('log_level', arg_type=get_enum_type(["DEBUG", "INFO", "WARNING", "ERROR", "FATAL"]), help='DNS service log level. Possible values include: "DEBUG", "INFO", "WARNING", "ERROR", "FATAL".')
+        c.argument('revision', help='NSX revision number.')
+
+    with self.argument_context('vmware workload-network dns-zone') as c:
+        c.argument('dns_zone_id', help="NSX DNS zone identifier. Generally the same as the DNS zone's display name.")
+        c.argument('display_name', help='Display name of the DNS zone.')
+        c.argument('domain', nargs='+', help='Domain names of the DNS zone.')
+        c.argument('dns_server_ips', nargs='+', help='DNS Server IP array of the DNS zone.')
+        c.argument('source_ip', help='Source IP of the DNS zone.')
+        c.argument('dns_services', help='Number of DNS services using the DNS zone.')
+        c.argument('revision', help='NSX revision number.')
+
+    with self.argument_context('vmware workload-network port-mirroring') as c:
+        c.argument('port_mirroring_id', help="NSX Port Mirroring identifier. Generally the same as the Port Mirroring display name.")
+        c.argument('display_name', help='Display name of the port mirroring profile.')
+        c.argument('direction', help='Direction of port mirroring profile. Possible values include: "INGRESS, EGRESS, BIDIRECTIONAL".')
+        c.argument('source', help='Source VM Group.')
+        c.argument('destination', help='Destination VM Group.')
+        c.argument('revision', help='NSX revision number.')

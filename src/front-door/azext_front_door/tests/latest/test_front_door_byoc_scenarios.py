@@ -3,12 +3,12 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 import unittest
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck)
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, record_only)
 
 
 class FrontDoorBYOCScenarioTests(ScenarioTest):
 
-    @unittest.skip("The test is not working as existing enable-https's implemention has ignored the LROPoller which will cause failures in test TearDown")
+    @record_only()  # This test requires resources in the specific subscription
     def test_frontend_endpoint_byoc_latest_version(self):
         resource_group = "bzhanafdtest"
         front_door = "frontdoorpstest2"
@@ -22,7 +22,15 @@ class FrontDoorBYOCScenarioTests(ScenarioTest):
                  f'--vault-id /subscriptions/{self.get_subscription_id()}/resourceGroups/bzhanafdtest/providers/Microsoft.KeyVault/vaults/bzhanbyostest '
                  '--secret-name frontdoorpstest2', checks=byoc_checks)
 
-    @unittest.skip("The test is not working as existing enable-https's implemention has ignored the LROPoller which will cause failures in test TearDown")
+        self.cmd(f'network front-door frontend-endpoint wait -f {front_door} -g {resource_group} -n {frontend_endpoint_name} '
+                 "--custom \"customHttpsProvisioningState=='Enabled'\"")
+
+        self.cmd(f'network front-door frontend-endpoint disable-https -f {front_door} -g {resource_group} -n {frontend_endpoint_name}')
+
+        self.cmd(f'network front-door frontend-endpoint wait -f {front_door} -g {resource_group} -n {frontend_endpoint_name} '
+                 "--custom \"customHttpsProvisioningState=='Disabled'\"")
+
+    @record_only()  # This test requires resources in the specific subscription
     def test_frontend_endpoint_byoc_specific_version(self):
         resource_group = "bzhanafdtest"
         front_door = "frontdoorpstest2"
@@ -37,3 +45,11 @@ class FrontDoorBYOCScenarioTests(ScenarioTest):
                  f'--vault-id /subscriptions/{self.get_subscription_id()}/resourceGroups/bzhanafdtest/providers/Microsoft.KeyVault/vaults/bzhanbyostest '
                  '--secret-name frontdoorpstest2 '
                  '--secret-version d6b1f0ffd2a142efb2a8a89289802c77', checks=byoc_checks)
+
+        self.cmd(f'network front-door frontend-endpoint wait -f {front_door} -g {resource_group} -n {frontend_endpoint_name} '
+                 "--custom \"customHttpsProvisioningState=='Enabled'\"")
+
+        self.cmd(f'network front-door frontend-endpoint disable-https -f {front_door} -g {resource_group} -n {frontend_endpoint_name}')
+
+        self.cmd(f'network front-door frontend-endpoint wait -f {front_door} -g {resource_group} -n {frontend_endpoint_name} '
+                 "--custom \"customHttpsProvisioningState=='Disabled'\"")

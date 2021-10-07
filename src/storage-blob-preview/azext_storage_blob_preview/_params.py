@@ -6,32 +6,22 @@
 
 from azure.cli.core.commands.validators import validate_tags
 from azure.cli.core.commands.parameters import (file_type, get_enum_type, get_three_state_flag)
-from azure.cli.core.local_context import LocalContextAttribute, LocalContextAction
 
 from ._validators import (validate_metadata, get_permission_validator, get_permission_help_string,
-                          validate_blob_type, validate_included_datasets_v2, add_progress_callback,
-                          validate_storage_data_plane_list, as_user_validator, blob_tier_validator,
-                          validate_container_delete_retention_days, validate_delete_retention_days,
-                          process_resource_group)
+                          validate_blob_type, validate_included_datasets_v2, get_datetime_type,
+                          add_download_progress_callback, add_upload_progress_callback,
+                          validate_storage_data_plane_list, as_user_validator, blob_tier_validator)
 
-from .profiles import CUSTOM_DATA_STORAGE_BLOB, CUSTOM_MGMT_STORAGE
+from .profiles import CUSTOM_DATA_STORAGE_BLOB
 
 
 def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statements, too-many-lines
     from argcomplete.completers import FilesCompleter
 
-    from knack.arguments import CLIArgumentType
-
-    from azure.cli.core.commands.parameters import get_resource_name_completion_list
+    from knack.arguments import ignore_type, CLIArgumentType
 
     from .sdkutil import get_table_data_type
     from .completers import get_storage_name_completion_list
-
-    acct_name_type = CLIArgumentType(options_list=['--account-name', '-n'], help='The storage account name.',
-                                     id_part='name',
-                                     completer=get_resource_name_completion_list('Microsoft.Storage/storageAccounts'),
-                                     local_context_attribute=LocalContextAttribute(
-                                         name='storage_account_name', actions=[LocalContextAction.GET]))
 
     t_base_blob_service = self.get_sdk('blob.baseblobservice#BaseBlobService')
     t_file_service = self.get_sdk('file#FileService')
@@ -57,7 +47,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
     table_name_type = CLIArgumentType(options_list=['--table-name', '-t'],
                                       completer=get_storage_name_completion_list(t_table_service, 'list_tables'))
     progress_type = CLIArgumentType(help='Include this flag to disable progress reporting for the command.',
-                                    action='store_true', validator=add_progress_callback)
+                                    action='store_true')
     sas_help = 'The permissions the SAS grants. Allowed values: {}. Do not use if a stored access policy is ' \
                'referenced with --policy-name that specifies this value. Can be combined.'
 
@@ -118,6 +108,20 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
     timeout_type = CLIArgumentType(
         help='Request timeout in seconds. Applies to each call to the service.', type=int
     )
+    t_delete_snapshots = self.get_sdk('_generated.models#DeleteSnapshotsOptionType',
+                                      resource_type=CUSTOM_DATA_STORAGE_BLOB)
+    delete_snapshots_type = CLIArgumentType(
+        arg_type=get_enum_type(t_delete_snapshots),
+        help='Required if the blob has associated snapshots. "only": Deletes only the blobs snapshots. '
+             '"include": Deletes the blob along with all snapshots.')
+    overwrite_type = CLIArgumentType(
+        arg_type=get_three_state_flag(),
+        help='Whether the blob to be uploaded should overwrite the current data. If True, upload_blob will '
+        'overwrite the existing data. If set to False, the operation will fail with ResourceExistsError. '
+        'The exception to the above is with Append blob types: if set to False and the data already exists, '
+        'an error will not be raised and the data will be appended to the existing blob. If set '
+        'overwrite=True, then the existing append blob will be deleted, and a new one created. '
+        'Defaults to False.')
 
     with self.argument_context('storage') as c:
         c.argument('container_name', container_name_type)
@@ -131,60 +135,16 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                    validator=validate_metadata)
         c.argument('timeout', help='Request timeout in seconds. Applies to each call to the service.', type=int)
 
-    with self.argument_context('storage account blob-service-properties show',
-                               resource_type=CUSTOM_MGMT_STORAGE) as c:
-        c.argument('account_name', acct_name_type, id_part=None)
-        c.argument('resource_group_name', required=False, validator=process_resource_group)
-
-    with self.argument_context('storage account blob-service-properties update',
-                               resource_type=CUSTOM_MGMT_STORAGE) as c:
-        from azure.cli.command_modules.storage._validators import get_api_version_type, \
-            validator_change_feed_retention_days
-        c.argument('account_name', acct_name_type, id_part=None)
-        c.argument('resource_group_name', required=False, validator=process_resource_group)
-        c.argument('enable_change_feed', arg_type=get_three_state_flag(), min_api='2019-04-01',
-                   arg_group='Change Feed Policy')
-        c.argument('change_feed_retention_days', is_preview=True,
-                   options_list=['--change-feed-retention-days', '--change-feed-days'],
-                   type=int, min_api='2019-06-01', arg_group='Change Feed Policy',
-                   validator=validator_change_feed_retention_days,
-                   help='Indicate the duration of changeFeed retention in days. '
-                        'Minimum value is 1 day and maximum value is 146000 days (400 years). '
-                        'A null value indicates an infinite retention of the change feed.'
-                        '(Use `--enable-change-feed` without `--change-feed-days` to indicate null)')
-        c.argument('enable_container_delete_retention',
-                   arg_type=get_three_state_flag(),
-                   options_list=['--enable-container-delete-retention', '--container-retention'],
-                   arg_group='Container Delete Retention Policy', min_api='2019-06-01',
-                   help='Enable container delete retention policy for container soft delete when set to true. '
-                        'Disable container delete retention policy when set to false.')
-        c.argument('container_delete_retention_days',
-                   options_list=['--container-delete-retention-days', '--container-days'],
-                   type=int, arg_group='Container Delete Retention Policy',
-                   min_api='2019-06-01', validator=validate_container_delete_retention_days,
-                   help='Indicate the number of days that the deleted container should be retained. The minimum '
-                        'specified value can be 1 and the maximum value can be 365.')
-        c.argument('enable_delete_retention', arg_type=get_three_state_flag(), arg_group='Delete Retention Policy',
-                   min_api='2018-07-01')
-        c.argument('delete_retention_days', type=int, arg_group='Delete Retention Policy',
-                   validator=validate_delete_retention_days, min_api='2018-07-01')
-        c.argument('enable_restore_policy', arg_type=get_three_state_flag(), arg_group='Restore Policy',
-                   min_api='2019-06-01', help="Enable blob restore policy when it set to true.")
-        c.argument('restore_days', type=int, arg_group='Restore Policy',
-                   min_api='2019-06-01', help="The number of days for the blob can be restored. It should be greater "
-                   "than zero and less than Delete Retention Days.")
-        c.argument('enable_versioning', arg_type=get_three_state_flag(), help='Versioning is enabled if set to true.',
-                   min_api='2019-06-01')
-        c.argument('enable_last_access_tracking', arg_type=get_three_state_flag(), min_api='2019-06-01',
-                   options_list=['--enable-last-access-tracking', '-t'],
-                   help='When set to true last access time based tracking policy is enabled.')
-        c.argument('default_service_version', options_list=['--default-service-version', '-d'],
-                   type=get_api_version_type(), min_api='2018-07-01',
-                   help="Indicate the default version to use for requests to the Blob service if an incoming request's "
-                        "version is not specified.")
-
     with self.argument_context('storage blob') as c:
         c.argument('blob_name', options_list=('--name', '-n'), arg_type=blob_name_type)
+        c.argument('destination_path', help='The destination path that will be appended to the blob name.')
+        c.argument('socket_timeout', deprecate_info=c.deprecate(hide=True),
+                   help='The socket timeout(secs), used by the service to regulate data flow.')
+
+    with self.argument_context('storage blob copy') as c:
+        c.argument('container_name', container_name_type, options_list=('--destination-container', '-c'))
+        c.argument('blob_name', blob_name_type, options_list=('--destination-blob', '-b'),
+                   help='Name of the destination blob. If the exists, it will be overwritten.')
 
     with self.argument_context('storage blob copy start') as c:
         from ._validators import validate_source_url
@@ -218,21 +178,36 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.extra('tier', tier_type)
         c.extra('tags', tags_type)
 
+    with self.argument_context('storage blob copy start-batch', arg_group='Copy Source') as c:
+        from ._validators import get_source_file_or_blob_service_client
+
+        c.argument('source_client', ignore_type, validator=get_source_file_or_blob_service_client)
+
+        c.extra('source_account_name')
+        c.extra('source_account_key')
+        c.extra('source_uri')
+        c.argument('source_sas')
+        c.argument('source_container')
+        c.argument('source_share')
+
     with self.argument_context('storage blob delete') as c:
-        t_delete_snapshots = self.get_sdk('_generated.models#DeleteSnapshotsOptionType',
-                                          resource_type=CUSTOM_DATA_STORAGE_BLOB)
         c.register_blob_arguments()
         c.register_precondition_options()
 
         c.extra('lease', lease_type)
         c.extra('snapshot', snapshot_type)
         c.extra('version_id', version_id_type)
-        c.argument('delete_snapshots', arg_type=get_enum_type(t_delete_snapshots),
-                   help='Required if the blob has associated snapshots. "only": Deletes only the blobs snapshots. '
-                        '"include": Deletes the blob along with all snapshots.')
+        c.argument('delete_snapshots', delete_snapshots_type)
+
+    with self.argument_context('storage blob delete-batch') as c:
+        c.register_precondition_options()
+
+        c.ignore('container_name')
+        c.argument('source', options_list=('--source', '-s'))
+        c.argument('delete_snapshots', delete_snapshots_type)
+        c.argument('lease_id', help='The active lease id for the blob.')
 
     with self.argument_context('storage blob download') as c:
-        from ._validators import add_progress_callback_v2
         c.register_blob_arguments()
         c.register_precondition_options()
         c.argument('file_path', options_list=('--file', '-f'), type=file_type, completer=FilesCompleter(),
@@ -245,7 +220,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                 help='End of byte range to use for downloading a section of the blob. If end_range is given, '
                 'start_range must be provided. The start_range and end_range params are inclusive. Ex: start_range=0, '
                 'end_range=511 will download first 512 bytes of blob.')
-        c.extra('no_progress', progress_type, validator=add_progress_callback_v2)
+        c.extra('no_progress', progress_type, validator=add_download_progress_callback)
         c.extra('snapshot', snapshot_type)
         c.extra('lease', lease_type)
         c.extra('version_id', version_id_type)
@@ -253,8 +228,6 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                 help='The number of parallel connections with which to download.')
         c.argument('open_mode', help='Mode to use when opening the file. Note that specifying append only open_mode '
                    'prevents parallel download. So, max_connections must be set to 1 if this open_mode is used.')
-        c.argument('socket_timeout', deprecate_info=c.deprecate(hide=True),
-                   help='The socket timeout(secs), used by the service to regulate data flow.')
         c.extra('validate_content', action='store_true', min_api='2016-05-31',
                 help='If true, calculates an MD5 hash for each chunk of the blob. The storage service checks the '
                 'hash of the content that has arrived with the hash that was sent. This is primarily valuable for '
@@ -263,8 +236,31 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                 'memory-efficient algorithm will not be used because computing the MD5 hash requires buffering '
                 'entire blocks, and doing so defeats the purpose of the memory-efficient algorithm.')
 
+    with self.argument_context('storage blob download-batch') as c:
+        # c.register_precondition_options()
+        c.ignore('container_name')
+        c.argument('destination', options_list=('--destination', '-d'))
+        c.argument('source', options_list=('--source', '-s'))
+        c.extra('max_concurrency', options_list='--max-connections', type=int, default=2,
+                help='The number of parallel connections with which to download.')
+        c.extra('no_progress', progress_type)
+
     with self.argument_context('storage blob exists') as c:
         c.register_blob_arguments()
+
+    with self.argument_context('storage blob set-legal-hold') as c:
+        c.register_blob_arguments()
+        c.argument('legal_hold', arg_type=get_three_state_flag(),
+                   help='Specified if a legal hold should be set on the blob.')
+
+    with self.argument_context('storage blob immutability-policy delete') as c:
+        c.register_blob_arguments()
+
+    with self.argument_context('storage blob immutability-policy set') as c:
+        c.register_blob_arguments()
+        c.argument('expiry_time', type=get_datetime_type(False),
+                   help='expiration UTC datetime in (Y-m-d\'T\'H:M:S\'Z\')')
+        c.argument('policy_mode', arg_type=get_enum_type(['Locked', 'Unlocked']), help='Lock or Unlock the policy')
 
     with self.argument_context('storage blob filter') as c:
         c.argument('filter_expression', options_list=['--tag-filter'])
@@ -432,8 +428,8 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.extra('if_tags_match_condition', tags_condition_type)
 
     with self.argument_context('storage blob upload') as c:
-        from ._validators import validate_encryption_scope_client_params, \
-            add_progress_callback_v2, validate_upload_blob
+        from ._validators import validate_encryption_scope_client_params, validate_upload_blob
+
         from .sdkutil import get_blob_types
 
         t_blob_content_settings = self.get_sdk('_models#ContentSettings', resource_type=CUSTOM_DATA_STORAGE_BLOB)
@@ -447,13 +443,13 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.argument('data', help='The blob data to upload.', required=False, is_preview=True, min_api='2019-02-02')
         c.argument('length', type=int, help='Number of bytes to read from the stream. This is optional, but should be '
                    'supplied for optimal performance. Cooperate with --data.', is_preview=True, min_api='2019-02-02')
-        c.argument('overwrite', arg_type=get_three_state_flag(), arg_group="Additional Flags",
-                   help='Whether the blob to be uploaded should overwrite the current data. If True, upload_blob will '
-                   'overwrite the existing data. If set to False, the operation will fail with ResourceExistsError. '
-                   'The exception to the above is with Append blob types: if set to False and the data already exists, '
-                   'an error will not be raised and the data will be appended to the existing blob. If set '
-                   'overwrite=True, then the existing append blob will be deleted, and a new one created. '
-                   'Defaults to False.', is_preview=True)
+        c.argument('overwrite', arg_type=get_three_state_flag(), arg_group="Additional Flags", is_preview=True,
+                   help='Whether the blob to be uploaded should overwrite the current data. If True, blob upload '
+                   'operation will  overwrite the existing data. If set to False, the operation will fail with '
+                   'ResourceExistsError. The exception to the above is with Append blob types: if set to False and the '
+                   'data already exists, an error will not be raised and the data will be appended to the existing '
+                   'blob. If set overwrite=True, then the existing append blob will be deleted, and a new one created. '
+                   'Defaults to False.')
         c.argument('max_connections', type=int, arg_group="Additional Flags",
                    help='Maximum number of parallel connections to use when the blob size exceeds 64MB.')
         c.extra('maxsize_condition', type=int, arg_group="Content Control",
@@ -461,9 +457,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.argument('blob_type', options_list=('--type', '-t'), validator=validate_blob_type,
                    arg_type=get_enum_type(get_blob_types()), arg_group="Additional Flags")
         c.argument('validate_content', action='store_true', min_api='2016-05-31', arg_group="Content Control")
-        c.extra('no_progress', progress_type, validator=add_progress_callback_v2, arg_group="Additional Flags")
-        c.argument('socket_timeout', deprecate_info=c.deprecate(hide=True),
-                   help='The socket timeout(secs), used by the service to regulate data flow.')
+        c.extra('no_progress', progress_type, validator=add_upload_progress_callback, arg_group="Additional Flags")
         c.extra('tier', tier_type, validator=blob_tier_validator, arg_group="Additional Flags")
         c.argument('encryption_scope', validator=validate_encryption_scope_client_params,
                    help='A predefined encryption scope used to encrypt the data on the service.',
@@ -472,6 +466,88 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.extra('tags', arg_type=tags_type, arg_group="Additional Flags")
         c.argument('metadata', arg_group="Additional Flags")
         c.argument('timeout', arg_group="Additional Flags")
+
+    with self.argument_context('storage blob upload-batch') as c:
+        from .sdkutil import get_blob_types
+
+        t_blob_content_settings = self.get_sdk('_models#ContentSettings', resource_type=CUSTOM_DATA_STORAGE_BLOB)
+        c.register_precondition_options()
+        c.register_content_settings_argument(t_blob_content_settings, update=False, arg_group='Content Control')
+        c.ignore('source_files', 'destination_container_name')
+
+        c.argument('source', options_list=('--source', '-s'))
+        c.argument('destination', options_list=('--destination', '-d'))
+        c.argument('max_connections', type=int,
+                   help='Maximum number of parallel connections to use when the blob size exceeds 64MB.')
+        c.argument('maxsize_condition', arg_group='Content Control')
+        c.argument('validate_content', action='store_true', min_api='2016-05-31', arg_group='Content Control')
+        c.argument('blob_type', options_list=('--type', '-t'), arg_type=get_enum_type(get_blob_types()))
+        c.extra('no_progress', progress_type)
+        c.extra('tier', tier_type, is_preview=True)
+        c.extra('overwrite', overwrite_type, is_preview=True)
+
+    with self.argument_context('storage blob query') as c:
+        from ._validators import validate_text_configuration
+        c.register_blob_arguments()
+        c.register_precondition_options()
+        line_separator = CLIArgumentType(help="The string used to separate records.", default='\n')
+        column_separator = CLIArgumentType(help="The string used to separate columns.", default=',')
+        quote_char = CLIArgumentType(help="The string used to quote a specific field.", default='"')
+        record_separator = CLIArgumentType(help="The string used to separate records.", default='\n')
+        escape_char = CLIArgumentType(help="The string used as an escape character. Default to empty.", default="")
+        has_header = CLIArgumentType(
+            arg_type=get_three_state_flag(),
+            help="Whether the blob data includes headers in the first line. "
+            "The default value is False, meaning that the data will be returned inclusive of the first line. "
+            "If set to True, the data will be returned exclusive of the first line.", default=False)
+        c.extra('lease', options_list='--lease-id',
+                help='Required if the blob has an active lease.')
+        c.argument('query_expression', help='The query expression in SQL. The maximum size of the query expression '
+                   'is 256KiB. For more information about the expression syntax, please see '
+                   'https://docs.microsoft.com/azure/storage/blobs/query-acceleration-sql-reference')
+        c.extra('input_format', arg_type=get_enum_type(['csv', 'json', 'parquet']), validator=validate_text_configuration,
+                min_api='2020-10-02',
+                help='Serialization type of the data currently stored in the blob. '
+                'The default is to treat the blob data as CSV data formatted in the default dialect.'
+                'The blob data will be reformatted according to that profile when blob format is specified. '
+                'If you choose `json`, please specify `Input Json Text Configuration Arguments` accordingly; '
+                'If you choose `csv`, please specify `Input Delimited Text Configuration Arguments`.')
+        c.extra('output_format', arg_type=get_enum_type(['csv', 'json']),
+                help='Output serialization type for the data stream. '
+                'By default the data will be returned as it is represented in the blob. '
+                'By providing an output format, the blob data will be reformatted according to that profile. '
+                'If you choose `json`, please specify `Output Json Text Configuration Arguments` accordingly; '
+                'If you choose `csv`, please specify `Output Delimited Text Configuration Arguments`.'
+                'By default data with input_format of `parquet` will have the output_format of `csv`')
+        c.extra('in_line_separator',
+                arg_group='Input Json Text Configuration',
+                arg_type=line_separator)
+        c.extra('in_column_separator', arg_group='Input Delimited Text Configuration',
+                arg_type=column_separator)
+        c.extra('in_quote_char', arg_group='Input Delimited Text Configuration',
+                arg_type=quote_char)
+        c.extra('in_record_separator', arg_group='Input Delimited Text Configuration',
+                arg_type=record_separator)
+        c.extra('in_escape_char', arg_group='Input Delimited Text Configuration',
+                arg_type=escape_char)
+        c.extra('in_has_header', arg_group='Input Delimited Text Configuration',
+                arg_type=has_header)
+        c.extra('out_line_separator',
+                arg_group='Output Json Text Configuration',
+                arg_type=line_separator)
+        c.extra('out_column_separator', arg_group='Output Delimited Text Configuration',
+                arg_type=column_separator)
+        c.extra('out_quote_char', arg_group='Output Delimited Text Configuration',
+                arg_type=quote_char)
+        c.extra('out_record_separator', arg_group='Output Delimited Text Configuration',
+                arg_type=record_separator)
+        c.extra('out_escape_char', arg_group='Output Delimited Text Configuration',
+                arg_type=escape_char)
+        c.extra('out_has_header', arg_group='Output Delimited Text Configuration',
+                arg_type=has_header)
+        c.extra('result_file', help='Specify the file path to save result.')
+        c.ignore('input_config')
+        c.ignore('output_config')
 
     with self.argument_context('storage container') as c:
         c.argument('container_name', container_name_type, options_list=('--name', '-n'))

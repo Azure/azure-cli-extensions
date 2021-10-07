@@ -56,33 +56,11 @@ helps['confluent organization show'] = """
 helps['confluent organization create'] = """
     type: command
     short-summary: "Create Organization resource."
-    parameters:
-      - name: --offer-detail
-        short-summary: "Confluent offer detail"
-        long-summary: |
-            Usage: --offer-detail publisher-id=XX id=XX plan-id=XX plan-name=XX term-unit=XX status=XX
-
-            publisher-id: Publisher Id
-            id: Offer Id
-            plan-id: Offer Plan Id
-            plan-name: Offer Plan Name
-            term-unit: Offer Plan Term unit
-            status: SaaS Offer Status
-      - name: --user-detail
-        short-summary: "Subscriber detail"
-        long-summary: |
-            Usage: --user-detail first-name=XX last-name=XX email-address=XX
-
-            first-name: First name
-            last-name: Last name
-            email-address: Email address
     examples:
       - name: Organization_Create
         text: |-
-               az confluent organization create --location "West US" --offer-detail id="string" plan-id="string" \
-plan-name="string" publisher-id="string" term-unit="string" --user-detail email-address="contoso@microsoft.com" \
-first-name="string" last-name="string" --tags Environment="Dev" --name "myOrganization" --resource-group \
-"myResourceGroup"
+               az confluent organization create --location "West US" --tags Environment="Dev" --name "myOrganization" \
+--resource-group "myResourceGroup"
 """
 
 helps['confluent organization update'] = """

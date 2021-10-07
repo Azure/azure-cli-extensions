@@ -51,7 +51,7 @@ def create_databox_job(client,
 
     body.setdefault('details', {})['destination_account_details'] = destination_account_details
 
-    return client.create(resource_group_name=resource_group_name, job_name=job_name, job_resource=body)
+    return client.begin_create(resource_group_name=resource_group_name, job_name=job_name, job_resource=body)
 
 
 def update_databox_job(client,
@@ -100,13 +100,13 @@ def update_databox_job(client,
     body.setdefault('details', {}).setdefault('shipping_address', {})[
         'company_name'] = shipping_address.company_name if company_name is None else company_name  # str
 
-    return client.update(resource_group_name=resource_group_name, job_name=job_name, job_resource_update_parameter=body)
+    return client.begin_update(resource_group_name=resource_group_name, job_name=job_name, job_resource_update_parameter=body)
 
 
 def delete_databox_job(client,
                        resource_group_name,
                        job_name):
-    return client.delete(resource_group_name=resource_group_name, job_name=job_name)
+    return client.begin_delete(resource_group_name=resource_group_name, job_name=job_name)
 
 
 def get_databox_job(client,
@@ -126,7 +126,7 @@ def cancel_databox_job(client,
                        resource_group_name,
                        job_name,
                        reason):
-    return client.cancel(resource_group_name=resource_group_name, job_name=job_name, reason=reason)
+    return client.cancel(resource_group_name=resource_group_name, job_name=job_name, cancellation_reason={'reason': reason})
 
 
 def list_credentials_databox_job(client,

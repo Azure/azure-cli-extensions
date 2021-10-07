@@ -34,7 +34,7 @@ def load_command_table(self, _):
         g.custom_command('list', 'datadog_monitor_list')
         g.custom_show_command('show', 'datadog_monitor_show')
         g.custom_command('create', 'datadog_monitor_create', supports_no_wait=True)
-        g.custom_command('update', 'datadog_monitor_update')
+        g.custom_command('update', 'datadog_monitor_update', supports_no_wait=True)
         g.custom_command('delete', 'datadog_monitor_delete', supports_no_wait=True, confirmation=True)
         g.custom_command('get-default-key', 'datadog_monitor_get_default_key')
         g.custom_command('list-api-key', 'datadog_monitor_list_api_key')
@@ -69,5 +69,5 @@ def load_command_table(self, _):
                                  custom_func_name='datadog_sso_config_update', supports_no_wait=True)
         g.custom_wait_command('wait', 'datadog_sso_config_show')
 
-    with self.command_group('datadog', is_experimental=True):
+    with self.command_group('datadog'):
         pass

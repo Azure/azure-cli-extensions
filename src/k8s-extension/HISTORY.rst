@@ -3,6 +3,68 @@
 Release History
 ===============
 
+0.7.1
+++++++++++++++++++
+* Fix DF resource manager endpoint check
+
+0.7.0
+++++++++++++++++++
+* Enable identity by default for extensions
+* Use custom delete confirmation for partners
+* microsoft.azureml.kubernetes: Adding a flag for AKS to AMLARC migration and set up corresponding FE helm values
+* microsoft.openservicemesh: Remove version requirement and auto upgrade minor version check
+* Adds -t as alternative to --cluster-type
+
+0.6.1
+++++++++++++++++++
+* Remove sending identity for clusters in Dogfood
+* Provide fix for getting tested distros for microsoft.openservicemesh
+* Add location to model for identity
+
+0.6.0
+++++++++++++++++++
+* Update extension resource models to Track2
+
+0.5.1
+++++++++++++++++++
+* Remove pyhelm dependency
+
+0.5.0
+++++++++++++++++++
+* Add microsoft.openservicemesh customization to check distros
+* Delete customization for partners 
+
+0.4.3
+++++++++++++++++++
+* Add SSL support for AzureML
+
+0.4.2
+++++++++++++++++++
+
+* Hotfix servicebus namespace creation for Track 2 changes
+* Change resource tag from 'amlk8s' to 'Azure Arc-enabled ML' in microsoft.azureml.kubernetes
+
+0.4.1
+++++++++++++++++++
+
+* Add compatible logic for the track 2 migration of resource dependence
+
+0.4.0
+++++++++++++++++++
+
+* Release customization for microsoft.openservicemesh
+
+0.3.1
+++++++++++++++++++
+
+* Add provider registration to check to validations
+* Only validate scoring fe settings when inference is enabled in microsoft.azureml.kubernetes
+
+0.3.0
+++++++++++++++++++
+
+* Release customization for microsoft.azureml.kubernetes
+
 0.2.1
 ++++++++++++++++++
 

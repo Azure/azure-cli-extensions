@@ -15,6 +15,8 @@ import json
 from subprocess import check_output, check_call
 from pkg_resources import parse_version
 
+import service_name
+
 
 def separator_line():
     print('-' * 100)
@@ -160,6 +162,9 @@ def linter_on_external_extension(index_json):
         azdev_extension = AzdevExtensionHelper(name)
         azdev_extension.linter()
 
+        print('Checking service name for external extensions')
+        service_name.check()
+
         az_extension.remove()
 
 
@@ -181,6 +186,10 @@ def linter_on_internal_extension(modified_files):
         azdev_extension = AzdevExtensionHelper(name)
         azdev_extension.add_from_code()
         azdev_extension.linter()
+
+        print('Checking service name for internal extensions')
+        service_name.check()
+
         azdev_extension.remove()
 
 

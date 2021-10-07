@@ -1,5 +1,58 @@
 Release History
 ===============
+2.10.0
+-----
+* Support functions for Java In-Process Agent feature General Available.
+* For Application Insights configuration, support both `connection_string` and `instrumentation_key`,
+  and we recommended to use `connection_string`.
+* Enabling In-Process Agent is equivalent to enabling application insights.
+* Mark `enable-java-agent` as deprecated, since IPA is GA-ed.
+* Mark application insights related parameter as deprecated in `az spring-cloud update`,
+  it's still supported, but will de decommissioned in the future, 
+  and we recommended to use `az spring-cloud app-insights update`.
+* Support `--sampling-rate` in `az spring-cloud create`.
+* Decommissioned `disable-distributed-tracing` parameter.
+
+2.9.0
+-----
+* Add --source-path argument into 'az spring-cloud app deploy' and 'az spring-cloud app deployment create'
+* Deprecate source code deploy without --source-path argument in 'az spring-cloud app deploy' and 'az spring-cloud app deployment create'
+* Add Support to create banner deployment in 'az spring-cloud app deployment create'
+
+2.8.0
+-----
+* Add support to validate jar before create/update deployment
+* Add support to delete deployment with no-wait
+
+2.7.1
+-----
+* Fix source code deployment build log issues
+
+2.7.0
+-----
+* Migrate to track2 SDK
+
+2.6.0
+-----
+* Add support for 0.5 core, 512 Mi resource requests in app deployment
+
+2.5.1
+-----
+* Revert `2.5.0` as a quick fix for incompatibility with old api-version.
+
+~~2.5.0~~
+-----
+* Deprecated
+* ~~Migration from `instrumentation_key` to `connection_string` when update java agent configurations.~~
+
+2.4.0
+-----
+* Add support to format log streaming of structured JSON output
+
+2.3.1
+-----
+* Fix disable-ssl in redis binding.
+
 2.3.0
 -----
 * Support End-to-end TLS.

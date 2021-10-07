@@ -7,9 +7,10 @@ from azure.cli.core.commands import CliCommandType
 from azure.cli.core.commands.arm import show_exception_handler
 from ._client_factory import (cf_sa, cf_blob_data_gen_update,
                               blob_data_service_factory, adls_blob_data_service_factory,
-                              cf_sa_blob_inventory, cf_mgmt_file_services, cf_share_client, cf_share_file_client)
+                              cf_sa_blob_inventory, cf_mgmt_file_services, cf_share_client, cf_share_file_client,
+                              cf_adls_service, cf_adls_file_system)
 from .profiles import (CUSTOM_DATA_STORAGE, CUSTOM_DATA_STORAGE_ADLS, CUSTOM_MGMT_PREVIEW_STORAGE,
-                       CUSTOM_DATA_STORAGE_FILESHARE)
+                       CUSTOM_DATA_STORAGE_FILESHARE, CUSTOM_DATA_STORAGE_FILEDATALAKE)
 
 
 def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-statements
@@ -93,18 +94,6 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         g.custom_command('add', 'add_network_rule')
         g.custom_command('list', 'list_network_rules')
         g.custom_command('remove', 'remove_network_rule')
-
-    base_blob_sdk = CliCommandType(
-        operations_tmpl='azext_storage_preview.vendored_sdks.azure_storage.blob.baseblobservice#BaseBlobService.{}',
-        client_factory=blob_data_service_factory,
-        resource_type=CUSTOM_DATA_STORAGE)
-
-    with self.command_group('storage blob service-properties', command_type=base_blob_sdk) as g:
-        g.storage_command_oauth('show', 'get_blob_service_properties', exception_handler=show_exception_handler)
-        g.storage_command_oauth('update', generic_update=True, getter_name='get_blob_service_properties',
-                                setter_type=get_custom_sdk('blob', cf_blob_data_gen_update),
-                                setter_name='set_service_properties',
-                                client_factory=cf_blob_data_gen_update)
 
     block_blob_sdk = CliCommandType(
         operations_tmpl='azure.multiapi.storage.blob.blockblobservice#BlockBlobService.{}',
@@ -217,3 +206,26 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         g.storage_custom_command('upload', 'storage_file_upload', transform=transform_file_upload)
         g.storage_custom_command('upload-batch', 'storage_file_upload_batch',
                                  custom_command_type=get_custom_sdk('file', client_factory=cf_share_client))
+
+    adls_fs_service_sdk = CliCommandType(
+        operations_tmpl='azext_storage_preview.vendored_sdks.azure_storage_filedatalake._data_lake_service_client#DataLakeServiceClient.{}',
+        client_factory=cf_adls_service,
+        resource_type=CUSTOM_DATA_STORAGE_FILEDATALAKE
+    )
+
+    with self.command_group('storage fs service-properties', command_type=adls_fs_service_sdk,
+                            custom_command_type=get_custom_sdk('filesystem', cf_adls_service),
+                            resource_type=CUSTOM_DATA_STORAGE_FILEDATALAKE, min_api='2020-06-12', is_preview=True) as g:
+        g.storage_command_oauth('show', 'get_service_properties', exception_handler=show_exception_handler)
+        g.storage_custom_command_oauth('update', 'set_service_properties')
+
+    adls_fs_sdk = CliCommandType(
+        operations_tmpl='azext_storage_preview.vendored_sdks.azure_storage_filedatalake._file_system_client#FileSystemClient.{}',
+        client_factory=cf_adls_file_system,
+        resource_type=CUSTOM_DATA_STORAGE_FILEDATALAKE
+    )
+    with self.command_group('storage fs', command_type=adls_fs_sdk,
+                            custom_command_type=get_custom_sdk('filesystem', cf_adls_file_system),
+                            resource_type=CUSTOM_DATA_STORAGE_FILEDATALAKE, min_api='2020-06-12', is_preview=True) as g:
+        g.storage_custom_command_oauth('list-deleted-path', 'list_deleted_path')
+        g.storage_command_oauth('undelete-path', '_undelete_path')

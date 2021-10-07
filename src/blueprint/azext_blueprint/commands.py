@@ -14,7 +14,8 @@ def load_command_table(self, _):
 
     from ._client_factory import cf_blueprints
     blueprint_blueprints = CliCommandType(
-        operations_tmpl='azext_blueprint.vendored_sdks.blueprint.operations._blueprints_operations#BlueprintsOperations.{}',
+        operations_tmpl='azext_blueprint.vendored_sdks.blueprint.operations._blueprints_operations#BlueprintsOperations'
+                        '.{}',
         client_factory=cf_blueprints)
     with self.command_group('blueprint', blueprint_blueprints, client_factory=cf_blueprints, is_experimental=True) as g:
         g.custom_command('create', 'create_blueprint')
@@ -25,7 +26,10 @@ def load_command_table(self, _):
         g.custom_command('delete', 'delete_blueprint', confirmation=True)
         g.custom_show_command('show', 'get_blueprint')
         g.custom_command('list', 'list_blueprint')
-        g.custom_command('import', 'import_blueprint_with_artifacts', confirmation="This operation will overwrite any unpublished changes if the blueprint already exists.")
+        g.custom_command('import', 'import_blueprint_with_artifacts',
+                         confirmation="This operation will overwrite any unpublished changes"
+                                      " if the blueprint already exists.")
+        g.custom_command('export', 'export_blueprint_with_artifacts')
 
     with self.command_group('blueprint resource-group', blueprint_blueprints, client_factory=cf_blueprints) as g:
         g.custom_command('add', 'add_blueprint_resource_group')
@@ -36,7 +40,8 @@ def load_command_table(self, _):
 
     from ._client_factory import cf_artifacts
     blueprint_artifacts = CliCommandType(
-        operations_tmpl='azext_blueprint.vendored_sdks.blueprint.operations._artifacts_operations#ArtifactsOperations.{}',
+        operations_tmpl='azext_blueprint.vendored_sdks.blueprint.operations._artifacts_operations#ArtifactsOperations'
+                        '.{}',
         client_factory=cf_artifacts)
     with self.command_group('blueprint artifact', blueprint_artifacts, client_factory=cf_artifacts) as g:
         g.custom_command('delete', 'delete_blueprint_artifact', confirmation=True)
@@ -57,9 +62,11 @@ def load_command_table(self, _):
 
     from ._client_factory import cf_published_blueprints
     blueprint_published_blueprints = CliCommandType(
-        operations_tmpl='azext_blueprint.vendored_sdks.blueprint.operations._published_blueprints_operations#PublishedBlueprintsOperations.{}',
+        operations_tmpl='azext_blueprint.vendored_sdks.blueprint.operations'
+                        '._published_blueprints_operations#PublishedBlueprintsOperations.{}',
         client_factory=cf_published_blueprints)
-    with self.command_group('blueprint', blueprint_published_blueprints, client_factory=cf_published_blueprints, is_experimental=True) as g:
+    with self.command_group('blueprint', blueprint_published_blueprints,
+                            client_factory=cf_published_blueprints, is_experimental=True) as g:
         g.custom_command('publish', 'publish_blueprint')
         g.custom_command('version delete', 'delete_blueprint_version', confirmation=True)
         g.custom_command('version show', 'get_blueprint_version')
@@ -67,15 +74,18 @@ def load_command_table(self, _):
 
     from ._client_factory import cf_published_artifacts
     blueprint_published_artifacts = CliCommandType(
-        operations_tmpl='azext_blueprint.vendored_sdks.blueprint.operations._published_artifacts_operations#PublishedArtifactsOperations.{}',
+        operations_tmpl='azext_blueprint.vendored_sdks.blueprint.operations'
+                        '._published_artifacts_operations#PublishedArtifactsOperations.{}',
         client_factory=cf_published_artifacts)
-    with self.command_group('blueprint version artifact', blueprint_published_artifacts, client_factory=cf_published_artifacts) as g:
+    with self.command_group('blueprint version artifact', blueprint_published_artifacts,
+                            client_factory=cf_published_artifacts) as g:
         g.custom_show_command('show', 'get_blueprint_version_artifact')
         g.custom_command('list', 'list_blueprint_version_artifact')
 
     from ._client_factory import cf_assignments
     blueprint_assignments = CliCommandType(
-        operations_tmpl='azext_blueprint.vendored_sdks.blueprint.operations._assignments_operations#AssignmentsOperations.{}',
+        operations_tmpl='azext_blueprint.vendored_sdks.blueprint.operations'
+                        '._assignments_operations#AssignmentsOperations.{}',
         client_factory=cf_assignments)
     with self.command_group('blueprint assignment', blueprint_assignments, client_factory=cf_assignments) as g:
         g.custom_command('create', 'create_blueprint_assignment')
@@ -83,5 +93,5 @@ def load_command_table(self, _):
         g.custom_command('delete', 'delete_blueprint_assignment', confirmation=True)
         g.custom_show_command('show', 'get_blueprint_assignment')
         g.custom_command('list', 'list_blueprint_assignment')
-        g.wait_command('wait')
+        g.custom_wait_command('wait', 'get_blueprint_assignment')
         g.custom_command('who', 'who_is_blueprint_blueprint_assignment')

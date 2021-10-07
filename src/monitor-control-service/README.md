@@ -159,3 +159,30 @@ az monitor data-collection rule association list --resource "subscriptions/70336
 ```
 az monitor data-collection rule association delete --name "myAssociation" --resource "subscriptions/703362b3-f278-4e4b-9179-c76eaf41ffc2/resourceGroups/myResourceGroup/providers/Microsoft.Compute/virtualMachines/myVm"
 ```
+
+#### data-collection endpoint
+##### Create
+```
+az monitor data-collection endpoint create --name "myEndpoint" -g "myResourceGroup" -l "eastus2euap" --public-network-access "enabled"
+```
+##### Show
+```
+az monitor data-collection endpoint show --name "myEndpoint" -g "myResourceGroup"
+```
+##### Update
+```
+az monitor data-collection endpoint update --name "myEndpoint" -g "myResourceGroup" --kind windows 
+```
+##### List
+List endpoints for specified resource group
+```
+az monitor data-collection endpoint list -g "myResourceGroup"
+```
+List endpoints for subscription
+```
+az monitor data-collection endpoint list 
+```
+##### Delete
+```
+az monitor data-collection endpoint delete --name "myEndpoint" -g "myResourceGroup"
+```

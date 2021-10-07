@@ -6,7 +6,7 @@
 
 def cf_custom_providers(cli_ctx, *_):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
-    from .vendored_sdks.customproviders import CustomProvidersClient
+    from .vendored_sdks.customproviders import Customproviders as CustomProvidersClient
     return get_mgmt_service_client(cli_ctx, CustomProvidersClient)
 
 

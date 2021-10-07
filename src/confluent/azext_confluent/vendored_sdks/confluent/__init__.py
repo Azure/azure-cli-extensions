@@ -7,6 +7,9 @@
 # --------------------------------------------------------------------------
 
 from ._confluent_management_client import ConfluentManagementClient
+from ._version import VERSION
+
+__version__ = VERSION
 __all__ = ['ConfluentManagementClient']
 
 try:

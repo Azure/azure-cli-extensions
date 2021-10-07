@@ -9,12 +9,12 @@
 # --------------------------------------------------------------------------
 
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
-from azext_providerhub.vendored_sdks.providerhub import Providerhub
+from azext_providerhub.vendored_sdks.providerhub import ProviderHub
 
 
 def cf_providerhub_cl(cli_ctx, *_):
     return get_mgmt_service_client(cli_ctx,
-                                   Providerhub)
+                                   ProviderHub)
 
 
 def cf_providerhub(cli_ctx, *_):
@@ -29,6 +29,10 @@ def cf_default_rollout(cli_ctx, *_):
     return cf_providerhub_cl(cli_ctx).default_rollouts
 
 
+def cf_notification_registration(cli_ctx, *_):
+    return cf_providerhub_cl(cli_ctx).notification_registrations
+
+
 def cf_operation(cli_ctx, *_):
     return cf_providerhub_cl(cli_ctx).operations
 
@@ -39,3 +43,7 @@ def cf_provider_registration(cli_ctx, *_):
 
 def cf_resource_type_registration(cli_ctx, *_):
     return cf_providerhub_cl(cli_ctx).resource_type_registrations
+
+
+def cf_sku(cli_ctx, *_):
+    return cf_providerhub_cl(cli_ctx).skus

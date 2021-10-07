@@ -8,6 +8,7 @@
 
 from azure.cli.core.util import sdk_no_wait
 from azure.cli.core.azclierror import MutuallyExclusiveArgumentError
+from msrest.serialization import last_restapi_key_transformer
 
 
 def _get_database_client(cli_ctx):
@@ -17,7 +18,11 @@ def _get_database_client(cli_ctx):
 
 def _get_cluster_with_databases(cluster,
                                 databases):
-    result = cluster.as_dict()
+    result = cluster.as_dict(key_transformer=last_restapi_key_transformer)
+    # Restore select null cluster attributes that were removed by cluster.as_dict()
+    if cluster.zones is None:
+        result['zones'] = None
+
     result['databases'] = []
     for database in databases:
         result['databases'].append(database)

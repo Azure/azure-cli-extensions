@@ -214,6 +214,12 @@ class AzureFilesIdentityBasedAuthentication(msrest.serialization.Model):
     :param active_directory_properties: Required if choose AD.
     :type active_directory_properties:
      ~azure.mgmt.storage.v2020_08_01_preview.models.ActiveDirectoryProperties
+    :param default_share_permission: Default share permission for users using Kerberos
+     authentication if RBAC role is not assigned. Possible values include: "None",
+     "StorageFileDataSmbShareReader", "StorageFileDataSmbShareContributor",
+     "StorageFileDataSmbShareElevatedContributor", "StorageFileDataSmbShareOwner".
+    :type default_share_permission: str or
+     ~azure.mgmt.storage.v2020_08_01_preview.models.DefaultSharePermission
     """
 
     _validation = {
@@ -223,6 +229,7 @@ class AzureFilesIdentityBasedAuthentication(msrest.serialization.Model):
     _attribute_map = {
         'directory_service_options': {'key': 'directoryServiceOptions', 'type': 'str'},
         'active_directory_properties': {'key': 'activeDirectoryProperties', 'type': 'ActiveDirectoryProperties'},
+        'default_share_permission': {'key': 'defaultSharePermission', 'type': 'str'},
     }
 
     def __init__(
@@ -232,6 +239,7 @@ class AzureFilesIdentityBasedAuthentication(msrest.serialization.Model):
         super(AzureFilesIdentityBasedAuthentication, self).__init__(**kwargs)
         self.directory_service_options = kwargs['directory_service_options']
         self.active_directory_properties = kwargs.get('active_directory_properties', None)
+        self.default_share_permission = kwargs.get('default_share_permission', None)
 
 
 class BlobContainer(AzureEntityResource):
@@ -1664,6 +1672,9 @@ class FileShare(AzureEntityResource):
     :ivar share_usage_bytes: The approximate size of the data stored on the share. Note that this
      value may not include all recently created or recently resized files.
     :vartype share_usage_bytes: long
+    :ivar snapshot_time: Creation time of share snapshot returned in the response of list shares
+     with expand param "snapshots".
+    :vartype snapshot_time: ~datetime.datetime
     """
 
     _validation = {
@@ -1680,6 +1691,7 @@ class FileShare(AzureEntityResource):
         'access_tier_change_time': {'readonly': True},
         'access_tier_status': {'readonly': True},
         'share_usage_bytes': {'readonly': True},
+        'snapshot_time': {'readonly': True},
     }
 
     _attribute_map = {
@@ -1700,6 +1712,7 @@ class FileShare(AzureEntityResource):
         'access_tier_change_time': {'key': 'properties.accessTierChangeTime', 'type': 'iso-8601'},
         'access_tier_status': {'key': 'properties.accessTierStatus', 'type': 'str'},
         'share_usage_bytes': {'key': 'properties.shareUsageBytes', 'type': 'long'},
+        'snapshot_time': {'key': 'properties.snapshotTime', 'type': 'iso-8601'},
     }
 
     def __init__(
@@ -1720,6 +1733,7 @@ class FileShare(AzureEntityResource):
         self.access_tier_change_time = None
         self.access_tier_status = None
         self.share_usage_bytes = None
+        self.snapshot_time = None
 
 
 class FileShareItem(AzureEntityResource):
@@ -1769,6 +1783,9 @@ class FileShareItem(AzureEntityResource):
     :ivar share_usage_bytes: The approximate size of the data stored on the share. Note that this
      value may not include all recently created or recently resized files.
     :vartype share_usage_bytes: long
+    :ivar snapshot_time: Creation time of share snapshot returned in the response of list shares
+     with expand param "snapshots".
+    :vartype snapshot_time: ~datetime.datetime
     """
 
     _validation = {
@@ -1785,6 +1802,7 @@ class FileShareItem(AzureEntityResource):
         'access_tier_change_time': {'readonly': True},
         'access_tier_status': {'readonly': True},
         'share_usage_bytes': {'readonly': True},
+        'snapshot_time': {'readonly': True},
     }
 
     _attribute_map = {
@@ -1805,6 +1823,7 @@ class FileShareItem(AzureEntityResource):
         'access_tier_change_time': {'key': 'properties.accessTierChangeTime', 'type': 'iso-8601'},
         'access_tier_status': {'key': 'properties.accessTierStatus', 'type': 'str'},
         'share_usage_bytes': {'key': 'properties.shareUsageBytes', 'type': 'long'},
+        'snapshot_time': {'key': 'properties.snapshotTime', 'type': 'iso-8601'},
     }
 
     def __init__(
@@ -1825,6 +1844,7 @@ class FileShareItem(AzureEntityResource):
         self.access_tier_change_time = None
         self.access_tier_status = None
         self.share_usage_bytes = None
+        self.snapshot_time = None
 
 
 class FileShareItems(msrest.serialization.Model):
@@ -3946,10 +3966,26 @@ class SmbSetting(msrest.serialization.Model):
 
     :param multichannel: Multichannel setting. Applies to Premium FileStorage only.
     :type multichannel: ~azure.mgmt.storage.v2020_08_01_preview.models.Multichannel
+    :param versions: SMB protocol versions supported by server. Valid values are SMB2.1, SMB3.0,
+     SMB3.1.1. Should be passed as a string with delimiter ';'.
+    :type versions: str
+    :param authentication_methods: SMB authentication methods supported by server. Valid values are
+     NTLMv2, Kerberos. Should be passed as a string with delimiter ';'.
+    :type authentication_methods: str
+    :param kerberos_ticket_encryption: Kerberos ticket encryption supported by server. Valid values
+     are RC4-HMAC, AES-256. Should be passed as a string with delimiter ';'.
+    :type kerberos_ticket_encryption: str
+    :param channel_encryption: SMB channel encryption supported by server. Valid values are AES-
+     CCM-128, AES-GCM-128, AES-GCM-256. Should be passed as a string with delimiter ';'.
+    :type channel_encryption: str
     """
 
     _attribute_map = {
         'multichannel': {'key': 'multichannel', 'type': 'Multichannel'},
+        'versions': {'key': 'versions', 'type': 'str'},
+        'authentication_methods': {'key': 'authenticationMethods', 'type': 'str'},
+        'kerberos_ticket_encryption': {'key': 'kerberosTicketEncryption', 'type': 'str'},
+        'channel_encryption': {'key': 'channelEncryption', 'type': 'str'},
     }
 
     def __init__(
@@ -3958,6 +3994,10 @@ class SmbSetting(msrest.serialization.Model):
     ):
         super(SmbSetting, self).__init__(**kwargs)
         self.multichannel = kwargs.get('multichannel', None)
+        self.versions = kwargs.get('versions', None)
+        self.authentication_methods = kwargs.get('authentication_methods', None)
+        self.kerberos_ticket_encryption = kwargs.get('kerberos_ticket_encryption', None)
+        self.channel_encryption = kwargs.get('channel_encryption', None)
 
 
 class TrackedResource(Resource):

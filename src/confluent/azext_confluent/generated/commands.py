@@ -9,6 +9,7 @@
 # --------------------------------------------------------------------------
 # pylint: disable=too-many-statements
 # pylint: disable=too-many-locals
+# pylint: disable=import-outside-toplevel
 
 from azure.cli.core.commands import CliCommandType
 
@@ -17,11 +18,11 @@ def load_command_table(self, _):
 
     from azext_confluent.generated._client_factory import cf_marketplace_agreement
     confluent_marketplace_agreement = CliCommandType(
-        operations_tmpl='azext_confluent.vendored_sdks.confluent.operations._marketplace_agreement_operations#Marketpla'
-        'ceAgreementOperations.{}',
+        operations_tmpl='azext_confluent.vendored_sdks.confluent.operations._marketplace_agreements_operations#Marketpl'
+        'aceAgreementsOperations.{}',
         client_factory=cf_marketplace_agreement)
     with self.command_group('confluent terms', confluent_marketplace_agreement,
-                            client_factory=cf_marketplace_agreement, is_experimental=True) as g:
+                            client_factory=cf_marketplace_agreement) as g:
         g.custom_command('list', 'confluent_terms_list')
 
     from azext_confluent.generated._client_factory import cf_organization
@@ -29,11 +30,13 @@ def load_command_table(self, _):
         operations_tmpl='azext_confluent.vendored_sdks.confluent.operations._organization_operations#OrganizationOperat'
         'ions.{}',
         client_factory=cf_organization)
-    with self.command_group('confluent organization', confluent_organization, client_factory=cf_organization,
-                            is_experimental=True) as g:
+    with self.command_group('confluent organization', confluent_organization, client_factory=cf_organization) as g:
         g.custom_command('list', 'confluent_organization_list')
         g.custom_show_command('show', 'confluent_organization_show')
         g.custom_command('create', 'confluent_organization_create', supports_no_wait=True)
         g.custom_command('update', 'confluent_organization_update')
         g.custom_command('delete', 'confluent_organization_delete', supports_no_wait=True, confirmation=True)
         g.custom_wait_command('wait', 'confluent_organization_show')
+
+    with self.command_group('confluent', is_experimental=True):
+        pass

@@ -27,12 +27,28 @@ from azext_amcs.action import (
 
 
 from azext_amcs.vendored_sdks.amcs.models import KnownDataFlowStreams, KnownPerfCounterDataSourceStreams, \
-    KnownPerfCounterDataSourceScheduledTransferPeriod, KnownWindowsEventLogDataSourceStreams, \
-    KnownWindowsEventLogDataSourceScheduledTransferPeriod, KnownSyslogDataSourceStreams, \
+    KnownWindowsEventLogDataSourceStreams, KnownSyslogDataSourceStreams, \
     KnownSyslogDataSourceFacilityNames, KnownSyslogDataSourceLogLevels
 
 
 def load_arguments(self, _):
+
+    with self.argument_context('monitor data-collection endpoint') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('data_collection_endpoint_name', options_list=['--name', '-n'], type=str,
+                   help='The name of the data collection endpoint. The name is case insensitive.', id_part='name')
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
+                   validator=get_default_location_from_resource_group)
+        c.argument('tags', tags_type)
+        c.argument('kind', arg_type=get_enum_type(['Linux', 'Windows']), help='The kind of the resource.')
+        c.argument('description', type=str, help='Description of the data collection endpoint.')
+        c.argument('public_network_access', arg_type=get_enum_type(['Enabled', 'Disabled']),
+                   help='The configuration to set whether network access from public internet to the endpoints '
+                        'are allowed.',
+                   arg_group='Network Acls')
+
+    with self.argument_context('monitor data-collection endpoint create') as c:
+        c.argument('data_collection_endpoint_name', id_part=None)
 
     with self.argument_context('monitor data-collection rule association') as c:
         c.argument('resource_uri', options_list=['--resource'], help='The identifier of the resource.')
@@ -109,9 +125,6 @@ def load_arguments(self, _):
                    nargs='+', help='List of streams that this data source will be sent to. A stream '
                    'indicates what schema will be used for this data and usually what table in Log Analytics the data '
                    'will be sent to.')
-        c.argument('scheduled_transfer_period', options_list=['--transfer-period'],
-                   arg_type=get_enum_type(KnownPerfCounterDataSourceScheduledTransferPeriod),
-                   help='The interval between data uploads (scheduled transfers), rounded up to the nearest minute.')
         c.argument('sampling_frequency_in_seconds', options_list=['--sampling-frequency'], type=int,
                    help='The number of seconds between consecutive counter measurements (samples).')
         c.argument('counter_specifiers', options_list=['--counter-specifiers'], nargs='+',
@@ -131,9 +144,6 @@ def load_arguments(self, _):
                    nargs='+', help='List of streams that this data source will be sent to. A stream '
                    'indicates what schema will be used for this data and usually what table in Log Analytics the data '
                    'will be sent to.')
-        c.argument('scheduled_transfer_period', options_list=['--transfer-period'],
-                   arg_type=get_enum_type(KnownWindowsEventLogDataSourceScheduledTransferPeriod),
-                   help='The interval between data uploads (scheduled transfers), rounded up to the nearest minute.')
         c.argument('x_path_queries', options_list=['--x-path-queries'], nargs='+',
                    help='A list of Windows Event Log queries in XPATH format.')
 

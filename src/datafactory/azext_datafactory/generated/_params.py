@@ -32,52 +32,52 @@ from azext_datafactory.action import (
 
 def load_arguments(self, _):
 
-    with self.argument_context('datafactory factory list') as c:
+    with self.argument_context('datafactory list') as c:
         c.argument('resource_group_name', resource_group_name_type)
 
-    with self.argument_context('datafactory factory show') as c:
+    with self.argument_context('datafactory show') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', options_list=['--name', '-n', '--factory-name'], type=str, help='The factory name.',
                    id_part='name')
         c.argument('if_none_match', type=str, help='ETag of the factory entity. Should only be specified for get. If '
                    'the ETag matches the existing entity tag, or if * was provided, then no content will be returned.')
 
-    with self.argument_context('datafactory factory create') as c:
+    with self.argument_context('datafactory create') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', options_list=['--name', '-n', '--factory-name'], type=str,
                    help='The factory name.')
         c.argument('if_match', type=str, help='ETag of the factory entity. Should only be specified for update, for '
                    'which it should match existing entity or can be * for unconditional update.')
-        c.argument('location', arg_type=get_location_type(self.cli_ctx),
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
         c.argument('tags', tags_type)
-        c.argument('factory_vsts_configuration', action=AddFactoryVstsConfiguration, nargs='*', help='Factory\'s VSTS '
+        c.argument('factory_vsts_configuration', action=AddFactoryVstsConfiguration, nargs='+', help='Factory\'s VSTS '
                    'repo information.', arg_group='RepoConfiguration')
-        c.argument('factory_git_hub_configuration', action=AddFactoryGitHubConfiguration, nargs='*', help='Factory\'s '
+        c.argument('factory_git_hub_configuration', action=AddFactoryGitHubConfiguration, nargs='+', help='Factory\'s '
                    'GitHub repo information.', arg_group='RepoConfiguration')
         c.argument('global_parameters', type=validate_file_or_dict, help='List of parameters for factory. Expected '
-                   'value: json-string/@json-file.')
+                   'value: json-string/json-file/@json-file.')
 
-    with self.argument_context('datafactory factory update') as c:
+    with self.argument_context('datafactory update') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', options_list=['--name', '-n', '--factory-name'], type=str, help='The factory name.',
                    id_part='name')
         c.argument('tags', tags_type)
 
-    with self.argument_context('datafactory factory delete') as c:
+    with self.argument_context('datafactory delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', options_list=['--name', '-n', '--factory-name'], type=str, help='The factory name.',
                    id_part='name')
 
-    with self.argument_context('datafactory factory configure-factory-repo') as c:
+    with self.argument_context('datafactory configure-factory-repo') as c:
         c.argument('location', arg_type=get_location_type(self.cli_ctx), id_part='name')
         c.argument('factory_resource_id', type=str, help='The factory resource id.')
-        c.argument('factory_vsts_configuration', action=AddFactoryVstsConfiguration, nargs='*', help='Factory\'s VSTS '
+        c.argument('factory_vsts_configuration', action=AddFactoryVstsConfiguration, nargs='+', help='Factory\'s VSTS '
                    'repo information.', arg_group='RepoConfiguration')
-        c.argument('factory_git_hub_configuration', action=AddFactoryGitHubConfiguration, nargs='*', help='Factory\'s '
+        c.argument('factory_git_hub_configuration', action=AddFactoryGitHubConfiguration, nargs='+', help='Factory\'s '
                    'GitHub repo information.', arg_group='RepoConfiguration')
 
-    with self.argument_context('datafactory factory get-data-plane-access') as c:
+    with self.argument_context('datafactory get-data-plane-access') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', options_list=['--name', '-n', '--factory-name'], type=str, help='The factory name.',
                    id_part='name')
@@ -92,7 +92,7 @@ def load_arguments(self, _):
         c.argument('expire_time', type=str, help='Expiration time for the token. Maximum duration for the token is '
                    'eight hours and by default the token will expire in eight hours.')
 
-    with self.argument_context('datafactory factory get-git-hub-access-token') as c:
+    with self.argument_context('datafactory get-git-hub-access-token') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', options_list=['--name', '-n', '--factory-name'], type=str, help='The factory name.',
                    id_part='name')
@@ -122,7 +122,7 @@ def load_arguments(self, _):
                    'belongs to.')
         c.argument('data_factory_name', type=str, help='The name of the data factory that the linked integration '
                    'runtime belongs to.')
-        c.argument('location', arg_type=get_location_type(self.cli_ctx),
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
 
     with self.argument_context('datafactory integration-runtime managed create') as c:
@@ -133,10 +133,11 @@ def load_arguments(self, _):
         c.argument('if_match', type=str, help='ETag of the integration runtime entity. Should only be specified for '
                    'update, for which it should match existing entity or can be * for unconditional update.')
         c.argument('description', type=str, help='Integration runtime description.')
-        c.argument('type_properties_compute_properties', type=validate_file_or_dict, help='The compute resource for '
-                   'managed integration runtime. Expected value: json-string/@json-file.')
-        c.argument('type_properties_ssis_properties', type=validate_file_or_dict, help='SSIS properties for managed '
-                   'integration runtime. Expected value: json-string/@json-file.')
+        c.argument('compute_properties', type=validate_file_or_dict, help='The compute resource for managed '
+                   'integration runtime. Expected value: json-string/json-file/@json-file.', arg_group='Type '
+                   'Properties')
+        c.argument('ssis_properties', type=validate_file_or_dict, help='SSIS properties for managed integration '
+                   'runtime. Expected value: json-string/json-file/@json-file.', arg_group='Type Properties')
 
     with self.argument_context('datafactory integration-runtime self-hosted create') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -146,8 +147,8 @@ def load_arguments(self, _):
         c.argument('if_match', type=str, help='ETag of the integration runtime entity. Should only be specified for '
                    'update, for which it should match existing entity or can be * for unconditional update.')
         c.argument('description', type=str, help='Integration runtime description.')
-        c.argument('type_properties_linked_info', type=validate_file_or_dict, help='The base definition of a linked '
-                   'integration runtime. Expected value: json-string/@json-file.')
+        c.argument('linked_info', type=validate_file_or_dict, help='The base definition of a linked integration '
+                   'runtime. Expected value: json-string/json-file/@json-file.', arg_group='Type Properties')
 
     with self.argument_context('datafactory integration-runtime update') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -285,7 +286,7 @@ def load_arguments(self, _):
         c.argument('if_match', type=str, help='ETag of the linkedService entity.  Should only be specified for update, '
                    'for which it should match existing entity or can be * for unconditional update.')
         c.argument('properties', type=validate_file_or_dict, help='Properties of linked service. Expected value: '
-                   'json-string/@json-file.')
+                   'json-string/json-file/@json-file.')
 
     with self.argument_context('datafactory linked-service update') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -295,13 +296,13 @@ def load_arguments(self, _):
         c.argument('if_match', type=str, help='ETag of the linkedService entity.  Should only be specified for update, '
                    'for which it should match existing entity or can be * for unconditional update.')
         c.argument('connect_via', type=validate_file_or_dict, help='The integration runtime reference. Expected value: '
-                   'json-string/@json-file.')
+                   'json-string/json-file/@json-file.')
         c.argument('description', type=str, help='Linked service description.')
         c.argument('parameters', type=validate_file_or_dict, help='Parameters for linked service. Expected value: '
-                   'json-string/@json-file.')
+                   'json-string/json-file/@json-file.')
         c.argument('annotations', type=validate_file_or_dict, help='List of tags that can be used for describing the '
-                   'linked service. Expected value: json-string/@json-file.')
-        c.ignore('properties')
+                   'linked service. Expected value: json-string/json-file/@json-file.')
+        c.ignore('linked_service')
 
     with self.argument_context('datafactory linked-service delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -329,7 +330,7 @@ def load_arguments(self, _):
         c.argument('if_match', type=str, help='ETag of the dataset entity.  Should only be specified for update, for '
                    'which it should match existing entity or can be * for unconditional update.')
         c.argument('properties', type=validate_file_or_dict, help='Dataset properties. Expected value: '
-                   'json-string/@json-file.')
+                   'json-string/json-file/@json-file.')
 
     with self.argument_context('datafactory dataset update') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -341,19 +342,19 @@ def load_arguments(self, _):
         c.argument('description', type=str, help='Dataset description.')
         c.argument('structure', type=validate_file_or_dict, help='Columns that define the structure of the dataset. '
                    'Type: array (or Expression with resultType array), itemType: DatasetDataElement. Expected value: '
-                   'json-string/@json-file.')
+                   'json-string/json-file/@json-file.')
         c.argument('schema', type=validate_file_or_dict, help='Columns that define the physical type schema of the '
                    'dataset. Type: array (or Expression with resultType array), itemType: DatasetSchemaDataElement. '
-                   'Expected value: json-string/@json-file.')
+                   'Expected value: json-string/json-file/@json-file.')
         c.argument('linked_service_name', type=validate_file_or_dict, help='Linked service reference. Expected value: '
-                   'json-string/@json-file.')
+                   'json-string/json-file/@json-file.')
         c.argument('parameters', type=validate_file_or_dict, help='Parameters for dataset. Expected value: '
-                   'json-string/@json-file.')
+                   'json-string/json-file/@json-file.')
         c.argument('annotations', type=validate_file_or_dict, help='List of tags that can be used for describing the '
-                   'Dataset. Expected value: json-string/@json-file.')
-        c.argument('folder', action=AddFolder, nargs='*', help='The folder that this Dataset is in. If not specified, '
+                   'Dataset. Expected value: json-string/json-file/@json-file.')
+        c.argument('folder', action=AddFolder, nargs='+', help='The folder that this Dataset is in. If not specified, '
                    'Dataset will appear at the root level.')
-        c.ignore('properties')
+        c.ignore('dataset')
 
     with self.argument_context('datafactory dataset delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -381,7 +382,7 @@ def load_arguments(self, _):
         c.argument('if_match', type=str, help='ETag of the pipeline entity.  Should only be specified for update, for '
                    'which it should match existing entity or can be * for unconditional update.')
         c.argument('pipeline', type=validate_file_or_dict, help='Pipeline resource definition. Expected value: '
-                   'json-string/@json-file.')
+                   'json-string/json-file/@json-file.')
 
     with self.argument_context('datafactory pipeline update') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -392,17 +393,21 @@ def load_arguments(self, _):
                    'which it should match existing entity or can be * for unconditional update.')
         c.argument('description', type=str, help='The description of the pipeline.')
         c.argument('activities', type=validate_file_or_dict, help='List of activities in pipeline. Expected value: '
-                   'json-string/@json-file.')
+                   'json-string/json-file/@json-file.')
         c.argument('parameters', type=validate_file_or_dict, help='List of parameters for pipeline. Expected value: '
-                   'json-string/@json-file.')
+                   'json-string/json-file/@json-file.')
         c.argument('variables', type=validate_file_or_dict, help='List of variables for pipeline. Expected value: '
-                   'json-string/@json-file.')
+                   'json-string/json-file/@json-file.')
         c.argument('concurrency', type=int, help='The max number of concurrent runs for the pipeline.')
         c.argument('annotations', type=validate_file_or_dict, help='List of tags that can be used for describing the '
-                   'Pipeline. Expected value: json-string/@json-file.')
+                   'Pipeline. Expected value: json-string/json-file/@json-file.')
         c.argument('run_dimensions', type=validate_file_or_dict, help='Dimensions emitted by Pipeline. Expected value: '
-                   'json-string/@json-file.')
-        c.argument('folder_name', type=str, help='The name of the folder that this Pipeline is in.')
+                   'json-string/json-file/@json-file.')
+        c.argument('duration', type=validate_file_or_dict, help='TimeSpan value, after which an Azure Monitoring '
+                   'Metric is fired. Expected value: json-string/json-file/@json-file.', arg_group='Policy Elapsed '
+                   'Time Metric')
+        c.argument('folder_name', type=str, help='The name of the folder that this Pipeline is in.',
+                   arg_group='Folder')
         c.ignore('pipeline')
 
     with self.argument_context('datafactory pipeline delete') as c:
@@ -427,7 +432,7 @@ def load_arguments(self, _):
                    'rerun will start from failed activities. The property will be used only if startActivityName is '
                    'not specified.')
         c.argument('parameters', type=validate_file_or_dict, help='Parameters of the pipeline run. These parameters '
-                   'will be used only if the runId is not specified. Expected value: json-string/@json-file.')
+                   'will be used only if the runId is not specified. Expected value: json-string/json-file/@json-file.')
 
     with self.argument_context('datafactory pipeline-run show') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -450,8 +455,8 @@ def load_arguments(self, _):
                    'format.')
         c.argument('last_updated_before', help='The time at or before which the run event was updated in \'ISO 8601\' '
                    'format.')
-        c.argument('filters', action=AddFilters, nargs='*', help='List of filters.')
-        c.argument('order_by', action=AddOrderBy, nargs='*', help='List of OrderBy option.')
+        c.argument('filters', action=AddFilters, nargs='+', help='List of filters.')
+        c.argument('order_by', action=AddOrderBy, nargs='+', help='List of OrderBy option.')
 
     with self.argument_context('datafactory activity-run query-by-pipeline-run') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -463,8 +468,8 @@ def load_arguments(self, _):
                    'format.')
         c.argument('last_updated_before', help='The time at or before which the run event was updated in \'ISO 8601\' '
                    'format.')
-        c.argument('filters', action=AddFilters, nargs='*', help='List of filters.')
-        c.argument('order_by', action=AddOrderBy, nargs='*', help='List of OrderBy option.')
+        c.argument('filters', action=AddFilters, nargs='+', help='List of filters.')
+        c.argument('order_by', action=AddOrderBy, nargs='+', help='List of OrderBy option.')
 
     with self.argument_context('datafactory trigger list') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -486,7 +491,7 @@ def load_arguments(self, _):
         c.argument('if_match', type=str, help='ETag of the trigger entity.  Should only be specified for update, for '
                    'which it should match existing entity or can be * for unconditional update.')
         c.argument('properties', type=validate_file_or_dict, help='Properties of the trigger. Expected value: '
-                   'json-string/@json-file.')
+                   'json-string/json-file/@json-file.')
 
     with self.argument_context('datafactory trigger update') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -497,8 +502,8 @@ def load_arguments(self, _):
                    'which it should match existing entity or can be * for unconditional update.')
         c.argument('description', type=str, help='Trigger description.')
         c.argument('annotations', type=validate_file_or_dict, help='List of tags that can be used for describing the '
-                   'trigger. Expected value: json-string/@json-file.')
-        c.ignore('properties')
+                   'trigger. Expected value: json-string/json-file/@json-file.')
+        c.ignore('trigger')
 
     with self.argument_context('datafactory trigger delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -567,11 +572,95 @@ def load_arguments(self, _):
                    'format.')
         c.argument('last_updated_before', help='The time at or before which the run event was updated in \'ISO 8601\' '
                    'format.')
-        c.argument('filters', action=AddFilters, nargs='*', help='List of filters.')
-        c.argument('order_by', action=AddOrderBy, nargs='*', help='List of OrderBy option.')
+        c.argument('filters', action=AddFilters, nargs='+', help='List of filters.')
+        c.argument('order_by', action=AddOrderBy, nargs='+', help='List of OrderBy option.')
 
     with self.argument_context('datafactory trigger-run rerun') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', type=str, help='The factory name.', id_part='name')
         c.argument('trigger_name', type=str, help='The trigger name.', id_part='child_name_1')
         c.argument('run_id', type=str, help='The pipeline run identifier.', id_part='child_name_2')
+
+    with self.argument_context('datafactory managed-virtual-network list') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('factory_name', type=str, help='The factory name.')
+
+    with self.argument_context('datafactory managed-virtual-network show') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('factory_name', type=str, help='The factory name.', id_part='name')
+        c.argument('managed_virtual_network_name', options_list=['--name', '-n', '--managed-virtual-network-name'],
+                   type=str, help='Managed virtual network name', id_part='child_name_1')
+        c.argument('if_none_match', type=str, help='ETag of the managed Virtual Network entity. Should only be '
+                   'specified for get. If the ETag matches the existing entity tag, or if * was provided, then no '
+                   'content will be returned.')
+
+    with self.argument_context('datafactory managed-virtual-network create') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('factory_name', type=str, help='The factory name.')
+        c.argument('managed_virtual_network_name', options_list=['--name', '-n', '--managed-virtual-network-name'],
+                   type=str, help='Managed virtual network name')
+        c.argument('if_match', type=str, help='ETag of the managed Virtual Network entity. Should only be specified '
+                   'for update, for which it should match existing entity or can be * for unconditional update.')
+
+    with self.argument_context('datafactory managed-virtual-network update') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('factory_name', type=str, help='The factory name.', id_part='name')
+        c.argument('managed_virtual_network_name', options_list=['--name', '-n', '--managed-virtual-network-name'],
+                   type=str, help='Managed virtual network name', id_part='child_name_1')
+        c.argument('if_match', type=str, help='ETag of the managed Virtual Network entity. Should only be specified '
+                   'for update, for which it should match existing entity or can be * for unconditional update.')
+        c.ignore('managed_virtual_network')
+
+    with self.argument_context('datafactory managed-private-endpoint list') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('factory_name', type=str, help='The factory name.')
+        c.argument('managed_virtual_network_name', options_list=['--managed-virtual-network-name', '--mvnet-name'],
+                   type=str, help='Managed virtual network name')
+
+    with self.argument_context('datafactory managed-private-endpoint show') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('factory_name', type=str, help='The factory name.', id_part='name')
+        c.argument('managed_virtual_network_name', options_list=['--managed-virtual-network-name', '--mvnet-name'],
+                   type=str, help='Managed virtual network name', id_part='child_name_1')
+        c.argument('managed_private_endpoint_name', options_list=['--name', '-n', '--managed-private-endpoint-name'],
+                   type=str, help='Managed private endpoint name', id_part='child_name_2')
+        c.argument('if_none_match', type=str, help='ETag of the managed private endpoint entity. Should only be '
+                   'specified for get. If the ETag matches the existing entity tag, or if * was provided, then no '
+                   'content will be returned.')
+
+    with self.argument_context('datafactory managed-private-endpoint create') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('factory_name', type=str, help='The factory name.')
+        c.argument('managed_virtual_network_name', options_list=['--managed-virtual-network-name', '--mvnet-name'],
+                   type=str, help='Managed virtual network name')
+        c.argument('managed_private_endpoint_name', options_list=['--name', '-n', '--managed-private-endpoint-name'],
+                   type=str, help='Managed private endpoint name')
+        c.argument('if_match', type=str, help='ETag of the managed private endpoint entity. Should only be specified '
+                   'for update, for which it should match existing entity or can be * for unconditional update.')
+        c.argument('fqdns', nargs='+', help='Fully qualified domain names')
+        c.argument('group_id', type=str, help='The groupId to which the managed private endpoint is created')
+        c.argument('private_link_resource_id', options_list=['--private-link-resource-id', '--private-link'], type=str,
+                   help='The ARM resource ID of the resource to which the managed private endpoint is created')
+
+    with self.argument_context('datafactory managed-private-endpoint update') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('factory_name', type=str, help='The factory name.', id_part='name')
+        c.argument('managed_virtual_network_name', options_list=['--managed-virtual-network-name', '--mvnet-name'],
+                   type=str, help='Managed virtual network name', id_part='child_name_1')
+        c.argument('managed_private_endpoint_name', options_list=['--name', '-n', '--managed-private-endpoint-name'],
+                   type=str, help='Managed private endpoint name', id_part='child_name_2')
+        c.argument('if_match', type=str, help='ETag of the managed private endpoint entity. Should only be specified '
+                   'for update, for which it should match existing entity or can be * for unconditional update.')
+        c.argument('fqdns', nargs='+', help='Fully qualified domain names')
+        c.argument('group_id', type=str, help='The groupId to which the managed private endpoint is created')
+        c.argument('private_link_resource_id', options_list=['--private-link-resource-id', '--private-link'], type=str,
+                   help='The ARM resource ID of the resource to which the managed private endpoint is created')
+        c.ignore('managed_private_endpoint')
+
+    with self.argument_context('datafactory managed-private-endpoint delete') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('factory_name', type=str, help='The factory name.', id_part='name')
+        c.argument('managed_virtual_network_name', options_list=['--managed-virtual-network-name', '--mvnet-name'],
+                   type=str, help='Managed virtual network name', id_part='child_name_1')
+        c.argument('managed_private_endpoint_name', options_list=['--name', '-n', '--managed-private-endpoint-name'],
+                   type=str, help='Managed private endpoint name', id_part='child_name_2')

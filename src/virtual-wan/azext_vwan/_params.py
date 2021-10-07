@@ -61,7 +61,8 @@ def load_arguments(self, _):
         c.argument('vpn_gateway', help='Name or ID of a VPN gateway.', validator=get_network_resource_name_or_id('vpn_gateway', 'vpnGateways'))
 
     with self.argument_context('network vhub get-effective-routes') as c:
-        c.argument('virtual_wan_resource_type', options_list='--resource-type')
+        c.argument('virtual_wan_resource_type', options_list='--resource-type', help='The type of the specified resource like RouteTable, ExpressRouteConnection, HubVirtualNetworkConnection, VpnConnection and P2SConnection.')
+        c.argument('resource_id', options_list='--resource-id', help='The resource whose effective routes are being requested')
 
     with self.argument_context('network vhub connection') as c:
         c.argument('virtual_hub_name', vhub_name_type)
@@ -78,6 +79,16 @@ def load_arguments(self, _):
         c.argument('address_prefixes', nargs='+', help='Space-separated list of all address prefixes.')
         c.argument('next_hop_ip_address', options_list='--next-hop', help='The ip address of the next hop.')
         c.argument('route_name', help='The name of the Static Route that is unique within a Vnet Route.')
+
+    with self.argument_context('network vhub bgpconnection') as c:
+        c.argument('virtual_hub_name', vhub_name_type)
+        c.argument('connection_name', help='Name of the bgpconnection.', options_list=['--name', '-n'], id_part='child_name_1')
+        c.argument('peer_asn', help='Peer ASN', type=int)
+        c.argument('peer_ip', help='Peer IP')
+        c.argument('virtual_hub_connection', options_list='--vhub-conn', help='The resource id of vhub connection.')
+
+    with self.argument_context('network vhub bgpconnection list') as c:
+        c.argument('virtual_hub_name', id_part=None)
 
     with self.argument_context('network vhub route') as c:
         c.argument('virtual_hub_name', vhub_name_type, id_part=None)
@@ -216,7 +227,7 @@ def load_arguments(self, _):
         c.argument('resource_name', p2s_vpn_gateway_name_type, id_part=None)
 
     with self.argument_context('network p2s-vpn-gateway vpn-client') as c:
-        c.argument('authentication_method', arg_type=get_enum_type(AuthenticationMethod))
+        c.argument('authentication_method', arg_type=get_enum_type(AuthenticationMethod), help='VPN client authentication method.')
     # endregion
 
     # region Routing Configuration

@@ -14,23 +14,21 @@ from azure.cli.core.azclierror import InvalidArgumentValueError
 from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id
 from azure.cli.core.util import sdk_no_wait
-from msrestazure.azure_exceptions import CloudError
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
 
-from azext_k8s_extension.vendored_sdks.models import ExtensionInstance
-from azext_k8s_extension.vendored_sdks.models import ExtensionInstanceUpdate
-from azext_k8s_extension.vendored_sdks.models import ScopeCluster
-from azext_k8s_extension.vendored_sdks.models import Scope
+from ..vendored_sdks.models import ExtensionInstance
+from ..vendored_sdks.models import ScopeCluster
+from ..vendored_sdks.models import Scope
 
-from azext_k8s_extension.partner_extensions.PartnerExtensionModel import PartnerExtensionModel
+from .DefaultExtension import DefaultExtension
 
-from azext_k8s_extension._client_factory import (
+from .._client_factory import (
     cf_resources, cf_resource_groups, cf_log_analytics)
 
 logger = get_logger(__name__)
 
 
-class ContainerInsights(PartnerExtensionModel):
+class ContainerInsights(DefaultExtension):
     def Create(self, cmd, client, resource_group_name, cluster_name, name, cluster_type, extension_type,
                scope, auto_upgrade_minor_version, release_train, version, target_namespace,
                release_namespace, configuration_settings, configuration_protected_settings,
@@ -72,17 +70,6 @@ class ContainerInsights(PartnerExtensionModel):
         )
         return extension_instance, name, create_identity
 
-    def Update(self, extension, auto_upgrade_minor_version, release_train, version):
-        """ExtensionType 'microsoft.azuremonitor.containers' specific validations & defaults for Update
-           Must create and return a valid 'ExtensionInstanceUpdate' object.
-
-        """
-        return ExtensionInstanceUpdate(
-            auto_upgrade_minor_version=auto_upgrade_minor_version,
-            release_train=release_train,
-            version=version
-        )
-
 
 # Custom Validation Logic for Container Insights
 
@@ -98,18 +85,15 @@ def _invoke_deployment(cmd, resource_group_name, deployment_name, template, para
         logger.info(json.dumps(template, indent=2))
         logger.info('==== END TEMPLATE ====')
 
-    if cmd.supported_api_version(min_api='2019-10-01', resource_type=ResourceType.MGMT_RESOURCE_RESOURCES):
-        deployment_temp = cmd.get_models('Deployment', resource_type=ResourceType.MGMT_RESOURCE_RESOURCES)
-        deployment = deployment_temp(properties=properties)
-
-        if validate:
-            validation_poller = smc.validate(resource_group_name, deployment_name, deployment)
-            return LongRunningOperation(cmd.cli_ctx)(validation_poller)
-        return sdk_no_wait(no_wait, smc.create_or_update, resource_group_name, deployment_name, deployment)
-
+    deployment_temp = cmd.get_models('Deployment', resource_type=ResourceType.MGMT_RESOURCE_RESOURCES)
+    deployment = deployment_temp(properties=properties)
     if validate:
-        return smc.validate(resource_group_name, deployment_name, properties)
-    return sdk_no_wait(no_wait, smc.create_or_update, resource_group_name, deployment_name, properties)
+        if cmd.supported_api_version(min_api='2019-10-01', resource_type=ResourceType.MGMT_RESOURCE_RESOURCES):
+            validation_poller = smc.begin_validate(resource_group_name, deployment_name, deployment)
+            return LongRunningOperation(cmd.cli_ctx)(validation_poller)
+        return smc.validate(resource_group_name, deployment_name, deployment)
+
+    return sdk_no_wait(no_wait, smc.begin_create_or_update, resource_group_name, deployment_name, deployment)
 
 
 def _ensure_default_log_analytics_workspace_for_monitoring(cmd, subscription_id,
@@ -201,6 +185,9 @@ def _ensure_default_log_analytics_workspace_for_monitoring(cmd, subscription_id,
         "usgovvirginia": "usgovvirginia"
     }
 
+    from azure.core.exceptions import HttpResponseError
+    from azure.cli.core.profiles import ResourceType
+
     cluster_location = ''
     resources = cf_resources(cmd.cli_ctx, subscription_id)
 
@@ -209,7 +196,7 @@ def _ensure_default_log_analytics_workspace_for_monitoring(cmd, subscription_id,
     try:
         resource = resources.get_by_id(cluster_resource_id, '2020-01-01-preview')
         cluster_location = resource.location.lower()
-    except CloudError as ex:
+    except HttpResponseError as ex:
         raise ex
 
     cloud_name = cmd.cli_ctx.cloud.name.lower()
@@ -261,23 +248,18 @@ def _ensure_default_log_analytics_workspace_for_monitoring(cmd, subscription_id,
         try:
             resource = resources.get_by_id(default_workspace_resource_id, '2015-11-01-preview')
             return resource.id
-        except CloudError as ex:
+        except HttpResponseError as ex:
             if ex.status_code != 404:
                 raise ex
     else:
-        resource_groups.create_or_update(default_workspace_resource_group, {
-            'location': workspace_region})
+        ResourceGroup = cmd.get_models('ResourceGroup', resource_type=ResourceType.MGMT_RESOURCE_RESOURCES)
+        resource_group = ResourceGroup(location=workspace_region)
+        resource_groups.create_or_update(default_workspace_resource_group, resource_group)
 
-    default_workspace_params = {
-        'location': workspace_region,
-        'properties': {
-            'sku': {
-                'name': 'standalone'
-            }
-        }
-    }
-    async_poller = resources.create_or_update_by_id(default_workspace_resource_id, '2015-11-01-preview',
-                                                    default_workspace_params)
+    GenericResource = cmd.get_models('GenericResource', resource_type=ResourceType.MGMT_RESOURCE_RESOURCES)
+    generic_resource = GenericResource(location=workspace_region, properties={'sku': {'name': 'standalone'}})
+    async_poller = resources.begin_create_or_update_by_id(default_workspace_resource_id, '2015-11-01-preview',
+                                                          generic_resource)
 
     ws_resource_id = ''
     while True:
@@ -294,11 +276,12 @@ def _ensure_container_insights_for_monitoring(cmd, workspace_resource_id):
     parsed = parse_resource_id(workspace_resource_id)
     subscription_id, resource_group = parsed["subscription"], parsed["resource_group"]
 
+    from azure.core.exceptions import HttpResponseError
     resources = cf_resources(cmd.cli_ctx, subscription_id)
     try:
         resource = resources.get_by_id(workspace_resource_id, '2015-11-01-preview')
         location = resource.location
-    except CloudError as ex:
+    except HttpResponseError as ex:
         raise ex
 
     unix_time_in_millis = int(

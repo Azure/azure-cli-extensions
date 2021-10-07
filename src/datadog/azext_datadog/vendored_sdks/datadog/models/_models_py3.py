@@ -460,11 +460,14 @@ class DatadogMonitorResourceUpdateParameters(msrest.serialization.Model):
     :type properties: ~microsoft_datadog_client.models.MonitorUpdateProperties
     :param tags: A set of tags. The new tags of the monitor resource.
     :type tags: dict[str, str]
+    :param sku:
+    :type sku: ~microsoft_datadog_client.models.ResourceSku
     """
 
     _attribute_map = {
         'properties': {'key': 'properties', 'type': 'MonitorUpdateProperties'},
         'tags': {'key': 'tags', 'type': '{str}'},
+        'sku': {'key': 'sku', 'type': 'ResourceSku'},
     }
 
     def __init__(
@@ -472,11 +475,13 @@ class DatadogMonitorResourceUpdateParameters(msrest.serialization.Model):
         *,
         properties: Optional["MonitorUpdateProperties"] = None,
         tags: Optional[Dict[str, str]] = None,
+        sku: Optional["ResourceSku"] = None,
         **kwargs
     ):
         super(DatadogMonitorResourceUpdateParameters, self).__init__(**kwargs)
         self.properties = properties
         self.tags = tags
+        self.sku = sku
 
 
 class DatadogOrganizationProperties(msrest.serialization.Model):
@@ -1096,6 +1101,8 @@ class MonitoringTagRulesListResponse(msrest.serialization.Model):
 
 class MonitoringTagRulesProperties(msrest.serialization.Model):
     """Definition of the properties for a TagRules resource.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar provisioning_state:  Possible values include: "Accepted", "Creating", "Updating",
      "Deleting", "Succeeded", "Failed", "Canceled", "Deleted", "NotSpecified".

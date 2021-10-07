@@ -1,5 +1,19 @@
 Release History
 ===============
+0.1.6
+-----
+* Add support for direct MSAL usage in newer Azure CLI (beta currently)
+* Add support for port option and ssh additional arguments option
+* Remove directory creation as part of ssh_config creation
+* Try .pub for public key if only private key is specified
+* Add --hostname to --ip argument
+* Add fallback to private IP with warning
+* Add support for USGov and China clouds
+
+0.1.5
+-----
+* Add public key error message
+* Cleanup documentation
 
 0.1.4
 -----

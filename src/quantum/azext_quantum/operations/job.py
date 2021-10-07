@@ -34,19 +34,37 @@ def get(cmd, job_id, resource_group_name=None, workspace_name=None, location=Non
     return client.get(job_id)
 
 
+def _check_dotnet_available():
+    """
+    Will fail if dotnet cannot be executed on the system.
+    """
+    args = ["dotnet", "--version"]
+
+    try:
+        import subprocess
+        result = subprocess.run(args, stdout=subprocess.PIPE, check=False)
+    except FileNotFoundError:
+        raise CLIError(f"Could not find 'dotnet' on the system.")
+
+    if result.returncode != 0:
+        raise CLIError(f"Failed to run 'dotnet'. (Error {result.returncode})")
+
+
 def build(cmd, target_id=None, project=None):
     """
     Compile a Q# program to run on Azure Quantum.
     """
     target = TargetInfo(cmd, target_id)
 
+    # Validate that dotnet is available
+    _check_dotnet_available()
+
     args = ["dotnet", "build"]
 
-    args.append(f"-property:ExecutionTarget={target.target_id}")
-
     if project:
-        args.append("--project")
         args.append(project)
+
+    args.append(f"-property:ExecutionTarget={target.target_id}")
 
     logger.debug("Building project with arguments:")
     logger.debug(args)
@@ -57,10 +75,13 @@ def build(cmd, target_id=None, project=None):
     if result.returncode == 0:
         return {'result': 'ok'}
 
+    # If we got here, we might have encountered an error during compilation, so propagate standard output to the user.
+    logger.error(f"Compilation stage failed with error code {result.returncode}")
+    print(result.stdout.decode('ascii'))
     raise CLIError("Failed to compile program.")
 
 
-def _generate_submit_args(program_args, ws, target, token, project, job_name, shots, storage):
+def _generate_submit_args(program_args, ws, target, token, project, job_name, shots, storage, job_params):
     """ Generates the list of arguments for calling submit on a Q# project """
 
     args = ["dotnet", "run", "--no-build"]
@@ -102,8 +123,13 @@ def _generate_submit_args(program_args, ws, target, token, project, job_name, sh
     args.append("--aad-token")
     args.append(token)
 
-    args.append("--base-uri")
-    args.append(base_url(ws.location))
+    args.append("--location")
+    args.append(ws.location)
+
+    if job_params:
+        args.append("--job-params")
+        for k, v in job_params.items():
+            args.append(f"{k}={v}")
 
     args.extend(program_args)
 
@@ -113,8 +139,24 @@ def _generate_submit_args(program_args, ws, target, token, project, job_name, sh
     return args
 
 
-def submit(cmd, program_args, resource_group_name=None, workspace_name=None, location=None,
-           target_id=None, project=None, job_name=None, shots=None, storage=None, no_build=False):
+def _set_cli_version():
+    # This is a temporary approach for runtime compatibility between a runtime version
+    # before support for the --user-agent parameter is added. We'll rely on the environment
+    # variable before the stand alone executable submits to the service.
+    try:
+        import os
+        from .._client_factory import get_appid
+        os.environ["USER_AGENT"] = get_appid()
+    except:
+        logger.warning("User Agent environment variable could not be set.")
+
+
+def _has_completed(job):
+    return job.status in ("Succeeded", "Failed", "Cancelled")
+
+
+def submit(cmd, program_args, resource_group_name=None, workspace_name=None, location=None, target_id=None,
+           project=None, job_name=None, shots=None, storage=None, no_build=False, job_params=None):
     """
     Submit a Q# project to run on Azure Quantum.
     """
@@ -124,22 +166,30 @@ def submit(cmd, program_args, resource_group_name=None, workspace_name=None, loc
     # `ExecutionTarget` property when passed in the command line
     if not no_build:
         build(cmd, target_id=target_id, project=project)
-
-    logger.info("Project built successfully.")
+        logger.info("Project built successfully.")
+    else:
+        _check_dotnet_available()
 
     ws = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
     target = TargetInfo(cmd, target_id)
     token = _get_data_credentials(cmd.cli_ctx, ws.subscription).get_token().token
 
-    args = _generate_submit_args(program_args, ws, target, token, project, job_name, shots, storage)
+    args = _generate_submit_args(program_args, ws, target, token, project, job_name, shots, storage, job_params)
+    _set_cli_version()
 
     import subprocess
     result = subprocess.run(args, stdout=subprocess.PIPE, check=False)
 
     if result.returncode == 0:
-        job_id = result.stdout.decode('ascii').strip()
+        output = result.stdout.decode('ascii').strip()
+        # Retrieve the job-id as the last line from standard output.
+        job_id = output.split()[-1]
+        # Query for the job and return status to caller.
         return get(cmd, job_id, resource_group_name, workspace_name, location)
 
+    # The program compiled succesfully, but executing the stand-alone .exe failed to run.
+    logger.error(f"Submission of job failed with error code {result.returncode}")
+    print(result.stdout.decode('ascii'))
     raise CLIError("Failed to submit job.")
 
 
@@ -173,15 +223,14 @@ def output(cmd, job_id, resource_group_name=None, workspace_name=None, location=
     from azure.cli.command_modules.storage._client_factory import blob_data_service_factory
 
     path = os.path.join(tempfile.gettempdir(), job_id)
+    info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
+    client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
+    job = client.get(job_id)
 
     if os.path.exists(path):
         logger.debug("Using existing blob from %s", path)
     else:
         logger.debug("Downloading job results blob into %s", path)
-
-        info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
-        client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
-        job = client.get(job_id)
 
         if job.status != "Succeeded":
             return f"Job status: {job.status}. Output only available if Succeeded."
@@ -191,7 +240,33 @@ def output(cmd, job_id, resource_group_name=None, workspace_name=None, location=
         blob_service.get_blob_to_path(args['container'], args['blob'], path)
 
     with open(path) as json_file:
-        data = json.load(json_file)
+        lines = [line.strip() for line in json_file.readlines()]
+
+        # Receiving an empty response is valid.
+        if len(lines) == 0:
+            return
+
+        if job.target.startswith("microsoft.simulator"):
+            result_start_line = len(lines) - 1
+            is_result_string = lines[-1].endswith('"')
+            if is_result_string:
+                while result_start_line >= 0 and not lines[result_start_line].startswith('"'):
+                    result_start_line -= 1
+            if result_start_line < 0:
+                raise CLIError("Job output is malformed, mismatched quote characters.")
+
+            # Print the job output and then the result of the operation as a histogram.
+            # If the result is a string, trim the quotation marks.
+            print('\n'.join(lines[:result_start_line]))
+            raw_result = ' '.join(lines[result_start_line:])
+            result = raw_result[1:-1] if is_result_string else raw_result
+            print('_' * len(result) + '\n')
+
+            json_string = '{ "histogram" : { "' + result + '" : 1 } }'
+            data = json.loads(json_string)
+        else:
+            json_file.seek(0)  # Reset the file pointer before loading
+            data = json.load(json_file)
         return data
 
 
@@ -201,9 +276,6 @@ def wait(cmd, job_id, resource_group_name=None, workspace_name=None, location=No
     """
     import time
 
-    def has_completed(job):
-        return job.status in ("Succeeded", "Failed", "Cancelled")
-
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
     client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
 
@@ -212,7 +284,7 @@ def wait(cmd, job_id, resource_group_name=None, workspace_name=None, location=No
     poll_wait = 0.2
     job = client.get(job_id)
 
-    while not has_completed(job):
+    while not _has_completed(job):
         print('.', end='', flush=True)
         wait_indicators_used = True
         time.sleep(poll_wait)
@@ -227,11 +299,12 @@ def wait(cmd, job_id, resource_group_name=None, workspace_name=None, location=No
 
 
 def run(cmd, program_args, resource_group_name=None, workspace_name=None, location=None, target_id=None,
-        project=None, job_name=None, shots=None, storage=None, no_build=False):
+        project=None, job_name=None, shots=None, storage=None, no_build=False, job_params=None):
     """
     Submit a job to run on Azure Quantum, and waits for the result.
     """
-    job = submit(cmd, program_args, resource_group_name, workspace_name, location, target_id, project, job_name, shots, storage, no_build)
+    job = submit(cmd, program_args, resource_group_name, workspace_name, location, target_id,
+                 project, job_name, shots, storage, no_build, job_params)
     logger.warning("Job id: %s", job.id)
     logger.debug(job)
 
@@ -241,4 +314,23 @@ def run(cmd, program_args, resource_group_name=None, workspace_name=None, locati
     if not job.status == "Succeeded":
         return job
 
-    return output(cmd, job.id, resource_group_name, workspace_name)
+    return output(cmd, job.id, resource_group_name, workspace_name, location)
+
+
+def cancel(cmd, job_id, resource_group_name=None, workspace_name=None, location=None):
+    """
+    Request to cancel a job on Azure Quantum if it hasn't completed.
+    """
+    info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
+    client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
+    job = client.get(job_id)
+
+    if _has_completed(job):
+        print(f"Job {job_id} has already completed with status: {job.status}.")
+        return
+
+    # If the job hasn't succeeded or failed, attempt to cancel.
+    client.cancel(job_id)
+
+    # Wait for the job status to complete or be reported as cancelled
+    return wait(cmd, job_id, info.resource_group, info.name, info.location)

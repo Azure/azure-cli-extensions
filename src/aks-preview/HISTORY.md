@@ -2,6 +2,131 @@
 
 Release History
 ===============
+0.5.34
++++++
+* Add support for WASM nodepools (`--workload-runtime WasmWasi`) in `az aks create`
+and `az aks nodepool add`
+
+0.5.33
++++++
+* Add support for new addon commands
+  * `az aks addon list`
+  * `az aks addon list-available`
+  * `az aks addon show`
+  * `az aks addon enable`
+  * `az aks addon disable`
+  * `az aks addon update`
+* Refactored code to bring addon specific functionality into a separate file.
+
+0.5.32
++++++
+* Update to use 2021-08-01 api-version
+
+0.5.31
++++++
+* Add support for new outbound types: 'managedNATGateway' and 'userAssignedNATGateway'
+
+0.5.30
++++++
+* Add preview support for setting scaleDownMode field on nodepools. Requires registering the feature flag "Microsoft.ContainerService/AKS-ScaleDownModePreview" for setting the value to "Deallocate".
+
+0.5.29
++++++
+* Fix update (failed due to "ERROR: (BadRequest) Feature Microsoft.ContainerService/AutoUpgradePreview is not enabled" even when autoupgrade was not specified)
+* Add podMaxPids argument for kubelet-config
+
+0.5.28
++++++
+* Update to adopt 2021-07-01 api-version
+
+0.5.27
++++++
+* GA private cluster public FQDN feature, breaking change to replace create parameter `--enable-public-fqdn` with `--disable-public-fqdn` since now it's enabled by default for private cluster during cluster creation.
+
+0.5.26
++++++
+* Correct containerLogMaxSizeMb to containerLogMaxSizeMB in customized kubelet config
+
+0.5.25
++++++
+* Add support for http proxy
+
+0.5.24
++++++
+* * Add "--aks-custom-headers" for "az aks nodepool upgrade"
+
+0.5.23
++++++
+* Fix issue that `maintenanceconfiguration add` subcommand cannot work
+
+0.5.22
++++++
+* Fix issue in dcr template
+
+0.5.21
++++++
+* Fix issue when disable monitoring on an AKS cluster would fail in regions where Data Collection Rules are not enabled
+
+0.5.20
++++++
+* Support enabling monitoring on AKS clusters with msi auth
+* Add `--enable-msi-auth-for-monitoring` option in aks create and aks enable-addons
+
+0.5.19
++++++
+* Remove azure-defender from list of available addons to install via `az aks enable-addons` command
+
+0.5.18
++++++
+* Fix issue with node config not consuming logging settings
+
+0.5.17
++++++
+* Add parameter '--enable-ultra-ssd' to enable UltraSSD on agent node pool
+
+0.5.16
++++++
+* Vendor SDK using latest swagger with optional query parameter added
+* Support private cluster public fqdn feature
+
+0.5.15
++++++
+* Update to use 2021-05-01 api-version
+
+0.5.14
++++++
+* Add os-sku argument for cluster and nodepool creation
+
+0.5.13
++++++
+* Add compatible logic for the track 2 migration of resource dependence
+
+0.5.12
++++++
+* Add --enable-azure-rbac and --disable-azure-rbac in aks update
+* Support disabling local accounts
+* Add addon `azure-defender` to list of available addons under `az aks enable-addons` command
+
+0.5.11
++++++
+* Add get OS options support
+* Fix wrong behavior when enabling pod identity addon for cluster with addon enabled
+
+0.5.10
++++++
+* Add `--binding-selector` to AAD pod identity add sub command
+* Support using custom kubelet identity
+* Support updating Windows password
+* Add FIPS support to CLI extension
+
+0.5.9
++++++
+* Display result better for `az aks command invoke`, while still honor output option
+* Fix the bug that checking the addon profile whether it exists
+
+0.5.8
++++++
+* Update to use 2021-03-01 api-version
 
 0.5.7
 +++++

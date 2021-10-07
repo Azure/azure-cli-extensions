@@ -6,12 +6,14 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from ._marketplace_agreement_operations import MarketplaceAgreementOperations
-from ._organization_operation_operations import OrganizationOperationOperations
+from ._marketplace_agreements_operations import MarketplaceAgreementsOperations
+from ._organization_operations_operations import OrganizationOperationsOperations
 from ._organization_operations import OrganizationOperations
+from ._validations_operations import ValidationsOperations
 
 __all__ = [
-    'MarketplaceAgreementOperations',
-    'OrganizationOperationOperations',
+    'MarketplaceAgreementsOperations',
+    'OrganizationOperationsOperations',
     'OrganizationOperations',
+    'ValidationsOperations',
 ]

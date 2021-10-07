@@ -2,6 +2,68 @@
 
 Release History
 ===============
+1.2.0
+++++++
+
+* Updated CSP version to 1.3.017131
+* Updated GA SDK to 2021-10-01
+* Updated CSP endpoint to CDN
+* Disabled proxy command in fairfax
+
+1.1.11
+++++++
+
+* Installing helm binary as part of CLI commands
+
+1.1.10
+++++++
+
+* Fixed ARM exception telemetry
+
+1.1.9
+++++++
+
+* Increase onboarding and upgrade timeout
+
+1.1.8
+++++++
+* Improve kubernetes distro and infra detection
+
+
+1.1.7
+++++++
+* Add non-existing namespace deploy check
+* Improve some error and warning experiences
+
+
+1.1.6
+++++++
+* Moved to track2 SDK
+* `az connectedk8s connect`: Added onboarding timeout parameter
+* `az connectedk8s upgrade`: Added upgrade timeout parameter
+* Release namespace detection bug fix in multiple commands
+
+
+1.1.5
+++++++
+* Add custom-locations oid parameter for spn scenario
+
+
+1.1.4
+++++++
+* Add compatible logic for the track 2 migration of resource dependence
+
+
+1.1.3
+++++++
+* Fix for list_node() sdk function for AKS v1.19.x clusters
+* Some logging and telemetry fixes
+
+
+1.1.2
+++++++
+* Fix/remove bug for unused error type import from az cli version 2.16.0+
+
 
 1.1.1
 ++++++

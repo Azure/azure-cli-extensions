@@ -4,8 +4,8 @@
 # --------------------------------------------------------------------------------------------
 
 from abc import ABC, abstractmethod
-from azext_k8s_extension.vendored_sdks.models import ExtensionInstance
-from azext_k8s_extension.vendored_sdks.models import ExtensionInstanceUpdate
+from ..vendored_sdks.models import ExtensionInstance
+from ..vendored_sdks.models import ExtensionInstanceUpdate
 
 
 class PartnerExtensionModel(ABC):
@@ -20,4 +20,8 @@ class PartnerExtensionModel(ABC):
     @abstractmethod
     def Update(self, extension: ExtensionInstance, auto_upgrade_minor_version: bool,
                release_train: str, version: str) -> ExtensionInstanceUpdate:
+        pass
+
+    @abstractmethod
+    def Delete(self, cmd, client, resource_group_name: str, cluster_name: str, name: str, cluster_type: str, yes: bool):
         pass

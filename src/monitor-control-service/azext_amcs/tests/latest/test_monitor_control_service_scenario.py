@@ -8,28 +8,88 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-import os
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk import ResourceGroupPreparer
-from .example_steps import step_data_collection_rule_show
-from .example_steps import step_data_collection_rule_list_by_resource_group
-from .example_steps import step_data_collection_rule_list_by_subscription
-from .example_steps import step_data_collection_rule_association_create
-from .example_steps import step_data_collection_rule_association_show
-from .example_steps import step_data_collection_rule_association_list_by_rule
-from .example_steps import step_data_collection_rule_association_list_by_resource
-from .example_steps import step_data_collection_rule_association_delete
-from .example_steps import step_data_collection_rule_delete
-from .. import (
-    try_manual,
-    raise_if,
-    calc_coverage
-)
-
-TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
-@try_manual
+def step_data_collection_rule_show(test, _, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az monitor data-collection rule show '
+             '--name "{myDataCollectionRule}" '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+
+def step_data_collection_rule_list_by_resource_group(test, _, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az monitor data-collection rule list '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+
+def step_data_collection_rule_list_by_subscription(test, _, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az monitor data-collection rule list ',
+             checks=checks)
+
+
+def step_data_collection_rule_association_create(test, _, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az monitor data-collection rule association create '
+             '--name "{myAssociation}" '
+             '--rule-id "{rule_id}" '
+             '--resource "{vm_id}"',
+             checks=checks)
+
+
+def step_data_collection_rule_association_show(test, _, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az monitor data-collection rule association show '
+             '--name "{myAssociation}" '
+             '--resource "{vm_id}"',
+             checks=checks)
+
+
+def step_data_collection_rule_association_list_by_rule(test, _, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az monitor data-collection rule association list '
+             '--rule-name "{myDataCollectionRule}" '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+
+def step_data_collection_rule_association_list_by_resource(test, _, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az monitor data-collection rule association list '
+             '--resource "{vm_id}" ',
+             checks=checks)
+
+
+def step_data_collection_rule_association_delete(test, _, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az monitor data-collection rule association delete -y '
+             '--name "{myAssociation}" '
+             '--resource "{vm_id}" ',
+             checks=checks)
+
+
+def step_data_collection_rule_delete(test, _, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az monitor data-collection rule delete -y '
+             '--name "{myDataCollectionRule}" '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+
 def step_data_collection_rule_create(test, rg, checks=None):
     if checks is None:
         checks = []
@@ -42,15 +102,15 @@ def step_data_collection_rule_create(test, rg, checks=None):
                          ')\\\\% Processor Time" counter-specifiers="\\\\Memory\\\\Committed Bytes" '
                          'counter-specifiers="\\\\LogicalDisk(_Total)\\\\Free Megabytes" '
                          'counter-specifiers="\\\\PhysicalDisk(_Total)\\\\Avg. Disk Queue Length" '
-                         'sampling-frequency=15 transfer-period="PT1M" streams="Microsoft-Perf" '
+                         'sampling-frequency=15 streams="Microsoft-Perf" '
                          '--performance-counters name="appTeamExtraCounters" '
                          'counter-specifiers="\\\\Process(_Total)\\\\Thread Count" sampling-frequency=30 '
-                         'transfer-period="PT5M" streams="Microsoft-Perf" '
+                         'streams="Microsoft-Perf" '
                          '--syslog name="syslogBase" facility-names="syslog" log-levels="Alert" log-levels="Critical" '
                          'log-levels="Emergency" streams="Microsoft-Syslog" '
-                         '--windows-event-logs name="cloudSecurityTeamEvents" transfer-period="PT1M" '
+                         '--windows-event-logs name="cloudSecurityTeamEvents" '
                          'streams="Microsoft-WindowsEvent" x-path-queries="Security!" '
-                         '--windows-event-logs name="appTeam1AppEvents" transfer-period="PT5M" '
+                         '--windows-event-logs name="appTeam1AppEvents" '
                          'streams="Microsoft-WindowsEvent" '
                          'x-path-queries="System![System[(Level = 1 or Level = 2 or Level = 3)]]" '
                          'x-path-queries="Application!*[System[(Level = 1 or Level = 2 or Level = 3)]]" ',
@@ -58,7 +118,6 @@ def step_data_collection_rule_create(test, rg, checks=None):
     test.kwargs['rule_id'] = rule_json['id']
 
 
-@try_manual
 def step_data_collection_rule_update_tags(test, rg, checks=None):
     if checks is None:
         checks = []
@@ -74,7 +133,6 @@ def step_data_collection_rule_update_tags(test, rg, checks=None):
              checks=checks)
 
 
-@try_manual
 def step_data_collection_rule_log_analytics_add(test, rg, checks=None):
     if checks is None:
         checks = []
@@ -87,7 +145,6 @@ def step_data_collection_rule_log_analytics_add(test, rg, checks=None):
              checks=checks)
 
 
-@try_manual
 def step_data_collection_rule_log_analytics_list(test, rg, checks=None):
     if checks is None:
         checks = []
@@ -98,7 +155,6 @@ def step_data_collection_rule_log_analytics_list(test, rg, checks=None):
              checks=checks)
 
 
-@try_manual
 def step_data_collection_rule_log_analytics_show(test, rg, checks=None):
     if checks is None:
         checks = []
@@ -110,7 +166,6 @@ def step_data_collection_rule_log_analytics_show(test, rg, checks=None):
              checks=checks)
 
 
-@try_manual
 def step_data_collection_rule_log_analytics_update(test, rg, checks=None):
     if checks is None:
         checks = []
@@ -123,7 +178,6 @@ def step_data_collection_rule_log_analytics_update(test, rg, checks=None):
              checks=checks)
 
 
-@try_manual
 def step_data_collection_rule_log_analytics_delete(test, rg, checks=None):
     if checks is None:
         checks = []
@@ -135,7 +189,6 @@ def step_data_collection_rule_log_analytics_delete(test, rg, checks=None):
              checks=checks)
 
 
-@try_manual
 def step_data_collection_rule_data_flow_list(test, rg, checks=None):
     if checks is None:
         checks = []
@@ -146,7 +199,6 @@ def step_data_collection_rule_data_flow_list(test, rg, checks=None):
              checks=checks)
 
 
-@try_manual
 def step_data_collection_rule_data_flow_add(test, rg, checks=None):
     if checks is None:
         checks = []
@@ -157,7 +209,6 @@ def step_data_collection_rule_data_flow_add(test, rg, checks=None):
              checks=checks)
 
 
-@try_manual
 def step_data_collection_rule_performance_counter_add(test, rg, checks=None):
     if checks is None:
         checks = []
@@ -168,12 +219,10 @@ def step_data_collection_rule_performance_counter_add(test, rg, checks=None):
              '--name extraCounters '
              '--counter-specifiers "\\\\Memory\\\\Committed Bytes" "\\\\Processor(_Total)\\\\% Processor Time" '
              '--sampling-frequency 15 '
-             '--transfer-period "PT1M" '
              '--streams "Microsoft-Perf"',
              checks=checks)
 
 
-@try_manual
 def step_data_collection_rule_performance_counter_list(test, rg, checks=None):
     if checks is None:
         checks = []
@@ -184,7 +233,6 @@ def step_data_collection_rule_performance_counter_list(test, rg, checks=None):
              checks=checks)
 
 
-@try_manual
 def step_data_collection_rule_performance_counter_show(test, rg, checks=None):
     if checks is None:
         checks = []
@@ -196,7 +244,6 @@ def step_data_collection_rule_performance_counter_show(test, rg, checks=None):
              checks=checks)
 
 
-@try_manual
 def step_data_collection_rule_performance_counter_update(test, rg, checks=None):
     if checks is None:
         checks = []
@@ -209,7 +256,6 @@ def step_data_collection_rule_performance_counter_update(test, rg, checks=None):
              checks=checks)
 
 
-@try_manual
 def step_data_collection_rule_performance_counter_delete(test, rg, checks=None):
     if checks is None:
         checks = []
@@ -221,7 +267,6 @@ def step_data_collection_rule_performance_counter_delete(test, rg, checks=None):
              checks=checks)
 
 
-@try_manual
 def step_data_collection_rule_windows_event_log_add(test, rg, checks=None):
     if checks is None:
         checks = []
@@ -230,14 +275,12 @@ def step_data_collection_rule_windows_event_log_add(test, rg, checks=None):
              '--rule-name "{myDataCollectionRule}" '
              '--resource-group "{rg}" '
              '--name extraEvents '
-             '--transfer-period "PT1M" '
              '--streams "Microsoft-WindowsEvent" '
              '--x-path-queries "System![System[(Level = 1 or Level = 2 or Level = 3)]]" '
              '"Application!*[System[(Level = 1 or Level = 2 or Level = 3)]]"',
              checks=checks)
 
 
-@try_manual
 def step_data_collection_rule_windows_event_log_list(test, rg, checks=None):
     if checks is None:
         checks = []
@@ -248,7 +291,6 @@ def step_data_collection_rule_windows_event_log_list(test, rg, checks=None):
              checks=checks)
 
 
-@try_manual
 def step_data_collection_rule_windows_event_log_show(test, rg, checks=None):
     if checks is None:
         checks = []
@@ -260,7 +302,6 @@ def step_data_collection_rule_windows_event_log_show(test, rg, checks=None):
              checks=checks)
 
 
-@try_manual
 def step_data_collection_rule_windows_event_log_update(test, rg, checks=None):
     if checks is None:
         checks = []
@@ -273,7 +314,6 @@ def step_data_collection_rule_windows_event_log_update(test, rg, checks=None):
              checks=checks)
 
 
-@try_manual
 def step_data_collection_rule_windows_event_log_delete(test, rg, checks=None):
     if checks is None:
         checks = []
@@ -285,7 +325,6 @@ def step_data_collection_rule_windows_event_log_delete(test, rg, checks=None):
              checks=checks)
 
 
-@try_manual
 def step_data_collection_rule_syslog_add(test, rg, checks=None):
     if checks is None:
         checks = []
@@ -300,7 +339,6 @@ def step_data_collection_rule_syslog_add(test, rg, checks=None):
              checks=checks)
 
 
-@try_manual
 def step_data_collection_rule_syslog_list(test, rg, checks=None):
     if checks is None:
         checks = []
@@ -311,7 +349,6 @@ def step_data_collection_rule_syslog_list(test, rg, checks=None):
              checks=checks)
 
 
-@try_manual
 def step_data_collection_rule_syslog_show(test, rg, checks=None):
     if checks is None:
         checks = []
@@ -323,7 +360,6 @@ def step_data_collection_rule_syslog_show(test, rg, checks=None):
              checks=checks)
 
 
-@try_manual
 def step_data_collection_rule_syslog_update(test, rg, checks=None):
     if checks is None:
         checks = []
@@ -336,7 +372,6 @@ def step_data_collection_rule_syslog_update(test, rg, checks=None):
              checks=checks)
 
 
-@try_manual
 def step_data_collection_rule_syslog_delete(test, rg, checks=None):
     if checks is None:
         checks = []
@@ -348,7 +383,6 @@ def step_data_collection_rule_syslog_delete(test, rg, checks=None):
              checks=checks)
 
 
-@try_manual
 def step_data_collection_rule_association_update(test, rg, checks=None):
     if checks is None:
         checks = []
@@ -363,7 +397,6 @@ def step_data_collection_rule_association_update(test, rg, checks=None):
 
 
 # Env setup_scenario
-@try_manual
 def setup_scenario(test, rg):
     test.kwargs.update({
         'rg': rg,
@@ -395,16 +428,10 @@ def setup_scenario(test, rg):
     test.kwargs['vm_id'] = vm_json['id']
 
 
-# Env cleanup_scenario
-@try_manual
-def cleanup_scenario(test, rg):
-    pass
-
-
 # Testcase: Scenario
-@try_manual
 def call_scenario(test, rg):
     setup_scenario(test, rg)
+
     step_data_collection_rule_create(test, rg, checks=[
         test.check("location", "{location}", case_sensitive=False),
         test.check("name", "{myDataCollectionRule}", case_sensitive=False),
@@ -468,11 +495,9 @@ def call_scenario(test, rg):
     step_data_collection_rule_association_delete(test, rg, checks=[])
 
     step_data_collection_rule_delete(test, rg, checks=[])
-    cleanup_scenario(test, rg)
 
 
 # EXAMPLE: /DataCollectionRules/patch/Update data collection rule
-@try_manual
 def step_data_collection_rule_update(test, rg, checks=None):
     if checks is None:
         checks = []
@@ -484,7 +509,6 @@ def step_data_collection_rule_update(test, rg, checks=None):
 
 
 # Test class for Scenario
-@try_manual
 class Monitor_control_serviceScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='clitestmonitor_control_service_myResourceGroup'[:7], key='rg',
@@ -500,5 +524,37 @@ class Monitor_control_serviceScenarioTest(ScenarioTest):
         })
 
         call_scenario(self, rg)
-        calc_coverage(__file__)
-        raise_if()
+
+    @ResourceGroupPreparer(name_prefix='clitest_amcs_endpoints', location='eastus2euap')
+    def test_amcs_data_collection_endpoint(self, resource_group):
+        self.kwargs.update({
+            'rg': resource_group,
+            'name1': 'endpoint1',
+            'name2': 'endpoint2',
+        })
+
+        self.cmd('monitor data-collection endpoint create -g {rg} -n {name1} --public-network-access disabled', checks=[
+            self.check('networkAcls.publicNetworkAccess', 'Disabled'),
+        ])
+
+        self.cmd('monitor data-collection endpoint update -g {rg} -n {name1} --public-network-access enabled '
+                 '--kind windows', checks=[
+            self.check('networkAcls.publicNetworkAccess', 'Enabled'),
+            self.check('kind', 'Windows')
+        ])
+
+        self.cmd('monitor data-collection endpoint create -g {rg} -n {name2} '
+                 '--public-network-access enabled --kind linux')
+        self.cmd('monitor data-collection endpoint show -g {rg} -n {name2}', checks=[
+            self.check('networkAcls.publicNetworkAccess', 'Enabled'),
+            self.check('kind', 'Linux')
+        ])
+
+        self.cmd('monitor data-collection endpoint list -g {rg}', checks=[
+            self.check('length(@)', 2)
+        ])
+
+        self.cmd('monitor data-collection endpoint delete -g {rg} -n {name2} -y')
+        self.cmd('monitor data-collection endpoint list -g {rg}', checks=[
+            self.check('length(@)', 1)
+        ])

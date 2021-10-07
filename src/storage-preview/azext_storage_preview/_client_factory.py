@@ -8,7 +8,9 @@ from azure.cli.core.profiles import get_sdk
 from knack.util import CLIError
 from knack.log import get_logger
 
-from .profiles import CUSTOM_DATA_STORAGE, CUSTOM_MGMT_PREVIEW_STORAGE, CUSTOM_DATA_STORAGE_FILESHARE
+
+from .profiles import CUSTOM_DATA_STORAGE, CUSTOM_MGMT_PREVIEW_STORAGE, CUSTOM_DATA_STORAGE_FILESHARE, \
+    CUSTOM_DATA_STORAGE_FILEDATALAKE
 
 MISSING_CREDENTIALS_ERROR_MESSAGE = """
 Missing credentials to access storage service. The following variations are accepted:
@@ -136,7 +138,6 @@ def cf_mgmt_file_services(cli_ctx, _):
 
 
 def get_account_url(cli_ctx, account_name, service):
-    from knack.util import CLIError
     if account_name is None:
         raise CLIError("Please provide storage account name or connection string.")
     storage_endpoint = cli_ctx.cloud.suffixes.storage_endpoint
@@ -172,3 +173,29 @@ def cf_share_directory_client(cli_ctx, kwargs):
 
 def cf_share_file_client(cli_ctx, kwargs):
     return cf_share_client(cli_ctx, kwargs).get_file_client(file_path=kwargs.pop('file_path'))
+
+
+def cf_adls_service(cli_ctx, kwargs):
+    client_kwargs = {}
+    t_adls_service = get_sdk(cli_ctx, CUSTOM_DATA_STORAGE_FILEDATALAKE,
+                             '_data_lake_service_client#DataLakeServiceClient')
+    connection_string = kwargs.pop('connection_string', None)
+    account_name = kwargs.pop('account_name', None)
+    account_key = kwargs.pop('account_key', None)
+    token_credential = kwargs.pop('token_credential', None)
+    sas_token = kwargs.pop('sas_token', None)
+    # Enable NetworkTraceLoggingPolicy which logs all headers (except Authorization) without being redacted
+    client_kwargs['logging_enable'] = True
+    if connection_string:
+        return t_adls_service.from_connection_string(conn_str=connection_string, **client_kwargs)
+
+    account_url = get_account_url(cli_ctx, account_name=account_name, service='dfs')
+    credential = account_key or sas_token or token_credential
+
+    if account_url and credential:
+        return t_adls_service(account_url=account_url, credential=credential, **client_kwargs)
+    return None
+
+
+def cf_adls_file_system(cli_ctx, kwargs):
+    return cf_adls_service(cli_ctx, kwargs).get_file_system_client(file_system=kwargs.pop('file_system_name'))

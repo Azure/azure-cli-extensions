@@ -2,6 +2,12 @@
 
 Release History
 ===============
+
+0.10.7 (2021-5-10)
+++++++++++++++++++
+
+* Add compatible logic for the track 2 migration of resource dependence
+
 0.10.6 (2019-6-24)
 ++++++++++++++++++
 

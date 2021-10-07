@@ -7,10 +7,7 @@ from azure.cli.testsdk import (ScenarioTest, JMESPathCheck, ResourceGroupPrepare
 
 from .frontdoor_test_util import WafScenarioMixin
 from knack.cli import CLIError
-try:
-    from azext_front_door.vendored_sdks.models._models_py3 import ErrorResponseException
-except (SyntaxError, ImportError):
-    from azext_front_door.vendored_sdks.models._models import ErrorResponseException
+from azure.core.exceptions import (HttpResponseError)
 
 
 class WafTests(WafScenarioMixin, ScenarioTest):
@@ -45,7 +42,7 @@ az network front-door waf-policy delete -g {resource_group} -n {policyName}
         result = self.cmd(cmd).get_output_in_json()
         self.assertEqual(result['name'], blockpolicy)
         self.assertEqual(result['policySettings']['mode'], "Prevention")
-        self.assertEqual(result['policySettings']['requestBodyCheck'], "Disabled")
+        self.assertEqual(result['policySettings']['requestBodyCheck'], "Enabled")
         self.assertIn('customRules', result)
         self.assertIn('managedRules', result)
         self.assertIn('id', result)
@@ -56,7 +53,7 @@ az network front-door waf-policy delete -g {resource_group} -n {policyName}
         result = self.cmd(cmd).get_output_in_json()
         self.assertEqual(result['name'], standardskupolicy)
         self.assertEqual(result['policySettings']['mode'], "Prevention")
-        self.assertEqual(result['policySettings']['requestBodyCheck'], "Disabled")
+        self.assertEqual(result['policySettings']['requestBodyCheck'], "Enabled")
         self.assertIn('customRules', result)
         self.assertIn('managedRules', result)
         self.assertIn('id', result)
@@ -68,7 +65,7 @@ az network front-door waf-policy delete -g {resource_group} -n {policyName}
         self.assertEqual(result['name'], detectionredirectpolicy)
         self.assertEqual(result['policySettings']['mode'], "Detection")
         self.assertEqual(result['policySettings']['redirectUrl'], "http://www.microsoft.com")
-        self.assertEqual(result['policySettings']['requestBodyCheck'], "Disabled")
+        self.assertEqual(result['policySettings']['requestBodyCheck'], "Enabled")
         self.assertIn('customRules', result)
         self.assertIn('managedRules', result)
         self.assertIn('id', result)
@@ -81,7 +78,7 @@ az network front-door waf-policy delete -g {resource_group} -n {policyName}
         self.assertEqual(result['policySettings']['mode'], "Detection")
         self.assertEqual(result['policySettings']['redirectUrl'], "http://www.microsoft.com")
         self.assertEqual(result['policySettings']['customBlockResponseStatusCode'], 406)
-        self.assertEqual(result['policySettings']['requestBodyCheck'], "Disabled")
+        self.assertEqual(result['policySettings']['requestBodyCheck'], "Enabled")
         self.assertIn('customRules', result)
         self.assertIn('managedRules', result)
         self.assertIn('id', result)
@@ -96,7 +93,7 @@ az network front-door waf-policy delete -g {resource_group} -n {policyName}
         self.assertEqual(result['policySettings']['redirectUrl'], "http://www.microsoft.com")
         self.assertEqual(result['policySettings']['customBlockResponseStatusCode'], 406)
         self.assertEqual(result['policySettings']['customBlockResponseBody'], "YiBvZHk=")
-        self.assertEqual(result['policySettings']['requestBodyCheck'], "Disabled")
+        self.assertEqual(result['policySettings']['requestBodyCheck'], "Enabled")
         self.assertIn('customRules', result)
         self.assertIn('managedRules', result)
         self.assertIn('id', result)
@@ -111,7 +108,7 @@ az network front-door waf-policy delete -g {resource_group} -n {policyName}
         self.assertEqual(result['policySettings']['redirectUrl'], None)
         self.assertEqual(result['policySettings']['customBlockResponseStatusCode'], None)
         self.assertEqual(result['policySettings']['customBlockResponseBody'], None)
-        self.assertEqual(result['policySettings']['requestBodyCheck'], "Disabled")
+        self.assertEqual(result['policySettings']['requestBodyCheck'], "Enabled")
         self.assertIn('customRules', result)
         self.assertIn('managedRules', result)
         self.assertIn('id', result)
@@ -123,7 +120,7 @@ az network front-door waf-policy delete -g {resource_group} -n {policyName}
         self.assertIn('managedRules', result)
         self.assertIn('id', result)
         self.assertEqual(result['policySettings']['enabledState'], "Enabled")
-        self.assertEqual(result['policySettings']['requestBodyCheck'], "Disabled")
+        self.assertEqual(result['policySettings']['requestBodyCheck'], "Enabled")
         self.assertEqual(result['sku']['name'], "Classic_AzureFrontDoor")
 
         cmd = 'az network front-door waf-policy update -g {resource_group} -n {blockpolicy} --tags test=best'.format(**locals())
@@ -141,7 +138,7 @@ az network front-door waf-policy delete -g {resource_group} -n {policyName}
         result = self.cmd(cmd).get_output_in_json()
         self.assertEqual(result['name'], blockpolicy)
         self.assertEqual(result['policySettings']['mode'], "Detection")
-        self.assertEqual(result['policySettings']['requestBodyCheck'], "Disabled")
+        self.assertEqual(result['policySettings']['requestBodyCheck'], "Enabled")
         self.assertEqual(result['sku']['name'], "Classic_AzureFrontDoor")
 
         cmd = 'az network front-door waf-policy update -g {resource_group} -n {blockpolicy} --mode prevention --redirect-url http://www.microsoft.com'.format(**locals())
@@ -156,7 +153,7 @@ az network front-door waf-policy delete -g {resource_group} -n {policyName}
         self.assertEqual(result['name'], blockpolicy)
         self.assertEqual(result['policySettings']['mode'], "Prevention")
         self.assertEqual(result['policySettings']['customBlockResponseStatusCode'], 406)
-        self.assertEqual(result['policySettings']['requestBodyCheck'], "Disabled")
+        self.assertEqual(result['policySettings']['requestBodyCheck'], "Enabled")
         self.assertEqual(result['sku']['name'], "Classic_AzureFrontDoor")
 
         cmd = 'az network front-door waf-policy update -g {resource_group} -n {blockpolicy} --custom-block-response-status-code 405 --custom-block-response-body YiBvZHk='.format(**locals())
@@ -165,14 +162,14 @@ az network front-door waf-policy delete -g {resource_group} -n {policyName}
         self.assertEqual(result['policySettings']['mode'], "Prevention")
         self.assertEqual(result['policySettings']['customBlockResponseStatusCode'], 405)
         self.assertEqual(result['policySettings']['customBlockResponseBody'], "YiBvZHk=")
-        self.assertEqual(result['policySettings']['requestBodyCheck'], "Disabled")
+        self.assertEqual(result['policySettings']['requestBodyCheck'], "Enabled")
         self.assertEqual(result['sku']['name'], "Classic_AzureFrontDoor")
 
         cmd = 'az network front-door waf-policy update -g {resource_group} -n {blockpolicy} --disabled'.format(**locals())
         result = self.cmd(cmd).get_output_in_json()
         self.assertEqual(result['name'], blockpolicy)
         self.assertEqual(result['policySettings']['enabledState'], "Disabled")
-        self.assertEqual(result['policySettings']['requestBodyCheck'], "Disabled")
+        self.assertEqual(result['policySettings']['requestBodyCheck'], "Enabled")
         self.assertEqual(result['sku']['name'], "Classic_AzureFrontDoor")
 
         cmd = 'az network front-door waf-policy show -g {resource_group} -n {blockpolicy}'.format(**locals())
@@ -181,7 +178,7 @@ az network front-door waf-policy delete -g {resource_group} -n {policyName}
         # spot check
         self.assertEqual(result['policySettings']['enabledState'], "Disabled")
         self.assertEqual(result['policySettings']['customBlockResponseStatusCode'], 405)
-        self.assertEqual(result['policySettings']['requestBodyCheck'], "Disabled")
+        self.assertEqual(result['policySettings']['requestBodyCheck'], "Enabled")
         self.assertEqual(result['sku']['name'], "Classic_AzureFrontDoor")
 
         cmd = 'az network front-door waf-policy list -g {resource_group}'.format(**locals())
@@ -437,9 +434,9 @@ az network front-door waf-policy rule match-condition list -g {resource_group} -
             cmd = 'az network front-door waf-policy rule update -g {resource_group} --policy-name {policyName} -n {disabledRateLimit} --priority 75'.format(**locals())
             result = self.cmd(cmd)
             self.fail()
-        except ErrorResponseException as e:
+        except HttpResponseError as e:
             # fails because of missing selector on RequestHeader
-            self.assertTrue("400" in str(e.response))
+            self.assertTrue(e.status_code == 400)
 
         # delete problematic match condition
         cmd = 'az network front-door waf-policy rule match-condition remove -g {resource_group} --policy-name {policyName} -n {rateLimit} --index 1 --defer'.format(**locals())
@@ -487,7 +484,7 @@ az network front-door waf-policy rule match-condition list -g {resource_group} -
         result = self.cmd(cmd).get_output_in_json()
         self.assertEqual(result['name'], policyName)
         self.assertEqual(result['policySettings']['mode'], "Prevention")
-        self.assertEqual(result['policySettings']['requestBodyCheck'], "Disabled")
+        self.assertEqual(result['policySettings']['requestBodyCheck'], "Enabled")
         self.assertIn('customRules', result)
         self.assertIn('managedRules', result)
         self.assertIn('id', result)

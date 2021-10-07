@@ -26,42 +26,48 @@ class _CaseInsensitiveEnumMeta(EnumMeta):
             raise AttributeError(name)
 
 
+class CreatedByType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """The type of identity that created the resource.
+    """
+
+    USER = "User"
+    APPLICATION = "Application"
+    MANAGED_IDENTITY = "ManagedIdentity"
+    KEY = "Key"
+
 class ImpactType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The impact type
     """
 
-    NONE = "None"
-    FREEZE = "Freeze"
-    RESTART = "Restart"
-    REDEPLOY = "Redeploy"
+    NONE = "None"  #: Pending updates has no impact on resource.
+    FREEZE = "Freeze"  #: Pending updates can freeze network or disk io operation on resource.
+    RESTART = "Restart"  #: Pending updates can cause resource to restart.
+    REDEPLOY = "Redeploy"  #: Pending updates can redeploy resource.
 
 class MaintenanceScope(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Gets or sets maintenanceScope of the configuration
     """
 
-    ALL = "All"
-    HOST = "Host"
-    RESOURCE = "Resource"
-    IN_RESOURCE = "InResource"
-    OS_IMAGE = "OSImage"
-    EXTENSION = "Extension"
-    IN_GUEST_PATCH = "InGuestPatch"
-    SQLDB = "SQLDB"
-    SQL_MANAGED_INSTANCE = "SQLManagedInstance"
+    HOST = "Host"  #: This maintenance scope controls installation of azure platform updates i.e. services on physical nodes hosting customer VMs.
+    OS_IMAGE = "OSImage"  #: This maintenance scope controls os image installation on VM/VMSS.
+    EXTENSION = "Extension"  #: This maintenance scope controls extension installation on VM/VMSS.
+    IN_GUEST_PATCH = "InGuestPatch"  #: This maintenance scope controls installation of windows and linux packages on VM/VMSS.
+    SQLDB = "SQLDB"  #: This maintenance scope controls installation of SQL server platform updates.
+    SQL_MANAGED_INSTANCE = "SQLManagedInstance"  #: This maintenance scope controls installation of SQL managed instance platform update.
 
 class UpdateStatus(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The status
     """
 
-    PENDING = "Pending"
-    IN_PROGRESS = "InProgress"
-    COMPLETED = "Completed"
-    RETRY_NOW = "RetryNow"
-    RETRY_LATER = "RetryLater"
+    PENDING = "Pending"  #: There are pending updates to be installed.
+    IN_PROGRESS = "InProgress"  #: Updates installation are in progress.
+    COMPLETED = "Completed"  #: All updates are successfully applied.
+    RETRY_NOW = "RetryNow"  #: Updates installation failed but are ready to retry again.
+    RETRY_LATER = "RetryLater"  #: Updates installation failed and should be retried later.
 
 class Visibility(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """Gets or sets the visibility of the configuration
+    """Gets or sets the visibility of the configuration. The default value is 'Custom'
     """
 
-    CUSTOM = "Custom"
-    PUBLIC = "Public"
+    CUSTOM = "Custom"  #: Only visible to users with permissions.
+    PUBLIC = "Public"  #: Visible to all users.

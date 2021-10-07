@@ -8,6 +8,7 @@
 # regenerated.
 # --------------------------------------------------------------------------
 # pylint: disable=too-many-lines
+# pylint: disable=import-outside-toplevel
 
 from azure.cli.core.util import sdk_no_wait
 

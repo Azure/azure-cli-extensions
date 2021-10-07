@@ -69,7 +69,7 @@ class AzureFirewallScenario(ScenarioTest):
         self.cmd('network firewall ip-config delete -g {rg} -n {ipconfig2} -f {af}')
         self.cmd('network firewall ip-config delete -g {rg} -n {ipconfig} -f {af}')
 
-    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_management_ip_config')
+    @ResourceGroupPreparer(name_prefix='test_azure_firewall_management_ip_config')
     def test_azure_firewall_management_ip_config(self, resource_group):
         self.kwargs.update({
             'af': 'af1',
@@ -110,6 +110,7 @@ class AzureFirewallScenario(ScenarioTest):
         #              self.check('subnet.id', subnet_id_ip_config)
         #          ])
 
+        self.cmd('network vnet create -g {rg} -n {vnet} --subnet-name "AzureFirewallSubnet" --address-prefixes 10.0.0.0/16 --subnet-prefixes 10.0.0.0/24')
         self.cmd('network firewall ip-config create -g {rg} -n {ipconfig3} -f {af} --public-ip-address {pubip3} --vnet-name {vnet}', checks=[
             self.check('name', '{ipconfig3}'),
             # self.check('subnet', None)
@@ -228,7 +229,7 @@ class AzureFirewallScenario(ScenarioTest):
         self.cmd('network firewall create -g {rg} -n {af} --zones 1 3')
         self.cmd('network firewall update -g {rg} -n {af} --zones 1')
 
-    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_virtual_hub', location='eastus2euap')
+    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_virtual_hub', location='eastus2')
     def test_azure_firewall_virtual_hub(self, resource_group):
         from knack.util import CLIError
         self.kwargs.update({
@@ -242,7 +243,7 @@ class AzureFirewallScenario(ScenarioTest):
         })
         # self.cmd('extension add -n virtual-wan')
         self.cmd('network vwan create -n {vwan} -g {rg} --type Standard')
-        self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan}  --address-prefix 10.0.0.0/24 -l eastus2euap --sku Standard')
+        self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan}  --address-prefix 10.0.0.0/24 -l eastus2 --sku Standard')
         self.cmd('network firewall create -g {rg} -n {af} --sku AZFW_Hub --count 1 --vhub {vhub}')
         self.cmd('network firewall update -g {rg} -n {af} --vhub ""')
 
@@ -250,10 +251,10 @@ class AzureFirewallScenario(ScenarioTest):
             self.cmd('network firewall create -g {rg} -n {af} --sku AZFW_Hub --count 1 --vhub {vhub} --allow-active-ftp')
 
         self.cmd('network vwan create -n {vwan2} -g {rg} --type Standard')
-        self.cmd('network vhub create -g {rg} -n {vhub2} --vwan {vwan2}  --address-prefix 10.0.0.0/24 -l eastus2euap --sku Standard')
+        self.cmd('network vhub create -g {rg} -n {vhub2} --vwan {vwan2}  --address-prefix 10.0.0.0/24 -l eastus2 --sku Standard')
         self.cmd('network firewall update -g {rg} -n {af} --vhub {vhub2}')
 
-    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_virtual_hub', location='eastus2euap')
+    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_virtual_hub', location='eastus2')
     def test_azure_firewall_virtual_hub_with_public_ips(self, resource_group):
 
         self.kwargs.update({
@@ -268,20 +269,20 @@ class AzureFirewallScenario(ScenarioTest):
         })
         # self.cmd('extension add -n virtual-wan')
         self.cmd('network vwan create -n {vwan} -g {rg} --type Standard')
-        self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan}  --address-prefix 10.0.0.0/24 -l eastus2euap --sku Standard')
+        self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan}  --address-prefix 10.0.0.0/24 -l eastus2 --sku Standard')
         self.cmd('network firewall create -g {rg} -n {af} --sku AZFW_Hub --count 4 --vhub {vhub}', checks=[
-            self.check('length(hubIpAddresses.publicIps.addresses)', 4)
+            self.check('length(hubIpAddresses.publicIPs.addresses)', 4)
         ])
         result = self.cmd('network firewall update -g {rg} -n {af} --count 5', checks=[
-            self.check('length(hubIpAddresses.publicIps.addresses)', 5)
+            self.check('length(hubIpAddresses.publicIPs.addresses)', 5)
         ]).get_output_in_json()
         self.kwargs.update({
-            'ip1': result['hubIpAddresses']['publicIps']['addresses'][0]['address'],
-            'ip2': result['hubIpAddresses']['publicIps']['addresses'][1]['address'],
-            'ip3': result['hubIpAddresses']['publicIps']['addresses'][2]['address']
+            'ip1': result['hubIpAddresses']['publicIPs']['addresses'][0]['address'],
+            'ip2': result['hubIpAddresses']['publicIPs']['addresses'][1]['address'],
+            'ip3': result['hubIpAddresses']['publicIPs']['addresses'][2]['address']
         })
         self.cmd('network firewall update -g {rg} -n {af} --public-ips {ip1} {ip2} {ip3}', checks=[
-            self.check('length(hubIpAddresses.publicIps.addresses)', 3)
+            self.check('length(hubIpAddresses.publicIPs.addresses)', 3)
         ])
         self.cmd('network firewall show -g {rg} -n {af}')
 
@@ -332,8 +333,21 @@ class AzureFirewallScenario(ScenarioTest):
             self.check('name', '{policy2}')
         ])
 
+    @ResourceGroupPreparer(name_prefix='test_azure_firewall_with_firewall_policy_premium', location='westus2')
+    def test_azure_firewall_with_firewall_policy_premium(self, resource_group, resource_group_location):
+        self.kwargs.update({
+            'policy2': 'myclipolicy2',
+            'rg': resource_group,
+            'location': resource_group_location,
+        })
+
+        self.cmd('network firewall policy create -g {rg} -n {policy2} -l {location} --sku Premium', checks=[
+            self.check('type', 'Microsoft.Network/FirewallPolicies'),
+            self.check('name', '{policy2}')
+        ])
+
         # test firewall policy identity
-        identity = self.cmd('identity create -g {rg} -n identitytest').get_output_in_json()
+        identity = self.cmd('identity create -g {rg} -n identitytest',).get_output_in_json()
         self.kwargs.update({'id': identity['id']})
         self.cmd('network firewall policy update -g {rg} -n {policy2} --identity {id}',
                  checks=[self.exists('identity')])
@@ -611,7 +625,7 @@ class AzureFirewallScenario(ScenarioTest):
     def test_firewall_policy_with_dns_settings(self, resource_group):
         self.kwargs.update({
             'rg': resource_group,
-            'location': 'eastus2euap',   # available only in this location for now
+            'location': 'eastus',   # available only in this location for now
             'policy': 'fwp01',
             'dns_servers': '10.0.0.1 10.0.0.2 10.0.0.3',
         })
@@ -650,7 +664,82 @@ class AzureFirewallScenario(ScenarioTest):
 
         self.cmd('network firewall policy delete --resource-group {rg} --name {policy} ')
 
-    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_policy', location='eastus2euap')
+    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_policy', location='eastus2')
+    def test_azure_firewall_policy_rules_with_fqdns(self, resource_group, resource_group_location):
+        self.kwargs.update({
+            'collectiongroup': 'myclirulecollectiongroup',
+            'policy': 'myclipolicy',
+            'rg': resource_group,
+            'location': resource_group_location,
+            'collection_group_priority': 10000,
+            'source_ip_group': 'sourceipgroup',
+            'destination_ip_group': 'destinationipgroup',
+            'fw': 'fw1',
+            'dns_servers': '10.0.0.2 10.0.0.3'
+        })
+
+        self.cmd('network ip-group create -n {source_ip_group} -g {rg} --ip-addresses 10.0.0.0 10.0.0.1')
+        self.cmd('network firewall policy create '
+                 '--resource-group {rg} '
+                 '--location {location} '
+                 '--name {policy} '
+                 '--dns-servers {dns_servers} '
+                 '--enable-dns-proxy', checks=[
+                    self.check('type', 'Microsoft.Network/FirewallPolicies'),
+                    self.check('name', '{policy}')
+                 ])
+
+        self.cmd(
+            'network firewall policy rule-collection-group create -g {rg} --priority {collection_group_priority} --policy-name {policy} -n {collectiongroup}',
+            checks=[
+                self.check('type', 'Microsoft.Network/FirewallPolicies/RuleCollectionGroups'),
+                self.check('name', '{collectiongroup}')
+            ])
+
+        self.cmd('network firewall policy rule-collection-group collection add-filter-collection -g {rg} --policy-name {policy} '
+                 '--rule-collection-group-name {collectiongroup} -n filter-collection-1 --collection-priority 15000 '
+                 '--action Allow --rule-name network-rule --rule-type NetworkRule '
+                 '--description "test" --destination-fqdns www.bing.com --source-ip-groups {source_ip_group} '
+                 '--destination-ports 12003 12004 --ip-protocols Any ICMP',
+                 checks=[
+                     self.check('length(ruleCollections)', 1),
+                     self.check('ruleCollections[0].ruleCollectionType', "FirewallPolicyFilterRuleCollection"),
+                     self.check('ruleCollections[0].name', "filter-collection-1")
+                 ])
+
+        self.cmd('network firewall policy rule-collection-group collection rule add -g {rg} --policy-name {policy} '
+                 '--rule-collection-group-name {collectiongroup} --collection-name filter-collection-1 '
+                 '--name network-rule-2 --rule-type NetworkRule '
+                 '--description "test" --destination-fqdns www.google.com --source-ip-groups {source_ip_group} '
+                 '--destination-ports 12003 12004 --ip-protocols Any ICMP',
+                 checks=[
+                     self.check('length(ruleCollections[0].rules)', 2)
+                 ])
+
+        self.cmd('az network firewall policy rule-collection-group collection add-nat-collection -n nat-collection '
+                 '--policy-name {policy} --rule-collection-group-name {collectiongroup} -g {rg} --collection-priority 10005 '
+                 '--action DNAT --rule-name nat-rule --description "test" '
+                 '--destination-addresses "202.120.36.15" --source-ip-groups {source_ip_group} '
+                 '--translated-address 128.1.1.1 --translated-port 1234 '
+                 '--destination-ports 12001 --ip-protocols TCP UDP',
+                 checks=[
+                     self.check('length(ruleCollections)', 2),
+                     self.check('ruleCollections[1].ruleCollectionType', "FirewallPolicyNatRuleCollection"),
+                     self.check('ruleCollections[1].name', "nat-collection"),
+                     self.check('length(ruleCollections[1].rules)', 1)
+                 ])
+
+        self.cmd('network firewall policy rule-collection-group collection rule add -g {rg} --policy-name {policy} '
+                 '--rule-collection-group-name {collectiongroup} --collection-name nat-collection '
+                 '--name nat-rule-2 --rule-type NatRule --description "test" '
+                 '--destination-addresses "202.120.36.16" --source-ip-groups {source_ip_group} '
+                 '--translated-fqdn www.bing2.com --translated-port 1234 '
+                 '--destination-ports 12000 --ip-protocols TCP UDP',
+                 checks=[
+                     self.check('length(ruleCollections[1].rules)', 2)
+                 ])
+
+    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_policy', location='eastus2')
     def test_azure_firewall_policy_rules_with_ip_groups(self, resource_group, resource_group_location):
         self.kwargs.update({
             'collectiongroup': 'myclirulecollectiongroup',
@@ -812,3 +901,11 @@ class AzureFirewallScenario(ScenarioTest):
         self.assertEqual(show_data['Network.DNS.EnableProxy'], 'true')
 
         self.cmd('network firewall delete -g {rg} --name {fw}')
+
+    @ResourceGroupPreparer(name_prefix='test_azure_firewall_tier', location='eastus2euap')
+    def test_azure_firewall_tier(self, resource_group):
+        self.kwargs.update({
+            'rg': resource_group
+        })
+        self.cmd('network firewall create -g {rg} -n af --sku AZFW_VNet --tier Premium',
+                 checks=self.check('sku.tier', 'Premium'))

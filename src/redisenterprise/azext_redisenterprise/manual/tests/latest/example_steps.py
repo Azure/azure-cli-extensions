@@ -14,10 +14,7 @@ def step_create(test, rg, checks=None):
         test.cmd('az redisenterprise create '
                  '--cluster-name "{cluster}" '
                  '--sku "EnterpriseFlash_F300" '
-                 '--capacity 3 '
                  '--tags tag1="value1" '
-                 '--zones "1" "2" "3" '
-                 '--minimum-tls-version "1.2" '
                  '--no-database '
                  '--resource-group "{rg}"',
                  checks=checks)

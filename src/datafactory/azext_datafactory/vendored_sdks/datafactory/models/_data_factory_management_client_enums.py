@@ -77,15 +77,19 @@ class CassandraSourceReadConsistencyLevels(with_metaclass(_CaseInsensitiveEnumMe
     LOCAL_SERIAL = "LOCAL_SERIAL"
 
 class CompressionCodec(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """All available compressionCodec values.
+    """
 
     NONE = "none"
-    GZIP = "gzip"
-    SNAPPY = "snappy"
     LZO = "lzo"
     BZIP2 = "bzip2"
+    GZIP = "gzip"
     DEFLATE = "deflate"
     ZIP_DEFLATE = "zipDeflate"
+    SNAPPY = "snappy"
     LZ4 = "lz4"
+    TAR = "tar"
+    TAR_G_ZIP = "tarGZip"
 
 class CopyBehaviorType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """All available types of copy behavior.
@@ -94,6 +98,23 @@ class CopyBehaviorType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     PRESERVE_HIERARCHY = "PreserveHierarchy"
     FLATTEN_HIERARCHY = "FlattenHierarchy"
     MERGE_FILES = "MergeFiles"
+
+class CosmosDbConnectionMode(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """The connection mode used to access CosmosDB account. Type: string (or Expression with
+    resultType string).
+    """
+
+    GATEWAY = "Gateway"
+    DIRECT = "Direct"
+
+class CosmosDbServicePrincipalCredentialType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """The service principal credential type to use in Server-To-Server authentication.
+    'ServicePrincipalKey' for key/secret, 'ServicePrincipalCert' for certificate. Type: string (or
+    Expression with resultType string).
+    """
+
+    SERVICE_PRINCIPAL_KEY = "ServicePrincipalKey"
+    SERVICE_PRINCIPAL_CERT = "ServicePrincipalCert"
 
 class DataFlowComputeType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Compute type of the cluster which will execute data flow job.
@@ -155,9 +176,7 @@ class DependencyCondition(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     COMPLETED = "Completed"
 
 class DynamicsAuthenticationType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """The authentication type to connect to Dynamics server. 'Office365' for online scenario, 'Ifd'
-    for on-premises with Ifd scenario, 'AADServicePrincipal' for Server-To-Server authentication in
-    online scenario. Type: string (or Expression with resultType string).
+    """All available dynamicsAuthenticationType values.
     """
 
     OFFICE365 = "Office365"
@@ -165,25 +184,14 @@ class DynamicsAuthenticationType(with_metaclass(_CaseInsensitiveEnumMeta, str, E
     AAD_SERVICE_PRINCIPAL = "AADServicePrincipal"
 
 class DynamicsDeploymentType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """The deployment type of the Dynamics instance. 'Online' for Dynamics Online and
-    'OnPremisesWithIfd' for Dynamics on-premises with Ifd. Type: string (or Expression with
-    resultType string).
+    """All available dynamicsDeploymentType values.
     """
 
     ONLINE = "Online"
     ON_PREMISES_WITH_IFD = "OnPremisesWithIfd"
 
-class DynamicsServicePrincipalCredentialType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """The service principal credential type to use in Server-To-Server authentication.
-    'ServicePrincipalKey' for key/secret, 'ServicePrincipalCert' for certificate. Type: string (or
-    Expression with resultType string).
-    """
-
-    SERVICE_PRINCIPAL_KEY = "ServicePrincipalKey"
-    SERVICE_PRINCIPAL_CERT = "ServicePrincipalCert"
-
 class DynamicsSinkWriteBehavior(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """The write behavior for the operation.
+    """Defines values for DynamicsSinkWriteBehavior.
     """
 
     UPSERT = "Upsert"
@@ -197,6 +205,14 @@ class EventSubscriptionStatus(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum
     DEPROVISIONING = "Deprovisioning"
     DISABLED = "Disabled"
     UNKNOWN = "Unknown"
+
+class FactoryIdentityType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """The identity type.
+    """
+
+    SYSTEM_ASSIGNED = "SystemAssigned"
+    USER_ASSIGNED = "UserAssigned"
+    SYSTEM_ASSIGNED_USER_ASSIGNED = "SystemAssigned,UserAssigned"
 
 class FtpAuthenticationType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The authentication type to be used to connect to the FTP server.
@@ -240,7 +256,7 @@ class HBaseAuthenticationType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum
     BASIC = "Basic"
 
 class HdiNodeTypes(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """The node types on which the script action should be executed.
+    """All available HdiNodeTypes values.
     """
 
     HEADNODE = "Headnode"
@@ -390,8 +406,7 @@ class JsonFormatFilePattern(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum))
     ARRAY_OF_OBJECTS = "arrayOfObjects"
 
 class JsonWriteFilePattern(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """File pattern of JSON. This setting controls the way a collection of JSON objects will be
-    treated. The default value is 'setOfObjects'. It is case-sensitive.
+    """All available filePatterns.
     """
 
     SET_OF_OBJECTS = "setOfObjects"
@@ -406,7 +421,7 @@ class ManagedIntegrationRuntimeNodeStatus(with_metaclass(_CaseInsensitiveEnumMet
     RECYCLING = "Recycling"
     UNAVAILABLE = "Unavailable"
 
-class MongoDBAuthenticationType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+class MongoDbAuthenticationType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The authentication type to be used to connect to the MongoDB database.
     """
 
@@ -421,7 +436,7 @@ class NetezzaPartitionOption(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)
     DATA_SLICE = "DataSlice"
     DYNAMIC_RANGE = "DynamicRange"
 
-class ODataAADServicePrincipalCredentialType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+class ODataAadServicePrincipalCredentialType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Specify the credential type (key or cert) is used for service principal.
     """
 
@@ -451,6 +466,7 @@ class OrcCompressionCodec(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     NONE = "none"
     ZLIB = "zlib"
     SNAPPY = "snappy"
+    LZO = "lzo"
 
 class ParameterType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Parameter type.
@@ -485,6 +501,13 @@ class PrestoAuthenticationType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enu
 
     ANONYMOUS = "Anonymous"
     LDAP = "LDAP"
+
+class PublicNetworkAccess(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Whether or not public network access is allowed for the data factory.
+    """
+
+    ENABLED = "Enabled"
+    DISABLED = "Disabled"
 
 class RecurrenceFrequency(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Enumerates possible frequency option for the schedule trigger.
@@ -626,12 +649,20 @@ class ServiceNowAuthenticationType(with_metaclass(_CaseInsensitiveEnumMeta, str,
     BASIC = "Basic"
     O_AUTH2 = "OAuth2"
 
+class ServicePrincipalCredentialType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """All available servicePrincipalCredentialType values.
+    """
+
+    SERVICE_PRINCIPAL_KEY = "ServicePrincipalKey"
+    SERVICE_PRINCIPAL_CERT = "ServicePrincipalCert"
+
 class SftpAuthenticationType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The authentication type to be used to connect to the FTP server.
     """
 
     BASIC = "Basic"
     SSH_PUBLIC_KEY = "SshPublicKey"
+    MULTI_FACTOR = "MultiFactor"
 
 class SparkAuthenticationType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The authentication method used to access the Spark server.
@@ -658,13 +689,36 @@ class SparkThriftTransportProtocol(with_metaclass(_CaseInsensitiveEnumMeta, str,
     SASL = "SASL"
     HTTP = "HTTP "
 
-class SQLPartitionOption(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+class SqlAlwaysEncryptedAkvAuthType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Sql always encrypted AKV authentication type. Type: string (or Expression with resultType
+    string).
+    """
+
+    SERVICE_PRINCIPAL = "ServicePrincipal"
+    MANAGED_IDENTITY = "ManagedIdentity"
+
+class SqlDwWriteBehaviorEnum(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Specify the write behavior when copying data into sql dw.
+    """
+
+    INSERT = "Insert"
+    UPSERT = "Upsert"
+
+class SqlPartitionOption(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The partition mechanism that will be used for Sql read in parallel.
     """
 
     NONE = "None"
     PHYSICAL_PARTITIONS_OF_TABLE = "PhysicalPartitionsOfTable"
     DYNAMIC_RANGE = "DynamicRange"
+
+class SqlWriteBehaviorEnum(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Specify the write behavior when copying data into sql.
+    """
+
+    INSERT = "Insert"
+    UPSERT = "Upsert"
+    STORED_PROCEDURE = "StoredProcedure"
 
 class SsisLogLocationType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The type of SSIS log location.
@@ -746,6 +800,7 @@ class TumblingWindowFrequency(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum
 
     MINUTE = "Minute"
     HOUR = "Hour"
+    MONTH = "Month"
 
 class VariableType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Variable type.

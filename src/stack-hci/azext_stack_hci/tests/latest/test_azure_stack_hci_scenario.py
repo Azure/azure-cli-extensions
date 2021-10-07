@@ -72,6 +72,9 @@ def step__clusters_list_clusters(test, rg, cluster_amount):
              '--resource-group "{rg}"',
              checks=[test.check('length([])', cluster_amount)])
 
+    test.cmd('az stack-hci cluster list ',
+             checks=[test.check('length([])', cluster_amount)])
+
 
 # EXAMPLE: /Clusters/patch/GetClusters
 @try_manual

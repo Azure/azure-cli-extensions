@@ -31,14 +31,14 @@ class RdbmsConnectMgmtScenarioTest(ScenarioTest):
     @live_only()
     def test_postgres_flexible_server_connect(self, resource_group):
         self._test_successful_connect('postgres', resource_group)
-        self._test_vnet_connect('postgres', resource_group)
+        # self._test_vnet_connect('postgres', resource_group)
 
     @AllowLargeResponse()
     @ResourceGroupPreparer(location=mysql_location)
     @live_only()
     def test_mysql_flexible_server_connect(self, resource_group):
         self._test_successful_connect('mysql', resource_group)
-        self._test_vnet_connect('mysql', resource_group)
+        # self._test_vnet_connect('mysql', resource_group)
 
     def _test_successful_connect(self, database_engine, resource_group):
         # setup variables for commands
@@ -89,15 +89,25 @@ class RdbmsConnectMgmtScenarioTest(ScenarioTest):
                  checks=NoneCheck())
 
         # test connection to the server with a simple query
-        self.cmd('{} flexible-server connect -n {} -u {} -p {} -d {} -q {}'
+        self.cmd('{} flexible-server execute -n {} -u {} -p {} -d {} -q {}'
                  .format(database_engine, server_name, username, generated_password, default_database, simple_query),
                  checks=[JMESPathCheck('length(@)', 1)])
 
         # test with invalid username
         username_wrong = 'fakeusername'
-        self.cmd('{} flexible-server connect -n {} -u {} -p {} -d {} -q {}'
+        self.cmd('{} flexible-server execute -n {} -u {} -p {} -d {} -q {}'
                  .format(database_engine, server_name, username_wrong, generated_password, default_database, simple_query),
                  expect_failure=True)
+
+        # test file execution
+        file_path = "./test.sql"
+        with open(file_path, "w") as sql_file:
+            sql_file.write("CREATE DATABASE sampledb;")
+
+        self.cmd('{} flexible-server execute -n {} -u {} -p {} -d {} -f {}'
+                 .format(database_engine, server_name, username, generated_password, default_database, file_path))
+
+        os.remove(file_path)
 
     def _test_vnet_connect(self, database_engine, resource_group):
         # setup variables for commands

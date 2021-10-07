@@ -1,7 +1,7 @@
 interactions:
 - request:
-    body: 'b''b\''b\\\''{"location": "westus", "sku": {"name": "DataBox"}, "properties":
-      {"details": {"contactDetails": {"contactName": "Public SDK Test", "phone": "14258828080",
+    body: '{"location": "westus", "sku": {"name": "DataBox"}, "properties": {"details":
+      {"contactDetails": {"contactName": "Public SDK Test", "phone": "14258828080",
       "emailList": ["testing@microsoft.com"]}, "shippingAddress": {"streetAddress1":
       "1 MICROSOFT WAY", "city": "Redmond", "stateOrProvince": "WA", "country": "US",
       "postalCode": "98052", "companyName": "Microsoft"}, "destinationAccountDetails":
@@ -9,7 +9,7 @@ interactions:
       {"dataDestinationType": "StorageAccount", "storageAccountId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.Storage/storageAccounts/clitest000003"},
       {"dataDestinationType": "ManagedDisk", "resourceGroupId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-for-managed-disk",
       "stagingStorageAccountId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.Storage/storageAccounts/clitest000002"}],
-      "jobDetailsType": "DataBox"}}}\\\''\'''''
+      "jobDetailsType": "DataBox"}}}'
     headers:
       Accept:
       - application/json
@@ -22,16 +22,13 @@ interactions:
       Content-Length:
       - '1374'
       Content-Type:
-      - application/json; charset=utf-8
+      - application/json
       ParameterSetName:
       - --resource-group --name --location --sku --contact-name --phone --email-list
         --street-address1 --city --state-or-province --country --postal-code --company-name
         --storage-account --staging-storage-account --resource-group-for-managed-disk
       User-Agent:
-      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databox/0.2.0 Azure-SDK-For-Python AZURECLI/2.1.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-databox/1.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.DataBox/jobs/job000004?api-version=2019-09-01
   response:
@@ -43,21 +40,21 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 06 Mar 2020 14:34:22 GMT
+      - Fri, 07 May 2021 06:49:46 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/769f0db1-ff52-47b3-ba84-b0da28cbac04?api-version=2018-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/b5ccfe1c-c8fc-45fd-8304-da898e07d61f?api-version=2019-09-01
       pragma:
       - no-cache
+      server:
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
-      x-powered-by:
-      - ASP.NET
     status:
       code: 202
       message: Accepted
@@ -65,7 +62,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -77,10 +74,9 @@ interactions:
         --street-address1 --city --state-or-province --country --postal-code --company-name
         --storage-account --staging-storage-account --resource-group-for-managed-disk
       User-Agent:
-      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databox/0.2.0 Azure-SDK-For-Python AZURECLI/2.1.0
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-databox/1.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/769f0db1-ff52-47b3-ba84-b0da28cbac04?api-version=2018-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/b5ccfe1c-c8fc-45fd-8304-da898e07d61f?api-version=2019-09-01
   response:
     body:
       string: ''
@@ -90,19 +86,19 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 06 Mar 2020 14:34:48 GMT
+      - Fri, 07 May 2021 06:49:56 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.DataBox/jobs/job000004?api-version=2018-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.DataBox/jobs/job000004?api-version=2019-09-01
       pragma:
       - no-cache
+      server:
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 202
       message: Accepted
@@ -110,7 +106,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -122,17 +118,42 @@ interactions:
         --street-address1 --city --state-or-province --country --postal-code --company-name
         --storage-account --staging-storage-account --resource-group-for-managed-disk
       User-Agent:
-      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databox/0.2.0 Azure-SDK-For-Python AZURECLI/2.1.0
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-databox/1.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.DataBox/jobs/job000004?api-version=2018-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.DataBox/jobs/job000004?api-version=2019-09-01
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"isCancellable\": true,\r\n    \"isDeletable\":
-        false,\r\n    \"isShippingAddressEditable\": true,\r\n    \"isPrepareToShipEnabled\":
-        false,\r\n    \"status\": \"DeviceOrdered\",\r\n    \"startTime\": \"2020-03-06T14:34:22.569476+00:00\",\r\n
-        \   \"deliveryType\": \"NonScheduled\",\r\n    \"deliveryInfo\": {\r\n      \"scheduledDateTime\":
-        \"0001-01-01T00:00:00+00:00\"\r\n    },\r\n    \"isCancellableWithoutFee\":
+        false,\r\n    \"isShippingAddressEditable\": true,\r\n    \"status\": \"DeviceOrdered\",\r\n
+        \   \"startTime\": \"2021-05-07T06:49:46.4515191+00:00\",\r\n    \"details\":
+        {\r\n      \"contactDetails\": {\r\n        \"contactName\": \"Public SDK
+        Test\",\r\n        \"phone\": \"14258828080\",\r\n        \"emailList\": [\r\n
+        \         \"testing@microsoft.com\"\r\n        ],\r\n        \"notificationPreference\":
+        [\r\n          {\r\n            \"stageName\": \"DevicePrepared\",\r\n            \"sendNotification\":
+        true\r\n          },\r\n          {\r\n            \"stageName\": \"Dispatched\",\r\n
+        \           \"sendNotification\": true\r\n          },\r\n          {\r\n
+        \           \"stageName\": \"Delivered\",\r\n            \"sendNotification\":
+        true\r\n          },\r\n          {\r\n            \"stageName\": \"PickedUp\",\r\n
+        \           \"sendNotification\": true\r\n          },\r\n          {\r\n
+        \           \"stageName\": \"AtAzureDC\",\r\n            \"sendNotification\":
+        true\r\n          },\r\n          {\r\n            \"stageName\": \"DataCopy\",\r\n
+        \           \"sendNotification\": true\r\n          }\r\n        ]\r\n      },\r\n
+        \     \"shippingAddress\": {\r\n        \"streetAddress1\": \"1 MICROSOFT
+        WAY\",\r\n        \"city\": \"Redmond\",\r\n        \"stateOrProvince\": \"WA\",\r\n
+        \       \"country\": \"US\",\r\n        \"postalCode\": \"98052\",\r\n        \"companyName\":
+        \"Microsoft\",\r\n        \"addressType\": \"None\"\r\n      },\r\n      \"destinationAccountDetails\":
+        [\r\n        {\r\n          \"storageAccountId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.Storage/storageAccounts/clitest000002\",\r\n
+        \         \"dataDestinationType\": \"StorageAccount\",\r\n          \"accountId\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.Storage/storageAccounts/clitest000002\"\r\n
+        \       },\r\n        {\r\n          \"storageAccountId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.Storage/storageAccounts/clitest000003\",\r\n
+        \         \"dataDestinationType\": \"StorageAccount\",\r\n          \"accountId\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.Storage/storageAccounts/clitest000003\"\r\n
+        \       },\r\n        {\r\n          \"resourceGroupId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-for-managed-disk\",\r\n
+        \         \"stagingStorageAccountId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.Storage/storageAccounts/clitest000002\",\r\n
+        \         \"dataDestinationType\": \"ManagedDisk\",\r\n          \"accountId\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-for-managed-disk\"\r\n
+        \       }\r\n      ],\r\n      \"jobDetailsType\": \"DataBox\",\r\n      \"preferences\":
+        {}\r\n    },\r\n    \"deliveryType\": \"NonScheduled\",\r\n    \"isCancellableWithoutFee\":
         true\r\n  },\r\n  \"location\": \"westus\",\r\n  \"tags\": {},\r\n  \"sku\":
         {\r\n    \"name\": \"DataBox\"\r\n  },\r\n  \"name\": \"job000004\",\r\n  \"id\":
         \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.DataBox/jobs/job000004\",\r\n
@@ -141,15 +162,17 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '778'
+      - '3595'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 06 Mar 2020 14:34:59 GMT
+      - Fri, 07 May 2021 06:50:07 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
+      server:
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
@@ -158,8 +181,6 @@ interactions:
       - Accept-Encoding
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 200
       message: OK
@@ -177,21 +198,18 @@ interactions:
       ParameterSetName:
       - --resource-group --name --contact-name --email-list
       User-Agent:
-      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databox/0.2.0 Azure-SDK-For-Python AZURECLI/2.1.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-databox/1.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.DataBox/jobs/job000004?api-version=2019-09-01&$expand=details
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"isCancellable\": true,\r\n    \"isDeletable\":
-        false,\r\n    \"isShippingAddressEditable\": true,\r\n    \"isPrepareToShipEnabled\":
-        false,\r\n    \"status\": \"DeviceOrdered\",\r\n    \"startTime\": \"2020-03-06T14:34:22.569476+00:00\",\r\n
-        \   \"details\": {\r\n      \"copyProgress\": [],\r\n      \"jobStages\":
-        [\r\n        {\r\n          \"stageName\": \"DeviceOrdered\",\r\n          \"displayName\":
+        false,\r\n    \"isShippingAddressEditable\": true,\r\n    \"status\": \"DeviceOrdered\",\r\n
+        \   \"startTime\": \"2021-05-07T06:49:46.4515191+00:00\",\r\n    \"details\":
+        {\r\n      \"copyProgress\": [],\r\n      \"jobStages\": [\r\n        {\r\n
+        \         \"stageName\": \"DeviceOrdered\",\r\n          \"displayName\":
         \"Ordered\",\r\n          \"stageStatus\": \"Succeeded\",\r\n          \"stageTime\":
-        \"2020-03-06T14:34:26.6154788+00:00\"\r\n        },\r\n        {\r\n          \"stageName\":
+        \"2021-05-07T06:49:51.7645955+00:00\"\r\n        },\r\n        {\r\n          \"stageName\":
         \"DevicePrepared\",\r\n          \"displayName\": \"Processed\",\r\n          \"stageStatus\":
         \"None\"\r\n        },\r\n        {\r\n          \"stageName\": \"Dispatched\",\r\n
         \         \"displayName\": \"Dispatched\",\r\n          \"stageStatus\": \"None\"\r\n
@@ -220,11 +238,11 @@ interactions:
         WAY\",\r\n        \"city\": \"Redmond\",\r\n        \"stateOrProvince\": \"WA\",\r\n
         \       \"country\": \"US\",\r\n        \"postalCode\": \"98052\",\r\n        \"companyName\":
         \"Microsoft\",\r\n        \"addressType\": \"None\"\r\n      },\r\n      \"deliveryPackage\":
-        {\r\n        \"carrierName\": \"\",\r\n        \"trackingId\": \"\",\r\n        \"trackingUrl\":
-        \"\"\r\n      },\r\n      \"returnPackage\": {\r\n        \"carrierName\":
-        \"\",\r\n        \"trackingId\": \"\",\r\n        \"trackingUrl\": \"\"\r\n
-        \     },\r\n      \"destinationAccountDetails\": [\r\n        {\r\n          \"storageAccountId\":
-        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.Storage/storageAccounts/clitest000002\",\r\n
+        {\r\n        \"trackingUrl\": \"\",\r\n        \"carrierName\": \"\",\r\n
+        \       \"trackingId\": \"\"\r\n      },\r\n      \"returnPackage\": {\r\n
+        \       \"trackingUrl\": \"\",\r\n        \"carrierName\": \"\",\r\n        \"trackingId\":
+        \"\"\r\n      },\r\n      \"destinationAccountDetails\": [\r\n        {\r\n
+        \         \"storageAccountId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.Storage/storageAccounts/clitest000002\",\r\n
         \         \"dataDestinationType\": \"StorageAccount\",\r\n          \"accountId\":
         \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.Storage/storageAccounts/clitest000002\"\r\n
         \       },\r\n        {\r\n          \"storageAccountId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.Storage/storageAccounts/clitest000003\",\r\n
@@ -234,10 +252,10 @@ interactions:
         \         \"stagingStorageAccountId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.Storage/storageAccounts/clitest000002\",\r\n
         \         \"dataDestinationType\": \"ManagedDisk\",\r\n          \"accountId\":
         \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-for-managed-disk\"\r\n
-        \       }\r\n      ],\r\n      \"errorDetails\": [],\r\n      \"jobDetailsType\":
-        \"DataBox\",\r\n      \"copyLogDetails\": []\r\n    },\r\n    \"deliveryType\":
-        \"NonScheduled\",\r\n    \"deliveryInfo\": {\r\n      \"scheduledDateTime\":
-        \"0001-01-01T00:00:00+00:00\"\r\n    },\r\n    \"isCancellableWithoutFee\":
+        \       }\r\n      ],\r\n      \"jobDetailsType\": \"DataBox\",\r\n      \"preferences\":
+        {},\r\n      \"copyLogDetails\": [],\r\n      \"reverseShipmentLabelSasKey\":
+        \"FakeKey\"\r\n
+        \   },\r\n    \"deliveryType\": \"NonScheduled\",\r\n    \"isCancellableWithoutFee\":
         true\r\n  },\r\n  \"location\": \"westus\",\r\n  \"tags\": {},\r\n  \"sku\":
         {\r\n    \"name\": \"DataBox\"\r\n  },\r\n  \"name\": \"job000004\",\r\n  \"id\":
         \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.DataBox/jobs/job000004\",\r\n
@@ -246,15 +264,17 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '5185'
+      - '5374'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 06 Mar 2020 14:35:08 GMT
+      - Fri, 07 May 2021 06:50:09 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
+      server:
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
@@ -263,8 +283,6 @@ interactions:
       - Accept-Encoding
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 200
       message: OK
@@ -285,14 +303,11 @@ interactions:
       Content-Length:
       - '320'
       Content-Type:
-      - application/json; charset=utf-8
+      - application/json
       ParameterSetName:
       - --resource-group --name --contact-name --email-list
       User-Agent:
-      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databox/0.2.0 Azure-SDK-For-Python AZURECLI/2.1.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-databox/1.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: PATCH
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.DataBox/jobs/job000004?api-version=2019-09-01
   response:
@@ -304,21 +319,21 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 06 Mar 2020 14:35:09 GMT
+      - Fri, 07 May 2021 06:50:10 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/6dc78456-b33e-4adc-87a6-14ad101154bc?api-version=2018-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/b260bec2-d619-4d10-aac2-a48fbcf318c4?api-version=2019-09-01
       pragma:
       - no-cache
+      server:
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
-      x-powered-by:
-      - ASP.NET
+      - '1198'
     status:
       code: 202
       message: Accepted
@@ -326,7 +341,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -336,10 +351,9 @@ interactions:
       ParameterSetName:
       - --resource-group --name --contact-name --email-list
       User-Agent:
-      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databox/0.2.0 Azure-SDK-For-Python AZURECLI/2.1.0
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-databox/1.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/6dc78456-b33e-4adc-87a6-14ad101154bc?api-version=2018-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/b260bec2-d619-4d10-aac2-a48fbcf318c4?api-version=2019-09-01
   response:
     body:
       string: ''
@@ -349,19 +363,19 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 06 Mar 2020 14:35:23 GMT
+      - Fri, 07 May 2021 06:50:21 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.DataBox/jobs/job000004?api-version=2018-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.DataBox/jobs/job000004?api-version=2019-09-01
       pragma:
       - no-cache
+      server:
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 202
       message: Accepted
@@ -369,7 +383,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -379,17 +393,42 @@ interactions:
       ParameterSetName:
       - --resource-group --name --contact-name --email-list
       User-Agent:
-      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databox/0.2.0 Azure-SDK-For-Python AZURECLI/2.1.0
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-databox/1.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.DataBox/jobs/job000004?api-version=2018-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.DataBox/jobs/job000004?api-version=2019-09-01
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"isCancellable\": true,\r\n    \"isDeletable\":
-        false,\r\n    \"isShippingAddressEditable\": true,\r\n    \"isPrepareToShipEnabled\":
-        false,\r\n    \"status\": \"DeviceOrdered\",\r\n    \"startTime\": \"2020-03-06T14:34:22.569476+00:00\",\r\n
-        \   \"deliveryType\": \"NonScheduled\",\r\n    \"deliveryInfo\": {\r\n      \"scheduledDateTime\":
-        \"0001-01-01T00:00:00+00:00\"\r\n    },\r\n    \"isCancellableWithoutFee\":
+        false,\r\n    \"isShippingAddressEditable\": true,\r\n    \"status\": \"DeviceOrdered\",\r\n
+        \   \"startTime\": \"2021-05-07T06:49:46.4515191+00:00\",\r\n    \"details\":
+        {\r\n      \"contactDetails\": {\r\n        \"contactName\": \"Public SDK
+        Test 1\",\r\n        \"phone\": \"14258828080\",\r\n        \"emailList\":
+        [\r\n          \"testing1@microsoft.com\"\r\n        ],\r\n        \"notificationPreference\":
+        [\r\n          {\r\n            \"stageName\": \"DevicePrepared\",\r\n            \"sendNotification\":
+        true\r\n          },\r\n          {\r\n            \"stageName\": \"Dispatched\",\r\n
+        \           \"sendNotification\": true\r\n          },\r\n          {\r\n
+        \           \"stageName\": \"Delivered\",\r\n            \"sendNotification\":
+        true\r\n          },\r\n          {\r\n            \"stageName\": \"PickedUp\",\r\n
+        \           \"sendNotification\": true\r\n          },\r\n          {\r\n
+        \           \"stageName\": \"AtAzureDC\",\r\n            \"sendNotification\":
+        true\r\n          },\r\n          {\r\n            \"stageName\": \"DataCopy\",\r\n
+        \           \"sendNotification\": true\r\n          }\r\n        ]\r\n      },\r\n
+        \     \"shippingAddress\": {\r\n        \"streetAddress1\": \"1 MICROSOFT
+        WAY\",\r\n        \"city\": \"Redmond\",\r\n        \"stateOrProvince\": \"WA\",\r\n
+        \       \"country\": \"US\",\r\n        \"postalCode\": \"98052\",\r\n        \"companyName\":
+        \"Microsoft\",\r\n        \"addressType\": \"None\"\r\n      },\r\n      \"destinationAccountDetails\":
+        [\r\n        {\r\n          \"storageAccountId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.Storage/storageAccounts/clitest000002\",\r\n
+        \         \"dataDestinationType\": \"StorageAccount\",\r\n          \"accountId\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.Storage/storageAccounts/clitest000002\"\r\n
+        \       },\r\n        {\r\n          \"storageAccountId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.Storage/storageAccounts/clitest000003\",\r\n
+        \         \"dataDestinationType\": \"StorageAccount\",\r\n          \"accountId\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.Storage/storageAccounts/clitest000003\"\r\n
+        \       },\r\n        {\r\n          \"resourceGroupId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-for-managed-disk\",\r\n
+        \         \"stagingStorageAccountId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.Storage/storageAccounts/clitest000002\",\r\n
+        \         \"dataDestinationType\": \"ManagedDisk\",\r\n          \"accountId\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-for-managed-disk\"\r\n
+        \       }\r\n      ],\r\n      \"jobDetailsType\": \"DataBox\",\r\n      \"preferences\":
+        {}\r\n    },\r\n    \"deliveryType\": \"NonScheduled\",\r\n    \"isCancellableWithoutFee\":
         true\r\n  },\r\n  \"location\": \"westus\",\r\n  \"tags\": {},\r\n  \"sku\":
         {\r\n    \"name\": \"DataBox\"\r\n  },\r\n  \"name\": \"job000004\",\r\n  \"id\":
         \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.DataBox/jobs/job000004\",\r\n
@@ -398,15 +437,17 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '778'
+      - '3598'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 06 Mar 2020 14:35:33 GMT
+      - Fri, 07 May 2021 06:50:31 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
+      server:
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
@@ -415,8 +456,6 @@ interactions:
       - Accept-Encoding
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 200
       message: OK
@@ -434,21 +473,18 @@ interactions:
       ParameterSetName:
       - --resource-group --name
       User-Agent:
-      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databox/0.2.0 Azure-SDK-For-Python AZURECLI/2.1.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-databox/1.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.DataBox/jobs/job000004?api-version=2019-09-01&$expand=details
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"isCancellable\": true,\r\n    \"isDeletable\":
-        false,\r\n    \"isShippingAddressEditable\": true,\r\n    \"isPrepareToShipEnabled\":
-        false,\r\n    \"status\": \"DeviceOrdered\",\r\n    \"startTime\": \"2020-03-06T14:34:22.569476+00:00\",\r\n
-        \   \"details\": {\r\n      \"copyProgress\": [],\r\n      \"jobStages\":
-        [\r\n        {\r\n          \"stageName\": \"DeviceOrdered\",\r\n          \"displayName\":
+        false,\r\n    \"isShippingAddressEditable\": true,\r\n    \"status\": \"DeviceOrdered\",\r\n
+        \   \"startTime\": \"2021-05-07T06:49:46.4515191+00:00\",\r\n    \"details\":
+        {\r\n      \"copyProgress\": [],\r\n      \"jobStages\": [\r\n        {\r\n
+        \         \"stageName\": \"DeviceOrdered\",\r\n          \"displayName\":
         \"Ordered\",\r\n          \"stageStatus\": \"Succeeded\",\r\n          \"stageTime\":
-        \"2020-03-06T14:34:26.6154788+00:00\"\r\n        },\r\n        {\r\n          \"stageName\":
+        \"2021-05-07T06:49:51.7645955+00:00\"\r\n        },\r\n        {\r\n          \"stageName\":
         \"DevicePrepared\",\r\n          \"displayName\": \"Processed\",\r\n          \"stageStatus\":
         \"None\"\r\n        },\r\n        {\r\n          \"stageName\": \"Dispatched\",\r\n
         \         \"displayName\": \"Dispatched\",\r\n          \"stageStatus\": \"None\"\r\n
@@ -477,11 +513,11 @@ interactions:
         WAY\",\r\n        \"city\": \"Redmond\",\r\n        \"stateOrProvince\": \"WA\",\r\n
         \       \"country\": \"US\",\r\n        \"postalCode\": \"98052\",\r\n        \"companyName\":
         \"Microsoft\",\r\n        \"addressType\": \"None\"\r\n      },\r\n      \"deliveryPackage\":
-        {\r\n        \"carrierName\": \"\",\r\n        \"trackingId\": \"\",\r\n        \"trackingUrl\":
-        \"\"\r\n      },\r\n      \"returnPackage\": {\r\n        \"carrierName\":
-        \"\",\r\n        \"trackingId\": \"\",\r\n        \"trackingUrl\": \"\"\r\n
-        \     },\r\n      \"destinationAccountDetails\": [\r\n        {\r\n          \"storageAccountId\":
-        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.Storage/storageAccounts/clitest000002\",\r\n
+        {\r\n        \"trackingUrl\": \"\",\r\n        \"carrierName\": \"\",\r\n
+        \       \"trackingId\": \"\"\r\n      },\r\n      \"returnPackage\": {\r\n
+        \       \"trackingUrl\": \"\",\r\n        \"carrierName\": \"\",\r\n        \"trackingId\":
+        \"\"\r\n      },\r\n      \"destinationAccountDetails\": [\r\n        {\r\n
+        \         \"storageAccountId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.Storage/storageAccounts/clitest000002\",\r\n
         \         \"dataDestinationType\": \"StorageAccount\",\r\n          \"accountId\":
         \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.Storage/storageAccounts/clitest000002\"\r\n
         \       },\r\n        {\r\n          \"storageAccountId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.Storage/storageAccounts/clitest000003\",\r\n
@@ -491,10 +527,10 @@ interactions:
         \         \"stagingStorageAccountId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.Storage/storageAccounts/clitest000002\",\r\n
         \         \"dataDestinationType\": \"ManagedDisk\",\r\n          \"accountId\":
         \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-for-managed-disk\"\r\n
-        \       }\r\n      ],\r\n      \"errorDetails\": [],\r\n      \"jobDetailsType\":
-        \"DataBox\",\r\n      \"copyLogDetails\": []\r\n    },\r\n    \"deliveryType\":
-        \"NonScheduled\",\r\n    \"deliveryInfo\": {\r\n      \"scheduledDateTime\":
-        \"0001-01-01T00:00:00+00:00\"\r\n    },\r\n    \"isCancellableWithoutFee\":
+        \       }\r\n      ],\r\n      \"jobDetailsType\": \"DataBox\",\r\n      \"preferences\":
+        {},\r\n      \"copyLogDetails\": [],\r\n      \"reverseShipmentLabelSasKey\":
+        \"FakeKey\"\r\n
+        \   },\r\n    \"deliveryType\": \"NonScheduled\",\r\n    \"isCancellableWithoutFee\":
         true\r\n  },\r\n  \"location\": \"westus\",\r\n  \"tags\": {},\r\n  \"sku\":
         {\r\n    \"name\": \"DataBox\"\r\n  },\r\n  \"name\": \"job000004\",\r\n  \"id\":
         \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.DataBox/jobs/job000004\",\r\n
@@ -503,15 +539,17 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '5188'
+      - '5375'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 06 Mar 2020 14:35:36 GMT
+      - Fri, 07 May 2021 06:50:34 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
+      server:
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
@@ -520,8 +558,6 @@ interactions:
       - Accept-Encoding
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 200
       message: OK
@@ -539,38 +575,82 @@ interactions:
       ParameterSetName:
       - --resource-group
       User-Agent:
-      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databox/0.2.0 Azure-SDK-For-Python AZURECLI/2.1.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-databox/1.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.DataBox/jobs?api-version=2019-09-01
   response:
     body:
       string: "{\r\n  \"value\": [\r\n    {\r\n      \"properties\": {\r\n        \"isCancellable\":
         true,\r\n        \"isDeletable\": false,\r\n        \"isShippingAddressEditable\":
-        true,\r\n        \"isPrepareToShipEnabled\": false,\r\n        \"status\":
-        \"DeviceOrdered\",\r\n        \"startTime\": \"2020-03-06T14:34:22.569476+00:00\",\r\n
-        \       \"deliveryType\": \"NonScheduled\",\r\n        \"deliveryInfo\": {\r\n
-        \         \"scheduledDateTime\": \"0001-01-01T00:00:00+00:00\"\r\n        },\r\n
-        \       \"isCancellableWithoutFee\": true\r\n      },\r\n      \"location\":
-        \"westus\",\r\n      \"tags\": {},\r\n      \"sku\": {\r\n        \"name\":
-        \"DataBox\"\r\n      },\r\n      \"name\": \"job000004\",\r\n      \"id\":
-        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.DataBox/jobs/job000004\",\r\n
+        true,\r\n        \"status\": \"DeviceOrdered\",\r\n        \"startTime\":
+        \"2021-05-07T06:49:46.4515191+00:00\",\r\n        \"details\": {\r\n          \"copyProgress\":
+        [],\r\n          \"jobStages\": [\r\n            {\r\n              \"stageName\":
+        \"DeviceOrdered\",\r\n              \"stageStatus\": \"Succeeded\",\r\n              \"stageTime\":
+        \"2021-05-07T06:49:51.7645955+00:00\"\r\n            },\r\n            {\r\n
+        \             \"stageName\": \"DevicePrepared\",\r\n              \"stageStatus\":
+        \"None\"\r\n            },\r\n            {\r\n              \"stageName\":
+        \"Dispatched\",\r\n              \"stageStatus\": \"None\"\r\n            },\r\n
+        \           {\r\n              \"stageName\": \"Delivered\",\r\n              \"stageStatus\":
+        \"None\"\r\n            },\r\n            {\r\n              \"stageName\":
+        \"PickedUp\",\r\n              \"stageStatus\": \"None\"\r\n            },\r\n
+        \           {\r\n              \"stageName\": \"AtAzureDC\",\r\n              \"stageStatus\":
+        \"None\"\r\n            },\r\n            {\r\n              \"stageName\":
+        \"DataCopy\",\r\n              \"stageStatus\": \"None\"\r\n            },\r\n
+        \           {\r\n              \"stageName\": \"Completed\",\r\n              \"stageStatus\":
+        \"None\"\r\n            }\r\n          ],\r\n          \"contactDetails\":
+        {\r\n            \"contactName\": \"Public SDK Test 1\",\r\n            \"phone\":
+        \"14258828080\",\r\n            \"emailList\": [\r\n              \"testing1@microsoft.com\"\r\n
+        \           ],\r\n            \"notificationPreference\": [\r\n              {\r\n
+        \               \"stageName\": \"DevicePrepared\",\r\n                \"sendNotification\":
+        true\r\n              },\r\n              {\r\n                \"stageName\":
+        \"Dispatched\",\r\n                \"sendNotification\": true\r\n              },\r\n
+        \             {\r\n                \"stageName\": \"Delivered\",\r\n                \"sendNotification\":
+        true\r\n              },\r\n              {\r\n                \"stageName\":
+        \"PickedUp\",\r\n                \"sendNotification\": true\r\n              },\r\n
+        \             {\r\n                \"stageName\": \"AtAzureDC\",\r\n                \"sendNotification\":
+        true\r\n              },\r\n              {\r\n                \"stageName\":
+        \"DataCopy\",\r\n                \"sendNotification\": true\r\n              }\r\n
+        \           ]\r\n          },\r\n          \"shippingAddress\": {\r\n            \"streetAddress1\":
+        \"1 MICROSOFT WAY\",\r\n            \"city\": \"Redmond\",\r\n            \"stateOrProvince\":
+        \"WA\",\r\n            \"country\": \"US\",\r\n            \"postalCode\":
+        \"98052\",\r\n            \"companyName\": \"Microsoft\",\r\n            \"addressType\":
+        \"None\"\r\n          },\r\n          \"deliveryPackage\": {\r\n            \"trackingUrl\":
+        \"\",\r\n            \"carrierName\": \"\",\r\n            \"trackingId\":
+        \"\"\r\n          },\r\n          \"returnPackage\": {\r\n            \"trackingUrl\":
+        \"\",\r\n            \"carrierName\": \"\",\r\n            \"trackingId\":
+        \"\"\r\n          },\r\n          \"destinationAccountDetails\": [\r\n            {\r\n
+        \             \"storageAccountId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.Storage/storageAccounts/clitest000002\",\r\n
+        \             \"dataDestinationType\": \"StorageAccount\",\r\n              \"accountId\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.Storage/storageAccounts/clitest000002\"\r\n
+        \           },\r\n            {\r\n              \"storageAccountId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.Storage/storageAccounts/clitest000003\",\r\n
+        \             \"dataDestinationType\": \"StorageAccount\",\r\n              \"accountId\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.Storage/storageAccounts/clitest000003\"\r\n
+        \           },\r\n            {\r\n              \"resourceGroupId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-for-managed-disk\",\r\n
+        \             \"stagingStorageAccountId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.Storage/storageAccounts/clitest000002\",\r\n
+        \             \"dataDestinationType\": \"ManagedDisk\",\r\n              \"accountId\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-for-managed-disk\"\r\n
+        \           }\r\n          ],\r\n          \"jobDetailsType\": \"DataBox\",\r\n
+        \         \"preferences\": {},\r\n          \"copyLogDetails\": []\r\n        },\r\n
+        \       \"deliveryType\": \"NonScheduled\",\r\n        \"isCancellableWithoutFee\":
+        true\r\n      },\r\n      \"location\": \"westus\",\r\n      \"tags\": {},\r\n
+        \     \"sku\": {\r\n        \"name\": \"DataBox\"\r\n      },\r\n      \"name\":
+        \"job000004\",\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.DataBox/jobs/job000004\",\r\n
         \     \"type\": \"Microsoft.DataBox/jobs\"\r\n    }\r\n  ]\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '895'
+      - '5286'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 06 Mar 2020 14:35:39 GMT
+      - Fri, 07 May 2021 06:50:36 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
+      server:
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
@@ -579,8 +659,6 @@ interactions:
       - Accept-Encoding
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 200
       message: OK
@@ -598,14 +676,11 @@ interactions:
       Content-Length:
       - '24'
       Content-Type:
-      - application/json; charset=utf-8
+      - application/json
       ParameterSetName:
       - --resource-group --name --reason -y
       User-Agent:
-      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databox/0.2.0 Azure-SDK-For-Python AZURECLI/2.1.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-databox/1.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.DataBox/jobs/job000004/cancel?api-version=2019-09-01
   response:
@@ -615,19 +690,19 @@ interactions:
       cache-control:
       - no-cache
       date:
-      - Fri, 06 Mar 2020 14:35:42 GMT
+      - Fri, 07 May 2021 06:50:39 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
+      server:
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
-      x-powered-by:
-      - ASP.NET
     status:
       code: 204
       message: No Content
@@ -645,18 +720,15 @@ interactions:
       ParameterSetName:
       - --resource-group --name
       User-Agent:
-      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databox/0.2.0 Azure-SDK-For-Python AZURECLI/2.1.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-databox/1.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.DataBox/jobs/job000004?api-version=2019-09-01&$expand=details
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"isCancellable\": false,\r\n    \"isDeletable\":
-        true,\r\n    \"isShippingAddressEditable\": false,\r\n    \"isPrepareToShipEnabled\":
-        false,\r\n    \"status\": \"Cancelled\",\r\n    \"startTime\": \"2020-03-06T14:34:22.569476+00:00\",\r\n
-        \   \"details\": {\r\n      \"copyProgress\": [\r\n        {\r\n          \"storageAccountName\":
+        true,\r\n    \"isShippingAddressEditable\": false,\r\n    \"status\": \"Cancelled\",\r\n
+        \   \"startTime\": \"2021-05-07T06:49:46.4515191+00:00\",\r\n    \"details\":
+        {\r\n      \"copyProgress\": [\r\n        {\r\n          \"storageAccountName\":
         \"clitest000002\",\r\n          \"dataDestinationType\": \"StorageAccount\",\r\n
         \         \"accountId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.Storage/storageAccounts/clitest000002\",\r\n
         \         \"bytesSentToCloud\": 0,\r\n          \"totalBytesToProcess\": 0\r\n
@@ -669,10 +741,10 @@ interactions:
         \         \"bytesSentToCloud\": 0,\r\n          \"totalBytesToProcess\": 0\r\n
         \       }\r\n      ],\r\n      \"jobStages\": [\r\n        {\r\n          \"stageName\":
         \"DeviceOrdered\",\r\n          \"displayName\": \"Ordered\",\r\n          \"stageStatus\":
-        \"Succeeded\",\r\n          \"stageTime\": \"2020-03-06T14:34:26.6154788+00:00\"\r\n
+        \"Succeeded\",\r\n          \"stageTime\": \"2021-05-07T06:49:51.7645955+00:00\"\r\n
         \       },\r\n        {\r\n          \"stageName\": \"Cancelled\",\r\n          \"displayName\":
         \"Canceled\",\r\n          \"stageStatus\": \"Succeeded\",\r\n          \"stageTime\":
-        \"2020-03-06T14:35:43.0099473+00:00\"\r\n        }\r\n      ],\r\n      \"contactDetails\":
+        \"2021-05-07T06:50:39.2020916+00:00\"\r\n        }\r\n      ],\r\n      \"contactDetails\":
         {\r\n        \"contactName\": \"Public SDK Test 1\",\r\n        \"phone\":
         \"14258828080\",\r\n        \"emailList\": [\r\n          \"testing1@microsoft.com\"\r\n
         \       ],\r\n        \"notificationPreference\": [\r\n          {\r\n            \"stageName\":
@@ -689,11 +761,11 @@ interactions:
         \"Redmond\",\r\n        \"stateOrProvince\": \"WA\",\r\n        \"country\":
         \"US\",\r\n        \"postalCode\": \"98052\",\r\n        \"companyName\":
         \"Microsoft\",\r\n        \"addressType\": \"None\"\r\n      },\r\n      \"deliveryPackage\":
-        {\r\n        \"carrierName\": \"\",\r\n        \"trackingId\": \"\",\r\n        \"trackingUrl\":
-        \"\"\r\n      },\r\n      \"returnPackage\": {\r\n        \"carrierName\":
-        \"\",\r\n        \"trackingId\": \"\",\r\n        \"trackingUrl\": \"\"\r\n
-        \     },\r\n      \"destinationAccountDetails\": [\r\n        {\r\n          \"storageAccountId\":
-        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.Storage/storageAccounts/clitest000002\",\r\n
+        {\r\n        \"trackingUrl\": \"\",\r\n        \"carrierName\": \"\",\r\n
+        \       \"trackingId\": \"\"\r\n      },\r\n      \"returnPackage\": {\r\n
+        \       \"trackingUrl\": \"\",\r\n        \"carrierName\": \"\",\r\n        \"trackingId\":
+        \"\"\r\n      },\r\n      \"destinationAccountDetails\": [\r\n        {\r\n
+        \         \"storageAccountId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.Storage/storageAccounts/clitest000002\",\r\n
         \         \"dataDestinationType\": \"StorageAccount\",\r\n          \"accountId\":
         \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.Storage/storageAccounts/clitest000002\"\r\n
         \       },\r\n        {\r\n          \"storageAccountId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.Storage/storageAccounts/clitest000003\",\r\n
@@ -703,27 +775,29 @@ interactions:
         \         \"stagingStorageAccountId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.Storage/storageAccounts/clitest000002\",\r\n
         \         \"dataDestinationType\": \"ManagedDisk\",\r\n          \"accountId\":
         \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-for-managed-disk\"\r\n
-        \       }\r\n      ],\r\n      \"errorDetails\": [],\r\n      \"jobDetailsType\":
-        \"DataBox\",\r\n      \"copyLogDetails\": []\r\n    },\r\n    \"cancellationReason\":
-        \"CancelTest\",\r\n    \"deliveryType\": \"NonScheduled\",\r\n    \"deliveryInfo\":
-        {\r\n      \"scheduledDateTime\": \"0001-01-01T00:00:00+00:00\"\r\n    },\r\n
-        \   \"isCancellableWithoutFee\": false\r\n  },\r\n  \"location\": \"westus\",\r\n
-        \ \"tags\": {},\r\n  \"sku\": {\r\n    \"name\": \"DataBox\"\r\n  },\r\n  \"name\":
-        \"job000004\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.DataBox/jobs/job000004\",\r\n
+        \       }\r\n      ],\r\n      \"jobDetailsType\": \"DataBox\",\r\n      \"preferences\":
+        {},\r\n      \"copyLogDetails\": [],\r\n      \"reverseShipmentLabelSasKey\":
+        \"FakeKey\"\r\n
+        \   },\r\n    \"cancellationReason\": \"CancelTest\",\r\n    \"deliveryType\":
+        \"NonScheduled\",\r\n    \"isCancellableWithoutFee\": false\r\n  },\r\n  \"location\":
+        \"westus\",\r\n  \"tags\": {},\r\n  \"sku\": {\r\n    \"name\": \"DataBox\"\r\n
+        \ },\r\n  \"name\": \"job000004\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.DataBox/jobs/job000004\",\r\n
         \ \"type\": \"Microsoft.DataBox/jobs\"\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '5637'
+      - '5826'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 06 Mar 2020 14:35:46 GMT
+      - Fri, 07 May 2021 06:50:41 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
+      server:
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
@@ -732,8 +806,6 @@ interactions:
       - Accept-Encoding
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 200
       message: OK
@@ -753,10 +825,7 @@ interactions:
       ParameterSetName:
       - --resource-group --name -y
       User-Agent:
-      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databox/0.2.0 Azure-SDK-For-Python AZURECLI/2.1.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-databox/1.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: DELETE
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.DataBox/jobs/job000004?api-version=2019-09-01
   response:
@@ -768,21 +837,21 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 06 Mar 2020 14:35:53 GMT
+      - Fri, 07 May 2021 06:50:45 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/769f0db1-ff52-47b3-ba84-b0da28cbac04-deleteorder?api-version=2018-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/b5ccfe1c-c8fc-45fd-8304-da898e07d61f-deleteorder?api-version=2019-09-01
       pragma:
       - no-cache
+      server:
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14998'
-      x-powered-by:
-      - ASP.NET
+      - '14999'
     status:
       code: 202
       message: Accepted
@@ -790,7 +859,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -800,10 +869,9 @@ interactions:
       ParameterSetName:
       - --resource-group --name -y
       User-Agent:
-      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databox/0.2.0 Azure-SDK-For-Python AZURECLI/2.1.0
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-databox/1.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/769f0db1-ff52-47b3-ba84-b0da28cbac04-deleteorder?api-version=2018-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/b5ccfe1c-c8fc-45fd-8304-da898e07d61f-deleteorder?api-version=2019-09-01
   response:
     body:
       string: ''
@@ -813,19 +881,19 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 06 Mar 2020 14:36:09 GMT
+      - Fri, 07 May 2021 06:50:55 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/769f0db1-ff52-47b3-ba84-b0da28cbac04-deleteorder?api-version=2018-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/b5ccfe1c-c8fc-45fd-8304-da898e07d61f-deleteorder?api-version=2019-09-01
       pragma:
       - no-cache
+      server:
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 202
       message: Accepted
@@ -833,7 +901,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -843,10 +911,9 @@ interactions:
       ParameterSetName:
       - --resource-group --name -y
       User-Agent:
-      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databox/0.2.0 Azure-SDK-For-Python AZURECLI/2.1.0
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-databox/1.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/769f0db1-ff52-47b3-ba84-b0da28cbac04-deleteorder?api-version=2018-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/b5ccfe1c-c8fc-45fd-8304-da898e07d61f-deleteorder?api-version=2019-09-01
   response:
     body:
       string: ''
@@ -856,19 +923,19 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 06 Mar 2020 14:36:19 GMT
+      - Fri, 07 May 2021 06:51:05 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/769f0db1-ff52-47b3-ba84-b0da28cbac04-deleteorder?api-version=2018-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/b5ccfe1c-c8fc-45fd-8304-da898e07d61f-deleteorder?api-version=2019-09-01
       pragma:
       - no-cache
+      server:
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 202
       message: Accepted
@@ -876,7 +943,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -886,10 +953,9 @@ interactions:
       ParameterSetName:
       - --resource-group --name -y
       User-Agent:
-      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databox/0.2.0 Azure-SDK-For-Python AZURECLI/2.1.0
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-databox/1.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/769f0db1-ff52-47b3-ba84-b0da28cbac04-deleteorder?api-version=2018-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/b5ccfe1c-c8fc-45fd-8304-da898e07d61f-deleteorder?api-version=2019-09-01
   response:
     body:
       string: ''
@@ -899,19 +965,19 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 06 Mar 2020 14:36:30 GMT
+      - Fri, 07 May 2021 06:51:16 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/769f0db1-ff52-47b3-ba84-b0da28cbac04-deleteorder?api-version=2018-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/b5ccfe1c-c8fc-45fd-8304-da898e07d61f-deleteorder?api-version=2019-09-01
       pragma:
       - no-cache
+      server:
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 202
       message: Accepted
@@ -919,7 +985,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -929,10 +995,9 @@ interactions:
       ParameterSetName:
       - --resource-group --name -y
       User-Agent:
-      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databox/0.2.0 Azure-SDK-For-Python AZURECLI/2.1.0
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-databox/1.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/769f0db1-ff52-47b3-ba84-b0da28cbac04-deleteorder?api-version=2018-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/b5ccfe1c-c8fc-45fd-8304-da898e07d61f-deleteorder?api-version=2019-09-01
   response:
     body:
       string: ''
@@ -942,19 +1007,19 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 06 Mar 2020 14:36:40 GMT
+      - Fri, 07 May 2021 06:51:26 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/769f0db1-ff52-47b3-ba84-b0da28cbac04-deleteorder?api-version=2018-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/b5ccfe1c-c8fc-45fd-8304-da898e07d61f-deleteorder?api-version=2019-09-01
       pragma:
       - no-cache
+      server:
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 202
       message: Accepted
@@ -962,7 +1027,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -972,10 +1037,9 @@ interactions:
       ParameterSetName:
       - --resource-group --name -y
       User-Agent:
-      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databox/0.2.0 Azure-SDK-For-Python AZURECLI/2.1.0
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-databox/1.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/769f0db1-ff52-47b3-ba84-b0da28cbac04-deleteorder?api-version=2018-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/b5ccfe1c-c8fc-45fd-8304-da898e07d61f-deleteorder?api-version=2019-09-01
   response:
     body:
       string: ''
@@ -985,19 +1049,19 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 06 Mar 2020 14:36:51 GMT
+      - Fri, 07 May 2021 06:51:36 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/769f0db1-ff52-47b3-ba84-b0da28cbac04-deleteorder?api-version=2018-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/b5ccfe1c-c8fc-45fd-8304-da898e07d61f-deleteorder?api-version=2019-09-01
       pragma:
       - no-cache
+      server:
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 202
       message: Accepted
@@ -1005,7 +1069,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -1015,10 +1079,9 @@ interactions:
       ParameterSetName:
       - --resource-group --name -y
       User-Agent:
-      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databox/0.2.0 Azure-SDK-For-Python AZURECLI/2.1.0
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-databox/1.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/769f0db1-ff52-47b3-ba84-b0da28cbac04-deleteorder?api-version=2018-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/b5ccfe1c-c8fc-45fd-8304-da898e07d61f-deleteorder?api-version=2019-09-01
   response:
     body:
       string: ''
@@ -1028,19 +1091,19 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 06 Mar 2020 14:37:03 GMT
+      - Fri, 07 May 2021 06:51:47 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/769f0db1-ff52-47b3-ba84-b0da28cbac04-deleteorder?api-version=2018-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/b5ccfe1c-c8fc-45fd-8304-da898e07d61f-deleteorder?api-version=2019-09-01
       pragma:
       - no-cache
+      server:
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 202
       message: Accepted
@@ -1048,7 +1111,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -1058,10 +1121,9 @@ interactions:
       ParameterSetName:
       - --resource-group --name -y
       User-Agent:
-      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databox/0.2.0 Azure-SDK-For-Python AZURECLI/2.1.0
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-databox/1.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/769f0db1-ff52-47b3-ba84-b0da28cbac04-deleteorder?api-version=2018-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/b5ccfe1c-c8fc-45fd-8304-da898e07d61f-deleteorder?api-version=2019-09-01
   response:
     body:
       string: ''
@@ -1071,19 +1133,19 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 06 Mar 2020 14:37:13 GMT
+      - Fri, 07 May 2021 06:51:57 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/769f0db1-ff52-47b3-ba84-b0da28cbac04-deleteorder?api-version=2018-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/b5ccfe1c-c8fc-45fd-8304-da898e07d61f-deleteorder?api-version=2019-09-01
       pragma:
       - no-cache
+      server:
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 202
       message: Accepted
@@ -1091,7 +1153,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -1101,10 +1163,9 @@ interactions:
       ParameterSetName:
       - --resource-group --name -y
       User-Agent:
-      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databox/0.2.0 Azure-SDK-For-Python AZURECLI/2.1.0
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-databox/1.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/769f0db1-ff52-47b3-ba84-b0da28cbac04-deleteorder?api-version=2018-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/b5ccfe1c-c8fc-45fd-8304-da898e07d61f-deleteorder?api-version=2019-09-01
   response:
     body:
       string: ''
@@ -1114,19 +1175,19 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 06 Mar 2020 14:37:25 GMT
+      - Fri, 07 May 2021 06:52:07 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/769f0db1-ff52-47b3-ba84-b0da28cbac04-deleteorder?api-version=2018-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/b5ccfe1c-c8fc-45fd-8304-da898e07d61f-deleteorder?api-version=2019-09-01
       pragma:
       - no-cache
+      server:
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 202
       message: Accepted
@@ -1134,7 +1195,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -1144,10 +1205,9 @@ interactions:
       ParameterSetName:
       - --resource-group --name -y
       User-Agent:
-      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databox/0.2.0 Azure-SDK-For-Python AZURECLI/2.1.0
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-databox/1.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/769f0db1-ff52-47b3-ba84-b0da28cbac04-deleteorder?api-version=2018-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/b5ccfe1c-c8fc-45fd-8304-da898e07d61f-deleteorder?api-version=2019-09-01
   response:
     body:
       string: ''
@@ -1157,19 +1217,19 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 06 Mar 2020 14:37:35 GMT
+      - Fri, 07 May 2021 06:52:18 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/769f0db1-ff52-47b3-ba84-b0da28cbac04-deleteorder?api-version=2018-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/b5ccfe1c-c8fc-45fd-8304-da898e07d61f-deleteorder?api-version=2019-09-01
       pragma:
       - no-cache
+      server:
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 202
       message: Accepted
@@ -1177,7 +1237,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -1187,10 +1247,261 @@ interactions:
       ParameterSetName:
       - --resource-group --name -y
       User-Agent:
-      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databox/0.2.0 Azure-SDK-For-Python AZURECLI/2.1.0
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-databox/1.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/769f0db1-ff52-47b3-ba84-b0da28cbac04-deleteorder?api-version=2018-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/b5ccfe1c-c8fc-45fd-8304-da898e07d61f-deleteorder?api-version=2019-09-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 07 May 2021 06:52:28 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/b5ccfe1c-c8fc-45fd-8304-da898e07d61f-deleteorder?api-version=2019-09-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databox job delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-databox/1.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/b5ccfe1c-c8fc-45fd-8304-da898e07d61f-deleteorder?api-version=2019-09-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 07 May 2021 06:52:39 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/b5ccfe1c-c8fc-45fd-8304-da898e07d61f-deleteorder?api-version=2019-09-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databox job delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-databox/1.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/b5ccfe1c-c8fc-45fd-8304-da898e07d61f-deleteorder?api-version=2019-09-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 07 May 2021 06:52:49 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/b5ccfe1c-c8fc-45fd-8304-da898e07d61f-deleteorder?api-version=2019-09-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databox job delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-databox/1.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/b5ccfe1c-c8fc-45fd-8304-da898e07d61f-deleteorder?api-version=2019-09-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 07 May 2021 06:52:59 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/b5ccfe1c-c8fc-45fd-8304-da898e07d61f-deleteorder?api-version=2019-09-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databox job delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-databox/1.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/b5ccfe1c-c8fc-45fd-8304-da898e07d61f-deleteorder?api-version=2019-09-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 07 May 2021 06:53:11 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/b5ccfe1c-c8fc-45fd-8304-da898e07d61f-deleteorder?api-version=2019-09-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databox job delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-databox/1.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/b5ccfe1c-c8fc-45fd-8304-da898e07d61f-deleteorder?api-version=2019-09-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 07 May 2021 06:53:21 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/b5ccfe1c-c8fc-45fd-8304-da898e07d61f-deleteorder?api-version=2019-09-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databox job delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-databox/1.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/b5ccfe1c-c8fc-45fd-8304-da898e07d61f-deleteorder?api-version=2019-09-01
   response:
     body:
       string: ''
@@ -1198,17 +1509,17 @@ interactions:
       cache-control:
       - no-cache
       date:
-      - Fri, 06 Mar 2020 14:37:45 GMT
+      - Fri, 07 May 2021 06:53:31 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
+      server:
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 204
       message: No Content
@@ -1226,47 +1537,45 @@ interactions:
       ParameterSetName:
       - --resource-group --name
       User-Agent:
-      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databox/0.2.0 Azure-SDK-For-Python AZURECLI/2.1.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-databox/1.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.DataBox/jobs/job000004?api-version=2019-09-01&$expand=details
   response:
     body:
-      string: '{"error":{"code":"ResourceNotFound","message":"The Resource ''Microsoft.DataBox/jobs/job000004''
-        under resource group ''cli_test_databox000001'' was not found."}}'
+      string: "{\r\n  \"code\": \"SsemUserErrorEntityNotFound\",\r\n  \"message\":
+        \"Could not find the entity job000004.\\r\\nProvide a valid entity name and
+        retry the operation.\",\r\n  \"details\": [],\r\n  \"additionalInfo\": []\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '226'
+      - '213'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 06 Mar 2020 14:37:51 GMT
+      - Fri, 07 May 2021 06:53:33 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
+      server:
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-content-type-options:
       - nosniff
-      x-ms-failure-cause:
-      - gateway
     status:
       code: 404
       message: Not Found
 - request:
-    body: 'b''b\''{"location": "westus", "sku": {"name": "DataBoxDisk"}, "properties":
-      {"details": {"expectedDataSizeInTerabytes": 1, "contactDetails": {"contactName":
-      "Public SDK Test", "phone": "14258828080", "emailList": ["testing@microsoft.com"]},
+    body: '{"location": "westus", "sku": {"name": "DataBoxDisk"}, "properties": {"details":
+      {"expectedDataSizeInTerabytes": 1, "contactDetails": {"contactName": "Public
+      SDK Test", "phone": "14258828080", "emailList": ["testing@microsoft.com"]},
       "shippingAddress": {"streetAddress1": "1 MICROSOFT WAY", "city": "Redmond",
       "stateOrProvince": "WA", "country": "US", "postalCode": "98052", "companyName":
       "Microsoft"}, "destinationAccountDetails": [{"dataDestinationType": "StorageAccount",
       "storageAccountId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.Storage/storageAccounts/clitest000002"}],
-      "jobDetailsType": "DataBoxDisk"}}}\'''''
+      "jobDetailsType": "DataBoxDisk"}}}'
     headers:
       Accept:
       - application/json
@@ -1279,18 +1588,15 @@ interactions:
       Content-Length:
       - '747'
       Content-Type:
-      - application/json; charset=utf-8
+      - application/json
       ParameterSetName:
       - --resource-group --name --location --sku --expected-data-size --contact-name
         --phone --email-list --street-address1 --city --state-or-province --country
         --postal-code --company-name --storage-account
       User-Agent:
-      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databox/0.2.0 Azure-SDK-For-Python AZURECLI/2.1.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-databox/1.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.DataBox/jobs/job000004?api-version=2019-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.DataBox/jobs/job000005?api-version=2019-09-01
   response:
     body:
       string: ''
@@ -1300,21 +1606,21 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 06 Mar 2020 14:37:57 GMT
+      - Fri, 07 May 2021 06:53:42 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/653a0a85-2258-4760-accc-a6a157a859f9?api-version=2018-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/25073361-d073-4efa-a48c-3357ab047de8?api-version=2019-09-01
       pragma:
       - no-cache
+      server:
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1195'
-      x-powered-by:
-      - ASP.NET
+      - '1199'
     status:
       code: 202
       message: Accepted
@@ -1322,7 +1628,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -1334,10 +1640,9 @@ interactions:
         --phone --email-list --street-address1 --city --state-or-province --country
         --postal-code --company-name --storage-account
       User-Agent:
-      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databox/0.2.0 Azure-SDK-For-Python AZURECLI/2.1.0
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-databox/1.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/653a0a85-2258-4760-accc-a6a157a859f9?api-version=2018-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/25073361-d073-4efa-a48c-3357ab047de8?api-version=2019-09-01
   response:
     body:
       string: ''
@@ -1347,19 +1652,19 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 06 Mar 2020 14:38:09 GMT
+      - Fri, 07 May 2021 06:53:52 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.DataBox/jobs/job000004?api-version=2018-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.DataBox/jobs/job000005?api-version=2019-09-01
       pragma:
       - no-cache
+      server:
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 202
       message: Accepted
@@ -1367,7 +1672,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -1379,34 +1684,55 @@ interactions:
         --phone --email-list --street-address1 --city --state-or-province --country
         --postal-code --company-name --storage-account
       User-Agent:
-      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databox/0.2.0 Azure-SDK-For-Python AZURECLI/2.1.0
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-databox/1.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.DataBox/jobs/job000004?api-version=2018-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.DataBox/jobs/job000005?api-version=2019-09-01
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"isCancellable\": true,\r\n    \"isDeletable\":
-        false,\r\n    \"isShippingAddressEditable\": true,\r\n    \"isPrepareToShipEnabled\":
-        false,\r\n    \"status\": \"DeviceOrdered\",\r\n    \"startTime\": \"2020-03-06T14:37:57.9932207+00:00\",\r\n
-        \   \"deliveryType\": \"NonScheduled\",\r\n    \"deliveryInfo\": {\r\n      \"scheduledDateTime\":
-        \"0001-01-01T00:00:00+00:00\"\r\n    },\r\n    \"isCancellableWithoutFee\":
+        false,\r\n    \"isShippingAddressEditable\": true,\r\n    \"status\": \"DeviceOrdered\",\r\n
+        \   \"startTime\": \"2021-05-07T06:53:42.3958227+00:00\",\r\n    \"details\":
+        {\r\n      \"expectedDataSizeInTeraBytes\": 1,\r\n      \"contactDetails\":
+        {\r\n        \"contactName\": \"Public SDK Test\",\r\n        \"phone\": \"14258828080\",\r\n
+        \       \"emailList\": [\r\n          \"testing@microsoft.com\"\r\n        ],\r\n
+        \       \"notificationPreference\": [\r\n          {\r\n            \"stageName\":
+        \"DevicePrepared\",\r\n            \"sendNotification\": true\r\n          },\r\n
+        \         {\r\n            \"stageName\": \"Dispatched\",\r\n            \"sendNotification\":
+        true\r\n          },\r\n          {\r\n            \"stageName\": \"Delivered\",\r\n
+        \           \"sendNotification\": true\r\n          },\r\n          {\r\n
+        \           \"stageName\": \"PickedUp\",\r\n            \"sendNotification\":
+        true\r\n          },\r\n          {\r\n            \"stageName\": \"AtAzureDC\",\r\n
+        \           \"sendNotification\": true\r\n          },\r\n          {\r\n
+        \           \"stageName\": \"DataCopy\",\r\n            \"sendNotification\":
+        true\r\n          }\r\n        ]\r\n      },\r\n      \"shippingAddress\":
+        {\r\n        \"streetAddress1\": \"1 MICROSOFT WAY\",\r\n        \"city\":
+        \"Redmond\",\r\n        \"stateOrProvince\": \"WA\",\r\n        \"country\":
+        \"US\",\r\n        \"postalCode\": \"98052\",\r\n        \"companyName\":
+        \"Microsoft\",\r\n        \"addressType\": \"None\"\r\n      },\r\n      \"destinationAccountDetails\":
+        [\r\n        {\r\n          \"storageAccountId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.Storage/storageAccounts/clitest000002\",\r\n
+        \         \"dataDestinationType\": \"StorageAccount\",\r\n          \"accountId\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.Storage/storageAccounts/clitest000002\"\r\n
+        \       }\r\n      ],\r\n      \"jobDetailsType\": \"DataBoxDisk\",\r\n      \"preferences\":
+        {}\r\n    },\r\n    \"deliveryType\": \"NonScheduled\",\r\n    \"isCancellableWithoutFee\":
         true\r\n  },\r\n  \"location\": \"westus\",\r\n  \"tags\": {},\r\n  \"sku\":
-        {\r\n    \"name\": \"DataBoxDisk\"\r\n  },\r\n  \"name\": \"job000004\",\r\n
-        \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.DataBox/jobs/job000004\",\r\n
+        {\r\n    \"name\": \"DataBoxDisk\"\r\n  },\r\n  \"name\": \"job000005\",\r\n
+        \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.DataBox/jobs/job000005\",\r\n
         \ \"type\": \"Microsoft.DataBox/jobs\"\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '783'
+      - '2527'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 06 Mar 2020 14:38:19 GMT
+      - Fri, 07 May 2021 06:54:03 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
+      server:
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
@@ -1415,8 +1741,6 @@ interactions:
       - Accept-Encoding
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 200
       message: OK
@@ -1434,16 +1758,13 @@ interactions:
       Content-Length:
       - '24'
       Content-Type:
-      - application/json; charset=utf-8
+      - application/json
       ParameterSetName:
       - --resource-group --name --reason -y
       User-Agent:
-      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databox/0.2.0 Azure-SDK-For-Python AZURECLI/2.1.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-databox/1.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.DataBox/jobs/job000004/cancel?api-version=2019-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.DataBox/jobs/job000005/cancel?api-version=2019-09-01
   response:
     body:
       string: ''
@@ -1451,19 +1772,19 @@ interactions:
       cache-control:
       - no-cache
       date:
-      - Fri, 06 Mar 2020 14:38:24 GMT
+      - Fri, 07 May 2021 06:54:06 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
+      server:
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
-      x-powered-by:
-      - ASP.NET
+      - '1199'
     status:
       code: 204
       message: No Content
@@ -1483,12 +1804,9 @@ interactions:
       ParameterSetName:
       - --resource-group --name -y
       User-Agent:
-      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databox/0.2.0 Azure-SDK-For-Python AZURECLI/2.1.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-databox/1.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.DataBox/jobs/job000004?api-version=2019-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.DataBox/jobs/job000005?api-version=2019-09-01
   response:
     body:
       string: ''
@@ -1498,21 +1816,21 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 06 Mar 2020 14:38:28 GMT
+      - Fri, 07 May 2021 06:54:11 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/653a0a85-2258-4760-accc-a6a157a859f9-deleteorder?api-version=2018-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/25073361-d073-4efa-a48c-3357ab047de8-deleteorder?api-version=2019-09-01
       pragma:
       - no-cache
+      server:
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14996'
-      x-powered-by:
-      - ASP.NET
+      - '14999'
     status:
       code: 202
       message: Accepted
@@ -1520,7 +1838,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -1530,10 +1848,9 @@ interactions:
       ParameterSetName:
       - --resource-group --name -y
       User-Agent:
-      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databox/0.2.0 Azure-SDK-For-Python AZURECLI/2.1.0
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-databox/1.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/653a0a85-2258-4760-accc-a6a157a859f9-deleteorder?api-version=2018-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/25073361-d073-4efa-a48c-3357ab047de8-deleteorder?api-version=2019-09-01
   response:
     body:
       string: ''
@@ -1543,19 +1860,19 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 06 Mar 2020 14:38:42 GMT
+      - Fri, 07 May 2021 06:54:21 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/653a0a85-2258-4760-accc-a6a157a859f9-deleteorder?api-version=2018-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/25073361-d073-4efa-a48c-3357ab047de8-deleteorder?api-version=2019-09-01
       pragma:
       - no-cache
+      server:
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 202
       message: Accepted
@@ -1563,7 +1880,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -1573,10 +1890,9 @@ interactions:
       ParameterSetName:
       - --resource-group --name -y
       User-Agent:
-      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databox/0.2.0 Azure-SDK-For-Python AZURECLI/2.1.0
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-databox/1.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/653a0a85-2258-4760-accc-a6a157a859f9-deleteorder?api-version=2018-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/25073361-d073-4efa-a48c-3357ab047de8-deleteorder?api-version=2019-09-01
   response:
     body:
       string: ''
@@ -1586,19 +1902,19 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 06 Mar 2020 14:38:53 GMT
+      - Fri, 07 May 2021 06:54:31 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/653a0a85-2258-4760-accc-a6a157a859f9-deleteorder?api-version=2018-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/25073361-d073-4efa-a48c-3357ab047de8-deleteorder?api-version=2019-09-01
       pragma:
       - no-cache
+      server:
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 202
       message: Accepted
@@ -1606,7 +1922,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -1616,10 +1932,9 @@ interactions:
       ParameterSetName:
       - --resource-group --name -y
       User-Agent:
-      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databox/0.2.0 Azure-SDK-For-Python AZURECLI/2.1.0
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-databox/1.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/653a0a85-2258-4760-accc-a6a157a859f9-deleteorder?api-version=2018-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/25073361-d073-4efa-a48c-3357ab047de8-deleteorder?api-version=2019-09-01
   response:
     body:
       string: ''
@@ -1629,19 +1944,19 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 06 Mar 2020 14:39:03 GMT
+      - Fri, 07 May 2021 06:54:42 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/653a0a85-2258-4760-accc-a6a157a859f9-deleteorder?api-version=2018-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/25073361-d073-4efa-a48c-3357ab047de8-deleteorder?api-version=2019-09-01
       pragma:
       - no-cache
+      server:
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 202
       message: Accepted
@@ -1649,7 +1964,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -1659,10 +1974,9 @@ interactions:
       ParameterSetName:
       - --resource-group --name -y
       User-Agent:
-      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databox/0.2.0 Azure-SDK-For-Python AZURECLI/2.1.0
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-databox/1.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/653a0a85-2258-4760-accc-a6a157a859f9-deleteorder?api-version=2018-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/25073361-d073-4efa-a48c-3357ab047de8-deleteorder?api-version=2019-09-01
   response:
     body:
       string: ''
@@ -1672,19 +1986,19 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 06 Mar 2020 14:39:13 GMT
+      - Fri, 07 May 2021 06:54:52 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/653a0a85-2258-4760-accc-a6a157a859f9-deleteorder?api-version=2018-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/25073361-d073-4efa-a48c-3357ab047de8-deleteorder?api-version=2019-09-01
       pragma:
       - no-cache
+      server:
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 202
       message: Accepted
@@ -1692,7 +2006,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -1702,10 +2016,9 @@ interactions:
       ParameterSetName:
       - --resource-group --name -y
       User-Agent:
-      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databox/0.2.0 Azure-SDK-For-Python AZURECLI/2.1.0
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-databox/1.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/653a0a85-2258-4760-accc-a6a157a859f9-deleteorder?api-version=2018-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/25073361-d073-4efa-a48c-3357ab047de8-deleteorder?api-version=2019-09-01
   response:
     body:
       string: ''
@@ -1715,19 +2028,19 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 06 Mar 2020 14:39:25 GMT
+      - Fri, 07 May 2021 06:55:03 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/653a0a85-2258-4760-accc-a6a157a859f9-deleteorder?api-version=2018-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/25073361-d073-4efa-a48c-3357ab047de8-deleteorder?api-version=2019-09-01
       pragma:
       - no-cache
+      server:
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 202
       message: Accepted
@@ -1735,7 +2048,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -1745,10 +2058,9 @@ interactions:
       ParameterSetName:
       - --resource-group --name -y
       User-Agent:
-      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databox/0.2.0 Azure-SDK-For-Python AZURECLI/2.1.0
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-databox/1.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/653a0a85-2258-4760-accc-a6a157a859f9-deleteorder?api-version=2018-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/25073361-d073-4efa-a48c-3357ab047de8-deleteorder?api-version=2019-09-01
   response:
     body:
       string: ''
@@ -1758,19 +2070,19 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 06 Mar 2020 14:39:35 GMT
+      - Fri, 07 May 2021 06:55:13 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/653a0a85-2258-4760-accc-a6a157a859f9-deleteorder?api-version=2018-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/25073361-d073-4efa-a48c-3357ab047de8-deleteorder?api-version=2019-09-01
       pragma:
       - no-cache
+      server:
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 202
       message: Accepted
@@ -1778,7 +2090,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -1788,10 +2100,9 @@ interactions:
       ParameterSetName:
       - --resource-group --name -y
       User-Agent:
-      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databox/0.2.0 Azure-SDK-For-Python AZURECLI/2.1.0
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-databox/1.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/653a0a85-2258-4760-accc-a6a157a859f9-deleteorder?api-version=2018-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/25073361-d073-4efa-a48c-3357ab047de8-deleteorder?api-version=2019-09-01
   response:
     body:
       string: ''
@@ -1801,19 +2112,19 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 06 Mar 2020 14:39:45 GMT
+      - Fri, 07 May 2021 06:55:24 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/653a0a85-2258-4760-accc-a6a157a859f9-deleteorder?api-version=2018-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/25073361-d073-4efa-a48c-3357ab047de8-deleteorder?api-version=2019-09-01
       pragma:
       - no-cache
+      server:
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 202
       message: Accepted
@@ -1821,7 +2132,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -1831,10 +2142,9 @@ interactions:
       ParameterSetName:
       - --resource-group --name -y
       User-Agent:
-      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databox/0.2.0 Azure-SDK-For-Python AZURECLI/2.1.0
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-databox/1.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/653a0a85-2258-4760-accc-a6a157a859f9-deleteorder?api-version=2018-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/25073361-d073-4efa-a48c-3357ab047de8-deleteorder?api-version=2019-09-01
   response:
     body:
       string: ''
@@ -1844,19 +2154,19 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 06 Mar 2020 14:39:56 GMT
+      - Fri, 07 May 2021 06:55:34 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/653a0a85-2258-4760-accc-a6a157a859f9-deleteorder?api-version=2018-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/25073361-d073-4efa-a48c-3357ab047de8-deleteorder?api-version=2019-09-01
       pragma:
       - no-cache
+      server:
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 202
       message: Accepted
@@ -1864,7 +2174,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -1874,10 +2184,9 @@ interactions:
       ParameterSetName:
       - --resource-group --name -y
       User-Agent:
-      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databox/0.2.0 Azure-SDK-For-Python AZURECLI/2.1.0
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-databox/1.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/653a0a85-2258-4760-accc-a6a157a859f9-deleteorder?api-version=2018-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/25073361-d073-4efa-a48c-3357ab047de8-deleteorder?api-version=2019-09-01
   response:
     body:
       string: ''
@@ -1887,19 +2196,19 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 06 Mar 2020 14:40:06 GMT
+      - Fri, 07 May 2021 06:55:45 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/653a0a85-2258-4760-accc-a6a157a859f9-deleteorder?api-version=2018-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/25073361-d073-4efa-a48c-3357ab047de8-deleteorder?api-version=2019-09-01
       pragma:
       - no-cache
+      server:
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 202
       message: Accepted
@@ -1907,7 +2216,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -1917,10 +2226,9 @@ interactions:
       ParameterSetName:
       - --resource-group --name -y
       User-Agent:
-      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databox/0.2.0 Azure-SDK-For-Python AZURECLI/2.1.0
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-databox/1.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/653a0a85-2258-4760-accc-a6a157a859f9-deleteorder?api-version=2018-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/25073361-d073-4efa-a48c-3357ab047de8-deleteorder?api-version=2019-09-01
   response:
     body:
       string: ''
@@ -1930,19 +2238,19 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 06 Mar 2020 14:40:17 GMT
+      - Fri, 07 May 2021 06:55:55 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/653a0a85-2258-4760-accc-a6a157a859f9-deleteorder?api-version=2018-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/25073361-d073-4efa-a48c-3357ab047de8-deleteorder?api-version=2019-09-01
       pragma:
       - no-cache
+      server:
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 202
       message: Accepted
@@ -1950,7 +2258,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -1960,10 +2268,9 @@ interactions:
       ParameterSetName:
       - --resource-group --name -y
       User-Agent:
-      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databox/0.2.0 Azure-SDK-For-Python AZURECLI/2.1.0
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-databox/1.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/653a0a85-2258-4760-accc-a6a157a859f9-deleteorder?api-version=2018-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/25073361-d073-4efa-a48c-3357ab047de8-deleteorder?api-version=2019-09-01
   response:
     body:
       string: ''
@@ -1973,19 +2280,19 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 06 Mar 2020 14:40:27 GMT
+      - Fri, 07 May 2021 06:56:06 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/653a0a85-2258-4760-accc-a6a157a859f9-deleteorder?api-version=2018-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/25073361-d073-4efa-a48c-3357ab047de8-deleteorder?api-version=2019-09-01
       pragma:
       - no-cache
+      server:
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 202
       message: Accepted
@@ -1993,7 +2300,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -2003,10 +2310,9 @@ interactions:
       ParameterSetName:
       - --resource-group --name -y
       User-Agent:
-      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databox/0.2.0 Azure-SDK-For-Python AZURECLI/2.1.0
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-databox/1.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/653a0a85-2258-4760-accc-a6a157a859f9-deleteorder?api-version=2018-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/25073361-d073-4efa-a48c-3357ab047de8-deleteorder?api-version=2019-09-01
   response:
     body:
       string: ''
@@ -2016,19 +2322,19 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 06 Mar 2020 14:40:38 GMT
+      - Fri, 07 May 2021 06:56:16 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/653a0a85-2258-4760-accc-a6a157a859f9-deleteorder?api-version=2018-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/25073361-d073-4efa-a48c-3357ab047de8-deleteorder?api-version=2019-09-01
       pragma:
       - no-cache
+      server:
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 202
       message: Accepted
@@ -2036,7 +2342,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -2046,10 +2352,9 @@ interactions:
       ParameterSetName:
       - --resource-group --name -y
       User-Agent:
-      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databox/0.2.0 Azure-SDK-For-Python AZURECLI/2.1.0
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-databox/1.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/653a0a85-2258-4760-accc-a6a157a859f9-deleteorder?api-version=2018-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/25073361-d073-4efa-a48c-3357ab047de8-deleteorder?api-version=2019-09-01
   response:
     body:
       string: ''
@@ -2059,19 +2364,19 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 06 Mar 2020 14:40:49 GMT
+      - Fri, 07 May 2021 06:56:26 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/653a0a85-2258-4760-accc-a6a157a859f9-deleteorder?api-version=2018-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/25073361-d073-4efa-a48c-3357ab047de8-deleteorder?api-version=2019-09-01
       pragma:
       - no-cache
+      server:
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 202
       message: Accepted
@@ -2079,7 +2384,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -2089,10 +2394,9 @@ interactions:
       ParameterSetName:
       - --resource-group --name -y
       User-Agent:
-      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databox/0.2.0 Azure-SDK-For-Python AZURECLI/2.1.0
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-databox/1.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/653a0a85-2258-4760-accc-a6a157a859f9-deleteorder?api-version=2018-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/25073361-d073-4efa-a48c-3357ab047de8-deleteorder?api-version=2019-09-01
   response:
     body:
       string: ''
@@ -2102,19 +2406,19 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 06 Mar 2020 14:40:59 GMT
+      - Fri, 07 May 2021 06:56:37 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/653a0a85-2258-4760-accc-a6a157a859f9-deleteorder?api-version=2018-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/25073361-d073-4efa-a48c-3357ab047de8-deleteorder?api-version=2019-09-01
       pragma:
       - no-cache
+      server:
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 202
       message: Accepted
@@ -2122,7 +2426,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -2132,10 +2436,9 @@ interactions:
       ParameterSetName:
       - --resource-group --name -y
       User-Agent:
-      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databox/0.2.0 Azure-SDK-For-Python AZURECLI/2.1.0
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-databox/1.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/653a0a85-2258-4760-accc-a6a157a859f9-deleteorder?api-version=2018-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/25073361-d073-4efa-a48c-3357ab047de8-deleteorder?api-version=2019-09-01
   response:
     body:
       string: ''
@@ -2145,19 +2448,19 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 06 Mar 2020 14:41:10 GMT
+      - Fri, 07 May 2021 06:56:47 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/653a0a85-2258-4760-accc-a6a157a859f9-deleteorder?api-version=2018-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/25073361-d073-4efa-a48c-3357ab047de8-deleteorder?api-version=2019-09-01
       pragma:
       - no-cache
+      server:
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 202
       message: Accepted
@@ -2165,7 +2468,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -2175,10 +2478,9 @@ interactions:
       ParameterSetName:
       - --resource-group --name -y
       User-Agent:
-      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databox/0.2.0 Azure-SDK-For-Python AZURECLI/2.1.0
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-databox/1.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/653a0a85-2258-4760-accc-a6a157a859f9-deleteorder?api-version=2018-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/25073361-d073-4efa-a48c-3357ab047de8-deleteorder?api-version=2019-09-01
   response:
     body:
       string: ''
@@ -2188,19 +2490,19 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 06 Mar 2020 14:41:20 GMT
+      - Fri, 07 May 2021 06:56:57 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/653a0a85-2258-4760-accc-a6a157a859f9-deleteorder?api-version=2018-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/25073361-d073-4efa-a48c-3357ab047de8-deleteorder?api-version=2019-09-01
       pragma:
       - no-cache
+      server:
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 202
       message: Accepted
@@ -2208,7 +2510,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -2218,10 +2520,9 @@ interactions:
       ParameterSetName:
       - --resource-group --name -y
       User-Agent:
-      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databox/0.2.0 Azure-SDK-For-Python AZURECLI/2.1.0
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-databox/1.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/653a0a85-2258-4760-accc-a6a157a859f9-deleteorder?api-version=2018-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/25073361-d073-4efa-a48c-3357ab047de8-deleteorder?api-version=2019-09-01
   response:
     body:
       string: ''
@@ -2231,19 +2532,19 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 06 Mar 2020 14:41:32 GMT
+      - Fri, 07 May 2021 06:57:08 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/653a0a85-2258-4760-accc-a6a157a859f9-deleteorder?api-version=2018-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/25073361-d073-4efa-a48c-3357ab047de8-deleteorder?api-version=2019-09-01
       pragma:
       - no-cache
+      server:
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 202
       message: Accepted
@@ -2251,7 +2552,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -2261,10 +2562,9 @@ interactions:
       ParameterSetName:
       - --resource-group --name -y
       User-Agent:
-      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databox/0.2.0 Azure-SDK-For-Python AZURECLI/2.1.0
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-databox/1.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/653a0a85-2258-4760-accc-a6a157a859f9-deleteorder?api-version=2018-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/25073361-d073-4efa-a48c-3357ab047de8-deleteorder?api-version=2019-09-01
   response:
     body:
       string: ''
@@ -2274,19 +2574,19 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 06 Mar 2020 14:41:42 GMT
+      - Fri, 07 May 2021 06:57:18 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/653a0a85-2258-4760-accc-a6a157a859f9-deleteorder?api-version=2018-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/25073361-d073-4efa-a48c-3357ab047de8-deleteorder?api-version=2019-09-01
       pragma:
       - no-cache
+      server:
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 202
       message: Accepted
@@ -2294,7 +2594,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -2304,10 +2604,9 @@ interactions:
       ParameterSetName:
       - --resource-group --name -y
       User-Agent:
-      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databox/0.2.0 Azure-SDK-For-Python AZURECLI/2.1.0
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-databox/1.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/653a0a85-2258-4760-accc-a6a157a859f9-deleteorder?api-version=2018-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/25073361-d073-4efa-a48c-3357ab047de8-deleteorder?api-version=2019-09-01
   response:
     body:
       string: ''
@@ -2317,19 +2616,19 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 06 Mar 2020 14:41:53 GMT
+      - Fri, 07 May 2021 06:57:28 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/653a0a85-2258-4760-accc-a6a157a859f9-deleteorder?api-version=2018-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/25073361-d073-4efa-a48c-3357ab047de8-deleteorder?api-version=2019-09-01
       pragma:
       - no-cache
+      server:
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 202
       message: Accepted
@@ -2337,7 +2636,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -2347,10 +2646,219 @@ interactions:
       ParameterSetName:
       - --resource-group --name -y
       User-Agent:
-      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databox/0.2.0 Azure-SDK-For-Python AZURECLI/2.1.0
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-databox/1.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/653a0a85-2258-4760-accc-a6a157a859f9-deleteorder?api-version=2018-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/25073361-d073-4efa-a48c-3357ab047de8-deleteorder?api-version=2019-09-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 07 May 2021 06:57:39 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/25073361-d073-4efa-a48c-3357ab047de8-deleteorder?api-version=2019-09-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databox job delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-databox/1.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/25073361-d073-4efa-a48c-3357ab047de8-deleteorder?api-version=2019-09-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 07 May 2021 06:57:49 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/25073361-d073-4efa-a48c-3357ab047de8-deleteorder?api-version=2019-09-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databox job delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-databox/1.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/25073361-d073-4efa-a48c-3357ab047de8-deleteorder?api-version=2019-09-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 07 May 2021 06:57:59 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/25073361-d073-4efa-a48c-3357ab047de8-deleteorder?api-version=2019-09-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databox job delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-databox/1.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/25073361-d073-4efa-a48c-3357ab047de8-deleteorder?api-version=2019-09-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 07 May 2021 06:58:10 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/25073361-d073-4efa-a48c-3357ab047de8-deleteorder?api-version=2019-09-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databox job delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-databox/1.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/25073361-d073-4efa-a48c-3357ab047de8-deleteorder?api-version=2019-09-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 07 May 2021 06:58:21 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/25073361-d073-4efa-a48c-3357ab047de8-deleteorder?api-version=2019-09-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - databox job delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name -y
+      User-Agent:
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-databox/1.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataBox/locations/westus/operationResults/25073361-d073-4efa-a48c-3357ab047de8-deleteorder?api-version=2019-09-01
   response:
     body:
       string: ''
@@ -2358,17 +2866,17 @@ interactions:
       cache-control:
       - no-cache
       date:
-      - Fri, 06 Mar 2020 14:42:03 GMT
+      - Fri, 07 May 2021 06:58:31 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
+      server:
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 204
       message: No Content
@@ -2386,37 +2894,33 @@ interactions:
       ParameterSetName:
       - --resource-group --name
       User-Agent:
-      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-databox/0.2.0 Azure-SDK-For-Python AZURECLI/2.1.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-databox/1.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.DataBox/jobs/job000004?api-version=2019-09-01&$expand=details
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databox000001/providers/Microsoft.DataBox/jobs/job000005?api-version=2019-09-01&$expand=details
   response:
     body:
-      string: "{\r\n  \"error\": {\r\n    \"code\": \"SsemUserErrorEntityNotFound\",\r\n
-        \   \"message\": \"Could not find the entity job000004.\\r\\nProvide a valid
-        entity name and retry the operation.\",\r\n    \"details\": [\r\n      null\r\n
-        \   ]\r\n  }\r\n}"
+      string: "{\r\n  \"code\": \"SsemUserErrorEntityNotFound\",\r\n  \"message\":
+        \"Could not find the entity job000005.\\r\\nProvide a valid entity name and
+        retry the operation.\",\r\n  \"details\": [],\r\n  \"additionalInfo\": []\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '231'
+      - '213'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 06 Mar 2020 14:42:09 GMT
+      - Fri, 07 May 2021 06:58:34 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
+      server:
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 404
       message: Not Found
@@ -2434,8 +2938,8 @@ interactions:
       ParameterSetName:
       - --name -g --resource-name --resource-type
       User-Agent:
-      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-resource/8.0.1 Azure-SDK-For-Python AZURECLI/2.1.0
+      - python/3.8.3 (Windows-10-10.0.18362-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-resource/12.1.0 Azure-SDK-For-Python AZURECLI/2.23.0
       accept-language:
       - en-US
     method: GET
@@ -2443,49 +2947,21 @@ interactions:
   response:
     body:
       string: '{"value":[{"properties":{"level":"CanNotDelete","notes":"Data Box Service
-        to copy data from device to storage account."},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_databoxrg2slunrj5vx5aydveu66wkj6rh3ildamkumi4zojpcf6f4vastgfp4v3rw/providers/Microsoft.Storage/storageAccounts/clitestmap7c2xyjf3gsd7yg/providers/Microsoft.Authorization/locks/DATABOX_SERVICE","type":"Microsoft.Authorization/locks","name":"DATABOX_SERVICE"},{"properties":{"level":"CanNotDelete","notes":"Data
-        Box Service to copy data from device to storage account."},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_databoxu7woflo47pjem4rfw2djuvafywtfnprfpduospdfotkqkudaylsua3ybqpa/providers/Microsoft.Storage/storageAccounts/clitestnxsheqf5s5rcht46h/providers/Microsoft.Authorization/locks/DATABOX_SERVICE","type":"Microsoft.Authorization/locks","name":"DATABOX_SERVICE"},{"properties":{"level":"CanNotDelete","notes":"for
-        Asir"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/emerald-city-bookstore/providers/Microsoft.Authorization/locks/No-DELETE","type":"Microsoft.Authorization/locks","name":"No-DELETE"},{"properties":{"level":"CanNotDelete","notes":"Data
-        Box Service to copy data from device to storage account."},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_databox52yrfbe7molrqhwdubnr2jcijd22xsz3hgcg3btf3sza5boeklwgzzq5sfn/providers/Microsoft.Storage/storageAccounts/clitestm7nikx6sld4npo42d/providers/Microsoft.Authorization/locks/DATABOX_SERVICE","type":"Microsoft.Authorization/locks","name":"DATABOX_SERVICE"},{"properties":{"level":"CanNotDelete","notes":"Data
-        Box Service to copy data from device to storage account."},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_databox52yrfbe7molrqhwdubnr2jcijd22xsz3hgcg3btf3sza5boeklwgzzq5sfn/providers/Microsoft.Storage/storageAccounts/clitestqsel4b35pkfyubvyx/providers/Microsoft.Authorization/locks/DATABOX_SERVICE","type":"Microsoft.Authorization/locks","name":"DATABOX_SERVICE"},{"properties":{"level":"CanNotDelete"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/zuhcentral/providers/Microsoft.Authorization/locks/delete","type":"Microsoft.Authorization/locks","name":"delete"},{"properties":{"level":"CanNotDelete","notes":"Data
-        Box Service to copy data from device to storage account."},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_databoxeg3csudujzrh2zcvbjytg6gvlkp6sjfcozveffblaqhrzhsslvpr54lg7n2/providers/Microsoft.Storage/storageAccounts/clitestgdfhjpgc2wgbrddlq/providers/Microsoft.Authorization/locks/DATABOX_SERVICE","type":"Microsoft.Authorization/locks","name":"DATABOX_SERVICE"},{"properties":{"level":"CanNotDelete"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yu-test-rg/providers/Microsoft.Authorization/locks/lock","type":"Microsoft.Authorization/locks","name":"lock"},{"properties":{"level":"CanNotDelete"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databoxam64dpcskfsb23dkj6zbvxysimh24e3upfdsdmuxbdl2j25ckz2uz5lht5y/providers/Microsoft.Authorization/locks/lock","type":"Microsoft.Authorization/locks","name":"lock"},{"properties":{"level":"CanNotDelete","notes":"Data
-        Box Service to copy data from device to storage account."},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_databoxoe2qtcqlnxonqpub522jgmpzgeegwhowl2qo6xqgfwtqcd3jzicz5yraawi/providers/Microsoft.Storage/storageAccounts/clitest6yrafi3cntx2cngw3/providers/Microsoft.Authorization/locks/DATABOX_SERVICE","type":"Microsoft.Authorization/locks","name":"DATABOX_SERVICE"},{"properties":{"level":"CanNotDelete","notes":"Data
-        Box Service to copy data from device to storage account."},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_databoxoe2qtcqlnxonqpub522jgmpzgeegwhowl2qo6xqgfwtqcd3jzicz5yraawi/providers/Microsoft.Storage/storageAccounts/clitestl6h6fa53d2gbmohn3/providers/Microsoft.Authorization/locks/DATABOX_SERVICE","type":"Microsoft.Authorization/locks","name":"DATABOX_SERVICE"},{"properties":{"level":"CanNotDelete"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ygmanual3/providers/Microsoft.Authorization/locks/nodel","type":"Microsoft.Authorization/locks","name":"nodel"},{"properties":{"level":"CanNotDelete"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/feng-cli-rg/providers/Microsoft.Storage/storageAccounts/fengsa/providers/Microsoft.Authorization/locks/no-delete","type":"Microsoft.Authorization/locks","name":"no-delete"},{"properties":{"level":"CanNotDelete","notes":"Auto-created
-        by Azure Backup for storage accounts registered with a Recovery Services Vault.
-        This lock is intended to guard against deletion of backups due to accidental
-        deletion of the storage account."},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg6i4hl6iakg/providers/microsoft.storage/storageAccounts/clitestu3p7a7ib4n4y7gt4m/providers/Microsoft.Authorization/locks/AzureBackupProtectionLock","type":"Microsoft.Authorization/locks","name":"AzureBackupProtectionLock"},{"properties":{"level":"CanNotDelete","notes":""},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/new-experiences/providers/Microsoft.Authorization/locks/NO-DELETE","type":"Microsoft.Authorization/locks","name":"NO-DELETE"},{"properties":{"level":"CanNotDelete"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/zuh/providers/Microsoft.Authorization/locks/delete","type":"Microsoft.Authorization/locks","name":"delete"},{"properties":{"level":"CanNotDelete","notes":"wait
-        until 2019.1.10"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azure-core-poc/providers/Microsoft.Authorization/locks/keep","type":"Microsoft.Authorization/locks","name":"keep"},{"properties":{"level":"CanNotDelete","notes":"Reserved
-        resource locked by ''zhoxing-test'' lab."},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/zhoxing-test/providers/microsoft.storage/storageaccounts/azhoxingtest9851/providers/Microsoft.Authorization/locks/DevTestLabs
-        Lock","type":"Microsoft.Authorization/locks","name":"DevTestLabs Lock"},{"properties":{"level":"CanNotDelete","notes":"Reserved
-        resource locked by ''zhoxing-test'' lab."},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/zhoxing-test/providers/Microsoft.KeyVault/vaults/zhoxingtest9ac53638/providers/Microsoft.Authorization/locks/DevTestLabs
-        Lock","type":"Microsoft.Authorization/locks","name":"DevTestLabs Lock"},{"properties":{"level":"CanNotDelete","notes":"Reserved
-        resource locked by ''zhoxing-test'' lab."},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/zhoxing-test/providers/Microsoft.KeyVault/vaults/zhoxingtest9393/providers/Microsoft.Authorization/locks/DevTestLabs
-        Lock","type":"Microsoft.Authorization/locks","name":"DevTestLabs Lock"},{"properties":{"level":"ReadOnly"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/zhoxing-test/providers/Microsoft.Network/virtualNetworks/zhoxing-test/providers/Microsoft.Authorization/locks/vnetlock","type":"Microsoft.Authorization/locks","name":"vnetlock"},{"properties":{"level":"CanNotDelete","notes":"Reserved
-        resource locked by ''zhoxing-test'' lab."},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/zhoxing-test/providers/Microsoft.Network/virtualNetworks/Dtlzhoxing-test/providers/Microsoft.Authorization/locks/DevTestLabs
-        Lock","type":"Microsoft.Authorization/locks","name":"DevTestLabs Lock"},{"properties":{"level":"CanNotDelete"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fytest/providers/Microsoft.KeyVault/vaults/vault4848/providers/Microsoft.Authorization/locks/l","type":"Microsoft.Authorization/locks","name":"l"},{"properties":{"level":"CanNotDelete"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fytest/providers/Microsoft.Compute/diskEncryptionSets/des1/providers/Microsoft.Authorization/locks/l","type":"Microsoft.Authorization/locks","name":"l"},{"properties":{"level":"CanNotDelete","notes":"In
-        case of deleting by incident"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/azuresdktest_reserved/providers/Microsoft.Authorization/locks/LockReservedResources","type":"Microsoft.Authorization/locks","name":"LockReservedResources"},{"properties":{"level":"CanNotDelete","notes":"Data
-        Box Service to copy data from device to storage account."},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_databox000001/providers/Microsoft.Storage/storageAccounts/clitest000003/providers/Microsoft.Authorization/locks/DATABOX_SERVICE","type":"Microsoft.Authorization/locks","name":"DATABOX_SERVICE"},{"properties":{"level":"CanNotDelete","notes":"Data
-        Box Service to copy data from device to storage account."},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_databox000001/providers/Microsoft.Storage/storageAccounts/clitest000002/providers/Microsoft.Authorization/locks/DATABOX_SERVICE","type":"Microsoft.Authorization/locks","name":"DATABOX_SERVICE"},{"properties":{"level":"CanNotDelete"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azure-cli-test-rg/providers/Microsoft.Authorization/locks/lock_test_resources","type":"Microsoft.Authorization/locks","name":"lock_test_resources"},{"properties":{"level":"CanNotDelete","notes":"for
-        msal test"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yeming/providers/Microsoft.Authorization/locks/yeliu","type":"Microsoft.Authorization/locks","name":"yeliu"},{"properties":{"level":"CanNotDelete","notes":"Data
-        Box Service to copy data from device to storage account."},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_databoxn5n2vkeyewiwob4e7e6nqiblkvvgc5qorevejhsntblvdlc2t373rrvy45p/providers/Microsoft.Storage/storageAccounts/clitest75g6r5uwkj7ker7wu/providers/Microsoft.Authorization/locks/DATABOX_SERVICE","type":"Microsoft.Authorization/locks","name":"DATABOX_SERVICE"},{"properties":{"level":"CanNotDelete"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/qianwens/providers/Microsoft.Authorization/locks/donotdelete","type":"Microsoft.Authorization/locks","name":"donotdelete"},{"properties":{"level":"CanNotDelete"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jlvm2rg/providers/Microsoft.Compute/virtualMachines/jlvm2/providers/Microsoft.Authorization/locks/dl","type":"Microsoft.Authorization/locks","name":"dl"},{"properties":{"level":"CanNotDelete","notes":"Data
-        Box Service to copy data from device to storage account."},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_databox5gpbe2knrizxsitmvje3fbdl44tf6cvpfqbpvsyicxmupsbyhmlcrg4wesk/providers/Microsoft.Storage/storageAccounts/clitest7b5n3o4aahl5rafju/providers/Microsoft.Authorization/locks/DATABOX_SERVICE","type":"Microsoft.Authorization/locks","name":"DATABOX_SERVICE"},{"properties":{"level":"CanNotDelete","notes":"for
-        customer issue repro  (snowflake)"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/storage-v2rt-repro/providers/Microsoft.Authorization/locks/DontDelete","type":"Microsoft.Authorization/locks","name":"DontDelete"},{"properties":{"level":"CanNotDelete","notes":"using
-        bastion"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fanqiu-vm/providers/Microsoft.Authorization/locks/person
-        vm","type":"Microsoft.Authorization/locks","name":"person vm"},{"properties":{"level":"CanNotDelete"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jlrg1/providers/Microsoft.Authorization/locks/dl","type":"Microsoft.Authorization/locks","name":"dl"},{"properties":{"level":"CanNotDelete","notes":"Data
-        Box Service to copy data from device to storage account."},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_databoxlekg7y4dtg2pnsaueisdkyqi5mnvmlwxto2cpu3kv7snll4uc37q2rm4wme/providers/Microsoft.Storage/storageAccounts/clitestcu3wv45lektdc3whs/providers/Microsoft.Authorization/locks/DATABOX_SERVICE","type":"Microsoft.Authorization/locks","name":"DATABOX_SERVICE"},{"properties":{"level":"CanNotDelete"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yu-test-rg-westus/providers/Microsoft.Authorization/locks/lock","type":"Microsoft.Authorization/locks","name":"lock"},{"properties":{"level":"CanNotDelete","notes":"Data
-        Box Service to copy data from device to storage account."},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/yu-test-rg-westus/providers/Microsoft.Storage/storageAccounts/sfsfsfsssf/providers/Microsoft.Authorization/locks/DATABOX_SERVICE","type":"Microsoft.Authorization/locks","name":"DATABOX_SERVICE"},{"properties":{"level":"CanNotDelete","notes":"Data
-        Box Service to copy data from device to storage account."},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/yu-test-rg-westus/providers/Microsoft.Storage/storageAccounts/stststeset/providers/Microsoft.Authorization/locks/DATABOX_SERVICE","type":"Microsoft.Authorization/locks","name":"DATABOX_SERVICE"},{"properties":{"level":"CanNotDelete"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/bim-rg/providers/Microsoft.Authorization/locks/bim-lock","type":"Microsoft.Authorization/locks","name":"bim-lock"},{"properties":{"level":"CanNotDelete","notes":"Data
-        Box Service to copy data from device to storage account."},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/bim-rg/providers/Microsoft.Storage/storageAccounts/bimstorageacc/providers/Microsoft.Authorization/locks/DATABOX_SERVICE","type":"Microsoft.Authorization/locks","name":"DATABOX_SERVICE"},{"properties":{"level":"CanNotDelete","notes":"Data
-        Box Service to copy data from device to storage account."},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_databoxfgdxtb5b3moqarfyogd7fcognbrlsihjlj3acnscrixetycujoejzzalyi3/providers/Microsoft.Storage/storageAccounts/clitestldg5uo7ika27utek4/providers/Microsoft.Authorization/locks/DATABOX_SERVICE","type":"Microsoft.Authorization/locks","name":"DATABOX_SERVICE"}]}'
+        to copy data from device to storage account."},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_databox000001/providers/Microsoft.Storage/storageAccounts/clitest000002/providers/Microsoft.Authorization/locks/DATABOX_SERVICE","type":"Microsoft.Authorization/locks","name":"DATABOX_SERVICE"},{"properties":{"level":"CanNotDelete","notes":"Data
+        Box Service to copy data from device to storage account."},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_databox000001/providers/Microsoft.Storage/storageAccounts/clitest000003/providers/Microsoft.Authorization/locks/DATABOX_SERVICE","type":"Microsoft.Authorization/locks","name":"DATABOX_SERVICE"},{"properties":{"level":"CanNotDelete","notes":"Please
+        do not delete this User Assigned Identity in the AzSecPackAutoConfigRG resource
+        group as AzSecPack AutoConfig depends on this."},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/AzSecPackAutoConfigRG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/AzSecPackAutoConfigUA-eastus2/providers/Microsoft.Authorization/locks/CanNotDeleteLock-AzSecPackAutoConfigUA-eastus2","type":"Microsoft.Authorization/locks","name":"CanNotDeleteLock-AzSecPackAutoConfigUA-eastus2"},{"properties":{"level":"CanNotDelete","notes":"Please
+        do not delete this User Assigned Identity in the AzSecPackAutoConfigRG resource
+        group as AzSecPack AutoConfig depends on this."},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/AzSecPackAutoConfigRG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/AzSecPackAutoConfigUA-eastus/providers/Microsoft.Authorization/locks/CanNotDeleteLock-AzSecPackAutoConfigUA-eastus","type":"Microsoft.Authorization/locks","name":"CanNotDeleteLock-AzSecPackAutoConfigUA-eastus"}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '14599'
+      - '2012'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 06 Mar 2020 14:42:12 GMT
+      - Fri, 07 May 2021 06:58:34 GMT
       expires:
       - '-1'
       pragma:
@@ -2517,8 +2993,8 @@ interactions:
       ParameterSetName:
       - --name -g --resource-name --resource-type
       User-Agent:
-      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-resource/8.0.1 Azure-SDK-For-Python AZURECLI/2.1.0
+      - python/3.8.3 (Windows-10-10.0.18362-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-resource/12.1.0 Azure-SDK-For-Python AZURECLI/2.23.0
       accept-language:
       - en-US
     method: DELETE
@@ -2532,7 +3008,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 06 Mar 2020 14:42:14 GMT
+      - Fri, 07 May 2021 06:58:35 GMT
       expires:
       - '-1'
       pragma:
@@ -2542,7 +3018,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14995'
+      - '14999'
     status:
       code: 200
       message: OK
@@ -2560,8 +3036,8 @@ interactions:
       ParameterSetName:
       - --name -g --resource-name --resource-type
       User-Agent:
-      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-resource/8.0.1 Azure-SDK-For-Python AZURECLI/2.1.0
+      - python/3.8.3 (Windows-10-10.0.18362-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-resource/12.1.0 Azure-SDK-For-Python AZURECLI/2.23.0
       accept-language:
       - en-US
     method: GET
@@ -2569,48 +3045,20 @@ interactions:
   response:
     body:
       string: '{"value":[{"properties":{"level":"CanNotDelete","notes":"Data Box Service
-        to copy data from device to storage account."},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_databoxrg2slunrj5vx5aydveu66wkj6rh3ildamkumi4zojpcf6f4vastgfp4v3rw/providers/Microsoft.Storage/storageAccounts/clitestmap7c2xyjf3gsd7yg/providers/Microsoft.Authorization/locks/DATABOX_SERVICE","type":"Microsoft.Authorization/locks","name":"DATABOX_SERVICE"},{"properties":{"level":"CanNotDelete","notes":"Data
-        Box Service to copy data from device to storage account."},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_databoxu7woflo47pjem4rfw2djuvafywtfnprfpduospdfotkqkudaylsua3ybqpa/providers/Microsoft.Storage/storageAccounts/clitestnxsheqf5s5rcht46h/providers/Microsoft.Authorization/locks/DATABOX_SERVICE","type":"Microsoft.Authorization/locks","name":"DATABOX_SERVICE"},{"properties":{"level":"CanNotDelete","notes":"for
-        Asir"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/emerald-city-bookstore/providers/Microsoft.Authorization/locks/No-DELETE","type":"Microsoft.Authorization/locks","name":"No-DELETE"},{"properties":{"level":"CanNotDelete","notes":"Data
-        Box Service to copy data from device to storage account."},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_databox52yrfbe7molrqhwdubnr2jcijd22xsz3hgcg3btf3sza5boeklwgzzq5sfn/providers/Microsoft.Storage/storageAccounts/clitestm7nikx6sld4npo42d/providers/Microsoft.Authorization/locks/DATABOX_SERVICE","type":"Microsoft.Authorization/locks","name":"DATABOX_SERVICE"},{"properties":{"level":"CanNotDelete","notes":"Data
-        Box Service to copy data from device to storage account."},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_databox52yrfbe7molrqhwdubnr2jcijd22xsz3hgcg3btf3sza5boeklwgzzq5sfn/providers/Microsoft.Storage/storageAccounts/clitestqsel4b35pkfyubvyx/providers/Microsoft.Authorization/locks/DATABOX_SERVICE","type":"Microsoft.Authorization/locks","name":"DATABOX_SERVICE"},{"properties":{"level":"CanNotDelete"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/zuhcentral/providers/Microsoft.Authorization/locks/delete","type":"Microsoft.Authorization/locks","name":"delete"},{"properties":{"level":"CanNotDelete","notes":"Data
-        Box Service to copy data from device to storage account."},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_databoxeg3csudujzrh2zcvbjytg6gvlkp6sjfcozveffblaqhrzhsslvpr54lg7n2/providers/Microsoft.Storage/storageAccounts/clitestgdfhjpgc2wgbrddlq/providers/Microsoft.Authorization/locks/DATABOX_SERVICE","type":"Microsoft.Authorization/locks","name":"DATABOX_SERVICE"},{"properties":{"level":"CanNotDelete"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yu-test-rg/providers/Microsoft.Authorization/locks/lock","type":"Microsoft.Authorization/locks","name":"lock"},{"properties":{"level":"CanNotDelete"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databoxam64dpcskfsb23dkj6zbvxysimh24e3upfdsdmuxbdl2j25ckz2uz5lht5y/providers/Microsoft.Authorization/locks/lock","type":"Microsoft.Authorization/locks","name":"lock"},{"properties":{"level":"CanNotDelete","notes":"Data
-        Box Service to copy data from device to storage account."},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_databoxoe2qtcqlnxonqpub522jgmpzgeegwhowl2qo6xqgfwtqcd3jzicz5yraawi/providers/Microsoft.Storage/storageAccounts/clitest6yrafi3cntx2cngw3/providers/Microsoft.Authorization/locks/DATABOX_SERVICE","type":"Microsoft.Authorization/locks","name":"DATABOX_SERVICE"},{"properties":{"level":"CanNotDelete","notes":"Data
-        Box Service to copy data from device to storage account."},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_databoxoe2qtcqlnxonqpub522jgmpzgeegwhowl2qo6xqgfwtqcd3jzicz5yraawi/providers/Microsoft.Storage/storageAccounts/clitestl6h6fa53d2gbmohn3/providers/Microsoft.Authorization/locks/DATABOX_SERVICE","type":"Microsoft.Authorization/locks","name":"DATABOX_SERVICE"},{"properties":{"level":"CanNotDelete"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ygmanual3/providers/Microsoft.Authorization/locks/nodel","type":"Microsoft.Authorization/locks","name":"nodel"},{"properties":{"level":"CanNotDelete"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/feng-cli-rg/providers/Microsoft.Storage/storageAccounts/fengsa/providers/Microsoft.Authorization/locks/no-delete","type":"Microsoft.Authorization/locks","name":"no-delete"},{"properties":{"level":"CanNotDelete","notes":"Auto-created
-        by Azure Backup for storage accounts registered with a Recovery Services Vault.
-        This lock is intended to guard against deletion of backups due to accidental
-        deletion of the storage account."},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg6i4hl6iakg/providers/microsoft.storage/storageAccounts/clitestu3p7a7ib4n4y7gt4m/providers/Microsoft.Authorization/locks/AzureBackupProtectionLock","type":"Microsoft.Authorization/locks","name":"AzureBackupProtectionLock"},{"properties":{"level":"CanNotDelete","notes":""},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/new-experiences/providers/Microsoft.Authorization/locks/NO-DELETE","type":"Microsoft.Authorization/locks","name":"NO-DELETE"},{"properties":{"level":"CanNotDelete"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/zuh/providers/Microsoft.Authorization/locks/delete","type":"Microsoft.Authorization/locks","name":"delete"},{"properties":{"level":"CanNotDelete","notes":"wait
-        until 2019.1.10"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azure-core-poc/providers/Microsoft.Authorization/locks/keep","type":"Microsoft.Authorization/locks","name":"keep"},{"properties":{"level":"CanNotDelete","notes":"Reserved
-        resource locked by ''zhoxing-test'' lab."},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/zhoxing-test/providers/microsoft.storage/storageaccounts/azhoxingtest9851/providers/Microsoft.Authorization/locks/DevTestLabs
-        Lock","type":"Microsoft.Authorization/locks","name":"DevTestLabs Lock"},{"properties":{"level":"CanNotDelete","notes":"Reserved
-        resource locked by ''zhoxing-test'' lab."},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/zhoxing-test/providers/Microsoft.KeyVault/vaults/zhoxingtest9ac53638/providers/Microsoft.Authorization/locks/DevTestLabs
-        Lock","type":"Microsoft.Authorization/locks","name":"DevTestLabs Lock"},{"properties":{"level":"CanNotDelete","notes":"Reserved
-        resource locked by ''zhoxing-test'' lab."},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/zhoxing-test/providers/Microsoft.KeyVault/vaults/zhoxingtest9393/providers/Microsoft.Authorization/locks/DevTestLabs
-        Lock","type":"Microsoft.Authorization/locks","name":"DevTestLabs Lock"},{"properties":{"level":"ReadOnly"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/zhoxing-test/providers/Microsoft.Network/virtualNetworks/zhoxing-test/providers/Microsoft.Authorization/locks/vnetlock","type":"Microsoft.Authorization/locks","name":"vnetlock"},{"properties":{"level":"CanNotDelete","notes":"Reserved
-        resource locked by ''zhoxing-test'' lab."},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/zhoxing-test/providers/Microsoft.Network/virtualNetworks/Dtlzhoxing-test/providers/Microsoft.Authorization/locks/DevTestLabs
-        Lock","type":"Microsoft.Authorization/locks","name":"DevTestLabs Lock"},{"properties":{"level":"CanNotDelete"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fytest/providers/Microsoft.KeyVault/vaults/vault4848/providers/Microsoft.Authorization/locks/l","type":"Microsoft.Authorization/locks","name":"l"},{"properties":{"level":"CanNotDelete"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fytest/providers/Microsoft.Compute/diskEncryptionSets/des1/providers/Microsoft.Authorization/locks/l","type":"Microsoft.Authorization/locks","name":"l"},{"properties":{"level":"CanNotDelete","notes":"In
-        case of deleting by incident"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/azuresdktest_reserved/providers/Microsoft.Authorization/locks/LockReservedResources","type":"Microsoft.Authorization/locks","name":"LockReservedResources"},{"properties":{"level":"CanNotDelete","notes":"Data
-        Box Service to copy data from device to storage account."},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_databox000001/providers/Microsoft.Storage/storageAccounts/clitest000003/providers/Microsoft.Authorization/locks/DATABOX_SERVICE","type":"Microsoft.Authorization/locks","name":"DATABOX_SERVICE"},{"properties":{"level":"CanNotDelete"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azure-cli-test-rg/providers/Microsoft.Authorization/locks/lock_test_resources","type":"Microsoft.Authorization/locks","name":"lock_test_resources"},{"properties":{"level":"CanNotDelete","notes":"for
-        msal test"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yeming/providers/Microsoft.Authorization/locks/yeliu","type":"Microsoft.Authorization/locks","name":"yeliu"},{"properties":{"level":"CanNotDelete","notes":"Data
-        Box Service to copy data from device to storage account."},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_databoxn5n2vkeyewiwob4e7e6nqiblkvvgc5qorevejhsntblvdlc2t373rrvy45p/providers/Microsoft.Storage/storageAccounts/clitest75g6r5uwkj7ker7wu/providers/Microsoft.Authorization/locks/DATABOX_SERVICE","type":"Microsoft.Authorization/locks","name":"DATABOX_SERVICE"},{"properties":{"level":"CanNotDelete"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/qianwens/providers/Microsoft.Authorization/locks/donotdelete","type":"Microsoft.Authorization/locks","name":"donotdelete"},{"properties":{"level":"CanNotDelete"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jlvm2rg/providers/Microsoft.Compute/virtualMachines/jlvm2/providers/Microsoft.Authorization/locks/dl","type":"Microsoft.Authorization/locks","name":"dl"},{"properties":{"level":"CanNotDelete","notes":"Data
-        Box Service to copy data from device to storage account."},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_databox5gpbe2knrizxsitmvje3fbdl44tf6cvpfqbpvsyicxmupsbyhmlcrg4wesk/providers/Microsoft.Storage/storageAccounts/clitest7b5n3o4aahl5rafju/providers/Microsoft.Authorization/locks/DATABOX_SERVICE","type":"Microsoft.Authorization/locks","name":"DATABOX_SERVICE"},{"properties":{"level":"CanNotDelete","notes":"for
-        customer issue repro  (snowflake)"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/storage-v2rt-repro/providers/Microsoft.Authorization/locks/DontDelete","type":"Microsoft.Authorization/locks","name":"DontDelete"},{"properties":{"level":"CanNotDelete","notes":"using
-        bastion"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fanqiu-vm/providers/Microsoft.Authorization/locks/person
-        vm","type":"Microsoft.Authorization/locks","name":"person vm"},{"properties":{"level":"CanNotDelete"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jlrg1/providers/Microsoft.Authorization/locks/dl","type":"Microsoft.Authorization/locks","name":"dl"},{"properties":{"level":"CanNotDelete","notes":"Data
-        Box Service to copy data from device to storage account."},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_databoxlekg7y4dtg2pnsaueisdkyqi5mnvmlwxto2cpu3kv7snll4uc37q2rm4wme/providers/Microsoft.Storage/storageAccounts/clitestcu3wv45lektdc3whs/providers/Microsoft.Authorization/locks/DATABOX_SERVICE","type":"Microsoft.Authorization/locks","name":"DATABOX_SERVICE"},{"properties":{"level":"CanNotDelete"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yu-test-rg-westus/providers/Microsoft.Authorization/locks/lock","type":"Microsoft.Authorization/locks","name":"lock"},{"properties":{"level":"CanNotDelete","notes":"Data
-        Box Service to copy data from device to storage account."},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/yu-test-rg-westus/providers/Microsoft.Storage/storageAccounts/sfsfsfsssf/providers/Microsoft.Authorization/locks/DATABOX_SERVICE","type":"Microsoft.Authorization/locks","name":"DATABOX_SERVICE"},{"properties":{"level":"CanNotDelete","notes":"Data
-        Box Service to copy data from device to storage account."},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/yu-test-rg-westus/providers/Microsoft.Storage/storageAccounts/stststeset/providers/Microsoft.Authorization/locks/DATABOX_SERVICE","type":"Microsoft.Authorization/locks","name":"DATABOX_SERVICE"},{"properties":{"level":"CanNotDelete"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/bim-rg/providers/Microsoft.Authorization/locks/bim-lock","type":"Microsoft.Authorization/locks","name":"bim-lock"},{"properties":{"level":"CanNotDelete","notes":"Data
-        Box Service to copy data from device to storage account."},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/bim-rg/providers/Microsoft.Storage/storageAccounts/bimstorageacc/providers/Microsoft.Authorization/locks/DATABOX_SERVICE","type":"Microsoft.Authorization/locks","name":"DATABOX_SERVICE"},{"properties":{"level":"CanNotDelete","notes":"Data
-        Box Service to copy data from device to storage account."},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_databoxfgdxtb5b3moqarfyogd7fcognbrlsihjlj3acnscrixetycujoejzzalyi3/providers/Microsoft.Storage/storageAccounts/clitestldg5uo7ika27utek4/providers/Microsoft.Authorization/locks/DATABOX_SERVICE","type":"Microsoft.Authorization/locks","name":"DATABOX_SERVICE"}]}'
+        to copy data from device to storage account."},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_databox000001/providers/Microsoft.Storage/storageAccounts/clitest000003/providers/Microsoft.Authorization/locks/DATABOX_SERVICE","type":"Microsoft.Authorization/locks","name":"DATABOX_SERVICE"},{"properties":{"level":"CanNotDelete","notes":"Please
+        do not delete this User Assigned Identity in the AzSecPackAutoConfigRG resource
+        group as AzSecPack AutoConfig depends on this."},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/AzSecPackAutoConfigRG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/AzSecPackAutoConfigUA-eastus2/providers/Microsoft.Authorization/locks/CanNotDeleteLock-AzSecPackAutoConfigUA-eastus2","type":"Microsoft.Authorization/locks","name":"CanNotDeleteLock-AzSecPackAutoConfigUA-eastus2"},{"properties":{"level":"CanNotDelete","notes":"Please
+        do not delete this User Assigned Identity in the AzSecPackAutoConfigRG resource
+        group as AzSecPack AutoConfig depends on this."},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/AzSecPackAutoConfigRG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/AzSecPackAutoConfigUA-eastus/providers/Microsoft.Authorization/locks/CanNotDeleteLock-AzSecPackAutoConfigUA-eastus","type":"Microsoft.Authorization/locks","name":"CanNotDeleteLock-AzSecPackAutoConfigUA-eastus"}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '14148'
+      - '1561'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 06 Mar 2020 14:42:18 GMT
+      - Fri, 07 May 2021 06:58:36 GMT
       expires:
       - '-1'
       pragma:
@@ -2642,8 +3090,8 @@ interactions:
       ParameterSetName:
       - --name -g --resource-name --resource-type
       User-Agent:
-      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.11 msrest_azure/0.6.2
-        azure-mgmt-resource/8.0.1 Azure-SDK-For-Python AZURECLI/2.1.0
+      - python/3.8.3 (Windows-10-10.0.18362-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-resource/12.1.0 Azure-SDK-For-Python AZURECLI/2.23.0
       accept-language:
       - en-US
     method: DELETE
@@ -2657,7 +3105,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 06 Mar 2020 14:42:20 GMT
+      - Fri, 07 May 2021 06:58:37 GMT
       expires:
       - '-1'
       pragma:

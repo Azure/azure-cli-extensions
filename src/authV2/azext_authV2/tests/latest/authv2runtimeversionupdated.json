@@ -1,0 +1,83 @@
+{
+    "globalValidation": {
+        "requireAuthentication": true,
+        "unauthenticatedClientAction": "RedirectToLoginPage"
+    },
+    "httpSettings": {
+        "forwardProxy": {
+            "convention": "NoProxy"
+        },
+        "requireHttps": true,
+        "routes": {
+            "apiPrefix": "/.auth"
+        }
+    },
+    "identityProviders": {
+        "apple": {
+            "enabled": true,
+            "login": {},
+            "registration": {}
+        },
+        "azureActiveDirectory": {
+            "enabled": true,
+            "login": {
+            "disableWWWAuthenticate": false
+            },
+            "registration": {},
+            "validation": {
+            "defaultAuthorizationPolicy": {
+                "allowedPrincipals": {}
+            },
+            "jwtClaimChecks": {}
+            }
+        },
+        "facebook": {
+            "enabled": true,
+            "login": {},
+            "registration": {}
+        },
+        "gitHub": {
+            "enabled": true,
+            "login": {},
+            "registration": {}
+        },
+        "google": {
+            "enabled": true,
+            "login": {},
+            "registration": {},
+            "validation": {}
+        },
+        "legacyMicrosoftAccount": {
+            "enabled": true,
+            "login": {},
+            "registration": {},
+            "validation": {}
+        },
+        "twitter": {
+            "enabled": true,
+            "registration": {}
+        }
+    },
+    "login": {
+        "cookieExpiration": {
+            "convention": "FixedTime",
+            "timeToExpiration": "08:00:00"
+        },
+        "nonce": {
+            "nonceExpirationInterval": "00:05:00",
+            "validateNonce": true
+        },
+        "preserveUrlFragmentsForLogins": false,
+        "routes": {},
+        "tokenStore": {
+            "azureBlobStorage": {},
+            "enabled": false,
+            "fileSystem": {},
+            "tokenRefreshExtensionHours": 72.0
+        }
+    },
+    "platform": {
+        "enabled": true,
+        "runtimeVersion": "1.2.8"
+    }
+}

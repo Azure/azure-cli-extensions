@@ -12,8 +12,6 @@ from knack.util import CLIError
 
 CUSTOM_MGMT_AKS_PREVIEW = CustomResourceType('azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks',
                                              'ContainerServiceClient')
-CUSTOM_MGMT_AKS = CustomResourceType('azext_aks_preview.vendored_sdks.azure_mgmt_aks',
-                                     'ContainerServiceClient')
 
 
 def cf_storage(cli_ctx, subscription_id=None):

@@ -13,8 +13,10 @@
 |az kusto cluster-principal-assignment|ClusterPrincipalAssignments|[commands](#CommandsInClusterPrincipalAssignments)|
 |az kusto database|Databases|[commands](#CommandsInDatabases)|
 |az kusto database-principal-assignment|DatabasePrincipalAssignments|[commands](#CommandsInDatabasePrincipalAssignments)|
+|az kusto script|Scripts|[commands](#CommandsInScripts)|
 |az kusto attached-database-configuration|AttachedDatabaseConfigurations|[commands](#CommandsInAttachedDatabaseConfigurations)|
 |az kusto data-connection|DataConnections|[commands](#CommandsInDataConnections)|
+|az kusto operation-result|OperationsResults|[commands](#CommandsInOperationsResults)|
 
 ## COMMANDS
 ### <a name="CommandsInAttachedDatabaseConfigurations">Commands in `az kusto attached-database-configuration` group</a>
@@ -92,6 +94,20 @@
 |[az kusto database-principal-assignment update](#DatabasePrincipalAssignmentsCreateOrUpdate#Update)|CreateOrUpdate#Update|[Parameters](#ParametersDatabasePrincipalAssignmentsCreateOrUpdate#Update)|Not Found|
 |[az kusto database-principal-assignment delete](#DatabasePrincipalAssignmentsDelete)|Delete|[Parameters](#ParametersDatabasePrincipalAssignmentsDelete)|[Example](#ExamplesDatabasePrincipalAssignmentsDelete)|
 
+### <a name="CommandsInOperationsResults">Commands in `az kusto operation-result` group</a>
+|CLI Command|Operation Swagger name|Parameters|Examples|
+|---------|------------|--------|-----------|
+|[az kusto operation-result show](#OperationsResultsGet)|Get|[Parameters](#ParametersOperationsResultsGet)|[Example](#ExamplesOperationsResultsGet)|
+
+### <a name="CommandsInScripts">Commands in `az kusto script` group</a>
+|CLI Command|Operation Swagger name|Parameters|Examples|
+|---------|------------|--------|-----------|
+|[az kusto script list](#ScriptsListByDatabase)|ListByDatabase|[Parameters](#ParametersScriptsListByDatabase)|[Example](#ExamplesScriptsListByDatabase)|
+|[az kusto script show](#ScriptsGet)|Get|[Parameters](#ParametersScriptsGet)|[Example](#ExamplesScriptsGet)|
+|[az kusto script create](#ScriptsCreateOrUpdate#Create)|CreateOrUpdate#Create|[Parameters](#ParametersScriptsCreateOrUpdate#Create)|[Example](#ExamplesScriptsCreateOrUpdate#Create)|
+|[az kusto script update](#ScriptsUpdate)|Update|[Parameters](#ParametersScriptsUpdate)|[Example](#ExamplesScriptsUpdate)|
+|[az kusto script delete](#ScriptsDelete)|Delete|[Parameters](#ParametersScriptsDelete)|[Example](#ExamplesScriptsDelete)|
+
 
 ## COMMAND DETAILS
 
@@ -129,7 +145,10 @@ az kusto attached-database-configuration show --name "attachedDatabaseConfigurat
 az kusto attached-database-configuration create --name "attachedDatabaseConfigurations1" --cluster-name \
 "kustoclusterrptest4" --location "westus" --cluster-resource-id "/subscriptions/12345678-1234-1234-1234-123456789098/re\
 sourceGroups/kustorptest/providers/Microsoft.Kusto/Clusters/KustoClusterLeader" --database-name "kustodatabase" \
---default-principals-modification-kind "Union" --resource-group "kustorptest"
+--default-principals-modification-kind "Union" --table-level-sharing-properties external-tables-to-exclude="ExternalTab\
+le2" external-tables-to-include="ExternalTable1" materialized-views-to-exclude="MaterializedViewTable2" \
+materialized-views-to-include="MaterializedViewTable1" tables-to-exclude="Table2" tables-to-include="Table1" \
+--resource-group "kustorptest"
 ```
 ##### <a name="ParametersAttachedDatabaseConfigurationsCreateOrUpdate#Create">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -141,6 +160,7 @@ sourceGroups/kustorptest/providers/Microsoft.Kusto/Clusters/KustoClusterLeader" 
 |**--database-name**|string|The name of the database which you would like to attach, use * if you want to follow all current and future databases.|database_name|databaseName|
 |**--cluster-resource-id**|string|The resource id of the cluster where the databases you would like to attach reside.|cluster_resource_id|clusterResourceId|
 |**--default-principals-modification-kind**|choice|The default principals modification kind|default_principals_modification_kind|defaultPrincipalsModificationKind|
+|**--table-level-sharing-properties**|object|Table level sharing specifications|table_level_sharing_properties|tableLevelSharingProperties|
 
 #### <a name="AttachedDatabaseConfigurationsCreateOrUpdate#Update">Command `az kusto attached-database-configuration update`</a>
 
@@ -154,6 +174,7 @@ sourceGroups/kustorptest/providers/Microsoft.Kusto/Clusters/KustoClusterLeader" 
 |**--database-name**|string|The name of the database which you would like to attach, use * if you want to follow all current and future databases.|database_name|databaseName|
 |**--cluster-resource-id**|string|The resource id of the cluster where the databases you would like to attach reside.|cluster_resource_id|clusterResourceId|
 |**--default-principals-modification-kind**|choice|The default principals modification kind|default_principals_modification_kind|defaultPrincipalsModificationKind|
+|**--table-level-sharing-properties**|object|Table level sharing specifications|table_level_sharing_properties|tableLevelSharingProperties|
 
 #### <a name="AttachedDatabaseConfigurationsDelete">Command `az kusto attached-database-configuration delete`</a>
 
@@ -206,7 +227,7 @@ az kusto cluster show --name "kustoclusterrptest4" --resource-group "kustorptest
 
 ##### <a name="ExamplesClustersCreateOrUpdate#Create">Example</a>
 ```
-az kusto cluster create --name "kustoclusterrptest4" --identity-type "SystemAssigned" --location "westus" \
+az kusto cluster create --name "kustoclusterrptest4" --type "SystemAssigned" --location "westus" \
 --enable-double-encryption false --enable-purge true --enable-streaming-ingest true --sku name="Standard_L8s" \
 capacity=2 tier="Standard" --resource-group "kustorptest"
 ```
@@ -217,6 +238,8 @@ capacity=2 tier="Standard" --resource-group "kustorptest"
 |**--cluster-name**|string|The name of the Kusto cluster.|cluster_name|clusterName|
 |**--location**|string|The geo-location where the resource lives|location|location|
 |**--sku**|object|The SKU of the cluster.|sku|sku|
+|**--if-match**|string|The ETag of the cluster. Omit this value to always overwrite the current cluster. Specify the last-seen ETag value to prevent accidentally overwriting concurrent changes.|if_match|IfMatch|
+|**--if-none-match**|string|Set to '*' to allow a new cluster to be created, but to prevent updating an existing cluster. Other values will result in a 412 Pre-condition Failed response.|if_none_match|IfNoneMatch|
 |**--tags**|dictionary|Resource tags.|tags|tags|
 |**--zones**|array|The availability zones of the cluster.|zones|zones|
 |**--trusted-external-tenants**|array|The cluster's external tenants.|trusted_external_tenants|trustedExternalTenants|
@@ -228,15 +251,15 @@ capacity=2 tier="Standard" --resource-group "kustorptest"
 |**--enable-purge**|boolean|A boolean value that indicates if the purge operations are enabled.|enable_purge|enablePurge|
 |**--enable-double-encryption**|boolean|A boolean value that indicates if double encryption is enabled.|enable_double_encryption|enableDoubleEncryption|
 |**--engine-type**|choice|The engine type|engine_type|engineType|
-|**--identity-type**|choice|The type of managed identity used. The type 'SystemAssigned, UserAssigned' includes both an implicitly created identity and a set of user-assigned identities. The type 'None' will remove all identities.|type|type|
-|**--identity-user-assigned-identities**|dictionary|The list of user identities associated with the Kusto cluster. The user identity dictionary key references will be ARM resource ids in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}'.|user_assigned_identities|userAssignedIdentities|
+|**--type**|choice|The type of managed identity used. The type 'SystemAssigned, UserAssigned' includes both an implicitly created identity and a set of user-assigned identities. The type 'None' will remove all identities.|type|type|
+|**--user-assigned-identities**|dictionary|The list of user identities associated with the Kusto cluster. The user identity dictionary key references will be ARM resource ids in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}'.|user_assigned_identities|userAssignedIdentities|
 
 #### <a name="ClustersUpdate">Command `az kusto cluster update`</a>
 
 ##### <a name="ExamplesClustersUpdate">Example</a>
 ```
-az kusto cluster update --name "kustoclusterrptest4" --identity-type "SystemAssigned" --location "westus" \
---enable-purge true --enable-streaming-ingest true --engine-type "V2" --key-vault-properties key-name="keyName" \
+az kusto cluster update --name "kustoclusterrptest4" --type "SystemAssigned" --location "westus" --enable-purge true \
+--enable-streaming-ingest true --engine-type "V2" --key-vault-properties key-name="keyName" \
 key-vault-uri="https://dummy.keyvault.com" key-version="keyVersion" --resource-group "kustorptest"
 ```
 ##### <a name="ParametersClustersUpdate">Parameters</a> 
@@ -244,6 +267,7 @@ key-vault-uri="https://dummy.keyvault.com" key-version="keyVersion" --resource-g
 |------|----|-----------|----------|------------|
 |**--resource-group-name**|string|The name of the resource group containing the Kusto cluster.|resource_group_name|resourceGroupName|
 |**--cluster-name**|string|The name of the Kusto cluster.|cluster_name|clusterName|
+|**--if-match**|string|The ETag of the cluster. Omit this value to always overwrite the current cluster. Specify the last-seen ETag value to prevent accidentally overwriting concurrent changes.|if_match|IfMatch|
 |**--tags**|dictionary|Resource tags.|tags|tags|
 |**--location**|string|Resource location.|location|location|
 |**--sku**|object|The SKU of the cluster.|sku|sku|
@@ -256,8 +280,8 @@ key-vault-uri="https://dummy.keyvault.com" key-version="keyVersion" --resource-g
 |**--enable-purge**|boolean|A boolean value that indicates if the purge operations are enabled.|enable_purge|enablePurge|
 |**--enable-double-encryption**|boolean|A boolean value that indicates if double encryption is enabled.|enable_double_encryption|enableDoubleEncryption|
 |**--engine-type**|choice|The engine type|engine_type|engineType|
-|**--identity-type**|choice|The type of managed identity used. The type 'SystemAssigned, UserAssigned' includes both an implicitly created identity and a set of user-assigned identities. The type 'None' will remove all identities.|type|type|
-|**--identity-user-assigned-identities**|dictionary|The list of user identities associated with the Kusto cluster. The user identity dictionary key references will be ARM resource ids in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}'.|user_assigned_identities|userAssignedIdentities|
+|**--type**|choice|The type of managed identity used. The type 'SystemAssigned, UserAssigned' includes both an implicitly created identity and a set of user-assigned identities. The type 'None' will remove all identities.|type|type|
+|**--user-assigned-identities**|dictionary|The list of user identities associated with the Kusto cluster. The user identity dictionary key references will be ARM resource ids in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}'.|user_assigned_identities|userAssignedIdentities|
 
 #### <a name="ClustersDelete">Command `az kusto cluster delete`</a>
 
@@ -525,7 +549,9 @@ az kusto data-connection show --cluster-name "kustoclusterrptest4" --name "DataC
 az kusto data-connection event-hub create --cluster-name "kustoclusterrptest4" --name "DataConnections8" \
 --database-name "KustoDatabase8" --location "westus" --consumer-group "testConsumerGroup1" --event-hub-resource-id \
 "/subscriptions/12345678-1234-1234-1234-123456789098/resourceGroups/kustorptest/providers/Microsoft.EventHub/namespaces\
-/eventhubTestns1/eventhubs/eventhubTest1" --resource-group "kustorptest"
+/eventhubTestns1/eventhubs/eventhubTest1" --managed-identity-resource-id "/subscriptions/12345678-1234-1234-1234-123456\
+789098/resourceGroups/kustorptest/providers/Microsoft.ManagedIdentity/userAssignedIdentities/managedidentityTest1" \
+--resource-group "kustorptest"
 ```
 ##### <a name="ParametersDataConnectionsCreateOrUpdate#Create#EventHub">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -542,6 +568,7 @@ az kusto data-connection event-hub create --cluster-name "kustoclusterrptest4" -
 |**--data-format**|choice|The data format of the message. Optionally the data format can be added to each message.|event_hub_data_format|dataFormat|
 |**--event-system-properties**|array|System properties of the event hub|event_hub_event_system_properties|eventSystemProperties|
 |**--compression**|choice|The event hub messages compression type|event_hub_compression|compression|
+|**--managed-identity-resource-id**|string|The resource ID of a managed identity (system or user assigned) to be used to authenticate with event hub.|event_hub_managed_identity_resource_id|managedIdentityResourceId|
 
 #### <a name="DataConnectionsCreateOrUpdate#Create#IotHub">Command `az kusto data-connection iot-hub create`</a>
 
@@ -587,7 +614,9 @@ az kusto data-connection event-hub create --cluster-name "kustoclusterrptest4" -
 az kusto data-connection event-hub update --cluster-name "kustoclusterrptest4" --name "DataConnections8" \
 --database-name "KustoDatabase8" --location "westus" --consumer-group "testConsumerGroup1" --event-hub-resource-id \
 "/subscriptions/12345678-1234-1234-1234-123456789098/resourceGroups/kustorptest/providers/Microsoft.EventHub/namespaces\
-/eventhubTestns1/eventhubs/eventhubTest1" --resource-group "kustorptest"
+/eventhubTestns1/eventhubs/eventhubTest1" --managed-identity-resource-id "/subscriptions/12345678-1234-1234-1234-123456\
+789098/resourceGroups/kustorptest/providers/Microsoft.ManagedIdentity/userAssignedIdentities/managedidentityTest1" \
+--resource-group "kustorptest"
 ```
 ##### <a name="ParametersDataConnectionsUpdate#EventHub">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -604,6 +633,7 @@ az kusto data-connection event-hub update --cluster-name "kustoclusterrptest4" -
 |**--data-format**|choice|The data format of the message. Optionally the data format can be added to each message.|event_hub_data_format|dataFormat|
 |**--event-system-properties**|array|System properties of the event hub|event_hub_event_system_properties|eventSystemProperties|
 |**--compression**|choice|The event hub messages compression type|event_hub_compression|compression|
+|**--managed-identity-resource-id**|string|The resource ID of a managed identity (system or user assigned) to be used to authenticate with event hub.|event_hub_managed_identity_resource_id|managedIdentityResourceId|
 
 #### <a name="DataConnectionsUpdate#IotHub">Command `az kusto data-connection iot-hub update`</a>
 
@@ -664,7 +694,9 @@ az kusto data-connection delete --cluster-name "kustoclusterrptest4" --name "kus
 az kusto data-connection event-hub data-connection-validation --cluster-name "kustoclusterrptest4" --database-name \
 "KustoDatabase8" --name "DataConnections8" --consumer-group "testConsumerGroup1" --event-hub-resource-id \
 "/subscriptions/12345678-1234-1234-1234-123456789098/resourceGroups/kustorptest/providers/Microsoft.EventHub/namespaces\
-/eventhubTestns1/eventhubs/eventhubTest1" --resource-group "kustorptest"
+/eventhubTestns1/eventhubs/eventhubTest1" --managed-identity-resource-id "/subscriptions/12345678-1234-1234-1234-123456\
+789098/resourceGroups/kustorptest/providers/Microsoft.ManagedIdentity/userAssignedIdentities/managedidentityTest1" \
+--resource-group "kustorptest"
 ```
 ##### <a name="ParametersDataConnectionsdataConnectionValidation#EventHub">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -681,6 +713,7 @@ az kusto data-connection event-hub data-connection-validation --cluster-name "ku
 |**--data-format**|choice|The data format of the message. Optionally the data format can be added to each message.|event_hub_data_format|dataFormat|
 |**--event-system-properties**|array|System properties of the event hub|event_hub_event_system_properties|eventSystemProperties|
 |**--compression**|choice|The event hub messages compression type|event_hub_compression|compression|
+|**--managed-identity-resource-id**|string|The resource ID of a managed identity (system or user assigned) to be used to authenticate with event hub.|event_hub_managed_identity_resource_id|managedIdentityResourceId|
 
 #### <a name="DataConnectionsdataConnectionValidation#IotHub">Command `az kusto data-connection iot-hub data-connection-validation`</a>
 
@@ -748,7 +781,7 @@ az kusto database create --cluster-name "kustoclusterrptest4" --database-name "K
 ##### <a name="ExamplesDatabasesUpdate">Example</a>
 ```
 az kusto database update --cluster-name "kustoclusterrptest4" --database-name "KustoDatabase8" --parameters \
-"{\\"properties\\":{\\"softDeletePeriod\\":\\"P1D\\"}}" --resource-group "kustorptest"
+"{\\"properties\\":{\\"hotCachePeriod\\":\\"P1D\\"}}" --resource-group "kustorptest"
 ```
 ##### <a name="ParametersDatabasesUpdate">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -901,3 +934,105 @@ az kusto database-principal-assignment delete --cluster-name "kustoclusterrptest
 |**--cluster-name**|string|The name of the Kusto cluster.|cluster_name|clusterName|
 |**--database-name**|string|The name of the database in the Kusto cluster.|database_name|databaseName|
 |**--principal-assignment-name**|string|The name of the Kusto principalAssignment.|principal_assignment_name|principalAssignmentName|
+
+### group `az kusto operation-result`
+#### <a name="OperationsResultsGet">Command `az kusto operation-result show`</a>
+
+##### <a name="ExamplesOperationsResultsGet">Example</a>
+```
+az kusto operation-result show --operation-id "30972f1b-b61d-4fd8-bd34-3dcfa24670f3" --location "westus"
+```
+##### <a name="ParametersOperationsResultsGet">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--location**|string|Azure location (region) name.|location|location|
+|**--operation-id**|string|The Guid of the operation ID|operation_id|operationId|
+
+### group `az kusto script`
+#### <a name="ScriptsListByDatabase">Command `az kusto script list`</a>
+
+##### <a name="ExamplesScriptsListByDatabase">Example</a>
+```
+az kusto script list --cluster-name "kustoclusterrptest4" --database-name "Kustodatabase8" --resource-group \
+"kustorptest"
+```
+##### <a name="ParametersScriptsListByDatabase">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The name of the resource group containing the Kusto cluster.|resource_group_name|resourceGroupName|
+|**--cluster-name**|string|The name of the Kusto cluster.|cluster_name|clusterName|
+|**--database-name**|string|The name of the database in the Kusto cluster.|database_name|databaseName|
+
+#### <a name="ScriptsGet">Command `az kusto script show`</a>
+
+##### <a name="ExamplesScriptsGet">Example</a>
+```
+az kusto script show --cluster-name "kustoclusterrptest4" --database-name "Kustodatabase8" --resource-group \
+"kustorptest" --name "kustoScript1"
+```
+##### <a name="ParametersScriptsGet">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The name of the resource group containing the Kusto cluster.|resource_group_name|resourceGroupName|
+|**--cluster-name**|string|The name of the Kusto cluster.|cluster_name|clusterName|
+|**--database-name**|string|The name of the database in the Kusto cluster.|database_name|databaseName|
+|**--script-name**|string|The name of the Kusto database script.|script_name|scriptName|
+
+#### <a name="ScriptsCreateOrUpdate#Create">Command `az kusto script create`</a>
+
+##### <a name="ExamplesScriptsCreateOrUpdate#Create">Example</a>
+```
+az kusto script create --cluster-name "kustoclusterrptest4" --database-name "KustoDatabase8" --continue-on-errors true \
+--force-update-tag "2bcf3c21-ffd1-4444-b9dd-e52e00ee53fe" --script-url "https://mysa.blob.core.windows.net/container/sc\
+ript.txt" --script-url-sas-token "?sv=2019-02-02&st=2019-04-29T22%3A18%3A26Z&se=2019-04-30T02%3A23%3A26Z&sr=b&sp=rw&sip\
+=168.1.5.60-168.1.5.70&spr=https&sig=********************************" --resource-group "kustorptest" --name \
+"kustoScript1"
+```
+##### <a name="ParametersScriptsCreateOrUpdate#Create">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The name of the resource group containing the Kusto cluster.|resource_group_name|resourceGroupName|
+|**--cluster-name**|string|The name of the Kusto cluster.|cluster_name|clusterName|
+|**--database-name**|string|The name of the database in the Kusto cluster.|database_name|databaseName|
+|**--script-name**|string|The name of the Kusto database script.|script_name|scriptName|
+|**--script-url**|string|The url to the KQL script blob file.|script_url|scriptUrl|
+|**--script-url-sas-token**|string|The SaS token.|script_url_sas_token|scriptUrlSasToken|
+|**--force-update-tag**|string|A unique string. If changed the script will be applied again.|force_update_tag|forceUpdateTag|
+|**--continue-on-errors**|boolean|Flag that indicates whether to continue if one of the command fails.|continue_on_errors|continueOnErrors|
+
+#### <a name="ScriptsUpdate">Command `az kusto script update`</a>
+
+##### <a name="ExamplesScriptsUpdate">Example</a>
+```
+az kusto script update --cluster-name "kustoclusterrptest4" --database-name "KustoDatabase8" --continue-on-errors true \
+--force-update-tag "2bcf3c21-ffd1-4444-b9dd-e52e00ee53fe" --script-url "https://mysa.blob.core.windows.net/container/sc\
+ript.txt" --script-url-sas-token "?sv=2019-02-02&st=2019-04-29T22%3A18%3A26Z&se=2019-04-30T02%3A23%3A26Z&sr=b&sp=rw&sip\
+=168.1.5.60-168.1.5.70&spr=https&sig=********************************" --resource-group "kustorptest" --name \
+"kustoScript1"
+```
+##### <a name="ParametersScriptsUpdate">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The name of the resource group containing the Kusto cluster.|resource_group_name|resourceGroupName|
+|**--cluster-name**|string|The name of the Kusto cluster.|cluster_name|clusterName|
+|**--database-name**|string|The name of the database in the Kusto cluster.|database_name|databaseName|
+|**--script-name**|string|The name of the Kusto database script.|script_name|scriptName|
+|**--script-url**|string|The url to the KQL script blob file.|script_url|scriptUrl|
+|**--script-url-sas-token**|string|The SaS token.|script_url_sas_token|scriptUrlSasToken|
+|**--force-update-tag**|string|A unique string. If changed the script will be applied again.|force_update_tag|forceUpdateTag|
+|**--continue-on-errors**|boolean|Flag that indicates whether to continue if one of the command fails.|continue_on_errors|continueOnErrors|
+
+#### <a name="ScriptsDelete">Command `az kusto script delete`</a>
+
+##### <a name="ExamplesScriptsDelete">Example</a>
+```
+az kusto script delete --cluster-name "kustoclusterrptest4" --database-name "KustoDatabase8" --resource-group \
+"kustorptest" --name "kustoScript1"
+```
+##### <a name="ParametersScriptsDelete">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The name of the resource group containing the Kusto cluster.|resource_group_name|resourceGroupName|
+|**--cluster-name**|string|The name of the Kusto cluster.|cluster_name|clusterName|
+|**--database-name**|string|The name of the database in the Kusto cluster.|database_name|databaseName|
+|**--script-name**|string|The name of the Kusto database script.|script_name|scriptName|

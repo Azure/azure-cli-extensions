@@ -6,7 +6,7 @@
 
 import os
 import unittest
-import mock
+from unittest import mock
 
 from azure.cli.core.mock import DummyCli
 from azext_interactive.azclishell.configuration import Configuration

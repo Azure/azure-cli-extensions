@@ -3,10 +3,10 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import os
-import unittest
+# pylint: disable=line-too-long
 
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, record_only)
+import os
+from azure.cli.testsdk import (ScenarioTest, record_only)
 
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
@@ -14,26 +14,28 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 class K8sExtensionScenarioTest(ScenarioTest):
     @record_only()
-    @ResourceGroupPreparer(name_prefix='cli_test_k8s_extension')
     def test_k8s_extension(self):
         resource_type = 'microsoft.openservicemesh'
         self.kwargs.update({
-            'name': 'openservice-mesh',
+            'name': 'openservicemesh',
             'rg': 'nanthirg0923',
             'cluster_name': 'nanthicluster0923',
             'cluster_type': 'connectedClusters',
             'extension_type': resource_type,
-            'release_train': 'staging',
-            'version': '0.1.0'
+            'release_train': 'pilot',
+            'version': '0.8.3'
         })
 
-        self.cmd('k8s-extension create -g {rg} -n {name} -c {cluster_name} --cluster-type {cluster_type} --extension-type {extension_type} --release-train {release_train} --version {version}', checks=[
-            self.check('name', '{name}'),
-            self.check('releaseTrain', '{release_train}'),
-            self.check('version', '{version}'),
-            self.check('resourceGroup', '{rg}'),
-            self.check('extensionType', '{extension_type}')
-        ])
+        self.cmd('k8s-extension create -g {rg} -n {name} -c {cluster_name} --cluster-type {cluster_type} '
+                 '--extension-type {extension_type} --release-train {release_train} --version {version}',
+                 checks=[
+                     self.check('name', '{name}'),
+                     self.check('releaseTrain', '{release_train}'),
+                     self.check('version', '{version}'),
+                     self.check('resourceGroup', '{rg}'),
+                     self.check('extensionType', '{extension_type}')
+                 ]
+                )
 
         # Update is disabled for now
         # self.cmd('k8s-extension update -g {rg} -n {name} --tags foo=boo', checks=[

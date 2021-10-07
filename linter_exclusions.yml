@@ -61,6 +61,12 @@ aks create:
     load_balancer_outbound_ports:
       rule_exclusions:
       - option_length_too_long
+    nat_gateway_idle_timeout:
+      rule_exclusions:
+      - option_length_too_long
+    nat_gateway_managed_outbound_ip_count:
+      rule_exclusions:
+      - option_length_too_long
     node_osdisk_diskencryptionset_id:
       rule_exclusions:
       - option_length_too_long
@@ -76,10 +82,38 @@ aks create:
     workspace_resource_id:
       rule_exclusions:
       - option_length_too_long
+    enable_msi_auth_for_monitoring:
+      rule_exclusions:
+      - option_length_too_long
     enable_encryption_at_host:
       rule_exclusions:
       - option_length_too_long
     enable_pod_identity_with_kubenet:
+      rule_exclusions:
+      - option_length_too_long
+    assign_kubelet_identity:
+      rule_exclusions:
+      - option_length_too_long
+aks addon enable:
+  parameters:
+    appgw_watch_namespace:
+      rule_exclusions:
+      - option_length_too_long
+    workspace_resource_id:
+      rule_exclusions:
+      - option_length_too_long
+    enable_msi_auth_for_monitoring:
+      rule_exclusions:
+      - option_length_too_long
+aks addon update:
+  parameters:
+    appgw_watch_namespace:
+      rule_exclusions:
+      - option_length_too_long
+    workspace_resource_id:
+      rule_exclusions:
+      - option_length_too_long
+    enable_msi_auth_for_monitoring:
       rule_exclusions:
       - option_length_too_long
 aks enable-addons:
@@ -88,6 +122,9 @@ aks enable-addons:
       rule_exclusions:
       - option_length_too_long
     workspace_resource_id:
+      rule_exclusions:
+      - option_length_too_long
+    enable_msi_auth_for_monitoring:
       rule_exclusions:
       - option_length_too_long
 aks nodepool add:
@@ -131,6 +168,12 @@ aks update:
       rule_exclusions:
       - option_length_too_long
     load_balancer_outbound_ports:
+      rule_exclusions:
+      - option_length_too_long
+    nat_gateway_idle_timeout:
+      rule_exclusions:
+      - option_length_too_long
+    nat_gateway_managed_outbound_ip_count:
       rule_exclusions:
       - option_length_too_long
     enable_managed_identity:
@@ -917,14 +960,39 @@ import-export update:
     backup_drive_manifest:
       rule_exclusions:
       - option_length_too_long
-iot pnp capability-model update:
+iot hub configuration update:
   parameters:
-    repo_endpoint:
+    auth_type_dataplane:
       rule_exclusions:
       - no_parameter_defaults_for_update_commands
-iot pnp interface update:
+iot hub device-identity update:
   parameters:
-    repo_endpoint:
+    auth_type_dataplane:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+iot hub device-twin update:
+  parameters:
+    auth_type_dataplane:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+iot hub distributed-tracing update:
+  parameters:
+    auth_type_dataplane:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+iot hub module-identity update:
+  parameters:
+    auth_type_dataplane:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+iot hub module-twin update:
+  parameters:
+    auth_type_dataplane:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+iot edge deployment update:
+  parameters:
+    auth_type_dataplane:
       rule_exclusions:
       - no_parameter_defaults_for_update_commands
 k8sconfiguration create:
@@ -1176,6 +1244,14 @@ logic workflow create:
       rule_exclusions:
       - option_length_too_long
 maintenance assignment create:
+  parameters:
+    configuration_assignment_name:
+      rule_exclusions:
+      - option_length_too_long
+    maintenance_configuration_id:
+      rule_exclusions:
+      - option_length_too_long
+maintenance assignment create-or-update-parent:
   parameters:
     configuration_assignment_name:
       rule_exclusions:
@@ -2039,6 +2115,11 @@ spring-cloud update:
     disable_distributed_tracing:
       rule_exclusions:
       - option_length_too_long
+ssh vm:
+  parameters:
+    ssh_args:
+      rule_exclusions:
+        - no_positional_parameters
 storage account create:
   parameters:
     hierarchical_namespace:

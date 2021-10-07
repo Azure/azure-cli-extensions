@@ -37,6 +37,9 @@ class AddSku(argparse.Action):
                 d['capacity'] = v[0]
             elif kl == 'tier':
                 d['tier'] = v[0]
+            else:
+                raise CLIError('Unsupported Key {} is provided for parameter sku. All possible keys are: name, '
+                               'capacity, tier'.format(k))
         return d
 
 
@@ -59,6 +62,9 @@ class AddTrustedExternalTenants(argparse._AppendAction):
             v = properties[k]
             if kl == 'value':
                 d['value'] = v[0]
+            else:
+                raise CLIError('Unsupported Key {} is provided for parameter trusted_external_tenants. All possible '
+                               'keys are: value'.format(k))
         return d
 
 
@@ -87,6 +93,9 @@ class AddOptimizedAutoscale(argparse.Action):
                 d['minimum'] = v[0]
             elif kl == 'maximum':
                 d['maximum'] = v[0]
+            else:
+                raise CLIError('Unsupported Key {} is provided for parameter optimized_autoscale. All possible keys '
+                               'are: version, is-enabled, minimum, maximum'.format(k))
         return d
 
 
@@ -113,6 +122,10 @@ class AddVirtualNetworkConfiguration(argparse.Action):
                 d['engine_public_ip_id'] = v[0]
             elif kl == 'data-management-public-ip-id':
                 d['data_management_public_ip_id'] = v[0]
+            else:
+                raise CLIError('Unsupported Key {} is provided for parameter virtual_network_configuration. All '
+                               'possible keys are: subnet-id, engine-public-ip-id, data-management-public-ip-id'.
+                               format(k))
         return d
 
 
@@ -141,6 +154,9 @@ class AddKeyVaultProperties(argparse.Action):
                 d['key_vault_uri'] = v[0]
             elif kl == 'user-identity':
                 d['user_identity'] = v[0]
+            else:
+                raise CLIError('Unsupported Key {} is provided for parameter key_vault_properties. All possible keys '
+                               'are: key-name, key-version, key-vault-uri, user-identity'.format(k))
         return d
 
 
@@ -163,6 +179,9 @@ class AddClustersValue(argparse._AppendAction):
             v = properties[k]
             if kl == 'language-extension-name':
                 d['language_extension_name'] = v[0]
+            else:
+                raise CLIError('Unsupported Key {} is provided for parameter value. All possible keys are: '
+                               'language-extension-name'.format(k))
         return d
 
 
@@ -189,6 +208,9 @@ class AddReadWriteDatabase(argparse.Action):
                 d['hot_cache_period'] = v[0]
             elif kl == 'location':
                 d['location'] = v[0]
+            else:
+                raise CLIError('Unsupported Key {} is provided for parameter read_write_database. All possible keys '
+                               'are: soft-delete-period, hot-cache-period, location'.format(k))
         d['kind'] = 'ReadWrite'
         return d
 
@@ -214,6 +236,9 @@ class AddReadOnlyFollowingDatabase(argparse.Action):
                 d['hot_cache_period'] = v[0]
             elif kl == 'location':
                 d['location'] = v[0]
+            else:
+                raise CLIError('Unsupported Key {} is provided for parameter read_only_following_database. All '
+                               'possible keys are: hot-cache-period, location'.format(k))
         d['kind'] = 'ReadOnlyFollowing'
         return d
 
@@ -247,4 +272,44 @@ class AddDatabasesValue(argparse._AppendAction):
                 d['email'] = v[0]
             elif kl == 'app-id':
                 d['app_id'] = v[0]
+            else:
+                raise CLIError('Unsupported Key {} is provided for parameter value. All possible keys are: role, name, '
+                               'type, fqn, email, app-id'.format(k))
+        return d
+
+
+class AddTableLevelSharingProperties(argparse.Action):
+    def __call__(self, parser, namespace, values, option_string=None):
+        action = self.get_action(values, option_string)
+        namespace.table_level_sharing_properties = action
+
+    def get_action(self, values, option_string):  # pylint: disable=no-self-use
+        try:
+            properties = defaultdict(list)
+            for (k, v) in (x.split('=', 1) for x in values):
+                properties[k].append(v)
+            properties = dict(properties)
+        except ValueError:
+            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+        d = {}
+        for k in properties:
+            kl = k.lower()
+            v = properties[k]
+            if kl == 'tables-to-include':
+                d['tables_to_include'] = v
+            elif kl == 'tables-to-exclude':
+                d['tables_to_exclude'] = v
+            elif kl == 'external-tables-to-include':
+                d['external_tables_to_include'] = v
+            elif kl == 'external-tables-to-exclude':
+                d['external_tables_to_exclude'] = v
+            elif kl == 'materialized-views-to-include':
+                d['materialized_views_to_include'] = v
+            elif kl == 'materialized-views-to-exclude':
+                d['materialized_views_to_exclude'] = v
+            else:
+                raise CLIError('Unsupported Key {} is provided for parameter table_level_sharing_properties. All '
+                               'possible keys are: tables-to-include, tables-to-exclude, external-tables-to-include, '
+                               'external-tables-to-exclude, materialized-views-to-include, '
+                               'materialized-views-to-exclude'.format(k))
         return d

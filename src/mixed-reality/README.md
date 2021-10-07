@@ -10,4 +10,5 @@ az extension add --name mixed-reality
 Then, call it as you would any other az command:
 ```
 az spatial-anchors-account -h
+az remote-rendering-account -h
 ```
