@@ -137,7 +137,7 @@ def write_ssh_config(relay_info, proxy_path, vm_name, ip, username,
                                  f"Couldn't write relay information to file {relay_info_path}", 'utf-8')
         oschmod.set_mode(relay_info_path, stat.S_IRUSR)
 
-        lines.append("Host " + vm_name)
+        lines.append("Host " + resource_group + "-" + vm_name)
         lines = lines + common_lines
         if port:
             lines.append("\tProxyCommand " + proxy_path + " " + "-r " + relay_info_path + " " + "-p " + port)

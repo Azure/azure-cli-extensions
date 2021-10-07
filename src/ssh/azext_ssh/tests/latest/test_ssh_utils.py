@@ -242,7 +242,7 @@ class SSHUtilsTests(unittest.TestCase):
         import stat
         expected_lines = [
             "",
-            "Host vm",
+            "Host rg-vm",
             "\tUser username",
             "\tCertificateFile cert",
             "\tIdentityFile privatekey",
@@ -269,7 +269,7 @@ class SSHUtilsTests(unittest.TestCase):
         import stat
         expected_lines = [
             "",
-            "Host vm",
+            "Host rg-vm",
             "\tUser username",
             "\tCertificateFile cert",
             "\tIdentityFile privatekey",
