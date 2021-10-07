@@ -355,6 +355,9 @@ helps['aks create'] = """
         - name: --workload-runtime
           type: string
           short-summary: Determines the type of workload a node can run. Defaults to OCIContainer.
+        - name: --gpu-instance-profile
+          type: string
+          short-summary: GPU instance profile to partition multi-gpu Nvidia GPUs.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -942,6 +945,9 @@ helps['aks nodepool add'] = """
         - name: --workload-runtime
           type: string
           short-summary: Determines the type of workload a node can run. Defaults to OCIContainer.
+        - name: --gpu-instance-profile
+          type: string
+          short-summary: GPU instance profile to partition multi-gpu Nvidia GPUs.
     examples:
         - name: Create a nodepool in an existing AKS cluster with ephemeral os enabled.
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --node-osdisk-type Ephemeral --node-osdisk-size 48

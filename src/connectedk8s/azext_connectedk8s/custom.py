@@ -41,8 +41,7 @@ from azext_connectedk8s._client_factory import get_graph_client_service_principa
 import azext_connectedk8s._constants as consts
 import azext_connectedk8s._utils as utils
 from glob import glob
-from .vendored_sdks.models import ConnectedCluster, ConnectedClusterIdentity
-from .vendored_sdks.preview_2021_04_01.models import ListClusterUserCredentialsProperties
+from .vendored_sdks.models import ConnectedCluster, ConnectedClusterIdentity, ListClusterUserCredentialProperties
 from threading import Timer, Thread
 import sys
 import hashlib
@@ -1599,11 +1598,17 @@ def client_side_proxy_wrapper(cmd,
                               context_name=None,
                               api_server_port=consts.API_SERVER_PORT):
 
+    cloud = send_cloud_telemetry(cmd)
+    if cloud == consts.Azure_USGovCloudName:
+        telemetry.set_debug_info('User tried proxy command in fairfax')
+        telemetry.set_exception(exception='Proxy command is not present yet in fairfax cloud.', fault_type=consts.ClusterConnect_Not_Present_Fault_Type,
+                                summary=f'User tried proxy command in fairfax.')
+        raise ClientRequestError(f'Cluster Connect feature is not yet available in {consts.Azure_USGovCloudName}')
+
     client_proxy_port = consts.CLIENT_PROXY_PORT
     if int(client_proxy_port) == int(api_server_port):
         raise ClientRequestError('Proxy uses port 47010 internally.', recommendation='Please pass some other unused port through --port option.')
 
-    cloud = send_cloud_telemetry(cmd)
     args = []
     operating_system = platform.system()
     proc_name = f'arcProxy{operating_system}'
@@ -1852,11 +1857,11 @@ def client_side_proxy(cmd,
 
     # Fetching hybrid connection details from Userrp
     try:
-        list_prop = ListClusterUserCredentialsProperties(
+        list_prop = ListClusterUserCredentialProperties(
             authentication_method=auth_method,
             client_proxy=True
         )
-        response = client.list_cluster_user_credentials(resource_group_name, cluster_name, list_prop)
+        response = client.list_cluster_user_credential(resource_group_name, cluster_name, list_prop)
     except Exception as e:
         if flag == 1:
             clientproxy_process.terminate()
