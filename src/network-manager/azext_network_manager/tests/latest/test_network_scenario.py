@@ -234,7 +234,42 @@ class NetworkScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='test_network_manager_user_rule_crud', location='eastus2euap')
     @VirtualNetworkPreparer()
     def test_network_manager_user_rule_crud(self, virtual_network, resource_group):
-        pass
+        self.kwargs.update({
+            'rule_name': 'myRule',
+            'collection_name': 'myTestCollection',
+            'config_name': 'myTestSecurityConfig',
+            'manager_name': 'TestNetworkManager',
+            'group_name': 'TestNetworkGroup',
+            'description': '"A sample policy"',
+            'sub': '/subscriptions/{}'.format(self.get_subscription_id()),
+            'virtual_network': virtual_network
+        })
+
+        self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" --display-name "TestNetworkManager" '
+                 '--network-manager-scope-accesses "SecurityUser" "Connectivity" '
+                 '--network-manager-scopes '
+                 ' subscriptions={sub} '
+                 '-l eastus2euap '
+                 '--resource-group {rg}')
+
+        self.cmd('network manager group create --name {group_name} --network-manager-name {manager_name} --description {description} '
+                 '--conditional-membership "" --display-name ASampleGroup --member-type VirtualNetwork  -g {rg} '
+                 '--group-members resource-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}" ')
+
+        self.cmd('network manager security-user-config create --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} '
+                 '--description {description} --delete-existing-ns-gs true --security-type "UserPolicy" --display-name MyTestConfig')
+
+        self.cmd('network manager user-rule collection create --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} '
+                 '--rule-collection-name {collection_name} --description {description} --display-name ASampleCollection '
+                 '--applies-to-groups  network-group-id={sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkManagers/{manager_name}/networkGroups/{group_name}')
+
+        self.cmd('network manager user-rule create -g {rg} --network-manager-name {manager_name} --configuration-name {config_name} --rule-collection-name {collection_name} '
+                 '--rule-name {rule_name} --kind "Custom" --protocol "Tcp" --direction "Inbound"')
+        self.cmd('network manager user-rule show -g {rg} --network-manager-name {manager_name} --configuration-name {config_name} --rule-collection-name {collection_name} --rule-name {rule_name}')
+        self.cmd('network manager user-rule update -g {rg} --network-manager-name {manager_name} --configuration-name {config_name} --rule-collection-name {collection_name} --rule-name {rule_name} '
+                 '--protocol "Udp"')
+        self.cmd('network manager user-rule list -g {rg} --network-manager-name {manager_name} --configuration-name {config_name} --rule-collection-name {collection_name}')
+        self.cmd('network manager user-rule delete -g {rg} --network-manager-name {manager_name} --configuration-name {config_name} --rule-collection-name {collection_name} --rule-name {rule_name} --yes')
 
     @ResourceGroupPreparer(name_prefix='test_network_manager_user_rule_collection_crud', location='eastus2euap')
     @VirtualNetworkPreparer()

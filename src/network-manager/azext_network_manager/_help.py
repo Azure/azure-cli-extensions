@@ -468,6 +468,25 @@ helps['network manager admin-rule'] = """
 helps['network manager admin-rule create'] = """
     type: command
     short-summary: "Create a network manager security configuration admin rule."
+    parameters:
+      - name: --source
+        short-summary: "The CIDR or source IP ranges."
+        long-summary: |
+            Usage: --source address-prefix=XX address-prefix-type=XX
+
+            address-prefix: Address prefix.
+            address-prefix-type: Address prefix type.
+
+            Multiple actions can be specified by using more than one --source argument.
+      - name: --destination
+        short-summary: "The destination address prefixes. CIDR or destination IP ranges."
+        long-summary: |
+            Usage: --destination address-prefix=XX address-prefix-type=XX
+
+            address-prefix: Address prefix.
+            address-prefix-type: Address prefix type.
+
+            Multiple actions can be specified by using more than one --destination argument.
     examples:
       - name: Create security admin rules
         text: |-
@@ -488,6 +507,25 @@ helps['network manager admin-rule list'] = """
 helps['network manager admin-rule update'] = """
     type: command
     short-summary: "Update a network manager security configuration admin rule in a subscription."
+    parameters:
+      - name: --source
+        short-summary: "The CIDR or source IP ranges."
+        long-summary: |
+            Usage: --source address-prefix=XX address-prefix-type=XX
+
+            address-prefix: Address prefix.
+            address-prefix-type: Address prefix type.
+
+            Multiple actions can be specified by using more than one --source argument.
+      - name: --destination
+        short-summary: "The destination address prefixes. CIDR or destination IP ranges."
+        long-summary: |
+            Usage: --destination address-prefix=XX address-prefix-type=XX
+
+            address-prefix: Address prefix.
+            address-prefix-type: Address prefix type.
+
+            Multiple actions can be specified by using more than one --destination argument.
     examples:
       - name: Update security admin rule
         text: |-
@@ -649,7 +687,7 @@ helps['network manager user-rule update'] = """
             address-prefix-type: Address prefix type.
 
             Multiple actions can be specified by using more than one --destination argument.
-     examples:
+    examples:
       - name: Update a user rule
         text: |-
                az network manager user-rule update --configuration-name "myTestSecurityConfig" --network-manager-name \

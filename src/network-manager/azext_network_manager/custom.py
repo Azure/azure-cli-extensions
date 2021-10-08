@@ -771,9 +771,9 @@ def network_manager_user_rule_collection_delete(client,
                                                 configuration_name,
                                                 rule_collection_name):
     return client.delete(resource_group_name=resource_group_name,
-                      network_manager_name=network_manager_name,
-                      configuration_name=configuration_name,
-                      rule_collection_name=rule_collection_name)
+                         network_manager_name=network_manager_name,
+                         configuration_name=configuration_name,
+                         rule_collection_name=rule_collection_name)
 
 
 def network_manager_user_rule_list(client,

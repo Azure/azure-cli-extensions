@@ -465,62 +465,48 @@ def load_arguments(self, _):
                    id_part='child_name_1')
         c.argument('rule_collection_name', type=str, help='The name of the admin rule collection.')
 
-    with self.argument_context('network manager user-rule list') as c:
+
+    with self.argument_context('network manager user-rule') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('network_manager_name', type=str, help='The name of the network manager.')
         c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.')
+        c.argument('rule_collection_name', type=str, help='The name of the admin rule collection.')
+        c.argument('rule_name', type=str, help='The name of the rule.', id_part='child_name_2')
+
+    with self.argument_context('network manager user-rule list') as c:
         c.argument('top', type=int, help='An optional query parameter which specifies the maximum number of records to '
                    'be returned by the server.')
         c.argument('skip_token', type=str, help='SkipToken is only used if a previous operation returned a partial '
                    'result. If a previous response contains a nextLink element, the value of the nextLink element will '
                    'include a skipToken parameter that specifies a starting point to use for subsequent calls.')
 
-    with self.argument_context('network manager user-rule show') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part='name')
-        c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.',
-                   id_part='child_name_1')
-        c.argument('rule_name', type=str, help='The name of the rule.', id_part='child_name_2')
-
     with self.argument_context('network manager user-rule create') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('network_manager_name', type=str, help='The name of the network manager.')
-        c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.')
-        c.argument('rule_name', type=str, help='The name of the rule.')
         c.argument('display_name', type=str, help='A friendly name for the rule.')
         c.argument('description', type=str, help='A description for this rule. Restricted to 140 chars.')
         c.argument('protocol', arg_type=get_enum_type(['Tcp', 'Udp', 'Icmp', 'Esp', 'Any', 'Ah']), help='Network '
                    'protocol this rule applies to.')
-        c.argument('source', action=AddSource, nargs='+', help='The CIDR or source IP ranges.')
-        c.argument('destination', action=AddDestination, nargs='+', help='The destination address prefixes. CIDR or '
+        c.argument('sources', action=AddSource, nargs='+', help='The CIDR or source IP ranges.')
+        c.argument('destinations', action=AddDestination, nargs='+', help='The destination address prefixes. CIDR or '
                    'destination IP ranges.')
         c.argument('source_port_ranges', nargs='+', help='The source port ranges.')
         c.argument('destination_port_ranges', nargs='+', help='The destination port ranges.')
         c.argument('direction', arg_type=get_enum_type(['Inbound', 'Outbound']), help='Indicates if the traffic '
                    'matched against the rule in inbound or outbound.')
+        c.argument('flag', type=str, help='Default rule flag.')
+        c.argument('kind', type=str, help='Required. Whether the rule is custom or default.Constant filled by server.', arg_type=get_enum_type(['Custom', 'Default']))
 
     with self.argument_context('network manager user-rule update') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part='name')
-        c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.',
-                   id_part='child_name_1')
-        c.argument('rule_name', type=str, help='The name of the rule.', id_part='child_name_2')
         c.argument('display_name', type=str, help='A friendly name for the rule.')
         c.argument('description', type=str, help='A description for this rule. Restricted to 140 chars.')
         c.argument('protocol', arg_type=get_enum_type(['Tcp', 'Udp', 'Icmp', 'Esp', 'Any', 'Ah']), help='Network '
                    'protocol this rule applies to.')
-        c.argument('source', action=AddSource, nargs='+', help='The CIDR or source IP ranges.')
-        c.argument('destination', action=AddDestination, nargs='+', help='The destination address prefixes. CIDR or '
+        c.argument('sources', action=AddSource, nargs='+', help='The CIDR or source IP ranges.')
+        c.argument('destinations', action=AddDestination, nargs='+', help='The destination address prefixes. CIDR or '
                    'destination IP ranges.')
         c.argument('source_port_ranges', nargs='+', help='The source port ranges.')
         c.argument('destination_port_ranges', nargs='+', help='The destination port ranges.')
         c.argument('direction', arg_type=get_enum_type(['Inbound', 'Outbound']), help='Indicates if the traffic '
                    'matched against the rule in inbound or outbound.')
+        c.argument('flag', type=str, help='Default rule flag.')
+        c.argument('kind', type=str, help='Required. Whether the rule is custom or default.Constant filled by server.', arg_type=get_enum_type(['Custom', 'Default']))
         c.ignore('user_rule')
-
-    with self.argument_context('network manager user-rule delete') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part='name')
-        c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.',
-                   id_part='child_name_1')
-        c.argument('rule_name', type=str, help='The name of the rule.', id_part='child_name_2')
