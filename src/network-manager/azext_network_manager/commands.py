@@ -105,7 +105,7 @@ def load_command_table(self, _):
     )
 
     network_userrulecollection = CliCommandType(
-        operations_tmpl='azext_network_manager.vendored_sdks.operations._user_rule_collection_operations#UserRuleCollectionsOperations.{}',
+        operations_tmpl='azext_network_manager.vendored_sdks.operations._user_rule_collections_operations#UserRuleCollectionsOperations.{}',
         client_factory=cf_userrulecollection
     )
 

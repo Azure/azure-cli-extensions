@@ -719,13 +719,13 @@ def network_manager_user_rule_collection_list(client,
 
 
 def network_manager_user_rule_collection_create(client,
-                                                 resource_group_name,
-                                                 network_manager_name,
-                                                 configuration_name,
-                                                 rule_collection_name,
-                                                 display_name=None,
-                                                 description=None,
-                                                 applies_to_groups=None):
+                                                resource_group_name,
+                                                network_manager_name,
+                                                configuration_name,
+                                                rule_collection_name,
+                                                display_name=None,
+                                                description=None,
+                                                applies_to_groups=None):
     rule_collection = {}
     rule_collection['display_name'] = display_name
     rule_collection['description'] = description
@@ -734,17 +734,17 @@ def network_manager_user_rule_collection_create(client,
                                    network_manager_name=network_manager_name,
                                    configuration_name=configuration_name,
                                    rule_collection_name=rule_collection_name,
-                                   rule_collection=rule_collection)
+                                   user_rule_collection=rule_collection)
 
 
 def network_manager_user_rule_collection_update(instance,
-                                                 resource_group_name,
-                                                 network_manager_name,
-                                                 configuration_name,
-                                                 rule_collection_name,
-                                                 display_name=None,
-                                                 description=None,
-                                                 applies_to_groups=None):
+                                                resource_group_name,
+                                                network_manager_name,
+                                                configuration_name,
+                                                rule_collection_name,
+                                                display_name=None,
+                                                description=None,
+                                                applies_to_groups=None):
     if display_name is not None:
         instance.display_name = display_name
     if description is not None:
