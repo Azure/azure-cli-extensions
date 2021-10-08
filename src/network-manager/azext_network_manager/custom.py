@@ -616,27 +616,27 @@ def network_manager_admin_rule_create(client,
                                    configuration_name=configuration_name,
                                    rule_collection_name=rule_collection_name,
                                    rule_name=rule_name,
-                                   rule=rule)
+                                   admin_rule=rule)
 
 
 def network_manager_admin_rule_update(instance,
-                                     resource_group_name,
-                                     network_manager_name,
-                                     configuration_name,
-                                     collection_name,
-                                     rule_name,
-                                     kind=None,
-                                     display_name=None,
-                                     description=None,
-                                     protocol=None,
-                                     sources=None,
-                                     destinations=None,
-                                     source_port_ranges=None,
-                                     destination_port_ranges=None,
-                                     access=None,
-                                     priority=None,
-                                     direction=None,
-                                     flag=None):
+                                      resource_group_name,
+                                      network_manager_name,
+                                      configuration_name,
+                                      rule_collection_name,
+                                      rule_name,
+                                      kind=None,
+                                      display_name=None,
+                                      description=None,
+                                      protocol=None,
+                                      sources=None,
+                                      destinations=None,
+                                      source_port_ranges=None,
+                                      destination_port_ranges=None,
+                                      access=None,
+                                      priority=None,
+                                      direction=None,
+                                      flag=None):
     if kind == 'DefaultAdminRule':
         if flag is not None:
             instance.flag = flag

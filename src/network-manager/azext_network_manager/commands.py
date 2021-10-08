@@ -191,7 +191,7 @@ def load_command_table(self, _):
 
     with self.command_group('network manager admin-rule', network_adminrule, client_factory=cf_adminrule) as g:
         g.custom_command('create', 'network_manager_admin_rule_create')
-        g.generic_update_command('update', setter_arg_name='admin_rule', custom_func_name='network_manager_admin_update')
+        g.generic_update_command('update', setter_arg_name='admin_rule', custom_func_name='network_manager_admin_rule_update')
         g.custom_command('list', 'network_manager_admin_rule_list')
         g.custom_show_command('show', 'network_manager_admin_rule_show')
         g.custom_command('delete', 'network_manager_admin_rule_delete', confirmation=True)

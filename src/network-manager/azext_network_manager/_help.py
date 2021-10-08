@@ -408,6 +408,16 @@ helps['network manager admin-rule'] = """
     short-summary: Manage adminrule with network
 """
 
+helps['network manager admin-rule create'] = """
+    type: command
+    short-summary: "Create a network manager security configuration admin rule."
+    examples:
+      - name: Create security admin rules
+        text: |-
+               az network manager admin-rule show --configuration-name "myTestSecurityConfig" --network-manager-name \
+"testNetworkManager" --resource-group "rg1" --rule-name "SampleAdminRule" --kind "Custom" --protocol "Tcp" --access "Allow" --priority 32 --direction "Inbound"
+"""
+
 helps['network manager admin-rule list'] = """
     type: command
     short-summary: "Retrieves a network manager security configuration admin rule."
@@ -416,6 +426,16 @@ helps['network manager admin-rule list'] = """
         text: |-
                az network manager admin-rule list --configuration-name "myTestSecurityConfig" --network-manager-name \
 "testNetworkManager" --resource-group "rg1"
+"""
+
+helps['network manager admin-rule update'] = """
+    type: command
+    short-summary: "Update a network manager security configuration admin rule in a subscription."
+    examples:
+      - name: Update security admin rule
+        text: |-
+               az network manager admin-rule update --configuration-name "myTestSecurityConfig" --network-manager-name \
+"testNetworkManager" --resource-group "rg1" --rule-name "SampleAdminRule" --access "Deny"
 """
 
 helps['network manager admin-rule show'] = """

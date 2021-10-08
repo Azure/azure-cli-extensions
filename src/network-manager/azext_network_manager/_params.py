@@ -376,19 +376,47 @@ def load_arguments(self, _):
                    id_part='child_name_1')
         c.argument('rule_collection_name', type=str, help='The name of the admin rule collection.')
 
-    with self.argument_context('network manager admin-rule show') as c:
+    with self.argument_context('network manager admin-rule') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part='name')
         c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.',
                    id_part='child_name_1')
         c.argument('rule_name', type=str, help='The name of the rule.', id_part='child_name_2')
+        c.argument('rule_collection_name', type=str, help='The name of the admin rule collection.')
 
-    with self.argument_context('network manager admin-rule delete') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part='name')
-        c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.',
-                   id_part='child_name_1')
-        c.argument('rule_name', type=str, help='The name of the rule.', id_part='child_name_2')
+    with self.argument_context('network manager admin-rule create') as c:
+        c.argument('access', type=str, help='Indicates the access allowed for this particular rule.', arg_type=get_enum_type(['Allow', 'Deny', 'AlwaysAllow']))
+        c.argument('flag', type=str, help='Default rule flag.')
+        c.argument('kind', type=str, help='Required. Whether the rule is custom or default.Constant filled by server.', arg_type=get_enum_type(['Custom', 'Default']))
+        c.argument('priority', type=int, help='The priority of the rule.')
+        c.argument('sources', action=AddSource, nargs='+', help='The CIDR or source IP ranges.')
+        c.argument('destinations', action=AddDestination, nargs='+', help='The destination address prefixes. CIDR or '
+                   'destination IP ranges.')
+        c.argument('display_name', type=str, help='A friendly name for the rule.')
+        c.argument('description', type=str, help='A description for this rule. Restricted to 140 chars.')
+        c.argument('protocol', arg_type=get_enum_type(['Tcp', 'Udp', 'Icmp', 'Esp', 'Any', 'Ah']), help='Network '
+                   'protocol this rule applies to.')
+        c.argument('source_port_ranges', nargs='+', help='The source port ranges.')
+        c.argument('destination_port_ranges', nargs='+', help='The destination port ranges.')
+        c.argument('direction', arg_type=get_enum_type(['Inbound', 'Outbound']), help='Indicates if the traffic '
+                   'matched against the rule in inbound or outbound.')
+
+    with self.argument_context('network manager admin-rule update') as c:
+        c.argument('access', type=str, help='Indicates the access allowed for this particular rule.', arg_type=get_enum_type(['Allow', 'Deny', 'AlwaysAllow']))
+        c.argument('flag', type=str, help='Default rule flag.')
+        c.argument('kind', type=str, help='Required. Whether the rule is custom or default.Constant filled by server.', arg_type=get_enum_type(['Custom', 'Default']))
+        c.argument('priority', type=int, help='The priority of the rule.')
+        c.argument('sources', action=AddSource, nargs='+', help='The CIDR or source IP ranges.')
+        c.argument('destinations', action=AddDestination, nargs='+', help='The destination address prefixes. CIDR or '
+                   'destination IP ranges.')
+        c.argument('display_name', type=str, help='A friendly name for the rule.')
+        c.argument('description', type=str, help='A description for this rule. Restricted to 140 chars.')
+        c.argument('protocol', arg_type=get_enum_type(['Tcp', 'Udp', 'Icmp', 'Esp', 'Any', 'Ah']), help='Network '
+                   'protocol this rule applies to.')
+        c.argument('source_port_ranges', nargs='+', help='The source port ranges.')
+        c.argument('destination_port_ranges', nargs='+', help='The destination port ranges.')
+        c.argument('direction', arg_type=get_enum_type(['Inbound', 'Outbound']), help='Indicates if the traffic '
+                   'matched against the rule in inbound or outbound.')
 
     with self.argument_context('network manager user-rule list') as c:
         c.argument('resource_group_name', resource_group_name_type)
