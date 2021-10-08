@@ -182,6 +182,7 @@ def load_arguments(self, _):
         c.argument('revision', help='NSX revision number.')
         c.argument('dhcp_ranges', nargs='+', help='DHCP Range assigned for subnet.')
         c.argument('gateway_address', help='Gateway address.')
+        c.argument('port_name', help='Name of port or VIF attached to segment.')
 
     with self.argument_context('vmware workload-network public-ip') as c:
         c.argument('public_ip', help="NSX Public IP Block identifier. Generally the same as the Public IP.")
