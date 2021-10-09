@@ -151,12 +151,12 @@ def load_arguments(self, _):
         c.argument('configuration_name', type=str, help='The name of the network manager connectivity configuration.')
         c.argument('display_name', type=str, help='A friendly name for the resource.')
         c.argument('description', type=str, help='A description of the connectivity configuration.')
-        c.argument('connectivity_topology', arg_type=get_enum_type(['HubAndSpokeTopology', 'MeshTopology']),
+        c.argument('connectivity_topology', arg_type=get_enum_type(['HubAndSpoke', 'Mesh']),
                    help='Connectivity topology type.')
-        c.argument('hub_id', type=str, help='The hub vnet Id.')
         c.argument('is_global', arg_type=get_three_state_flag(), help='Flag if global mesh is supported.')
         c.argument('applies_to_groups', action=AddConnectivityconfigurationsAppliesToGroups, nargs='+', help='Groups '
                    'for configuration')
+        c.argument('hubs', action=AddGroupMembers, nargs='+', help='The hub vnets.')
         c.argument('delete_existing_peering', arg_type=get_three_state_flag(), help='Flag if need to remove current '
                    'existing peerings.')
 
@@ -169,10 +169,10 @@ def load_arguments(self, _):
         c.argument('description', type=str, help='A description of the connectivity configuration.')
         c.argument('connectivity_topology', arg_type=get_enum_type(['HubAndSpokeTopology', 'MeshTopology']),
                    help='Connectivity topology type.')
-        c.argument('hub_id', type=str, help='The hub vnet Id.')
         c.argument('is_global', arg_type=get_three_state_flag(), help='Flag if global mesh is supported.')
         c.argument('applies_to_groups', action=AddConnectivityconfigurationsAppliesToGroups, nargs='+', help='Groups '
                    'for configuration')
+        c.argument('hubs', action=AddGroupMembers, nargs='+', help='The hub vnets.')
         c.argument('delete_existing_peering', arg_type=get_three_state_flag(), help='Flag if need to remove current '
                    'existing peerings.')
         c.ignore('connectivity_configuration')

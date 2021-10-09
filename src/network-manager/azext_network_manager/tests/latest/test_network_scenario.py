@@ -319,12 +319,38 @@ class NetworkScenarioTest(ScenarioTest):
         # manager perimeter-associable-resource-types list
         pass
 
-
-    @unittest.skip('TODO')
     @ResourceGroupPreparer(name_prefix='test_network_manager_connect_config_crud', location='eastus2euap')
     @VirtualNetworkPreparer()
     def test_network_manager_connect_config_crud(self, virtual_network, resource_group):
-        pass
+        self.kwargs.update({
+            'config_name': 'myTestSecurityConfig',
+            'manager_name': 'TestNetworkManager',
+            'group_name': 'TestNetworkGroup',
+            'description': '"A sample policy"',
+            'sub': '/subscriptions/{}'.format(self.get_subscription_id()),
+            'virtual_network': virtual_network
+        })
+
+        self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" --display-name "TestNetworkManager" '
+                 '--network-manager-scope-accesses "SecurityUser" "Connectivity" '
+                 '--network-manager-scopes '
+                 ' subscriptions={sub} '
+                 '-l eastus2euap '
+                 '--resource-group {rg}')
+
+        self.cmd('network manager group create --name {group_name} --network-manager-name {manager_name} --description {description} '
+                 '--conditional-membership "" --display-name ASampleGroup --member-type VirtualNetwork  -g {rg} '
+                 '--group-members resource-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}" ')
+
+        self.cmd('network manager connect-config create --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} '
+                 '--applies-to-groups group-connectivity="None" network-group-id={sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkManagers/{manager_name}/networkGroups/{group_name} '
+                 'is-global=false use-hub-gateway=true --connectivity-topology "HubAndSpoke" --delete-existing-peering true --hubs '
+                 'resource-id={sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network} '
+                 'resource-type="Microsoft.Network/virtualNetworks" --description "Sample Configuration" --is-global true')
+        self.cmd('network manager connect-config show --configuration-name {config_name} --network-manager-name {manager_name} -g {rg}')
+        self.cmd('network manager connect-config update --configuration-name {config_name} --network-manager-name {manager_name} -g {rg}')
+        self.cmd('network manager connect-config list --network-manager-name {manager_name} -g {rg}')
+        self.cmd('network manager connect-config delete --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} --yes')
  
 
     @unittest.skip('TODO')

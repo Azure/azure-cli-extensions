@@ -91,9 +91,11 @@ class AddGroupMembers(argparse._AppendAction):
             v = properties[k]
             if kl == 'resource-id':
                 d['resource_id'] = v[0]
+            elif kl == 'resource-type':
+                d['resource_type'] = v[0]
             else:
                 raise CLIError('Unsupported Key {} is provided for parameter group_members. All possible keys are: '
-                               'resource-id'.format(k))
+                               'resource-id, resource-type'.format(k))
         return d
 
 

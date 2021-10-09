@@ -245,7 +245,7 @@ def network_manager_connect_config_create(client,
                                           display_name=None,
                                           description=None,
                                           connectivity_topology=None,
-                                          hub_id=None,
+                                          hubs=None,
                                           is_global=None,
                                           applies_to_groups=None,
                                           delete_existing_peering=None):
@@ -253,7 +253,7 @@ def network_manager_connect_config_create(client,
     connectivity_configuration['display_name'] = display_name
     connectivity_configuration['description'] = description
     connectivity_configuration['connectivity_topology'] = connectivity_topology
-    connectivity_configuration['hub_id'] = hub_id
+    connectivity_configuration['hubs'] = hubs
     connectivity_configuration['is_global'] = is_global
     connectivity_configuration['applies_to_groups'] = applies_to_groups
     connectivity_configuration['delete_existing_peering'] = delete_existing_peering
@@ -270,7 +270,7 @@ def network_manager_connect_config_update(instance,
                                           display_name=None,
                                           description=None,
                                           connectivity_topology=None,
-                                          hub_id=None,
+                                          hubs=None,
                                           is_global=None,
                                           applies_to_groups=None,
                                           delete_existing_peering=None):
@@ -280,8 +280,8 @@ def network_manager_connect_config_update(instance,
         instance.description = description
     if connectivity_topology is not None:
         instance.connectivity_topology = connectivity_topology
-    if hub_id is not None:
-        instance.hub_id = hub_id
+    if hubs is not None:
+        instance.hubs = hubs
     if is_global is not None:
         instance.is_global = is_global
     if applies_to_groups is not None:
