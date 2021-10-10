@@ -1368,3 +1368,44 @@ helps['aks egress-endpoints list'] = """
     type: command
     short-summary: List egress endpoints that are required or recommended to be whitelisted for a cluster.
 """
+
+helps['aks snapshot'] = """
+    type: group
+    short-summary: Commands to manage snapshots.
+"""
+
+helps['aks snapshot show'] = """
+    type: command
+    short-summary: Show the details for a snapshot.
+"""
+
+helps['aks snapshot list'] = """
+    type: command
+    short-summary: List snapshots.
+"""
+
+helps['aks snapshot create'] = """
+    type: command
+    short-summary: Create a snapshot of a node pool.
+    parameters:
+        - name: --source-nodepool-id
+          type: string
+          short-summary: The source node pool id.
+        - name: --tags
+          type: string
+          short-summary: The tags of the snapshot.
+        - name: --aks-custom-headers
+          type: string
+          short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
+
+    examples:
+        - name: Create a snapshot.
+          text: az aks snapshot create -g MyResourceGroup -n snapshot1 --source-nodepool-id "/subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.ContainerService/managedClusters/akscluster1/agentPools/nodepool1"
+        - name: Create a snapshot with custom tags.
+          text: az aks snapshot create -g MyResourceGroup -n snapshot1 --source-nodepool-id "/subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.ContainerService/managedClusters/akscluster1/agentPools/nodepool1" --tags "foo=bar" "key1=val1"
+"""
+
+helps['aks snapshot delete'] = """
+    type: command
+    short-summary: Delete a snapshot.
+"""

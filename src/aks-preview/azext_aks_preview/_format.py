@@ -214,3 +214,22 @@ def aks_pod_identities_table_format(result):
     }""")
     # use ordered dicts so headers are predictable
     return parsed.search(result, Options(dict_cls=OrderedDict, custom_functions=_custom_functions(preview)))
+
+def aks_list_snapshot_table_format(results):
+    """"Format a list of snapshots as summary results for display with "-o table"."""
+    return [_aks_snapshot_table_format(r) for r in results]
+
+
+def aks_show_snapshot_table_format(result):
+    """Format a snapshot as summary results for display with "-o table"."""
+    return [_aks_snapshot_table_format(result)]
+
+
+def _aks_snapshot_table_format(result):
+    parsed = compile_jmes("""{
+        name: name,
+        location: location,
+        resourceGroup: resourceGroup
+    }""")
+    # use ordered dicts so headers are predictable
+    return parsed.search(result, Options(dict_cls=OrderedDict))

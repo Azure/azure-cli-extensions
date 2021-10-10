@@ -2,6 +2,14 @@
 
 Release History
 ===============
+0.5.35
++++++
+* Add support for new snapshot commands
+  * `az aks snapshot list`
+  * `az aks snapshot show`
+  * `az aks snapshot create`
+  * `az aks snapshot delete`
+
 0.5.34
 +++++
 * Add support for WASM nodepools (`--workload-runtime WasmWasi`) in `az aks create`

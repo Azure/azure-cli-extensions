@@ -79,7 +79,9 @@ from .vendored_sdks.azure_mgmt_preview_aks.v2021_08_01.models import (ContainerS
                                                                       ManagedClusterPodIdentityProfile,
                                                                       ManagedClusterPodIdentity,
                                                                       ManagedClusterPodIdentityException,
-                                                                      UserAssignedIdentity)
+                                                                      UserAssignedIdentity,
+                                                                      Snapshot,
+                                                                      CreationData)
 from ._client_factory import cf_resource_groups
 from ._client_factory import get_auth_management_client
 from ._client_factory import get_graph_rbac_management_client
@@ -3733,3 +3735,52 @@ def _ensure_cluster_identity_permission_on_kubelet_identity(cli_ctx, cluster_ide
 
 def aks_egress_endpoints_list(cmd, client, resource_group_name, name):   # pylint: disable=unused-argument
     return client.list_outbound_network_dependencies_endpoints(resource_group_name, name)
+
+def aks_snapshot_create(cmd,      # pylint: disable=unused-argument,too-many-locals
+                      client,
+                      resource_group_name,
+                      name,
+                      source_nodepool_id,
+                      location=None,
+                      tags=None,
+                      aks_custom_headers=None,
+                      no_wait=False):
+
+    rg_location = get_rg_location(cmd.cli_ctx, resource_group_name)
+    if location is None:
+        location = rg_location
+
+    creationData = CreationData(
+        source_resource_id = source_nodepool_id
+    )
+
+    snapshot = Snapshot(
+        name=_trim_nodepoolname(name),
+        tags=tags,
+        location=location,
+        creation_data=creationData
+    )
+
+    headers = get_aks_custom_headers(aks_custom_headers)
+    return client.create_or_update(resource_group_name, _trim_nodepoolname(name), snapshot, headers=headers)
+
+def aks_snapshot_show(cmd, client, resource_group_name, name):   # pylint: disable=unused-argument
+    snapshot = client.get(resource_group_name, name)
+    return _remove_nulls([snapshot])[0]
+
+def aks_snapshot_delete(cmd,   # pylint: disable=unused-argument
+                         client,
+                         resource_group_name,
+                         name,
+                         no_wait=False):
+    logger.warning('resource_group_name: %s, snapshot_name: %s ',
+                   resource_group_name, name)
+    return client.delete(resource_group_name, name)
+
+def aks_snapshot_list(cmd,   # pylint: disable=unused-argument
+                         client,
+                         resource_group_name=None):
+    if resource_group_name is None or resource_group_name == '':
+        return client.list()
+
+    return client.list_by_resource_group(resource_group_name)

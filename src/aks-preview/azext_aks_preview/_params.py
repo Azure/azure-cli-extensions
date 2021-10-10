@@ -18,7 +18,7 @@ from ._completers import (
 from ._validators import (
     validate_cluster_autoscaler_profile, validate_create_parameters, validate_k8s_version, validate_linux_host_name,
     validate_ssh_key, validate_nodes_count, validate_ip_ranges,
-    validate_nodepool_name, validate_vm_set_type, validate_load_balancer_sku,
+    validate_nodepool_name, validate_vm_set_type, validate_load_balancer_sku, validate_source_nodepool_id,
     validate_load_balancer_outbound_ips, validate_load_balancer_outbound_ip_prefixes, validate_nat_gateway_managed_outbound_ip_count,
     validate_taints, validate_priority, validate_eviction_policy, validate_spot_max_price, validate_acr, validate_user,
     validate_load_balancer_outbound_ports, validate_load_balancer_idle_timeout, validate_nat_gateway_idle_timeout, validate_nodepool_tags, validate_addon,
@@ -366,6 +366,16 @@ def load_arguments(self, _):
                    help='pod labels in key=value [key=value ...].',
                    validator=validate_pod_identity_pod_labels)
 
+    for scope in ['aks snapshot create']:
+        with self.argument_context(scope) as c:
+            c.argument('snapshot_name', type=str, options_list=['--name', '-n'], required=True, validator=validate_linux_host_name, help='The snapshot name.')
+            c.argument('tags', tags_type)
+            c.argument('source_nodepool_id', type=str, required=True, validator=validate_source_nodepool_id, help='The source nodepool id.')
+            c.argument('aks_custom_headers')
+
+    for scope in ['aks snapshot show', 'aks snapshot delete']:
+        with self.argument_context(scope) as c:
+            c.argument('snapshot_name', type=str, options_list=['--name', '-n'], required=True, validator=validate_linux_host_name, help='The snapshot name.')
 
 def _get_default_install_location(exe_name):
     system = platform.system()
