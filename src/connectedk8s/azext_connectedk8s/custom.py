@@ -1485,7 +1485,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, storage_account
                 pass
             if not not_found:
                 tr_logger.error("Couldn't check the existence of Connected cluster resource. Error: {}".format(str(ex)))
-
+        
         try:
             # setting kubeconfig
             kube_config = set_kube_config(kube_config)
