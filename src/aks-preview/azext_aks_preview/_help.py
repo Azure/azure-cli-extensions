@@ -352,6 +352,12 @@ helps['aks create'] = """
         - name: --disable-local-accounts
           type: bool
           short-summary: (Preview) If set to true, getting static credential will be disabled for this cluster.
+        - name: --workload-runtime
+          type: string
+          short-summary: Determines the type of workload a node can run. Defaults to OCIContainer.
+        - name: --gpu-instance-profile
+          type: string
+          short-summary: GPU instance profile to partition multi-gpu Nvidia GPUs.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -936,13 +942,21 @@ helps['aks nodepool add'] = """
         - name: --enable-ultra-ssd
           type: bool
           short-summary: Enable UltraSSD on agent node pool.
+        - name: --workload-runtime
+          type: string
+          short-summary: Determines the type of workload a node can run. Defaults to OCIContainer.
+        - name: --gpu-instance-profile
+          type: string
+          short-summary: GPU instance profile to partition multi-gpu Nvidia GPUs.
     examples:
         - name: Create a nodepool in an existing AKS cluster with ephemeral os enabled.
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --node-osdisk-type Ephemeral --node-osdisk-size 48
         - name: Create a nodepool with EncryptionAtHost enabled.
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --enable-encryption-at-host
-        - name: Create a nodepool cluster with a specific os-sku
+        - name: Create a nodepool with a specific os-sku
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster  --os-sku Ubuntu
+        - name: Create a nodepool which can run wasm workloads.
+          text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster  --workload-runtime WasmWasi
 """
 
 helps['aks nodepool scale'] = """
