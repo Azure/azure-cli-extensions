@@ -84,6 +84,42 @@ examples:
       az managed-cassandra cluster node-status --resource-group MyResourceGroup --cluster-name MyCluster --output table
 """
 
+helps['managed-cassandra cluster command'] = """
+type: command
+short-summary: Invoke a command like nodetool for cassandra maintenance.
+examples:
+  - name: This command runs nodetool status in a host node of the cluster.
+    text: |
+      az managed-cassandra cluster command --resource-group MyResourceGroup --cluster-name MyCluster --command "nodetool status" --host "10.0.1.12"
+"""
+
+helps['managed-cassandra cluster deallocate'] = """
+type: command
+short-summary: Deallocate the Managed Cassandra Cluster and Associated Data Centers. Deallocation will deallocate the host virtual machine of this cluster, and reserved the data disk. This won't do anything on an already deallocated cluster. Use Start to restart the cluster.
+examples:
+  - name: This command deallocates this cluster.
+    text: |
+      az managed-cassandra cluster deallocate --resource-group MyResourceGroup --cluster-name MyCluster
+"""
+
+helps['managed-cassandra cluster start'] = """
+type: command
+short-summary: Start the Managed Cassandra Cluster and Associated Data Centers. Start will start the host virtual machine of this cluster with reserved data disk. This won't do anything on an already running cluster. Use Deallocate to deallocate the cluster.
+examples:
+  - name: This command starts this cluster.
+    text: |
+      az managed-cassandra cluster start --resource-group MyResourceGroup --cluster-name MyCluster
+"""
+
+helps['managed-cassandra cluster status'] = """
+type: command
+short-summary: Gets the CPU, memory, and disk usage statistics for each Cassandra node in a cluster.
+examples:
+  - name: Gets the CPU, memory, and disk usage statistics for each Cassandra node in a cluster.
+    text: |
+      az managed-cassandra cluster status --resource-group MyResourceGroup --cluster-name MyCluster
+"""
+
 helps['managed-cassandra datacenter'] = """
 type: group
 short-summary: Azure Managed Cassandra DataCenter.

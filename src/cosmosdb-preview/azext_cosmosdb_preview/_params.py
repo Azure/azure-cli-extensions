@@ -21,6 +21,9 @@ def load_arguments(self, _):
             'managed-cassandra cluster update',
             'managed-cassandra cluster show',
             'managed-cassandra cluster delete',
+            'managed-cassandra cluster deallocate',
+            'managed-cassandra cluster start',
+            'managed-cassandra cluster status',
             'managed-cassandra cluster node-status']:
         with self.argument_context(scope) as c:
             c.argument('cluster_name', options_list=['--cluster-name', '-c'], help="Cluster Name", required=True)
@@ -48,6 +51,15 @@ def load_arguments(self, _):
         c.argument('initial_cassandra_admin_password', options_list=['--initial-cassandra-admin-password', '-i'], help="The intial password to be configured when a cluster is created for authentication_method Cassandra.")
         c.argument('restore_from_backup_id', help="The resource id of a backup. If provided on create, the backup will be used to prepopulate the cluster. The cluster data center count and node counts must match the backup.")
         c.argument('cluster_name_override', help="If a cluster must have a name that is not a valid azure resource name, this field can be specified to choose the Cassandra cluster name. Otherwise, the resource name will be used as the cluster name.")
+
+    # Managed Cassandra Cluster
+    for scope in ['managed-cassandra cluster command']:
+        with self.argument_context(scope) as c:
+            c.argument('command', options_list=['--command'], help="The command which should be run", required=True)
+            c.argument('parameters', options_list=['--parameters'], help="The parameters for the command to be run")
+            c.argument('host', options_list=['--host'], help="IP address of the cassandra host to run the command on", required=True)
+            c.argument('cassandra-stop-start', options_list=['--cassandra-stop-start'], help="If true, stops cassandra before executing the command and then start it again.")
+            c.argument('readwrite', options_list=['--readwrite'], help="If true, allows the command to *write* to the cassandra directory, otherwise read-only.")
 
     # Managed Cassandra Datacenter
     for scope in [
