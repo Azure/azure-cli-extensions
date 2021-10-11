@@ -272,9 +272,13 @@ def app_create(cmd, client, resource_group, service, name,
     properties = models_20210901preview.AppResourceProperties()
     properties.temporary_disk = models_20210901preview.TemporaryDisk(
         size_in_gb=5, mount_path="/tmp")
-    resource = client.services.get(resource_group, service)
 
-    _validate_instance_count(resource.sku.tier, instance_count)
+    if enable_persistent_storage:
+        properties.persistent_disk = models_20210901preview.PersistentDisk(
+            size_in_gb=_get_persistent_disk_size(resource.sku.tier), mount_path="/persistent")
+    else:
+        properties.persistent_disk = models_20210901preview.PersistentDisk(
+            size_in_gb=0, mount_path="/persistent")
 
     if loaded_certificates_file is not None:
         input_file = open(loaded_certificates_file)
@@ -284,9 +288,13 @@ def app_create(cmd, client, resource_group, service, name,
         for item in data['loadedCertificates']:
             certificate_resource = client.certificates.get(resource_group, service, item['certificateName'])
             loaded_certificates.append(models_20210901preview.
-                                       LoadedCertificate(resource_id=certificate_resource.resourceId,
+                                       LoadedCertificate(resource_id=certificate_resource.id,
                                                          load_trust_store=item['loadTrustStore']))
         properties.loaded_certificates=loaded_certificates
+
+    resource = client.services.get(resource_group, service)
+
+    _validate_instance_count(resource.sku.tier, instance_count)
 
     app_resource = models_20210901preview.AppResource()
     app_resource.properties = properties
@@ -310,17 +318,9 @@ def app_create(cmd, client, resource_group, service, name,
                                                        default_deployment_resource)
 
     logger.warning("[3/4] Setting default deployment to production")
-    properties = models_20210901preview.AppResourceProperties(
-        active_deployment_name=DEFAULT_DEPLOYMENT_NAME, public=assign_endpoint)
 
-    if enable_persistent_storage:
-        properties.persistent_disk = models_20210901preview.PersistentDisk(
-            size_in_gb=_get_persistent_disk_size(resource.sku.tier), mount_path="/persistent")
-    else:
-        properties.persistent_disk = models_20210901preview.PersistentDisk(
-            size_in_gb=0, mount_path="/persistent")
-
-    app_resource.properties = properties
+    app_resource.properties.active_deployment_name=DEFAULT_DEPLOYMENT_NAME
+    app_resource.properties.public=assign_endpoint
     app_resource.location = resource.location
 
     app_poller = client.apps.begin_update(resource_group, service, name, app_resource)
@@ -400,7 +400,7 @@ def app_update(cmd, client, resource_group, service, name,
         for item in data['loadedCertificates']:
             certificate_resource = client.certificates.get(resource_group, service, item['certificateName'])
             loaded_certificates.append(models_20210901preview.
-                                       LoadedCertificate(resource_id=certificate_resource.resourceId,
+                                       LoadedCertificate(resource_id=certificate_resource.id,
                                                          load_trust_store=item['loadTrustStore']))
         properties.loaded_certificates=loaded_certificates
 
@@ -789,22 +789,21 @@ def app_append_loaded_certificate(cmd, client, resource_group, service, name, ce
     client = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20210901preview)
     _check_active_deployment_exist(client, resource_group, service, name)
 
-    appResource = client.apps.get(resource_group, service, name)
-    certificateResource = client.certificates.get(resource_group, service, certificate_name)
-    certificateResourceId = certificateResource.id
+    app_resource = client.apps.get(resource_group, service, name)
+    certificate_resource = client.certificates.get(resource_group, service, certificate_name)
+    certificate_resource_id = certificate_resource.id
 
-    loadedCertificates = appResource.properties.loaded_certificates
+    loaded_certificates = app_resource.properties.loaded_certificates
 
-    for loadedCertificate in loadedCertificates:
-        if loadedCertificate.resource_id == certificateResource.id:
+    for loaded_certificate in loaded_certificates:
+        if loaded_certificate.resource_id == certificate_resource.id:
             raise CLIError("The certificate has been loaded.")
 
-    loadedCertificate.append(models_20210901preview.
-                               LoadedCertificate(resource_id=certificateResourceId,
+    loaded_certificates.append(models_20210901preview.
+                               LoadedCertificate(resource_id=certificate_resource_id,
                                                  load_trust_store=load_trust_store))
-    properties = models_20210901preview.AppResourceProperties(public=assign_endpoint, https_only=https_only,
-                                                              enable_end_to_end_tls=enable_end_to_end_tls)
-    app_resource.properties.loaded_certificates = loadedCertificates
+
+    app_resource.properties.loaded_certificates = loaded_certificates
 
     poller = client.apps.begin_update(
         resource_group, service, name, app_resource)
@@ -1660,15 +1659,23 @@ def certificate_remove(cmd, resource_group, service, name):
 
 def certificate_list_reference_app(cmd, resource_group, service, name):
     client = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20210901preview)
-    apps = app_list(cmd, client, resource_group, service)
+
+    apps = list(client.apps.list(resource_group, service))
+    deployments = list(
+        client.deployments.list_for_cluster(resource_group, service))
     reference_apps = []
-    certificateResource = client.certificates.get(resource_group, service, name)
-    certificateResourceId = certificateResource.id
+    certificate_resource = client.certificates.get(resource_group, service, name)
+    certificate_resource_id = certificate_resource.id
     for app in apps:
-        for load_certificate in app.properties.loaded_certificates:
-            if load_certificate.resource_id == certificateResourceId:
+        for load_certificate in app.properties.loaded_certificates or []:
+            if load_certificate.resource_id == certificate_resource_id:
                 reference_apps.append(app)
                 break
+    for app in reference_apps:
+        if app.properties.active_deployment_name:
+            deployment = next(
+                (x for x in deployments if x.properties.app_name == app.name))
+            app.properties.active_deployment = deployment
     return reference_apps
 
 def domain_bind(cmd, client, resource_group, service, app,
