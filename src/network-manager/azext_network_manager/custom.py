@@ -102,7 +102,6 @@ def network_manager_commit_post(client,
 def network_manager_deploy_status_list(client,
                                        resource_group_name,
                                        network_manager_name,
-                                       top=None,
                                        skip_token=None,
                                        regions=None,
                                        deployment_types=None):
@@ -112,8 +111,6 @@ def network_manager_deploy_status_list(client,
     parameters['skip_token'] = skip_token
     return client.list(resource_group_name=resource_group_name,
                        network_manager_name=network_manager_name,
-                       top=top,
-                       skip_token=skip_token,
                        parameters=parameters)
 
 
@@ -121,16 +118,13 @@ def network_manager_effect_vnet_list_by_network_group(client,
                                                       resource_group_name,
                                                       network_manager_name,
                                                       network_group_name,
-                                                      top=None,
                                                       skip_token=None):
     parameters = {}
     parameters['skip_token'] = skip_token
     return client.list_by_network_group(resource_group_name=resource_group_name,
                                         network_manager_name=network_manager_name,
                                         network_group_name=network_group_name,
-                                        parameters=parameters,
-                                        top=top,
-                                        skip_token=skip_token)
+                                        parameters=parameters)
 
 
 def network_manager_effect_vnet_list_by_network_manager(client,
@@ -152,7 +146,6 @@ def network_manager_effect_vnet_list_by_network_manager(client,
 def network_manager_active_config_list(client,
                                        resource_group_name,
                                        network_manager_name,
-                                       top=None,
                                        skip_token=None,
                                        region=None):
     parameters = {}
@@ -160,25 +153,23 @@ def network_manager_active_config_list(client,
     parameters['region'] = region
     return client.list(resource_group_name=resource_group_name,
                        network_manager_name=network_manager_name,
-                       parameters=parameters,
-                       top=top)
+                       parameters=parameters)
 
 
 def network_manager_effective_config_list(client,
-                                       resource_group_name,
-                                       network_manager_name,
-                                       skip_token=None):
+                                          resource_group_name,
+                                          virtual_network_name,
+                                          skip_token=None):
     parameters = {}
     parameters['skip_token'] = skip_token
     return client.list(resource_group_name=resource_group_name,
-                       network_manager_name=network_manager_name,
+                       virtual_network_name=virtual_network_name,
                        parameters=parameters)
 
 
 def network_manager_active_security_admin_rule_list(client,
                                                     resource_group_name,
                                                     network_manager_name,
-                                                    top=None,
                                                     skip_token=None,
                                                     region=None):
     parameters = {}
@@ -186,14 +177,12 @@ def network_manager_active_security_admin_rule_list(client,
     parameters['region'] = region
     return client.list(resource_group_name=resource_group_name,
                        network_manager_name=network_manager_name,
-                       parameters=parameters,
-                       top=top)
+                       parameters=parameters)
 
 
 def network_manager_active_security_user_rule_list(client,
                                                    resource_group_name,
                                                    network_manager_name,
-                                                   top=None,
                                                    skip_token=None,
                                                    region=None):
     parameters = {}
@@ -201,8 +190,7 @@ def network_manager_active_security_user_rule_list(client,
     parameters['region'] = region
     return client.list(resource_group_name=resource_group_name,
                        network_manager_name=network_manager_name,
-                       parameters=parameters,
-                       top=top)
+                       parameters=parameters)
 
 
 def network_manager_effective_security_user_rule_list(client,

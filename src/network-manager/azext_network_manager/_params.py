@@ -120,6 +120,9 @@ def load_arguments(self, _):
                    'include a skipToken parameter that specifies a starting point to use for subsequent calls.')
         c.argument('conditional_members', type=str, help='Conditional Members.')
 
+    with self.argument_context('network manager effective-config list') as c:
+        c.argument('virtual_network_name', type=str, help='The name of the virtual network.')
+
     with self.argument_context('network manager active-config list') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('network_manager_name', type=str, help='The name of the network manager.')

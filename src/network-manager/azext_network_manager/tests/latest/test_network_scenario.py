@@ -311,14 +311,6 @@ class NetworkScenarioTest(ScenarioTest):
         self.cmd('network manager security-user-config delete --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} --yes')
         self.cmd('network manager group delete -g {rg} --name {group_name} --network-manager-name {manager_name} --yes')
 
-    @unittest.skip('TODO')
-    @ResourceGroupPreparer(name_prefix='test_network_manager_vnet_security_perimeter_crud', location='eastus2euap')
-    @VirtualNetworkPreparer()
-    def test_network_manager_vnet_security_perimeter_crud(self, virtual_network, resource_group):
-        # TODO: need test other list commands:
-        # manager perimeter-associable-resource-types list
-        pass
-
     @ResourceGroupPreparer(name_prefix='test_network_manager_connect_config_crud', location='eastus2euap')
     @VirtualNetworkPreparer()
     def test_network_manager_connect_config_crud(self, virtual_network, resource_group):
@@ -353,17 +345,35 @@ class NetworkScenarioTest(ScenarioTest):
         self.cmd('network manager connect-config delete --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} --yes')
  
 
-    @unittest.skip('TODO')
     @ResourceGroupPreparer(name_prefix='test_network_manager_list_queries', location='eastus2euap')
     @VirtualNetworkPreparer()
     def test_network_manager_list_queries(self, virtual_network, resource_group):
-        # TODO: need test other list commands:
-        # manager deploy-status list
-        # manager effect-vent list-by-network-group
-        # manager effect-vent list-by-network-manager
-        # manager active-config list
-        # manager effective-config list
-        # manager active-security-admin-rule list
-        # manager active-security-user-rule list
-        # manager effective-security-admin-rule list
-        pass
+
+        self.kwargs.update({
+            'manager_name': 'TestNetworkManager',
+            'group_name': 'TestNetworkGroup',
+            'description': '"A sample policy"',
+            'sub': '/subscriptions/{}'.format(self.get_subscription_id()),
+            'virtual_network': virtual_network
+        })
+
+        self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" --display-name "TestNetworkManager" '
+                 '--network-manager-scope-accesses "SecurityUser" "Connectivity" '
+                 '--network-manager-scopes '
+                 ' subscriptions={sub} '
+                 '-l eastus2euap '
+                 '--resource-group {rg}')
+
+        self.cmd('network manager group create --name {group_name} --network-manager-name {manager_name} --description {description} '
+                 '--conditional-membership "" --display-name ASampleGroup --member-type VirtualNetwork  -g {rg} '
+                 '--group-members resource-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}" ')
+
+        self.cmd('network manager deploy-status list --network-manager-name {manager_name} --deployment-types "Connectivity" --regions "eastus2euap" --resource-group {rg}')
+        self.cmd('network manager effect-vnet list-by-network-group --network-group-name {group_name} --network-manager-name {manager_name} --resource-group {rg}')
+        # Internal Server Error
+        # self.cmd('network manager effect-vnet list-by-network-manager --network-manager-name {manager_name} --resource-group {rg}')
+        self.cmd('network manager active-config list --network-manager-name {manager_name} --resource-group {rg}')
+        self.cmd('network manager effective-config list --virtual-network-name {virtual_network} -g {rg}')
+        self.cmd('network manager active-security-admin-rule list --network-manager-name {manager_name} -g {rg} --region eastus2euap')
+        # Internal Server Error
+        # self.cmd('network manager active-security-user-rule list --network-manager-name {manager_name} -g {rg} --region eastus2euap')

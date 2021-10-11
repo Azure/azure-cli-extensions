@@ -67,14 +67,6 @@ def cf_networkmanager(cli_ctx, *_):
     return cf_network_cl(cli_ctx).network_managers
 
 
-def cf_securityperimeter(cli_ctx, *_):
-    return cf_network_cl(cli_ctx).network_security_perimeters
-
-
-def cf_perimeterassociableresourcetype(cli_ctx, *_):
-    return cf_network_cl(cli_ctx).perimeter_associable_resource_types
-
-
 def cf_securityadminconfiguration(cli_ctx, *_):
     return cf_network_cl(cli_ctx).security_admin_configurations
 
