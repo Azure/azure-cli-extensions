@@ -19,10 +19,9 @@ from knack.prompting import NoTTYException, prompt_y_n
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.util import send_raw_request
 from azure.cli.core import telemetry
-from azure.core.exceptions import ResourceNotFoundError
+from azure.core.exceptions import ResourceNotFoundError, HttpResponseError
 from msrest.exceptions import AuthenticationError, HttpOperationError, TokenExpiredError
 from msrest.exceptions import ValidationError as MSRestValidationError
-from msrestazure.azure_exceptions import CloudError
 from kubernetes.client.rest import ApiException
 from azext_connectedk8s._client_factory import _resource_client_factory, _resource_providers_client
 import azext_connectedk8s._constants as consts
@@ -69,10 +68,10 @@ def validate_location(cmd, location):
             break
 
 
-def get_chart_path(registry_path, kube_config, kube_context):
+def get_chart_path(registry_path, kube_config, kube_context, helm_client_location):
     # Pulling helm chart from registry
     os.environ['HELM_EXPERIMENTAL_OCI'] = '1'
-    pull_helm_chart(registry_path, kube_config, kube_context)
+    pull_helm_chart(registry_path, kube_config, kube_context, helm_client_location)
 
     # Exporting helm chart after cleanup
     chart_export_path = os.path.join(os.path.expanduser('~'), '.azure', 'AzureArcCharts')
@@ -81,7 +80,7 @@ def get_chart_path(registry_path, kube_config, kube_context):
             shutil.rmtree(chart_export_path)
     except:
         logger.warning("Unable to cleanup the azure-arc helm charts already present on the machine. In case of failure, please cleanup the directory '%s' and try again.", chart_export_path)
-    export_helm_chart(registry_path, chart_export_path, kube_config, kube_context)
+    export_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location)
 
     # Returning helm chart path
     helm_chart_path = os.path.join(chart_export_path, 'azure-arc-k8sagents')
@@ -89,8 +88,8 @@ def get_chart_path(registry_path, kube_config, kube_context):
     return chart_path
 
 
-def pull_helm_chart(registry_path, kube_config, kube_context):
-    cmd_helm_chart_pull = ["helm", "chart", "pull", registry_path]
+def pull_helm_chart(registry_path, kube_config, kube_context, helm_client_location):
+    cmd_helm_chart_pull = [helm_client_location, "chart", "pull", registry_path]
     if kube_config:
         cmd_helm_chart_pull.extend(["--kubeconfig", kube_config])
     if kube_context:
@@ -103,8 +102,8 @@ def pull_helm_chart(registry_path, kube_config, kube_context):
         raise CLIInternalError("Unable to pull helm chart from the registry '{}': ".format(registry_path) + error_helm_chart_pull.decode("ascii"))
 
 
-def export_helm_chart(registry_path, chart_export_path, kube_config, kube_context):
-    cmd_helm_chart_export = ["helm", "chart", "export", registry_path, "--destination", chart_export_path]
+def export_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location):
+    cmd_helm_chart_export = [helm_client_location, "chart", "export", registry_path, "--destination", chart_export_path]
     if kube_config:
         cmd_helm_chart_export.extend(["--kubeconfig", kube_config])
     if kube_context:
@@ -117,10 +116,10 @@ def export_helm_chart(registry_path, chart_export_path, kube_config, kube_contex
         raise CLIInternalError("Unable to export helm chart from the registry '{}': ".format(registry_path) + error_helm_chart_export.decode("ascii"))
 
 
-def add_helm_repo(kube_config, kube_context):
+def add_helm_repo(kube_config, kube_context, helm_client_location):
     repo_name = os.getenv('HELMREPONAME')
     repo_url = os.getenv('HELMREPOURL')
-    cmd_helm_repo = ["helm", "repo", "add", repo_name, repo_url]
+    cmd_helm_repo = [helm_client_location, "repo", "add", repo_name, repo_url]
     if kube_config:
         cmd_helm_repo.extend(["--kubeconfig", kube_config])
     if kube_context:
@@ -188,7 +187,7 @@ def arm_exception_handler(ex, fault_type, summary, return_if_not_found=False):
         telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
         raise AzureResponseError("Validation error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
 
-    if isinstance(ex, CloudError):
+    if isinstance(ex, HttpResponseError):
         status_code = ex.status_code
         if status_code == 404 and return_if_not_found:
             return
@@ -196,8 +195,8 @@ def arm_exception_handler(ex, fault_type, summary, return_if_not_found=False):
             telemetry.set_user_fault()
         telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
         if status_code // 100 == 5:
-            raise AzureInternalError("Cloud error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
-        raise AzureResponseError("Cloud error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
+            raise AzureInternalError("Http response error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
+        raise AzureResponseError("Http response error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
 
     if isinstance(ex, ResourceNotFoundError) and return_if_not_found:
         return
@@ -233,7 +232,7 @@ def validate_infrastructure_type(infra):
     for s in consts.Infrastructure_Enum_Values[1:]:  # First value is "auto"
         if s.lower() == infra.lower():
             return s
-    return "generic"
+    return None
 
 
 def get_values_file():
@@ -270,8 +269,8 @@ def ensure_namespace_cleanup(configuration):
                                          raise_error=False)
 
 
-def delete_arc_agents(release_namespace, kube_config, kube_context, configuration):
-    cmd_helm_delete = ["helm", "delete", "azure-arc", "--namespace", release_namespace]
+def delete_arc_agents(release_namespace, kube_config, kube_context, configuration, helm_client_location):
+    cmd_helm_delete = [helm_client_location, "delete", "azure-arc", "--namespace", release_namespace]
     if kube_config:
         cmd_helm_delete.extend(["--kubeconfig", kube_config])
     if kube_context:
@@ -291,8 +290,9 @@ def delete_arc_agents(release_namespace, kube_config, kube_context, configuratio
 
 def helm_install_release(chart_path, subscription_id, kubernetes_distro, kubernetes_infra, resource_group_name, cluster_name,
                          location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, proxy_cert, private_key_pem,
-                         kube_config, kube_context, no_wait, values_file_provided, values_file, cloud_name, disable_auto_upgrade, enable_custom_locations, custom_locations_oid, onboarding_timeout="300"):
-    cmd_helm_install = ["helm", "upgrade", "--install", "azure-arc", chart_path,
+                         kube_config, kube_context, no_wait, values_file_provided, values_file, cloud_name, disable_auto_upgrade,
+                         enable_custom_locations, custom_locations_oid, helm_client_location, onboarding_timeout="600"):
+    cmd_helm_install = [helm_client_location, "upgrade", "--install", "azure-arc", chart_path,
                         "--set", "global.subscriptionId={}".format(subscription_id),
                         "--set", "global.kubernetesDistro={}".format(kubernetes_distro),
                         "--set", "global.kubernetesInfra={}".format(kubernetes_infra),
@@ -431,3 +431,15 @@ def can_create_clusterrolebindings(configuration):
     except Exception as ex:
         logger.warning("Couldn't check for the permission to create clusterrolebindings on this k8s cluster. Error: {}".format(str(ex)))
         return "Unknown"
+
+
+def validate_node_api_response(api_instance, node_api_response):
+    if node_api_response is None:
+        try:
+            node_api_response = api_instance.list_node()
+            return node_api_response
+        except Exception as ex:
+            logger.debug("Error occcured while listing nodes on this kubernetes cluster: {}".format(str(ex)))
+            return None
+    else:
+        return node_api_response

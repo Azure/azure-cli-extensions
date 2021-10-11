@@ -8,7 +8,7 @@
 from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "0.3.6"
+VERSION = "0.3.8"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -47,7 +47,7 @@ setup(
             'scripts/enable-nestedhyperv.ps1',
             'scripts/linux-mount-encrypted-disk.sh',
             'scripts/win-mount-encrypted-disk.ps1',
-            'linux-build_setup-cloud-init.txt',
+            'scripts/linux-build_setup-cloud-init.txt',
             'azext_metadata.json'
         ]
     },

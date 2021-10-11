@@ -14,7 +14,7 @@ from knack.log import get_logger
 
 from azure.cli.core.util import sdk_no_wait
 
-from ._client_factory import network_client_factory
+from ._client_factory import network_client_factory, cf_virtual_hub_bgpconnections, cf_virtual_hub_connection
 from ._util import _get_property
 
 logger = get_logger(__name__)
@@ -256,6 +256,41 @@ def create_hub_vnet_connection(cmd, resource_group_name, virtual_hub_name, conne
                        virtual_hub_name, connection_name, connection)
 
 
+def _bgp_connections_client(cli_ctx):
+    return cf_virtual_hub_bgpconnections(cli_ctx=cli_ctx, _=None)
+
+
+def create_hub_vnet_bgpconnection(cmd, client, resource_group_name, virtual_hub_name, connection_name,
+                                  virtual_hub_connection=None, peer_asn=None, peer_ip=None, no_wait=False):
+
+    from .vendored_sdks.v2021_03_01.models import BgpConnection, SubResource
+    connection = BgpConnection(
+        name=connection_name,
+        peer_asn=peer_asn,
+        peer_ip=peer_ip,
+        hub_virtual_network_connection=SubResource(id=virtual_hub_connection) if virtual_hub_connection else None
+    )
+    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name,
+                       virtual_hub_name, connection_name, connection)
+
+
+def update_hub_vnet_bgpconnection(cmd, instance, resource_group_name, virtual_hub_name, connection_name,
+                                  virtual_hub_connection=None, peer_asn=None, peer_ip=None):
+    if peer_asn is not None:
+        instance.peer_asn = peer_asn
+    if peer_ip is not None:
+        instance.peer_ip = peer_ip
+    if virtual_hub_connection is not None:
+        from .vendored_sdks.v2021_03_01.models import SubResource
+        instance.hub_virtual_network_connection = SubResource(id=virtual_hub_connection)
+    return instance
+
+
+def list_hub_vnet_bgpconnection(cmd, client, resource_group_name, virtual_hub_name):
+    client = _bgp_connections_client(cmd.cli_ctx)
+    return client.list(resource_group_name=resource_group_name, virtual_hub_name=virtual_hub_name)
+
+
 # pylint: disable=inconsistent-return-statements
 def add_hub_route(cmd, resource_group_name, virtual_hub_name, address_prefixes, next_hop_ip_address, no_wait=False):
     VirtualHubRoute = cmd.get_models('VirtualHubRoute')
@@ -282,7 +317,7 @@ def reset_hub_routes(cmd, resource_group_name, virtual_hub_name, no_wait=False):
     hub = client.get(resource_group_name, virtual_hub_name)
     if hub.routing_state == 'Failed':
         logger.warning('Reset virtual hub')
-        poller = sdk_no_wait(no_wait, client.create_or_update,
+        poller = sdk_no_wait(no_wait, client.begin_create_or_update,
                              resource_group_name, virtual_hub_name, hub)
         try:
             return poller.result().route_table.routes
@@ -299,7 +334,7 @@ def remove_hub_route(cmd, resource_group_name, virtual_hub_name, index, no_wait=
         hub.route_table.routes.pop(index - 1)
     except IndexError:
         raise CLIError('invalid index: {}. Index can range from 1 to {}'.format(index, len(hub.route_table.routes)))
-    poller = sdk_no_wait(no_wait, client.create_or_update,
+    poller = sdk_no_wait(no_wait, client.begin_create_or_update,
                          resource_group_name, virtual_hub_name, hub)
     try:
         return poller.result().route_table.routes
@@ -588,6 +623,9 @@ def add_vpn_gateway_connection_ipsec_policy(cmd, resource_group_name, gateway_na
     client = network_client_factory(cmd.cli_ctx).vpn_gateways
     gateway = client.get(resource_group_name, gateway_name)
     conn = _find_item_at_path(gateway, 'connections.{}'.format(connection_name))
+
+    if conn.ipsec_policies is None:
+        conn.ipsec_policies = []
     conn.ipsec_policies.append(
         IpsecPolicy(
             sa_life_time_seconds=sa_life_time_seconds,
@@ -600,8 +638,9 @@ def add_vpn_gateway_connection_ipsec_policy(cmd, resource_group_name, gateway_na
             pfs_group=pfs_group
         )
     )
+
     _upsert(gateway, 'connections', conn, 'name', warn=False)
-    poller = sdk_no_wait(no_wait, client.create_or_update,
+    poller = sdk_no_wait(no_wait, client.begin_create_or_update,
                          resource_group_name, gateway_name, gateway)
     try:
         return _get_property(poller.result().connections, connection_name)
@@ -626,7 +665,7 @@ def remove_vpn_conn_ipsec_policy(cmd, resource_group_name, gateway_name, connect
     except IndexError:
         raise CLIError('invalid index: {}. Index can range from 1 to {}'.format(index, len(conn.ipsec_policies)))
     _upsert(gateway, 'connections', conn, 'name', warn=False)
-    poller = sdk_no_wait(no_wait, client.create_or_update,
+    poller = sdk_no_wait(no_wait, client.begin_create_or_update,
                          resource_group_name, gateway_name, gateway)
     try:
         return _get_property(poller.result().connections, connection_name)
