@@ -14,7 +14,7 @@ from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import AsyncHttpResponse, HttpRequest
 from azure.mgmt.core.exceptions import ARMErrorFormat
 
-from ... import models as _models
+from ... import models
 
 T = TypeVar('T')
 ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
@@ -33,7 +33,7 @@ class RestorableMongodbCollectionsOperations:
     :param deserializer: An object model deserializer.
     """
 
-    models = _models
+    models = models
 
     def __init__(self, client, config, serializer, deserializer) -> None:
         self._client = client
@@ -46,8 +46,8 @@ class RestorableMongodbCollectionsOperations:
         location: str,
         instance_id: str,
         restorable_mongodb_database_rid: Optional[str] = None,
-        **kwargs: Any
-    ) -> AsyncIterable["_models.RestorableMongodbCollectionsListResult"]:
+        **kwargs
+    ) -> AsyncIterable["models.RestorableMongodbCollectionsListResult"]:
         """Show the event feed of all mutations done on all the Azure Cosmos DB MongoDB collections under
         a specific database.  This helps in scenario where container was accidentally deleted.  This
         API requires 'Microsoft.DocumentDB/locations/restorableDatabaseAccounts/.../read' permission.
@@ -63,12 +63,12 @@ class RestorableMongodbCollectionsOperations:
         :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.cosmosdb.models.RestorableMongodbCollectionsListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.RestorableMongodbCollectionsListResult"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.RestorableMongodbCollectionsListResult"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-07-01-preview"
+        api_version = "2021-10-15-preview"
         accept = "application/json"
 
         def prepare_request(next_link=None):

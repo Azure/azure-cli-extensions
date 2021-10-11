@@ -1,0 +1,116 @@
+{
+    "chosen_version": "2021-10-15-preview",
+    "total_api_version_list": ["2021-10-15-preview"],
+    "client": {
+        "name": "CosmosDBManagementClient",
+        "filename": "_cosmos_db_management_client",
+        "description": "Azure Cosmos DB Database Service Resource Provider REST API.",
+        "base_url": "\u0027https://management.azure.com\u0027",
+        "custom_base_url": null,
+        "azure_arm": true,
+        "has_lro_operations": true,
+        "client_side_validation": false
+    },
+    "global_parameters": {
+        "sync": {
+            "credential": {
+                "signature": "credential,  # type: \"TokenCredential\"",
+                "description": "Credential needed for the client to connect to Azure.",
+                "docstring_type": "~azure.core.credentials.TokenCredential",
+                "required": true
+            },
+            "subscription_id": {
+                "signature": "subscription_id,  # type: str",
+                "description": "The ID of the target subscription.",
+                "docstring_type": "str",
+                "required": true
+            }
+        },
+        "async": {
+            "credential": {
+                "signature": "credential,  # type: \"AsyncTokenCredential\"",
+                "description": "Credential needed for the client to connect to Azure.",
+                "docstring_type": "~azure.core.credentials_async.AsyncTokenCredential",
+                "required": true
+            },
+            "subscription_id": {
+                "signature": "subscription_id,  # type: str",
+                "description": "The ID of the target subscription.",
+                "docstring_type": "str",
+                "required": true
+            }
+        },
+        "constant": {
+        },
+        "call": "credential, subscription_id"
+    },
+    "config": {
+        "credential": true,
+        "credential_scopes": ["https://management.azure.com/.default"],
+        "credential_default_policy_type": "BearerTokenCredentialPolicy",
+        "credential_default_policy_type_has_async_version": true,
+        "credential_key_header_name": null
+    },
+    "operation_groups": {
+        "database_accounts": "DatabaseAccountsOperations",
+        "operations": "Operations",
+        "database": "DatabaseOperations",
+        "collection": "CollectionOperations",
+        "collection_region": "CollectionRegionOperations",
+        "database_account_region": "DatabaseAccountRegionOperations",
+        "percentile_source_target": "PercentileSourceTargetOperations",
+        "percentile_target": "PercentileTargetOperations",
+        "percentile": "PercentileOperations",
+        "collection_partition_region": "CollectionPartitionRegionOperations",
+        "collection_partition": "CollectionPartitionOperations",
+        "partition_key_range_id": "PartitionKeyRangeIdOperations",
+        "partition_key_range_id_region": "PartitionKeyRangeIdRegionOperations",
+        "graph_resources": "GraphResourcesOperations",
+        "sql_resources": "SqlResourcesOperations",
+        "mongo_db_resources": "MongoDBResourcesOperations",
+        "table_resources": "TableResourcesOperations",
+        "cassandra_resources": "CassandraResourcesOperations",
+        "gremlin_resources": "GremlinResourcesOperations",
+        "cassandra_clusters": "CassandraClustersOperations",
+        "cassandra_data_centers": "CassandraDataCentersOperations",
+        "notebook_workspaces": "NotebookWorkspacesOperations",
+        "private_endpoint_connections": "PrivateEndpointConnectionsOperations",
+        "private_link_resources": "PrivateLinkResourcesOperations",
+        "restorable_database_accounts": "RestorableDatabaseAccountsOperations",
+        "restorable_sql_databases": "RestorableSqlDatabasesOperations",
+        "restorable_sql_containers": "RestorableSqlContainersOperations",
+        "restorable_sql_resources": "RestorableSqlResourcesOperations",
+        "restorable_mongodb_databases": "RestorableMongodbDatabasesOperations",
+        "restorable_mongodb_collections": "RestorableMongodbCollectionsOperations",
+        "restorable_mongodb_resources": "RestorableMongodbResourcesOperations",
+        "service": "ServiceOperations"
+    },
+    "operation_mixins": {
+        "location_list" : {
+            "sync": {
+                "signature": "def location_list(\n    self,\n    **kwargs  # type: Any\n):\n",
+                "doc": "\"\"\"List Cosmos DB locations and their properties.\n\n:keyword callable cls: A custom type or function that will be passed the direct response\n:return: An iterator like instance of either LocationListResult or the result of cls(response)\n:rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.cosmosdb.models.LocationListResult]\n:raises: ~azure.core.exceptions.HttpResponseError\n\"\"\""
+            },
+            "async": {
+                "coroutine": false,
+                "signature": "def location_list(\n    self,\n    **kwargs\n) -\u003e AsyncItemPaged[\"models.LocationListResult\"]:\n",
+                "doc": "\"\"\"List Cosmos DB locations and their properties.\n\n:keyword callable cls: A custom type or function that will be passed the direct response\n:return: An iterator like instance of either LocationListResult or the result of cls(response)\n:rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.cosmosdb.models.LocationListResult]\n:raises: ~azure.core.exceptions.HttpResponseError\n\"\"\""
+            },
+            "call": ""
+        },
+        "location_get" : {
+            "sync": {
+                "signature": "def location_get(\n    self,\n    location,  # type: str\n    **kwargs  # type: Any\n):\n",
+                "doc": "\"\"\"Get the properties of an existing Cosmos DB location.\n\n:param location: Cosmos DB region, with spaces between words and each word capitalized.\n:type location: str\n:keyword callable cls: A custom type or function that will be passed the direct response\n:return: LocationGetResult, or the result of cls(response)\n:rtype: ~azure.mgmt.cosmosdb.models.LocationGetResult\n:raises: ~azure.core.exceptions.HttpResponseError\n\"\"\""
+            },
+            "async": {
+                "coroutine": true,
+                "signature": "async def location_get(\n    self,\n    location: str,\n    **kwargs\n) -\u003e \"models.LocationGetResult\":\n",
+                "doc": "\"\"\"Get the properties of an existing Cosmos DB location.\n\n:param location: Cosmos DB region, with spaces between words and each word capitalized.\n:type location: str\n:keyword callable cls: A custom type or function that will be passed the direct response\n:return: LocationGetResult, or the result of cls(response)\n:rtype: ~azure.mgmt.cosmosdb.models.LocationGetResult\n:raises: ~azure.core.exceptions.HttpResponseError\n\"\"\""
+            },
+            "call": "location"
+        }
+    },
+    "sync_imports": "{\"regular\": {\"azurecore\": {\"azure.core.exceptions\": [\"ClientAuthenticationError\", \"HttpResponseError\", \"ResourceExistsError\", \"ResourceNotFoundError\", \"map_error\"], \"azure.mgmt.core.exceptions\": [\"ARMErrorFormat\"], \"azure.core.pipeline\": [\"PipelineResponse\"], \"azure.core.pipeline.transport\": [\"HttpRequest\", \"HttpResponse\"], \"azure.core.paging\": [\"ItemPaged\"]}, \"stdlib\": {\"warnings\": [null]}}, \"conditional\": {\"stdlib\": {\"typing\": [\"Any\", \"Callable\", \"Dict\", \"Generic\", \"Iterable\", \"Optional\", \"TypeVar\"]}}}",
+    "async_imports": "{\"regular\": {\"azurecore\": {\"azure.core.exceptions\": [\"ClientAuthenticationError\", \"HttpResponseError\", \"ResourceExistsError\", \"ResourceNotFoundError\", \"map_error\"], \"azure.mgmt.core.exceptions\": [\"ARMErrorFormat\"], \"azure.core.pipeline\": [\"PipelineResponse\"], \"azure.core.pipeline.transport\": [\"AsyncHttpResponse\", \"HttpRequest\"], \"azure.core.async_paging\": [\"AsyncItemPaged\", \"AsyncList\"]}, \"stdlib\": {\"warnings\": [null]}}, \"conditional\": {\"stdlib\": {\"typing\": [\"Any\", \"AsyncIterable\", \"Callable\", \"Dict\", \"Generic\", \"Optional\", \"TypeVar\"]}}}"
+}

@@ -16,7 +16,7 @@ from azure.core.polling import LROPoller, NoPolling, PollingMethod
 from azure.mgmt.core.exceptions import ARMErrorFormat
 from azure.mgmt.core.polling.arm_polling import ARMPolling
 
-from .. import models as _models
+from .. import models
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
@@ -39,7 +39,7 @@ class GraphResourcesOperations(object):
     :param deserializer: An object model deserializer.
     """
 
-    models = _models
+    models = models
 
     def __init__(self, client, config, serializer, deserializer):
         self._client = client
@@ -53,7 +53,7 @@ class GraphResourcesOperations(object):
         account_name,  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> Iterable["_models.GraphResourcesListResult"]
+        # type: (...) -> Iterable["models.GraphResourcesListResult"]
         """Lists the graphs under an existing Azure Cosmos DB database account.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
@@ -65,12 +65,12 @@ class GraphResourcesOperations(object):
         :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.cosmosdb.models.GraphResourcesListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.GraphResourcesListResult"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.GraphResourcesListResult"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-07-01-preview"
+        api_version = "2021-10-15-preview"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -129,7 +129,7 @@ class GraphResourcesOperations(object):
         graph_name,  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> "_models.GraphResourceGetResults"
+        # type: (...) -> "models.GraphResourceGetResults"
         """Gets the Graph resource under an existing Azure Cosmos DB database account with the provided
         name.
 
@@ -144,12 +144,12 @@ class GraphResourcesOperations(object):
         :rtype: ~azure.mgmt.cosmosdb.models.GraphResourceGetResults
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.GraphResourceGetResults"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.GraphResourceGetResults"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-07-01-preview"
+        api_version = "2021-10-15-preview"
         accept = "application/json"
 
         # Construct URL
@@ -191,16 +191,16 @@ class GraphResourcesOperations(object):
         resource_group_name,  # type: str
         account_name,  # type: str
         graph_name,  # type: str
-        create_update_graph_parameters,  # type: "_models.GraphResourceCreateUpdateParameters"
+        create_update_graph_parameters,  # type: "models.GraphResourceCreateUpdateParameters"
         **kwargs  # type: Any
     ):
-        # type: (...) -> Optional["_models.GraphResourceGetResults"]
-        cls = kwargs.pop('cls', None)  # type: ClsType[Optional["_models.GraphResourceGetResults"]]
+        # type: (...) -> Optional["models.GraphResourceGetResults"]
+        cls = kwargs.pop('cls', None)  # type: ClsType[Optional["models.GraphResourceGetResults"]]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-07-01-preview"
+        api_version = "2021-10-15-preview"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -249,10 +249,10 @@ class GraphResourcesOperations(object):
         resource_group_name,  # type: str
         account_name,  # type: str
         graph_name,  # type: str
-        create_update_graph_parameters,  # type: "_models.GraphResourceCreateUpdateParameters"
+        create_update_graph_parameters,  # type: "models.GraphResourceCreateUpdateParameters"
         **kwargs  # type: Any
     ):
-        # type: (...) -> LROPoller["_models.GraphResourceGetResults"]
+        # type: (...) -> LROPoller["models.GraphResourceGetResults"]
         """Create or update an Azure Cosmos DB Graph.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
@@ -265,8 +265,8 @@ class GraphResourcesOperations(object):
         :type create_update_graph_parameters: ~azure.mgmt.cosmosdb.models.GraphResourceCreateUpdateParameters
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be ARMPolling.
-         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
+        :keyword polling: True for ARMPolling, False for no polling, or a
+         polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of LROPoller that returns either GraphResourceGetResults or the result of cls(response)
@@ -274,7 +274,7 @@ class GraphResourcesOperations(object):
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.GraphResourceGetResults"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.GraphResourceGetResults"]
         lro_delay = kwargs.pop(
             'polling_interval',
             self._config.polling_interval
@@ -334,7 +334,7 @@ class GraphResourcesOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-07-01-preview"
+        api_version = "2021-10-15-preview"
 
         # Construct URL
         url = self._delete_graph_resource_initial.metadata['url']  # type: ignore
@@ -384,8 +384,8 @@ class GraphResourcesOperations(object):
         :type graph_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be ARMPolling.
-         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
+        :keyword polling: True for ARMPolling, False for no polling, or a
+         polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of LROPoller that returns either None or the result of cls(response)

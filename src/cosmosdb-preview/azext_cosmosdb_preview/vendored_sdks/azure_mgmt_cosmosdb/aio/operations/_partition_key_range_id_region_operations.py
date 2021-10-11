@@ -14,7 +14,7 @@ from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import AsyncHttpResponse, HttpRequest
 from azure.mgmt.core.exceptions import ARMErrorFormat
 
-from ... import models as _models
+from ... import models
 
 T = TypeVar('T')
 ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
@@ -33,7 +33,7 @@ class PartitionKeyRangeIdRegionOperations:
     :param deserializer: An object model deserializer.
     """
 
-    models = _models
+    models = models
 
     def __init__(self, client, config, serializer, deserializer) -> None:
         self._client = client
@@ -50,8 +50,8 @@ class PartitionKeyRangeIdRegionOperations:
         collection_rid: str,
         partition_key_range_id: str,
         filter: str,
-        **kwargs: Any
-    ) -> AsyncIterable["_models.PartitionMetricListResult"]:
+        **kwargs
+    ) -> AsyncIterable["models.PartitionMetricListResult"]:
         """Retrieves the metrics determined by the given filter for the given partition key range id and
         region.
 
@@ -76,12 +76,12 @@ class PartitionKeyRangeIdRegionOperations:
         :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.cosmosdb.models.PartitionMetricListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.PartitionMetricListResult"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.PartitionMetricListResult"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-07-01-preview"
+        api_version = "2021-10-15-preview"
         accept = "application/json"
 
         def prepare_request(next_link=None):

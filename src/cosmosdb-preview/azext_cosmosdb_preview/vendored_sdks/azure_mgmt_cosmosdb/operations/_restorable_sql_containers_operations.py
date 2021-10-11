@@ -14,7 +14,7 @@ from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import HttpRequest, HttpResponse
 from azure.mgmt.core.exceptions import ARMErrorFormat
 
-from .. import models as _models
+from .. import models
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
@@ -37,7 +37,7 @@ class RestorableSqlContainersOperations(object):
     :param deserializer: An object model deserializer.
     """
 
-    models = _models
+    models = models
 
     def __init__(self, client, config, serializer, deserializer):
         self._client = client
@@ -54,7 +54,7 @@ class RestorableSqlContainersOperations(object):
         end_time=None,  # type: Optional[str]
         **kwargs  # type: Any
     ):
-        # type: (...) -> Iterable["_models.RestorableSqlContainersListResult"]
+        # type: (...) -> Iterable["models.RestorableSqlContainersListResult"]
         """Show the event feed of all mutations done on all the Azure Cosmos DB SQL containers under a
         specific database.  This helps in scenario where container was accidentally deleted.  This API
         requires 'Microsoft.DocumentDB/locations/restorableDatabaseAccounts/.../read' permission.
@@ -74,12 +74,12 @@ class RestorableSqlContainersOperations(object):
         :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.cosmosdb.models.RestorableSqlContainersListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.RestorableSqlContainersListResult"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.RestorableSqlContainersListResult"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-07-01-preview"
+        api_version = "2021-10-15-preview"
         accept = "application/json"
 
         def prepare_request(next_link=None):

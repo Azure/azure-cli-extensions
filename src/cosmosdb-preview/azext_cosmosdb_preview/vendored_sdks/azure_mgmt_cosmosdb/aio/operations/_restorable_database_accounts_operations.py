@@ -14,7 +14,7 @@ from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import AsyncHttpResponse, HttpRequest
 from azure.mgmt.core.exceptions import ARMErrorFormat
 
-from ... import models as _models
+from ... import models
 
 T = TypeVar('T')
 ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
@@ -33,7 +33,7 @@ class RestorableDatabaseAccountsOperations:
     :param deserializer: An object model deserializer.
     """
 
-    models = _models
+    models = models
 
     def __init__(self, client, config, serializer, deserializer) -> None:
         self._client = client
@@ -44,8 +44,8 @@ class RestorableDatabaseAccountsOperations:
     def list_by_location(
         self,
         location: str,
-        **kwargs: Any
-    ) -> AsyncIterable["_models.RestorableDatabaseAccountsListResult"]:
+        **kwargs
+    ) -> AsyncIterable["models.RestorableDatabaseAccountsListResult"]:
         """Lists all the restorable Azure Cosmos DB database accounts available under the subscription and
         in a region.  This call requires
         'Microsoft.DocumentDB/locations/restorableDatabaseAccounts/read' permission.
@@ -57,12 +57,12 @@ class RestorableDatabaseAccountsOperations:
         :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.cosmosdb.models.RestorableDatabaseAccountsListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.RestorableDatabaseAccountsListResult"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.RestorableDatabaseAccountsListResult"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-07-01-preview"
+        api_version = "2021-10-15-preview"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -115,8 +115,8 @@ class RestorableDatabaseAccountsOperations:
 
     def list(
         self,
-        **kwargs: Any
-    ) -> AsyncIterable["_models.RestorableDatabaseAccountsListResult"]:
+        **kwargs
+    ) -> AsyncIterable["models.RestorableDatabaseAccountsListResult"]:
         """Lists all the restorable Azure Cosmos DB database accounts available under the subscription.
         This call requires 'Microsoft.DocumentDB/locations/restorableDatabaseAccounts/read' permission.
 
@@ -125,12 +125,12 @@ class RestorableDatabaseAccountsOperations:
         :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.cosmosdb.models.RestorableDatabaseAccountsListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.RestorableDatabaseAccountsListResult"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.RestorableDatabaseAccountsListResult"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-07-01-preview"
+        api_version = "2021-10-15-preview"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -184,8 +184,8 @@ class RestorableDatabaseAccountsOperations:
         self,
         location: str,
         instance_id: str,
-        **kwargs: Any
-    ) -> "_models.RestorableDatabaseAccountGetResult":
+        **kwargs
+    ) -> "models.RestorableDatabaseAccountGetResult":
         """Retrieves the properties of an existing Azure Cosmos DB restorable database account.  This call
         requires 'Microsoft.DocumentDB/locations/restorableDatabaseAccounts/read/*' permission.
 
@@ -198,12 +198,12 @@ class RestorableDatabaseAccountsOperations:
         :rtype: ~azure.mgmt.cosmosdb.models.RestorableDatabaseAccountGetResult
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.RestorableDatabaseAccountGetResult"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.RestorableDatabaseAccountGetResult"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-07-01-preview"
+        api_version = "2021-10-15-preview"
         accept = "application/json"
 
         # Construct URL

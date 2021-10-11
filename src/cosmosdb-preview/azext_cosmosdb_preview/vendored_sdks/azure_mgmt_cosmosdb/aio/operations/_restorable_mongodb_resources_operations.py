@@ -14,7 +14,7 @@ from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import AsyncHttpResponse, HttpRequest
 from azure.mgmt.core.exceptions import ARMErrorFormat
 
-from ... import models as _models
+from ... import models
 
 T = TypeVar('T')
 ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
@@ -33,7 +33,7 @@ class RestorableMongodbResourcesOperations:
     :param deserializer: An object model deserializer.
     """
 
-    models = _models
+    models = models
 
     def __init__(self, client, config, serializer, deserializer) -> None:
         self._client = client
@@ -47,8 +47,8 @@ class RestorableMongodbResourcesOperations:
         instance_id: str,
         restore_location: Optional[str] = None,
         restore_timestamp_in_utc: Optional[str] = None,
-        **kwargs: Any
-    ) -> AsyncIterable["_models.RestorableMongodbResourcesListResult"]:
+        **kwargs
+    ) -> AsyncIterable["models.RestorableMongodbResourcesListResult"]:
         """Return a list of database and collection combo that exist on the account at the given timestamp
         and location. This helps in scenarios to validate what resources exist at given timestamp and
         location. This API requires
@@ -67,12 +67,12 @@ class RestorableMongodbResourcesOperations:
         :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.cosmosdb.models.RestorableMongodbResourcesListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.RestorableMongodbResourcesListResult"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.RestorableMongodbResourcesListResult"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-07-01-preview"
+        api_version = "2021-10-15-preview"
         accept = "application/json"
 
         def prepare_request(next_link=None):

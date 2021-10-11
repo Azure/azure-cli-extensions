@@ -14,7 +14,7 @@ from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import HttpRequest, HttpResponse
 from azure.mgmt.core.exceptions import ARMErrorFormat
 
-from .. import models as _models
+from .. import models
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
@@ -29,7 +29,7 @@ class CosmosDBManagementClientOperationsMixin(object):
         self,
         **kwargs  # type: Any
     ):
-        # type: (...) -> Iterable["_models.LocationListResult"]
+        # type: (...) -> Iterable["models.LocationListResult"]
         """List Cosmos DB locations and their properties.
 
         :keyword callable cls: A custom type or function that will be passed the direct response
@@ -37,12 +37,12 @@ class CosmosDBManagementClientOperationsMixin(object):
         :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.cosmosdb.models.LocationListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.LocationListResult"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.LocationListResult"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-07-01-preview"
+        api_version = "2021-10-15-preview"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -97,7 +97,7 @@ class CosmosDBManagementClientOperationsMixin(object):
         location,  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> "_models.LocationGetResult"
+        # type: (...) -> "models.LocationGetResult"
         """Get the properties of an existing Cosmos DB location.
 
         :param location: Cosmos DB region, with spaces between words and each word capitalized.
@@ -107,12 +107,12 @@ class CosmosDBManagementClientOperationsMixin(object):
         :rtype: ~azure.mgmt.cosmosdb.models.LocationGetResult
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.LocationGetResult"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.LocationGetResult"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-07-01-preview"
+        api_version = "2021-10-15-preview"
         accept = "application/json"
 
         # Construct URL
