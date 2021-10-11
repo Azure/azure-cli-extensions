@@ -58,7 +58,7 @@ def load_arguments(self, _):
         c.argument('description', type=str, help='A description of the network manager.')
         c.argument('network_manager_scopes', action=AddNetworkManagerScopes, nargs='+', help='Scope of Network '
                    'Manager.')
-        c.argument('network_manager_scope_accesses', nargs='+', help='Scope Access. Available value: SecurityAdmin, '
+        c.argument('network_manager_scope_accesses', options_list=['--scope-accesses'], nargs='+', help='Scope Access. Available value: SecurityAdmin, '
                    'SecurityUser, Connectivity.')
 
     with self.argument_context('network manager update') as c:
@@ -71,7 +71,7 @@ def load_arguments(self, _):
         c.argument('description', type=str, help='A description of the network manager.')
         c.argument('network_manager_scopes', action=AddNetworkManagerScopes, nargs='+', help='Scope of Network '
                    'Manager.')
-        c.argument('network_manager_scope_accesses', nargs='+', help='Scope Access. Available value: SecurityAdmin, '
+        c.argument('network_manager_scope_accesses', options_list=['--scope-accesses'], nargs='+', help='Scope Access. Available value: SecurityAdmin, '
                    'SecurityUser, Connectivity.')
         c.ignore('parameters')
 
@@ -91,7 +91,7 @@ def load_arguments(self, _):
 
     with self.argument_context('network manager deploy-status list') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('network_manager_name', type=str, help='The name of the network manager.')
+        c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part=None)
         c.argument('top', type=int, help='An optional query parameter which specifies the maximum number of records to '
                    'be returned by the server.')
         c.argument('skip_token', type=str, help='SkipToken is only used if a previous operation returned a partial '
@@ -121,11 +121,25 @@ def load_arguments(self, _):
         c.argument('conditional_members', type=str, help='Conditional Members.')
 
     with self.argument_context('network manager effective-config list') as c:
-        c.argument('virtual_network_name', type=str, help='The name of the virtual network.')
+        c.argument('virtual_network_name', type=str, help='The name of the virtual network.', id_part=None)
+
+    with self.argument_context('network manager active-security-admin-rule list') as c:
+        c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part=None)
+        c.argument('skip_token', type=str, help='SkipToken is only used if a previous operation returned a partial '
+                   'result. If a previous response contains a nextLink element, the value of the nextLink element will '
+                   'include a skipToken parameter that specifies a starting point to use for subsequent calls.')
+        c.argument('regions', nargs='+', help='List of locations.')
+
+    with self.argument_context('network manager active-security-user-rule list') as c:
+        c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part=None)
+        c.argument('skip_token', type=str, help='SkipToken is only used if a previous operation returned a partial '
+                   'result. If a previous response contains a nextLink element, the value of the nextLink element will '
+                   'include a skipToken parameter that specifies a starting point to use for subsequent calls.')
+        c.argument('regions', nargs='+', help='List of locations.')
 
     with self.argument_context('network manager active-config list') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('network_manager_name', type=str, help='The name of the network manager.')
+        c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part=None)
         c.argument('top', type=int, help='An optional query parameter which specifies the maximum number of records to '
                    'be returned by the server.')
         c.argument('skip_token', type=str, help='SkipToken is only used if a previous operation returned a partial '
@@ -135,7 +149,7 @@ def load_arguments(self, _):
 
     with self.argument_context('network manager connect-config list') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('network_manager_name', type=str, help='The name of the network manager.')
+        c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part=None)
         c.argument('top', type=int, help='An optional query parameter which specifies the maximum number of records to '
                    'be returned by the server.')
         c.argument('skip_token', type=str, help='SkipToken is only used if a previous operation returned a partial '
@@ -160,7 +174,7 @@ def load_arguments(self, _):
         c.argument('applies_to_groups', action=AddConnectivityconfigurationsAppliesToGroups, nargs='+', help='Groups '
                    'for configuration')
         c.argument('hubs', action=AddGroupMembers, nargs='+', help='The hub vnets.')
-        c.argument('delete_existing_peering', arg_type=get_three_state_flag(), help='Flag if need to remove current '
+        c.argument('delete_existing_peering', options_list=['--delete-peering'], arg_type=get_three_state_flag(), help='Flag if need to remove current '
                    'existing peerings.')
 
     with self.argument_context('network manager connect-config update') as c:
@@ -176,7 +190,7 @@ def load_arguments(self, _):
         c.argument('applies_to_groups', action=AddConnectivityconfigurationsAppliesToGroups, nargs='+', help='Groups '
                    'for configuration')
         c.argument('hubs', action=AddGroupMembers, nargs='+', help='The hub vnets.')
-        c.argument('delete_existing_peering', arg_type=get_three_state_flag(), help='Flag if need to remove current '
+        c.argument('delete_existing_peering', options_list=['--delete-peering'], arg_type=get_three_state_flag(), help='Flag if need to remove current '
                    'existing peerings.')
         c.ignore('connectivity_configuration')
 
@@ -188,7 +202,7 @@ def load_arguments(self, _):
 
     with self.argument_context('network manager group list') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('network_manager_name', options_list=['--network-manager-name'], type=str, help='The name of the network manager.')
+        c.argument('network_manager_name', options_list=['--network-manager-name'], type=str, help='The name of the network manager.', id_part=None)
         c.argument('top', type=int, help='An optional query parameter which specifies the maximum number of records to '
                    'be returned by the server.')
         c.argument('skip_token', type=str, help='SkipToken is only used if a previous operation returned a partial '
@@ -238,7 +252,7 @@ def load_arguments(self, _):
 
     with self.argument_context('network manager security-user-config list') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('network_manager_name', type=str, help='The name of the network manager.')
+        c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part=None)
         c.argument('top', type=int, help='An optional query parameter which specifies the maximum number of records to '
                    'be returned by the server.')
         c.argument('skip_token', type=str, help='SkipToken is only used if a previous operation returned a partial '
@@ -281,7 +295,7 @@ def load_arguments(self, _):
 
     with self.argument_context('network manager admin-rule list') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('network_manager_name', type=str, help='The name of the network manager.')
+        c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part=None)
         c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.')
         c.argument('top', type=int, help='An optional query parameter which specifies the maximum number of records to '
                    'be returned by the server.')
@@ -291,7 +305,7 @@ def load_arguments(self, _):
 
     with self.argument_context('network manager security-admin-config list') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('network_manager_name', type=str, help='The name of the network manager.')
+        c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part=None)
         c.argument('top', type=int, help='An optional query parameter which specifies the maximum number of records to '
                    'be returned by the server.')
         c.argument('skip_token', type=str, help='SkipToken is only used if a previous operation returned a partial '
@@ -356,7 +370,7 @@ def load_arguments(self, _):
 
     with self.argument_context('network manager admin-rule collection list') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part='name')
+        c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part=None)
         c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.',
                    id_part='child_name_1')
         c.argument('top', type=int, help='An optional query parameter which specifies the maximum number of records to '
@@ -400,7 +414,7 @@ def load_arguments(self, _):
         c.argument('protocol', arg_type=get_enum_type(['Tcp', 'Udp', 'Icmp', 'Esp', 'Any', 'Ah']), help='Network '
                    'protocol this rule applies to.')
         c.argument('source_port_ranges', nargs='+', help='The source port ranges.')
-        c.argument('destination_port_ranges', nargs='+', help='The destination port ranges.')
+        c.argument('destination_port_ranges', options_list=['--dest-port-ranges'], nargs='+', help='The destination port ranges.')
         c.argument('direction', arg_type=get_enum_type(['Inbound', 'Outbound']), help='Indicates if the traffic '
                    'matched against the rule in inbound or outbound.')
 
@@ -417,7 +431,7 @@ def load_arguments(self, _):
         c.argument('protocol', arg_type=get_enum_type(['Tcp', 'Udp', 'Icmp', 'Esp', 'Any', 'Ah']), help='Network '
                    'protocol this rule applies to.')
         c.argument('source_port_ranges', nargs='+', help='The source port ranges.')
-        c.argument('destination_port_ranges', nargs='+', help='The destination port ranges.')
+        c.argument('destination_port_ranges', options_list=['--dest-port-ranges'], nargs='+', help='The destination port ranges.')
         c.argument('direction', arg_type=get_enum_type(['Inbound', 'Outbound']), help='Indicates if the traffic '
                    'matched against the rule in inbound or outbound.')
 
@@ -445,7 +459,7 @@ def load_arguments(self, _):
 
     with self.argument_context('network manager user-rule collection list') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part='name')
+        c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part=None)
         c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.',
                    id_part='child_name_1')
         c.argument('top', type=int, help='An optional query parameter which specifies the maximum number of records to '
@@ -476,6 +490,7 @@ def load_arguments(self, _):
         c.argument('rule_name', type=str, help='The name of the rule.', id_part='child_name_2')
 
     with self.argument_context('network manager user-rule list') as c:
+        c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part=None)
         c.argument('top', type=int, help='An optional query parameter which specifies the maximum number of records to '
                    'be returned by the server.')
         c.argument('skip_token', type=str, help='SkipToken is only used if a previous operation returned a partial '
@@ -491,7 +506,7 @@ def load_arguments(self, _):
         c.argument('destinations', action=AddDestination, nargs='+', help='The destination address prefixes. CIDR or '
                    'destination IP ranges.')
         c.argument('source_port_ranges', nargs='+', help='The source port ranges.')
-        c.argument('destination_port_ranges', nargs='+', help='The destination port ranges.')
+        c.argument('destination_port_ranges', options_list=['--dest-port-ranges'], nargs='+', help='The destination port ranges.')
         c.argument('direction', arg_type=get_enum_type(['Inbound', 'Outbound']), help='Indicates if the traffic '
                    'matched against the rule in inbound or outbound.')
         c.argument('flag', type=str, help='Default rule flag.')
@@ -506,7 +521,7 @@ def load_arguments(self, _):
         c.argument('destinations', action=AddDestination, nargs='+', help='The destination address prefixes. CIDR or '
                    'destination IP ranges.')
         c.argument('source_port_ranges', nargs='+', help='The source port ranges.')
-        c.argument('destination_port_ranges', nargs='+', help='The destination port ranges.')
+        c.argument('destination_port_ranges', options_list=['--dest-port-ranges'], nargs='+', help='The destination port ranges.')
         c.argument('direction', arg_type=get_enum_type(['Inbound', 'Outbound']), help='Indicates if the traffic '
                    'matched against the rule in inbound or outbound.')
         c.argument('flag', type=str, help='Default rule flag.')

@@ -171,10 +171,10 @@ def network_manager_active_security_admin_rule_list(client,
                                                     resource_group_name,
                                                     network_manager_name,
                                                     skip_token=None,
-                                                    region=None):
+                                                    regions=None):
     parameters = {}
     parameters['skip_token'] = skip_token
-    parameters['region'] = region
+    parameters['region'] = regions
     return client.list(resource_group_name=resource_group_name,
                        network_manager_name=network_manager_name,
                        parameters=parameters)
@@ -184,10 +184,10 @@ def network_manager_active_security_user_rule_list(client,
                                                    resource_group_name,
                                                    network_manager_name,
                                                    skip_token=None,
-                                                   region=None):
+                                                   regions=None):
     parameters = {}
     parameters['skip_token'] = skip_token
-    parameters['region'] = region
+    parameters['regions'] = regions
     return client.list(resource_group_name=resource_group_name,
                        network_manager_name=network_manager_name,
                        parameters=parameters)

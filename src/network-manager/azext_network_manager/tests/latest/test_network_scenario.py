@@ -37,7 +37,7 @@ class NetworkScenarioTest(ScenarioTest):
         })
 
         self.cmd('network manager create --name {name} --description {description} --display-name {display_name} '
-                 '--network-manager-scope-accesses "Routing" "Connectivity" '
+                 '--scope-accesses "Routing" "Connectivity" '
                  '--network-manager-scopes '
                  ' subscriptions={sub} '
                  '-l eastus2euap '
@@ -67,7 +67,7 @@ class NetworkScenarioTest(ScenarioTest):
         })
 
         self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" --display-name "TestNetworkManager" '
-                 '--network-manager-scope-accesses "Routing" "Connectivity" '
+                 '--scope-accesses "Routing" "Connectivity" '
                  '--network-manager-scopes '
                  ' subscriptions={sub} '
                  '-l eastus2euap '
@@ -93,7 +93,7 @@ class NetworkScenarioTest(ScenarioTest):
         })
 
         self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" --display-name "TestNetworkManager" '
-                 '--network-manager-scope-accesses "SecurityUser" "Connectivity" '
+                 '--scope-accesses "SecurityUser" "Connectivity" '
                  '--network-manager-scopes '
                  ' subscriptions={sub} '
                  '-l eastus2euap '
@@ -119,7 +119,7 @@ class NetworkScenarioTest(ScenarioTest):
         })
 
         self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" --display-name "TestNetworkManager" '
-                 '--network-manager-scope-accesses "SecurityAdmin" "Connectivity" '
+                 '--scope-accesses "SecurityAdmin" "Connectivity" '
                  '--network-manager-scopes '
                  ' subscriptions={sub} '
                  '-l eastus2euap '
@@ -160,7 +160,7 @@ class NetworkScenarioTest(ScenarioTest):
 
 
         self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" --display-name "TestNetworkManager" '
-                 '--network-manager-scope-accesses "SecurityAdmin" "Connectivity" '
+                 '--scope-accesses "SecurityAdmin" "Connectivity" '
                  '--network-manager-scopes '
                  ' subscriptions={sub} '
                  '-l eastus2euap '
@@ -202,7 +202,7 @@ class NetworkScenarioTest(ScenarioTest):
         })
 
         self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" --display-name "TestNetworkManager" '
-                 '--network-manager-scope-accesses "SecurityAdmin" "Connectivity" '
+                 '--scope-accesses "SecurityAdmin" "Connectivity" '
                  '--network-manager-scopes '
                  ' subscriptions={sub} '
                  '-l eastus2euap '
@@ -246,7 +246,7 @@ class NetworkScenarioTest(ScenarioTest):
         })
 
         self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" --display-name "TestNetworkManager" '
-                 '--network-manager-scope-accesses "SecurityUser" "Connectivity" '
+                 '--scope-accesses "SecurityUser" "Connectivity" '
                  '--network-manager-scopes '
                  ' subscriptions={sub} '
                  '-l eastus2euap '
@@ -286,7 +286,7 @@ class NetworkScenarioTest(ScenarioTest):
         })
 
         self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" --display-name "TestNetworkManager" '
-                 '--network-manager-scope-accesses "SecurityUser" "Connectivity" '
+                 '--scope-accesses "SecurityUser" "Connectivity" '
                  '--network-manager-scopes '
                  ' subscriptions={sub} '
                  '-l eastus2euap '
@@ -324,7 +324,7 @@ class NetworkScenarioTest(ScenarioTest):
         })
 
         self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" --display-name "TestNetworkManager" '
-                 '--network-manager-scope-accesses "SecurityUser" "Connectivity" '
+                 '--scope-accesses "SecurityUser" "Connectivity" '
                  '--network-manager-scopes '
                  ' subscriptions={sub} '
                  '-l eastus2euap '
@@ -336,7 +336,7 @@ class NetworkScenarioTest(ScenarioTest):
 
         self.cmd('network manager connect-config create --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} '
                  '--applies-to-groups group-connectivity="None" network-group-id={sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkManagers/{manager_name}/networkGroups/{group_name} '
-                 'is-global=false use-hub-gateway=true --connectivity-topology "HubAndSpoke" --delete-existing-peering true --hubs '
+                 'is-global=false use-hub-gateway=true --connectivity-topology "HubAndSpoke" --delete-peering true --hubs '
                  'resource-id={sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network} '
                  'resource-type="Microsoft.Network/virtualNetworks" --description "Sample Configuration" --is-global true')
         self.cmd('network manager connect-config show --configuration-name {config_name} --network-manager-name {manager_name} -g {rg}')
@@ -358,7 +358,7 @@ class NetworkScenarioTest(ScenarioTest):
         })
 
         self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" --display-name "TestNetworkManager" '
-                 '--network-manager-scope-accesses "SecurityUser" "Connectivity" '
+                 '--scope-accesses "SecurityUser" "Connectivity" '
                  '--network-manager-scopes '
                  ' subscriptions={sub} '
                  '-l eastus2euap '
@@ -371,9 +371,9 @@ class NetworkScenarioTest(ScenarioTest):
         self.cmd('network manager deploy-status list --network-manager-name {manager_name} --deployment-types "Connectivity" --regions "eastus2euap" --resource-group {rg}')
         self.cmd('network manager effect-vnet list-by-network-group --network-group-name {group_name} --network-manager-name {manager_name} --resource-group {rg}')
         # Internal Server Error
-        self.cmd('network manager effect-vnet list-by-network-manager --network-manager-name {manager_name} --resource-group {rg}')
+        # self.cmd('network manager effect-vnet list-by-network-manager --network-manager-name {manager_name} --resource-group {rg}')
         self.cmd('network manager active-config list --network-manager-name {manager_name} --resource-group {rg}')
         self.cmd('network manager effective-config list --virtual-network-name {virtual_network} -g {rg}')
-        self.cmd('network manager active-security-admin-rule list --network-manager-name {manager_name} -g {rg} --region eastus2euap')
+        self.cmd('network manager active-security-admin-rule list --network-manager-name {manager_name} -g {rg} --regions eastus2euap')
         # Internal Server Error
         # self.cmd('network manager active-security-user-rule list --network-manager-name {manager_name} -g {rg} --region eastus2euap')
