@@ -17,5 +17,5 @@ python -m pip install -U pip
 pip install azdev
 azdev setup --repo .
 azdev extension add quantum
-az account set -s 916dfd6d-030c-4bd9-b579-7bb6d1926e97
+az account set -s $Env:AZURE_QUANTUM_SUBSCRIPTION_ID
 azdev test quantum --live
