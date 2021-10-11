@@ -9,6 +9,7 @@ from azure.core.exceptions import HttpResponseError
 from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     ClusterResource,
     ClusterResourceProperties,
+    CommandPostBody,
     DataCenterResource,
     DataCenterResourceProperties,
     GraphResource,
@@ -161,6 +162,53 @@ def cli_cosmosdb_managed_cassandra_fetch_node_status(client,
     """Get Azure Managed Cassandra Cluster Node Status"""
 
     return client.begin_fetch_node_status(resource_group_name, cluster_name)
+
+def cli_cosmosdb_managed_cassandra_cluster_invoke_command(client,
+                                                         resource_group_name,
+                                                         cluster_name,
+                                                         command,
+                                                         parameters,
+                                                         host,
+                                                         cassandra_stop_start=None,
+                                                         readwrite=None):
+
+    """Invokes a command in Azure Managed Cassandra Cluster host"""
+
+    cluster_invoke_command = CommandPostBody(
+        command=command,
+        parameters=parameters,
+        host=host,
+        cassandra_stop_start=cassandra_stop_start,
+        readwrite=readwrite
+    )
+
+    return client.begin_invoke_command(client, resource_group_name, cluster_name, cluster_invoke_command)
+
+def cli_cosmosdb_managed_cassandra_cluster_status(client,
+                                                     resource_group_name,
+                                                     cluster_name):
+
+    """Get Azure Managed Cassandra Cluster Node Status"""
+
+    return client.status(client, resource_group_name, cluster_name)
+
+
+def cli_cosmosdb_managed_cassandra_cluster_deallocate(client,
+                                                     resource_group_name,
+                                                     cluster_name):
+
+    """Deallocate Azure Managed Cassandra Cluster"""
+
+    return client.begin_fetch_node_status(client, resource_group_name, cluster_name)
+
+
+def cli_cosmosdb_managed_cassandra_cluster_start(client,
+                                                     resource_group_name,
+                                                     cluster_name):
+
+    """Start Azure Managed Cassandra Cluster"""
+
+    return client.begin_start(client, resource_group_name, cluster_name)
 
 
 def cli_cosmosdb_managed_cassandra_datacenter_create(client,
