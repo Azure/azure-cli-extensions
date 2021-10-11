@@ -333,7 +333,7 @@ helps['network manager group create'] = """
         text: |-
                az network manager group create --name "TestNetworkGroup" --network-manager-name "testNetworkManager" \
 --description "A sample group" --conditional-membership "" --display-name "My Network Group" --group-members \
-vnet-id="/subscriptions/subscriptionC/resourceGroup/rg1/providers/Microsoft.Network/virtualnetworks/vnet1" subnet-id="" \
+resource-id="/subscriptions/subscriptionC/resourceGroup/rg1/providers/Microsoft.Network/virtualnetworks/vnet1" \
 --member-type "VirtualNetwork" --resource-group "rg1"
 """
 
