@@ -289,7 +289,7 @@ helps['network manager group create'] = """
         text: |-
                az network manager group create --name "TestNetworkGroup" --network-manager-name "testNetworkManager" \
 --description "A sample group" --conditional-membership "" --display-name "My Network Group" --group-members \
-vnet-id="/subscriptions/subscriptionC/resourceGroup/rg1/providers/Microsoft.Network/virtualnetworks/vnet1" subnet-id="" \
+resource-id="/subscriptions/subscriptionC/resourceGroup/rg1/providers/Microsoft.Network/virtualnetworks/vnet1" \
 --member-type "VirtualNetwork" --resource-group "rg1"
 """
 
@@ -434,7 +434,7 @@ helps['network manager admin-rule collection create'] = """
         text: |-
                az network manager admin-rule collection create --configuration-name "myTestSecurityConfig" --network-manager-name "testNetworkManager"  -g "rg1" \
 --rule-collection-name myTestCollection --description "A sample description" --display-name "ASampleCollection" \
---applies-to-groups  network-group-id=sub_id/resourceGroups/rgid/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkGroup 
+--applies-to-groups  network-group-id=sub_id/resourceGroups/rgid/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkGroup
 """
 
 helps['network manager admin-rule collection list'] = """
@@ -454,7 +454,7 @@ helps['network manager admin-rule collection update'] = """
       - name: Update security admin rule collection
         text: |-
                az network manager admin-rule collection update --configuration-name "myTestSecurityConfig" --network-manager-name \
-"testNetworkManager" --resource-group "rg1" --rule-collection-name "myTestCollection" --display-name "ASampleCollection2" 
+"testNetworkManager" --resource-group "rg1" --rule-collection-name "myTestCollection" --display-name "ASampleCollection2"
 """
 
 helps['network manager admin-rule collection show'] = """
@@ -584,7 +584,7 @@ helps['network manager user-rule collection create'] = """
         text: |-
                az network manager user-rule collection create --configuration-name "myTestSecurityConfig" --network-manager-name "testNetworkManager"  -g "rg1" \
 --rule-collection-name myTestCollection --description "A sample description" --display-name "ASampleCollection" \
---applies-to-groups  network-group-id=sub_id/resourceGroups/rgid/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkGroup 
+--applies-to-groups  network-group-id=sub_id/resourceGroups/rgid/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkGroup
 """
 
 helps['network manager user-rule collection list'] = """
@@ -604,7 +604,7 @@ helps['network manager user-rule collection update'] = """
       - name: Update security user rule collection
         text: |-
                az network manager user-rule collection update --configuration-name "myTestSecurityConfig" --network-manager-name \
-"testNetworkManager" --resource-group "rg1" --rule-collection-name "myTestCollection" --display-name "ASampleCollection2" 
+"testNetworkManager" --resource-group "rg1" --rule-collection-name "myTestCollection" --display-name "ASampleCollection2"
 """
 
 helps['network manager user-rule collection show'] = """

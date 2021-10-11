@@ -27,7 +27,7 @@ interactions:
   response:
     body:
       string: '{"name":"TestNetworkManager","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_list_queries000001/providers/Microsoft.Network/networkManagers/TestNetworkManager","location":"eastus2euap","type":"Microsoft.Network/networkManagers","tags":{},"etag":"","properties":{"displayName":"TestNetworkManager","description":"My
-        Test Network Manager","networkManagerScopes":{"managementGroups":[],"subscriptions":["/subscriptions/00000000-0000-0000-0000-000000000000"]},"provisioningState":"Succeeded","networkManagerScopeAccesses":["SEcurityUser","Connectivity"],"resourceGuid":"bd67f380-af1e-4eb4-9798-2d52fa1d6dcc"},"systemData":{"createdBy":"v-kaisun@microsoft.com","createdByType":"User","createdAt":"2021-10-11T02:43:08.6706867Z","lastModifiedBy":"v-kaisun@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-11T02:43:08.6706867Z"}}'
+        Test Network Manager","networkManagerScopes":{"managementGroups":[],"subscriptions":["/subscriptions/00000000-0000-0000-0000-000000000000"]},"provisioningState":"Succeeded","networkManagerScopeAccesses":["SEcurityUser","Connectivity"],"resourceGuid":"1c6ce98c-0ced-481b-9c89-5ae0cbaf9220"},"systemData":{"createdBy":"v-kaisun@microsoft.com","createdByType":"User","createdAt":"2021-10-11T03:18:01.8236046Z","lastModifiedBy":"v-kaisun@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-11T03:18:01.8236046Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -36,7 +36,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 11 Oct 2021 02:43:12 GMT
+      - Mon, 11 Oct 2021 03:18:08 GMT
       expires:
       - '-1'
       pragma:
@@ -52,7 +52,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1194'
+      - '1199'
     status:
       code: 200
       message: OK
@@ -83,16 +83,16 @@ interactions:
   response:
     body:
       string: '{"name":"TestNetworkGroup","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_list_queries000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkGroup","type":"Microsoft.Network/networkManagers/networkGroups","etag":"","properties":{"displayName":"ASampleGroup","description":"A
-        sample policy","groupMembers":[{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_list_queries000001/providers/Microsoft.Network/virtualnetworks/clitest.vn000002"}],"conditionalMembership":"","provisioningState":"Succeeded","resourceGuid":"39be2062-edc9-44ef-aad4-4affdb85ce84"},"systemData":{"createdBy":"v-kaisun@microsoft.com","createdByType":"User","createdAt":"2021-10-11T02:43:14.099211Z","lastModifiedBy":"v-kaisun@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-11T02:43:14.099211Z"}}'
+        sample policy","groupMembers":[{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_list_queries000001/providers/Microsoft.Network/virtualnetworks/clitest.vn000002"}],"conditionalMembership":"","provisioningState":"Succeeded","resourceGuid":"797d22a8-a95d-47df-8aa2-724b0f6d1485"},"systemData":{"createdBy":"v-kaisun@microsoft.com","createdByType":"User","createdAt":"2021-10-11T03:18:09.9474252Z","lastModifiedBy":"v-kaisun@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-11T03:18:09.9474252Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1007'
+      - '1009'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 11 Oct 2021 02:43:13 GMT
+      - Mon, 11 Oct 2021 03:18:13 GMT
       expires:
       - '-1'
       pragma:
@@ -108,7 +108,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1191'
+      - '1199'
     status:
       code: 200
       message: OK
@@ -144,7 +144,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 11 Oct 2021 02:43:16 GMT
+      - Mon, 11 Oct 2021 03:18:16 GMT
       expires:
       - '-1'
       pragma:
@@ -160,7 +160,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1192'
+      - '1199'
     status:
       code: 200
       message: OK
@@ -187,16 +187,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_list_queries000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkGroup/listEffectiveVirtualNetworks?api-version=2021-02-01-preview
   response:
     body:
-      string: '{"skipToken":"","value":[]}'
+      string: '{"skipToken":"","value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_list_queries000001/providers/Microsoft.Network/virtualNetworks/clitest.vn000002","location":"eastus2euap","membershipType":"Dynamic"}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '27'
+      - '299'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 11 Oct 2021 02:43:19 GMT
+      - Mon, 11 Oct 2021 03:18:20 GMT
       expires:
       - '-1'
       pragma:
@@ -212,7 +212,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1196'
+      - '1199'
     status:
       code: 200
       message: OK
@@ -224,7 +224,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - network manager active-config list
+      - network manager effect-vnet list-by-network-manager
       Connection:
       - keep-alive
       Content-Length:
@@ -236,19 +236,19 @@ interactions:
       User-Agent:
       - AZURECLI/2.28.1 azsdk-python-mgmt-network/1.0.0b1 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_list_queries000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/listActiveConnectivityConfigurations?api-version=2021-02-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_list_queries000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/listEffectiveVirtualNetworks?api-version=2021-02-01-preview
   response:
     body:
-      string: '{"skipToken":"","value":[]}'
+      string: ''
     headers:
       cache-control:
       - no-cache
+      connection:
+      - close
       content-length:
-      - '27'
-      content-type:
-      - application/json; charset=utf-8
+      - '0'
       date:
-      - Mon, 11 Oct 2021 02:43:21 GMT
+      - Mon, 11 Oct 2021 03:18:25 GMT
       expires:
       - '-1'
       pragma:
@@ -257,17 +257,15 @@ interactions:
       - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
       x-content-type-options:
       - nosniff
+      x-ms-failure-cause:
+      - service
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1196'
+      - '1199'
     status:
-      code: 200
-      message: OK
+      code: 500
+      message: Internal Server Error
 - request:
     body: '{}'
     headers:
@@ -276,7 +274,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - network manager effective-config list
+      - network manager effect-vnet list-by-network-manager
       Connection:
       - keep-alive
       Content-Length:
@@ -284,23 +282,23 @@ interactions:
       Content-Type:
       - application/json
       ParameterSetName:
-      - --virtual-network-name -g
+      - --network-manager-name --resource-group
       User-Agent:
       - AZURECLI/2.28.1 azsdk-python-mgmt-network/1.0.0b1 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_list_queries000001/providers/Microsoft.Network/virtualNetworks/clitest.vn000002/listNetworkManagerEffectiveConnectivityConfigurations?api-version=2021-02-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_list_queries000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/listEffectiveVirtualNetworks?api-version=2021-02-01-preview
   response:
     body:
-      string: '{"skipToken":"","value":[]}'
+      string: ''
     headers:
       cache-control:
       - no-cache
+      connection:
+      - close
       content-length:
-      - '27'
-      content-type:
-      - application/json; charset=utf-8
+      - '0'
       date:
-      - Mon, 11 Oct 2021 02:43:22 GMT
+      - Mon, 11 Oct 2021 03:18:27 GMT
       expires:
       - '-1'
       pragma:
@@ -309,17 +307,15 @@ interactions:
       - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
       x-content-type-options:
       - nosniff
+      x-ms-failure-cause:
+      - service
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1191'
+      - '1199'
     status:
-      code: 200
-      message: OK
+      code: 500
+      message: Internal Server Error
 - request:
     body: '{}'
     headers:
@@ -328,7 +324,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - network manager active-security-admin-rule list
+      - network manager effect-vnet list-by-network-manager
       Connection:
       - keep-alive
       Content-Length:
@@ -336,23 +332,23 @@ interactions:
       Content-Type:
       - application/json
       ParameterSetName:
-      - --network-manager-name -g --region
+      - --network-manager-name --resource-group
       User-Agent:
       - AZURECLI/2.28.1 azsdk-python-mgmt-network/1.0.0b1 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_list_queries000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/listActiveSecurityAdminRules?api-version=2021-02-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_list_queries000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/listEffectiveVirtualNetworks?api-version=2021-02-01-preview
   response:
     body:
-      string: '{"skipToken":"","value":[]}'
+      string: ''
     headers:
       cache-control:
       - no-cache
+      connection:
+      - close
       content-length:
-      - '27'
-      content-type:
-      - application/json; charset=utf-8
+      - '0'
       date:
-      - Mon, 11 Oct 2021 02:43:24 GMT
+      - Mon, 11 Oct 2021 03:18:33 GMT
       expires:
       - '-1'
       pragma:
@@ -361,15 +357,63 @@ interactions:
       - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
       x-content-type-options:
       - nosniff
+      x-ms-failure-cause:
+      - service
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1195'
+      - '1199'
     status:
-      code: 200
-      message: OK
+      code: 500
+      message: Internal Server Error
+- request:
+    body: '{}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager effect-vnet list-by-network-manager
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '2'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --network-manager-name --resource-group
+      User-Agent:
+      - AZURECLI/2.28.1 azsdk-python-mgmt-network/1.0.0b1 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_list_queries000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/listEffectiveVirtualNetworks?api-version=2021-02-01-preview
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      connection:
+      - close
+      content-length:
+      - '0'
+      date:
+      - Mon, 11 Oct 2021 03:18:39 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - service
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 500
+      message: Internal Server Error
 version: 1

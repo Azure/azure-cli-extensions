@@ -468,7 +468,6 @@ def load_arguments(self, _):
                    id_part='child_name_1')
         c.argument('rule_collection_name', type=str, help='The name of the admin rule collection.')
 
-
     with self.argument_context('network manager user-rule') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('network_manager_name', type=str, help='The name of the network manager.')

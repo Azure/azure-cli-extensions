@@ -194,10 +194,10 @@ def network_manager_active_security_user_rule_list(client,
 
 
 def network_manager_effective_security_user_rule_list(client,
-                                                   resource_group_name,
-                                                   network_manager_name,
-                                                   top=None,
-                                                   skip_token=None):
+                                                      resource_group_name,
+                                                      network_manager_name,
+                                                      top=None,
+                                                      skip_token=None):
     parameters = {}
     parameters['skip_token'] = skip_token
     return client.list(resource_group_name=resource_group_name,
@@ -563,9 +563,9 @@ def network_manager_admin_rule_collection_delete(client,
                                                  configuration_name,
                                                  rule_collection_name):
     return client.delete(resource_group_name=resource_group_name,
-                      network_manager_name=network_manager_name,
-                      configuration_name=configuration_name,
-                      rule_collection_name=rule_collection_name)
+                         network_manager_name=network_manager_name,
+                         configuration_name=configuration_name,
+                         rule_collection_name=rule_collection_name)
 
 
 def network_manager_admin_rule_create(client,
@@ -774,7 +774,7 @@ def network_manager_user_rule_list(client,
     return client.list(resource_group_name=resource_group_name,
                        network_manager_name=network_manager_name,
                        configuration_name=configuration_name,
-                       rule_collection_name=rule_collection_name, 
+                       rule_collection_name=rule_collection_name,
                        top=top,
                        skip_token=skip_token)
 
