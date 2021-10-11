@@ -282,8 +282,9 @@ def app_create(cmd, client, resource_group, service, name,
         loaded_certificates = []
 
         for item in data['loadedCertificates']:
+            certificate_resource = client.certificates.get(resource_group, service, item['certificateName'])
             loaded_certificates.append(models_20210901preview.
-                                       LoadedCertificate(resource_id=item['resourceId'],
+                                       LoadedCertificate(resource_id=certificate_resource.resourceId,
                                                          load_trust_store=item['loadTrustStore']))
         properties.loaded_certificates=loaded_certificates
 
@@ -397,8 +398,9 @@ def app_update(cmd, client, resource_group, service, name,
         loaded_certificates = []
 
         for item in data['loadedCertificates']:
+            certificate_resource = client.certificates.get(resource_group, service, item['certificateName'])
             loaded_certificates.append(models_20210901preview.
-                                       LoadedCertificate(resource_id=item['resourceId'],
+                                       LoadedCertificate(resource_id=certificate_resource.resourceId,
                                                          load_trust_store=item['loadTrustStore']))
         properties.loaded_certificates=loaded_certificates
 
@@ -783,6 +785,43 @@ def app_unset_deployment(cmd, client, resource_group, service, name):
 
     return client.apps.begin_update(resource_group, service, name, app_resource)
 
+def app_append_loaded_certificate(cmd, client, resource_group, service, name, certificate_name, load_trust_store):
+    client = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20210901preview)
+    _check_active_deployment_exist(client, resource_group, service, name)
+
+    appResource = client.apps.get(resource_group, service, name)
+    certificateResource = client.certificates.get(resource_group, service, certificate_name)
+    certificateResourceId = certificateResource.id
+
+    loadedCertificates = appResource.properties.loaded_certificates
+
+    for loadedCertificate in loadedCertificates:
+        if loadedCertificate.resource_id == certificateResource.id:
+            raise CLIError("The certificate has been loaded.")
+
+    loadedCertificate.append(models_20210901preview.
+                               LoadedCertificate(resource_id=certificateResourceId,
+                                                 load_trust_store=load_trust_store))
+    properties = models_20210901preview.AppResourceProperties(public=assign_endpoint, https_only=https_only,
+                                                              enable_end_to_end_tls=enable_end_to_end_tls)
+    app_resource.properties.loaded_certificates = loadedCertificates
+
+    poller = client.apps.begin_update(
+        resource_group, service, name, app_resource)
+    while poller.done() is False:
+        sleep(APP_CREATE_OR_UPDATE_SLEEP_INTERVAL)
+
+    app_updated = client.apps.get(resource_group, service, name)
+
+    deployment_name = app_updated.properties.active_deployment_name
+    if deployment_name:
+        deployment = client.deployments.get(
+            resource_group, service, name, deployment_name)
+        app_updated.properties.active_deployment = deployment
+    else:
+        logger.warning(NO_PRODUCTION_DEPLOYMENT_SET_ERROR)
+
+    return app_updated
 
 def deployment_create(cmd, client, resource_group, service, app, name,
                       skip_clone_settings=False,
@@ -1619,9 +1658,18 @@ def certificate_remove(cmd, resource_group, service, name):
     client.certificates.get(resource_group, service, name)
     return client.certificates.begin_delete(resource_group, service, name)
 
-def certificate_list_reference_app():
+def certificate_list_reference_app(cmd, resource_group, service, name):
     client = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20210901preview)
-
+    apps = app_list(cmd, client, resource_group, service)
+    reference_apps = []
+    certificateResource = client.certificates.get(resource_group, service, name)
+    certificateResourceId = certificateResource.id
+    for app in apps:
+        for load_certificate in app.properties.loaded_certificates:
+            if load_certificate.resource_id == certificateResourceId:
+                reference_apps.append(app)
+                break
+    return reference_apps
 
 def domain_bind(cmd, client, resource_group, service, app,
                 domain_name,

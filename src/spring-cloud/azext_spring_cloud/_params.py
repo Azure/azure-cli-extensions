@@ -119,7 +119,8 @@ def load_arguments(self, _):
                    help='Memory resource quantity. Should be 512Mi or #Gi, e.g., 1Gi, 3Gi.')
         c.argument('instance_count', type=int,
                    default=1, help='Number of instance.', validator=validate_instance_count)
-        c.argument('loaded-certificates-file', help='A json file path for the certificates which would be loaded to app')
+        c.argument('loaded_certificates_file',
+                   help='A json file path for the certificates which would be loaded to app')
 
     with self.argument_context('spring-cloud app update') as c:
         c.argument('assign_endpoint', arg_type=get_three_state_flag(),
@@ -127,7 +128,8 @@ def load_arguments(self, _):
                    options_list=['--assign-endpoint', c.deprecate(target='--is-public', redirect='--assign-endpoint', hide=True)])
         c.argument('https_only', arg_type=get_three_state_flag(), help='If true, access app via https', default=False)
         c.argument('enable_end_to_end_tls', arg_type=get_three_state_flag(), help='If true, enable end to end tls')
-        c.argument('loaded-certificates-file', help='A json file path for the certificates which would be loaded to app')
+        c.argument('loaded_certificates_file',
+                   help='A json file path for the certificates which would be loaded to app')
 
     for scope in ['spring-cloud app update', 'spring-cloud app start', 'spring-cloud app stop', 'spring-cloud app restart', 'spring-cloud app deploy', 'spring-cloud app scale', 'spring-cloud app set-deployment', 'spring-cloud app show-deploy-log']:
         with self.argument_context(scope) as c:
@@ -246,6 +248,10 @@ def load_arguments(self, _):
         with self.argument_context(scope) as c:
             c.argument('key', help='Api key of the service.')
             c.argument('disable_ssl', arg_type=get_three_state_flag(), help='If true, disable SSL. If false, enable SSL.', default=False)
+
+    with self.argument_context('spring-cloud app append-loaded-certificate') as c:
+        c.argument('certificate_name', help='Name of the certificate to be appended')
+        c.argument('load_trust_store', arg_type=get_three_state_flag(), help='If true, the certificate would be loaded into trust store for Java applications', default=False)
 
     with self.argument_context('spring-cloud config-server set') as c:
         c.argument('config_file',
