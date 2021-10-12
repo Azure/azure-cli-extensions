@@ -826,7 +826,8 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                disable_azure_rbac=False,
                enable_windows_gmsa=False,
                gmsa_dns_server=None,
-               gmsa_root_domain_name=None):
+               gmsa_root_domain_name=None,
+               http_proxy_config=None):
     update_autoscaler = enable_cluster_autoscaler or disable_cluster_autoscaler or update_cluster_autoscaler
     update_acr = attach_acr is not None or detach_acr is not None
     update_pod_security = enable_pod_security_policy or disable_pod_security_policy
@@ -868,7 +869,8 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
        not enable_public_fqdn and \
        not disable_public_fqdn and \
        not enable_windows_gmsa and \
-       not nodepool_labels:
+       not nodepool_labels and \
+       not http_proxy_config:
         raise CLIError('Please specify "--enable-cluster-autoscaler" or '
                        '"--disable-cluster-autoscaler" or '
                        '"--update-cluster-autoscaler" or '
@@ -906,9 +908,13 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                        '"--enable-public-fqdn" or '
                        '"--disable-public-fqdn"'
                        '"--enble-windows-gmsa" or '
-                       '"--nodepool-labels"')
+                       '"--nodepool-labels" or '
+                       '"--http-proxy-config"')
     instance = client.get(resource_group_name, name)
     _fill_defaults_for_pod_identity_profile(instance.pod_identity_profile)
+
+    if http_proxy_config:
+        instance.http_proxy_config = _get_http_proxy_config(http_proxy_config)
 
     if update_autoscaler and len(instance.agent_pool_profiles) > 1:
         raise CLIError('There is more than one node pool in the cluster. Please use "az aks nodepool" command '

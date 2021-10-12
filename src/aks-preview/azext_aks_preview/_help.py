@@ -632,6 +632,9 @@ helps['aks update'] = """
           long-summary: |-
              You do not need to set this if you have set DNS server in the VNET used by the cluster.
              You must set or not set --gmsa-dns-server and --gmsa-root-domain-name at the same time when setting --enable-windows-gmsa.
+        - name: --http-proxy-config
+          type: string
+          short-summary: Http Proxy configuration for this cluster.
     examples:
       - name: Enable cluster-autoscaler within node count range [1,5]
         text: az aks update --enable-cluster-autoscaler --min-count 1 --max-count 5 -g MyResourceGroup -n MyManagedCluster

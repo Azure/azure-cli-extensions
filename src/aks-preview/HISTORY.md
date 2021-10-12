@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.5.46
+++++++
+* Add support for updating HTTP proxy configuration via `az aks update --http-proxy-config file.json`
+
 0.5.45
 ++++++
 * Remove the snapshot name trimming in `az aks snapshot create` command.

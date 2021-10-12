@@ -193,6 +193,7 @@ def load_arguments(self, _):
         c.argument('enable_windows_gmsa', action='store_true', options_list=['--enable-windows-gmsa'])
         c.argument('gmsa_dns_server', options_list=['--gmsa-dns-server'])
         c.argument('gmsa_root_domain_name', options_list=['--gmsa-root-domain-name'])
+        c.argument('http_proxy_config', options_list=['--http-proxy-config'], type=str)
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
         c.argument('nodepool_labels', nargs='*', validator=validate_nodepool_labels, help='space-separated labels: key[=value] [key[=value] ...]. See https://aka.ms/node-labels for syntax of labels.')
 
