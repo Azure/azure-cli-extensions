@@ -72,16 +72,13 @@ examples:
       az managed-cassandra cluster list
 """
 
-helps['managed-cassandra cluster node-status'] = """
+helps['managed-cassandra cluster backups'] = """
 type: command
-short-summary: Gets Status of all the nodes in all the datacenters in a given Cluster.
+short-summary: List the backups of this cluster that are available to restore.
 examples:
-  - name: This command gets the status of all the nodes in this cluster. By default a json is returned.
+  - name: This command lists the backups of this cluster that are available to restore.
     text: |
-      az managed-cassandra cluster node-status --resource-group MyResourceGroup --cluster-name MyCluster
-  - name: This command gets the status of all the nodes in this cluster. When a table output is specified only one token is displayed. Use json output to get all the tokens.
-    text: |
-      az managed-cassandra cluster node-status --resource-group MyResourceGroup --cluster-name MyCluster --output table
+      az managed-cassandra cluster backups --resource-group MyResourceGroup --cluster-name MyCluster
 """
 
 helps['managed-cassandra cluster command'] = """

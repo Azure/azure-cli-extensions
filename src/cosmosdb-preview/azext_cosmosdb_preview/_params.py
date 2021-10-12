@@ -24,7 +24,7 @@ def load_arguments(self, _):
             'managed-cassandra cluster deallocate',
             'managed-cassandra cluster start',
             'managed-cassandra cluster status',
-            'managed-cassandra cluster node-status']:
+            'managed-cassandra cluster backups']:
         with self.argument_context(scope) as c:
             c.argument('cluster_name', options_list=['--cluster-name', '-c'], help="Cluster Name", required=True)
 
