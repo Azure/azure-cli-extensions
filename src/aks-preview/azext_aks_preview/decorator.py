@@ -2066,7 +2066,8 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
                 '"--disable-public-fqdn"'
                 '"--enble-windows-gmsa" or '
                 '"--nodepool-labels" or '
-                '"--enable-oidc-issuer".'
+                '"--enable-oidc-issuer" or '
+                '"--http-proxy-config".'
             )
 
     def update_load_balancer_profile(self, mc: ManagedCluster) -> ManagedCluster:
