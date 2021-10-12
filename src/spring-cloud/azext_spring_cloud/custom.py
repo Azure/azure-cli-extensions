@@ -12,7 +12,7 @@ from azure.core.exceptions import HttpResponseError
 from azure.mgmt.cosmosdb import CosmosDBManagementClient
 from azure.mgmt.redis import RedisManagementClient
 from requests.auth import HTTPBasicAuth
-import yaml   # pylint: disable=import-error
+import yaml  # pylint: disable=import-error
 from time import sleep
 from ._stream_utils import stream_logs
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
@@ -33,13 +33,14 @@ from knack.log import get_logger
 from .azure_storage_file import FileService
 from azure.cli.core.azclierror import InvalidArgumentValueError, RequiredArgumentMissingError
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
-from azure.cli.core.util import sdk_no_wait
+from azure.cli.core.util import get_file_json, sdk_no_wait
 from azure.cli.core.profiles import ResourceType, get_sdk
 from azure.mgmt.applicationinsights import ApplicationInsightsManagementClient
 from azure.cli.core.commands import cached_put
 from azure.core.exceptions import ResourceNotFoundError
 from ._utils import _get_rg_location
 from ._utils import _get_sku_name
+# from ._utils import _try_load_file_object
 from ._resource_quantity import validate_cpu, validate_memory
 from six.moves.urllib import parse
 from threading import Thread
@@ -248,7 +249,8 @@ def list_keys(cmd, client, resource_group, name, app=None, deployment=None):
 
 # pylint: disable=redefined-builtin
 def regenerate_keys(cmd, client, resource_group, name, type):
-    return client.services.regenerate_test_key(resource_group, name, models.RegenerateTestKeyRequestPayload(key_type=type))
+    return client.services.regenerate_test_key(resource_group, name,
+                                               models.RegenerateTestKeyRequestPayload(key_type=type))
 
 
 def app_create(cmd, client, resource_group, service, name,
@@ -262,6 +264,7 @@ def app_create(cmd, client, resource_group, service, name,
                enable_persistent_storage=None,
                assign_identity=None,
                loaded_certificates_file=None):
+
     client = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20210901preview)
     cpu = validate_cpu(cpu)
     memory = validate_memory(memory)
@@ -280,17 +283,21 @@ def app_create(cmd, client, resource_group, service, name,
         properties.persistent_disk = models_20210901preview.PersistentDisk(
             size_in_gb=0, mount_path="/persistent")
 
-    if loaded_certificates_file is not None:
-        input_file = open(loaded_certificates_file)
-        data = json.load(input_file)
+    if loaded_certificates_file is not None and os.path.isfile(loaded_certificates_file):
+        data = get_file_json(loaded_certificates_file, throw_on_empty=False)
         loaded_certificates = []
-
-        for item in data['loadedCertificates']:
-            certificate_resource = client.certificates.get(resource_group, service, item['certificateName'])
-            loaded_certificates.append(models_20210901preview.
-                                       LoadedCertificate(resource_id=certificate_resource.id,
-                                                         load_trust_store=item['loadTrustStore']))
-        properties.loaded_certificates=loaded_certificates
+        if data:
+            for item in data['loadedCertificates']:
+                certificate_resource = client.certificates.get(resource_group, service, item['certificateName'])
+                loaded_certificates.append(models_20210901preview.
+                                           LoadedCertificate(resource_id=certificate_resource.id,
+                                                             load_trust_store=item['loadTrustStore']))
+        # for item in data['loadedCertificates']:
+        #     certificate_resource = client.certificates.get(resource_group, service, item['certificateName'])
+        #     loaded_certificates.append(models_20210901preview.
+        #                                LoadedCertificate(resource_id=certificate_resource.id,
+        #                                                  load_trust_store=item['loadTrustStore']))
+        properties.loaded_certificates = loaded_certificates
 
     resource = client.services.get(resource_group, service)
 
@@ -310,7 +317,8 @@ def app_create(cmd, client, resource_group, service, name,
     # create default deployment
     logger.warning(
         "[2/4] Creating default deployment with name '{}'".format(DEFAULT_DEPLOYMENT_NAME))
-    default_deployment_resource = _default_deployment_resource_builder(cpu, memory, env, jvm_options, runtime_version, instance_count)
+    default_deployment_resource = _default_deployment_resource_builder(cpu, memory, env, jvm_options, runtime_version,
+                                                                       instance_count)
     poller = client.deployments.begin_create_or_update(resource_group,
                                                        service,
                                                        name,
@@ -319,8 +327,8 @@ def app_create(cmd, client, resource_group, service, name,
 
     logger.warning("[3/4] Setting default deployment to production")
 
-    app_resource.properties.active_deployment_name=DEFAULT_DEPLOYMENT_NAME
-    app_resource.properties.public=assign_endpoint
+    app_resource.properties.active_deployment_name = DEFAULT_DEPLOYMENT_NAME
+    app_resource.properties.public = assign_endpoint
     app_resource.location = resource.location
 
     app_poller = client.apps.begin_update(resource_group, service, name, app_resource)
@@ -392,17 +400,27 @@ def app_update(cmd, client, resource_group, service, name,
     if enable_persistent_storage is False:
         properties.persistent_disk = models_20210901preview.PersistentDisk(size_in_gb=0)
 
-    if loaded_certificates_file is not None:
-        input_file = open(loaded_certificates_file)
-        data = json.load(input_file)
+    # if loaded_certificates_file is not None:
+    #     input_file = open(loaded_certificates_file)
+    #     data = json.load(input_file)
+    #     loaded_certificates = []
+    #
+    #     for item in data['loadedCertificates']:
+    #         certificate_resource = client.certificates.get(resource_group, service, item['certificateName'])
+    #         loaded_certificates.append(models_20210901preview.
+    #                                    LoadedCertificate(resource_id=certificate_resource.id,
+    #                                                      load_trust_store=item['loadTrustStore']))
+    if loaded_certificates_file is not None and os.path.isfile(loaded_certificates_file):
+        data = get_file_json(loaded_certificates_file, throw_on_empty=False)
         loaded_certificates = []
+        if data:
+            for item in data['loadedCertificates']:
+                certificate_resource = client.certificates.get(resource_group, service, item['certificateName'])
+                loaded_certificates.append(models_20210901preview.
+                                           LoadedCertificate(resource_id=certificate_resource.id,
+                                                             load_trust_store=item['loadTrustStore']))
 
-        for item in data['loadedCertificates']:
-            certificate_resource = client.certificates.get(resource_group, service, item['certificateName'])
-            loaded_certificates.append(models_20210901preview.
-                                       LoadedCertificate(resource_id=certificate_resource.id,
-                                                         load_trust_store=item['loadTrustStore']))
-        properties.loaded_certificates=loaded_certificates
+    properties.loaded_certificates = loaded_certificates
 
     app_resource = models_20210901preview.AppResource()
     app_resource.properties = properties
@@ -430,7 +448,7 @@ def app_update(cmd, client, resource_group, service, name,
         environment_variables=env,
         jvm_options=jvm_options,
         net_core_main_entry_path=main_entry,
-        runtime_version=runtime_version,)
+        runtime_version=runtime_version, )
     deployment_settings.cpu = None
     deployment_settings.memory_in_gb = None
     properties = models_20210901preview.DeploymentResourceProperties(
@@ -649,7 +667,9 @@ def app_tail_log(cmd, client, resource_group, service, name,
     test_keys = client.services.list_test_keys(resource_group, service)
     primary_key = test_keys.primary_key
     if not primary_key:
-        raise CLIError("To use the log streaming feature, please enable the test endpoint by running 'az spring-cloud test-endpoint enable -n {0} -g {1}'".format(service, resource_group))
+        raise CLIError(
+            "To use the log streaming feature, please enable the test endpoint by running 'az spring-cloud test-endpoint enable -n {0} -g {1}'".format(
+                service, resource_group))
 
     # https://primary:xxxx[key]@servicename.test.azuremicrosoervice.io -> servicename.azuremicroservice.io
     test_url = test_keys.primary_test_endpoint
@@ -785,6 +805,7 @@ def app_unset_deployment(cmd, client, resource_group, service, name):
 
     return client.apps.begin_update(resource_group, service, name, app_resource)
 
+
 def app_append_loaded_certificate(cmd, client, resource_group, service, name, certificate_name, load_trust_store):
     client = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20210901preview)
     _check_active_deployment_exist(client, resource_group, service, name)
@@ -793,11 +814,11 @@ def app_append_loaded_certificate(cmd, client, resource_group, service, name, ce
     certificate_resource = client.certificates.get(resource_group, service, certificate_name)
     certificate_resource_id = certificate_resource.id
 
-    loaded_certificates = app_resource.properties.loaded_certificates
+    loaded_certificates = app_resource.properties.loaded_certificates or []
 
     for loaded_certificate in loaded_certificates:
         if loaded_certificate.resource_id == certificate_resource.id:
-            raise CLIError("The certificate has been loaded.")
+            raise CLIError("This certificate has already been loaded.")
 
     loaded_certificates.append(models_20210901preview.
                                LoadedCertificate(resource_id=certificate_resource_id,
@@ -821,6 +842,7 @@ def app_append_loaded_certificate(cmd, client, resource_group, service, name, ce
         logger.warning(NO_PRODUCTION_DEPLOYMENT_SET_ERROR)
 
     return app_updated
+
 
 def deployment_create(cmd, client, resource_group, service, app, name,
                       skip_clone_settings=False,
@@ -928,7 +950,9 @@ def validate_config_server_settings(client, resource_group, name, config_server_
     try:
         result = sdk_no_wait(False, client.begin_validate, resource_group, name, config_server_settings).result()
     except Exception as err:  # pylint: disable=broad-except
-        raise CLIError("{0}. You may raise a support ticket if needed by the following link: https://docs.microsoft.com/azure/spring-cloud/spring-cloud-faq?pivots=programming-language-java#how-can-i-provide-feedback-and-report-issues".format(err))
+        raise CLIError(
+            "{0}. You may raise a support ticket if needed by the following link: https://docs.microsoft.com/azure/spring-cloud/spring-cloud-faq?pivots=programming-language-java#how-can-i-provide-feedback-and-report-issues".format(
+                err))
 
     if not result.is_valid:
         for item in result.details or []:
@@ -1392,11 +1416,14 @@ def _app_deploy(client, resource_group, service, app, name, version, path, runti
     if file_type is None:
         # update means command is az spring-cloud app deploy xxx
         if update:
-            raise RequiredArgumentMissingError("One of the following arguments are required: '--artifact-path' or '--source-path'")
+            raise RequiredArgumentMissingError(
+                "One of the following arguments are required: '--artifact-path' or '--source-path'")
         # if command is az spring-cloud app deployment create xxx, create default deployment
         else:
-            logger.warning("Creating default deployment without artifact/source folder. Please specify the --artifact-path/--source-path argument explicitly if needed.")
-            default_deployment_resource = _default_deployment_resource_builder(cpu, memory, env, jvm_options, runtime_version, instance_count)
+            logger.warning(
+                "Creating default deployment without artifact/source folder. Please specify the --artifact-path/--source-path argument explicitly if needed.")
+            default_deployment_resource = _default_deployment_resource_builder(cpu, memory, env, jvm_options,
+                                                                               runtime_version, instance_count)
             return sdk_no_wait(no_wait, client.deployments.begin_create_or_update,
                                resource_group, service, app, name, default_deployment_resource)
     upload_url = None
@@ -1552,7 +1579,7 @@ def _get_app_log(url, user_name, password, format_json, exceptions):
 
         return format_line
 
-    def iter_lines(response, limit=2**20):
+    def iter_lines(response, limit=2 ** 20):
         '''
         Returns a line iterator from the response content. If no line ending was found and the buffered content size is
         larger than the limit, the buffer will be yielded directly.
@@ -1604,9 +1631,8 @@ def _get_app_log(url, user_name, password, format_json, exceptions):
             exceptions.append(e)
 
 
-def certificate_add(cmd, resource_group, service, name, exclude_private_key=None,
+def certificate_add(cmd, client, resource_group, service, name, exclude_private_key=None,
                     vault_uri=None, vault_certificate_name=None, certificate_file=None):
-    client = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20210901preview)
     if vault_uri is None and certificate_file is None:
         raise CLIError("Neither vault-uri nor certificate-file is provided")
     if vault_uri is not None and certificate_file is not None:
@@ -1634,32 +1660,36 @@ def certificate_add(cmd, resource_group, service, name, exclude_private_key=None
             type="ContentCertificate",
             content=content
         )
-    certificate_resource = models.CertificateResource(properties=properties)
-    return client.certificates.begin_create_or_update(
+    certificate_resource = models_20210901preview.CertificateResource(properties=properties)
+    # return client.certificates.begin_create_or_update(
+    #     resource_group_name=resource_group,
+    #     service_name=service,
+    #     certificate_name=name,
+    #     certificate_resource=certificate_resource
+    # )
+    client.certificates.begin_create_or_update(
         resource_group_name=resource_group,
         service_name=service,
         certificate_name=name,
         certificate_resource=certificate_resource
     )
-
-def certificate_show(cmd, resource_group, service, name):
-    client = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20210901preview)
     return client.certificates.get(resource_group, service, name)
 
 
-def certificate_list(cmd, resource_group, service):
-    client = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20210901preview)
+def certificate_show(cmd, client, resource_group, service, name):
+    return client.certificates.get(resource_group, service, name)
+
+
+def certificate_list(cmd, client, resource_group, service):
     return client.certificates.list(resource_group, service)
 
 
-def certificate_remove(cmd, resource_group, service, name):
-    client = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20210901preview)
+def certificate_remove(cmd, client, resource_group, service, name):
     client.certificates.get(resource_group, service, name)
     return client.certificates.begin_delete(resource_group, service, name)
 
-def certificate_list_reference_app(cmd, resource_group, service, name):
-    client = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20210901preview)
 
+def certificate_list_reference_app(cmd, client, resource_group, service, name):
     apps = list(client.apps.list(resource_group, service))
     deployments = list(
         client.deployments.list_for_cluster(resource_group, service))
@@ -1677,6 +1707,7 @@ def certificate_list_reference_app(cmd, resource_group, service, name):
                 (x for x in deployments if x.properties.app_name == app.name))
             app.properties.active_deployment = deployment
     return reference_apps
+
 
 def domain_bind(cmd, client, resource_group, service, app,
                 domain_name,
