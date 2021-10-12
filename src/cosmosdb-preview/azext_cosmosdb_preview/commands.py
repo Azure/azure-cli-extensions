@@ -12,9 +12,6 @@ from azext_cosmosdb_preview._client_factory import (
     cf_graph_resources,
     cf_service
 )
-from azext_cosmosdb_preview._format import (
-    amc_node_status_table_format
-)
 
 
 def load_command_table(self, _):

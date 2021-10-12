@@ -11,6 +11,7 @@ from azext_cosmosdb_preview._validators import (
     validate_seednodes,
     validate_node_count)
 
+
 def load_arguments(self, _):
     from azure.cli.core.commands.parameters import tags_type, get_enum_type
 
@@ -35,7 +36,7 @@ def load_arguments(self, _):
             c.argument('tags', arg_type=tags_type)
             c.argument('external_gossip_certificates', nargs='+', validator=validate_gossip_certificates, options_list=['--external-gossip-certificates', '-e'], help="A list of certificates that the managed cassandra data center's should accept.")
             c.argument('cassandra_version', help="The version of Cassandra chosen.")
-            c.argument('authentication_method', help="Authentication mode can be None, Cassandra or Ldap. If None, no authentication will be required to connect to the Cassandra API. If Cassandra, then passwords will be used. Ldap is in preview")
+            c.argument('authentication_method', arg_type=get_enum_type(['None', 'Cassandra', 'Ldap']), help="Authentication mode can be None, Cassandra or Ldap. If None, no authentication will be required to connect to the Cassandra API. If Cassandra, then passwords will be used. Ldap is in preview")
             c.argument('hours_between_backups', help="The number of hours between backup attempts.")
             c.argument('repair_enabled', help="Enables automatic repair.")
             c.argument('client_certificates', nargs='+', validator=validate_client_certificates, help="If specified, enables client certificate authentication to the Cassandra API.")
@@ -64,7 +65,6 @@ def load_arguments(self, _):
     for scope in ['managed-cassandra cluster backup show']:
         with self.argument_context(scope) as c:
             c.argument('backup_id', options_list=['--backup-id'], help="The resource id of the backup", required=True)
-
 
     # Managed Cassandra Datacenter
     for scope in [
