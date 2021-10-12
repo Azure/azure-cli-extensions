@@ -70,7 +70,7 @@ def load_command_table(self, _):
         g.custom_command('stop', 'app_stop', supports_no_wait=True)
         g.custom_command('restart', 'app_restart', supports_no_wait=True)
         g.custom_command('logs', 'app_tail_log')
-        g.custom_command('append-loaded-certificate', 'app_append_loaded_certificate')
+        g.custom_command('append-loaded-public-cert', 'app_append_loaded_public_cert')
 
     with self.command_group('spring-cloud app identity', client_factory=cf_spring_cloud,
                             exception_handler=handle_asc_exception) as g:

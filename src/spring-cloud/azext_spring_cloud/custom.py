@@ -263,7 +263,7 @@ def app_create(cmd, client, resource_group, service, name,
                env=None,
                enable_persistent_storage=None,
                assign_identity=None,
-               loaded_certificates_file=None):
+               loaded_public_cert_file=None):
 
     client = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20210901preview)
     cpu = validate_cpu(cpu)
@@ -283,8 +283,8 @@ def app_create(cmd, client, resource_group, service, name,
         properties.persistent_disk = models_20210901preview.PersistentDisk(
             size_in_gb=0, mount_path="/persistent")
 
-    if loaded_certificates_file is not None and os.path.isfile(loaded_certificates_file):
-        data = get_file_json(loaded_certificates_file, throw_on_empty=False)
+    if loaded_public_cert_file is not None and os.path.isfile(loaded_public_cert_file):
+        data = get_file_json(loaded_public_cert_file, throw_on_empty=False)
         loaded_certificates = []
         if data:
             for item in data['loadedCertificates']:
@@ -386,7 +386,7 @@ def app_update(cmd, client, resource_group, service, name,
                enable_persistent_storage=None,
                https_only=None,
                enable_end_to_end_tls=None,
-               loaded_certificates_file=None):
+               loaded_public_cert_file=None):
     client = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20210901preview)
     _check_active_deployment_exist(client, resource_group, service, name)
     resource = client.services.get(resource_group, service)
@@ -400,8 +400,8 @@ def app_update(cmd, client, resource_group, service, name,
     if enable_persistent_storage is False:
         properties.persistent_disk = models_20210901preview.PersistentDisk(size_in_gb=0)
 
-    # if loaded_certificates_file is not None:
-    #     input_file = open(loaded_certificates_file)
+    # if loaded_public_cert_file is not None:
+    #     input_file = open(loaded_public_cert_file)
     #     data = json.load(input_file)
     #     loaded_certificates = []
     #
@@ -410,8 +410,8 @@ def app_update(cmd, client, resource_group, service, name,
     #         loaded_certificates.append(models_20210901preview.
     #                                    LoadedCertificate(resource_id=certificate_resource.id,
     #                                                      load_trust_store=item['loadTrustStore']))
-    if loaded_certificates_file is not None and os.path.isfile(loaded_certificates_file):
-        data = get_file_json(loaded_certificates_file, throw_on_empty=False)
+    if loaded_public_cert_file is not None and os.path.isfile(loaded_public_cert_file):
+        data = get_file_json(loaded_public_cert_file, throw_on_empty=False)
         loaded_certificates = []
         if data:
             for item in data['loadedCertificates']:
@@ -806,7 +806,7 @@ def app_unset_deployment(cmd, client, resource_group, service, name):
     return client.apps.begin_update(resource_group, service, name, app_resource)
 
 
-def app_append_loaded_certificate(cmd, client, resource_group, service, name, certificate_name, load_trust_store):
+def app_append_loaded_public_cert(cmd, client, resource_group, service, name, certificate_name, load_trust_store):
     client = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20210901preview)
     _check_active_deployment_exist(client, resource_group, service, name)
 
@@ -1631,11 +1631,11 @@ def _get_app_log(url, user_name, password, format_json, exceptions):
             exceptions.append(e)
 
 
-def certificate_add(cmd, client, resource_group, service, name, exclude_private_key=None,
-                    vault_uri=None, vault_certificate_name=None, certificate_file=None):
-    if vault_uri is None and certificate_file is None:
+def certificate_add(cmd, client, resource_group, service, name, only_public_cert=None,
+                    vault_uri=None, vault_certificate_name=None, public_cert_file=None):
+    if vault_uri is None and public_cert_file is None:
         raise CLIError("Neither vault-uri nor certificate-file is provided")
-    if vault_uri is not None and certificate_file is not None:
+    if vault_uri is not None and public_cert_file is not None:
         raise CLIError("Both vault-uri and certificate-file are provided")
     if vault_uri is not None:
         if vault_certificate_name is None:
@@ -1644,18 +1644,18 @@ def certificate_add(cmd, client, resource_group, service, name, exclude_private_
             type="KeyVaultCertificate",
             vault_uri=vault_uri,
             key_vault_cert_name=vault_certificate_name,
-            exclude_private_key=exclude_private_key
+            exclude_private_key=only_public_cert
         )
     else:
-        if os.path.exists(certificate_file):
+        if os.path.exists(public_cert_file):
             try:
-                with open(certificate_file, 'rb') as input_file:
-                    logger.debug("attempting to read file %s as binary", certificate_file)
+                with open(public_cert_file, 'rb') as input_file:
+                    logger.debug("attempting to read file %s as binary", public_cert_file)
                     content = base64.b64encode(input_file.read()).decode("utf-8")
             except Exception:
-                raise CLIError('Failed to decode file {} - unknown decoding'.format(certificate_file))
+                raise CLIError('Failed to decode file {} - unknown decoding'.format(public_cert_file))
         else:
-            raise CLIError("certificate_file %s could not be found", certificate_file)
+            raise CLIError("public_cert_file %s could not be found", public_cert_file)
         properties = models_20210901preview.ContentCertificateProperties(
             type="ContentCertificate",
             content=content
@@ -1680,8 +1680,20 @@ def certificate_show(cmd, client, resource_group, service, name):
     return client.certificates.get(resource_group, service, name)
 
 
-def certificate_list(cmd, client, resource_group, service):
-    return client.certificates.list(resource_group, service)
+def certificate_list(cmd, client, resource_group, service, cert_type=None):
+    certificates = list(client.certificates.list(resource_group, service))
+    certificates_to_list = []
+    if cert_type is None:
+        certificates_to_list = certificates
+    elif cert_type == 'KeyVaultCertificate':
+        for certificate in certificates:
+            if certificate.properties.type == 'KeyVaultCertificate':
+                certificates_to_list.append(certificate)
+    elif cert_type == 'ContentCertificate':
+        for certificate in certificates:
+            if certificate.properties.type == 'ContentCertificate':
+                certificates_to_list.append(certificate)
+    return certificates_to_list
 
 
 def certificate_remove(cmd, client, resource_group, service, name):
