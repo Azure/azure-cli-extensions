@@ -196,16 +196,16 @@ def cli_cosmosdb_managed_cassandra_cluster_deallocate(client,
 
 
 def cli_cosmosdb_managed_cassandra_cluster_list_backup(client,
-                                                   resource_group_name,
-                                                   cluster_name):
+                                                       resource_group_name,
+                                                       cluster_name):
     """List Azure Managed Cassandra Backup"""
     return client.list_backups(client, resource_group_name, cluster_name)
 
 
 def cli_cosmosdb_managed_cassandra_cluster_show_backup(client,
-                                                   resource_group_name,
-                                                   cluster_name,
-                                                   backup_id):
+                                                       resource_group_name,
+                                                       cluster_name,
+                                                       backup_id):
     """Get Azure Managed Cassandra Backup"""
     return client.get_backup(client, resource_group_name, cluster_name, backup_id)
 
