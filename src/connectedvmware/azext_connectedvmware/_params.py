@@ -48,6 +48,20 @@ def load_arguments(self, _):
     with self.argument_context('connectedvmware vcenter delete') as c:
         c.argument('force', action='store_true', help="Whether force delete or not.")
 
+    with self.argument_context('connectedvmware vcenter inventory-item list') as c:
+        c.argument(
+            'vcenter_name', options_list=['--vcenter-name'], help="Name of the vCenter."
+        )
+
+    with self.argument_context('connectedvmware vcenter inventory-item show') as c:
+        c.argument(
+            'inventory_item_name',
+            options_list=['--inventory-item-name'], help="Name of the inventory item.",
+        )
+        c.argument(
+            'vcenter_name', options_list=['--vcenter-name'], help="Name of the vCenter.",
+        )
+
     with self.argument_context('connectedvmware resource-pool create') as c:
         c.argument(
             'custom_location',
@@ -71,6 +85,81 @@ def load_arguments(self, _):
         )
 
     with self.argument_context('connectedvmware resource-pool delete') as c:
+        c.argument('force', action='store_true', help="Whether force delete or not.")
+
+    with self.argument_context('connectedvmware cluster create') as c:
+        c.argument(
+            'custom_location',
+            options_list=['--custom-location'],
+            help="Name or ID of the custom location that is managing this cluster.",
+        )
+        c.argument(
+            'vcenter',
+            options_list=['--vcenter'],
+            help="Name or ID of the vCenter that is managing this cluster.",
+        )
+        c.argument(
+            'mo_ref_id',
+            options_list=['--mo-ref-id'],
+            help="VCenter MoRef (Managed Object Reference) ID for the existing cluster.",
+        )
+        c.argument(
+            'inventory_item',
+            options_list=['--inventory-item'],
+            help="Name or ID of the inventory item.",
+        )
+
+    with self.argument_context('connectedvmware cluster delete') as c:
+        c.argument('force', action='store_true', help="Whether force delete or not.")
+
+    with self.argument_context('connectedvmware datastore create') as c:
+        c.argument(
+            'custom_location',
+            options_list=['--custom-location'],
+            help="Name or ID of the custom location that is managing this datastore.",
+        )
+        c.argument(
+            'vcenter',
+            options_list=['--vcenter'],
+            help="Name or ID of the vCenter that is managing this datastore.",
+        )
+        c.argument(
+            'mo_ref_id',
+            options_list=['--mo-ref-id'],
+            help="VCenter MoRef (Managed Object Reference) ID for the existing datastore.",
+        )
+        c.argument(
+            'inventory_item',
+            options_list=['--inventory-item'],
+            help="Name or ID of the inventory item.",
+        )
+
+    with self.argument_context('connectedvmware datastore delete') as c:
+        c.argument('force', action='store_true', help="Whether force delete or not.")
+
+    with self.argument_context('connectedvmware host create') as c:
+        c.argument(
+            'custom_location',
+            options_list=['--custom-location'],
+            help="Name or ID of the custom location that is managing this host.",
+        )
+        c.argument(
+            'vcenter',
+            options_list=['--vcenter'],
+            help="Name or ID of the vCenter that is managing this host.",
+        )
+        c.argument(
+            'mo_ref_id',
+            options_list=['--mo-ref-id'],
+            help="VCenter MoRef (Managed Object Reference) ID for the existing host.",
+        )
+        c.argument(
+            'inventory_item',
+            options_list=['--inventory-item'],
+            help="Name or ID of the inventory item.",
+        )
+
+    with self.argument_context('connectedvmware host delete') as c:
         c.argument('force', action='store_true', help="Whether force delete or not.")
 
     with self.argument_context('connectedvmware virtual-network create') as c:
@@ -153,6 +242,21 @@ def load_arguments(self, _):
             'resource_pool',
             options_list=['--resource-pool'],
             help="Name or ID of the resource pool for deploying the vm.",
+        )
+        c.argument(
+            'cluster',
+            options_list=['--cluster'],
+            help="Name or ID of the cluster for deploying the vm.",
+        )
+        c.argument(
+            'host',
+            options_list=['--host'],
+            help="Name or ID of the host for deploying the vm.",
+        )
+        c.argument(
+            'datastore',
+            options_list=['--datastore'],
+            help="Name or ID of the datastore for deploying the vm.",
         )
         c.argument(
             'inventory_item',
@@ -360,16 +464,22 @@ def load_arguments(self, _):
             help="The device key for the disk.",
         )
 
-    with self.argument_context('connectedvmware inventory-item list') as c:
+    with self.argument_context('connectedvmware vm guest-agent enable') as c:
         c.argument(
-            'vcenter_name', options_list=['--vcenter-name'], help="Name of the vCenter."
+            'vm_name', options_list=['--vm-name'], help="Name of the vm."
+        )
+        c.argument(
+            'username',
+            options_list=['--username'],
+            help="Username to use for connecting to the vm.",
+        )
+        c.argument(
+            'password',
+            options_list=['--password'],
+            help="Username password credentials to use for connecting to the vm.",
         )
 
-    with self.argument_context('connectedvmware inventory-item show') as c:
+    with self.argument_context('connectedvmware vm guest-agent show') as c:
         c.argument(
-            'inventory_item_name',
-            options_list=['--inventory-item-name'], help="Name of the inventory item.",
-        )
-        c.argument(
-            'vcenter_name', options_list=['--vcenter-name'], help="Name of the vCenter.",
+            'vm_name', options_list=['--vm-name'], help="Name of the vm.",
         )

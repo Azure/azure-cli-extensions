@@ -2,7 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-# pylint: disable=line-too-long
+# pylint: disable=line-too-long, disable=too-many-statements
 
 from ._client_factory import (
     cf_vcenter,
@@ -11,6 +11,10 @@ from ._client_factory import (
     cf_virtual_machine_template,
     cf_virtual_machine,
     cf_inventory_item,
+    cf_guest_agent,
+    cf_cluster,
+    cf_datastore,
+    cf_host,
 )
 
 
@@ -23,12 +27,42 @@ def load_command_table(self, _):
         g.custom_command('list', 'list_vcenter')
 
     with self.command_group(
+        'connectedvmware vcenter inventory-item', client_factory=cf_inventory_item
+    ) as g:
+        g.custom_show_command('show', 'show_inventory_item')
+        g.custom_command('list', 'list_inventory_item')
+
+    with self.command_group(
         'connectedvmware resource-pool', client_factory=cf_resource_pool
     ) as g:
         g.custom_command('create', 'create_resource_pool', supports_no_wait=True)
         g.custom_command('delete', 'delete_resource_pool', supports_no_wait=True)
         g.custom_show_command('show', 'show_resource_pool')
         g.custom_command('list', 'list_resource_pool')
+
+    with self.command_group(
+        'connectedvmware cluster', client_factory=cf_cluster
+    ) as g:
+        g.custom_command('create', 'create_cluster', supports_no_wait=True)
+        g.custom_command('delete', 'delete_cluster', supports_no_wait=True)
+        g.custom_show_command('show', 'show_cluster')
+        g.custom_command('list', 'list_cluster')
+
+    with self.command_group(
+        'connectedvmware datastore', client_factory=cf_datastore
+    ) as g:
+        g.custom_command('create', 'create_datastore', supports_no_wait=True)
+        g.custom_command('delete', 'delete_datastore', supports_no_wait=True)
+        g.custom_show_command('show', 'show_datastore')
+        g.custom_command('list', 'list_datastore')
+
+    with self.command_group(
+        'connectedvmware host', client_factory=cf_host
+    ) as g:
+        g.custom_command('create', 'create_host', supports_no_wait=True)
+        g.custom_command('delete', 'delete_host', supports_no_wait=True)
+        g.custom_show_command('show', 'show_host')
+        g.custom_command('list', 'list_host')
 
     with self.command_group(
         'connectedvmware virtual-network', client_factory=cf_virtual_network
@@ -77,10 +111,10 @@ def load_command_table(self, _):
         g.custom_command('list', 'list_disks')
 
     with self.command_group(
-        'connectedvmware inventory-item', client_factory=cf_inventory_item
+        'connectedvmware vm guest-agent', client_factory=cf_guest_agent
     ) as g:
-        g.custom_show_command('show', 'show_inventory_item')
-        g.custom_command('list', 'list_inventory_item')
+        g.custom_command('enable', 'enable_guest_agent', supports_no_wait=True)
+        g.custom_show_command('show', 'show_guest_agent')
 
     with self.command_group('connectedvmware', is_preview=False):
         pass

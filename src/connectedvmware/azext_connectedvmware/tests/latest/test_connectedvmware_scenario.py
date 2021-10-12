@@ -18,15 +18,21 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
 
     def test_connectedvmware(self):
         self.kwargs.update({
-            'rg': 'azcli-test-rg',
+            'rg': 'az-cli-test2',
             'loc': 'eastus2euap',
             'cus_loc': 'azcli-test-cl-avs',
             'vc_name': 'azcli-test-vcenter-avs',
-            'rp_morefid': 'resgroup-5034',
+            'rp_morefid': 'resgroup-74941',
             'rp_name': 'azcli-test-resource-pool',
-            'vnet_morefid': 'network-o761',
+            'cluster_morefid': 'domain-c7',
+            'cluster_name': 'azcli-test-cluster',
+            'datastore_morefid': 'datastore-11',
+            'datastore_name': 'azcli-test-datastore',
+            'host_morefid': 'host-10',
+            'host_name': 'azcli-test-host',
+            'vnet_morefid': 'network-o61',
             'vnet_name': 'azcli-test-virtual-network',
-            'vmtpl_morefid': 'vm-55',
+            'vmtpl_morefid': 'vm-141',
             'vmtpl_name': 'azcli-test-vm-template',
             'vm_name': 'azcli-test-virtual-machine',
             'nic_name': 'nic_1',
@@ -56,6 +62,45 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
         # At this point there should be 1 resource-pool resource.
         assert len(resource_list) >= 1
 
+        # Create cluster resource.
+        self.cmd('az connectedvmware cluster create -g {rg} -l {loc} --custom-location {cus_loc} --vcenter {vc_name} --mo-ref-id {cluster_morefid} --name {cluster_name}')
+
+        # Validate the show command output with cluster name.
+        self.cmd('az connectedvmware cluster show -g {rg} --name {cluster_name}', checks=[
+            self.check('name', '{cluster_name}'),
+        ])
+
+        # List the cluster resources in this resource group.
+        resource_list = self.cmd('az connectedvmware cluster list -g {rg}').get_output_in_json()
+        # At this point there should be 1 cluster resource.
+        assert len(resource_list) >= 1
+
+        # Create datastore resource.
+        self.cmd('az connectedvmware datastore create -g {rg} -l {loc} --custom-location {cus_loc} --vcenter {vc_name} --mo-ref-id {datastore_morefid} --name {datastore_name}')
+
+        # Validate the show command output with datastore name.
+        self.cmd('az connectedvmware datastore show -g {rg} --name {datastore_name}', checks=[
+            self.check('name', '{datastore_name}'),
+        ])
+
+        # List the datastore resources in this resource group.
+        resource_list = self.cmd('az connectedvmware datastore list -g {rg}').get_output_in_json()
+        # At this point there should be 1 datastore resource.
+        assert len(resource_list) >= 1
+
+        # Create host resource.
+        self.cmd('az connectedvmware host create -g {rg} -l {loc} --custom-location {cus_loc} --vcenter {vc_name} --mo-ref-id {host_morefid} --name {host_name}')
+
+        # Validate the show command output with host name.
+        self.cmd('az connectedvmware host show -g {rg} --name {host_name}', checks=[
+            self.check('name', '{host_name}'),
+        ])
+
+        # List the host resources in this resource group.
+        resource_list = self.cmd('az connectedvmware host list -g {rg}').get_output_in_json()
+        # At this point there should be 1 host resource.
+        assert len(resource_list) >= 1
+        
         # Create virtual-network resource.
         self.cmd('az connectedvmware virtual-network create -g {rg} -l {loc} --custom-location {cus_loc} --vcenter {vc_name} --mo-ref-id {vnet_morefid} --name {vnet_name}')
 
@@ -83,7 +128,7 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
         assert len(resource_list) >= 1
 
         # Validate the show command output with inventory-item name.
-        self.cmd('az connectedvmware inventory-item show -g {rg} --vcenter-name {vc_name} --inventory-item {rp_morefid}', checks=[
+        self.cmd('az connectedvmware vcenter inventory-item show -g {rg} --vcenter-name {vc_name} --inventory-item {rp_morefid}', checks=[
             self.check('name', '{rp_morefid}'),
         ])
 
@@ -131,6 +176,15 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
 
         # Delete the created resource-pool.
         self.cmd('az connectedvmware resource-pool delete -g {rg} --name {rp_name}')
+
+        # Delete the created cluster.
+        self.cmd('az connectedvmware cluster delete -g {rg} --name {cluster_name}')
+
+        # Delete the created datastore.
+        self.cmd('az connectedvmware datastore delete -g {rg} --name {datastore_name}')
+
+        # Delete the created host.
+        self.cmd('az connectedvmware host delete -g {rg} --name {host_name}')
 
         # Delete the created virtual-network.
         self.cmd('az connectedvmware virtual-network delete -g {rg} --name {vnet_name}')

@@ -25,8 +25,8 @@ if TYPE_CHECKING:
     T = TypeVar('T')
     ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
 
-class ResourcePoolsOperations(object):
-    """ResourcePoolsOperations operations.
+class HostsOperations(object):
+    """HostsOperations operations.
 
     You should not instantiate this class directly. Instead, you should create a Client instance that
     instantiates it for you and attaches it as an attribute.
@@ -50,12 +50,12 @@ class ResourcePoolsOperations(object):
     def _create_initial(
         self,
         resource_group_name,  # type: str
-        resource_pool_name,  # type: str
-        body=None,  # type: Optional["_models.ResourcePool"]
+        host_name,  # type: str
+        body=None,  # type: Optional["_models.Host"]
         **kwargs  # type: Any
     ):
-        # type: (...) -> "_models.ResourcePool"
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.ResourcePool"]
+        # type: (...) -> "_models.Host"
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.Host"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -69,7 +69,7 @@ class ResourcePoolsOperations(object):
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'resourcePoolName': self._serialize.url("resource_pool_name", resource_pool_name, 'str'),
+            'hostName': self._serialize.url("host_name", host_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -84,7 +84,7 @@ class ResourcePoolsOperations(object):
 
         body_content_kwargs = {}  # type: Dict[str, Any]
         if body is not None:
-            body_content = self._serialize.body(body, 'ResourcePool')
+            body_content = self._serialize.body(body, 'Host')
         else:
             body_content = None
         body_content_kwargs['content'] = body_content
@@ -98,47 +98,47 @@ class ResourcePoolsOperations(object):
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if response.status_code == 200:
-            deserialized = self._deserialize('ResourcePool', pipeline_response)
+            deserialized = self._deserialize('Host', pipeline_response)
 
         if response.status_code == 201:
-            deserialized = self._deserialize('ResourcePool', pipeline_response)
+            deserialized = self._deserialize('Host', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    _create_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/resourcePools/{resourcePoolName}'}  # type: ignore
+    _create_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/hosts/{hostName}'}  # type: ignore
 
     def begin_create(
         self,
         resource_group_name,  # type: str
-        resource_pool_name,  # type: str
-        body=None,  # type: Optional["_models.ResourcePool"]
+        host_name,  # type: str
+        body=None,  # type: Optional["_models.Host"]
         **kwargs  # type: Any
     ):
-        # type: (...) -> LROPoller["_models.ResourcePool"]
-        """Implements resourcePool PUT method.
+        # type: (...) -> LROPoller["_models.Host"]
+        """Implements host PUT method.
 
-        Create Or Update resourcePool.
+        Create Or Update host.
 
         :param resource_group_name: The Resource Group Name.
         :type resource_group_name: str
-        :param resource_pool_name: Name of the resourcePool.
-        :type resource_pool_name: str
+        :param host_name: Name of the host.
+        :type host_name: str
         :param body: Request payload.
-        :type body: ~azure_arc_vmware_management_service_api.models.ResourcePool
+        :type body: ~azure_arc_vmware_management_service_api.models.Host
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling.
          Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
-        :return: An instance of LROPoller that returns either ResourcePool or the result of cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~azure_arc_vmware_management_service_api.models.ResourcePool]
+        :return: An instance of LROPoller that returns either Host or the result of cls(response)
+        :rtype: ~azure.core.polling.LROPoller[~azure_arc_vmware_management_service_api.models.Host]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.ResourcePool"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.Host"]
         lro_delay = kwargs.pop(
             'polling_interval',
             self._config.polling_interval
@@ -147,7 +147,7 @@ class ResourcePoolsOperations(object):
         if cont_token is None:
             raw_result = self._create_initial(
                 resource_group_name=resource_group_name,
-                resource_pool_name=resource_pool_name,
+                host_name=host_name,
                 body=body,
                 cls=lambda x,y,z: x,
                 **kwargs
@@ -157,7 +157,7 @@ class ResourcePoolsOperations(object):
         kwargs.pop('content_type', None)
 
         def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize('ResourcePool', pipeline_response)
+            deserialized = self._deserialize('Host', pipeline_response)
 
             if cls:
                 return cls(pipeline_response, deserialized, {})
@@ -166,7 +166,7 @@ class ResourcePoolsOperations(object):
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'resourcePoolName': self._serialize.url("resource_pool_name", resource_pool_name, 'str'),
+            'hostName': self._serialize.url("host_name", host_name, 'str'),
         }
 
         if polling is True: polling_method = ARMPolling(lro_delay, lro_options={'final-state-via': 'azure-async-operation'}, path_format_arguments=path_format_arguments,  **kwargs)
@@ -181,29 +181,29 @@ class ResourcePoolsOperations(object):
             )
         else:
             return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    begin_create.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/resourcePools/{resourcePoolName}'}  # type: ignore
+    begin_create.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/hosts/{hostName}'}  # type: ignore
 
     def get(
         self,
         resource_group_name,  # type: str
-        resource_pool_name,  # type: str
+        host_name,  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> "_models.ResourcePool"
-        """Gets a resourcePool.
+        # type: (...) -> "_models.Host"
+        """Gets a host.
 
-        Implements resourcePool GET method.
+        Implements host GET method.
 
         :param resource_group_name: The Resource Group Name.
         :type resource_group_name: str
-        :param resource_pool_name: Name of the resourcePool.
-        :type resource_pool_name: str
+        :param host_name: Name of the host.
+        :type host_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: ResourcePool, or the result of cls(response)
-        :rtype: ~azure_arc_vmware_management_service_api.models.ResourcePool
+        :return: Host, or the result of cls(response)
+        :rtype: ~azure_arc_vmware_management_service_api.models.Host
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.ResourcePool"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.Host"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -216,7 +216,7 @@ class ResourcePoolsOperations(object):
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'resourcePoolName': self._serialize.url("resource_pool_name", resource_pool_name, 'str'),
+            'hostName': self._serialize.url("host_name", host_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -237,38 +237,38 @@ class ResourcePoolsOperations(object):
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('ResourcePool', pipeline_response)
+        deserialized = self._deserialize('Host', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/resourcePools/{resourcePoolName}'}  # type: ignore
+    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/hosts/{hostName}'}  # type: ignore
 
     def update(
         self,
         resource_group_name,  # type: str
-        resource_pool_name,  # type: str
+        host_name,  # type: str
         body=None,  # type: Optional["_models.ResourcePatch"]
         **kwargs  # type: Any
     ):
-        # type: (...) -> "_models.ResourcePool"
-        """Updates a resourcePool.
+        # type: (...) -> "_models.Host"
+        """Updates a host.
 
-        API to update certain properties of the resourcePool resource.
+        API to update certain properties of the host resource.
 
         :param resource_group_name: The Resource Group Name.
         :type resource_group_name: str
-        :param resource_pool_name: Name of the resourcePool.
-        :type resource_pool_name: str
+        :param host_name: Name of the host.
+        :type host_name: str
         :param body: Resource properties to update.
         :type body: ~azure_arc_vmware_management_service_api.models.ResourcePatch
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: ResourcePool, or the result of cls(response)
-        :rtype: ~azure_arc_vmware_management_service_api.models.ResourcePool
+        :return: Host, or the result of cls(response)
+        :rtype: ~azure_arc_vmware_management_service_api.models.Host
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.ResourcePool"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.Host"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -282,7 +282,7 @@ class ResourcePoolsOperations(object):
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'resourcePoolName': self._serialize.url("resource_pool_name", resource_pool_name, 'str'),
+            'hostName': self._serialize.url("host_name", host_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -310,18 +310,18 @@ class ResourcePoolsOperations(object):
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('ResourcePool', pipeline_response)
+        deserialized = self._deserialize('Host', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/resourcePools/{resourcePoolName}'}  # type: ignore
+    update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/hosts/{hostName}'}  # type: ignore
 
     def _delete_initial(
         self,
         resource_group_name,  # type: str
-        resource_pool_name,  # type: str
+        host_name,  # type: str
         force=None,  # type: Optional[bool]
         **kwargs  # type: Any
     ):
@@ -339,7 +339,7 @@ class ResourcePoolsOperations(object):
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'resourcePoolName': self._serialize.url("resource_pool_name", resource_pool_name, 'str'),
+            'hostName': self._serialize.url("host_name", host_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -365,24 +365,24 @@ class ResourcePoolsOperations(object):
         if cls:
             return cls(pipeline_response, None, {})
 
-    _delete_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/resourcePools/{resourcePoolName}'}  # type: ignore
+    _delete_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/hosts/{hostName}'}  # type: ignore
 
     def begin_delete(
         self,
         resource_group_name,  # type: str
-        resource_pool_name,  # type: str
+        host_name,  # type: str
         force=None,  # type: Optional[bool]
         **kwargs  # type: Any
     ):
         # type: (...) -> LROPoller[None]
-        """Deletes an resourcePool.
+        """Deletes an host.
 
-        Implements resourcePool DELETE method.
+        Implements host DELETE method.
 
         :param resource_group_name: The Resource Group Name.
         :type resource_group_name: str
-        :param resource_pool_name: Name of the resourcePool.
-        :type resource_pool_name: str
+        :param host_name: Name of the host.
+        :type host_name: str
         :param force: Whether force delete was specified.
         :type force: bool
         :keyword callable cls: A custom type or function that will be passed the direct response
@@ -405,7 +405,7 @@ class ResourcePoolsOperations(object):
         if cont_token is None:
             raw_result = self._delete_initial(
                 resource_group_name=resource_group_name,
-                resource_pool_name=resource_pool_name,
+                host_name=host_name,
                 force=force,
                 cls=lambda x,y,z: x,
                 **kwargs
@@ -421,7 +421,7 @@ class ResourcePoolsOperations(object):
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'resourcePoolName': self._serialize.url("resource_pool_name", resource_pool_name, 'str'),
+            'hostName': self._serialize.url("host_name", host_name, 'str'),
         }
 
         if polling is True: polling_method = ARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
@@ -436,23 +436,23 @@ class ResourcePoolsOperations(object):
             )
         else:
             return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    begin_delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/resourcePools/{resourcePoolName}'}  # type: ignore
+    begin_delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/hosts/{hostName}'}  # type: ignore
 
     def list(
         self,
         **kwargs  # type: Any
     ):
-        # type: (...) -> Iterable["_models.ResourcePoolsList"]
-        """Implements GET resourcePools in a subscription.
+        # type: (...) -> Iterable["_models.HostsList"]
+        """Implements GET hosts in a subscription.
 
-        List of resourcePools in a subscription.
+        List of hosts in a subscription.
 
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either ResourcePoolsList or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~azure_arc_vmware_management_service_api.models.ResourcePoolsList]
+        :return: An iterator like instance of either HostsList or the result of cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~azure_arc_vmware_management_service_api.models.HostsList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.ResourcePoolsList"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.HostsList"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -484,7 +484,7 @@ class ResourcePoolsOperations(object):
             return request
 
         def extract_data(pipeline_response):
-            deserialized = self._deserialize('ResourcePoolsList', pipeline_response)
+            deserialized = self._deserialize('HostsList', pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
@@ -506,26 +506,26 @@ class ResourcePoolsOperations(object):
         return ItemPaged(
             get_next, extract_data
         )
-    list.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ConnectedVMwarevSphere/resourcePools'}  # type: ignore
+    list.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ConnectedVMwarevSphere/hosts'}  # type: ignore
 
     def list_by_resource_group(
         self,
         resource_group_name,  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> Iterable["_models.ResourcePoolsList"]
-        """Implements GET resourcePools in a resource group.
+        # type: (...) -> Iterable["_models.HostsList"]
+        """Implements GET hosts in a resource group.
 
-        List of resourcePools in a resource group.
+        List of hosts in a resource group.
 
         :param resource_group_name: The Resource Group Name.
         :type resource_group_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either ResourcePoolsList or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~azure_arc_vmware_management_service_api.models.ResourcePoolsList]
+        :return: An iterator like instance of either HostsList or the result of cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~azure_arc_vmware_management_service_api.models.HostsList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.ResourcePoolsList"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.HostsList"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -558,7 +558,7 @@ class ResourcePoolsOperations(object):
             return request
 
         def extract_data(pipeline_response):
-            deserialized = self._deserialize('ResourcePoolsList', pipeline_response)
+            deserialized = self._deserialize('HostsList', pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
@@ -580,4 +580,4 @@ class ResourcePoolsOperations(object):
         return ItemPaged(
             get_next, extract_data
         )
-    list_by_resource_group.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/resourcePools'}  # type: ignore
+    list_by_resource_group.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/hosts'}  # type: ignore
