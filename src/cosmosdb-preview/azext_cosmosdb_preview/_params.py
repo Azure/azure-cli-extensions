@@ -13,7 +13,7 @@ from azext_cosmosdb_preview._validators import (
 
 
 def load_arguments(self, _):
-    from azure.cli.core.commands.parameters import tags_type
+    from azure.cli.core.commands.parameters import tags_type, get_enum_type
 
     # Managed Cassandra Cluster
     for scope in [
@@ -24,7 +24,7 @@ def load_arguments(self, _):
             'managed-cassandra cluster deallocate',
             'managed-cassandra cluster start',
             'managed-cassandra cluster status',
-            'managed-cassandra cluster node-status']:
+            'managed-cassandra cluster backup']:
         with self.argument_context(scope) as c:
             c.argument('cluster_name', options_list=['--cluster-name', '-c'], help="Cluster Name", required=True)
 
@@ -36,7 +36,7 @@ def load_arguments(self, _):
             c.argument('tags', arg_type=tags_type)
             c.argument('external_gossip_certificates', nargs='+', validator=validate_gossip_certificates, options_list=['--external-gossip-certificates', '-e'], help="A list of certificates that the managed cassandra data center's should accept.")
             c.argument('cassandra_version', help="The version of Cassandra chosen.")
-            c.argument('authentication_method', help="Authentication mode can be None or Cassandra. If None, no authentication will be required to connect to the Cassandra API. If Cassandra, then passwords will be used.")
+            c.argument('authentication_method', arg_type=get_enum_type(['None', 'Cassandra', 'Ldap']), help="Authentication mode can be None, Cassandra or Ldap. If None, no authentication will be required to connect to the Cassandra API. If Cassandra, then passwords will be used. Ldap is in preview")
             c.argument('hours_between_backups', help="The number of hours between backup attempts.")
             c.argument('repair_enabled', help="Enables automatic repair.")
             c.argument('client_certificates', nargs='+', validator=validate_client_certificates, help="If specified, enables client certificate authentication to the Cassandra API.")
@@ -56,10 +56,15 @@ def load_arguments(self, _):
     for scope in ['managed-cassandra cluster command']:
         with self.argument_context(scope) as c:
             c.argument('command', options_list=['--command'], help="The command which should be run", required=True)
-            c.argument('parameters', options_list=['--parameters'], help="The parameters for the command to be run")
+            c.argument('arguments', options_list=['--arguments'], help="The arguments for the command to be run")
             c.argument('host', options_list=['--host'], help="IP address of the cassandra host to run the command on", required=True)
             c.argument('cassandra-stop-start', options_list=['--cassandra-stop-start'], help="If true, stops cassandra before executing the command and then start it again.")
             c.argument('readwrite', options_list=['--readwrite'], help="If true, allows the command to *write* to the cassandra directory, otherwise read-only.")
+
+    # Managed Cassandra Cluster
+    for scope in ['managed-cassandra cluster backup show']:
+        with self.argument_context(scope) as c:
+            c.argument('backup_id', options_list=['--backup-id'], help="The resource id of the backup", required=True)
 
     # Managed Cassandra Datacenter
     for scope in [
