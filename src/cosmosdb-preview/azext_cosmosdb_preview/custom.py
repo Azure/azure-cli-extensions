@@ -155,14 +155,6 @@ def cli_cosmosdb_managed_cassandra_cluster_list(client,
     return client.list_by_resource_group(resource_group_name)
 
 
-def cli_cosmosdb_managed_cassandra_fetch_node_status(client,
-                                                     resource_group_name,
-                                                     cluster_name):
-
-    """Get Azure Managed Cassandra Cluster Node Status"""
-
-    return client.begin_fetch_node_status(resource_group_name, cluster_name)
-
 def cli_cosmosdb_managed_cassandra_cluster_invoke_command(client,
                                                          resource_group_name,
                                                          cluster_name,
@@ -184,6 +176,7 @@ def cli_cosmosdb_managed_cassandra_cluster_invoke_command(client,
 
     return client.begin_invoke_command(client, resource_group_name, cluster_name, cluster_invoke_command)
 
+
 def cli_cosmosdb_managed_cassandra_cluster_status(client,
                                                      resource_group_name,
                                                      cluster_name):
@@ -199,7 +192,13 @@ def cli_cosmosdb_managed_cassandra_cluster_deallocate(client,
 
     """Deallocate Azure Managed Cassandra Cluster"""
 
-    return client.begin_fetch_node_status(client, resource_group_name, cluster_name)
+    return client.begin_deallocate(client, resource_group_name, cluster_name)
+
+def cli_cosmosdb_managed_cassandra_cluster_backups(client,
+                                                   resource_group_name,
+                                                   cluster_name):
+    """List Azure Managed Cassandra Backups"""
+    return client.list_backups(client, resource_group_name, cluster_name)
 
 
 def cli_cosmosdb_managed_cassandra_cluster_start(client,
