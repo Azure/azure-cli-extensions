@@ -122,6 +122,9 @@ def load_arguments(self, _):
 
     with self.argument_context('network manager effective-config list') as c:
         c.argument('virtual_network_name', type=str, help='The name of the virtual network.', id_part=None)
+        c.argument('skip_token', type=str, help='SkipToken is only used if a previous operation returned a partial '
+                   'result. If a previous response contains a nextLink element, the value of the nextLink element will '
+                   'include a skipToken parameter that specifies a starting point to use for subsequent calls.')
 
     with self.argument_context('network manager active-security-admin-rule list') as c:
         c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part=None)

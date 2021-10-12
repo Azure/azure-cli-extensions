@@ -50,7 +50,7 @@ helps['network manager create'] = """
       - name: Create/Update Azure Virtual Network Manager
         text: |-
                az network manager create --name "TestNetworkManager" --description "My Test Network Manager" \
---display-name "TestNetworkManager" --network-manager-scope-accesses "Security" "Routing" "Connectivity" \
+--display-name "TestNetworkManager" --scope-accesses "Security" "Routing" "Connectivity" \
 --network-manager-scopes management-groups="/Microsoft.Management/testmg" subscriptions="/subscriptions/00000000-0000-0\
 000-0000-000000000000" --resource-group "rg1"
 """
@@ -175,7 +175,7 @@ helps['network manager effective-config list'] = """
     examples:
       - name: Get Azure Virtual Network Manager Effective Configuration
         text: |-
-               az network manager effective-config list --virtual-network--name "myVirtualNetwork" --resource-group "myResourceGroup"
+               az network manager effective-config list --virtual-network-name "myVirtualNetwork" --resource-group "myResourceGroup"
 """
 
 helps['network manager active-config'] = """
@@ -250,7 +250,7 @@ helps['network manager connect-config create'] = """
 "Sample Configuration" --applies-to-groups group-connectivity="None" is-global=false \
 network-group-id="subscriptions/subscriptionA/resourceGroups/myResourceGroup/providers/Microsoft.Network/networkManager\
 s/testNetworkManager/networkManagerGroups/group1" use-hub-gateway=true --connectivity-topology "HubAndSpoke" \
---delete-existing-peering true --display-name "myTestConnectivityConfig" --hubs resource-id="subscriptions/subscriptionA/resource\
+--delete-peering true --display-name "myTestConnectivityConfig" --hubs resource-id="subscriptions/subscriptionA/resource\
 Groups/myResourceGroup/providers/Microsoft.Network/virtualNetworks/myTestConnectivityConfig" resource-type="Microsoft.Network/virtualNetworks" \
 --is-global true --network-manager-name "testNetworkManager" --resource-group "myResourceGroup"
 """
@@ -534,12 +534,12 @@ helps['network manager admin-rule create'] = """
       - name: --sources
         short-summary: "The CIDR or source IP ranges."
         long-summary: |
-            Usage: --source address-prefix=XX address-prefix-type=XX
+            Usage: --sources address-prefix=XX address-prefix-type=XX
 
             address-prefix: Address prefix.
             address-prefix-type: Address prefix type.
 
-            Multiple actions can be specified by using more than one --source argument.
+            Multiple actions can be specified by using more than one --sources argument.
       - name: --destinations
         short-summary: "The destination address prefixes. CIDR or destination IP ranges."
         long-summary: |
@@ -552,7 +552,7 @@ helps['network manager admin-rule create'] = """
     examples:
       - name: Create security admin rules
         text: |-
-               az network manager admin-rule show --configuration-name "myTestSecurityConfig" --network-manager-name "testNetworkManager" \
+               az network manager admin-rule create --configuration-name "myTestSecurityConfig" --network-manager-name "testNetworkManager" \
 --resource-group "rg1" --rule-collection-name "myTestCollection" --rule-name "SampleAdminRule" \
 --kind "Custom" --protocol "Tcp" --access "Allow" --priority 32 --direction "Inbound"
 """
@@ -574,12 +574,12 @@ helps['network manager admin-rule update'] = """
       - name: --sources
         short-summary: "The CIDR or source IP ranges."
         long-summary: |
-            Usage: --source address-prefix=XX address-prefix-type=XX
+            Usage: --sources address-prefix=XX address-prefix-type=XX
 
             address-prefix: Address prefix.
             address-prefix-type: Address prefix type.
 
-            Multiple actions can be specified by using more than one --source argument.
+            Multiple actions can be specified by using more than one --sources argument.
       - name: --destinations
         short-summary: "The destination address prefixes. CIDR or destination IP ranges."
         long-summary: |
@@ -684,7 +684,7 @@ helps['network manager user-rule list'] = """
       - name: List security user rules
         text: |-
                az network manager user-rule list --configuration-name "myTestConnectivityConfig" \
---network-manager-name "testNetworkManager" --resource-group "rg1 --rule-collection-name "myTestCollection"
+--network-manager-name "testNetworkManager" --resource-group "rg1" --rule-collection-name "myTestCollection"
 """
 
 helps['network manager user-rule show'] = """
@@ -694,7 +694,7 @@ helps['network manager user-rule show'] = """
       - name: Gets a user rule
         text: |-
                az network manager user-rule show --configuration-name "myTestSecurityConfig" --network-manager-name \
-"testNetworkManager" --resource-group "rg1" --rule-name "SampleUserRule --rule-collection-name "myTestCollection"
+"testNetworkManager" --resource-group "rg1" --rule-name "SampleUserRule" --rule-collection-name "myTestCollection"
 """
 
 helps['network manager user-rule create'] = """
@@ -704,12 +704,12 @@ helps['network manager user-rule create'] = """
       - name: --sources
         short-summary: "The CIDR or source IP ranges."
         long-summary: |
-            Usage: --source address-prefix=XX address-prefix-type=XX
+            Usage: --sources address-prefix=XX address-prefix-type=XX
 
             address-prefix: Address prefix.
             address-prefix-type: Address prefix type.
 
-            Multiple actions can be specified by using more than one --source argument.
+            Multiple actions can be specified by using more than one --sources argument.
       - name: --destinations
         short-summary: "The destination address prefixes. CIDR or destination IP ranges."
         long-summary: |
@@ -724,8 +724,8 @@ helps['network manager user-rule create'] = """
         text: |-
                az network manager user-rule create --configuration-name "myTestSecurityConfig" --network-manager-name \
 "testNetworkManager" --resource-group "rg1" --rule-collection-name "myTestCollection" --rule-name "SampleUserRule" --description "Sample User Rule" \
---destinations address-prefix="*" address-prefix-type="IPPrefix" --destination-port-ranges "22" --direction "Inbound" \
---source address-prefix="*" address-prefix-type="IPPrefix" --source-port-ranges "0-65535" --protocol "Tcp"
+--destinations address-prefix="*" address-prefix-type="IPPrefix" --dest-port-ranges 22 --direction "Inbound" \
+--sources address-prefix="*" address-prefix-type="IPPrefix" --source-port-ranges "0-65535" --protocol "Tcp"
 """
 
 helps['network manager user-rule update'] = """
@@ -735,12 +735,12 @@ helps['network manager user-rule update'] = """
       - name: --sources
         short-summary: "The CIDR or source IP ranges."
         long-summary: |
-            Usage: --source address-prefix=XX address-prefix-type=XX
+            Usage: --sources address-prefix=XX address-prefix-type=XX
 
             address-prefix: Address prefix.
             address-prefix-type: Address prefix type.
 
-            Multiple actions can be specified by using more than one --source argument.
+            Multiple actions can be specified by using more than one --sources argument.
       - name: --destinations
         short-summary: "The destination address prefixes. CIDR or destination IP ranges."
         long-summary: |
