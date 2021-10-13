@@ -52,5 +52,5 @@ setup(
     classifiers=CLASSIFIERS,
     packages=find_packages(),
     install_requires=DEPENDENCIES,
-    package_data={'azext_enterprise-edge': ['azext_metadata.json']},
+    package_data={'azext_enterprise_edge': ['azext_metadata.json']},
 )
