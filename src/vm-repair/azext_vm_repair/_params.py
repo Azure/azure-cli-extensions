@@ -47,4 +47,3 @@ def load_arguments(self, _):
 
     with self.argument_context('vm repair list-scripts') as c:
         c.argument('preview', help="URL of forked repair script library's map.json https://github.com/{user}/repair-script-library/blob/master/map.json")
-        
