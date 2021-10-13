@@ -2,7 +2,7 @@ Release History
 ===============
 0.1.8
 -----
-* This is a rollback for version 0.1.7.
+* This is a rollback from version 0.1.7 to 0.1.6.
 
 0.1.7
 -----
