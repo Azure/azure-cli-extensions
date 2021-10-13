@@ -6,7 +6,7 @@ Release History
 
 0.1.7
 -----
-* The changes in this version are not publicly available available at this time.
+* The changes in this version are not publicly available at this time.
 
 0.1.6
 -----
