@@ -32,19 +32,41 @@ class StaticWebAppFrontDoorClient:
 
         return r
 
-    # TODO test SKU validation
     @classmethod
     def set(cls, cmd, resource_group, name, enable):
         params = cls.get(cmd, resource_group, name).json()
-        if enable and params["sku"].get("name").lower() != "standard":
-            raise CLIError("Invalid SKU: '{}'. Staticwebapp {} must have 'Standard' SKU to use "
-                           "enterprise edge CDN").format(params["sku"].get("name"), name)
+
+        if enable:
+            cls._validate_cdn_provider_registered(cmd)
+            cls._validate_sku(params["sku"].get("name"))
+
         params["properties"]["enterpriseGradeCdnStatus"] = "enabled" if enable else "disabled"
         return cls._request(cmd, resource_group, name, "PUT", params)
 
     @classmethod
     def get(cls, cmd, resource_group, name):
         return cls._request(cmd, resource_group, name)
+
+    # TODO verify that we only want to check on disable
+    @classmethod
+    def _validate_cdn_provider_registered(cls, cmd):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        api_version = "2021-04-01"
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/providers/Microsoft.CDN?api-version={}"
+
+        request_url = url_fmt.format(management_hostname.strip('/'), sub_id, api_version)
+
+        registration = send_raw_request(cmd.cli_ctx, "GET", request_url).json().get("registrationState").lower()
+        if registration != "registered":
+            raise CLIError("Provider Microsoft.CDN is not registered. "
+                           "Please run 'az provider register --wait --namespace Microsoft.CDN'")
+
+    @classmethod
+    def _validate_sku(cls, sku_name):
+        if sku_name.lower() != "standard":
+            raise CLIError("Invalid SKU: '{}'. Staticwebapp must have 'Standard' SKU to use "
+                           "enterprise edge CDN").format(sku_name)
 
 
 def enable_staticwebapp_enterprise_edge(cmd, name, resource_group_name):
