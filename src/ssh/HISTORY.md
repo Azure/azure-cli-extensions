@@ -1,5 +1,13 @@
 Release History
 ===============
+0.1.8
+-----
+* This is a rollback for version 0.1.7.
+
+0.1.7
+-----
+* The changes in this version are not publicly available available at this time.
+
 0.1.6
 -----
 * Add support for direct MSAL usage in newer Azure CLI (beta currently)
