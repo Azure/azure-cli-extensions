@@ -371,7 +371,7 @@ class NetworkScenarioTest(ScenarioTest):
         self.cmd('network manager deploy-status list --network-manager-name {manager_name} --deployment-types "Connectivity" --regions "eastus2euap" --resource-group {rg}')
         self.cmd('network manager effect-vnet list-by-network-group --network-group-name {group_name} --network-manager-name {manager_name} --resource-group {rg}')
         # Internal Server Error
-        # self.cmd('network manager effect-vnet list-by-network-manager --network-manager-name {manager_name} --resource-group {rg}')
+        self.cmd('network manager effect-vnet list-by-network-manager --network-manager-name {manager_name} --resource-group {rg}')
         self.cmd('network manager active-config list --network-manager-name {manager_name} --resource-group {rg}')
         self.cmd('network manager effective-config list --virtual-network-name {virtual_network} -g {rg}')
         self.cmd('network manager active-security-admin-rule list --network-manager-name {manager_name} -g {rg} --regions eastus2euap')
