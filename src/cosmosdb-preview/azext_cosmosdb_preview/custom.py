@@ -12,6 +12,7 @@ from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     CommandPostBody,
     DataCenterResource,
     DataCenterResourceProperties,
+    ManagedCassandraManagedServiceIdentity,
     GraphResource,
     GraphResourceCreateUpdateParameters,
     ServiceResourceCreateUpdateParameters
@@ -32,7 +33,7 @@ def cli_cosmosdb_managed_cassandra_cluster_create(client,
                                                   location,
                                                   delegated_management_subnet_id,
                                                   tags=None,
-                                                  identity=None,
+                                                  identity_type=None,
                                                   cluster_name_override=None,
                                                   initial_cassandra_admin_password=None,
                                                   client_certificates=None,
@@ -65,10 +66,14 @@ def cli_cosmosdb_managed_cassandra_cluster_create(client,
         hours_between_backups=hours_between_backups,
         repair_enabled=repair_enabled)
 
+    managed_service_identity_parameter = ManagedCassandraManagedServiceIdentity(
+        type=identity_type
+    )
+
     cluster_resource_create_update_parameters = ClusterResource(
         location=location,
         tags=tags,
-        identity=identity,
+        identity=managed_service_identity_parameter,
         properties=cluster_properties)
 
     return client.begin_create_update(resource_group_name, cluster_name, cluster_resource_create_update_parameters)
@@ -78,7 +83,7 @@ def cli_cosmosdb_managed_cassandra_cluster_update(client,
                                                   resource_group_name,
                                                   cluster_name,
                                                   tags=None,
-                                                  identity=None,
+                                                  identity_type=None,
                                                   client_certificates=None,
                                                   external_gossip_certificates=None,
                                                   external_seed_nodes=None,
@@ -115,8 +120,10 @@ def cli_cosmosdb_managed_cassandra_cluster_update(client,
     if tags is None:
         tags = cluster_resource.tags
 
-    if identity is None:
-        identity = cluster_resource.identity
+    identity = cluster_resource.identity
+
+    if identity_type is not None:
+        identity = ManagedCassandraManagedServiceIdentity(type=identity_type)
 
     cluster_properties = ClusterResourceProperties(
         provisioning_state=cluster_resource.properties.provisioning_state,
@@ -226,7 +233,12 @@ def cli_cosmosdb_managed_cassandra_datacenter_create(client,
                                                      data_center_location,
                                                      delegated_subnet_id,
                                                      node_count,
-                                                     base64_encoded_cassandra_yaml_fragment=None):
+                                                     base64_encoded_cassandra_yaml_fragment=None,
+                                                     managed_disk_customer_key_uri=None,
+                                                     sku=None,
+                                                     disk_sku=None,
+                                                     disk_capacity=None,
+                                                     availability_zone=None):
 
     """Creates an Azure Managed Cassandra Datacenter"""
 
@@ -234,7 +246,12 @@ def cli_cosmosdb_managed_cassandra_datacenter_create(client,
         data_center_location=data_center_location,
         delegated_subnet_id=delegated_subnet_id,
         node_count=node_count,
-        base64_encoded_cassandra_yaml_fragment=base64_encoded_cassandra_yaml_fragment
+        base64_encoded_cassandra_yaml_fragment=base64_encoded_cassandra_yaml_fragment,
+        sku=sku,
+        disk_sku=disk_sku,
+        disk_capacity=disk_capacity,
+        availability_zone=availability_zone,
+        managed_disk_customer_key_uri=managed_disk_customer_key_uri
     )
 
     data_center_resource = DataCenterResource(
@@ -248,7 +265,8 @@ def cli_cosmosdb_managed_cassandra_datacenter_update(client, resource_group_name
                                                      cluster_name,
                                                      data_center_name,
                                                      node_count=None,
-                                                     base64_encoded_cassandra_yaml_fragment=None):
+                                                     base64_encoded_cassandra_yaml_fragment=None,
+                                                     managed_disk_customer_key_uri=None):
 
     """Updates an Azure Managed Cassandra Datacenter"""
 
@@ -265,7 +283,9 @@ def cli_cosmosdb_managed_cassandra_datacenter_update(client, resource_group_name
         delegated_subnet_id=data_center_resource.properties.delegated_subnet_id,
         node_count=node_count,
         seed_nodes=data_center_resource.properties.seed_nodes,
-        base64_encoded_cassandra_yaml_fragment=base64_encoded_cassandra_yaml_fragment)
+        base64_encoded_cassandra_yaml_fragment=base64_encoded_cassandra_yaml_fragment,
+        managed_disk_customer_key_uri=managed_disk_customer_key_uri
+    )
 
     data_center_resource = DataCenterResource(
         properties=data_center_properties
