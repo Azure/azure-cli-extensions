@@ -54,7 +54,7 @@ helps['vm repair run'] = """
             az vm repair run -g MyResourceGroup -n MySourceWinVM --custom-script-file ./file.ps1 --verbose
         - name: Run unverified script from your fork of https://github.com/Azure/repair-script-library
           text: >
-            az vm repair -g MyResourceGroup -n MySourceWinVM --preview "https://github.com/haagha/repair-script-library/blob/master/map.json" --run-id test 
+            az vm repair run -g MyResourceGroup -n MySourceWinVM --preview "https://github.com/haagha/repair-script-library/blob/master/map.json" --run-id test 
 """
 
 helps['vm repair list-scripts'] = """

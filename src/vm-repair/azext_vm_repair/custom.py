@@ -53,7 +53,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
 
         is_linux = _is_linux_os(source_vm)
         is_gen2 = _is_gen2(source_vm_instance_view)
-        
+
         target_disk_name = source_vm.storage_profile.os_disk.name
         is_managed = _uses_managed_disk(source_vm)
         copy_disk_id = None
