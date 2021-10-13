@@ -3,11 +3,20 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import importlib
 import unittest
 
-from azure.cli.command_modules.acs._consts import (
-    DecoratorMode,
+from azext_aks_preview.__init__ import register_aks_preview_resource_type
+from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
+from azext_aks_preview.decorator import (
+    AKSPreviewContext,
+    AKSPreviewCreateDecorator,
+    AKSPreviewModels,
+    AKSPreviewUpdateDecorator,
 )
+from azext_aks_preview.tests.latest.mocks import MockCLI, MockClient, MockCmd
+from azext_aks_preview.tests.latest.test_aks_commands import _get_test_data_file
+from azure.cli.command_modules.acs._consts import DecoratorMode
 from azure.cli.core.azclierror import (
     ArgumentUsageError,
     CLIInternalError,
@@ -17,24 +26,31 @@ from azure.cli.core.azclierror import (
     RequiredArgumentMissingError,
     UnknownError,
 )
-from azext_aks_preview.decorator import (
-    AKSPreviewContext,
-    AKSPreviewCreateDecorator,
-    AKSPreviewModels,
-    AKSPreviewUpdateDecorator,
-)
-from azext_aks_preview.tests.latest.mocks import (
-    MockCLI,
-    MockClient,
-    MockCmd,
-)
-from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
-from azext_aks_preview.__init__ import register_aks_preview_resource_type
+
 
 class AKSPreviewModelsTestCase(unittest.TestCase):
     def setUp(self):
+        # manually register CUSTOM_MGMT_AKS_PREVIEW
+        register_aks_preview_resource_type()
         self.cli_ctx = MockCLI()
         self.cmd = MockCmd(self.cli_ctx)
+
+    def test_models(self):
+        models = AKSPreviewModels(self.cmd, CUSTOM_MGMT_AKS_PREVIEW)
+
+        # load models directly (instead of through the `get_sdk` method provided by the cli component)
+        from azure.cli.core.profiles._shared import AZURE_API_PROFILES
+
+        sdk_profile = AZURE_API_PROFILES["latest"][CUSTOM_MGMT_AKS_PREVIEW]
+        api_version = sdk_profile.default_api_version
+        module_name = "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks.v{}.models".format(
+            api_version.replace("-", "_")
+        )
+        module = importlib.import_module(module_name)
+
+        self.assertEqual(models.KubeletConfig, getattr(module, "KubeletConfig"))
+        self.assertEqual(models.LinuxOSConfig, getattr(module, "LinuxOSConfig"))
+
 
 class AKSPreviewContextTestCase(unittest.TestCase):
     def setUp(self):
@@ -72,7 +88,8 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         )
         self.assertEqual(ctx_1.get_enable_fips_image(), False)
         agent_pool_profile = self.models.ManagedClusterAgentPoolProfile(
-            name="test_nodepool_name", enable_fips=True,
+            name="test_nodepool_name",
+            enable_fips=True,
         )
         mc = self.models.ManagedCluster(
             location="test_location", agent_pool_profiles=[agent_pool_profile]
@@ -90,13 +107,16 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         )
         self.assertEqual(ctx_1.get_workload_runtime(), None)
         agent_pool_profile = self.models.ManagedClusterAgentPoolProfile(
-            name="test_nodepool_name", workload_runtime="test_mc_workload_runtime",
+            name="test_nodepool_name",
+            workload_runtime="test_mc_workload_runtime",
         )
         mc = self.models.ManagedCluster(
             location="test_location", agent_pool_profiles=[agent_pool_profile]
         )
         ctx_1.attach_mc(mc)
-        self.assertEqual(ctx_1.get_workload_runtime(), "test_mc_workload_runtime")
+        self.assertEqual(
+            ctx_1.get_workload_runtime(), "test_mc_workload_runtime"
+        )
 
     def test_get_gpu_instance_profile(self):
         # default
@@ -108,13 +128,105 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         )
         self.assertEqual(ctx_1.get_gpu_instance_profile(), None)
         agent_pool_profile = self.models.ManagedClusterAgentPoolProfile(
-            name="test_nodepool_name", gpu_instance_profile="test_mc_gpu_instance_profile",
+            name="test_nodepool_name",
+            gpu_instance_profile="test_mc_gpu_instance_profile",
         )
         mc = self.models.ManagedCluster(
             location="test_location", agent_pool_profiles=[agent_pool_profile]
         )
         ctx_1.attach_mc(mc)
-        self.assertEqual(ctx_1.get_gpu_instance_profile(), "test_mc_gpu_instance_profile")
+        self.assertEqual(
+            ctx_1.get_gpu_instance_profile(), "test_mc_gpu_instance_profile"
+        )
+
+    def test_get_kubelet_config(self):
+        # default
+        ctx_1 = AKSPreviewContext(
+            self.cmd,
+            {"kubelet_config": None},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_kubelet_config(), None)
+        agent_pool_profile = self.models.ManagedClusterAgentPoolProfile(
+            name="test_nodepool_name",
+            kubelet_config=self.models.KubeletConfig(pod_max_pids=100),
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location", agent_pool_profiles=[agent_pool_profile]
+        )
+        ctx_1.attach_mc(mc)
+        self.assertEqual(
+            ctx_1.get_kubelet_config(),
+            self.models.KubeletConfig(pod_max_pids=100),
+        )
+
+        # custom value
+        ctx_2 = AKSPreviewContext(
+            self.cmd,
+            {"kubelet_config": "fake-path"},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        # fail on invalid file path
+        with self.assertRaises(InvalidArgumentValueError):
+            ctx_2.get_kubelet_config()
+
+        # custom value
+        ctx_3 = AKSPreviewContext(
+            self.cmd,
+            {"kubelet_config": _get_test_data_file("invalidconfig.json")},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        # fail on invalid file path
+        with self.assertRaises(InvalidArgumentValueError):
+            ctx_3.get_kubelet_config()
+
+    def test_get_linux_os_config(self):
+        # default
+        ctx_1 = AKSPreviewContext(
+            self.cmd,
+            {"linux_os_config": None},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_linux_os_config(), None)
+        agent_pool_profile = self.models.ManagedClusterAgentPoolProfile(
+            name="test_nodepool_name",
+            linux_os_config=self.models.LinuxOSConfig(swap_file_size_mb=200),
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location", agent_pool_profiles=[agent_pool_profile]
+        )
+        ctx_1.attach_mc(mc)
+        self.assertEqual(
+            ctx_1.get_linux_os_config(),
+            self.models.LinuxOSConfig(swap_file_size_mb=200),
+        )
+
+        # custom value
+        ctx_2 = AKSPreviewContext(
+            self.cmd,
+            {"linux_os_config": "fake-path"},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        # fail on invalid file path
+        with self.assertRaises(InvalidArgumentValueError):
+            ctx_2.get_linux_os_config()
+
+        # custom value
+        ctx_3 = AKSPreviewContext(
+            self.cmd,
+            {"linux_os_config": _get_test_data_file("invalidconfig.json")},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        # fail on invalid file path
+        with self.assertRaises(InvalidArgumentValueError):
+            ctx_3.get_linux_os_config()
+
 
 class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
     def setUp(self):
@@ -154,6 +266,7 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
                 "max_count": None,
                 "workload_runtime": None,
                 "gpu_instance_profile": None,
+                "kubelet_config": None,
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
@@ -190,6 +303,7 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
             max_count=None,
             workload_runtime=None,
             gpu_instance_profile=None,
+            kubelet_config=None,
         )
         ground_truth_mc_1 = self.models.ManagedCluster(location="test_location")
         ground_truth_mc_1.agent_pool_profiles = [agent_pool_profile_1]
@@ -223,6 +337,8 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
                 "max_count": 20,
                 "workload_runtime": "test_workload_runtime",
                 "gpu_instance_profile": "test_gpu_instance_profile",
+                "kubelet_config": _get_test_data_file("kubeletconfig.json"),
+                "linux_os_config": _get_test_data_file("linuxosconfig.json"),
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
@@ -236,7 +352,7 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
             count=10,
             vm_size="Standard_DSx_vy",
             os_type="Linux",
-            os_sku= "test_os_sku",
+            os_sku="test_os_sku",
             vnet_subnet_id="test_vnet_subnet_id",
             pod_subnet_id="test_pod_subnet_id",
             proximity_placement_group_id="test_ppg_id",
@@ -256,6 +372,29 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
             max_count=20,
             workload_runtime="test_workload_runtime",
             gpu_instance_profile="test_gpu_instance_profile",
+            kubelet_config={
+                "cpuManagerPolicy": "static",
+                "cpuCfsQuota": True,
+                "cpuCfsQuotaPeriod": "200ms",
+                "imageGcHighThreshold": 90,
+                "imageGcLowThreshold": 70,
+                "topologyManagerPolicy": "best-effort",
+                "allowedUnsafeSysctls": ["kernel.msg*", "net.*"],
+                "failSwapOn": False,
+                "containerLogMaxFiles": 10,
+                "podMaxPids": 120,
+                "containerLogMaxSizeMB": 20,
+            },
+            linux_os_config={
+                "transparentHugePageEnabled": "madvise",
+                "transparentHugePageDefrag": "defer+madvise",
+                "swapFileSizeMB": 1500,
+                "sysctls": {
+                    "netCoreSomaxconn": 163849,
+                    "netIpv4TcpTwReuse": True,
+                    "netIpv4IpLocalPortRange": "32000 60000",
+                },
+            },
         )
         ground_truth_mc_2 = self.models.ManagedCluster(location="test_location")
         ground_truth_mc_2.agent_pool_profiles = [agent_pool_profile_2]

@@ -3,21 +3,22 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from typing import Any, Dict, List, Tuple, TypeVar, Union
+import os
+from typing import Dict, TypeVar, Union
 
-from azure.cli.command_modules.acs._consts import (
-    DecoratorMode,
-)
+from azure.cli.command_modules.acs._consts import DecoratorMode
 from azure.cli.command_modules.acs.decorator import (
-    AKSModels,
     AKSContext,
     AKSCreateDecorator,
+    AKSModels,
     AKSUpdateDecorator,
     safe_list_get,
 )
 from azure.cli.core import AzCommandsLoader
+from azure.cli.core.azclierror import InvalidArgumentValueError
 from azure.cli.core.commands import AzCliCommand
 from azure.cli.core.profiles import ResourceType
+from azure.cli.core.util import get_file_json
 from knack.log import get_logger
 
 logger = get_logger(__name__)
@@ -28,15 +29,36 @@ Identity = TypeVar("Identity")
 ManagedCluster = TypeVar("ManagedCluster")
 ManagedClusterLoadBalancerProfile = TypeVar("ManagedClusterLoadBalancerProfile")
 ResourceReference = TypeVar("ResourceReference")
+KubeletConfig = TypeVar("KubeletConfig")
+LinuxOSConfig = TypeVar("LinuxOSConfig")
 
 
+# pylint: disable=too-many-instance-attributes,too-few-public-methods
 class AKSPreviewModels(AKSModels):
-    def __init__(self, cmd: AzCommandsLoader, resource_type: ResourceType = ...):
+    def __init__(self, cmd: AzCommandsLoader, resource_type: ResourceType):
         super().__init__(cmd, resource_type=resource_type)
+        self.__cmd = cmd
+        self.KubeletConfig = self.__cmd.get_models(
+            "KubeletConfig",
+            resource_type=self.resource_type,
+            operation_group="managed_clusters",
+        )
+        self.LinuxOSConfig = self.__cmd.get_models(
+            "LinuxOSConfig",
+            resource_type=self.resource_type,
+            operation_group="managed_clusters",
+        )
 
 
+# pylint: disable=too-many-public-methods
 class AKSPreviewContext(AKSContext):
-    def __init__(self, cmd: AzCliCommand, raw_parameters: Dict, models: AKSPreviewModels, decorator_mode):
+    def __init__(
+        self,
+        cmd: AzCliCommand,
+        raw_parameters: Dict,
+        models: AKSPreviewModels,
+        decorator_mode,
+    ):
         super().__init__(cmd, raw_parameters, models, decorator_mode)
 
     def get_pod_subnet_id(self) -> Union[str, None]:
@@ -143,6 +165,86 @@ class AKSPreviewContext(AKSContext):
         # this parameter does not need validation
         return gpu_instance_profile
 
+    def get_kubelet_config(self) -> Union[dict, KubeletConfig, None]:
+        """Obtain the value of kubelet_config.
+
+        :return: dict, KubeletConfig or None
+        """
+        # read the original value passed by the command
+        kubelet_config = None
+        kubelet_config_file_path = self.raw_param.get("kubelet_config")
+        # validate user input
+        if kubelet_config_file_path:
+            if not os.path.isfile(kubelet_config_file_path):
+                raise InvalidArgumentValueError(
+                    "{} is not valid file, or not accessable.".format(
+                        kubelet_config_file_path
+                    )
+                )
+            kubelet_config = get_file_json(kubelet_config_file_path)
+            if not isinstance(kubelet_config, dict):
+                raise InvalidArgumentValueError(
+                    "Error reading kubelet configuration from {}. "
+                    "Please see https://aka.ms/CustomNodeConfig for correct format.".format(
+                        kubelet_config_file_path
+                    )
+                )
+
+        # try to read the property value corresponding to the parameter from the `mc` object
+        if self.mc and self.mc.agent_pool_profiles:
+            agent_pool_profile = safe_list_get(
+                self.mc.agent_pool_profiles, 0, None
+            )
+            if (
+                agent_pool_profile
+                and agent_pool_profile.kubelet_config is not None
+            ):
+                kubelet_config = agent_pool_profile.kubelet_config
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return kubelet_config
+
+    def get_linux_os_config(self) -> Union[dict, LinuxOSConfig, None]:
+        """Obtain the value of linux_os_config.
+
+        :return: dict, LinuxOSConfig or None
+        """
+        # read the original value passed by the command
+        linux_os_config = None
+        linux_os_config_file_path = self.raw_param.get("linux_os_config")
+        # validate user input
+        if linux_os_config_file_path:
+            if not os.path.isfile(linux_os_config_file_path):
+                raise InvalidArgumentValueError(
+                    "{} is not valid file, or not accessable.".format(
+                        linux_os_config_file_path
+                    )
+                )
+            linux_os_config = get_file_json(linux_os_config_file_path)
+            if not isinstance(linux_os_config, dict):
+                raise InvalidArgumentValueError(
+                    "Error reading Linux OS configuration from {}. "
+                    "Please see https://aka.ms/CustomNodeConfig for correct format.".format(
+                        linux_os_config_file_path
+                    )
+                )
+
+        # try to read the property value corresponding to the parameter from the `mc` object
+        if self.mc and self.mc.agent_pool_profiles:
+            agent_pool_profile = safe_list_get(
+                self.mc.agent_pool_profiles, 0, None
+            )
+            if (
+                agent_pool_profile
+                and agent_pool_profile.linux_os_config is not None
+            ):
+                linux_os_config = agent_pool_profile.linux_os_config
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return linux_os_config
+
 
 class AKSPreviewCreateDecorator(AKSCreateDecorator):
     # pylint: disable=super-init-not-called
@@ -165,7 +267,12 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
         self.client = client
         self.models = AKSPreviewModels(cmd, resource_type)
         # store the context in the process of assemble the ManagedCluster object
-        self.context = AKSPreviewContext(cmd, raw_parameters, self.models, decorator_mode=DecoratorMode.CREATE)
+        self.context = AKSPreviewContext(
+            cmd,
+            raw_parameters,
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
 
     def set_up_agent_pool_profiles(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up agent pool profiles for the ManagedCluster object.
@@ -178,9 +285,16 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
         # set up extra parameters supported in aks-preview
         agent_pool_profile.pod_subnet_id = self.context.get_pod_subnet_id()
         agent_pool_profile.enable_fips = self.context.get_enable_fips_image()
-        agent_pool_profile.workload_runtime = self.context.get_workload_runtime()
-        agent_pool_profile.gpu_instance_profile = self.context.get_gpu_instance_profile()
+        agent_pool_profile.workload_runtime = (
+            self.context.get_workload_runtime()
+        )
+        agent_pool_profile.gpu_instance_profile = (
+            self.context.get_gpu_instance_profile()
+        )
+        agent_pool_profile.kubelet_config = self.context.get_kubelet_config()
+        agent_pool_profile.linux_os_config = self.context.get_linux_os_config()
         return mc
+
 
 class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
     # pylint: disable=super-init-not-called
@@ -203,4 +317,9 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
         self.client = client
         self.models = AKSPreviewModels(cmd, resource_type)
         # store the context in the process of assemble the ManagedCluster object
-        self.context = AKSPreviewContext(cmd, raw_parameters, self.models, decorator_mode=DecoratorMode.UPDATE)
+        self.context = AKSPreviewContext(
+            cmd,
+            raw_parameters,
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
