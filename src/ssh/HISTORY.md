@@ -1,5 +1,11 @@
 Release History
 ===============
+0.1.7
+-----
+* Add support for connecting to Arc Servers using AAD issued certificates.
+* Add support for connecting to local users on Azure VMs and Arc Server using certs-based, key-based, and password-based authentication
+* Add --ssh-client-path, --resource-id, --local-user, --cert-file, and --delete-privkey arguments.
+
 0.1.6
 -----
 * Add support for direct MSAL usage in newer Azure CLI (beta currently)

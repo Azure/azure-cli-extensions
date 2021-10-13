@@ -3,11 +3,8 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-
-def load_command_table(self, _):
-
-    with self.command_group('ssh') as g:
-        g.custom_command('vm', 'ssh_vm')
-        g.custom_command('config', 'ssh_config')
-        g.custom_command('cert', 'ssh_cert')
-        g.custom_command('arc', 'ssh_arc')
+CLIENT_PROXY_VERSION = "1.3.017131"
+CLIENT_PROXY_RELEASE = "release10-09-21"
+CLIENT_PROXY_STORAGE_URL = "https://sshproxysa.blob.core.windows.net"
+CLEANUP_TOTAL_TIME_LIMIT_IN_SECONDS = 120
+CLEANUP_TIME_INTERVAL_IN_SECONDS = 10
