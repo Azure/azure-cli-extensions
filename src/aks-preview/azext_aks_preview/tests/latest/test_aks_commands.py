@@ -869,16 +869,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         nodepool_name = self.create_random_name('c', 6)
         self.kwargs.update({
             'resource_group': resource_group,
-            'name': aks_name,
-            'nodepool_name' : nodepool_name,
+            'name': 'testingCluster1',
+            'nodepool_name' : 'rurunp1',
             'ssh_key_value': self.generate_ssh_keys()
         })
         
-        # add feature for start stop agent pool
-        add_feature_cmd = 'az feature register --namespace Microsoft.ContainerService --name PreviewStartStopAgentPool'
-        self.cmd(add_feature_cmd)
-        self.cmd('az provider register -n Microsoft.ContainerService')
-
         # create aks cluster
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --ssh-key-value={ssh_key_value}'
         self.cmd(create_cmd, checks=[

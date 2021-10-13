@@ -3325,8 +3325,8 @@ def aks_agentpool_stop(cmd,   # pylint: disable=unused-argument
         raise CLIError("Node pool {} doesnt exist, "
                        "use 'aks nodepool list' to get current node pool list".format(nodepool_name))
     instance = client.get(resource_group_name, cluster_name, nodepool_name)
-    ps = PowerState(code = "Stopped")
-    instance.power_state = ps
+    power_state = PowerState(code = "Stopped")
+    instance.power_state = power_state
     return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, cluster_name, nodepool_name,instance)
 
 def aks_agentpool_start(cmd,   # pylint: disable=unused-argument
@@ -3345,8 +3345,8 @@ def aks_agentpool_start(cmd,   # pylint: disable=unused-argument
         raise CLIError("Node pool {} doesnt exist, "
                        "use 'aks nodepool list' to get current node pool list".format(nodepool_name))
     instance = client.get(resource_group_name, cluster_name, nodepool_name)
-    ps = PowerState(code = "Running")
-    instance.power_state = ps
+    power_state = PowerState(code = "Running")
+    instance.power_state = power_state
     return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, cluster_name, nodepool_name,instance)    
 
 
