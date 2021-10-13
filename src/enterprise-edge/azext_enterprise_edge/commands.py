@@ -4,7 +4,6 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=line-too-long
-from azure.cli.core.commands import CliCommandType
 
 
 def load_command_table(self, _):
@@ -12,4 +11,3 @@ def load_command_table(self, _):
         g.custom_command('enable', 'enable_staticwebapp_enterprise_edge')
         g.custom_command('disable', 'disable_staticwebapp_enterprise_edge')
         g.custom_command('show', 'show_staticwebapp_enterprise_edge_status')
-        g.custom_command('wait', 'staticwebapp_enterprise_edge_wait')
