@@ -32,15 +32,13 @@ class StaticWebAppFrontDoorClient:
 
         return r
 
-
-    # TODO test with nonextant staticsite
     # TODO test SKU validation
     @classmethod
     def set(cls, cmd, resource_group, name, enable):
         params = cls.get(cmd, resource_group, name).json()
         if enable and params["sku"].get("name").lower() != "standard":
             raise CLIError("Invalid SKU: '{}'. Staticwebapp {} must have 'Standard' SKU to use "
-            "enterprise edge CDN").format(params["sku"].get("name"), name)
+                           "enterprise edge CDN").format(params["sku"].get("name"), name)
         params["properties"]["enterpriseGradeCdnStatus"] = "enabled" if enable else "disabled"
         return cls._request(cmd, resource_group, name, "PUT", params)
 

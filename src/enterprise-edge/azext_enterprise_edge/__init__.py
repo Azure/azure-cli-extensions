@@ -14,7 +14,7 @@ class EnterpriseEdgeCommandsLoader(AzCommandsLoader):
         from azure.cli.core.commands import CliCommandType
         enterprise_edge_custom = CliCommandType(
             operations_tmpl='azext_enterprise_edge.custom#{}')
-        super().__init__(cli_ctx=cli_ctx,custom_command_type=enterprise_edge_custom)
+        super().__init__(cli_ctx=cli_ctx, custom_command_type=enterprise_edge_custom)
 
     def load_command_table(self, args):
         from azext_enterprise_edge.commands import load_command_table

@@ -6,19 +6,23 @@
 
 from knack.help_files import helps  # pylint: disable=unused-import
 
-# TODO
 
-# helps['enterprise-edge delete'] = """
-#     type: command
-#     short-summary: Delete a Enterprise-edge.
-# """
+helps['staticwebapp enterprise-edge'] = """
+    type: group
+    short-summary: Manage the Azure Front Door CDN for static webapps
+"""
 
-# helps['enterprise-edge show'] = """
-#     type: command
-#     short-summary: Show details of a Enterprise-edge.
-# """
+helps['staticwebapp enterprise-edge enable'] = """
+    type: command
+    short-summary: Enable the Azure Front Door CDN for a static webapp
+"""
 
-# helps['enterprise-edge update'] = """
-#     type: command
-#     short-summary: Update a Enterprise-edge.
-# """
+helps['staticwebapp enterprise-edge disable'] = """
+    type: command
+    short-summary: Disable the Azure Front Door CDN for a static webapp
+"""
+
+helps['staticwebapp enterprise-edge show'] = """
+    type: command
+    short-summary: Show the status (Enabled, Disabled, Enabling, Disabling) of the Azure Front Door CDN for a webapp
+"""

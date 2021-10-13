@@ -32,7 +32,6 @@ CLASSIFIERS = [
     'License :: OSI Approved :: MIT License',
 ]
 
-# TODO: Add any additional SDK dependencies here
 DEPENDENCIES = []
 
 with open('README.rst', 'r', encoding='utf-8') as f:

@@ -6,11 +6,14 @@
 
 from knack.arguments import CLIArgumentType
 
-from azure.cli.core.commands.parameters import resource_group_name_type, get_enum_type
+from azure.cli.core.commands.parameters import resource_group_name_type
+
 
 def load_arguments(self, _):
-    name_arg_type = CLIArgumentType(options_list=['--name', '-n'], metavar='NAME')
+    staticsite_name_arg_type = CLIArgumentType(options_list=['--name', '-n'],
+                                               metavar='NAME',
+                                               help="name of the staticwebapp")
 
     with self.argument_context('staticwebapp enterprise-edge') as c:
-        c.argument("name", arg_type=name_arg_type)
+        c.argument("name", arg_type=staticsite_name_arg_type)
         c.argument("resource_group_name", arg_type=resource_group_name_type)
