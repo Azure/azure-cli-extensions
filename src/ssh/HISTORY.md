@@ -2,11 +2,11 @@ Release History
 ===============
 0.1.8
 -----
-* This is a rollback from version 0.1.7 to 0.1.6.
+* Rollback from version 0.1.7 to 0.1.6 to remove preview features.
 
 0.1.7
 -----
-* The changes in this version are not publicly available at this time.
+* Introduced preview features.
 
 0.1.6
 -----
