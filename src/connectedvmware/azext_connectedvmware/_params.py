@@ -466,7 +466,7 @@ def load_arguments(self, _):
 
     with self.argument_context('connectedvmware vm guest-agent enable') as c:
         c.argument(
-            'vm_name', options_list=['--vm-name'], help="Name of the vm."
+            'vm_name', options_list=['--vm-name'], help="Name of the VM."
         )
         c.argument(
             'username',
