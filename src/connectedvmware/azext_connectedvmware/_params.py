@@ -246,17 +246,17 @@ def load_arguments(self, _):
         c.argument(
             'cluster',
             options_list=['--cluster'],
-            help="Name or ID of the cluster for deploying the vm.",
+            help="Name or ID of the cluster for deploying the VM.",
         )
         c.argument(
             'host',
             options_list=['--host'],
-            help="Name or ID of the host for deploying the vm.",
+            help="Name or ID of the host for deploying the VM.",
         )
         c.argument(
             'datastore',
             options_list=['--datastore'],
-            help="Name or ID of the datastore for deploying the vm.",
+            help="Name or ID of the datastore for deploying the VM.",
         )
         c.argument(
             'inventory_item',
