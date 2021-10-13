@@ -476,10 +476,10 @@ def load_arguments(self, _):
         c.argument(
             'password',
             options_list=['--password'],
-            help="Username password credentials to use for connecting to the vm.",
+            help="Username password credentials to use for connecting to the VM.",
         )
 
     with self.argument_context('connectedvmware vm guest-agent show') as c:
         c.argument(
-            'vm_name', options_list=['--vm-name'], help="Name of the vm.",
+            'vm_name', options_list=['--vm-name'], help="Name of the VM.",
         )
