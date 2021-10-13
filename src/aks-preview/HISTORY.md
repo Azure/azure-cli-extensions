@@ -2,6 +2,11 @@
 
 Release History
 ===============
+0.5.35
++++++
+* Add support for multi-instance GPU configuration (`--gpu_instance_profile`) in `az aks create`
+and `az aks nodepool add`.
+
 0.5.34
 +++++
 * Add support for WASM nodepools (`--workload-runtime WasmWasi`) in `az aks create`
