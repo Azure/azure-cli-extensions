@@ -67,21 +67,17 @@ class AKSPreviewContext(AKSContext):
         :return: bool
         """
         # read the original value passed by the command
-        raw_value = self.raw_param.get("pod_subnet_id")
+        pod_subnet_id = self.raw_param.get("pod_subnet_id")
         # try to read the property value corresponding to the parameter from the `mc` object
-        value_obtained_from_mc = None
         if self.mc and self.mc.agent_pool_profiles:
             agent_pool_profile = safe_list_get(
                 self.mc.agent_pool_profiles, 0, None
             )
-            if agent_pool_profile:
-                value_obtained_from_mc = agent_pool_profile.pod_subnet_id
-
-        # set default value
-        if value_obtained_from_mc is not None:
-            pod_subnet_id = value_obtained_from_mc
-        else:
-            pod_subnet_id = raw_value
+            if (
+                agent_pool_profile and
+                agent_pool_profile.pod_subnet_id is not None
+            ):
+                pod_subnet_id = agent_pool_profile.pod_subnet_id
 
         # this parameter does not need dynamic completion
         # this parameter does not need validation
@@ -93,21 +89,17 @@ class AKSPreviewContext(AKSContext):
         :return: bool
         """
         # read the original value passed by the command
-        raw_value = self.raw_param.get("enable_fips_image")
+        enable_fips_image = self.raw_param.get("enable_fips_image")
         # try to read the property value corresponding to the parameter from the `mc` object
-        value_obtained_from_mc = None
         if self.mc and self.mc.agent_pool_profiles:
             agent_pool_profile = safe_list_get(
                 self.mc.agent_pool_profiles, 0, None
             )
-            if agent_pool_profile:
-                value_obtained_from_mc = agent_pool_profile.enable_fips
-
-        # set default value
-        if value_obtained_from_mc is not None:
-            enable_fips_image = value_obtained_from_mc
-        else:
-            enable_fips_image = raw_value
+            if (
+                agent_pool_profile and
+                agent_pool_profile.enable_fips is not None
+            ):
+                enable_fips_image = agent_pool_profile.enable_fips
 
         # this parameter does not need dynamic completion
         # this parameter does not need validation
@@ -119,21 +111,17 @@ class AKSPreviewContext(AKSContext):
         :return: string or None
         """
         # read the original value passed by the command
-        raw_value = self.raw_param.get("workload_runtime")
+        workload_runtime = self.raw_param.get("workload_runtime")
         # try to read the property value corresponding to the parameter from the `mc` object
-        value_obtained_from_mc = None
         if self.mc and self.mc.agent_pool_profiles:
             agent_pool_profile = safe_list_get(
                 self.mc.agent_pool_profiles, 0, None
             )
-            if agent_pool_profile:
-                value_obtained_from_mc = agent_pool_profile.workload_runtime
-
-        # set default value
-        if value_obtained_from_mc is not None:
-            workload_runtime = value_obtained_from_mc
-        else:
-            workload_runtime = raw_value
+            if (
+                agent_pool_profile and
+                agent_pool_profile.workload_runtime is not None
+            ):
+                workload_runtime = agent_pool_profile.workload_runtime
 
         # this parameter does not need dynamic completion
         # this parameter does not need validation
@@ -145,21 +133,17 @@ class AKSPreviewContext(AKSContext):
         :return: string or None
         """
         # read the original value passed by the command
-        raw_value = self.raw_param.get("gpu_instance_profile")
+        gpu_instance_profile = self.raw_param.get("gpu_instance_profile")
         # try to read the property value corresponding to the parameter from the `mc` object
-        value_obtained_from_mc = None
         if self.mc and self.mc.agent_pool_profiles:
             agent_pool_profile = safe_list_get(
                 self.mc.agent_pool_profiles, 0, None
             )
-            if agent_pool_profile:
-                value_obtained_from_mc = agent_pool_profile.gpu_instance_profile
-
-        # set default value
-        if value_obtained_from_mc is not None:
-            gpu_instance_profile = value_obtained_from_mc
-        else:
-            gpu_instance_profile = raw_value
+            if (
+                agent_pool_profile and
+                agent_pool_profile.gpu_instance_profile is not None
+            ):
+                gpu_instance_profile = agent_pool_profile.gpu_instance_profile
 
         # this parameter does not need dynamic completion
         # this parameter does not need validation
@@ -196,8 +180,8 @@ class AKSPreviewContext(AKSContext):
                 self.mc.agent_pool_profiles, 0, None
             )
             if (
-                agent_pool_profile
-                and agent_pool_profile.kubelet_config is not None
+                agent_pool_profile and
+                agent_pool_profile.kubelet_config is not None
             ):
                 kubelet_config = agent_pool_profile.kubelet_config
 
@@ -236,8 +220,8 @@ class AKSPreviewContext(AKSContext):
                 self.mc.agent_pool_profiles, 0, None
             )
             if (
-                agent_pool_profile
-                and agent_pool_profile.linux_os_config is not None
+                agent_pool_profile and
+                agent_pool_profile.linux_os_config is not None
             ):
                 linux_os_config = agent_pool_profile.linux_os_config
 
