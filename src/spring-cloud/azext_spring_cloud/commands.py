@@ -10,6 +10,7 @@ from ._client_factory import (cf_app_services,
                               cf_spring_cloud,
                               cf_spring_cloud_20201101preview,
                               cf_spring_cloud_20210601preview,
+                              cf_spring_cloud_20210901preview,
                               cf_config_servers)
 from ._transformers import (transform_spring_cloud_table_output,
                             transform_app_table_output,
@@ -69,6 +70,7 @@ def load_command_table(self, _):
         g.custom_command('stop', 'app_stop', supports_no_wait=True)
         g.custom_command('restart', 'app_restart', supports_no_wait=True)
         g.custom_command('logs', 'app_tail_log')
+        g.custom_command('append-persistent-storage', 'app_append_persistent_storage')
 
     with self.command_group('spring-cloud app identity', client_factory=cf_spring_cloud,
                             exception_handler=handle_asc_exception) as g:
@@ -101,6 +103,15 @@ def load_command_table(self, _):
         g.custom_command('redis add', 'binding_redis_add')
         g.custom_command('redis update', 'binding_redis_update')
         g.custom_show_command('remove', 'binding_remove')
+
+    with self.command_group('spring-cloud storage', client_factory=cf_spring_cloud_20210901preview,
+                            exception_handler=handle_asc_exception) as g:
+        g.custom_command('list', 'storage_list')
+        g.custom_show_command('show', 'storage_get')
+        g.custom_command('add', 'storage_add')
+        g.custom_command('update', 'storage_update')
+        g.custom_command('remove', 'storage_remove')
+        g.custom_command('list-persistent-storage', "storage_list_persistent_storage", table_transformer=transform_app_table_output)
 
     with self.command_group('spring-cloud certificate', client_factory=cf_spring_cloud,
                             exception_handler=handle_asc_exception) as g:

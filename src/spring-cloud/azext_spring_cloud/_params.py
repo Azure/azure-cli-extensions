@@ -119,6 +119,8 @@ def load_arguments(self, _):
                    help='Memory resource quantity. Should be 512Mi or #Gi, e.g., 1Gi, 3Gi.')
         c.argument('instance_count', type=int,
                    default=1, help='Number of instance.', validator=validate_instance_count)
+        c.argument('persistent_storage', type=str,
+                   help='A json file path for the persistent storages to be mounted to the app')
 
     with self.argument_context('spring-cloud app update') as c:
         c.argument('assign_endpoint', arg_type=get_three_state_flag(),
@@ -126,6 +128,18 @@ def load_arguments(self, _):
                    options_list=['--assign-endpoint', c.deprecate(target='--is-public', redirect='--assign-endpoint', hide=True)])
         c.argument('https_only', arg_type=get_three_state_flag(), help='If true, access app via https', default=False)
         c.argument('enable_end_to_end_tls', arg_type=get_three_state_flag(), help='If true, enable end to end tls')
+        c.argument('persistent_storage', type=str,
+            help='A json file path for the persistent storages to be mounted to the app')
+
+    with self.argument_context('spring-cloud app append-persistent-storage') as c:
+        c.argument('storage_name', type=str,
+                   help='Name of the storage resource you created in Azure Spring Cloud.')
+        c.argument('persistent_storage_type', type=str, help='Type of the persistent storage volumed.')
+        c.argument('share_name', type=str, help="The name of the pre-created file share. "
+        "ShareName should be provided only if the type of the persistent storage volume is AzureFileVolume.")
+        c.argument('mount_path', type=str, help='The path for the persistent storage volume to be mounted.')
+        c.argument('mount_options', nargs='+', help='[optional] The mount options for the persistent storage volume.', default=None)
+        c.argument('read_only', arg_type=get_three_state_flag(), help='[optional] If true, the persistent storage volume will be read only.', default=False)
 
     for scope in ['spring-cloud app update', 'spring-cloud app start', 'spring-cloud app stop', 'spring-cloud app restart', 'spring-cloud app deploy', 'spring-cloud app scale', 'spring-cloud app set-deployment', 'spring-cloud app show-deploy-log']:
         with self.argument_context(scope) as c:
@@ -278,6 +292,20 @@ def load_arguments(self, _):
                    validator=validate_app_name)
         c.argument('deployment', options_list=[
             '--deployment', '-d'], help='Name of an existing deployment of the app. Default to the production deployment if not specified.', validator=validate_deployment_name)
+
+    with self.argument_context('spring-cloud storage') as c:
+        c.argument('service', service_name_type)
+        c.argument('name', help='Name of storage.')
+
+    with self.argument_context('spring-cloud storage add') as c:
+        c.argument('storage_type', help='The type of the torage. e.g. StorageAccount')
+        c.argument('account_name', help='The name of the storage account. Only available when the type is StorageAccount.')
+        c.argument('account_key', help='The account key of the storage account. Only available when the type is StorageAccount.')
+
+    with self.argument_context('spring-cloud storage update') as c:
+        c.argument('storage_type', help='The type of the torage. e.g. StorageAccount')
+        c.argument('account_name', help='The name of the storage account. Only available when the type is StorageAccount.')
+        c.argument('account_key', help='The account key of the storage account. Only available when the type is StorageAccount.')
 
     with self.argument_context('spring-cloud certificate') as c:
         c.argument('service', service_name_type)
