@@ -5,12 +5,12 @@
 
 # pylint: disable=line-too-long
 from azure.cli.core.commands import CliCommandType
-from .profiles import CUSTOM_VWAN
+from .profiles import CUSTOM_VWAN, CUSTOM_VWAN_2021_03_01
 
 from ._client_factory import (
     cf_virtual_wans, cf_virtual_hubs, cf_vpn_sites, cf_vpn_site_configs,
     cf_vpn_gateways, cf_vpn_gateway_connection, cf_virtual_hub_route_table_v2s, cf_vpn_server_config,
-    cf_p2s_vpn_gateways, cf_virtual_hub_connection)
+    cf_p2s_vpn_gateways, cf_virtual_hub_connection, cf_virtual_hub_bgpconnection)
 from ._util import (
     list_network_resource_property,
     get_network_resource_property_entry
@@ -35,6 +35,12 @@ def load_command_table(self, _):
         client_factory=cf_virtual_hub_connection,
         resource_type=CUSTOM_VWAN,
         min_api='2020-05-01'
+    )
+
+    network_vhub_bgpconnection_sdk = CliCommandType(
+        operations_tmpl='azext_vwan.vendored_sdks.v2021_03_01.v2021_03_01.operations#VirtualHubBgpConnectionOperations.{}',
+        client_factory=cf_virtual_hub_bgpconnection,
+        resource_type=CUSTOM_VWAN_2021_03_01
     )
 
     network_vhub_route_table_sdk = CliCommandType(
@@ -118,6 +124,14 @@ def load_command_table(self, _):
         g.show_command('show')
         g.command('list', 'list')
         g.generic_update_command('update', custom_func_name='update_hub_vnet_connection', setter_name="begin_create_or_update", setter_arg_name='hub_virtual_network_connection_parameters', supports_no_wait=True)
+        g.wait_command('wait')
+
+    with self.command_group('network vhub bgpconnection', network_vhub_bgpconnection_sdk, client_factory=cf_virtual_hub_bgpconnection) as g:
+        g.custom_command('create', 'create_hub_vnet_bgpconnection', supports_no_wait=True)
+        g.command('delete', 'begin_delete', supports_no_wait=True, confirmation=True)
+        g.show_command('show')
+        g.custom_command('list', 'list_hub_vnet_bgpconnection')
+        g.generic_update_command('update', custom_func_name='update_hub_vnet_bgpconnection', setter_name="begin_create_or_update", supports_no_wait=True)
         g.wait_command('wait')
 
     with self.command_group('network vhub route', network_vhub_sdk, deprecate_info=self.deprecate(redirect=ROUTE_TABLE_DEPRECATION_INFO, hide=False)) as g:

@@ -32,6 +32,7 @@ def load_arguments(self, _):
                    help='Name of the Kubernetes cluster')
         c.argument('cluster_type',
                    arg_type=get_enum_type(['connectedClusters', 'managedClusters', 'appliances']),
+                   options_list=['--cluster-type', '-t'],
                    help='Specify Arc clusters or AKS managed clusters or Arc appliances.')
         c.argument('scope',
                    arg_type=get_enum_type(['cluster', 'namespace']),
@@ -73,3 +74,8 @@ def load_arguments(self, _):
         c.argument('target_namespace',
                    help='Specify the target namespace to install to for the extension instance. This'
                    ' parameter is required if extension scope is set to \'namespace\'')
+
+    with self.argument_context(f"{consts.EXTENSION_NAME} delete") as c:
+        c.argument('yes',
+                   options_list=['--yes', '-y'],
+                   help='Ignore confirmation prompts')

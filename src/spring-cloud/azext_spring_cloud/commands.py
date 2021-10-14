@@ -88,7 +88,7 @@ def load_command_table(self, _):
                          table_transformer=transform_spring_cloud_deployment_output)
         g.custom_show_command(
             'show', 'deployment_get', table_transformer=transform_spring_cloud_deployment_output)
-        g.custom_command('delete', 'deployment_delete')
+        g.custom_command('delete', 'deployment_delete', supports_no_wait=True)
 
     with self.command_group('spring-cloud app binding', client_factory=cf_spring_cloud,
                             exception_handler=handle_asc_exception) as g:
@@ -117,10 +117,10 @@ def load_command_table(self, _):
         g.custom_command('update', 'domain_update')
         g.custom_command('unbind', 'domain_unbind')
 
-    with self.command_group('spring-cloud app-insights', is_preview=True,
+    with self.command_group('spring-cloud app-insights',
                             client_factory=cf_spring_cloud_20201101preview,
                             exception_handler=handle_asc_exception) as g:
-        g.custom_command('update', 'app_insights_update')
+        g.custom_command('update', 'app_insights_update', supports_no_wait=True)
         g.custom_show_command('show', 'app_insights_show')
 
     with self.command_group('spring-cloud', exception_handler=handle_asc_exception):
