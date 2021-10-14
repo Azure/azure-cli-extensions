@@ -69,7 +69,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             os_type = 'Windows'
 
         # check hyperv Generation
-        #if enable_nested and (is_gen2 == 2):
+        # if enable_nested and (is_gen2 == 2):
         #    raise SkuDoesNotSupportHyperV('Cannot support V2 HyperV generation. Please run command without --enabled-nested')
 
         # Set up base create vm command
