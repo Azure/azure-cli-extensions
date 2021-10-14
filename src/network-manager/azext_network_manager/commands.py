@@ -24,40 +24,6 @@ def load_command_table(self, _):
         client_factory=cf_networkmanager
     )
 
-    network_networkmanagercommit = CliCommandType(
-        operations_tmpl='azext_network_manager.vendored_sdks.operations._network_manager_commits_operations#NetworkManagercommitsOperations.{}',
-        client_factory=cf_networkmanagercommit
-    )
-
-    network_networkmanagerdeploymentstatus = CliCommandType(
-        operations_tmpl='azext_network_manager.vendored_sdks.operations._network_manager_deployment_status_operations#NetworkManagerDeploymentStatusOperations.{}',
-        client_factory=cf_networkmanagerdeploymentstatus
-    )
-
-    network_effectivevirtualnetwork = CliCommandType(
-        operations_tmpl='azext_network_manager.vendored_sdks.operations._effective_virtual_networks_operations#EffectiveVirtualNetworksOperations.{}',
-        client_factory=cf_effectivevirtualnetwork)
-
-    network_activeconnectivityconfiguration = CliCommandType(
-        operations_tmpl='azext_network_manager.vendored_sdks.operations._active_connectivity_configurations_operations#ActiveConnetivityConfigurationsOperations.{}',
-        client_factory=cf_activeconnectivityconfiguration
-    )
-
-    network_effectiveconnectivityconfiguration = CliCommandType(
-        operations_tmpl='azext_network_manager.vendored_sdks.operations._effective_connectivity_configurations_operations#EffectiveConnetivityConfigurationsOperations.{}',
-        client_factory=cf_effectiveconnectivityconfiguration
-    )
-
-    network_activesecurityadminrule = CliCommandType(
-        operations_tmpl='azext_network_manager.vendored_sdks.operations._active_security_admin_rules_operations#ActiveSecurityAdminRulesOperations.{}',
-        client_factory=cf_activesecurityadminrule
-    )
-
-    network_activesecurityuserrule = CliCommandType(
-        operations_tmpl='azext_network_manager.vendored_sdks.operations._active_security_user_rules_operations#ActiveSecurityUserRulesOperations.{}',
-        client_factory=cf_activesecurityuserrule
-    )
-
     network_connectivityconfiguration = CliCommandType(
         operations_tmpl='azext_network_manager.vendored_sdks.operations._connectivity_configurations_operations#ConnectivityConfigurationsOperations.{}',
         client_factory=cf_connectivityconfiguration
