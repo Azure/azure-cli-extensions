@@ -286,6 +286,51 @@ class AKSPreviewContext(AKSContext):
         # this parameter does not need validation
         return node_resource_group
 
+    def get_nat_gateway_managed_outbound_ip_count(self) -> Union[int, None]:
+        """Obtain the value of nat_gateway_managed_outbound_ip_count.
+
+        :return: string or None
+        """
+        # read the original value passed by the command
+        nat_gateway_managed_outbound_ip_count = self.raw_param.get("nat_gateway_managed_outbound_ip_count")
+        # try to read the property value corresponding to the parameter from the `mc` object
+        if (
+            self.mc and
+            self.mc.network_profile and
+            self.mc.network_profile.nat_gateway_profile and
+            self.mc.network_profile.nat_gateway_profile.managed_outbound_ip_profile and
+            self.mc.network_profile.nat_gateway_profile.managed_outbound_ip_profile.count is not None
+        ):
+            nat_gateway_managed_outbound_ip_count = (
+                self.mc.network_profile.nat_gateway_profile.managed_outbound_ip_profile.count
+            )
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return nat_gateway_managed_outbound_ip_count
+
+    def get_nat_gateway_idle_timeout(self) -> Union[int, None]:
+        """Obtain the value of nat_gateway_idle_timeout.
+
+        :return: string or None
+        """
+        # read the original value passed by the command
+        nat_gateway_idle_timeout = self.raw_param.get("nat_gateway_idle_timeout")
+        # try to read the property value corresponding to the parameter from the `mc` object
+        if (
+            self.mc and
+            self.mc.network_profile and
+            self.mc.network_profile.nat_gateway_profile and
+            self.mc.network_profile.nat_gateway_profile.idle_timeout_in_minutes is not None
+        ):
+            nat_gateway_idle_timeout = (
+                self.mc.network_profile.nat_gateway_profile.idle_timeout_in_minutes
+            )
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return nat_gateway_idle_timeout
+
 
 class AKSPreviewCreateDecorator(AKSCreateDecorator):
     # pylint: disable=super-init-not-called
