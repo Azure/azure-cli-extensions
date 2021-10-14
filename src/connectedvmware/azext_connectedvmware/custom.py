@@ -201,18 +201,18 @@ def list_vcenter(client: VCentersOperations, resource_group_name=None):
 def show_inventory_item(
     client: InventoryItemsOperations,
     resource_group_name,
-    vcenter_name,
-    inventory_item_name
+    vcenter,
+    inventory_item
 ):
 
-    return client.get(resource_group_name, vcenter_name, inventory_item_name)
+    return client.get(resource_group_name, vcenter, inventory_item)
 
 
 def list_inventory_item(
-    client: InventoryItemsOperations, resource_group_name, vcenter_name
+    client: InventoryItemsOperations, resource_group_name, vcenter
 ):
 
-    return client.list_by_v_center(resource_group_name, vcenter_name)
+    return client.list_by_v_center(resource_group_name, vcenter)
 
 
 # endregion

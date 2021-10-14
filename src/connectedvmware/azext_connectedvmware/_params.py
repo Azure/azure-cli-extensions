@@ -11,15 +11,47 @@ from ._actions import VmNicAddAction, VmDiskAddAction
 
 
 def load_arguments(self, _):
-    connectedvmware_name_type = CLIArgumentType(
+    resource_name = CLIArgumentType(
         options_list='--resource-name', help='Name of the resource.', id_part='name'
+    )
+
+    custom_location = CLIArgumentType(
+        options_list=['--custom-location', '-c'],
+        help='Name or ID of the custom location that will manage this resource.',
+    )
+
+    vcenter = CLIArgumentType(
+        options_list=['--vcenter', '-v'],
+        help='Name or ID of the vCenter that is managing this resource.',
+    )
+
+    mo_ref_id = CLIArgumentType(
+        options_list=['--mo-ref-id', '-m'],
+        help='VCenter MoRef (Managed Object Reference) ID for the existing resource.',
+    )
+
+    inventory_item = CLIArgumentType(
+        options_list=['--inventory-item', '-i'],
+        help='Name or ID of the inventory item.',
     )
 
     with self.argument_context('connectedvmware') as c:
         c.argument('tags', tags_type)
         c.argument('location', validator=get_default_location_from_resource_group)
         c.argument(
-            'resource_name', connectedvmware_name_type, options_list=['--name', '-n']
+            'resource_name', resource_name, options_list=['--name', '-n']
+        )
+        c.argument(
+            'custom_location', custom_location, options_list=['--custom-location', '-c']
+        )
+        c.argument(
+            'vcenter', vcenter, options_list=['--vcenter', '-v']
+        )
+        c.argument(
+            'mo_ref_id', mo_ref_id, options_list=['--mo-ref-id', '-m']
+        )
+        c.argument(
+            'inventory_item', inventory_item, options_list=['--inventory-item', '-i']
         )
 
     with self.argument_context('connectedvmware vcenter connect') as c:
@@ -28,11 +60,6 @@ def load_arguments(self, _):
         )
         c.argument(
             'port', type=int, options_list=['--port'], help="The port of the vCenter."
-        )
-        c.argument(
-            'custom_location',
-            options_list=['--custom-location'],
-            help="Name or ID of the custom location that will manage this vCenter.",
         )
         c.argument(
             'username',
@@ -48,191 +75,41 @@ def load_arguments(self, _):
     with self.argument_context('connectedvmware vcenter delete') as c:
         c.argument('force', action='store_true', help="Whether force delete or not.")
 
-    with self.argument_context('connectedvmware vcenter inventory-item list') as c:
-        c.argument(
-            'vcenter_name', options_list=['--vcenter-name'], help="Name of the vCenter."
-        )
+    self.argument_context('connectedvmware vcenter inventory-item list')
 
-    with self.argument_context('connectedvmware vcenter inventory-item show') as c:
-        c.argument(
-            'inventory_item_name',
-            options_list=['--inventory-item-name'], help="Name of the inventory item.",
-        )
-        c.argument(
-            'vcenter_name', options_list=['--vcenter-name'], help="Name of the vCenter.",
-        )
+    self.argument_context('connectedvmware vcenter inventory-item show')
 
-    with self.argument_context('connectedvmware resource-pool create') as c:
-        c.argument(
-            'custom_location',
-            options_list=['--custom-location'],
-            help="Name or ID of the custom location that is managing this resource pool.",
-        )
-        c.argument(
-            'vcenter',
-            options_list=['--vcenter'],
-            help="Name or ID of the vCenter that is managing this resource pool.",
-        )
-        c.argument(
-            'mo_ref_id',
-            options_list=['--mo-ref-id'],
-            help="VCenter MoRef (Managed Object Reference) ID for the existing resource pool.",
-        )
-        c.argument(
-            'inventory_item',
-            options_list=['--inventory-item'],
-            help="Name or ID of the inventory item.",
-        )
+    self.argument_context('connectedvmware resource-pool create')
 
     with self.argument_context('connectedvmware resource-pool delete') as c:
         c.argument('force', action='store_true', help="Whether force delete or not.")
 
-    with self.argument_context('connectedvmware cluster create') as c:
-        c.argument(
-            'custom_location',
-            options_list=['--custom-location'],
-            help="Name or ID of the custom location that is managing this cluster.",
-        )
-        c.argument(
-            'vcenter',
-            options_list=['--vcenter'],
-            help="Name or ID of the vCenter that is managing this cluster.",
-        )
-        c.argument(
-            'mo_ref_id',
-            options_list=['--mo-ref-id'],
-            help="VCenter MoRef (Managed Object Reference) ID for the existing cluster.",
-        )
-        c.argument(
-            'inventory_item',
-            options_list=['--inventory-item'],
-            help="Name or ID of the inventory item.",
-        )
+    self.argument_context('connectedvmware cluster create')
 
     with self.argument_context('connectedvmware cluster delete') as c:
         c.argument('force', action='store_true', help="Whether force delete or not.")
 
-    with self.argument_context('connectedvmware datastore create') as c:
-        c.argument(
-            'custom_location',
-            options_list=['--custom-location'],
-            help="Name or ID of the custom location that is managing this datastore.",
-        )
-        c.argument(
-            'vcenter',
-            options_list=['--vcenter'],
-            help="Name or ID of the vCenter that is managing this datastore.",
-        )
-        c.argument(
-            'mo_ref_id',
-            options_list=['--mo-ref-id'],
-            help="VCenter MoRef (Managed Object Reference) ID for the existing datastore.",
-        )
-        c.argument(
-            'inventory_item',
-            options_list=['--inventory-item'],
-            help="Name or ID of the inventory item.",
-        )
+    self.argument_context('connectedvmware datastore create')
 
     with self.argument_context('connectedvmware datastore delete') as c:
         c.argument('force', action='store_true', help="Whether force delete or not.")
 
-    with self.argument_context('connectedvmware host create') as c:
-        c.argument(
-            'custom_location',
-            options_list=['--custom-location'],
-            help="Name or ID of the custom location that is managing this host.",
-        )
-        c.argument(
-            'vcenter',
-            options_list=['--vcenter'],
-            help="Name or ID of the vCenter that is managing this host.",
-        )
-        c.argument(
-            'mo_ref_id',
-            options_list=['--mo-ref-id'],
-            help="VCenter MoRef (Managed Object Reference) ID for the existing host.",
-        )
-        c.argument(
-            'inventory_item',
-            options_list=['--inventory-item'],
-            help="Name or ID of the inventory item.",
-        )
+    self.argument_context('connectedvmware host create')
 
     with self.argument_context('connectedvmware host delete') as c:
         c.argument('force', action='store_true', help="Whether force delete or not.")
 
-    with self.argument_context('connectedvmware virtual-network create') as c:
-        c.argument(
-            'custom_location',
-            options_list=['--custom-location'],
-            help="Name or ID of the custom location that is managing this virtual network.",
-        )
-        c.argument(
-            'vcenter',
-            options_list=['--vcenter'],
-            help="Name or ID of the vCenter that is managing this virtual network.",
-        )
-        c.argument(
-            'mo_ref_id',
-            options_list=['--mo-ref-id'],
-            help="VCenter MoRef (Managed Object Reference) ID for the existing virtual network.",
-        )
-        c.argument(
-            'inventory_item',
-            options_list=['--inventory-item'],
-            help="Name or ID of the inventory item.",
-        )
+    self.argument_context('connectedvmware virtual-network create')
 
     with self.argument_context('connectedvmware virtual-network delete') as c:
         c.argument('force', action='store_true', help="Whether force delete or not.")
 
-    with self.argument_context('connectedvmware vm-template create') as c:
-        c.argument(
-            'arc_zone',
-            options_list=['--arc-zone'],
-            help="Name or ID of the Arc zone that is managing this vm template.",
-        )
-        c.argument(
-            'vcenter',
-            options_list=['--vcenter'],
-            help="Name or ID of the vCenter that is managing this vm template.",
-        )
-        c.argument(
-            'mo_ref_id',
-            options_list=['--mo-ref-id'],
-            help="VCenter MoRef (Managed Object Reference) ID for the existing vm template.",
-        )
-        c.argument(
-            'custom_location',
-            options_list=['--custom-location'],
-            help="Name or ID of the custom location that will manage this vCenter.",
-        )
-        c.argument(
-            'inventory_item',
-            options_list=['--inventory-item'],
-            help="Name or ID of the inventory item.",
-        )
+    self.argument_context('connectedvmware vm-template create')
 
     with self.argument_context('connectedvmware vm-template delete') as c:
         c.argument('force', action='store_true', help="Whether force delete or not.")
 
     with self.argument_context('connectedvmware vm create') as c:
-        c.argument(
-            'arc_zone',
-            options_list=['--arc-zone'],
-            help="Name or ID of the Arc zone to deploy the vm.",
-        )
-        c.argument(
-            'custom_location',
-            options_list=['--custom-location'],
-            help="Name or ID of the custom location that will manage this vm.",
-        )
-        c.argument(
-            'vcenter',
-            options_list=['--vcenter'],
-            help="Name or ID of the vCenter to deploy the vm.",
-        )
         c.argument(
             'vm_template',
             options_list=['--vm-template'],
@@ -257,11 +134,6 @@ def load_arguments(self, _):
             'datastore',
             options_list=['--datastore'],
             help="Name or ID of the datastore for deploying the vm.",
-        )
-        c.argument(
-            'inventory_item',
-            options_list=['--inventory-item'],
-            help="Name or ID of the inventory item.",
         )
         c.argument(
             'admin_username',

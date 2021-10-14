@@ -128,7 +128,7 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
         assert len(resource_list) >= 1
 
         # Validate the show command output with inventory-item name.
-        self.cmd('az connectedvmware vcenter inventory-item show -g {rg} --vcenter-name {vc_name} --inventory-item {rp_morefid}', checks=[
+        self.cmd('az connectedvmware vcenter inventory-item show -g {rg} --vcenter {vc_name} --inventory-item {rp_morefid}', checks=[
             self.check('name', '{rp_morefid}'),
         ])
 
