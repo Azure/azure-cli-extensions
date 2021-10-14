@@ -123,17 +123,17 @@ def load_arguments(self, _):
         c.argument(
             'cluster',
             options_list=['--cluster'],
-            help="Name or ID of the cluster for deploying the vm.",
+            help="Name or ID of the cluster for deploying the VM.",
         )
         c.argument(
             'host',
             options_list=['--host'],
-            help="Name or ID of the host for deploying the vm.",
+            help="Name or ID of the host for deploying the VM.",
         )
         c.argument(
             'datastore',
             options_list=['--datastore'],
-            help="Name or ID of the datastore for deploying the vm.",
+            help="Name or ID of the datastore for deploying the VM.",
         )
         c.argument(
             'admin_username',
@@ -338,7 +338,7 @@ def load_arguments(self, _):
 
     with self.argument_context('connectedvmware vm guest-agent enable') as c:
         c.argument(
-            'vm_name', options_list=['--vm-name'], help="Name of the vm."
+            'vm_name', options_list=['--vm-name'], help="Name of the VM."
         )
         c.argument(
             'username',
@@ -348,10 +348,10 @@ def load_arguments(self, _):
         c.argument(
             'password',
             options_list=['--password'],
-            help="Username password credentials to use for connecting to the vm.",
+            help="Username password credentials to use for connecting to the VM.",
         )
 
     with self.argument_context('connectedvmware vm guest-agent show') as c:
         c.argument(
-            'vm_name', options_list=['--vm-name'], help="Name of the vm.",
+            'vm_name', options_list=['--vm-name'], help="Name of the VM.",
         )
