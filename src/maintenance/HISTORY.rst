@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.3.0
+++++++
+* Added support for VM patch maintenance.
+
 1.2.0
 ++++++
 * Added support for VMSS OSImage and extension.

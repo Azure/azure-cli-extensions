@@ -1,5 +1,13 @@
 Release History
 ===============
+0.1.8
+-----
+* Rollback from version 0.1.7 to 0.1.6 to remove preview features.
+
+0.1.7
+-----
+* Introduced preview features.
+
 0.1.6
 -----
 * Add support for direct MSAL usage in newer Azure CLI (beta currently)
