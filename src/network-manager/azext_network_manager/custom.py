@@ -10,6 +10,16 @@
 # pylint: disable=too-many-lines
 # pylint: disable=unused-argument
 
+from ._client_factory import (
+    cf_networkmanagercommit,
+    cf_networkmanagerdeploymentstatus,
+    cf_effectivevirtualnetwork,
+    cf_activeconnectivityconfiguration,
+    cf_effectiveconnectivityconfiguration,
+    cf_activesecurityadminrule,
+    cf_activesecurityuserrule
+)
+
 
 def network_manager_list(client,
                          resource_group_name,
@@ -84,12 +94,14 @@ def network_manager_delete(client,
                          network_manager_name=network_manager_name)
 
 
-def network_manager_commit_post(client,
+def network_manager_commit_post(cmd,
+                                client,
                                 resource_group_name,
                                 network_manager_name,
                                 target_locations=None,
                                 configuration_ids=None,
                                 commit_type=None):
+    client = cf_networkmanagercommit(cmd.cli_ctx)
     parameters = {}
     parameters['target_locations'] = target_locations
     parameters['configuration_ids'] = configuration_ids
@@ -99,12 +111,14 @@ def network_manager_commit_post(client,
                        parameters=parameters)
 
 
-def network_manager_deploy_status_list(client,
+def network_manager_deploy_status_list(cmd,
+                                       client,
                                        resource_group_name,
                                        network_manager_name,
                                        skip_token=None,
                                        regions=None,
                                        deployment_types=None):
+    client = cf_networkmanagerdeploymentstatus(cmd.cli_ctx)
     parameters = {}
     parameters['regions'] = regions
     parameters['deployment_types'] = deployment_types
@@ -114,11 +128,13 @@ def network_manager_deploy_status_list(client,
                        parameters=parameters)
 
 
-def network_manager_effect_vnet_list_by_network_group(client,
+def network_manager_effect_vnet_list_by_network_group(cmd,
+                                                      client,
                                                       resource_group_name,
                                                       network_manager_name,
                                                       network_group_name,
                                                       skip_token=None):
+    client = cf_effectivevirtualnetwork(cmd.cli_ctx)
     parameters = {}
     parameters['skip_token'] = skip_token
     return client.list_by_network_group(resource_group_name=resource_group_name,
@@ -127,12 +143,14 @@ def network_manager_effect_vnet_list_by_network_group(client,
                                         parameters=parameters)
 
 
-def network_manager_effect_vnet_list_by_network_manager(client,
+def network_manager_effect_vnet_list_by_network_manager(cmd,
+                                                        client,
                                                         resource_group_name,
                                                         network_manager_name,
                                                         top=None,
                                                         skip_token=None,
                                                         conditional_members=None):
+    client = cf_effectivevirtualnetwork(cmd.cli_ctx)
     parameters = {}
     parameters['skip_token'] = skip_token
     parameters['conditional_members'] = conditional_members
@@ -143,11 +161,13 @@ def network_manager_effect_vnet_list_by_network_manager(client,
                                           parameters=parameters)
 
 
-def network_manager_active_config_list(client,
+def network_manager_active_config_list(cmd,
+                                       client,
                                        resource_group_name,
                                        network_manager_name,
                                        skip_token=None,
                                        region=None):
+    client = cf_activeconnectivityconfiguration(cmd.cli_ctx)
     parameters = {}
     parameters['skip_token'] = skip_token
     parameters['region'] = region
@@ -156,10 +176,12 @@ def network_manager_active_config_list(client,
                        parameters=parameters)
 
 
-def network_manager_effective_config_list(client,
+def network_manager_effective_config_list(cmd,
+                                          client,
                                           resource_group_name,
                                           virtual_network_name,
                                           skip_token=None):
+    client = cf_effectiveconnectivityconfiguration(cmd.cli_ctx)
     parameters = {}
     parameters['skip_token'] = skip_token
     return client.list(resource_group_name=resource_group_name,
@@ -167,11 +189,13 @@ def network_manager_effective_config_list(client,
                        parameters=parameters)
 
 
-def network_manager_active_security_admin_rule_list(client,
+def network_manager_active_security_admin_rule_list(cmd,
+                                                    client,
                                                     resource_group_name,
                                                     network_manager_name,
                                                     skip_token=None,
                                                     regions=None):
+    client = cf_activesecurityadminrule(cmd.cli_ctx)
     parameters = {}
     parameters['skip_token'] = skip_token
     parameters['region'] = regions
@@ -180,11 +204,13 @@ def network_manager_active_security_admin_rule_list(client,
                        parameters=parameters)
 
 
-def network_manager_active_security_user_rule_list(client,
+def network_manager_active_security_user_rule_list(cmd,
+                                                   client,
                                                    resource_group_name,
                                                    network_manager_name,
                                                    skip_token=None,
                                                    regions=None):
+    client = cf_activesecurityuserrule(cmd.cli_ctx)
     parameters = {}
     parameters['skip_token'] = skip_token
     parameters['regions'] = regions

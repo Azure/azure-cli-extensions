@@ -81,7 +81,7 @@ def load_arguments(self, _):
                    help='The name of the network manager.', id_part='name')
 
     # endregion
-    with self.argument_context('network manager commit post') as c:
+    with self.argument_context('network manager post-commit') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part='name')
         c.argument('target_locations', nargs='+', help='List of target locations.')
@@ -89,7 +89,7 @@ def load_arguments(self, _):
         c.argument('commit_type', arg_type=get_enum_type(['SecurityAdmin', 'SecurityUser', 'Connectivity']),
                    help='Commit Type.')
 
-    with self.argument_context('network manager deploy-status list') as c:
+    with self.argument_context('network manager list-deploy-status') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part=None)
         c.argument('top', type=int, help='An optional query parameter which specifies the maximum number of records to '
@@ -100,7 +100,7 @@ def load_arguments(self, _):
         c.argument('regions', nargs='+', help='List of locations.')
         c.argument('deployment_types', nargs='+', help='List of configurations\' deployment types.')
 
-    with self.argument_context('network manager effect-vnet list-by-network-group') as c:
+    with self.argument_context('network manager group list-effect-vnet') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('network_manager_name', type=str, help='The name of the network manager.')
         c.argument('network_group_name', type=str, help='The name of the network group to get.')
@@ -110,7 +110,7 @@ def load_arguments(self, _):
                    'result. If a previous response contains a nextLink element, the value of the nextLink element will '
                    'include a skipToken parameter that specifies a starting point to use for subsequent calls.')
 
-    with self.argument_context('network manager effect-vnet list-by-network-manager') as c:
+    with self.argument_context('network manager list-effect-vnet') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('network_manager_name', type=str, help='The name of the network manager.')
         c.argument('top', type=int, help='An optional query parameter which specifies the maximum number of records to '
@@ -120,27 +120,27 @@ def load_arguments(self, _):
                    'include a skipToken parameter that specifies a starting point to use for subsequent calls.')
         c.argument('conditional_members', type=str, help='Conditional Members.')
 
-    with self.argument_context('network manager effective-config list') as c:
+    with self.argument_context('network manager list-effective-config') as c:
         c.argument('virtual_network_name', type=str, help='The name of the virtual network.', id_part=None)
         c.argument('skip_token', type=str, help='SkipToken is only used if a previous operation returned a partial '
                    'result. If a previous response contains a nextLink element, the value of the nextLink element will '
                    'include a skipToken parameter that specifies a starting point to use for subsequent calls.')
 
-    with self.argument_context('network manager active-security-admin-rule list') as c:
+    with self.argument_context('network manager list-active-security-admin-rule') as c:
         c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part=None)
         c.argument('skip_token', type=str, help='SkipToken is only used if a previous operation returned a partial '
                    'result. If a previous response contains a nextLink element, the value of the nextLink element will '
                    'include a skipToken parameter that specifies a starting point to use for subsequent calls.')
         c.argument('regions', nargs='+', help='List of locations.')
 
-    with self.argument_context('network manager active-security-user-rule list') as c:
+    with self.argument_context('network manager list-active-security-user-rule') as c:
         c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part=None)
         c.argument('skip_token', type=str, help='SkipToken is only used if a previous operation returned a partial '
                    'result. If a previous response contains a nextLink element, the value of the nextLink element will '
                    'include a skipToken parameter that specifies a starting point to use for subsequent calls.')
         c.argument('regions', nargs='+', help='List of locations.')
 
-    with self.argument_context('network manager active-config list') as c:
+    with self.argument_context('network manager list-active-config') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part=None)
         c.argument('top', type=int, help='An optional query parameter which specifies the maximum number of records to '

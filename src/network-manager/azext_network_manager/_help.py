@@ -77,120 +77,75 @@ helps['network manager delete'] = """
                az network manager delete --name "testNetworkManager" --resource-group "rg1"
 """
 
-helps['network manager commit'] = """
-    type: group
-    short-summary: Manage networkmanagercommit with network
-"""
-
-helps['network manager commit post'] = """
+helps['network manager post-commit'] = """
     type: command
     short-summary: "Post a Network Manager Commit."
     examples:
       - name: Post Azure Virtual Network Manager Commit
         text: |-
-               az network manager commit post --network-manager-name "testNetworkManager" --commit-type "SecurityAdmin" \
+               az network manager post-commit --network-manager-name "testNetworkManager" --commit-type "SecurityAdmin" \
 --configuration-ids "/subscriptions/subscriptionC/resourceGroups/resoureGroupSample/providers/Microsoft.Network/network\
 Managers/testNetworkManager/securityConfigurations/SampleSecurityConfig" --target-locations "eastus" --resource-group \
 "resoureGroupSample"
 """
 
-helps['network manager deploy-status'] = """
-    type: group
-    short-summary: Manage networkmanagerdeploymentstatus with network
-"""
-
-helps['network manager deploy-status list'] = """
+helps['network manager list-deploy-status'] = """
     type: command
     short-summary: "Post List of Network Manager Deployment Status."
     examples:
       - name: Post Azure Virtual Network Manager Deployment Status
         text: |-
-               az network manager deploy-status list --network-manager-name "testNetworkManager" --deployment-types \
+               az network manager list-deploy-status --network-manager-name "testNetworkManager" --deployment-types \
 "Connectivity" "AdminPolicy" --regions "eastus" "westus" --resource-group "resoureGroupSample"
 """
 
-helps['network manager effect-vnet'] = """
-    type: group
-    short-summary: Manage effectivevirtualnetwork with network
-"""
-
-helps['network manager effect-vnet list-by-network-group'] = """
-    type: command
-    short-summary: "Lists all effective virtual networks by specified network group."
-    examples:
-      - name: List Effective Virtual Networks List By Network Groups
-        text: |-
-               az network manager effect-vnet list-by-network-group --network-group-name "TestNetworkGroup" \
---network-manager-name "testNetworkManager" --resource-group "rg1"
-"""
-
-helps['network manager effect-vnet list-by-network-manager'] = """
+helps['network manager list-effect-vnet'] = """
     type: command
     short-summary: "List effective virtual networks in a network manager."
     examples:
       - name: List Effective Virtual Networks List By Network Groups
         text: |-
-               az network manager effect-vnet list-by-network-manager --network-manager-name "testNetworkManager" \
+               az network manager list-effect-vnet --network-manager-name "testNetworkManager" \
 --conditional-members "location=\'useast2\'" --resource-group "rg1"
 """
 
-helps['network manager active-security-admin-rule'] = """
-    type: group
-    short-summary: Manage active security admin rule
-"""
-
-helps['network manager active-security-admin-rule list'] = """
-    type: command
-    short-summary: "Lists active security admin rule in a network manager."
-    examples:
-      - name: Get Azure Virtual Network Manager Active Security Admin Rule
-        text: |-
-               az network manager active-security-admin-rule list --network-manager-name "testNetworkManager" --resource-group \
-"myResourceGroup --region eastus2euap"
-"""
-
-helps['network manager active-security-user-rule'] = """
-    type: group
-    short-summary: Manage active security user rule
-"""
-
-helps['network manager active-security-user-rule list'] = """
-    type: command
-    short-summary: "Lists active security user rule in a network manager."
-    examples:
-      - name: Get Azure Virtual Network Manager Active Security User Rule
-        text: |-
-               az network manager active-security-user-rule list --network-manager-name "testNetworkManager" --resource-group \
-"myResourceGroup --region eastus2euap"
-"""
-
-helps['network manager effective-config'] = """
-    type: group
-    short-summary: Manage effective configuration
-"""
-
-helps['network manager effective-config list'] = """
-    type: command
-    short-summary: "Lists effective configuration in a network manager."
-    examples:
-      - name: Get Azure Virtual Network Manager Effective Configuration
-        text: |-
-               az network manager effective-config list --virtual-network-name "myVirtualNetwork" --resource-group "myResourceGroup"
-"""
-
-helps['network manager active-config'] = """
-    type: group
-    short-summary: Manage activeconfiguration with network
-"""
-
-helps['network manager active-config list'] = """
+helps['network manager list-active-config'] = """
     type: command
     short-summary: "Lists active configurations in a network manager."
     examples:
       - name: Get Azure Virtual Network Manager Active Configuration
         text: |-
-               az network manager active-config list --network-manager-name "testNetworkManager" --resource-group \
+               az network manager list-active-config --network-manager-name "testNetworkManager" --resource-group \
 "myResourceGroup"
+"""
+
+helps['network manager list-effective-config'] = """
+    type: command
+    short-summary: "Lists effective configuration in a network manager."
+    examples:
+      - name: Get Azure Virtual Network Manager Effective Configuration
+        text: |-
+               az network manager list-effective-config --virtual-network-name "myVirtualNetwork" --resource-group "myResourceGroup"
+"""
+
+helps['network manager list-active-security-admin-rule'] = """
+    type: command
+    short-summary: "Lists active security admin rule in a network manager."
+    examples:
+      - name: Get Azure Virtual Network Manager Active Security Admin Rule
+        text: |-
+               az network manager list-active-security-admin-rule --network-manager-name "testNetworkManager" --resource-group \
+"myResourceGroup --region eastus2euap"
+"""
+
+helps['network manager list-active-security-user-rule'] = """
+    type: command
+    short-summary: "Lists active security user rule in a network manager."
+    examples:
+      - name: Get Azure Virtual Network Manager Active Security User Rule
+        text: |-
+               az network manager list-active-security-user-rule --network-manager-name "testNetworkManager" --resource-group \
+"myResourceGroup --region eastus2euap"
 """
 
 helps['network manager connect-config'] = """
@@ -359,6 +314,16 @@ helps['network manager group delete'] = """
         text: |-
                az network manager group delete --name "TestNetworkGroup" --network-manager-name "testNetworkManager" \
 --resource-group "rg1"
+"""
+
+helps['network manager effect-vnet list-effect-vnet'] = """
+    type: command
+    short-summary: "Lists all effective virtual networks by specified network group."
+    examples:
+      - name: List Effective Virtual Networks List By Network Groups
+        text: |-
+               az network manager list-effect-vnet --network-group-name "TestNetworkGroup" \
+--network-manager-name "testNetworkManager" --resource-group "rg1"
 """
 
 helps['network manager security-user-config'] = """

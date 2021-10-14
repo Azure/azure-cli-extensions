@@ -104,28 +104,13 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'network_manager_show')
         g.generic_update_command('update', custom_func_name='network_manager_update')
         g.custom_command('delete', 'network_manager_delete', confirmation=True)
-
-    with self.command_group('network manager commit', network_networkmanagercommit, client_factory=cf_networkmanagercommit) as g:
-        g.custom_command('post', 'network_manager_commit_post')
-
-    with self.command_group('network manager deploy-status', network_networkmanagerdeploymentstatus, client_factory=cf_networkmanagerdeploymentstatus) as g:
-        g.custom_command('list', 'network_manager_deploy_status_list')
-
-    with self.command_group('network manager effect-vnet', network_effectivevirtualnetwork, client_factory=cf_effectivevirtualnetwork) as g:
-        g.custom_command('list-by-network-group', 'network_manager_effect_vnet_list_by_network_group')
-        g.custom_command('list-by-network-manager', 'network_manager_effect_vnet_list_by_network_manager')
-
-    with self.command_group('network manager active-config', network_activeconnectivityconfiguration, client_factory=cf_activeconnectivityconfiguration) as g:
-        g.custom_command('list', 'network_manager_active_config_list')
-
-    with self.command_group('network manager effective-config', network_effectiveconnectivityconfiguration, client_factory=cf_effectiveconnectivityconfiguration) as g:
-        g.custom_command('list', 'network_manager_effective_config_list')
-
-    with self.command_group('network manager active-security-admin-rule', network_activesecurityadminrule, client_factory=cf_activesecurityadminrule) as g:
-        g.custom_command('list', 'network_manager_active_security_admin_rule_list')
-
-    with self.command_group('network manager active-security-user-rule', network_activesecurityuserrule, client_factory=cf_activesecurityuserrule) as g:
-        g.custom_command('list', 'network_manager_active_security_user_rule_list')
+        g.custom_command('post-commit', 'network_manager_commit_post')
+        g.custom_command('list-deploy-status', 'network_manager_deploy_status_list')
+        g.custom_command('list-effect-vnet', 'network_manager_effect_vnet_list_by_network_manager')
+        g.custom_command('list-active-config', 'network_manager_active_config_list')
+        g.custom_command('list-effective-config', 'network_manager_effective_config_list')
+        g.custom_command('list-active-security-admin-rule', 'network_manager_active_security_admin_rule_list')
+        g.custom_command('list-active-security-user-rule', 'network_manager_active_security_user_rule_list')
 
     with self.command_group('network manager connect-config', network_connectivityconfiguration, client_factory=cf_connectivityconfiguration) as g:
         g.custom_command('list', 'network_manager_connect_config_list')
@@ -140,6 +125,7 @@ def load_command_table(self, _):
         g.custom_command('create', 'network_manager_group_create')
         g.generic_update_command('update', custom_func_name='network_manager_group_update')
         g.custom_command('delete', 'network_manager_group_delete', confirmation=True)
+        g.custom_command('list-effect-vnet', 'network_manager_effect_vnet_list_by_network_group')
 
     with self.command_group('network manager security-user-config', network_securityuserconfiguration, client_factory=cf_securityuserconfiguration) as g:
         g.custom_command('list', 'network_manager_security_user_config_list')

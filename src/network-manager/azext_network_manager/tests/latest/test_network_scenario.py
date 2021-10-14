@@ -134,11 +134,11 @@ class NetworkScenarioTest(ScenarioTest):
         self.cmd('network manager security-admin-config show --configuration-name {name} --network-manager-name {manager_name} -g {rg}')
 
         # test nm commit
-        # self.cmd('network manager commit post --network-manager-name {manager_name} --commit-type "SecurityAdmin" --target-locations "eastus2euap" -g {rg} '
+        # self.cmd('network manager post-commit --network-manager-name {manager_name} --commit-type "SecurityAdmin" --target-locations "eastus2euap" -g {rg} '
         #          '--configuration-ids {sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkManagers/{manager_name}/securityAdminConfigurations/{name}')
 
         # test nm uncommit
-        # self.cmd('network manager commit post --network-manager-name {manager_name} --commit-type "SecurityAdmin" --target-locations "eastus2euap" -g {rg} ')
+        # self.cmd('network manager post-commit --network-manager-name {manager_name} --commit-type "SecurityAdmin" --target-locations "eastus2euap" -g {rg} ')
 
         self.cmd('network manager security-admin-config delete --configuration-name {name} --network-manager-name {manager_name} -g {rg} --yes')
 
@@ -368,12 +368,12 @@ class NetworkScenarioTest(ScenarioTest):
                  '--conditional-membership "" --display-name ASampleGroup --member-type VirtualNetwork  -g {rg} '
                  '--group-members resource-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}" ')
 
-        self.cmd('network manager deploy-status list --network-manager-name {manager_name} --deployment-types "Connectivity" --regions "eastus2euap" --resource-group {rg}')
-        self.cmd('network manager effect-vnet list-by-network-group --network-group-name {group_name} --network-manager-name {manager_name} --resource-group {rg}')
+        self.cmd('network manager list-deploy-status --network-manager-name {manager_name} --deployment-types "Connectivity" --regions "eastus2euap" --resource-group {rg}')
+        self.cmd('network manager group list-effect-vnet --network-group-name {group_name} --network-manager-name {manager_name} --resource-group {rg}')
         # Internal Server Error
-        self.cmd('network manager effect-vnet list-by-network-manager --network-manager-name {manager_name} --resource-group {rg}')
-        self.cmd('network manager active-config list --network-manager-name {manager_name} --resource-group {rg}')
-        self.cmd('network manager effective-config list --virtual-network-name {virtual_network} -g {rg}')
-        self.cmd('network manager active-security-admin-rule list --network-manager-name {manager_name} -g {rg} --regions eastus2euap')
+        self.cmd('network manager list-effect-vnet --network-manager-name {manager_name} --resource-group {rg}')
+        self.cmd('network manager list-active-config --network-manager-name {manager_name} --resource-group {rg}')
+        self.cmd('network manager list-effective-config --virtual-network-name {virtual_network} -g {rg}')
+        self.cmd('network manager list-active-security-admin-rule --network-manager-name {manager_name} -g {rg} --regions eastus2euap')
         # Internal Server Error
-        # self.cmd('network manager active-security-user-rule list --network-manager-name {manager_name} -g {rg} --region eastus2euap')
+        # self.cmd('network manager list-active-security-user-rule --network-manager-name {manager_name} -g {rg} --region eastus2euap')
