@@ -9,511 +9,252 @@
 # --------------------------------------------------------------------------
 
 import os
-import unittest
-
-from azure_devtools.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import ScenarioTest
-from .. import try_manual
 from azure.cli.testsdk import ResourceGroupPreparer
+from azure.cli.testsdk import StorageAccountPreparer
+from azure_devtools.scenario_tests import AllowLargeResponse
+from .. import (
+    try_manual,
+    raise_if,
+    calc_coverage
+)
 
+from .example_steps import step_attached_database_configuration_create
+from .example_steps import step_attached_database_configuration_delete
+from .example_steps import step_attached_database_configuration_list
+from .example_steps import step_attached_database_configuration_show
+from .example_steps import step_cluster_add_language_extension
+from .example_steps import step_cluster_create
+from .example_steps import step_cluster_delete
+from .example_steps import step_cluster_detach_follower_database
+from .example_steps import step_cluster_diagnose_virtual_network
+from .example_steps import step_cluster_list
+from .example_steps import step_cluster_list_by_resource_group
+from .example_steps import step_cluster_list_follower_database
+from .example_steps import step_cluster_list_language_extension
+from .example_steps import step_cluster_list_outbound
+from .example_steps import step_cluster_list_sku
+from .example_steps import step_cluster_list_sku_by_resource_group
+from .example_steps import step_cluster_principal_assignment_create
+from .example_steps import step_cluster_principal_assignment_delete
+from .example_steps import step_cluster_principal_assignment_list
+from .example_steps import step_cluster_principal_assignment_show
+from .example_steps import step_cluster_remove_language_extension
+from .example_steps import step_cluster_show
+from .example_steps import step_cluster_start
+from .example_steps import step_cluster_stop
+from .example_steps import step_cluster_update
+from .example_steps import step_data_connection_delete
+from .example_steps import step_data_connection_event_hub_create
+from .example_steps import step_data_connection_event_hub_update
+from .example_steps import step_data_connection_list
+from .example_steps import step_data_connection_show
+from .example_steps import step_data_connection_validation
+from .example_steps import step_database_add_principal
+from .example_steps import step_database_create
+from .example_steps import step_database_delete
+from .example_steps import step_database_list
+from .example_steps import step_database_list_principal
+from .example_steps import step_database_principal_assignment_create
+from .example_steps import step_database_principal_assignment_delete
+from .example_steps import step_database_principal_assignment_list
+from .example_steps import step_database_principal_assignment_show
+from .example_steps import step_database_remove_principal
+from .example_steps import step_database_show
+from .example_steps import step_database_update
+from .example_steps import step_leader_cluster_create
+from .example_steps import step_managed_private_endpoint_create
+from .example_steps import step_managed_private_endpoint_delete
+from .example_steps import step_managed_private_endpoint_list
+from .example_steps import step_managed_private_endpoint_show
+from .example_steps import step_managed_private_endpoint_update
+from .example_steps import step_operation_result_show
+from .example_steps import step_private_endpoint_connection_create
+from .example_steps import step_private_endpoint_connection_delete
+from .example_steps import step_private_endpoint_connection_list
+from .example_steps import step_private_endpoint_connection_show
+from .example_steps import step_private_link_resource_list
+from .example_steps import step_private_link_resource_show
+from .example_steps import step_script_create
+from .example_steps import step_script_delete
+from .example_steps import step_script_list
+from .example_steps import step_script_show
+from .example_steps import step_script_update
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
-# EXAMPLE: kustoclusterscreateorupdate
+# Env setup_scenario
 @try_manual
-def step_kusto_clusters_create_or_update2(test, rg):
-
-    test.cmd('az kusto cluster create '
-             '--cluster-name "{Clusters_2}" '
-             '--type "SystemAssigned" '
-             '--location "southcentralus" '
-             '--enable-purge true '
-             '--enable-streaming-ingest true '
-             '--key-vault-properties key-name="" key-vault-uri="" key-version="" '
-             '--sku name="Standard_D11_v2" capacity=2 tier="Standard" '
-             '--resource-group "{rg}"',
-             checks=[])
-    test.cmd('az kusto cluster wait --created '
-             '--cluster-name "{Clusters_2}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: kustoclusterscreateorupdate
-@try_manual
-def step_kusto_clusters_create_or_update(test, rg):
-    test.cmd('az kusto cluster create '
-             '--cluster-name "{Clusters_3}" '
-             '--type "SystemAssigned" '
-             '--location "southcentralus" '
-             '--enable-purge true '
-             '--enable-streaming-ingest true '
-             '--key-vault-properties key-name="" key-vault-uri="" key-version="" '
-             '--sku name="Standard_D11_v2" capacity=2 tier="Standard" '
-             '--resource-group "{rg}"',
-             checks=[])
-    test.cmd('az kusto cluster wait --created '
-             '--cluster-name "{Clusters_3}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: kustoclusterschecknameavailability
-@try_manual
-def step_kusto_clusters_check_name_availability(test, rg):
-    # EXAMPLE NOT FOUND!
+def setup_scenario(test):
     pass
 
 
-# EXAMPLE: kustoclustersget
+# Env cleanup_scenario
 @try_manual
-def step_kusto_clusters_get(test, rg):
-    test.cmd('az kusto cluster show '
-             '--cluster-name "{Clusters_3}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: kustoclusterslist
-@try_manual
-def step_kusto_clusters_list(test, rg):
-    test.cmd('az kusto cluster list',
-             checks=[])
-
-
-# EXAMPLE: kustoclusterslistbyresourcegroup
-@try_manual
-def step_kusto_clusters_list_by_resource_group(test, rg):
-    test.cmd('az kusto cluster list '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: kustoclustersstop
-@try_manual
-def step_kusto_clusters_stop(test, rg):
-    test.cmd('az kusto cluster stop '
-             '--cluster-name "{Clusters_3}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: kustoclustersstart
-@try_manual
-def step_kusto_clusters_start(test, rg):
-    test.cmd('az kusto cluster start '
-             '--cluster-name "{Clusters_3}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: kustoclusterslistresourceskus
-@try_manual
-def step_kusto_clusters_list_resource_skus(test, rg):
-    test.cmd('az kusto cluster list-sku '
-             '--cluster-name "{Clusters_3}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: kustoclusterslistskus
-@try_manual
-def step_kusto_clusters_list_skus(test, rg):
-
-    test.cmd('az kusto cluster list-sku',
-             checks=[])
-
-
-# EXAMPLE: kustodatabasescreateorupdate
-@try_manual
-def step_kusto_databases_create_or_update(test, rg):
-    test.cmd('az kusto database create '
-             '--cluster-name "{Clusters_3}" '
-             '--database-name "KustoDatabase8" '
-             '--read-write-database location="southcentralus" soft-delete-period="P1D" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: kustodatabasechecknameavailability
-@try_manual
-def step_kusto_database_check_name_availability(test, rg):
-    # EXAMPLE NOT FOUND!
+def cleanup_scenario(test):
     pass
 
 
-# EXAMPLE: kustodatabaseslistbycluster
+# Testcase: Scenario
 @try_manual
-def step_kusto_databases_list_by_cluster(test, rg):
-    test.cmd('az kusto database list '
-             '--cluster-name "{Clusters_3}" '
-             '--resource-group "{rg}"',
-             checks=[])
+def call_scenario(test):
+    setup_scenario(test)
+    # Create 
+    step_cluster_create(test, checks=[
+        test.check("name", "{myCluster}", case_sensitive=False),
+        test.check("identity.type", "SystemAssigned", case_sensitive=False),
+        test.check("location", "westus2", case_sensitive=False),
+        test.check("enableAutoStop", True),
+        test.check("enableDoubleEncryption", False),
+        test.check("enablePurge", True),
+        test.check("enableStreamingIngest", True),
+        test.check("publicNetworkAccess", "Enabled", case_sensitive=False),
+        test.check("sku.name", "Standard_D11_v2", case_sensitive=False),
+        test.check("sku.capacity", 2),
+        test.check("sku.tier", "Standard", case_sensitive=False),
+    ])
+    step_cluster_principal_assignment_create(test, checks=[])
+    step_leader_cluster_create(test, checks=[])
+    step_database_create(test, checks=[])
+    step_database_principal_assignment_create(test, checks=[])
+    step_database_add_principal(test, checks=[])
+    step_attached_database_configuration_create(test, checks=[])
+    step_data_connection_event_hub_create(test, checks=[])
+    step_script_create(test, checks=[])
+    step_managed_private_endpoint_create(test, checks=[])
+    step_cluster_add_language_extension(test, checks=[])
+    step_private_endpoint_connection_create(test, checks=[])
+    # Show / List
+    step_cluster_show(test, checks=[
+        test.check("name", "{myCluster}", case_sensitive=False),
+        test.check("identity.type", "SystemAssigned", case_sensitive=False),
+        test.check("location", "West US 2", case_sensitive=False),
+        test.check("enableAutoStop", True),
+        test.check("enableStreamingIngest", True),
+        test.check("publicNetworkAccess", "Enabled", case_sensitive=False),
+        test.check("sku.name", "Standard_D11_v2", case_sensitive=False),
+        test.check("sku.capacity", 2),
+        test.check("sku.tier", "Standard", case_sensitive=False),
+    ])
+    step_cluster_principal_assignment_show(test, checks=[])
+    step_database_show(test, checks=[])
+    step_script_show(test, checks=[])
+    step_database_principal_assignment_show(test, checks=[])
+    step_attached_database_configuration_show(test, checks=[
+        test.check("location", "West US 2", case_sensitive=False),
+        test.check("defaultPrincipalsModificationKind", "Union", case_sensitive=False),
+        test.check("tableLevelSharingProperties.externalTablesToExclude[0]", "ExternalTable2", case_sensitive=False),
+        test.check("tableLevelSharingProperties.externalTablesToInclude[0]", "ExternalTable1", case_sensitive=False),
+        test.check("tableLevelSharingProperties.materializedViewsToExclude[0]", "MaterializedViewTable2", case_sensitive=False),
+        test.check("tableLevelSharingProperties.materializedViewsToInclude[0]", "MaterializedViewTable1", case_sensitive=False),
+        test.check("tableLevelSharingProperties.tablesToExclude[0]", "Table2", case_sensitive=False),
+        test.check("tableLevelSharingProperties.tablesToInclude[0]", "Table1", case_sensitive=False),
+    ])
+    step_data_connection_show(test, checks=[
+        test.check("location", "West US 2", case_sensitive=False),
+        test.check("eventHubResourceId", "/subscriptions/{subscription_id}/resourceGroups/testrg/providers/Microsoft.EventHub/namespaces/testcli/eventhubs/eventhubTest1", case_sensitive=False)
+    ])
+    step_managed_private_endpoint_show(test, checks=[])
+    step_private_endpoint_connection_show(test, checks=[])
+    step_private_link_resource_show(test, checks=[])
+    step_cluster_list(test, checks=[])
+    step_cluster_list_by_resource_group(test, checks=[
+        test.check('length(@)', 2),
+    ])
+    step_cluster_principal_assignment_list(test, checks=[])
+    step_script_list(test, checks=[
+        test.check('length(@)', 1),
+    ])
+    step_cluster_list_sku(test, checks=[])
+    step_cluster_list_sku_by_resource_group(test, checks=[])
+    step_cluster_list_language_extension(test, checks=[
+        test.check('length(@)', 2),
+    ])
+    step_database_list(test, checks=[
+        test.check('length(@)', 1),
+    ])
+    step_cluster_list_follower_database(test, checks=[
+        test.check('length(@)', 1),
+    ])
+    step_database_principal_assignment_list(test, checks=[])
+    step_database_list_principal(test, checks=[
+            test.check('length(@)', 3),
+    ])
+    step_attached_database_configuration_list(test, checks=[
+        test.check('length(@)', 1),
+    ])
+    step_data_connection_list(test, checks=[
+        test.check('length(@)', 1),
+    ])
+    step_managed_private_endpoint_list(test, checks=[])
+    step_cluster_diagnose_virtual_network(test, checks=[])
+    step_cluster_list_outbound(test, checks=[])
+    step_private_endpoint_connection_list(test, checks=[])
+    step_private_link_resource_list(test, checks=[
+        test.check('length(@)', 1),
+    ])
+    ####################step_operation_result_show(test, checks=[])
+    # Update + validation
+    step_data_connection_event_hub_update(test, checks=[])
+    step_managed_private_endpoint_update(test, checks=[])
+    step_data_connection_validation(test, checks=[])
+    step_script_update(test, checks=[])
+    step_database_update(test, checks=[])
+    step_cluster_stop(test, checks=[])
+    step_cluster_start(test, checks=[])
+    step_cluster_update(test, checks=[
+        test.check("name", "{myCluster1}", case_sensitive=False),
+        test.check("identity.type", "SystemAssigned", case_sensitive=False),
+        test.check("location", "West US 2", case_sensitive=False),
+        test.check("enableAutoStop", True),
+        test.check("enablePurge", True),
+        test.check("enableStreamingIngest", True),
+        test.check("engineType", "V3", case_sensitive=False),
+        test.check("restrictOutboundNetworkAccess", "Disabled", case_sensitive=False),
+    ])
+    # Remove  
+    step_cluster_remove_language_extension(test, checks=[])
+    step_managed_private_endpoint_delete(test, checks=[])
+    step_private_endpoint_connection_delete(test, checks=[])
+    step_script_delete(test, checks=[])
+    step_database_principal_assignment_delete(test, checks=[])
+    step_cluster_principal_assignment_delete(test, checks=[])
+    step_database_remove_principal(test, checks=[])
+    step_cluster_detach_follower_database(test, checks=[])
+    step_attached_database_configuration_delete(test, checks=[])
+    step_data_connection_delete(test, checks=[])
+    step_database_delete(test, checks=[])
+    step_cluster_delete(test, checks=[])
+    # Cleanup
+    cleanup_scenario(test)
 
 
-# EXAMPLE: kustodatabasesget
+# Test class for Scenario
 @try_manual
-def step_kusto_databases_get(test, rg):
-    test.cmd('az kusto database show '
-             '--database-name "KustoDatabase8" '
-             '--cluster-name "{Clusters_3}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: kustodatabasesupdate
-@try_manual
-def step_kusto_databases_update(test, rg):
-    test.cmd('az kusto database update '
-             '--cluster-name "{Clusters_3}" '
-             '--database-name "KustoDatabase8" '
-             '--read-write-database soft-delete-period="P1D" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: kustodatabaseprincipalassignmentscreateorupdate
-@try_manual
-def step_kusto_database_principal_assignments_create_or_update(test, rg):
-    test.cmd('az kusto database-principal-assignment create '
-             '--cluster-name "{Clusters_3}" '
-             '--database-name "Kustodatabase8" '
-             '--principal-id "d9a1f322-1293-4595-91e3-f54f8bb34725" '
-             '--principal-type "App" '
-             '--role "Admin" '
-             '--tenant-id "33e01921-4d64-4f8c-a055-5bdaffd5e33d" '
-             '--principal-assignment-name "kustoprincipal1" '
-             '--resource-group "{rg}"',
-             checks=[])
-    test.cmd('az kusto database-principal-assignment wait --created '
-             '--cluster-name "{Clusters_3}" '
-             '--database-name "Kustodatabase8" '
-             '--principal-assignment-name "kustoprincipal1" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: kustodatabaselistprincipals
-@try_manual
-def step_kusto_database_list_principals(test, rg):
-    test.cmd('az kusto database list-principal '
-             '--cluster-name "{Clusters_3}" '
-             '--database-name "Kustodatabase8" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: kustodatabaseprincipalassignmentsget
-@try_manual
-def step_kusto_database_principal_assignments_get(test, rg):
-    test.cmd('az kusto database-principal-assignment show '
-             '--cluster-name "{Clusters_3}" '
-             '--database-name "Kustodatabase8" '
-             '--principal-assignment-name "kustoprincipal1" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: kustodatabaseprincipalassignmentsdelete
-@try_manual
-def step_kusto_database_principal_assignments_delete(test, rg):
-    test.cmd('az kusto database-principal-assignment delete -y '
-             '--cluster-name "{Clusters_3}" '
-             '--database-name "Kustodatabase8" '
-             '--principal-assignment-name "kustoprincipal1" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: kustoclusterprincipalassignmentscreateorupdate
-@try_manual
-def step_kusto_cluster_principal_assignments_create_or_update(test, rg):
-    test.cmd('az kusto cluster-principal-assignment create '
-             '--cluster-name "{Clusters_3}" '
-             '--principal-id "d9a1f322-1293-4595-91e3-f54f8bb34725" '
-             '--principal-type "App" '
-             '--role "AllDatabasesViewer" '
-             '--tenant-id "33e01921-4d64-4f8c-a055-5bdaffd5e33d" '
-             '--principal-assignment-name "kustoprincipal1" '
-             '--resource-group "{rg}"',
-             checks=[])
-    test.cmd('az kusto cluster-principal-assignment wait --created '
-             '--principal-assignment-name "kustoprincipal1" '
-             '--cluster-name "{Clusters_3}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: kustoclusterprincipalassignmentsget
-@try_manual
-def step_kusto_cluster_principal_assignments_get(test, rg):
-    test.cmd('az kusto cluster-principal-assignment show '
-             '--cluster-name "{Clusters_3}" '
-             '--principal-assignment-name "kustoprincipal1" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: attacheddatabaseconfigurationscreateorupdate
-@try_manual
-def step_attached_database_configuration_create(test, rg):
-    test.cmd('az kusto attached-database-configuration create '
-             '--attached-database-configuration-name "{attachedDatabaseConfigurations_1}" '
-             '--cluster-name "{Clusters_2}" '
-             '--location "southcentralus" '
-             '--cluster-resource-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Kusto/Clu'
-             'sters/{Clusters_3}" '
-             '--database-name "Kustodatabase8" '
-             '--default-principals-modification-kind "Union" '
-             '--table-level-sharing-properties external-tables-to-exclude="ExternalTable2" '
-             '--resource-group "{rg}"',
-             checks=[])
-    test.cmd('az kusto attached-database-configuration wait --created '
-             '--cluster-name "{Clusters_2}" '
-             '--attached-database-configuration-name "{attachedDatabaseConfigurations_1}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: attacheddatabaseconfigurationsget
-@try_manual
-def step_attached_database_configurations_get(test, rg):
-    test.cmd('az kusto attached-database-configuration show '
-             '--attached-database-configuration-name "{attachedDatabaseConfigurations_1}" '
-             '--cluster-name "{Clusters_2}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: kustoattacheddatabaseconfigurationslistbycluster
-@try_manual
-def step_kusto_attached_database_configurations_list_by_cluster(test, rg):
-    test.cmd('az kusto attached-database-configuration list '
-             '--cluster-name "{Clusters_3}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: kustoclusterlistfollowerdatabases
-@try_manual
-def step_kusto_cluster_list_follower_databases(test, rg):
-    test.cmd('az kusto cluster list-follower-database '
-             '--cluster-name "{Clusters_3}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: kustoclusterdetachfollowerdatabases
-@try_manual
-def step_kusto_cluster_detach_follower_databases(test, rg):
-    test.cmd('az kusto cluster detach-follower-database '
-             '--cluster-name "{Clusters_3}" '
-             '--attached-database-configuration-name "{attachedDatabaseConfigurations_1}" '
-             '--cluster-resource-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Kusto/clu'
-             'sters/{Clusters_2}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: kustooperationslist
-@try_manual
-def step_kusto_operations_list(test, rg):
-    # EXAMPLE NOT FOUND!
-    pass
-
-
-# EXAMPLE: kustodatabasesdelete
-@try_manual
-def step_kusto_databases_delete(test, rg):
-    test.cmd('az kusto database delete -y '
-             '--cluster-name "{Clusters_3}" '
-             '--database-name "KustoDatabase8" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: kustoclustersdelete
-@try_manual
-def step_kusto_clusters_delete(test, rg):
-    test.cmd('az kusto cluster delete -y '
-             '--cluster-name "{Clusters_3}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: KustoDataConnectionValidation
-@try_manual
-def step_kusto_data_connection_validation(test, rg):
-    test.cmd('az kusto data-connection event-hub data-connection-validation '
-             '--cluster-name "{Clusters_3}" '
-             '--database-name "KustoDatabase8" '
-             '--data-connection-name "{DataConnections8}" '
-             '--consumer-group "$Default" '
-             '--event-hub-resource-id "{eventhub_resource_id}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: KustoDataConnectionsCreateOrUpdate
-@try_manual
-def step_kusto_data_connections_create_or_update(test, rg):
-    test.cmd('az kusto data-connection event-hub create '
-             '--cluster-name "{Clusters_3}" '
-             '--data-connection-name "{DataConnections8}" '
-             '--database-name "KustoDatabase8" '
-             '--location "southcentralus" '
-             '--consumer-group "$Default" '
-             '--event-hub-resource-id "{eventhub_resource_id}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: KustoDataConnectionsGet
-@try_manual
-def step_kusto_data_connections_get(test, rg):
-    test.cmd('az kusto data-connection show '
-             '--cluster-name "{Clusters_3}" '
-             '--data-connection-name "{DataConnections8}" '
-             '--database-name "KustoDatabase8" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: KustoDataConnectionsUpdate
-@try_manual
-def step_kusto_data_connections_update(test, rg):
-    test.cmd('az kusto data-connection event-hub update '
-             '--cluster-name "{Clusters_3}" '
-             '--data-connection-name "{DataConnections8}" '
-             '--database-name "KustoDatabase8" '
-             '--location "southcentralus" '
-             '--consumer-group "$Default" '
-             '--event-hub-resource-id "{eventhub_resource_id}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: KustoDataConnectionsDelete
-@try_manual
-def step_kusto_data_connections_delete(test, rg):
-    test.cmd('az kusto data-connection delete -y '
-             '--cluster-name "{Clusters_3}" '
-             '--data-connection-name "{DataConnections8}" '
-             '--database-name "KustoDatabase8" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /Scripts/put/KustoScriptsCreateOrUpdate
-@try_manual
-def step_script_create(test, rg):
-    test.cmd('az kusto script create '
-             '--cluster-name "blablab123" '
-             '--database-name "test00" '
-             '--continue-on-errors true '
-             '--script-url "https://testclients.blob.core.windows.net/testclientscontainer/script.txt" '
-             '--script-url-sas-token "{sas}" '
-             '--resource-group "testgroupyefkpv" '
-             '--name "testscript"',
-             checks=[])
-
-
-# EXAMPLE: /Scripts/get/KustoScriptsGet
-@try_manual
-def step_script_show(test, rg, checks=None):
-    test.cmd('az kusto script show '
-             '--cluster-name "blablab123" '
-             '--database-name "test00" '
-             '--resource-group "testgroupyefkpv" '
-             '--name "testscript"',
-             checks=[])
-
-
-# EXAMPLE: /Scripts/get/KustoScriptsList
-@try_manual
-def step_script_list(test, rg, checks=None):
-    test.cmd('az kusto script list '
-             '--cluster-name "blablab123" '
-             '--database-name "test00" '
-             '--resource-group "testgroupyefkpv"',
-             checks=[])
-
-
-def kusto_manual_setup(test):
-
-    # Get sas-token for 'script' resource tests.
-    # Please update the '--expiry' with the relevant date
-    sas = test.cmd(
-        'storage blob generate-sas -n script --account-name testclients -c testclientscontainer --permissions r --expiry 2021-05-18 --start 2021-05-08 --auth-mode login --as-user').output.strip()
-
-    # Set parameters for tests.
-    test.kwargs.update({
-        'Clusters_2': 'clitestcluster0f327',
-        'Clusters_3': 'clitestcluster327',
-        'attachedDatabaseConfigurations_1': 'attachedDatabaseConfigurations2',
-        'DataConnections8': 'DataConnections8',
-        'eventhub_name': 'kustoclitesteh',
-        'eventhub_namespace': 'ADX-EG-astauben',
-        'eventhub_resource_id': '/subscriptions/fbccad30-f0ed-4ac4-9497-93bf6141062f/resourceGroups/astauben-tests/providers/Microsoft.EventHub/namespaces/ADX-EG-astauben/eventhubs/kustoclitesteh',
-        'sas': sas
-    })
-
-
-@try_manual
-def call_scenario(test, rg):
-
-    # Set manual data for tests.
-    kusto_manual_setup(test)
-    step_script_create(test, rg)
-    step_kusto_clusters_create_or_update(test, rg)
-    step_kusto_databases_create_or_update(test, rg)
-    step_kusto_clusters_create_or_update2(test, rg)
-    step_attached_database_configuration_create(test, rg)
-    step_attached_database_configurations_get(test, rg)
-    step_kusto_clusters_check_name_availability(test, rg)
-    step_kusto_clusters_get(test, rg)
-    step_kusto_clusters_list(test, rg)
-    step_kusto_clusters_list_by_resource_group(test, rg)
-    step_kusto_clusters_list_resource_skus(test, rg)
-    step_kusto_clusters_list_skus(test, rg)
-    step_kusto_databases_create_or_update(test, rg)
-    step_kusto_database_check_name_availability(test, rg)
-    step_kusto_databases_list_by_cluster(test, rg)
-    step_kusto_databases_get(test, rg)
-    step_kusto_databases_update(test, rg)
-    step_kusto_database_principal_assignments_create_or_update(test, rg)
-    step_kusto_database_list_principals(test, rg)
-    step_kusto_database_principal_assignments_get(test, rg)
-    step_kusto_database_principal_assignments_delete(test, rg)
-    step_kusto_cluster_principal_assignments_create_or_update(test, rg)
-    step_kusto_cluster_principal_assignments_get(test, rg)
-    step_kusto_attached_database_configurations_list_by_cluster(test, rg)
-    step_kusto_cluster_list_follower_databases(test, rg)
-    step_kusto_cluster_detach_follower_databases(test, rg)
-    step_kusto_data_connection_validation(test, rg)
-    step_kusto_data_connections_create_or_update(test, rg)
-    step_kusto_data_connections_get(test, rg)
-    step_kusto_data_connections_update(test, rg)
-    step_kusto_data_connections_delete(test, rg)
-    step_kusto_operations_list(test, rg)
-    step_script_create(test, rg)
-    step_script_show(test, rg)
-    step_script_list(test, rg)
-    step_kusto_databases_delete(test, rg)
-    step_kusto_clusters_delete(test, rg)
-
-
-@try_manual
-class KustoManagementClientScenarioTest(ScenarioTest):
-
-    @AllowLargeResponse(size_kb=5000)
-    @ResourceGroupPreparer(name_prefix='clitestkusto_kustorptest'[:7], key='rg', parameter_name='rg')
-    def test_kusto(self, rg):
-
+class KustoScenarioTest(ScenarioTest):
+    
+    def __init__(self, *args, **kwargs):
+        super(KustoScenarioTest, self).__init__(*args, **kwargs)
         self.kwargs.update({
             'subscription_id': self.get_subscription_id()
         })
-        
-        # TODO: Fix it ASAP
-        # call_scenario(self, rg)
+
+        self.kwargs.update({
+            'myCluster': 'kustoclusterclitest7',
+            'myScript': 'kustoScript2',
+            'myCluster1': 'KustoClusterLeader7',
+            'myDataConnection': 'DataConnection3',
+            'myAttachedDatabaseConfiguration': 'myAttachedDatabaseConfiguration',
+            'myManagedPrivateEndpoint': 'kustoManagedPrivateEndpoint4',
+            'myPrivateEndpoint': 'kustoPrivateEndpoint4',
+            'myPrivateLinkResource': 'privateLinkResource'
+        })
+
+    @AllowLargeResponse(size_kb=5000)
+    @ResourceGroupPreparer(name_prefix='clitestkusto_kustorptest'[:7], key='rg', parameter_name='rg')
+    @StorageAccountPreparer(name_prefix='clitestkusto_storageAccountTest'[:7], key='sa', resource_group_parameter_name='rg')
+    def test_kusto_Scenario(self, rg):
+        call_scenario(self)
+        calc_coverage(__file__)
+        raise_if()

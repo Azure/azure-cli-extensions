@@ -27,11 +27,13 @@ from azext_kusto.action import (
     AddOptimizedAutoscale,
     AddVirtualNetworkConfiguration,
     AddKeyVaultProperties,
+    AddAcceptedAudiences,
     AddClustersValue,
     AddReadWriteDatabase,
     AddReadOnlyFollowingDatabase,
     AddDatabasesValue,
-    AddTableLevelSharingProperties
+    AddTableLevelSharingProperties,
+    AddPrivateLinkServiceConnectionState
 )
 
 
@@ -75,18 +77,31 @@ def load_arguments(self, _):
                    'operations are enabled.')
         c.argument('enable_double_encryption', arg_type=get_three_state_flag(), help='A boolean value that indicates '
                    'if double encryption is enabled.')
+        c.argument('public_network_access', arg_type=get_enum_type(['Enabled', 'Disabled']), help='Public network '
+                   'access to the cluster is enabled by default. When disabled, only private endpoint connection to '
+                   'the cluster is allowed')
+        c.argument('allowed_ip_range_list', nargs='+', help='The list of ips in the format of CIDR allowed to connect '
+                   'to the cluster.')
         c.argument('engine_type', arg_type=get_enum_type(['V2', 'V3']), help='The engine type')
+        c.argument('accepted_audiences', action=AddAcceptedAudiences, nargs='+', help='The cluster\'s accepted '
+                   'audiences.')
+        c.argument('enable_auto_stop', arg_type=get_three_state_flag(), help='A boolean value that indicates if the '
+                   'cluster could be automatically stopped (due to lack of data or no activity for many days).')
+        c.argument('restrict_outbound_network_access', arg_type=get_enum_type(['Enabled', 'Disabled']), help='Whether '
+                   'or not to restrict outbound network access.  Value is optional but if passed in, must be '
+                   '\'Enabled\' or \'Disabled\'')
+        c.argument('allowed_fqdn_list', nargs='+', help='List of allowed FQDNs(Fully Qualified Domain Name) for egress '
+                   'from Cluster.')
         c.argument('type_', options_list=['--type'], arg_type=get_enum_type(['None', 'SystemAssigned', 'UserAssigned',
                                                                              'SystemAssigned, UserAssigned']),
                    help='The type of managed identity used. The type \'SystemAssigned, UserAssigned\' includes both an '
                    'implicitly created identity and a set of user-assigned identities. The type \'None\' will remove '
                    'all identities.', arg_group='Identity')
-        c.argument('user_assigned_identities', options_list=['--user-assigned-identities', '--uai'],
-                   type=validate_file_or_dict, help='The list of user identities associated with the Kusto cluster. '
-                   'The user identity dictionary key references will be ARM resource ids in the form: '
-                   '\'/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIde'
-                   'ntity/userAssignedIdentities/{identityName}\'. Expected value: json-string/@json-file.',
-                   arg_group='Identity')
+        c.argument('user_assigned_identities', type=validate_file_or_dict, help='The list of user identities '
+                   'associated with the Kusto cluster. The user identity dictionary key references will be ARM '
+                   'resource ids in the form: \'/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/prov'
+                   'iders/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}\'. Expected value: '
+                   'json-string/json-file/@json-file.', arg_group='Identity')
 
     with self.argument_context('kusto cluster update') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -115,18 +130,31 @@ def load_arguments(self, _):
                    'operations are enabled.')
         c.argument('enable_double_encryption', arg_type=get_three_state_flag(), help='A boolean value that indicates '
                    'if double encryption is enabled.')
+        c.argument('public_network_access', arg_type=get_enum_type(['Enabled', 'Disabled']), help='Public network '
+                   'access to the cluster is enabled by default. When disabled, only private endpoint connection to '
+                   'the cluster is allowed')
+        c.argument('allowed_ip_range_list', nargs='+', help='The list of ips in the format of CIDR allowed to connect '
+                   'to the cluster.')
         c.argument('engine_type', arg_type=get_enum_type(['V2', 'V3']), help='The engine type')
+        c.argument('accepted_audiences', action=AddAcceptedAudiences, nargs='+', help='The cluster\'s accepted '
+                   'audiences.')
+        c.argument('enable_auto_stop', arg_type=get_three_state_flag(), help='A boolean value that indicates if the '
+                   'cluster could be automatically stopped (due to lack of data or no activity for many days).')
+        c.argument('restrict_outbound_network_access', arg_type=get_enum_type(['Enabled', 'Disabled']), help='Whether '
+                   'or not to restrict outbound network access.  Value is optional but if passed in, must be '
+                   '\'Enabled\' or \'Disabled\'')
+        c.argument('allowed_fqdn_list', nargs='+', help='List of allowed FQDNs(Fully Qualified Domain Name) for egress '
+                   'from Cluster.')
         c.argument('type_', options_list=['--type'], arg_type=get_enum_type(['None', 'SystemAssigned', 'UserAssigned',
                                                                              'SystemAssigned, UserAssigned']),
                    help='The type of managed identity used. The type \'SystemAssigned, UserAssigned\' includes both an '
                    'implicitly created identity and a set of user-assigned identities. The type \'None\' will remove '
                    'all identities.', arg_group='Identity')
-        c.argument('user_assigned_identities', options_list=['--user-assigned-identities', '--uai'],
-                   type=validate_file_or_dict, help='The list of user identities associated with the Kusto cluster. '
-                   'The user identity dictionary key references will be ARM resource ids in the form: '
-                   '\'/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIde'
-                   'ntity/userAssignedIdentities/{identityName}\'. Expected value: json-string/@json-file.',
-                   arg_group='Identity')
+        c.argument('user_assigned_identities', type=validate_file_or_dict, help='The list of user identities '
+                   'associated with the Kusto cluster. The user identity dictionary key references will be ARM '
+                   'resource ids in the form: \'/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/prov'
+                   'iders/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}\'. Expected value: '
+                   'json-string/json-file/@json-file.', arg_group='Identity')
 
     with self.argument_context('kusto cluster delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -159,6 +187,11 @@ def load_arguments(self, _):
                    'Kusto cluster.')
 
     with self.argument_context('kusto cluster list-language-extension') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('cluster_name', options_list=['--name', '-n', '--cluster-name'], type=str, help='The name of the '
+                   'Kusto cluster.')
+
+    with self.argument_context('kusto cluster list-outbound-network-dependency-endpoint') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', options_list=['--name', '-n', '--cluster-name'], type=str, help='The name of the '
                    'Kusto cluster.')
@@ -295,6 +328,112 @@ def load_arguments(self, _):
         c.argument('database_name', type=str, help='The name of the database in the Kusto cluster.',
                    id_part='child_name_1')
 
+    with self.argument_context('kusto attached-database-configuration list') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('cluster_name', type=str, help='The name of the Kusto cluster.')
+
+    with self.argument_context('kusto attached-database-configuration show') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('cluster_name', type=str, help='The name of the Kusto cluster.', id_part='name')
+        c.argument('attached_database_configuration_name', options_list=['--name', '-n',
+                                                                         '--attached-database-configuration-name'],
+                   type=str, help='The name of the attached database configuration.', id_part='child_name_1')
+
+    with self.argument_context('kusto attached-database-configuration create') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('cluster_name', type=str, help='The name of the Kusto cluster.')
+        c.argument('attached_database_configuration_name', options_list=['--name', '-n',
+                                                                         '--attached-database-configuration-name'],
+                   type=str, help='The name of the attached database configuration.')
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
+                   validator=get_default_location_from_resource_group)
+        c.argument('database_name', type=str, help='The name of the database which you would like to attach, use * if '
+                   'you want to follow all current and future databases.')
+        c.argument('cluster_resource_id', type=str, help='The resource id of the cluster where the databases you would '
+                   'like to attach reside.')
+        c.argument('default_principals_modification_kind', arg_type=get_enum_type(['Union', 'Replace', 'None']),
+                   help='The default principals modification kind')
+        c.argument('table_level_sharing_properties', action=AddTableLevelSharingProperties, nargs='+', help='Table '
+                   'level sharing specifications')
+
+    with self.argument_context('kusto attached-database-configuration update') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('cluster_name', type=str, help='The name of the Kusto cluster.', id_part='name')
+        c.argument('attached_database_configuration_name', options_list=['--name', '-n',
+                                                                         '--attached-database-configuration-name'],
+                   type=str, help='The name of the attached database configuration.', id_part='child_name_1')
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
+                   validator=get_default_location_from_resource_group)
+        c.argument('database_name', type=str, help='The name of the database which you would like to attach, use * if '
+                   'you want to follow all current and future databases.')
+        c.argument('cluster_resource_id', type=str, help='The resource id of the cluster where the databases you would '
+                   'like to attach reside.')
+        c.argument('default_principals_modification_kind', arg_type=get_enum_type(['Union', 'Replace', 'None']),
+                   help='The default principals modification kind')
+        c.argument('table_level_sharing_properties', action=AddTableLevelSharingProperties, nargs='+', help='Table '
+                   'level sharing specifications')
+        c.ignore('parameters')
+
+    with self.argument_context('kusto attached-database-configuration delete') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('cluster_name', type=str, help='The name of the Kusto cluster.', id_part='name')
+        c.argument('attached_database_configuration_name', options_list=['--name', '-n',
+                                                                         '--attached-database-configuration-name'],
+                   type=str, help='The name of the attached database configuration.', id_part='child_name_1')
+
+    with self.argument_context('kusto attached-database-configuration wait') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('cluster_name', type=str, help='The name of the Kusto cluster.', id_part='name')
+        c.argument('attached_database_configuration_name', options_list=['--name', '-n',
+                                                                         '--attached-database-configuration-name'],
+                   type=str, help='The name of the attached database configuration.', id_part='child_name_1')
+
+    with self.argument_context('kusto managed-private-endpoint list') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('cluster_name', type=str, help='The name of the Kusto cluster.')
+
+    with self.argument_context('kusto managed-private-endpoint show') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('cluster_name', type=str, help='The name of the Kusto cluster.', id_part='name')
+        c.argument('managed_private_endpoint_name', options_list=['--name', '-n', '--managed-private-endpoint-name'],
+                   type=str, help='The name of the managed private endpoint.', id_part='child_name_1')
+
+    with self.argument_context('kusto managed-private-endpoint create') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('cluster_name', type=str, help='The name of the Kusto cluster.')
+        c.argument('managed_private_endpoint_name', options_list=['--name', '-n', '--managed-private-endpoint-name'],
+                   type=str, help='The name of the managed private endpoint.')
+        c.argument('private_link_resource_id', type=str, help='The ARM resource ID of the resource for which the '
+                   'managed private endpoint is created.')
+        c.argument('private_link_resource_region', type=str, help='The region of the resource to which the managed '
+                   'private endpoint is created.')
+        c.argument('group_id', type=str, help='The groupId in which the managed private endpoint is created.')
+        c.argument('request_message', type=str, help='The user request message.')
+
+    with self.argument_context('kusto managed-private-endpoint update') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('cluster_name', type=str, help='The name of the Kusto cluster.', id_part='name')
+        c.argument('managed_private_endpoint_name', options_list=['--name', '-n', '--managed-private-endpoint-name'],
+                   type=str, help='The name of the managed private endpoint.', id_part='child_name_1')
+        c.argument('private_link_resource_id', type=str, help='The ARM resource ID of the resource for which the '
+                   'managed private endpoint is created.')
+        c.argument('private_link_resource_region', type=str, help='The region of the resource to which the managed '
+                   'private endpoint is created.')
+        c.argument('group_id', type=str, help='The groupId in which the managed private endpoint is created.')
+        c.argument('request_message', type=str, help='The user request message.')
+
+    with self.argument_context('kusto managed-private-endpoint delete') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('cluster_name', type=str, help='The name of the Kusto cluster.', id_part='name')
+        c.argument('managed_private_endpoint_name', options_list=['--name', '-n', '--managed-private-endpoint-name'],
+                   type=str, help='The name of the managed private endpoint.', id_part='child_name_1')
+
+    with self.argument_context('kusto managed-private-endpoint wait') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('cluster_name', type=str, help='The name of the Kusto cluster.', id_part='name')
+        c.argument('managed_private_endpoint_name', options_list=['--name', '-n', '--managed-private-endpoint-name'],
+                   type=str, help='The name of the managed private endpoint.', id_part='child_name_1')
+
     with self.argument_context('kusto database-principal-assignment list') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', type=str, help='The name of the Kusto cluster.')
@@ -405,65 +544,59 @@ def load_arguments(self, _):
         c.argument('script_name', options_list=['--name', '-n', '--script-name'], type=str, help='The name of the '
                    'Kusto database script.', id_part='child_name_2')
 
-    with self.argument_context('kusto attached-database-configuration list') as c:
+    with self.argument_context('kusto private-endpoint-connection list') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', type=str, help='The name of the Kusto cluster.')
 
-    with self.argument_context('kusto attached-database-configuration show') as c:
+    with self.argument_context('kusto private-endpoint-connection show') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', type=str, help='The name of the Kusto cluster.', id_part='name')
-        c.argument('attached_database_configuration_name', options_list=['--name', '-n',
-                                                                         '--attached-database-configuration-name'],
-                   type=str, help='The name of the attached database configuration.', id_part='child_name_1')
+        c.argument('private_endpoint_connection_name', options_list=['--name', '-n', '--private-endpoint-connection-nam'
+                                                                     'e'], type=str, help='The name of the private '
+                   'endpoint connection.', id_part='child_name_1')
 
-    with self.argument_context('kusto attached-database-configuration create') as c:
+    with self.argument_context('kusto private-endpoint-connection create') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', type=str, help='The name of the Kusto cluster.')
-        c.argument('attached_database_configuration_name', options_list=['--name', '-n',
-                                                                         '--attached-database-configuration-name'],
-                   type=str, help='The name of the attached database configuration.')
-        c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
-                   validator=get_default_location_from_resource_group)
-        c.argument('database_name', type=str, help='The name of the database which you would like to attach, use * if '
-                   'you want to follow all current and future databases.')
-        c.argument('cluster_resource_id', type=str, help='The resource id of the cluster where the databases you would '
-                   'like to attach reside.')
-        c.argument('default_principals_modification_kind', arg_type=get_enum_type(['Union', 'Replace', 'None']),
-                   help='The default principals modification kind')
-        c.argument('table_level_sharing_properties', options_list=['--table-level-sharing-properties', '--tls'],
-                   action=AddTableLevelSharingProperties, nargs='+', help='Table level sharing specifications')
+        c.argument('private_endpoint_connection_name', options_list=['--name', '-n', '--private-endpoint-connection-nam'
+                                                                     'e'], type=str, help='The name of the private '
+                   'endpoint connection.')
+        c.argument('private_link_service_connection_state', action=AddPrivateLinkServiceConnectionState, nargs='+',
+                   help='Connection State of the Private Endpoint Connection.')
 
-    with self.argument_context('kusto attached-database-configuration update') as c:
+    with self.argument_context('kusto private-endpoint-connection update') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', type=str, help='The name of the Kusto cluster.', id_part='name')
-        c.argument('attached_database_configuration_name', options_list=['--name', '-n',
-                                                                         '--attached-database-configuration-name'],
-                   type=str, help='The name of the attached database configuration.', id_part='child_name_1')
-        c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
-                   validator=get_default_location_from_resource_group)
-        c.argument('database_name', type=str, help='The name of the database which you would like to attach, use * if '
-                   'you want to follow all current and future databases.')
-        c.argument('cluster_resource_id', type=str, help='The resource id of the cluster where the databases you would '
-                   'like to attach reside.')
-        c.argument('default_principals_modification_kind', arg_type=get_enum_type(['Union', 'Replace', 'None']),
-                   help='The default principals modification kind')
-        c.argument('table_level_sharing_properties', options_list=['--table-level-sharing-properties', '--tls'],
-                   action=AddTableLevelSharingProperties, nargs='+', help='Table level sharing specifications')
+        c.argument('private_endpoint_connection_name', options_list=['--name', '-n', '--private-endpoint-connection-nam'
+                                                                     'e'], type=str, help='The name of the private '
+                   'endpoint connection.', id_part='child_name_1')
+        c.argument('private_link_service_connection_state', action=AddPrivateLinkServiceConnectionState, nargs='+',
+                   help='Connection State of the Private Endpoint Connection.')
         c.ignore('parameters')
 
-    with self.argument_context('kusto attached-database-configuration delete') as c:
+    with self.argument_context('kusto private-endpoint-connection delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', type=str, help='The name of the Kusto cluster.', id_part='name')
-        c.argument('attached_database_configuration_name', options_list=['--name', '-n',
-                                                                         '--attached-database-configuration-name'],
-                   type=str, help='The name of the attached database configuration.', id_part='child_name_1')
+        c.argument('private_endpoint_connection_name', options_list=['--name', '-n', '--private-endpoint-connection-nam'
+                                                                     'e'], type=str, help='The name of the private '
+                   'endpoint connection.', id_part='child_name_1')
 
-    with self.argument_context('kusto attached-database-configuration wait') as c:
+    with self.argument_context('kusto private-endpoint-connection wait') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', type=str, help='The name of the Kusto cluster.', id_part='name')
-        c.argument('attached_database_configuration_name', options_list=['--name', '-n',
-                                                                         '--attached-database-configuration-name'],
-                   type=str, help='The name of the attached database configuration.', id_part='child_name_1')
+        c.argument('private_endpoint_connection_name', options_list=['--name', '-n', '--private-endpoint-connection-nam'
+                                                                     'e'], type=str, help='The name of the private '
+                   'endpoint connection.', id_part='child_name_1')
+
+    with self.argument_context('kusto private-link-resource list') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('cluster_name', type=str, help='The name of the Kusto cluster.')
+
+    with self.argument_context('kusto private-link-resource show') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('cluster_name', type=str, help='The name of the Kusto cluster.', id_part='name')
+        c.argument('private_link_resource_name', options_list=['--name', '-n', '--private-link-resource-name'],
+                   type=str, help='The name of the private link resource.', id_part='child_name_1')
 
     with self.argument_context('kusto data-connection list') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -527,9 +660,8 @@ def load_arguments(self, _):
         c.argument('event_system_properties', nargs='+', help='System properties of the event hub')
         c.argument('compression', arg_type=get_enum_type(['None', 'GZip']), help='The event hub messages compression '
                    'type')
-        c.argument('managed_identity_resource_id', options_list=['--managed-identity-resource-id', '--mi-rid'],
-                   type=str, help='The resource ID of a managed identity (system or user assigned) to be used to '
-                   'authenticate with event hub.')
+        c.argument('managed_identity_resource_id', type=str, help='The resource ID of a managed identity (system or '
+                   'user assigned) to be used to authenticate with event hub.')
 
     with self.argument_context('kusto data-connection iot-hub create') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -604,9 +736,8 @@ def load_arguments(self, _):
         c.argument('event_system_properties', nargs='+', help='System properties of the event hub')
         c.argument('compression', arg_type=get_enum_type(['None', 'GZip']), help='The event hub messages compression '
                    'type')
-        c.argument('managed_identity_resource_id', options_list=['--managed-identity-resource-id', '--mi-rid'],
-                   type=str, help='The resource ID of a managed identity (system or user assigned) to be used to '
-                   'authenticate with event hub.')
+        c.argument('managed_identity_resource_id', type=str, help='The resource ID of a managed identity (system or '
+                   'user assigned) to be used to authenticate with event hub.')
 
     with self.argument_context('kusto data-connection iot-hub update') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -690,9 +821,8 @@ def load_arguments(self, _):
         c.argument('event_system_properties', nargs='+', help='System properties of the event hub')
         c.argument('compression', arg_type=get_enum_type(['None', 'GZip']), help='The event hub messages compression '
                    'type')
-        c.argument('managed_identity_resource_id', options_list=['--managed-identity-resource-id', '--mi-rid'],
-                   type=str, help='The resource ID of a managed identity (system or user assigned) to be used to '
-                   'authenticate with event hub.')
+        c.argument('managed_identity_resource_id', type=str, help='The resource ID of a managed identity (system or '
+                   'user assigned) to be used to authenticate with event hub.')
 
     with self.argument_context('kusto data-connection iot-hub data-connection-validation') as c:
         c.argument('resource_group_name', resource_group_name_type)
