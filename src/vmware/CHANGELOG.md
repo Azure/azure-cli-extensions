@@ -3,6 +3,14 @@
 ## 3.2.0
 
 - Add `az vmware workload-network dhcp` command group
+- Add `az vmware workload-network dns-service` command group
+- Add `az vmware workload-network dns-zone` command group
+- Add `az vmware workload-network port-mirroring` command group
+- Add `az vmware workload-network segment` command group
+- Add `az vmware workload-network public-ip` command group
+- Add `az vmware workload-network vm-group` command group
+- Add `az vmware workload-network vm` command group
+- Add `az vmware workload-network gateway` command group
 
 ## 3.1.0 (2021-08)
 

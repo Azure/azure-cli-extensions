@@ -12,19 +12,9 @@
 from .. import try_manual
 
 
-# EXAMPLE: /ApplyUpdateForResourceGroup/get/ApplyUpdatesResourceGroup_List
-@try_manual
-def step_applyupdate_for_resource_group_list(test, rg, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az maintenance applyupdate-for-resource-group list '
-             '--resource-group "{rg}"',
-             checks=checks)
-
-
 # EXAMPLE: /ApplyUpdates/put/ApplyUpdates_CreateOrUpdate
 @try_manual
-def step_applyupdate_create(test, rg, checks=None):
+def step_applyupdate_create(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az maintenance applyupdate create '
@@ -37,10 +27,10 @@ def step_applyupdate_create(test, rg, checks=None):
 
 # EXAMPLE: /ApplyUpdates/put/ApplyUpdates_CreateOrUpdateParent
 @try_manual
-def step_applyupdate_create2(test, rg, checks=None):
+def step_applyupdate_create_or_update_parent(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az maintenance applyupdate create '
+    test.cmd('az maintenance applyupdate create-or-update-parent '
              '--provider-name "Microsoft.Compute" '
              '--resource-group "{rg}" '
              '--resource-name "smdvm1" '
@@ -52,7 +42,7 @@ def step_applyupdate_create2(test, rg, checks=None):
 
 # EXAMPLE: /ApplyUpdates/get/ApplyUpdates_Get
 @try_manual
-def step_applyupdate_show(test, rg, checks=None):
+def step_applyupdate_show(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az maintenance applyupdate show '
@@ -66,7 +56,7 @@ def step_applyupdate_show(test, rg, checks=None):
 
 # EXAMPLE: /ApplyUpdates/get/ApplyUpdates_GetParent
 @try_manual
-def step_applyupdate_show_parent(test, rg, checks=None):
+def step_applyupdate_show_parent(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az maintenance applyupdate show-parent '
@@ -82,7 +72,7 @@ def step_applyupdate_show_parent(test, rg, checks=None):
 
 # EXAMPLE: /ApplyUpdates/get/ApplyUpdates_List
 @try_manual
-def step_applyupdate_list(test, rg, checks=None):
+def step_applyupdate_list(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az maintenance applyupdate list',
@@ -91,38 +81,50 @@ def step_applyupdate_list(test, rg, checks=None):
 
 # EXAMPLE: /MaintenanceConfigurations/put/MaintenanceConfigurations_CreateOrUpdateForResource
 @try_manual
-def step_configuration_create(test, rg, checks=None):
+def step_configuration_create(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az maintenance configuration create '
-             '--location "westus2" '
-             '--maintenance-scope "Host" '
+             '--location "eastus2euap" '
+             '--maintenance-scope "OSImage" '
              '--maintenance-window-duration "05:00" '
              '--maintenance-window-expiration-date-time "9999-12-31 00:00" '
              '--maintenance-window-recur-every "Day" '
-             '--maintenance-window-start-date-time "2025-04-30 08:00" '
+             '--maintenance-window-start-date-time "2020-04-30 08:00" '
              '--maintenance-window-time-zone "Pacific Standard Time" '
              '--namespace "Microsoft.Maintenance" '
              '--visibility "Custom" '
              '--resource-group "{rg}" '
-             '--resource-name "{myMaintenanceConfiguration2}"',
+             '--resource-name "{myMaintenanceConfiguration}"',
              checks=checks)
 
 
 # EXAMPLE: /MaintenanceConfigurations/get/MaintenanceConfigurations_GetForResource
 @try_manual
-def step_configuration_show(test, rg, checks=None):
+def step_configuration_show(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az maintenance configuration show '
              '--resource-group "{rg}" '
-             '--resource-name "{myMaintenanceConfiguration2}"',
+             '--resource-name "{myMaintenanceConfiguration}"',
              checks=checks)
+
+
+# EXAMPLE: /MaintenanceConfigurations/get/MaintenanceConfigurations_GetForResource_GuestOSPatchLinux
+@try_manual
+def step_configuration_show2(test, checks=None):
+    return step_configuration_show(test, checks)
+
+
+# EXAMPLE: /MaintenanceConfigurations/get/MaintenanceConfigurations_GetForResource_GuestOSPatchWindows
+@try_manual
+def step_configuration_show3(test, checks=None):
+    return step_configuration_show(test, checks)
 
 
 # EXAMPLE: /MaintenanceConfigurations/get/MaintenanceConfigurations_List
 @try_manual
-def step_configuration_list(test, rg, checks=None):
+def step_configuration_list(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az maintenance configuration list',
@@ -131,33 +133,33 @@ def step_configuration_list(test, rg, checks=None):
 
 # EXAMPLE: /MaintenanceConfigurations/patch/MaintenanceConfigurations_UpdateForResource
 @try_manual
-def step_configuration_update(test, rg, checks=None):
+def step_configuration_update(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az maintenance configuration update '
-             '--location "westus2" '
-             '--maintenance-scope "Host" '
+             '--location "eastus2euap" '
+             '--maintenance-scope "OSImage" '
              '--maintenance-window-duration "05:00" '
              '--maintenance-window-expiration-date-time "9999-12-31 00:00" '
              '--maintenance-window-recur-every "Month Third Sunday" '
-             '--maintenance-window-start-date-time "2025-04-30 08:00" '
+             '--maintenance-window-start-date-time "2020-04-30 08:00" '
              '--maintenance-window-time-zone "Pacific Standard Time" '
              '--namespace "Microsoft.Maintenance" '
              '--visibility "Custom" '
              '--resource-group "{rg}" '
-             '--resource-name "{myMaintenanceConfiguration2}"',
+             '--resource-name "{myMaintenanceConfiguration}"',
              checks=checks)
 
 
 # EXAMPLE: /ConfigurationAssignments/put/ConfigurationAssignments_CreateOrUpdate
 @try_manual
-def step_assignment_create(test, rg, checks=None):
+def step_assignment_create(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az maintenance assignment create '
              '--maintenance-configuration-id "/subscriptions/{subscription_id}/resourcegroups/{rg}/providers/Microsoft.'
-             'Maintenance/maintenanceConfigurations/{myMaintenanceConfiguration2}" '
-             '--name "{myConfigurationAssignment2}" '
+             'Maintenance/maintenanceConfigurations/{myMaintenanceConfiguration}" '
+             '--name "{myConfigurationAssignment}" '
              '--provider-name "Microsoft.Compute" '
              '--resource-group "{rg}" '
              '--resource-name "smdtest1" '
@@ -167,13 +169,43 @@ def step_assignment_create(test, rg, checks=None):
 
 # EXAMPLE: /ConfigurationAssignments/put/ConfigurationAssignments_CreateOrUpdateParent
 @try_manual
-def step_assignment_create2(test, rg, checks=None):
+def step_assignment_create_or_update_parent(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az maintenance assignment create '
+    test.cmd('az maintenance assignment create-or-update-parent '
              '--maintenance-configuration-id "/subscriptions/{subscription_id}/resourcegroups/{rg}/providers/Microsoft.'
-             'Maintenance/maintenanceConfigurations/{myMaintenanceConfiguration}" '
+             'Maintenance/maintenanceConfigurations/{myMaintenanceConfiguration2}" '
+             '--name "{myConfigurationAssignment2}" '
+             '--provider-name "Microsoft.Compute" '
+             '--resource-group "{rg}" '
+             '--resource-name "smdvm1" '
+             '--resource-parent-name "smdtest1" '
+             '--resource-parent-type "virtualMachineScaleSets" '
+             '--resource-type "virtualMachines"',
+             checks=checks)
+
+
+# EXAMPLE: /ConfigurationAssignments/get/ConfigurationAssignments_Get
+@try_manual
+def step_assignment_show(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az maintenance assignment show '
              '--name "{myConfigurationAssignment}" '
+             '--provider-name "Microsoft.Compute" '
+             '--resource-group "{rg}" '
+             '--resource-name "smdtest1" '
+             '--resource-type "virtualMachineScaleSets"',
+             checks=checks)
+
+
+# EXAMPLE: /ConfigurationAssignments/get/ConfigurationAssignments_GetParent
+@try_manual
+def step_assignment_show_parent(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az maintenance assignment show-parent '
+             '--name "{myConfigurationAssignment2}" '
              '--provider-name "Microsoft.Compute" '
              '--resource-group "{rg}" '
              '--resource-name "smdvm1" '
@@ -185,7 +217,7 @@ def step_assignment_create2(test, rg, checks=None):
 
 # EXAMPLE: /ConfigurationAssignments/get/ConfigurationAssignments_List
 @try_manual
-def step_assignment_list(test, rg, checks=None):
+def step_assignment_list(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az maintenance assignment list '
@@ -198,7 +230,7 @@ def step_assignment_list(test, rg, checks=None):
 
 # EXAMPLE: /ConfigurationAssignments/get/ConfigurationAssignments_ListParent
 @try_manual
-def step_assignment_list_parent(test, rg, checks=None):
+def step_assignment_list_parent(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az maintenance assignment list-parent '
@@ -213,11 +245,11 @@ def step_assignment_list_parent(test, rg, checks=None):
 
 # EXAMPLE: /ConfigurationAssignments/delete/ConfigurationAssignments_Delete
 @try_manual
-def step_assignment_delete(test, rg, checks=None):
+def step_assignment_delete(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az maintenance assignment delete -y '
-             '--name "{myConfigurationAssignment2}" '
+             '--name "{myConfigurationAssignment}" '
              '--provider-name "Microsoft.Compute" '
              '--resource-group "{rg}" '
              '--resource-name "smdtest1" '
@@ -227,11 +259,11 @@ def step_assignment_delete(test, rg, checks=None):
 
 # EXAMPLE: /ConfigurationAssignments/delete/ConfigurationAssignments_DeleteParent
 @try_manual
-def step_assignment_delete2(test, rg, checks=None):
+def step_assignment_delete_parent(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az maintenance assignment delete -y '
-             '--name "{myConfigurationAssignment2}" '
+    test.cmd('az maintenance assignment delete-parent '
+             '--name "{myConfigurationAssignment}" '
              '--provider-name "Microsoft.Compute" '
              '--resource-group "{rg}" '
              '--resource-name "smdvm1" '
@@ -243,7 +275,7 @@ def step_assignment_delete2(test, rg, checks=None):
 
 # EXAMPLE: /MaintenanceConfigurations/delete/MaintenanceConfigurations_DeleteForResource
 @try_manual
-def step_configuration_delete(test, rg, checks=None):
+def step_configuration_delete(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az maintenance configuration delete -y '
@@ -252,29 +284,19 @@ def step_configuration_delete(test, rg, checks=None):
              checks=checks)
 
 
-# EXAMPLE: /MaintenanceConfigurationsForResourceGroup/get/MaintenanceConfigurationsResourceGroup_List
-@try_manual
-def step_configuration_for_resource_group_list(test, rg, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az maintenance configuration-for-resource-group list '
-             '--resource-group "{rg}"',
-             checks=checks)
-
-
 # EXAMPLE: /PublicMaintenanceConfigurations/get/PublicMaintenanceConfigurations_GetForResource
 @try_manual
-def step_public_configuration_show(test, rg, checks=None):
+def step_public_configuration_show(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az maintenance public-configuration show '
-             '--resource-name "{myMaintenanceConfiguration2}"',
+             '--resource-name "{myMaintenanceConfiguration}"',
              checks=checks)
 
 
 # EXAMPLE: /PublicMaintenanceConfigurations/get/PublicMaintenanceConfigurations_List
 @try_manual
-def step_public_configuration_list(test, rg, checks=None):
+def step_public_configuration_list(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az maintenance public-configuration list',
@@ -283,7 +305,7 @@ def step_public_configuration_list(test, rg, checks=None):
 
 # EXAMPLE: /Updates/get/Updates_List
 @try_manual
-def step_update_list(test, rg, checks=None):
+def step_update_list(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az maintenance update list '
@@ -296,7 +318,7 @@ def step_update_list(test, rg, checks=None):
 
 # EXAMPLE: /Updates/get/Updates_ListParent
 @try_manual
-def step_update_list_parent(test, rg, checks=None):
+def step_update_list_parent(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az maintenance update list-parent '
@@ -307,4 +329,3 @@ def step_update_list_parent(test, rg, checks=None):
              '--resource-parent-type "virtualMachineScaleSets" '
              '--resource-type "virtualMachines"',
              checks=checks)
-
