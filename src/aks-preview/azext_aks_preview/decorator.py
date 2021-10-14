@@ -271,7 +271,6 @@ class AKSPreviewContext(AKSContext):
         # this parameter does not need validation
         return http_proxy_config
 
-
     def get_node_resource_group(self) -> Union[str, None]:
         """Obtain the value of node_resource_group.
 
