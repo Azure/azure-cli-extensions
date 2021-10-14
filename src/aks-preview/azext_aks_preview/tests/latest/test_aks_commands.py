@@ -869,8 +869,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         nodepool_name = self.create_random_name('c', 6)
         self.kwargs.update({
             'resource_group': resource_group,
-            'name': 'testingCluster1',
-            'nodepool_name' : 'rurunp1',
+            'name': aks_name,
+            'nodepool_name' : nodepool_name,
             'ssh_key_value': self.generate_ssh_keys()
         })
         

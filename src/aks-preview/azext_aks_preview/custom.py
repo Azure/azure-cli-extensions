@@ -3327,6 +3327,7 @@ def aks_agentpool_stop(cmd,   # pylint: disable=unused-argument
     instance = client.get(resource_group_name, cluster_name, nodepool_name)
     power_state = PowerState(code = "Stopped")
     instance.power_state = power_state
+    print("***** STOPPING ", instance)
     return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, cluster_name, nodepool_name,instance)
 
 def aks_agentpool_start(cmd,   # pylint: disable=unused-argument
@@ -3347,6 +3348,7 @@ def aks_agentpool_start(cmd,   # pylint: disable=unused-argument
     instance = client.get(resource_group_name, cluster_name, nodepool_name)
     power_state = PowerState(code = "Running")
     instance.power_state = power_state
+    print("***** STARTING ", instance)
     return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, cluster_name, nodepool_name,instance)    
 
 
