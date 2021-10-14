@@ -121,7 +121,7 @@ def load_arguments(self, _):
         c.argument('conditional_members', type=str, help='Conditional Members.')
 
     with self.argument_context('network manager list-effective-config') as c:
-        c.argument('virtual_network_name', type=str, help='The name of the virtual network.', id_part=None)
+        c.argument('virtual_network_name', options_list=['--vnet-name', '--virtual-network-name'], type=str, help='The name of the virtual network.', id_part=None)
         c.argument('skip_token', type=str, help='SkipToken is only used if a previous operation returned a partial '
                    'result. If a previous response contains a nextLink element, the value of the nextLink element will '
                    'include a skipToken parameter that specifies a starting point to use for subsequent calls.')
