@@ -22,7 +22,7 @@ def load_command_table(self, _):
 
     with self.command_group('connectedvmware vcenter', client_factory=cf_vcenter) as g:
         g.custom_command('connect', 'connect_vcenter', supports_no_wait=True)
-        g.custom_command('delete', 'delete_vcenter', supports_no_wait=True)
+        g.custom_command('delete', 'delete_vcenter', supports_no_wait=True, confirmation=True)
         g.custom_show_command('show', 'show_vcenter')
         g.custom_command('list', 'list_vcenter')
 
@@ -36,7 +36,7 @@ def load_command_table(self, _):
         'connectedvmware resource-pool', client_factory=cf_resource_pool
     ) as g:
         g.custom_command('create', 'create_resource_pool', supports_no_wait=True)
-        g.custom_command('delete', 'delete_resource_pool', supports_no_wait=True)
+        g.custom_command('delete', 'delete_resource_pool', supports_no_wait=True, confirmation=True)
         g.custom_show_command('show', 'show_resource_pool')
         g.custom_command('list', 'list_resource_pool')
 
@@ -44,7 +44,7 @@ def load_command_table(self, _):
         'connectedvmware cluster', client_factory=cf_cluster
     ) as g:
         g.custom_command('create', 'create_cluster', supports_no_wait=True)
-        g.custom_command('delete', 'delete_cluster', supports_no_wait=True)
+        g.custom_command('delete', 'delete_cluster', supports_no_wait=True, confirmation=True)
         g.custom_show_command('show', 'show_cluster')
         g.custom_command('list', 'list_cluster')
 
@@ -52,7 +52,7 @@ def load_command_table(self, _):
         'connectedvmware datastore', client_factory=cf_datastore
     ) as g:
         g.custom_command('create', 'create_datastore', supports_no_wait=True)
-        g.custom_command('delete', 'delete_datastore', supports_no_wait=True)
+        g.custom_command('delete', 'delete_datastore', supports_no_wait=True, confirmation=True)
         g.custom_show_command('show', 'show_datastore')
         g.custom_command('list', 'list_datastore')
 
@@ -60,7 +60,7 @@ def load_command_table(self, _):
         'connectedvmware host', client_factory=cf_host
     ) as g:
         g.custom_command('create', 'create_host', supports_no_wait=True)
-        g.custom_command('delete', 'delete_host', supports_no_wait=True)
+        g.custom_command('delete', 'delete_host', supports_no_wait=True, confirmation=True)
         g.custom_show_command('show', 'show_host')
         g.custom_command('list', 'list_host')
 
@@ -68,7 +68,7 @@ def load_command_table(self, _):
         'connectedvmware virtual-network', client_factory=cf_virtual_network
     ) as g:
         g.custom_command('create', 'create_virtual_network', supports_no_wait=True)
-        g.custom_command('delete', 'delete_virtual_network', supports_no_wait=True)
+        g.custom_command('delete', 'delete_virtual_network', supports_no_wait=True, confirmation=True)
         g.custom_show_command('show', 'show_virtual_network')
         g.custom_command('list', 'list_virtual_network')
 
@@ -76,7 +76,7 @@ def load_command_table(self, _):
         'connectedvmware vm-template', client_factory=cf_virtual_machine_template
     ) as g:
         g.custom_command('create', 'create_vm_template', supports_no_wait=True)
-        g.custom_command('delete', 'delete_vm_template', supports_no_wait=True)
+        g.custom_command('delete', 'delete_vm_template', supports_no_wait=True, confirmation=True)
         g.custom_show_command('show', 'show_vm_template')
         g.custom_command('list', 'list_vm_template')
 
@@ -84,7 +84,7 @@ def load_command_table(self, _):
         'connectedvmware vm', client_factory=cf_virtual_machine
     ) as g:
         g.custom_command('create', 'create_vm', supports_no_wait=True)
-        g.custom_command('delete', 'delete_vm', supports_no_wait=True)
+        g.custom_command('delete', 'delete_vm', supports_no_wait=True, confirmation=True)
         g.custom_command('update', 'update_vm', supports_no_wait=True)
         g.custom_show_command('show', 'show_vm')
         g.custom_command('list', 'list_vm')
@@ -97,7 +97,7 @@ def load_command_table(self, _):
     ) as g:
         g.custom_command('add', 'add_nic', supports_no_wait=True)
         g.custom_command('update', 'update_nic', supports_no_wait=True)
-        g.custom_command('delete', 'delete_nics', supports_no_wait=True)
+        g.custom_command('delete', 'delete_nics', supports_no_wait=True, confirmation=True)
         g.custom_show_command('show', 'show_nic')
         g.custom_command('list', 'list_nics')
 
@@ -106,7 +106,7 @@ def load_command_table(self, _):
     ) as g:
         g.custom_command('add', 'add_disk', supports_no_wait=True)
         g.custom_command('update', 'update_disk', supports_no_wait=True)
-        g.custom_command('delete', 'delete_disks', supports_no_wait=True)
+        g.custom_command('delete', 'delete_disks', supports_no_wait=True, confirmation=True)
         g.custom_show_command('show', 'show_disk')
         g.custom_command('list', 'list_disks')
 

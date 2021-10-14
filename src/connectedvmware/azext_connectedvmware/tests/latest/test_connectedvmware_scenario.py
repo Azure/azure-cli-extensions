@@ -172,22 +172,22 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
         self.cmd('az connectedvmware vm start -g {rg} --name {vm_name}')
 
         # Delete the created VM.
-        self.cmd('az connectedvmware vm delete -g {rg} --name {vm_name}')
+        self.cmd('az connectedvmware vm delete -g {rg} --name {vm_name} -y')
 
         # Delete the created resource-pool.
-        self.cmd('az connectedvmware resource-pool delete -g {rg} --name {rp_name}')
+        self.cmd('az connectedvmware resource-pool delete -g {rg} --name {rp_name} -y')
 
         # Delete the created cluster.
-        self.cmd('az connectedvmware cluster delete -g {rg} --name {cluster_name}')
+        self.cmd('az connectedvmware cluster delete -g {rg} --name {cluster_name} -y')
 
         # Delete the created datastore.
-        self.cmd('az connectedvmware datastore delete -g {rg} --name {datastore_name}')
+        self.cmd('az connectedvmware datastore delete -g {rg} --name {datastore_name} -y')
 
         # Delete the created host.
-        self.cmd('az connectedvmware host delete -g {rg} --name {host_name}')
+        self.cmd('az connectedvmware host delete -g {rg} --name {host_name} -y')
 
         # Delete the created virtual-network.
-        self.cmd('az connectedvmware virtual-network delete -g {rg} --name {vnet_name}')
+        self.cmd('az connectedvmware virtual-network delete -g {rg} --name {vnet_name} -y')
 
         # Delete the created vm-template.
-        self.cmd('az connectedvmware vm-template delete -g {rg} --name {vmtpl_name}')
+        self.cmd('az connectedvmware vm-template delete -g {rg} --name {vmtpl_name} -y')
