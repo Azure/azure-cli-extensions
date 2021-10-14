@@ -316,13 +316,13 @@ helps['network manager group delete'] = """
 --resource-group "rg1"
 """
 
-helps['network manager effect-vnet list-effect-vnet'] = """
+helps['network manager group list-effect-vnet'] = """
     type: command
     short-summary: "Lists all effective virtual networks by specified network group."
     examples:
       - name: List Effective Virtual Networks List By Network Groups
         text: |-
-               az network manager list-effect-vnet --network-group-name "TestNetworkGroup" \
+               az network manager group list-effect-vnet --network-group-name "TestNetworkGroup" \
 --network-manager-name "testNetworkManager" --resource-group "rg1"
 """
 
