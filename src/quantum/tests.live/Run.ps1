@@ -18,4 +18,4 @@ pip install azdev
 azdev setup --repo .
 azdev extension add quantum
 az account set -s $Env:AZURE_QUANTUM_SUBSCRIPTION_ID
-azdev test quantum --live --verbose
+azdev test quantum --live --verbose --xml-path src\quantum\azext_quantum\tests\latest\recordings
