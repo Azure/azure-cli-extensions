@@ -50,6 +50,10 @@ class AKSPreviewModelsTestCase(unittest.TestCase):
 
         self.assertEqual(models.KubeletConfig, getattr(module, "KubeletConfig"))
         self.assertEqual(models.LinuxOSConfig, getattr(module, "LinuxOSConfig"))
+        self.assertEqual(
+            models.ManagedClusterHTTPProxyConfig,
+            getattr(module, "ManagedClusterHTTPProxyConfig"),
+        )
 
 
 class AKSPreviewContextTestCase(unittest.TestCase):
@@ -227,6 +231,69 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         with self.assertRaises(InvalidArgumentValueError):
             ctx_3.get_linux_os_config()
 
+    def test_get_http_proxy_config(self):
+        # default
+        ctx_1 = AKSPreviewContext(
+            self.cmd,
+            {"http_proxy_config": None},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_http_proxy_config(), None)
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            http_proxy_config=self.models.ManagedClusterHTTPProxyConfig(
+                http_proxy="test_http_proxy"
+            ),
+        )
+        ctx_1.attach_mc(mc)
+        self.assertEqual(
+            ctx_1.get_http_proxy_config(),
+            self.models.ManagedClusterHTTPProxyConfig(
+                http_proxy="test_http_proxy"
+            ),
+        )
+
+        # custom value
+        ctx_2 = AKSPreviewContext(
+            self.cmd,
+            {"http_proxy_config": "fake-path"},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        # fail on invalid file path
+        with self.assertRaises(InvalidArgumentValueError):
+            ctx_2.get_http_proxy_config()
+
+        # custom value
+        ctx_3 = AKSPreviewContext(
+            self.cmd,
+            {"http_proxy_config": _get_test_data_file("invalidconfig.json")},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        # fail on invalid file path
+        with self.assertRaises(InvalidArgumentValueError):
+            ctx_3.get_http_proxy_config()
+
+    def test_get_node_resource_group(self):
+        # default
+        ctx_1 = AKSPreviewContext(
+            self.cmd,
+            {"node_resource_group": None},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_node_resource_group(), None)
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            node_resource_group="test_node_resource_group",
+        )
+        ctx_1.attach_mc(mc)
+        self.assertEqual(
+            ctx_1.get_node_resource_group(), "test_node_resource_group"
+        )
+
 
 class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
     def setUp(self):
@@ -399,6 +466,79 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
         ground_truth_mc_2 = self.models.ManagedCluster(location="test_location")
         ground_truth_mc_2.agent_pool_profiles = [agent_pool_profile_2]
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
+    def test_set_up_http_proxy_config(self):
+        # default value in `aks_create`
+        dec_1 = AKSPreviewCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "http_proxy_config": None,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(location="test_location")
+        # fail on passing the wrong mc object
+        with self.assertRaises(CLIInternalError):
+            dec_1.set_up_http_proxy_config(None)
+        dec_mc_1 = dec_1.set_up_http_proxy_config(mc_1)
+        ground_truth_mc_1 = self.models.ManagedCluster(location="test_location")
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+        # custom value
+        dec_2 = AKSPreviewCreateDecorator(
+            self.cmd,
+            self.client,
+            {"http_proxy_config": _get_test_data_file("httpproxyconfig.json")},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_2 = self.models.ManagedCluster(location="test_location")
+        dec_mc_2 = dec_2.set_up_http_proxy_config(mc_2)
+        ground_truth_mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            http_proxy_config={
+                "httpProxy": "http://myproxy.server.com:8080/",
+                "httpsProxy": "https://myproxy.server.com:8080/",
+                "noProxy": ["localhost", "127.0.0.1"],
+            },
+        )
+        self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
+    def test_set_up_node_resource_group(self):
+        # default value in `aks_create`
+        dec_1 = AKSPreviewCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "node_resource_group": None,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(location="test_location")
+        # fail on passing the wrong mc object
+        with self.assertRaises(CLIInternalError):
+            dec_1.set_up_node_resource_group(None)
+        dec_mc_1 = dec_1.set_up_node_resource_group(mc_1)
+        ground_truth_mc_1 = self.models.ManagedCluster(location="test_location")
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+        # custom value
+        dec_2 = AKSPreviewCreateDecorator(
+            self.cmd,
+            self.client,
+            {"node_resource_group": "test_node_resource_group"},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_2 = self.models.ManagedCluster(location="test_location")
+        dec_mc_2 = dec_2.set_up_node_resource_group(mc_2)
+        ground_truth_mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            node_resource_group="test_node_resource_group",
+        )
+        self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
+    def test_construct_preview_mc_profile(self):
+        pass
 
 
 class AKSPreviewUpdateDecoratorTestCase(unittest.TestCase):

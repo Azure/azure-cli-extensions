@@ -15,7 +15,10 @@ from azure.cli.command_modules.acs.decorator import (
     safe_list_get,
 )
 from azure.cli.core import AzCommandsLoader
-from azure.cli.core.azclierror import InvalidArgumentValueError
+from azure.cli.core.azclierror import (
+    CLIInternalError,
+    InvalidArgumentValueError,
+)
 from azure.cli.core.commands import AzCliCommand
 from azure.cli.core.profiles import ResourceType
 from azure.cli.core.util import get_file_json
@@ -31,6 +34,7 @@ ManagedClusterLoadBalancerProfile = TypeVar("ManagedClusterLoadBalancerProfile")
 ResourceReference = TypeVar("ResourceReference")
 KubeletConfig = TypeVar("KubeletConfig")
 LinuxOSConfig = TypeVar("LinuxOSConfig")
+ManagedClusterHTTPProxyConfig = TypeVar("ManagedClusterHTTPProxyConfig")
 
 
 # pylint: disable=too-many-instance-attributes,too-few-public-methods
@@ -45,6 +49,11 @@ class AKSPreviewModels(AKSModels):
         )
         self.LinuxOSConfig = self.__cmd.get_models(
             "LinuxOSConfig",
+            resource_type=self.resource_type,
+            operation_group="managed_clusters",
+        )
+        self.ManagedClusterHTTPProxyConfig = self.__cmd.get_models(
+            "ManagedClusterHTTPProxyConfig",
             resource_type=self.resource_type,
             operation_group="managed_clusters",
         )
@@ -229,6 +238,55 @@ class AKSPreviewContext(AKSContext):
         # this parameter does not need validation
         return linux_os_config
 
+    def get_http_proxy_config(self) -> Union[dict, ManagedClusterHTTPProxyConfig, None]:
+        """Obtain the value of http_proxy_config.
+
+        :return: dict, ManagedClusterHTTPProxyConfig or None
+        """
+        # read the original value passed by the command
+        http_proxy_config = None
+        http_proxy_config_file_path = self.raw_param.get("http_proxy_config")
+        # validate user input
+        if http_proxy_config_file_path:
+            if not os.path.isfile(http_proxy_config_file_path):
+                raise InvalidArgumentValueError(
+                    "{} is not valid file, or not accessable.".format(
+                        http_proxy_config_file_path
+                    )
+                )
+            http_proxy_config = get_file_json(http_proxy_config_file_path)
+            if not isinstance(http_proxy_config, dict):
+                raise InvalidArgumentValueError(
+                    "Error reading Http Proxy Config from {}. "
+                    "Please see https://aka.ms/HttpProxyConfig for correct format.".format(
+                        http_proxy_config_file_path
+                    )
+                )
+
+        # try to read the property value corresponding to the parameter from the `mc` object
+        if self.mc and self.mc.http_proxy_config is not None:
+            http_proxy_config = self.mc.http_proxy_config
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return http_proxy_config
+
+
+    def get_node_resource_group(self) -> Union[str, None]:
+        """Obtain the value of node_resource_group.
+
+        :return: string or None
+        """
+        # read the original value passed by the command
+        node_resource_group = self.raw_param.get("node_resource_group")
+        # try to read the property value corresponding to the parameter from the `mc` object
+        if self.mc and self.mc.node_resource_group is not None:
+            node_resource_group = self.mc.node_resource_group
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return node_resource_group
+
 
 class AKSPreviewCreateDecorator(AKSCreateDecorator):
     # pylint: disable=super-init-not-called
@@ -277,6 +335,48 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
         )
         agent_pool_profile.kubelet_config = self.context.get_kubelet_config()
         agent_pool_profile.linux_os_config = self.context.get_linux_os_config()
+        return mc
+
+    def set_up_http_proxy_config(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up http proxy config for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        if not isinstance(mc, self.models.ManagedCluster):
+            raise CLIInternalError(
+                "Unexpected mc object with type '{}'.".format(type(mc))
+            )
+
+        mc.http_proxy_config = self.context.get_http_proxy_config()
+        return mc
+
+    def set_up_node_resource_group(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up node resource group for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        if not isinstance(mc, self.models.ManagedCluster):
+            raise CLIInternalError(
+                "Unexpected mc object with type '{}'.".format(type(mc))
+            )
+
+        mc.node_resource_group = self.context.get_node_resource_group()
+        return mc
+
+    def construct_preview_mc_profile(self) -> ManagedCluster:
+        """The overall controller used to construct the preview ManagedCluster profile.
+
+        The completely constructed ManagedCluster object will later be passed as a parameter to the underlying SDK
+        (mgmt-containerservice) to send the actual request.
+
+        :return: the ManagedCluster object
+        """
+        # construct the default ManagedCluster profile
+        mc = self.construct_default_mc_profile()
+        # set up http proxy config
+        mc = self.set_up_http_proxy_config(mc)
+        # set up node resource group
+        mc = self.set_up_node_resource_group(mc)
         return mc
 
 
