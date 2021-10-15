@@ -9,7 +9,7 @@ import unittest
 from azure_devtools.scenario_tests import AllowLargeResponse, live_only
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 
-from .utils import get_test_resource_group, get_test_workspace, get_test_workspace_location, get_test_workspace_storage, get_test_workspace_random_name, get_test_capabilities, get_test_workspace_provider_sku_list
+from .utils import get_test_resource_group, get_test_workspace, get_test_workspace_location, get_test_workspace_storage, get_test_workspace_random_name, get_test_capabilities, get_test_workspace_provider_sku_list, all_providers_are_in_capabilities
 from ..._version_check_helper import check_version
 from datetime import datetime
 from ...__init__ import CLI_REPORTED_VERSION 
@@ -56,10 +56,8 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
         test_workspace_temp = get_test_workspace_random_name()
         test_storage_account = get_test_workspace_storage()
         test_provider_sku_list = get_test_workspace_provider_sku_list()
-        test_capabilities = get_test_capabilities()
-        test_provider = "new." + test_provider_sku_list.split(';')[0].split('/')[0].lower()
 
-        if test_provider in test_capabilities:
+        if all_providers_are_in_capabilities(test_provider_sku_list, get_test_capabilities()):
             # create
             self.cmd(f'az quantum workspace create -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account} -r {test_provider_sku_list} -o json --skip-role-assignment', checks=[
             self.check("name", test_workspace_temp),
@@ -72,7 +70,7 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
             self.check("provisioningState", "Deleting")
             ])
         else:
-            self.skipTest(f"Skipping test_workspace_create_destroy: Provider {test_provider} not found in AZURE_QUANTUM_CAPABILITIES")
+            self.skipTest(f"Skipping test_workspace_create_destroy: One or more providers in '{test_provider_sku_list}' not found in AZURE_QUANTUM_CAPABILITIES")
 
     @live_only()
     def test_version_check(self):
