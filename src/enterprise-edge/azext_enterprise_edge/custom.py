@@ -51,7 +51,6 @@ class StaticWebAppFrontDoorClient:
     def get(cls, cmd, resource_group, name):
         return cls._request(cmd, resource_group, name)
 
-    # TODO verify that we only want to check on disable
     @classmethod
     def _validate_cdn_provider_registered(cls, cmd):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
