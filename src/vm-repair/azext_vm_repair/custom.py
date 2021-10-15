@@ -32,7 +32,8 @@ from .repair_utils import (
     _unlock_singlepass_encrypted_disk,
     _invoke_run_command,
     _check_hyperV_gen,
-    _get_cloud_init_script
+    _get_cloud_init_script,
+    _select_distro_linux
 )
 from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError, SkuDoesNotSupportHyperV, ScriptReturnsError
 logger = get_logger(__name__)
@@ -56,18 +57,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         if is_linux:
             #os_image_urn = "UbuntuLTS"
             os_type = 'Linux'
-            if distro == 'rhel':
-                os_image_urn = 'RedHat:RHEL:7-RAW:latest'
-            elif distro == 'suse':
-                os_image_urn = 'SUSE:sles-15-sp2:gen1:latest'
-            elif distro == 'centos':
-                os_image_urn = 'OpenLogic:CentOS:7_9:latest'
-            elif distro == 'oracle':
-                os_image_urn = 'Oracle:Oracle-Linux:ol79:latest'
-            elif distro == 'ubuntu':
-                os_image_urn = "UbuntuLTS"
-            else:
-                os_image_urn = "UbuntuLTS"
+            os_image_urn = _select_distro_linux(distro)
         else:
             os_image_urn = _fetch_compatible_windows_os_urn(source_vm)
             os_type = 'Windows'

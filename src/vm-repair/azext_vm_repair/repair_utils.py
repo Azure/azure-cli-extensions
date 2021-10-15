@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+from logging import Logger, log
 import subprocess
 import shlex
 import os
@@ -16,7 +17,7 @@ from knack.prompting import prompt_y_n, NoTTYException
 
 from .encryption_types import Encryption
 
-from .exceptions import AzCommandError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError, SkuDoesNotSupportHyperV
+from .exceptions import AzCommandError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError, SkuDoesNotSupportHyperV,SuseNotAvailableError
 # pylint: disable=line-too-long, deprecated-method
 
 REPAIR_MAP_URL = 'https://raw.githubusercontent.com/Azure/repair-script-library/master/map.json'
@@ -388,6 +389,55 @@ def _fetch_compatible_windows_os_urn(source_vm):
     logger.debug('Returning Urn 0: %s', urns[0])
     return urns[0]
 
+def _suse_image_selector(distro):
+    fetch_urn_command = 'az vm image list --publisher SUSE --offer {offer} --sku gen1 --verbose --all --query "[].urn | reverse(sort(@))" -o json'.format(offer=distro)
+    logger.info('Fetching compatible SUSE OS images from gallery...')
+    urns = loads(_call_az_command(fetch_urn_command))
+
+    #Raise exception when not finding SUSE image
+    if not urns:
+        raise SuseNotAvailableError()
+
+    logger.debug('Fetched urns: \n%s', urns)
+    #Returning the first URN as it is the latest image with no special use like HPC or SAP
+    logger.debug('Return the first URN : %s' , urns[0])
+    return urns[0]
+
+def _select_distro_linux(distro):
+    if distro == 'rhel6':
+        os_image_urn = 'RedHat:RHEL:6.10:latest'
+    elif distro == 'rhel7':
+        os_image_urn = 'RedHat:rhel-raw:7-raw:latest'
+    elif distro == 'rhel8':
+        os_image_urn = 'RedHat:rhel-raw:8-raw:latest'
+    elif distro == 'ubuntu18':
+        os_image_urn = 'Canonical:UbuntuServer:18.04-LTS:latest'
+    elif distro == 'ubuntu20':
+        os_image_urn = "Canonical:0001-com-ubuntu-server-focal:20_04-lts:latest"
+    elif distro == 'centos6' :
+        os_image_urn = 'OpenLogic:CentOS:6.10:latest' 
+    elif distro == 'centos7' :
+        os_image_urn = 'OpenLogic:CentOS:7_9:latest' 
+    elif distro == 'centos8' :
+        os_image_urn = 'OpenLogic:CentOS:7_9:latest' 
+    elif distro == 'oracle6' :
+        os_image_urn = 'Oracle:Oracle-Linux:6.10:latest' 
+    elif distro == 'oracle7' :
+        os_image_urn = 'Oracle:Oracle-Linux:ol79:latest' 
+    elif distro == 'oracle8' :
+        os_image_urn = 'Oracle:Oracle-Linux:ol84-lvm:latest' 
+    elif distro == 'sles12':
+        os_image_urn = _suse_image_selector('sles-12')
+    elif distro == 'sles15':
+        os_image_urn = _suse_image_selector('sles-15')
+    else:
+        if distro.count(":") == 3:
+            logger.info('A custom URN was provided , will be used as distro for the recovery VM')
+            os_image_urn = distro
+        else:
+            logger.info('No specific distro was provided , using the default Ubuntu distro')
+            os_image_urn = "UbuntuLTS"
+    return os_image_urn
 
 def _resolve_api_version(rcf, resource_provider_namespace, parent_resource_path, resource_type):
 
