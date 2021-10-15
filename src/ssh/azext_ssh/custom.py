@@ -18,7 +18,10 @@ from . import ssh_utils
 
 def ssh_vm(cmd, resource_group_name=None, vm_name=None, ssh_ip=None, public_key_file=None,
            private_key_file=None, use_private_ip=False, port=None, ssh_args=None):
-    op_call = functools.partial(ssh_utils.start_ssh_connection, port, ssh_args)
+    delete_key = False
+    if not private_key_file and not public_key_file:
+        delete_key = True
+    op_call = functools.partial(ssh_utils.start_ssh_connection, port, ssh_args, delete_key)
     _do_ssh_op(cmd, resource_group_name, vm_name, ssh_ip,
                public_key_file, private_key_file, use_private_ip, op_call)
 

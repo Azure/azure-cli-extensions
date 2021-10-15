@@ -5,21 +5,60 @@
 import os
 import platform
 import subprocess
+import time
+import re
+import multiprocessing as mp
+from azext_ssh import file_utils
 
 from knack import log
 from azure.cli.core import azclierror
 
 logger = log.get_logger(__name__)
 
+CLEANUP_TOTAL_TIME_LIMIT_IN_SECONDS = 120
+CLEANUP_TIME_INTERVAL_IN_SECONDS = 10
 
-def start_ssh_connection(port, ssh_args, ip, username, cert_file, private_key_file):
+
+def start_ssh_connection(port, ssh_args, delete_keys, ip, username, cert_file, private_key_file):
     ssh_arg_list = []
     if ssh_args:
         ssh_arg_list = ssh_args
+
+    log_file = None
+    if '-E' not in ssh_arg_list and set(['-v', '-vv', '-vvv']).isdisjoint(ssh_arg_list):
+        # This means the user either provided his own client log file or that they
+        # want the client log messages to be printed to the console.
+        # In these two cases, we should not use the log files to check for connection success.
+        log_file_dir = os.path.dirname(cert_file)
+        log_file_name = 'ssh_client_log_' + str(os.getpid())
+        log_file = os.path.join(log_file_dir, log_file_name)
+        ssh_arg_list = ssh_arg_list + ['-E', log_file, '-v']
+    print(f"Log file: {log_file}")
+    print(f"Certificate: {cert_file}")
+
     command = [_get_ssh_path(), _get_host(username, ip)]
     command = command + _build_args(cert_file, private_key_file, port) + ssh_arg_list
+
+    # Create a new process that will wait until the connection is established and then delete keys.
+    cleanup_process = mp.Process(target=_do_cleanup, args=(delete_keys, cert_file, private_key_file,
+                                 log_file, True))
+    cleanup_process.start()
+
     logger.debug("Running ssh command %s", ' '.join(command))
     subprocess.call(command, shell=platform.system() == 'Windows')
+
+    if cleanup_process.is_alive():
+        print("Terminating cleanup")
+        cleanup_process.terminate()
+        while cleanup_process.is_alive():
+            print("Waiting for cleanup process to die")
+            time.sleep(1)
+    # Make sure all files have been properly removed.
+    _do_cleanup(delete_keys, cert_file, private_key_file)
+    if log_file:
+        file_utils.delete_file(log_file, f"Couldn't delete temporary log file {cert_file}. ", True)
+    # Delete the temporary folder as well?
+    os.rmdir(os.path.dirname(cert_file))
 
 
 def create_ssh_keyfile(private_key_file):
@@ -52,6 +91,11 @@ def get_ssh_cert_principals(cert_file):
 
 def write_ssh_config(config_path, resource_group, vm_name, overwrite,
                      ip, username, cert_file, private_key_file):
+
+    logger.warning("Sensitive information for authentication is being stored on disk. You are responsible for "
+                   "managing/deleting the private key and signed public key once this config file is no "
+                   "longer being used. Please delete the contents of %s once you no longer need this config file.",
+                   os.path.dirname(cert_file))
 
     lines = [""]
 
@@ -117,3 +161,36 @@ def _build_args(cert_file, private_key_file, port):
         port_arg = ["-p", port]
     certificate = ["-o", "CertificateFile=" + cert_file]
     return private_key + certificate + port_arg
+
+
+def _do_cleanup(delete_keys, cert_file, private_key, log_file=None, wait=False):
+    # if there is a log file, use it to check for the connection success
+    print(f"Cleanup launched. Log file: {log_file}")
+    if log_file:
+        t0 = time.time()
+        match = False
+        while (time.time() - t0) < CLEANUP_TOTAL_TIME_LIMIT_IN_SECONDS and not match:
+            time.sleep(CLEANUP_TIME_INTERVAL_IN_SECONDS)
+            try:
+                with open(log_file, 'r') as ssh_client_log:
+                    for line in ssh_client_log:
+                        if re.search("debug1: Authentication succeeded", line):
+                            match = True
+                ssh_client_log.close()
+            except:
+                print("Can't open log, waiting two minutes")
+                t1 = time.time() - t0
+                if t1 < CLEANUP_TOTAL_TIME_LIMIT_IN_SECONDS:
+                    time.sleep(CLEANUP_TOTAL_TIME_LIMIT_IN_SECONDS - t1)
+    elif wait:
+        print("No log. Waiting two minutes")
+        # if we are not checking the logs, but still want to wait for connection before deleting files
+        time.sleep(CLEANUP_TOTAL_TIME_LIMIT_IN_SECONDS)
+
+    print("Deleting")
+    if delete_keys and private_key:
+        public_key = private_key + '.pub'
+        file_utils.delete_file(private_key, f"Couldn't delete private key {private_key}. ", True)
+        file_utils.delete_file(public_key, f"Couldn't delete public key {public_key}. ", True)
+    if cert_file:
+        file_utils.delete_file(cert_file, f"Couldn't delete certificate {cert_file}. ", True)
