@@ -187,8 +187,8 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         if enable_nested:
             logger.info("Running Script win-enable-nested-hyperv.ps1 to install HyperV")
 
-            run_hyperv_command = "az vm repair run -g {g} -n {name} --run-id win-enable-nested-hyperv" \
-                .format(g=repair_group_name, name=repair_vm_name)
+            run_hyperv_command = "az vm repair run -g {g} -n {name} --run-id win-enable-nested-hyperv --parameters gen={gen}" \
+                .format(g=repair_group_name, name=repair_vm_name, gen=is_gen2)
             ret_enable_nested = _call_az_command(run_hyperv_command)
 
             logger.debug("az vm repair run hyperv command returned: %s", ret_enable_nested)
