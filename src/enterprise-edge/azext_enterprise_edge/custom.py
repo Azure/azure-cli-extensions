@@ -6,9 +6,13 @@
 import json
 
 from knack.util import CLIError
+from knack.log import get_logger
 
 from azure.cli.core.util import send_raw_request
 from azure.cli.core.commands.client_factory import get_subscription_id
+
+
+logger = get_logger(__name__)
 
 
 class StaticWebAppFrontDoorClient:
@@ -70,13 +74,16 @@ class StaticWebAppFrontDoorClient:
 
 
 def enable_staticwebapp_enterprise_edge(cmd, name, resource_group_name):
+    logger.warn("For optimal experience and availability please check our documentation https://aka.ms/swaedge")
     return StaticWebAppFrontDoorClient.set(cmd, name=name, resource_group=resource_group_name, enable=True)
 
 
 def disable_staticwebapp_enterprise_edge(cmd, name, resource_group_name):
+    logger.warn("For optimal experience and availability please check our documentation https://aka.ms/swaedge")
     return StaticWebAppFrontDoorClient.set(cmd, name=name, resource_group=resource_group_name, enable=False)
 
 
 def show_staticwebapp_enterprise_edge_status(cmd, name, resource_group_name):
+    logger.warn("For optimal experience and availability please check our documentation https://aka.ms/swaedge")
     staticsite_data = StaticWebAppFrontDoorClient.get(cmd, name=name, resource_group=resource_group_name).json()
     return {"enterpriseGradeCdnStatus": staticsite_data["properties"]["enterpriseGradeCdnStatus"]}
