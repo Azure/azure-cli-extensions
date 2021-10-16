@@ -497,9 +497,9 @@ def _select_distro_linux_gen2(distro):
     elif distro == 'oracle8' :
         os_image_urn = 'Oracle:Oracle-Linux:ol82-gen2:latest' 
     elif distro == 'sles12':
-        os_image_urn = _suse_image_selector('sles-12')
+        os_image_urn = _suse_image_selector_gen2('sles-12')
     elif distro == 'sles15':
-        os_image_urn = _suse_image_selector('sles-15')
+        os_image_urn = _suse_image_selector_gen2('sles-15')
     else:
         if distro.count(":") == 3:
             logger.info('A custom URN was provided , will be used as distro for the recovery VM')

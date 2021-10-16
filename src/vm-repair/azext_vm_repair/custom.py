@@ -59,8 +59,8 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         if is_linux:
             #os_image_urn = "UbuntuLTS"
             os_type = 'Linux'
-            hyperV_generation = _check_linux_hyperV_gen(source_vm)
-            if hyperV_generation == 'V2':
+            hyperV_generation_linux = _check_linux_hyperV_gen(source_vm)
+            if hyperV_generation_linux == 'V2':
                 logger.info('Generation 2 VM detected, RHEL/Centos/Oracle 6 distros not available to be used for rescue VM ')
                 logger.debug('gen2 machine detected')
                 os_image_urn = _select_distro_linux_gen2(distro)
@@ -109,6 +109,9 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             # Only add hyperV variable when available
             if hyperV_generation:
                 copy_disk_command += ' --hyper-v-generation {hyperV}'.format(hyperV=hyperV_generation)
+            elif is_linux and hyperV_generation_linux == 'V2':
+                logger.info('The disk did not contian the info of gen2 , but the machine is created from gen2 image')
+                copy_disk_command += ' --hyper-v-generation {hyperV}'.format(hyperV=hyperV_generation_linux)
             # Set availability zone for vm when available
             if source_vm.zones:
                 zone = source_vm.zones[0]
