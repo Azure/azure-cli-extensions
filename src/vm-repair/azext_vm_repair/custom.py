@@ -33,7 +33,9 @@ from .repair_utils import (
     _invoke_run_command,
     _check_hyperV_gen,
     _get_cloud_init_script,
-    _select_distro_linux
+    _select_distro_linux,
+    _check_linux_hyperV_gen,
+    _select_distro_linux_gen2
 )
 from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError, SkuDoesNotSupportHyperV, ScriptReturnsError
 logger = get_logger(__name__)
@@ -57,7 +59,13 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         if is_linux:
             #os_image_urn = "UbuntuLTS"
             os_type = 'Linux'
-            os_image_urn = _select_distro_linux(distro)
+            hyperV_generation = _check_linux_hyperV_gen(source_vm)
+            if hyperV_generation == 'V2':
+                logger.info('Generation 2 VM detected, RHEL/Centos/Oracle 6 distros not available to be used for rescue VM ')
+                logger.debug('gen2 machine detected')
+                os_image_urn = _select_distro_linux_gen2(distro)
+            else:
+                os_image_urn = _select_distro_linux(distro)
         else:
             os_image_urn = _fetch_compatible_windows_os_urn(source_vm)
             os_type = 'Windows'
