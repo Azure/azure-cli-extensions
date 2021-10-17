@@ -87,7 +87,7 @@ def call_scenario(test):
         test.check("sku.capacity", 2),
         test.check("sku.tier", "Standard", case_sensitive=False),
     ])
-    step_database_create(test, checks=[]))
+    step_database_create(test, checks=[])
     step_data_connection_event_hub_create(test, checks=[])
     step_attached_database_configuration_create(test, checks=[
         test.check("location", "westus", case_sensitive=False),
