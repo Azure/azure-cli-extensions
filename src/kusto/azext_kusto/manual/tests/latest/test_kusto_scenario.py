@@ -157,7 +157,7 @@ def call_scenario(test):
     ])
     step_managed_private_endpoint_show(test, checks=[])
     step_private_endpoint_connection_show(test, checks=[])
-    step_private_link_resource_show(test, checks=[])
+    #step_private_link_resource_show(test, checks=[])
     step_cluster_list(test, checks=[])
     step_cluster_list_by_resource_group(test, checks=[
         test.check('length(@)', 2),
@@ -191,9 +191,9 @@ def call_scenario(test):
     step_cluster_diagnose_virtual_network(test, checks=[])
     step_cluster_list_outbound(test, checks=[])
     step_private_endpoint_connection_list(test, checks=[])
-    step_private_link_resource_list(test, checks=[
-        test.check('length(@)', 1),
-    ])
+    #step_private_link_resource_list(test, checks=[
+    #    test.check('length(@)', 1),
+    #])
     ####################step_operation_result_show(test, checks=[])
     # Update + validation
     step_data_connection_event_hub_update(test, checks=[])
