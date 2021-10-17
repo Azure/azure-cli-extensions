@@ -87,7 +87,8 @@ def load_arguments(self, _):
                    'audiences.')
         c.argument('enable_auto_stop', arg_type=get_three_state_flag(), help='A boolean value that indicates if the '
                    'cluster could be automatically stopped (due to lack of data or no activity for many days).')
-        c.argument('restrict_outbound_network_access', arg_type=get_enum_type(['Enabled', 'Disabled']), help='Whether '
+        c.argument('restrict_outbound_network_access', options_list=['--restrict-outbound-network-access', '-rona'],
+                   arg_type=get_enum_type(['Enabled', 'Disabled']), help='Whether '
                    'or not to restrict outbound network access.  Value is optional but if passed in, must be '
                    '\'Enabled\' or \'Disabled\'')
         c.argument('allowed_fqdn_list', nargs='+', help='List of allowed FQDNs(Fully Qualified Domain Name) for egress '
@@ -97,7 +98,8 @@ def load_arguments(self, _):
                    help='The type of managed identity used. The type \'SystemAssigned, UserAssigned\' includes both an '
                    'implicitly created identity and a set of user-assigned identities. The type \'None\' will remove '
                    'all identities.', arg_group='Identity')
-        c.argument('user_assigned_identities', type=validate_file_or_dict, help='The list of user identities '
+        c.argument('user_assigned_identities', options_list=['--user-assigned-identities', '--uai'], 
+                   type=validate_file_or_dict, help='The list of user identities '
                    'associated with the Kusto cluster. The user identity dictionary key references will be ARM '
                    'resource ids in the form: \'/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/prov'
                    'iders/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}\'. Expected value: '
@@ -140,7 +142,8 @@ def load_arguments(self, _):
                    'audiences.')
         c.argument('enable_auto_stop', arg_type=get_three_state_flag(), help='A boolean value that indicates if the '
                    'cluster could be automatically stopped (due to lack of data or no activity for many days).')
-        c.argument('restrict_outbound_network_access', arg_type=get_enum_type(['Enabled', 'Disabled']), help='Whether '
+        c.argument('restrict_outbound_network_access', options_list=['--restrict-outbound-network-access', '-rona'],
+                   arg_type=get_enum_type(['Enabled', 'Disabled']), help='Whether '
                    'or not to restrict outbound network access.  Value is optional but if passed in, must be '
                    '\'Enabled\' or \'Disabled\'')
         c.argument('allowed_fqdn_list', nargs='+', help='List of allowed FQDNs(Fully Qualified Domain Name) for egress '
@@ -150,7 +153,8 @@ def load_arguments(self, _):
                    help='The type of managed identity used. The type \'SystemAssigned, UserAssigned\' includes both an '
                    'implicitly created identity and a set of user-assigned identities. The type \'None\' will remove '
                    'all identities.', arg_group='Identity')
-        c.argument('user_assigned_identities', type=validate_file_or_dict, help='The list of user identities '
+        c.argument('user_assigned_identities', options_list=['--user-assigned-identities', '--uai'],
+                   type=validate_file_or_dict, help='The list of user identities '
                    'associated with the Kusto cluster. The user identity dictionary key references will be ARM '
                    'resource ids in the form: \'/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/prov'
                    'iders/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}\'. Expected value: '
@@ -353,7 +357,8 @@ def load_arguments(self, _):
                    'like to attach reside.')
         c.argument('default_principals_modification_kind', arg_type=get_enum_type(['Union', 'Replace', 'None']),
                    help='The default principals modification kind')
-        c.argument('table_level_sharing_properties', action=AddTableLevelSharingProperties, nargs='+', help='Table '
+        c.argument('table_level_sharing_properties', options_list=['--table-level-sharing-properties', '--tls'],
+                   action=AddTableLevelSharingProperties, nargs='+', help='Table '
                    'level sharing specifications')
 
     with self.argument_context('kusto attached-database-configuration update') as c:
@@ -370,8 +375,8 @@ def load_arguments(self, _):
                    'like to attach reside.')
         c.argument('default_principals_modification_kind', arg_type=get_enum_type(['Union', 'Replace', 'None']),
                    help='The default principals modification kind')
-        c.argument('table_level_sharing_properties', action=AddTableLevelSharingProperties, nargs='+', help='Table '
-                   'level sharing specifications')
+        c.argument('table_level_sharing_properties', options_list=['--table-level-sharing-properties', '--tls'],
+                   action=AddTableLevelSharingProperties, nargs='+', help='Table level sharing specifications')
         c.ignore('parameters')
 
     with self.argument_context('kusto attached-database-configuration delete') as c:
@@ -403,9 +408,11 @@ def load_arguments(self, _):
         c.argument('cluster_name', type=str, help='The name of the Kusto cluster.')
         c.argument('managed_private_endpoint_name', options_list=['--name', '-n', '--managed-private-endpoint-name'],
                    type=str, help='The name of the managed private endpoint.')
-        c.argument('private_link_resource_id', type=str, help='The ARM resource ID of the resource for which the '
+        c.argument('private_link_resource_id', options_list=['--private-link-resource-id', '-plri'],
+                   type=str, help='The ARM resource ID of the resource for which the '
                    'managed private endpoint is created.')
-        c.argument('private_link_resource_region', type=str, help='The region of the resource to which the managed '
+        c.argument('private_link_resource_region', options_list=['--private-link-resource-region', '-plrr'],
+                   type=str, help='The region of the resource to which the managed '
                    'private endpoint is created.')
         c.argument('group_id', type=str, help='The groupId in which the managed private endpoint is created.')
         c.argument('request_message', type=str, help='The user request message.')
@@ -415,9 +422,11 @@ def load_arguments(self, _):
         c.argument('cluster_name', type=str, help='The name of the Kusto cluster.', id_part='name')
         c.argument('managed_private_endpoint_name', options_list=['--name', '-n', '--managed-private-endpoint-name'],
                    type=str, help='The name of the managed private endpoint.', id_part='child_name_1')
-        c.argument('private_link_resource_id', type=str, help='The ARM resource ID of the resource for which the '
+        c.argument('private_link_resource_id', options_list=['--private-link-resource-id', '-plri'],
+                   type=str, help='The ARM resource ID of the resource for which the '
                    'managed private endpoint is created.')
-        c.argument('private_link_resource_region', type=str, help='The region of the resource to which the managed '
+        c.argument('private_link_resource_region', options_list=['--private-link-resource-region', '-plrr'],
+                   type=str, help='The region of the resource to which the managed '
                    'private endpoint is created.')
         c.argument('group_id', type=str, help='The groupId in which the managed private endpoint is created.')
         c.argument('request_message', type=str, help='The user request message.')
@@ -561,7 +570,8 @@ def load_arguments(self, _):
         c.argument('private_endpoint_connection_name', options_list=['--name', '-n', '--private-endpoint-connection-nam'
                                                                      'e'], type=str, help='The name of the private '
                    'endpoint connection.')
-        c.argument('private_link_service_connection_state', action=AddPrivateLinkServiceConnectionState, nargs='+',
+        c.argument('private_link_service_connection_state', options_list=['--private-link-service-connection-state', '-plscs'],
+                   action=AddPrivateLinkServiceConnectionState, nargs='+',
                    help='Connection State of the Private Endpoint Connection.')
 
     with self.argument_context('kusto private-endpoint-connection update') as c:
@@ -570,7 +580,8 @@ def load_arguments(self, _):
         c.argument('private_endpoint_connection_name', options_list=['--name', '-n', '--private-endpoint-connection-nam'
                                                                      'e'], type=str, help='The name of the private '
                    'endpoint connection.', id_part='child_name_1')
-        c.argument('private_link_service_connection_state', action=AddPrivateLinkServiceConnectionState, nargs='+',
+        c.argument('private_link_service_connection_state', options_list=['--private-link-service-connection-state', '-plscs'],
+                   action=AddPrivateLinkServiceConnectionState, nargs='+',
                    help='Connection State of the Private Endpoint Connection.')
         c.ignore('parameters')
 
@@ -660,7 +671,8 @@ def load_arguments(self, _):
         c.argument('event_system_properties', nargs='+', help='System properties of the event hub')
         c.argument('compression', arg_type=get_enum_type(['None', 'GZip']), help='The event hub messages compression '
                    'type')
-        c.argument('managed_identity_resource_id', type=str, help='The resource ID of a managed identity (system or '
+        c.argument('managed_identity_resource_id', options_list=['--managed-identity-resource-id', '-miri'],
+                   type=str, help='The resource ID of a managed identity (system or '
                    'user assigned) to be used to authenticate with event hub.')
 
     with self.argument_context('kusto data-connection iot-hub create') as c:
@@ -736,7 +748,8 @@ def load_arguments(self, _):
         c.argument('event_system_properties', nargs='+', help='System properties of the event hub')
         c.argument('compression', arg_type=get_enum_type(['None', 'GZip']), help='The event hub messages compression '
                    'type')
-        c.argument('managed_identity_resource_id', type=str, help='The resource ID of a managed identity (system or '
+        c.argument('managed_identity_resource_id', options_list=['--managed-identity-resource-id', '-miri'],
+                   type=str, help='The resource ID of a managed identity (system or '
                    'user assigned) to be used to authenticate with event hub.')
 
     with self.argument_context('kusto data-connection iot-hub update') as c:
@@ -821,7 +834,8 @@ def load_arguments(self, _):
         c.argument('event_system_properties', nargs='+', help='System properties of the event hub')
         c.argument('compression', arg_type=get_enum_type(['None', 'GZip']), help='The event hub messages compression '
                    'type')
-        c.argument('managed_identity_resource_id', type=str, help='The resource ID of a managed identity (system or '
+        c.argument('managed_identity_resource_id', options_list=['--managed-identity-resource-id', '-miri'],
+                   type=str, help='The resource ID of a managed identity (system or '
                    'user assigned) to be used to authenticate with event hub.')
 
     with self.argument_context('kusto data-connection iot-hub data-connection-validation') as c:
