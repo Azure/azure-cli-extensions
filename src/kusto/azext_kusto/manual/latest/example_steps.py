@@ -146,8 +146,8 @@ def step_cluster_show(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az kusto cluster show " 
-        '--name "{myCluster}" ' 
+        "az kusto cluster show "
+        '--name "{myCluster}" '
         '--resource-group "{rg}" ',
         checks=checks,
     )
@@ -159,7 +159,7 @@ def step_cluster_list(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az kusto cluster list " '-g "" ', 
+        "az kusto cluster list " '-g "" ',
         checks=checks
     )
 
@@ -170,8 +170,8 @@ def step_cluster_list_by_resource_group(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az kusto cluster list " 
-        '--resource-group "{rg}" ', 
+        "az kusto cluster list "
+        '--resource-group "{rg}" ',
         checks=checks
     )
 
@@ -182,8 +182,8 @@ def step_cluster_list_sku_by_resource_group(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az kusto cluster list-sku " 
-        '--name "{myCluster}" ' 
+        "az kusto cluster list-sku "
+        '--name "{myCluster}" '
         '--resource-group "{rg}" ',
         checks=checks,
     )
@@ -309,8 +309,8 @@ def step_cluster_start(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az kusto cluster start " 
-        '--name "{myCluster1}" ' 
+        "az kusto cluster start "
+        '--name "{myCluster1}" '
         '--resource-group "{rg}" ',
         checks=checks,
     )
@@ -322,8 +322,8 @@ def step_cluster_stop(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az kusto cluster stop " 
-        '--name "{myCluster1}" ' 
+        "az kusto cluster stop "
+        '--name "{myCluster1}" '
         '--resource-group "{rg}" ',
         checks=checks,
     )

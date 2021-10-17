@@ -111,7 +111,7 @@ def call_scenario(test):
         checks=[
             test.check("name", "{myCluster}", case_sensitive=False),
             test.check(
-                "identity.type", "SystemAssigned", 
+                "identity.type", "SystemAssigned",
                 case_sensitive=False
             ),
             test.check("location", "westus2", case_sensitive=False),
@@ -144,7 +144,7 @@ def call_scenario(test):
         checks=[
             test.check("name", "{myCluster}", case_sensitive=False),
             test.check(
-                "identity.type", "SystemAssigned", 
+                "identity.type", "SystemAssigned",
                 case_sensitive=False
             ),
             test.check("location", "West US 2", case_sensitive=False),
@@ -165,7 +165,7 @@ def call_scenario(test):
         checks=[
             test.check("location", "West US 2", case_sensitive=False),
             test.check(
-                "defaultPrincipalsModificationKind", "Union", 
+                "defaultPrincipalsModificationKind", "Union",
                 case_sensitive=False
             ),
             test.check(
@@ -217,7 +217,7 @@ def call_scenario(test):
     step_private_link_resource_show(test, checks=[])
     step_cluster_list(test, checks=[])
     step_cluster_list_by_resource_group(
-        test, 
+        test,
         checks=[test.check("length(@)", 2)]
     )
     step_cluster_principal_assignment_list(test, checks=[])
@@ -225,18 +225,18 @@ def call_scenario(test):
     step_cluster_list_sku(test, checks=[])
     step_cluster_list_sku_by_resource_group(test, checks=[])
     step_cluster_list_language_extension(
-        test, 
+        test,
         checks=[test.check("length(@)", 2)]
     )
     step_database_list(test, checks=[test.check("length(@)", 1)])
     step_cluster_list_follower_database(
-        test, 
+        test,
         checks=[test.check("length(@)", 1)]
     )
     step_database_principal_assignment_list(test, checks=[])
     step_database_list_principal(test, checks=[test.check("length(@)", 3)])
     step_attached_database_configuration_list(
-        test, 
+        test,
         checks=[test.check("length(@)", 1)]
     )
     step_data_connection_list(test, checks=[test.check("length(@)", 1)])
@@ -261,7 +261,7 @@ def call_scenario(test):
         checks=[
             test.check("name", "{myCluster1}", case_sensitive=False),
             test.check(
-                "identity.type", "SystemAssigned", 
+                "identity.type", "SystemAssigned",
                 case_sensitive=False
             ),
             test.check("location", "West US 2", case_sensitive=False),
@@ -270,7 +270,7 @@ def call_scenario(test):
             test.check("enableStreamingIngest", True),
             test.check("engineType", "V3", case_sensitive=False),
             test.check(
-                "restrictOutboundNetworkAccess", "Disabled", 
+                "restrictOutboundNetworkAccess", "Disabled",
                 case_sensitive=False
             ),
         ],
@@ -310,7 +310,7 @@ class KustoScenarioTest(ScenarioTest):
                 "myScript": "kustoScript2",
                 "myCluster1": "KustoClusterLeader7",
                 "myDataConnection": "DataConnection3",
-                "myAttachedDatabaseConfiguration": 
+                "myAttachedDatabaseConfiguration":
                     "myAttachedDatabaseConfiguration",
                 "myManagedPrivateEndpoint": "kustoManagedPrivateEndpoint4",
                 "myPrivateEndpoint": "kustoPrivateEndpoint4",
@@ -320,8 +320,8 @@ class KustoScenarioTest(ScenarioTest):
 
     @AllowLargeResponse(size_kb=5000)
     @ResourceGroupPreparer(
-        name_prefix="clitestkusto_kustorptest"[:7], 
-        key="rg", 
+        name_prefix="clitestkusto_kustorptest"[:7],
+        key="rg",
         parameter_name="rg"
     )
     @StorageAccountPreparer(
