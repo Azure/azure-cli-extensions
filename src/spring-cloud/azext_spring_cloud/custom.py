@@ -1673,24 +1673,6 @@ def certificate_add(cmd, client, resource_group, service, name, only_public_cert
         cls=callback
     )
 
-    # poller = client.certificates.begin_create_or_update(
-    #     resource_group_name=resource_group,
-    #     service_name=service,
-    #     certificate_name=name,
-    #     certificate_resource=certificate_resource
-    # )
-    #
-    # return client.certificates.begin_create_or_update(
-    #     resource_group_name=resource_group,
-    #     service_name=service,
-    #     certificate_name=name,
-    #     certificate_resource=certificate_resource,
-    #     continuation_token=poller.continuation_token()
-    # )
-
-
-    # return client.certificates.get(resource_group, service, name)
-
 
 def certificate_show(cmd, client, resource_group, service, name):
     return client.certificates.get(resource_group, service, name)
