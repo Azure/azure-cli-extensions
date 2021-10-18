@@ -13,8 +13,5 @@
 from .generated._help import helps  # pylint: disable=reimported
 try:
     from .manual._help import helps  # pylint: disable=reimported
-except ImportError as e:
-    if e.name.endswith('manual._help'):
-        pass
-    else:
-        raise e
+except ImportError:
+    pass

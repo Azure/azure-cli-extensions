@@ -30,11 +30,8 @@ class KustoManagementClientCommandsLoader(AzCommandsLoader):
         try:
             from azext_kusto.manual.commands import load_command_table as load_command_table_manual
             load_command_table_manual(self, args)
-        except ImportError as e:
-            if e.name.endswith('manual.commands'):
-                pass
-            else:
-                raise e
+        except ImportError:
+            pass
         return self.command_table
 
     def load_arguments(self, command):
@@ -43,11 +40,8 @@ class KustoManagementClientCommandsLoader(AzCommandsLoader):
         try:
             from azext_kusto.manual._params import load_arguments as load_arguments_manual
             load_arguments_manual(self, command)
-        except ImportError as e:
-            if e.name.endswith('manual._params'):
-                pass
-            else:
-                raise e
+        except ImportError:
+            pass
 
 
 COMMAND_LOADER_CLS = KustoManagementClientCommandsLoader
