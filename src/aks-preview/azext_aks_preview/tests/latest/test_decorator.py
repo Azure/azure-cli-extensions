@@ -294,6 +294,58 @@ class AKSPreviewContextTestCase(unittest.TestCase):
             ctx_1.get_node_resource_group(), "test_node_resource_group"
         )
 
+    def test_get_nat_gateway_managed_outbound_ip_count(self):
+        # default
+        ctx_1 = AKSPreviewContext(
+            self.cmd,
+            {"nat_gateway_managed_outbound_ip_count": None},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(
+            ctx_1.get_nat_gateway_managed_outbound_ip_count(), None
+        )
+        nat_gateway_profile = self.models.nat_gateway_models.get(
+            "ManagedClusterNATGatewayProfile"
+        )(
+            managed_outbound_ip_profile=self.models.nat_gateway_models.get(
+                "ManagedClusterManagedOutboundIPProfile"
+            )(count=10)
+        )
+        network_profile = self.models.ContainerServiceNetworkProfile(
+            nat_gateway_profile=nat_gateway_profile
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=network_profile,
+        )
+        ctx_1.attach_mc(mc)
+        self.assertEqual(ctx_1.get_nat_gateway_managed_outbound_ip_count(), 10)
+
+    def test_get_nat_gateway_idle_timeout(self):
+        # default
+        ctx_1 = AKSPreviewContext(
+            self.cmd,
+            {"nat_gateway_idle_timeout": None},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_nat_gateway_idle_timeout(), None)
+        nat_gateway_profile = self.models.nat_gateway_models.get(
+            "ManagedClusterNATGatewayProfile"
+        )(
+            idle_timeout_in_minutes=20,
+        )
+        network_profile = self.models.ContainerServiceNetworkProfile(
+            nat_gateway_profile=nat_gateway_profile
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=network_profile,
+        )
+        ctx_1.attach_mc(mc)
+        self.assertEqual(ctx_1.get_nat_gateway_idle_timeout(), 20)
+
 
 class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
     def setUp(self):
@@ -534,6 +586,98 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
         ground_truth_mc_2 = self.models.ManagedCluster(
             location="test_location",
             node_resource_group="test_node_resource_group",
+        )
+        self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
+    def test_set_up_network_profile(self):
+        # default value in `aks_create`
+        dec_1 = AKSPreviewCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "load_balancer_sku": None,
+                "load_balancer_managed_outbound_ip_count": None,
+                "load_balancer_outbound_ips": None,
+                "load_balancer_outbound_ip_prefixes": None,
+                "load_balancer_outbound_ports": None,
+                "load_balancer_idle_timeout": None,
+                "outbound_type": None,
+                "network_plugin": None,
+                "pod_cidr": None,
+                "service_cidr": None,
+                "dns_service_ip": None,
+                "docker_bridge_cidr": None,
+                "network_policy": None,
+                "nat_gateway_managed_outbound_ip_count": None,
+                "nat_gateway_idle_timeout": None,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+
+        mc_1 = self.models.ManagedCluster(location="test_location")
+        # fail on passing the wrong mc object
+        with self.assertRaises(CLIInternalError):
+            dec_1.set_up_network_profile(None)
+        dec_mc_1 = dec_1.set_up_network_profile(mc_1)
+
+        network_profile_1 = self.models.ContainerServiceNetworkProfile(
+            network_plugin="kubenet",  # default value in SDK
+            pod_cidr="10.244.0.0/16",  # default value in SDK
+            service_cidr="10.0.0.0/16",  # default value in SDK
+            dns_service_ip="10.0.0.10",  # default value in SDK
+            docker_bridge_cidr="172.17.0.1/16",  # default value in SDK
+            load_balancer_sku="standard",
+            outbound_type="loadBalancer",
+        )
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location", network_profile=network_profile_1
+        )
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+        # custom value
+        dec_2 = AKSPreviewCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "load_balancer_sku": None,
+                "load_balancer_managed_outbound_ip_count": None,
+                "load_balancer_outbound_ips": None,
+                "load_balancer_outbound_ip_prefixes": None,
+                "load_balancer_outbound_ports": None,
+                "load_balancer_idle_timeout": None,
+                "outbound_type": None,
+                "network_plugin": "kubenet",
+                "pod_cidr": "10.246.0.0/16",
+                "service_cidr": None,
+                "dns_service_ip": None,
+                "docker_bridge_cidr": None,
+                "network_policy": None,
+                "nat_gateway_managed_outbound_ip_count": 10,
+                "nat_gateway_idle_timeout": 20,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_2 = self.models.ManagedCluster(location="test_location")
+        dec_mc_2 = dec_2.set_up_network_profile(mc_2)
+
+        nat_gateway_profile_2 = self.models.nat_gateway_models.get("ManagedClusterNATGatewayProfile")(
+            managed_outbound_ip_profile=self.models.nat_gateway_models.get(
+                "ManagedClusterManagedOutboundIPProfile"
+            )(count=10),
+            idle_timeout_in_minutes=20,
+        )
+        network_profile_2 = self.models.ContainerServiceNetworkProfile(
+            network_plugin="kubenet",
+            pod_cidr="10.246.0.0/16",
+            service_cidr=None,  # overwritten to None
+            dns_service_ip=None,  # overwritten to None
+            docker_bridge_cidr=None,  # overwritten to None
+            load_balancer_sku="standard",
+            outbound_type="loadBalancer",
+            nat_gateway_profile=nat_gateway_profile_2,
+        )
+        ground_truth_mc_2 = self.models.ManagedCluster(
+            location="test_location", network_profile=network_profile_2
         )
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
 

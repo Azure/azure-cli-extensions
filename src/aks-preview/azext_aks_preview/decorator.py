@@ -453,14 +453,14 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
         # build nat gateway profile, which is part of the network profile
         nat_gateway_profile = create_nat_gateway_profile(
             self.context.get_nat_gateway_managed_outbound_ip_count(),
-            self.context.get_assign_identity(),
+            self.context.get_nat_gateway_idle_timeout(),
             models=self.models.nat_gateway_models,
         )
 
         load_balancer_sku = self.context.get_load_balancer_sku()
         if load_balancer_sku != "basic":
             network_profile.nat_gateway_profile = nat_gateway_profile
-        mc.nat_gateway_profile = nat_gateway_profile
+        mc.network_profile = network_profile
         return mc
 
     def construct_preview_mc_profile(self) -> ManagedCluster:

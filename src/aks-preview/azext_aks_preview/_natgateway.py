@@ -10,7 +10,7 @@ def create_nat_gateway_profile(managed_outbound_ip_count, idle_timeout, models):
         return None
 
     # profile = ManagedClusterNATGatewayProfile()
-    profile = models.get("ManagedClusterNATGatewayProfile")
+    profile = models.get("ManagedClusterNATGatewayProfile")()
     return configure_nat_gateway_profile(managed_outbound_ip_count, idle_timeout, profile, models)
 
 
