@@ -19,6 +19,10 @@ from azure.cli.core.azclierror import (
     CLIInternalError,
     InvalidArgumentValueError,
 )
+
+from azext_aks_preview._natgateway import(
+    create_nat_gateway_profile
+)
 from azure.cli.core.commands import AzCliCommand
 from azure.cli.core.profiles import ResourceType
 from azure.cli.core.util import get_file_json
@@ -57,6 +61,31 @@ class AKSPreviewModels(AKSModels):
             resource_type=self.resource_type,
             operation_group="managed_clusters",
         )
+        # init nat gateway models
+        self.init_nat_gateway_models()
+
+    def init_nat_gateway_models(self) -> None:
+        """Initialize models used by nat gateway.
+
+        The models are stored in a dictionary, the key is the model name and the value is the model type.
+
+        :return: None
+        """
+        nat_gateway_models = {}
+        nat_gateway_models["ManagedClusterNATGatewayProfile"] = self.__cmd.get_models(
+            "ManagedClusterNATGatewayProfile",
+            resource_type=self.resource_type,
+            operation_group="managed_clusters",
+        )
+        nat_gateway_models["ManagedClusterManagedOutboundIPProfile"] = self.__cmd.get_models(
+            "ManagedClusterManagedOutboundIPProfile",
+             resource_type=self.resource_type,
+            operation_group="managed_clusters",
+        )
+        self.nat_gateway_models = nat_gateway_models
+        # Note: Uncomment the followings to add these models as class attributes.
+        # for model_name, model_type in nat_gateway_models.items():
+        #     setattr(self, model_name, model_type)
 
 
 # pylint: disable=too-many-public-methods
@@ -363,6 +392,9 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
     def set_up_agent_pool_profiles(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up agent pool profiles for the ManagedCluster object.
 
+        Call the method of the same name in the parent class to set up agent_pool_profiles, and then set some additional
+        properties on this basis.
+
         :return: the ManagedCluster object
         """
         mc = super().set_up_agent_pool_profiles(mc)
@@ -405,6 +437,30 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
             )
 
         mc.node_resource_group = self.context.get_node_resource_group()
+        return mc
+
+    def set_up_network_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up network profile for the ManagedCluster object.
+
+        Call the method of the same name in the parent class to set up network_profile, and then set the
+        nat_gateway_profile on this basis.
+
+        :return: the ManagedCluster object
+        """
+        mc = super().set_up_network_profile(mc)
+        network_profile = mc.network_profile
+
+        # build nat gateway profile, which is part of the network profile
+        nat_gateway_profile = create_nat_gateway_profile(
+            self.context.get_nat_gateway_managed_outbound_ip_count(),
+            self.context.get_assign_identity(),
+            models=self.models.nat_gateway_models,
+        )
+
+        load_balancer_sku = self.context.get_load_balancer_sku()
+        if load_balancer_sku != "basic":
+            network_profile.nat_gateway_profile = nat_gateway_profile
+        mc.nat_gateway_profile = nat_gateway_profile
         return mc
 
     def construct_preview_mc_profile(self) -> ManagedCluster:
