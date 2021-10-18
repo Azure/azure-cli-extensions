@@ -292,11 +292,6 @@ def app_create(cmd, client, resource_group, service, name,
                 loaded_certificates.append(models_20210901preview.
                                            LoadedCertificate(resource_id=certificate_resource.id,
                                                              load_trust_store=item['loadTrustStore']))
-        # for item in data['loadedCertificates']:
-        #     certificate_resource = client.certificates.get(resource_group, service, item['certificateName'])
-        #     loaded_certificates.append(models_20210901preview.
-        #                                LoadedCertificate(resource_id=certificate_resource.id,
-        #                                                  load_trust_store=item['loadTrustStore']))
         properties.loaded_certificates = loaded_certificates
 
     resource = client.services.get(resource_group, service)
@@ -400,16 +395,6 @@ def app_update(cmd, client, resource_group, service, name,
     if enable_persistent_storage is False:
         properties.persistent_disk = models_20210901preview.PersistentDisk(size_in_gb=0)
 
-    # if loaded_public_cert_file is not None:
-    #     input_file = open(loaded_public_cert_file)
-    #     data = json.load(input_file)
-    #     loaded_certificates = []
-    #
-    #     for item in data['loadedCertificates']:
-    #         certificate_resource = client.certificates.get(resource_group, service, item['certificateName'])
-    #         loaded_certificates.append(models_20210901preview.
-    #                                    LoadedCertificate(resource_id=certificate_resource.id,
-    #                                                      load_trust_store=item['loadTrustStore']))
     if loaded_public_cert_file is not None and os.path.isfile(loaded_public_cert_file):
         data = get_file_json(loaded_public_cert_file, throw_on_empty=False)
         loaded_certificates = []
