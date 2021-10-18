@@ -243,6 +243,7 @@ class SSHUtilsTests(unittest.TestCase):
         expected_lines = [
             "",
             "Host rg-vm",
+            "\tHostName vm",
             "\tUser username",
             "\tCertificateFile cert",
             "\tIdentityFile privatekey",
@@ -270,6 +271,7 @@ class SSHUtilsTests(unittest.TestCase):
         expected_lines = [
             "",
             "Host rg-vm",
+            "\tHostName vm",
             "\tUser username",
             "\tCertificateFile cert",
             "\tIdentityFile privatekey",
