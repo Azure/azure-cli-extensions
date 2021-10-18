@@ -54,7 +54,7 @@ logger = get_logger(__name__)
 # pylint: disable=line-too-long
 
 
-def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="", proxy_cert="", location=None,
+def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="", proxy_cert="", insecure_skip_verify=False, location=None,
                         kube_config=None, kube_context=None, no_wait=False, tags=None, distribution='auto', infrastructure='auto',
                         disable_auto_upgrade=False, cl_oid=None, onboarding_timeout="600"):
     logger.warning("This operation might take a while...\n")
@@ -105,6 +105,9 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     # Loading the kubeconfig file in kubernetes client configuration
     load_kube_config(kube_config, kube_context)
     configuration = kube_client.Configuration()
+    if insecure_skip_verify:
+        logger.warn("Disabling TLS/SSL verification for the target Kubernetes cluster.")
+        configuration.verify_ssl = False
 
     # Checking the connection to kubernetes cluster.
     # This check was added to avoid large timeouts when connecting to AAD Enabled AKS clusters
@@ -217,7 +220,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
 
         current_k8s_namespace = current_k8s_context.get('context').get('namespace', "default")  # Take "default" namespace, if not specified in the kube-config
         namespace_exists = False
-        k8s_v1 = kube_client.CoreV1Api()
+        k8s_v1 = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
         k8s_ns = k8s_v1.list_namespace()
         for ns in k8s_ns.items:
             if ns.metadata.name == current_k8s_namespace:
@@ -656,7 +659,7 @@ def list_connectedk8s(cmd, client, resource_group_name=None):
 
 
 def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
-                        kube_config=None, kube_context=None, no_wait=False):
+                        kube_config=None, kube_context=None, insecure_skip_verify=False, no_wait=False):
     logger.warning("This operation might take a while ...\n")
 
     # Send cloud information to telemetry
@@ -668,6 +671,9 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
     # Loading the kubeconfig file in kubernetes client configuration
     load_kube_config(kube_config, kube_context)
     configuration = kube_client.Configuration()
+    if insecure_skip_verify:
+        logger.warn("Disabling TLS/SSL verification for the target Kubernetes cluster.")
+        configuration.verify_ssl = False
 
     # Checking the connection to kubernetes cluster.
     # This check was added to avoid large timeouts when connecting to AAD Enabled
@@ -774,7 +780,7 @@ def update_connectedk8s(cmd, instance, tags=None):
 
 
 def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="", proxy_cert="",
-                  disable_proxy=False, kube_config=None, kube_context=None, auto_upgrade=None):
+                  disable_proxy=False, kube_config=None, kube_context=None, insecure_skip_verify=False, auto_upgrade=None):
     logger.warning("This operation might take a while...\n")
 
     # Send cloud information to telemetry
@@ -818,6 +824,9 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
     # Loading the kubeconfig file in kubernetes client configuration
     load_kube_config(kube_config, kube_context)
     configuration = kube_client.Configuration()
+    if insecure_skip_verify:
+        logger.warn("Disabling TLS/SSL verification for the target Kubernetes cluster.")
+        configuration.verify_ssl = False
 
     # Checking the connection to kubernetes cluster.
     # This check was added to avoid large timeouts when connecting to AAD Enabled AKS clusters
@@ -916,7 +925,7 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
     return str.format(consts.Update_Agent_Success, connected_cluster.name)
 
 
-def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=None, kube_context=None, arc_agent_version=None, upgrade_timeout="600"):
+def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=None, insecure_skip_verify=False, kube_context=None, arc_agent_version=None, upgrade_timeout="600"):
     logger.warning("This operation might take a while...\n")
 
     # Send cloud information to telemetry
@@ -937,6 +946,9 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
     # Loading the kubeconfig file in kubernetes client configuration
     load_kube_config(kube_config, kube_context)
     configuration = kube_client.Configuration()
+    if insecure_skip_verify:
+        logger.warn("Disabling TLS/SSL verification for the target Kubernetes cluster.")
+        configuration.verify_ssl = False
 
     # Checking the connection to kubernetes cluster.
     # This check was added to avoid large timeouts when connecting to AAD Enabled AKS clusters
@@ -1170,7 +1182,7 @@ def get_all_helm_values(release_namespace, kube_config, kube_context, helm_clien
         raise CLIInternalError("Problem loading the helm existing values: " + str(e))
 
 
-def enable_features(cmd, client, resource_group_name, cluster_name, features, kube_config=None, kube_context=None,
+def enable_features(cmd, client, resource_group_name, cluster_name, features, kube_config=None, kube_context=None, insecure_skip_verify=False,
                     azrbac_client_id=None, azrbac_client_secret=None, azrbac_skip_authz_check=None, cl_oid=None):
     logger.warning("This operation might take a while...\n")
 
@@ -1214,6 +1226,9 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
     # Loading the kubeconfig file in kubernetes client configuration
     load_kube_config(kube_config, kube_context)
     configuration = kube_client.Configuration()
+    if insecure_skip_verify:
+        logger.warn("Disabling TLS/SSL verification for the target Kubernetes cluster.")
+        configuration.verify_ssl = False
 
     # Checking the connection to kubernetes cluster.
     # This check was added to avoid large timeouts when connecting to AAD Enabled AKS clusters
@@ -1309,7 +1324,7 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
     return str.format(consts.Successfully_Enabled_Features, features, connected_cluster.name)
 
 
-def disable_features(cmd, client, resource_group_name, cluster_name, features, kube_config=None, kube_context=None,
+def disable_features(cmd, client, resource_group_name, cluster_name, features, kube_config=None, kube_context=None, insecure_skip_verify=False,
                      yes=False):
     features = [x.lower() for x in features]
     confirmation_message = "Disabling few of the features may adversely impact dependent resources. Learn more about this at https://aka.ms/ArcK8sDependentResources. \n" + "Are you sure you want to disable these features: {}".format(features)
@@ -1337,6 +1352,9 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
     # Loading the kubeconfig file in kubernetes client configuration
     load_kube_config(kube_config, kube_context)
     configuration = kube_client.Configuration()
+    if insecure_skip_verify:
+        logger.warn("Disabling TLS/SSL verification for the target Kubernetes cluster.")
+        configuration.verify_ssl = False
 
     # Checking the connection to kubernetes cluster.
     # This check was added to avoid large timeouts when connecting to AAD Enabled AKS clusters

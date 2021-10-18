@@ -26,6 +26,7 @@ def load_arguments(self, _):
         c.argument('cluster_name', options_list=['--name', '-n'], help='The name of the connected cluster.')
         c.argument('kube_config', options_list=['--kube-config'], help='Path to the kube config file.')
         c.argument('kube_context', options_list=['--kube-context'], help='Kubconfig context from current machine.')
+        c.argument('insecure_skip_verify', options_list=['--insecure-skip-verify'], arg_group='Proxy', action='store_true', default=False, help='Skip TLS/SSL verification for the target kubernetes cluster. This is not recommended.')
         c.argument('https_proxy', options_list=['--proxy-https'], arg_group='Proxy', help='Https proxy URL to be used.')
         c.argument('http_proxy', options_list=['--proxy-http'], arg_group='Proxy', help='Http proxy URL to be used.')
         c.argument('no_proxy', options_list=['--proxy-skip-range'], arg_group='Proxy', help='List of URLs/CIDRs for which proxy should not to be used.')
@@ -41,6 +42,7 @@ def load_arguments(self, _):
         c.argument('cluster_name', options_list=['--name', '-n'], id_part='name', help='The name of the connected cluster.')
         c.argument('kube_config', options_list=['--kube-config'], help='Path to the kube config file.')
         c.argument('kube_context', options_list=['--kube-context'], help='Kubconfig context from current machine.')
+        c.argument('insecure_skip_verify', options_list=['--insecure-skip-verify'], arg_group='Proxy', action='store_true', default=False, help='Skip TLS/SSL verification for the target kubernetes cluster. This is not recommended.')
         c.argument('https_proxy', options_list=['--proxy-https'], arg_group='Proxy', help='Https proxy URL to be used.')
         c.argument('http_proxy', options_list=['--proxy-http'], arg_group='Proxy', help='Http proxy URL to be used.')
         c.argument('no_proxy', options_list=['--proxy-skip-range'], arg_group='Proxy', help='List of URLs/CIDRs for which proxy should not to be used.')
@@ -52,6 +54,7 @@ def load_arguments(self, _):
         c.argument('cluster_name', options_list=['--name', '-n'], id_part='name', help='The name of the connected cluster.')
         c.argument('kube_config', options_list=['--kube-config'], help='Path to the kube config file.')
         c.argument('kube_context', options_list=['--kube-context'], help='Kubconfig context from current machine.')
+        c.argument('insecure_skip_verify', options_list=['--insecure-skip-verify'], action='store_true', default=False, help='Skip TLS/SSL verification for the target kubernetes cluster. This is not recommended.')
         c.argument('arc_agent_version', options_list=['--agent-version'], help='Version of agent to update the helm charts to.')
         c.argument('upgrade_timeout', options_list=['--upgrade-timeout'], help='Time required (in seconds) for the arc-agent pods to be upgraded on the kubernetes cluster. Override this value if the hardware/network constraints on your cluster requires more time for upgrading the arc-agent pods.')
 
@@ -59,6 +62,7 @@ def load_arguments(self, _):
         c.argument('cluster_name', options_list=['--name', '-n'], id_part='name', help='The name of the connected cluster.')
         c.argument('kube_config', options_list=['--kube-config'], help='Path to the kube config file.')
         c.argument('kube_context', options_list=['--kube-context'], help='Kubconfig context from current machine.')
+        c.argument('insecure_skip_verify', options_list=['--insecure-skip-verify'], action='store_true', default=False, help='Skip TLS/SSL verification for the target kubernetes cluster. This is not recommended.')
         c.argument('features', features_types, options_list=['--features'], help='Space-separated list of features you want to enable.')
         c.argument('azrbac_client_id', options_list=['--app-id'], arg_group='Azure RBAC', help='Application ID for enabling Azure RBAC. Specify when enabling azure-rbac.')
         c.argument('azrbac_client_secret', options_list=['--app-secret'], arg_group='Azure RBAC', help='Application secret for enabling Azure RBAC. Specify when enabling azure-rbac.')
@@ -69,6 +73,7 @@ def load_arguments(self, _):
         c.argument('cluster_name', options_list=['--name', '-n'], id_part='name', help='The name of the connected cluster.')
         c.argument('kube_config', options_list=['--kube-config'], help='Path to the kube config file.')
         c.argument('kube_context', options_list=['--kube-context'], help='Kubconfig context from current machine.')
+        c.argument('insecure_skip_verify', options_list=['--insecure-skip-verify'], action='store_true', default=False, help='Skip TLS/SSL verification for the target kubernetes cluster. This is not recommended.')
         c.argument('features', features_types, options_list=['--features'], help='Space-separated list of features you want to disable.')
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
 
@@ -82,6 +87,7 @@ def load_arguments(self, _):
         c.argument('cluster_name', options_list=['--name', '-n'], id_part='name', help='The name of the connected cluster.')
         c.argument('kube_config', options_list=['--kube-config'], help='Path to the kube config file.')
         c.argument('kube_context', options_list=['--kube-context'], help='Kubconfig context from current machine.')
+        c.argument('insecure_skip_verify', options_list=['--insecure-skip-verify'], action='store_true', default=False, help='Skip TLS/SSL verification for the target kubernetes cluster. This is not recommended.')
 
     with self.argument_context('connectedk8s proxy') as c:
         c.argument('cluster_name', options_list=['--name', '-n'], id_part='name', help='The name of the connected cluster.')

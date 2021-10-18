@@ -2,6 +2,11 @@
 
 Release History
 ===============
+1.2.1
+++++++
+
+* Added `--insecure-skip-verify` to relevant commands
+
 1.2.0
 ++++++
 
