@@ -248,6 +248,7 @@ def list_keys(cmd, client, resource_group, name, app=None, deployment=None):
 def regenerate_keys(cmd, client, resource_group, name, type):
     return client.services.regenerate_test_key(resource_group, name, models.RegenerateTestKeyRequestPayload(key_type=type))
 
+
 def app_append_persistent_storage(cmd, client, resource_group, service, name,
                                   storage_name=None,
                                   persistent_storage_type=None,
@@ -256,29 +257,28 @@ def app_append_persistent_storage(cmd, client, resource_group, service, name,
                                   mount_options=None,
                                   read_only=None):
     client_0901_preview = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20210901preview)
-    resource=client.services.get(resource_group, service)
-    location=resource.location
 
-    storage_resource=client_0901_preview.storages.get(resource_group, service, storage_name)
-    app=client_0901_preview.apps.get(resource_group, service, name)
+    storage_resource = client_0901_preview.storages.get(resource_group, service, storage_name)
+    app = client_0901_preview.apps.get(resource_group, service, name)
 
-    custom_persistent_disks=[]
+    custom_persistent_disks = []
     if app.properties.custom_persistent_disks:
         for disk in app.properties.custom_persistent_disks:
             custom_persistent_disks.append(disk)
 
-    custom_persistent_disk_properties=models_20210901preview.AzureFileVolume(
-                type=persistent_storage_type,
-                share_name=share_name,
-                mount_path=mount_path,
-                mount_options=mount_options,
-                read_only=read_only)
-            
-    custom_persistent_disks.append(models_20210901preview.
-                                CustomPersistentDiskResource(storage_id=storage_resource.id, 
-                                                custom_persistent_disk_properties=custom_persistent_disk_properties))
-    
-    app.properties.custom_persistent_disks=custom_persistent_disks
+    custom_persistent_disk_properties = models_20210901preview.AzureFileVolume(
+        type=persistent_storage_type,
+        share_name=share_name,
+        mount_path=mount_path,
+        mount_options=mount_options,
+        read_only=read_only)
+
+    custom_persistent_disks.append(
+        models_20210901preview.CustomPersistentDiskResource(
+            storage_id=storage_resource.id,
+            custom_persistent_disk_properties=custom_persistent_disk_properties))
+
+    app.properties.custom_persistent_disks = custom_persistent_disks
     logger.warning("[1/1] updating app '{}'".format(name))
 
     poller = client.apps.begin_update(
@@ -287,6 +287,8 @@ def app_append_persistent_storage(cmd, client, resource_group, service, name,
         sleep(APP_CREATE_OR_UPDATE_SLEEP_INTERVAL)
 
     app_updated = client.apps.get(resource_group, service, name)
+    return app_updated
+
 
 def app_create(cmd, client, resource_group, service, name,
                assign_endpoint=None,
@@ -308,14 +310,18 @@ def app_create(cmd, client, resource_group, service, name,
     properties = models_20210901preview.AppResourceProperties()
     properties.temporary_disk = models_20210901preview.TemporaryDisk(
         size_in_gb=5, mount_path="/tmp")
-    
+
+    resource = client.services.get(resource_group, service)
+
+    _validate_instance_count(resource.sku.tier, instance_count)
+
     if enable_persistent_storage:
         properties.persistent_disk = models_20210901preview.PersistentDisk(
             size_in_gb=_get_persistent_disk_size(resource.sku.tier), mount_path="/persistent")
     else:
         properties.persistent_disk = models_20210901preview.PersistentDisk(
             size_in_gb=0, mount_path="/persistent")
-    
+
     if persistent_storage:
         client_0901_preview = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20210901preview)
         input_file = open(persistent_storage)
@@ -324,22 +330,19 @@ def app_create(cmd, client, resource_group, service, name,
 
         if data:
             for item in data['customPersistentDisks']:
-                storage_resource=client_0901_preview.storages.get(resource_group, service, item['storageName'])
-                custom_persistent_disk_properties=models_20210901preview.AzureFileVolume(
+                storage_resource = client_0901_preview.storages.get(resource_group, service, item['storageName'])
+                custom_persistent_disk_properties = models_20210901preview.AzureFileVolume(
                     type=item['customPersistentDiskProperties']['type'],
                     share_name=item['customPersistentDiskProperties']['shareName'],
                     mount_path=item['customPersistentDiskProperties']['mountPath'],
                     mount_options=item['customPersistentDiskProperties']['mountOptions'] if 'mountOptions' in item['customPersistentDiskProperties'] else None,
                     read_only=item['customPersistentDiskProperties']['readOnly'] if 'readOnly' in item['customPersistentDiskProperties'] else None)
-                
-                custom_persistent_disks.append(models_20210901preview.
-                                        CustomPersistentDiskResource(storage_id=storage_resource.id, 
-                                                            custom_persistent_disk_properties=custom_persistent_disk_properties))
-        properties.custom_persistent_disks=custom_persistent_disks
-        
-    resource = client.services.get(resource_group, service)
 
-    _validate_instance_count(resource.sku.tier, instance_count)
+                custom_persistent_disks.append(
+                    models_20210901preview.CustomPersistentDiskResource(
+                        storage_id=storage_resource.id,
+                        custom_persistent_disk_properties=custom_persistent_disk_properties))
+        properties.custom_persistent_disks = custom_persistent_disks
 
     app_resource = models_20210901preview.AppResource()
     app_resource.properties = properties
@@ -364,8 +367,8 @@ def app_create(cmd, client, resource_group, service, name,
 
     logger.warning("[3/4] Setting default deployment to production")
 
-    properties.active_deployment_name=DEFAULT_DEPLOYMENT_NAME
-    properties.public=assign_endpoint
+    properties.active_deployment_name = DEFAULT_DEPLOYMENT_NAME
+    properties.public = assign_endpoint
 
     app_resource.location = resource.location
 
@@ -444,18 +447,19 @@ def app_update(cmd, client, resource_group, service, name,
         custom_persistent_disks = []
 
         for item in data['customPersistentDisks']:
-            storage_resource=client_0901_preview.storages.get(resource_group, service, item['storageName'])
-            custom_persistent_disk_properties=models_20210901preview.AzureFileVolume(
+            storage_resource = client_0901_preview.storages.get(resource_group, service, item['storageName'])
+            custom_persistent_disk_properties = models_20210901preview.AzureFileVolume(
                 type=item['customPersistentDiskProperties']['type'],
                 share_name=item['customPersistentDiskProperties']['shareName'],
                 mount_path=item['customPersistentDiskProperties']['mountPath'],
                 mount_options=item['customPersistentDiskProperties']['mountOptions'] if 'mountOptions' in item['customPersistentDiskProperties'] else None,
                 read_only=item['customPersistentDiskProperties']['readOnly'] if 'readOnly' in item['customPersistentDiskProperties'] else None)
-            
-            custom_persistent_disks.append(models_20210901preview.
-                                       CustomPersistentDiskResource(storage_id=storage_resource.id, 
-                                                        custom_persistent_disk_properties=custom_persistent_disk_properties))
-        properties.custom_persistent_disks=custom_persistent_disks
+
+            custom_persistent_disks.append(
+                models_20210901preview.CustomPersistentDiskResource(
+                    storage_id=storage_resource.id,
+                    custom_persistent_disk_properties=custom_persistent_disk_properties))
+        properties.custom_persistent_disks = custom_persistent_disks
 
     app_resource = models_20210901preview.AppResource()
     app_resource.properties = properties
@@ -1627,7 +1631,8 @@ def storage_add(cmd, resource_group, service, name, storage_type, account_name, 
     client = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20210901preview)
     properties = None
     if storage_type == 'StorageAccount':
-        properties=models_20210901preview.StorageAccount(storage_type=storage_type,
+        properties = models_20210901preview.StorageAccount(
+            storage_type=storage_type,
             account_name=account_name,
             account_key=account_key)
 
@@ -1652,14 +1657,15 @@ def storage_list(cmd, resource_group, service):
 def storage_remove(cmd, resource_group, service, name):
     client = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20210901preview)
     client.storages.get(resource_group, service, name)
-    return client.storages.begin_delete(resource_group, service, name)  
+    return client.storages.begin_delete(resource_group, service, name)
 
 
 def storage_update(cmd, resource_group, service, name, storage_type, account_name, account_key):
     client = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20210901preview)
     properties = None
     if storage_type == 'StorageAccount':
-        properties=models_20210901preview.StorageAccount(storage_type=storage_type,
+        properties = models_20210901preview.StorageAccount(
+            storage_type=storage_type,
             account_name=account_name,
             account_key=account_key)
 
@@ -1668,7 +1674,7 @@ def storage_update(cmd, resource_group, service, name, storage_type, account_nam
         service_name=service,
         storage_name=name,
         storage_resource=models_20210901preview.StorageResource(properties=properties),
-        cls=callback)
+        cls=storage_callback)
 
 
 def storage_list_persistent_storage(cmd, resource_group, service, name):
@@ -1685,6 +1691,7 @@ def storage_list_persistent_storage(cmd, resource_group, service, name):
                 reference_apps.append(app)
                 break
     return reference_apps
+
 
 def certificate_list_reference_app(cmd, resource_group, service, name):
     client = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20210901preview)

@@ -129,14 +129,15 @@ def load_arguments(self, _):
         c.argument('https_only', arg_type=get_three_state_flag(), help='If true, access app via https', default=False)
         c.argument('enable_end_to_end_tls', arg_type=get_three_state_flag(), help='If true, enable end to end tls')
         c.argument('persistent_storage', type=str,
-            help='A json file path for the persistent storages to be mounted to the app')
+                   help='A json file path for the persistent storages to be mounted to the app')
 
     with self.argument_context('spring-cloud app append-persistent-storage') as c:
         c.argument('storage_name', type=str,
                    help='Name of the storage resource you created in Azure Spring Cloud.')
         c.argument('persistent_storage_type', type=str, help='Type of the persistent storage volumed.')
-        c.argument('share_name', type=str, help="The name of the pre-created file share. "
-        "ShareName should be provided only if the type of the persistent storage volume is AzureFileVolume.")
+        c.argument('share_name', type=str,
+                   help="The name of the pre-created file share. "
+                        "ShareName should be provided only if the type of the persistent storage volume is AzureFileVolume.")
         c.argument('mount_path', type=str, help='The path for the persistent storage volume to be mounted.')
         c.argument('mount_options', nargs='+', help='[optional] The mount options for the persistent storage volume.', default=None)
         c.argument('read_only', arg_type=get_three_state_flag(), help='[optional] If true, the persistent storage volume will be read only.', default=False)

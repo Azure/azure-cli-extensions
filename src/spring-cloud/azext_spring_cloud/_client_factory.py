@@ -15,6 +15,7 @@ from .vendored_sdks.appplatform.v2021_09_01_preview import (
     AppPlatformManagementClient as AppPlatformManagementClient_20210901preview
 )
 
+
 def cf_spring_cloud(cli_ctx, *_):
     return get_mgmt_service_client(cli_ctx, AppPlatformManagementClient)
 
@@ -26,8 +27,10 @@ def cf_spring_cloud_20201101preview(cli_ctx, *_):
 def cf_spring_cloud_20210601preview(cli_ctx, *_):
     return get_mgmt_service_client(cli_ctx, AppPlatformManagementClient_20210601preview)
 
+
 def cf_spring_cloud_20210901preview(cli_ctx, *_):
     return get_mgmt_service_client(cli_ctx, AppPlatformManagementClient_20210901preview)
+
 
 def cf_resource_groups(cli_ctx, subscription_id=None):
     return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES,
