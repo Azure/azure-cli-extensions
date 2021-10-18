@@ -19,14 +19,12 @@ from azure.cli.core.azclierror import (
     CLIInternalError,
     InvalidArgumentValueError,
 )
-
-from azext_aks_preview._natgateway import(
-    create_nat_gateway_profile
-)
 from azure.cli.core.commands import AzCliCommand
 from azure.cli.core.profiles import ResourceType
 from azure.cli.core.util import get_file_json
 from knack.log import get_logger
+
+from azext_aks_preview._natgateway import create_nat_gateway_profile
 
 logger = get_logger(__name__)
 
@@ -79,7 +77,7 @@ class AKSPreviewModels(AKSModels):
         )
         nat_gateway_models["ManagedClusterManagedOutboundIPProfile"] = self.__cmd.get_models(
             "ManagedClusterManagedOutboundIPProfile",
-             resource_type=self.resource_type,
+            resource_type=self.resource_type,
             operation_group="managed_clusters",
         )
         self.nat_gateway_models = nat_gateway_models
