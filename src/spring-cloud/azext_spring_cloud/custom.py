@@ -1661,19 +1661,35 @@ def certificate_add(cmd, client, resource_group, service, name, only_public_cert
             content=content
         )
     certificate_resource = models_20210901preview.CertificateResource(properties=properties)
-    # return client.certificates.begin_create_or_update(
+
+    def callback(pipeline_response, deserialized, headers):
+        return models_20210901preview.CertificateResource.deserialize(json.loads(pipeline_response.http_response.text()))
+
+    return client.certificates.begin_create_or_update(
+        resource_group_name=resource_group,
+        service_name=service,
+        certificate_name=name,
+        certificate_resource=certificate_resource,
+        cls=callback
+    )
+
+    # poller = client.certificates.begin_create_or_update(
     #     resource_group_name=resource_group,
     #     service_name=service,
     #     certificate_name=name,
     #     certificate_resource=certificate_resource
     # )
-    client.certificates.begin_create_or_update(
-        resource_group_name=resource_group,
-        service_name=service,
-        certificate_name=name,
-        certificate_resource=certificate_resource
-    )
-    return client.certificates.get(resource_group, service, name)
+    #
+    # return client.certificates.begin_create_or_update(
+    #     resource_group_name=resource_group,
+    #     service_name=service,
+    #     certificate_name=name,
+    #     certificate_resource=certificate_resource,
+    #     continuation_token=poller.continuation_token()
+    # )
+
+
+    # return client.certificates.get(resource_group, service, name)
 
 
 def certificate_show(cmd, client, resource_group, service, name):
