@@ -1619,6 +1619,10 @@ def _get_app_log(url, user_name, password, format_json, exceptions):
             exceptions.append(e)
 
 
+def storage_callback(pipeline_response, deserialized, headers):
+    return models_20210901preview.StorageResource.deserialize(json.loads(pipeline_response.http_response.text()))
+
+
 def storage_add(cmd, resource_group, service, name, storage_type, account_name, account_key):
     client = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20210901preview)
     properties = None
@@ -1631,7 +1635,8 @@ def storage_add(cmd, resource_group, service, name, storage_type, account_name, 
         resource_group_name=resource_group,
         service_name=service,
         storage_name=name,
-        storage_resource=models_20210901preview.StorageResource(storage_properties=properties))
+        storage_resource=models_20210901preview.StorageResource(properties=properties),
+        cls=storage_callback)
 
 
 def storage_get(cmd, resource_group, service, name):
@@ -1662,7 +1667,8 @@ def storage_update(cmd, resource_group, service, name, storage_type, account_nam
         resource_group_name=resource_group,
         service_name=service,
         storage_name=name,
-        storage_resource=models_20210901preview.StorageResource(storage_properties=properties))
+        storage_resource=models_20210901preview.StorageResource(properties=properties),
+        cls=callback)
 
 
 def storage_list_persistent_storage(cmd, resource_group, service, name):
