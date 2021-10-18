@@ -87,7 +87,7 @@ def load_arguments(self, _):
                    'audiences.')
         c.argument('enable_auto_stop', arg_type=get_three_state_flag(), help='A boolean value that indicates if the '
                    'cluster could be automatically stopped (due to lack of data or no activity for many days).')
-        c.argument('restrict_outbound_network_access', options_list=['--restrict-outbound-network-access', '--outbound-network-access'],
+        c.argument('restrict_outbound_network_access', options_list=['--restrict-outbound-network-access', '--network-access'],
                    arg_type=get_enum_type(['Enabled', 'Disabled']), help='Whether '
                    'or not to restrict outbound network access.  Value is optional but if passed in, must be '
                    '\'Enabled\' or \'Disabled\'')
@@ -142,7 +142,7 @@ def load_arguments(self, _):
                    'audiences.')
         c.argument('enable_auto_stop', arg_type=get_three_state_flag(), help='A boolean value that indicates if the '
                    'cluster could be automatically stopped (due to lack of data or no activity for many days).')
-        c.argument('restrict_outbound_network_access', options_list=['--restrict-outbound-network-access', '--outbound-network-access'],
+        c.argument('restrict_outbound_network_access', options_list=['--restrict-outbound-network-access', '--network-access'],
                    arg_type=get_enum_type(['Enabled', 'Disabled']), help='Whether '
                    'or not to restrict outbound network access.  Value is optional but if passed in, must be '
                    '\'Enabled\' or \'Disabled\'')
@@ -567,10 +567,10 @@ def load_arguments(self, _):
     with self.argument_context('kusto private-endpoint-connection create') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', type=str, help='The name of the Kusto cluster.')
-        c.argument('private_endpoint_connection_name', options_list=['--name', '-n', '--private-endpoint-connection-nam'
-                                                                     'e'], type=str, help='The name of the private '
-                   'endpoint connection.')
-        c.argument('private_link_service_connection_state', options_list=['--private-link-service-connection-state', '--connection-state'],
+        c.argument('private_endpoint_connection_name',
+                   options_list=['--name', '-n', '--private-endpoint-connection-name'], type=str,
+                   help='The name of the private endpoint connection.')
+        c.argument('private_link_service_connection_state', options_list=['--connection-state'],
                    action=AddPrivateLinkServiceConnectionState, nargs='+',
                    help='Connection State of the Private Endpoint Connection.')
 
@@ -580,9 +580,8 @@ def load_arguments(self, _):
         c.argument('private_endpoint_connection_name', options_list=['--name', '-n', '--private-endpoint-connection-nam'
                                                                      'e'], type=str, help='The name of the private '
                    'endpoint connection.', id_part='child_name_1')
-        c.argument('private_link_service_connection_state', options_list=['--private-link-service-connection-state', '--connection-state'],
-                   action=AddPrivateLinkServiceConnectionState, nargs='+',
-                   help='Connection State of the Private Endpoint Connection.')
+        c.argument('private_link_service_connection_state', options_list=['--connection-state'],
+                   action=AddPrivateLinkServiceConnectionState, nargs='+', help='Connection State of the Private Endpoint Connection.')
         c.ignore('parameters')
 
     with self.argument_context('kusto private-endpoint-connection delete') as c:
