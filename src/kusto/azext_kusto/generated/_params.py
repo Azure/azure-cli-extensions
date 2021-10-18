@@ -570,7 +570,7 @@ def load_arguments(self, _):
         c.argument('private_endpoint_connection_name',
                    options_list=['--name', '-n', '--private-endpoint-connection-name'], type=str,
                    help='The name of the private endpoint connection.')
-        c.argument('private_link_service_connection_state', options_list=['--connection-state'],
+        c.argument('private_link_service_connection_state', options_list=['--private-link-service-connection-state', '--connection-state'],
                    action=AddPrivateLinkServiceConnectionState, nargs='+',
                    help='Connection State of the Private Endpoint Connection.')
 
@@ -580,7 +580,7 @@ def load_arguments(self, _):
         c.argument('private_endpoint_connection_name', options_list=['--name', '-n', '--private-endpoint-connection-nam'
                                                                      'e'], type=str, help='The name of the private '
                    'endpoint connection.', id_part='child_name_1')
-        c.argument('private_link_service_connection_state', options_list=['--connection-state'],
+        c.argument('private_link_service_connection_state', options_list=['--private-link-service-connection-state', '--connection-state'],
                    action=AddPrivateLinkServiceConnectionState, nargs='+', help='Connection State of the Private Endpoint Connection.')
         c.ignore('parameters')
 
