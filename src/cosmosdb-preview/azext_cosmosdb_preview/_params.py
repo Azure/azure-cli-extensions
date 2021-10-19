@@ -24,6 +24,7 @@ def load_arguments(self, _):
             'managed-cassandra cluster deallocate',
             'managed-cassandra cluster start',
             'managed-cassandra cluster status',
+            'managed-cassandra cluster command',
             'managed-cassandra cluster backup list']:
         with self.argument_context(scope) as c:
             c.argument('cluster_name', options_list=['--cluster-name', '-c'], help="Cluster Name", required=True)
@@ -55,9 +56,9 @@ def load_arguments(self, _):
     # Managed Cassandra Cluster
     for scope in ['managed-cassandra cluster command']:
         with self.argument_context(scope) as c:
-            c.argument('command', options_list=['--command'], help="The command which should be run", required=True)
-            c.argument('arguments', options_list=['--arguments'], help="The arguments for the command to be run")
+            c.argument('command_name', options_list=['--command-name'], help="The command which should be run", required=True)
             c.argument('host', options_list=['--host'], help="IP address of the cassandra host to run the command on", required=True)
+            c.argument('arguments', options_list=['--arguments'], help="The dictionary of arguments for the command in json format.")
             c.argument('cassandra-stop-start', options_list=['--cassandra-stop-start'], help="If true, stops cassandra before executing the command and then start it again.")
             c.argument('readwrite', options_list=['--readwrite'], help="If true, allows the command to *write* to the cassandra directory, otherwise read-only.")
 
