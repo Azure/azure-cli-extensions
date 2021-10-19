@@ -81,6 +81,59 @@ helps['spring-cloud test-endpoint renew-key'] = """
     short-summary: Regenerate a test-endpoint key for the Azure Spring Cloud.
 """
 
+helps['spring-cloud storage'] = """
+    type: group
+    short-summary: Commands to manage Storages in Azure Spring Cloud.
+"""
+
+helps['spring-cloud storage add'] = """
+    type: command
+    short-summary: Create a new storage in the Azure Spring Cloud.
+    examples:
+    - name: Create a Storage resource with your own storage account.
+      text: az spring-cloud storage add --storage-type StorageAccount --account-name MyAccountName --account-key MyAccountKey  -g MyResourceGroup -s MyService -n MyStorageName
+"""
+
+helps['spring-cloud storage update'] = """
+    type: command
+    short-summary: Update an existing storage in the Azure Spring Cloud.
+    examples:
+    - name: Update a Storage resource with new name or new key.
+      text: az spring-cloud storage update --storage-type StorageAccount --account-name MyAccountName --account-key MyAccountKey  -g MyResourceGroup -s MyService -n MyStorageName
+"""
+
+helps['spring-cloud storage show'] = """
+    type: command
+    short-summary: Get an existing storage in the Azure Spring Cloud.
+    examples:
+    - name: Get a Storage resource.
+      text: az spring-cloud storage show -g MyResourceGroup -s MyService -n MyStorageName
+"""
+
+helps['spring-cloud storage list'] = """
+    type: command
+    short-summary: List all existing storages in the Azure Spring Cloud.
+    examples:
+    - name: List all Storage resources.
+      text: az spring-cloud storage list -g MyResourceGroup -s MyService
+"""
+
+helps['spring-cloud storage remove'] = """
+    type: command
+    short-summary: Remove an existing storage in the Azure Spring Cloud.
+    examples:
+    - name: Remove a Storage resource.
+      text: az spring-cloud storage remove -g MyResourceGroup -s MyService -n MyStorageName
+"""
+
+helps['spring-cloud storage list-persistent-storage'] = """
+    type: command
+    short-summary: List all the persistent storages related to an existing storage in the Azure Spring Cloud.
+    examples:
+    - name: Remove a Storage resource.
+      text: az spring-cloud storage list-persistent-storage -g MyResourceGroup -s MyService -n MyStorageName
+"""
+
 helps['spring-cloud app'] = """
     type: group
     short-summary: Commands to manage apps in Azure Spring Cloud.
@@ -94,6 +147,14 @@ helps['spring-cloud app create'] = """
       text: az spring-cloud app create -n MyApp -s MyCluster -g MyResourceGroup
     - name: Create an public accessible app with 3 instances and 2 cpu cores and 3 GB of memory per instance.
       text: az spring-cloud app create -n MyApp -s MyCluster -g MyResourceGroup --assign-endpoint true --cpu 2 --memory 3 --instance-count 3
+"""
+
+helps['spring-cloud app append-persistent-storage'] = """
+    type: command
+    short-summary: Append a new persistent storage to an app in the Azure Spring Cloud.
+    examples:
+    - name: Append a new persistent storage to an app.
+      text: az spring-cloud app append-persistent-storage --persistent-storage-type AzureFileVolume --share-name MyShareName --mount-path /MyMountPath --storage-name MyStorageName -n MyApp -g MyResourceGroup -s MyService
 """
 
 helps['spring-cloud app update'] = """

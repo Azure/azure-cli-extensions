@@ -134,7 +134,7 @@ def load_arguments(self, _):
     with self.argument_context('spring-cloud app append-persistent-storage') as c:
         c.argument('storage_name', type=str,
                    help='Name of the storage resource you created in Azure Spring Cloud.')
-        c.argument('persistent_storage_type', type=str, help='Type of the persistent storage volumed.')
+        c.argument('persistent_storage_type', options_list=['--persistent-storage-type', '-t'], type=str, help='Type of the persistent storage volumed.')
         c.argument('share_name', type=str,
                    help="The name of the pre-created file share. "
                         "ShareName should be provided only if the type of the persistent storage volume is AzureFileVolume.")
