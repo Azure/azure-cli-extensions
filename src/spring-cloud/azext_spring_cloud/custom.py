@@ -40,7 +40,6 @@ from azure.cli.core.commands import cached_put
 from azure.core.exceptions import ResourceNotFoundError
 from ._utils import _get_rg_location
 from ._utils import _get_sku_name
-# from ._utils import _try_load_file_object
 from ._resource_quantity import validate_cpu, validate_memory
 from six.moves.urllib import parse
 from threading import Thread
@@ -798,7 +797,10 @@ def app_append_loaded_public_cert(cmd, client, resource_group, service, name, ce
     certificate_resource = client.certificates.get(resource_group, service, certificate_name)
     certificate_resource_id = certificate_resource.id
 
-    loaded_certificates = app_resource.properties.loaded_certificates or []
+    loaded_certificates = []
+    if app_resource.properties.loaded_certificates:
+        for loaded_certificate in app_resource.properties.loaded_certificates:
+            loaded_certificates.append(loaded_certificate)
 
     for loaded_certificate in loaded_certificates:
         if loaded_certificate.resource_id == certificate_resource.id:
@@ -809,6 +811,7 @@ def app_append_loaded_public_cert(cmd, client, resource_group, service, name, ce
                                                  load_trust_store=load_trust_store))
 
     app_resource.properties.loaded_certificates = loaded_certificates
+    logger.warning("[1/1] updating app '{}'".format(name))
 
     poller = client.apps.begin_update(
         resource_group, service, name, app_resource)
