@@ -24,6 +24,8 @@ from azure.cli.core.profiles import ResourceType
 from azure.cli.core.util import get_file_json
 from knack.log import get_logger
 
+from azext_aks_preview._natgateway import create_nat_gateway_profile
+
 logger = get_logger(__name__)
 
 # type variables
@@ -57,6 +59,31 @@ class AKSPreviewModels(AKSModels):
             resource_type=self.resource_type,
             operation_group="managed_clusters",
         )
+        # init nat gateway models
+        self.init_nat_gateway_models()
+
+    def init_nat_gateway_models(self) -> None:
+        """Initialize models used by nat gateway.
+
+        The models are stored in a dictionary, the key is the model name and the value is the model type.
+
+        :return: None
+        """
+        nat_gateway_models = {}
+        nat_gateway_models["ManagedClusterNATGatewayProfile"] = self.__cmd.get_models(
+            "ManagedClusterNATGatewayProfile",
+            resource_type=self.resource_type,
+            operation_group="managed_clusters",
+        )
+        nat_gateway_models["ManagedClusterManagedOutboundIPProfile"] = self.__cmd.get_models(
+            "ManagedClusterManagedOutboundIPProfile",
+            resource_type=self.resource_type,
+            operation_group="managed_clusters",
+        )
+        self.nat_gateway_models = nat_gateway_models
+        # Note: Uncomment the followings to add these models as class attributes.
+        # for model_name, model_type in nat_gateway_models.items():
+        #     setattr(self, model_name, model_type)
 
 
 # pylint: disable=too-many-public-methods
@@ -286,6 +313,51 @@ class AKSPreviewContext(AKSContext):
         # this parameter does not need validation
         return node_resource_group
 
+    def get_nat_gateway_managed_outbound_ip_count(self) -> Union[int, None]:
+        """Obtain the value of nat_gateway_managed_outbound_ip_count.
+
+        :return: string or None
+        """
+        # read the original value passed by the command
+        nat_gateway_managed_outbound_ip_count = self.raw_param.get("nat_gateway_managed_outbound_ip_count")
+        # try to read the property value corresponding to the parameter from the `mc` object
+        if (
+            self.mc and
+            self.mc.network_profile and
+            self.mc.network_profile.nat_gateway_profile and
+            self.mc.network_profile.nat_gateway_profile.managed_outbound_ip_profile and
+            self.mc.network_profile.nat_gateway_profile.managed_outbound_ip_profile.count is not None
+        ):
+            nat_gateway_managed_outbound_ip_count = (
+                self.mc.network_profile.nat_gateway_profile.managed_outbound_ip_profile.count
+            )
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return nat_gateway_managed_outbound_ip_count
+
+    def get_nat_gateway_idle_timeout(self) -> Union[int, None]:
+        """Obtain the value of nat_gateway_idle_timeout.
+
+        :return: string or None
+        """
+        # read the original value passed by the command
+        nat_gateway_idle_timeout = self.raw_param.get("nat_gateway_idle_timeout")
+        # try to read the property value corresponding to the parameter from the `mc` object
+        if (
+            self.mc and
+            self.mc.network_profile and
+            self.mc.network_profile.nat_gateway_profile and
+            self.mc.network_profile.nat_gateway_profile.idle_timeout_in_minutes is not None
+        ):
+            nat_gateway_idle_timeout = (
+                self.mc.network_profile.nat_gateway_profile.idle_timeout_in_minutes
+            )
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return nat_gateway_idle_timeout
+
 
 class AKSPreviewCreateDecorator(AKSCreateDecorator):
     # pylint: disable=super-init-not-called
@@ -317,6 +389,9 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
 
     def set_up_agent_pool_profiles(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up agent pool profiles for the ManagedCluster object.
+
+        Call the method of the same name in the parent class to set up agent_pool_profiles, and then set some additional
+        properties on this basis.
 
         :return: the ManagedCluster object
         """
@@ -360,6 +435,30 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
             )
 
         mc.node_resource_group = self.context.get_node_resource_group()
+        return mc
+
+    def set_up_network_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up network profile for the ManagedCluster object.
+
+        Call the method of the same name in the parent class to set up network_profile, and then set the
+        nat_gateway_profile on this basis.
+
+        :return: the ManagedCluster object
+        """
+        mc = super().set_up_network_profile(mc)
+        network_profile = mc.network_profile
+
+        # build nat gateway profile, which is part of the network profile
+        nat_gateway_profile = create_nat_gateway_profile(
+            self.context.get_nat_gateway_managed_outbound_ip_count(),
+            self.context.get_nat_gateway_idle_timeout(),
+            models=self.models.nat_gateway_models,
+        )
+
+        load_balancer_sku = self.context.get_load_balancer_sku()
+        if load_balancer_sku != "basic":
+            network_profile.nat_gateway_profile = nat_gateway_profile
+        mc.network_profile = network_profile
         return mc
 
     def construct_preview_mc_profile(self) -> ManagedCluster:
