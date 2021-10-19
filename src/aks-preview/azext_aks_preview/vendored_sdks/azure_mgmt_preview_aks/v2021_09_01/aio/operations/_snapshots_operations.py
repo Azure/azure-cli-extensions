@@ -26,7 +26,7 @@ class SnapshotsOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.containerservice.v2021_08_01.models
+    :type models: ~azure.mgmt.containerservice.v2021_09_01.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -51,7 +51,7 @@ class SnapshotsOperations:
 
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either SnapshotListResult or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.containerservice.v2021_08_01.models.SnapshotListResult]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.containerservice.v2021_09_01.models.SnapshotListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.SnapshotListResult"]
@@ -59,7 +59,7 @@ class SnapshotsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-08-01"
+        api_version = "2021-09-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -122,7 +122,7 @@ class SnapshotsOperations:
         :type resource_group_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either SnapshotListResult or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.containerservice.v2021_08_01.models.SnapshotListResult]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.containerservice.v2021_09_01.models.SnapshotListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.SnapshotListResult"]
@@ -130,7 +130,7 @@ class SnapshotsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-08-01"
+        api_version = "2021-09-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -197,7 +197,7 @@ class SnapshotsOperations:
         :type resource_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: Snapshot, or the result of cls(response)
-        :rtype: ~azure.mgmt.containerservice.v2021_08_01.models.Snapshot
+        :rtype: ~azure.mgmt.containerservice.v2021_09_01.models.Snapshot
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.Snapshot"]
@@ -205,7 +205,7 @@ class SnapshotsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-08-01"
+        api_version = "2021-09-01"
         accept = "application/json"
 
         # Construct URL
@@ -257,10 +257,10 @@ class SnapshotsOperations:
         :param resource_name: The name of the managed cluster resource.
         :type resource_name: str
         :param parameters: The snapshot to create or update.
-        :type parameters: ~azure.mgmt.containerservice.v2021_08_01.models.Snapshot
+        :type parameters: ~azure.mgmt.containerservice.v2021_09_01.models.Snapshot
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: Snapshot, or the result of cls(response)
-        :rtype: ~azure.mgmt.containerservice.v2021_08_01.models.Snapshot
+        :rtype: ~azure.mgmt.containerservice.v2021_09_01.models.Snapshot
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.Snapshot"]
@@ -268,7 +268,7 @@ class SnapshotsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-08-01"
+        api_version = "2021-09-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -329,10 +329,10 @@ class SnapshotsOperations:
         :param resource_name: The name of the managed cluster resource.
         :type resource_name: str
         :param parameters: Parameters supplied to the Update snapshot Tags operation.
-        :type parameters: ~azure.mgmt.containerservice.v2021_08_01.models.TagsObject
+        :type parameters: ~azure.mgmt.containerservice.v2021_09_01.models.TagsObject
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: Snapshot, or the result of cls(response)
-        :rtype: ~azure.mgmt.containerservice.v2021_08_01.models.Snapshot
+        :rtype: ~azure.mgmt.containerservice.v2021_09_01.models.Snapshot
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.Snapshot"]
@@ -340,7 +340,7 @@ class SnapshotsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-08-01"
+        api_version = "2021-09-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -405,7 +405,7 @@ class SnapshotsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-08-01"
+        api_version = "2021-09-01"
         accept = "application/json"
 
         # Construct URL
