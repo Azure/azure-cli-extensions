@@ -25,6 +25,7 @@ def load_arguments(self, _):
         c.argument('circuit_secondary_subnet', help='A /30 subnet for the secondary circuit in the Express Route to configure routing between your network and Microsoft\'s Enterprise edge (MSEEs) routers.')
         c.argument('cluster_size', help='Number of hosts for the default management cluster. Minimum of 3 and maximum of 16.')
         c.argument('network_block', help='A subnet at least of size /22. Make sure the CIDR format is conformed to (A.B.C.D/X) where A,B,C,D are between 0 and 255, and X is between 0 and 22.')
+        c.argument('type', help='The type of identity used for the private cloud. The type "SystemAssigned" refers to an implicitly created identity. The type "None" will remove any identities from the Private Cloud.')
 
     with self.argument_context('vmware cluster') as c:
         c.argument('name', options_list=['--name', '-n'], help='Name of the cluster.')
@@ -44,6 +45,14 @@ def load_arguments(self, _):
 
     with self.argument_context('vmware private-cloud update') as c:
         c.argument('name', options_list=['--name', '-n'], help='Name of the private cloud.')
+        c.argument('zone', help='The primary availability zone for the private cloud')
+        c.argument('secondary_zone', help='The secondary availability zone for the private cloud.')
+        c.argument('status', help='Status of customer managed encryption key. Possible values include "Enabled" and "Disabled".')
+        c.argument('key_name', help='The name of the key.')
+        c.argument('key_state', help='The state of key provided. Possible values include "Connected" and "AccessDenied".')
+        c.argument('key_vault_url', help='The URL of the vault.')
+        c.argument('key_version', help='The version of the key.')
+        c.argument('version_type', help='Property of the key if user provided or auto detected.')
 
     with self.argument_context('vmware private-cloud delete') as c:
         c.argument('name', options_list=['--name', '-n'], help='Name of the private cloud.')

@@ -32,7 +32,7 @@ def privatecloud_show(client: AVSClient, resource_group_name, name):
     return client.private_clouds.get(resource_group_name, name)
 
 
-def privatecloud_create(client: AVSClient, resource_group_name, name, location, sku, cluster_size, network_block, circuit_primary_subnet=None, circuit_secondary_subnet=None, internet=None, vcenter_password=None, nsxt_password=None, tags=None, accept_eula=False):
+def privatecloud_create(client: AVSClient, resource_group_name, name, location, sku, cluster_size, network_block, circuit_primary_subnet=None, circuit_secondary_subnet=None, internet=None, vcenter_password=None, nsxt_password=None, tags=None, accept_eula=False, identity_type=None):
     from knack.prompting import prompt_y_n
     if not accept_eula:
         print(LEGAL_TERMS)
@@ -40,13 +40,13 @@ def privatecloud_create(client: AVSClient, resource_group_name, name, location, 
         if not prompt_y_n(msg, default="n"):
             return None
 
-    from azext_vmware.vendored_sdks.avs_client.models import PrivateCloud, Circuit, ManagementCluster, Sku
+    from azext_vmware.vendored_sdks.avs_client.models import PrivateCloud, Circuit, ManagementCluster, Sku, PrivateCloudIdentity
     if circuit_primary_subnet is not None or circuit_secondary_subnet is not None:
         circuit = Circuit(primary_subnet=circuit_primary_subnet, secondary_subnet=circuit_secondary_subnet)
     else:
         circuit = None
     management_cluster = ManagementCluster(cluster_size=cluster_size)
-    cloud = PrivateCloud(location=location, sku=Sku(name=sku), circuit=circuit, management_cluster=management_cluster, network_block=network_block, tags=tags)
+    cloud = PrivateCloud(location=location, sku=Sku(name=sku), circuit=circuit, management_cluster=management_cluster, network_block=network_block, tags=tags, identity=PrivateCloudIdentity(type=identity_type))
     if internet is not None:
         cloud.internet = internet
     if vcenter_password is not None:
@@ -56,13 +56,19 @@ def privatecloud_create(client: AVSClient, resource_group_name, name, location, 
     return client.private_clouds.begin_create_or_update(resource_group_name, name, cloud)
 
 
-def privatecloud_update(client: AVSClient, resource_group_name, name, cluster_size=None, internet=None):
-    from azext_vmware.vendored_sdks.avs_client.models import PrivateCloudUpdate, ManagementCluster
+def privatecloud_update(client: AVSClient, resource_group_name, name, cluster_size=None, internet=None, zone=None, secondary_zone=None, identity_type=None, status=None, key_name=None, key_version=None, key_vault_url=None, key_state=None, version_type=None):
+    from azext_vmware.vendored_sdks.avs_client.models import PrivateCloudUpdate, ManagementCluster, PrivateCloudIdentity, AvailabilityProperties, Encryption, EncryptionKeyVaultProperties
     private_cloud_update = PrivateCloudUpdate()
     if cluster_size is not None:
         private_cloud_update.management_cluster = ManagementCluster(cluster_size=cluster_size)
     if internet is not None:
         private_cloud_update.internet = internet
+    if zone is not None:
+        private_cloud_update.availability = AvailabilityProperties(zone=zone, secondary_zone=secondary_zone)
+    if type is not None:
+        private_cloud_update.identity = PrivateCloudIdentity(type=identity_type)
+    if status is not None:
+        private_cloud_update.encryption = Encryption(status=status, key_vault_properties=EncryptionKeyVaultProperties(key_name=key_name, key_version=key_version, key_vault_url=key_vault_url, key_state=key_state, version_type=version_type))
     return client.private_clouds.begin_update(resource_group_name, name, private_cloud_update)
 
 
