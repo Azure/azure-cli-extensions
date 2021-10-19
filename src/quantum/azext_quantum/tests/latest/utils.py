@@ -14,19 +14,19 @@ def get_from_os_environment(env_name, default):
     return os.environ[env_name] if env_name in os.environ and os.environ[env_name] != "" else default
 
 def get_test_subscription_id():
-    return get_from_os_environment("AZUREQUANTUM_SUBSCRIPTION_ID", TEST_SUBS_DEFAULT)
+    return get_from_os_environment("AZURE_QUANTUM_SUBSCRIPTION_ID", TEST_SUBS_DEFAULT)
 
 def get_test_resource_group():
-    return get_from_os_environment("AZUREQUANTUM_WORKSPACE_RG", TEST_RG_DEFAULT)
+    return get_from_os_environment("AZURE_QUANTUM_WORKSPACE_RG", TEST_RG_DEFAULT)
 
 def get_test_workspace():
-    return get_from_os_environment("AZUREQUANTUM_WORKSPACE_NAME", TEST_WORKSPACE_DEFAULT)
+    return get_from_os_environment("AZURE_QUANTUM_WORKSPACE_NAME", TEST_WORKSPACE_DEFAULT)
 
 def get_test_workspace_location():
-    return get_from_os_environment("AZUREQUANTUM_WORKSPACE_LOCATION", TEST_WORKSPACE_DEFAULT_LOCATION)
+    return get_from_os_environment("AZURE_QUANTUM_WORKSPACE_LOCATION", TEST_WORKSPACE_DEFAULT_LOCATION)
 
 def get_test_workspace_storage():
-    return get_from_os_environment("AZUREQUANTUM_WORKSPACE_STORAGE", TEST_WORKSPACE_DEFAULT_STORAGE)
+    return get_from_os_environment("AZURE_QUANTUM_WORKSPACE_STORAGE", TEST_WORKSPACE_DEFAULT_STORAGE)
 
 def get_test_workspace_random_name():
     import random
