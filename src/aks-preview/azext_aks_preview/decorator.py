@@ -15,11 +15,16 @@ from azure.cli.command_modules.acs.decorator import (
     safe_list_get,
 )
 from azure.cli.core import AzCommandsLoader
-from azure.cli.core.azclierror import InvalidArgumentValueError
+from azure.cli.core.azclierror import (
+    CLIInternalError,
+    InvalidArgumentValueError,
+)
 from azure.cli.core.commands import AzCliCommand
 from azure.cli.core.profiles import ResourceType
 from azure.cli.core.util import get_file_json
 from knack.log import get_logger
+
+from azext_aks_preview._natgateway import create_nat_gateway_profile
 
 logger = get_logger(__name__)
 
@@ -31,6 +36,7 @@ ManagedClusterLoadBalancerProfile = TypeVar("ManagedClusterLoadBalancerProfile")
 ResourceReference = TypeVar("ResourceReference")
 KubeletConfig = TypeVar("KubeletConfig")
 LinuxOSConfig = TypeVar("LinuxOSConfig")
+ManagedClusterHTTPProxyConfig = TypeVar("ManagedClusterHTTPProxyConfig")
 
 
 # pylint: disable=too-many-instance-attributes,too-few-public-methods
@@ -48,6 +54,36 @@ class AKSPreviewModels(AKSModels):
             resource_type=self.resource_type,
             operation_group="managed_clusters",
         )
+        self.ManagedClusterHTTPProxyConfig = self.__cmd.get_models(
+            "ManagedClusterHTTPProxyConfig",
+            resource_type=self.resource_type,
+            operation_group="managed_clusters",
+        )
+        # init nat gateway models
+        self.init_nat_gateway_models()
+
+    def init_nat_gateway_models(self) -> None:
+        """Initialize models used by nat gateway.
+
+        The models are stored in a dictionary, the key is the model name and the value is the model type.
+
+        :return: None
+        """
+        nat_gateway_models = {}
+        nat_gateway_models["ManagedClusterNATGatewayProfile"] = self.__cmd.get_models(
+            "ManagedClusterNATGatewayProfile",
+            resource_type=self.resource_type,
+            operation_group="managed_clusters",
+        )
+        nat_gateway_models["ManagedClusterManagedOutboundIPProfile"] = self.__cmd.get_models(
+            "ManagedClusterManagedOutboundIPProfile",
+            resource_type=self.resource_type,
+            operation_group="managed_clusters",
+        )
+        self.nat_gateway_models = nat_gateway_models
+        # Note: Uncomment the followings to add these models as class attributes.
+        # for model_name, model_type in nat_gateway_models.items():
+        #     setattr(self, model_name, model_type)
 
 
 # pylint: disable=too-many-public-methods
@@ -229,6 +265,99 @@ class AKSPreviewContext(AKSContext):
         # this parameter does not need validation
         return linux_os_config
 
+    def get_http_proxy_config(self) -> Union[dict, ManagedClusterHTTPProxyConfig, None]:
+        """Obtain the value of http_proxy_config.
+
+        :return: dict, ManagedClusterHTTPProxyConfig or None
+        """
+        # read the original value passed by the command
+        http_proxy_config = None
+        http_proxy_config_file_path = self.raw_param.get("http_proxy_config")
+        # validate user input
+        if http_proxy_config_file_path:
+            if not os.path.isfile(http_proxy_config_file_path):
+                raise InvalidArgumentValueError(
+                    "{} is not valid file, or not accessable.".format(
+                        http_proxy_config_file_path
+                    )
+                )
+            http_proxy_config = get_file_json(http_proxy_config_file_path)
+            if not isinstance(http_proxy_config, dict):
+                raise InvalidArgumentValueError(
+                    "Error reading Http Proxy Config from {}. "
+                    "Please see https://aka.ms/HttpProxyConfig for correct format.".format(
+                        http_proxy_config_file_path
+                    )
+                )
+
+        # try to read the property value corresponding to the parameter from the `mc` object
+        if self.mc and self.mc.http_proxy_config is not None:
+            http_proxy_config = self.mc.http_proxy_config
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return http_proxy_config
+
+    def get_node_resource_group(self) -> Union[str, None]:
+        """Obtain the value of node_resource_group.
+
+        :return: string or None
+        """
+        # read the original value passed by the command
+        node_resource_group = self.raw_param.get("node_resource_group")
+        # try to read the property value corresponding to the parameter from the `mc` object
+        if self.mc and self.mc.node_resource_group is not None:
+            node_resource_group = self.mc.node_resource_group
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return node_resource_group
+
+    def get_nat_gateway_managed_outbound_ip_count(self) -> Union[int, None]:
+        """Obtain the value of nat_gateway_managed_outbound_ip_count.
+
+        :return: string or None
+        """
+        # read the original value passed by the command
+        nat_gateway_managed_outbound_ip_count = self.raw_param.get("nat_gateway_managed_outbound_ip_count")
+        # try to read the property value corresponding to the parameter from the `mc` object
+        if (
+            self.mc and
+            self.mc.network_profile and
+            self.mc.network_profile.nat_gateway_profile and
+            self.mc.network_profile.nat_gateway_profile.managed_outbound_ip_profile and
+            self.mc.network_profile.nat_gateway_profile.managed_outbound_ip_profile.count is not None
+        ):
+            nat_gateway_managed_outbound_ip_count = (
+                self.mc.network_profile.nat_gateway_profile.managed_outbound_ip_profile.count
+            )
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return nat_gateway_managed_outbound_ip_count
+
+    def get_nat_gateway_idle_timeout(self) -> Union[int, None]:
+        """Obtain the value of nat_gateway_idle_timeout.
+
+        :return: string or None
+        """
+        # read the original value passed by the command
+        nat_gateway_idle_timeout = self.raw_param.get("nat_gateway_idle_timeout")
+        # try to read the property value corresponding to the parameter from the `mc` object
+        if (
+            self.mc and
+            self.mc.network_profile and
+            self.mc.network_profile.nat_gateway_profile and
+            self.mc.network_profile.nat_gateway_profile.idle_timeout_in_minutes is not None
+        ):
+            nat_gateway_idle_timeout = (
+                self.mc.network_profile.nat_gateway_profile.idle_timeout_in_minutes
+            )
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return nat_gateway_idle_timeout
+
 
 class AKSPreviewCreateDecorator(AKSCreateDecorator):
     # pylint: disable=super-init-not-called
@@ -261,6 +390,9 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
     def set_up_agent_pool_profiles(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up agent pool profiles for the ManagedCluster object.
 
+        Call the method of the same name in the parent class to set up agent_pool_profiles, and then set some additional
+        properties on this basis.
+
         :return: the ManagedCluster object
         """
         mc = super().set_up_agent_pool_profiles(mc)
@@ -277,6 +409,72 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
         )
         agent_pool_profile.kubelet_config = self.context.get_kubelet_config()
         agent_pool_profile.linux_os_config = self.context.get_linux_os_config()
+        return mc
+
+    def set_up_http_proxy_config(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up http proxy config for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        if not isinstance(mc, self.models.ManagedCluster):
+            raise CLIInternalError(
+                "Unexpected mc object with type '{}'.".format(type(mc))
+            )
+
+        mc.http_proxy_config = self.context.get_http_proxy_config()
+        return mc
+
+    def set_up_node_resource_group(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up node resource group for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        if not isinstance(mc, self.models.ManagedCluster):
+            raise CLIInternalError(
+                "Unexpected mc object with type '{}'.".format(type(mc))
+            )
+
+        mc.node_resource_group = self.context.get_node_resource_group()
+        return mc
+
+    def set_up_network_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up network profile for the ManagedCluster object.
+
+        Call the method of the same name in the parent class to set up network_profile, and then set the
+        nat_gateway_profile on this basis.
+
+        :return: the ManagedCluster object
+        """
+        mc = super().set_up_network_profile(mc)
+        network_profile = mc.network_profile
+
+        # build nat gateway profile, which is part of the network profile
+        nat_gateway_profile = create_nat_gateway_profile(
+            self.context.get_nat_gateway_managed_outbound_ip_count(),
+            self.context.get_nat_gateway_idle_timeout(),
+            models=self.models.nat_gateway_models,
+        )
+
+        load_balancer_sku = self.context.get_load_balancer_sku()
+        if load_balancer_sku != "basic":
+            network_profile.nat_gateway_profile = nat_gateway_profile
+        mc.network_profile = network_profile
+        return mc
+
+    def construct_preview_mc_profile(self) -> ManagedCluster:
+        """The overall controller used to construct the preview ManagedCluster profile.
+
+        The completely constructed ManagedCluster object will later be passed as a parameter to the underlying SDK
+        (mgmt-containerservice) to send the actual request.
+
+        :return: the ManagedCluster object
+        """
+        # construct the default ManagedCluster profile
+        mc = self.construct_default_mc_profile()
+        # set up http proxy config
+        mc = self.set_up_http_proxy_config(mc)
+        # set up node resource group
+        mc = self.set_up_node_resource_group(mc)
         return mc
 
 
