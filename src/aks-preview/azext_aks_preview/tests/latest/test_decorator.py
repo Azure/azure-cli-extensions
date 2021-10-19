@@ -464,6 +464,15 @@ class AKSPreviewContextTestCase(unittest.TestCase):
                 ctx_2.get_enable_pod_identity_with_kubenet(), False
             )
 
+    def test_get_appgw_subnet_prefix(self):
+        ctx_1 = AKSPreviewContext(
+            self.cmd,
+            {"enable_addons": "monitoring,gitops"},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        print(ctx_1.get_enable_addons())
+
 
 class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
     def setUp(self):

@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-from typing import Dict, TypeVar, Union
+from typing import Dict, TypeVar, Union, List
 
 from azure.cli.command_modules.acs._consts import DecoratorMode
 from azure.cli.command_modules.acs.decorator import (
@@ -24,6 +24,14 @@ from azure.cli.core.azclierror import (
 from azure.cli.core.commands import AzCliCommand
 from azure.cli.core.profiles import ResourceType
 from azure.cli.core.util import get_file_json
+# TODO: change to import from azure.cli.command_modules.acs._consts
+from azext_aks_preview._consts import (
+    ADDONS,
+    CONST_INGRESS_APPGW_ADDON_NAME,
+    CONST_INGRESS_APPGW_SUBNET_CIDR,
+    CONST_MONITORING_ADDON_NAME,
+    CONST_MONITORING_USING_AAD_MSI_AUTH
+)
 from knack.log import get_logger
 
 from azext_aks_preview._natgateway import create_nat_gateway_profile
@@ -496,6 +504,88 @@ class AKSPreviewContext(AKSContext):
         """
         return self._get_enable_pod_identity_with_kubenet(enable_validation=True)
 
+    # pylint: disable=unused-argument
+    def _get_enable_addons(self, enable_validation: bool = False, **kwargs) -> List[str]:
+        print("Hello World!")
+        print(ADDONS)
+        return super()._get_enable_addons(enable_validation, ADDONS=ADDONS)
+
+    def get_appgw_subnet_prefix(self) -> Union[str, None]:
+        """Obtain the value of appgw_subnet_prefix.
+
+        [Deprecated] Note: this parameter is depracated and replaced by appgw_subnet_cidr.
+
+        :return: string or None
+        """
+        # read the original value passed by the command
+        appgw_subnet_prefix = self.raw_param.get("appgw_subnet_prefix")
+        # try to read the property value corresponding to the parameter from the `mc` object
+        if (
+            self.mc and
+            self.mc.addon_profiles and
+            CONST_INGRESS_APPGW_ADDON_NAME in self.mc.addon_profiles and
+            self.mc.addon_profiles.get(
+                CONST_INGRESS_APPGW_ADDON_NAME
+            ).config.get(CONST_INGRESS_APPGW_SUBNET_CIDR) is not None
+        ):
+            appgw_subnet_prefix = self.mc.addon_profiles.get(
+                CONST_INGRESS_APPGW_ADDON_NAME
+            ).config.get(CONST_INGRESS_APPGW_SUBNET_CIDR)
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return appgw_subnet_prefix
+
+    def get_enable_msi_auth_for_monitoring(self) -> Union[bool, None]:
+        """Obtain the value of enable_msi_auth_for_monitoring.
+
+        Note: The arg type of this parameter supports three states (True, False or None), but the corresponding default
+        value in entry function is not None.
+
+        :return: bool or None
+        """
+        # read the original value passed by the command
+        enable_msi_auth_for_monitoring = self.raw_param.get("enable_msi_auth_for_monitoring")
+        # try to read the property value corresponding to the parameter from the `mc` object
+        if (
+            self.mc and
+            self.mc.addon_profiles and
+            CONST_MONITORING_ADDON_NAME in self.mc.addon_profiles and
+            self.mc.addon_profiles.get(
+                CONST_MONITORING_ADDON_NAME
+            ).config.get(CONST_MONITORING_USING_AAD_MSI_AUTH) is not None
+        ):
+            enable_msi_auth_for_monitoring = self.mc.addon_profiles.get(
+                CONST_MONITORING_ADDON_NAME
+            ).config.get(CONST_MONITORING_USING_AAD_MSI_AUTH)
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return enable_msi_auth_for_monitoring
+
+    # def get_enable_secret_rotation(self) -> bool:
+    #     """Obtain the value of enable_secret_rotation.
+
+    #     :return: bool
+    #     """
+    #     # read the original value passed by the command
+    #     enable_secret_rotation = self.raw_param.get("enable_secret_rotation")
+    #     # try to read the property value corresponding to the parameter from the `mc` object
+    #     if (
+    #         self.mc and
+    #         self.mc.addon_profiles and
+    #         CONST_MONITORING_ADDON_NAME in self.mc.addon_profiles and
+    #         self.mc.addon_profiles.get(
+    #             CONST_MONITORING_ADDON_NAME
+    #         ).config.get(CONST_MONITORING_USING_AAD_MSI_AUTH) is not None
+    #     ):
+    #         enable_msi_auth_for_monitoring = self.mc.addon_profiles.get(
+    #             CONST_MONITORING_ADDON_NAME
+    #         ).config.get(CONST_MONITORING_USING_AAD_MSI_AUTH)
+
+    #     # this parameter does not need dynamic completion
+    #     # this parameter does not need validation
+    #     return enable_msi_auth_for_monitoring
 
 class AKSPreviewCreateDecorator(AKSCreateDecorator):
     # pylint: disable=super-init-not-called
