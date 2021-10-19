@@ -1383,11 +1383,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
         # stop nodepool
         self.cmd('aks nodepool stop --resource-group={resource_group} --cluster-name={name} --nodepool-name={nodepool_name}', checks=[ 
-            self.check('provisioningState', 'Succeeded')
+            self.check('powerState.code', 'Stopped')
         ])
         #start nodepool
         self.cmd('aks nodepool start --resource-group={resource_group} --cluster-name={name} --nodepool-name={nodepool_name}', checks=[
-            self.check('provisioningState', 'Succeeded')
+            self.check('powerState.code', 'Running')
         ])
         # delete AKS cluster
         self.cmd(
