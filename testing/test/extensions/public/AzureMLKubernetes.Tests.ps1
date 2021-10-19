@@ -13,7 +13,7 @@ Describe 'AzureML Kubernetes Testing' {
     It 'Creates the extension and checks that it onboards correctly with inference and SSL enabled' {
         $sslKeyPemFile = Join-Path (Join-Path (Join-Path (Split-Path $PSScriptRoot -Parent) "data") "azure_ml") "test_key.pem"
         $sslCertPemFile = Join-Path (Join-Path (Join-Path (Split-Path $PSScriptRoot -Parent) "data") "azure_ml") "test_cert.pem"
-        Invoke-Expression "az $Env:K8sExtensionName create -c $($ENVCONFIG.arcClusterName) -g $($ENVCONFIG.resourceGroup) --cluster-type connectedClusters --extension-type $extensionType -n $extensionName --release-train staging --config enableInference=true identity.proxy.remoteEnabled=True identity.proxy.remoteHost=https://master.experiments.azureml-test.net inferenceLoadBalancerHA=False --config-protected sslKeyPemFile=$sslKeyPemFile sslCertPemFile=$sslCertPemFile" -ErrorVariable badOut
+        Invoke-Expression "az $Env:K8sExtensionName create -c $($ENVCONFIG.arcClusterName) -g $($ENVCONFIG.resourceGroup) --cluster-type connectedClusters --extension-type $extensionType -n $extensionName --release-train staging --config enableInference=true identity.proxy.remoteEnabled=True identity.proxy.remoteHost=https://master.experiments.azureml-test.net inferenceLoadBalancerHA=False --config-protected sslKeyPemFile=$sslKeyPemFile sslCertPemFile=$sslCertPemFile --no-wait" -ErrorVariable badOut
         $badOut | Should -BeNullOrEmpty        
 
         $output = Invoke-Expression "az $Env:K8sExtensionName show -c $($ENVCONFIG.arcClusterName) -g $($ENVCONFIG.resourceGroup) --cluster-type connectedClusters -n $extensionName" -ErrorVariable badOut
@@ -37,33 +37,6 @@ Describe 'AzureML Kubernetes Testing' {
         # check if relay is populated
         $relayResourceID = Get-ExtensionConfigurationSettings $extensionName $relayResourceIDKey
         $relayResourceID | Should -Not -BeNullOrEmpty
-    }
-
-    It "Runs an update on the extension on the cluster" {
-        Set-ItResult -Skipped -Because "Update is not a valid scenario for now"
-        az k8s-extension update --cluster-name $ENVCONFIG.arcClusterName -g $ENVCONFIG.resourceGroup --cluster-type connectedClusters --name $extensionName --auto-upgrade-minor-version false
-        $? | Should -BeTrue
-
-        $output = az k8s-extension show --cluster-name $ENVCONFIG.arcClusterName -g $ENVCONFIG.resourceGroup --cluster-type connectedClusters --name $extensionName
-        $? | Should -BeTrue
-
-        $isAutoUpgradeMinorVersion = ($output | ConvertFrom-Json).autoUpgradeMinorVersion 
-        $isAutoUpgradeMinorVersion.ToString() -eq "False" | Should -BeTrue
-
-        # Loop and retry until the extension config updates
-        $n = 0
-        do 
-        {
-            $isAutoUpgradeMinorVersion = (Get-ExtensionData $extensionName).spec.autoUpgradeMinorVersion
-            if (!$isAutoUpgradeMinorVersion) {  #autoUpgradeMinorVersion doesn't exist in ExtensionConfig CRD if false
-                if (Get-ExtensionStatus $extensionName -eq $SUCCESS_MESSAGE) {
-                    break
-                }
-            }
-            Start-Sleep -Seconds 20
-            $n += 1
-        } while ($n -le $MAX_RETRY_ATTEMPTS)
-        $n | Should -BeLessOrEqual $MAX_RETRY_ATTEMPTS
     }
 
     It "Performs a show on the extension" {
@@ -91,7 +64,7 @@ Describe 'AzureML Kubernetes Testing' {
         az relay namespace delete --resource-group $ENVCONFIG.resourceGroup --name $relayNamespaceName
         az servicebus namespace delete --resource-group $ENVCONFIG.resourceGroup --name $serviceBusNamespaceName
 
-        $output = Invoke-Expression "az $Env:K8sExtensionName delete -c $($ENVCONFIG.arcClusterName) -g $($ENVCONFIG.resourceGroup) --cluster-type connectedClusters -n $extensionName" -ErrorVariable badOut
+        $output = Invoke-Expression "az $Env:K8sExtensionName delete -c $($ENVCONFIG.arcClusterName) -g $($ENVCONFIG.resourceGroup) --cluster-type connectedClusters -n $extensionName --force" -ErrorVariable badOut
         $badOut | Should -BeNullOrEmpty
 
         # Extension should not be found on the cluster

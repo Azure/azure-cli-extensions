@@ -6,12 +6,12 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from ._source_control_configurations_operations import SourceControlConfigurationsOperations
-from ._operations import Operations
 from ._extensions_operations import ExtensionsOperations
+from ._operation_status_operations import OperationStatusOperations
+from ._operations import Operations
 
 __all__ = [
-    'SourceControlConfigurationsOperations',
-    'Operations',
     'ExtensionsOperations',
+    'OperationStatusOperations',
+    'Operations',
 ]

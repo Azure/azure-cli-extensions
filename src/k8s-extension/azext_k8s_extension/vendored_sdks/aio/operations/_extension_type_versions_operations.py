@@ -19,14 +19,14 @@ from ... import models as _models
 T = TypeVar('T')
 ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
 
-class Operations:
-    """Operations async operations.
+class ExtensionTypeVersionsOperations:
+    """ExtensionTypeVersionsOperations async operations.
 
     You should not instantiate this class directly. Instead, you should create a Client instance that
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.kubernetesconfiguration.models
+    :type models: ~azure.mgmt.kubernetesconfiguration.v2021_05_01_preview.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -43,22 +43,27 @@ class Operations:
 
     def list(
         self,
+        location: str,
+        extension_type_name: str,
         **kwargs: Any
-    ) -> AsyncIterable["_models.ResourceProviderOperationList"]:
-        """List all the available operations the KubernetesConfiguration resource provider supports, in
-        this api-version.
+    ) -> AsyncIterable["_models.ExtensionVersionList"]:
+        """List available versions for an Extension Type.
 
+        :param location: extension location.
+        :type location: str
+        :param extension_type_name: Extension type name.
+        :type extension_type_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either ResourceProviderOperationList or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.kubernetesconfiguration.models.ResourceProviderOperationList]
+        :return: An iterator like instance of either ExtensionVersionList or the result of cls(response)
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.kubernetesconfiguration.v2021_05_01_preview.models.ExtensionVersionList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.ResourceProviderOperationList"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.ExtensionVersionList"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-09-01"
+        api_version = "2021-05-01-preview"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -69,6 +74,12 @@ class Operations:
             if not next_link:
                 # Construct URL
                 url = self.list.metadata['url']  # type: ignore
+                path_format_arguments = {
+                    'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+                    'location': self._serialize.url("location", location, 'str'),
+                    'extensionTypeName': self._serialize.url("extension_type_name", extension_type_name, 'str'),
+                }
+                url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
                 query_parameters = {}  # type: Dict[str, Any]
                 query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
@@ -81,8 +92,8 @@ class Operations:
             return request
 
         async def extract_data(pipeline_response):
-            deserialized = self._deserialize('ResourceProviderOperationList', pipeline_response)
-            list_of_elem = deserialized.value
+            deserialized = self._deserialize('ExtensionVersionList', pipeline_response)
+            list_of_elem = deserialized.versions
             if cls:
                 list_of_elem = cls(list_of_elem)
             return deserialized.next_link or None, AsyncList(list_of_elem)
@@ -103,4 +114,4 @@ class Operations:
         return AsyncItemPaged(
             get_next, extract_data
         )
-    list.metadata = {'url': '/providers/Microsoft.KubernetesConfiguration/operations'}  # type: ignore
+    list.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.KubernetesConfiguration/locations/{location}/extensionTypes/{extensionTypeName}/versions'}  # type: ignore

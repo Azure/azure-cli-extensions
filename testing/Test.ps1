@@ -40,9 +40,9 @@ if ($Type -eq 'k8s-extension') {
         }
     }
     if ($OnlyPublicTests) {
-        $testFilePath = "$PSScriptRoot/test/extensions/public"
+        $testFilePaths = "$PSScriptRoot/test/extensions/public"
     } else {
-        $testFilePath = "$PSScriptRoot/test/extensions"
+        $testFilePaths = "$PSScriptRoot/test/extensions/public", "$PSScriptRoot/test/extensions/private-preview"
     }
 } elseif ($Type -eq 'k8s-extension-private') {
     $k8sExtensionPrivateVersion = $ENVCONFIG.extensionVersion.'k8s-extension-private'
@@ -71,14 +71,19 @@ if ($Type -eq 'k8s-extension') {
         Write-Host "Installing k8s-configuration version $k8sConfigurationVersion..."
         az extension add --source ./bin/k8s_configuration-$k8sConfigurationVersion-py3-none-any.whl
     }
-    $testFilePath = "$PSScriptRoot/test/configurations"
+    $testFilePaths = "$PSScriptRoot/test/configurations"
 }
 
 if ($CI) {
     # This runs the tests in parallel during the CI pipline to speed up testing
 
     Write-Host "Invoking Pester to run tests from '$testFilePath'..."
-    $testFiles = Get-ChildItem $testFilePath
+    $testFiles = @()
+    foreach ($paths in $testFilePaths) 
+    {
+        $temp = Get-ChildItem $paths
+        $testFiles += $temp
+    }
     $resultFileNumber = 0
     foreach ($testFile in $testFiles)
     {
