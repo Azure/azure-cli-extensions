@@ -129,6 +129,15 @@ from .addonconfiguration import update_addons, enable_addons, ensure_default_log
 logger = get_logger(__name__)
 
 
+def prepare_nat_gateway_models():
+    from .vendored_sdks.azure_mgmt_preview_aks.v2021_09_01.models import ManagedClusterNATGatewayProfile
+    from .vendored_sdks.azure_mgmt_preview_aks.v2021_09_01.models import ManagedClusterManagedOutboundIPProfile
+    nat_gateway_models = {}
+    nat_gateway_models["ManagedClusterNATGatewayProfile"] = ManagedClusterNATGatewayProfile
+    nat_gateway_models["ManagedClusterManagedOutboundIPProfile"] = ManagedClusterManagedOutboundIPProfile
+    return nat_gateway_models
+
+
 def which(binary):
     path_var = os.getenv('PATH')
     if platform.system() == 'Windows':
@@ -988,9 +997,11 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         load_balancer_outbound_ports,
         load_balancer_idle_timeout)
 
-    from azext_aks_preview.decorator import AKSPreviewModels
-    # store all the models used by nat gateway
-    nat_gateway_models = AKSPreviewModels(cmd, CUSTOM_MGMT_AKS_PREVIEW).nat_gateway_models
+    # TODO: uncomment the following after next cli release
+    # from azext_aks_preview.decorator import AKSPreviewModels
+    # # store all the models used by nat gateway
+    # nat_gateway_models = AKSPreviewModels(cmd, CUSTOM_MGMT_AKS_PREVIEW).nat_gateway_models
+    nat_gateway_models = prepare_nat_gateway_models()
     nat_gateway_profile = create_nat_gateway_profile(
         nat_gateway_managed_outbound_ip_count,
         nat_gateway_idle_timeout,
@@ -1485,9 +1496,11 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
             instance.network_profile.load_balancer_profile)
 
     if update_natgw_profile:
-        from azext_aks_preview.decorator import AKSPreviewModels
-        # store all the models used by nat gateway
-        nat_gateway_models = AKSPreviewModels(cmd, CUSTOM_MGMT_AKS_PREVIEW).nat_gateway_models
+        # TODO: uncomment the following after next cli release
+        # from azext_aks_preview.decorator import AKSPreviewModels
+        # # store all the models used by nat gateway
+        # nat_gateway_models = AKSPreviewModels(cmd, CUSTOM_MGMT_AKS_PREVIEW).nat_gateway_models
+        nat_gateway_models = prepare_nat_gateway_models()
         instance.network_profile.nat_gateway_profile = update_nat_gateway_profile(
             nat_gateway_managed_outbound_ip_count,
             nat_gateway_idle_timeout,
