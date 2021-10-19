@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.5.36
++++++
+* Update to use 2021-09-01 api-version
+
 0.5.35
 +++++
 * Add support for multi-instance GPU configuration (`--gpu_instance_profile`) in `az aks create`

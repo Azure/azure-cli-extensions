@@ -92,6 +92,7 @@ try:
     from ._models_py3 import TimeInWeek
     from ._models_py3 import TimeSpan
     from ._models_py3 import UserAssignedIdentity
+    from ._models_py3 import WindowsGmsaProfile
 except (SyntaxError, ImportError):
     from ._models import AgentPool  # type: ignore
     from ._models import AgentPoolAvailableVersions  # type: ignore
@@ -178,6 +179,7 @@ except (SyntaxError, ImportError):
     from ._models import TimeInWeek  # type: ignore
     from ._models import TimeSpan  # type: ignore
     from ._models import UserAssignedIdentity  # type: ignore
+    from ._models import WindowsGmsaProfile  # type: ignore
 
 from ._container_service_client_enums import (
     AgentPoolMode,
@@ -302,6 +304,7 @@ __all__ = [
     'TimeInWeek',
     'TimeSpan',
     'UserAssignedIdentity',
+    'WindowsGmsaProfile',
     'AgentPoolMode',
     'AgentPoolType',
     'Code',
