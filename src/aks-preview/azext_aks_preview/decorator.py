@@ -384,8 +384,36 @@ class AKSPreviewContext(AKSContext):
         # this parameter does not need validation
         return enable_pod_security_policy
 
-    def get_enable_pod_identity(self) -> bool:
-        """Obtain the value of enable_pod_identity.
+    # pylint: disable=unused-argument
+    def _get_enable_managed_identity(
+        self, enable_validation: bool = False, read_only: bool = False, **kwargs
+    ) -> bool:
+        """Internal function to obtain the value of enable_pod_identity.
+
+        Inherited and extended to perform additional validation.
+
+        This function supports the option of enable_validation. When enabled, if enable_managed_identity is not
+        specified but enable_pod_identity is, raise a RequiredArgumentMissingError.
+
+        :return: bool
+        """
+        enable_managed_identity = super()._get_enable_managed_identity(enable_validation, read_only, **kwargs)
+        # additional validation
+        if enable_validation:
+            if not enable_managed_identity and self._get_enable_pod_identity(enable_validation=False):
+                raise RequiredArgumentMissingError(
+                    "--enable-pod-identity can only be specified when --enable-managed-identity is specified"
+                )
+        return enable_managed_identity
+
+    # pylint: disable=unused-argument
+    def _get_enable_pod_identity(self, enable_validation: bool = False, **kwargs) -> bool:
+        """Internal function to obtain the value of enable_pod_identity.
+
+        This function supports the option of enable_validation. When enabled, if enable_managed_identity is not
+        specified but enable_pod_identity is, raise a RequiredArgumentMissingError. If network_profile has been set
+        up in `mc`, network_plugin equals to "kubenet" and enable_pod_identity is specified but
+        enable_pod_identity_with_kubenet is not, raise a RequiredArgumentMissingError.
 
         :return: bool
         """
@@ -401,15 +429,38 @@ class AKSPreviewContext(AKSContext):
 
         # this parameter does not need dynamic completion
         # validation
-        # Note: The parameter involved in the validation is not verified in its own getter.
-        if enable_pod_identity and not self._get_enable_managed_identity(enable_validation=False):
-            raise RequiredArgumentMissingError(
-                "--enable-pod-identity can only be specified when --enable-managed-identity is specified"
-            )
+        if enable_validation:
+            if enable_pod_identity and not self._get_enable_managed_identity(enable_validation=False):
+                raise RequiredArgumentMissingError(
+                    "--enable-pod-identity can only be specified when --enable-managed-identity is specified"
+                )
+            if self.mc and self.mc.network_profile and safe_lower(self.mc.network_profile.network_plugin) == "kubenet":
+                if enable_pod_identity and not self._get_enable_pod_identity_with_kubenet(enable_validation=False):
+                    raise RequiredArgumentMissingError(
+                        "--enable-pod-identity-with-kubenet is required for enabling pod identity addon "
+                        "when using Kubenet network plugin"
+                    )
         return enable_pod_identity
 
-    def get_enable_pod_identity_with_kubenet(self) -> bool:
-        """Obtain the value of enable_pod_identity_with_kubenet.
+    def get_enable_pod_identity(self) -> bool:
+        """Obtain the value of enable_pod_identity.
+
+        This function will verify the parameter by default. If enable_managed_identity is not specified but
+        enable_pod_identity is, raise a RequiredArgumentMissingError. If network_profile has been set up in `mc`,
+        network_plugin equals to "kubenet" and enable_pod_identity is specified but enable_pod_identity_with_kubenet
+        is not, raise a RequiredArgumentMissingError.
+
+        :return: bool
+        """
+
+        return self._get_enable_pod_identity(enable_validation=True)
+
+    def _get_enable_pod_identity_with_kubenet(self, enable_validation: bool = False, **kwargs) -> bool:
+        """Internal function to obtain the value of enable_pod_identity_with_kubenet.
+
+        This function supports the option of enable_validation. When enabled, if network_profile has been set up in
+        `mc`, network_plugin equals to "kubenet" and enable_pod_identity is specified but
+        enable_pod_identity_with_kubenet is not, raise a RequiredArgumentMissingError.
 
         :return: bool
         """
@@ -425,14 +476,25 @@ class AKSPreviewContext(AKSContext):
 
         # this parameter does not need dynamic completion
         # validation
-        if self.mc and self.mc.network_profile and safe_lower(self.mc.network_profile.network_plugin) == "kubenet":
-            if not enable_pod_identity_with_kubenet:
-                raise RequiredArgumentMissingError(
-                    "--enable-pod-identity-with-kubenet is required for enabling pod identity addon "
-                    "when using Kubenet network plugin"
-                )
+        if enable_validation:
+            if self.mc and self.mc.network_profile and safe_lower(self.mc.network_profile.network_plugin) == "kubenet":
+                if not enable_pod_identity_with_kubenet and self._get_enable_pod_identity(enable_validation=False):
+                    raise RequiredArgumentMissingError(
+                        "--enable-pod-identity-with-kubenet is required for enabling pod identity addon "
+                        "when using Kubenet network plugin"
+                    )
         return enable_pod_identity_with_kubenet
 
+    def get_enable_pod_identity_with_kubenet(self) -> bool:
+        """Obtain the value of enable_pod_identity_with_kubenet.
+
+        This function will verify the parameter by default. If network_profile has been set up in `mc`, network_plugin
+        equals to "kubenet" and enable_pod_identity is specified but enable_pod_identity_with_kubenet is not, raise a
+        RequiredArgumentMissingError.
+
+        :return: bool
+        """
+        return self._get_enable_pod_identity_with_kubenet(enable_validation=True)
 
 class AKSPreviewCreateDecorator(AKSCreateDecorator):
     # pylint: disable=super-init-not-called
