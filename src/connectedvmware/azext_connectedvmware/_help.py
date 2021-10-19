@@ -307,7 +307,7 @@ helps[
       - name: Retrieve a list of inventory item
         text: |-
                az connectedvmware vcenter inventory-item list --resource-group "resource group name" \
-               --vcenter-name "name of the vcenter"
+               --vcenter "name of the vcenter"
 """
 
 helps[
@@ -319,7 +319,7 @@ helps[
       - name: Get details of a inventory item
         text: |-
                az connectedvmware vcenter inventory-item show --inventory-item-name "inventory item name" \
-               --resource-group "resource group name" --vcenter-name "name of the vcenter"
+               --resource-group "resource group name" --vcenter "name of the vcenter"
 """
 
 helps[
