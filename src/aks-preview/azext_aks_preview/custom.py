@@ -130,8 +130,8 @@ logger = get_logger(__name__)
 
 
 def prepare_nat_gateway_models():
-    from .vendored_sdks.azure_mgmt_preview_aks.v2021_08_01.models import ManagedClusterNATGatewayProfile
-    from .vendored_sdks.azure_mgmt_preview_aks.v2021_08_01.models import ManagedClusterManagedOutboundIPProfile
+    from .vendored_sdks.azure_mgmt_preview_aks.v2021_09_01.models import ManagedClusterNATGatewayProfile
+    from .vendored_sdks.azure_mgmt_preview_aks.v2021_09_01.models import ManagedClusterManagedOutboundIPProfile
     nat_gateway_models = {}
     nat_gateway_models["ManagedClusterNATGatewayProfile"] = ManagedClusterNATGatewayProfile
     nat_gateway_models["ManagedClusterManagedOutboundIPProfile"] = ManagedClusterManagedOutboundIPProfile
