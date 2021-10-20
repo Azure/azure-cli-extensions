@@ -328,6 +328,8 @@ def app_create(cmd, client, resource_group, service, name,
         custom_persistent_disks = []
 
         if data:
+            if not data.get('customPersistentDisks'):
+                raise CLIError("CustomPersistentDisks mast be provided in the json file")
             for item in data['customPersistentDisks']:
                 invalidProperties = not item.get('storageName') or \
                     not item.get('customPersistentDiskProperties').get('type') or \
