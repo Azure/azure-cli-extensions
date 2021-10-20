@@ -146,6 +146,9 @@ def load_arguments(self, _):
         c.argument('assign_kubelet_identity', type=str, validator=validate_assign_kubelet_identity)
         c.argument('disable_local_accounts', action='store_true')
         c.argument('gpu_instance_profile', arg_type=get_enum_type(gpu_instance_profiles))
+        c.argument('enable_windows_gmsa', action='store_true', options_list=['--enable-windows-gmsa'])
+        c.argument('gmsa_dns_server', options_list=['--gmsa-dns-server'])
+        c.argument('gmsa_root_domain_name', options_list=['--gmsa-root-domain-name'])
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
         c.argument('workload_runtime', arg_type=get_enum_type(workload_runtimes), default=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER)
 
@@ -183,6 +186,9 @@ def load_arguments(self, _):
         c.argument('windows_admin_password', options_list=['--windows-admin-password'])
         c.argument('disable_local_accounts', action='store_true')
         c.argument('enable_local_accounts', action='store_true')
+        c.argument('enable_windows_gmsa', action='store_true', options_list=['--enable-windows-gmsa'])
+        c.argument('gmsa_dns_server', options_list=['--gmsa-dns-server'])
+        c.argument('gmsa_root_domain_name', options_list=['--gmsa-root-domain-name'])
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
 
     with self.argument_context('aks scale') as c:
