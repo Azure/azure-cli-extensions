@@ -300,13 +300,13 @@ def load_arguments(self, _):
 
     with self.argument_context('spring-cloud storage add') as c:
         c.argument('storage_type', help='The type of the torage. e.g. StorageAccount')
-        c.argument('account_name', help='The name of the storage account. Only available when the type is StorageAccount.')
-        c.argument('account_key', help='The account key of the storage account. Only available when the type is StorageAccount.')
+        c.argument('account_name', help='The name of the storage account.')
+        c.argument('account_key', help='The account key of the storage account.')
 
     with self.argument_context('spring-cloud storage update') as c:
         c.argument('storage_type', help='The type of the torage. e.g. StorageAccount')
-        c.argument('account_name', help='The name of the storage account. Only available when the type is StorageAccount.')
-        c.argument('account_key', help='The account key of the storage account. Only available when the type is StorageAccount.')
+        c.argument('account_name', help='The name of the storage account.')
+        c.argument('account_key', help='The account key of the storage account.')
 
     with self.argument_context('spring-cloud certificate') as c:
         c.argument('service', service_name_type)

@@ -329,14 +329,14 @@ def app_create(cmd, client, resource_group, service, name,
 
         if data:
             if not data.get('customPersistentDisks'):
-                raise CLIError("CustomPersistentDisks mast be provided in the json file")
+                raise InvalidArgumentValueError("CustomPersistentDisks must be provided in the json file")
             for item in data['customPersistentDisks']:
                 invalidProperties = not item.get('storageName') or \
                     not item.get('customPersistentDiskProperties').get('type') or \
                     not item.get('customPersistentDiskProperties').get('shareName') or \
                     not item.get('customPersistentDiskProperties').get('mountPath')
                 if invalidProperties:
-                    raise CLIError("StorageName, Type, ShareName, MountPath mast be provided in the json file")
+                    raise InvalidArgumentValueError("StorageName, Type, ShareName, MountPath mast be provided in the json file")
                 storage_resource = client_0901_preview.storages.get(resource_group, service, item['storageName'])
                 custom_persistent_disk_properties = models_20210901preview.AzureFileVolume(
                     type=item['customPersistentDiskProperties']['type'],
@@ -449,23 +449,31 @@ def app_update(cmd, client, resource_group, service, name,
 
     if persistent_storage:
         client_0901_preview = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20210901preview)
-        input_file = open(persistent_storage)
-        data = json.load(input_file)
+        data = get_file_json(persistent_storage, throw_on_empty=False)
         custom_persistent_disks = []
 
-        for item in data['customPersistentDisks']:
-            storage_resource = client_0901_preview.storages.get(resource_group, service, item['storageName'])
-            custom_persistent_disk_properties = models_20210901preview.AzureFileVolume(
-                type=item['customPersistentDiskProperties']['type'],
-                share_name=item['customPersistentDiskProperties']['shareName'],
-                mount_path=item['customPersistentDiskProperties']['mountPath'],
-                mount_options=item['customPersistentDiskProperties']['mountOptions'] if 'mountOptions' in item['customPersistentDiskProperties'] else None,
-                read_only=item['customPersistentDiskProperties']['readOnly'] if 'readOnly' in item['customPersistentDiskProperties'] else None)
+        if data:
+            if not data.get('customPersistentDisks'):
+                raise InvalidArgumentValueError("CustomPersistentDisks must be provided in the json file")
+            for item in data['customPersistentDisks']:
+                invalidProperties = not item.get('storageName') or \
+                    not item.get('customPersistentDiskProperties').get('type') or \
+                    not item.get('customPersistentDiskProperties').get('shareName') or \
+                    not item.get('customPersistentDiskProperties').get('mountPath')
+                if invalidProperties:
+                    raise InvalidArgumentValueError("StorageName, Type, ShareName, MountPath mast be provided in the json file")
+                storage_resource = client_0901_preview.storages.get(resource_group, service, item['storageName'])
+                custom_persistent_disk_properties = models_20210901preview.AzureFileVolume(
+                    type=item['customPersistentDiskProperties']['type'],
+                    share_name=item['customPersistentDiskProperties']['shareName'],
+                    mount_path=item['customPersistentDiskProperties']['mountPath'],
+                    mount_options=item['customPersistentDiskProperties']['mountOptions'] if 'mountOptions' in item['customPersistentDiskProperties'] else None,
+                    read_only=item['customPersistentDiskProperties']['readOnly'] if 'readOnly' in item['customPersistentDiskProperties'] else None)
 
-            custom_persistent_disks.append(
-                models_20210901preview.CustomPersistentDiskResource(
-                    storage_id=storage_resource.id,
-                    custom_persistent_disk_properties=custom_persistent_disk_properties))
+                custom_persistent_disks.append(
+                    models_20210901preview.CustomPersistentDiskResource(
+                        storage_id=storage_resource.id,
+                        custom_persistent_disk_properties=custom_persistent_disk_properties))
         properties.custom_persistent_disks = custom_persistent_disks
 
     app_resource = models_20210901preview.AppResource()
