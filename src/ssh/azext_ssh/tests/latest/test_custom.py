@@ -5,7 +5,7 @@
 
 import io
 from knack import util
-import mock
+from unittest import mock
 import unittest
 
 from azext_ssh import custom

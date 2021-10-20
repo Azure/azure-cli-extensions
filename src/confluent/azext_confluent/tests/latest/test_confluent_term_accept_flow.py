@@ -8,7 +8,7 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-import mock
+from unittest import mock
 import time
 
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer

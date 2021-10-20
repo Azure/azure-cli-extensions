@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long
 
+from typing import List, Tuple
 from azext_vmware.vendored_sdks.avs_client import AVSClient
 
 LEGAL_TERMS = '''
@@ -274,7 +275,7 @@ def globalreachconnection_delete(client: AVSClient, resource_group_name, private
     return client.global_reach_connections.begin_delete(resource_group_name=resource_group_name, private_cloud_name=private_cloud, global_reach_connection_name=name)
 
 
-def cloud_link_create_or_update(client: AVSClient, resource_group_name, name, private_cloud, linked_cloud):
+def cloud_link_create(client: AVSClient, resource_group_name, name, private_cloud, linked_cloud):
     return client.cloud_links.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cloud_link_name=name, linked_cloud=linked_cloud)
 
 
@@ -288,3 +289,43 @@ def cloud_link_show(client: AVSClient, resource_group_name, private_cloud, name)
 
 def cloud_link_delete(client: AVSClient, resource_group_name, private_cloud, name):
     return client.cloud_links.begin_delete(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cloud_link_name=name)
+
+
+def script_cmdlet_list(client: AVSClient, resource_group_name, private_cloud, script_package):
+    return client.script_cmdlets.list(resource_group_name=resource_group_name, private_cloud_name=private_cloud, script_package_name=script_package)
+
+
+def script_cmdlet_show(client: AVSClient, resource_group_name, private_cloud, script_package, name):
+    return client.script_cmdlets.get(resource_group_name=resource_group_name, private_cloud_name=private_cloud, script_package_name=script_package, script_cmdlet_name=name)
+
+
+def script_package_list(client: AVSClient, resource_group_name, private_cloud):
+    return client.script_packages.list(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
+
+
+def script_package_show(client: AVSClient, resource_group_name, private_cloud, name):
+    return client.script_packages.get(resource_group_name=resource_group_name, private_cloud_name=private_cloud, script_package_name=name)
+
+
+def script_execution_create(client: AVSClient, resource_group_name, private_cloud, name, timeout, script_cmdlet_id=None, parameters=None, hidden_parameters=None, failure_reason=None, retention=None, out=None, named_outputs: List[Tuple[str, str]] = None):
+    from azext_vmware.vendored_sdks.avs_client.models import ScriptExecution
+    if named_outputs is not None:
+        named_outputs = dict(named_outputs)
+    script_execution = ScriptExecution(timeout=timeout, script_cmdlet_id=script_cmdlet_id, parameters=parameters, hidden_parameters=hidden_parameters, failure_reason=failure_reason, retention=retention, output=out, named_outputs=named_outputs)
+    return client.script_executions.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, script_execution_name=name, script_execution=script_execution)
+
+
+def script_execution_list(client: AVSClient, resource_group_name, private_cloud):
+    return client.script_executions.list(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
+
+
+def script_execution_show(client: AVSClient, resource_group_name, private_cloud, name):
+    return client.script_executions.get(resource_group_name=resource_group_name, private_cloud_name=private_cloud, script_execution_name=name)
+
+
+def script_execution_delete(client: AVSClient, resource_group_name, private_cloud, name):
+    return client.script_executions.begin_delete(resource_group_name=resource_group_name, private_cloud_name=private_cloud, script_execution_name=name)
+
+
+def script_execution_logs(client: AVSClient, resource_group_name, private_cloud, name):
+    return client.script_executions.get_execution_logs(resource_group_name=resource_group_name, private_cloud_name=private_cloud, script_execution_name=name)

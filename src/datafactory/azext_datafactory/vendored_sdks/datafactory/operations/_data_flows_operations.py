@@ -30,7 +30,7 @@ class DataFlowsOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~data_factory_management_client.models
+    :type models: ~azure.mgmt.datafactory.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -64,13 +64,13 @@ class DataFlowsOperations(object):
         :param data_flow_name: The data flow name.
         :type data_flow_name: str
         :param data_flow: Data flow resource definition.
-        :type data_flow: ~data_factory_management_client.models.DataFlowResource
+        :type data_flow: ~azure.mgmt.datafactory.models.DataFlowResource
         :param if_match: ETag of the data flow entity. Should only be specified for update, for which
          it should match existing entity or can be * for unconditional update.
         :type if_match: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: DataFlowResource, or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.DataFlowResource
+        :rtype: ~azure.mgmt.datafactory.models.DataFlowResource
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DataFlowResource"]
@@ -144,7 +144,7 @@ class DataFlowsOperations(object):
         :type if_none_match: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: DataFlowResource, or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.DataFlowResource
+        :rtype: ~azure.mgmt.datafactory.models.DataFlowResource
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DataFlowResource"]
@@ -266,7 +266,7 @@ class DataFlowsOperations(object):
         :type factory_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either DataFlowListResponse or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~data_factory_management_client.models.DataFlowListResponse]
+        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.datafactory.models.DataFlowListResponse]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DataFlowListResponse"]

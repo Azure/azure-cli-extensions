@@ -588,6 +588,9 @@ def add_vpn_gateway_connection_ipsec_policy(cmd, resource_group_name, gateway_na
     client = network_client_factory(cmd.cli_ctx).vpn_gateways
     gateway = client.get(resource_group_name, gateway_name)
     conn = _find_item_at_path(gateway, 'connections.{}'.format(connection_name))
+
+    if conn.ipsec_policies is None:
+        conn.ipsec_policies = []
     conn.ipsec_policies.append(
         IpsecPolicy(
             sa_life_time_seconds=sa_life_time_seconds,
@@ -600,6 +603,7 @@ def add_vpn_gateway_connection_ipsec_policy(cmd, resource_group_name, gateway_na
             pfs_group=pfs_group
         )
     )
+
     _upsert(gateway, 'connections', conn, 'name', warn=False)
     poller = sdk_no_wait(no_wait, client.create_or_update,
                          resource_group_name, gateway_name, gateway)
