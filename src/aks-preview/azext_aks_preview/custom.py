@@ -54,7 +54,8 @@ from azure.graphrbac.models import (ApplicationCreateParameters,
                                     KeyCredential,
                                     ServicePrincipalCreateParameters,
                                     GetObjectsParameters)
-from .vendored_sdks.azure_mgmt_preview_aks.v2021_08_01.models import (ContainerServiceLinuxProfile,
+from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
+from .vendored_sdks.azure_mgmt_preview_aks.v2021_09_01.models import (ContainerServiceLinuxProfile,
                                                                       ManagedClusterWindowsProfile,
                                                                       ContainerServiceNetworkProfile,
                                                                       ManagedClusterServicePrincipalProfile,
@@ -126,6 +127,15 @@ from .addonconfiguration import update_addons, enable_addons, ensure_default_log
     add_ingress_appgw_addon_role_assignment, add_virtual_node_role_assignment
 
 logger = get_logger(__name__)
+
+
+def prepare_nat_gateway_models():
+    from .vendored_sdks.azure_mgmt_preview_aks.v2021_09_01.models import ManagedClusterNATGatewayProfile
+    from .vendored_sdks.azure_mgmt_preview_aks.v2021_09_01.models import ManagedClusterManagedOutboundIPProfile
+    nat_gateway_models = {}
+    nat_gateway_models["ManagedClusterNATGatewayProfile"] = ManagedClusterNATGatewayProfile
+    nat_gateway_models["ManagedClusterManagedOutboundIPProfile"] = ManagedClusterManagedOutboundIPProfile
+    return nat_gateway_models
 
 
 def which(binary):
@@ -987,9 +997,16 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         load_balancer_outbound_ports,
         load_balancer_idle_timeout)
 
+    # TODO: uncomment the following after next cli release
+    # from azext_aks_preview.decorator import AKSPreviewModels
+    # # store all the models used by nat gateway
+    # nat_gateway_models = AKSPreviewModels(cmd, CUSTOM_MGMT_AKS_PREVIEW).nat_gateway_models
+    nat_gateway_models = prepare_nat_gateway_models()
     nat_gateway_profile = create_nat_gateway_profile(
         nat_gateway_managed_outbound_ip_count,
-        nat_gateway_idle_timeout)
+        nat_gateway_idle_timeout,
+        models=nat_gateway_models,
+    )
 
     outbound_type = _set_outbound_type(
         outbound_type, vnet_subnet_id, load_balancer_sku, load_balancer_profile)
@@ -1479,10 +1496,17 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
             instance.network_profile.load_balancer_profile)
 
     if update_natgw_profile:
+        # TODO: uncomment the following after next cli release
+        # from azext_aks_preview.decorator import AKSPreviewModels
+        # # store all the models used by nat gateway
+        # nat_gateway_models = AKSPreviewModels(cmd, CUSTOM_MGMT_AKS_PREVIEW).nat_gateway_models
+        nat_gateway_models = prepare_nat_gateway_models()
         instance.network_profile.nat_gateway_profile = update_nat_gateway_profile(
             nat_gateway_managed_outbound_ip_count,
             nat_gateway_idle_timeout,
-            instance.network_profile.nat_gateway_profile)
+            instance.network_profile.nat_gateway_profile,
+            models=nat_gateway_models,
+        )
 
     if attach_acr and detach_acr:
         raise CLIError(
