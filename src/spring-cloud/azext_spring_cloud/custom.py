@@ -32,7 +32,7 @@ from knack.log import get_logger
 from .azure_storage_file import FileService
 from azure.cli.core.azclierror import InvalidArgumentValueError, RequiredArgumentMissingError
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
-from azure.cli.core.util import sdk_no_wait
+from azure.cli.core.util import get_file_json, sdk_no_wait
 from azure.cli.core.profiles import ResourceType, get_sdk
 from azure.mgmt.applicationinsights import ApplicationInsightsManagementClient
 from azure.cli.core.commands import cached_put
@@ -250,10 +250,10 @@ def regenerate_keys(cmd, client, resource_group, name, type):
 
 
 def app_append_persistent_storage(cmd, client, resource_group, service, name,
-                                  storage_name=None,
-                                  persistent_storage_type=None,
-                                  share_name=None,
-                                  mount_path=None,
+                                  storage_name,
+                                  persistent_storage_type,
+                                  share_name,
+                                  mount_path,
                                   mount_options=None,
                                   read_only=None):
     client_0901_preview = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20210901preview)
@@ -324,12 +324,14 @@ def app_create(cmd, client, resource_group, service, name,
 
     if persistent_storage:
         client_0901_preview = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20210901preview)
-        input_file = open(persistent_storage)
-        data = json.load(input_file)
+        data = get_file_json(persistent_storage, throw_on_empty=False)
         custom_persistent_disks = []
 
         if data:
             for item in data['customPersistentDisks']:
+                invalidProperties = not item.get('storageName') or not item.get('type') or not item.get('shareName') or not item.get('mountPath')
+                if invalidProperties:
+                    raise CLIError("StorageName, Type, ShareName, MountPath mast be provided in the json file")
                 storage_resource = client_0901_preview.storages.get(resource_group, service, item['storageName'])
                 custom_persistent_disk_properties = models_20210901preview.AzureFileVolume(
                     type=item['customPersistentDiskProperties']['type'],
@@ -1627,8 +1629,7 @@ def storage_callback(pipeline_response, deserialized, headers):
     return models_20210901preview.StorageResource.deserialize(json.loads(pipeline_response.http_response.text()))
 
 
-def storage_add(cmd, resource_group, service, name, storage_type, account_name, account_key):
-    client = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20210901preview)
+def storage_add(client, resource_group, service, name, storage_type, account_name, account_key):
     properties = None
     if storage_type == 'StorageAccount':
         properties = models_20210901preview.StorageAccount(
@@ -1644,24 +1645,20 @@ def storage_add(cmd, resource_group, service, name, storage_type, account_name, 
         cls=storage_callback)
 
 
-def storage_get(cmd, resource_group, service, name):
-    client = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20210901preview)
+def storage_get(client, resource_group, service, name):
     return client.storages.get(resource_group, service, name)
 
 
-def storage_list(cmd, resource_group, service):
-    client = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20210901preview)
+def storage_list(client, resource_group, service):
     return client.storages.list(resource_group, service)
 
 
-def storage_remove(cmd, resource_group, service, name):
-    client = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20210901preview)
+def storage_remove(client, resource_group, service, name):
     client.storages.get(resource_group, service, name)
     return client.storages.begin_delete(resource_group, service, name)
 
 
-def storage_update(cmd, resource_group, service, name, storage_type, account_name, account_key):
-    client = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20210901preview)
+def storage_update(client, resource_group, service, name, storage_type, account_name, account_key):
     properties = None
     if storage_type == 'StorageAccount':
         properties = models_20210901preview.StorageAccount(
@@ -1677,8 +1674,7 @@ def storage_update(cmd, resource_group, service, name, storage_type, account_nam
         cls=storage_callback)
 
 
-def storage_list_persistent_storage(cmd, resource_group, service, name):
-    client = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20210901preview)
+def storage_list_persistent_storage(client, resource_group, service, name):
     apps = list(client.apps.list(resource_group, service))
 
     storage_resource = client.storages.get(resource_group, service, name)

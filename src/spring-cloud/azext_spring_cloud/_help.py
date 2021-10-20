@@ -130,7 +130,7 @@ helps['spring-cloud storage list-persistent-storage'] = """
     type: command
     short-summary: List all the persistent storages related to an existing storage in the Azure Spring Cloud.
     examples:
-    - name: Remove a Storage resource.
+    - name: list all the persistent-storage related to an existing storage.
       text: az spring-cloud storage list-persistent-storage -g MyResourceGroup -s MyService -n MyStorageName
 """
 
