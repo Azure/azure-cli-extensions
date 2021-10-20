@@ -2,6 +2,24 @@
 
 Release History
 ===============
+0.5.37
++++++
+* Add Windows gMSA v2 support. Add parameters `--enable-windows-gmsa`, `--gmsa-dns-server` and `--gmsa-root-domain-name`
+
+0.5.36
++++++
+* Update to use 2021-09-01 api-version
+
+0.5.35
++++++
+* Add support for multi-instance GPU configuration (`--gpu_instance_profile`) in `az aks create`
+and `az aks nodepool add`.
+
+0.5.34
++++++
+* Add support for WASM nodepools (`--workload-runtime WasmWasi`) in `az aks create`
+and `az aks nodepool add`
+
 0.5.33
 +++++
 * Add support for new addon commands

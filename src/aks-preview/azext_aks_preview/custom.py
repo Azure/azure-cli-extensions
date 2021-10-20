@@ -54,7 +54,8 @@ from azure.graphrbac.models import (ApplicationCreateParameters,
                                     KeyCredential,
                                     ServicePrincipalCreateParameters,
                                     GetObjectsParameters)
-from .vendored_sdks.azure_mgmt_preview_aks.v2021_08_01.models import (ContainerServiceLinuxProfile,
+from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
+from .vendored_sdks.azure_mgmt_preview_aks.v2021_09_01.models import (ContainerServiceLinuxProfile,
                                                                       ManagedClusterWindowsProfile,
                                                                       ContainerServiceNetworkProfile,
                                                                       ManagedClusterServicePrincipalProfile,
@@ -79,7 +80,8 @@ from .vendored_sdks.azure_mgmt_preview_aks.v2021_08_01.models import (ContainerS
                                                                       ManagedClusterPodIdentityProfile,
                                                                       ManagedClusterPodIdentity,
                                                                       ManagedClusterPodIdentityException,
-                                                                      UserAssignedIdentity)
+                                                                      UserAssignedIdentity,
+                                                                      WindowsGmsaProfile)
 from ._client_factory import cf_resource_groups
 from ._client_factory import get_auth_management_client
 from ._client_factory import get_graph_rbac_management_client
@@ -126,6 +128,15 @@ from .addonconfiguration import update_addons, enable_addons, ensure_default_log
     add_ingress_appgw_addon_role_assignment, add_virtual_node_role_assignment
 
 logger = get_logger(__name__)
+
+
+def prepare_nat_gateway_models():
+    from .vendored_sdks.azure_mgmt_preview_aks.v2021_09_01.models import ManagedClusterNATGatewayProfile
+    from .vendored_sdks.azure_mgmt_preview_aks.v2021_09_01.models import ManagedClusterManagedOutboundIPProfile
+    nat_gateway_models = {}
+    nat_gateway_models["ManagedClusterNATGatewayProfile"] = ManagedClusterNATGatewayProfile
+    nat_gateway_models["ManagedClusterManagedOutboundIPProfile"] = ManagedClusterManagedOutboundIPProfile
+    return nat_gateway_models
 
 
 def which(binary):
@@ -809,6 +820,11 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                disable_local_accounts=False,
                no_wait=False,
                assign_kubelet_identity=None,
+               workload_runtime=None,
+               gpu_instance_profile=None,
+               enable_windows_gmsa=False,
+               gmsa_dns_server=None,
+               gmsa_root_domain_name=None,
                yes=False):
     if not no_ssh_key:
         try:
@@ -868,7 +884,9 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         enable_encryption_at_host=enable_encryption_at_host,
         enable_ultra_ssd=enable_ultra_ssd,
         max_pods=int(max_pods) if max_pods else None,
-        type=vm_set_type
+        type=vm_set_type,
+        workload_runtime=workload_runtime,
+        gpu_instance_profile=gpu_instance_profile
     )
 
     if node_osdisk_size:
@@ -911,9 +929,29 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
             windows_license_type = 'Windows_Server'
 
         windows_profile = ManagedClusterWindowsProfile(
+            # [SuppressMessage("Microsoft.Security", "CS002:SecretInNextLine", Justification="no secret in next line")]
             admin_username=windows_admin_username,
             admin_password=windows_admin_password,
             license_type=windows_license_type)
+
+        if enable_windows_gmsa:
+            windows_profile.gmsa_profile = WindowsGmsaProfile(
+                enabled=True)
+            if gmsa_dns_server is not None and gmsa_root_domain_name is not None:
+                windows_profile.gmsa_profile.dns_server = gmsa_dns_server
+                windows_profile.gmsa_profile.root_domain_name = gmsa_root_domain_name
+            elif gmsa_dns_server is None and gmsa_root_domain_name is None:
+                msg = ('Please assure that you have set the DNS server in the vnet used by the cluster when not specifying --gmsa-dns-server and --gmsa-root-domain-name')
+                from knack.prompting import prompt_y_n
+                if not yes and not prompt_y_n(msg, default="n"):
+                    return None
+            else:
+                raise ArgumentUsageError(
+                    'You must set or not set --gmsa-dns-server and --gmsa-root-domain-name at the same time.')
+        else:
+            if gmsa_dns_server is not None or gmsa_root_domain_name is not None:
+                raise ArgumentUsageError(
+                    'You only can set --gmsa-dns-server and --gmsa-root-domain-name when setting --enable-windows-gmsa.')
 
     service_principal_profile = None
     principal_obj = None
@@ -983,9 +1021,16 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         load_balancer_outbound_ports,
         load_balancer_idle_timeout)
 
+    # TODO: uncomment the following after next cli release
+    # from azext_aks_preview.decorator import AKSPreviewModels
+    # # store all the models used by nat gateway
+    # nat_gateway_models = AKSPreviewModels(cmd, CUSTOM_MGMT_AKS_PREVIEW).nat_gateway_models
+    nat_gateway_models = prepare_nat_gateway_models()
     nat_gateway_profile = create_nat_gateway_profile(
         nat_gateway_managed_outbound_ip_count,
-        nat_gateway_idle_timeout)
+        nat_gateway_idle_timeout,
+        models=nat_gateway_models,
+    )
 
     outbound_type = _set_outbound_type(
         outbound_type, vnet_subnet_id, load_balancer_sku, load_balancer_profile)
@@ -1317,7 +1362,10 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                tags=None,
                windows_admin_password=None,
                enable_azure_rbac=False,
-               disable_azure_rbac=False):
+               disable_azure_rbac=False,
+               enable_windows_gmsa=False,
+               gmsa_dns_server=None,
+               gmsa_root_domain_name=None):
     update_autoscaler = enable_cluster_autoscaler or disable_cluster_autoscaler or update_cluster_autoscaler
     update_acr = attach_acr is not None or detach_acr is not None
     update_pod_security = enable_pod_security_policy or disable_pod_security_policy
@@ -1356,7 +1404,8 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
        not enable_local_accounts and \
        not disable_local_accounts and \
        not enable_public_fqdn and \
-       not disable_public_fqdn:
+       not disable_public_fqdn and \
+       not enable_windows_gmsa:
         raise CLIError('Please specify "--enable-cluster-autoscaler" or '
                        '"--disable-cluster-autoscaler" or '
                        '"--update-cluster-autoscaler" or '
@@ -1391,7 +1440,8 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                        '"--enable-local-accounts" or '
                        '"--disable-local-accounts" or '
                        '"--enable-public-fqdn" or '
-                       '"--disable-public-fqdn"')
+                       '"--disable-public-fqdn"'
+                       '"--enble-windows-gmsa"')
     instance = client.get(resource_group_name, name)
 
     if update_autoscaler and len(instance.agent_pool_profiles) > 1:
@@ -1475,10 +1525,17 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
             instance.network_profile.load_balancer_profile)
 
     if update_natgw_profile:
+        # TODO: uncomment the following after next cli release
+        # from azext_aks_preview.decorator import AKSPreviewModels
+        # # store all the models used by nat gateway
+        # nat_gateway_models = AKSPreviewModels(cmd, CUSTOM_MGMT_AKS_PREVIEW).nat_gateway_models
+        nat_gateway_models = prepare_nat_gateway_models()
         instance.network_profile.nat_gateway_profile = update_nat_gateway_profile(
             nat_gateway_managed_outbound_ip_count,
             nat_gateway_idle_timeout,
-            instance.network_profile.nat_gateway_profile)
+            instance.network_profile.nat_gateway_profile,
+            models=nat_gateway_models,
+        )
 
     if attach_acr and detach_acr:
         raise CLIError(
@@ -1672,6 +1729,24 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
 
     if windows_admin_password:
         instance.windows_profile.admin_password = windows_admin_password
+
+    if enable_windows_gmsa:
+        instance.windows_profile.gmsa_profile = WindowsGmsaProfile(enabled=True)
+        if gmsa_dns_server is not None and gmsa_root_domain_name is not None:
+            instance.windows_profile.gmsa_profile.dns_server = gmsa_dns_server
+            instance.windows_profile.gmsa_profile.root_domain_name = gmsa_root_domain_name
+        elif gmsa_dns_server is None and gmsa_root_domain_name is None:
+            msg = ('Please assure that you have set the DNS server in the vnet used by the cluster when not specifying --gmsa-dns-server and --gmsa-root-domain-name')
+            from knack.prompting import prompt_y_n
+            if not yes and not prompt_y_n(msg, default="n"):
+                return None
+        else:
+            raise ArgumentUsageError(
+                'You must set or not set --gmsa-dns-server and --gmsa-root-domain-name at the same time.')
+    else:
+        if gmsa_dns_server is not None or gmsa_root_domain_name is not None:
+            raise ArgumentUsageError(
+                'You only can set --gmsa-dns-server and --gmsa-root-domain-name when setting --enable-windows-gmsa.')
 
     headers = get_aks_custom_headers(aks_custom_headers)
 
@@ -2017,8 +2092,8 @@ def aks_upgrade(cmd,    # pylint: disable=unused-argument, too-many-return-state
                        'If you only want to upgrade the node version please use the "--node-image-only" option only.')
 
     if node_image_only:
-        msg = "This node image upgrade operation will run across every node pool in the cluster" \
-              "and might take a while, do you wish to continue?"
+        msg = "This node image upgrade operation will run across every node pool in the cluster " \
+              "and might take a while. Do you wish to continue?"
         if not yes and not prompt_y_n(msg, default="n"):
             return None
 
@@ -2375,6 +2450,8 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
                       linux_os_config=None,
                       enable_encryption_at_host=False,
                       enable_ultra_ssd=False,
+                      workload_runtime=None,
+                      gpu_instance_profile=None,
                       no_wait=False):
     instances = client.list(resource_group_name, cluster_name)
     for agentpool_profile in instances:
@@ -2428,7 +2505,9 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
         upgrade_settings=upgradeSettings,
         enable_encryption_at_host=enable_encryption_at_host,
         enable_ultra_ssd=enable_ultra_ssd,
-        mode=mode
+        mode=mode,
+        workload_runtime=workload_runtime,
+        gpu_instance_profile=gpu_instance_profile
     )
 
     if priority == CONST_SCALE_SET_PRIORITY_SPOT:
