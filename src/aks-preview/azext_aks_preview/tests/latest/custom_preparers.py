@@ -14,7 +14,7 @@ from azure.cli.testsdk.preparers import (
     KEY_VIRTUAL_NETWORK,
 )
 from azure.cli.testsdk.utilities import GraphClientPasswordReplacer
-from azure.cli.command_modules.acs.tests.latest.recording_processors import MOCK_GUID, MOCK_SECRET
+from azext_aks_preview.tests.latest.recording_processors import MOCK_GUID, MOCK_SECRET
 
 
 class AKSCustomResourceGroupPreparer(ResourceGroupPreparer):
