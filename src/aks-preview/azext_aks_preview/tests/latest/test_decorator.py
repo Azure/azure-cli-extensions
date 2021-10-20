@@ -465,13 +465,13 @@ class AKSPreviewContextTestCase(unittest.TestCase):
             )
 
     def test_get_appgw_subnet_prefix(self):
-        ctx_1 = AKSPreviewContext(
-            self.cmd,
-            {"enable_addons": "monitoring,gitops"},
-            self.models,
-            decorator_mode=DecoratorMode.CREATE,
-        )
-        print(ctx_1.get_enable_addons())
+        pass
+
+    def test_get_enable_msi_auth_for_monitoring(self):
+        pass
+
+    def test_get_enable_secret_rotation(self):
+        pass
 
 
 class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):

@@ -24,14 +24,6 @@ from azure.cli.core.azclierror import (
 from azure.cli.core.commands import AzCliCommand
 from azure.cli.core.profiles import ResourceType
 from azure.cli.core.util import get_file_json
-# TODO: change to import from azure.cli.command_modules.acs._consts
-from azext_aks_preview._consts import (
-    ADDONS,
-    CONST_INGRESS_APPGW_ADDON_NAME,
-    CONST_INGRESS_APPGW_SUBNET_CIDR,
-    CONST_MONITORING_ADDON_NAME,
-    CONST_MONITORING_USING_AAD_MSI_AUTH
-)
 from knack.log import get_logger
 
 from azext_aks_preview._natgateway import create_nat_gateway_profile
@@ -504,11 +496,30 @@ class AKSPreviewContext(AKSContext):
         """
         return self._get_enable_pod_identity_with_kubenet(enable_validation=True)
 
-    # pylint: disable=unused-argument
-    def _get_enable_addons(self, enable_validation: bool = False, **kwargs) -> List[str]:
-        print("Hello World!")
-        print(ADDONS)
-        return super()._get_enable_addons(enable_validation, ADDONS=ADDONS)
+    def _get_addon_consts(self) -> Dict[str, str]:
+        """Helper function to obtain the constants used by addons.
+
+        Note: This is not a parameter of aks commands.
+
+        :return: dict
+        """
+        from azext_aks_preview._consts import (
+            ADDONS,
+            CONST_GITOPS_ADDON_NAME,
+            CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME,
+            CONST_SECRET_ROTATION_ENABLED,
+        )
+
+        addon_consts = super()._get_addon_consts()
+        addon_consts["ADDONS"] = ADDONS
+        addon_consts["CONST_GITOPS_ADDON_NAME"] = CONST_GITOPS_ADDON_NAME
+        addon_consts[
+            "CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME"
+        ] = CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME
+        addon_consts[
+            "CONST_SECRET_ROTATION_ENABLED"
+        ] = CONST_SECRET_ROTATION_ENABLED
+        return addon_consts
 
     def get_appgw_subnet_prefix(self) -> Union[str, None]:
         """Obtain the value of appgw_subnet_prefix.
@@ -517,20 +528,25 @@ class AKSPreviewContext(AKSContext):
 
         :return: string or None
         """
+        # determine the value of constants
+        addon_consts = self._get_addon_consts()
+        ingress_appgw_addon_name = addon_consts.get("CONST_INGRESS_APPGW_ADDON_NAME")
+        ingress_appgw_subnet_cidr = addon_consts.get("CONST_INGRESS_APPGW_SUBNET_CIDR")
+
         # read the original value passed by the command
         appgw_subnet_prefix = self.raw_param.get("appgw_subnet_prefix")
         # try to read the property value corresponding to the parameter from the `mc` object
         if (
             self.mc and
             self.mc.addon_profiles and
-            CONST_INGRESS_APPGW_ADDON_NAME in self.mc.addon_profiles and
+            ingress_appgw_addon_name in self.mc.addon_profiles and
             self.mc.addon_profiles.get(
-                CONST_INGRESS_APPGW_ADDON_NAME
-            ).config.get(CONST_INGRESS_APPGW_SUBNET_CIDR) is not None
+                ingress_appgw_addon_name
+            ).config.get(ingress_appgw_subnet_cidr) is not None
         ):
             appgw_subnet_prefix = self.mc.addon_profiles.get(
-                CONST_INGRESS_APPGW_ADDON_NAME
-            ).config.get(CONST_INGRESS_APPGW_SUBNET_CIDR)
+                ingress_appgw_addon_name
+            ).config.get(ingress_appgw_subnet_cidr)
 
         # this parameter does not need dynamic completion
         # this parameter does not need validation
@@ -544,20 +560,25 @@ class AKSPreviewContext(AKSContext):
 
         :return: bool or None
         """
+        # determine the value of constants
+        addon_consts = self._get_addon_consts()
+        monitoring_addon_name = addon_consts.get("CONST_MONITORING_ADDON_NAME")
+        monitoring_using_aad_msi_auth = addon_consts.get("CONST_MONITORING_USING_AAD_MSI_AUTH")
+
         # read the original value passed by the command
         enable_msi_auth_for_monitoring = self.raw_param.get("enable_msi_auth_for_monitoring")
         # try to read the property value corresponding to the parameter from the `mc` object
         if (
             self.mc and
             self.mc.addon_profiles and
-            CONST_MONITORING_ADDON_NAME in self.mc.addon_profiles and
+            monitoring_addon_name in self.mc.addon_profiles and
             self.mc.addon_profiles.get(
-                CONST_MONITORING_ADDON_NAME
-            ).config.get(CONST_MONITORING_USING_AAD_MSI_AUTH) is not None
+                monitoring_addon_name
+            ).config.get(monitoring_using_aad_msi_auth) is not None
         ):
             enable_msi_auth_for_monitoring = self.mc.addon_profiles.get(
-                CONST_MONITORING_ADDON_NAME
-            ).config.get(CONST_MONITORING_USING_AAD_MSI_AUTH)
+                monitoring_addon_name
+            ).config.get(monitoring_using_aad_msi_auth)
 
         # this parameter does not need dynamic completion
         # this parameter does not need validation
