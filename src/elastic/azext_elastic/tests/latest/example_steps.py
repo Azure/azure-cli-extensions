@@ -83,7 +83,7 @@ def step_monitor_update(test, checks=None):
 def step_deployment_info_list(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az elastic deployment-info list '
+    test.cmd('az elastic monitor list-deployment-info '
              '--monitor-name "{myMonitor}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -94,7 +94,7 @@ def step_deployment_info_list(test, checks=None):
 def step_monitored_resource_list(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az elastic monitored-resource list '
+    test.cmd('az elastic monitor list-resource '
              '--monitor-name "{myMonitor}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -105,7 +105,7 @@ def step_monitored_resource_list(test, checks=None):
 def step_tag_rule_create(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az elastic tag-rule create '
+    test.cmd('az elastic monitor tag-rule create '
              '--monitor-name "{myMonitor}" '
              '--filtering-tags name="Environment" action="Include" value="Prod" '
              '--filtering-tags name="Environment" action="Exclude" value="Dev" '
@@ -122,7 +122,7 @@ def step_tag_rule_create(test, checks=None):
 def step_tag_rule_show(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az elastic tag-rule show '
+    test.cmd('az elastic monitor tag-rule show '
              '--monitor-name "{myMonitor}" '
              '--resource-group "{rg}" '
              '--rule-set-name "default"',
@@ -134,7 +134,7 @@ def step_tag_rule_show(test, checks=None):
 def step_tag_rule_list(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az elastic tag-rule list '
+    test.cmd('az elastic monitor tag-rule list '
              '--monitor-name "{myMonitor}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -145,7 +145,7 @@ def step_tag_rule_list(test, checks=None):
 def step_tag_rule_delete(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az elastic tag-rule delete -y '
+    test.cmd('az elastic monitor tag-rule delete -y '
              '--monitor-name "{myMonitor}" '
              '--resource-group "{rg}" '
              '--rule-set-name "default"',
@@ -157,7 +157,7 @@ def step_tag_rule_delete(test, checks=None):
 def step_vm_collection_update(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az elastic vm-collection update '
+    test.cmd('az elastic monitor update-vm-collection '
              '--monitor-name "{myMonitor}" '
              '--operation-name "Add" '
              '--vm-resource-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Compute/virtua'
@@ -171,7 +171,7 @@ def step_vm_collection_update(test, checks=None):
 def step_vm_host_list(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az elastic vm-host list '
+    test.cmd('az elastic monitor list-vm-host '
              '--monitor-name "{myMonitor}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -182,7 +182,7 @@ def step_vm_host_list(test, checks=None):
 def step_vm_ingestion_detail(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az elastic vm-ingestion detail '
+    test.cmd('az elastic monitor list-vm-ingestion-detail '
              '--monitor-name "{myMonitor}" '
              '--resource-group "{rg}"',
              checks=checks)

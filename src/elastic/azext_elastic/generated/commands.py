@@ -24,25 +24,9 @@ from azext_elastic.generated._client_factory import (
 )
 
 
-elastic_deployment_info = CliCommandType(
-    operations_tmpl=(
-        'azext_elastic.vendored_sdks.elastic.operations._deployment_info_operations#DeploymentInfoOperations.{}'
-    ),
-    client_factory=cf_deployment_info,
-)
-
-
 elastic_monitor = CliCommandType(
     operations_tmpl='azext_elastic.vendored_sdks.elastic.operations._monitors_operations#MonitorsOperations.{}',
     client_factory=cf_monitor,
-)
-
-
-elastic_monitored_resource = CliCommandType(
-    operations_tmpl=(
-        'azext_elastic.vendored_sdks.elastic.operations._monitored_resources_operations#MonitoredResourcesOperations.{}'
-    ),
-    client_factory=cf_monitored_resource,
 )
 
 
@@ -52,30 +36,7 @@ elastic_tag_rule = CliCommandType(
 )
 
 
-elastic_vm_collection = CliCommandType(
-    operations_tmpl=(
-        'azext_elastic.vendored_sdks.elastic.operations._vm_collection_operations#VmCollectionOperations.{}'
-    ),
-    client_factory=cf_vm_collection,
-)
-
-
-elastic_vm_host = CliCommandType(
-    operations_tmpl='azext_elastic.vendored_sdks.elastic.operations._vm_host_operations#VmHostOperations.{}',
-    client_factory=cf_vm_host,
-)
-
-
-elastic_vm_ingestion = CliCommandType(
-    operations_tmpl='azext_elastic.vendored_sdks.elastic.operations._vm_ingestion_operations#VmIngestionOperations.{}',
-    client_factory=cf_vm_ingestion,
-)
-
-
 def load_command_table(self, _):
-
-    with self.command_group('elastic deployment-info', elastic_deployment_info, client_factory=cf_deployment_info) as g:
-        g.custom_command('list', 'elastic_deployment_info_list')
 
     with self.command_group('elastic monitor', elastic_monitor, client_factory=cf_monitor) as g:
         g.custom_command('list', 'elastic_monitor_list')
@@ -83,29 +44,26 @@ def load_command_table(self, _):
         g.custom_command('create', 'elastic_monitor_create', supports_no_wait=True)
         g.custom_command('update', 'elastic_monitor_update')
         g.custom_command('delete', 'elastic_monitor_delete', supports_no_wait=True, confirmation=True)
+        g.custom_command(
+            'list-deployment-info', 'elastic_monitor_list_deployment_info', client_factory=cf_deployment_info
+        )
+        g.custom_command('list-resource', 'elastic_monitor_list_resource', client_factory=cf_monitored_resource)
+        g.custom_command('list-vm-host', 'elastic_monitor_list_vm_host', client_factory=cf_vm_host)
+        g.custom_command(
+            'list-vm-ingestion-detail', 'elastic_monitor_list_vm_ingestion_detail', client_factory=cf_vm_ingestion
+        )
+        g.custom_command(
+            'update-vm-collection', 'elastic_monitor_update_vm_collection', client_factory=cf_vm_collection
+        )
         g.custom_wait_command('wait', 'elastic_monitor_show')
 
-    with self.command_group(
-        'elastic monitored-resource', elastic_monitored_resource, client_factory=cf_monitored_resource
-    ) as g:
-        g.custom_command('list', 'elastic_monitored_resource_list')
-
-    with self.command_group('elastic tag-rule', elastic_tag_rule, client_factory=cf_tag_rule) as g:
-        g.custom_command('list', 'elastic_tag_rule_list')
-        g.custom_show_command('show', 'elastic_tag_rule_show')
-        g.custom_command('create', 'elastic_tag_rule_create')
-        g.generic_update_command('update', custom_func_name='elastic_tag_rule_update', setter_arg_name='body')
-        g.custom_command('delete', 'elastic_tag_rule_delete', supports_no_wait=True, confirmation=True)
-        g.custom_wait_command('wait', 'elastic_tag_rule_show')
-
-    with self.command_group('elastic vm-collection', elastic_vm_collection, client_factory=cf_vm_collection) as g:
-        g.custom_command('update', 'elastic_vm_collection_update')
-
-    with self.command_group('elastic vm-host', elastic_vm_host, client_factory=cf_vm_host) as g:
-        g.custom_command('list', 'elastic_vm_host_list')
-
-    with self.command_group('elastic vm-ingestion', elastic_vm_ingestion, client_factory=cf_vm_ingestion) as g:
-        g.custom_command('detail', 'elastic_vm_ingestion_detail')
+    with self.command_group('elastic monitor tag-rule', elastic_tag_rule, client_factory=cf_tag_rule) as g:
+        g.custom_command('list', 'elastic_monitor_tag_rule_list')
+        g.custom_show_command('show', 'elastic_monitor_tag_rule_show')
+        g.custom_command('create', 'elastic_monitor_tag_rule_create')
+        g.generic_update_command('update', custom_func_name='elastic_monitor_tag_rule_update', setter_arg_name='body')
+        g.custom_command('delete', 'elastic_monitor_tag_rule_delete', supports_no_wait=True, confirmation=True)
+        g.custom_wait_command('wait', 'elastic_monitor_tag_rule_show')
 
     with self.command_group('elastic', is_experimental=True):
         pass

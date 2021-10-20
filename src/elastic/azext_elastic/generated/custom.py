@@ -91,45 +91,74 @@ def elastic_monitor_delete(client,
                        monitor_name=monitor_name)
 
 
-def elastic_monitored_resource_list(client,
-                                    resource_group_name,
-                                    monitor_name):
+def elastic_monitor_list_deployment_info(client,
+                                         resource_group_name,
+                                         monitor_name):
     return client.list(resource_group_name=resource_group_name,
                        monitor_name=monitor_name)
 
 
-def elastic_deployment_info_list(client,
+def elastic_monitor_list_resource(client,
+                                  resource_group_name,
+                                  monitor_name):
+    return client.list(resource_group_name=resource_group_name,
+                       monitor_name=monitor_name)
+
+
+def elastic_monitor_list_vm_host(client,
                                  resource_group_name,
                                  monitor_name):
     return client.list(resource_group_name=resource_group_name,
                        monitor_name=monitor_name)
 
 
-def elastic_tag_rule_list(client,
-                          resource_group_name,
-                          monitor_name):
+def elastic_monitor_list_vm_ingestion_detail(client,
+                                             resource_group_name,
+                                             monitor_name):
+    return client.details(resource_group_name=resource_group_name,
+                          monitor_name=monitor_name)
+
+
+def elastic_monitor_update_vm_collection(client,
+                                         resource_group_name,
+                                         monitor_name,
+                                         vm_resource_id=None,
+                                         operation_name=None):
+    body = {}
+    if vm_resource_id is not None:
+        body['vm_resource_id'] = vm_resource_id
+    if operation_name is not None:
+        body['operation_name'] = operation_name
+    return client.update(resource_group_name=resource_group_name,
+                         monitor_name=monitor_name,
+                         body=body)
+
+
+def elastic_monitor_tag_rule_list(client,
+                                  resource_group_name,
+                                  monitor_name):
     return client.list(resource_group_name=resource_group_name,
                        monitor_name=monitor_name)
 
 
-def elastic_tag_rule_show(client,
-                          resource_group_name,
-                          monitor_name,
-                          rule_set_name):
+def elastic_monitor_tag_rule_show(client,
+                                  resource_group_name,
+                                  monitor_name,
+                                  rule_set_name):
     return client.get(resource_group_name=resource_group_name,
                       monitor_name=monitor_name,
                       rule_set_name=rule_set_name)
 
 
-def elastic_tag_rule_create(client,
-                            resource_group_name,
-                            monitor_name,
-                            rule_set_name,
-                            provisioning_state=None,
-                            send_aad_logs=None,
-                            send_subscription_logs=None,
-                            send_activity_logs=None,
-                            filtering_tags=None):
+def elastic_monitor_tag_rule_create(client,
+                                    resource_group_name,
+                                    monitor_name,
+                                    rule_set_name,
+                                    provisioning_state=None,
+                                    send_aad_logs=None,
+                                    send_subscription_logs=None,
+                                    send_activity_logs=None,
+                                    filtering_tags=None):
     body = {}
     body['properties'] = {}
     if provisioning_state is not None:
@@ -151,15 +180,15 @@ def elastic_tag_rule_create(client,
                                    body=body)
 
 
-def elastic_tag_rule_update(instance,
-                            resource_group_name,
-                            monitor_name,
-                            rule_set_name,
-                            provisioning_state=None,
-                            send_aad_logs=None,
-                            send_subscription_logs=None,
-                            send_activity_logs=None,
-                            filtering_tags=None):
+def elastic_monitor_tag_rule_update(instance,
+                                    resource_group_name,
+                                    monitor_name,
+                                    rule_set_name,
+                                    provisioning_state=None,
+                                    send_aad_logs=None,
+                                    send_subscription_logs=None,
+                                    send_activity_logs=None,
+                                    filtering_tags=None):
     if provisioning_state is not None:
         instance.properties.provisioning_state = provisioning_state
     if send_aad_logs is not None:
@@ -173,42 +202,13 @@ def elastic_tag_rule_update(instance,
     return instance
 
 
-def elastic_tag_rule_delete(client,
-                            resource_group_name,
-                            monitor_name,
-                            rule_set_name,
-                            no_wait=False):
+def elastic_monitor_tag_rule_delete(client,
+                                    resource_group_name,
+                                    monitor_name,
+                                    rule_set_name,
+                                    no_wait=False):
     return sdk_no_wait(no_wait,
                        client.begin_delete,
                        resource_group_name=resource_group_name,
                        monitor_name=monitor_name,
                        rule_set_name=rule_set_name)
-
-
-def elastic_vm_host_list(client,
-                         resource_group_name,
-                         monitor_name):
-    return client.list(resource_group_name=resource_group_name,
-                       monitor_name=monitor_name)
-
-
-def elastic_vm_ingestion_detail(client,
-                                resource_group_name,
-                                monitor_name):
-    return client.details(resource_group_name=resource_group_name,
-                          monitor_name=monitor_name)
-
-
-def elastic_vm_collection_update(client,
-                                 resource_group_name,
-                                 monitor_name,
-                                 vm_resource_id=None,
-                                 operation_name=None):
-    body = {}
-    if vm_resource_id is not None:
-        body['vm_resource_id'] = vm_resource_id
-    if operation_name is not None:
-        body['operation_name'] = operation_name
-    return client.update(resource_group_name=resource_group_name,
-                         monitor_name=monitor_name,
-                         body=body)

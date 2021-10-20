@@ -64,29 +64,49 @@ def load_arguments(self, _):
         c.argument('monitor_name', options_list=['--name', '-n', '--monitor-name'], type=str, help='Monitor resource '
                    'name', id_part='name')
 
+    with self.argument_context('elastic monitor list-deployment-info') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('monitor_name', options_list=['--name', '-n', '--monitor-name'], type=str, help='Monitor resource '
+                   'name')
+
+    with self.argument_context('elastic monitor list-resource') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('monitor_name', options_list=['--name', '-n', '--monitor-name'], type=str, help='Monitor resource '
+                   'name')
+
+    with self.argument_context('elastic monitor list-vm-host') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('monitor_name', options_list=['--name', '-n', '--monitor-name'], type=str, help='Monitor resource '
+                   'name')
+
+    with self.argument_context('elastic monitor list-vm-ingestion-detail') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('monitor_name', options_list=['--name', '-n', '--monitor-name'], type=str, help='Monitor resource '
+                   'name')
+
+    with self.argument_context('elastic monitor update-vm-collection') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('monitor_name', options_list=['--name', '-n', '--monitor-name'], type=str, help='Monitor resource '
+                   'name', id_part='name')
+        c.argument('vm_resource_id', type=str, help='ARM id of the VM resource.')
+        c.argument('operation_name', arg_type=get_enum_type(['Add', 'Delete']), help='Operation to be performed for '
+                   'given VM.')
+
     with self.argument_context('elastic monitor wait') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('monitor_name', options_list=['--name', '-n', '--monitor-name'], type=str, help='Monitor resource '
                    'name', id_part='name')
 
-    with self.argument_context('elastic monitored-resource list') as c:
+    with self.argument_context('elastic monitor tag-rule list') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('monitor_name', type=str, help='Monitor resource name')
 
-    with self.argument_context('elastic deployment-info list') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('monitor_name', type=str, help='Monitor resource name')
-
-    with self.argument_context('elastic tag-rule list') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('monitor_name', type=str, help='Monitor resource name')
-
-    with self.argument_context('elastic tag-rule show') as c:
+    with self.argument_context('elastic monitor tag-rule show') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('monitor_name', type=str, help='Monitor resource name', id_part='name')
         c.argument('rule_set_name', type=str, help='Tag Rule Set resource name', id_part='child_name_1')
 
-    with self.argument_context('elastic tag-rule create') as c:
+    with self.argument_context('elastic monitor tag-rule create') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('monitor_name', type=str, help='Monitor resource name')
         c.argument('rule_set_name', type=str, help='Tag Rule Set resource name')
@@ -106,7 +126,7 @@ def load_arguments(self, _):
                    'of all available resources. If Include actions are specified, the rules will only include '
                    'resources with the associated tags.', arg_group='Log Rules')
 
-    with self.argument_context('elastic tag-rule update') as c:
+    with self.argument_context('elastic monitor tag-rule update') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('monitor_name', type=str, help='Monitor resource name', id_part='name')
         c.argument('rule_set_name', type=str, help='Tag Rule Set resource name', id_part='child_name_1')
@@ -127,27 +147,12 @@ def load_arguments(self, _):
                    'resources with the associated tags.', arg_group='Log Rules')
         c.ignore('body')
 
-    with self.argument_context('elastic tag-rule delete') as c:
+    with self.argument_context('elastic monitor tag-rule delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('monitor_name', type=str, help='Monitor resource name', id_part='name')
         c.argument('rule_set_name', type=str, help='Tag Rule Set resource name', id_part='child_name_1')
 
-    with self.argument_context('elastic tag-rule wait') as c:
+    with self.argument_context('elastic monitor tag-rule wait') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('monitor_name', type=str, help='Monitor resource name', id_part='name')
         c.argument('rule_set_name', type=str, help='Tag Rule Set resource name', id_part='child_name_1')
-
-    with self.argument_context('elastic vm-host list') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('monitor_name', type=str, help='Monitor resource name')
-
-    with self.argument_context('elastic vm-ingestion detail') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('monitor_name', type=str, help='Monitor resource name', id_part='name')
-
-    with self.argument_context('elastic vm-collection update') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('monitor_name', type=str, help='Monitor resource name', id_part='name')
-        c.argument('vm_resource_id', type=str, help='ARM id of the VM resource.')
-        c.argument('operation_name', arg_type=get_enum_type(['Add', 'Delete']), help='Operation to be performed for '
-                   'given VM.')
