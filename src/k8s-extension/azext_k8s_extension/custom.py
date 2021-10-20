@@ -163,11 +163,14 @@ def update_k8s_extension(cmd, client, resource_group_name, cluster_name, name, c
     """Patch an existing Extension Instance.
     """
 
-    if configuration_settings or configuration_protected_settings or configuration_settings_file or configuration_protected_settings_file:
+    if configuration_settings or \
+       configuration_protected_settings or \
+       configuration_settings_file or \
+       configuration_protected_settings_file:
         msg = ('Updating properties in --config-settings or --config-protected-settings may lead to undesirable state'
-            ' if the cluster extension type does not support it. Please refer to the documentation of the'
-            ' cluster extension service to check if updates to these properties is supported.'
-            ' Do you wish to proceed?')
+               ' if the cluster extension type does not support it. Please refer to the documentation of the'
+               ' cluster extension service to check if updates to these properties is supported.'
+               ' Do you wish to proceed?')
         user_confirmation_factory(cmd, yes, msg)
 
     # Determine ClusterRP
@@ -176,8 +179,6 @@ def update_k8s_extension(cmd, client, resource_group_name, cluster_name, name, c
     # We need to determine the ExtensionType to call ExtensionFactory and create Extension class
     extension = show_k8s_extension(client, resource_group_name, cluster_name, name, cluster_type)
     extension_type_lower = extension.extension_type.lower()
-
-    __validate_version_and_auto_upgrade(version, auto_upgrade_minor_version)
 
     config_settings = {}
     config_protected_settings = {}
