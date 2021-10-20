@@ -25,12 +25,13 @@ def load_arguments(self, _):
         c.argument('circuit_secondary_subnet', help='A /30 subnet for the secondary circuit in the Express Route to configure routing between your network and Microsoft\'s Enterprise edge (MSEEs) routers.')
         c.argument('cluster_size', help='Number of hosts for the default management cluster. Minimum of 3 and maximum of 16.')
         c.argument('network_block', help='A subnet at least of size /22. Make sure the CIDR format is conformed to (A.B.C.D/X) where A,B,C,D are between 0 and 255, and X is between 0 and 22.')
-        c.argument('type', help='The type of identity used for the private cloud. The type "SystemAssigned" refers to an implicitly created identity. The type "None" will remove any identities from the Private Cloud.')
+        c.argument('identity_type', help='The type of identity used for the private cloud. The type "SystemAssigned" refers to an implicitly created identity. The type "None" will remove any identities from the Private Cloud.')
 
     with self.argument_context('vmware cluster') as c:
         c.argument('name', options_list=['--name', '-n'], help='Name of the cluster.')
         c.argument('sku', help='The product SKU.')
         c.argument('size', help='Number of hosts for the cluster. Minimum of 3 and a maximum of 16.')
+        c.argument('hosts', nargs='+', help='A cluster\'s hosts in the private cloud.')
 
     with self.argument_context('vmware private-cloud create') as c:
         c.argument('name', options_list=['--name', '-n'], help='Name of the private cloud.')
@@ -121,6 +122,7 @@ def load_arguments(self, _):
     with self.argument_context('vmware global-reach-connection create') as c:
         c.argument('peer_express_route_circuit', help='Identifier of the ExpressRoute Circuit to peer with.')
         c.argument('authorization_key', help='Authorization key from the peer express route.')
+        c.argument('express_route_id', help="The ID of the Private Cloud's ExpressRoute Circuit that is participating in the global reach connection.")
 
     with self.argument_context('vmware cloud-link') as c:
         c.argument('name', options_list=['--name', '-n'], help='The name of the cloud link.')

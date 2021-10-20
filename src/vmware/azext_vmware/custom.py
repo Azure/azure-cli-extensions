@@ -112,9 +112,9 @@ def privatecloud_rotate_nsxt_password(client: AVSClient, resource_group_name, pr
     return client.private_clouds.begin_rotate_nsxt_password(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
 
 
-def cluster_create(client: AVSClient, resource_group_name, name, sku, private_cloud, size):
-    from azext_vmware.vendored_sdks.avs_client.models import Sku
-    return client.clusters.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=name, sku=Sku(name=sku), cluster_size=size)
+def cluster_create(client: AVSClient, resource_group_name, name, sku, private_cloud, size, hosts):
+    from azext_vmware.vendored_sdks.avs_client.models import Sku, Cluster
+    return client.clusters.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=name, cluster=Cluster(sku=Sku(name=sku), cluster_size=size, hosts=hosts))
 
 
 def cluster_update(client: AVSClient, resource_group_name, name, private_cloud, size):
@@ -265,8 +265,9 @@ def addon_srm_delete(client: AVSClient, resource_group_name, private_cloud):
     return client.addons.begin_delete(resource_group_name=resource_group_name, private_cloud_name=private_cloud, addon_name="srm")
 
 
-def globalreachconnection_create(client: AVSClient, resource_group_name, private_cloud, name, authorization_key=None, peer_express_route_circuit=None):
-    return client.global_reach_connections.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, global_reach_connection_name=name, authorization_key=authorization_key, peer_express_route_circuit=peer_express_route_circuit)
+def globalreachconnection_create(client: AVSClient, resource_group_name, private_cloud, name, authorization_key=None, peer_express_route_circuit=None, express_route_id=None):
+    from azext_vmware.vendored_sdks.avs_client.models import GlobalReachConnection
+    return client.global_reach_connections.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, global_reach_connection_name=name, global_reach_connection=GlobalReachConnection(authorization_key=authorization_key, peer_express_route_circuit=peer_express_route_circuit, express_route_id=express_route_id))
 
 
 def globalreachconnection_list(client: AVSClient, resource_group_name, private_cloud):
