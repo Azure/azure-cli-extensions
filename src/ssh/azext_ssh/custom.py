@@ -248,11 +248,11 @@ def _arc_get_client_side_proxy():
         raise azclierror.BadRequestError(f"Unsuported architecture: {machine} is not currently supported")
 
     # define the request url and install location based on the os and architecture
+    proxy_name = f"sshProxy_{operating_system.lower()}_{architecture}"
     request_uri = (f"{consts.CLIENT_PROXY_STORAGE_URL}/{consts.CLIENT_PROXY_RELEASE}"
-                   f"/sshProxy_{operating_system.lower()}_{architecture}_{consts.CLIENT_PROXY_VERSION}")
-    proxy_name = 'argSSHProxy' + consts.CLIENT_PROXY_VERSION
-    install_location = os.path.join(".clientsshproxy", proxy_name.replace('.', '_'))
-    older_version_location = os.path.join(".clientsshproxy", 'argSSHProxy*')
+                   f"/{proxy_name}_{consts.CLIENT_PROXY_VERSION}")
+    install_location = os.path.join(".clientsshproxy", proxy_name + "_" + consts.CLIENT_PROXY_VERSION.replace('.', '_'))
+    older_version_location = os.path.join(".clientsshproxy", proxy_name + "*")
 
     if operating_system == 'Windows':
         request_uri = request_uri + ".exe"
