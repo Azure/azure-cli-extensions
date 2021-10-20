@@ -318,7 +318,7 @@ helps[
     examples:
       - name: Get details of a inventory item
         text: |-
-               az connectedvmware vcenter inventory-item show --inventory-item-name "inventory item name" \
+               az connectedvmware vcenter inventory-item show --inventory-item "inventory item name" \
                --resource-group "resource group name" --vcenter "name of the vcenter"
 """
 
