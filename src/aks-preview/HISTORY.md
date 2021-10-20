@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.5.37
++++++
+* Add Windows gMSA v2 support. Add parameters `--enable-windows-gmsa`, `--gmsa-dns-server` and `--gmsa-root-domain-name`
+
 0.5.36
 +++++
 * Update to use 2021-09-01 api-version
