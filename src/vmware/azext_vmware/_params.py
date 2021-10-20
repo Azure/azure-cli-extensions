@@ -6,6 +6,7 @@
 
 
 from azext_vmware.action import ScriptExecutionNamedOutputAction, ScriptExecutionParameterAction
+from azure.cli.core.commands.parameters import get_enum_type
 from ._validators import server_addresses_length
 
 
@@ -137,7 +138,7 @@ def load_arguments(self, _):
         c.argument('script_cmdlet_id', help='A reference to the script cmdlet resource if user is running a AVS script.')
 
     with self.argument_context('vmware workload-network dhcp') as c:
-        c.argument('dhcp_id', help='NSX DHCP identifier. Generally the same as the DHCP display name.')
+        c.argument('dhcp', help='NSX DHCP identifier. Generally the same as the DHCP display name.')
         c.argument('display_name', help='Display name of the DHCP entity.')
         c.argument('revision', help='NSX revision number.')
 
@@ -147,3 +148,55 @@ def load_arguments(self, _):
 
     with self.argument_context('vmware workload-network dhcp relay') as c:
         c.argument('server_addresses', nargs='+', validator=server_addresses_length, help='DHCP Relay Addresses. Max 3.')
+
+    with self.argument_context('vmware workload-network dns-service') as c:
+        c.argument('dns_service', help="NSX DNS service identifier. Generally the same as the DNS service's display name.")
+        c.argument('display_name', help='Display name of the DNS service.')
+        c.argument('dns_service_ip', help='DNS service IP of the DNS service.')
+        c.argument('default_dns_zone', help='Default DNS zone of the DNS service.')
+        c.argument('fqdn_zones', nargs='+', help='FQDN zones of the DNS service.')
+        c.argument('log_level', arg_type=get_enum_type(["DEBUG", "INFO", "WARNING", "ERROR", "FATAL"]), help='DNS service log level. Possible values include: "DEBUG", "INFO", "WARNING", "ERROR", "FATAL".')
+        c.argument('revision', help='NSX revision number.')
+
+    with self.argument_context('vmware workload-network dns-zone') as c:
+        c.argument('dns_zone', help="NSX DNS zone identifier. Generally the same as the DNS zone's display name.")
+        c.argument('display_name', help='Display name of the DNS zone.')
+        c.argument('domain', nargs='+', help='Domain names of the DNS zone.')
+        c.argument('dns_server_ips', nargs='+', help='DNS Server IP array of the DNS zone.')
+        c.argument('source_ip', help='Source IP of the DNS zone.')
+        c.argument('dns_services', help='Number of DNS services using the DNS zone.')
+        c.argument('revision', help='NSX revision number.')
+
+    with self.argument_context('vmware workload-network port-mirroring') as c:
+        c.argument('port_mirroring', help="NSX Port Mirroring identifier. Generally the same as the Port Mirroring display name.")
+        c.argument('display_name', help='Display name of the port mirroring profile.')
+        c.argument('direction', help='Direction of port mirroring profile. Possible values include: "INGRESS, EGRESS, BIDIRECTIONAL".')
+        c.argument('source', help='Source VM Group.')
+        c.argument('destination', help='Destination VM Group.')
+        c.argument('revision', help='NSX revision number.')
+
+    with self.argument_context('vmware workload-network segment') as c:
+        c.argument('segment', help="NSX Segment identifier. Generally the same as the Segment's display name.")
+        c.argument('display_name', help='Display name of the segment.')
+        c.argument('connected_gateway', help='Gateway which to connect segment to.')
+        c.argument('revision', help='NSX revision number.')
+        c.argument('dhcp_ranges', nargs='+', help='DHCP Range assigned for subnet.')
+        c.argument('gateway_address', help='Gateway address.')
+        c.argument('port_name', help='Name of port or VIF attached to segment.')
+
+    with self.argument_context('vmware workload-network public-ip') as c:
+        c.argument('public_ip', help="NSX Public IP Block identifier. Generally the same as the Public IP.")
+        c.argument('display_name', help='Display name of the Public IP Block.')
+        c.argument('number_of_public_ips', help='Number of Public IPs requested.')
+
+    with self.argument_context('vmware workload-network vm-group') as c:
+        c.argument('vm_group', help="NSX VM Group identifier. Generally the same as the VM Group's display name.")
+        c.argument('display_name', help='Display name of the VM group.')
+        c.argument('members', nargs='+', help='Virtual machine members of this group.')
+        c.argument('revision', help='NSX revision number.')
+
+    with self.argument_context('vmware workload-network vm') as c:
+        c.argument('virtual_machine', help="Virtual Machine identifier.")
+
+    with self.argument_context('vmware workload-network gateway') as c:
+        c.argument('gateway', help="NSX Gateway identifier. Generally the same as the Gateway's display name.")

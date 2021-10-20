@@ -5,6 +5,10 @@
         ]
     },
     "exclude": {
+        "compatibility issue": [
+            "test_aks_nodepool_add_with_ossku",
+            "test_aks_create_with_ossku"
+        ],
         "need additional feature": [
             "test_aks_create_with_azurekeyvaultsecretsprovider_addon",
             "test_aks_create_addon_with_azurekeyvaultsecretsprovider_with_secret_rotation",
@@ -16,6 +20,12 @@
             "test_aks_create_with_openservicemesh_addon",
             "test_aks_enable_addon_with_openservicemesh",
             "test_aks_disable_addon_openservicemesh",
+            "test_aks_addon_disable_openservicemesh",
+            "test_aks_addon_show_openservicemesh_enabled",
+            "test_aks_addon_enable_with_openservicemesh",
+            "test_aks_addon_list_openservicemesh_enabled",
+            "test_aks_addon_update_with_azurekeyvaultsecretsprovider",
+            "test_aks_addon_enable_with_azurekeyvaultsecretsprovider",
             "test_aks_create_with_auto_upgrade_channel",
             "test_aks_disable_local_accounts",
             "test_aks_create_with_pod_identity_enabled",
@@ -27,7 +37,9 @@
             "test_aks_enable_monitoring_with_aad_auth_msi",
             "test_aks_enable_monitoring_with_aad_auth_uai",
             "test_aks_create_and_update_with_managed_nat_gateway_outbound",
-            "test_aks_create_with_http_proxy_config"
+            "test_aks_create_with_http_proxy_config",
+            "test_aks_nodepool_add_with_workload_runtime",
+            "test_aks_nodepool_add_with_gpu_instance_profile"
         ]
     }
 }
