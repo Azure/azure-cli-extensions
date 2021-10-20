@@ -74,13 +74,13 @@ class AgentPool(SubResource):
      after creation. For more information see `Ephemeral OS
      <https://docs.microsoft.com/azure/aks/cluster-configuration#ephemeral-os>`_. Possible values
      include: "Managed", "Ephemeral".
-    :type os_disk_type: str or ~azure.mgmt.containerservice.v2021_08_01.models.OSDiskType
+    :type os_disk_type: str or ~azure.mgmt.containerservice.v2021_09_01.models.OSDiskType
     :param kubelet_disk_type: Determines the placement of emptyDir volumes, container runtime data
      root, and Kubelet ephemeral storage. Possible values include: "OS", "Temporary".
-    :type kubelet_disk_type: str or ~azure.mgmt.containerservice.v2021_08_01.models.KubeletDiskType
+    :type kubelet_disk_type: str or ~azure.mgmt.containerservice.v2021_09_01.models.KubeletDiskType
     :param workload_runtime: Determines the type of workload a node can run. Possible values
      include: "OCIContainer", "WasmWasi".
-    :type workload_runtime: str or ~azure.mgmt.containerservice.v2021_08_01.models.WorkloadRuntime
+    :type workload_runtime: str or ~azure.mgmt.containerservice.v2021_09_01.models.WorkloadRuntime
     :param vnet_subnet_id: If this is not specified, a VNET and subnet will be generated and used.
      If no podSubnetID is specified, this applies to nodes and pods, otherwise it applies to just
      nodes. This is of the form:
@@ -94,10 +94,10 @@ class AgentPool(SubResource):
     :type max_pods: int
     :param os_type: The operating system type. The default is Linux. Possible values include:
      "Linux", "Windows". Default value: "Linux".
-    :type os_type: str or ~azure.mgmt.containerservice.v2021_08_01.models.OSType
+    :type os_type: str or ~azure.mgmt.containerservice.v2021_09_01.models.OSType
     :param os_sku: Specifies an OS SKU. This value must not be specified if OSType is Windows.
      Possible values include: "Ubuntu", "CBLMariner".
-    :type os_sku: str or ~azure.mgmt.containerservice.v2021_08_01.models.OSSKU
+    :type os_sku: str or ~azure.mgmt.containerservice.v2021_09_01.models.OSSKU
     :param max_count: The maximum number of nodes for auto-scaling.
     :type max_count: int
     :param min_count: The minimum number of nodes for auto-scaling.
@@ -106,16 +106,16 @@ class AgentPool(SubResource):
     :type enable_auto_scaling: bool
     :param scale_down_mode: This also effects the cluster autoscaler behavior. If not specified, it
      defaults to Delete. Possible values include: "Delete", "Deallocate".
-    :type scale_down_mode: str or ~azure.mgmt.containerservice.v2021_08_01.models.ScaleDownMode
+    :type scale_down_mode: str or ~azure.mgmt.containerservice.v2021_09_01.models.ScaleDownMode
     :param type_properties_type: The type of Agent Pool. Possible values include:
      "VirtualMachineScaleSets", "AvailabilitySet".
     :type type_properties_type: str or
-     ~azure.mgmt.containerservice.v2021_08_01.models.AgentPoolType
+     ~azure.mgmt.containerservice.v2021_09_01.models.AgentPoolType
     :param mode: A cluster must have at least one 'System' Agent Pool at all times. For additional
      information on agent pool restrictions and best practices, see:
      https://docs.microsoft.com/azure/aks/use-system-pools. Possible values include: "System",
      "User".
-    :type mode: str or ~azure.mgmt.containerservice.v2021_08_01.models.AgentPoolMode
+    :type mode: str or ~azure.mgmt.containerservice.v2021_09_01.models.AgentPoolMode
     :param orchestrator_version: As a best practice, you should upgrade all node pools in an AKS
      cluster to the same Kubernetes version. The node pool version must have the same major version
      as the control plane. The node pool minor version must be within two minor versions of the
@@ -127,11 +127,14 @@ class AgentPool(SubResource):
     :vartype node_image_version: str
     :param upgrade_settings: Settings for upgrading the agentpool.
     :type upgrade_settings:
-     ~azure.mgmt.containerservice.v2021_08_01.models.AgentPoolUpgradeSettings
+     ~azure.mgmt.containerservice.v2021_09_01.models.AgentPoolUpgradeSettings
     :ivar provisioning_state: The current deployment or provisioning state.
     :vartype provisioning_state: str
-    :ivar power_state: Describes whether the Agent Pool is Running or Stopped.
-    :vartype power_state: ~azure.mgmt.containerservice.v2021_08_01.models.PowerState
+    :param power_state: When an Agent Pool is first created it is initially Running. The Agent Pool
+     can be stopped by setting this field to Stopped. A stopped Agent Pool stops all of its VMs and
+     does not accrue billing charges. An Agent Pool can only be stopped if it is Running and
+     provisioning state is Succeeded.
+    :type power_state: ~azure.mgmt.containerservice.v2021_09_01.models.PowerState
     :param availability_zones: The list of Availability zones to use for nodes. This can only be
      specified if the AgentPoolType property is 'VirtualMachineScaleSets'.
     :type availability_zones: list[str]
@@ -148,12 +151,12 @@ class AgentPool(SubResource):
     :param scale_set_priority: The Virtual Machine Scale Set priority. If not specified, the
      default is 'Regular'. Possible values include: "Spot", "Regular". Default value: "Regular".
     :type scale_set_priority: str or
-     ~azure.mgmt.containerservice.v2021_08_01.models.ScaleSetPriority
+     ~azure.mgmt.containerservice.v2021_09_01.models.ScaleSetPriority
     :param scale_set_eviction_policy: This cannot be specified unless the scaleSetPriority is
      'Spot'. If not specified, the default is 'Delete'. Possible values include: "Delete",
      "Deallocate". Default value: "Delete".
     :type scale_set_eviction_policy: str or
-     ~azure.mgmt.containerservice.v2021_08_01.models.ScaleSetEvictionPolicy
+     ~azure.mgmt.containerservice.v2021_09_01.models.ScaleSetEvictionPolicy
     :param spot_max_price: Possible values are any decimal value greater than zero or -1 which
      indicates the willingness to pay any on-demand price. For more details on spot pricing, see
      `spot VMs pricing <https://docs.microsoft.com/azure/virtual-machines/spot-vms#pricing>`_.
@@ -169,9 +172,9 @@ class AgentPool(SubResource):
     :param proximity_placement_group_id: The ID for Proximity Placement Group.
     :type proximity_placement_group_id: str
     :param kubelet_config: The Kubelet configuration on the agent pool nodes.
-    :type kubelet_config: ~azure.mgmt.containerservice.v2021_08_01.models.KubeletConfig
+    :type kubelet_config: ~azure.mgmt.containerservice.v2021_09_01.models.KubeletConfig
     :param linux_os_config: The OS configuration of Linux agent nodes.
-    :type linux_os_config: ~azure.mgmt.containerservice.v2021_08_01.models.LinuxOSConfig
+    :type linux_os_config: ~azure.mgmt.containerservice.v2021_09_01.models.LinuxOSConfig
     :param enable_encryption_at_host: This is only supported on certain VM sizes and in certain
      Azure regions. For more information, see:
      https://docs.microsoft.com/azure/aks/enable-host-encryption.
@@ -185,10 +188,10 @@ class AgentPool(SubResource):
     :param gpu_instance_profile: GPUInstanceProfile to be used to specify GPU MIG instance profile
      for supported GPU VM SKU. Possible values include: "MIG1g", "MIG2g", "MIG3g", "MIG4g", "MIG7g".
     :type gpu_instance_profile: str or
-     ~azure.mgmt.containerservice.v2021_08_01.models.GPUInstanceProfile
+     ~azure.mgmt.containerservice.v2021_09_01.models.GPUInstanceProfile
     :param creation_data: CreationData to be used to specify the source Snapshot ID if the node
      pool will be created/upgraded using a snapshot.
-    :type creation_data: ~azure.mgmt.containerservice.v2021_08_01.models.CreationData
+    :type creation_data: ~azure.mgmt.containerservice.v2021_09_01.models.CreationData
     """
 
     _validation = {
@@ -198,7 +201,6 @@ class AgentPool(SubResource):
         'os_disk_size_gb': {'maximum': 2048, 'minimum': 0},
         'node_image_version': {'readonly': True},
         'provisioning_state': {'readonly': True},
-        'power_state': {'readonly': True},
     }
 
     _attribute_map = {
@@ -272,7 +274,7 @@ class AgentPool(SubResource):
         self.node_image_version = None
         self.upgrade_settings = kwargs.get('upgrade_settings', None)
         self.provisioning_state = None
-        self.power_state = None
+        self.power_state = kwargs.get('power_state', None)
         self.availability_zones = kwargs.get('availability_zones', None)
         self.enable_node_public_ip = kwargs.get('enable_node_public_ip', None)
         self.node_public_ip_prefix_id = kwargs.get('node_public_ip_prefix_id', None)
@@ -305,7 +307,7 @@ class AgentPoolAvailableVersions(msrest.serialization.Model):
     :vartype type: str
     :param agent_pool_versions: List of versions available for agent pool.
     :type agent_pool_versions:
-     list[~azure.mgmt.containerservice.v2021_08_01.models.AgentPoolAvailableVersionsPropertiesAgentPoolVersionsItem]
+     list[~azure.mgmt.containerservice.v2021_09_01.models.AgentPoolAvailableVersionsPropertiesAgentPoolVersionsItem]
     """
 
     _validation = {
@@ -365,7 +367,7 @@ class AgentPoolListResult(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :param value: The list of agent pools.
-    :type value: list[~azure.mgmt.containerservice.v2021_08_01.models.AgentPool]
+    :type value: list[~azure.mgmt.containerservice.v2021_09_01.models.AgentPool]
     :ivar next_link: The URL to get the next set of agent pool results.
     :vartype next_link: str
     """
@@ -405,10 +407,10 @@ class AgentPoolUpgradeProfile(msrest.serialization.Model):
     :type kubernetes_version: str
     :param os_type: Required. The operating system type. The default is Linux. Possible values
      include: "Linux", "Windows". Default value: "Linux".
-    :type os_type: str or ~azure.mgmt.containerservice.v2021_08_01.models.OSType
+    :type os_type: str or ~azure.mgmt.containerservice.v2021_09_01.models.OSType
     :param upgrades: List of orchestrator types and versions available for upgrade.
     :type upgrades:
-     list[~azure.mgmt.containerservice.v2021_08_01.models.AgentPoolUpgradeProfilePropertiesUpgradesItem]
+     list[~azure.mgmt.containerservice.v2021_09_01.models.AgentPoolUpgradeProfilePropertiesUpgradesItem]
     :param latest_node_image_version: The latest AKS supported node image version.
     :type latest_node_image_version: str
     """
@@ -504,7 +506,7 @@ class CloudErrorBody(msrest.serialization.Model):
      error.
     :type target: str
     :param details: A list of additional details about the error.
-    :type details: list[~azure.mgmt.containerservice.v2021_08_01.models.CloudErrorBody]
+    :type details: list[~azure.mgmt.containerservice.v2021_09_01.models.CloudErrorBody]
     """
 
     _attribute_map = {
@@ -532,7 +534,7 @@ class ContainerServiceDiagnosticsProfile(msrest.serialization.Model):
 
     :param vm_diagnostics: Required. Profile for diagnostics on the container service VMs.
     :type vm_diagnostics:
-     ~azure.mgmt.containerservice.v2021_08_01.models.ContainerServiceVMDiagnostics
+     ~azure.mgmt.containerservice.v2021_09_01.models.ContainerServiceVMDiagnostics
     """
 
     _validation = {
@@ -559,7 +561,7 @@ class ContainerServiceLinuxProfile(msrest.serialization.Model):
     :param admin_username: Required. The administrator username to use for Linux VMs.
     :type admin_username: str
     :param ssh: Required. The SSH configuration for Linux-based VMs running on Azure.
-    :type ssh: ~azure.mgmt.containerservice.v2021_08_01.models.ContainerServiceSshConfiguration
+    :type ssh: ~azure.mgmt.containerservice.v2021_09_01.models.ContainerServiceSshConfiguration
     """
 
     _validation = {
@@ -590,7 +592,7 @@ class ContainerServiceMasterProfile(msrest.serialization.Model):
 
     :param count: Number of masters (VMs) in the container service cluster. Allowed values are 1,
      3, and 5. The default value is 1. Possible values include: 1, 3, 5. Default value: "1".
-    :type count: str or ~azure.mgmt.containerservice.v2021_08_01.models.Count
+    :type count: str or ~azure.mgmt.containerservice.v2021_09_01.models.Count
     :param dns_prefix: Required. DNS prefix to be used to create the FQDN for the master pool.
     :type dns_prefix: str
     :param vm_size: Required. Size of agent VMs. Possible values include: "Standard_A1",
@@ -632,7 +634,7 @@ class ContainerServiceMasterProfile(msrest.serialization.Model):
      "Standard_NC6", "Standard_NC6s_v2", "Standard_NC6s_v3", "Standard_ND12s", "Standard_ND24rs",
      "Standard_ND24s", "Standard_ND6s", "Standard_NV12", "Standard_NV24", "Standard_NV6".
     :type vm_size: str or
-     ~azure.mgmt.containerservice.v2021_08_01.models.ContainerServiceVMSizeTypes
+     ~azure.mgmt.containerservice.v2021_09_01.models.ContainerServiceVMSizeTypes
     :param os_disk_size_gb: OS Disk Size in GB to be used to specify the disk size for every
      machine in this master/agent pool. If you specify 0, it will apply the default osDisk size
      according to the vmSize specified.
@@ -646,7 +648,7 @@ class ContainerServiceMasterProfile(msrest.serialization.Model):
      StorageAccount and ManagedDisks. Leave it empty, we will choose for you based on the
      orchestrator choice. Possible values include: "StorageAccount", "ManagedDisks".
     :type storage_profile: str or
-     ~azure.mgmt.containerservice.v2021_08_01.models.ContainerServiceStorageProfileTypes
+     ~azure.mgmt.containerservice.v2021_09_01.models.ContainerServiceStorageProfileTypes
     :ivar fqdn: FQDN for the master pool.
     :vartype fqdn: str
     """
@@ -689,13 +691,13 @@ class ContainerServiceNetworkProfile(msrest.serialization.Model):
 
     :param network_plugin: Network plugin used for building the Kubernetes network. Possible values
      include: "azure", "kubenet". Default value: "kubenet".
-    :type network_plugin: str or ~azure.mgmt.containerservice.v2021_08_01.models.NetworkPlugin
+    :type network_plugin: str or ~azure.mgmt.containerservice.v2021_09_01.models.NetworkPlugin
     :param network_policy: Network policy used for building the Kubernetes network. Possible values
      include: "calico", "azure".
-    :type network_policy: str or ~azure.mgmt.containerservice.v2021_08_01.models.NetworkPolicy
+    :type network_policy: str or ~azure.mgmt.containerservice.v2021_09_01.models.NetworkPolicy
     :param network_mode: This cannot be specified if networkPlugin is anything other than 'azure'.
      Possible values include: "transparent", "bridge".
-    :type network_mode: str or ~azure.mgmt.containerservice.v2021_08_01.models.NetworkMode
+    :type network_mode: str or ~azure.mgmt.containerservice.v2021_09_01.models.NetworkMode
     :param pod_cidr: A CIDR notation IP range from which to assign pod IPs when kubenet is used.
     :type pod_cidr: str
     :param service_cidr: A CIDR notation IP range from which to assign service cluster IPs. It must
@@ -712,17 +714,17 @@ class ContainerServiceNetworkProfile(msrest.serialization.Model):
      <https://docs.microsoft.com/azure/aks/egress-outboundtype>`_. Possible values include:
      "loadBalancer", "userDefinedRouting", "managedNATGateway", "userAssignedNATGateway". Default
      value: "loadBalancer".
-    :type outbound_type: str or ~azure.mgmt.containerservice.v2021_08_01.models.OutboundType
+    :type outbound_type: str or ~azure.mgmt.containerservice.v2021_09_01.models.OutboundType
     :param load_balancer_sku: The default is 'standard'. See `Azure Load Balancer SKUs
      <https://docs.microsoft.com/azure/load-balancer/skus>`_ for more information about the
      differences between load balancer SKUs. Possible values include: "standard", "basic".
-    :type load_balancer_sku: str or ~azure.mgmt.containerservice.v2021_08_01.models.LoadBalancerSku
+    :type load_balancer_sku: str or ~azure.mgmt.containerservice.v2021_09_01.models.LoadBalancerSku
     :param load_balancer_profile: Profile of the cluster load balancer.
     :type load_balancer_profile:
-     ~azure.mgmt.containerservice.v2021_08_01.models.ManagedClusterLoadBalancerProfile
+     ~azure.mgmt.containerservice.v2021_09_01.models.ManagedClusterLoadBalancerProfile
     :param nat_gateway_profile: Profile of the cluster NAT gateway.
     :type nat_gateway_profile:
-     ~azure.mgmt.containerservice.v2021_08_01.models.ManagedClusterNATGatewayProfile
+     ~azure.mgmt.containerservice.v2021_09_01.models.ManagedClusterNATGatewayProfile
     """
 
     _validation = {
@@ -772,7 +774,7 @@ class ContainerServiceSshConfiguration(msrest.serialization.Model):
     :param public_keys: Required. The list of SSH public keys used to authenticate with Linux-based
      VMs. A maximum of 1 key may be specified.
     :type public_keys:
-     list[~azure.mgmt.containerservice.v2021_08_01.models.ContainerServiceSshPublicKey]
+     list[~azure.mgmt.containerservice.v2021_09_01.models.ContainerServiceSshPublicKey]
     """
 
     _validation = {
@@ -905,7 +907,7 @@ class CredentialResults(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar kubeconfigs: Base64-encoded Kubernetes configuration file.
-    :vartype kubeconfigs: list[~azure.mgmt.containerservice.v2021_08_01.models.CredentialResult]
+    :vartype kubeconfigs: list[~azure.mgmt.containerservice.v2021_09_01.models.CredentialResult]
     """
 
     _validation = {
@@ -930,7 +932,7 @@ class EndpointDependency(msrest.serialization.Model):
     :param domain_name: The domain name of the dependency.
     :type domain_name: str
     :param endpoint_details: The Ports and Protocols used when connecting to domainName.
-    :type endpoint_details: list[~azure.mgmt.containerservice.v2021_08_01.models.EndpointDetail]
+    :type endpoint_details: list[~azure.mgmt.containerservice.v2021_09_01.models.EndpointDetail]
     """
 
     _attribute_map = {
@@ -984,7 +986,7 @@ class ExtendedLocation(msrest.serialization.Model):
     :param name: The name of the extended location.
     :type name: str
     :param type: The type of the extended location. Possible values include: "EdgeZone".
-    :type type: str or ~azure.mgmt.containerservice.v2021_08_01.models.ExtendedLocationTypes
+    :type type: str or ~azure.mgmt.containerservice.v2021_09_01.models.ExtendedLocationTypes
     """
 
     _attribute_map = {
@@ -1080,7 +1082,7 @@ class LinuxOSConfig(msrest.serialization.Model):
     """See `AKS custom node configuration <https://docs.microsoft.com/azure/aks/custom-node-configuration>`_ for more details.
 
     :param sysctls: Sysctl settings for Linux agent nodes.
-    :type sysctls: ~azure.mgmt.containerservice.v2021_08_01.models.SysctlConfig
+    :type sysctls: ~azure.mgmt.containerservice.v2021_09_01.models.SysctlConfig
     :param transparent_huge_page_enabled: Valid values are 'always', 'madvise', and 'never'. The
      default is 'always'. For more information see `Transparent Hugepages
      <https://www.kernel.org/doc/html/latest/admin-guide/mm/transhuge.html#admin-guide-transhuge>`_.
@@ -1125,12 +1127,12 @@ class MaintenanceConfiguration(SubResource):
     :ivar type: Resource type.
     :vartype type: str
     :ivar system_data: The system metadata relating to this resource.
-    :vartype system_data: ~azure.mgmt.containerservice.v2021_08_01.models.SystemData
+    :vartype system_data: ~azure.mgmt.containerservice.v2021_09_01.models.SystemData
     :param time_in_week: If two array entries specify the same day of the week, the applied
      configuration is the union of times in both entries.
-    :type time_in_week: list[~azure.mgmt.containerservice.v2021_08_01.models.TimeInWeek]
+    :type time_in_week: list[~azure.mgmt.containerservice.v2021_09_01.models.TimeInWeek]
     :param not_allowed_time: Time slots on which upgrade is not allowed.
-    :type not_allowed_time: list[~azure.mgmt.containerservice.v2021_08_01.models.TimeSpan]
+    :type not_allowed_time: list[~azure.mgmt.containerservice.v2021_09_01.models.TimeSpan]
     """
 
     _validation = {
@@ -1165,7 +1167,7 @@ class MaintenanceConfigurationListResult(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :param value: The list of maintenance configurations.
-    :type value: list[~azure.mgmt.containerservice.v2021_08_01.models.MaintenanceConfiguration]
+    :type value: list[~azure.mgmt.containerservice.v2021_09_01.models.MaintenanceConfiguration]
     :ivar next_link: The URL to get the next set of maintenance configuration results.
     :vartype next_link: str
     """
@@ -1252,15 +1254,15 @@ class ManagedCluster(Resource):
     :param tags: A set of tags. Resource tags.
     :type tags: dict[str, str]
     :param sku: The managed cluster SKU.
-    :type sku: ~azure.mgmt.containerservice.v2021_08_01.models.ManagedClusterSKU
+    :type sku: ~azure.mgmt.containerservice.v2021_09_01.models.ManagedClusterSKU
     :param extended_location: The extended location of the Virtual Machine.
-    :type extended_location: ~azure.mgmt.containerservice.v2021_08_01.models.ExtendedLocation
+    :type extended_location: ~azure.mgmt.containerservice.v2021_09_01.models.ExtendedLocation
     :param identity: The identity of the managed cluster, if configured.
-    :type identity: ~azure.mgmt.containerservice.v2021_08_01.models.ManagedClusterIdentity
+    :type identity: ~azure.mgmt.containerservice.v2021_09_01.models.ManagedClusterIdentity
     :ivar provisioning_state: The current provisioning state.
     :vartype provisioning_state: str
     :ivar power_state: The Power State of the cluster.
-    :vartype power_state: ~azure.mgmt.containerservice.v2021_08_01.models.PowerState
+    :vartype power_state: ~azure.mgmt.containerservice.v2021_09_01.models.PowerState
     :ivar max_agent_pools: The max number of agent pools for the managed cluster.
     :vartype max_agent_pools: int
     :param kubernetes_version: When you upgrade a supported AKS cluster, Kubernetes minor versions
@@ -1283,25 +1285,25 @@ class ManagedCluster(Resource):
     :vartype azure_portal_fqdn: str
     :param agent_pool_profiles: The agent pool properties.
     :type agent_pool_profiles:
-     list[~azure.mgmt.containerservice.v2021_08_01.models.ManagedClusterAgentPoolProfile]
+     list[~azure.mgmt.containerservice.v2021_09_01.models.ManagedClusterAgentPoolProfile]
     :param linux_profile: The profile for Linux VMs in the Managed Cluster.
     :type linux_profile:
-     ~azure.mgmt.containerservice.v2021_08_01.models.ContainerServiceLinuxProfile
+     ~azure.mgmt.containerservice.v2021_09_01.models.ContainerServiceLinuxProfile
     :param windows_profile: The profile for Windows VMs in the Managed Cluster.
     :type windows_profile:
-     ~azure.mgmt.containerservice.v2021_08_01.models.ManagedClusterWindowsProfile
+     ~azure.mgmt.containerservice.v2021_09_01.models.ManagedClusterWindowsProfile
     :param service_principal_profile: Information about a service principal identity for the
      cluster to use for manipulating Azure APIs.
     :type service_principal_profile:
-     ~azure.mgmt.containerservice.v2021_08_01.models.ManagedClusterServicePrincipalProfile
+     ~azure.mgmt.containerservice.v2021_09_01.models.ManagedClusterServicePrincipalProfile
     :param addon_profiles: The profile of managed cluster add-on.
     :type addon_profiles: dict[str,
-     ~azure.mgmt.containerservice.v2021_08_01.models.ManagedClusterAddonProfile]
+     ~azure.mgmt.containerservice.v2021_09_01.models.ManagedClusterAddonProfile]
     :param pod_identity_profile: See `use AAD pod identity
      <https://docs.microsoft.com/azure/aks/use-azure-ad-pod-identity>`_ for more details on AAD pod
      identity integration.
     :type pod_identity_profile:
-     ~azure.mgmt.containerservice.v2021_08_01.models.ManagedClusterPodIdentityProfile
+     ~azure.mgmt.containerservice.v2021_09_01.models.ManagedClusterPodIdentityProfile
     :param node_resource_group: The name of the resource group containing agent pool nodes.
     :type node_resource_group: str
     :param enable_rbac: Whether to enable Kubernetes Role-Based Access Control.
@@ -1312,27 +1314,27 @@ class ManagedCluster(Resource):
     :type enable_pod_security_policy: bool
     :param network_profile: The network configuration profile.
     :type network_profile:
-     ~azure.mgmt.containerservice.v2021_08_01.models.ContainerServiceNetworkProfile
+     ~azure.mgmt.containerservice.v2021_09_01.models.ContainerServiceNetworkProfile
     :param aad_profile: The Azure Active Directory configuration.
-    :type aad_profile: ~azure.mgmt.containerservice.v2021_08_01.models.ManagedClusterAADProfile
+    :type aad_profile: ~azure.mgmt.containerservice.v2021_09_01.models.ManagedClusterAADProfile
     :param auto_upgrade_profile: The auto upgrade configuration.
     :type auto_upgrade_profile:
-     ~azure.mgmt.containerservice.v2021_08_01.models.ManagedClusterAutoUpgradeProfile
+     ~azure.mgmt.containerservice.v2021_09_01.models.ManagedClusterAutoUpgradeProfile
     :param auto_scaler_profile: Parameters to be applied to the cluster-autoscaler when enabled.
     :type auto_scaler_profile:
-     ~azure.mgmt.containerservice.v2021_08_01.models.ManagedClusterPropertiesAutoScalerProfile
+     ~azure.mgmt.containerservice.v2021_09_01.models.ManagedClusterPropertiesAutoScalerProfile
     :param api_server_access_profile: The access profile for managed cluster API server.
     :type api_server_access_profile:
-     ~azure.mgmt.containerservice.v2021_08_01.models.ManagedClusterAPIServerAccessProfile
+     ~azure.mgmt.containerservice.v2021_09_01.models.ManagedClusterAPIServerAccessProfile
     :param disk_encryption_set_id: This is of the form:
      '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/diskEncryptionSets/{encryptionSetName}'.
     :type disk_encryption_set_id: str
     :param identity_profile: Identities associated with the cluster.
     :type identity_profile: dict[str,
-     ~azure.mgmt.containerservice.v2021_08_01.models.UserAssignedIdentity]
+     ~azure.mgmt.containerservice.v2021_09_01.models.UserAssignedIdentity]
     :param private_link_resources: Private link resources associated with the cluster.
     :type private_link_resources:
-     list[~azure.mgmt.containerservice.v2021_08_01.models.PrivateLinkResource]
+     list[~azure.mgmt.containerservice.v2021_09_01.models.PrivateLinkResource]
     :param disable_local_accounts: If set to true, getting static credentials will be disabled for
      this cluster. This must only be used on Managed Clusters that are AAD enabled. For more details
      see `disable local accounts
@@ -1340,14 +1342,14 @@ class ManagedCluster(Resource):
     :type disable_local_accounts: bool
     :param http_proxy_config: Configurations for provisioning the cluster with HTTP proxy servers.
     :type http_proxy_config:
-     ~azure.mgmt.containerservice.v2021_08_01.models.ManagedClusterHTTPProxyConfig
+     ~azure.mgmt.containerservice.v2021_09_01.models.ManagedClusterHTTPProxyConfig
     :param security_profile: Security profile for the managed cluster.
     :type security_profile:
-     ~azure.mgmt.containerservice.v2021_08_01.models.ManagedClusterSecurityProfile
+     ~azure.mgmt.containerservice.v2021_09_01.models.ManagedClusterSecurityProfile
     :param public_network_access: Default value is 'Enabled' (case insensitive). Could be set to
      'Disabled' to enable private cluster. Possible values include: "Enabled", "Disabled".
     :type public_network_access: str or
-     ~azure.mgmt.containerservice.v2021_08_01.models.PublicNetworkAccess
+     ~azure.mgmt.containerservice.v2021_09_01.models.PublicNetworkAccess
     """
 
     _validation = {
@@ -1547,7 +1549,7 @@ class ManagedClusterAddonProfile(msrest.serialization.Model):
     :type config: dict[str, str]
     :ivar identity: Information of user assigned identity used by this add-on.
     :vartype identity:
-     ~azure.mgmt.containerservice.v2021_08_01.models.ManagedClusterAddonProfileIdentity
+     ~azure.mgmt.containerservice.v2021_09_01.models.ManagedClusterAddonProfileIdentity
     """
 
     _validation = {
@@ -1644,13 +1646,13 @@ class ManagedClusterAgentPoolProfileProperties(msrest.serialization.Model):
      after creation. For more information see `Ephemeral OS
      <https://docs.microsoft.com/azure/aks/cluster-configuration#ephemeral-os>`_. Possible values
      include: "Managed", "Ephemeral".
-    :type os_disk_type: str or ~azure.mgmt.containerservice.v2021_08_01.models.OSDiskType
+    :type os_disk_type: str or ~azure.mgmt.containerservice.v2021_09_01.models.OSDiskType
     :param kubelet_disk_type: Determines the placement of emptyDir volumes, container runtime data
      root, and Kubelet ephemeral storage. Possible values include: "OS", "Temporary".
-    :type kubelet_disk_type: str or ~azure.mgmt.containerservice.v2021_08_01.models.KubeletDiskType
+    :type kubelet_disk_type: str or ~azure.mgmt.containerservice.v2021_09_01.models.KubeletDiskType
     :param workload_runtime: Determines the type of workload a node can run. Possible values
      include: "OCIContainer", "WasmWasi".
-    :type workload_runtime: str or ~azure.mgmt.containerservice.v2021_08_01.models.WorkloadRuntime
+    :type workload_runtime: str or ~azure.mgmt.containerservice.v2021_09_01.models.WorkloadRuntime
     :param vnet_subnet_id: If this is not specified, a VNET and subnet will be generated and used.
      If no podSubnetID is specified, this applies to nodes and pods, otherwise it applies to just
      nodes. This is of the form:
@@ -1664,10 +1666,10 @@ class ManagedClusterAgentPoolProfileProperties(msrest.serialization.Model):
     :type max_pods: int
     :param os_type: The operating system type. The default is Linux. Possible values include:
      "Linux", "Windows". Default value: "Linux".
-    :type os_type: str or ~azure.mgmt.containerservice.v2021_08_01.models.OSType
+    :type os_type: str or ~azure.mgmt.containerservice.v2021_09_01.models.OSType
     :param os_sku: Specifies an OS SKU. This value must not be specified if OSType is Windows.
      Possible values include: "Ubuntu", "CBLMariner".
-    :type os_sku: str or ~azure.mgmt.containerservice.v2021_08_01.models.OSSKU
+    :type os_sku: str or ~azure.mgmt.containerservice.v2021_09_01.models.OSSKU
     :param max_count: The maximum number of nodes for auto-scaling.
     :type max_count: int
     :param min_count: The minimum number of nodes for auto-scaling.
@@ -1676,15 +1678,15 @@ class ManagedClusterAgentPoolProfileProperties(msrest.serialization.Model):
     :type enable_auto_scaling: bool
     :param scale_down_mode: This also effects the cluster autoscaler behavior. If not specified, it
      defaults to Delete. Possible values include: "Delete", "Deallocate".
-    :type scale_down_mode: str or ~azure.mgmt.containerservice.v2021_08_01.models.ScaleDownMode
+    :type scale_down_mode: str or ~azure.mgmt.containerservice.v2021_09_01.models.ScaleDownMode
     :param type: The type of Agent Pool. Possible values include: "VirtualMachineScaleSets",
      "AvailabilitySet".
-    :type type: str or ~azure.mgmt.containerservice.v2021_08_01.models.AgentPoolType
+    :type type: str or ~azure.mgmt.containerservice.v2021_09_01.models.AgentPoolType
     :param mode: A cluster must have at least one 'System' Agent Pool at all times. For additional
      information on agent pool restrictions and best practices, see:
      https://docs.microsoft.com/azure/aks/use-system-pools. Possible values include: "System",
      "User".
-    :type mode: str or ~azure.mgmt.containerservice.v2021_08_01.models.AgentPoolMode
+    :type mode: str or ~azure.mgmt.containerservice.v2021_09_01.models.AgentPoolMode
     :param orchestrator_version: As a best practice, you should upgrade all node pools in an AKS
      cluster to the same Kubernetes version. The node pool version must have the same major version
      as the control plane. The node pool minor version must be within two minor versions of the
@@ -1696,11 +1698,14 @@ class ManagedClusterAgentPoolProfileProperties(msrest.serialization.Model):
     :vartype node_image_version: str
     :param upgrade_settings: Settings for upgrading the agentpool.
     :type upgrade_settings:
-     ~azure.mgmt.containerservice.v2021_08_01.models.AgentPoolUpgradeSettings
+     ~azure.mgmt.containerservice.v2021_09_01.models.AgentPoolUpgradeSettings
     :ivar provisioning_state: The current deployment or provisioning state.
     :vartype provisioning_state: str
-    :ivar power_state: Describes whether the Agent Pool is Running or Stopped.
-    :vartype power_state: ~azure.mgmt.containerservice.v2021_08_01.models.PowerState
+    :param power_state: When an Agent Pool is first created it is initially Running. The Agent Pool
+     can be stopped by setting this field to Stopped. A stopped Agent Pool stops all of its VMs and
+     does not accrue billing charges. An Agent Pool can only be stopped if it is Running and
+     provisioning state is Succeeded.
+    :type power_state: ~azure.mgmt.containerservice.v2021_09_01.models.PowerState
     :param availability_zones: The list of Availability zones to use for nodes. This can only be
      specified if the AgentPoolType property is 'VirtualMachineScaleSets'.
     :type availability_zones: list[str]
@@ -1717,12 +1722,12 @@ class ManagedClusterAgentPoolProfileProperties(msrest.serialization.Model):
     :param scale_set_priority: The Virtual Machine Scale Set priority. If not specified, the
      default is 'Regular'. Possible values include: "Spot", "Regular". Default value: "Regular".
     :type scale_set_priority: str or
-     ~azure.mgmt.containerservice.v2021_08_01.models.ScaleSetPriority
+     ~azure.mgmt.containerservice.v2021_09_01.models.ScaleSetPriority
     :param scale_set_eviction_policy: This cannot be specified unless the scaleSetPriority is
      'Spot'. If not specified, the default is 'Delete'. Possible values include: "Delete",
      "Deallocate". Default value: "Delete".
     :type scale_set_eviction_policy: str or
-     ~azure.mgmt.containerservice.v2021_08_01.models.ScaleSetEvictionPolicy
+     ~azure.mgmt.containerservice.v2021_09_01.models.ScaleSetEvictionPolicy
     :param spot_max_price: Possible values are any decimal value greater than zero or -1 which
      indicates the willingness to pay any on-demand price. For more details on spot pricing, see
      `spot VMs pricing <https://docs.microsoft.com/azure/virtual-machines/spot-vms#pricing>`_.
@@ -1738,9 +1743,9 @@ class ManagedClusterAgentPoolProfileProperties(msrest.serialization.Model):
     :param proximity_placement_group_id: The ID for Proximity Placement Group.
     :type proximity_placement_group_id: str
     :param kubelet_config: The Kubelet configuration on the agent pool nodes.
-    :type kubelet_config: ~azure.mgmt.containerservice.v2021_08_01.models.KubeletConfig
+    :type kubelet_config: ~azure.mgmt.containerservice.v2021_09_01.models.KubeletConfig
     :param linux_os_config: The OS configuration of Linux agent nodes.
-    :type linux_os_config: ~azure.mgmt.containerservice.v2021_08_01.models.LinuxOSConfig
+    :type linux_os_config: ~azure.mgmt.containerservice.v2021_09_01.models.LinuxOSConfig
     :param enable_encryption_at_host: This is only supported on certain VM sizes and in certain
      Azure regions. For more information, see:
      https://docs.microsoft.com/azure/aks/enable-host-encryption.
@@ -1754,17 +1759,16 @@ class ManagedClusterAgentPoolProfileProperties(msrest.serialization.Model):
     :param gpu_instance_profile: GPUInstanceProfile to be used to specify GPU MIG instance profile
      for supported GPU VM SKU. Possible values include: "MIG1g", "MIG2g", "MIG3g", "MIG4g", "MIG7g".
     :type gpu_instance_profile: str or
-     ~azure.mgmt.containerservice.v2021_08_01.models.GPUInstanceProfile
+     ~azure.mgmt.containerservice.v2021_09_01.models.GPUInstanceProfile
     :param creation_data: CreationData to be used to specify the source Snapshot ID if the node
      pool will be created/upgraded using a snapshot.
-    :type creation_data: ~azure.mgmt.containerservice.v2021_08_01.models.CreationData
+    :type creation_data: ~azure.mgmt.containerservice.v2021_09_01.models.CreationData
     """
 
     _validation = {
         'os_disk_size_gb': {'maximum': 2048, 'minimum': 0},
         'node_image_version': {'readonly': True},
         'provisioning_state': {'readonly': True},
-        'power_state': {'readonly': True},
     }
 
     _attribute_map = {
@@ -1835,7 +1839,7 @@ class ManagedClusterAgentPoolProfileProperties(msrest.serialization.Model):
         self.node_image_version = None
         self.upgrade_settings = kwargs.get('upgrade_settings', None)
         self.provisioning_state = None
-        self.power_state = None
+        self.power_state = kwargs.get('power_state', None)
         self.availability_zones = kwargs.get('availability_zones', None)
         self.enable_node_public_ip = kwargs.get('enable_node_public_ip', None)
         self.node_public_ip_prefix_id = kwargs.get('node_public_ip_prefix_id', None)
@@ -1879,13 +1883,13 @@ class ManagedClusterAgentPoolProfile(ManagedClusterAgentPoolProfileProperties):
      after creation. For more information see `Ephemeral OS
      <https://docs.microsoft.com/azure/aks/cluster-configuration#ephemeral-os>`_. Possible values
      include: "Managed", "Ephemeral".
-    :type os_disk_type: str or ~azure.mgmt.containerservice.v2021_08_01.models.OSDiskType
+    :type os_disk_type: str or ~azure.mgmt.containerservice.v2021_09_01.models.OSDiskType
     :param kubelet_disk_type: Determines the placement of emptyDir volumes, container runtime data
      root, and Kubelet ephemeral storage. Possible values include: "OS", "Temporary".
-    :type kubelet_disk_type: str or ~azure.mgmt.containerservice.v2021_08_01.models.KubeletDiskType
+    :type kubelet_disk_type: str or ~azure.mgmt.containerservice.v2021_09_01.models.KubeletDiskType
     :param workload_runtime: Determines the type of workload a node can run. Possible values
      include: "OCIContainer", "WasmWasi".
-    :type workload_runtime: str or ~azure.mgmt.containerservice.v2021_08_01.models.WorkloadRuntime
+    :type workload_runtime: str or ~azure.mgmt.containerservice.v2021_09_01.models.WorkloadRuntime
     :param vnet_subnet_id: If this is not specified, a VNET and subnet will be generated and used.
      If no podSubnetID is specified, this applies to nodes and pods, otherwise it applies to just
      nodes. This is of the form:
@@ -1899,10 +1903,10 @@ class ManagedClusterAgentPoolProfile(ManagedClusterAgentPoolProfileProperties):
     :type max_pods: int
     :param os_type: The operating system type. The default is Linux. Possible values include:
      "Linux", "Windows". Default value: "Linux".
-    :type os_type: str or ~azure.mgmt.containerservice.v2021_08_01.models.OSType
+    :type os_type: str or ~azure.mgmt.containerservice.v2021_09_01.models.OSType
     :param os_sku: Specifies an OS SKU. This value must not be specified if OSType is Windows.
      Possible values include: "Ubuntu", "CBLMariner".
-    :type os_sku: str or ~azure.mgmt.containerservice.v2021_08_01.models.OSSKU
+    :type os_sku: str or ~azure.mgmt.containerservice.v2021_09_01.models.OSSKU
     :param max_count: The maximum number of nodes for auto-scaling.
     :type max_count: int
     :param min_count: The minimum number of nodes for auto-scaling.
@@ -1911,15 +1915,15 @@ class ManagedClusterAgentPoolProfile(ManagedClusterAgentPoolProfileProperties):
     :type enable_auto_scaling: bool
     :param scale_down_mode: This also effects the cluster autoscaler behavior. If not specified, it
      defaults to Delete. Possible values include: "Delete", "Deallocate".
-    :type scale_down_mode: str or ~azure.mgmt.containerservice.v2021_08_01.models.ScaleDownMode
+    :type scale_down_mode: str or ~azure.mgmt.containerservice.v2021_09_01.models.ScaleDownMode
     :param type: The type of Agent Pool. Possible values include: "VirtualMachineScaleSets",
      "AvailabilitySet".
-    :type type: str or ~azure.mgmt.containerservice.v2021_08_01.models.AgentPoolType
+    :type type: str or ~azure.mgmt.containerservice.v2021_09_01.models.AgentPoolType
     :param mode: A cluster must have at least one 'System' Agent Pool at all times. For additional
      information on agent pool restrictions and best practices, see:
      https://docs.microsoft.com/azure/aks/use-system-pools. Possible values include: "System",
      "User".
-    :type mode: str or ~azure.mgmt.containerservice.v2021_08_01.models.AgentPoolMode
+    :type mode: str or ~azure.mgmt.containerservice.v2021_09_01.models.AgentPoolMode
     :param orchestrator_version: As a best practice, you should upgrade all node pools in an AKS
      cluster to the same Kubernetes version. The node pool version must have the same major version
      as the control plane. The node pool minor version must be within two minor versions of the
@@ -1931,11 +1935,14 @@ class ManagedClusterAgentPoolProfile(ManagedClusterAgentPoolProfileProperties):
     :vartype node_image_version: str
     :param upgrade_settings: Settings for upgrading the agentpool.
     :type upgrade_settings:
-     ~azure.mgmt.containerservice.v2021_08_01.models.AgentPoolUpgradeSettings
+     ~azure.mgmt.containerservice.v2021_09_01.models.AgentPoolUpgradeSettings
     :ivar provisioning_state: The current deployment or provisioning state.
     :vartype provisioning_state: str
-    :ivar power_state: Describes whether the Agent Pool is Running or Stopped.
-    :vartype power_state: ~azure.mgmt.containerservice.v2021_08_01.models.PowerState
+    :param power_state: When an Agent Pool is first created it is initially Running. The Agent Pool
+     can be stopped by setting this field to Stopped. A stopped Agent Pool stops all of its VMs and
+     does not accrue billing charges. An Agent Pool can only be stopped if it is Running and
+     provisioning state is Succeeded.
+    :type power_state: ~azure.mgmt.containerservice.v2021_09_01.models.PowerState
     :param availability_zones: The list of Availability zones to use for nodes. This can only be
      specified if the AgentPoolType property is 'VirtualMachineScaleSets'.
     :type availability_zones: list[str]
@@ -1952,12 +1959,12 @@ class ManagedClusterAgentPoolProfile(ManagedClusterAgentPoolProfileProperties):
     :param scale_set_priority: The Virtual Machine Scale Set priority. If not specified, the
      default is 'Regular'. Possible values include: "Spot", "Regular". Default value: "Regular".
     :type scale_set_priority: str or
-     ~azure.mgmt.containerservice.v2021_08_01.models.ScaleSetPriority
+     ~azure.mgmt.containerservice.v2021_09_01.models.ScaleSetPriority
     :param scale_set_eviction_policy: This cannot be specified unless the scaleSetPriority is
      'Spot'. If not specified, the default is 'Delete'. Possible values include: "Delete",
      "Deallocate". Default value: "Delete".
     :type scale_set_eviction_policy: str or
-     ~azure.mgmt.containerservice.v2021_08_01.models.ScaleSetEvictionPolicy
+     ~azure.mgmt.containerservice.v2021_09_01.models.ScaleSetEvictionPolicy
     :param spot_max_price: Possible values are any decimal value greater than zero or -1 which
      indicates the willingness to pay any on-demand price. For more details on spot pricing, see
      `spot VMs pricing <https://docs.microsoft.com/azure/virtual-machines/spot-vms#pricing>`_.
@@ -1973,9 +1980,9 @@ class ManagedClusterAgentPoolProfile(ManagedClusterAgentPoolProfileProperties):
     :param proximity_placement_group_id: The ID for Proximity Placement Group.
     :type proximity_placement_group_id: str
     :param kubelet_config: The Kubelet configuration on the agent pool nodes.
-    :type kubelet_config: ~azure.mgmt.containerservice.v2021_08_01.models.KubeletConfig
+    :type kubelet_config: ~azure.mgmt.containerservice.v2021_09_01.models.KubeletConfig
     :param linux_os_config: The OS configuration of Linux agent nodes.
-    :type linux_os_config: ~azure.mgmt.containerservice.v2021_08_01.models.LinuxOSConfig
+    :type linux_os_config: ~azure.mgmt.containerservice.v2021_09_01.models.LinuxOSConfig
     :param enable_encryption_at_host: This is only supported on certain VM sizes and in certain
      Azure regions. For more information, see:
      https://docs.microsoft.com/azure/aks/enable-host-encryption.
@@ -1989,10 +1996,10 @@ class ManagedClusterAgentPoolProfile(ManagedClusterAgentPoolProfileProperties):
     :param gpu_instance_profile: GPUInstanceProfile to be used to specify GPU MIG instance profile
      for supported GPU VM SKU. Possible values include: "MIG1g", "MIG2g", "MIG3g", "MIG4g", "MIG7g".
     :type gpu_instance_profile: str or
-     ~azure.mgmt.containerservice.v2021_08_01.models.GPUInstanceProfile
+     ~azure.mgmt.containerservice.v2021_09_01.models.GPUInstanceProfile
     :param creation_data: CreationData to be used to specify the source Snapshot ID if the node
      pool will be created/upgraded using a snapshot.
-    :type creation_data: ~azure.mgmt.containerservice.v2021_08_01.models.CreationData
+    :type creation_data: ~azure.mgmt.containerservice.v2021_09_01.models.CreationData
     :param name: Required. Windows agent pool names must be 6 characters or less.
     :type name: str
     """
@@ -2001,7 +2008,6 @@ class ManagedClusterAgentPoolProfile(ManagedClusterAgentPoolProfileProperties):
         'os_disk_size_gb': {'maximum': 2048, 'minimum': 0},
         'node_image_version': {'readonly': True},
         'provisioning_state': {'readonly': True},
-        'power_state': {'readonly': True},
         'name': {'required': True, 'pattern': r'^[a-z][a-z0-9]{0,11}$'},
     }
 
@@ -2104,7 +2110,7 @@ class ManagedClusterAutoUpgradeProfile(msrest.serialization.Model):
     :param upgrade_channel: For more information see `setting the AKS cluster auto-upgrade channel
      <https://docs.microsoft.com/azure/aks/upgrade-cluster#set-auto-upgrade-channel>`_. Possible
      values include: "rapid", "stable", "patch", "node-image", "none".
-    :type upgrade_channel: str or ~azure.mgmt.containerservice.v2021_08_01.models.UpgradeChannel
+    :type upgrade_channel: str or ~azure.mgmt.containerservice.v2021_09_01.models.UpgradeChannel
     """
 
     _attribute_map = {
@@ -2164,11 +2170,11 @@ class ManagedClusterIdentity(msrest.serialization.Model):
     :param type: For more information see `use managed identities in AKS
      <https://docs.microsoft.com/azure/aks/use-managed-identity>`_. Possible values include:
      "SystemAssigned", "UserAssigned", "None".
-    :type type: str or ~azure.mgmt.containerservice.v2021_08_01.models.ResourceIdentityType
+    :type type: str or ~azure.mgmt.containerservice.v2021_09_01.models.ResourceIdentityType
     :param user_assigned_identities: The keys must be ARM resource IDs in the form:
      '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}'.
     :type user_assigned_identities: dict[str,
-     ~azure.mgmt.containerservice.v2021_08_01.models.ManagedServiceIdentityUserAssignedIdentitiesValue]
+     ~azure.mgmt.containerservice.v2021_09_01.models.ManagedServiceIdentityUserAssignedIdentitiesValue]
     """
 
     _validation = {
@@ -2200,7 +2206,7 @@ class ManagedClusterListResult(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :param value: The list of managed clusters.
-    :type value: list[~azure.mgmt.containerservice.v2021_08_01.models.ManagedCluster]
+    :type value: list[~azure.mgmt.containerservice.v2021_09_01.models.ManagedCluster]
     :ivar next_link: The URL to get the next set of managed cluster results.
     :vartype next_link: str
     """
@@ -2228,18 +2234,18 @@ class ManagedClusterLoadBalancerProfile(msrest.serialization.Model):
 
     :param managed_outbound_i_ps: Desired managed outbound IPs for the cluster load balancer.
     :type managed_outbound_i_ps:
-     ~azure.mgmt.containerservice.v2021_08_01.models.ManagedClusterLoadBalancerProfileManagedOutboundIPs
+     ~azure.mgmt.containerservice.v2021_09_01.models.ManagedClusterLoadBalancerProfileManagedOutboundIPs
     :param outbound_ip_prefixes: Desired outbound IP Prefix resources for the cluster load
      balancer.
     :type outbound_ip_prefixes:
-     ~azure.mgmt.containerservice.v2021_08_01.models.ManagedClusterLoadBalancerProfileOutboundIPPrefixes
+     ~azure.mgmt.containerservice.v2021_09_01.models.ManagedClusterLoadBalancerProfileOutboundIPPrefixes
     :param outbound_i_ps: Desired outbound IP resources for the cluster load balancer.
     :type outbound_i_ps:
-     ~azure.mgmt.containerservice.v2021_08_01.models.ManagedClusterLoadBalancerProfileOutboundIPs
+     ~azure.mgmt.containerservice.v2021_09_01.models.ManagedClusterLoadBalancerProfileOutboundIPs
     :param effective_outbound_i_ps: The effective outbound IP resources of the cluster load
      balancer.
     :type effective_outbound_i_ps:
-     list[~azure.mgmt.containerservice.v2021_08_01.models.ResourceReference]
+     list[~azure.mgmt.containerservice.v2021_09_01.models.ResourceReference]
     :param allocated_outbound_ports: The desired number of allocated SNAT ports per VM. Allowed
      values are in the range of 0 to 64000 (inclusive). The default value is 0 which results in
      Azure dynamically allocating ports.
@@ -2310,7 +2316,7 @@ class ManagedClusterLoadBalancerProfileOutboundIPPrefixes(msrest.serialization.M
 
     :param public_ip_prefixes: A list of public IP prefix resources.
     :type public_ip_prefixes:
-     list[~azure.mgmt.containerservice.v2021_08_01.models.ResourceReference]
+     list[~azure.mgmt.containerservice.v2021_09_01.models.ResourceReference]
     """
 
     _attribute_map = {
@@ -2329,7 +2335,7 @@ class ManagedClusterLoadBalancerProfileOutboundIPs(msrest.serialization.Model):
     """Desired outbound IP resources for the cluster load balancer.
 
     :param public_i_ps: A list of public IP resources.
-    :type public_i_ps: list[~azure.mgmt.containerservice.v2021_08_01.models.ResourceReference]
+    :type public_i_ps: list[~azure.mgmt.containerservice.v2021_09_01.models.ResourceReference]
     """
 
     _attribute_map = {
@@ -2374,10 +2380,10 @@ class ManagedClusterNATGatewayProfile(msrest.serialization.Model):
     :param managed_outbound_ip_profile: Profile of the managed outbound IP resources of the cluster
      NAT gateway.
     :type managed_outbound_ip_profile:
-     ~azure.mgmt.containerservice.v2021_08_01.models.ManagedClusterManagedOutboundIPProfile
+     ~azure.mgmt.containerservice.v2021_09_01.models.ManagedClusterManagedOutboundIPProfile
     :param effective_outbound_i_ps: The effective outbound IP resources of the cluster NAT gateway.
     :type effective_outbound_i_ps:
-     list[~azure.mgmt.containerservice.v2021_08_01.models.ResourceReference]
+     list[~azure.mgmt.containerservice.v2021_09_01.models.ResourceReference]
     :param idle_timeout_in_minutes: Desired outbound flow idle timeout in minutes. Allowed values
      are in the range of 4 to 120 (inclusive). The default value is 4 minutes.
     :type idle_timeout_in_minutes: int
@@ -2417,14 +2423,14 @@ class ManagedClusterPodIdentity(msrest.serialization.Model):
     :param binding_selector: The binding selector to use for the AzureIdentityBinding resource.
     :type binding_selector: str
     :param identity: Required. The user assigned identity details.
-    :type identity: ~azure.mgmt.containerservice.v2021_08_01.models.UserAssignedIdentity
+    :type identity: ~azure.mgmt.containerservice.v2021_09_01.models.UserAssignedIdentity
     :ivar provisioning_state: The current provisioning state of the pod identity. Possible values
      include: "Assigned", "Updating", "Deleting", "Failed".
     :vartype provisioning_state: str or
-     ~azure.mgmt.containerservice.v2021_08_01.models.ManagedClusterPodIdentityProvisioningState
+     ~azure.mgmt.containerservice.v2021_09_01.models.ManagedClusterPodIdentityProvisioningState
     :ivar provisioning_info:
     :vartype provisioning_info:
-     ~azure.mgmt.containerservice.v2021_08_01.models.ManagedClusterPodIdentityProvisioningInfo
+     ~azure.mgmt.containerservice.v2021_09_01.models.ManagedClusterPodIdentityProvisioningInfo
     """
 
     _validation = {
@@ -2505,10 +2511,10 @@ class ManagedClusterPodIdentityProfile(msrest.serialization.Model):
     :type allow_network_plugin_kubenet: bool
     :param user_assigned_identities: The pod identities to use in the cluster.
     :type user_assigned_identities:
-     list[~azure.mgmt.containerservice.v2021_08_01.models.ManagedClusterPodIdentity]
+     list[~azure.mgmt.containerservice.v2021_09_01.models.ManagedClusterPodIdentity]
     :param user_assigned_identity_exceptions: The pod identity exceptions to allow.
     :type user_assigned_identity_exceptions:
-     list[~azure.mgmt.containerservice.v2021_08_01.models.ManagedClusterPodIdentityException]
+     list[~azure.mgmt.containerservice.v2021_09_01.models.ManagedClusterPodIdentityException]
     """
 
     _attribute_map = {
@@ -2534,7 +2540,7 @@ class ManagedClusterPodIdentityProvisioningError(msrest.serialization.Model):
 
     :param error: Details about the error.
     :type error:
-     ~azure.mgmt.containerservice.v2021_08_01.models.ManagedClusterPodIdentityProvisioningErrorBody
+     ~azure.mgmt.containerservice.v2021_09_01.models.ManagedClusterPodIdentityProvisioningErrorBody
     """
 
     _attribute_map = {
@@ -2563,7 +2569,7 @@ class ManagedClusterPodIdentityProvisioningErrorBody(msrest.serialization.Model)
     :type target: str
     :param details: A list of additional details about the error.
     :type details:
-     list[~azure.mgmt.containerservice.v2021_08_01.models.ManagedClusterPodIdentityProvisioningErrorBody]
+     list[~azure.mgmt.containerservice.v2021_09_01.models.ManagedClusterPodIdentityProvisioningErrorBody]
     """
 
     _attribute_map = {
@@ -2589,7 +2595,7 @@ class ManagedClusterPodIdentityProvisioningInfo(msrest.serialization.Model):
 
     :param error: Pod identity assignment error (if any).
     :type error:
-     ~azure.mgmt.containerservice.v2021_08_01.models.ManagedClusterPodIdentityProvisioningError
+     ~azure.mgmt.containerservice.v2021_09_01.models.ManagedClusterPodIdentityProvisioningError
     """
 
     _attribute_map = {
@@ -2615,10 +2621,10 @@ class ManagedClusterPoolUpgradeProfile(msrest.serialization.Model):
     :type name: str
     :param os_type: Required. The operating system type. The default is Linux. Possible values
      include: "Linux", "Windows". Default value: "Linux".
-    :type os_type: str or ~azure.mgmt.containerservice.v2021_08_01.models.OSType
+    :type os_type: str or ~azure.mgmt.containerservice.v2021_09_01.models.OSType
     :param upgrades: List of orchestrator types and versions available for upgrade.
     :type upgrades:
-     list[~azure.mgmt.containerservice.v2021_08_01.models.ManagedClusterPoolUpgradeProfileUpgradesItem]
+     list[~azure.mgmt.containerservice.v2021_09_01.models.ManagedClusterPoolUpgradeProfileUpgradesItem]
     """
 
     _validation = {
@@ -2676,7 +2682,7 @@ class ManagedClusterPropertiesAutoScalerProfile(msrest.serialization.Model):
      <https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/FAQ.md#what-are-expanders>`_
      for more information. Possible values include: "least-waste", "most-pods", "priority",
      "random".
-    :type expander: str or ~azure.mgmt.containerservice.v2021_08_01.models.Expander
+    :type expander: str or ~azure.mgmt.containerservice.v2021_09_01.models.Expander
     :param max_empty_bulk_delete: The default is 10.
     :type max_empty_bulk_delete: str
     :param max_graceful_termination_sec: The default is 600.
@@ -2768,7 +2774,7 @@ class ManagedClusterSecurityProfile(msrest.serialization.Model):
 
     :param azure_defender: Azure Defender settings for the security profile.
     :type azure_defender:
-     ~azure.mgmt.containerservice.v2021_08_01.models.ManagedClusterSecurityProfileAzureDefender
+     ~azure.mgmt.containerservice.v2021_09_01.models.ManagedClusterSecurityProfileAzureDefender
     """
 
     _attribute_map = {
@@ -2841,11 +2847,11 @@ class ManagedClusterSKU(msrest.serialization.Model):
     """The SKU of a Managed Cluster.
 
     :param name: The name of a managed cluster SKU. Possible values include: "Basic".
-    :type name: str or ~azure.mgmt.containerservice.v2021_08_01.models.ManagedClusterSKUName
+    :type name: str or ~azure.mgmt.containerservice.v2021_09_01.models.ManagedClusterSKUName
     :param tier: If not specified, the default is 'Free'. See `uptime SLA
      <https://docs.microsoft.com/azure/aks/uptime-sla>`_ for more details. Possible values include:
      "Paid", "Free".
-    :type tier: str or ~azure.mgmt.containerservice.v2021_08_01.models.ManagedClusterSKUTier
+    :type tier: str or ~azure.mgmt.containerservice.v2021_09_01.models.ManagedClusterSKUTier
     """
 
     _attribute_map = {
@@ -2878,10 +2884,10 @@ class ManagedClusterUpgradeProfile(msrest.serialization.Model):
     :param control_plane_profile: Required. The list of available upgrade versions for the control
      plane.
     :type control_plane_profile:
-     ~azure.mgmt.containerservice.v2021_08_01.models.ManagedClusterPoolUpgradeProfile
+     ~azure.mgmt.containerservice.v2021_09_01.models.ManagedClusterPoolUpgradeProfile
     :param agent_pool_profiles: Required. The list of available upgrade versions for agent pools.
     :type agent_pool_profiles:
-     list[~azure.mgmt.containerservice.v2021_08_01.models.ManagedClusterPoolUpgradeProfile]
+     list[~azure.mgmt.containerservice.v2021_09_01.models.ManagedClusterPoolUpgradeProfile]
     """
 
     _validation = {
@@ -2936,10 +2942,12 @@ class ManagedClusterWindowsProfile(msrest.serialization.Model):
     :param license_type: The license type to use for Windows VMs. See `Azure Hybrid User Benefits
      <https://azure.microsoft.com/pricing/hybrid-benefit/faq/>`_ for more details. Possible values
      include: "None", "Windows_Server".
-    :type license_type: str or ~azure.mgmt.containerservice.v2021_08_01.models.LicenseType
+    :type license_type: str or ~azure.mgmt.containerservice.v2021_09_01.models.LicenseType
     :param enable_csi_proxy: For more details on CSI proxy, see the `CSI proxy GitHub repo
      <https://github.com/kubernetes-csi/csi-proxy>`_.
     :type enable_csi_proxy: bool
+    :param gmsa_profile: The Windows gMSA Profile in the Managed Cluster.
+    :type gmsa_profile: ~azure.mgmt.containerservice.v2021_09_01.models.WindowsGmsaProfile
     """
 
     _validation = {
@@ -2951,6 +2959,7 @@ class ManagedClusterWindowsProfile(msrest.serialization.Model):
         'admin_password': {'key': 'adminPassword', 'type': 'str'},
         'license_type': {'key': 'licenseType', 'type': 'str'},
         'enable_csi_proxy': {'key': 'enableCSIProxy', 'type': 'bool'},
+        'gmsa_profile': {'key': 'gmsaProfile', 'type': 'WindowsGmsaProfile'},
     }
 
     def __init__(
@@ -2962,6 +2971,7 @@ class ManagedClusterWindowsProfile(msrest.serialization.Model):
         self.admin_password = kwargs.get('admin_password', None)
         self.license_type = kwargs.get('license_type', None)
         self.enable_csi_proxy = kwargs.get('enable_csi_proxy', None)
+        self.gmsa_profile = kwargs.get('gmsa_profile', None)
 
 
 class ManagedServiceIdentityUserAssignedIdentitiesValue(msrest.serialization.Model):
@@ -3000,7 +3010,7 @@ class OperationListResult(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar value: The list of operations.
-    :vartype value: list[~azure.mgmt.containerservice.v2021_08_01.models.OperationValue]
+    :vartype value: list[~azure.mgmt.containerservice.v2021_09_01.models.OperationValue]
     """
 
     _validation = {
@@ -3084,7 +3094,7 @@ class OSOptionProfile(msrest.serialization.Model):
     :vartype type: str
     :param os_option_property_list: Required. The list of OS options.
     :type os_option_property_list:
-     list[~azure.mgmt.containerservice.v2021_08_01.models.OSOptionProperty]
+     list[~azure.mgmt.containerservice.v2021_09_01.models.OSOptionProperty]
     """
 
     _validation = {
@@ -3149,7 +3159,7 @@ class OutboundEnvironmentEndpoint(msrest.serialization.Model):
      azure-resource-management, apiserver, etc.
     :type category: str
     :param endpoints: The endpoints that AKS agent nodes connect to.
-    :type endpoints: list[~azure.mgmt.containerservice.v2021_08_01.models.EndpointDependency]
+    :type endpoints: list[~azure.mgmt.containerservice.v2021_09_01.models.EndpointDependency]
     """
 
     _attribute_map = {
@@ -3174,7 +3184,7 @@ class OutboundEnvironmentEndpointCollection(msrest.serialization.Model):
     All required parameters must be populated in order to send to Azure.
 
     :param value: Required. Collection of resources.
-    :type value: list[~azure.mgmt.containerservice.v2021_08_01.models.OutboundEnvironmentEndpoint]
+    :type value: list[~azure.mgmt.containerservice.v2021_09_01.models.OutboundEnvironmentEndpoint]
     :ivar next_link: Link to next page of resources.
     :vartype next_link: str
     """
@@ -3203,7 +3213,7 @@ class PowerState(msrest.serialization.Model):
 
     :param code: Tells whether the cluster is Running or Stopped. Possible values include:
      "Running", "Stopped".
-    :type code: str or ~azure.mgmt.containerservice.v2021_08_01.models.Code
+    :type code: str or ~azure.mgmt.containerservice.v2021_09_01.models.Code
     """
 
     _attribute_map = {
@@ -3251,13 +3261,13 @@ class PrivateEndpointConnection(msrest.serialization.Model):
     :ivar provisioning_state: The current provisioning state. Possible values include: "Succeeded",
      "Creating", "Deleting", "Failed".
     :vartype provisioning_state: str or
-     ~azure.mgmt.containerservice.v2021_08_01.models.PrivateEndpointConnectionProvisioningState
+     ~azure.mgmt.containerservice.v2021_09_01.models.PrivateEndpointConnectionProvisioningState
     :param private_endpoint: The resource of private endpoint.
-    :type private_endpoint: ~azure.mgmt.containerservice.v2021_08_01.models.PrivateEndpoint
+    :type private_endpoint: ~azure.mgmt.containerservice.v2021_09_01.models.PrivateEndpoint
     :param private_link_service_connection_state: A collection of information about the state of
      the connection between service consumer and provider.
     :type private_link_service_connection_state:
-     ~azure.mgmt.containerservice.v2021_08_01.models.PrivateLinkServiceConnectionState
+     ~azure.mgmt.containerservice.v2021_09_01.models.PrivateLinkServiceConnectionState
     """
 
     _validation = {
@@ -3293,7 +3303,7 @@ class PrivateEndpointConnectionListResult(msrest.serialization.Model):
     """A list of private endpoint connections.
 
     :param value: The collection value.
-    :type value: list[~azure.mgmt.containerservice.v2021_08_01.models.PrivateEndpointConnection]
+    :type value: list[~azure.mgmt.containerservice.v2021_09_01.models.PrivateEndpointConnection]
     """
 
     _attribute_map = {
@@ -3358,7 +3368,7 @@ class PrivateLinkResourcesListResult(msrest.serialization.Model):
     """A list of private link resources.
 
     :param value: The collection value.
-    :type value: list[~azure.mgmt.containerservice.v2021_08_01.models.PrivateLinkResource]
+    :type value: list[~azure.mgmt.containerservice.v2021_09_01.models.PrivateLinkResource]
     """
 
     _attribute_map = {
@@ -3378,7 +3388,7 @@ class PrivateLinkServiceConnectionState(msrest.serialization.Model):
 
     :param status: The private link service connection status. Possible values include: "Pending",
      "Approved", "Rejected", "Disconnected".
-    :type status: str or ~azure.mgmt.containerservice.v2021_08_01.models.ConnectionStatus
+    :type status: str or ~azure.mgmt.containerservice.v2021_09_01.models.ConnectionStatus
     :param description: The private link service connection description.
     :type description: str
     """
@@ -3522,13 +3532,27 @@ class Snapshot(Resource):
     :param tags: A set of tags. Resource tags.
     :type tags: dict[str, str]
     :ivar system_data: The system metadata relating to this snapshot.
-    :vartype system_data: ~azure.mgmt.containerservice.v2021_08_01.models.SystemData
+    :vartype system_data: ~azure.mgmt.containerservice.v2021_09_01.models.SystemData
     :param creation_data: CreationData to be used to specify the source agent pool resource ID to
      create this snapshot.
-    :type creation_data: ~azure.mgmt.containerservice.v2021_08_01.models.CreationData
+    :type creation_data: ~azure.mgmt.containerservice.v2021_09_01.models.CreationData
     :param snapshot_type: The type of a snapshot. The default is NodePool. Possible values include:
      "NodePool". Default value: "NodePool".
-    :type snapshot_type: str or ~azure.mgmt.containerservice.v2021_08_01.models.SnapshotType
+    :type snapshot_type: str or ~azure.mgmt.containerservice.v2021_09_01.models.SnapshotType
+    :ivar kubernetes_version: The version of Kubernetes.
+    :vartype kubernetes_version: str
+    :ivar node_image_version: The version of node image.
+    :vartype node_image_version: str
+    :ivar os_type: The operating system type. The default is Linux. Possible values include:
+     "Linux", "Windows". Default value: "Linux".
+    :vartype os_type: str or ~azure.mgmt.containerservice.v2021_09_01.models.OSType
+    :ivar os_sku: Specifies an OS SKU. This value must not be specified if OSType is Windows.
+     Possible values include: "Ubuntu", "CBLMariner".
+    :vartype os_sku: str or ~azure.mgmt.containerservice.v2021_09_01.models.OSSKU
+    :ivar vm_size: The size of the VM.
+    :vartype vm_size: str
+    :ivar enable_fips: Whether to use a FIPS-enabled OS.
+    :vartype enable_fips: bool
     """
 
     _validation = {
@@ -3537,6 +3561,12 @@ class Snapshot(Resource):
         'type': {'readonly': True},
         'location': {'required': True},
         'system_data': {'readonly': True},
+        'kubernetes_version': {'readonly': True},
+        'node_image_version': {'readonly': True},
+        'os_type': {'readonly': True},
+        'os_sku': {'readonly': True},
+        'vm_size': {'readonly': True},
+        'enable_fips': {'readonly': True},
     }
 
     _attribute_map = {
@@ -3548,6 +3578,12 @@ class Snapshot(Resource):
         'system_data': {'key': 'systemData', 'type': 'SystemData'},
         'creation_data': {'key': 'properties.creationData', 'type': 'CreationData'},
         'snapshot_type': {'key': 'properties.snapshotType', 'type': 'str'},
+        'kubernetes_version': {'key': 'properties.kubernetesVersion', 'type': 'str'},
+        'node_image_version': {'key': 'properties.nodeImageVersion', 'type': 'str'},
+        'os_type': {'key': 'properties.osType', 'type': 'str'},
+        'os_sku': {'key': 'properties.osSku', 'type': 'str'},
+        'vm_size': {'key': 'properties.vmSize', 'type': 'str'},
+        'enable_fips': {'key': 'properties.enableFIPS', 'type': 'bool'},
     }
 
     def __init__(
@@ -3558,6 +3594,12 @@ class Snapshot(Resource):
         self.system_data = None
         self.creation_data = kwargs.get('creation_data', None)
         self.snapshot_type = kwargs.get('snapshot_type', "NodePool")
+        self.kubernetes_version = None
+        self.node_image_version = None
+        self.os_type = None
+        self.os_sku = None
+        self.vm_size = None
+        self.enable_fips = None
 
 
 class SnapshotListResult(msrest.serialization.Model):
@@ -3566,7 +3608,7 @@ class SnapshotListResult(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :param value: The list of snapshots.
-    :type value: list[~azure.mgmt.containerservice.v2021_08_01.models.Snapshot]
+    :type value: list[~azure.mgmt.containerservice.v2021_09_01.models.Snapshot]
     :ivar next_link: The URL to get the next set of snapshot results.
     :vartype next_link: str
     """
@@ -3723,7 +3765,7 @@ class SystemData(msrest.serialization.Model):
     :type created_by: str
     :param created_by_type: The type of identity that created the resource. Possible values
      include: "User", "Application", "ManagedIdentity", "Key".
-    :type created_by_type: str or ~azure.mgmt.containerservice.v2021_08_01.models.CreatedByType
+    :type created_by_type: str or ~azure.mgmt.containerservice.v2021_09_01.models.CreatedByType
     :param created_at: The UTC timestamp of resource creation.
     :type created_at: ~datetime.datetime
     :param last_modified_by: The identity that last modified the resource.
@@ -3731,7 +3773,7 @@ class SystemData(msrest.serialization.Model):
     :param last_modified_by_type: The type of identity that last modified the resource. Possible
      values include: "User", "Application", "ManagedIdentity", "Key".
     :type last_modified_by_type: str or
-     ~azure.mgmt.containerservice.v2021_08_01.models.CreatedByType
+     ~azure.mgmt.containerservice.v2021_09_01.models.CreatedByType
     :param last_modified_at: The type of identity that last modified the resource.
     :type last_modified_at: ~datetime.datetime
     """
@@ -3782,7 +3824,7 @@ class TimeInWeek(msrest.serialization.Model):
 
     :param day: The day of the week. Possible values include: "Sunday", "Monday", "Tuesday",
      "Wednesday", "Thursday", "Friday", "Saturday".
-    :type day: str or ~azure.mgmt.containerservice.v2021_08_01.models.WeekDay
+    :type day: str or ~azure.mgmt.containerservice.v2021_09_01.models.WeekDay
     :param hour_slots: Each integer hour represents a time range beginning at 0m after the hour
      ending at the next hour (non-inclusive). 0 corresponds to 00:00 UTC, 23 corresponds to 23:00
      UTC. Specifying [0, 1] means the 00:00 - 02:00 UTC time range.
@@ -3824,3 +3866,34 @@ class TimeSpan(msrest.serialization.Model):
         super(TimeSpan, self).__init__(**kwargs)
         self.start = kwargs.get('start', None)
         self.end = kwargs.get('end', None)
+
+
+class WindowsGmsaProfile(msrest.serialization.Model):
+    """Windows gMSA Profile in the managed cluster.
+
+    :param enabled: Specifies whether to enable Windows gMSA in the managed cluster.
+    :type enabled: bool
+    :param dns_server: Specifies the DNS server for Windows gMSA. :code:`<br>`:code:`<br>` Set it
+     to empty if you have configured the DNS server in the vnet which is used to create the managed
+     cluster.
+    :type dns_server: str
+    :param root_domain_name: Specifies the root domain name for Windows gMSA.
+     :code:`<br>`:code:`<br>` Set it to empty if you have configured the DNS server in the vnet
+     which is used to create the managed cluster.
+    :type root_domain_name: str
+    """
+
+    _attribute_map = {
+        'enabled': {'key': 'enabled', 'type': 'bool'},
+        'dns_server': {'key': 'dnsServer', 'type': 'str'},
+        'root_domain_name': {'key': 'rootDomainName', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(WindowsGmsaProfile, self).__init__(**kwargs)
+        self.enabled = kwargs.get('enabled', None)
+        self.dns_server = kwargs.get('dns_server', None)
+        self.root_domain_name = kwargs.get('root_domain_name', None)

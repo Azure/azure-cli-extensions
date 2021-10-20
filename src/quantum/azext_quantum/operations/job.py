@@ -126,6 +126,9 @@ def _generate_submit_args(program_args, ws, target, token, project, job_name, sh
     args.append("--location")
     args.append(ws.location)
 
+    args.append("--user-agent")
+    args.append("CLI")
+
     if job_params:
         args.append("--job-params")
         for k, v in job_params.items():

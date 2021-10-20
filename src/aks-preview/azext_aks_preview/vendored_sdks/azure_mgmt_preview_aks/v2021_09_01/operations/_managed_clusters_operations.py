@@ -32,7 +32,7 @@ class ManagedClustersOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.containerservice.v2021_08_01.models
+    :type models: ~azure.mgmt.containerservice.v2021_09_01.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -64,7 +64,7 @@ class ManagedClustersOperations(object):
         :type resource_type: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: OSOptionProfile, or the result of cls(response)
-        :rtype: ~azure.mgmt.containerservice.v2021_08_01.models.OSOptionProfile
+        :rtype: ~azure.mgmt.containerservice.v2021_09_01.models.OSOptionProfile
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.OSOptionProfile"]
@@ -72,7 +72,7 @@ class ManagedClustersOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-08-01"
+        api_version = "2021-09-01"
         accept = "application/json"
 
         # Construct URL
@@ -120,7 +120,7 @@ class ManagedClustersOperations(object):
 
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either ManagedClusterListResult or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.containerservice.v2021_08_01.models.ManagedClusterListResult]
+        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.containerservice.v2021_09_01.models.ManagedClusterListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.ManagedClusterListResult"]
@@ -128,7 +128,7 @@ class ManagedClustersOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-08-01"
+        api_version = "2021-09-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -192,7 +192,7 @@ class ManagedClustersOperations(object):
         :type resource_group_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either ManagedClusterListResult or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.containerservice.v2021_08_01.models.ManagedClusterListResult]
+        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.containerservice.v2021_09_01.models.ManagedClusterListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.ManagedClusterListResult"]
@@ -200,7 +200,7 @@ class ManagedClustersOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-08-01"
+        api_version = "2021-09-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -268,7 +268,7 @@ class ManagedClustersOperations(object):
         :type resource_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ManagedClusterUpgradeProfile, or the result of cls(response)
-        :rtype: ~azure.mgmt.containerservice.v2021_08_01.models.ManagedClusterUpgradeProfile
+        :rtype: ~azure.mgmt.containerservice.v2021_09_01.models.ManagedClusterUpgradeProfile
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.ManagedClusterUpgradeProfile"]
@@ -276,7 +276,7 @@ class ManagedClustersOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-08-01"
+        api_version = "2021-09-01"
         accept = "application/json"
 
         # Construct URL
@@ -335,7 +335,7 @@ class ManagedClustersOperations(object):
         :type role_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ManagedClusterAccessProfile, or the result of cls(response)
-        :rtype: ~azure.mgmt.containerservice.v2021_08_01.models.ManagedClusterAccessProfile
+        :rtype: ~azure.mgmt.containerservice.v2021_09_01.models.ManagedClusterAccessProfile
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.ManagedClusterAccessProfile"]
@@ -343,7 +343,7 @@ class ManagedClustersOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-08-01"
+        api_version = "2021-09-01"
         accept = "application/json"
 
         # Construct URL
@@ -400,7 +400,7 @@ class ManagedClustersOperations(object):
         :type server_fqdn: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: CredentialResults, or the result of cls(response)
-        :rtype: ~azure.mgmt.containerservice.v2021_08_01.models.CredentialResults
+        :rtype: ~azure.mgmt.containerservice.v2021_09_01.models.CredentialResults
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.CredentialResults"]
@@ -408,7 +408,7 @@ class ManagedClustersOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-08-01"
+        api_version = "2021-09-01"
         accept = "application/json"
 
         # Construct URL
@@ -466,7 +466,7 @@ class ManagedClustersOperations(object):
         :type server_fqdn: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: CredentialResults, or the result of cls(response)
-        :rtype: ~azure.mgmt.containerservice.v2021_08_01.models.CredentialResults
+        :rtype: ~azure.mgmt.containerservice.v2021_09_01.models.CredentialResults
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.CredentialResults"]
@@ -474,7 +474,7 @@ class ManagedClustersOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-08-01"
+        api_version = "2021-09-01"
         accept = "application/json"
 
         # Construct URL
@@ -532,7 +532,7 @@ class ManagedClustersOperations(object):
         :type server_fqdn: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: CredentialResults, or the result of cls(response)
-        :rtype: ~azure.mgmt.containerservice.v2021_08_01.models.CredentialResults
+        :rtype: ~azure.mgmt.containerservice.v2021_09_01.models.CredentialResults
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.CredentialResults"]
@@ -540,7 +540,7 @@ class ManagedClustersOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-08-01"
+        api_version = "2021-09-01"
         accept = "application/json"
 
         # Construct URL
@@ -595,7 +595,7 @@ class ManagedClustersOperations(object):
         :type resource_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ManagedCluster, or the result of cls(response)
-        :rtype: ~azure.mgmt.containerservice.v2021_08_01.models.ManagedCluster
+        :rtype: ~azure.mgmt.containerservice.v2021_09_01.models.ManagedCluster
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.ManagedCluster"]
@@ -603,7 +603,7 @@ class ManagedClustersOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-08-01"
+        api_version = "2021-09-01"
         accept = "application/json"
 
         # Construct URL
@@ -652,7 +652,7 @@ class ManagedClustersOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-08-01"
+        api_version = "2021-09-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -714,7 +714,7 @@ class ManagedClustersOperations(object):
         :param resource_name: The name of the managed cluster resource.
         :type resource_name: str
         :param parameters: The managed cluster to create or update.
-        :type parameters: ~azure.mgmt.containerservice.v2021_08_01.models.ManagedCluster
+        :type parameters: ~azure.mgmt.containerservice.v2021_09_01.models.ManagedCluster
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling.
@@ -722,7 +722,7 @@ class ManagedClustersOperations(object):
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of LROPoller that returns either ManagedCluster or the result of cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.containerservice.v2021_08_01.models.ManagedCluster]
+        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.containerservice.v2021_09_01.models.ManagedCluster]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
@@ -784,7 +784,7 @@ class ManagedClustersOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-08-01"
+        api_version = "2021-09-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -842,7 +842,7 @@ class ManagedClustersOperations(object):
         :param resource_name: The name of the managed cluster resource.
         :type resource_name: str
         :param parameters: Parameters supplied to the Update Managed Cluster Tags operation.
-        :type parameters: ~azure.mgmt.containerservice.v2021_08_01.models.TagsObject
+        :type parameters: ~azure.mgmt.containerservice.v2021_09_01.models.TagsObject
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling.
@@ -850,7 +850,7 @@ class ManagedClustersOperations(object):
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of LROPoller that returns either ManagedCluster or the result of cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.containerservice.v2021_08_01.models.ManagedCluster]
+        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.containerservice.v2021_09_01.models.ManagedCluster]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
@@ -911,7 +911,7 @@ class ManagedClustersOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-08-01"
+        api_version = "2021-09-01"
         accept = "application/json"
 
         # Construct URL
@@ -1024,7 +1024,7 @@ class ManagedClustersOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-08-01"
+        api_version = "2021-09-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -1079,7 +1079,7 @@ class ManagedClustersOperations(object):
         :param resource_name: The name of the managed cluster resource.
         :type resource_name: str
         :param parameters: The service principal profile to set on the managed cluster.
-        :type parameters: ~azure.mgmt.containerservice.v2021_08_01.models.ManagedClusterServicePrincipalProfile
+        :type parameters: ~azure.mgmt.containerservice.v2021_09_01.models.ManagedClusterServicePrincipalProfile
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling.
@@ -1146,7 +1146,7 @@ class ManagedClustersOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-08-01"
+        api_version = "2021-09-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -1201,7 +1201,7 @@ class ManagedClustersOperations(object):
         :param resource_name: The name of the managed cluster resource.
         :type resource_name: str
         :param parameters: The AAD profile to set on the Managed Cluster.
-        :type parameters: ~azure.mgmt.containerservice.v2021_08_01.models.ManagedClusterAADProfile
+        :type parameters: ~azure.mgmt.containerservice.v2021_09_01.models.ManagedClusterAADProfile
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling.
@@ -1267,7 +1267,7 @@ class ManagedClustersOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-08-01"
+        api_version = "2021-09-01"
         accept = "application/json"
 
         # Construct URL
@@ -1380,7 +1380,7 @@ class ManagedClustersOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-08-01"
+        api_version = "2021-09-01"
         accept = "application/json"
 
         # Construct URL
@@ -1496,7 +1496,7 @@ class ManagedClustersOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-08-01"
+        api_version = "2021-09-01"
         accept = "application/json"
 
         # Construct URL
@@ -1610,7 +1610,7 @@ class ManagedClustersOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-08-01"
+        api_version = "2021-09-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -1672,7 +1672,7 @@ class ManagedClustersOperations(object):
         :param resource_name: The name of the managed cluster resource.
         :type resource_name: str
         :param request_payload: The run command request.
-        :type request_payload: ~azure.mgmt.containerservice.v2021_08_01.models.RunCommandRequest
+        :type request_payload: ~azure.mgmt.containerservice.v2021_09_01.models.RunCommandRequest
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling.
@@ -1680,7 +1680,7 @@ class ManagedClustersOperations(object):
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of LROPoller that returns either RunCommandResult or the result of cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.containerservice.v2021_08_01.models.RunCommandResult]
+        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.containerservice.v2021_09_01.models.RunCommandResult]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
@@ -1749,7 +1749,7 @@ class ManagedClustersOperations(object):
         :type command_id: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: RunCommandResult, or the result of cls(response)
-        :rtype: ~azure.mgmt.containerservice.v2021_08_01.models.RunCommandResult or None
+        :rtype: ~azure.mgmt.containerservice.v2021_09_01.models.RunCommandResult or None
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType[Optional["_models.RunCommandResult"]]
@@ -1757,7 +1757,7 @@ class ManagedClustersOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-08-01"
+        api_version = "2021-09-01"
         accept = "application/json"
 
         # Construct URL
@@ -1814,7 +1814,7 @@ class ManagedClustersOperations(object):
         :type resource_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either OutboundEnvironmentEndpointCollection or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.containerservice.v2021_08_01.models.OutboundEnvironmentEndpointCollection]
+        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.containerservice.v2021_09_01.models.OutboundEnvironmentEndpointCollection]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.OutboundEnvironmentEndpointCollection"]
@@ -1822,7 +1822,7 @@ class ManagedClustersOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-08-01"
+        api_version = "2021-09-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
