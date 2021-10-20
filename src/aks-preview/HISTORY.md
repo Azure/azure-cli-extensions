@@ -1,14 +1,26 @@
 .. :changelog:
 
 Release History
-===============
-0.5.35
+0.5.38
 +++++
 * Add support for new snapshot commands
   * `az aks snapshot list`
   * `az aks snapshot show`
   * `az aks snapshot create`
   * `az aks snapshot delete`
+
+0.5.37
++++++
+* Add Windows gMSA v2 support. Add parameters `--enable-windows-gmsa`, `--gmsa-dns-server` and `--gmsa-root-domain-name`
+
+0.5.36
++++++
+* Update to use 2021-09-01 api-version
+
+0.5.35
++++++
+* Add support for multi-instance GPU configuration (`--gpu_instance_profile`) in `az aks create`
+and `az aks nodepool add`.
 
 0.5.34
 +++++
