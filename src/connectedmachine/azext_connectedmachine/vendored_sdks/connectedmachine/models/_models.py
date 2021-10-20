@@ -675,6 +675,9 @@ class MachineExtensionProperties(msrest.serialization.Model):
     :type type: str
     :param type_handler_version: Specifies the version of the script handler.
     :type type_handler_version: str
+    :param enable_automatic_upgrade: Indicates whether the extension should be automatically
+     upgraded by the platform if there is a newer version available.
+    :type enable_automatic_upgrade: bool
     :param auto_upgrade_minor_version: Indicates whether the extension should use a newer minor
      version if one is available at deployment time. Once deployed, however, the extension will not
      upgrade minor versions unless redeployed, even with this property set to true.
@@ -699,6 +702,7 @@ class MachineExtensionProperties(msrest.serialization.Model):
         'publisher': {'key': 'publisher', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
         'type_handler_version': {'key': 'typeHandlerVersion', 'type': 'str'},
+        'enable_automatic_upgrade': {'key': 'enableAutomaticUpgrade', 'type': 'bool'},
         'auto_upgrade_minor_version': {'key': 'autoUpgradeMinorVersion', 'type': 'bool'},
         'settings': {'key': 'settings', 'type': 'object'},
         'protected_settings': {'key': 'protectedSettings', 'type': 'object'},
@@ -715,6 +719,7 @@ class MachineExtensionProperties(msrest.serialization.Model):
         self.publisher = kwargs.get('publisher', None)
         self.type = kwargs.get('type', None)
         self.type_handler_version = kwargs.get('type_handler_version', None)
+        self.enable_automatic_upgrade = kwargs.get('enable_automatic_upgrade', None)
         self.auto_upgrade_minor_version = kwargs.get('auto_upgrade_minor_version', None)
         self.settings = kwargs.get('settings', None)
         self.protected_settings = kwargs.get('protected_settings', None)
@@ -799,6 +804,9 @@ class MachineExtensionUpdateProperties(msrest.serialization.Model):
     :type type: str
     :param type_handler_version: Specifies the version of the script handler.
     :type type_handler_version: str
+    :param enable_automatic_upgrade: Indicates whether the extension should be automatically
+     upgraded by the platform if there is a newer version available.
+    :type enable_automatic_upgrade: bool
     :param auto_upgrade_minor_version: Indicates whether the extension should use a newer minor
      version if one is available at deployment time. Once deployed, however, the extension will not
      upgrade minor versions unless redeployed, even with this property set to true.
@@ -815,6 +823,7 @@ class MachineExtensionUpdateProperties(msrest.serialization.Model):
         'publisher': {'key': 'publisher', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
         'type_handler_version': {'key': 'typeHandlerVersion', 'type': 'str'},
+        'enable_automatic_upgrade': {'key': 'enableAutomaticUpgrade', 'type': 'bool'},
         'auto_upgrade_minor_version': {'key': 'autoUpgradeMinorVersion', 'type': 'bool'},
         'settings': {'key': 'settings', 'type': 'object'},
         'protected_settings': {'key': 'protectedSettings', 'type': 'object'},
@@ -829,6 +838,7 @@ class MachineExtensionUpdateProperties(msrest.serialization.Model):
         self.publisher = kwargs.get('publisher', None)
         self.type = kwargs.get('type', None)
         self.type_handler_version = kwargs.get('type_handler_version', None)
+        self.enable_automatic_upgrade = kwargs.get('enable_automatic_upgrade', None)
         self.auto_upgrade_minor_version = kwargs.get('auto_upgrade_minor_version', None)
         self.settings = kwargs.get('settings', None)
         self.protected_settings = kwargs.get('protected_settings', None)

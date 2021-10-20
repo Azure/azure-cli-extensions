@@ -3,9 +3,13 @@
 Release History
 ===============
 
+0.4.1	
++++++	
+* Added enable-auto-upgrade param	
+
 0.4.0	
 +++++	
-* Add private link scope and private endpoint connection commands	
+* Added private link scope and private endpoint connection commands	
 
 0.3.0	
 +++++	
