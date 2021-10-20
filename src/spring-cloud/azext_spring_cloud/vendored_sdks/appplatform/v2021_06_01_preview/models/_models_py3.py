@@ -234,10 +234,10 @@ class AppResourceProperties(msrest.serialization.Model):
         public: Optional[bool] = None,
         active_deployment_name: Optional[str] = None,
         fqdn: Optional[str] = None,
-        https_only: Optional[bool] = False,
+        https_only: Optional[bool] = None,
         temporary_disk: Optional["TemporaryDisk"] = None,
         persistent_disk: Optional["PersistentDisk"] = None,
-        enable_end_to_end_tls: Optional[bool] = False,
+        enable_end_to_end_tls: Optional[bool] = None,
         **kwargs
     ):
         super(AppResourceProperties, self).__init__(**kwargs)
@@ -1285,7 +1285,7 @@ class DeploymentSettings(msrest.serialization.Model):
     :param environment_variables: Collection of environment variables.
     :type environment_variables: dict[str, str]
     :param runtime_version: Runtime version. Possible values include: "Java_8", "Java_11",
-     "NetCore_31". Default value: "Java_8".
+     "NetCore_31".
     :type runtime_version: str or ~azure.mgmt.appplatform.v2021_06_01_preview.models.RuntimeVersion
     """
 
@@ -1308,7 +1308,7 @@ class DeploymentSettings(msrest.serialization.Model):
         jvm_options: Optional[str] = None,
         net_core_main_entry_path: Optional[str] = None,
         environment_variables: Optional[Dict[str, str]] = None,
-        runtime_version: Optional[Union[str, "RuntimeVersion"]] = "Java_8",
+        runtime_version: Optional[Union[str, "RuntimeVersion"]] = None,
         **kwargs
     ):
         super(DeploymentSettings, self).__init__(**kwargs)
@@ -1599,8 +1599,6 @@ class MetricSpecification(msrest.serialization.Model):
     :type fill_gap_with_zero: bool
     :param dimensions: Dimensions of the metric.
     :type dimensions: list[~azure.mgmt.appplatform.v2021_06_01_preview.models.MetricDimension]
-    :param source_mdm_namespace: Name of the MDM namespace. Optional.
-    :type source_mdm_namespace: str
     """
 
     _attribute_map = {
@@ -1614,7 +1612,6 @@ class MetricSpecification(msrest.serialization.Model):
         'supported_time_grain_types': {'key': 'supportedTimeGrainTypes', 'type': '[str]'},
         'fill_gap_with_zero': {'key': 'fillGapWithZero', 'type': 'bool'},
         'dimensions': {'key': 'dimensions', 'type': '[MetricDimension]'},
-        'source_mdm_namespace': {'key': 'sourceMdmNamespace', 'type': 'str'},
     }
 
     def __init__(
@@ -1630,7 +1627,6 @@ class MetricSpecification(msrest.serialization.Model):
         supported_time_grain_types: Optional[List[str]] = None,
         fill_gap_with_zero: Optional[bool] = None,
         dimensions: Optional[List["MetricDimension"]] = None,
-        source_mdm_namespace: Optional[str] = None,
         **kwargs
     ):
         super(MetricSpecification, self).__init__(**kwargs)
@@ -1644,7 +1640,6 @@ class MetricSpecification(msrest.serialization.Model):
         self.supported_time_grain_types = supported_time_grain_types
         self.fill_gap_with_zero = fill_gap_with_zero
         self.dimensions = dimensions
-        self.source_mdm_namespace = source_mdm_namespace
 
 
 class MonitoringSettingProperties(msrest.serialization.Model):
@@ -2680,7 +2675,7 @@ class TemporaryDisk(msrest.serialization.Model):
         self,
         *,
         size_in_gb: Optional[int] = None,
-        mount_path: Optional[str] = "/tmp",
+        mount_path: Optional[str] = None,
         **kwargs
     ):
         super(TemporaryDisk, self).__init__(**kwargs)

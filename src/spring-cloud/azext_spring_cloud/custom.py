@@ -1624,6 +1624,8 @@ def certificate_add(cmd, client, resource_group, service, name, only_public_cert
             raise InvalidArgumentValueError("--vault-certificate-name should be provided for Key Vault Certificate")
 
     if vault_uri is not None:
+        if only_public_certificate is None:
+            only_public_certificate = False
         properties = models_20210901preview.KeyVaultCertificateProperties(
             type="KeyVaultCertificate",
             vault_uri=vault_uri,
