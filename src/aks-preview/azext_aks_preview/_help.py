@@ -1045,6 +1045,9 @@ helps['aks nodepool stop'] = """
         - name: --nodepool-name
           type: string
           short-summary: Agent pool name
+        - name: --aks-custom-headers
+          type: string
+          short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2          
     examples:
         - name: Stop agent pool in the managed cluster
           text: az aks nodepool stop --nodepool-name nodepool1 -g MyResourceGroup --cluster-name MyManagedCluster
@@ -1057,6 +1060,9 @@ helps['aks nodepool start'] = """
         - name: --nodepool-name
           type: string
           short-summary: Agent pool name
+        - name: --aks-custom-headers
+          type: string
+          short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2          
     examples:
         - name: Start agent pool in the managed cluster
           text: az aks nodepool start --nodepool-name nodepool1 -g MyResourceGroup --cluster-name MyManagedCluster

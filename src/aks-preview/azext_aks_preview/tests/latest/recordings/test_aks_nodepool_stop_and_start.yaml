@@ -18,7 +18,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001?api-version=2021-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001","name":"clitest000001","type":"Microsoft.Resources/resourceGroups","location":"centraluseuap","tags":{"product":"azurecli","cause":"automation","date":"2021-10-19T15:22:03Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001","name":"clitest000001","type":"Microsoft.Resources/resourceGroups","location":"centraluseuap","tags":{"product":"azurecli","cause":"automation","date":"2021-10-20T03:06:19Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -27,7 +27,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 19 Oct 2021 15:22:50 GMT
+      - Wed, 20 Oct 2021 03:06:22 GMT
       expires:
       - '-1'
       pragma:
@@ -43,7 +43,7 @@ interactions:
       message: OK
 - request:
     body: '{"location": "centraluseuap", "identity": {"type": "SystemAssigned"}, "properties":
-      {"kubernetesVersion": "", "dnsPrefix": "cliakstest-cliteste2wtk6xbh-8ecadf",
+      {"kubernetesVersion": "", "dnsPrefix": "cliakstest-clitest5xb2xlog6-8ecadf",
       "agentPoolProfiles": [{"count": 3, "vmSize": "Standard_DS2_v2", "workloadRuntime":
       "OCIContainer", "osType": "Linux", "type": "VirtualMachineScaleSets", "mode":
       "System", "enableNodePublicIP": false, "scaleSetPriority": "Regular", "scaleSetEvictionPolicy":
@@ -81,9 +81,9 @@ interactions:
         \ \"location\": \"centraluseuap\",\n  \"name\": \"cliakstest000002\",\n  \"type\":
         \"Microsoft.ContainerService/ManagedClusters\",\n  \"properties\": {\n   \"provisioningState\":
         \"Creating\",\n   \"powerState\": {\n    \"code\": \"Running\"\n   },\n   \"kubernetesVersion\":
-        \"1.20.9\",\n   \"dnsPrefix\": \"cliakstest-cliteste2wtk6xbh-8ecadf\",\n   \"fqdn\":
-        \"cliakstest-cliteste2wtk6xbh-8ecadf-b261b82f.hcp.centraluseuap.azmk8s.io\",\n
-        \  \"azurePortalFQDN\": \"cliakstest-cliteste2wtk6xbh-8ecadf-b261b82f.portal.hcp.centraluseuap.azmk8s.io\",\n
+        \"1.20.9\",\n   \"dnsPrefix\": \"cliakstest-clitest5xb2xlog6-8ecadf\",\n   \"fqdn\":
+        \"cliakstest-clitest5xb2xlog6-8ecadf-447b5407.hcp.centraluseuap.azmk8s.io\",\n
+        \  \"azurePortalFQDN\": \"cliakstest-clitest5xb2xlog6-8ecadf-447b5407.portal.hcp.centraluseuap.azmk8s.io\",\n
         \  \"agentPoolProfiles\": [\n    {\n     \"name\": \"nodepool1\",\n     \"count\":
         3,\n     \"vmSize\": \"Standard_DS2_v2\",\n     \"osDiskSizeGB\": 128,\n     \"osDiskType\":
         \"Managed\",\n     \"kubeletDiskType\": \"OS\",\n     \"workloadRuntime\":
@@ -111,7 +111,7 @@ interactions:
         {\n   \"name\": \"Basic\",\n   \"tier\": \"Free\"\n  }\n }"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/647a0c3b-0ac3-4cb7-927b-d9ff4d23dabf?api-version=2016-03-30
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/ebe236de-a6a7-437c-9c25-f6ba3b85d519?api-version=2016-03-30
       cache-control:
       - no-cache
       content-length:
@@ -119,7 +119,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 19 Oct 2021 15:22:55 GMT
+      - Wed, 20 Oct 2021 03:06:27 GMT
       expires:
       - '-1'
       pragma:
@@ -152,20 +152,20 @@ interactions:
       - AZURECLI/2.27.2 azsdk-python-azure-mgmt-containerservice/16.3.0 Python/3.7.9
         (Darwin-20.6.0-x86_64-i386-64bit)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/647a0c3b-0ac3-4cb7-927b-d9ff4d23dabf?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/ebe236de-a6a7-437c-9c25-f6ba3b85d519?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"3b0c7a64-c30a-b74c-927b-d9ff4d23dabf\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2021-10-19T15:22:56.3433333Z\"\n }"
+      string: "{\n  \"name\": \"de36e2eb-a7a6-7c43-9c25-f6ba3b85d519\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2021-10-20T03:06:27.42Z\"\n }"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '126'
+      - '121'
       content-type:
       - application/json
       date:
-      - Tue, 19 Oct 2021 15:23:25 GMT
+      - Wed, 20 Oct 2021 03:06:58 GMT
       expires:
       - '-1'
       pragma:
@@ -200,20 +200,20 @@ interactions:
       - AZURECLI/2.27.2 azsdk-python-azure-mgmt-containerservice/16.3.0 Python/3.7.9
         (Darwin-20.6.0-x86_64-i386-64bit)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/647a0c3b-0ac3-4cb7-927b-d9ff4d23dabf?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/ebe236de-a6a7-437c-9c25-f6ba3b85d519?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"3b0c7a64-c30a-b74c-927b-d9ff4d23dabf\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2021-10-19T15:22:56.3433333Z\"\n }"
+      string: "{\n  \"name\": \"de36e2eb-a7a6-7c43-9c25-f6ba3b85d519\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2021-10-20T03:06:27.42Z\"\n }"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '126'
+      - '121'
       content-type:
       - application/json
       date:
-      - Tue, 19 Oct 2021 15:23:56 GMT
+      - Wed, 20 Oct 2021 03:07:28 GMT
       expires:
       - '-1'
       pragma:
@@ -248,20 +248,20 @@ interactions:
       - AZURECLI/2.27.2 azsdk-python-azure-mgmt-containerservice/16.3.0 Python/3.7.9
         (Darwin-20.6.0-x86_64-i386-64bit)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/647a0c3b-0ac3-4cb7-927b-d9ff4d23dabf?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/ebe236de-a6a7-437c-9c25-f6ba3b85d519?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"3b0c7a64-c30a-b74c-927b-d9ff4d23dabf\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2021-10-19T15:22:56.3433333Z\"\n }"
+      string: "{\n  \"name\": \"de36e2eb-a7a6-7c43-9c25-f6ba3b85d519\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2021-10-20T03:06:27.42Z\"\n }"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '126'
+      - '121'
       content-type:
       - application/json
       date:
-      - Tue, 19 Oct 2021 15:24:26 GMT
+      - Wed, 20 Oct 2021 03:07:58 GMT
       expires:
       - '-1'
       pragma:
@@ -296,20 +296,20 @@ interactions:
       - AZURECLI/2.27.2 azsdk-python-azure-mgmt-containerservice/16.3.0 Python/3.7.9
         (Darwin-20.6.0-x86_64-i386-64bit)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/647a0c3b-0ac3-4cb7-927b-d9ff4d23dabf?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/ebe236de-a6a7-437c-9c25-f6ba3b85d519?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"3b0c7a64-c30a-b74c-927b-d9ff4d23dabf\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2021-10-19T15:22:56.3433333Z\"\n }"
+      string: "{\n  \"name\": \"de36e2eb-a7a6-7c43-9c25-f6ba3b85d519\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2021-10-20T03:06:27.42Z\"\n }"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '126'
+      - '121'
       content-type:
       - application/json
       date:
-      - Tue, 19 Oct 2021 15:24:56 GMT
+      - Wed, 20 Oct 2021 03:08:28 GMT
       expires:
       - '-1'
       pragma:
@@ -344,20 +344,20 @@ interactions:
       - AZURECLI/2.27.2 azsdk-python-azure-mgmt-containerservice/16.3.0 Python/3.7.9
         (Darwin-20.6.0-x86_64-i386-64bit)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/647a0c3b-0ac3-4cb7-927b-d9ff4d23dabf?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/ebe236de-a6a7-437c-9c25-f6ba3b85d519?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"3b0c7a64-c30a-b74c-927b-d9ff4d23dabf\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2021-10-19T15:22:56.3433333Z\"\n }"
+      string: "{\n  \"name\": \"de36e2eb-a7a6-7c43-9c25-f6ba3b85d519\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2021-10-20T03:06:27.42Z\"\n }"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '126'
+      - '121'
       content-type:
       - application/json
       date:
-      - Tue, 19 Oct 2021 15:25:26 GMT
+      - Wed, 20 Oct 2021 03:08:57 GMT
       expires:
       - '-1'
       pragma:
@@ -392,20 +392,20 @@ interactions:
       - AZURECLI/2.27.2 azsdk-python-azure-mgmt-containerservice/16.3.0 Python/3.7.9
         (Darwin-20.6.0-x86_64-i386-64bit)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/647a0c3b-0ac3-4cb7-927b-d9ff4d23dabf?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/ebe236de-a6a7-437c-9c25-f6ba3b85d519?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"3b0c7a64-c30a-b74c-927b-d9ff4d23dabf\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2021-10-19T15:22:56.3433333Z\"\n }"
+      string: "{\n  \"name\": \"de36e2eb-a7a6-7c43-9c25-f6ba3b85d519\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2021-10-20T03:06:27.42Z\"\n }"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '126'
+      - '121'
       content-type:
       - application/json
       date:
-      - Tue, 19 Oct 2021 15:25:56 GMT
+      - Wed, 20 Oct 2021 03:09:28 GMT
       expires:
       - '-1'
       pragma:
@@ -440,117 +440,21 @@ interactions:
       - AZURECLI/2.27.2 azsdk-python-azure-mgmt-containerservice/16.3.0 Python/3.7.9
         (Darwin-20.6.0-x86_64-i386-64bit)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/647a0c3b-0ac3-4cb7-927b-d9ff4d23dabf?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/ebe236de-a6a7-437c-9c25-f6ba3b85d519?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"3b0c7a64-c30a-b74c-927b-d9ff4d23dabf\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2021-10-19T15:22:56.3433333Z\"\n }"
+      string: "{\n  \"name\": \"de36e2eb-a7a6-7c43-9c25-f6ba3b85d519\",\n  \"status\":
+        \"Succeeded\",\n  \"startTime\": \"2021-10-20T03:06:27.42Z\",\n  \"endTime\":
+        \"2021-10-20T03:09:37.9544368Z\"\n }"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '126'
+      - '165'
       content-type:
       - application/json
       date:
-      - Tue, 19 Oct 2021 15:26:27 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - nginx
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - aks create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-group --name --ssh-key-value
-      User-Agent:
-      - AZURECLI/2.27.2 azsdk-python-azure-mgmt-containerservice/16.3.0 Python/3.7.9
-        (Darwin-20.6.0-x86_64-i386-64bit)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/647a0c3b-0ac3-4cb7-927b-d9ff4d23dabf?api-version=2016-03-30
-  response:
-    body:
-      string: "{\n  \"name\": \"3b0c7a64-c30a-b74c-927b-d9ff4d23dabf\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2021-10-19T15:22:56.3433333Z\"\n }"
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '126'
-      content-type:
-      - application/json
-      date:
-      - Tue, 19 Oct 2021 15:26:57 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - nginx
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - aks create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-group --name --ssh-key-value
-      User-Agent:
-      - AZURECLI/2.27.2 azsdk-python-azure-mgmt-containerservice/16.3.0 Python/3.7.9
-        (Darwin-20.6.0-x86_64-i386-64bit)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/647a0c3b-0ac3-4cb7-927b-d9ff4d23dabf?api-version=2016-03-30
-  response:
-    body:
-      string: "{\n  \"name\": \"3b0c7a64-c30a-b74c-927b-d9ff4d23dabf\",\n  \"status\":
-        \"Succeeded\",\n  \"startTime\": \"2021-10-19T15:22:56.3433333Z\",\n  \"endTime\":
-        \"2021-10-19T15:27:06.6732311Z\"\n }"
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '170'
-      content-type:
-      - application/json
-      date:
-      - Tue, 19 Oct 2021 15:27:27 GMT
+      - Wed, 20 Oct 2021 03:09:58 GMT
       expires:
       - '-1'
       pragma:
@@ -592,9 +496,9 @@ interactions:
         \ \"location\": \"centraluseuap\",\n  \"name\": \"cliakstest000002\",\n  \"type\":
         \"Microsoft.ContainerService/ManagedClusters\",\n  \"properties\": {\n   \"provisioningState\":
         \"Succeeded\",\n   \"powerState\": {\n    \"code\": \"Running\"\n   },\n   \"kubernetesVersion\":
-        \"1.20.9\",\n   \"dnsPrefix\": \"cliakstest-cliteste2wtk6xbh-8ecadf\",\n   \"fqdn\":
-        \"cliakstest-cliteste2wtk6xbh-8ecadf-b261b82f.hcp.centraluseuap.azmk8s.io\",\n
-        \  \"azurePortalFQDN\": \"cliakstest-cliteste2wtk6xbh-8ecadf-b261b82f.portal.hcp.centraluseuap.azmk8s.io\",\n
+        \"1.20.9\",\n   \"dnsPrefix\": \"cliakstest-clitest5xb2xlog6-8ecadf\",\n   \"fqdn\":
+        \"cliakstest-clitest5xb2xlog6-8ecadf-447b5407.hcp.centraluseuap.azmk8s.io\",\n
+        \  \"azurePortalFQDN\": \"cliakstest-clitest5xb2xlog6-8ecadf-447b5407.portal.hcp.centraluseuap.azmk8s.io\",\n
         \  \"agentPoolProfiles\": [\n    {\n     \"name\": \"nodepool1\",\n     \"count\":
         3,\n     \"vmSize\": \"Standard_DS2_v2\",\n     \"osDiskSizeGB\": 128,\n     \"osDiskType\":
         \"Managed\",\n     \"kubeletDiskType\": \"OS\",\n     \"workloadRuntime\":
@@ -613,7 +517,7 @@ interactions:
         \  \"enablePodSecurityPolicy\": false,\n   \"networkProfile\": {\n    \"networkPlugin\":
         \"kubenet\",\n    \"loadBalancerSku\": \"Standard\",\n    \"loadBalancerProfile\":
         {\n     \"managedOutboundIPs\": {\n      \"count\": 1\n     },\n     \"effectiveOutboundIPs\":
-        [\n      {\n       \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MC_clitest000001_cliakstest000002_centraluseuap/providers/Microsoft.Network/publicIPAddresses/c33fee8b-c4df-4acf-8d9a-ec820296f089\"\n
+        [\n      {\n       \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MC_clitest000001_cliakstest000002_centraluseuap/providers/Microsoft.Network/publicIPAddresses/c1af6ed0-2b9d-4960-8ec3-37c088825849\"\n
         \     }\n     ]\n    },\n    \"podCidr\": \"10.244.0.0/16\",\n    \"serviceCidr\":
         \"10.0.0.0/16\",\n    \"dnsServiceIP\": \"10.0.0.10\",\n    \"dockerBridgeCidr\":
         \"172.17.0.1/16\",\n    \"outboundType\": \"loadBalancer\"\n   },\n   \"maxAgentPools\":
@@ -632,7 +536,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 19 Oct 2021 15:27:28 GMT
+      - Wed, 20 Oct 2021 03:09:59 GMT
       expires:
       - '-1'
       pragma:
@@ -690,7 +594,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 19 Oct 2021 15:27:29 GMT
+      - Wed, 20 Oct 2021 03:09:59 GMT
       expires:
       - '-1'
       pragma:
@@ -750,7 +654,7 @@ interactions:
         \  \"enableFIPS\": false\n  }\n }"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/c5493573-7a2b-4186-be9d-55f8cc1b617d?api-version=2016-03-30
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/53bc250f-cdc6-41d1-9fa8-71b74c049e53?api-version=2016-03-30
       cache-control:
       - no-cache
       content-length:
@@ -758,7 +662,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 19 Oct 2021 15:27:31 GMT
+      - Wed, 20 Oct 2021 03:10:01 GMT
       expires:
       - '-1'
       pragma:
@@ -791,11 +695,11 @@ interactions:
       - AZURECLI/2.27.2 azsdk-python-azure-mgmt-containerservice/16.3.0 Python/3.7.9
         (Darwin-20.6.0-x86_64-i386-64bit)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/c5493573-7a2b-4186-be9d-55f8cc1b617d?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/53bc250f-cdc6-41d1-9fa8-71b74c049e53?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"733549c5-2b7a-8641-be9d-55f8cc1b617d\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2021-10-19T15:27:31.9966666Z\"\n }"
+      string: "{\n  \"name\": \"0f25bc53-c6cd-d141-9fa8-71b74c049e53\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2021-10-20T03:10:02.2266666Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -804,7 +708,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 19 Oct 2021 15:28:01 GMT
+      - Wed, 20 Oct 2021 03:10:31 GMT
       expires:
       - '-1'
       pragma:
@@ -839,11 +743,11 @@ interactions:
       - AZURECLI/2.27.2 azsdk-python-azure-mgmt-containerservice/16.3.0 Python/3.7.9
         (Darwin-20.6.0-x86_64-i386-64bit)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/c5493573-7a2b-4186-be9d-55f8cc1b617d?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/53bc250f-cdc6-41d1-9fa8-71b74c049e53?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"733549c5-2b7a-8641-be9d-55f8cc1b617d\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2021-10-19T15:27:31.9966666Z\"\n }"
+      string: "{\n  \"name\": \"0f25bc53-c6cd-d141-9fa8-71b74c049e53\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2021-10-20T03:10:02.2266666Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -852,7 +756,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 19 Oct 2021 15:28:31 GMT
+      - Wed, 20 Oct 2021 03:11:02 GMT
       expires:
       - '-1'
       pragma:
@@ -887,11 +791,11 @@ interactions:
       - AZURECLI/2.27.2 azsdk-python-azure-mgmt-containerservice/16.3.0 Python/3.7.9
         (Darwin-20.6.0-x86_64-i386-64bit)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/c5493573-7a2b-4186-be9d-55f8cc1b617d?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/53bc250f-cdc6-41d1-9fa8-71b74c049e53?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"733549c5-2b7a-8641-be9d-55f8cc1b617d\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2021-10-19T15:27:31.9966666Z\"\n }"
+      string: "{\n  \"name\": \"0f25bc53-c6cd-d141-9fa8-71b74c049e53\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2021-10-20T03:10:02.2266666Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -900,7 +804,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 19 Oct 2021 15:29:02 GMT
+      - Wed, 20 Oct 2021 03:11:32 GMT
       expires:
       - '-1'
       pragma:
@@ -935,11 +839,11 @@ interactions:
       - AZURECLI/2.27.2 azsdk-python-azure-mgmt-containerservice/16.3.0 Python/3.7.9
         (Darwin-20.6.0-x86_64-i386-64bit)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/c5493573-7a2b-4186-be9d-55f8cc1b617d?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/53bc250f-cdc6-41d1-9fa8-71b74c049e53?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"733549c5-2b7a-8641-be9d-55f8cc1b617d\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2021-10-19T15:27:31.9966666Z\"\n }"
+      string: "{\n  \"name\": \"0f25bc53-c6cd-d141-9fa8-71b74c049e53\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2021-10-20T03:10:02.2266666Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -948,7 +852,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 19 Oct 2021 15:29:32 GMT
+      - Wed, 20 Oct 2021 03:12:02 GMT
       expires:
       - '-1'
       pragma:
@@ -983,11 +887,11 @@ interactions:
       - AZURECLI/2.27.2 azsdk-python-azure-mgmt-containerservice/16.3.0 Python/3.7.9
         (Darwin-20.6.0-x86_64-i386-64bit)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/c5493573-7a2b-4186-be9d-55f8cc1b617d?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/53bc250f-cdc6-41d1-9fa8-71b74c049e53?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"733549c5-2b7a-8641-be9d-55f8cc1b617d\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2021-10-19T15:27:31.9966666Z\"\n }"
+      string: "{\n  \"name\": \"0f25bc53-c6cd-d141-9fa8-71b74c049e53\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2021-10-20T03:10:02.2266666Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -996,7 +900,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 19 Oct 2021 15:30:01 GMT
+      - Wed, 20 Oct 2021 03:12:32 GMT
       expires:
       - '-1'
       pragma:
@@ -1031,11 +935,11 @@ interactions:
       - AZURECLI/2.27.2 azsdk-python-azure-mgmt-containerservice/16.3.0 Python/3.7.9
         (Darwin-20.6.0-x86_64-i386-64bit)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/c5493573-7a2b-4186-be9d-55f8cc1b617d?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/53bc250f-cdc6-41d1-9fa8-71b74c049e53?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"733549c5-2b7a-8641-be9d-55f8cc1b617d\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2021-10-19T15:27:31.9966666Z\"\n }"
+      string: "{\n  \"name\": \"0f25bc53-c6cd-d141-9fa8-71b74c049e53\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2021-10-20T03:10:02.2266666Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -1044,7 +948,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 19 Oct 2021 15:30:32 GMT
+      - Wed, 20 Oct 2021 03:13:02 GMT
       expires:
       - '-1'
       pragma:
@@ -1079,11 +983,11 @@ interactions:
       - AZURECLI/2.27.2 azsdk-python-azure-mgmt-containerservice/16.3.0 Python/3.7.9
         (Darwin-20.6.0-x86_64-i386-64bit)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/c5493573-7a2b-4186-be9d-55f8cc1b617d?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/53bc250f-cdc6-41d1-9fa8-71b74c049e53?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"733549c5-2b7a-8641-be9d-55f8cc1b617d\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2021-10-19T15:27:31.9966666Z\"\n }"
+      string: "{\n  \"name\": \"0f25bc53-c6cd-d141-9fa8-71b74c049e53\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2021-10-20T03:10:02.2266666Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -1092,7 +996,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 19 Oct 2021 15:31:02 GMT
+      - Wed, 20 Oct 2021 03:13:32 GMT
       expires:
       - '-1'
       pragma:
@@ -1127,12 +1031,60 @@ interactions:
       - AZURECLI/2.27.2 azsdk-python-azure-mgmt-containerservice/16.3.0 Python/3.7.9
         (Darwin-20.6.0-x86_64-i386-64bit)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/c5493573-7a2b-4186-be9d-55f8cc1b617d?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/53bc250f-cdc6-41d1-9fa8-71b74c049e53?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"733549c5-2b7a-8641-be9d-55f8cc1b617d\",\n  \"status\":
-        \"Succeeded\",\n  \"startTime\": \"2021-10-19T15:27:31.9966666Z\",\n  \"endTime\":
-        \"2021-10-19T15:31:03.8422401Z\"\n }"
+      string: "{\n  \"name\": \"0f25bc53-c6cd-d141-9fa8-71b74c049e53\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2021-10-20T03:10:02.2266666Z\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '126'
+      content-type:
+      - application/json
+      date:
+      - Wed, 20 Oct 2021 03:14:03 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks nodepool add
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --cluster-name --name --node-count
+      User-Agent:
+      - AZURECLI/2.27.2 azsdk-python-azure-mgmt-containerservice/16.3.0 Python/3.7.9
+        (Darwin-20.6.0-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/53bc250f-cdc6-41d1-9fa8-71b74c049e53?api-version=2016-03-30
+  response:
+    body:
+      string: "{\n  \"name\": \"0f25bc53-c6cd-d141-9fa8-71b74c049e53\",\n  \"status\":
+        \"Succeeded\",\n  \"startTime\": \"2021-10-20T03:10:02.2266666Z\",\n  \"endTime\":
+        \"2021-10-20T03:14:06.2876206Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -1141,7 +1093,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 19 Oct 2021 15:31:32 GMT
+      - Wed, 20 Oct 2021 03:14:33 GMT
       expires:
       - '-1'
       pragma:
@@ -1199,7 +1151,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 19 Oct 2021 15:31:32 GMT
+      - Wed, 20 Oct 2021 03:14:33 GMT
       expires:
       - '-1'
       pragma:
@@ -1229,7 +1181,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --cluster-name --nodepool-name
+      - --resource-group --cluster-name --nodepool-name --aks-custom-headers
       User-Agent:
       - AZURECLI/2.27.2 azsdk-python-azure-mgmt-containerservice/16.3.0 Python/3.7.9
         (Darwin-20.6.0-x86_64-i386-64bit)
@@ -1269,7 +1221,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 19 Oct 2021 15:31:34 GMT
+      - Wed, 20 Oct 2021 03:14:34 GMT
       expires:
       - '-1'
       pragma:
@@ -1299,7 +1251,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --cluster-name --nodepool-name
+      - --resource-group --cluster-name --nodepool-name --aks-custom-headers
       User-Agent:
       - AZURECLI/2.27.2 azsdk-python-azure-mgmt-containerservice/16.3.0 Python/3.7.9
         (Darwin-20.6.0-x86_64-i386-64bit)
@@ -1327,7 +1279,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 19 Oct 2021 15:31:34 GMT
+      - Wed, 20 Oct 2021 03:14:35 GMT
       expires:
       - '-1'
       pragma:
@@ -1354,6 +1306,8 @@ interactions:
       false, "enableEncryptionAtHost": false, "enableUltraSSD": false, "enableFIPS":
       false}}'
     headers:
+      AKSHTTPCustomFeatures:
+      - Microsoft.ContainerService/PreviewStartStopAgentPool
       Accept:
       - application/json
       Accept-Encoding:
@@ -1367,7 +1321,7 @@ interactions:
       Content-Type:
       - application/json
       ParameterSetName:
-      - --resource-group --cluster-name --nodepool-name
+      - --resource-group --cluster-name --nodepool-name --aks-custom-headers
       User-Agent:
       - AZURECLI/2.27.2 azsdk-python-azure-mgmt-containerservice/16.3.0 Python/3.7.9
         (Darwin-20.6.0-x86_64-i386-64bit)
@@ -1389,7 +1343,7 @@ interactions:
         \  \"upgradeSettings\": {},\n   \"enableFIPS\": false\n  }\n }"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/a550c6d2-199c-4c99-8458-e93270c38ca0?api-version=2016-03-30
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/2be6d2db-c651-484f-9791-79769905f8ae?api-version=2016-03-30
       cache-control:
       - no-cache
       content-length:
@@ -1397,7 +1351,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 19 Oct 2021 15:31:35 GMT
+      - Wed, 20 Oct 2021 03:14:37 GMT
       expires:
       - '-1'
       pragma:
@@ -1420,6 +1374,8 @@ interactions:
 - request:
     body: null
     headers:
+      AKSHTTPCustomFeatures:
+      - Microsoft.ContainerService/PreviewStartStopAgentPool
       Accept:
       - '*/*'
       Accept-Encoding:
@@ -1429,25 +1385,25 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --cluster-name --nodepool-name
+      - --resource-group --cluster-name --nodepool-name --aks-custom-headers
       User-Agent:
       - AZURECLI/2.27.2 azsdk-python-azure-mgmt-containerservice/16.3.0 Python/3.7.9
         (Darwin-20.6.0-x86_64-i386-64bit)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/a550c6d2-199c-4c99-8458-e93270c38ca0?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/2be6d2db-c651-484f-9791-79769905f8ae?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"d2c650a5-9c19-994c-8458-e93270c38ca0\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2021-10-19T15:31:36.5433333Z\"\n }"
+      string: "{\n  \"name\": \"dbd2e62b-51c6-4f48-9791-79769905f8ae\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2021-10-20T03:14:37.48Z\"\n }"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '126'
+      - '121'
       content-type:
       - application/json
       date:
-      - Tue, 19 Oct 2021 15:32:06 GMT
+      - Wed, 20 Oct 2021 03:15:07 GMT
       expires:
       - '-1'
       pragma:
@@ -1468,6 +1424,8 @@ interactions:
 - request:
     body: null
     headers:
+      AKSHTTPCustomFeatures:
+      - Microsoft.ContainerService/PreviewStartStopAgentPool
       Accept:
       - '*/*'
       Accept-Encoding:
@@ -1477,25 +1435,25 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --cluster-name --nodepool-name
+      - --resource-group --cluster-name --nodepool-name --aks-custom-headers
       User-Agent:
       - AZURECLI/2.27.2 azsdk-python-azure-mgmt-containerservice/16.3.0 Python/3.7.9
         (Darwin-20.6.0-x86_64-i386-64bit)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/a550c6d2-199c-4c99-8458-e93270c38ca0?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/2be6d2db-c651-484f-9791-79769905f8ae?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"d2c650a5-9c19-994c-8458-e93270c38ca0\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2021-10-19T15:31:36.5433333Z\"\n }"
+      string: "{\n  \"name\": \"dbd2e62b-51c6-4f48-9791-79769905f8ae\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2021-10-20T03:14:37.48Z\"\n }"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '126'
+      - '121'
       content-type:
       - application/json
       date:
-      - Tue, 19 Oct 2021 15:32:36 GMT
+      - Wed, 20 Oct 2021 03:15:37 GMT
       expires:
       - '-1'
       pragma:
@@ -1516,6 +1474,8 @@ interactions:
 - request:
     body: null
     headers:
+      AKSHTTPCustomFeatures:
+      - Microsoft.ContainerService/PreviewStartStopAgentPool
       Accept:
       - '*/*'
       Accept-Encoding:
@@ -1525,25 +1485,25 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --cluster-name --nodepool-name
+      - --resource-group --cluster-name --nodepool-name --aks-custom-headers
       User-Agent:
       - AZURECLI/2.27.2 azsdk-python-azure-mgmt-containerservice/16.3.0 Python/3.7.9
         (Darwin-20.6.0-x86_64-i386-64bit)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/a550c6d2-199c-4c99-8458-e93270c38ca0?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/2be6d2db-c651-484f-9791-79769905f8ae?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"d2c650a5-9c19-994c-8458-e93270c38ca0\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2021-10-19T15:31:36.5433333Z\"\n }"
+      string: "{\n  \"name\": \"dbd2e62b-51c6-4f48-9791-79769905f8ae\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2021-10-20T03:14:37.48Z\"\n }"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '126'
+      - '121'
       content-type:
       - application/json
       date:
-      - Tue, 19 Oct 2021 15:33:06 GMT
+      - Wed, 20 Oct 2021 03:16:07 GMT
       expires:
       - '-1'
       pragma:
@@ -1564,6 +1524,8 @@ interactions:
 - request:
     body: null
     headers:
+      AKSHTTPCustomFeatures:
+      - Microsoft.ContainerService/PreviewStartStopAgentPool
       Accept:
       - '*/*'
       Accept-Encoding:
@@ -1573,25 +1535,26 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --cluster-name --nodepool-name
+      - --resource-group --cluster-name --nodepool-name --aks-custom-headers
       User-Agent:
       - AZURECLI/2.27.2 azsdk-python-azure-mgmt-containerservice/16.3.0 Python/3.7.9
         (Darwin-20.6.0-x86_64-i386-64bit)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/a550c6d2-199c-4c99-8458-e93270c38ca0?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/2be6d2db-c651-484f-9791-79769905f8ae?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"d2c650a5-9c19-994c-8458-e93270c38ca0\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2021-10-19T15:31:36.5433333Z\"\n }"
+      string: "{\n  \"name\": \"dbd2e62b-51c6-4f48-9791-79769905f8ae\",\n  \"status\":
+        \"Succeeded\",\n  \"startTime\": \"2021-10-20T03:14:37.48Z\",\n  \"endTime\":
+        \"2021-10-20T03:17:17.8916208Z\"\n }"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '126'
+      - '165'
       content-type:
       - application/json
       date:
-      - Tue, 19 Oct 2021 15:33:37 GMT
+      - Wed, 20 Oct 2021 03:25:54 GMT
       expires:
       - '-1'
       pragma:
@@ -1612,6 +1575,8 @@ interactions:
 - request:
     body: null
     headers:
+      AKSHTTPCustomFeatures:
+      - Microsoft.ContainerService/PreviewStartStopAgentPool
       Accept:
       - '*/*'
       Accept-Encoding:
@@ -1621,56 +1586,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --cluster-name --nodepool-name
-      User-Agent:
-      - AZURECLI/2.27.2 azsdk-python-azure-mgmt-containerservice/16.3.0 Python/3.7.9
-        (Darwin-20.6.0-x86_64-i386-64bit)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/a550c6d2-199c-4c99-8458-e93270c38ca0?api-version=2016-03-30
-  response:
-    body:
-      string: "{\n  \"name\": \"d2c650a5-9c19-994c-8458-e93270c38ca0\",\n  \"status\":
-        \"Succeeded\",\n  \"startTime\": \"2021-10-19T15:31:36.5433333Z\",\n  \"endTime\":
-        \"2021-10-19T15:34:03.4894331Z\"\n }"
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '170'
-      content-type:
-      - application/json
-      date:
-      - Tue, 19 Oct 2021 15:34:06 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - nginx
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - aks nodepool stop
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-group --cluster-name --nodepool-name
+      - --resource-group --cluster-name --nodepool-name --aks-custom-headers
       User-Agent:
       - AZURECLI/2.27.2 azsdk-python-azure-mgmt-containerservice/16.3.0 Python/3.7.9
         (Darwin-20.6.0-x86_64-i386-64bit)
@@ -1698,7 +1614,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 19 Oct 2021 15:34:07 GMT
+      - Wed, 20 Oct 2021 03:25:55 GMT
       expires:
       - '-1'
       pragma:
@@ -1728,7 +1644,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --cluster-name --nodepool-name
+      - --resource-group --cluster-name --nodepool-name --aks-custom-headers
       User-Agent:
       - AZURECLI/2.27.2 azsdk-python-azure-mgmt-containerservice/16.3.0 Python/3.7.9
         (Darwin-20.6.0-x86_64-i386-64bit)
@@ -1768,7 +1684,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 19 Oct 2021 15:34:08 GMT
+      - Wed, 20 Oct 2021 03:25:56 GMT
       expires:
       - '-1'
       pragma:
@@ -1798,7 +1714,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --cluster-name --nodepool-name
+      - --resource-group --cluster-name --nodepool-name --aks-custom-headers
       User-Agent:
       - AZURECLI/2.27.2 azsdk-python-azure-mgmt-containerservice/16.3.0 Python/3.7.9
         (Darwin-20.6.0-x86_64-i386-64bit)
@@ -1826,7 +1742,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 19 Oct 2021 15:34:09 GMT
+      - Wed, 20 Oct 2021 03:25:56 GMT
       expires:
       - '-1'
       pragma:
@@ -1853,6 +1769,8 @@ interactions:
       "Running"}, "enableNodePublicIP": false, "enableEncryptionAtHost": false, "enableUltraSSD":
       false, "enableFIPS": false}}'
     headers:
+      AKSHTTPCustomFeatures:
+      - Microsoft.ContainerService/PreviewStartStopAgentPool
       Accept:
       - application/json
       Accept-Encoding:
@@ -1866,7 +1784,7 @@ interactions:
       Content-Type:
       - application/json
       ParameterSetName:
-      - --resource-group --cluster-name --nodepool-name
+      - --resource-group --cluster-name --nodepool-name --aks-custom-headers
       User-Agent:
       - AZURECLI/2.27.2 azsdk-python-azure-mgmt-containerservice/16.3.0 Python/3.7.9
         (Darwin-20.6.0-x86_64-i386-64bit)
@@ -1888,7 +1806,7 @@ interactions:
         \  \"upgradeSettings\": {},\n   \"enableFIPS\": false\n  }\n }"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/4a2dd7ff-9238-4a18-abd9-f0f7ffbe1340?api-version=2016-03-30
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/4609ec33-8434-4d9e-ba60-5625085c551f?api-version=2016-03-30
       cache-control:
       - no-cache
       content-length:
@@ -1896,7 +1814,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 19 Oct 2021 15:34:11 GMT
+      - Wed, 20 Oct 2021 03:25:58 GMT
       expires:
       - '-1'
       pragma:
@@ -1919,6 +1837,8 @@ interactions:
 - request:
     body: null
     headers:
+      AKSHTTPCustomFeatures:
+      - Microsoft.ContainerService/PreviewStartStopAgentPool
       Accept:
       - '*/*'
       Accept-Encoding:
@@ -1928,16 +1848,16 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --cluster-name --nodepool-name
+      - --resource-group --cluster-name --nodepool-name --aks-custom-headers
       User-Agent:
       - AZURECLI/2.27.2 azsdk-python-azure-mgmt-containerservice/16.3.0 Python/3.7.9
         (Darwin-20.6.0-x86_64-i386-64bit)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/4a2dd7ff-9238-4a18-abd9-f0f7ffbe1340?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/4609ec33-8434-4d9e-ba60-5625085c551f?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"ffd72d4a-3892-184a-abd9-f0f7ffbe1340\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2021-10-19T15:34:11.3466666Z\"\n }"
+      string: "{\n  \"name\": \"33ec0946-3484-9e4d-ba60-5625085c551f\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2021-10-20T03:25:58.7066666Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -1946,7 +1866,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 19 Oct 2021 15:34:41 GMT
+      - Wed, 20 Oct 2021 03:26:28 GMT
       expires:
       - '-1'
       pragma:
@@ -1967,6 +1887,8 @@ interactions:
 - request:
     body: null
     headers:
+      AKSHTTPCustomFeatures:
+      - Microsoft.ContainerService/PreviewStartStopAgentPool
       Accept:
       - '*/*'
       Accept-Encoding:
@@ -1976,16 +1898,16 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --cluster-name --nodepool-name
+      - --resource-group --cluster-name --nodepool-name --aks-custom-headers
       User-Agent:
       - AZURECLI/2.27.2 azsdk-python-azure-mgmt-containerservice/16.3.0 Python/3.7.9
         (Darwin-20.6.0-x86_64-i386-64bit)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/4a2dd7ff-9238-4a18-abd9-f0f7ffbe1340?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/4609ec33-8434-4d9e-ba60-5625085c551f?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"ffd72d4a-3892-184a-abd9-f0f7ffbe1340\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2021-10-19T15:34:11.3466666Z\"\n }"
+      string: "{\n  \"name\": \"33ec0946-3484-9e4d-ba60-5625085c551f\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2021-10-20T03:25:58.7066666Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -1994,7 +1916,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 19 Oct 2021 15:35:10 GMT
+      - Wed, 20 Oct 2021 03:26:58 GMT
       expires:
       - '-1'
       pragma:
@@ -2015,6 +1937,8 @@ interactions:
 - request:
     body: null
     headers:
+      AKSHTTPCustomFeatures:
+      - Microsoft.ContainerService/PreviewStartStopAgentPool
       Accept:
       - '*/*'
       Accept-Encoding:
@@ -2024,16 +1948,16 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --cluster-name --nodepool-name
+      - --resource-group --cluster-name --nodepool-name --aks-custom-headers
       User-Agent:
       - AZURECLI/2.27.2 azsdk-python-azure-mgmt-containerservice/16.3.0 Python/3.7.9
         (Darwin-20.6.0-x86_64-i386-64bit)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/4a2dd7ff-9238-4a18-abd9-f0f7ffbe1340?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/4609ec33-8434-4d9e-ba60-5625085c551f?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"ffd72d4a-3892-184a-abd9-f0f7ffbe1340\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2021-10-19T15:34:11.3466666Z\"\n }"
+      string: "{\n  \"name\": \"33ec0946-3484-9e4d-ba60-5625085c551f\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2021-10-20T03:25:58.7066666Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -2042,7 +1966,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 19 Oct 2021 15:35:40 GMT
+      - Wed, 20 Oct 2021 03:27:29 GMT
       expires:
       - '-1'
       pragma:
@@ -2063,6 +1987,8 @@ interactions:
 - request:
     body: null
     headers:
+      AKSHTTPCustomFeatures:
+      - Microsoft.ContainerService/PreviewStartStopAgentPool
       Accept:
       - '*/*'
       Accept-Encoding:
@@ -2072,16 +1998,16 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --cluster-name --nodepool-name
+      - --resource-group --cluster-name --nodepool-name --aks-custom-headers
       User-Agent:
       - AZURECLI/2.27.2 azsdk-python-azure-mgmt-containerservice/16.3.0 Python/3.7.9
         (Darwin-20.6.0-x86_64-i386-64bit)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/4a2dd7ff-9238-4a18-abd9-f0f7ffbe1340?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/4609ec33-8434-4d9e-ba60-5625085c551f?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"ffd72d4a-3892-184a-abd9-f0f7ffbe1340\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2021-10-19T15:34:11.3466666Z\"\n }"
+      string: "{\n  \"name\": \"33ec0946-3484-9e4d-ba60-5625085c551f\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2021-10-20T03:25:58.7066666Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -2090,7 +2016,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 19 Oct 2021 15:36:11 GMT
+      - Wed, 20 Oct 2021 03:27:58 GMT
       expires:
       - '-1'
       pragma:
@@ -2111,6 +2037,8 @@ interactions:
 - request:
     body: null
     headers:
+      AKSHTTPCustomFeatures:
+      - Microsoft.ContainerService/PreviewStartStopAgentPool
       Accept:
       - '*/*'
       Accept-Encoding:
@@ -2120,16 +2048,16 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --cluster-name --nodepool-name
+      - --resource-group --cluster-name --nodepool-name --aks-custom-headers
       User-Agent:
       - AZURECLI/2.27.2 azsdk-python-azure-mgmt-containerservice/16.3.0 Python/3.7.9
         (Darwin-20.6.0-x86_64-i386-64bit)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/4a2dd7ff-9238-4a18-abd9-f0f7ffbe1340?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/4609ec33-8434-4d9e-ba60-5625085c551f?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"ffd72d4a-3892-184a-abd9-f0f7ffbe1340\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2021-10-19T15:34:11.3466666Z\"\n }"
+      string: "{\n  \"name\": \"33ec0946-3484-9e4d-ba60-5625085c551f\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2021-10-20T03:25:58.7066666Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -2138,7 +2066,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 19 Oct 2021 15:36:41 GMT
+      - Wed, 20 Oct 2021 03:28:28 GMT
       expires:
       - '-1'
       pragma:
@@ -2159,6 +2087,8 @@ interactions:
 - request:
     body: null
     headers:
+      AKSHTTPCustomFeatures:
+      - Microsoft.ContainerService/PreviewStartStopAgentPool
       Accept:
       - '*/*'
       Accept-Encoding:
@@ -2168,16 +2098,16 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --cluster-name --nodepool-name
+      - --resource-group --cluster-name --nodepool-name --aks-custom-headers
       User-Agent:
       - AZURECLI/2.27.2 azsdk-python-azure-mgmt-containerservice/16.3.0 Python/3.7.9
         (Darwin-20.6.0-x86_64-i386-64bit)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/4a2dd7ff-9238-4a18-abd9-f0f7ffbe1340?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/4609ec33-8434-4d9e-ba60-5625085c551f?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"ffd72d4a-3892-184a-abd9-f0f7ffbe1340\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2021-10-19T15:34:11.3466666Z\"\n }"
+      string: "{\n  \"name\": \"33ec0946-3484-9e4d-ba60-5625085c551f\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2021-10-20T03:25:58.7066666Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -2186,7 +2116,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 19 Oct 2021 15:37:11 GMT
+      - Wed, 20 Oct 2021 03:28:58 GMT
       expires:
       - '-1'
       pragma:
@@ -2207,6 +2137,8 @@ interactions:
 - request:
     body: null
     headers:
+      AKSHTTPCustomFeatures:
+      - Microsoft.ContainerService/PreviewStartStopAgentPool
       Accept:
       - '*/*'
       Accept-Encoding:
@@ -2216,16 +2148,16 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --cluster-name --nodepool-name
+      - --resource-group --cluster-name --nodepool-name --aks-custom-headers
       User-Agent:
       - AZURECLI/2.27.2 azsdk-python-azure-mgmt-containerservice/16.3.0 Python/3.7.9
         (Darwin-20.6.0-x86_64-i386-64bit)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/4a2dd7ff-9238-4a18-abd9-f0f7ffbe1340?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/4609ec33-8434-4d9e-ba60-5625085c551f?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"ffd72d4a-3892-184a-abd9-f0f7ffbe1340\",\n  \"status\":
-        \"InProgress\",\n  \"startTime\": \"2021-10-19T15:34:11.3466666Z\"\n }"
+      string: "{\n  \"name\": \"33ec0946-3484-9e4d-ba60-5625085c551f\",\n  \"status\":
+        \"InProgress\",\n  \"startTime\": \"2021-10-20T03:25:58.7066666Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -2234,7 +2166,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 19 Oct 2021 15:37:41 GMT
+      - Wed, 20 Oct 2021 03:29:29 GMT
       expires:
       - '-1'
       pragma:
@@ -2255,6 +2187,8 @@ interactions:
 - request:
     body: null
     headers:
+      AKSHTTPCustomFeatures:
+      - Microsoft.ContainerService/PreviewStartStopAgentPool
       Accept:
       - '*/*'
       Accept-Encoding:
@@ -2264,17 +2198,17 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --cluster-name --nodepool-name
+      - --resource-group --cluster-name --nodepool-name --aks-custom-headers
       User-Agent:
       - AZURECLI/2.27.2 azsdk-python-azure-mgmt-containerservice/16.3.0 Python/3.7.9
         (Darwin-20.6.0-x86_64-i386-64bit)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/4a2dd7ff-9238-4a18-abd9-f0f7ffbe1340?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/4609ec33-8434-4d9e-ba60-5625085c551f?api-version=2016-03-30
   response:
     body:
-      string: "{\n  \"name\": \"ffd72d4a-3892-184a-abd9-f0f7ffbe1340\",\n  \"status\":
-        \"Succeeded\",\n  \"startTime\": \"2021-10-19T15:34:11.3466666Z\",\n  \"endTime\":
-        \"2021-10-19T15:37:49.1524184Z\"\n }"
+      string: "{\n  \"name\": \"33ec0946-3484-9e4d-ba60-5625085c551f\",\n  \"status\":
+        \"Succeeded\",\n  \"startTime\": \"2021-10-20T03:25:58.7066666Z\",\n  \"endTime\":
+        \"2021-10-20T03:29:37.6999735Z\"\n }"
     headers:
       cache-control:
       - no-cache
@@ -2283,7 +2217,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 19 Oct 2021 15:38:12 GMT
+      - Wed, 20 Oct 2021 03:29:59 GMT
       expires:
       - '-1'
       pragma:
@@ -2304,6 +2238,8 @@ interactions:
 - request:
     body: null
     headers:
+      AKSHTTPCustomFeatures:
+      - Microsoft.ContainerService/PreviewStartStopAgentPool
       Accept:
       - '*/*'
       Accept-Encoding:
@@ -2313,7 +2249,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --cluster-name --nodepool-name
+      - --resource-group --cluster-name --nodepool-name --aks-custom-headers
       User-Agent:
       - AZURECLI/2.27.2 azsdk-python-azure-mgmt-containerservice/16.3.0 Python/3.7.9
         (Darwin-20.6.0-x86_64-i386-64bit)
@@ -2341,7 +2277,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 19 Oct 2021 15:38:12 GMT
+      - Wed, 20 Oct 2021 03:29:59 GMT
       expires:
       - '-1'
       pragma:
@@ -2384,17 +2320,17 @@ interactions:
       string: ''
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/08bab615-2787-4426-a919-4d3e05886f85?api-version=2016-03-30
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operations/e0a6aa65-25ed-40c6-a970-df7398c51792?api-version=2016-03-30
       cache-control:
       - no-cache
       content-length:
       - '0'
       date:
-      - Tue, 19 Oct 2021 15:38:14 GMT
+      - Wed, 20 Oct 2021 03:30:01 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/08bab615-2787-4426-a919-4d3e05886f85?api-version=2016-03-30
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/operationresults/e0a6aa65-25ed-40c6-a970-df7398c51792?api-version=2016-03-30
       pragma:
       - no-cache
       server:
