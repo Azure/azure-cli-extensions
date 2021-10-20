@@ -329,7 +329,10 @@ def app_create(cmd, client, resource_group, service, name,
 
         if data:
             for item in data['customPersistentDisks']:
-                invalidProperties = not item.get('storageName') or not item.get('type') or not item.get('shareName') or not item.get('mountPath')
+                invalidProperties = not item.get('storageName') or \
+                    not item.get('customPersistentDiskProperties').get('type') or \
+                    not item.get('customPersistentDiskProperties').get('shareName') or \
+                    not item.get('customPersistentDiskProperties').get('mountPath')
                 if invalidProperties:
                     raise CLIError("StorageName, Type, ShareName, MountPath mast be provided in the json file")
                 storage_resource = client_0901_preview.storages.get(resource_group, service, item['storageName'])
