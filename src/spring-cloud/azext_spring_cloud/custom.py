@@ -262,7 +262,7 @@ def app_create(cmd, client, resource_group, service, name,
                env=None,
                enable_persistent_storage=None,
                assign_identity=None,
-               loaded_public_cert_file=None):
+               loaded_public_certificate_file=None):
 
     client = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20210901preview)
     cpu = validate_cpu(cpu)
@@ -282,11 +282,16 @@ def app_create(cmd, client, resource_group, service, name,
         properties.persistent_disk = models_20210901preview.PersistentDisk(
             size_in_gb=0, mount_path="/persistent")
 
-    if loaded_public_cert_file is not None:
-        data = get_file_json(loaded_public_cert_file, throw_on_empty=False)
+    if loaded_public_certificate_file is not None:
+        data = get_file_json(loaded_public_certificate_file)
         if data:
+            if not data.get('loadedCertificates'):
+                raise CLIError("loadedCertificates must be provided in the json file")
             loaded_certificates = []
             for item in data['loadedCertificates']:
+                invalidProperties = not item.get('certificateName') or not item.get('loadTrustStore')
+                if invalidProperties:
+                    raise CLIError("certificateName, loadTrustStore must be provided in the json file")
                 certificate_resource = client.certificates.get(resource_group, service, item['certificateName'])
                 loaded_certificates.append(models_20210901preview.
                                            LoadedCertificate(resource_id=certificate_resource.id,
@@ -380,7 +385,7 @@ def app_update(cmd, client, resource_group, service, name,
                enable_persistent_storage=None,
                https_only=None,
                enable_end_to_end_tls=None,
-               loaded_public_cert_file=None):
+               loaded_public_certificate_file=None):
     client = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20210901preview)
     _check_active_deployment_exist(client, resource_group, service, name)
     resource = client.services.get(resource_group, service)
@@ -394,11 +399,16 @@ def app_update(cmd, client, resource_group, service, name,
     if enable_persistent_storage is False:
         properties.persistent_disk = models_20210901preview.PersistentDisk(size_in_gb=0)
 
-    if loaded_public_cert_file is not None:
-        data = get_file_json(loaded_public_cert_file, throw_on_empty=False)
+    if loaded_public_certificate_file is not None:
+        data = get_file_json(loaded_public_certificate_file)
         if data:
+            if not data.get('loadedCertificates'):
+                raise CLIError("loadedCertificates must be provided in the json file")
             loaded_certificates = []
             for item in data['loadedCertificates']:
+                invalidProperties = not item.get('certificateName') or not item.get('loadTrustStore')
+                if invalidProperties:
+                    raise CLIError("certificateName, loadTrustStore must be provided in the json file")
                 certificate_resource = client.certificates.get(resource_group, service, item['certificateName'])
                 loaded_certificates.append(models_20210901preview.
                                            LoadedCertificate(resource_id=certificate_resource.id,
@@ -789,7 +799,7 @@ def app_unset_deployment(cmd, client, resource_group, service, name):
     return client.apps.begin_update(resource_group, service, name, app_resource)
 
 
-def app_append_loaded_public_cert(cmd, client, resource_group, service, name, certificate_name, load_trust_store):
+def app_append_loaded_public_certificate(cmd, client, resource_group, service, name, certificate_name, load_trust_store):
     client = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20210901preview)
     _check_active_deployment_exist(client, resource_group, service, name)
 
@@ -1618,31 +1628,33 @@ def _get_app_log(url, user_name, password, format_json, exceptions):
             exceptions.append(e)
 
 
-def certificate_add(cmd, client, resource_group, service, name, only_public_cert=None,
-                    vault_uri=None, vault_certificate_name=None, public_cert_file=None):
-    if vault_uri is None and public_cert_file is None:
-        raise CLIError("Neither vault-uri nor certificate-file is provided")
-    if vault_uri is not None and public_cert_file is not None:
-        raise CLIError("Both vault-uri and certificate-file are provided")
+def certificate_add(cmd, client, resource_group, service, name, only_public_certificate=None,
+                    vault_uri=None, vault_certificate_name=None, public_certificate_file=None):
+    if vault_uri is None and public_certificate_file is None:
+        raise InvalidArgumentValueError("One of --vault-uri and --public-certificate-file should be provided")
+    if vault_uri is not None and public_certificate_file is not None:
+        raise InvalidArgumentValueError("--vault-uri and --public-certificate-file could not be provided at the same time")
     if vault_uri is not None:
         if vault_certificate_name is None:
-            raise CLIError("Parameter vault-certificate-name should be provided for Key Vault Certificate")
+            raise InvalidArgumentValueError("--vault-certificate-name should be provided for Key Vault Certificate")
+
+    if vault_uri is not None:
         properties = models_20210901preview.KeyVaultCertificateProperties(
             type="KeyVaultCertificate",
             vault_uri=vault_uri,
             key_vault_cert_name=vault_certificate_name,
-            exclude_private_key=only_public_cert
+            exclude_private_key=only_public_certificate
         )
     else:
-        if os.path.exists(public_cert_file):
+        if os.path.exists(public_certificate_file):
             try:
-                with open(public_cert_file, 'rb') as input_file:
-                    logger.debug("attempting to read file %s as binary", public_cert_file)
+                with open(public_certificate_file, 'rb') as input_file:
+                    logger.debug("attempting to read file %s as binary", public_certificate_file)
                     content = base64.b64encode(input_file.read()).decode("utf-8")
             except Exception:
-                raise CLIError('Failed to decode file {} - unknown decoding'.format(public_cert_file))
+                raise CLIError('Failed to decode file {} - unknown decoding'.format(public_certificate_file))
         else:
-            raise CLIError("public_cert_file %s could not be found", public_cert_file)
+            raise CLIError("public_certificate_file %s could not be found", public_certificate_file)
         properties = models_20210901preview.ContentCertificateProperties(
             type="ContentCertificate",
             content=content
@@ -1665,16 +1677,16 @@ def certificate_show(cmd, client, resource_group, service, name):
     return client.certificates.get(resource_group, service, name)
 
 
-def certificate_list(cmd, client, resource_group, service, cert_type=None):
+def certificate_list(cmd, client, resource_group, service, certificate_type=None):
     certificates = list(client.certificates.list(resource_group, service))
     certificates_to_list = []
-    if cert_type is None:
+    if certificate_type is None:
         certificates_to_list = certificates
-    elif cert_type == 'KeyVaultCertificate':
+    elif certificate_type == 'KeyVaultCertificate':
         for certificate in certificates:
             if certificate.properties.type == 'KeyVaultCertificate':
                 certificates_to_list.append(certificate)
-    elif cert_type == 'ContentCertificate':
+    elif certificate_type == 'ContentCertificate':
         for certificate in certificates:
             if certificate.properties.type == 'ContentCertificate':
                 certificates_to_list.append(certificate)
@@ -1698,11 +1710,6 @@ def certificate_list_reference_app(cmd, client, resource_group, service, name):
             if load_certificate.resource_id == certificate_resource_id:
                 reference_apps.append(app)
                 break
-    for app in reference_apps:
-        if app.properties.active_deployment_name:
-            deployment = next(
-                (x for x in deployments if x.properties.app_name == app.name))
-            app.properties.active_deployment = deployment
     return reference_apps
 
 
