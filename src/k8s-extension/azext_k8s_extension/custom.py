@@ -162,11 +162,13 @@ def update_k8s_extension(cmd, client, resource_group_name, cluster_name, name, c
                          no_wait=False, yes=False):
     """Patch an existing Extension Instance.
     """
-    msg = ('Updating properties in --config-settings or --config-protected-settings may lead to undesirable state'
-           ' if the cluster extension type does not support it. Please refer to the documentation of the'
-           ' cluster extension service to check if updates to these properties is supported.'
-           ' Do you wish to proceed?')
-    user_confirmation_factory(cmd, yes, msg)
+
+    if configuration_settings or configuration_protected_settings or configuration_settings_file or configuration_protected_settings_file:
+        msg = ('Updating properties in --config-settings or --config-protected-settings may lead to undesirable state'
+            ' if the cluster extension type does not support it. Please refer to the documentation of the'
+            ' cluster extension service to check if updates to these properties is supported.'
+            ' Do you wish to proceed?')
+        user_confirmation_factory(cmd, yes, msg)
 
     # Determine ClusterRP
     cluster_rp = __get_cluster_rp(cluster_type)
