@@ -1273,3 +1273,34 @@ def get_source_file_or_blob_service_client(cmd, namespace):
                                                       account_key=source_key,
                                                       share=source_share)
     ns['source_sas'] = source_sas
+
+
+def validate_text_configuration(cmd, ns):
+    DelimitedTextDialect = cmd.get_models('_models#DelimitedTextDialect', resource_type=CUSTOM_DATA_STORAGE_BLOB)
+    DelimitedJsonDialect = cmd.get_models('_models#DelimitedJsonDialect', resource_type=CUSTOM_DATA_STORAGE_BLOB)
+    QuickQueryDialect = cmd.get_models('_models#QuickQueryDialect', resource_type=CUSTOM_DATA_STORAGE_BLOB)
+
+    if ns.input_format == 'csv':
+        ns.input_config = DelimitedTextDialect(
+            delimiter=ns.in_column_separator,
+            quotechar=ns.in_quote_char,
+            lineterminator=ns.in_record_separator,
+            escapechar=ns.in_escape_char,
+            has_header=ns.in_has_header)
+    if ns.input_format == 'json':
+        ns.input_config = DelimitedJsonDialect(delimiter=ns.in_line_separator)
+    if ns.input_format == 'parquet':
+        ns.input_config = QuickQueryDialect.ParquetDialect
+    if ns.output_format == 'csv':
+        ns.output_config = DelimitedTextDialect(
+            delimiter=ns.out_column_separator,
+            quotechar=ns.out_quote_char,
+            lineterminator=ns.out_record_separator,
+            escapechar=ns.out_escape_char,
+            has_header=ns.out_has_header)
+    if ns.output_format == 'json':
+        ns.output_config = DelimitedJsonDialect(delimiter=ns.out_line_separator)
+    del ns.input_format, ns.in_line_separator, ns.in_column_separator, ns.in_quote_char, ns.in_record_separator, \
+        ns.in_escape_char, ns.in_has_header
+    del ns.output_format, ns.out_line_separator, ns.out_column_separator, ns.out_quote_char, ns.out_record_separator, \
+        ns.out_escape_char, ns.out_has_header

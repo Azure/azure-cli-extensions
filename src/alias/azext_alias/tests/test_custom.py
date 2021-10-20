@@ -6,7 +6,7 @@
 # pylint: disable=line-too-long,no-self-use,protected-access
 
 import unittest
-from mock import Mock, patch
+from unittest.mock import Mock, patch
 
 from knack.util import CLIError
 

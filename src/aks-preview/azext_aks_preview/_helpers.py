@@ -6,11 +6,13 @@
 from distutils.version import StrictVersion  # pylint: disable=no-name-in-module,import-error
 # pylint: disable=no-name-in-module,import-error
 from knack.util import CLIError
+from azure.cli.core.azclierror import ArgumentUsageError
 
 # pylint: disable=no-name-in-module,import-error
-from .vendored_sdks.azure_mgmt_preview_aks.v2021_05_01.models import ManagedClusterAPIServerAccessProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2021_09_01.models import ManagedClusterAPIServerAccessProfile
 from ._consts import CONST_CONTAINER_NAME_MAX_LENGTH
-from ._consts import CONST_OUTBOUND_TYPE_LOAD_BALANCER, CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING
+from ._consts import CONST_OUTBOUND_TYPE_LOAD_BALANCER, CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING, \
+    CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY, CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY
 
 
 def _populate_api_server_access_profile(api_server_authorized_ip_ranges, instance=None):
@@ -49,21 +51,42 @@ def _set_vm_set_type(vm_set_type, kubernetes_version):
 
 
 def _set_outbound_type(outbound_type, vnet_subnet_id, load_balancer_sku, load_balancer_profile):
-    if outbound_type != CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING:
+    if (
+        outbound_type != CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING and
+        outbound_type != CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY and
+        outbound_type != CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY
+    ):
         return CONST_OUTBOUND_TYPE_LOAD_BALANCER
 
+    if outbound_type == CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY:
+        if load_balancer_sku == "basic":
+            raise ArgumentUsageError("managedNATGateway doesn't support basic load balancer sku")
+
+        return CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY
+
+    if outbound_type == CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY:
+        if load_balancer_sku == "basic":
+            raise ArgumentUsageError("userAssignedNATGateway doesn't support basic load balancer sku")
+
+        if vnet_subnet_id in ["", None]:
+            raise ArgumentUsageError("--vnet-subnet-id must be specified for userAssignedNATGateway and it must "
+                                     "be pre-associated with a NAT gateway with outbound public IPs or IP prefixes")
+
+        return CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY
+
     if vnet_subnet_id in ["", None]:
-        raise CLIError("--vnet-subnet-id must be specified for userDefinedRouting and it must \
-        be pre-configured with a route table with egress rules")
+        raise ArgumentUsageError("--vnet-subnet-id must be specified for userDefinedRouting and it must "
+                                 "be pre-configured with a route table with egress rules")
 
     if load_balancer_sku == "basic":
-        raise CLIError("userDefinedRouting doesn't support basic load balancer sku")
+        raise ArgumentUsageError("userDefinedRouting doesn't support basic load balancer sku")
 
     if load_balancer_profile:
-        if (load_balancer_profile.managed_outbound_ips or
-                load_balancer_profile.outbound_ips or
+        if (load_balancer_profile.managed_outbound_i_ps or
+                load_balancer_profile.outbound_i_ps or
                 load_balancer_profile.outbound_ip_prefixes):
-            raise CLIError("userDefinedRouting doesn't support customizing a standard load balancer with IP addresses")
+            raise ArgumentUsageError("userDefinedRouting doesn't support customizing a standard load balancer "
+                                     "with IP addresses")
 
     return CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING
 

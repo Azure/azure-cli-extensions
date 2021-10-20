@@ -34,11 +34,30 @@ def get(cmd, job_id, resource_group_name=None, workspace_name=None, location=Non
     return client.get(job_id)
 
 
+def _check_dotnet_available():
+    """
+    Will fail if dotnet cannot be executed on the system.
+    """
+    args = ["dotnet", "--version"]
+
+    try:
+        import subprocess
+        result = subprocess.run(args, stdout=subprocess.PIPE, check=False)
+    except FileNotFoundError:
+        raise CLIError(f"Could not find 'dotnet' on the system.")
+
+    if result.returncode != 0:
+        raise CLIError(f"Failed to run 'dotnet'. (Error {result.returncode})")
+
+
 def build(cmd, target_id=None, project=None):
     """
     Compile a Q# program to run on Azure Quantum.
     """
     target = TargetInfo(cmd, target_id)
+
+    # Validate that dotnet is available
+    _check_dotnet_available()
 
     args = ["dotnet", "build"]
 
@@ -56,10 +75,13 @@ def build(cmd, target_id=None, project=None):
     if result.returncode == 0:
         return {'result': 'ok'}
 
+    # If we got here, we might have encountered an error during compilation, so propagate standard output to the user.
+    logger.error(f"Compilation stage failed with error code {result.returncode}")
+    print(result.stdout.decode('ascii'))
     raise CLIError("Failed to compile program.")
 
 
-def _generate_submit_args(program_args, ws, target, token, project, job_name, shots, storage):
+def _generate_submit_args(program_args, ws, target, token, project, job_name, shots, storage, job_params):
     """ Generates the list of arguments for calling submit on a Q# project """
 
     args = ["dotnet", "run", "--no-build"]
@@ -104,6 +126,14 @@ def _generate_submit_args(program_args, ws, target, token, project, job_name, sh
     args.append("--location")
     args.append(ws.location)
 
+    args.append("--user-agent")
+    args.append("CLI")
+
+    if job_params:
+        args.append("--job-params")
+        for k, v in job_params.items():
+            args.append(f"{k}={v}")
+
     args.extend(program_args)
 
     logger.debug("Running project with arguments:")
@@ -128,8 +158,8 @@ def _has_completed(job):
     return job.status in ("Succeeded", "Failed", "Cancelled")
 
 
-def submit(cmd, program_args, resource_group_name=None, workspace_name=None, location=None,
-           target_id=None, project=None, job_name=None, shots=None, storage=None, no_build=False):
+def submit(cmd, program_args, resource_group_name=None, workspace_name=None, location=None, target_id=None,
+           project=None, job_name=None, shots=None, storage=None, no_build=False, job_params=None):
     """
     Submit a Q# project to run on Azure Quantum.
     """
@@ -139,14 +169,15 @@ def submit(cmd, program_args, resource_group_name=None, workspace_name=None, loc
     # `ExecutionTarget` property when passed in the command line
     if not no_build:
         build(cmd, target_id=target_id, project=project)
-
-    logger.info("Project built successfully.")
+        logger.info("Project built successfully.")
+    else:
+        _check_dotnet_available()
 
     ws = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
     target = TargetInfo(cmd, target_id)
     token = _get_data_credentials(cmd.cli_ctx, ws.subscription).get_token().token
 
-    args = _generate_submit_args(program_args, ws, target, token, project, job_name, shots, storage)
+    args = _generate_submit_args(program_args, ws, target, token, project, job_name, shots, storage, job_params)
     _set_cli_version()
 
     import subprocess
@@ -159,6 +190,9 @@ def submit(cmd, program_args, resource_group_name=None, workspace_name=None, loc
         # Query for the job and return status to caller.
         return get(cmd, job_id, resource_group_name, workspace_name, location)
 
+    # The program compiled succesfully, but executing the stand-alone .exe failed to run.
+    logger.error(f"Submission of job failed with error code {result.returncode}")
+    print(result.stdout.decode('ascii'))
     raise CLIError("Failed to submit job.")
 
 
@@ -209,21 +243,32 @@ def output(cmd, job_id, resource_group_name=None, workspace_name=None, location=
         blob_service.get_blob_to_path(args['container'], args['blob'], path)
 
     with open(path) as json_file:
+        lines = [line.strip() for line in json_file.readlines()]
+
+        # Receiving an empty response is valid.
+        if len(lines) == 0:
+            return
+
         if job.target.startswith("microsoft.simulator"):
-
-            lines = [line.strip() for line in json_file.readlines()]
             result_start_line = len(lines) - 1
-            if lines[-1].endswith('"'):
-                while not lines[result_start_line].startswith('"'):
+            is_result_string = lines[-1].endswith('"')
+            if is_result_string:
+                while result_start_line >= 0 and not lines[result_start_line].startswith('"'):
                     result_start_line -= 1
+            if result_start_line < 0:
+                raise CLIError("Job output is malformed, mismatched quote characters.")
 
+            # Print the job output and then the result of the operation as a histogram.
+            # If the result is a string, trim the quotation marks.
             print('\n'.join(lines[:result_start_line]))
-            result = ' '.join(lines[result_start_line:])[1:-1]  # seems the cleanest version to display
-            print("_" * len(result) + "\n")
+            raw_result = ' '.join(lines[result_start_line:])
+            result = raw_result[1:-1] if is_result_string else raw_result
+            print('_' * len(result) + '\n')
 
-            json_string = "{ \"histogram\" : { \"" + result + "\" : 1 } }"
+            json_string = '{ "histogram" : { "' + result + '" : 1 } }'
             data = json.loads(json_string)
         else:
+            json_file.seek(0)  # Reset the file pointer before loading
             data = json.load(json_file)
         return data
 
@@ -257,11 +302,12 @@ def wait(cmd, job_id, resource_group_name=None, workspace_name=None, location=No
 
 
 def run(cmd, program_args, resource_group_name=None, workspace_name=None, location=None, target_id=None,
-        project=None, job_name=None, shots=None, storage=None, no_build=False):
+        project=None, job_name=None, shots=None, storage=None, no_build=False, job_params=None):
     """
     Submit a job to run on Azure Quantum, and waits for the result.
     """
-    job = submit(cmd, program_args, resource_group_name, workspace_name, location, target_id, project, job_name, shots, storage, no_build)
+    job = submit(cmd, program_args, resource_group_name, workspace_name, location, target_id,
+                 project, job_name, shots, storage, no_build, job_params)
     logger.warning("Job id: %s", job.id)
     logger.debug(job)
 
@@ -271,7 +317,7 @@ def run(cmd, program_args, resource_group_name=None, workspace_name=None, locati
     if not job.status == "Succeeded":
         return job
 
-    return output(cmd, job.id, resource_group_name, workspace_name)
+    return output(cmd, job.id, resource_group_name, workspace_name, location)
 
 
 def cancel(cmd, job_id, resource_group_name=None, workspace_name=None, location=None):
