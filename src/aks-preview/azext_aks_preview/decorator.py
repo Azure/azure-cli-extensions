@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-from typing import Dict, TypeVar, Union, List
+from typing import Dict, List, Optional, TypeVar, Union
 
 from azure.cli.command_modules.acs._consts import DecoratorMode
 from azure.cli.command_modules.acs.decorator import (
@@ -27,6 +27,7 @@ from azure.cli.core.util import get_file_json
 from knack.log import get_logger
 
 from azext_aks_preview._natgateway import create_nat_gateway_profile
+from azext_aks_preview.addonconfiguration import ensure_container_insights_for_monitoring
 
 logger = get_logger(__name__)
 
@@ -530,8 +531,8 @@ class AKSPreviewContext(AKSContext):
         """
         # determine the value of constants
         addon_consts = self._get_addon_consts()
-        ingress_appgw_addon_name = addon_consts.get("CONST_INGRESS_APPGW_ADDON_NAME")
-        ingress_appgw_subnet_cidr = addon_consts.get("CONST_INGRESS_APPGW_SUBNET_CIDR")
+        CONST_INGRESS_APPGW_ADDON_NAME = addon_consts.get("CONST_INGRESS_APPGW_ADDON_NAME")
+        CONST_INGRESS_APPGW_SUBNET_CIDR = addon_consts.get("CONST_INGRESS_APPGW_SUBNET_CIDR")
 
         # read the original value passed by the command
         appgw_subnet_prefix = self.raw_param.get("appgw_subnet_prefix")
@@ -539,14 +540,14 @@ class AKSPreviewContext(AKSContext):
         if (
             self.mc and
             self.mc.addon_profiles and
-            ingress_appgw_addon_name in self.mc.addon_profiles and
+            CONST_INGRESS_APPGW_ADDON_NAME in self.mc.addon_profiles and
             self.mc.addon_profiles.get(
-                ingress_appgw_addon_name
-            ).config.get(ingress_appgw_subnet_cidr) is not None
+                CONST_INGRESS_APPGW_ADDON_NAME
+            ).config.get(CONST_INGRESS_APPGW_SUBNET_CIDR) is not None
         ):
             appgw_subnet_prefix = self.mc.addon_profiles.get(
-                ingress_appgw_addon_name
-            ).config.get(ingress_appgw_subnet_cidr)
+                CONST_INGRESS_APPGW_ADDON_NAME
+            ).config.get(CONST_INGRESS_APPGW_SUBNET_CIDR)
 
         # this parameter does not need dynamic completion
         # this parameter does not need validation
@@ -562,8 +563,8 @@ class AKSPreviewContext(AKSContext):
         """
         # determine the value of constants
         addon_consts = self._get_addon_consts()
-        monitoring_addon_name = addon_consts.get("CONST_MONITORING_ADDON_NAME")
-        monitoring_using_aad_msi_auth = addon_consts.get("CONST_MONITORING_USING_AAD_MSI_AUTH")
+        CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
+        CONST_MONITORING_USING_AAD_MSI_AUTH = addon_consts.get("CONST_MONITORING_USING_AAD_MSI_AUTH")
 
         # read the original value passed by the command
         enable_msi_auth_for_monitoring = self.raw_param.get("enable_msi_auth_for_monitoring")
@@ -571,42 +572,51 @@ class AKSPreviewContext(AKSContext):
         if (
             self.mc and
             self.mc.addon_profiles and
-            monitoring_addon_name in self.mc.addon_profiles and
+            CONST_MONITORING_ADDON_NAME in self.mc.addon_profiles and
             self.mc.addon_profiles.get(
-                monitoring_addon_name
-            ).config.get(monitoring_using_aad_msi_auth) is not None
+                CONST_MONITORING_ADDON_NAME
+            ).config.get(CONST_MONITORING_USING_AAD_MSI_AUTH) is not None
         ):
             enable_msi_auth_for_monitoring = self.mc.addon_profiles.get(
-                monitoring_addon_name
-            ).config.get(monitoring_using_aad_msi_auth)
+                CONST_MONITORING_ADDON_NAME
+            ).config.get(CONST_MONITORING_USING_AAD_MSI_AUTH)
 
         # this parameter does not need dynamic completion
         # this parameter does not need validation
         return enable_msi_auth_for_monitoring
 
-    # def get_enable_secret_rotation(self) -> bool:
-    #     """Obtain the value of enable_secret_rotation.
+    def get_enable_secret_rotation(self) -> bool:
+        """Obtain the value of enable_secret_rotation.
 
-    #     :return: bool
-    #     """
-    #     # read the original value passed by the command
-    #     enable_secret_rotation = self.raw_param.get("enable_secret_rotation")
-    #     # try to read the property value corresponding to the parameter from the `mc` object
-    #     if (
-    #         self.mc and
-    #         self.mc.addon_profiles and
-    #         CONST_MONITORING_ADDON_NAME in self.mc.addon_profiles and
-    #         self.mc.addon_profiles.get(
-    #             CONST_MONITORING_ADDON_NAME
-    #         ).config.get(CONST_MONITORING_USING_AAD_MSI_AUTH) is not None
-    #     ):
-    #         enable_msi_auth_for_monitoring = self.mc.addon_profiles.get(
-    #             CONST_MONITORING_ADDON_NAME
-    #         ).config.get(CONST_MONITORING_USING_AAD_MSI_AUTH)
+        :return: bool
+        """
+        # determine the value of constants
+        addon_consts = self._get_addon_consts()
+        CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME = addon_consts.get(
+            "CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME"
+        )
+        CONST_SECRET_ROTATION_ENABLED = addon_consts.get(
+            "CONST_SECRET_ROTATION_ENABLED"
+        )
 
-    #     # this parameter does not need dynamic completion
-    #     # this parameter does not need validation
-    #     return enable_msi_auth_for_monitoring
+        # read the original value passed by the command
+        enable_secret_rotation = self.raw_param.get("enable_secret_rotation")
+        # try to read the property value corresponding to the parameter from the `mc` object
+        if (
+            self.mc and
+            self.mc.addon_profiles and
+            CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME in self.mc.addon_profiles and
+            self.mc.addon_profiles.get(
+                CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME
+            ).config.get(CONST_SECRET_ROTATION_ENABLED) is not None
+        ):
+            enable_secret_rotation = self.mc.addon_profiles.get(
+                CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME
+            ).config.get(CONST_SECRET_ROTATION_ENABLED)
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return enable_secret_rotation
 
 class AKSPreviewCreateDecorator(AKSCreateDecorator):
     # pylint: disable=super-init-not-called
@@ -640,7 +650,7 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
         """Set up agent pool profiles for the ManagedCluster object.
 
         Call the method of the same name in the parent class to set up agent_pool_profiles, and then set some additional
-        properties on this basis.
+        properties.
 
         :return: the ManagedCluster object
         """
@@ -690,7 +700,7 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
         """Set up network profile for the ManagedCluster object.
 
         Call the method of the same name in the parent class to set up network_profile, and then set the
-        nat_gateway_profile on this basis.
+        nat_gateway_profile.
 
         :return: the ManagedCluster object
         """
@@ -744,6 +754,75 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
                 allow_network_plugin_kubenet=enable_pod_identity_with_kubenet,
             )
         mc.pod_identity_profile = pod_identity_profile
+        return mc
+
+    def set_up_addon_profiles(self, mc: ManagedCluster, skip_addons: Optional[List[str]] = None) -> ManagedCluster:
+        """Set up addon profiles for the ManagedCluster object.
+
+        Call the method of the same name in the parent class to set up addon_profiles, and then set some extra addons
+        and overwrite the process of setting the monitoring addon.
+
+        :return: the ManagedCluster object
+        """
+        # replace empty default value
+        if skip_addons is None:
+            skip_addons = []
+        addon_consts = self.context._get_addon_consts()
+        CONST_MONITORING_ADDON_NAME = addon_consts.get(
+            "CONST_MONITORING_ADDON_NAME"
+        )
+        CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID = addon_consts.get(
+            "CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID"
+        )
+        CONST_MONITORING_USING_AAD_MSI_AUTH = addon_consts.get(
+            "CONST_MONITORING_USING_AAD_MSI_AUTH"
+        )
+        CONST_SECRET_ROTATION_ENABLED = addon_consts.get(
+            "CONST_SECRET_ROTATION_ENABLED"
+        )
+        CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME = addon_consts.get(
+            "CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME"
+        )
+
+        mc = super().set_up_addon_profiles(mc, skip_addons=["monitoring"])
+        ManagedClusterAddonProfile = self.models.ManagedClusterAddonProfile
+        addon_profiles = mc.addon_profiles
+        addons = self.context.get_enable_addons()
+        if "monitoring" in addons:
+            workspace_resource_id = self.context.get_workspace_resource_id()
+            enable_msi_auth_for_monitoring = (
+                self.context.get_enable_msi_auth_for_monitoring()
+            )
+            addon_profiles[
+                CONST_MONITORING_ADDON_NAME
+            ] = ManagedClusterAddonProfile(
+                enabled=True,
+                config={
+                    CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID: workspace_resource_id,
+                    CONST_MONITORING_USING_AAD_MSI_AUTH: enable_msi_auth_for_monitoring,
+                },
+            )
+            # post-process, create a deployment
+            # TODO: fix signature
+            ensure_container_insights_for_monitoring(
+                self.cmd, addon_profiles[CONST_MONITORING_ADDON_NAME]
+            )
+            # set intermediate
+            self.context.set_intermediate(
+                "monitoring", True, overwrite_exists=True
+            )
+        if "azure-keyvault-secrets-provider" in addons:
+            addon_profile = ManagedClusterAddonProfile(
+                enabled=True, config={CONST_SECRET_ROTATION_ENABLED: "false"}
+            )
+            if self.context.get_enable_secret_rotation():
+                addon_profile.config[CONST_SECRET_ROTATION_ENABLED] = "true"
+            addon_profiles[
+                CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME
+            ] = addon_profile
+        if "gitops" in addons:
+            addon_profiles["gitops"] = ManagedClusterAddonProfile(enabled=True)
+        mc.addon_profiles = addon_profiles
         return mc
 
     def construct_preview_mc_profile(self) -> ManagedCluster:
