@@ -263,8 +263,6 @@ def app_create(cmd, client, resource_group, service, name,
                enable_persistent_storage=None,
                assign_identity=None,
                loaded_public_certificate_file=None):
-
-    client = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20210901preview)
     cpu = validate_cpu(cpu)
     memory = validate_memory(memory)
     apps = _get_all_apps(client, resource_group, service)
@@ -274,6 +272,10 @@ def app_create(cmd, client, resource_group, service, name,
     properties = models_20210901preview.AppResourceProperties()
     properties.temporary_disk = models_20210901preview.TemporaryDisk(
         size_in_gb=5, mount_path="/tmp")
+
+    resource = client.services.get(resource_group, service)
+
+    _validate_instance_count(resource.sku.tier, instance_count)
 
     if enable_persistent_storage:
         properties.persistent_disk = models_20210901preview.PersistentDisk(
@@ -297,10 +299,6 @@ def app_create(cmd, client, resource_group, service, name,
                                            LoadedCertificate(resource_id=certificate_resource.id,
                                                              load_trust_store=item['loadTrustStore']))
             properties.loaded_certificates = loaded_certificates
-
-    resource = client.services.get(resource_group, service)
-
-    _validate_instance_count(resource.sku.tier, instance_count)
 
     app_resource = models_20210901preview.AppResource()
     app_resource.properties = properties
@@ -386,7 +384,6 @@ def app_update(cmd, client, resource_group, service, name,
                https_only=None,
                enable_end_to_end_tls=None,
                loaded_public_certificate_file=None):
-    client = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20210901preview)
     _check_active_deployment_exist(client, resource_group, service, name)
     resource = client.services.get(resource_group, service)
     location = resource.location
@@ -517,7 +514,6 @@ def app_restart(cmd, client,
 def app_list(cmd, client,
              resource_group,
              service):
-    client = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20210901preview)
     apps = list(client.apps.list(resource_group, service))
     deployments = list(
         client.deployments.list_for_cluster(resource_group, service))
@@ -534,7 +530,6 @@ def app_get(cmd, client,
             resource_group,
             service,
             name):
-    client = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20210901preview)
     app = client.apps.get(resource_group, service, name)
     deployment_name = app.properties.active_deployment_name
     if deployment_name:
@@ -800,11 +795,10 @@ def app_unset_deployment(cmd, client, resource_group, service, name):
 
 
 def app_append_loaded_public_certificate(cmd, client, resource_group, service, name, certificate_name, load_trust_store):
-    client = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20210901preview)
-    _check_active_deployment_exist(client, resource_group, service, name)
+    client_0901_preview = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20210901preview)
 
-    app_resource = client.apps.get(resource_group, service, name)
-    certificate_resource = client.certificates.get(resource_group, service, certificate_name)
+    app_resource = client_0901_preview.apps.get(resource_group, service, name)
+    certificate_resource = client_0901_preview.certificates.get(resource_group, service, certificate_name)
     certificate_resource_id = certificate_resource.id
 
     loaded_certificates = []
@@ -823,21 +817,12 @@ def app_append_loaded_public_certificate(cmd, client, resource_group, service, n
     app_resource.properties.loaded_certificates = loaded_certificates
     logger.warning("[1/1] updating app '{}'".format(name))
 
-    poller = client.apps.begin_update(
+    poller = client_0901_preview.apps.begin_update(
         resource_group, service, name, app_resource)
     while poller.done() is False:
         sleep(APP_CREATE_OR_UPDATE_SLEEP_INTERVAL)
 
-    app_updated = client.apps.get(resource_group, service, name)
-
-    deployment_name = app_updated.properties.active_deployment_name
-    if deployment_name:
-        deployment = client.deployments.get(
-            resource_group, service, name, deployment_name)
-        app_updated.properties.active_deployment = deployment
-    else:
-        logger.warning(NO_PRODUCTION_DEPLOYMENT_SET_ERROR)
-
+    app_updated = client_0901_preview.apps.get(resource_group, service, name)
     return app_updated
 
 
@@ -1700,8 +1685,6 @@ def certificate_remove(cmd, client, resource_group, service, name):
 
 def certificate_list_reference_app(cmd, client, resource_group, service, name):
     apps = list(client.apps.list(resource_group, service))
-    deployments = list(
-        client.deployments.list_for_cluster(resource_group, service))
     reference_apps = []
     certificate_resource = client.certificates.get(resource_group, service, name)
     certificate_resource_id = certificate_resource.id
