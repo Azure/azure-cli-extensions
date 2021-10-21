@@ -119,7 +119,7 @@ def load_arguments(self, _):
                    help='Memory resource quantity. Should be 512Mi or #Gi, e.g., 1Gi, 3Gi.')
         c.argument('instance_count', type=int,
                    default=1, help='Number of instance.', validator=validate_instance_count)
-        c.argument('loaded_public_certificate_file', type=str,
+        c.argument('loaded_public_certificate_file', options_list=['--loaded-public-certificate-file', '-f'], type=str,
                    help='A json file path indicates the certificates which would be loaded to app')
 
     with self.argument_context('spring-cloud app update') as c:
@@ -128,7 +128,7 @@ def load_arguments(self, _):
                    options_list=['--assign-endpoint', c.deprecate(target='--is-public', redirect='--assign-endpoint', hide=True)])
         c.argument('https_only', arg_type=get_three_state_flag(), help='If true, access app via https', default=False)
         c.argument('enable_end_to_end_tls', arg_type=get_three_state_flag(), help='If true, enable end to end tls')
-        c.argument('loaded_public_certificate_file', type=str,
+        c.argument('loaded_public_certificate_file', type=str, options_list=['--loaded-public-certificate-file', '-f'],
                    help='A json file path indicates the certificates which would be loaded to app')
 
     for scope in ['spring-cloud app update', 'spring-cloud app start', 'spring-cloud app stop', 'spring-cloud app restart', 'spring-cloud app deploy', 'spring-cloud app scale', 'spring-cloud app set-deployment', 'spring-cloud app show-deploy-log']:
@@ -295,8 +295,10 @@ def load_arguments(self, _):
         c.argument('vault_uri', help='The key vault uri where store the certificate')
         c.argument('vault_certificate_name', help='The certificate name in key vault')
         c.argument('only_public_certificate', arg_type=get_three_state_flag(),
+                   options_list=['--only-public-certificate', '--only-public-cert'],
                    help='If true, only import public certificate part from key vault.', default=False)
-        c.argument('public_certificate_file', help='A file path for the public certificate to be uploaded')
+        c.argument('public_certificate_file', options_list=['--public-certificate-file', '-f'],
+                   help='A file path for the public certificate to be uploaded')
 
     with self.argument_context('spring-cloud certificate list') as c:
         c.argument('certificate_type', help='Type of uploaded certificate',

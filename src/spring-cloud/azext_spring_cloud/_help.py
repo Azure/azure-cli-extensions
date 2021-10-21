@@ -377,12 +377,12 @@ helps['spring-cloud app binding redis update'] = """
     short-summary: Update an Azure Cache for Redis service binding of the app.
 """
 
-helps['spring-cloud app append_loaded_public_certificate'] = """
+helps['spring-cloud app append-loaded-public-certificate'] = """
     type: command
     short-summary: Append a new loaded public certificate to an app in the Azure Spring Cloud.
     examples:
     - name: Append a new loaded public certificate to an app.
-      text: az spring-cloud app append_loaded_public_certificate --name MyApp -service MyCluster --resource-group MyResourceGroup -–certificate-name MyCertName --load-trust-store true
+      text: az spring-cloud app append-loaded-public-certificate --name MyApp --service MyCluster --resource-group MyResourceGroup --certificate-name MyCertName --load-trust-store true
 """
 
 helps['spring-cloud certificate'] = """
