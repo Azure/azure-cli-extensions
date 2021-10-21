@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import os
+import time
 from typing import Dict, List, Optional, TypeVar, Union
 
 from azure.cli.command_modules.acs._consts import DecoratorMode
@@ -25,9 +26,12 @@ from azure.cli.core.commands import AzCliCommand
 from azure.cli.core.profiles import ResourceType
 from azure.cli.core.util import get_file_json
 from knack.log import get_logger
+from msrestazure.azure_exceptions import CloudError
 
 from azext_aks_preview._natgateway import create_nat_gateway_profile
-from azext_aks_preview.addonconfiguration import ensure_container_insights_for_monitoring
+from azext_aks_preview.addonconfiguration import (
+    ensure_container_insights_for_monitoring,
+)
 
 logger = get_logger(__name__)
 
@@ -391,7 +395,7 @@ class AKSPreviewContext(AKSContext):
     ) -> bool:
         """Internal function to obtain the value of enable_pod_identity.
 
-        Inherited and extended to perform additional validation.
+        Note: Inherited and extended in aks-preview to perform additional validation.
 
         This function supports the option of enable_validation. When enabled, if enable_managed_identity is not
         specified but enable_pod_identity is, raise a RequiredArgumentMissingError.
@@ -500,16 +504,15 @@ class AKSPreviewContext(AKSContext):
     def get_addon_consts(self) -> Dict[str, str]:
         """Helper function to obtain the constants used by addons.
 
+        Note: Inherited and extended in aks-preview to replace and add a few values.
+
         Note: This is not a parameter of aks commands.
 
         :return: dict
         """
         from azext_aks_preview._consts import (
-            ADDONS,
-            CONST_GITOPS_ADDON_NAME,
-            CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME,
-            CONST_SECRET_ROTATION_ENABLED,
-        )
+            ADDONS, CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME,
+            CONST_GITOPS_ADDON_NAME, CONST_SECRET_ROTATION_ENABLED)
 
         addon_consts = super().get_addon_consts()
         addon_consts["ADDONS"] = ADDONS
@@ -585,6 +588,27 @@ class AKSPreviewContext(AKSContext):
         # this parameter does not need validation
         return enable_msi_auth_for_monitoring
 
+
+    def get_no_wait(self) -> bool:
+        """Obtain the value of no_wait.
+
+        Note: Inherited and extended in aks-preview to replace the set value when enable_msi_auth_for_monitoring is
+        specified.
+
+        Note: no_wait will not be decorated into the `mc` object.
+
+        :return: bool
+        """
+        no_wait = super().get_no_wait()
+
+        if self.get_intermediate("monitoring") and self.get_enable_msi_auth_for_monitoring():
+            logger.warning("Enabling msi auth for monitoring addon requires waiting for cluster creation to complete")
+            if no_wait:
+                logger.warning("The set option --no-wait has been ignored")
+                no_wait = False
+        return no_wait
+
+
     def get_enable_secret_rotation(self) -> bool:
         """Obtain the value of enable_secret_rotation.
 
@@ -617,6 +641,7 @@ class AKSPreviewContext(AKSContext):
         # this parameter does not need dynamic completion
         # this parameter does not need validation
         return enable_secret_rotation
+
 
 class AKSPreviewCreateDecorator(AKSCreateDecorator):
     # pylint: disable=super-init-not-called
@@ -803,9 +828,17 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
                 },
             )
             # post-process, create a deployment
-            # TODO: fix signature
             ensure_container_insights_for_monitoring(
-                self.cmd, addon_profiles[CONST_MONITORING_ADDON_NAME]
+                self.cmd,
+                addon_profiles[CONST_MONITORING_ADDON_NAME],
+                self.context.get_subscription_id(),
+                self.context.get_resource_group_name(),
+                self.context.get_name(),
+                self.context.get_location(),
+                remove_monitoring=False,
+                aad_route=enable_msi_auth_for_monitoring,
+                create_dcr=True,
+                create_dcra=False,
             )
             # set intermediate
             self.context.set_intermediate(
@@ -844,6 +877,48 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
         # set up pod identity profile
         mc = self.set_up_pod_identity_profile(mc)
         return mc
+
+    def create_mc(self, mc: ManagedCluster) -> ManagedCluster:
+        """Send request to create a real managed cluster.
+
+        Note: Inherited and extended in aks-preview to create dcr association for monitoring addon if
+        enable_msi_auth_for_monitoring is specified after cluster is created.
+
+        :return: the ManagedCluster object
+        """
+        created_cluster = super().create_mc(mc)
+
+        # determine the value of constants
+        addon_consts = self.context.get_addon_consts()
+        CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
+
+        # Due to SPN replication latency, we do a few retries here
+        max_retry = 30
+        retry_exception = Exception(None)
+        for _ in range(0, max_retry):
+            try:
+                if self.context.get_intermediate("monitoring") and self.context.get_enable_msi_auth_for_monitoring():
+                    # Create the DCR Association here
+                    ensure_container_insights_for_monitoring(
+                        self.cmd,
+                        mc.addon_profiles[CONST_MONITORING_ADDON_NAME],
+                        self.context.get_subscription_id(),
+                        self.context.get_resource_group_name(),
+                        self.context.get_name(),
+                        self.context.get_location(),
+                        remove_monitoring=False,
+                        aad_route=self.context.get_enable_msi_auth_for_monitoring(),
+                        create_dcr=False,
+                        create_dcra=True,
+                    )
+                return created_cluster
+            except CloudError as ex:
+                retry_exception = ex
+                if 'not found in Active Directory tenant' in ex.message:
+                    time.sleep(3)
+                else:
+                    raise ex
+        raise retry_exception
 
 
 class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
