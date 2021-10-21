@@ -8,6 +8,7 @@ import unittest
 
 from azure_devtools.scenario_tests import AllowLargeResponse, live_only
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
+from azure.cli.core.azclierror import RequiredArgumentMissingError, ResourceNotFoundError
 
 from .utils import get_test_resource_group, get_test_workspace, get_test_workspace_location, get_test_workspace_storage, get_test_workspace_random_name
 from ..._version_check_helper import check_version
@@ -67,6 +68,26 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
            self.check("name", test_workspace_temp),
            self.check("provisioningState", "Deleting")
         ])
+
+    @live_only()
+    def test_workspace_errors(self):
+        # initialize values
+        test_location = get_test_workspace_location()
+        test_resource_group = get_test_resource_group()
+        test_workspace_temp = get_test_workspace_random_name()
+        test_storage_account = get_test_workspace_storage()
+
+        # Attempt to create workspace, but omit the provider/SKU parameter
+        try:
+            self.cmd(f'az quantum workspace create -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account} --skip-role-assignment')
+        except RequiredArgumentMissingError:
+            pass    
+
+        # Attempt to create workspace, but omit the resource group parameter
+        try:
+            self.cmd(f'az quantum workspace create -w {test_workspace_temp} -l {test_location} -a {test_storage_account} -r "Microsoft/Basic" --skip-role-assignment')
+        except ResourceNotFoundError:
+            pass    
 
     @live_only()
     def test_version_check(self):

@@ -5,7 +5,7 @@
 
 # pylint: disable=line-too-long,redefined-builtin
 
-from knack.util import CLIError
+from azure.cli.core.azclierror import InvalidArgumentValueError, RequiredArgumentMissingError
 from .._client_factory import cf_offerings, cf_vm_image_term
 import time
 
@@ -42,7 +42,7 @@ def _get_publisher_and_offer_from_provider_id(providers, provider_id):
 
 def _valid_publisher_and_offer(provider, publisher, offer):
     if (offer is None or publisher is None):
-        raise CLIError(f"Provider '{provider}' not found.")
+        raise InvalidArgumentValueError(f"Provider '{provider}' not found.")
     if (offer == OFFER_NOT_AVAILABLE or publisher == PUBLISHER_NOT_AVAILABLE):
         # We show this information to the user to prevent a confusion when term commands take no effect.
         _show_info(f"No terms require to be accepted for provider '{provider}'.")
@@ -55,7 +55,7 @@ def list_offerings(cmd, location=None):
     Get the list of all provider offerings available on the given location.
     """
     if (not location):
-        raise CLIError("A location is required to list offerings available.")
+        raise RequiredArgumentMissingError("A location is required to list offerings available.")
     client = cf_offerings(cmd.cli_ctx)
     return client.list(location_name=location)
 
