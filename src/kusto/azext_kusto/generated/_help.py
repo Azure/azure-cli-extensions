@@ -926,7 +926,7 @@ helps['kusto private-endpoint-connection create'] = """
     type: command
     short-summary: "Approve or reject a private endpoint connection with a given name."
     parameters:
-      - name: --private-link-service-connection-state --connection-state
+      - name: --connection-state --private-link-service-connection-state
         short-summary: "Connection State of the Private Endpoint Connection."
         long-summary: |
             Usage: --private-link-service-connection-state status=XX description=XX
