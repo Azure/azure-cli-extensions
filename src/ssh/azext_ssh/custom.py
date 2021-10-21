@@ -334,8 +334,8 @@ def _decide_op_call(cmd, resource_group_name, vm_name, resource_id, ssh_ip, conf
             raise azclierror.InvalidArgumentValueError(error)
 
     else:
-        is_azure_vm = _check_if_azure_vm(cmd, resource_group_name, vm_name)
-        is_arc_server = _check_if_arc_server(cmd, resource_group_name, vm_name)
+        vm_error, is_azure_vm = _check_if_azure_vm(cmd, resource_group_name, vm_name)
+        arc_error, is_arc_server = _check_if_arc_server(cmd, resource_group_name, vm_name)
 
         if is_azure_vm and is_arc_server:
             raise azclierror.BadRequestError(f"{resource_group_name} has Azure VM and Arc Server with the "
@@ -343,8 +343,12 @@ def _decide_op_call(cmd, resource_group_name, vm_name, resource_id, ssh_ip, conf
                                              "of --vm-name and --resource-group")
         if not is_azure_vm and not is_arc_server:
             from azure.core.exceptions import ResourceNotFoundError
-            raise ResourceNotFoundError(f"The Resource {vm_name} under resource group '{resource_group_name}' "
-                                        "was not found.")
+            if isinstance(arc_error, ResourceNotFoundError) and isinstance(vm_error, ResourceNotFoundError):
+                raise azclierror.ResourceNotFoundError(f"The resource {vm_name} in the resource group "
+                                                       "{resource_group_name} was not found. Erros:\n"
+                                                       f"{str(arc_error)}\n{str(vm_error)}")
+            raise azclierror.BadRequestError("Unable to determine the target machine type as Azure VM or "
+                                             f"Arc Server. Errors:\n{str(arc_error)}\n{str(vm_error)}")
 
     if config_path:
         op_call = functools.partial(ssh_utils.write_ssh_config, config_path=config_path, overwrite=overwrite,
@@ -361,21 +365,27 @@ def _decide_op_call(cmd, resource_group_name, vm_name, resource_id, ssh_ip, conf
 def _check_if_azure_vm(cmd, resource_group_name, vm_name):
     from azure.cli.core.commands import client_factory
     from azure.cli.core import profiles
-    from azure.core.exceptions import ResourceNotFoundError
+    from azure.core.exceptions import ResourceNotFoundError, HttpResponseError
     try:
         compute_client = client_factory.get_mgmt_service_client(cmd.cli_ctx, profiles.ResourceType.MGMT_COMPUTE)
         compute_client.virtual_machines.get(resource_group_name, vm_name)
-    except ResourceNotFoundError:
-        return False
-    return True
+    except ResourceNotFoundError as e:
+        return e, False
+    # If user is not authorized to get the VM, it will throw a HttpResponseError
+    except HttpResponseError as e:
+        return e, False
+    return None, True
 
 
 def _check_if_arc_server(cmd, resource_group_name, vm_name):
-    from azure.core.exceptions import ResourceNotFoundError
+    from azure.core.exceptions import ResourceNotFoundError, HttpResponseError
     from azext_ssh._client_factory import cf_machine
     client = cf_machine(cmd.cli_ctx)
     try:
         client.get(resource_group_name=resource_group_name, machine_name=vm_name)
-    except ResourceNotFoundError:
-        return False
-    return True
+    except ResourceNotFoundError as e:
+        return e, False
+    # If user is not authorized to get the arc server, it will throw a HttpResponseError
+    except HttpResponseError as e:
+        return e, False
+    return None, True
