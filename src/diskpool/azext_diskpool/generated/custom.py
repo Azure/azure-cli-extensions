@@ -106,6 +106,16 @@ def disk_pool_list_outbound_network_dependency_endpoint(client,
                                                                disk_pool_name=disk_pool_name)
 
 
+def disk_pool_redeploy(client,
+                       resource_group_name,
+                       disk_pool_name,
+                       no_wait=False):
+    return sdk_no_wait(no_wait,
+                       client.begin_upgrade,
+                       resource_group_name=resource_group_name,
+                       disk_pool_name=disk_pool_name)
+
+
 def disk_pool_start(client,
                     resource_group_name,
                     disk_pool_name,
@@ -122,16 +132,6 @@ def disk_pool_stop(client,
                    no_wait=False):
     return sdk_no_wait(no_wait,
                        client.begin_deallocate,
-                       resource_group_name=resource_group_name,
-                       disk_pool_name=disk_pool_name)
-
-
-def disk_pool_upgrade(client,
-                      resource_group_name,
-                      disk_pool_name,
-                      no_wait=False):
-    return sdk_no_wait(no_wait,
-                       client.begin_upgrade,
                        resource_group_name=resource_group_name,
                        disk_pool_name=disk_pool_name)
 

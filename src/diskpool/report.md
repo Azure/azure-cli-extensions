@@ -24,9 +24,9 @@
 |[az disk-pool update](#DiskPoolsUpdate)|Update|[Parameters](#ParametersDiskPoolsUpdate)|[Example](#ExamplesDiskPoolsUpdate)|
 |[az disk-pool delete](#DiskPoolsDelete)|Delete|[Parameters](#ParametersDiskPoolsDelete)|[Example](#ExamplesDiskPoolsDelete)|
 |[az disk-pool list-outbound-network-dependency-endpoint](#DiskPoolsListOutboundNetworkDependenciesEndpoints)|ListOutboundNetworkDependenciesEndpoints|[Parameters](#ParametersDiskPoolsListOutboundNetworkDependenciesEndpoints)|[Example](#ExamplesDiskPoolsListOutboundNetworkDependenciesEndpoints)|
+|[az disk-pool redeploy](#DiskPoolsUpgrade)|Upgrade|[Parameters](#ParametersDiskPoolsUpgrade)|[Example](#ExamplesDiskPoolsUpgrade)|
 |[az disk-pool start](#DiskPoolsStart)|Start|[Parameters](#ParametersDiskPoolsStart)|[Example](#ExamplesDiskPoolsStart)|
 |[az disk-pool stop](#DiskPoolsDeallocate)|Deallocate|[Parameters](#ParametersDiskPoolsDeallocate)|[Example](#ExamplesDiskPoolsDeallocate)|
-|[az disk-pool upgrade](#DiskPoolsUpgrade)|Upgrade|[Parameters](#ParametersDiskPoolsUpgrade)|[Example](#ExamplesDiskPoolsUpgrade)|
 
 ### <a name="CommandsInDiskPoolZones">Commands in `az disk-pool` group</a>
 |CLI Command|Operation Swagger name|Parameters|Examples|
@@ -150,6 +150,18 @@ az disk-pool list-outbound-network-dependency-endpoint --name "SampleAse" --reso
 |**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--disk-pool-name**|string|The name of the Disk Pool.|disk_pool_name|diskPoolName|
 
+#### <a name="DiskPoolsUpgrade">Command `az disk-pool redeploy`</a>
+
+##### <a name="ExamplesDiskPoolsUpgrade">Example</a>
+```
+az disk-pool redeploy --name "myDiskPool" --resource-group "myResourceGroup"
+```
+##### <a name="ParametersDiskPoolsUpgrade">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
+|**--disk-pool-name**|string|The name of the Disk Pool.|disk_pool_name|diskPoolName|
+
 #### <a name="DiskPoolsStart">Command `az disk-pool start`</a>
 
 ##### <a name="ExamplesDiskPoolsStart">Example</a>
@@ -169,18 +181,6 @@ az disk-pool start --name "myDiskPool" --resource-group "myResourceGroup"
 az disk-pool stop --name "myDiskPool" --resource-group "myResourceGroup"
 ```
 ##### <a name="ParametersDiskPoolsDeallocate">Parameters</a> 
-|Option|Type|Description|Path (SDK)|Swagger name|
-|------|----|-----------|----------|------------|
-|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
-|**--disk-pool-name**|string|The name of the Disk Pool.|disk_pool_name|diskPoolName|
-
-#### <a name="DiskPoolsUpgrade">Command `az disk-pool upgrade`</a>
-
-##### <a name="ExamplesDiskPoolsUpgrade">Example</a>
-```
-az disk-pool upgrade --name "myDiskPool" --resource-group "myResourceGroup"
-```
-##### <a name="ParametersDiskPoolsUpgrade">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
 |**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|

@@ -27,8 +27,6 @@ def step_create(test, checks=None):
              '--subnet-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Network/virtualNetw'
              'orks/{vn}/subnets/{subnets}" '
              '--sku name="Basic_V1" tier="Basic" '
-             'orks/{vn}/subnets/{subnets}" '
-             '--sku name="Basic_V1" tier="Basic" '
              '--tags key="value" '
              '--name "{myDiskPool}" '
              '--resource-group "{rg}"',
@@ -93,7 +91,6 @@ def step_update(test, checks=None):
              '--disks "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Compute/disks/vm-name_D'
              'ataDisk_1" '
              '--sku name="Basic_B1" tier="Basic" '
-             '--sku name="Basic_B1" tier="Basic" '
              '--tags key="value" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -123,21 +120,10 @@ def step_start(test, checks=None):
 
 # EXAMPLE: /DiskPools/post/Upgrade Disk Pool
 @try_manual
-def step_upgrade(test, checks=None):
+def step_redeploy(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az disk-pool upgrade '
-             '--name "{myDiskPool}" '
-             '--resource-group "{rg}"',
-             checks=checks)
-
-
-# EXAMPLE: /DiskPools/post/Upgrade Disk Pool
-@try_manual
-def step_upgrade(test, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az disk-pool upgrade '
+    test.cmd('az disk-pool redeploy '
              '--name "{myDiskPool}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -151,26 +137,6 @@ def step_delete(test, checks=None):
     test.cmd('az disk-pool delete -y '
              '--name "{myDiskPool}" '
              '--resource-group "{rg}"',
-             checks=checks)
-
-
-# EXAMPLE: /DiskPoolZones/get/List Disk Pool Skus
-@try_manual
-def step_list_skus(test, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az disk-pool list-skus '
-             '--location "eastus"',
-             checks=checks)
-
-
-# EXAMPLE: /DiskPoolZones/get/List Disk Pool Zones
-@try_manual
-def step_list_zones(test, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az disk-pool list-zones '
-             '--location "eastus"',
              checks=checks)
 
 
@@ -209,7 +175,6 @@ def step_iscsi_target_create(test, checks=None):
              '--resource-group "{rg}"',
              checks=[])
     test.cmd('az disk-pool iscsi-target wait --created '
-             '--disk-pool-name "{myDiskPool}" '
              '--disk-pool-name "{myDiskPool}" '
              '--name "{myIscsiTarget}" '
              '--resource-group "{rg}"',

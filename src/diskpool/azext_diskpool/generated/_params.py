@@ -78,17 +78,17 @@ def load_arguments(self, _):
         c.argument('disk_pool_name', options_list=['--name', '-n', '--disk-pool-name'], type=str, help='The name of '
                    'the Disk Pool.')
 
+    with self.argument_context('disk-pool redeploy') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('disk_pool_name', options_list=['--name', '-n', '--disk-pool-name'], type=str, help='The name of '
+                   'the Disk Pool.', id_part='name')
+
     with self.argument_context('disk-pool start') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('disk_pool_name', options_list=['--name', '-n', '--disk-pool-name'], type=str, help='The name of '
                    'the Disk Pool.', id_part='name')
 
     with self.argument_context('disk-pool stop') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('disk_pool_name', options_list=['--name', '-n', '--disk-pool-name'], type=str, help='The name of '
-                   'the Disk Pool.', id_part='name')
-
-    with self.argument_context('disk-pool upgrade') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('disk_pool_name', options_list=['--name', '-n', '--disk-pool-name'], type=str, help='The name of '
                    'the Disk Pool.', id_part='name')

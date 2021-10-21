@@ -49,9 +49,9 @@ def load_command_table(self, _):
         g.custom_command(
             'list-outbound-network-dependency-endpoint', 'disk_pool_list_outbound_network_dependency_endpoint'
         )
+        g.custom_command('redeploy', 'disk_pool_redeploy', supports_no_wait=True)
         g.custom_command('start', 'disk_pool_start', supports_no_wait=True)
         g.custom_command('stop', 'disk_pool_stop', supports_no_wait=True)
-        g.custom_command('upgrade', 'disk_pool_upgrade', supports_no_wait=True)
         g.custom_wait_command('wait', 'disk_pool_show')
 
     with self.command_group('disk-pool', diskpool_disk_pool_zone, client_factory=cf_disk_pool_zone) as g:

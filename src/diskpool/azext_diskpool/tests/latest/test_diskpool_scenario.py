@@ -13,7 +13,6 @@ from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk import ResourceGroupPreparer
 from .preparers import VirtualNetworkPreparer
 from .preparers import SubnetPreparer
-from .preparers import SubnetPreparer
 from .example_steps import step_create
 from .example_steps import step_show
 from .example_steps import step_list_outbound_network_dependency_endpoint
@@ -22,11 +21,9 @@ from .example_steps import step_list2
 from .example_steps import step_update
 from .example_steps import step_stop
 from .example_steps import step_start
-from .example_steps import step_upgrade
-from .example_steps import step_upgrade
+from .example_steps import step_redeploy
 from .example_steps import step_delete
 from .example_steps import step_list_skus
-from .example_steps import step_list_zones
 from .example_steps import step_list_zones
 from .example_steps import step_iscsi_target_create
 from .example_steps import step_iscsi_target_show
@@ -88,61 +85,7 @@ def call_scenario(test):
     ])
     step_stop(test, checks=[])
     step_start(test, checks=[])
-    step_upgrade(test, checks=[])
-    step_delete(test, checks=[])
-    step_list_skus(test, checks=[])
-    step_list_zones(test, checks=[])
-    step_iscsi_target_create(test, checks=[
-        test.check("aclMode", "Dynamic", case_sensitive=False),
-        test.check("targetIqn", "iqn.2005-03.org.iscsi:server1", case_sensitive=False),
-        test.check("name", "{myIscsiTarget}", case_sensitive=False),
-    ])
-    step_iscsi_target_show(test, checks=[
-        test.check("targetIqn", "iqn.2005-03.org.iscsi:server1", case_sensitive=False),
-        test.check("name", "{myIscsiTarget}", case_sensitive=False),
-    ])
-    step_iscsi_target_list(test, checks=[
-        test.check('length(@)', 1),
-    ])
-    step_iscsi_target_update(test, checks=[
-        test.check("targetIqn", "iqn.2005-03.org.iscsi:server1", case_sensitive=False),
-        test.check("name", "{myIscsiTarget}", case_sensitive=False),
-    ])
-    step_iscsi_target_delete(test, checks=[])
-    cleanup_scenario(test)
-
-
-    setup_scenario(test)
-    step_create(test, checks=[
-        test.check("availabilityZones[0]", "1", case_sensitive=False),
-        test.check("subnetId", "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Network/virtua"
-                   "lNetworks/{vn}/subnets/{subnets}", case_sensitive=False),
-        test.check("name", "{myDiskPool}", case_sensitive=False),
-    ])
-    step_show(test, checks=[
-        test.check("availabilityZones[0]", "1", case_sensitive=False),
-        test.check("subnetId", "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Network/virtua"
-                   "lNetworks/{vn}/subnets/{subnets}", case_sensitive=False),
-        test.check("sku.name", "Basic_V1", case_sensitive=False),
-        test.check("sku.tier", "Basic", case_sensitive=False),
-        test.check("name", "{myDiskPool}", case_sensitive=False),
-    ])
-    step_list_outbound_network_dependency_endpoint(test, checks=[])
-    step_list(test, checks=[
-        test.check('length(@)', 1),
-    ])
-    step_list2(test, checks=[
-        test.check('length(@)', 1),
-    ])
-    step_update(test, checks=[
-        test.check("availabilityZones[0]", "1", case_sensitive=False),
-        test.check("subnetId", "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Network/virtua"
-                   "lNetworks/{vn}/subnets/{subnets}", case_sensitive=False),
-        test.check("name", "{myDiskPool}", case_sensitive=False),
-    ])
-    step_stop(test, checks=[])
-    step_start(test, checks=[])
-    step_upgrade(test, checks=[])
+    step_redeploy(test, checks=[])
     step_delete(test, checks=[])
     step_list_skus(test, checks=[])
     step_list_zones(test, checks=[])
@@ -187,10 +130,7 @@ class DiskpoolScenarioTest(ScenarioTest):
     @VirtualNetworkPreparer(name_prefix='clitestdiskpool_myvnet'[:7], key='vn', resource_group_key='rg')
     @SubnetPreparer(name_prefix='clitestdiskpool_mysubnet'[:7], key='subnets', virtual_network_key='vn',
                     resource_group_key='rg')
-    @SubnetPreparer(name_prefix='clitestdiskpool_mysubnet'[:7], key='subnets', virtual_network_key='vn',
-                    resource_group_key='rg')
     def test_diskpool_Scenario(self, rg, rg_2):
-        call_scenario(self)
         call_scenario(self)
         calc_coverage(__file__)
         raise_if()

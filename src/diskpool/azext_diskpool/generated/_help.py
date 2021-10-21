@@ -122,6 +122,16 @@ helps['disk-pool list-outbound-network-dependency-endpoint'] = """
 "Sample-WestUSResourceGroup"
 """
 
+helps['disk-pool redeploy'] = """
+    type: command
+    short-summary: "Redeploy replaces the underlying virtual machine hosts one at a time. This operation can take 10-15 \
+minutes to complete. This is expected service behavior."
+    examples:
+      - name: Redeploy Disk Pool
+        text: |-
+               az disk-pool redeploy --name "myDiskPool" --resource-group "myResourceGroup"
+"""
+
 helps['disk-pool start'] = """
     type: command
     short-summary: "The operation to start a Disk Pool. This start operation can take 10 minutes to complete. This is \
@@ -141,16 +151,6 @@ behavior."
       - name: Deallocate Disk Pool
         text: |-
                az disk-pool stop --name "myDiskPool" --resource-group "myResourceGroup"
-"""
-
-helps['disk-pool upgrade'] = """
-    type: command
-    short-summary: "Upgrade replaces the underlying virtual machine hosts one at a time. This operation can take 10-15 \
-minutes to complete. This is expected service behavior."
-    examples:
-      - name: Upgrade Disk Pool
-        text: |-
-               az disk-pool upgrade --name "myDiskPool" --resource-group "myResourceGroup"
 """
 
 helps['disk-pool wait'] = """
