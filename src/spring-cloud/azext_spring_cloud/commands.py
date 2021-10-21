@@ -50,7 +50,7 @@ def load_command_table(self, _):
         g.custom_command('repo update', 'config_repo_update')
         g.custom_command('repo list', 'config_repo_list')
 
-    with self.command_group('spring-cloud app', client_factory=cf_spring_cloud_20210601preview,
+    with self.command_group('spring-cloud app', client_factory=cf_spring_cloud_20210901preview,
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('create', 'app_create')
         g.custom_command('update', 'app_update')

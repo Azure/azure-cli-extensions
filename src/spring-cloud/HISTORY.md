@@ -4,7 +4,7 @@ Release History
 2.11.1
 -----
 * Add support for public certificate crud, source could be either key vault or local file
-* Application could load public certificate by using argument`--loaded_public_certificate_file` in batch or 
+* Application could load public certificate by using argument `--loaded_public_certificate_file` in batch or 
   directly using `spring-cloud app append-loaded-public-certificate` one by one
 * Add support to list all apps which have loaded the certificate `spring-cloud certificate list-reference-app`
 

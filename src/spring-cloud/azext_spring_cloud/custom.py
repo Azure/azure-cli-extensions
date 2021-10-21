@@ -26,9 +26,6 @@ from .vendored_sdks.appplatform.v2020_07_01.models import _app_platform_manageme
 from .vendored_sdks.appplatform.v2020_11_01_preview import (
     AppPlatformManagementClient as AppPlatformManagementClient_20201101preview
 )
-from .vendored_sdks.appplatform.v2021_09_01_preview import (
-    AppPlatformManagementClient as AppPlatformManagementClient_20210901preview
-)
 from knack.log import get_logger
 from .azure_storage_file import FileService
 from azure.cli.core.azclierror import InvalidArgumentValueError, RequiredArgumentMissingError
@@ -288,12 +285,12 @@ def app_create(cmd, client, resource_group, service, name,
         data = get_file_json(loaded_public_certificate_file)
         if data:
             if not data.get('loadedCertificates'):
-                raise CLIError("loadedCertificates must be provided in the json file")
+                raise FileOperationError("loadedCertificates must be provided in the json file")
             loaded_certificates = []
             for item in data['loadedCertificates']:
                 invalidProperties = not item.get('certificateName') or not item.get('loadTrustStore')
                 if invalidProperties:
-                    raise CLIError("certificateName, loadTrustStore must be provided in the json file")
+                    raise FileOperationError("certificateName, loadTrustStore must be provided in the json file")
                 certificate_resource = client.certificates.get(resource_group, service, item['certificateName'])
                 loaded_certificates.append(models_20210901preview.
                                            LoadedCertificate(resource_id=certificate_resource.id,
@@ -655,9 +652,7 @@ def app_tail_log(cmd, client, resource_group, service, name,
     test_keys = client.services.list_test_keys(resource_group, service)
     primary_key = test_keys.primary_key
     if not primary_key:
-        raise CLIError(
-            "To use the log streaming feature, please enable the test endpoint by running 'az spring-cloud test-endpoint enable -n {0} -g {1}'".format(
-                service, resource_group))
+        raise CLIError("To use the log streaming feature, please enable the test endpoint by running 'az spring-cloud test-endpoint enable -n {0} -g {1}'".format(service, resource_group))
 
     # https://primary:xxxx[key]@servicename.test.azuremicrosoervice.io -> servicename.azuremicroservice.io
     test_url = test_keys.primary_test_endpoint
@@ -795,10 +790,8 @@ def app_unset_deployment(cmd, client, resource_group, service, name):
 
 
 def app_append_loaded_public_certificate(cmd, client, resource_group, service, name, certificate_name, load_trust_store):
-    client_0901_preview = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20210901preview)
-
-    app_resource = client_0901_preview.apps.get(resource_group, service, name)
-    certificate_resource = client_0901_preview.certificates.get(resource_group, service, certificate_name)
+    app_resource = client.apps.get(resource_group, service, name)
+    certificate_resource = client.certificates.get(resource_group, service, certificate_name)
     certificate_resource_id = certificate_resource.id
 
     loaded_certificates = []
@@ -808,7 +801,7 @@ def app_append_loaded_public_certificate(cmd, client, resource_group, service, n
 
     for loaded_certificate in loaded_certificates:
         if loaded_certificate.resource_id == certificate_resource.id:
-            raise CLIError("This certificate has already been loaded.")
+            raise ClientRequestError("This certificate has already been loaded.")
 
     loaded_certificates.append(models_20210901preview.
                                LoadedCertificate(resource_id=certificate_resource_id,
@@ -817,12 +810,12 @@ def app_append_loaded_public_certificate(cmd, client, resource_group, service, n
     app_resource.properties.loaded_certificates = loaded_certificates
     logger.warning("[1/1] updating app '{}'".format(name))
 
-    poller = client_0901_preview.apps.begin_update(
+    poller = client.apps.begin_update(
         resource_group, service, name, app_resource)
     while poller.done() is False:
         sleep(APP_CREATE_OR_UPDATE_SLEEP_INTERVAL)
 
-    app_updated = client_0901_preview.apps.get(resource_group, service, name)
+    app_updated = client.apps.get(resource_group, service, name)
     return app_updated
 
 
@@ -932,9 +925,7 @@ def validate_config_server_settings(client, resource_group, name, config_server_
     try:
         result = sdk_no_wait(False, client.begin_validate, resource_group, name, config_server_settings).result()
     except Exception as err:  # pylint: disable=broad-except
-        raise CLIError(
-            "{0}. You may raise a support ticket if needed by the following link: https://docs.microsoft.com/azure/spring-cloud/spring-cloud-faq?pivots=programming-language-java#how-can-i-provide-feedback-and-report-issues".format(
-                err))
+        raise CLIError("{0}. You may raise a support ticket if needed by the following link: https://docs.microsoft.com/azure/spring-cloud/spring-cloud-faq?pivots=programming-language-java#how-can-i-provide-feedback-and-report-issues".format(err))
 
     if not result.is_valid:
         for item in result.details or []:
@@ -1639,9 +1630,9 @@ def certificate_add(cmd, client, resource_group, service, name, only_public_cert
                     logger.debug("attempting to read file %s as binary", public_certificate_file)
                     content = base64.b64encode(input_file.read()).decode("utf-8")
             except Exception:
-                raise CLIError('Failed to decode file {} - unknown decoding'.format(public_certificate_file))
+                raise FileOperationError('Failed to decode file {} - unknown decoding'.format(public_certificate_file))
         else:
-            raise CLIError("public_certificate_file %s could not be found", public_certificate_file)
+            raise FileOperationError("public_certificate_file %s could not be found", public_certificate_file)
         properties = models_20210901preview.ContentCertificateProperties(
             type="ContentCertificate",
             content=content
