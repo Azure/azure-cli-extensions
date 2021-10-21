@@ -497,7 +497,7 @@ class AKSPreviewContext(AKSContext):
         """
         return self._get_enable_pod_identity_with_kubenet(enable_validation=True)
 
-    def _get_addon_consts(self) -> Dict[str, str]:
+    def get_addon_consts(self) -> Dict[str, str]:
         """Helper function to obtain the constants used by addons.
 
         Note: This is not a parameter of aks commands.
@@ -511,7 +511,7 @@ class AKSPreviewContext(AKSContext):
             CONST_SECRET_ROTATION_ENABLED,
         )
 
-        addon_consts = super()._get_addon_consts()
+        addon_consts = super().get_addon_consts()
         addon_consts["ADDONS"] = ADDONS
         addon_consts["CONST_GITOPS_ADDON_NAME"] = CONST_GITOPS_ADDON_NAME
         addon_consts[
@@ -530,7 +530,7 @@ class AKSPreviewContext(AKSContext):
         :return: string or None
         """
         # determine the value of constants
-        addon_consts = self._get_addon_consts()
+        addon_consts = self.get_addon_consts()
         CONST_INGRESS_APPGW_ADDON_NAME = addon_consts.get("CONST_INGRESS_APPGW_ADDON_NAME")
         CONST_INGRESS_APPGW_SUBNET_CIDR = addon_consts.get("CONST_INGRESS_APPGW_SUBNET_CIDR")
 
@@ -562,7 +562,7 @@ class AKSPreviewContext(AKSContext):
         :return: bool or None
         """
         # determine the value of constants
-        addon_consts = self._get_addon_consts()
+        addon_consts = self.get_addon_consts()
         CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
         CONST_MONITORING_USING_AAD_MSI_AUTH = addon_consts.get("CONST_MONITORING_USING_AAD_MSI_AUTH")
 
@@ -591,7 +591,7 @@ class AKSPreviewContext(AKSContext):
         :return: bool
         """
         # determine the value of constants
-        addon_consts = self._get_addon_consts()
+        addon_consts = self.get_addon_consts()
         CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME = addon_consts.get(
             "CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME"
         )
@@ -767,7 +767,7 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
         # replace empty default value
         if skip_addons is None:
             skip_addons = []
-        addon_consts = self.context._get_addon_consts()
+        addon_consts = self.context.get_addon_consts()
         CONST_MONITORING_ADDON_NAME = addon_consts.get(
             "CONST_MONITORING_ADDON_NAME"
         )
