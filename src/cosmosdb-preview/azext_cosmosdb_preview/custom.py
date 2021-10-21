@@ -235,6 +235,7 @@ def cli_cosmosdb_managed_cassandra_datacenter_create(client,
                                                      node_count,
                                                      base64_encoded_cassandra_yaml_fragment=None,
                                                      managed_disk_customer_key_uri=None,
+                                                     backup_storage_customer_key_uri=None,
                                                      sku=None,
                                                      disk_sku=None,
                                                      disk_capacity=None,
@@ -251,7 +252,8 @@ def cli_cosmosdb_managed_cassandra_datacenter_create(client,
         disk_sku=disk_sku,
         disk_capacity=disk_capacity,
         availability_zone=availability_zone,
-        managed_disk_customer_key_uri=managed_disk_customer_key_uri
+        managed_disk_customer_key_uri=managed_disk_customer_key_uri,
+        backup_storage_customer_key_uri=backup_storage_customer_key_uri
     )
 
     data_center_resource = DataCenterResource(
