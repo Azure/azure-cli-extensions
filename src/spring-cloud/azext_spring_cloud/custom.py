@@ -28,7 +28,7 @@ from .vendored_sdks.appplatform.v2020_11_01_preview import (
 )
 from knack.log import get_logger
 from .azure_storage_file import FileService
-from azure.cli.core.azclierror import InvalidArgumentValueError, RequiredArgumentMissingError
+from azure.cli.core.azclierror import ClientRequestError, FileOperationError, InvalidArgumentValueError, RequiredArgumentMissingError
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.util import get_file_json, sdk_no_wait
 from azure.cli.core.profiles import ResourceType, get_sdk
