@@ -45,6 +45,7 @@ KubeletConfig = TypeVar("KubeletConfig")
 LinuxOSConfig = TypeVar("LinuxOSConfig")
 ManagedClusterHTTPProxyConfig = TypeVar("ManagedClusterHTTPProxyConfig")
 ContainerServiceNetworkProfile = TypeVar("ContainerServiceNetworkProfile")
+ManagedClusterAddonProfile = TypeVar("ManagedClusterAddonProfile")
 
 
 # pylint: disable=too-many-instance-attributes,too-few-public-methods
@@ -511,8 +512,12 @@ class AKSPreviewContext(AKSContext):
         :return: dict
         """
         from azext_aks_preview._consts import (
-            ADDONS, CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME,
-            CONST_GITOPS_ADDON_NAME, CONST_SECRET_ROTATION_ENABLED)
+            ADDONS,
+            CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME,
+            CONST_GITOPS_ADDON_NAME,
+            CONST_SECRET_ROTATION_ENABLED,
+            CONST_MONITORING_USING_AAD_MSI_AUTH,
+        )
 
         addon_consts = super().get_addon_consts()
         addon_consts["ADDONS"] = ADDONS
@@ -523,6 +528,9 @@ class AKSPreviewContext(AKSContext):
         addon_consts[
             "CONST_SECRET_ROTATION_ENABLED"
         ] = CONST_SECRET_ROTATION_ENABLED
+        addon_consts[
+            "CONST_MONITORING_USING_AAD_MSI_AUTH"
+        ] = CONST_MONITORING_USING_AAD_MSI_AUTH
         return addon_consts
 
     def get_appgw_subnet_prefix(self) -> Union[str, None]:
@@ -588,7 +596,6 @@ class AKSPreviewContext(AKSContext):
         # this parameter does not need validation
         return enable_msi_auth_for_monitoring
 
-
     def get_no_wait(self) -> bool:
         """Obtain the value of no_wait.
 
@@ -604,10 +611,9 @@ class AKSPreviewContext(AKSContext):
         if self.get_intermediate("monitoring") and self.get_enable_msi_auth_for_monitoring():
             logger.warning("Enabling msi auth for monitoring addon requires waiting for cluster creation to complete")
             if no_wait:
-                logger.warning("The set option --no-wait has been ignored")
+                logger.warning("The set option '--no-wait' has been ignored")
                 no_wait = False
         return no_wait
-
 
     def get_enable_secret_rotation(self) -> bool:
         """Obtain the value of enable_secret_rotation.
@@ -636,7 +642,7 @@ class AKSPreviewContext(AKSContext):
         ):
             enable_secret_rotation = self.mc.addon_profiles.get(
                 CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME
-            ).config.get(CONST_SECRET_ROTATION_ENABLED)
+            ).config.get(CONST_SECRET_ROTATION_ENABLED) == "true"
 
         # this parameter does not need dynamic completion
         # this parameter does not need validation
@@ -674,8 +680,7 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
     def set_up_agent_pool_profiles(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up agent pool profiles for the ManagedCluster object.
 
-        Call the method of the same name in the parent class to set up agent_pool_profiles, and then set some additional
-        properties.
+        Note: Inherited and extended in aks-preview to set some additional properties.
 
         :return: the ManagedCluster object
         """
@@ -724,8 +729,7 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
     def set_up_network_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up network profile for the ManagedCluster object.
 
-        Call the method of the same name in the parent class to set up network_profile, and then set the
-        nat_gateway_profile.
+        Note: Inherited and extended in aks-preview to set the nat_gateway_profile.
 
         :return: the ManagedCluster object
         """
@@ -781,7 +785,13 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
         mc.pod_identity_profile = pod_identity_profile
         return mc
 
-    def set_up_monitoring_addon_profile(self):
+    def set_up_monitoring_addon_profile(self) -> ManagedClusterAddonProfile:
+        """Set up monitoring addon profile.
+
+        Note: Overwritten in aks-preview.
+
+        :return: a ManagedClusterAddonProfile object
+        """
         # determine the value of constants
         addon_consts = self.context.get_addon_consts()
         CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID = addon_consts.get(
@@ -815,37 +825,83 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
         self.context.set_intermediate("monitoring", True, overwrite_exists=True)
         return monitoring_addon_profile
 
-    def set_up_addon_profiles(self, mc: ManagedCluster) -> ManagedCluster:
-        """Set up addon profiles for the ManagedCluster object.
+    def set_up_ingress_appgw_addon_profile(self) -> ManagedClusterAddonProfile:
+        """Set up ingress appgw addon profile.
 
-        Call the method of the same name in the parent class to set up addon_profiles, and then set some extra addons
-        and overwrite the process of setting the monitoring addon.
+        Note: Inherited and extended in aks-preview to support option appgw_subnet_prefix.
 
-        :return: the ManagedCluster object
+        :return: a ManagedClusterAddonProfile object
         """
+        # determine the value of constants
+        addon_consts = self.context.get_addon_consts()
+        CONST_INGRESS_APPGW_SUBNET_CIDR = addon_consts.get(
+            "CONST_INGRESS_APPGW_SUBNET_CIDR"
+        )
+
+        ingress_appgw_addon_profile = super().set_up_ingress_appgw_addon_profile()
+        appgw_subnet_prefix = self.context.get_appgw_subnet_prefix()
+        if (
+            appgw_subnet_prefix is not None and
+            ingress_appgw_addon_profile.config.get(
+                CONST_INGRESS_APPGW_SUBNET_CIDR
+            )
+            is None
+        ):
+            ingress_appgw_addon_profile.config[CONST_INGRESS_APPGW_SUBNET_CIDR] = appgw_subnet_prefix
+        return ingress_appgw_addon_profile
+
+    def set_up_azure_keyvault_secrets_provider_addon_profile(self) -> ManagedClusterAddonProfile:
+        """Set up azure keyvault secrets provider addon profile.
+
+        :return: a ManagedClusterAddonProfile object
+        """
+        # determine the value of constants
         addon_consts = self.context.get_addon_consts()
         CONST_SECRET_ROTATION_ENABLED = addon_consts.get(
             "CONST_SECRET_ROTATION_ENABLED"
         )
+
+        azure_keyvault_secrets_provider_addon_profile = self.models.ManagedClusterAddonProfile(
+                enabled=True, config={CONST_SECRET_ROTATION_ENABLED: "false"}
+            )
+        if self.context.get_enable_secret_rotation():
+            azure_keyvault_secrets_provider_addon_profile.config[CONST_SECRET_ROTATION_ENABLED] = "true"
+        return azure_keyvault_secrets_provider_addon_profile
+
+    def set_up_gitops_addon_profile(self) -> ManagedClusterAddonProfile:
+        """Set up gitops addon profile.
+
+        :return: a ManagedClusterAddonProfile object
+        """
+        gitops_addon_profile = self.models.ManagedClusterAddonProfile(
+            enabled=True,
+        )
+        return gitops_addon_profile
+
+    def set_up_addon_profiles(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up addon profiles for the ManagedCluster object.
+
+        Note: Inherited and extended in aks-preview to set some extra addons.
+
+        :return: the ManagedCluster object
+        """
+        addon_consts = self.context.get_addon_consts()
         CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME = addon_consts.get(
             "CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME"
         )
+        CONST_GITOPS_ADDON_NAME = addon_consts.get("CONST_GITOPS_ADDON_NAME")
 
         mc = super().set_up_addon_profiles(mc)
-        ManagedClusterAddonProfile = self.models.ManagedClusterAddonProfile
         addon_profiles = mc.addon_profiles
         addons = self.context.get_enable_addons()
         if "azure-keyvault-secrets-provider" in addons:
-            addon_profile = ManagedClusterAddonProfile(
-                enabled=True, config={CONST_SECRET_ROTATION_ENABLED: "false"}
-            )
-            if self.context.get_enable_secret_rotation():
-                addon_profile.config[CONST_SECRET_ROTATION_ENABLED] = "true"
             addon_profiles[
                 CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME
-            ] = addon_profile
+            ] = self.set_up_azure_keyvault_secrets_provider_addon_profile()
         if "gitops" in addons:
-            addon_profiles["gitops"] = ManagedClusterAddonProfile(enabled=True)
+            addon_profiles[
+                CONST_GITOPS_ADDON_NAME
+            ] = self.set_up_gitops_addon_profile()
         mc.addon_profiles = addon_profiles
         return mc
 
