@@ -64,3 +64,36 @@ class CustomDomainTests(ScenarioTest):
 
         self.cmd('spring-cloud certificate remove --name {cert} -g {rg} -s {serviceName}')
         self.cmd('spring-cloud certificate show --name {cert} -g {rg} -s {serviceName}', expect_failure=True)
+
+
+@record_only()
+class SslTests(ScenarioTest):
+
+    def test_load_public_cert_to_app(self):
+        self.kwargs.update({
+            'cert': 'test-cert',
+            'keyVaultUri': 'https://integration-test-prod.vault.azure.net/',
+            'KeyVaultCertName': 'cli-unittest',
+            'app': 'test-app',
+            'serviceName': 'cli-unittest',
+            'rg': 'cli'
+        })
+
+        self.cmd(
+            'spring-cloud certificate add --name {cert} --vault-uri {keyVaultUri} --vault-certificate-name {KeyVaultCertName} --only-public-cert true -g {rg} -s {serviceName}',
+            checks=[
+                self.check('name', '{cert}')
+            ])
+
+        self.cmd('spring-cloud certificate show --name {cert} -g {rg} -s {serviceName}', checks=[
+            self.check('name', '{cert}')
+        ])
+
+        cert_result = self.cmd('spring-cloud certificate list -g {rg} -s {serviceName}').get_output_in_json()
+        self.assertTrue(len(cert_result) > 0)
+
+        self.cmd('spring-cloud app append-loaded-public-certificate --name {app} --certificate-name {cert} --load-trust-store true -g {rg} -s {serviceName}')
+
+        app_result = self.cmd('spring-cloud certificate list-reference-app --name {cert} -g {rg} -s {serviceName}').get_output_in_json()
+        self.assertTrue(len(app_result) > 0)
+

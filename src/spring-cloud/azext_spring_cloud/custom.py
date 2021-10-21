@@ -1613,7 +1613,7 @@ def _get_app_log(url, user_name, password, format_json, exceptions):
             exceptions.append(e)
 
 
-def certificate_add(cmd, client, resource_group, service, name, only_public_certificate=None,
+def certificate_add(cmd, client, resource_group, service, name, only_public_cert=None,
                     vault_uri=None, vault_certificate_name=None, public_certificate_file=None):
     if vault_uri is None and public_certificate_file is None:
         raise InvalidArgumentValueError("One of --vault-uri and --public-certificate-file should be provided")
@@ -1624,13 +1624,13 @@ def certificate_add(cmd, client, resource_group, service, name, only_public_cert
             raise InvalidArgumentValueError("--vault-certificate-name should be provided for Key Vault Certificate")
 
     if vault_uri is not None:
-        if only_public_certificate is None:
-            only_public_certificate = False
+        if only_public_cert is None:
+            only_public_cert = False
         properties = models_20210901preview.KeyVaultCertificateProperties(
             type="KeyVaultCertificate",
             vault_uri=vault_uri,
             key_vault_cert_name=vault_certificate_name,
-            exclude_private_key=only_public_certificate
+            exclude_private_key=only_public_cert
         )
     else:
         if os.path.exists(public_certificate_file):
