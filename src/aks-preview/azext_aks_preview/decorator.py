@@ -5,7 +5,7 @@
 
 import os
 import time
-from typing import Dict, List, Optional, TypeVar, Union
+from typing import Dict, TypeVar, Union
 
 from azure.cli.command_modules.acs._consts import DecoratorMode
 from azure.cli.command_modules.acs.decorator import (
@@ -781,7 +781,41 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
         mc.pod_identity_profile = pod_identity_profile
         return mc
 
-    def set_up_addon_profiles(self, mc: ManagedCluster, skip_addons: Optional[List[str]] = None) -> ManagedCluster:
+    def set_up_monitoring_addon_profile(self):
+        # determine the value of constants
+        addon_consts = self.context.get_addon_consts()
+        CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID = addon_consts.get(
+            "CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID"
+        )
+        CONST_MONITORING_USING_AAD_MSI_AUTH = addon_consts.get(
+            "CONST_MONITORING_USING_AAD_MSI_AUTH"
+        )
+
+        monitoring_addon_profile = self.models.ManagedClusterAddonProfile(
+            enabled=True,
+            config={
+                CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID: self.context.get_workspace_resource_id(),
+                CONST_MONITORING_USING_AAD_MSI_AUTH: self.context.get_enable_msi_auth_for_monitoring(),
+            },
+        )
+        # post-process, create a deployment
+        ensure_container_insights_for_monitoring(
+            self.cmd,
+            monitoring_addon_profile,
+            self.context.get_subscription_id(),
+            self.context.get_resource_group_name(),
+            self.context.get_name(),
+            self.context.get_location(),
+            remove_monitoring=False,
+            aad_route=self.context.get_enable_msi_auth_for_monitoring(),
+            create_dcr=True,
+            create_dcra=False,
+        )
+        # set intermediate
+        self.context.set_intermediate("monitoring", True, overwrite_exists=True)
+        return monitoring_addon_profile
+
+    def set_up_addon_profiles(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up addon profiles for the ManagedCluster object.
 
         Call the method of the same name in the parent class to set up addon_profiles, and then set some extra addons
@@ -789,19 +823,7 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
 
         :return: the ManagedCluster object
         """
-        # replace empty default value
-        if skip_addons is None:
-            skip_addons = []
         addon_consts = self.context.get_addon_consts()
-        CONST_MONITORING_ADDON_NAME = addon_consts.get(
-            "CONST_MONITORING_ADDON_NAME"
-        )
-        CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID = addon_consts.get(
-            "CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID"
-        )
-        CONST_MONITORING_USING_AAD_MSI_AUTH = addon_consts.get(
-            "CONST_MONITORING_USING_AAD_MSI_AUTH"
-        )
         CONST_SECRET_ROTATION_ENABLED = addon_consts.get(
             "CONST_SECRET_ROTATION_ENABLED"
         )
@@ -809,41 +831,10 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
             "CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME"
         )
 
-        mc = super().set_up_addon_profiles(mc, skip_addons=["monitoring"])
+        mc = super().set_up_addon_profiles(mc)
         ManagedClusterAddonProfile = self.models.ManagedClusterAddonProfile
         addon_profiles = mc.addon_profiles
         addons = self.context.get_enable_addons()
-        if "monitoring" in addons:
-            workspace_resource_id = self.context.get_workspace_resource_id()
-            enable_msi_auth_for_monitoring = (
-                self.context.get_enable_msi_auth_for_monitoring()
-            )
-            addon_profiles[
-                CONST_MONITORING_ADDON_NAME
-            ] = ManagedClusterAddonProfile(
-                enabled=True,
-                config={
-                    CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID: workspace_resource_id,
-                    CONST_MONITORING_USING_AAD_MSI_AUTH: enable_msi_auth_for_monitoring,
-                },
-            )
-            # post-process, create a deployment
-            ensure_container_insights_for_monitoring(
-                self.cmd,
-                addon_profiles[CONST_MONITORING_ADDON_NAME],
-                self.context.get_subscription_id(),
-                self.context.get_resource_group_name(),
-                self.context.get_name(),
-                self.context.get_location(),
-                remove_monitoring=False,
-                aad_route=enable_msi_auth_for_monitoring,
-                create_dcr=True,
-                create_dcra=False,
-            )
-            # set intermediate
-            self.context.set_intermediate(
-                "monitoring", True, overwrite_exists=True
-            )
         if "azure-keyvault-secrets-provider" in addons:
             addon_profile = ManagedClusterAddonProfile(
                 enabled=True, config={CONST_SECRET_ROTATION_ENABLED: "false"}
