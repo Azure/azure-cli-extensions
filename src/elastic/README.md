@@ -13,7 +13,7 @@ az extension add --name elastic
 ```
 az elastic monitor create --monitor-name "myMonitor" --name "myMonitor" --location "West US 2" \
     --user-info "{\\"companyInfo\\":{\\"business\\":\\"Technology\\",\\"country\\":\\"US\\",\\"domain\\":\\"microsoft.com\\",\\"employeeNumber\\":\\"10000\\",\\"state\\":\\"WA\\"},\\"companyName\\":\\"Microsoft\\",\\"emailAddress\\":\\"alice@microsoft.com\\",\\"firstName\\":\\"Alice\\",\\"lastName\\":\\"Bob\\"}" \
-    --name "free_Monthly" --tags Environment="Dev" --resource-group "myResourceGroup" 
+    --sku "free_Monthly" --tags Environment="Dev" --resource-group "myResourceGroup"
 
 az elastic monitor wait --created --monitor-name "{myMonitor}" --resource-group "{rg}"
 ```
@@ -33,50 +33,45 @@ az elastic monitor update --name "myMonitor" --tags Environment="Dev" --resource
 ```
 az elastic monitor delete --name "myMonitor" --resource-group "myResourceGroup"
 ```
-#### elastic monitored-resource ####
-##### List #####
+##### List Resource #####
 ```
-az elastic monitored-resource list --monitor-name "myMonitor" --resource-group "myResourceGroup"
+az elastic monitor list-resource --name "myMonitor" --resource-group "myResourceGroup"
 ```
-#### elastic deployment-info ####
-##### List #####
+##### List Deployment Info #####
 ```
-az elastic deployment-info list --monitor-name "myMonitor" --resource-group "myResourceGroup"
+az elastic monitor list-deployment-info --name "myMonitor" --resource-group "myResourceGroup"
 ```
-#### elastic tag-rule ####
+##### List VM Host #####
+```
+az elastic monitor list-vm-host --name "myMonitor" --resource-group "myResourceGroup"
+```
+##### List VM Ingestion Detail #####
+```
+az elastic monitor list-vm-ingestion-detail --name "myMonitor" --resource-group "myResourceGroup"
+```
+##### Update VM Collection #####
+```
+az elastic monitor update-vm-collection --name "myMonitor" --operation-name "Add" --vm-resource-id \
+"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.Compute/virtual\
+machines/myVM" --resource-group "myResourceGroup"
+```
+#### elastic monitor tag-rule ####
 ##### Create #####
 ```
-az elastic tag-rule create --monitor-name "myMonitor" \
+az elastic monitor tag-rule create --monitor-name "myMonitor" \
     --filtering-tags name="Environment" action="Include" value="Prod" \
     --filtering-tags name="Environment" action="Exclude" value="Dev" --send-aad-logs false --send-activity-logs true \
     --send-subscription-logs true --resource-group "myResourceGroup" --rule-set-name "default" 
 ```
 ##### Show #####
 ```
-az elastic tag-rule show --monitor-name "myMonitor" --resource-group "myResourceGroup" --rule-set-name "default"
+az monitor elastic tag-rule show --monitor-name "myMonitor" --resource-group "myResourceGroup" --rule-set-name "default"
 ```
 ##### List #####
 ```
-az elastic tag-rule list --monitor-name "myMonitor" --resource-group "myResourceGroup"
+az monitor elastic tag-rule list --monitor-name "myMonitor" --resource-group "myResourceGroup"
 ```
 ##### Delete #####
 ```
-az elastic tag-rule delete --monitor-name "myMonitor" --resource-group "myResourceGroup" --rule-set-name "default"
-```
-#### elastic vm-host ####
-##### List #####
-```
-az elastic vm-host list --monitor-name "myMonitor" --resource-group "myResourceGroup"
-```
-#### elastic vm-ingestion ####
-##### Detail #####
-```
-az elastic vm-ingestion detail --monitor-name "myMonitor" --resource-group "myResourceGroup"
-```
-#### elastic vm-collection ####
-##### Update #####
-```
-az elastic vm-collection update --monitor-name "myMonitor" --operation-name "Add" \
-    --vm-resource-id "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.Compute/virtualmachines/myVM" \
-    --resource-group "myResourceGroup" 
+az monitor elastic tag-rule delete --monitor-name "myMonitor" --resource-group "myResourceGroup" --rule-set-name "default"
 ```
