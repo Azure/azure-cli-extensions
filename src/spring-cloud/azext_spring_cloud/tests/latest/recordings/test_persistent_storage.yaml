@@ -1,0 +1,304 @@
+interactions:
+- request:
+    body: '{"properties": {"storageType": "StorageAccount", "accountName": "test-name",
+      "accountKey": "test-key"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud storage add
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '103'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --storage-type --account-name --account-key -g -s
+      User-Agent:
+      - AZURECLI/2.28.0 azsdk-python-mgmt-appplatform/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/storages/test-storage-name?api-version=2021-09-01-preview
+  response:
+    body:
+      string: '{"type":"Microsoft.AppPlatform/Spring/storages","properties":{"accountName":"test-name","accountKey":"tes******","storageType":"StorageAccount"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/storages/test-storage-name","name":"test-storage-name"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '339'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 21 Oct 2021 10:52:46 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-rp-server-mvid:
+      - f1121840-86d6-4dbd-b7cd-a892ccdda3f6
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud storage show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name -g -s
+      User-Agent:
+      - AZURECLI/2.28.0 azsdk-python-mgmt-appplatform/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/storages/test-storage-name?api-version=2021-09-01-preview
+  response:
+    body:
+      string: '{"type":"Microsoft.AppPlatform/Spring/storages","properties":{"accountName":"test-name","accountKey":"tes******","storageType":"StorageAccount"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/storages/test-storage-name","name":"test-storage-name"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '339'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 21 Oct 2021 10:52:48 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - f1121840-86d6-4dbd-b7cd-a892ccdda3f6
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud storage list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -s
+      User-Agent:
+      - AZURECLI/2.28.0 azsdk-python-mgmt-appplatform/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/storages?api-version=2021-09-01-preview
+  response:
+    body:
+      string: '{"value":[{"type":"Microsoft.AppPlatform/Spring/storages","properties":{"accountName":"YQFZcgPhvZui/CSQCX/WOoarnjqDlUXeGdNliWSSFLLlFhJa8b6HdO/l817633aUuEjuFLP7SwQsrk//KB7xGA==","accountKey":"xuy******","storageType":"StorageAccount"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/storages/byos-storage01","name":"byos-storage01"},{"type":"Microsoft.AppPlatform/Spring/storages","properties":{"accountName":"dumpstorage","accountKey":"KYX******","storageType":"StorageAccount"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/storages/testxuyang","name":"testxuyang"},{"type":"Microsoft.AppPlatform/Spring/storages","properties":{"accountName":"test-name","accountKey":"tes******","storageType":"StorageAccount"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/storages/test-storage-name","name":"test-storage-name"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1092'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 21 Oct 2021 10:52:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - f1121840-86d6-4dbd-b7cd-a892ccdda3f6
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud storage remove
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name -g -s
+      User-Agent:
+      - AZURECLI/2.28.0 azsdk-python-mgmt-appplatform/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/storages/test-storage-name?api-version=2021-09-01-preview
+  response:
+    body:
+      string: '{"type":"Microsoft.AppPlatform/Spring/storages","properties":{"accountName":"test-name","accountKey":"tes******","storageType":"StorageAccount"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/storages/test-storage-name","name":"test-storage-name"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '339'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 21 Oct 2021 10:52:51 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - f1121840-86d6-4dbd-b7cd-a892ccdda3f6
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud storage remove
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --name -g -s
+      User-Agent:
+      - AZURECLI/2.28.0 azsdk-python-mgmt-appplatform/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/storages/test-storage-name?api-version=2021-09-01-preview
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Thu, 21 Oct 2021 10:52:51 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+      x-rp-server-mvid:
+      - f1121840-86d6-4dbd-b7cd-a892ccdda3f6
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring-cloud storage show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name -g -s
+      User-Agent:
+      - AZURECLI/2.28.0 azsdk-python-mgmt-appplatform/1.0.0b1 Python/3.9.5 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/storages/test-storage-name?api-version=2021-09-01-preview
+  response:
+    body:
+      string: '{"error":{"code":"EntityNotFound","message":"Storage ''test-storage-name''
+        not found.","target":null,"details":null}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '115'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 21 Oct 2021 10:52:53 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - f1121840-86d6-4dbd-b7cd-a892ccdda3f6
+    status:
+      code: 404
+      message: Not Found
+version: 1

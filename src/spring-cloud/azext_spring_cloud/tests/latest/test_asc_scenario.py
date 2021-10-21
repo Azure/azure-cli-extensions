@@ -64,3 +64,34 @@ class CustomDomainTests(ScenarioTest):
 
         self.cmd('spring-cloud certificate remove --name {cert} -g {rg} -s {serviceName}')
         self.cmd('spring-cloud certificate show --name {cert} -g {rg} -s {serviceName}', expect_failure=True)
+
+
+@record_only()
+class ByosTest(ScenarioTest):
+
+    def test_persistent_storage(self):
+        self.kwargs.update({
+            'storageType': 'StorageAccount',
+            'accountKey': 'test-key',
+            'accountName': 'test-name',
+            'storage': 'test-storage-name',
+            'app': 'test-app',
+            'serviceName': 'cli-unittest',
+            'rg': 'cli'
+        })
+
+        self.cmd('spring-cloud storage add --name {storage} --storage-type {storageType} --account-name {accountName} --account-key {accountKey} -g {rg} -s {serviceName}', checks=[
+            self.check('name', '{storage}'),
+            self.check('properties.storageType', '{storageType}'),
+            self.check('properties.accountName', '{accountName}'),
+        ])
+
+        self.cmd('spring-cloud storage show --name {storage} -g {rg} -s {serviceName}', checks=[
+            self.check('name', '{storage}')
+        ])
+
+        result = self.cmd('spring-cloud storage list -g {rg} -s {serviceName}').get_output_in_json()
+        self.assertTrue(len(result) > 0)
+
+        self.cmd('spring-cloud storage remove --name {storage} -g {rg} -s {serviceName}')
+        self.cmd('spring-cloud storage show --name {storage} -g {rg} -s {serviceName}', expect_failure=True)
