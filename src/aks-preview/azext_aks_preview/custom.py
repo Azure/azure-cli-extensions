@@ -118,7 +118,7 @@ from ._consts import CONST_SCALE_SET_PRIORITY_REGULAR, CONST_SCALE_SET_PRIORITY_
 from ._consts import CONST_SCALE_DOWN_MODE_DELETE
 from ._consts import CONST_CONFCOM_ADDON_NAME, CONST_ACC_SGX_QUOTE_HELPER_ENABLED
 from ._consts import CONST_OPEN_SERVICE_MESH_ADDON_NAME
-from ._consts import CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME, CONST_SECRET_ROTATION_ENABLED
+from ._consts import CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME, CONST_SECRET_ROTATION_ENABLED, CONST_ROTATION_POLL_INTERVAL
 from ._consts import CONST_MANAGED_IDENTITY_OPERATOR_ROLE, CONST_MANAGED_IDENTITY_OPERATOR_ROLE_ID
 from ._consts import CONST_PRIVATE_DNS_ZONE_SYSTEM, CONST_PRIVATE_DNS_ZONE_NONE
 from ._consts import ADDONS, ADDONS_DESCRIPTIONS
@@ -817,6 +817,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                enable_encryption_at_host=False,
                enable_ultra_ssd=False,
                enable_secret_rotation=False,
+               rotation_poll_interval=None,
                disable_local_accounts=False,
                no_wait=False,
                assign_kubelet_identity=None,
@@ -1091,6 +1092,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         aci_subnet_name=aci_subnet_name,
         vnet_subnet_id=vnet_subnet_id,
         enable_secret_rotation=enable_secret_rotation,
+        rotation_poll_interval=rotation_poll_interval,
     )
     monitoring = False
     if CONST_MONITORING_ADDON_NAME in addon_profiles:
@@ -1354,6 +1356,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                disable_pod_identity=False,
                enable_secret_rotation=False,
                disable_secret_rotation=False,
+               rotation_poll_interval=None,
                disable_local_accounts=False,
                enable_local_accounts=False,
                enable_public_fqdn=False,
@@ -1399,6 +1402,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
        not disable_pod_identity and \
        not enable_secret_rotation and \
        not disable_secret_rotation and \
+       not rotation_poll_interval and \
        not tags and \
        not windows_admin_password and \
        not enable_local_accounts and \
@@ -1433,6 +1437,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                        '"--auto-upgrade-channel" or '
                        '"--enable-secret-rotation" or '
                        '"--disable-secret-rotation" or '
+                       '"--rotation-poll-interval" or '
                        '"--tags" or '
                        '"--windows-admin-password" or '
                        '"--enable-azure-rbac" or '
@@ -1714,15 +1719,20 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
 
     if enable_secret_rotation:
         if not azure_keyvault_secrets_provider_enabled:
-            raise CLIError(
+            raise ArgumentUsageError(
                 '--enable-secret-rotation can only be specified when azure-keyvault-secrets-provider is enabled')
         azure_keyvault_secrets_provider_addon_profile.config[CONST_SECRET_ROTATION_ENABLED] = "true"
 
     if disable_secret_rotation:
         if not azure_keyvault_secrets_provider_enabled:
-            raise CLIError(
+            raise ArgumentUsageError(
                 '--disable-secret-rotation can only be specified when azure-keyvault-secrets-provider is enabled')
         azure_keyvault_secrets_provider_addon_profile.config[CONST_SECRET_ROTATION_ENABLED] = "false"
+    if rotation_poll_interval is not None:
+        if not azure_keyvault_secrets_provider_enabled:
+            raise ArgumentUsageError(
+                '--rotation-poll-interval can only be specified when azure-keyvault-secrets-provider is enabled')
+        azure_keyvault_secrets_provider_addon_profile.config[CONST_ROTATION_POLL_INTERVAL] = rotation_poll_interval
 
     if tags:
         instance.tags = tags
@@ -2175,7 +2185,8 @@ def _handle_addons_args(cmd,  # pylint: disable=too-many-statements
                         enable_sgxquotehelper=False,
                         aci_subnet_name=None,
                         vnet_subnet_id=None,
-                        enable_secret_rotation=False):
+                        enable_secret_rotation=False,
+                        rotation_poll_interval=None,):
     if not addon_profiles:
         addon_profiles = {}
     addons = addons_str.split(',') if addons_str else []
@@ -2229,10 +2240,11 @@ def _handle_addons_args(cmd,  # pylint: disable=too-many-statements
         addon_profiles[CONST_OPEN_SERVICE_MESH_ADDON_NAME] = addon_profile
         addons.remove('open-service-mesh')
     if 'azure-keyvault-secrets-provider' in addons:
-        addon_profile = ManagedClusterAddonProfile(
-            enabled=True, config={CONST_SECRET_ROTATION_ENABLED: "false"})
+        addon_profile = ManagedClusterAddonProfile(enabled=True, config={CONST_SECRET_ROTATION_ENABLED: "false", CONST_ROTATION_POLL_INTERVAL: "2m"})
         if enable_secret_rotation:
             addon_profile.config[CONST_SECRET_ROTATION_ENABLED] = "true"
+        if rotation_poll_interval is not None:
+            addon_profile.config[CONST_ROTATION_POLL_INTERVAL] = rotation_poll_interval
         addon_profiles[CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME] = addon_profile
         addons.remove('azure-keyvault-secrets-provider')
     if 'confcom' in addons:
@@ -2745,13 +2757,13 @@ def aks_addon_show(cmd, client, resource_group_name, name, addon):  # pylint: di
 def aks_addon_enable(cmd, client, resource_group_name, name, addon, workspace_resource_id=None,
                      subnet_name=None, appgw_name=None, appgw_subnet_prefix=None, appgw_subnet_cidr=None, appgw_id=None,
                      appgw_subnet_id=None,
-                     appgw_watch_namespace=None, enable_sgxquotehelper=False, enable_secret_rotation=False,
+                     appgw_watch_namespace=None, enable_sgxquotehelper=False, enable_secret_rotation=False, rotation_poll_interval=None,
                      no_wait=False, enable_msi_auth_for_monitoring=False):
     return enable_addons(cmd, client, resource_group_name, name, addon, workspace_resource_id=workspace_resource_id,
                          subnet_name=subnet_name, appgw_name=appgw_name, appgw_subnet_prefix=appgw_subnet_prefix,
                          appgw_subnet_cidr=appgw_subnet_cidr, appgw_id=appgw_id, appgw_subnet_id=appgw_subnet_id,
                          appgw_watch_namespace=appgw_watch_namespace, enable_sgxquotehelper=enable_sgxquotehelper,
-                         enable_secret_rotation=enable_secret_rotation, no_wait=no_wait,
+                         enable_secret_rotation=enable_secret_rotation, rotation_poll_interval=rotation_poll_interval, no_wait=no_wait,
                          enable_msi_auth_for_monitoring=enable_msi_auth_for_monitoring)
 
 
@@ -2762,7 +2774,7 @@ def aks_addon_disable(cmd, client, resource_group_name, name, addon, no_wait=Fal
 def aks_addon_update(cmd, client, resource_group_name, name, addon, workspace_resource_id=None,
                      subnet_name=None, appgw_name=None, appgw_subnet_prefix=None, appgw_subnet_cidr=None, appgw_id=None,
                      appgw_subnet_id=None,
-                     appgw_watch_namespace=None, enable_sgxquotehelper=False, enable_secret_rotation=False,
+                     appgw_watch_namespace=None, enable_sgxquotehelper=False, enable_secret_rotation=False, rotation_poll_interval=None,
                      no_wait=False, enable_msi_auth_for_monitoring=False):
     addon_profiles = client.get(resource_group_name, name).addon_profiles
     addon_key = ADDONS[addon]
@@ -2775,7 +2787,7 @@ def aks_addon_update(cmd, client, resource_group_name, name, addon, workspace_re
                          subnet_name=subnet_name, appgw_name=appgw_name, appgw_subnet_prefix=appgw_subnet_prefix,
                          appgw_subnet_cidr=appgw_subnet_cidr, appgw_id=appgw_id, appgw_subnet_id=appgw_subnet_id,
                          appgw_watch_namespace=appgw_watch_namespace, enable_sgxquotehelper=enable_sgxquotehelper,
-                         enable_secret_rotation=enable_secret_rotation, no_wait=no_wait,
+                         enable_secret_rotation=enable_secret_rotation, rotation_poll_interval=rotation_poll_interval, no_wait=no_wait,
                          enable_msi_auth_for_monitoring=enable_msi_auth_for_monitoring)
 
 
@@ -2821,7 +2833,7 @@ def aks_disable_addons(cmd, client, resource_group_name, name, addons, no_wait=F
 
 def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_resource_id=None,
                       subnet_name=None, appgw_name=None, appgw_subnet_prefix=None, appgw_subnet_cidr=None, appgw_id=None, appgw_subnet_id=None,
-                      appgw_watch_namespace=None, enable_sgxquotehelper=False, enable_secret_rotation=False, no_wait=False, enable_msi_auth_for_monitoring=False):
+                      appgw_watch_namespace=None, enable_sgxquotehelper=False, enable_secret_rotation=False, rotation_poll_interval=None, no_wait=False, enable_msi_auth_for_monitoring=False):
 
     instance = client.get(resource_group_name, name)
     msi_auth = True if instance.service_principal_profile.client_id == "msi" else False  # this is overwritten by _update_addons(), so the value needs to be recorded here
@@ -2830,7 +2842,7 @@ def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_
     instance = _update_addons(cmd, instance, subscription_id, resource_group_name, name, addons, enable=True,
                               workspace_resource_id=workspace_resource_id, enable_msi_auth_for_monitoring=enable_msi_auth_for_monitoring, subnet_name=subnet_name,
                               appgw_name=appgw_name, appgw_subnet_prefix=appgw_subnet_prefix, appgw_subnet_cidr=appgw_subnet_cidr, appgw_id=appgw_id, appgw_subnet_id=appgw_subnet_id, appgw_watch_namespace=appgw_watch_namespace,
-                              enable_sgxquotehelper=enable_sgxquotehelper, enable_secret_rotation=enable_secret_rotation, no_wait=no_wait)
+                              enable_sgxquotehelper=enable_sgxquotehelper, enable_secret_rotation=enable_secret_rotation, rotation_poll_interval=rotation_poll_interval, no_wait=no_wait)
 
     if CONST_MONITORING_ADDON_NAME in instance.addon_profiles and instance.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled:
         if CONST_MONITORING_USING_AAD_MSI_AUTH in instance.addon_profiles[CONST_MONITORING_ADDON_NAME].config and \
@@ -2910,6 +2922,8 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                    appgw_watch_namespace=None,
                    enable_sgxquotehelper=False,
                    enable_secret_rotation=False,
+                   disable_secret_rotation=False,
+                   rotation_poll_interval=None,
                    no_wait=False):  # pylint: disable=unused-argument
 
     # parse the comma-separated addons argument
@@ -3009,9 +3023,13 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                                    f'"az aks disable-addons -a azure-keyvault-secrets-provider -n {name} -g {resource_group_name}" '
                                    'before enabling it again.')
                 addon_profile = ManagedClusterAddonProfile(
-                    enabled=True, config={CONST_SECRET_ROTATION_ENABLED: "false"})
+                    enabled=True, config={CONST_SECRET_ROTATION_ENABLED: "false", CONST_ROTATION_POLL_INTERVAL: "2m"})
                 if enable_secret_rotation:
                     addon_profile.config[CONST_SECRET_ROTATION_ENABLED] = "true"
+                if disable_secret_rotation:
+                    addon_profile.config[CONST_SECRET_ROTATION_ENABLED] = "false"
+                if rotation_poll_interval is not None:
+                    addon_profile.config[CONST_ROTATION_POLL_INTERVAL] = rotation_poll_interval
                 addon_profiles[CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME] = addon_profile
             addon_profiles[addon] = addon_profile
         else:
