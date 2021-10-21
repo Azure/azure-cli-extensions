@@ -63,7 +63,6 @@ def load_command_table(self, _):
     with self.command_group('webpubsub hub', webpubsub_hub_utils) as g:
         g.command('delete', 'hub_delete')
         g.generic_update_command('update', getter_name='get_hub', setter_name='set_hub', custom_func_name='update', custom_func_type=webpubsub_hub_utils)
-        # g.command('update', 'hub_update')
         g.command('create', 'hub_create')
         g.show_command('show', 'hub_show', exception_handler=empty_on_404)
         g.command('list', 'hub_list')

@@ -37,7 +37,6 @@ def get_hub(client: WebPubSubHubsOperations, resource_group_name, webpubsub_name
 
 
 def set_hub(client: WebPubSubHubsOperations, resource_group_name, webpubsub_name, hub_name, parameters):
-    print(parameters.properties.event_handlers[0].auth.managed_identity)
     return client.begin_create_or_update(hub_name, resource_group_name, webpubsub_name, parameters)
 
 
