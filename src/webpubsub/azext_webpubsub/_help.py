@@ -154,7 +154,7 @@ helps['webpubsub hub create'] = """
     examples:
       - name: Create a hub setting with two event handler settings
         text: >
-            az webpubsub hub create -n MyWebPubSub -g MyResourceGroup --hub-name MyHub --event-handler url-template="http://host.com" user-event-pattern="MyEvent" --event-handler url-template="http://host2.com" system-events="connected,disconnected" auth-type="ManagedIdentity" auth-resource="uri://myUri"
+            az webpubsub hub create -n MyWebPubSub -g MyResourceGroup --hub-name MyHub --event-handler url-template="http://host.com" user-event-pattern="MyEvent" --event-handler url-template="http://host2.com" system-event="connected" system-event="disconnected" auth-type="ManagedIdentity" auth-resource="uri://myUri"
       - name: Create a hub setting with anonymous connection allowed
         text: >
             az webpubsub hub create -n MyWebPubSub -g MyResourceGroup --hub-name MyHub --allow-anonymous true
@@ -166,7 +166,7 @@ helps['webpubsub hub update'] = """
     examples:
       - name: Update event handler settings of a hub
         text: >
-            az webpubsub hub update -n MyWebPubSub -g MyResourceGroup --hub-name MyHub --event-handler url-template="http://host.com" user-event-pattern="MyEvent" --event-handler url-template="http://host2.com" system-events="connected,disconnected" auth-type="ManagedIdentity" auth-resource="uri://myUri"
+            az webpubsub hub update -n MyWebPubSub -g MyResourceGroup --hub-name MyHub --event-handler url-template="http://host.com" user-event-pattern="MyEvent" --event-handler url-template="http://host2.com" system-event="connected" system-event="disconnected" auth-type="ManagedIdentity" auth-resource="uri://myUri"
       - name: Update to allow anonymous connection
         text: >
             az webpubsub hub update -n MyWebPubSub -g MyResourceGroup --hub-name MyHub --allow-anonymous true

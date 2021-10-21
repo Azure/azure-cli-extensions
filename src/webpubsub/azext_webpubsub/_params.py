@@ -58,7 +58,7 @@ def load_arguments(self, _):
                   'webpubsub hub create']:
         with self.argument_context(scope) as c:
             c.argument('hub_name', help='The hub to manage')
-            c.argument('event_handler', action=EventHandlerTemplateUpdateAction, nargs='*', help='Template item for event handler settings. Use key=value pattern to set properties. Supported keys are "url-template", "user-event-pattern", "system-events", "auth".')
+            c.argument('event_handler', action=EventHandlerTemplateUpdateAction, nargs='*', help='Template item for event handler settings. Use key=value pattern to set properties. Supported keys are "url-template", "user-event-pattern", "system-event", "auth-type" and "auth-resource".')
             c.argument('allow_anonymous', arg_type=get_three_state_flag(), help='Set if anonymous connections are allowed for this hub')
 
     with self.argument_context('webpubsub hub list') as c:

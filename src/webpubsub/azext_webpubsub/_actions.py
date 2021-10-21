@@ -14,17 +14,19 @@ logger = get_logger(__name__)
 
 # pylint: disable=protected-access, too-few-public-methods
 class EventHandlerTemplateUpdateAction(argparse._AppendAction):
-    # --event-handler urlTemplate="" user_event_pattern="" system_events="" auth_type="" auth_resource=""
+    # --event-handler urlTemplate="" user_event_pattern="" system_event="" system_event="" auth_type="" auth_resource=""
     def __call__(self, parser, namespace, values, option_string=None):
         kwargs = {}
         auth_type = None
         auth_resource = None
+        system_events = []
         for item in values:
             try:
                 key, value = item.split('=', 1)
 
-                if key == 'system-events':
-                    value = value.split(',')
+                if key == 'system-event':
+                    system_events.append(value)
+                    continue
                 elif key == 'auth-type':
                     auth_type = value
                     continue
@@ -37,6 +39,7 @@ class EventHandlerTemplateUpdateAction(argparse._AppendAction):
                 raise InvalidArgumentValueError('usage error: {} KEY=VALUE [KEY=VALUE ...]'.format(option_string))
         if auth_type is not None:
             kwargs['auth'] = UpstreamAuthSettings(type=auth_type, managed_identity=ManagedIdentitySettings(resource=auth_resource))
-
+        if system_events:
+            kwargs['system_events'] = system_events
         value = EventHandler(**kwargs)
         super().__call__(parser, namespace, value, option_string)
