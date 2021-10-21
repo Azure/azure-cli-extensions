@@ -349,6 +349,9 @@ helps['aks create'] = """
         - name: --enable-secret-rotation
           type: bool
           short-summary: Enable secret rotation. Use with azure-keyvault-secrets-provider addon.
+        - name: --rotation-poll-interval
+          type: string
+          short-summary: Set interval of rotation poll. Use with azure-keyvault-secrets-provider addon.
         - name: --disable-local-accounts
           type: bool
           short-summary: (Preview) If set to true, getting static credential will be disabled for this cluster.
@@ -358,6 +361,21 @@ helps['aks create'] = """
         - name: --gpu-instance-profile
           type: string
           short-summary: GPU instance profile to partition multi-gpu Nvidia GPUs.
+        - name: --enable-windows-gmsa
+          type: bool
+          short-summary: Enable Windows gmsa.
+        - name: --gmsa-dns-server
+          type: string
+          short-summary: Specify DNS server for Windows gmsa for this cluster.
+          long-summary: |-
+             You do not need to set this if you have set DNS server in the VNET used by the cluster.
+             You must set or not set --gmsa-dns-server and --gmsa-root-domain-name at the same time when setting --enable-windows-gmsa.
+        - name: --gmsa-root-domain-name
+          type: string
+          short-summary: Specify root domain name for Windows gmsa for this cluster.
+          long-summary: |-
+             You do not need to set this if you have set DNS server in the VNET used by the cluster.
+             You must set or not set --gmsa-dns-server and --gmsa-root-domain-name at the same time when setting --enable-windows-gmsa.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -407,6 +425,10 @@ helps['aks create'] = """
           text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-aad --enable-azure-rbac
         - name: Create a kubernetes cluster with a specific os-sku
           text: az aks create -g MyResourceGroup -n MyManagedCluster --os-sku Ubuntu
+        - name: Create a kubernetes cluster with enabling Windows gmsa and with setting DNS server in the vnet used by the cluster.
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --load-balancer-sku Standard --network-plugin azure --windows-admin-username azure --windows-admin-password 'replacePassword1234$' --enable-windows-gmsa
+        - name: Create a kubernetes cluster with enabling Windows gmsa but without setting DNS server in the vnet used by the cluster.
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --load-balancer-sku Standard --network-plugin azure --windows-admin-username azure --windows-admin-password 'replacePassword1234$' --enable-windows-gmsa --gmsa-dns-server "10.240.0.4" --gmsa-root-domain-name "contoso.com"
 """.format(sp_cache=AKS_SERVICE_PRINCIPAL_CACHE)
 
 helps['aks scale'] = """
@@ -552,6 +574,9 @@ helps['aks update'] = """
         - name: --disable-secret-rotation
           type: bool
           short-summary: Disable secret rotation. Use with azure-keyvault-secrets-provider addon.
+        - name: --rotation-poll-interval
+          type: string
+          short-summary: Set interval of rotation poll. Use with azure-keyvault-secrets-provider addon.
         - name: --tags
           type: string
           short-summary: The tags of the managed cluster. The managed cluster instance and all resources managed by the cloud provider will be tagged.
@@ -587,6 +612,21 @@ helps['aks update'] = """
         - name: --disable-public-fqdn
           type: bool
           short-summary: Disable public fqdn feature for private cluster.
+        - name: --enable-windows-gmsa
+          type: bool
+          short-summary: Enable Windows gmsa on cluster.
+        - name: --gmsa-dns-server
+          type: string
+          short-summary: Specify DNS server for Windows gmsa on cluster.
+          long-summary: |-
+             You do not need to set this if you have set DNS server in the VNET used by the cluster.
+             You must set or not set --gmsa-dns-server and --gmsa-root-domain-name at the same time when setting --enable-windows-gmsa.
+        - name: --gmsa-root-domain-name
+          type: string
+          short-summary: Specify root domain name for Windows gmsa on cluster.
+          long-summary: |-
+             You do not need to set this if you have set DNS server in the VNET used by the cluster.
+             You must set or not set --gmsa-dns-server and --gmsa-root-domain-name at the same time when setting --enable-windows-gmsa.
     examples:
       - name: Enable cluster-autoscaler within node count range [1,5]
         text: az aks update --enable-cluster-autoscaler --min-count 1 --max-count 5 -g MyResourceGroup -n MyManagedCluster
@@ -638,6 +678,10 @@ helps['aks update'] = """
         text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-azure-rbac
       - name: Disable Azure RBAC in a managed AAD AKS cluster
         text: az aks update -g MyResourceGroup -n MyManagedCluster --disable-azure-rbac
+      - name: Enable Windows gmsa for a kubernetes cluster with setting DNS server in the vnet used by the cluster.
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-windows-gmsa
+      - name: Enable Windows gmsa for a kubernetes cluster without setting DNS server in the vnet used by the cluster.
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-windows-gmsa --gmsa-dns-server "10.240.0.4" --gmsa-root-domain-name "contoso.com"
 """
 
 helps['aks kollect'] = """
@@ -1136,6 +1180,9 @@ parameters:
   - name: --enable-secret-rotation
     type: bool
     short-summary: Enable secret rotation. Use with azure-keyvault-secrets-provider addon.
+  - name: --rotation-poll-interval
+    type: string
+    short-summary: Set interval of rotation poll. Use with azure-keyvault-secrets-provider addon.
 examples:
   - name: Enable a Kubernetes addon. (autogenerated)
     text: az aks addon enable --addon virtual-node --name MyManagedCluster --resource-group MyResourceGroup --subnet-name VirtualNodeSubnet
@@ -1188,6 +1235,9 @@ parameters:
   - name: --enable-secret-rotation
     type: bool
     short-summary: Enable secret rotation. Use with azure-keyvault-secrets-provider addon.
+  - name: --rotation-poll-interval
+    type: string
+    short-summary: Set interval of rotation poll. Use with azure-keyvault-secrets-provider addon.
 examples:
   - name: Update a Kubernetes addon. (autogenerated)
     text: az aks addon update --addon virtual-node --name MyManagedCluster --resource-group MyResourceGroup --subnet-name VirtualNodeSubnet
@@ -1253,6 +1303,9 @@ parameters:
   - name: --enable-secret-rotation
     type: bool
     short-summary: Enable secret rotation. Use with azure-keyvault-secrets-provider addon.
+  - name: --rotation-poll-interval
+    type: string
+    short-summary: Set interval of rotation poll. Use with azure-keyvault-secrets-provider addon.
 examples:
   - name: Enable Kubernetes addons. (autogenerated)
     text: az aks enable-addons --addons virtual-node --name MyManagedCluster --resource-group MyResourceGroup --subnet-name VirtualNodeSubnet
