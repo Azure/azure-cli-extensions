@@ -373,6 +373,9 @@ helps['aks create'] = """
           long-summary: |-
              You do not need to set this if you have set DNS server in the VNET used by the cluster.
              You must set or not set --gmsa-dns-server and --gmsa-root-domain-name at the same time when setting --enable-windows-gmsa.
+        - name: --snapshot-id
+          type: bool
+          short-summary: Use a snapshot to create this cluster.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -1432,7 +1435,7 @@ helps['aks snapshot create'] = """
     type: command
     short-summary: Create a snapshot of a node pool.
     parameters:
-        - name: --source-nodepool-id
+        - name: --nodepool-id
           type: string
           short-summary: The source node pool id.
         - name: --tags
@@ -1444,9 +1447,9 @@ helps['aks snapshot create'] = """
 
     examples:
         - name: Create a snapshot.
-          text: az aks snapshot create -g MyResourceGroup -n snapshot1 --source-nodepool-id "/subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.ContainerService/managedClusters/akscluster1/agentPools/nodepool1"
+          text: az aks snapshot create -g MyResourceGroup -n snapshot1 --nodepool-id "/subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.ContainerService/managedClusters/akscluster1/agentPools/nodepool1"
         - name: Create a snapshot with custom tags.
-          text: az aks snapshot create -g MyResourceGroup -n snapshot1 --source-nodepool-id "/subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.ContainerService/managedClusters/akscluster1/agentPools/nodepool1" --tags "foo=bar" "key1=val1"
+          text: az aks snapshot create -g MyResourceGroup -n snapshot1 --nodepool-id "/subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.ContainerService/managedClusters/akscluster1/agentPools/nodepool1" --tags "foo=bar" "key1=val1"
 """
 
 helps['aks snapshot delete'] = """

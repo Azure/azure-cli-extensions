@@ -93,6 +93,8 @@ from ._client_factory import get_resource_by_name
 from ._client_factory import cf_container_registry_service
 from ._client_factory import cf_storage
 from ._client_factory import cf_agent_pools
+from ._client_factory import cf_snapshots
+from ._client_factory import cf_snapshots_client
 from ._resourcegroup import get_rg_location
 
 from ._roleassignments import add_role_assignment, create_role_assignment, build_role_scope, resolve_role_id, \
@@ -523,6 +525,27 @@ def _update_dict(dict1, dict2):
     cp.update(dict2)
     return cp
 
+_re_snapshot_resource_id = re.compile(
+    r'/subscriptions/(.*?)/resourcegroups/(.*?)/providers/microsoft.containerservice/snapshots/(.*)',
+    flags=re.IGNORECASE)
+
+def _get_snapshot(cli_ctx, snapshot_id):
+    snapshot_id = snapshot_id.lower()
+    match = _re_snapshot_resource_id.search(snapshot_id)
+    if match:
+        subscription_id = match.group(1)
+        resource_group_name = match.group(2)
+        snapshot_name = match.group(3)
+        snapshot_client = cf_snapshots_client(cli_ctx, subscription_id=subscription_id)
+        try:
+            snapshot = snapshot_client.get(resource_group_name, snapshot_name)
+        except CloudError as ex:
+            if 'was not found' in ex.message:
+                raise CLIError("Snapshot {} not found.".format(snapshot_id))
+            raise CLIError(ex.message)
+        return snapshot
+    raise CLIError(
+        "Cannot parse snapshot name from provided resource id {}.".format(snapshot_id))
 
 def aks_browse(cmd,     # pylint: disable=too-many-statements,too-many-branches
                client,
@@ -827,7 +850,8 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                enable_windows_gmsa=False,
                gmsa_dns_server=None,
                gmsa_root_domain_name=None,
-               yes=False):
+               yes=False,
+               snapshot_id=None):
     if not no_ssh_key:
         try:
             if not ssh_key_value or not is_valid_ssh_rsa_public_key(ssh_key_value):
@@ -849,6 +873,19 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
     rg_location = get_rg_location(cmd.cli_ctx, resource_group_name)
     if location is None:
         location = rg_location
+
+    creationData = None
+    if snapshot_id:
+        snapshot = _get_snapshot(cmd.cli_ctx, snapshot_id)
+        if not kubernetes_version:
+            kubernetes_version = snapshot.kubernetes_version
+        if not os_sku:
+            os_sku = snapshot.os_sku
+        if not node_vm_size:
+            node_vm_size = snapshot.vm_size
+        creationData = CreationData(
+            source_resource_id = snapshot_id
+        )
 
     # Flag to be removed, kept for back-compatibility only. Remove the below section
     # when we deprecate the enable-vmss flag
@@ -888,7 +925,8 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         max_pods=int(max_pods) if max_pods else None,
         type=vm_set_type,
         workload_runtime=workload_runtime,
-        gpu_instance_profile=gpu_instance_profile
+        gpu_instance_profile=gpu_instance_profile,
+        creation_data=creationData
     )
 
     if node_osdisk_size:
@@ -3815,7 +3853,7 @@ def aks_snapshot_create(cmd,      # pylint: disable=unused-argument,too-many-loc
                       client,
                       resource_group_name,
                       name,
-                      source_nodepool_id,
+                      nodepool_id,
                       location=None,
                       tags=None,
                       aks_custom_headers=None,
@@ -3826,7 +3864,7 @@ def aks_snapshot_create(cmd,      # pylint: disable=unused-argument,too-many-loc
         location = rg_location
 
     creationData = CreationData(
-        source_resource_id = source_nodepool_id
+        source_resource_id = nodepool_id
     )
 
     snapshot = Snapshot(
@@ -3841,7 +3879,7 @@ def aks_snapshot_create(cmd,      # pylint: disable=unused-argument,too-many-loc
 
 def aks_snapshot_show(cmd, client, resource_group_name, name):   # pylint: disable=unused-argument
     snapshot = client.get(resource_group_name, name)
-    return _remove_nulls([snapshot])[0]
+    return snapshot
 
 def aks_snapshot_delete(cmd,   # pylint: disable=unused-argument
                          client,

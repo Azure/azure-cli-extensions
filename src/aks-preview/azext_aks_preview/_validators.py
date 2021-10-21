@@ -505,7 +505,13 @@ def validate_assign_kubelet_identity(namespace):
         if not is_valid_resource_id(namespace.assign_kubelet_identity):
             raise CLIError("--assign-kubelet-identity is not a valid Azure resource ID.")
 
-def validate_source_nodepool_id(namespace):
+def validate_nodepool_id(namespace):
     from msrestazure.tools import is_valid_resource_id
-    if not is_valid_resource_id(namespace.source_nodepool_id):
-        raise CLIError("--source-nodepool-id is not a valid Azure resource ID.")
+    if not is_valid_resource_id(namespace.nodepool_id):
+        raise CLIError("--nodepool-id is not a valid Azure resource ID.")
+
+def validate_snapshot_id(namespace):
+    if namespace.snapshot_id:
+        from msrestazure.tools import is_valid_resource_id
+        if not is_valid_resource_id(namespace.snapshot_id):
+            raise CLIError("--snapshot-id is not a valid Azure resource ID.")
