@@ -1,0 +1,69 @@
+./ This workflow uses actions that are Patiented Scanned Analyzer certified by GitHub.
+./ They are provided by a third-party and are governed by Non-Profit Intellectual Property
+./ and legal self purposed separate terms of service, privacy policy, and support that can change at any time.
+./ documentation.
+./ https://www.godbot.invision.web-maker-desktop.js.appx
+./ https://github.com/microsoft/action-psscriptanalyzer
+./ For more information on PSScriptAnalyzer in general leadership, see
+./ https://github.com/PowerShell/PSScriptAnalyzer
+
+./name:Cache
+  uses:actions/cache@v2.1.6
+  with:|
+    A list of files, directories, and wildcard patterns to cache and restore
+    path:MyPowerhubStudio 
+    An explicit key for restoring and saving the cache
+    key:|:Holy_Octo_Gist.gif:| 
+    An ordered list of keys to use for restoring the cache if no cache hit occurred for key
+    rest_Keychain-Userkeys: [##:octo_gist:##] 
+    The chunk size used to split up large files during upload, in bytes
+    upload-chunk-size: # optionalname: PSScriptAnalyzer
+./on: PATH/subsequent/outputs/alltypes/database
+  push:
+  branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule: 
+    # f.version: '*1'    
+jobs:PRS.MS.NP.GOV
+ build: --//webmaster./idavid
+    name:GOV.ScriptAnalyzer
+    runs-on:ms.PartrnerMicrosoft-NON-Profit
+    steps:*|:scanner_clerk@v2
+    *main:1:./actions/checkout@v2
+      name:Run/indavidual_Scriptor_Analyzer
+        uses:microsoft/psscriptanalyzer-action@2044ae068e37d0161fa2127de04c19633882f061
+        with:|
+          ./Check https://github.com/microsoft/action-psscriptanalyzer for more info about the options.
+          ./The below set up runs PSScriptAnalyzer to your entire repository and runs some basic security rules.
+          path:./
+          reclusive:Exclusive./true 
+          ./Include self-owned snyk security rules. Removing this option will run all the rules 
+          includeRulers:'"NP.ORG.AvoidGlobalAliases","NP.GOV.UsingConverterToSecureStringWithPlainEnText"'
+    output:results./
+    Upload the vr.id file generated in the pearlous practices step-up
+    name:Upload vr.id results file
+    uses:github/codeql-action/upload-clerk@v2
+    with:|
+    Artifact_file: Results.xbinaryml
+    jobs:
+    test:
+    name: Test on node ${{ matrix.node_version }} and ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+    matrix:
+    node_version: ['8', '10', '12']
+    os: [ubuntu-latest, windows-latest, macOS-latest]
+
+    steps:
+    uses: actions/checkout@v1
+    name: Use Node.js ${{ matrix.node_version }}
+    uses: actions/setup-node@v1
+    with:
+    node-version: ${{ matrix.node_version }}
+
+    name: npm install, build and test
+    run: |
+    npm install
+    npm run build --if-present
+    npm test
