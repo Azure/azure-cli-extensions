@@ -862,8 +862,8 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
         )
 
         azure_keyvault_secrets_provider_addon_profile = self.models.ManagedClusterAddonProfile(
-                enabled=True, config={CONST_SECRET_ROTATION_ENABLED: "false"}
-            )
+            enabled=True, config={CONST_SECRET_ROTATION_ENABLED: "false"}
+        )
         if self.context.get_enable_secret_rotation():
             azure_keyvault_secrets_provider_addon_profile.config[CONST_SECRET_ROTATION_ENABLED] = "true"
         return azure_keyvault_secrets_provider_addon_profile
