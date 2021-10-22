@@ -29,7 +29,7 @@ for src_d in os.listdir(SRC_PATH):
     if not os.path.isdir(src_d_full):
         continue
     pkg_name = next((d for d in os.listdir(src_d_full) if d.startswith('azext_')), None)
-    print("{}: ".format(pkg_name), end='')
+    print("{}: ".format(pkg_name), end='', flush=True)
 
     # If running in Travis CI, only run tests for edited extensions
     commit_range = os.environ.get('TRAVIS_COMMIT_RANGE')
@@ -55,7 +55,7 @@ for src_d in os.listdir(SRC_PATH):
 
     # Find the package and check it has tests
     if pkg_name and os.path.isdir(os.path.join(src_d_full, pkg_name, 'tests')):
-        print(Added)
+        print("Added", flush=True)
         ALL_TESTS.append((pkg_name, src_d_full))
 
 
