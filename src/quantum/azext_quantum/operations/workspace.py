@@ -5,7 +5,8 @@
 
 # pylint: disable=line-too-long,redefined-builtin
 
-from knack.util import CLIError
+from azure.cli.core.azclierror import (InvalidArgumentValueError, AzureInternalError,
+                                       RequiredArgumentMissingError, ResourceNotFoundError)
 
 from .._client_factory import cf_workspaces, cf_quotas, cf_offerings
 from ..vendored_sdks.azure_mgmt_quantum.models import QuantumWorkspace
@@ -97,19 +98,19 @@ def _add_quantum_providers(cmd, workspace, providers):
     for pair in providers.split(','):
         es = [e.strip() for e in pair.split('/')]
         if (len(es) != 2):
-            raise CLIError(f"Invalid Provider/SKU specified: '{pair.strip()}'")
+            raise InvalidArgumentValueError(f"Invalid Provider/SKU specified: '{pair.strip()}'")
         provider_id = es[0]
         sku = es[1]
         (publisher, offer) = _get_publisher_and_offer_from_provider_id(providers_in_region, provider_id)
         if (offer is None or publisher is None):
-            raise CLIError(f"Provider '{provider_id}' not found in region {workspace.location}.")
+            raise InvalidArgumentValueError(f"Provider '{provider_id}' not found in region {workspace.location}.")
         providers_selected.append({'provider_id': provider_id, 'sku': sku, 'offer_id': offer, 'publisher_id': publisher})
     _show_tip(f"Workspace creation has been requested with the following providers:\n{providers_selected}")
     # Now that the providers have been requested, add each of them into the workspace
     for provider in providers_selected:
         if _provider_terms_need_acceptance(cmd, provider):
-            raise CLIError(f"Terms for Provider '{provider['provider_id']}' and SKU '{provider['sku']}' have not been accepted.\n"
-                           "Use command 'az quantum offerings accept-terms' to accept them.")
+            raise InvalidArgumentValueError(f"Terms for Provider '{provider['provider_id']}' and SKU '{provider['sku']}' have not been accepted.\n"
+                                            "Use command 'az quantum offerings accept-terms' to accept them.")
         p = Provider()
         p.provider_id = provider['provider_id']
         p.provider_sku = provider['sku']
@@ -123,7 +124,7 @@ def _create_role_assignment(cmd, quantum_workspace):
         try:
             create_role_assignment(cmd, role="Contributor", scope=quantum_workspace.storage_account, assignee=quantum_workspace.identity.principal_id)
             break
-        except (CloudError, CLIError) as e:
+        except (CloudError, AzureInternalError) as e:
             error = str(e.args).lower()
             if (("does not exist" in error) or ("cannot find" in error)):
                 print('.', end='', flush=True)
@@ -132,12 +133,12 @@ def _create_role_assignment(cmd, quantum_workspace):
                 continue
             raise e
         except Exception as x:
-            raise CLIError(f"Role assignment encountered exception ({type(x).__name__}): {x}")
+            raise AzureInternalError(f"Role assignment encountered exception ({type(x).__name__}): {x}")
     if (retry_attempts > 0):
         print()  # To end the line of the waiting indicators.
     if (retry_attempts == MAX_RETRIES_ROLE_ASSIGNMENT):
         max_time_in_seconds = MAX_RETRIES_ROLE_ASSIGNMENT * POLLING_TIME_DURATION
-        raise CLIError(f"Role assignment could not be added to storage account {quantum_workspace.storage_account} within {max_time_in_seconds} seconds.")
+        raise AzureInternalError(f"Role assignment could not be added to storage account {quantum_workspace.storage_account} within {max_time_in_seconds} seconds.")
     return quantum_workspace
 
 
@@ -147,16 +148,16 @@ def create(cmd, resource_group_name=None, workspace_name=None, location=None, st
     """
     client = cf_workspaces(cmd.cli_ctx)
     if (not workspace_name):
-        raise CLIError("An explicit workspace name is required for this command.")
+        raise RequiredArgumentMissingError("An explicit workspace name is required for this command.")
     if (not storage_account):
-        raise CLIError("A quantum workspace requires a valid storage account.")
+        raise RequiredArgumentMissingError("A quantum workspace requires a valid storage account.")
     if (not location):
-        raise CLIError("A location for the new quantum workspace is required.")
+        raise RequiredArgumentMissingError("A location for the new quantum workspace is required.")
     if (provider_sku_list is None):
-        raise CLIError("A list of Azure Quantum providers and SKUs is required.")
+        raise RequiredArgumentMissingError("A list of Azure Quantum providers and SKUs is required.")
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
     if (not info.resource_group):
-        raise CLIError("Please run 'az quantum workspace set' first to select a default resource group.")
+        raise ResourceNotFoundError("Please run 'az quantum workspace set' first to select a default resource group.")
     quantum_workspace = _get_basic_quantum_workspace(location, info, storage_account)
     _add_quantum_providers(cmd, quantum_workspace, provider_sku_list)
     poller = client.begin_create_or_update(info.resource_group, info.name, quantum_workspace, polling=False)
@@ -175,7 +176,7 @@ def delete(cmd, resource_group_name=None, workspace_name=None):
     client = cf_workspaces(cmd.cli_ctx)
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
     if (not info.resource_group) or (not info.name):
-        raise CLIError("Please run 'az quantum workspace set' first to select a default Quantum Workspace.")
+        raise ResourceNotFoundError("Please run 'az quantum workspace set' first to select a default Quantum Workspace.")
     client.begin_delete(info.resource_group, info.name, polling=False)
     # If we deleted the current workspace, clear it
     curr_ws = WorkspaceInfo(cmd)
@@ -202,7 +203,7 @@ def get(cmd, resource_group_name=None, workspace_name=None):
     client = cf_workspaces(cmd.cli_ctx)
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name, None)
     if (not info.resource_group) or (not info.name):
-        raise CLIError("Please run 'az quantum workspace set' first to select a default Quantum Workspace.")
+        raise ResourceNotFoundError("Please run 'az quantum workspace set' first to select a default Quantum Workspace.")
     ws = client.get(info.resource_group, info.name)
     return ws
 
