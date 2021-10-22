@@ -45,13 +45,15 @@ class DiskpoolScenarioTest(ScenarioTest):
         self.kwargs['subnetId'] = result['id']
 
         # Create a Disk Pool
+        # TODO: remove --additional-capabilities when service is ready
         self.cmd('disk-pool create --name {diskPoolName} --resource-group {rg} --location {location} '
                  '--availability-zones {zone} --subnet-id {subnetId} --sku name="Standard_S1" tier="Standard" '
-                 '--disks {diskId}', checks=[self.check('name', '{diskPoolName}'),
-                                             self.check('availabilityZones[0]', '{zone}'),
-                                             self.check('disks[0].id', '{diskId}'),
-                                             self.check('subnetId', '{subnetId}'),
-                                             self.check('tier', 'Standard')])
+                 '--disks {diskId} --additional-capabilities DiskPool.SkipInfrastructureDeployment',
+                 checks=[self.check('name', '{diskPoolName}'),
+                         self.check('availabilityZones[0]', '{zone}'),
+                         self.check('disks[0].id', '{diskId}'),
+                         self.check('subnetId', '{subnetId}'),
+                         self.check('tier', 'Standard')])
         self.cmd('disk-pool show --name {diskPoolName} --resource-group {rg}',
                  checks=[self.check('name', '{diskPoolName}'),
                          self.check('availabilityZones[0]', '{zone}'),
