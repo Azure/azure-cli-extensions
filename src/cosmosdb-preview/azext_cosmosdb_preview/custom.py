@@ -263,7 +263,7 @@ def cli_cosmosdb_managed_cassandra_datacenter_create(client,
     return client.begin_create_update(resource_group_name, cluster_name, data_center_name, data_center_resource)
 
 
-def cli_cosmosdb_managed_cassandra_datacenter_update(client, 
+def cli_cosmosdb_managed_cassandra_datacenter_update(client,
                                                      resource_group_name,
                                                      cluster_name,
                                                      data_center_name,

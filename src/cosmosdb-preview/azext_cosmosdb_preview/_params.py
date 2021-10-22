@@ -11,9 +11,12 @@ from azext_cosmosdb_preview._validators import (
     validate_seednodes,
     validate_node_count)
 
+from azext_cosmosdb_preview.actions import (
+    InvokeCommandArgumentsAddAction)
+
 
 def load_arguments(self, _):
-    from azure.cli.core.commands.parameters import tags_type, get_enum_type, get_three_state_flag
+    from azure.cli.core.commands.parameters import tags_type, get_enum_type
 
     # Managed Cassandra Cluster
     for scope in [
@@ -24,7 +27,7 @@ def load_arguments(self, _):
             'managed-cassandra cluster deallocate',
             'managed-cassandra cluster start',
             'managed-cassandra cluster status',
-            'managed-cassandra cluster command',
+            'managed-cassandra cluster invoke-command',
             'managed-cassandra cluster backup list']:
         with self.argument_context(scope) as c:
             c.argument('cluster_name', options_list=['--cluster-name', '-c'], help="Cluster Name", required=True)
@@ -54,11 +57,11 @@ def load_arguments(self, _):
         c.argument('cluster_name_override', help="If a cluster must have a name that is not a valid azure resource name, this field can be specified to choose the Cassandra cluster name. Otherwise, the resource name will be used as the cluster name.")
 
     # Managed Cassandra Cluster
-    for scope in ['managed-cassandra cluster command']:
+    for scope in ['managed-cassandra cluster invoke-command']:
         with self.argument_context(scope) as c:
             c.argument('command_name', options_list=['--command-name'], help="The command which should be run", required=True)
             c.argument('host', options_list=['--host'], help="IP address of the cassandra host to run the command on", required=True)
-            c.argument('arguments', options_list=['--arguments'], help="The dictionary of arguments for the command in json format.")
+            c.argument('arguments', options_list=['--arguments'], action=InvokeCommandArgumentsAddAction, nargs='+', help="The key=value of arguments for the command.")
             c.argument('cassandra_stop_start', options_list=['--cassandra-stop-start'], help="If true, stops cassandra before executing the command and then start it again.")
             c.argument('readwrite', options_list=['--readwrite'], help="If true, allows the command to *write* to the cassandra directory, otherwise read-only.")
 
