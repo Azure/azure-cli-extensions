@@ -9,6 +9,9 @@ pip install -e azure-cli/src/azure-cli-core
 pip install -e azure-cli/src/azure-cli
 echo "Installed."
 
+pip list -v
+az --version
+
 python ./scripts/ci/test_source.py -v
 
 echo "OK. Completed tests."
