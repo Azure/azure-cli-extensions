@@ -24,6 +24,11 @@ from util import SRC_PATH
 
 ALL_TESTS = []
 
+
+for k, v in os.environ.items():
+    print("{}={}".format(k, v))
+
+
 for src_d in os.listdir(SRC_PATH):
     src_d_full = os.path.join(SRC_PATH, src_d)
     if not os.path.isdir(src_d_full):
