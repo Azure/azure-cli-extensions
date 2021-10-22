@@ -12,6 +12,7 @@ echo "Installed."
 pip list -v
 az --version
 
+cat ./scripts/ci/test_source.py
 python ./scripts/ci/test_source.py -v
 
 echo "OK. Completed tests."
