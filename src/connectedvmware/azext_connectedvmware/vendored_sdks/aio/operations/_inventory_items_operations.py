@@ -47,7 +47,7 @@ class InventoryItemsOperations:
         vcenter_name: str,
         inventory_item_name: str,
         body: Optional["_models.InventoryItem"] = None,
-        **kwargs
+        **kwargs: Any
     ) -> "_models.InventoryItem":
         """Implements InventoryItem PUT method.
 
@@ -122,7 +122,7 @@ class InventoryItemsOperations:
         resource_group_name: str,
         vcenter_name: str,
         inventory_item_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> "_models.InventoryItem":
         """Gets InventoryItem.
 
@@ -187,7 +187,7 @@ class InventoryItemsOperations:
         resource_group_name: str,
         vcenter_name: str,
         inventory_item_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> None:
         """Deletes an inventoryItem.
 
@@ -248,7 +248,7 @@ class InventoryItemsOperations:
         self,
         resource_group_name: str,
         vcenter_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> AsyncIterable["_models.InventoryItemsList"]:
         """Implements GET inventoryItems in a vCenter.
 

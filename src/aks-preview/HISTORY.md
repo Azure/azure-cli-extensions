@@ -2,6 +2,39 @@
 
 Release History
 ===============
+0.5.38
++++++
+* Add parameter `--rotation-poll-interval` for Azure Keyvault Secrets Provider Addon. 
+
+0.5.37
++++++
+* Add Windows gMSA v2 support. Add parameters `--enable-windows-gmsa`, `--gmsa-dns-server` and `--gmsa-root-domain-name`
+
+0.5.36
++++++
+* Update to use 2021-09-01 api-version
+
+0.5.35
++++++
+* Add support for multi-instance GPU configuration (`--gpu_instance_profile`) in `az aks create`
+and `az aks nodepool add`.
+
+0.5.34
++++++
+* Add support for WASM nodepools (`--workload-runtime WasmWasi`) in `az aks create`
+and `az aks nodepool add`
+
+0.5.33
++++++
+* Add support for new addon commands
+  * `az aks addon list`
+  * `az aks addon list-available`
+  * `az aks addon show`
+  * `az aks addon enable`
+  * `az aks addon disable`
+  * `az aks addon update`
+* Refactored code to bring addon specific functionality into a separate file.
+
 0.5.32
 +++++
 * Update to use 2021-08-01 api-version

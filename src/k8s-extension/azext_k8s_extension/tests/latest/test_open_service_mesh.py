@@ -11,7 +11,6 @@ import unittest
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from azext_k8s_extension.partner_extensions.OpenServiceMesh import _get_tested_distros
 
-TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 class TestOpenServiceMesh(unittest.TestCase):
     def test_bad_osm_arc_version(self):
