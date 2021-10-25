@@ -785,8 +785,8 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
         mc.pod_identity_profile = pod_identity_profile
         return mc
 
-    def set_up_monitoring_addon_profile(self) -> ManagedClusterAddonProfile:
-        """Set up monitoring addon profile.
+    def build_monitoring_addon_profile(self) -> ManagedClusterAddonProfile:
+        """Build monitoring addon profile.
 
         Note: Overwritten in aks-preview.
 
@@ -825,8 +825,8 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
         self.context.set_intermediate("monitoring", True, overwrite_exists=True)
         return monitoring_addon_profile
 
-    def set_up_ingress_appgw_addon_profile(self) -> ManagedClusterAddonProfile:
-        """Set up ingress appgw addon profile.
+    def build_ingress_appgw_addon_profile(self) -> ManagedClusterAddonProfile:
+        """Build ingress appgw addon profile.
 
         Note: Inherited and extended in aks-preview to support option appgw_subnet_prefix.
 
@@ -838,7 +838,7 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
             "CONST_INGRESS_APPGW_SUBNET_CIDR"
         )
 
-        ingress_appgw_addon_profile = super().set_up_ingress_appgw_addon_profile()
+        ingress_appgw_addon_profile = super().build_ingress_appgw_addon_profile()
         appgw_subnet_prefix = self.context.get_appgw_subnet_prefix()
         if (
             appgw_subnet_prefix is not None and
@@ -850,8 +850,8 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
             ingress_appgw_addon_profile.config[CONST_INGRESS_APPGW_SUBNET_CIDR] = appgw_subnet_prefix
         return ingress_appgw_addon_profile
 
-    def set_up_azure_keyvault_secrets_provider_addon_profile(self) -> ManagedClusterAddonProfile:
-        """Set up azure keyvault secrets provider addon profile.
+    def build_azure_keyvault_secrets_provider_addon_profile(self) -> ManagedClusterAddonProfile:
+        """Build azure keyvault secrets provider addon profile.
 
         :return: a ManagedClusterAddonProfile object
         """
@@ -868,8 +868,8 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
             azure_keyvault_secrets_provider_addon_profile.config[CONST_SECRET_ROTATION_ENABLED] = "true"
         return azure_keyvault_secrets_provider_addon_profile
 
-    def set_up_gitops_addon_profile(self) -> ManagedClusterAddonProfile:
-        """Set up gitops addon profile.
+    def build_gitops_addon_profile(self) -> ManagedClusterAddonProfile:
+        """Build gitops addon profile.
 
         :return: a ManagedClusterAddonProfile object
         """
@@ -897,11 +897,11 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
         if "azure-keyvault-secrets-provider" in addons:
             addon_profiles[
                 CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME
-            ] = self.set_up_azure_keyvault_secrets_provider_addon_profile()
+            ] = self.build_azure_keyvault_secrets_provider_addon_profile()
         if "gitops" in addons:
             addon_profiles[
                 CONST_GITOPS_ADDON_NAME
-            ] = self.set_up_gitops_addon_profile()
+            ] = self.build_gitops_addon_profile()
         mc.addon_profiles = addon_profiles
         return mc
 

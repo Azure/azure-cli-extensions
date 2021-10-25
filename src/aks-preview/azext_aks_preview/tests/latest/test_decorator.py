@@ -1032,6 +1032,231 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
         )
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
 
+    def test_build_monitoring_addon_profile(self):
+        # default
+        dec_1 = AKSPreviewCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "resource_group_name": "test_rg_name",
+                "name": "test_name",
+                "location": "test_location",
+                "enable_addons": "monitoring",
+                "workspace_resource_id": "test_workspace_resource_id",
+                "enable_msi_auth_for_monitoring": False,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+
+        with patch(
+            "azext_aks_preview.decorator.ensure_container_insights_for_monitoring",
+            return_value=None,
+        ):
+            self.assertEqual(dec_1.context.get_intermediate("monitoring"), None)
+            monitoring_addon_profile = dec_1.build_monitoring_addon_profile()
+            ground_truth_monitoring_addon_profile = self.models.ManagedClusterAddonProfile(
+                enabled=True,
+                config={
+                    CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID: "/test_workspace_resource_id",
+                    CONST_MONITORING_USING_AAD_MSI_AUTH: False,
+                },
+            )
+            self.assertEqual(
+                monitoring_addon_profile, ground_truth_monitoring_addon_profile
+            )
+            self.assertEqual(dec_1.context.get_intermediate("monitoring"), True)
+
+        # custom value
+        dec_2 = AKSPreviewCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "resource_group_name": "test_rg_name",
+                "name": "test_name",
+                "location": "test_location",
+                "enable_addons": "monitoring",
+                "workspace_resource_id": "test_workspace_resource_id",
+                "enable_msi_auth_for_monitoring": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+
+        with patch(
+            "azext_aks_preview.decorator.ensure_container_insights_for_monitoring",
+            return_value=None,
+        ):
+            self.assertEqual(dec_2.context.get_intermediate("monitoring"), None)
+            monitoring_addon_profile = dec_2.build_monitoring_addon_profile()
+            ground_truth_monitoring_addon_profile = self.models.ManagedClusterAddonProfile(
+                enabled=True,
+                config={
+                    CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID: "/test_workspace_resource_id",
+                    CONST_MONITORING_USING_AAD_MSI_AUTH: True,
+                },
+            )
+            self.assertEqual(
+                monitoring_addon_profile, ground_truth_monitoring_addon_profile
+            )
+            self.assertEqual(dec_2.context.get_intermediate("monitoring"), True)
+
+    def test_build_ingress_appgw_addon_profile(self):
+        # default
+        dec_1 = AKSPreviewCreateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+
+        self.assertEqual(
+            dec_1.context.get_intermediate("ingress_appgw_addon_enabled"), None
+        )
+        ingress_appgw_addon_profile = dec_1.build_ingress_appgw_addon_profile()
+        ground_truth_ingress_appgw_addon_profile = (
+            self.models.ManagedClusterAddonProfile(
+                enabled=True,
+                config={},
+            )
+        )
+        self.assertEqual(
+            ingress_appgw_addon_profile,
+            ground_truth_ingress_appgw_addon_profile,
+        )
+        self.assertEqual(
+            dec_1.context.get_intermediate("ingress_appgw_addon_enabled"), True
+        )
+
+        # custom value
+        dec_2 = AKSPreviewCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "appgw_name": "test_appgw_name",
+                "appgw_subnet_prefix": "test_appgw_subnet_prefix",
+                "appgw_id": "test_appgw_id",
+                "appgw_subnet_id": "test_appgw_subnet_id",
+                "appgw_watch_namespace": "test_appgw_watch_namespace",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+
+        self.assertEqual(
+            dec_2.context.get_intermediate("ingress_appgw_addon_enabled"), None
+        )
+        ingress_appgw_addon_profile = dec_2.build_ingress_appgw_addon_profile()
+        ground_truth_ingress_appgw_addon_profile = self.models.ManagedClusterAddonProfile(
+            enabled=True,
+            config={
+                CONST_INGRESS_APPGW_APPLICATION_GATEWAY_NAME: "test_appgw_name",
+                CONST_INGRESS_APPGW_SUBNET_CIDR: "test_appgw_subnet_prefix",
+                CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID: "test_appgw_id",
+                CONST_INGRESS_APPGW_SUBNET_ID: "test_appgw_subnet_id",
+                CONST_INGRESS_APPGW_WATCH_NAMESPACE: "test_appgw_watch_namespace",
+            },
+        )
+        self.assertEqual(
+            ingress_appgw_addon_profile,
+            ground_truth_ingress_appgw_addon_profile,
+        )
+        self.assertEqual(
+            dec_2.context.get_intermediate("ingress_appgw_addon_enabled"), True
+        )
+
+        # custom value
+        dec_3 = AKSPreviewCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "appgw_name": "test_appgw_name",
+                "appgw_subnet_prefix": "test_appgw_subnet_prefix",
+                "appgw_subnet_cidr": "test_appgw_subnet_cidr",
+                "appgw_id": "test_appgw_id",
+                "appgw_subnet_id": "test_appgw_subnet_id",
+                "appgw_watch_namespace": "test_appgw_watch_namespace",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+
+        self.assertEqual(
+            dec_3.context.get_intermediate("ingress_appgw_addon_enabled"), None
+        )
+        ingress_appgw_addon_profile = dec_3.build_ingress_appgw_addon_profile()
+        ground_truth_ingress_appgw_addon_profile = self.models.ManagedClusterAddonProfile(
+            enabled=True,
+            config={
+                CONST_INGRESS_APPGW_APPLICATION_GATEWAY_NAME: "test_appgw_name",
+                CONST_INGRESS_APPGW_SUBNET_CIDR: "test_appgw_subnet_cidr",
+                CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID: "test_appgw_id",
+                CONST_INGRESS_APPGW_SUBNET_ID: "test_appgw_subnet_id",
+                CONST_INGRESS_APPGW_WATCH_NAMESPACE: "test_appgw_watch_namespace",
+            },
+        )
+        self.assertEqual(
+            ingress_appgw_addon_profile,
+            ground_truth_ingress_appgw_addon_profile,
+        )
+        self.assertEqual(
+            dec_3.context.get_intermediate("ingress_appgw_addon_enabled"), True
+        )
+
+    def test_build_azure_keyvault_secrets_provider_addon_profile(self):
+        # default
+        dec_1 = AKSPreviewCreateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_secret_rotation": False},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+
+        azure_keyvault_secrets_provider_addon_profile = dec_1.build_azure_keyvault_secrets_provider_addon_profile()
+        ground_truth_azure_keyvault_secrets_provider_addon_profile = (
+            self.models.ManagedClusterAddonProfile(
+                enabled=True,
+                config={CONST_SECRET_ROTATION_ENABLED: "false"}
+            )
+        )
+        self.assertEqual(
+            azure_keyvault_secrets_provider_addon_profile, ground_truth_azure_keyvault_secrets_provider_addon_profile
+        )
+
+        # custom value
+        dec_2 = AKSPreviewCreateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_secret_rotation": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+
+        azure_keyvault_secrets_provider_addon_profile = dec_2.build_azure_keyvault_secrets_provider_addon_profile()
+        ground_truth_azure_keyvault_secrets_provider_addon_profile = (
+            self.models.ManagedClusterAddonProfile(
+                enabled=True,
+                config={CONST_SECRET_ROTATION_ENABLED: "true"}
+            )
+        )
+        self.assertEqual(
+            azure_keyvault_secrets_provider_addon_profile, ground_truth_azure_keyvault_secrets_provider_addon_profile
+        )
+
+    def test_build_gitops_addon_profile(self):
+        # default
+        dec_1 = AKSPreviewCreateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+
+        gitops_addon_profile = dec_1.build_gitops_addon_profile()
+        ground_truth_gitops_addon_profile = (
+            self.models.ManagedClusterAddonProfile(
+                enabled=True,
+            )
+        )
+        self.assertEqual(
+            gitops_addon_profile, ground_truth_gitops_addon_profile
+        )
+
     def test_set_up_addon_profiles(self):
         # default value in `aks_create`
         dec_1 = AKSPreviewCreateDecorator(
