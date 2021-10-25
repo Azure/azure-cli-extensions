@@ -13,8 +13,5 @@
 from .generated.custom import *  # noqa: F403
 try:
     from .manual.custom import *  # noqa: F403
-except ImportError as e:
-    if e.name.endswith('manual.custom'):
-        pass
-    else:
-        raise e
+except ImportError:
+    pass
