@@ -249,6 +249,7 @@ def load_arguments(self, _):
             c.argument('enable_ultra_ssd', action='store_true')
             c.argument('workload_runtime', arg_type=get_enum_type(workload_runtimes), default=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER)
             c.argument('gpu_instance_profile', arg_type=get_enum_type(gpu_instance_profiles))
+            c.argument('snapshot_id', type=str, validator=validate_snapshot_id, is_preview=True)
 
     for scope in ['aks nodepool show', 'aks nodepool delete', 'aks nodepool scale', 'aks nodepool upgrade', 'aks nodepool update']:
         with self.argument_context(scope) as c:
@@ -257,6 +258,7 @@ def load_arguments(self, _):
     with self.argument_context('aks nodepool upgrade') as c:
         c.argument('max_surge', type=str, validator=validate_max_surge)
         c.argument('aks_custom_headers')
+        c.argument('snapshot_id', type=str, validator=validate_snapshot_id, is_preview=True)
 
     with self.argument_context('aks nodepool update') as c:
         c.argument('enable_cluster_autoscaler', options_list=["--enable-cluster-autoscaler", "-e"], action='store_true')

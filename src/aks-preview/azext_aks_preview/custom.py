@@ -2185,6 +2185,7 @@ def aks_upgrade(cmd,    # pylint: disable=unused-argument, too-many-return-state
     if upgrade_all:
         for agent_profile in instance.agent_pool_profiles:
             agent_profile.orchestrator_version = kubernetes_version
+            agent_profile.creation_data = None
 
     # null out the SP and AAD profile because otherwise validation complains
     instance.service_principal_profile = None
@@ -2492,7 +2493,8 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
                       enable_ultra_ssd=False,
                       workload_runtime=None,
                       gpu_instance_profile=None,
-                      no_wait=False):
+                      no_wait=False,
+                      snapshot_id=None):
     instances = client.list(resource_group_name, cluster_name)
     for agentpool_profile in instances:
         if agentpool_profile.name == nodepool_name:
@@ -2501,6 +2503,19 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
 
     upgradeSettings = AgentPoolUpgradeSettings()
     taints_array = []
+
+    creationData = None
+    if snapshot_id:
+        snapshot = _get_snapshot(cmd.cli_ctx, snapshot_id)
+        if not kubernetes_version:
+            kubernetes_version = snapshot.kubernetes_version
+        if not os_sku:
+            os_sku = snapshot.os_sku
+        if not node_vm_size:
+            node_vm_size = snapshot.vm_size
+        creationData = CreationData(
+            source_resource_id = snapshot_id
+        )
 
     if node_taints is not None:
         for taint in node_taints.split(','):
@@ -2547,7 +2562,8 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
         enable_ultra_ssd=enable_ultra_ssd,
         mode=mode,
         workload_runtime=workload_runtime,
-        gpu_instance_profile=gpu_instance_profile
+        gpu_instance_profile=gpu_instance_profile,
+        creation_data=creationData
     )
 
     if priority == CONST_SCALE_SET_PRIORITY_SPOT:
@@ -2602,7 +2618,11 @@ def aks_agentpool_upgrade(cmd,  # pylint: disable=unused-argument
                           no_wait=False,
                           node_image_only=False,
                           max_surge=None,
-                          aks_custom_headers=None):
+                          aks_custom_headers=None,
+                          snapshot_id=None):
+    if snapshot_id and node_image_only:
+        raise CLIError('Conflicting flags. Upgrading nodepool with both --snapshot-id and --node_image_only is not allowed.')
+
     if kubernetes_version != '' and node_image_only:
         raise CLIError('Conflicting flags. Upgrading the Kubernetes version will also upgrade node image version.'
                        'If you only want to upgrade the node version please use the "--node-image-only" option only.')
@@ -2614,8 +2634,18 @@ def aks_agentpool_upgrade(cmd,  # pylint: disable=unused-argument
                                                       cluster_name,
                                                       nodepool_name)
 
+    creationData = None
+    if snapshot_id:
+        snapshot = _get_snapshot(cmd.cli_ctx, snapshot_id)
+        if not kubernetes_version:
+            kubernetes_version = snapshot.kubernetes_version
+        creationData = CreationData(
+            source_resource_id = snapshot_id
+        )
+
     instance = client.get(resource_group_name, cluster_name, nodepool_name)
     instance.orchestrator_version = kubernetes_version
+    instance.creation_data=creationData
 
     if not instance.upgrade_settings:
         instance.upgrade_settings = AgentPoolUpgradeSettings()

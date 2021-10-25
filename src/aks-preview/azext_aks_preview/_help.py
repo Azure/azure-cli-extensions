@@ -374,7 +374,7 @@ helps['aks create'] = """
              You do not need to set this if you have set DNS server in the VNET used by the cluster.
              You must set or not set --gmsa-dns-server and --gmsa-root-domain-name at the same time when setting --enable-windows-gmsa.
         - name: --snapshot-id
-          type: bool
+          type: string
           short-summary: Use a snapshot to create this cluster.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
@@ -989,6 +989,9 @@ helps['aks nodepool add'] = """
         - name: --gpu-instance-profile
           type: string
           short-summary: GPU instance profile to partition multi-gpu Nvidia GPUs.
+        - name: --snapshot-id
+          type: string
+          short-summary: Use a snapshot to create this nodepool.
     examples:
         - name: Create a nodepool in an existing AKS cluster with ephemeral os enabled.
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --node-osdisk-type Ephemeral --node-osdisk-size 48
@@ -1025,6 +1028,9 @@ helps['aks nodepool upgrade'] = """
         - name: --aks-custom-headers
           type: string
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
+        - name: --snapshot-id
+          type: string
+          short-summary: Use a snapshot to upgrade this nodepool.
 """
 
 helps['aks nodepool update'] = """
