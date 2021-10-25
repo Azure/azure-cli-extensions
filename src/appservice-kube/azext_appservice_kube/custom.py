@@ -154,7 +154,7 @@ class KubeEnvironmentClient():
             formatted = formatter(kube)
             kube_list.append(formatted)
 
-        while j["nextLink"] is not None:
+        while j.get("nextLink") is not None:
             request_url = j["nextLink"]
             r = send_raw_request(cmd.cli_ctx, "GET", request_url)
             j = r.json()
@@ -184,7 +184,7 @@ class KubeEnvironmentClient():
             formatted = formatter(kube)
             kube_list.append(formatted)
 
-        while j["nextLink"] is not None:
+        while j.get("nextLink") is not None:
             request_url = j["nextLink"]
             r = send_raw_request(cmd.cli_ctx, "GET", request_url)
             j = r.json()
