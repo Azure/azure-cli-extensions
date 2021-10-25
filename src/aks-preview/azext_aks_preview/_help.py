@@ -1082,6 +1082,36 @@ parameters:
     short-summary: name of the node pool.
 """
 
+helps['aks nodepool stop'] = """
+    type: command
+    short-summary: Stop running agent pool in the managed Kubernetes cluster.
+    parameters:
+        - name: --nodepool-name
+          type: string
+          short-summary: Agent pool name
+        - name: --aks-custom-headers
+          type: string
+          short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
+    examples:
+        - name: Stop agent pool in the managed cluster
+          text: az aks nodepool stop --nodepool-name nodepool1 -g MyResourceGroup --cluster-name MyManagedCluster
+"""
+
+helps['aks nodepool start'] = """
+    type: command
+    short-summary: Start stopped agent pool in the managed Kubernetes cluster.
+    parameters:
+        - name: --nodepool-name
+          type: string
+          short-summary: Agent pool name
+        - name: --aks-custom-headers
+          type: string
+          short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
+    examples:
+        - name: Start agent pool in the managed cluster
+          text: az aks nodepool start --nodepool-name nodepool1 -g MyResourceGroup --cluster-name MyManagedCluster
+"""
+
 helps['aks nodepool delete'] = """
     type: command
     short-summary: Delete the agent pool in the managed Kubernetes cluster.
