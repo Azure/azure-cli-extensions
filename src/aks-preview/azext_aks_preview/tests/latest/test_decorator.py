@@ -1047,6 +1047,9 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
+        dec_1.context.set_intermediate(
+            "subscription_id", "test_subscription_id"
+        )
 
         with patch(
             "azext_aks_preview.decorator.ensure_container_insights_for_monitoring",
@@ -1079,6 +1082,9 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
                 "enable_msi_auth_for_monitoring": True,
             },
             CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        dec_2.context.set_intermediate(
+            "subscription_id", "test_subscription_id"
         )
 
         with patch(
