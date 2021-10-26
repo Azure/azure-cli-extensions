@@ -117,8 +117,8 @@ def cluster_create(client: AVSClient, resource_group_name, name, sku, private_cl
     return client.clusters.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=name, cluster=Cluster(sku=Sku(name=sku), cluster_size=size, hosts=hosts))
 
 
-def cluster_update(client: AVSClient, resource_group_name, name, private_cloud, size):
-    return client.clusters.begin_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=name, cluster_size=size)
+def cluster_update(client: AVSClient, resource_group_name, name, private_cloud, size=None, hosts=None):
+    return client.clusters.begin_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=name, cluster_size=size, hosts=hosts)
 
 
 def cluster_list(client: AVSClient, resource_group_name, private_cloud):
@@ -532,3 +532,50 @@ def workload_network_gateway_list(client: AVSClient, resource_group_name, privat
 
 def workload_network_gateway_get(client: AVSClient, resource_group_name, private_cloud, gateway):
     return client.workload_networks.get_gateway(resource_group_name=resource_group_name, private_cloud_name=private_cloud, gateway_id=gateway)
+
+
+def placement_policy_list(client: AVSClient, resource_group_name, private_cloud, cluster_name):
+    return client.placement_policies.list(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=cluster_name)
+
+
+def placement_policy_get(client: AVSClient, resource_group_name, private_cloud, cluster_name, placement_policy_name):
+    return client.placement_policies.get(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=cluster_name, placement_policy_name=placement_policy_name)
+
+
+def placement_policy_vm_create(client: AVSClient, resource_group_name, private_cloud, cluster_name, placement_policy_name, state=None, display_name=None, vm_members=None, affinity_type=None):
+    from azext_vmware.vendored_sdks.avs_client.models import VmPlacementPolicyProperties
+    if vm_members is not None and affinity_type is not None:
+        vmProperties = VmPlacementPolicyProperties(type="VmVm", state=state, display_name=display_name, vm_members=vm_members, affinity_type=affinity_type)
+        return client.placement_policies.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=cluster_name, placement_policy_name=placement_policy_name, properties=vmProperties)
+    return client.placement_policies.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=cluster_name, placement_policy_name=placement_policy_name)
+
+
+def placement_policy_vm_host_create(client: AVSClient, resource_group_name, private_cloud, cluster_name, placement_policy_name, state=None, display_name=None, vm_members=None, host_members=None, affinity_type=None):
+    from azext_vmware.vendored_sdks.avs_client.models import VmHostPlacementPolicyProperties
+    if vm_members is not None and host_members is not None and affinity_type is not None:
+        vmHostProperties = VmHostPlacementPolicyProperties(type="VmHost", state=state, display_name=display_name, vm_members=vm_members, host_members=host_members, affinity_type=affinity_type)
+        return client.placement_policies.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=cluster_name, placement_policy_name=placement_policy_name, properties=vmHostProperties)
+    return client.placement_policies.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=cluster_name, placement_policy_name=placement_policy_name)
+
+
+def placement_policy_update(client: AVSClient, resource_group_name, private_cloud, cluster_name, placement_policy_name, state=None, vm_members=None, host_members=None):
+    from azext_vmware.vendored_sdks.avs_client.models import PlacementPolicyUpdate
+    props = PlacementPolicyUpdate(state=state, vm_members=vm_members, host_members=host_members)
+    return client.placement_policies.begin_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=cluster_name, placement_policy_name=placement_policy_name, placement_policy_update=props)
+
+
+def placement_policy_delete(client: AVSClient, resource_group_name, private_cloud, cluster_name, placement_policy_name):
+    return client.placement_policies.begin_delete(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=cluster_name, placement_policy_name=placement_policy_name)
+
+
+def virtual_machine_get(client: AVSClient, resource_group_name, private_cloud, cluster_name, virtual_machine):
+    return client.virtual_machines.get(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=cluster_name, virtual_machine_id=virtual_machine)
+
+
+def virtual_machine_list(client: AVSClient, resource_group_name, private_cloud, cluster_name):
+    return client.virtual_machines.list(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=cluster_name)
+
+
+def virtual_machine_restrict(client: AVSClient, resource_group_name, private_cloud, cluster_name, virtual_machine, restrict_movement):
+    from azext_vmware.vendored_sdks.avs_client.models import VirtualMachineRestrictMovementState
+    return client.virtual_machines.begin_restrict_movement(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=cluster_name, virtual_machine_id=virtual_machine, restrict_movement=VirtualMachineRestrictMovementState(restrict_movement))

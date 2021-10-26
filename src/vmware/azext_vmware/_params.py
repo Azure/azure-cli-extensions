@@ -211,3 +211,17 @@ def load_arguments(self, _):
 
     with self.argument_context('vmware workload-network gateway') as c:
         c.argument('gateway', help="NSX Gateway identifier. Generally the same as the Gateway's display name.")
+
+    with self.argument_context('vmware placement-policy') as c:
+        c.argument('cluster_name', help="Name of the cluster in the private cloud.")
+        c.argument('placement_policy_name', help="Name of the VMware vSphere Distributed Resource Scheduler (DRS) placement policy.")
+        c.argument('state', help="Whether the placement policy is enabled or disabled. Possible values include: 'Enabled', 'Disabled'.")
+        c.argument('display_name', help="Display name of the placement policy.")
+        c.argument('vm_members', nargs='+', help="Virtual machine members list.")
+        c.argument('affinity_type', help="Placement policy affinity type. Possible values include: 'Affinity', 'AntiAffinity'.")
+        c.argument('host_members', nargs='+', help='Host members list.')
+
+    with self.argument_context('vmware vm') as c:
+        c.argument('cluster_name', help='Name of the cluster in the private cloud.')
+        c.argument('virtual_machine', help='Virtual Machine identifier.')
+        c.argument('restrict_movement', help='Whether VM DRS-driven movement is restricted (enabled) or not (disabled).')

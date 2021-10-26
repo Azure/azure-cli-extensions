@@ -170,3 +170,22 @@ def load_command_table(self, _):
     with self.command_group('vmware workload-network gateway', vmware_sdk, client_factory=cf_vmware) as g:
         g.custom_command('list', 'workload_network_gateway_list')
         g.custom_show_command('show', 'workload_network_gateway_get')
+
+    with self.command_group('vmware placement-policy', vmware_sdk, client_factory=cf_vmware) as g:
+        g.custom_command('list', 'placement_policy_list')
+        g.custom_show_command('show', 'placement_policy_get')
+
+    with self.command_group('vmware placement-policy vm', vmware_sdk, client_factory=cf_vmware) as g:
+        g.custom_command('create', 'placement_policy_vm_create')
+        g.custom_command('update', 'placement_policy_update')
+        g.custom_command('delete', 'placement_policy_delete')
+
+    with self.command_group('vmware placement-policy vm-host', vmware_sdk, client_factory=cf_vmware) as g:
+        g.custom_command('create', 'placement_policy_vm_host_create')
+        g.custom_command('update', 'placement_policy_update')
+        g.custom_command('delete', 'placement_policy_delete')
+
+    with self.command_group('vmware vm', vmware_sdk, client_factory=cf_vmware) as g:
+        g.custom_command('list', 'virtual_machine_list')
+        g.custom_show_command('show', 'virtual_machine_get')
+        g.custom_command('restrict-movement', 'virtual_machine_restrict')

@@ -1,5 +1,12 @@
 # Release History
 
+## 4.0.0 (2021-12)
+
+- Add `az vmware placement-policy` command group
+- Add `az vmware vm` command group
+- Updated `az vmware private-cloud create` with new Identity parameter
+- Updated `az vmware private-cloud update` with new Identity parameter
+
 ## 3.2.0 (2021-10)
 
 - Add `az vmware workload-network dhcp` command group

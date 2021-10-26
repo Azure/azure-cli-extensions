@@ -21,7 +21,7 @@ interactions:
       - -g -n --location --sku --cluster-size --network-block --nsxt-password --vcenter-password
         --accept-eula
       User-Agent:
-      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/0.1.0 Python/3.8.10 (Windows-10-10.0.19043-SP0)
+      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/0.1.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: PUT
     uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1?api-version=2021-12-01
   response:
@@ -33,7 +33,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 21 Oct 2021 15:44:16 GMT
+      - Tue, 26 Oct 2021 17:47:53 GMT
       server:
       - Rocket
     status:
@@ -53,19 +53,19 @@ interactions:
       ParameterSetName:
       - -g -c
       User-Agent:
-      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/0.1.0 Python/3.8.10 (Windows-10-10.0.19043-SP0)
+      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/0.1.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
     uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/globalReachConnections?api-version=2021-12-01
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/{subscription-id}/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/globalReachConnections/connection1","name":"connection1","type":"Microsoft.AVS/privateClouds/globalReachConnections","properties":{"provisioningState":"Succeeded","addressPrefix":"10.2.3.16/29","authorizationKey":"01010101-0101-0101-0101-010101010101","circuitConnectionStatus":"Connected","peerExpressRouteCircuit":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mygroup/providers/Microsoft.Network/expressRouteCircuits/mypeer","expressRouteID":"/subscriptions/{subscription-id}/resourceGroups/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2/providers/Microsoft.Network/expressroutecircuits/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2-xconnect"}}]}'
+      string: '{"value":[{"id":"/subscriptions/{subscription-id}/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/globalReachConnections/connection1","name":"connection1","type":"Microsoft.AVS/privateClouds/globalReachConnections","properties":{"provisioningState":"Succeeded","addressPrefix":"10.2.3.16/29","authorizationKey":"01010101-0101-0101-0101-010101010101","circuitConnectionStatus":"Connected","peerExpressRouteCircuit":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mygroup/providers/Microsoft.Network/expressRouteCircuits/mypeer"}}]}'
     headers:
       content-length:
-      - '796'
+      - '569'
       content-type:
       - application/json
       date:
-      - Thu, 21 Oct 2021 15:44:21 GMT
+      - Tue, 26 Oct 2021 17:47:58 GMT
       server:
       - Rocket
     status:
@@ -91,19 +91,19 @@ interactions:
       ParameterSetName:
       - -g -c -n --peer-express-route-circuit --authorization-key --express-route-id
       User-Agent:
-      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/0.1.0 Python/3.8.10 (Windows-10-10.0.19043-SP0)
+      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/0.1.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: PUT
     uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/globalReachConnections/connection1?api-version=2021-12-01
   response:
     body:
-      string: '{"id":"/subscriptions/{subscription-id}/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/globalReachConnections/connection1","name":"connection1","type":"Microsoft.AVS/privateClouds/globalReachConnections","properties":{"provisioningState":"Succeeded","addressPrefix":"10.2.3.16/29","authorizationKey":"01010101-0101-0101-0101-010101010101","circuitConnectionStatus":"Connected","peerExpressRouteCircuit":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mygroup/providers/Microsoft.Network/expressRouteCircuits/mypeer","expressRouteID":"/subscriptions/{subscription-id}/resourceGroups/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2/providers/Microsoft.Network/expressroutecircuits/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2-xconnect"}}'
+      string: '{"id":"/subscriptions/{subscription-id}/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/globalReachConnections/connection1","name":"connection1","type":"Microsoft.AVS/privateClouds/globalReachConnections","properties":{"provisioningState":"Succeeded","addressPrefix":"10.2.3.16/29","authorizationKey":"01010101-0101-0101-0101-010101010101","circuitConnectionStatus":"Connected","peerExpressRouteCircuit":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mygroup/providers/Microsoft.Network/expressRouteCircuits/mypeer"}}'
     headers:
       content-length:
-      - '784'
+      - '557'
       content-type:
       - application/json
       date:
-      - Thu, 21 Oct 2021 15:44:26 GMT
+      - Tue, 26 Oct 2021 17:48:02 GMT
       server:
       - Rocket
     status:
@@ -123,19 +123,19 @@ interactions:
       ParameterSetName:
       - -g -c
       User-Agent:
-      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/0.1.0 Python/3.8.10 (Windows-10-10.0.19043-SP0)
+      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/0.1.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
     uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/globalReachConnections?api-version=2021-12-01
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/{subscription-id}/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/globalReachConnections/connection1","name":"connection1","type":"Microsoft.AVS/privateClouds/globalReachConnections","properties":{"provisioningState":"Succeeded","addressPrefix":"10.2.3.16/29","authorizationKey":"01010101-0101-0101-0101-010101010101","circuitConnectionStatus":"Connected","peerExpressRouteCircuit":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mygroup/providers/Microsoft.Network/expressRouteCircuits/mypeer","expressRouteID":"/subscriptions/{subscription-id}/resourceGroups/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2/providers/Microsoft.Network/expressroutecircuits/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2-xconnect"}}]}'
+      string: '{"value":[{"id":"/subscriptions/{subscription-id}/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/globalReachConnections/connection1","name":"connection1","type":"Microsoft.AVS/privateClouds/globalReachConnections","properties":{"provisioningState":"Succeeded","addressPrefix":"10.2.3.16/29","authorizationKey":"01010101-0101-0101-0101-010101010101","circuitConnectionStatus":"Connected","peerExpressRouteCircuit":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mygroup/providers/Microsoft.Network/expressRouteCircuits/mypeer"}}]}'
     headers:
       content-length:
-      - '796'
+      - '569'
       content-type:
       - application/json
       date:
-      - Thu, 21 Oct 2021 15:44:30 GMT
+      - Tue, 26 Oct 2021 17:48:06 GMT
       server:
       - Rocket
     status:
@@ -155,19 +155,19 @@ interactions:
       ParameterSetName:
       - -g -c -n
       User-Agent:
-      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/0.1.0 Python/3.8.10 (Windows-10-10.0.19043-SP0)
+      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/0.1.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
     uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/globalReachConnections/connection1?api-version=2021-12-01
   response:
     body:
-      string: '{"id":"/subscriptions/{subscription-id}/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/globalReachConnections/connection1","name":"connection1","type":"Microsoft.AVS/privateClouds/globalReachConnections","properties":{"provisioningState":"Succeeded","addressPrefix":"10.2.3.16/29","authorizationKey":"01010101-0101-0101-0101-010101010101","circuitConnectionStatus":"Connected","peerExpressRouteCircuit":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mygroup/providers/Microsoft.Network/expressRouteCircuits/mypeer","expressRouteID":"/subscriptions/{subscription-id}/resourceGroups/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2/providers/Microsoft.Network/expressroutecircuits/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2-xconnect"}}'
+      string: '{"id":"/subscriptions/{subscription-id}/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/globalReachConnections/connection1","name":"connection1","type":"Microsoft.AVS/privateClouds/globalReachConnections","properties":{"provisioningState":"Succeeded","addressPrefix":"10.2.3.16/29","authorizationKey":"01010101-0101-0101-0101-010101010101","circuitConnectionStatus":"Connected","peerExpressRouteCircuit":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mygroup/providers/Microsoft.Network/expressRouteCircuits/mypeer"}}'
     headers:
       content-length:
-      - '784'
+      - '557'
       content-type:
       - application/json
       date:
-      - Thu, 21 Oct 2021 15:44:35 GMT
+      - Tue, 26 Oct 2021 17:48:10 GMT
       server:
       - Rocket
     status:
@@ -189,7 +189,7 @@ interactions:
       ParameterSetName:
       - -g -c -n
       User-Agent:
-      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/0.1.0 Python/3.8.10 (Windows-10-10.0.19043-SP0)
+      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/0.1.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: DELETE
     uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/globalReachConnections/connection1?api-version=2021-12-01
   response:
@@ -199,7 +199,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Thu, 21 Oct 2021 15:44:39 GMT
+      - Tue, 26 Oct 2021 17:48:15 GMT
       server:
       - Rocket
     status:
@@ -219,19 +219,19 @@ interactions:
       ParameterSetName:
       - -g -c
       User-Agent:
-      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/0.1.0 Python/3.8.10 (Windows-10-10.0.19043-SP0)
+      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/0.1.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
     method: GET
     uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/globalReachConnections?api-version=2021-12-01
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/{subscription-id}/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/globalReachConnections/connection1","name":"connection1","type":"Microsoft.AVS/privateClouds/globalReachConnections","properties":{"provisioningState":"Succeeded","addressPrefix":"10.2.3.16/29","authorizationKey":"01010101-0101-0101-0101-010101010101","circuitConnectionStatus":"Connected","peerExpressRouteCircuit":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mygroup/providers/Microsoft.Network/expressRouteCircuits/mypeer","expressRouteID":"/subscriptions/{subscription-id}/resourceGroups/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2/providers/Microsoft.Network/expressroutecircuits/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2-xconnect"}}]}'
+      string: '{"value":[{"id":"/subscriptions/{subscription-id}/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/globalReachConnections/connection1","name":"connection1","type":"Microsoft.AVS/privateClouds/globalReachConnections","properties":{"provisioningState":"Succeeded","addressPrefix":"10.2.3.16/29","authorizationKey":"01010101-0101-0101-0101-010101010101","circuitConnectionStatus":"Connected","peerExpressRouteCircuit":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mygroup/providers/Microsoft.Network/expressRouteCircuits/mypeer"}}]}'
     headers:
       content-length:
-      - '796'
+      - '569'
       content-type:
       - application/json
       date:
-      - Thu, 21 Oct 2021 15:44:44 GMT
+      - Tue, 26 Oct 2021 17:48:19 GMT
       server:
       - Rocket
     status:
