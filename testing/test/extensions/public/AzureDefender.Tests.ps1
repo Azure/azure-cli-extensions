@@ -26,7 +26,7 @@ Describe 'Azure Defender Testing' {
             $output = Invoke-Expression "az $Env:K8sExtensionName show -c $($ENVCONFIG.arcClusterName) -g $($ENVCONFIG.resourceGroup) --cluster-type connectedClusters -n $extensionName" -ErrorVariable badOut
             $provisioningState = ($output | ConvertFrom-Json).provisioningState
             Write-Host "Got ProvisioningState: $provisioningState for the extension"  
-            if ((Has-ExtensionData $extensionName) -And ($provisioningState -eq "Succeeded")) {
+            if (Has-ExtensionData $extensionName) {
                 break
             }
             Start-Sleep -Seconds 10
@@ -39,30 +39,6 @@ Describe 'Azure Defender Testing' {
         $output = Invoke-Expression "az $Env:K8sExtensionName show -c $($ENVCONFIG.arcClusterName) -g $($ENVCONFIG.resourceGroup) --cluster-type connectedClusters -n $extensionName" -ErrorVariable badOut
         $badOut | Should -BeNullOrEmpty
         $output | Should -Not -BeNullOrEmpty
-    }
-
-    It "Runs an update on the extension on the cluster" {
-        $output = Invoke-Expression "az $Env:K8sExtensionName update -c $($ENVCONFIG.arcClusterName) -g $($ENVCONFIG.resourceGroup) --cluster-type connectedClusters -n $extensionName --auto-upgrade false --no-wait" -ErrorVariable badOut
-        $badOut | Should -BeNullOrEmpty
-
-        $output = Invoke-Expression "az $Env:K8sExtensionName show -c $($ENVCONFIG.arcClusterName) -g $($ENVCONFIG.resourceGroup) --cluster-type connectedClusters -n $extensionName" -ErrorVariable badOut
-        $badOut | Should -BeNullOrEmpty
-
-        $isAutoUpgradeMinorVersion = ($output | ConvertFrom-Json).autoUpgradeMinorVersion 
-        $isAutoUpgradeMinorVersion.ToString() -eq "False" | Should -BeTrue
-
-        # Loop and retry until the extension config updates
-        $n = 0
-        do 
-        {
-            $isAutoUpgradeMinorVersion = (Get-ExtensionData $extensionName).spec.autoUpgradeMinorVersion
-            if (!$isAutoUpgradeMinorVersion) {  #autoUpgradeMinorVersion doesn't exist in ExtensionConfig CRD if false
-                break
-            }
-            Start-Sleep -Seconds 10
-            $n += 1
-        } while ($n -le $MAX_RETRY_ATTEMPTS)
-        $n | Should -BeLessOrEqual $MAX_RETRY_ATTEMPTS
     }
 
     It "Lists the extensions on the cluster" {
