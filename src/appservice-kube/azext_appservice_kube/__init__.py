@@ -25,11 +25,7 @@ class AppserviceCommandsLoader(AzCommandsLoader):
         return self.command_table
 
     def load_arguments(self, command):
-        from sys import version_info
-        if version_info[0] < 3:
-            super().load_arguments(command)
-        else:
-            super().load_arguments(command)
+        super().load_arguments(command)
         from azext_appservice_kube._params import load_arguments
         load_arguments(self, command)
 
