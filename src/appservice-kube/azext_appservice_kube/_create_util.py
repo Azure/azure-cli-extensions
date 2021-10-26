@@ -5,7 +5,7 @@
 
 import os
 import zipfile
-from knack.util import CLIError
+from azure.cli.core.azclierror import ValidationError, ArgumentUsageError
 from knack.log import get_logger
 from azure.mgmt.web.models import SkuDescription
 
@@ -29,7 +29,7 @@ def get_runtime_version_details(file_path, lang_name, is_kube=False):
         version_detected = parse_dotnet_version(file_path)
         version_to_create = detect_dotnet_version_tocreate(version_detected)
         if is_kube:
-            raise CLIError("Dotnet runtime is not supported for Kube Environments")
+            raise ValidationError("Dotnet runtime is not supported for Kube Environments")
     elif lang_name.lower() == NODE_RUNTIME_NAME:
         if file_path == '':
             version_detected = "-"
@@ -134,8 +134,8 @@ def get_lang_from_content(src_path, html=False):
             runtime_details_dict['file_loc'] = static_html_file
             runtime_details_dict['default_sku'] = 'F1'
         else:
-            raise CLIError("The html flag was passed, but could not find HTML files, "
-                           "see 'https://go.microsoft.com/fwlink/?linkid=2109470' for more information")
+            raise ArgumentUsageError("The html flag was passed, but could not find HTML files, "
+                                     "see 'https://go.microsoft.com/fwlink/?linkid=2109470' for more information")
     elif os.path.isfile(package_python_file):
         runtime_details_dict['language'] = PYTHON_RUNTIME_NAME
         runtime_details_dict['file_loc'] = package_python_file
@@ -150,8 +150,8 @@ def get_lang_from_content(src_path, html=False):
         runtime_details_dict['file_loc'] = package_netcore_file
         runtime_details_dict['default_sku'] = 'F1'
     else:  # TODO: Update the doc when the detection logic gets updated
-        raise CLIError("Could not auto-detect the runtime stack of your app, "
-                       "see 'https://go.microsoft.com/fwlink/?linkid=2109470' for more information")
+        raise ValidationError("Could not auto-detect the runtime stack of your app, "
+                              "see 'https://go.microsoft.com/fwlink/?linkid=2109470' for more information")
     return runtime_details_dict
 
 
@@ -327,8 +327,8 @@ def get_rg_to_use(cmd, user, loc, os_name, rg_name=None):
     if rg_name is not None and _check_resource_group_exists(cmd, rg_name):
         if _check_resource_group_supports_os(cmd, rg_name, os_name.lower() == 'linux'):
             return rg_name
-        raise CLIError("The ResourceGroup '{}' cannot be used with the os '{}'. Use a different RG".format(rg_name,
-                                                                                                           os_name))
+        raise ArgumentUsageError("The ResourceGroup '{}' cannot be used with the os '{}'. "
+                                 "Use a different RG".format(rg_name, os_name))
     if rg_name is None:
         rg_name = default_rg
     return rg_name
