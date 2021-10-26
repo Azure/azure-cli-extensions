@@ -20,13 +20,18 @@ def load_command_table(self, _):
         operations_tmpl='azext_diskpool.vendored_sdks.storagepool.operations._disk_pools_operations#DiskPoolsOperations'
         '.{}',
         client_factory=cf_disk_pool)
-    with self.command_group('disk-pool', diskpool_disk_pool, client_factory=cf_disk_pool, is_preview=True) as g:
+    diskpool_iscsi_target = CliCommandType(
+        operations_tmpl=(
+            'azext_diskpool.vendored_sdks.storagepool.operations._iscsi_targets_operations#IscsiTargetsOperations.{}'
+        ),
+        client_factory=cf_iscsi_target,
+    )
+    with self.command_group('disk-pool', diskpool_disk_pool, client_factory=cf_disk_pool) as g:
         from ._transformers import transform_disk_pool_list_output, transform_disk_pool_show_output
         g.custom_command('list', 'disk_pool_list', table_transformer=transform_disk_pool_list_output)
-        g.custom_command('list-skus', 'disk_pool_list_skus', client_factory=cf_disk_pool_zone)
         g.custom_show_command('show', 'disk_pool_show', table_transformer=transform_disk_pool_show_output)
 
-    with self.command_group('disk-pool iscsi-target', client_factory=cf_iscsi_target) as g:
+    with self.command_group('disk-pool iscsi-target', diskpool_iscsi_target, client_factory=cf_iscsi_target) as g:
         from ._transformers import transform_disk_pool_iscsi_target_list_output, \
             transform_disk_pool_iscsi_target_show_output
         g.custom_command('list', 'disk_pool_iscsi_target_list',

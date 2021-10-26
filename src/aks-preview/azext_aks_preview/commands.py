@@ -118,6 +118,8 @@ def load_command_table(self, _):
         g.custom_command('delete', 'aks_agentpool_delete',
                          supports_no_wait=True)
         g.custom_command('get-upgrades', 'aks_agentpool_get_upgrade_profile')
+        g.custom_command('stop', 'aks_agentpool_stop', supports_no_wait=True)
+        g.custom_command('start', 'aks_agentpool_start', supports_no_wait=True)
 
     # AKS pod identity commands
     with self.command_group('aks pod-identity', managed_clusters_sdk, client_factory=cf_managed_clusters) as g:

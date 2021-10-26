@@ -1,13 +1,26 @@
 .. :changelog:
 
 Release History
-0.5.38
+===============
+0.5.40
 +++++
 * Add support for new snapshot commands
-  * `az aks snapshot list`
-  * `az aks snapshot show`
   * `az aks snapshot create`
   * `az aks snapshot delete`
+  * `az aks snapshot list`
+  * `az aks snapshot show
+* Add --snapshot-id to creating/upgrading commands
+  * `az aks create --snapshot-id`
+  * `az aks nodepool add --snapshot-id`
+  * `az aks nodepool upgrade --snapshot-id`
+
+0.5.39
++++++
+* Add commands for agentpool start stop feature
+
+0.5.38
++++++
+* Add parameter `--rotation-poll-interval` for Azure Keyvault Secrets Provider Addon. 
 
 0.5.37
 +++++

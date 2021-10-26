@@ -16,10 +16,10 @@ def load_command_table(self, _):
         operations_tmpl=consts.EXTENSION_PACKAGE_NAME + '.vendored_sdks.operations#K8sExtensionsOperations.{}',
         client_factory=cf_k8s_extension)
 
-    with self.command_group(consts.EXTENSION_NAME, k8s_extension_sdk, client_factory=cf_k8s_extension_operation,
-                            is_preview=True) \
+    with self.command_group(consts.EXTENSION_NAME, k8s_extension_sdk, client_factory=cf_k8s_extension_operation) \
             as g:
-        g.custom_command('create', 'create_k8s_extension')
-        g.custom_command('delete', 'delete_k8s_extension')
+        g.custom_command('create', 'create_k8s_extension', supports_no_wait=True)
+        g.custom_command('delete', 'delete_k8s_extension', supports_no_wait=True)
         g.custom_command('list', 'list_k8s_extension', table_transformer=k8s_extension_list_table_format)
         g.custom_show_command('show', 'show_k8s_extension', table_transformer=k8s_extension_show_table_format)
+        g.custom_command('update', 'update_k8s_extension', supports_no_wait=True)

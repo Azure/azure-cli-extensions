@@ -143,6 +143,7 @@ def load_arguments(self, _):
         c.argument('enable_encryption_at_host', arg_type=get_three_state_flag(), help='Enable EncryptionAtHost.')
         c.argument('enable_ultra_ssd', action='store_true')
         c.argument('enable_secret_rotation', action='store_true')
+        c.argument('rotation_poll_interval', type=str)
         c.argument('assign_kubelet_identity', type=str, validator=validate_assign_kubelet_identity)
         c.argument('disable_local_accounts', action='store_true')
         c.argument('gpu_instance_profile', arg_type=get_enum_type(gpu_instance_profiles))
@@ -184,6 +185,7 @@ def load_arguments(self, _):
         c.argument('disable_pod_identity', action='store_true')
         c.argument('enable_secret_rotation', action='store_true')
         c.argument('disable_secret_rotation', action='store_true')
+        c.argument('rotation_poll_interval', type=str)
         c.argument('windows_admin_password', options_list=['--windows-admin-password'])
         c.argument('disable_local_accounts', action='store_true')
         c.argument('enable_local_accounts', action='store_true')
@@ -284,6 +286,7 @@ def load_arguments(self, _):
         c.argument('appgw_subnet_id', options_list=['--appgw-subnet-id'], arg_group='Application Gateway')
         c.argument('appgw_watch_namespace', options_list=['--appgw-watch-namespace'], arg_group='Application Gateway')
         c.argument('enable_secret_rotation', action='store_true')
+        c.argument('rotation_poll_interval', type=str)
         c.argument('workspace_resource_id')
         c.argument('enable_msi_auth_for_monitoring', arg_type=get_three_state_flag(), is_preview=True)
 
@@ -302,6 +305,7 @@ def load_arguments(self, _):
         c.argument('appgw_subnet_id', options_list=['--appgw-subnet-id'], arg_group='Application Gateway')
         c.argument('appgw_watch_namespace', options_list=['--appgw-watch-namespace'], arg_group='Application Gateway')
         c.argument('enable_secret_rotation', action='store_true')
+        c.argument('rotation_poll_interval', type=str)
         c.argument('workspace_resource_id')
         c.argument('enable_msi_auth_for_monitoring', arg_type=get_three_state_flag(), is_preview=True)
 
@@ -320,6 +324,7 @@ def load_arguments(self, _):
         c.argument('appgw_subnet_id', options_list=['--appgw-subnet-id'], arg_group='Application Gateway')
         c.argument('appgw_watch_namespace', options_list=['--appgw-watch-namespace'], arg_group='Application Gateway')
         c.argument('enable_secret_rotation', action='store_true')
+        c.argument('rotation_poll_interval', type=str)
         c.argument('workspace_resource_id')
         c.argument('enable_msi_auth_for_monitoring', arg_type=get_three_state_flag(), is_preview=True)
 
