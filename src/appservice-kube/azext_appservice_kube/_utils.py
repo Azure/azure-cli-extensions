@@ -28,11 +28,12 @@ def _validate_asp_sku(app_service_environment, custom_location, sku):
 
     if sku.upper() in ['I1', 'I2', 'I3', 'I1V2', 'I2V2', 'I3V2']:
         if not app_service_environment:
-            raise ValidationError("The pricing tier 'Isolated' is not allowed for this app service plan. Use this link to "
-                           "learn more: https://docs.microsoft.com/en-us/azure/app-service/overview-hosting-plans")
+            raise ValidationError("The pricing tier 'Isolated' is not allowed for this app service plan. "
+                                  "Use this link to learn more: "
+                                  "https://docs.microsoft.com/en-us/azure/app-service/overview-hosting-plans")
     elif app_service_environment:
         raise ValidationError("Only pricing tier 'Isolated' is allowed in this app service plan. Use this link to "
-                       "learn more: https://docs.microsoft.com/en-us/azure/app-service/overview-hosting-plans")
+                              "learn more: https://docs.microsoft.com/en-us/azure/app-service/overview-hosting-plans")
     elif custom_location:
         # Custom Location only supports K1
         if sku.upper() != 'K1':

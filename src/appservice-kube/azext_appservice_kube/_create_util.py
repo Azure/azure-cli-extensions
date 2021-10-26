@@ -5,9 +5,10 @@
 
 import os
 import zipfile
-from azure.cli.core.azclierror import ValidationError, ArgumentUsageError
 from knack.log import get_logger
+
 from azure.mgmt.web.models import SkuDescription
+from azure.cli.core.azclierror import ValidationError, ArgumentUsageError
 
 from ._constants import (NETCORE_VERSION_DEFAULT, NETCORE_VERSIONS, NODE_VERSION_DEFAULT,
                          NODE_VERSIONS, NETCORE_RUNTIME_NAME, NODE_RUNTIME_NAME, DOTNET_RUNTIME_NAME,
