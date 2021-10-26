@@ -66,11 +66,9 @@ class CustomDomainTests(ScenarioTest):
         self.cmd('spring-cloud certificate show --name {cert} -g {rg} -s {serviceName}', expect_failure=True)
 
 
-@record_only()
 class SslTests(ScenarioTest):
 
     def test_load_public_cert_to_app(self):
-
         py_path = os.path.abspath(os.path.dirname(__file__))
         baltiCertPath = os.path.join(py_path, 'files/BaltimoreCyberTrustRoot.crt.pem')
         digiCertPath = os.path.join(py_path, 'files/DigiCertGlobalRootCA.crt.pem')
@@ -90,9 +88,6 @@ class SslTests(ScenarioTest):
             'rg': 'cli',
             'location': 'westus'
         })
-
-
-        subscription_id = self.get_subscription_id()
 
         self.cmd('group create -n {rg} -l {location}')
         self.cmd('spring-cloud create -n {serviceName} -g {rg} -l {location}')
