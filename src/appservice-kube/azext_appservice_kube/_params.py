@@ -53,7 +53,7 @@ def load_arguments(self, _):
 
     with self.argument_context('webapp create') as c:
         c.argument('name', options_list=['--name', '-n'], help='name of the new web app', validator=validate_site_create)
-        c.argument('custom_location', options_list=['--custom-location'], help="Name or ID of the custom location")
+        c.argument('custom_location', help="Name or ID of the custom location")
         c.argument('startup_file', help="Linux only. The web's startup file")
         c.argument('docker_registry_server_user', options_list=['--docker-registry-server-user', '-s'], help='the container registry server username')
         c.argument('docker_registry_server_password', options_list=['--docker-registry-server-password', '-w'], help='The container registry server password. Required for private registries.')
@@ -93,7 +93,7 @@ def load_arguments(self, _):
                    completer=get_resource_name_completion_list('Microsoft.Web/serverFarms'),
                    help="name or resource id of the function app service plan. Use 'appservice plan create' to get one")
         c.argument('new_app_name', options_list=['--name', '-n'], help='name of the new function app')
-        c.argument('custom_location', options_list=['--custom-location'], help="Name or ID of the custom location")
+        c.argument('custom_location', help="Name or ID of the custom location")
         c.argument('storage_account', options_list=['--storage-account', '-s'],
                    help='Provide a string value of a Storage Account in the provided Resource Group. Or Resource ID of a Storage Account in a different Resource Group')
         c.argument('consumption_plan_location', options_list=['--consumption-plan-location', '-c'],
@@ -113,8 +113,8 @@ def load_arguments(self, _):
         with self.argument_context(scope + ' create') as c:
             c.argument('assign_identities', nargs='*', options_list=['--assign-identity'],
                        help='accept system or user assigned identities separated by spaces. Use \'[system]\' to refer system assigned identity, or a resource id to refer user assigned identity. Check out help for more examples')
-            c.argument('scope', options_list=['--scope'], help="Scope that the system assigned identity can access")
-            c.argument('role', options_list=['--role'], help="Role name or id the system assigned identity will have")
+            c.argument('scope', help="Scope that the system assigned identity can access")
+            c.argument('role', help="Role name or id the system assigned identity will have")
 
             c.argument('deployment_container_image_name', options_list=['--deployment-container-image-name', '-i'], help='Linux only. Container image name from Docker Hub, e.g. publisher/image-name:tag')
             c.argument('deployment_local_git', action='store_true', options_list=['--deployment-local-git', '-l'], help='enable local git')
