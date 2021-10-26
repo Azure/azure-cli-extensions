@@ -3,8 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from knack.util import CLIError
-
+from azure.cli.core.azclierror import ValidationError, InvalidArgumentValueError, ArgumentUsageError
 from ._client_factory import web_client_factory, cf_resource_groups
 
 
@@ -25,19 +24,19 @@ def _validate_asp_sku(app_service_environment, custom_location, sku):
     # Isolated SKU is supported only for ASE
     if sku.upper() not in ['F1', 'FREE', 'D1', 'SHARED', 'B1', 'B2', 'B3', 'S1', 'S2', 'S3', 'P1V2', 'P1V3', 'P2V2',
                            'P3V2', 'PC2', 'PC3', 'PC4', 'I1', 'I2', 'I3', 'K1']:
-        raise CLIError('Invalid sku entered: {}'.format(sku))
+        raise InvalidArgumentValueError('Invalid sku entered: {}'.format(sku))
 
     if sku.upper() in ['I1', 'I2', 'I3', 'I1V2', 'I2V2', 'I3V2']:
         if not app_service_environment:
-            raise CLIError("The pricing tier 'Isolated' is not allowed for this app service plan. Use this link to "
+            raise ValidationError("The pricing tier 'Isolated' is not allowed for this app service plan. Use this link to "
                            "learn more: https://docs.microsoft.com/en-us/azure/app-service/overview-hosting-plans")
     elif app_service_environment:
-        raise CLIError("Only pricing tier 'Isolated' is allowed in this app service plan. Use this link to "
+        raise ValidationError("Only pricing tier 'Isolated' is allowed in this app service plan. Use this link to "
                        "learn more: https://docs.microsoft.com/en-us/azure/app-service/overview-hosting-plans")
     elif custom_location:
         # Custom Location only supports K1
         if sku.upper() != 'K1':
-            raise CLIError("Only pricing tier 'K1' is allowed for this type of app service plan.")
+            raise ValidationError("Only pricing tier 'K1' is allowed for this type of app service plan.")
 
 
 def get_sku_name(tier):  # pylint: disable=too-many-return-statements
@@ -66,7 +65,7 @@ def get_sku_name(tier):  # pylint: disable=too-many-return-statements
         return 'IsolatedV2'
     if tier in ['K1']:
         return 'Kubernetes'
-    raise CLIError("Invalid sku(pricing tier), please refer to command help for valid values")
+    raise InvalidArgumentValueError("Invalid sku(pricing tier), please refer to command help for valid values")
 
 
 def validate_subnet_id(cli_ctx, subnet, vnet_name, resource_group_name):
@@ -86,7 +85,7 @@ def validate_subnet_id(cli_ctx, subnet, vnet_name, resource_group_name):
             name=vnet_name,
             child_type_1='subnets',
             child_name_1=subnet)
-    raise CLIError('Usage error: --subnet ID | --subnet NAME --vnet-name NAME')
+    raise ArgumentUsageError('Usage error: --subnet ID | --subnet NAME --vnet-name NAME')
 
 
 def validate_aks_id(cli_ctx, aks, resource_group_name):
@@ -104,7 +103,7 @@ def validate_aks_id(cli_ctx, aks, resource_group_name):
             namespace='Microsoft.ContainerService',
             type='managedClusters',
             name=aks)
-    raise CLIError('Usage error: --aks')
+    raise ArgumentUsageError('Usage error: --aks')
 
 
 def _generic_site_operation(cli_ctx, resource_group_name, name, operation_name, slot=None,
