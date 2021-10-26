@@ -377,6 +377,14 @@ helps['spring-cloud app binding redis update'] = """
     short-summary: Update an Azure Cache for Redis service binding of the app.
 """
 
+helps['spring-cloud app append-loaded-public-certificate'] = """
+    type: command
+    short-summary: Append a new loaded public certificate to an app in the Azure Spring Cloud.
+    examples:
+    - name: Append a new loaded public certificate to an app.
+      text: az spring-cloud app append-loaded-public-certificate --name MyApp --service MyCluster --resource-group MyResourceGroup --certificate-name MyCertName --load-trust-store true
+"""
+
 helps['spring-cloud certificate'] = """
     type: group
     short-summary: Commands to manage certificates.
@@ -406,6 +414,14 @@ helps['spring-cloud certificate list'] = """
 helps['spring-cloud certificate remove'] = """
     type: command
     short-summary: Remove a certificate in Azure Spring Cloud.
+"""
+
+helps['spring-cloud certificate list-reference-app'] = """
+    type: command
+    short-summary: List all the apps reference an existing certificate in the Azure Spring Cloud.
+    examples:
+    - name: List all the apps reference an existing certificate in spring cloud service.
+      text: az spring-cloud certificate list-reference-app --service MyCluster --resource-group MyResourceGroup --name MyCertName
 """
 
 helps['spring-cloud app custom-domain'] = """
