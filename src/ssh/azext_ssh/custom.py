@@ -18,18 +18,24 @@ from . import ssh_utils
 
 def ssh_vm(cmd, resource_group_name=None, vm_name=None, ssh_ip=None, public_key_file=None,
            private_key_file=None, use_private_ip=False, port=None, ssh_args=None):
-    delete_key = False
-    if not private_key_file and not public_key_file:
-        delete_key = True
-    op_call = functools.partial(ssh_utils.start_ssh_connection, port, ssh_args, delete_key)
+    credentials_folder = None
+    is_config = False
+    op_call = functools.partial(ssh_utils.start_ssh_connection, port, ssh_args)
     _do_ssh_op(cmd, resource_group_name, vm_name, ssh_ip,
-               public_key_file, private_key_file, use_private_ip, op_call)
+               public_key_file, private_key_file, use_private_ip, credentials_folder, is_config, op_call)
 
 
 def ssh_config(cmd, config_path, resource_group_name=None, vm_name=None, ssh_ip=None,
-               public_key_file=None, private_key_file=None, overwrite=False, use_private_ip=False):
+               public_key_file=None, private_key_file=None, overwrite=False, use_private_ip=False, credentials_folder=None):
     op_call = functools.partial(ssh_utils.write_ssh_config, config_path, resource_group_name, vm_name, overwrite)
-    _do_ssh_op(cmd, resource_group_name, vm_name, ssh_ip, public_key_file, private_key_file, use_private_ip, op_call)
+    is_config = True
+    # Default credential location
+    if not credentials_folder:
+        config_folder = os.path.dirname(config_path)
+        folder_name = resource_group_name + "-" + vm_name
+        credentials_folder = os.path.join(config_folder, os.path.join("az_ssh_config", folder_name))
+
+    _do_ssh_op(cmd, resource_group_name, vm_name, ssh_ip, public_key_file, private_key_file, use_private_ip, credentials_folder, is_config, op_call)
 
 
 def ssh_cert(cmd, cert_path=None, public_key_file=None):
@@ -38,9 +44,8 @@ def ssh_cert(cmd, cert_path=None, public_key_file=None):
     print(cert_file + "\n")
 
 
-def _do_ssh_op(cmd, resource_group, vm_name, ssh_ip, public_key_file, private_key_file, use_private_ip, op_call):
+def _do_ssh_op(cmd, resource_group, vm_name, ssh_ip, public_key_file, private_key_file, use_private_ip, credentials_folder, is_config, op_call):
     _assert_args(resource_group, vm_name, ssh_ip)
-    public_key_file, private_key_file = _check_or_create_public_private_files(public_key_file, private_key_file)
     ssh_ip = ssh_ip or ip_utils.get_ssh_ip(cmd, resource_group, vm_name, use_private_ip)
 
     if not ssh_ip:
@@ -49,8 +54,10 @@ def _do_ssh_op(cmd, resource_group, vm_name, ssh_ip, public_key_file, private_ke
 
         raise azclierror.ResourceNotFoundError(f"VM '{vm_name}' does not have a public or private IP address to SSH to")
 
+    # Get ssh_ip before getting public key to avoid getting "ResourceNotFound" exception after creating the keys
+    public_key_file, private_key_file, delete_keys = _check_or_create_public_private_files(public_key_file, private_key_file, credentials_folder, is_config)
     cert_file, username = _get_and_write_certificate(cmd, public_key_file, None)
-    op_call(ssh_ip, username, cert_file, private_key_file)
+    op_call(ssh_ip, username, cert_file, private_key_file, delete_keys)
 
 
 def _get_and_write_certificate(cmd, public_key_file, cert_file):
@@ -123,12 +130,20 @@ def _assert_args(resource_group, vm_name, ssh_ip):
             "--ip cannot be used with --resource-group or --vm-name/--name")
 
 
-def _check_or_create_public_private_files(public_key_file, private_key_file):
+def _check_or_create_public_private_files(public_key_file, private_key_file, credentials_folder, is_config):
+    delete_keys = False
     # If nothing is passed in create a temporary directory with a ephemeral keypair
     if not public_key_file and not private_key_file:
-        temp_dir = tempfile.mkdtemp(prefix="aadsshcert")
-        public_key_file = os.path.join(temp_dir, "id_rsa.pub")
-        private_key_file = os.path.join(temp_dir, "id_rsa")
+        # We only want to delete the keys after the connection if the user hasn't providede their own keys
+        delete_keys = True
+        if not is_config:
+            # az ssh vm: Create keys on temp folder and delete folder once connection is established.
+            credentials_folder = tempfile.mkdtemp(prefix="aadsshcert")
+        else:
+            if not os.path.isdir(credentials_folder):
+                os.makedirs(credentials_folder)
+        public_key_file = os.path.join(credentials_folder, "id_rsa.pub")
+        private_key_file = os.path.join(credentials_folder, "id_rsa")
         ssh_utils.create_ssh_keyfile(private_key_file)
 
     if not public_key_file:
@@ -146,7 +161,7 @@ def _check_or_create_public_private_files(public_key_file, private_key_file):
         if not os.path.isfile(private_key_file):
             raise azclierror.FileOperationError(f"Private key file {private_key_file} not found")
 
-    return public_key_file, private_key_file
+    return public_key_file, private_key_file, delete_keys
 
 
 def _write_cert_file(certificate_contents, cert_file):
