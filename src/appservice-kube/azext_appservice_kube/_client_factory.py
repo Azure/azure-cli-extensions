@@ -12,7 +12,7 @@ from azure.cli.core.profiles import ResourceType
 def ex_handler_factory(creating_plan=False, no_throw=False):
     def _polish_bad_errors(ex):
         import json
-        from knack.util import CLIError
+        from azure.cli.core.azclierror import ValidationError
         try:
             detail = json.loads(ex.response.text)['Message']
             if creating_plan:
@@ -24,7 +24,7 @@ def ex_handler_factory(creating_plan=False, no_throw=False):
                     detail = ("Plan with Linux worker can only be created in a group " +
                               "which has never contained a Windows worker, and vice versa. " +
                               "Please use a new resource group. Original error:" + detail)
-            ex = CLIError(detail)
+            ex = ValidationError(detail)
         except Exception:  # pylint: disable=broad-except
             pass
         if no_throw:
