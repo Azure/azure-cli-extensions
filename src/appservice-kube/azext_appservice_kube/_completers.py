@@ -36,7 +36,7 @@ def _get_location(cli_ctx, namespace):
     Return an Azure location by using an explicit `--location` argument, then by `--resource-group`, and
     finally by the subscription if neither argument was provided.
     """
-    from msrestazure.azure_exceptions import CloudError
+    from azure.core.exceptions import HttpResponseError
     from azure.cli.core.commands.parameters import get_one_of_subscription_locations
 
     location = None
@@ -45,7 +45,7 @@ def _get_location(cli_ctx, namespace):
     elif getattr(namespace, 'resource_group_name', None):
         try:
             location = _get_location_from_resource_group(cli_ctx, namespace.resource_group_name)
-        except CloudError as err:
+        except HttpResponseError as err:
             from argcomplete import warn
             warn('Warning: {}'.format(err.message))
     if not location:
