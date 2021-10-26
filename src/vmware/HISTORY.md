@@ -1,6 +1,6 @@
 # Release History
 
-## 3.2.0
+## 3.2.0 (2021-10)
 
 - Add `az vmware workload-network dhcp` command group
 - Add `az vmware workload-network dns-service` command group
