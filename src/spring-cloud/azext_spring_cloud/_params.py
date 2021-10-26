@@ -121,6 +121,9 @@ def load_arguments(self, _):
                    default=1, help='Number of instance.', validator=validate_instance_count)
         c.argument('persistent_storage', type=str,
                    help='A json file path for the persistent storages to be mounted to the app')
+        c.argument('loaded_public_certificate_file', options_list=['--loaded-public-certificate-file', '-f'], type=str,
+                   help='A json file path indicates the certificates which would be loaded to app')
+
 
     with self.argument_context('spring-cloud app update') as c:
         c.argument('assign_endpoint', arg_type=get_three_state_flag(),
@@ -130,6 +133,9 @@ def load_arguments(self, _):
         c.argument('enable_end_to_end_tls', arg_type=get_three_state_flag(), help='If true, enable end to end tls')
         c.argument('persistent_storage', type=str,
                    help='A json file path for the persistent storages to be mounted to the app')
+        c.argument('loaded_public_certificate_file', type=str, options_list=['--loaded-public-certificate-file', '-f'],
+                   help='A json file path indicates the certificates which would be loaded to app')
+
 
     with self.argument_context('spring-cloud app append-persistent-storage') as c:
         c.argument('storage_name', type=str,
@@ -141,6 +147,7 @@ def load_arguments(self, _):
         c.argument('mount_path', type=str, help='The path for the persistent storage volume to be mounted.')
         c.argument('mount_options', nargs='+', help='[optional] The mount options for the persistent storage volume.', default=None)
         c.argument('read_only', arg_type=get_three_state_flag(), help='[optional] If true, the persistent storage volume will be read only.', default=False)
+
 
     for scope in ['spring-cloud app update', 'spring-cloud app start', 'spring-cloud app stop', 'spring-cloud app restart', 'spring-cloud app deploy', 'spring-cloud app scale', 'spring-cloud app set-deployment', 'spring-cloud app show-deploy-log']:
         with self.argument_context(scope) as c:
@@ -260,6 +267,10 @@ def load_arguments(self, _):
             c.argument('key', help='Api key of the service.')
             c.argument('disable_ssl', arg_type=get_three_state_flag(), help='If true, disable SSL. If false, enable SSL.', default=False)
 
+    with self.argument_context('spring-cloud app append-loaded-public-certificate') as c:
+        c.argument('certificate_name', help='Name of the certificate to be appended')
+        c.argument('load_trust_store', arg_type=get_three_state_flag(), help='If true, the certificate would be loaded into trust store for Java applications', default=False)
+
     with self.argument_context('spring-cloud config-server set') as c:
         c.argument('config_file',
                    help='A yaml file path for the configuration of Spring Cloud config server')
@@ -315,6 +326,14 @@ def load_arguments(self, _):
     with self.argument_context('spring-cloud certificate add') as c:
         c.argument('vault_uri', help='The key vault uri where store the certificate')
         c.argument('vault_certificate_name', help='The certificate name in key vault')
+        c.argument('only_public_cert', arg_type=get_three_state_flag(),
+                   help='If true, only import public certificate part from key vault.', default=False)
+        c.argument('public_certificate_file', options_list=['--public-certificate-file', '-f'],
+                   help='A file path for the public certificate to be uploaded')
+
+    with self.argument_context('spring-cloud certificate list') as c:
+        c.argument('certificate_type', help='Type of uploaded certificate',
+                   arg_type=get_enum_type(['KeyVaultCertificate', 'ContentCertificate']))
 
     with self.argument_context('spring-cloud app custom-domain') as c:
         c.argument('service', service_name_type)

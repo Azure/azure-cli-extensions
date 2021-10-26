@@ -93,6 +93,13 @@ class MonitoringSettingState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)
     SUCCEEDED = "Succeeded"
     UPDATING = "Updating"
 
+class PowerState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Power state of the Service
+    """
+
+    RUNNING = "Running"
+    STOPPED = "Stopped"
+
 class ProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Provisioning state of the Service
     """
