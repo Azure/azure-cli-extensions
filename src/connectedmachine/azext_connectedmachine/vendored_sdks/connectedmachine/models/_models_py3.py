@@ -724,9 +724,9 @@ class MachineExtensionProperties(msrest.serialization.Model):
     :type type: str
     :param type_handler_version: Specifies the version of the script handler.
     :type type_handler_version: str
-    :param enable_automatic_upgrade: Indicates whether the extension should be automatically
+    :param enable_auto_upgrade: Indicates whether the extension should be automatically
      upgraded by the platform if there is a newer version available.
-    :type enable_automatic_upgrade: bool
+    :type enable_auto_upgrade: bool
     :param auto_upgrade_minor_version: Indicates whether the extension should use a newer minor
      version if one is available at deployment time. Once deployed, however, the extension will not
      upgrade minor versions unless redeployed, even with this property set to true.
@@ -751,7 +751,7 @@ class MachineExtensionProperties(msrest.serialization.Model):
         'publisher': {'key': 'publisher', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
         'type_handler_version': {'key': 'typeHandlerVersion', 'type': 'str'},
-        'enable_automatic_upgrade': {'key': 'enableAutomaticUpgrade', 'type': 'bool'},
+        'enable_auto_upgrade': {'key': 'enableAutomaticUpgrade', 'type': 'bool'},
         'auto_upgrade_minor_version': {'key': 'autoUpgradeMinorVersion', 'type': 'bool'},
         'settings': {'key': 'settings', 'type': 'object'},
         'protected_settings': {'key': 'protectedSettings', 'type': 'object'},
@@ -766,7 +766,7 @@ class MachineExtensionProperties(msrest.serialization.Model):
         publisher: Optional[str] = None,
         type: Optional[str] = None,
         type_handler_version: Optional[str] = None,
-        enable_automatic_upgrade: Optional[bool] = None,
+        enable_auto_upgrade: Optional[bool] = None,
         auto_upgrade_minor_version: Optional[bool] = None,
         settings: Optional[object] = None,
         protected_settings: Optional[object] = None,
@@ -778,7 +778,7 @@ class MachineExtensionProperties(msrest.serialization.Model):
         self.publisher = publisher
         self.type = type
         self.type_handler_version = type_handler_version
-        self.enable_automatic_upgrade = enable_automatic_upgrade
+        self.enable_auto_upgrade = enable_auto_upgrade
         self.auto_upgrade_minor_version = auto_upgrade_minor_version
         self.settings = settings
         self.protected_settings = protected_settings
@@ -871,9 +871,9 @@ class MachineExtensionUpdateProperties(msrest.serialization.Model):
     :type type: str
     :param type_handler_version: Specifies the version of the script handler.
     :type type_handler_version: str
-    :param enable_automatic_upgrade: Indicates whether the extension should be automatically
+    :param enable_auto_upgrade: Indicates whether the extension should be automatically
      upgraded by the platform if there is a newer version available.
-    :type enable_automatic_upgrade: bool
+    :type enable_auto_upgrade: bool
     :param auto_upgrade_minor_version: Indicates whether the extension should use a newer minor
      version if one is available at deployment time. Once deployed, however, the extension will not
      upgrade minor versions unless redeployed, even with this property set to true.
@@ -890,7 +890,7 @@ class MachineExtensionUpdateProperties(msrest.serialization.Model):
         'publisher': {'key': 'publisher', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
         'type_handler_version': {'key': 'typeHandlerVersion', 'type': 'str'},
-        'enable_automatic_upgrade': {'key': 'enableAutomaticUpgrade', 'type': 'bool'},
+        'enable_auto_upgrade': {'key': 'enableAutomaticUpgrade', 'type': 'bool'},
         'auto_upgrade_minor_version': {'key': 'autoUpgradeMinorVersion', 'type': 'bool'},
         'settings': {'key': 'settings', 'type': 'object'},
         'protected_settings': {'key': 'protectedSettings', 'type': 'object'},
@@ -903,7 +903,7 @@ class MachineExtensionUpdateProperties(msrest.serialization.Model):
         publisher: Optional[str] = None,
         type: Optional[str] = None,
         type_handler_version: Optional[str] = None,
-        enable_automatic_upgrade: Optional[bool] = None,
+        enable_auto_upgrade: Optional[bool] = None,
         auto_upgrade_minor_version: Optional[bool] = None,
         settings: Optional[object] = None,
         protected_settings: Optional[object] = None,
@@ -914,7 +914,7 @@ class MachineExtensionUpdateProperties(msrest.serialization.Model):
         self.publisher = publisher
         self.type = type
         self.type_handler_version = type_handler_version
-        self.enable_automatic_upgrade = enable_automatic_upgrade
+        self.enable_auto_upgrade = enable_auto_upgrade
         self.auto_upgrade_minor_version = auto_upgrade_minor_version
         self.settings = settings
         self.protected_settings = protected_settings

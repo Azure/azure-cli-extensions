@@ -64,7 +64,7 @@ def connectedmachine_extension_create(client,
                                       publisher=None,
                                       type_=None,
                                       type_handler_version=None,
-                                      enable_automatic_upgrade=None,
+                                      enable_auto_upgrade=None,
                                       auto_upgrade_minor=None,
                                       settings=None,
                                       protected_settings=None,
@@ -80,7 +80,7 @@ def connectedmachine_extension_create(client,
     extension_parameters['properties']['publisher'] = publisher
     extension_parameters['properties']['type'] = type_
     extension_parameters['properties']['type_handler_version'] = type_handler_version
-    extension_parameters['properties']['enable_automatic_upgrade'] = enable_automatic_upgrade
+    extension_parameters['properties']['enable_auto_upgrade'] = enable_auto_upgrade
     extension_parameters['properties']['auto_upgrade_minor_version'] = auto_upgrade_minor
     extension_parameters['properties']['settings'] = settings
     extension_parameters['properties']['protected_settings'] = protected_settings
@@ -106,7 +106,7 @@ def connectedmachine_extension_update(client,
                                       publisher=None,
                                       type_=None,
                                       type_handler_version=None,
-                                      enable_automatic_upgrade=None,
+                                      enable_auto_upgrade=None,
                                       auto_upgrade_minor=None,
                                       settings=None,
                                       protected_settings=None,
@@ -118,7 +118,7 @@ def connectedmachine_extension_update(client,
     extension_parameters['properties']['publisher'] = publisher
     extension_parameters['properties']['type'] = type_
     extension_parameters['properties']['type_handler_version'] = type_handler_version
-    extension_parameters['properties']['enable_automatic_upgrade'] = enable_automatic_upgrade
+    extension_parameters['properties']['enable_auto_upgrade'] = enable_auto_upgrade
     extension_parameters['properties']['auto_upgrade_minor_version'] = auto_upgrade_minor
     extension_parameters['properties']['settings'] = settings
     extension_parameters['properties']['protected_settings'] = protected_settings
