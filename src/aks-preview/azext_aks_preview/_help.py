@@ -196,7 +196,7 @@ helps['aks create'] = """
         - name: --network-plugin
           type: string
           short-summary: The Kubernetes network plugin to use.
-          long-summary: Specify "azure" for pod VNET IPs, "kubenet" for pod IPs NAT'd to your Node IPs, or "none" for no networking.
+          long-summary: Specify "azure" for routable pod IPs from VNET, "kubenet" for non-routable pod IPs with an overlay network, or "none" for no networking configured.
         - name: --network-policy
           type: string
           short-summary: (PREVIEW) The Kubernetes network policy to use.
