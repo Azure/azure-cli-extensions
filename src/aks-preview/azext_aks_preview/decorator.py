@@ -664,7 +664,14 @@ class AKSPreviewContext(AKSContext):
         return enable_secret_rotation
 
     # pylint: disable=unused-argument,no-self-use
-    def validate_gmsa_options(self, enable_windows_gmsa, gmsa_dns_server, gmsa_root_domain_name, yes, **kwargs) -> None:
+    def __validate_gmsa_options(
+        self,
+        enable_windows_gmsa,
+        gmsa_dns_server,
+        gmsa_root_domain_name,
+        yes,
+        **kwargs
+    ) -> None:
         """Helper function to validate gmsa related options.
 
         When enable_windows_gmsa is specified, if both gmsa_dns_server and gmsa_root_domain_name are not assigned and
@@ -701,7 +708,7 @@ class AKSPreviewContext(AKSContext):
     def _get_enable_windows_gmsa(self, enable_validation: bool = False, **kwargs) -> bool:
         """Internal function to obtain the value of enable_windows_gmsa.
 
-        This function supports the option of enable_validation. Please refer to function validate_gmsa_options for
+        This function supports the option of enable_validation. Please refer to function __validate_gmsa_options for
         details of validation.
 
         :return: bool
@@ -726,7 +733,7 @@ class AKSPreviewContext(AKSContext):
             ) = self._get_gmsa_dns_server_and_root_domain_name(
                 enable_validation=False
             )
-            self.validate_gmsa_options(
+            self.__validate_gmsa_options(
                 enable_windows_gmsa, gmsa_dns_server, gmsa_root_domain_name, self.get_yes()
             )
         return enable_windows_gmsa
@@ -748,7 +755,7 @@ class AKSPreviewContext(AKSContext):
     def _get_gmsa_dns_server_and_root_domain_name(self, enable_validation: bool = False, **kwargs):
         """Internal function to obtain the values of gmsa_dns_server and gmsa_root_domain_name.
 
-        This function supports the option of enable_validation. Please refer to function validate_gmsa_options for
+        This function supports the option of enable_validation. Please refer to function __validate_gmsa_options for
         details of validation.
 
         :return: a tuple containing two elements: gmsa_dns_server of string type or None and gmsa_root_domain_name of
@@ -792,7 +799,7 @@ class AKSPreviewContext(AKSContext):
         # this parameter does not need dynamic completion
         # validation
         if enable_validation:
-            self.validate_gmsa_options(
+            self.__validate_gmsa_options(
                 self._get_enable_windows_gmsa(enable_validation=False),
                 gmsa_dns_server,
                 gmsa_root_domain_name,

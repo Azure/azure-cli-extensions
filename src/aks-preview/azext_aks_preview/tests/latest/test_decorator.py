@@ -630,23 +630,23 @@ class AKSPreviewContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
-        ctx.validate_gmsa_options(False, None, None, False)
-        ctx.validate_gmsa_options(True, None, None, True)
+        ctx._AKSPreviewContext__validate_gmsa_options(False, None, None, False)
+        ctx._AKSPreviewContext__validate_gmsa_options(True, None, None, True)
 
         # fail on yes & prompt_y_n not specified
         with patch(
             "azext_aks_preview.decorator.prompt_y_n",
             return_value=False,
         ), self.assertRaises(DecoratorEarlyExitException):
-            ctx.validate_gmsa_options(True, None, None, False)
+            ctx._AKSPreviewContext__validate_gmsa_options(True, None, None, False)
 
         # fail on gmsa_root_domain_name not specified
         with self.assertRaises(RequiredArgumentMissingError):
-            ctx.validate_gmsa_options(True, "test_gmsa_dns_server", None, False)
+            ctx._AKSPreviewContext__validate_gmsa_options(True, "test_gmsa_dns_server", None, False)
 
         # fail on enable_windows_gmsa not specified
         with self.assertRaises(RequiredArgumentMissingError):
-            ctx.validate_gmsa_options(False, None, "test_gmsa_root_domain_name", False)
+            ctx._AKSPreviewContext__validate_gmsa_options(False, None, "test_gmsa_root_domain_name", False)
 
     def test_get_enable_windows_gmsa(self):
         # default
