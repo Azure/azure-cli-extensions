@@ -33,8 +33,6 @@ def start_ssh_connection(port, ssh_args, ip, username, cert_file, private_key_fi
         log_file_name = 'ssh_client_log_' + str(os.getpid())
         log_file = os.path.join(log_file_dir, log_file_name)
         ssh_arg_list = ssh_arg_list + ['-E', log_file, '-v']
-
-    print(cert_file)
     
     command = [_get_ssh_path(), _get_host(username, ip)]
     command = command + _build_args(cert_file, private_key_file, port) + ssh_arg_list
@@ -97,7 +95,7 @@ def write_ssh_config(config_path, resource_group, vm_name, overwrite,
                        "longer being used. Please delete the contents of %s once you no longer need this config file.",
                        os.path.dirname(cert_file))
     else:
-        # Delete keys is false when user hasn't provided their own key pair. Only request deletion of certificate in that case.
+        # Delete keys is false when user provided their own key pair. Only request deletion of certificate in that case.
         logger.warning("Sensitive information for authentication is being stored on disk. You are responsible for "
                        "managing/deleting the signed public key once this config file is no longer being used. "
                        "Please delete %s once you no longer need this config file.", cert_file)
