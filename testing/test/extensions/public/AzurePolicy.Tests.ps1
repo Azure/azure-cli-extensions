@@ -19,14 +19,20 @@ Describe 'Azure Policy Testing' {
         $isAutoUpgradeMinorVersion = ($output | ConvertFrom-Json).autoUpgradeMinorVersion 
         $isAutoUpgradeMinorVersion.ToString() -eq "True" | Should -BeTrue
 
+        # Check that we get the principal id back for the created identity
+        $principalId = ($output | ConvertFrom-Json).identity.principalId
+        $principalId | Should -Not -BeNullOrEmpty
+
         # Loop and retry until the extension installs
         $n = 0
         do 
         {
-            if (Get-ExtensionStatus $extensionName -eq $SUCCESS_MESSAGE) {
-                if (Get-PodStatus $extensionAgentName -Namespace $extensionAgentNamespace -eq $POD_RUNNING) {
-                    break
-                }
+            # Only check the extension config, not the pod since this doesn't bring up pods
+            $output = Invoke-Expression "az $Env:K8sExtensionName show -c $($ENVCONFIG.arcClusterName) -g $($ENVCONFIG.resourceGroup) --cluster-type connectedClusters -n $extensionName" -ErrorVariable badOut
+            $provisioningState = ($output | ConvertFrom-Json).provisioningState
+            Write-Host "Got ProvisioningState: $provisioningState for the extension"  
+            if ((Has-ExtensionData $extensionName) -And ($provisioningState -eq "Succeeded")) {
+                break
             }
             Start-Sleep -Seconds 10
             $n += 1

@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.1
+++++++++++++++++++
+* Enable Microsoft.PolicyInsights extension type
+
 1.0.0
 ++++++++++++++++++
 * Switch to GA api-version of Extensions (2021-09-01)
