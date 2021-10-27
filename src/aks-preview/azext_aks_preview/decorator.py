@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import os
+import time
 from typing import Dict, TypeVar, Union
 
 from azure.cli.command_modules.acs._consts import DecoratorMode
@@ -25,8 +26,12 @@ from azure.cli.core.commands import AzCliCommand
 from azure.cli.core.profiles import ResourceType
 from azure.cli.core.util import get_file_json
 from knack.log import get_logger
+from msrestazure.azure_exceptions import CloudError
 
 from azext_aks_preview._natgateway import create_nat_gateway_profile
+from azext_aks_preview.addonconfiguration import (
+    ensure_container_insights_for_monitoring,
+)
 
 logger = get_logger(__name__)
 
@@ -40,6 +45,7 @@ KubeletConfig = TypeVar("KubeletConfig")
 LinuxOSConfig = TypeVar("LinuxOSConfig")
 ManagedClusterHTTPProxyConfig = TypeVar("ManagedClusterHTTPProxyConfig")
 ContainerServiceNetworkProfile = TypeVar("ContainerServiceNetworkProfile")
+ManagedClusterAddonProfile = TypeVar("ManagedClusterAddonProfile")
 
 
 # pylint: disable=too-many-instance-attributes,too-few-public-methods
@@ -390,7 +396,7 @@ class AKSPreviewContext(AKSContext):
     ) -> bool:
         """Internal function to obtain the value of enable_pod_identity.
 
-        Inherited and extended to perform additional validation.
+        Note: Inherited and extended in aks-preview to perform additional validation.
 
         This function supports the option of enable_validation. When enabled, if enable_managed_identity is not
         specified but enable_pod_identity is, raise a RequiredArgumentMissingError.
@@ -496,6 +502,156 @@ class AKSPreviewContext(AKSContext):
         """
         return self._get_enable_pod_identity_with_kubenet(enable_validation=True)
 
+    def get_addon_consts(self) -> Dict[str, str]:
+        """Helper function to obtain the constants used by addons.
+
+        Note: Inherited and extended in aks-preview to replace and add a few values.
+
+        Note: This is not a parameter of aks commands.
+
+        :return: dict
+        """
+        from azext_aks_preview._consts import (
+            ADDONS,
+            CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME,
+            CONST_ROTATION_POLL_INTERVAL,
+            CONST_SECRET_ROTATION_ENABLED,
+            CONST_GITOPS_ADDON_NAME,
+            CONST_MONITORING_USING_AAD_MSI_AUTH,
+        )
+
+        addon_consts = super().get_addon_consts()
+        addon_consts["ADDONS"] = ADDONS
+        addon_consts[
+            "CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME"
+        ] = CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME
+        addon_consts[
+            "CONST_ROTATION_POLL_INTERVAL"
+        ] = CONST_ROTATION_POLL_INTERVAL
+        addon_consts[
+            "CONST_SECRET_ROTATION_ENABLED"
+        ] = CONST_SECRET_ROTATION_ENABLED
+        addon_consts["CONST_GITOPS_ADDON_NAME"] = CONST_GITOPS_ADDON_NAME
+        addon_consts[
+            "CONST_MONITORING_USING_AAD_MSI_AUTH"
+        ] = CONST_MONITORING_USING_AAD_MSI_AUTH
+        return addon_consts
+
+    def get_appgw_subnet_prefix(self) -> Union[str, None]:
+        """Obtain the value of appgw_subnet_prefix.
+
+        [Deprecated] Note: this parameter is depracated and replaced by appgw_subnet_cidr.
+
+        :return: string or None
+        """
+        # determine the value of constants
+        addon_consts = self.get_addon_consts()
+        CONST_INGRESS_APPGW_ADDON_NAME = addon_consts.get("CONST_INGRESS_APPGW_ADDON_NAME")
+        CONST_INGRESS_APPGW_SUBNET_CIDR = addon_consts.get("CONST_INGRESS_APPGW_SUBNET_CIDR")
+
+        # read the original value passed by the command
+        appgw_subnet_prefix = self.raw_param.get("appgw_subnet_prefix")
+        # try to read the property value corresponding to the parameter from the `mc` object
+        if (
+            self.mc and
+            self.mc.addon_profiles and
+            CONST_INGRESS_APPGW_ADDON_NAME in self.mc.addon_profiles and
+            self.mc.addon_profiles.get(
+                CONST_INGRESS_APPGW_ADDON_NAME
+            ).config.get(CONST_INGRESS_APPGW_SUBNET_CIDR) is not None
+        ):
+            appgw_subnet_prefix = self.mc.addon_profiles.get(
+                CONST_INGRESS_APPGW_ADDON_NAME
+            ).config.get(CONST_INGRESS_APPGW_SUBNET_CIDR)
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return appgw_subnet_prefix
+
+    def get_enable_msi_auth_for_monitoring(self) -> Union[bool, None]:
+        """Obtain the value of enable_msi_auth_for_monitoring.
+
+        Note: The arg type of this parameter supports three states (True, False or None), but the corresponding default
+        value in entry function is not None.
+
+        :return: bool or None
+        """
+        # determine the value of constants
+        addon_consts = self.get_addon_consts()
+        CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
+        CONST_MONITORING_USING_AAD_MSI_AUTH = addon_consts.get("CONST_MONITORING_USING_AAD_MSI_AUTH")
+
+        # read the original value passed by the command
+        enable_msi_auth_for_monitoring = self.raw_param.get("enable_msi_auth_for_monitoring")
+        # try to read the property value corresponding to the parameter from the `mc` object
+        if (
+            self.mc and
+            self.mc.addon_profiles and
+            CONST_MONITORING_ADDON_NAME in self.mc.addon_profiles and
+            self.mc.addon_profiles.get(
+                CONST_MONITORING_ADDON_NAME
+            ).config.get(CONST_MONITORING_USING_AAD_MSI_AUTH) is not None
+        ):
+            enable_msi_auth_for_monitoring = self.mc.addon_profiles.get(
+                CONST_MONITORING_ADDON_NAME
+            ).config.get(CONST_MONITORING_USING_AAD_MSI_AUTH)
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return enable_msi_auth_for_monitoring
+
+    def get_no_wait(self) -> bool:
+        """Obtain the value of no_wait.
+
+        Note: Inherited and extended in aks-preview to replace the set value when enable_msi_auth_for_monitoring is
+        specified.
+
+        Note: no_wait will not be decorated into the `mc` object.
+
+        :return: bool
+        """
+        no_wait = super().get_no_wait()
+
+        if self.get_intermediate("monitoring") and self.get_enable_msi_auth_for_monitoring():
+            logger.warning("Enabling msi auth for monitoring addon requires waiting for cluster creation to complete")
+            if no_wait:
+                logger.warning("The set option '--no-wait' has been ignored")
+                no_wait = False
+        return no_wait
+
+    def get_enable_secret_rotation(self) -> bool:
+        """Obtain the value of enable_secret_rotation.
+
+        :return: bool
+        """
+        # determine the value of constants
+        addon_consts = self.get_addon_consts()
+        CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME = addon_consts.get(
+            "CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME"
+        )
+        CONST_SECRET_ROTATION_ENABLED = addon_consts.get(
+            "CONST_SECRET_ROTATION_ENABLED"
+        )
+
+        # read the original value passed by the command
+        enable_secret_rotation = self.raw_param.get("enable_secret_rotation")
+        # try to read the property value corresponding to the parameter from the `mc` object
+        if (
+            self.mc and
+            self.mc.addon_profiles and
+            CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME in self.mc.addon_profiles and
+            self.mc.addon_profiles.get(
+                CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME
+            ).config.get(CONST_SECRET_ROTATION_ENABLED) is not None
+        ):
+            enable_secret_rotation = self.mc.addon_profiles.get(
+                CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME
+            ).config.get(CONST_SECRET_ROTATION_ENABLED) == "true"
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return enable_secret_rotation
+
 
 class AKSPreviewCreateDecorator(AKSCreateDecorator):
     # pylint: disable=super-init-not-called
@@ -528,8 +684,7 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
     def set_up_agent_pool_profiles(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up agent pool profiles for the ManagedCluster object.
 
-        Call the method of the same name in the parent class to set up agent_pool_profiles, and then set some additional
-        properties on this basis.
+        Note: Inherited and extended in aks-preview to set some additional properties.
 
         :return: the ManagedCluster object
         """
@@ -578,8 +733,7 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
     def set_up_network_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up network profile for the ManagedCluster object.
 
-        Call the method of the same name in the parent class to set up network_profile, and then set the
-        nat_gateway_profile on this basis.
+        Note: Inherited and extended in aks-preview to set the nat_gateway_profile.
 
         :return: the ManagedCluster object
         """
@@ -635,6 +789,126 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
         mc.pod_identity_profile = pod_identity_profile
         return mc
 
+    def build_monitoring_addon_profile(self) -> ManagedClusterAddonProfile:
+        """Build monitoring addon profile.
+
+        Note: Overwritten in aks-preview.
+
+        :return: a ManagedClusterAddonProfile object
+        """
+        # determine the value of constants
+        addon_consts = self.context.get_addon_consts()
+        CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID = addon_consts.get(
+            "CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID"
+        )
+        CONST_MONITORING_USING_AAD_MSI_AUTH = addon_consts.get(
+            "CONST_MONITORING_USING_AAD_MSI_AUTH"
+        )
+
+        monitoring_addon_profile = self.models.ManagedClusterAddonProfile(
+            enabled=True,
+            config={
+                CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID: self.context.get_workspace_resource_id(),
+                CONST_MONITORING_USING_AAD_MSI_AUTH: self.context.get_enable_msi_auth_for_monitoring(),
+            },
+        )
+        # post-process, create a deployment
+        ensure_container_insights_for_monitoring(
+            self.cmd,
+            monitoring_addon_profile,
+            self.context.get_subscription_id(),
+            self.context.get_resource_group_name(),
+            self.context.get_name(),
+            self.context.get_location(),
+            remove_monitoring=False,
+            aad_route=self.context.get_enable_msi_auth_for_monitoring(),
+            create_dcr=True,
+            create_dcra=False,
+        )
+        # set intermediate
+        self.context.set_intermediate("monitoring", True, overwrite_exists=True)
+        return monitoring_addon_profile
+
+    def build_ingress_appgw_addon_profile(self) -> ManagedClusterAddonProfile:
+        """Build ingress appgw addon profile.
+
+        Note: Inherited and extended in aks-preview to support option appgw_subnet_prefix.
+
+        :return: a ManagedClusterAddonProfile object
+        """
+        # determine the value of constants
+        addon_consts = self.context.get_addon_consts()
+        CONST_INGRESS_APPGW_SUBNET_CIDR = addon_consts.get(
+            "CONST_INGRESS_APPGW_SUBNET_CIDR"
+        )
+
+        ingress_appgw_addon_profile = super().build_ingress_appgw_addon_profile()
+        appgw_subnet_prefix = self.context.get_appgw_subnet_prefix()
+        if (
+            appgw_subnet_prefix is not None and
+            ingress_appgw_addon_profile.config.get(
+                CONST_INGRESS_APPGW_SUBNET_CIDR
+            )
+            is None
+        ):
+            ingress_appgw_addon_profile.config[CONST_INGRESS_APPGW_SUBNET_CIDR] = appgw_subnet_prefix
+        return ingress_appgw_addon_profile
+
+    def build_azure_keyvault_secrets_provider_addon_profile(self) -> ManagedClusterAddonProfile:
+        """Build azure keyvault secrets provider addon profile.
+
+        :return: a ManagedClusterAddonProfile object
+        """
+        # determine the value of constants
+        addon_consts = self.context.get_addon_consts()
+        CONST_SECRET_ROTATION_ENABLED = addon_consts.get(
+            "CONST_SECRET_ROTATION_ENABLED"
+        )
+
+        azure_keyvault_secrets_provider_addon_profile = self.models.ManagedClusterAddonProfile(
+            enabled=True, config={CONST_SECRET_ROTATION_ENABLED: "false"}
+        )
+        if self.context.get_enable_secret_rotation():
+            azure_keyvault_secrets_provider_addon_profile.config[CONST_SECRET_ROTATION_ENABLED] = "true"
+        return azure_keyvault_secrets_provider_addon_profile
+
+    def build_gitops_addon_profile(self) -> ManagedClusterAddonProfile:
+        """Build gitops addon profile.
+
+        :return: a ManagedClusterAddonProfile object
+        """
+        gitops_addon_profile = self.models.ManagedClusterAddonProfile(
+            enabled=True,
+        )
+        return gitops_addon_profile
+
+    def set_up_addon_profiles(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up addon profiles for the ManagedCluster object.
+
+        Note: Inherited and extended in aks-preview to set some extra addons.
+
+        :return: the ManagedCluster object
+        """
+        addon_consts = self.context.get_addon_consts()
+        CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME = addon_consts.get(
+            "CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME"
+        )
+        CONST_GITOPS_ADDON_NAME = addon_consts.get("CONST_GITOPS_ADDON_NAME")
+
+        mc = super().set_up_addon_profiles(mc)
+        addon_profiles = mc.addon_profiles
+        addons = self.context.get_enable_addons()
+        if "azure-keyvault-secrets-provider" in addons:
+            addon_profiles[
+                CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME
+            ] = self.build_azure_keyvault_secrets_provider_addon_profile()
+        if "gitops" in addons:
+            addon_profiles[
+                CONST_GITOPS_ADDON_NAME
+            ] = self.build_gitops_addon_profile()
+        mc.addon_profiles = addon_profiles
+        return mc
+
     def construct_preview_mc_profile(self) -> ManagedCluster:
         """The overall controller used to construct the preview ManagedCluster profile.
 
@@ -654,6 +928,48 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
         # set up pod identity profile
         mc = self.set_up_pod_identity_profile(mc)
         return mc
+
+    def create_mc(self, mc: ManagedCluster) -> ManagedCluster:
+        """Send request to create a real managed cluster.
+
+        Note: Inherited and extended in aks-preview to create dcr association for monitoring addon if
+        enable_msi_auth_for_monitoring is specified after cluster is created.
+
+        :return: the ManagedCluster object
+        """
+        created_cluster = super().create_mc(mc)
+
+        # determine the value of constants
+        addon_consts = self.context.get_addon_consts()
+        CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
+
+        # Due to SPN replication latency, we do a few retries here
+        max_retry = 30
+        retry_exception = Exception(None)
+        for _ in range(0, max_retry):
+            try:
+                if self.context.get_intermediate("monitoring") and self.context.get_enable_msi_auth_for_monitoring():
+                    # Create the DCR Association here
+                    ensure_container_insights_for_monitoring(
+                        self.cmd,
+                        mc.addon_profiles[CONST_MONITORING_ADDON_NAME],
+                        self.context.get_subscription_id(),
+                        self.context.get_resource_group_name(),
+                        self.context.get_name(),
+                        self.context.get_location(),
+                        remove_monitoring=False,
+                        aad_route=self.context.get_enable_msi_auth_for_monitoring(),
+                        create_dcr=False,
+                        create_dcra=True,
+                    )
+                return created_cluster
+            except CloudError as ex:
+                retry_exception = ex
+                if 'not found in Active Directory tenant' in ex.message:
+                    time.sleep(3)
+                else:
+                    raise ex
+        raise retry_exception
 
 
 class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
