@@ -133,7 +133,7 @@ def _create_role_assignment(cmd, quantum_workspace):
                 continue
             raise e
         except Exception as x:
-            raise AzureInternalError(f"Role assignment encountered exception ({type(x).__name__}): {x}")
+            raise AzureInternalError(f"Role assignment encountered exception ({type(x).__name__}): {x}") from x
     if retry_attempts > 0:
         print()  # To end the line of the waiting indicators.
     if retry_attempts == MAX_RETRIES_ROLE_ASSIGNMENT:
