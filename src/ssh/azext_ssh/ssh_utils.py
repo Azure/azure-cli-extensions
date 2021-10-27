@@ -26,14 +26,16 @@ def start_ssh_connection(port, ssh_args, ip, username, cert_file, private_key_fi
 
     log_file = None
     if '-E' not in ssh_arg_list and set(['-v', '-vv', '-vvv']).isdisjoint(ssh_arg_list):
-        # If the user either provided his own client log file (-E) or 
-        # want the client log messages to be printed to the console (-vvv/-vv/-v),
+        # If the user either provides his own client log file (-E) or 
+        # wants the client log messages to be printed to the console (-vvv/-vv/-v),
         # we should not use the log files to check for connection success.
         log_file_dir = os.path.dirname(cert_file)
         log_file_name = 'ssh_client_log_' + str(os.getpid())
         log_file = os.path.join(log_file_dir, log_file_name)
         ssh_arg_list = ssh_arg_list + ['-E', log_file, '-v']
 
+    print(cert_file)
+    
     command = [_get_ssh_path(), _get_host(username, ip)]
     command = command + _build_args(cert_file, private_key_file, port) + ssh_arg_list
 
@@ -54,7 +56,8 @@ def start_ssh_connection(port, ssh_args, ip, username, cert_file, private_key_fi
     if log_file:
         file_utils.delete_file(log_file, f"Couldn't delete temporary log file {cert_file}. ", True)
     # Delete the temporary folder as well?
-    os.rmdir(os.path.dirname(cert_file))
+    if delete_keys:
+        os.rmdir(os.path.dirname(cert_file))
 
 
 def create_ssh_keyfile(private_key_file):

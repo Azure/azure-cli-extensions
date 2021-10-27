@@ -134,7 +134,7 @@ def _check_or_create_public_private_files(public_key_file, private_key_file, cre
     delete_keys = False
     # If nothing is passed in create a temporary directory with a ephemeral keypair
     if not public_key_file and not private_key_file:
-        # We only want to delete the keys after the connection if the user hasn't providede their own keys
+        # We only want to delete the keys if the user hasn't providede their own keys
         delete_keys = True
         if not is_config:
             # az ssh vm: Create keys on temp folder and delete folder once connection is established.
