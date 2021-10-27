@@ -5,7 +5,7 @@
 
 import os
 import time
-from typing import Dict, Tuple, TypeVar, Union
+from typing import Dict, List, Tuple, TypeVar, Union
 
 from azure.cli.command_modules.acs._consts import (
     DecoratorEarlyExitException,
@@ -120,6 +120,43 @@ class AKSPreviewContext(AKSContext):
         decorator_mode,
     ):
         super().__init__(cmd, raw_parameters, models, decorator_mode)
+
+    # pylint: disable=unused-argument
+    def _get_vm_set_type(self, read_only: bool = False, **kwargs) -> Union[str, None]:
+        """Internal function to dynamically obtain the value of vm_set_type according to the context.
+
+        Note: Inherited and extended in aks-preview to add support for the deprecated option --enable-vmss.
+
+        :return: string or None
+        """
+        vm_set_type = super()._get_vm_set_type(read_only, **kwargs)
+
+        # TODO: Remove the below section when we deprecate the --enable-vmss flag, kept for back-compatibility only.
+        # read the original value passed by the command
+        enable_vmss = self.raw_param.get("enable_vmss")
+
+        if enable_vmss:
+            if vm_set_type and vm_set_type.lower() != "VirtualMachineScaleSets".lower():
+                raise InvalidArgumentValueError(
+                    "--enable-vmss and provided --vm-set-type ({}) are conflicting with each other".format(
+                        vm_set_type
+                    )
+                )
+            vm_set_type = "VirtualMachineScaleSets"
+        return vm_set_type
+
+    def get_zones(self) -> Union[List[str], None]:
+        """Obtain the value of zones.
+
+        Note: Inherited and extended in aks-preview to add support for a different parameter name (node_zones).
+
+        :return: list of strings or None
+        """
+        zones = super().get_zones()
+        if zones is not None:
+            return zones
+        # read the original value passed by the command
+        return self.raw_param.get("node_zones")
 
     def get_pod_subnet_id(self) -> Union[str, None]:
         """Obtain the value of pod_subnet_id.

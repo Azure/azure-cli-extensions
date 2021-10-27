@@ -99,6 +99,76 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         self.cmd = MockCmd(self.cli_ctx)
         self.models = AKSPreviewModels(self.cmd, CUSTOM_MGMT_AKS_PREVIEW)
 
+    def test__get_vm_set_type(self):
+        # default & dynamic completion
+        ctx_1 = AKSPreviewContext(
+            self.cmd,
+            {"vm_set_type": None, "kubernetes_version": "", "enable_vmss": False},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1._get_vm_set_type(read_only=True), None)
+        self.assertEqual(ctx_1.get_vm_set_type(), "VirtualMachineScaleSets")
+        agent_pool_profile = self.models.ManagedClusterAgentPoolProfile(
+            name="test_ap_name", type="test_mc_vm_set_type"
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location", agent_pool_profiles=[agent_pool_profile]
+        )
+        ctx_1.attach_mc(mc)
+        self.assertEqual(ctx_1.get_vm_set_type(), "test_mc_vm_set_type")
+
+        # custom value & dynamic completion
+        ctx_2 = AKSPreviewContext(
+            self.cmd,
+            {"vm_set_type": "availabilityset", "kubernetes_version": "", "enable_vmss": True},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        # fail on invalid vm_set_type when enable_vmss is specified
+        with self.assertRaises(InvalidArgumentValueError):
+            self.assertEqual(ctx_2.get_vm_set_type(), "AvailabilitySet")
+
+        # custom value & dynamic completion
+        ctx_3 = AKSPreviewContext(
+            self.cmd,
+            {"vm_set_type": None, "kubernetes_version": "", "enable_vmss": True},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        # fail on invalid vm_set_type when enable_vmss is specified
+        self.assertEqual(ctx_3.get_vm_set_type(), "VirtualMachineScaleSets")
+
+    def test_get_zones(self):
+        # default
+        ctx_1 = AKSPreviewContext(
+            self.cmd,
+            {"node_zones": None},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_zones(), None)
+        agent_pool_profile = self.models.ManagedClusterAgentPoolProfile(
+            name="test_nodepool_name",
+            availability_zones=["test_mc_zones1", "test_mc_zones2"],
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location", agent_pool_profiles=[agent_pool_profile]
+        )
+        ctx_1.attach_mc(mc)
+        self.assertEqual(
+            ctx_1.get_zones(), ["test_mc_zones1", "test_mc_zones2"]
+        )
+
+        # custom value
+        ctx_2 = AKSPreviewContext(
+            self.cmd,
+            {"node_zones": ["test_zones1", "test_zones2"]},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_2.get_zones(), ["test_zones1", "test_zones2"])
+
     def test_get_pod_subnet_id(self):
         # default
         ctx_1 = AKSPreviewContext(
