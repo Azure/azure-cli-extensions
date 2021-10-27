@@ -514,20 +514,24 @@ class AKSPreviewContext(AKSContext):
         from azext_aks_preview._consts import (
             ADDONS,
             CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME,
-            CONST_GITOPS_ADDON_NAME,
+            CONST_ROTATION_POLL_INTERVAL,
             CONST_SECRET_ROTATION_ENABLED,
+            CONST_GITOPS_ADDON_NAME,
             CONST_MONITORING_USING_AAD_MSI_AUTH,
         )
 
         addon_consts = super().get_addon_consts()
         addon_consts["ADDONS"] = ADDONS
-        addon_consts["CONST_GITOPS_ADDON_NAME"] = CONST_GITOPS_ADDON_NAME
         addon_consts[
             "CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME"
         ] = CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME
         addon_consts[
+            "CONST_ROTATION_POLL_INTERVAL"
+        ] = CONST_ROTATION_POLL_INTERVAL
+        addon_consts[
             "CONST_SECRET_ROTATION_ENABLED"
         ] = CONST_SECRET_ROTATION_ENABLED
+        addon_consts["CONST_GITOPS_ADDON_NAME"] = CONST_GITOPS_ADDON_NAME
         addon_consts[
             "CONST_MONITORING_USING_AAD_MSI_AUTH"
         ] = CONST_MONITORING_USING_AAD_MSI_AUTH
