@@ -307,8 +307,8 @@ class CustomPersistentDiskProperties(msrest.serialization.Model):
     :type type: str
     :param mount_path: Required. The mount path of the persistent disk.
     :type mount_path: str
-    :param readonly: Indicates whether the persistent disk is a readonly one.
-    :type readonly: bool
+    :param read_only: Indicates whether the persistent disk is a readOnly one.
+    :type read_only: bool
     :param mount_options: These are the mount options for a persistent disk.
     :type mount_options: list[str]
     """
@@ -321,7 +321,7 @@ class CustomPersistentDiskProperties(msrest.serialization.Model):
     _attribute_map = {
         'type': {'key': 'type', 'type': 'str'},
         'mount_path': {'key': 'mountPath', 'type': 'str'},
-        'readonly': {'key': 'readonly', 'type': 'bool'},
+        'read_only': {'key': 'readOnly', 'type': 'bool'},
         'mount_options': {'key': 'mountOptions', 'type': '[str]'},
     }
 
@@ -336,7 +336,7 @@ class CustomPersistentDiskProperties(msrest.serialization.Model):
         super(CustomPersistentDiskProperties, self).__init__(**kwargs)
         self.type = None  # type: Optional[str]
         self.mount_path = kwargs['mount_path']
-        self.readonly = kwargs.get('readonly', None)
+        self.read_only = kwargs.get('read_only', None)
         self.mount_options = kwargs.get('mount_options', None)
 
 
@@ -350,8 +350,8 @@ class AzureFileVolume(CustomPersistentDiskProperties):
     :type type: str
     :param mount_path: Required. The mount path of the persistent disk.
     :type mount_path: str
-    :param readonly: Indicates whether the persistent disk is a readonly one.
-    :type readonly: bool
+    :param read_only: Indicates whether the persistent disk is a readOnly one.
+    :type read_only: bool
     :param mount_options: These are the mount options for a persistent disk.
     :type mount_options: list[str]
     :param share_name: Required. The share name of the Azure File share.
@@ -367,7 +367,7 @@ class AzureFileVolume(CustomPersistentDiskProperties):
     _attribute_map = {
         'type': {'key': 'type', 'type': 'str'},
         'mount_path': {'key': 'mountPath', 'type': 'str'},
-        'readonly': {'key': 'readonly', 'type': 'bool'},
+        'read_only': {'key': 'readOnly', 'type': 'bool'},
         'mount_options': {'key': 'mountOptions', 'type': '[str]'},
         'share_name': {'key': 'shareName', 'type': 'str'},
     }
@@ -677,12 +677,15 @@ class ClusterResourceProperties(msrest.serialization.Model):
     :vartype version: int
     :ivar service_id: ServiceInstanceEntity GUID which uniquely identifies a created resource.
     :vartype service_id: str
+    :ivar power_state: Power state of the Service. Possible values include: "Running", "Stopped".
+    :vartype power_state: str or ~azure.mgmt.appplatform.v2021_09_01_preview.models.PowerState
     """
 
     _validation = {
         'provisioning_state': {'readonly': True},
         'version': {'readonly': True},
         'service_id': {'readonly': True},
+        'power_state': {'readonly': True},
     }
 
     _attribute_map = {
@@ -690,6 +693,7 @@ class ClusterResourceProperties(msrest.serialization.Model):
         'network_profile': {'key': 'networkProfile', 'type': 'NetworkProfile'},
         'version': {'key': 'version', 'type': 'int'},
         'service_id': {'key': 'serviceId', 'type': 'str'},
+        'power_state': {'key': 'powerState', 'type': 'str'},
     }
 
     def __init__(
@@ -701,6 +705,7 @@ class ClusterResourceProperties(msrest.serialization.Model):
         self.network_profile = kwargs.get('network_profile', None)
         self.version = None
         self.service_id = None
+        self.power_state = None
 
 
 class ConfigServerGitProperty(msrest.serialization.Model):
@@ -1397,6 +1402,33 @@ class DeploymentSettings(msrest.serialization.Model):
         self.net_core_main_entry_path = kwargs.get('net_core_main_entry_path', None)
         self.environment_variables = kwargs.get('environment_variables', None)
         self.runtime_version = kwargs.get('runtime_version', "Java_8")
+
+
+class DiagnosticParameters(msrest.serialization.Model):
+    """Diagnostic parameters of diagnostic operations.
+
+    :param app_instance: App instance name.
+    :type app_instance: str
+    :param file_path: Your target file path in your own BYOS.
+    :type file_path: str
+    :param duration: Duration of your JFR. 1 min can be represented by 1m or 60s.
+    :type duration: str
+    """
+
+    _attribute_map = {
+        'app_instance': {'key': 'appInstance', 'type': 'str'},
+        'file_path': {'key': 'filePath', 'type': 'str'},
+        'duration': {'key': 'duration', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(DiagnosticParameters, self).__init__(**kwargs)
+        self.app_instance = kwargs.get('app_instance', None)
+        self.file_path = kwargs.get('file_path', None)
+        self.duration = kwargs.get('duration', None)
 
 
 class Error(msrest.serialization.Model):

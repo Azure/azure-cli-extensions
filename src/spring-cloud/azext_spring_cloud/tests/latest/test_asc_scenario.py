@@ -8,7 +8,7 @@ import unittest
 
 from knack.util import CLIError
 from azure_devtools.scenario_tests import AllowLargeResponse
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, record_only)
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, StorageAccountPreparer, record_only)
 
 # pylint: disable=line-too-long
 # pylint: disable=too-many-lines
@@ -64,6 +64,46 @@ class CustomDomainTests(ScenarioTest):
 
         self.cmd('spring-cloud certificate remove --name {cert} -g {rg} -s {serviceName}')
         self.cmd('spring-cloud certificate show --name {cert} -g {rg} -s {serviceName}', expect_failure=True)
+
+
+class ByosTest(ScenarioTest):
+
+    @ResourceGroupPreparer()
+    @StorageAccountPreparer()
+    def test_persistent_storage(self, resource_group, storage_account):
+        template = 'storage account keys list -n {} -g {} --query "[0].value" -otsv'
+        accountkey = self.cmd(template.format(storage_account, resource_group)).output
+
+        self.kwargs.update({
+            'storageType': 'StorageAccount',
+            'storage': 'test-storage-name',
+            'app': 'test-app',
+            'serviceName': 'cli-unittest',
+            'location': 'centralus',
+            'accountKey': accountkey,
+            'resource_group': resource_group,
+            'storage_account': storage_account,
+        })
+
+        self.cmd('spring-cloud create -n {serviceName} -g {resource_group} -l {location}')
+
+        self.cmd('spring-cloud storage add --name {storage} --storage-type {storageType} --account-name {storage_account} --account-key {accountKey} -g {resource_group} -s {serviceName}', checks=[
+            self.check('name', '{storage}'),
+            self.check('properties.storageType', '{storageType}'),
+            self.check('properties.accountName', '{storage_account}'),
+        ])
+
+        self.cmd('spring-cloud storage show --name {storage} -g {resource_group} -s {serviceName}', checks=[
+            self.check('name', '{storage}')
+        ])
+
+        result = self.cmd('spring-cloud storage list -g {resource_group} -s {serviceName}').get_output_in_json()
+        self.assertTrue(len(result) > 0)
+
+        self.cmd('spring-cloud storage remove --name {storage} -g {resource_group} -s {serviceName}')
+        self.cmd('spring-cloud storage show --name {storage} -g {resource_group} -s {serviceName}', expect_failure=True)
+
+        self.cmd('spring-cloud delete -n {serviceName} -g {rg}')
 
 
 class SslTests(ScenarioTest):

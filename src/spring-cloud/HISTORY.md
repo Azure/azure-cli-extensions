@@ -8,6 +8,13 @@ Release History
   directly using `spring-cloud app append-loaded-public-certificate` one by one
 * Add support to list all apps which have loaded the certificate `spring-cloud certificate list-reference-app`
 
+2.11.0
+-----
+* Support functions for Persistent Storage feature.
+* Add new command group 'az spring-cloud storage' to register your own storage to Azure Spring Cloud
+* Add new command `append-persistent-storage` into 'az spring-cloud app' to append persistent storage to applications
+* Add new parameter `--persistent-storage` into 'az spring-cloud app create' and 'az spring-cloud app update' to accept a json file to create persistent storages
+
 2.10.0
 -----
 * Support functions for Java In-Process Agent feature General Available.

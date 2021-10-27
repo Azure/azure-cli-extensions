@@ -26,6 +26,9 @@ from .vendored_sdks.appplatform.v2020_07_01.models import _app_platform_manageme
 from .vendored_sdks.appplatform.v2020_11_01_preview import (
     AppPlatformManagementClient as AppPlatformManagementClient_20201101preview
 )
+from .vendored_sdks.appplatform.v2021_09_01_preview import (
+    AppPlatformManagementClient as AppPlatformManagementClient_20210901preview
+)
 from knack.log import get_logger
 from .azure_storage_file import FileService
 from azure.cli.core.azclierror import ClientRequestError, FileOperationError, InvalidArgumentValueError, RequiredArgumentMissingError
@@ -249,6 +252,47 @@ def regenerate_keys(cmd, client, resource_group, name, type):
                                                models.RegenerateTestKeyRequestPayload(key_type=type))
 
 
+def app_append_persistent_storage(cmd, client, resource_group, service, name,
+                                  storage_name,
+                                  persistent_storage_type,
+                                  share_name,
+                                  mount_path,
+                                  mount_options=None,
+                                  read_only=None):
+    client_0901_preview = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20210901preview)
+
+    storage_resource = client_0901_preview.storages.get(resource_group, service, storage_name)
+    app = client_0901_preview.apps.get(resource_group, service, name)
+
+    custom_persistent_disks = []
+    if app.properties.custom_persistent_disks:
+        for disk in app.properties.custom_persistent_disks:
+            custom_persistent_disks.append(disk)
+
+    custom_persistent_disk_properties = models_20210901preview.AzureFileVolume(
+        type=persistent_storage_type,
+        share_name=share_name,
+        mount_path=mount_path,
+        mount_options=mount_options,
+        read_only=read_only)
+
+    custom_persistent_disks.append(
+        models_20210901preview.CustomPersistentDiskResource(
+            storage_id=storage_resource.id,
+            custom_persistent_disk_properties=custom_persistent_disk_properties))
+
+    app.properties.custom_persistent_disks = custom_persistent_disks
+    logger.warning("[1/1] updating app '{}'".format(name))
+
+    poller = client.apps.begin_update(
+        resource_group, service, name, app)
+    while poller.done() is False:
+        sleep(APP_CREATE_OR_UPDATE_SLEEP_INTERVAL)
+
+    app_updated = client.apps.get(resource_group, service, name)
+    return app_updated
+
+
 def app_create(cmd, client, resource_group, service, name,
                assign_endpoint=None,
                cpu=None,
@@ -259,6 +303,7 @@ def app_create(cmd, client, resource_group, service, name,
                env=None,
                enable_persistent_storage=None,
                assign_identity=None,
+               persistent_storage=None,
                loaded_public_certificate_file=None):
     cpu = validate_cpu(cpu)
     memory = validate_memory(memory)
@@ -280,6 +325,35 @@ def app_create(cmd, client, resource_group, service, name,
     else:
         properties.persistent_disk = models_20210901preview.PersistentDisk(
             size_in_gb=0, mount_path="/persistent")
+
+    if persistent_storage:
+        client_0901_preview = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20210901preview)
+        data = get_file_json(persistent_storage, throw_on_empty=False)
+        custom_persistent_disks = []
+
+        if data:
+            if not data.get('customPersistentDisks'):
+                raise InvalidArgumentValueError("CustomPersistentDisks must be provided in the json file")
+            for item in data['customPersistentDisks']:
+                invalidProperties = not item.get('storageName') or \
+                    not item.get('customPersistentDiskProperties').get('type') or \
+                    not item.get('customPersistentDiskProperties').get('shareName') or \
+                    not item.get('customPersistentDiskProperties').get('mountPath')
+                if invalidProperties:
+                    raise InvalidArgumentValueError("StorageName, Type, ShareName, MountPath mast be provided in the json file")
+                storage_resource = client_0901_preview.storages.get(resource_group, service, item['storageName'])
+                custom_persistent_disk_properties = models_20210901preview.AzureFileVolume(
+                    type=item['customPersistentDiskProperties']['type'],
+                    share_name=item['customPersistentDiskProperties']['shareName'],
+                    mount_path=item['customPersistentDiskProperties']['mountPath'],
+                    mount_options=item['customPersistentDiskProperties']['mountOptions'] if 'mountOptions' in item['customPersistentDiskProperties'] else None,
+                    read_only=item['customPersistentDiskProperties']['readOnly'] if 'readOnly' in item['customPersistentDiskProperties'] else None)
+
+                custom_persistent_disks.append(
+                    models_20210901preview.CustomPersistentDiskResource(
+                        storage_id=storage_resource.id,
+                        custom_persistent_disk_properties=custom_persistent_disk_properties))
+        properties.custom_persistent_disks = custom_persistent_disks
 
     if loaded_public_certificate_file is not None:
         data = get_file_json(loaded_public_certificate_file)
@@ -321,8 +395,9 @@ def app_create(cmd, client, resource_group, service, name,
 
     logger.warning("[3/4] Setting default deployment to production")
 
-    app_resource.properties.active_deployment_name = DEFAULT_DEPLOYMENT_NAME
-    app_resource.properties.public = assign_endpoint
+    properties.active_deployment_name = DEFAULT_DEPLOYMENT_NAME
+    properties.public = assign_endpoint
+
     app_resource.location = resource.location
 
     app_poller = client.apps.begin_update(resource_group, service, name, app_resource)
@@ -380,6 +455,7 @@ def app_update(cmd, client, resource_group, service, name,
                enable_persistent_storage=None,
                https_only=None,
                enable_end_to_end_tls=None,
+               persistent_storage=None,
                loaded_public_certificate_file=None):
     _check_active_deployment_exist(client, resource_group, service, name)
     resource = client.services.get(resource_group, service)
@@ -393,6 +469,34 @@ def app_update(cmd, client, resource_group, service, name,
     if enable_persistent_storage is False:
         properties.persistent_disk = models_20210901preview.PersistentDisk(size_in_gb=0)
 
+    if persistent_storage:
+        client_0901_preview = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20210901preview)
+        data = get_file_json(persistent_storage, throw_on_empty=False)
+        custom_persistent_disks = []
+
+        if data:
+            if not data.get('customPersistentDisks'):
+                raise InvalidArgumentValueError("CustomPersistentDisks must be provided in the json file")
+            for item in data['customPersistentDisks']:
+                invalidProperties = not item.get('storageName') or \
+                    not item.get('customPersistentDiskProperties').get('type') or \
+                    not item.get('customPersistentDiskProperties').get('shareName') or \
+                    not item.get('customPersistentDiskProperties').get('mountPath')
+                if invalidProperties:
+                    raise InvalidArgumentValueError("StorageName, Type, ShareName, MountPath mast be provided in the json file")
+                storage_resource = client_0901_preview.storages.get(resource_group, service, item['storageName'])
+                custom_persistent_disk_properties = models_20210901preview.AzureFileVolume(
+                    type=item['customPersistentDiskProperties']['type'],
+                    share_name=item['customPersistentDiskProperties']['shareName'],
+                    mount_path=item['customPersistentDiskProperties']['mountPath'],
+                    mount_options=item['customPersistentDiskProperties']['mountOptions'] if 'mountOptions' in item['customPersistentDiskProperties'] else None,
+                    read_only=item['customPersistentDiskProperties']['readOnly'] if 'readOnly' in item['customPersistentDiskProperties'] else None)
+
+                custom_persistent_disks.append(
+                    models_20210901preview.CustomPersistentDiskResource(
+                        storage_id=storage_resource.id,
+                        custom_persistent_disk_properties=custom_persistent_disk_properties))
+        properties.custom_persistent_disks = custom_persistent_disks
     if loaded_public_certificate_file is not None:
         data = get_file_json(loaded_public_certificate_file)
         if data:
@@ -1602,6 +1706,70 @@ def _get_app_log(url, user_name, password, format_json, exceptions):
 
         except CLIError as e:
             exceptions.append(e)
+
+
+def storage_callback(pipeline_response, deserialized, headers):
+    return models_20210901preview.StorageResource.deserialize(json.loads(pipeline_response.http_response.text()))
+
+
+def storage_add(client, resource_group, service, name, storage_type, account_name, account_key):
+    properties = None
+    if storage_type == 'StorageAccount':
+        properties = models_20210901preview.StorageAccount(
+            storage_type=storage_type,
+            account_name=account_name,
+            account_key=account_key)
+
+    return client.storages.begin_create_or_update(
+        resource_group_name=resource_group,
+        service_name=service,
+        storage_name=name,
+        storage_resource=models_20210901preview.StorageResource(properties=properties),
+        cls=storage_callback)
+
+
+def storage_get(client, resource_group, service, name):
+    return client.storages.get(resource_group, service, name)
+
+
+def storage_list(client, resource_group, service):
+    return client.storages.list(resource_group, service)
+
+
+def storage_remove(client, resource_group, service, name):
+    client.storages.get(resource_group, service, name)
+    return client.storages.begin_delete(resource_group, service, name)
+
+
+def storage_update(client, resource_group, service, name, storage_type, account_name, account_key):
+    properties = None
+    if storage_type == 'StorageAccount':
+        properties = models_20210901preview.StorageAccount(
+            storage_type=storage_type,
+            account_name=account_name,
+            account_key=account_key)
+
+    return client.storages.begin_create_or_update(
+        resource_group_name=resource_group,
+        service_name=service,
+        storage_name=name,
+        storage_resource=models_20210901preview.StorageResource(properties=properties),
+        cls=storage_callback)
+
+
+def storage_list_persistent_storage(client, resource_group, service, name):
+    apps = list(client.apps.list(resource_group, service))
+
+    storage_resource = client.storages.get(resource_group, service, name)
+    storage_id = storage_resource.id
+    reference_apps = []
+
+    for app in apps:
+        for custom_persistent_disk in app.properties.custom_persistent_disks or []:
+            if custom_persistent_disk.storage_id == storage_id:
+                reference_apps.append(app)
+                break
+    return reference_apps
 
 
 def certificate_add(cmd, client, resource_group, service, name, only_public_cert=None,
