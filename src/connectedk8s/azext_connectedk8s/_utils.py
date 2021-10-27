@@ -702,6 +702,7 @@ def display_diagnostics_report(kubectl_prior):   # pylint: disable=too-many-stat
     else:
         logger.warning("Could not get network config. "
                        "Please run 'az connectedk8s troubleshoot' command again later to get the analysis results.")
+        logger.debug("Network outbound connectivity is not working on the connected cluster.")
 
     if network_status_array:
         print("Below are the network connectivity results for each node:")
@@ -710,7 +711,7 @@ def display_diagnostics_report(kubectl_prior):   # pylint: disable=too-many-stat
     else:
         logger.warning("Could not get networking status. "
                        "Please run 'az connectedk8s troubleshoot' command again later to get the analysis results.")
-
+        logger.debug("Network outbound connectivity is not working on the connected cluster.")
 
 def format_diag_status(diag_status):
     for diag in diag_status:
@@ -758,7 +759,7 @@ def collect_periscope_logs(resource_group_name, name, storage_account_name=None,
                                               (base64.b64encode(bytes(storage_account_name, 'ascii'))).decode('ascii'))
     deployment_yaml = deployment_yaml.replace("# <saskey, base64 encoded>",
                                               (base64.b64encode(bytes("?" + sas_token, 'ascii'))).decode('ascii'))
-    deployment_yaml = deployment_yaml.replace("aksrepos.azurecr.io/staging/aks-periscope:v0.4", "mcr.microsoft.com/aks/periscope:v0.6")
+    deployment_yaml = deployment_yaml.replace("aksrepos.azurecr.io/staging/aks-periscope:v0.4", "mcr.microsoft.com/aks/periscope:v0.7")
     container_logs = "azure-arc"
     kube_objects = "azure-arc/pod azure-arc/service"
     yaml_lines = deployment_yaml.splitlines()
