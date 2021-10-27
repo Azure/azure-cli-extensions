@@ -24,3 +24,9 @@ def load_arguments(self, _):
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
         c.argument('availability_zones', nargs='+', help='Logical zone for Disk Pool resource.')
+
+    with self.argument_context('disk-pool list-skus') as c:
+        c.argument('location', required=True, arg_type=get_location_type(self.cli_ctx))
+
+    with self.argument_context('disk-pool list-zones') as c:
+        c.argument('location', required=True, arg_type=get_location_type(self.cli_ctx))

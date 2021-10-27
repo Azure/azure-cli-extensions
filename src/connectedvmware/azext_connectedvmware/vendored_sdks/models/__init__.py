@@ -7,14 +7,25 @@
 # --------------------------------------------------------------------------
 
 try:
+    from ._models_py3 import Cluster
+    from ._models_py3 import ClusterInventoryItem
+    from ._models_py3 import ClustersList
     from ._models_py3 import Condition
+    from ._models_py3 import Datastore
+    from ._models_py3 import DatastoreInventoryItem
+    from ._models_py3 import DatastoresList
     from ._models_py3 import ErrorDefinition
+    from ._models_py3 import ErrorDetail
     from ._models_py3 import ErrorResponse
     from ._models_py3 import ExtendedLocation
     from ._models_py3 import GuestAgent
     from ._models_py3 import GuestAgentList
+    from ._models_py3 import GuestAgentProfile
     from ._models_py3 import GuestCredential
     from ._models_py3 import HardwareProfile
+    from ._models_py3 import Host
+    from ._models_py3 import HostsList
+    from ._models_py3 import HttpProxyConfiguration
     from ._models_py3 import HybridIdentityMetadata
     from ._models_py3 import HybridIdentityMetadataList
     from ._models_py3 import Identity
@@ -38,12 +49,14 @@ try:
     from ._models_py3 import OperationDisplay
     from ._models_py3 import OperationsList
     from ._models_py3 import OsProfile
+    from ._models_py3 import PlacementProfile
     from ._models_py3 import ProxyResource
     from ._models_py3 import Resource
     from ._models_py3 import ResourcePatch
     from ._models_py3 import ResourcePool
     from ._models_py3 import ResourcePoolInventoryItem
     from ._models_py3 import ResourcePoolsList
+    from ._models_py3 import ResourceStatus
     from ._models_py3 import StopVirtualMachineOptions
     from ._models_py3 import StorageProfile
     from ._models_py3 import StorageProfileUpdate
@@ -65,14 +78,25 @@ try:
     from ._models_py3 import VirtualNetworksList
     from ._models_py3 import VirtualSCSIController
 except (SyntaxError, ImportError):
+    from ._models import Cluster  # type: ignore
+    from ._models import ClusterInventoryItem  # type: ignore
+    from ._models import ClustersList  # type: ignore
     from ._models import Condition  # type: ignore
+    from ._models import Datastore  # type: ignore
+    from ._models import DatastoreInventoryItem  # type: ignore
+    from ._models import DatastoresList  # type: ignore
     from ._models import ErrorDefinition  # type: ignore
+    from ._models import ErrorDetail  # type: ignore
     from ._models import ErrorResponse  # type: ignore
     from ._models import ExtendedLocation  # type: ignore
     from ._models import GuestAgent  # type: ignore
     from ._models import GuestAgentList  # type: ignore
+    from ._models import GuestAgentProfile  # type: ignore
     from ._models import GuestCredential  # type: ignore
     from ._models import HardwareProfile  # type: ignore
+    from ._models import Host  # type: ignore
+    from ._models import HostsList  # type: ignore
+    from ._models import HttpProxyConfiguration  # type: ignore
     from ._models import HybridIdentityMetadata  # type: ignore
     from ._models import HybridIdentityMetadataList  # type: ignore
     from ._models import Identity  # type: ignore
@@ -96,12 +120,14 @@ except (SyntaxError, ImportError):
     from ._models import OperationDisplay  # type: ignore
     from ._models import OperationsList  # type: ignore
     from ._models import OsProfile  # type: ignore
+    from ._models import PlacementProfile  # type: ignore
     from ._models import ProxyResource  # type: ignore
     from ._models import Resource  # type: ignore
     from ._models import ResourcePatch  # type: ignore
     from ._models import ResourcePool  # type: ignore
     from ._models import ResourcePoolInventoryItem  # type: ignore
     from ._models import ResourcePoolsList  # type: ignore
+    from ._models import ResourceStatus  # type: ignore
     from ._models import StopVirtualMachineOptions  # type: ignore
     from ._models import StorageProfile  # type: ignore
     from ._models import StorageProfileUpdate  # type: ignore
@@ -126,6 +152,7 @@ except (SyntaxError, ImportError):
 from ._azure_arc_vmware_management_service_api_enums import (
     CreatedByType,
     DiskMode,
+    DiskType,
     IPAddressAllocationMethod,
     IdentityType,
     InventoryType,
@@ -133,20 +160,33 @@ from ._azure_arc_vmware_management_service_api_enums import (
     OsType,
     PowerOnBootOption,
     ProvisioningAction,
+    ProvisioningState,
     SCSIControllerType,
     StatusLevelTypes,
+    StatusTypes,
     VirtualSCSISharing,
 )
 
 __all__ = [
+    'Cluster',
+    'ClusterInventoryItem',
+    'ClustersList',
     'Condition',
+    'Datastore',
+    'DatastoreInventoryItem',
+    'DatastoresList',
     'ErrorDefinition',
+    'ErrorDetail',
     'ErrorResponse',
     'ExtendedLocation',
     'GuestAgent',
     'GuestAgentList',
+    'GuestAgentProfile',
     'GuestCredential',
     'HardwareProfile',
+    'Host',
+    'HostsList',
+    'HttpProxyConfiguration',
     'HybridIdentityMetadata',
     'HybridIdentityMetadataList',
     'Identity',
@@ -170,12 +210,14 @@ __all__ = [
     'OperationDisplay',
     'OperationsList',
     'OsProfile',
+    'PlacementProfile',
     'ProxyResource',
     'Resource',
     'ResourcePatch',
     'ResourcePool',
     'ResourcePoolInventoryItem',
     'ResourcePoolsList',
+    'ResourceStatus',
     'StopVirtualMachineOptions',
     'StorageProfile',
     'StorageProfileUpdate',
@@ -198,6 +240,7 @@ __all__ = [
     'VirtualSCSIController',
     'CreatedByType',
     'DiskMode',
+    'DiskType',
     'IPAddressAllocationMethod',
     'IdentityType',
     'InventoryType',
@@ -205,7 +248,9 @@ __all__ = [
     'OsType',
     'PowerOnBootOption',
     'ProvisioningAction',
+    'ProvisioningState',
     'SCSIControllerType',
     'StatusLevelTypes',
+    'StatusTypes',
     'VirtualSCSISharing',
 ]

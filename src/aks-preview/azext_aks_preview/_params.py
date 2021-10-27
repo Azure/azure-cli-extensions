@@ -30,7 +30,12 @@ from ._consts import CONST_OUTBOUND_TYPE_LOAD_BALANCER, CONST_OUTBOUND_TYPE_USER
     CONST_SCALE_DOWN_MODE_DELETE, CONST_SCALE_DOWN_MODE_DEALLOCATE, \
     CONST_NODEPOOL_MODE_SYSTEM, CONST_NODEPOOL_MODE_USER, \
     CONST_OS_DISK_TYPE_MANAGED, CONST_OS_DISK_TYPE_EPHEMERAL, \
-    CONST_RAPID_UPGRADE_CHANNEL, CONST_STABLE_UPGRADE_CHANNEL, CONST_PATCH_UPGRADE_CHANNEL, CONST_NODE_IMAGE_UPGRADE_CHANNEL, CONST_NONE_UPGRADE_CHANNEL
+    CONST_RAPID_UPGRADE_CHANNEL, CONST_STABLE_UPGRADE_CHANNEL, CONST_PATCH_UPGRADE_CHANNEL, CONST_NODE_IMAGE_UPGRADE_CHANNEL, CONST_NONE_UPGRADE_CHANNEL, \
+    CONST_WORKLOAD_RUNTIME_OCI_CONTAINER, CONST_WORKLOAD_RUNTIME_WASM_WASI
+from ._consts import CONST_GPU_INSTANCE_PROFILE_MIG1_G, CONST_GPU_INSTANCE_PROFILE_MIG2_G, CONST_GPU_INSTANCE_PROFILE_MIG3_G, CONST_GPU_INSTANCE_PROFILE_MIG4_G, CONST_GPU_INSTANCE_PROFILE_MIG7_G
+
+workload_runtimes = [CONST_WORKLOAD_RUNTIME_OCI_CONTAINER, CONST_WORKLOAD_RUNTIME_WASM_WASI]
+gpu_instance_profiles = [CONST_GPU_INSTANCE_PROFILE_MIG1_G, CONST_GPU_INSTANCE_PROFILE_MIG2_G, CONST_GPU_INSTANCE_PROFILE_MIG3_G, CONST_GPU_INSTANCE_PROFILE_MIG4_G, CONST_GPU_INSTANCE_PROFILE_MIG7_G]
 
 
 def load_arguments(self, _):
@@ -138,9 +143,15 @@ def load_arguments(self, _):
         c.argument('enable_encryption_at_host', arg_type=get_three_state_flag(), help='Enable EncryptionAtHost.')
         c.argument('enable_ultra_ssd', action='store_true')
         c.argument('enable_secret_rotation', action='store_true')
+        c.argument('rotation_poll_interval', type=str)
         c.argument('assign_kubelet_identity', type=str, validator=validate_assign_kubelet_identity)
         c.argument('disable_local_accounts', action='store_true')
+        c.argument('gpu_instance_profile', arg_type=get_enum_type(gpu_instance_profiles))
+        c.argument('enable_windows_gmsa', action='store_true', options_list=['--enable-windows-gmsa'])
+        c.argument('gmsa_dns_server', options_list=['--gmsa-dns-server'])
+        c.argument('gmsa_root_domain_name', options_list=['--gmsa-root-domain-name'])
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
+        c.argument('workload_runtime', arg_type=get_enum_type(workload_runtimes), default=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER)
 
     with self.argument_context('aks update') as c:
         c.argument('enable_cluster_autoscaler', options_list=["--enable-cluster-autoscaler", "-e"], action='store_true')
@@ -173,9 +184,13 @@ def load_arguments(self, _):
         c.argument('disable_pod_identity', action='store_true')
         c.argument('enable_secret_rotation', action='store_true')
         c.argument('disable_secret_rotation', action='store_true')
+        c.argument('rotation_poll_interval', type=str)
         c.argument('windows_admin_password', options_list=['--windows-admin-password'])
         c.argument('disable_local_accounts', action='store_true')
         c.argument('enable_local_accounts', action='store_true')
+        c.argument('enable_windows_gmsa', action='store_true', options_list=['--enable-windows-gmsa'])
+        c.argument('gmsa_dns_server', options_list=['--gmsa-dns-server'])
+        c.argument('gmsa_root_domain_name', options_list=['--gmsa-root-domain-name'])
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
 
     with self.argument_context('aks scale') as c:
@@ -233,6 +248,8 @@ def load_arguments(self, _):
             c.argument('linux_os_config', type=str)
             c.argument('enable_encryption_at_host', options_list=['--enable-encryption-at-host'], action='store_true')
             c.argument('enable_ultra_ssd', action='store_true')
+            c.argument('workload_runtime', arg_type=get_enum_type(workload_runtimes), default=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER)
+            c.argument('gpu_instance_profile', arg_type=get_enum_type(gpu_instance_profiles))
 
     for scope in ['aks nodepool show', 'aks nodepool delete', 'aks nodepool scale', 'aks nodepool upgrade', 'aks nodepool update']:
         with self.argument_context(scope) as c:
@@ -266,6 +283,7 @@ def load_arguments(self, _):
         c.argument('appgw_subnet_id', options_list=['--appgw-subnet-id'], arg_group='Application Gateway')
         c.argument('appgw_watch_namespace', options_list=['--appgw-watch-namespace'], arg_group='Application Gateway')
         c.argument('enable_secret_rotation', action='store_true')
+        c.argument('rotation_poll_interval', type=str)
         c.argument('workspace_resource_id')
         c.argument('enable_msi_auth_for_monitoring', arg_type=get_three_state_flag(), is_preview=True)
 
@@ -284,6 +302,7 @@ def load_arguments(self, _):
         c.argument('appgw_subnet_id', options_list=['--appgw-subnet-id'], arg_group='Application Gateway')
         c.argument('appgw_watch_namespace', options_list=['--appgw-watch-namespace'], arg_group='Application Gateway')
         c.argument('enable_secret_rotation', action='store_true')
+        c.argument('rotation_poll_interval', type=str)
         c.argument('workspace_resource_id')
         c.argument('enable_msi_auth_for_monitoring', arg_type=get_three_state_flag(), is_preview=True)
 
@@ -302,6 +321,7 @@ def load_arguments(self, _):
         c.argument('appgw_subnet_id', options_list=['--appgw-subnet-id'], arg_group='Application Gateway')
         c.argument('appgw_watch_namespace', options_list=['--appgw-watch-namespace'], arg_group='Application Gateway')
         c.argument('enable_secret_rotation', action='store_true')
+        c.argument('rotation_poll_interval', type=str)
         c.argument('workspace_resource_id')
         c.argument('enable_msi_auth_for_monitoring', arg_type=get_three_state_flag(), is_preview=True)
 
