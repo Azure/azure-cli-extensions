@@ -12,6 +12,11 @@
 from knack.help_files import helps
 
 
+helps['disk-pool'] = '''
+    type: group
+    short-summary: Manage Storage Pool Management
+'''
+
 helps['disk-pool'] = """
     type: group
     short-summary: Manage disk pool with diskpool
@@ -40,7 +45,8 @@ helps['disk-pool show'] = """
 
 helps['disk-pool create'] = """
     type: command
-    short-summary: "Create Disk pool."
+    short-summary: "Create Disk pool. This Create operation can take 15 minutes to complete. This is expected service \
+behavior."
     parameters:
       - name: --sku
         short-summary: "Determines the SKU of the Disk Pool"
@@ -64,7 +70,7 @@ helps['disk-pool create'] = """
 111-1111-111111111111/resourceGroups/myResourceGroup/providers/Microsoft.Compute/disks/vm-name_DataDisk_0" --disks \
 "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/myResourceGroup/providers/Microsoft.Compute/disks/v\
 m-name_DataDisk_1" --subnet-id "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/prov\
-iders/Microsoft.Network/virtualNetworks/myvnet/subnets/mysubnet" --sku name="Basic_V0" tier="Basic" --tags key="value" \
+iders/Microsoft.Network/virtualNetworks/myvnet/subnets/mysubnet" --sku name="Basic_V1" tier="Basic" --tags key="value" \
 --name "myDiskPool" --resource-group "myResourceGroup"
 """
 
@@ -72,6 +78,13 @@ helps['disk-pool update'] = """
     type: command
     short-summary: "Update a Disk pool."
     parameters:
+      - name: --sku
+        short-summary: "Determines the SKU of the Disk Pool"
+        long-summary: |
+            Usage: --sku name=XX tier=XX
+
+            name: Required. Sku name
+            tier: Sku tier
       - name: --disks
         short-summary: "List of Azure Managed Disks to attach to a Disk Pool."
         long-summary: |
@@ -86,12 +99,13 @@ helps['disk-pool update'] = """
                az disk-pool update --name "myDiskPool" --disks "/subscriptions/11111111-1111-1111-1111-111111111111/res\
 ourceGroups/myResourceGroup/providers/Microsoft.Compute/disks/vm-name_DataDisk_0" --disks \
 "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/myResourceGroup/providers/Microsoft.Compute/disks/v\
-m-name_DataDisk_1" --tags key="value" --resource-group "myResourceGroup"
+m-name_DataDisk_1" --sku name="Basic_B1" tier="Basic" --tags key="value" --resource-group "myResourceGroup"
 """
 
 helps['disk-pool delete'] = """
     type: command
-    short-summary: "Delete a Disk pool."
+    short-summary: "Delete a Disk pool; attached disks are not affected. This delete operation can take 10 minutes to \
+complete. This is expected service behavior."
     examples:
       - name: Delete Disk pool
         text: |-
@@ -108,18 +122,20 @@ helps['disk-pool list-outbound-network-dependency-endpoint'] = """
 "Sample-WestUSResourceGroup"
 """
 
-helps['disk-pool list-skus'] = """
+helps['disk-pool redeploy'] = """
     type: command
-    short-summary: "Lists available Disk Pool Skus in an Azure location."
+    short-summary: "Redeploy replaces the underlying virtual machine hosts one at a time. This operation can take 10-15 \
+minutes to complete. This is expected service behavior."
     examples:
-      - name: List Disk Pool Skus
+      - name: Redeploy Disk Pool
         text: |-
-               az disk-pool list-skus --location "eastus"
+               az disk-pool redeploy --name "myDiskPool" --resource-group "myResourceGroup"
 """
 
 helps['disk-pool start'] = """
     type: command
-    short-summary: "The operation to start a Disk Pool."
+    short-summary: "The operation to start a Disk Pool. This start operation can take 10 minutes to complete. This is \
+expected service behavior."
     examples:
       - name: Start Disk Pool
         text: |-
@@ -129,7 +145,8 @@ helps['disk-pool start'] = """
 helps['disk-pool stop'] = """
     type: command
     short-summary: "Shuts down the Disk Pool and releases the compute resources. You are not billed for the compute \
-resources that this Disk Pool uses."
+resources that this Disk Pool uses. This operation can take 10 minutes to complete. This is expected service \
+behavior."
     examples:
       - name: Deallocate Disk Pool
         text: |-
@@ -149,6 +166,29 @@ helps['disk-pool wait'] = """
       - name: Pause executing next line of CLI script until the disk-pool is successfully deleted.
         text: |-
                az disk-pool wait --name "myDiskPool" --resource-group "myResourceGroup" --deleted
+"""
+
+helps['disk-pool'] = """
+    type: group
+    short-summary: Manage disk pool zone with diskpool
+"""
+
+helps['disk-pool list-skus'] = """
+    type: command
+    short-summary: "Lists available StoragePool resources and skus in an Azure location."
+    examples:
+      - name: List Disk Pool Skus
+        text: |-
+               az disk-pool list-skus --location "eastus"
+"""
+
+helps['disk-pool list-zones'] = """
+    type: command
+    short-summary: "Lists available Disk Pool Skus in an Azure location."
+    examples:
+      - name: List Disk Pool Zones
+        text: |-
+               az disk-pool list-zones --location "eastus"
 """
 
 helps['disk-pool iscsi-target'] = """
