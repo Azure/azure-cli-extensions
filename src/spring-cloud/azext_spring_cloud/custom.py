@@ -20,6 +20,7 @@ from knack.util import CLIError
 from .vendored_sdks.appplatform.v2020_07_01 import models
 from .vendored_sdks.appplatform.v2020_11_01_preview import models as models_20201101preview
 from .vendored_sdks.appplatform.v2021_06_01_preview import models as models_20210601preview
+from .vendored_sdks.appplatform.v2021_09_01_preview import models as models_20210901preview
 from .vendored_sdks.appplatform.v2020_07_01.models import _app_platform_management_client_enums as AppPlatformEnums
 from .vendored_sdks.appplatform.v2020_11_01_preview import (
     AppPlatformManagementClient as AppPlatformManagementClient_20201101preview
@@ -824,6 +825,48 @@ def _validate_instance_count(sku, instance_count=None):
 
 def deployment_list(cmd, client, resource_group, service, app):
     return client.deployments.list(resource_group, service, app)
+
+
+def deployment_generate_heap_dump(cmd, client, resource_group, service, app, app_instance, file_path, deployment=None):
+    if deployment is None:
+        logger.warning(
+            "No '--deployment' given, will update app's production deployment")
+        deployment = client.apps.get(
+            resource_group, service, app).properties.active_deployment_name
+        if deployment is None:
+            logger.warning("No production deployment found for update")
+            return
+    diagnostic_parameters = models_20210901preview.DiagnosticParameters(app_instance=app_instance, file_path=file_path)
+    return client.deployments.begin_generate_heap_dump(resource_group, service, app, deployment, diagnostic_parameters)
+
+
+def deployment_generate_thread_dump(cmd, client, resource_group, service, app, app_instance, file_path,
+                                    deployment=None):
+    if deployment is None:
+        logger.warning(
+            "No '--deployment' given, will update app's production deployment")
+        deployment = client.apps.get(
+            resource_group, service, app).properties.active_deployment_name
+        if deployment is None:
+            logger.warning("No production deployment found for update")
+            return
+    diagnostic_parameters = models_20210901preview.DiagnosticParameters(app_instance=app_instance, file_path=file_path)
+    return client.deployments.begin_generate_thread_dump(resource_group, service, app, deployment, diagnostic_parameters)
+
+
+def deployment_start_jfr(cmd, client, resource_group, service, app, app_instance, file_path, duration=None,
+                         deployment=None):
+    if deployment is None:
+        logger.warning(
+            "No '--deployment' given, will update app's production deployment")
+        deployment = client.apps.get(
+            resource_group, service, app).properties.active_deployment_name
+        if deployment is None:
+            logger.warning("No production deployment found for update")
+            return
+    diagnostic_parameters = models_20210901preview.DiagnosticParameters(app_instance=app_instance, file_path=file_path,
+                                                                        duration=duration)
+    return client.deployments.begin_start_jfr(resource_group, service, app, deployment, diagnostic_parameters)
 
 
 def deployment_get(cmd, client, resource_group, service, app, name):
