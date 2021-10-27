@@ -6,7 +6,7 @@ Release History
 1.0.0
 ++++++
 * Add command group `az webpubsub hub`
-* Remove command group `az webpubsub event-handlers`
+* [Breaking] Remove command group `az webpubsub event-handlers`
 
 0.2.1
 ++++++
