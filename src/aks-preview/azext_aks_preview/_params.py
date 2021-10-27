@@ -21,7 +21,7 @@ from ._validators import (
     validate_nodepool_name, validate_vm_set_type, validate_load_balancer_sku,
     validate_load_balancer_outbound_ips, validate_load_balancer_outbound_ip_prefixes, validate_nat_gateway_managed_outbound_ip_count,
     validate_taints, validate_priority, validate_eviction_policy, validate_spot_max_price, validate_acr, validate_user,
-    validate_load_balancer_outbound_ports, validate_load_balancer_idle_timeout, validate_nat_gateway_idle_timeout, validate_nodepool_tags,
+    validate_load_balancer_outbound_ports, validate_load_balancer_idle_timeout, validate_nat_gateway_idle_timeout, validate_nodepool_tags, validate_addon,
     validate_nodepool_labels, validate_vnet_subnet_id, validate_pod_subnet_id, validate_max_surge, validate_assign_identity, validate_addons,
     validate_pod_identity_pod_labels, validate_pod_identity_resource_name, validate_pod_identity_resource_namespace, validate_assign_kubelet_identity)
 from ._consts import CONST_OUTBOUND_TYPE_LOAD_BALANCER, CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING, CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY, \
@@ -30,7 +30,12 @@ from ._consts import CONST_OUTBOUND_TYPE_LOAD_BALANCER, CONST_OUTBOUND_TYPE_USER
     CONST_SCALE_DOWN_MODE_DELETE, CONST_SCALE_DOWN_MODE_DEALLOCATE, \
     CONST_NODEPOOL_MODE_SYSTEM, CONST_NODEPOOL_MODE_USER, \
     CONST_OS_DISK_TYPE_MANAGED, CONST_OS_DISK_TYPE_EPHEMERAL, \
-    CONST_RAPID_UPGRADE_CHANNEL, CONST_STABLE_UPGRADE_CHANNEL, CONST_PATCH_UPGRADE_CHANNEL, CONST_NODE_IMAGE_UPGRADE_CHANNEL, CONST_NONE_UPGRADE_CHANNEL
+    CONST_RAPID_UPGRADE_CHANNEL, CONST_STABLE_UPGRADE_CHANNEL, CONST_PATCH_UPGRADE_CHANNEL, CONST_NODE_IMAGE_UPGRADE_CHANNEL, CONST_NONE_UPGRADE_CHANNEL, \
+    CONST_WORKLOAD_RUNTIME_OCI_CONTAINER, CONST_WORKLOAD_RUNTIME_WASM_WASI
+from ._consts import CONST_GPU_INSTANCE_PROFILE_MIG1_G, CONST_GPU_INSTANCE_PROFILE_MIG2_G, CONST_GPU_INSTANCE_PROFILE_MIG3_G, CONST_GPU_INSTANCE_PROFILE_MIG4_G, CONST_GPU_INSTANCE_PROFILE_MIG7_G
+
+workload_runtimes = [CONST_WORKLOAD_RUNTIME_OCI_CONTAINER, CONST_WORKLOAD_RUNTIME_WASM_WASI]
+gpu_instance_profiles = [CONST_GPU_INSTANCE_PROFILE_MIG1_G, CONST_GPU_INSTANCE_PROFILE_MIG2_G, CONST_GPU_INSTANCE_PROFILE_MIG3_G, CONST_GPU_INSTANCE_PROFILE_MIG4_G, CONST_GPU_INSTANCE_PROFILE_MIG7_G]
 
 
 def load_arguments(self, _):
@@ -140,7 +145,9 @@ def load_arguments(self, _):
         c.argument('enable_secret_rotation', action='store_true')
         c.argument('assign_kubelet_identity', type=str, validator=validate_assign_kubelet_identity)
         c.argument('disable_local_accounts', action='store_true')
+        c.argument('gpu_instance_profile', arg_type=get_enum_type(gpu_instance_profiles))
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
+        c.argument('workload_runtime', arg_type=get_enum_type(workload_runtimes), default=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER)
 
     with self.argument_context('aks update') as c:
         c.argument('enable_cluster_autoscaler', options_list=["--enable-cluster-autoscaler", "-e"], action='store_true')
@@ -233,6 +240,8 @@ def load_arguments(self, _):
             c.argument('linux_os_config', type=str)
             c.argument('enable_encryption_at_host', options_list=['--enable-encryption-at-host'], action='store_true')
             c.argument('enable_ultra_ssd', action='store_true')
+            c.argument('workload_runtime', arg_type=get_enum_type(workload_runtimes), default=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER)
+            c.argument('gpu_instance_profile', arg_type=get_enum_type(gpu_instance_profiles))
 
     for scope in ['aks nodepool show', 'aks nodepool delete', 'aks nodepool scale', 'aks nodepool upgrade', 'aks nodepool update']:
         with self.argument_context(scope) as c:
@@ -250,6 +259,42 @@ def load_arguments(self, _):
         c.argument('tags', tags_type)
         c.argument('mode', arg_type=get_enum_type([CONST_NODEPOOL_MODE_SYSTEM, CONST_NODEPOOL_MODE_USER]))
         c.argument('max_surge', type=str, validator=validate_max_surge)
+
+    with self.argument_context('aks addon show') as c:
+        c.argument('addon', options_list=['--addon', '-a'], validator=validate_addon)
+
+    with self.argument_context('aks addon enable') as c:
+        c.argument('addon', options_list=['--addon', '-a'], validator=validate_addon)
+        c.argument('subnet_name', options_list=['--subnet-name', '-s'])
+        c.argument('enable_sgxquotehelper', action='store_true')
+        c.argument('osm_mesh_name', options_list=['--osm-mesh-name'])
+        c.argument('appgw_name', options_list=['--appgw-name'], arg_group='Application Gateway')
+        c.argument('appgw_subnet_prefix', options_list=['--appgw-subnet-prefix'], arg_group='Application Gateway', deprecate_info=c.deprecate(redirect='--appgw-subnet-cidr', hide=True))
+        c.argument('appgw_subnet_cidr', options_list=['--appgw-subnet-cidr'], arg_group='Application Gateway')
+        c.argument('appgw_id', options_list=['--appgw-id'], arg_group='Application Gateway')
+        c.argument('appgw_subnet_id', options_list=['--appgw-subnet-id'], arg_group='Application Gateway')
+        c.argument('appgw_watch_namespace', options_list=['--appgw-watch-namespace'], arg_group='Application Gateway')
+        c.argument('enable_secret_rotation', action='store_true')
+        c.argument('workspace_resource_id')
+        c.argument('enable_msi_auth_for_monitoring', arg_type=get_three_state_flag(), is_preview=True)
+
+    with self.argument_context('aks addon disable') as c:
+        c.argument('addon', options_list=['--addon', '-a'], validator=validate_addon)
+
+    with self.argument_context('aks addon update') as c:
+        c.argument('addon', options_list=['--addon', '-a'], validator=validate_addon)
+        c.argument('subnet_name', options_list=['--subnet-name', '-s'])
+        c.argument('enable_sgxquotehelper', action='store_true')
+        c.argument('osm_mesh_name', options_list=['--osm-mesh-name'])
+        c.argument('appgw_name', options_list=['--appgw-name'], arg_group='Application Gateway')
+        c.argument('appgw_subnet_prefix', options_list=['--appgw-subnet-prefix'], arg_group='Application Gateway', deprecate_info=c.deprecate(redirect='--appgw-subnet-cidr', hide=True))
+        c.argument('appgw_subnet_cidr', options_list=['--appgw-subnet-cidr'], arg_group='Application Gateway')
+        c.argument('appgw_id', options_list=['--appgw-id'], arg_group='Application Gateway')
+        c.argument('appgw_subnet_id', options_list=['--appgw-subnet-id'], arg_group='Application Gateway')
+        c.argument('appgw_watch_namespace', options_list=['--appgw-watch-namespace'], arg_group='Application Gateway')
+        c.argument('enable_secret_rotation', action='store_true')
+        c.argument('workspace_resource_id')
+        c.argument('enable_msi_auth_for_monitoring', arg_type=get_three_state_flag(), is_preview=True)
 
     with self.argument_context('aks disable-addons') as c:
         c.argument('addons', options_list=['--addons', '-a'], validator=validate_addons)

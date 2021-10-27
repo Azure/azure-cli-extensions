@@ -131,5 +131,5 @@ helps['connectedk8s troubleshoot'] = """
       - name: using the resource id of a storage account resource you own.
         text: az connectedk8s troubleshoot -g MyResourceGroup -n ConnectedCluster --storage-account "MyStoreageAccountResourceId"
       - name: Troubleshoot a connectedCluster by specifying the kubeconfig and kubecontext
-        text: az connectedk8s troubleshoot -g resourceGroupName -n connectedClusterName --kube-config /path/to/kubeconfig --kube-context kubeContextName
+        text: az connectedk8s troubleshoot -g resourceGroupName -n connectedClusterName --storage-account "MyStoreageAccountResourceId" --kube-config /path/to/kubeconfig --kube-context kubeContextName
 """

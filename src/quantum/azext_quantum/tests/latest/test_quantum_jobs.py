@@ -39,7 +39,12 @@ class QuantumJobsScenarioTest(ScenarioTest):
         token = _get_data_credentials(self.cli_ctx, get_test_subscription_id()).get_token().token
         assert len(token) > 0
 
-        args = _generate_submit_args(["--foo", "--bar"], ws, target, token, project=None, job_name=None, storage=None, shots=None)
+        job_parameters = {}
+        job_parameters["key1"] = "value1"
+        job_parameters["key2"] = "value2"
+
+        args = _generate_submit_args(["--foo", "--bar"], ws, target, token, project=None,
+                                     job_name=None, storage=None, shots=None, job_params=None)
         self.assertEquals(args[0], "dotnet")
         self.assertEquals(args[1], "run")
         self.assertEquals(args[2], "--no-build")
@@ -57,7 +62,8 @@ class QuantumJobsScenarioTest(ScenarioTest):
         self.assertNotIn("--storage", args)
         self.assertNotIn("--shots", args)
 
-        args = _generate_submit_args(["--foo", "--bar"], ws, target, token, "../other/path", "job-name", 1234, "az-stor")
+        args = _generate_submit_args(["--foo", "--bar"], ws, target, token, "../other/path",
+                                     "job-name", 1234, "az-stor", job_parameters)
         self.assertEquals(args[0], "dotnet")
         self.assertEquals(args[1], "run")
         self.assertEquals(args[2], "--no-build")
@@ -69,6 +75,9 @@ class QuantumJobsScenarioTest(ScenarioTest):
         self.assertIn("--job-name", args)
         self.assertIn("--storage", args)
         self.assertIn("--shots", args)
+        self.assertIn("--job-params", args)
+        self.assertIn("key1=value1", args)
+        self.assertIn("key2=value2", args)
 
     def test_parse_blob_url(self):
         sas = "sv=2018-03-28&sr=c&sig=some-sig&sp=racwl"

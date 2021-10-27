@@ -365,3 +365,75 @@ def workload_network_dhcp_list(client: AVSClient, resource_group_name, private_c
 
 def workload_network_dhcp_show(client: AVSClient, resource_group_name, private_cloud, dhcp_id: str):
     return client.workload_networks.get_dhcp(resource_group_name=resource_group_name, private_cloud_name=private_cloud, dhcp_id=dhcp_id)
+
+
+def workload_network_dns_services_list(client: AVSClient, resource_group_name, private_cloud):
+    return client.workload_networks.list_dns_services(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
+
+
+def workload_network_dns_services_get(client: AVSClient, resource_group_name, private_cloud, dns_service_id):
+    return client.workload_networks.get_dns_service(resource_group_name=resource_group_name, private_cloud_name=private_cloud, dns_service_id=dns_service_id)
+
+
+def workload_network_dns_services_create(client: AVSClient, resource_group_name, private_cloud, dns_service_id, display_name=None, dns_service_ip=None, default_dns_zone=None, fqdn_zones=None, log_level=None, revision=None):
+    from azext_vmware.vendored_sdks.avs_client.models import WorkloadNetworkDnsService
+    prop = WorkloadNetworkDnsService(display_name=display_name, dns_service_ip=dns_service_ip, default_dns_zone=default_dns_zone, log_level=log_level, revision=revision, fqdn_zones=fqdn_zones)
+    return client.workload_networks.begin_create_dns_service(resource_group_name=resource_group_name, private_cloud_name=private_cloud, dns_service_id=dns_service_id, workload_network_dns_service=prop)
+
+
+def workload_network_dns_services_update(client: AVSClient, resource_group_name, private_cloud, dns_service_id, display_name=None, dns_service_ip=None, default_dns_zone=None, fqdn_zones=None, log_level=None, revision=None):
+    from azext_vmware.vendored_sdks.avs_client.models import WorkloadNetworkDnsService
+    prop = WorkloadNetworkDnsService(display_name=display_name, dns_service_ip=dns_service_ip, default_dns_zone=default_dns_zone, fqdn_zones=fqdn_zones, log_level=log_level, revision=revision)
+    return client.workload_networks.begin_update_dns_service(resource_group_name=resource_group_name, private_cloud_name=private_cloud, dns_service_id=dns_service_id, workload_network_dns_service=prop)
+
+
+def workload_network_dns_services_delete(client: AVSClient, resource_group_name, private_cloud, dns_service_id):
+    return client.workload_networks.begin_delete_dns_service(resource_group_name=resource_group_name, private_cloud_name=private_cloud, dns_service_id=dns_service_id)
+
+
+def workload_network_dns_zone_list(client: AVSClient, resource_group_name, private_cloud):
+    return client.workload_networks.list_dns_zones(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
+
+
+def workload_network_dns_zone_get(client: AVSClient, resource_group_name, private_cloud, dns_zone_id):
+    return client.workload_networks.get_dns_zone(resource_group_name=resource_group_name, private_cloud_name=private_cloud, dns_zone_id=dns_zone_id)
+
+
+def workload_network_dns_zone_create(client: AVSClient, resource_group_name, private_cloud, dns_zone_id, display_name=None, domain=None, dns_server_ips=None, source_ip=None, dns_services=None, revision=None):
+    from azext_vmware.vendored_sdks.avs_client.models import WorkloadNetworkDnsZone
+    prop = WorkloadNetworkDnsZone(display_name=display_name, domain=domain, dns_server_ips=dns_server_ips, source_ip=source_ip, dns_services=dns_services, revision=revision)
+    return client.workload_networks.begin_create_dns_zone(resource_group_name=resource_group_name, private_cloud_name=private_cloud, dns_zone_id=dns_zone_id, workload_network_dns_zone=prop)
+
+
+def workload_network_dns_zone_update(client: AVSClient, resource_group_name, private_cloud, dns_zone_id, display_name=None, domain=None, dns_server_ips=None, source_ip=None, dns_services=None, revision=None):
+    from azext_vmware.vendored_sdks.avs_client.models import WorkloadNetworkDnsZone
+    prop = WorkloadNetworkDnsZone(display_name=display_name, domain=domain, dns_server_ips=dns_server_ips, source_ip=source_ip, dns_services=dns_services, revision=revision)
+    return client.workload_networks.begin_update_dns_zone(resource_group_name=resource_group_name, private_cloud_name=private_cloud, dns_zone_id=dns_zone_id, workload_network_dns_zone=prop)
+
+
+def workload_network_dns_zone_delete(client: AVSClient, resource_group_name, private_cloud, dns_zone_id):
+    return client.workload_networks.begin_delete_dns_zone(resource_group_name=resource_group_name, private_cloud_name=private_cloud, dns_zone_id=dns_zone_id)
+
+
+def workload_network_port_mirroring_list(client: AVSClient, resource_group_name, private_cloud):
+    return client.workload_networks.list_port_mirroring(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
+
+
+def workload_network_port_mirroring_get(client: AVSClient, resource_group_name, private_cloud, port_mirroring_id):
+    return client.workload_networks.get_port_mirroring(resource_group_name=resource_group_name, private_cloud_name=private_cloud, port_mirroring_id=port_mirroring_id)
+
+
+def workload_network_port_mirroring_create(client: AVSClient, resource_group_name, private_cloud, port_mirroring_id, display_name=None, direction=None, source=None, destination=None, revision=None):
+    from azext_vmware.vendored_sdks.avs_client.models import WorkloadNetworkPortMirroring
+    prop = WorkloadNetworkPortMirroring(display_name=display_name, direction=direction, source=source, destination=destination, revision=revision)
+    return client.workload_networks.begin_create_port_mirroring(resource_group_name=resource_group_name, private_cloud_name=private_cloud, port_mirroring_id=port_mirroring_id, workload_network_port_mirroring=prop)
+
+
+def workload_network_port_mirroring_update(client: AVSClient, resource_group_name, private_cloud, port_mirroring_id, display_name=None, direction=None, source=None, destination=None, revision=None):
+    from azext_vmware.vendored_sdks.avs_client.models import WorkloadNetworkPortMirroring
+    prop = WorkloadNetworkPortMirroring(display_name=display_name, direction=direction, source=source, destination=destination, revision=revision)
+    return client.workload_networks.begin_update_port_mirroring(resource_group_name=resource_group_name, private_cloud_name=private_cloud, port_mirroring_id=port_mirroring_id, workload_network_port_mirroring=prop)
+
+
+def workload_network_port_mirroring_delete(client: AVSClient, resource_group_name, private_cloud, port_mirroring_id):
+    return client.workload_networks.begin_delete_port_mirroring(resource_group_name=resource_group_name, private_cloud_name=private_cloud, port_mirroring_id=port_mirroring_id)

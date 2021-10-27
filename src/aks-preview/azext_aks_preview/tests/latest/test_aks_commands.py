@@ -11,6 +11,7 @@ from azure.cli.testsdk import (
     ResourceGroupPreparer, RoleBasedServicePrincipalPreparer, ScenarioTest, live_only)
 from azure.cli.command_modules.acs._format import version_to_tuple
 from azure_devtools.scenario_tests import AllowLargeResponse
+from knack.util import CLIError
 
 from .recording_processors import KeyReplacer
 from .custom_preparers import AKSCustomResourceGroupPreparer
@@ -438,6 +439,438 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('addonProfiles.openServiceMesh.enabled', True),
         ])
 
+    @live_only()  # live only is required for test environment setup like `az login`
+    @AllowLargeResponse()
+    def test_aks_addon_list_available(self):
+        list_available_cmd = 'aks addon list-available -o json'
+        addon_list = self.cmd(list_available_cmd).get_output_in_json()
+
+        assert len(addon_list) == 10
+        assert addon_list[0]['name'] == "http_application_routing"
+        assert addon_list[1]['name'] == "monitoring"
+        assert addon_list[2]['name'] == "virtual-node"
+        assert addon_list[3]['name'] == "azure-policy"
+        assert addon_list[4]['name'] == "kube-dashboard"
+        assert addon_list[5]['name'] == "ingress-appgw"
+        assert addon_list[6]['name'] == "open-service-mesh"
+        assert addon_list[7]['name'] == "confcom"
+        assert addon_list[8]['name'] == "gitops"
+        assert addon_list[9]['name'] == "azure-keyvault-secrets-provider"
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_addon_list_all_disabled(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'ssh_key_value': self.generate_ssh_keys()
+        })
+
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --enable-managed-identity --ssh-key-value={ssh_key_value} -o json'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('addonProfiles.openServiceMesh', None),
+        ])
+
+        list_cmd = 'aks addon list --resource-group={resource_group} --name={name} -o json'
+        addon_list = self.cmd(list_cmd).get_output_in_json()
+
+        assert len(addon_list) > 0
+
+        for addon in addon_list:
+            assert not addon["enabled"]
+
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_addon_list_confcom_enabled(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'ssh_key_value': self.generate_ssh_keys()
+        })
+
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --enable-managed-identity --ssh-key-value={ssh_key_value} ' \
+                     '-a confcom -o json'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('addonProfiles.ACCSGXDevicePlugin.enabled', True),
+            self.check(
+                'addonProfiles.ACCSGXDevicePlugin.config.ACCSGXQuoteHelperEnabled', "false")
+        ])
+
+        list_cmd = 'aks addon list --resource-group={resource_group} --name={name} -o json'
+        addon_list = self.cmd(list_cmd).get_output_in_json()
+
+        assert len(addon_list) > 0
+
+        for addon in addon_list:
+            if addon["name"] == "confcom":
+                assert addon["enabled"]
+            else:
+                assert not addon["enabled"]
+
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_addon_list_openservicemesh_enabled(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'ssh_key_value': self.generate_ssh_keys()
+        })
+
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --enable-managed-identity --ssh-key-value={ssh_key_value} ' \
+                     '-a open-service-mesh -o json'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('addonProfiles.openServiceMesh.enabled', True),
+        ])
+
+        list_cmd = 'aks addon list --resource-group={resource_group} --name={name} -o json'
+        addon_list = self.cmd(list_cmd).get_output_in_json()
+
+        assert len(addon_list) > 0
+
+        for addon in addon_list:
+            if addon["name"] == "open-service-mesh":
+                assert addon["enabled"]
+            else:
+                assert not addon["enabled"]
+
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_addon_show_all_disabled(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'ssh_key_value': self.generate_ssh_keys()
+        })
+
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --enable-managed-identity --ssh-key-value={ssh_key_value} -o json'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('addonProfiles.openServiceMesh', None),
+        ])
+
+        show_cmd = 'aks addon show --resource-group={resource_group} --name={name} ' \
+                   '-a open-service-mesh -o json'
+
+        with self.assertRaisesRegexp(CLIError, 'Addon "open-service-mesh" is not enabled in this cluster.'):
+            self.cmd(show_cmd)
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_addon_show_confcom_enabled(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'ssh_key_value': self.generate_ssh_keys()
+        })
+
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --enable-managed-identity --ssh-key-value={ssh_key_value} ' \
+                     '-a confcom -o json'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('addonProfiles.ACCSGXDevicePlugin.enabled', True),
+            self.check(
+                'addonProfiles.ACCSGXDevicePlugin.config.ACCSGXQuoteHelperEnabled', "false")
+        ])
+
+        show_cmd = 'aks addon show --resource-group={resource_group} --name={name} ' \
+                   '-a confcom -o json'
+
+        self.cmd(show_cmd, checks=[
+            self.check("api_key", "ACCSGXDevicePlugin"),
+            self.check("name", "confcom"),
+            self.exists('config')
+        ])
+
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_addon_show_openservicemesh_enabled(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'ssh_key_value': self.generate_ssh_keys()
+        })
+
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --enable-managed-identity --ssh-key-value={ssh_key_value} ' \
+                     '-a open-service-mesh -o json'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('addonProfiles.openServiceMesh.enabled', True),
+        ])
+
+        show_cmd = 'aks addon show --resource-group={resource_group} --name={name} ' \
+                   '-a open-service-mesh -o json'
+
+        self.cmd(show_cmd, checks=[
+            self.check("api_key", "openServiceMesh"),
+            self.check("name", "open-service-mesh"),
+            self.exists('identity')
+        ])
+
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_addon_enable_with_openservicemesh(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'ssh_key_value': self.generate_ssh_keys()
+        })
+
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --enable-managed-identity --ssh-key-value={ssh_key_value} -o json'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('addonProfiles.openServiceMesh', None),
+        ])
+
+        enable_cmd = 'aks addon enable --addon open-service-mesh --resource-group={resource_group} --name={name} -o json'
+        self.cmd(enable_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('addonProfiles.openServiceMesh.enabled', True),
+        ])
+
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_addon_disable_openservicemesh(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'ssh_key_value': self.generate_ssh_keys()
+        })
+
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --enable-managed-identity --ssh-key-value={ssh_key_value} ' \
+                     '-a open-service-mesh -o json'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('addonProfiles.openServiceMesh.enabled', True),
+        ])
+
+        disable_cmd = 'aks addon disable --addon open-service-mesh --resource-group={resource_group} --name={name} -o json'
+        self.cmd(disable_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('addonProfiles.openServiceMesh.enabled', False),
+            self.check('addonProfiles.openServiceMesh.config', None)
+        ])
+
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_addon_enable_with_azurekeyvaultsecretsprovider(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'ssh_key_value': self.generate_ssh_keys()
+        })
+
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --ssh-key-value={ssh_key_value}'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('addonProfiles.azureKeyvaultSecretsProvider', None)
+        ])
+
+        enable_cmd = 'aks addon enable --addon azure-keyvault-secrets-provider --resource-group={resource_group} --name={name} -o json'
+        self.cmd(enable_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check(
+                'addonProfiles.azureKeyvaultSecretsProvider.enabled', True),
+            self.check(
+                'addonProfiles.azureKeyvaultSecretsProvider.config.enableSecretRotation', "false")
+        ])
+
+        disable_cmd = 'aks addon disable --addon azure-keyvault-secrets-provider --resource-group={resource_group} --name={name} -o json'
+        self.cmd(disable_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check(
+                'addonProfiles.azureKeyvaultSecretsProvider.enabled', False),
+            self.check(
+                'addonProfiles.azureKeyvaultSecretsProvider.config', None)
+        ])
+
+        enable_with_secret_rotation_cmd = 'aks addon enable --addon azure-keyvault-secrets-provider --enable-secret-rotation --resource-group={resource_group} --name={name} -o json'
+        self.cmd(enable_with_secret_rotation_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check(
+                'addonProfiles.azureKeyvaultSecretsProvider.enabled', True),
+            self.check(
+                'addonProfiles.azureKeyvaultSecretsProvider.config.enableSecretRotation', "true")
+        ])
+
+        # delete
+        cmd = 'aks delete --resource-group={resource_group} --name={name} --yes --no-wait'
+        self.cmd(cmd, checks=[
+            self.is_empty(),
+        ])
+
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_addon_enable_confcom_addon(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'ssh_key_value': self.generate_ssh_keys()
+        })
+
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --enable-managed-identity --ssh-key-value={ssh_key_value} ' \
+                     '-o json'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('addonProfiles.ACCSGXDevicePlugin', None)
+        ])
+
+        enable_cmd = 'aks addon enable --addon confcom --resource-group={resource_group} --name={name} -o json'
+        self.cmd(enable_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('addonProfiles.ACCSGXDevicePlugin.enabled', True),
+            self.check(
+                'addonProfiles.ACCSGXDevicePlugin.config.ACCSGXQuoteHelperEnabled', "false")
+        ])
+
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_addon_disable_confcom_addon(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'ssh_key_value': self.generate_ssh_keys()
+        })
+
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --enable-managed-identity --ssh-key-value={ssh_key_value} ' \
+                     '-a confcom -o json'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('addonProfiles.ACCSGXDevicePlugin.enabled', True),
+            self.check(
+                'addonProfiles.ACCSGXDevicePlugin.config.ACCSGXQuoteHelperEnabled', "false")
+        ])
+
+        disable_cmd = 'aks addon disable --addon confcom --resource-group={resource_group} --name={name} -o json'
+        self.cmd(disable_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('addonProfiles.ACCSGXDevicePlugin.enabled', False),
+            self.check('addonProfiles.ACCSGXDevicePlugin.config', None)
+        ])
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_addon_update_all_disabled(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'ssh_key_value': self.generate_ssh_keys()
+        })
+
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --enable-managed-identity --ssh-key-value={ssh_key_value} ' \
+                     '-o json'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('addonProfiles.ACCSGXDevicePlugin', None)
+        ])
+
+        update_cmd = 'aks addon update --addon confcom --resource-group={resource_group} --name={name} -o json'
+        with self.assertRaisesRegexp(CLIError, 'Addon "confcom" is not enabled in this cluster.'):
+            self.cmd(update_cmd)
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_addon_update_with_confcom(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'ssh_key_value': self.generate_ssh_keys()
+        })
+
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --enable-managed-identity ' \
+                     '--ssh-key-value={ssh_key_value} -o json'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('addonProfiles.ACCSGXDevicePlugin', None)
+        ])
+
+        enable_cmd = 'aks addon enable --addon confcom --resource-group={resource_group} --name={name} -o json'
+        self.cmd(enable_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('addonProfiles.ACCSGXDevicePlugin.enabled', True),
+            self.check(
+                'addonProfiles.ACCSGXDevicePlugin.config.ACCSGXQuoteHelperEnabled', "false")
+        ])
+
+        update_cmd = 'aks addon update --resource-group={resource_group} --name={name} ' \
+                     '-a confcom --enable-sgxquotehelper -o json'
+        self.cmd(update_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('addonProfiles.ACCSGXDevicePlugin.enabled', True),
+            self.check(
+                'addonProfiles.ACCSGXDevicePlugin.config.ACCSGXQuoteHelperEnabled', "true")
+        ])
+
+        delete_cmd = 'aks delete --resource-group={resource_group} --name={name} --yes --no-wait'
+        self.cmd(delete_cmd, checks=[
+            self.is_empty(),
+        ])
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_addon_update_with_azurekeyvaultsecretsprovider(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'ssh_key_value': self.generate_ssh_keys()
+        })
+
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --ssh-key-value={ssh_key_value}'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('addonProfiles.azureKeyvaultSecretsProvider', None)
+        ])
+
+        enable_cmd = 'aks addon enable --addon azure-keyvault-secrets-provider --resource-group={resource_group} --name={name} -o json'
+        self.cmd(enable_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check(
+                'addonProfiles.azureKeyvaultSecretsProvider.enabled', True),
+            self.check(
+                'addonProfiles.azureKeyvaultSecretsProvider.config.enableSecretRotation', "false")
+        ])
+
+        update_with_secret_rotation_cmd = 'aks addon update --addon azure-keyvault-secrets-provider --enable-secret-rotation --resource-group={resource_group} --name={name} -o json'
+        self.cmd(update_with_secret_rotation_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check(
+                'addonProfiles.azureKeyvaultSecretsProvider.enabled', True),
+            self.check(
+                'addonProfiles.azureKeyvaultSecretsProvider.config.enableSecretRotation', "true")
+        ])
+
+        # delete
+        cmd = 'aks delete --resource-group={resource_group} --name={name} --yes --no-wait'
+        self.cmd(cmd, checks=[
+            self.is_empty(),
+        ])
+
+
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_enable_addon_with_openservicemesh(self, resource_group, resource_group_location):
@@ -854,6 +1287,42 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # delete
         self.cmd(
             'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
+    
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus')
+    def test_aks_nodepool_add_with_workload_runtime(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        node_pool_name = self.create_random_name('c', 6)
+        node_pool_name_second = self.create_random_name('c', 6)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'node_pool_name': node_pool_name,
+            'node_pool_name_second': node_pool_name_second,
+            'ssh_key_value': self.generate_ssh_keys()
+        })
+
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} ' \
+                     '--nodepool-name {node_pool_name} -c 1 ' \
+                     '--ssh-key-value={ssh_key_value}'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
+
+        self.cmd('aks nodepool add '
+                 '--resource-group={resource_group} '
+                 '--cluster-name={name} '
+                 '--name={node_pool_name_second} '
+                 '--workload-runtime WasmWasi',
+                 checks=[
+                    self.check('provisioningState', 'Succeeded'),
+                    self.check('workloadRuntime', 'WasmWasi'),
+                 ])
+
+        # delete
+        self.cmd(
+            'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
+
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus')
@@ -885,6 +1354,45 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                  checks=[
                     self.check('provisioningState', 'Succeeded'),
                     self.check('osSku', 'CBLMariner'),
+                 ])
+
+        # delete
+        self.cmd(
+            'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus')
+    def test_aks_nodepool_add_with_gpu_instance_profile(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        node_pool_name = self.create_random_name('c', 6)
+        node_pool_name_second = self.create_random_name('c', 6)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'node_pool_name': node_pool_name,
+            'node_pool_name_second': node_pool_name_second,
+            'ssh_key_value': self.generate_ssh_keys()
+        })
+
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} ' \
+                     '--nodepool-name {node_pool_name} -c 1 ' \
+                     '--ssh-key-value={ssh_key_value}'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
+
+        # nodepool get-upgrades
+        self.cmd('aks nodepool add '
+                 '--resource-group={resource_group} '
+                 '--cluster-name={name} '
+                 '--name={node_pool_name_second} '
+                 '--gpu-instance-profile=MIG3g '
+                 '-c 1 '
+                 '--aks-custom-headers UseGPUDedicatedVHD=true '
+                 '--node-vm-size=standard_nd96asr_v4',
+                 checks=[
+                    self.check('provisioningState', 'Succeeded'),
+                    self.check('gpuInstanceProfile', 'MIG3g'),
                  ])
 
         # delete
