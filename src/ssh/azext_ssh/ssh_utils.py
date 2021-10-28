@@ -17,9 +17,11 @@ logger = log.get_logger(__name__)
 
 CLEANUP_TOTAL_TIME_LIMIT_IN_SECONDS = 120
 CLEANUP_TIME_INTERVAL_IN_SECONDS = 10
+CLEANUP_AWAIT_TERMINATION_IN_SECONDS = 30
 
 
 def start_ssh_connection(port, ssh_args, ip, username, cert_file, private_key_file, delete_keys):
+
     ssh_arg_list = []
     if ssh_args:
         ssh_arg_list = ssh_args
@@ -47,15 +49,18 @@ def start_ssh_connection(port, ssh_args, ip, username, cert_file, private_key_fi
 
     if cleanup_process.is_alive():
         cleanup_process.terminate()
-        while cleanup_process.is_alive():
+        # wait for process to terminate
+        t0 = time.time()
+        while cleanup_process.is_alive() and (time.time() - t0) < CLEANUP_AWAIT_TERMINATION_IN_SECONDS:
             time.sleep(1)
+
     # Make sure all files have been properly removed.
     _do_cleanup(delete_keys, cert_file, private_key_file)
     if log_file:
         file_utils.delete_file(log_file, f"Couldn't delete temporary log file {cert_file}. ", True)
-    # Delete the temporary folder as well?
     if delete_keys:
-        os.rmdir(os.path.dirname(cert_file))
+        temp_dir = os.path.dirname(cert_file)
+        file_utils.delete_folder(temp_dir, f"Couldn't delete temporary folder {temp_dir}", True)
 
 
 def create_ssh_keyfile(private_key_file):
@@ -89,16 +94,13 @@ def get_ssh_cert_principals(cert_file):
 def write_ssh_config(config_path, resource_group, vm_name, overwrite,
                      ip, username, cert_file, private_key_file, delete_keys):
 
-    if delete_keys:
-        logger.warning("Sensitive information for authentication is being stored on disk. You are responsible for "
-                       "managing/deleting the private key and signed public key once this config file is no "
-                       "longer being used. Please delete the contents of %s once you no longer need this config file.",
-                       os.path.dirname(cert_file))
-    else:
-        # Delete keys is false when user provided their own key pair. Only request deletion of certificate in that case.
-        logger.warning("Sensitive information for authentication is being stored on disk. You are responsible for "
-                       "managing/deleting the signed public key once this config file is no longer being used. "
-                       "Please delete %s once you no longer need this config file.", cert_file)
+    # Warn users to delete credentials once config file is no longer being used.
+    # If user provided keys, only ask them to delete the certificate.
+    path_to_delete = os.path.dirname(cert_file)
+    if not delete_keys:
+        path_to_delete = cert_file
+    logger.warning("%s contains sensitive information, please delete it once you no longer need this config file.",
+                   path_to_delete)
 
     lines = [""]
 
@@ -169,25 +171,24 @@ def _build_args(cert_file, private_key_file, port):
 def _do_cleanup(delete_keys, cert_file, private_key, log_file=None, wait=False):
     # if there is a log file, use it to check for the connection success
     if log_file:
+        time.sleep(500)
         t0 = time.time()
         match = False
         while (time.time() - t0) < CLEANUP_TOTAL_TIME_LIMIT_IN_SECONDS and not match:
             time.sleep(CLEANUP_TIME_INTERVAL_IN_SECONDS)
             try:
                 with open(log_file, 'r') as ssh_client_log:
-                    for line in ssh_client_log:
-                        if re.search("debug1: Authentication succeeded", line):
-                            match = True
-                ssh_client_log.close()
+                    match = "debug1: Authentication succeeded" in ssh_client_log.read()
+                    ssh_client_log.close()
             except:
-                # Can't open log, wait for two minutes
-                t1 = time.time() - t0
-                if t1 < CLEANUP_TOTAL_TIME_LIMIT_IN_SECONDS:
-                    time.sleep(CLEANUP_TOTAL_TIME_LIMIT_IN_SECONDS - t1)
+                # If there is an exception, wait for a little bit and try again
+                time.sleep(CLEANUP_TIME_INTERVAL_IN_SECONDS)
+
     elif wait:
         # if we are not checking the logs, but still want to wait for connection before deleting files
         time.sleep(CLEANUP_TOTAL_TIME_LIMIT_IN_SECONDS)
-
+    
+    # TO DO: Once arc changes are merged, delete relay information as well
     if delete_keys and private_key:
         public_key = private_key + '.pub'
         file_utils.delete_file(private_key, f"Couldn't delete private key {private_key}. ", True)
