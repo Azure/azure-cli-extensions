@@ -46,14 +46,14 @@ def load_arguments(self, _):
 
     with self.argument_context('vmware private-cloud update') as c:
         c.argument('name', options_list=['--name', '-n'], help='Name of the private cloud.')
-        c.argument('zone', help='The primary availability zone for the private cloud')
-        c.argument('secondary_zone', help='The secondary availability zone for the private cloud.')
-        c.argument('status', help='Status of customer managed encryption key. Possible values include "Enabled" and "Disabled".')
-        c.argument('key_name', help='The name of the key.')
-        c.argument('key_state', help='The state of key provided. Possible values include "Connected" and "AccessDenied".')
-        c.argument('key_vault_url', help='The URL of the vault.')
-        c.argument('key_version', help='The version of the key.')
-        c.argument('version_type', help='Property of the key if user provided or auto detected.')
+        c.argument('avail_zone', help='The primary availability zone for the private cloud')
+        c.argument('avail_secondary_zone', help='The secondary availability zone for the private cloud.')
+        c.argument('encryption_status', help='Status of customer managed encryption key. Possible values include "Enabled" and "Disabled".')
+        c.argument('enc_kv_key_name', help='The name of the encryption key vault key.')
+        c.argument('enc_kv_key_state', help='The state of encryption key vault key provided. Possible values include "Connected" and "AccessDenied".')
+        c.argument('enc_kv_url', help='The URL of the encryption key vault.')
+        c.argument('enc_kv_key_version', help='The version of the encryption key vault key.')
+        c.argument('enc_kv_key_vs_type', help='Property of the encryption key vault key if user provided or auto detected.')
 
     with self.argument_context('vmware private-cloud delete') as c:
         c.argument('name', options_list=['--name', '-n'], help='Name of the private cloud.')
