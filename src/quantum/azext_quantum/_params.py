@@ -2,7 +2,8 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-# pylint: disable=line-too-long,protected-access
+
+# pylint: disable=line-too-long,protected-access,no-self-use,too-many-statements
 
 import argparse
 from knack.arguments import CLIArgumentType

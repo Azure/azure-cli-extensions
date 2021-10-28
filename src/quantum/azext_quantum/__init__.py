@@ -17,7 +17,7 @@ CLI_REPORTED_VERSION = "0.9.0"
 class QuantumCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
-        super(QuantumCommandsLoader, self).__init__(cli_ctx=cli_ctx)
+        super().__init__(cli_ctx=cli_ctx)
 
         # Save the CLI context config for use in load_arguments
         self.cli_ctx_config = cli_ctx.config
