@@ -91,6 +91,13 @@ def get_ssh_cert_principals(cert_file):
     return principals
 
 
+def get_ssh_cert_validity(cert_file):
+    info = get_ssh_cert_info(cert_file)
+    for line in info:
+        if "Valid:" in line:
+            return line.strip()
+
+
 def write_ssh_config(config_path, resource_group, vm_name, overwrite,
                      ip, username, cert_file, private_key_file, delete_keys):
 
@@ -99,8 +106,8 @@ def write_ssh_config(config_path, resource_group, vm_name, overwrite,
     path_to_delete = os.path.dirname(cert_file)
     if not delete_keys:
         path_to_delete = cert_file
-    logger.warning("%s contains sensitive information, please delete it once you no longer need this config file.",
-                   path_to_delete)
+    logger.warning("%s contains sensitive information, please delete it once you no longer need this config file. "
+                   "The signed public key %s is %s", path_to_delete, cert_file, get_ssh_cert_validity(cert_file))
 
     lines = [""]
 
