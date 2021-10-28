@@ -230,6 +230,24 @@ def load_arguments(self, _):
                    validator=validate_app_name)
         c.argument('name', name_type, help='Name of deployment.')
 
+    for scope in ['spring-cloud app deployment generate-heap-dump', 'spring-cloud app deployment generate-thread-dump']:
+        with self.argument_context(scope) as c:
+            c.argument('deployment', options_list=[
+                '--deployment', '-d'], help='Name of an existing deployment of the app. Default to the production deployment if not specified.', validator=validate_deployment_name)
+            c.argument('app_instance', help='Target app instance you want to dump.')
+            c.argument('file_path', help='The mount file path for your dump file.')
+
+    with self.argument_context('spring-cloud app deployment start-jfr') as c:
+        c.argument('deployment', options_list=[
+            '--deployment', '-d'], help='Name of an existing deployment of the app. Default to the production deployment if not specified.', validator=validate_deployment_name)
+        c.argument('app_instance', help='Target app instance you want to dump.')
+        c.argument('file_path', help='The mount file path for your dump file.')
+        c.argument('duration', type=str, default="60s", help='Duration of JFR.')
+
+    with self.argument_context('spring-cloud app deployment') as c:
+        c.argument('app', app_name_type, help='Name of app.',
+                   validator=validate_app_name)
+
     with self.argument_context('spring-cloud app binding') as c:
         c.argument('app', app_name_type, help='Name of app.',
                    validator=validate_app_name)

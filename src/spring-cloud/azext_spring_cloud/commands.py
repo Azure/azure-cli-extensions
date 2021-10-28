@@ -84,7 +84,7 @@ def load_command_table(self, _):
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('tail', 'app_tail_log')
 
-    with self.command_group('spring-cloud app deployment', client_factory=cf_spring_cloud_20210601preview,
+    with self.command_group('spring-cloud app deployment', client_factory=cf_spring_cloud_20210901preview,
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('create', 'deployment_create', supports_no_wait=True)
         g.custom_command('list', 'deployment_list',
@@ -92,6 +92,9 @@ def load_command_table(self, _):
         g.custom_show_command(
             'show', 'deployment_get', table_transformer=transform_spring_cloud_deployment_output)
         g.custom_command('delete', 'deployment_delete', supports_no_wait=True)
+        g.custom_command('generate-heap-dump', 'deployment_generate_heap_dump')
+        g.custom_command('generate-thread-dump', 'deployment_generate_thread_dump')
+        g.custom_command('start-jfr', 'deployment_start_jfr')
 
     with self.command_group('spring-cloud app binding', client_factory=cf_spring_cloud,
                             exception_handler=handle_asc_exception) as g:
