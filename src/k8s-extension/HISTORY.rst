@@ -3,6 +3,25 @@
 Release History
 ===============
 
+1.0.0
+++++++++++++++++++
+* Switch to GA api-version of Extensions (2021-09-01)
+* Support Extensions PATCH
+* Enable Dapr extension type
+* Enable ManagedClusters clusterType
+
+0.7.1
+++++++++++++++++++
+* Fix DF resource manager endpoint check
+
+0.7.0
+++++++++++++++++++
+* Enable identity by default for extensions
+* Use custom delete confirmation for partners
+* microsoft.azureml.kubernetes: Adding a flag for AKS to AMLARC migration and set up corresponding FE helm values
+* microsoft.openservicemesh: Remove version requirement and auto upgrade minor version check
+* Adds -t as alternative to --cluster-type
+
 0.6.1
 ++++++++++++++++++
 * Remove sending identity for clusters in Dogfood

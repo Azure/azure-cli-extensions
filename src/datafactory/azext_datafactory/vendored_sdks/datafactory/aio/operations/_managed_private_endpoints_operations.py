@@ -26,7 +26,7 @@ class ManagedPrivateEndpointsOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~data_factory_management_client.models
+    :type models: ~azure.mgmt.datafactory.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -58,7 +58,7 @@ class ManagedPrivateEndpointsOperations:
         :type managed_virtual_network_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either ManagedPrivateEndpointListResponse or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~data_factory_management_client.models.ManagedPrivateEndpointListResponse]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.datafactory.models.ManagedPrivateEndpointListResponse]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ManagedPrivateEndpointListResponse"]
@@ -140,13 +140,13 @@ class ManagedPrivateEndpointsOperations:
         :param managed_private_endpoint_name: Managed private endpoint name.
         :type managed_private_endpoint_name: str
         :param managed_private_endpoint: Managed private endpoint resource definition.
-        :type managed_private_endpoint: ~data_factory_management_client.models.ManagedPrivateEndpointResource
+        :type managed_private_endpoint: ~azure.mgmt.datafactory.models.ManagedPrivateEndpointResource
         :param if_match: ETag of the managed private endpoint entity. Should only be specified for
          update, for which it should match existing entity or can be * for unconditional update.
         :type if_match: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ManagedPrivateEndpointResource, or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.ManagedPrivateEndpointResource
+        :rtype: ~azure.mgmt.datafactory.models.ManagedPrivateEndpointResource
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ManagedPrivateEndpointResource"]
@@ -224,7 +224,7 @@ class ManagedPrivateEndpointsOperations:
         :type if_none_match: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ManagedPrivateEndpointResource, or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.ManagedPrivateEndpointResource
+        :rtype: ~azure.mgmt.datafactory.models.ManagedPrivateEndpointResource
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ManagedPrivateEndpointResource"]

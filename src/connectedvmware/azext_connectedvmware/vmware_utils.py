@@ -22,9 +22,9 @@ def get_resource_id(
     """
 
     if not is_valid_resource_id(resource):
-        resource_ids = None
+        _resource_id = None
         if child_type_1 and child_name_1:
-            resource_ids = resource_id(
+            _resource_id = resource_id(
                 subscription=get_subscription_id(cmd.cli_ctx),
                 resource_group=resource_group_name,
                 namespace=provider_name_space,
@@ -34,7 +34,7 @@ def get_resource_id(
                 child_name_1=child_name_1,
             )
         else:
-            resource_ids = resource_id(
+            _resource_id = resource_id(
                 subscription=get_subscription_id(cmd.cli_ctx),
                 resource_group=resource_group_name,
                 namespace=provider_name_space,
@@ -43,9 +43,9 @@ def get_resource_id(
             )
 
     else:
-        resource_ids = resource
+        _resource_id = resource
 
-    return resource_ids
+    return _resource_id
 
 
 def create_dictionary_from_arg_string(values, option_string=None):

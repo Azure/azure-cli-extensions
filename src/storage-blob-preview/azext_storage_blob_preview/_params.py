@@ -6,16 +6,13 @@
 
 from azure.cli.core.commands.validators import validate_tags
 from azure.cli.core.commands.parameters import (file_type, get_enum_type, get_three_state_flag)
-from azure.cli.core.local_context import LocalContextAttribute, LocalContextAction
 
 from ._validators import (validate_metadata, get_permission_validator, get_permission_help_string,
-                          validate_blob_type, validate_included_datasets_v2,
+                          validate_blob_type, validate_included_datasets_v2, get_datetime_type,
                           add_download_progress_callback, add_upload_progress_callback,
-                          validate_storage_data_plane_list, as_user_validator, blob_tier_validator,
-                          validate_container_delete_retention_days, validate_delete_retention_days,
-                          process_resource_group)
+                          validate_storage_data_plane_list, as_user_validator, blob_tier_validator)
 
-from .profiles import CUSTOM_DATA_STORAGE_BLOB, CUSTOM_MGMT_STORAGE
+from .profiles import CUSTOM_DATA_STORAGE_BLOB
 
 
 def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statements, too-many-lines
@@ -23,16 +20,8 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
 
     from knack.arguments import ignore_type, CLIArgumentType
 
-    from azure.cli.core.commands.parameters import get_resource_name_completion_list
-
     from .sdkutil import get_table_data_type
     from .completers import get_storage_name_completion_list
-
-    acct_name_type = CLIArgumentType(options_list=['--account-name', '-n'], help='The storage account name.',
-                                     id_part='name',
-                                     completer=get_resource_name_completion_list('Microsoft.Storage/storageAccounts'),
-                                     local_context_attribute=LocalContextAttribute(
-                                         name='storage_account_name', actions=[LocalContextAction.GET]))
 
     t_base_blob_service = self.get_sdk('blob.baseblobservice#BaseBlobService')
     t_file_service = self.get_sdk('file#FileService')
@@ -146,58 +135,6 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                    validator=validate_metadata)
         c.argument('timeout', help='Request timeout in seconds. Applies to each call to the service.', type=int)
 
-    with self.argument_context('storage account blob-service-properties show',
-                               resource_type=CUSTOM_MGMT_STORAGE) as c:
-        c.argument('account_name', acct_name_type, id_part=None)
-        c.argument('resource_group_name', required=False, validator=process_resource_group)
-
-    with self.argument_context('storage account blob-service-properties update',
-                               resource_type=CUSTOM_MGMT_STORAGE) as c:
-        from azure.cli.command_modules.storage._validators import get_api_version_type, \
-            validator_change_feed_retention_days
-        c.argument('account_name', acct_name_type, id_part=None)
-        c.argument('resource_group_name', required=False, validator=process_resource_group)
-        c.argument('enable_change_feed', arg_type=get_three_state_flag(), min_api='2019-04-01',
-                   arg_group='Change Feed Policy')
-        c.argument('change_feed_retention_days', is_preview=True,
-                   options_list=['--change-feed-retention-days', '--change-feed-days'],
-                   type=int, min_api='2019-06-01', arg_group='Change Feed Policy',
-                   validator=validator_change_feed_retention_days,
-                   help='Indicate the duration of changeFeed retention in days. '
-                        'Minimum value is 1 day and maximum value is 146000 days (400 years). '
-                        'A null value indicates an infinite retention of the change feed.'
-                        '(Use `--enable-change-feed` without `--change-feed-days` to indicate null)')
-        c.argument('enable_container_delete_retention',
-                   arg_type=get_three_state_flag(),
-                   options_list=['--enable-container-delete-retention', '--container-retention'],
-                   arg_group='Container Delete Retention Policy', min_api='2019-06-01',
-                   help='Enable container delete retention policy for container soft delete when set to true. '
-                        'Disable container delete retention policy when set to false.')
-        c.argument('container_delete_retention_days',
-                   options_list=['--container-delete-retention-days', '--container-days'],
-                   type=int, arg_group='Container Delete Retention Policy',
-                   min_api='2019-06-01', validator=validate_container_delete_retention_days,
-                   help='Indicate the number of days that the deleted container should be retained. The minimum '
-                        'specified value can be 1 and the maximum value can be 365.')
-        c.argument('enable_delete_retention', arg_type=get_three_state_flag(), arg_group='Delete Retention Policy',
-                   min_api='2018-07-01')
-        c.argument('delete_retention_days', type=int, arg_group='Delete Retention Policy',
-                   validator=validate_delete_retention_days, min_api='2018-07-01')
-        c.argument('enable_restore_policy', arg_type=get_three_state_flag(), arg_group='Restore Policy',
-                   min_api='2019-06-01', help="Enable blob restore policy when it set to true.")
-        c.argument('restore_days', type=int, arg_group='Restore Policy',
-                   min_api='2019-06-01', help="The number of days for the blob can be restored. It should be greater "
-                   "than zero and less than Delete Retention Days.")
-        c.argument('enable_versioning', arg_type=get_three_state_flag(), help='Versioning is enabled if set to true.',
-                   min_api='2019-06-01')
-        c.argument('enable_last_access_tracking', arg_type=get_three_state_flag(), min_api='2019-06-01',
-                   options_list=['--enable-last-access-tracking', '-t'],
-                   help='When set to true last access time based tracking policy is enabled.')
-        c.argument('default_service_version', options_list=['--default-service-version', '-d'],
-                   type=get_api_version_type(), min_api='2018-07-01',
-                   help="Indicate the default version to use for requests to the Blob service if an incoming request's "
-                        "version is not specified.")
-
     with self.argument_context('storage blob') as c:
         c.argument('blob_name', options_list=('--name', '-n'), arg_type=blob_name_type)
         c.argument('destination_path', help='The destination path that will be appended to the blob name.')
@@ -310,6 +247,20 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
 
     with self.argument_context('storage blob exists') as c:
         c.register_blob_arguments()
+
+    with self.argument_context('storage blob set-legal-hold') as c:
+        c.register_blob_arguments()
+        c.argument('legal_hold', arg_type=get_three_state_flag(),
+                   help='Specified if a legal hold should be set on the blob.')
+
+    with self.argument_context('storage blob immutability-policy delete') as c:
+        c.register_blob_arguments()
+
+    with self.argument_context('storage blob immutability-policy set') as c:
+        c.register_blob_arguments()
+        c.argument('expiry_time', type=get_datetime_type(False),
+                   help='expiration UTC datetime in (Y-m-d\'T\'H:M:S\'Z\')')
+        c.argument('policy_mode', arg_type=get_enum_type(['Locked', 'Unlocked']), help='Lock or Unlock the policy')
 
     with self.argument_context('storage blob filter') as c:
         c.argument('filter_expression', options_list=['--tag-filter'])
@@ -534,6 +485,69 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.extra('no_progress', progress_type)
         c.extra('tier', tier_type, is_preview=True)
         c.extra('overwrite', overwrite_type, is_preview=True)
+
+    with self.argument_context('storage blob query') as c:
+        from ._validators import validate_text_configuration
+        c.register_blob_arguments()
+        c.register_precondition_options()
+        line_separator = CLIArgumentType(help="The string used to separate records.", default='\n')
+        column_separator = CLIArgumentType(help="The string used to separate columns.", default=',')
+        quote_char = CLIArgumentType(help="The string used to quote a specific field.", default='"')
+        record_separator = CLIArgumentType(help="The string used to separate records.", default='\n')
+        escape_char = CLIArgumentType(help="The string used as an escape character. Default to empty.", default="")
+        has_header = CLIArgumentType(
+            arg_type=get_three_state_flag(),
+            help="Whether the blob data includes headers in the first line. "
+            "The default value is False, meaning that the data will be returned inclusive of the first line. "
+            "If set to True, the data will be returned exclusive of the first line.", default=False)
+        c.extra('lease', options_list='--lease-id',
+                help='Required if the blob has an active lease.')
+        c.argument('query_expression', help='The query expression in SQL. The maximum size of the query expression '
+                   'is 256KiB. For more information about the expression syntax, please see '
+                   'https://docs.microsoft.com/azure/storage/blobs/query-acceleration-sql-reference')
+        c.extra('input_format', arg_type=get_enum_type(['csv', 'json', 'parquet']), validator=validate_text_configuration,
+                min_api='2020-10-02',
+                help='Serialization type of the data currently stored in the blob. '
+                'The default is to treat the blob data as CSV data formatted in the default dialect.'
+                'The blob data will be reformatted according to that profile when blob format is specified. '
+                'If you choose `json`, please specify `Input Json Text Configuration Arguments` accordingly; '
+                'If you choose `csv`, please specify `Input Delimited Text Configuration Arguments`.')
+        c.extra('output_format', arg_type=get_enum_type(['csv', 'json']),
+                help='Output serialization type for the data stream. '
+                'By default the data will be returned as it is represented in the blob. '
+                'By providing an output format, the blob data will be reformatted according to that profile. '
+                'If you choose `json`, please specify `Output Json Text Configuration Arguments` accordingly; '
+                'If you choose `csv`, please specify `Output Delimited Text Configuration Arguments`.'
+                'By default data with input_format of `parquet` will have the output_format of `csv`')
+        c.extra('in_line_separator',
+                arg_group='Input Json Text Configuration',
+                arg_type=line_separator)
+        c.extra('in_column_separator', arg_group='Input Delimited Text Configuration',
+                arg_type=column_separator)
+        c.extra('in_quote_char', arg_group='Input Delimited Text Configuration',
+                arg_type=quote_char)
+        c.extra('in_record_separator', arg_group='Input Delimited Text Configuration',
+                arg_type=record_separator)
+        c.extra('in_escape_char', arg_group='Input Delimited Text Configuration',
+                arg_type=escape_char)
+        c.extra('in_has_header', arg_group='Input Delimited Text Configuration',
+                arg_type=has_header)
+        c.extra('out_line_separator',
+                arg_group='Output Json Text Configuration',
+                arg_type=line_separator)
+        c.extra('out_column_separator', arg_group='Output Delimited Text Configuration',
+                arg_type=column_separator)
+        c.extra('out_quote_char', arg_group='Output Delimited Text Configuration',
+                arg_type=quote_char)
+        c.extra('out_record_separator', arg_group='Output Delimited Text Configuration',
+                arg_type=record_separator)
+        c.extra('out_escape_char', arg_group='Output Delimited Text Configuration',
+                arg_type=escape_char)
+        c.extra('out_has_header', arg_group='Output Delimited Text Configuration',
+                arg_type=has_header)
+        c.extra('result_file', help='Specify the file path to save result.')
+        c.ignore('input_config')
+        c.ignore('output_config')
 
     with self.argument_context('storage container') as c:
         c.argument('container_name', container_name_type, options_list=('--name', '-n'))

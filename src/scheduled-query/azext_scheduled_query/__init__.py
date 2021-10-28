@@ -16,8 +16,7 @@ class ScheduledQueryCommandsLoader(AzCommandsLoader):
         scheduled_query_custom = CliCommandType(
             operations_tmpl='azext_scheduled_query.custom#{}',
             client_factory=cf_scheduled_query)
-        super(ScheduledQueryCommandsLoader, self).__init__(cli_ctx=cli_ctx,
-                                                           custom_command_type=scheduled_query_custom)
+        super().__init__(cli_ctx=cli_ctx, custom_command_type=scheduled_query_custom)
 
     def load_command_table(self, args):
         from azext_scheduled_query.commands import load_command_table

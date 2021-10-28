@@ -1,5 +1,50 @@
 Release History
 ===============
+2.11.1
+-----
+* Add support for Diagnostic Operation. Heap dump: 'spring-cloud app deployment generate-heap-dump'. Thread Dump: 'spring-cloud app deployment generate-thread-dump'. JFR: 'spring-cloud app deployment start-jfr'
+
+2.11.1
+-----
+* Add support for public certificate crud, source could be either key vault or local file
+* Application could load public certificate by using argument `--loaded_public_certificate_file` in batch or 
+  directly using `spring-cloud app append-loaded-public-certificate` one by one
+* Add support to list all apps which have loaded the certificate `spring-cloud certificate list-reference-app`
+
+2.11.0
+-----
+* Support functions for Persistent Storage feature.
+* Add new command group 'az spring-cloud storage' to register your own storage to Azure Spring Cloud
+* Add new command `append-persistent-storage` into 'az spring-cloud app' to append persistent storage to applications
+* Add new parameter `--persistent-storage` into 'az spring-cloud app create' and 'az spring-cloud app update' to accept a json file to create persistent storages
+
+2.10.0
+-----
+* Support functions for Java In-Process Agent feature General Available.
+* For Application Insights configuration, support both `connection_string` and `instrumentation_key`,
+  and we recommended to use `connection_string`.
+* Enabling In-Process Agent is equivalent to enabling application insights.
+* Mark `enable-java-agent` as deprecated, since IPA is GA-ed.
+* Mark application insights related parameter as deprecated in `az spring-cloud update`,
+  it's still supported, but will de decommissioned in the future, 
+  and we recommended to use `az spring-cloud app-insights update`.
+* Support `--sampling-rate` in `az spring-cloud create`.
+* Decommissioned `disable-distributed-tracing` parameter.
+
+2.9.0
+-----
+* Add --source-path argument into 'az spring-cloud app deploy' and 'az spring-cloud app deployment create'
+* Deprecate source code deploy without --source-path argument in 'az spring-cloud app deploy' and 'az spring-cloud app deployment create'
+* Add Support to create banner deployment in 'az spring-cloud app deployment create'
+
+2.8.0
+-----
+* Add support to validate jar before create/update deployment
+* Add support to delete deployment with no-wait
+
+2.7.1
+-----
+* Fix source code deployment build log issues
 
 2.7.0
 -----
