@@ -1009,6 +1009,7 @@ def deployment_generate_heap_dump(cmd, client, resource_group, service, app, app
             logger.warning("No production deployment found for update")
             return
     diagnostic_parameters = models_20210901preview.DiagnosticParameters(app_instance=app_instance, file_path=file_path)
+    logger.info("Heap dump is triggered.")
     return client.deployments.begin_generate_heap_dump(resource_group, service, app, deployment, diagnostic_parameters)
 
 
@@ -1023,6 +1024,7 @@ def deployment_generate_thread_dump(cmd, client, resource_group, service, app, a
             logger.warning("No production deployment found for update")
             return
     diagnostic_parameters = models_20210901preview.DiagnosticParameters(app_instance=app_instance, file_path=file_path)
+    logger.info("Thread dump is triggered.")
     return client.deployments.begin_generate_thread_dump(resource_group, service, app, deployment, diagnostic_parameters)
 
 
@@ -1038,6 +1040,7 @@ def deployment_start_jfr(cmd, client, resource_group, service, app, app_instance
             return
     diagnostic_parameters = models_20210901preview.DiagnosticParameters(app_instance=app_instance, file_path=file_path,
                                                                         duration=duration)
+    logger.info("JFR is triggered.")
     return client.deployments.begin_start_jfr(resource_group, service, app, deployment, diagnostic_parameters)
 
 
