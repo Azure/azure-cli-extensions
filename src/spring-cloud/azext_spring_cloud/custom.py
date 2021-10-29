@@ -214,7 +214,7 @@ def spring_cloud_start(cmd, client, resource_group, name, no_wait=False):
     state = resource.properties.provisioning_state
     power_state = resource.properties.power_state
     if state != "Succeeded" or power_state != "Stopped":
-        raise CLIError("Service is in Provisioning State({}) and Power State({}), starting cannot be performed.".format(state, power_state))
+        raise ClientRequestError("Service is in Provisioning State({}) and Power State({}), starting cannot be performed.".format(state, power_state))
     return sdk_no_wait(no_wait, client.services.begin_start, resource_group_name=resource_group, service_name=name)
 
 
@@ -223,7 +223,7 @@ def spring_cloud_stop(cmd, client, resource_group, name, no_wait=False):
     state = resource.properties.provisioning_state
     power_state = resource.properties.power_state
     if state != "Succeeded" or power_state != "Running":
-        raise CLIError("Service is in Provisioning State({}) and Power State({}), stopping cannot be performed.".format(state, power_state))
+        raise ClientRequestError("Service is in Provisioning State({}) and Power State({}), stopping cannot be performed.".format(state, power_state))
     return sdk_no_wait(no_wait, client.services.begin_stop, resource_group_name=resource_group, service_name=name)
 
 
