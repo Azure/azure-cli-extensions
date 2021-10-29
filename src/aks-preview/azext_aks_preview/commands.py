@@ -21,6 +21,7 @@ from ._format import aks_pod_identity_exceptions_table_format
 from ._format import aks_show_snapshot_table_format
 from ._format import aks_list_snapshot_table_format
 
+
 def load_command_table(self, _):
 
     managed_clusters_sdk = CliCommandType(
@@ -142,9 +143,7 @@ def load_command_table(self, _):
 
     # AKS snapshot commands
     with self.command_group('aks snapshot', snapshot_sdk, client_factory=cf_snapshots) as g:
-        g.custom_command('list', 'aks_snapshot_list',
-                        table_transformer=aks_list_snapshot_table_format)
-        g.custom_show_command('show', 'aks_snapshot_show',
-                        table_transformer=aks_show_snapshot_table_format)
+        g.custom_command('list', 'aks_snapshot_list', table_transformer=aks_list_snapshot_table_format)
+        g.custom_show_command('show', 'aks_snapshot_show', table_transformer=aks_show_snapshot_table_format)
         g.custom_command('create', 'aks_snapshot_create', supports_no_wait=True)
         g.custom_command('delete', 'aks_snapshot_delete', supports_no_wait=True)

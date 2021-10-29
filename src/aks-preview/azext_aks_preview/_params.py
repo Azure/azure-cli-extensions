@@ -394,6 +394,8 @@ def load_arguments(self, _):
     for scope in ['aks snapshot show', 'aks snapshot delete']:
         with self.argument_context(scope) as c:
             c.argument('snapshot_name', type=str, options_list=['--name', '-n'], required=True, validator=validate_linux_host_name, help='The snapshot name.')
+            c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
+
 
 def _get_default_install_location(exe_name):
     system = platform.system()

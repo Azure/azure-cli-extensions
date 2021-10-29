@@ -526,9 +526,11 @@ def _update_dict(dict1, dict2):
     cp.update(dict2)
     return cp
 
+
 _re_snapshot_resource_id = re.compile(
     r'/subscriptions/(.*?)/resourcegroups/(.*?)/providers/microsoft.containerservice/snapshots/(.*)',
     flags=re.IGNORECASE)
+
 
 def _get_snapshot(cli_ctx, snapshot_id):
     snapshot_id = snapshot_id.lower()
@@ -547,6 +549,7 @@ def _get_snapshot(cli_ctx, snapshot_id):
         return snapshot
     raise CLIError(
         "Cannot parse snapshot name from provided resource id {}.".format(snapshot_id))
+
 
 def aks_browse(cmd,     # pylint: disable=too-many-statements,too-many-branches
                client,
@@ -852,8 +855,8 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                enable_windows_gmsa=False,
                gmsa_dns_server=None,
                gmsa_root_domain_name=None,
-               yes=False,
-               snapshot_id=None):
+               snapshot_id=None,
+               yes=False):
     if not no_ssh_key:
         try:
             if not ssh_key_value or not is_valid_ssh_rsa_public_key(ssh_key_value):
@@ -885,12 +888,13 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
             os_sku = snapshot.os_sku
         if not node_vm_size:
             node_vm_size = snapshot.vm_size
+
         creationData = CreationData(
-            source_resource_id = snapshot_id
+            source_resource_id=snapshot_id
         )
 
     if not node_vm_size:
-        node_vm_size="Standard_DS2_v2"
+        node_vm_size = "Standard_DS2_v2"
 
     # Flag to be removed, kept for back-compatibility only. Remove the below section
     # when we deprecate the enable-vmss flag
@@ -2213,7 +2217,7 @@ def aks_upgrade(cmd,    # pylint: disable=unused-argument, too-many-return-state
 def _upgrade_single_nodepool_image_version(no_wait, client, resource_group_name, cluster_name, nodepool_name, snapshot_id=None):
     headers = {}
     if snapshot_id:
-        headers["AKSSnapshotId"] = snapshot_id        
+        headers["AKSSnapshotId"] = snapshot_id
 
     return sdk_no_wait(no_wait, client.begin_upgrade_node_image_version, resource_group_name, cluster_name, nodepool_name, headers=headers)
 
@@ -2513,8 +2517,8 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
                       enable_ultra_ssd=False,
                       workload_runtime=None,
                       gpu_instance_profile=None,
-                      no_wait=False,
-                      snapshot_id=None):
+                      snapshot_id=None,
+                      no_wait=False):
     instances = client.list(resource_group_name, cluster_name)
     for agentpool_profile in instances:
         if agentpool_profile.name == nodepool_name:
@@ -2535,12 +2539,13 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
             os_sku = snapshot.os_sku
         if not node_vm_size:
             node_vm_size = snapshot.vm_size
+
         creationData = CreationData(
-            source_resource_id = snapshot_id
+            source_resource_id=snapshot_id
         )
 
     if not os_type:
-        os_type="Linux"
+        os_type = "Linux"
 
     if node_taints is not None:
         for taint in node_taints.split(','):
@@ -2663,13 +2668,14 @@ def aks_agentpool_upgrade(cmd,  # pylint: disable=unused-argument
         snapshot = _get_snapshot(cmd.cli_ctx, snapshot_id)
         if not kubernetes_version and not node_image_only:
             kubernetes_version = snapshot.kubernetes_version
+
         creationData = CreationData(
-            source_resource_id = snapshot_id
+            source_resource_id=snapshot_id
         )
 
     instance = client.get(resource_group_name, cluster_name, nodepool_name)
     instance.orchestrator_version = kubernetes_version
-    instance.creation_data=creationData
+    instance.creation_data = creationData
 
     if not instance.upgrade_settings:
         instance.upgrade_settings = AgentPoolUpgradeSettings()
@@ -3957,22 +3963,23 @@ def _ensure_cluster_identity_permission_on_kubelet_identity(cli_ctx, cluster_ide
 def aks_egress_endpoints_list(cmd, client, resource_group_name, name):   # pylint: disable=unused-argument
     return client.list_outbound_network_dependencies_endpoints(resource_group_name, name)
 
-def aks_snapshot_create(cmd,      # pylint: disable=unused-argument,too-many-locals
-                      client,
-                      resource_group_name,
-                      name,
-                      nodepool_id,
-                      location=None,
-                      tags=None,
-                      aks_custom_headers=None,
-                      no_wait=False):
+
+def aks_snapshot_create(cmd,    # pylint: disable=too-many-locals,too-many-statements,too-many-branches
+                        client,
+                        resource_group_name,
+                        name,
+                        nodepool_id,
+                        location=None,
+                        tags=None,
+                        aks_custom_headers=None,
+                        no_wait=False):
 
     rg_location = get_rg_location(cmd.cli_ctx, resource_group_name)
     if location is None:
         location = rg_location
 
     creationData = CreationData(
-        source_resource_id = nodepool_id
+        source_resource_id=nodepool_id
     )
 
     snapshot = Snapshot(
@@ -3985,16 +3992,19 @@ def aks_snapshot_create(cmd,      # pylint: disable=unused-argument,too-many-loc
     headers = get_aks_custom_headers(aks_custom_headers)
     return client.create_or_update(resource_group_name, _trim_nodepoolname(name), snapshot, headers=headers)
 
+
 def aks_snapshot_show(cmd, client, resource_group_name, name):   # pylint: disable=unused-argument
     snapshot = client.get(resource_group_name, name)
     return snapshot
 
-def aks_snapshot_delete(cmd,   # pylint: disable=unused-argument
-                         client,
-                         resource_group_name,
-                         name,
-                         no_wait=False,
-                         yes=False):
+
+def aks_snapshot_delete(cmd,    # pylint: disable=unused-argument
+                        client,
+                        resource_group_name,
+                        name,
+                        no_wait=False,
+                        yes=False):
+
     from knack.prompting import prompt_y_n
     msg = 'This will delete the snapshot "{}" in resource group "{}", Are you sure?'.format(name, resource_group_name)
     if not yes and not prompt_y_n(msg, default="n"):
@@ -4002,9 +4012,8 @@ def aks_snapshot_delete(cmd,   # pylint: disable=unused-argument
 
     return client.delete(resource_group_name, name)
 
-def aks_snapshot_list(cmd,   # pylint: disable=unused-argument
-                         client,
-                         resource_group_name=None):
+
+def aks_snapshot_list(cmd, client, resource_group_name=None):  # pylint: disable=unused-argument
     if resource_group_name is None or resource_group_name == '':
         return client.list()
 
