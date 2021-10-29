@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+# pylint: disable=unused-import, line-too-long, unused-argument
 import os
 import unittest
 
@@ -49,7 +50,6 @@ class WebpubsubScenarioTest(ScenarioTest):
             self.exists('publicPort'),
             self.exists('serverPort'),
             self.exists('externalIp'),
-            self.exists('eventHandler')
         ])
 
         # Test show
@@ -63,7 +63,6 @@ class WebpubsubScenarioTest(ScenarioTest):
             self.exists('publicPort'),
             self.exists('serverPort'),
             self.exists('externalIp'),
-            self.exists('eventHandler')
         ])
 
         # Test list
@@ -77,7 +76,6 @@ class WebpubsubScenarioTest(ScenarioTest):
             self.exists('[0].publicPort'),
             self.exists('[0].serverPort'),
             self.exists('[0].externalIp'),
-            self.exists('[0].eventHandler')
         ])
 
         # Test update
@@ -91,7 +89,6 @@ class WebpubsubScenarioTest(ScenarioTest):
             self.exists('publicPort'),
             self.exists('serverPort'),
             self.exists('externalIp'),
-            self.exists('eventHandler')
         ])
 
         # Test key show
@@ -102,6 +99,12 @@ class WebpubsubScenarioTest(ScenarioTest):
 
         # Test key regenerate
         self.cmd('webpubsub key regenerate -n {name} -g {rg} --key-type secondary', checks=[
+            self.exists('primaryKey'),
+            self.exists('secondaryKey')
+        ])
+
+        # Test key regenerate salt
+        self.cmd('webpubsub key regenerate -n {name} -g {rg} --key-type salt', checks=[
             self.exists('primaryKey'),
             self.exists('secondaryKey')
         ])

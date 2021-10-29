@@ -4,9 +4,13 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-from typing import Dict, TypeVar, Union
+import time
+from typing import Dict, List, Tuple, TypeVar, Union
 
-from azure.cli.command_modules.acs._consts import DecoratorMode
+from azure.cli.command_modules.acs._consts import (
+    DecoratorEarlyExitException,
+    DecoratorMode,
+)
 from azure.cli.command_modules.acs.decorator import (
     AKSContext,
     AKSCreateDecorator,
@@ -25,8 +29,14 @@ from azure.cli.core.commands import AzCliCommand
 from azure.cli.core.profiles import ResourceType
 from azure.cli.core.util import get_file_json
 from knack.log import get_logger
+from knack.prompting import prompt_y_n
+from msrestazure.azure_exceptions import CloudError
 
 from azext_aks_preview._natgateway import create_nat_gateway_profile
+from azext_aks_preview.addonconfiguration import (
+    ensure_container_insights_for_monitoring,
+)
+
 
 logger = get_logger(__name__)
 
@@ -40,6 +50,7 @@ KubeletConfig = TypeVar("KubeletConfig")
 LinuxOSConfig = TypeVar("LinuxOSConfig")
 ManagedClusterHTTPProxyConfig = TypeVar("ManagedClusterHTTPProxyConfig")
 ContainerServiceNetworkProfile = TypeVar("ContainerServiceNetworkProfile")
+ManagedClusterAddonProfile = TypeVar("ManagedClusterAddonProfile")
 
 
 # pylint: disable=too-many-instance-attributes,too-few-public-methods
@@ -64,6 +75,11 @@ class AKSPreviewModels(AKSModels):
         )
         self.ManagedClusterPodIdentityProfile = self.__cmd.get_models(
             "ManagedClusterPodIdentityProfile",
+            resource_type=self.resource_type,
+            operation_group="managed_clusters",
+        )
+        self.WindowsGmsaProfile = self.__cmd.get_models(
+            "WindowsGmsaProfile",
             resource_type=self.resource_type,
             operation_group="managed_clusters",
         )
@@ -104,6 +120,43 @@ class AKSPreviewContext(AKSContext):
         decorator_mode,
     ):
         super().__init__(cmd, raw_parameters, models, decorator_mode)
+
+    # pylint: disable=unused-argument
+    def _get_vm_set_type(self, read_only: bool = False, **kwargs) -> Union[str, None]:
+        """Internal function to dynamically obtain the value of vm_set_type according to the context.
+
+        Note: Inherited and extended in aks-preview to add support for the deprecated option --enable-vmss.
+
+        :return: string or None
+        """
+        vm_set_type = super()._get_vm_set_type(read_only, **kwargs)
+
+        # TODO: Remove the below section when we deprecate the --enable-vmss flag, kept for back-compatibility only.
+        # read the original value passed by the command
+        enable_vmss = self.raw_param.get("enable_vmss")
+
+        if enable_vmss:
+            if vm_set_type and vm_set_type.lower() != "VirtualMachineScaleSets".lower():
+                raise InvalidArgumentValueError(
+                    "--enable-vmss and provided --vm-set-type ({}) are conflicting with each other".format(
+                        vm_set_type
+                    )
+                )
+            vm_set_type = "VirtualMachineScaleSets"
+        return vm_set_type
+
+    def get_zones(self) -> Union[List[str], None]:
+        """Obtain the value of zones.
+
+        Note: Inherited and extended in aks-preview to add support for a different parameter name (node_zones).
+
+        :return: list of strings or None
+        """
+        zones = super().get_zones()
+        if zones is not None:
+            return zones
+        # read the original value passed by the command
+        return self.raw_param.get("node_zones")
 
     def get_pod_subnet_id(self) -> Union[str, None]:
         """Obtain the value of pod_subnet_id.
@@ -390,7 +443,7 @@ class AKSPreviewContext(AKSContext):
     ) -> bool:
         """Internal function to obtain the value of enable_pod_identity.
 
-        Inherited and extended to perform additional validation.
+        Note: Inherited and extended in aks-preview to perform additional validation.
 
         This function supports the option of enable_validation. When enabled, if enable_managed_identity is not
         specified but enable_pod_identity is, raise a RequiredArgumentMissingError.
@@ -496,6 +549,315 @@ class AKSPreviewContext(AKSContext):
         """
         return self._get_enable_pod_identity_with_kubenet(enable_validation=True)
 
+    def get_addon_consts(self) -> Dict[str, str]:
+        """Helper function to obtain the constants used by addons.
+
+        Note: Inherited and extended in aks-preview to replace and add a few values.
+
+        Note: This is not a parameter of aks commands.
+
+        :return: dict
+        """
+        from azext_aks_preview._consts import (
+            ADDONS,
+            CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME,
+            CONST_ROTATION_POLL_INTERVAL,
+            CONST_SECRET_ROTATION_ENABLED,
+            CONST_GITOPS_ADDON_NAME,
+            CONST_MONITORING_USING_AAD_MSI_AUTH,
+            CONST_SECRET_ROTATION_ENABLED,
+        )
+
+        addon_consts = super().get_addon_consts()
+        addon_consts["ADDONS"] = ADDONS
+        addon_consts[
+            "CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME"
+        ] = CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME
+        addon_consts[
+            "CONST_ROTATION_POLL_INTERVAL"
+        ] = CONST_ROTATION_POLL_INTERVAL
+        addon_consts[
+            "CONST_SECRET_ROTATION_ENABLED"
+        ] = CONST_SECRET_ROTATION_ENABLED
+        addon_consts["CONST_GITOPS_ADDON_NAME"] = CONST_GITOPS_ADDON_NAME
+        addon_consts[
+            "CONST_MONITORING_USING_AAD_MSI_AUTH"
+        ] = CONST_MONITORING_USING_AAD_MSI_AUTH
+        return addon_consts
+
+    def get_appgw_subnet_prefix(self) -> Union[str, None]:
+        """Obtain the value of appgw_subnet_prefix.
+
+        [Deprecated] Note: this parameter is depracated and replaced by appgw_subnet_cidr.
+
+        :return: string or None
+        """
+        # determine the value of constants
+        addon_consts = self.get_addon_consts()
+        CONST_INGRESS_APPGW_ADDON_NAME = addon_consts.get("CONST_INGRESS_APPGW_ADDON_NAME")
+        CONST_INGRESS_APPGW_SUBNET_CIDR = addon_consts.get("CONST_INGRESS_APPGW_SUBNET_CIDR")
+
+        # read the original value passed by the command
+        appgw_subnet_prefix = self.raw_param.get("appgw_subnet_prefix")
+        # try to read the property value corresponding to the parameter from the `mc` object
+        if (
+            self.mc and
+            self.mc.addon_profiles and
+            CONST_INGRESS_APPGW_ADDON_NAME in self.mc.addon_profiles and
+            self.mc.addon_profiles.get(
+                CONST_INGRESS_APPGW_ADDON_NAME
+            ).config.get(CONST_INGRESS_APPGW_SUBNET_CIDR) is not None
+        ):
+            appgw_subnet_prefix = self.mc.addon_profiles.get(
+                CONST_INGRESS_APPGW_ADDON_NAME
+            ).config.get(CONST_INGRESS_APPGW_SUBNET_CIDR)
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return appgw_subnet_prefix
+
+    def get_enable_msi_auth_for_monitoring(self) -> Union[bool, None]:
+        """Obtain the value of enable_msi_auth_for_monitoring.
+
+        Note: The arg type of this parameter supports three states (True, False or None), but the corresponding default
+        value in entry function is not None.
+
+        :return: bool or None
+        """
+        # determine the value of constants
+        addon_consts = self.get_addon_consts()
+        CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
+        CONST_MONITORING_USING_AAD_MSI_AUTH = addon_consts.get("CONST_MONITORING_USING_AAD_MSI_AUTH")
+
+        # read the original value passed by the command
+        enable_msi_auth_for_monitoring = self.raw_param.get("enable_msi_auth_for_monitoring")
+        # try to read the property value corresponding to the parameter from the `mc` object
+        if (
+            self.mc and
+            self.mc.addon_profiles and
+            CONST_MONITORING_ADDON_NAME in self.mc.addon_profiles and
+            self.mc.addon_profiles.get(
+                CONST_MONITORING_ADDON_NAME
+            ).config.get(CONST_MONITORING_USING_AAD_MSI_AUTH) is not None
+        ):
+            enable_msi_auth_for_monitoring = self.mc.addon_profiles.get(
+                CONST_MONITORING_ADDON_NAME
+            ).config.get(CONST_MONITORING_USING_AAD_MSI_AUTH)
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return enable_msi_auth_for_monitoring
+
+    def get_no_wait(self) -> bool:
+        """Obtain the value of no_wait.
+
+        Note: Inherited and extended in aks-preview to replace the set value when enable_msi_auth_for_monitoring is
+        specified.
+
+        Note: no_wait will not be decorated into the `mc` object.
+
+        :return: bool
+        """
+        no_wait = super().get_no_wait()
+
+        if self.get_intermediate("monitoring") and self.get_enable_msi_auth_for_monitoring():
+            logger.warning("Enabling msi auth for monitoring addon requires waiting for cluster creation to complete")
+            if no_wait:
+                logger.warning("The set option '--no-wait' has been ignored")
+                no_wait = False
+        return no_wait
+
+    def get_enable_secret_rotation(self) -> bool:
+        """Obtain the value of enable_secret_rotation.
+
+        :return: bool
+        """
+        # determine the value of constants
+        addon_consts = self.get_addon_consts()
+        CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME = addon_consts.get(
+            "CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME"
+        )
+        CONST_SECRET_ROTATION_ENABLED = addon_consts.get(
+            "CONST_SECRET_ROTATION_ENABLED"
+        )
+
+        # read the original value passed by the command
+        enable_secret_rotation = self.raw_param.get("enable_secret_rotation")
+        # try to read the property value corresponding to the parameter from the `mc` object
+        if (
+            self.mc and
+            self.mc.addon_profiles and
+            CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME in self.mc.addon_profiles and
+            self.mc.addon_profiles.get(
+                CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME
+            ).config.get(CONST_SECRET_ROTATION_ENABLED) is not None
+        ):
+            enable_secret_rotation = self.mc.addon_profiles.get(
+                CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME
+            ).config.get(CONST_SECRET_ROTATION_ENABLED) == "true"
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return enable_secret_rotation
+
+    # pylint: disable=unused-argument,no-self-use
+    def __validate_gmsa_options(
+        self,
+        enable_windows_gmsa,
+        gmsa_dns_server,
+        gmsa_root_domain_name,
+        yes,
+        **kwargs
+    ) -> None:
+        """Helper function to validate gmsa related options.
+
+        When enable_windows_gmsa is specified, if both gmsa_dns_server and gmsa_root_domain_name are not assigned and
+        user does not confirm the operation, a DecoratorEarlyExitException will be raised; if only one of
+        gmsa_dns_server or gmsa_root_domain_name is assigned, raise a RequiredArgumentMissingError. When
+        enable_windows_gmsa is not specified, if any of gmsa_dns_server or gmsa_root_domain_name is assigned, raise
+        a RequiredArgumentMissingError.
+
+        :return: bool
+        """
+        gmsa_dns_server_is_none = gmsa_dns_server is None
+        gmsa_root_domain_name_is_none = gmsa_root_domain_name is None
+        if enable_windows_gmsa:
+            if gmsa_dns_server_is_none == gmsa_root_domain_name_is_none:
+                if gmsa_dns_server_is_none:
+                    msg = (
+                        "Please assure that you have set the DNS server in the vnet used by the cluster "
+                        "when not specifying --gmsa-dns-server and --gmsa-root-domain-name"
+                    )
+                    if not yes and not prompt_y_n(msg, default="n"):
+                        raise DecoratorEarlyExitException()
+            else:
+                raise RequiredArgumentMissingError(
+                    "You must set or not set --gmsa-dns-server and --gmsa-root-domain-name at the same time."
+                )
+        else:
+            if gmsa_dns_server_is_none != gmsa_root_domain_name_is_none:
+                raise RequiredArgumentMissingError(
+                    "You only can set --gmsa-dns-server and --gmsa-root-domain-name "
+                    "when setting --enable-windows-gmsa."
+                )
+
+    # pylint: disable=unused-argument
+    def _get_enable_windows_gmsa(self, enable_validation: bool = False, **kwargs) -> bool:
+        """Internal function to obtain the value of enable_windows_gmsa.
+
+        This function supports the option of enable_validation. Please refer to function __validate_gmsa_options for
+        details of validation.
+
+        :return: bool
+        """
+        # read the original value passed by the command
+        enable_windows_gmsa = self.raw_param.get("enable_windows_gmsa")
+        # try to read the property value corresponding to the parameter from the `mc` object
+        if (
+            self.mc and
+            self.mc.windows_profile and
+            self.mc.windows_profile.gmsa_profile and
+            self.mc.windows_profile.gmsa_profile.enabled is not None
+        ):
+            enable_windows_gmsa = self.mc.windows_profile.gmsa_profile.enabled
+
+        # this parameter does not need dynamic completion
+        # validation
+        if enable_validation:
+            (
+                gmsa_dns_server,
+                gmsa_root_domain_name,
+            ) = self._get_gmsa_dns_server_and_root_domain_name(
+                enable_validation=False
+            )
+            self.__validate_gmsa_options(
+                enable_windows_gmsa, gmsa_dns_server, gmsa_root_domain_name, self.get_yes()
+            )
+        return enable_windows_gmsa
+
+    def get_enable_windows_gmsa(self) -> bool:
+        """Obtain the value of enable_windows_gmsa.
+
+        This function will verify the parameter by default. When enable_windows_gmsa is specified, if both
+        gmsa_dns_server and gmsa_root_domain_name are not assigned and user does not confirm the operation,
+        a DecoratorEarlyExitException will be raised; if only one of gmsa_dns_server or gmsa_root_domain_name is
+        assigned, raise a RequiredArgumentMissingError. When enable_windows_gmsa is not specified, if any of
+        gmsa_dns_server or gmsa_root_domain_name is assigned, raise a RequiredArgumentMissingError.
+
+        :return: bool
+        """
+        return self._get_enable_windows_gmsa(enable_validation=True)
+
+    # pylint: disable=unused-argument
+    def _get_gmsa_dns_server_and_root_domain_name(self, enable_validation: bool = False, **kwargs):
+        """Internal function to obtain the values of gmsa_dns_server and gmsa_root_domain_name.
+
+        This function supports the option of enable_validation. Please refer to function __validate_gmsa_options for
+        details of validation.
+
+        :return: a tuple containing two elements: gmsa_dns_server of string type or None and gmsa_root_domain_name of
+        string type or None
+        """
+        # gmsa_dns_server
+        # read the original value passed by the command
+        gmsa_dns_server = self.raw_param.get("gmsa_dns_server")
+        # try to read the property value corresponding to the parameter from the `mc` object
+        gmsa_dns_read_from_mc = False
+        if (
+            self.mc and
+            self.mc.windows_profile and
+            self.mc.windows_profile.gmsa_profile and
+            self.mc.windows_profile.gmsa_profile.dns_server is not None
+        ):
+            gmsa_dns_server = self.mc.windows_profile.gmsa_profile.dns_server
+            gmsa_dns_read_from_mc = True
+
+        # gmsa_root_domain_name
+        # read the original value passed by the command
+        gmsa_root_domain_name = self.raw_param.get("gmsa_root_domain_name")
+        # try to read the property value corresponding to the parameter from the `mc` object
+        gmsa_root_read_from_mc = False
+        if (
+            self.mc and
+            self.mc.windows_profile and
+            self.mc.windows_profile.gmsa_profile and
+            self.mc.windows_profile.gmsa_profile.root_domain_name is not None
+        ):
+            gmsa_root_domain_name = self.mc.windows_profile.gmsa_profile.root_domain_name
+            gmsa_root_read_from_mc = True
+
+        # consistent check
+        if gmsa_dns_read_from_mc != gmsa_root_read_from_mc:
+            raise CLIInternalError(
+                "Inconsistent state detected, one of gmsa_dns_server and gmsa_root_domain_name "
+                "is read from the `mc` object."
+            )
+
+        # this parameter does not need dynamic completion
+        # validation
+        if enable_validation:
+            self.__validate_gmsa_options(
+                self._get_enable_windows_gmsa(enable_validation=False),
+                gmsa_dns_server,
+                gmsa_root_domain_name,
+                self.get_yes(),
+            )
+        return gmsa_dns_server, gmsa_root_domain_name
+
+    def get_gmsa_dns_server_and_root_domain_name(self) -> Tuple[Union[str, None], Union[str, None]]:
+        """Obtain the values of gmsa_dns_server and gmsa_root_domain_name.
+
+        This function will verify the parameter by default. When enable_windows_gmsa is specified, if both
+        gmsa_dns_server and gmsa_root_domain_name are not assigned and user does not confirm the operation,
+        a DecoratorEarlyExitException will be raised; if only one of gmsa_dns_server or gmsa_root_domain_name is
+        assigned, raise a RequiredArgumentMissingError. When enable_windows_gmsa is not specified, if any of
+        gmsa_dns_server or gmsa_root_domain_name is assigned, raise a RequiredArgumentMissingError.
+
+        :return: a tuple containing two elements: gmsa_dns_server of string type or None and gmsa_root_domain_name of
+        string type or None
+        """
+        return self._get_gmsa_dns_server_and_root_domain_name(enable_validation=True)
+
 
 class AKSPreviewCreateDecorator(AKSCreateDecorator):
     # pylint: disable=super-init-not-called
@@ -528,8 +890,7 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
     def set_up_agent_pool_profiles(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up agent pool profiles for the ManagedCluster object.
 
-        Call the method of the same name in the parent class to set up agent_pool_profiles, and then set some additional
-        properties on this basis.
+        Note: Inherited and extended in aks-preview to set some additional properties.
 
         :return: the ManagedCluster object
         """
@@ -578,8 +939,7 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
     def set_up_network_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up network profile for the ManagedCluster object.
 
-        Call the method of the same name in the parent class to set up network_profile, and then set the
-        nat_gateway_profile on this basis.
+        Note: Inherited and extended in aks-preview to set the nat_gateway_profile.
 
         :return: the ManagedCluster object
         """
@@ -635,6 +995,146 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
         mc.pod_identity_profile = pod_identity_profile
         return mc
 
+    def build_monitoring_addon_profile(self) -> ManagedClusterAddonProfile:
+        """Build monitoring addon profile.
+
+        Note: Overwritten in aks-preview.
+
+        :return: a ManagedClusterAddonProfile object
+        """
+        # determine the value of constants
+        addon_consts = self.context.get_addon_consts()
+        CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID = addon_consts.get(
+            "CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID"
+        )
+        CONST_MONITORING_USING_AAD_MSI_AUTH = addon_consts.get(
+            "CONST_MONITORING_USING_AAD_MSI_AUTH"
+        )
+
+        monitoring_addon_profile = self.models.ManagedClusterAddonProfile(
+            enabled=True,
+            config={
+                CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID: self.context.get_workspace_resource_id(),
+                CONST_MONITORING_USING_AAD_MSI_AUTH: self.context.get_enable_msi_auth_for_monitoring(),
+            },
+        )
+        # post-process, create a deployment
+        ensure_container_insights_for_monitoring(
+            self.cmd,
+            monitoring_addon_profile,
+            self.context.get_subscription_id(),
+            self.context.get_resource_group_name(),
+            self.context.get_name(),
+            self.context.get_location(),
+            remove_monitoring=False,
+            aad_route=self.context.get_enable_msi_auth_for_monitoring(),
+            create_dcr=True,
+            create_dcra=False,
+        )
+        # set intermediate
+        self.context.set_intermediate("monitoring", True, overwrite_exists=True)
+        return monitoring_addon_profile
+
+    def build_ingress_appgw_addon_profile(self) -> ManagedClusterAddonProfile:
+        """Build ingress appgw addon profile.
+
+        Note: Inherited and extended in aks-preview to support option appgw_subnet_prefix.
+
+        :return: a ManagedClusterAddonProfile object
+        """
+        # determine the value of constants
+        addon_consts = self.context.get_addon_consts()
+        CONST_INGRESS_APPGW_SUBNET_CIDR = addon_consts.get(
+            "CONST_INGRESS_APPGW_SUBNET_CIDR"
+        )
+
+        ingress_appgw_addon_profile = super().build_ingress_appgw_addon_profile()
+        appgw_subnet_prefix = self.context.get_appgw_subnet_prefix()
+        if (
+            appgw_subnet_prefix is not None and
+            ingress_appgw_addon_profile.config.get(
+                CONST_INGRESS_APPGW_SUBNET_CIDR
+            )
+            is None
+        ):
+            ingress_appgw_addon_profile.config[CONST_INGRESS_APPGW_SUBNET_CIDR] = appgw_subnet_prefix
+        return ingress_appgw_addon_profile
+
+    def build_azure_keyvault_secrets_provider_addon_profile(self) -> ManagedClusterAddonProfile:
+        """Build azure keyvault secrets provider addon profile.
+
+        :return: a ManagedClusterAddonProfile object
+        """
+        # determine the value of constants
+        addon_consts = self.context.get_addon_consts()
+        CONST_SECRET_ROTATION_ENABLED = addon_consts.get(
+            "CONST_SECRET_ROTATION_ENABLED"
+        )
+
+        azure_keyvault_secrets_provider_addon_profile = self.models.ManagedClusterAddonProfile(
+            enabled=True, config={CONST_SECRET_ROTATION_ENABLED: "false"}
+        )
+        if self.context.get_enable_secret_rotation():
+            azure_keyvault_secrets_provider_addon_profile.config[CONST_SECRET_ROTATION_ENABLED] = "true"
+        return azure_keyvault_secrets_provider_addon_profile
+
+    def build_gitops_addon_profile(self) -> ManagedClusterAddonProfile:
+        """Build gitops addon profile.
+
+        :return: a ManagedClusterAddonProfile object
+        """
+        gitops_addon_profile = self.models.ManagedClusterAddonProfile(
+            enabled=True,
+        )
+        return gitops_addon_profile
+
+    def set_up_addon_profiles(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up addon profiles for the ManagedCluster object.
+
+        Note: Inherited and extended in aks-preview to set some extra addons.
+
+        :return: the ManagedCluster object
+        """
+        addon_consts = self.context.get_addon_consts()
+        CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME = addon_consts.get(
+            "CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME"
+        )
+        CONST_GITOPS_ADDON_NAME = addon_consts.get("CONST_GITOPS_ADDON_NAME")
+
+        mc = super().set_up_addon_profiles(mc)
+        addon_profiles = mc.addon_profiles
+        addons = self.context.get_enable_addons()
+        if "azure-keyvault-secrets-provider" in addons:
+            addon_profiles[
+                CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME
+            ] = self.build_azure_keyvault_secrets_provider_addon_profile()
+        if "gitops" in addons:
+            addon_profiles[
+                CONST_GITOPS_ADDON_NAME
+            ] = self.build_gitops_addon_profile()
+        mc.addon_profiles = addon_profiles
+        return mc
+
+    def set_up_windows_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up windows profile for the ManagedCluster object.
+
+        Note: Inherited and extended in aks-preview to set gmsa related options.
+
+        :return: the ManagedCluster object
+        """
+        mc = super().set_up_windows_profile(mc)
+        windows_profile = mc.windows_profile
+
+        if windows_profile and self.context.get_enable_windows_gmsa():
+            gmsa_dns_server, gmsa_root_domain_name = self.context.get_gmsa_dns_server_and_root_domain_name()
+            windows_profile.gmsa_profile = self.models.WindowsGmsaProfile(
+                enabled=True,
+                dns_server=gmsa_dns_server,
+                root_domain_name=gmsa_root_domain_name,
+            )
+        mc.windows_profile = windows_profile
+        return mc
+
     def construct_preview_mc_profile(self) -> ManagedCluster:
         """The overall controller used to construct the preview ManagedCluster profile.
 
@@ -654,6 +1154,48 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
         # set up pod identity profile
         mc = self.set_up_pod_identity_profile(mc)
         return mc
+
+    def create_mc(self, mc: ManagedCluster) -> ManagedCluster:
+        """Send request to create a real managed cluster.
+
+        Note: Inherited and extended in aks-preview to create dcr association for monitoring addon if
+        enable_msi_auth_for_monitoring is specified after cluster is created.
+
+        :return: the ManagedCluster object
+        """
+        created_cluster = super().create_mc(mc)
+
+        # determine the value of constants
+        addon_consts = self.context.get_addon_consts()
+        CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
+
+        # Due to SPN replication latency, we do a few retries here
+        max_retry = 30
+        retry_exception = Exception(None)
+        for _ in range(0, max_retry):
+            try:
+                if self.context.get_intermediate("monitoring") and self.context.get_enable_msi_auth_for_monitoring():
+                    # Create the DCR Association here
+                    ensure_container_insights_for_monitoring(
+                        self.cmd,
+                        mc.addon_profiles[CONST_MONITORING_ADDON_NAME],
+                        self.context.get_subscription_id(),
+                        self.context.get_resource_group_name(),
+                        self.context.get_name(),
+                        self.context.get_location(),
+                        remove_monitoring=False,
+                        aad_route=self.context.get_enable_msi_auth_for_monitoring(),
+                        create_dcr=False,
+                        create_dcra=True,
+                    )
+                return created_cluster
+            except CloudError as ex:
+                retry_exception = ex
+                if 'not found in Active Directory tenant' in ex.message:
+                    time.sleep(3)
+                else:
+                    raise ex
+        raise retry_exception
 
 
 class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
