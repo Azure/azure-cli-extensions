@@ -230,11 +230,11 @@ def spring_cloud_stop(cmd, client, resource_group, name, no_wait=False):
 def spring_cloud_list(cmd, client, resource_group=None):
     if resource_group is None:
         return client.list_by_subscription()
-    return client.list(resource_group)
+    return client.services.list(resource_group)
 
 
 def spring_cloud_get(cmd, client, resource_group, name):
-    return client.get(resource_group, name)
+    return client.services.get(resource_group, name)
 
 
 def enable_test_endpoint(cmd, client, resource_group, name):
