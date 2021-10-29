@@ -1,14 +1,14 @@
 Release History
 ===============
-2.11.1
------
-* Add support for Diagnostic Operation. Heap dump: 'spring-cloud app deployment generate-heap-dump'. Thread Dump: 'spring-cloud app deployment generate-thread-dump'. JFR: 'spring-cloud app deployment start-jfr'
-
 2.11.2
 -----
 * Add support to stop and start Azure Spring Cloud service instance
 * Add new command `spring-cloud stop` to stop a running Azure Spring Cloud service instance
 * Add new command `spring-cloud start` to start a stopped Azure Spring Cloud service instance
+
+2.11.1
+-----
+* Add support for Diagnostic Operation. Heap dump: 'spring-cloud app deployment generate-heap-dump'. Thread Dump: 'spring-cloud app deployment generate-thread-dump'. JFR: 'spring-cloud app deployment start-jfr'
 
 2.11.1
 -----
