@@ -69,7 +69,7 @@ class StaticWebAppFrontDoorClient:
     def _validate_sku(cls, sku_name):
         if sku_name.lower() != "standard":
             raise CLIError("Invalid SKU: '{}'. Staticwebapp must have 'Standard' SKU to use "
-                           "enterprise edge CDN").format(sku_name)
+                           "enterprise edge CDN".format(sku_name))
 
 
 def enable_staticwebapp_enterprise_edge(cmd, name, resource_group_name):
