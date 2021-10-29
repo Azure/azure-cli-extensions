@@ -1017,6 +1017,51 @@ def deployment_list(cmd, client, resource_group, service, app):
     return client.deployments.list(resource_group, service, app)
 
 
+def deployment_generate_heap_dump(cmd, client, resource_group, service, app, app_instance, file_path, deployment=None):
+    if deployment is None:
+        logger.warning(
+            "No '--deployment' given, will update app's production deployment")
+        deployment = client.apps.get(
+            resource_group, service, app).properties.active_deployment_name
+        if deployment is None:
+            logger.warning("No production deployment found for update")
+            return
+    diagnostic_parameters = models_20210901preview.DiagnosticParameters(app_instance=app_instance, file_path=file_path)
+    logger.info("Heap dump is triggered.")
+    return client.deployments.begin_generate_heap_dump(resource_group, service, app, deployment, diagnostic_parameters)
+
+
+def deployment_generate_thread_dump(cmd, client, resource_group, service, app, app_instance, file_path,
+                                    deployment=None):
+    if deployment is None:
+        logger.warning(
+            "No '--deployment' given, will update app's production deployment")
+        deployment = client.apps.get(
+            resource_group, service, app).properties.active_deployment_name
+        if deployment is None:
+            logger.warning("No production deployment found for update")
+            return
+    diagnostic_parameters = models_20210901preview.DiagnosticParameters(app_instance=app_instance, file_path=file_path)
+    logger.info("Thread dump is triggered.")
+    return client.deployments.begin_generate_thread_dump(resource_group, service, app, deployment, diagnostic_parameters)
+
+
+def deployment_start_jfr(cmd, client, resource_group, service, app, app_instance, file_path, duration=None,
+                         deployment=None):
+    if deployment is None:
+        logger.warning(
+            "No '--deployment' given, will update app's production deployment")
+        deployment = client.apps.get(
+            resource_group, service, app).properties.active_deployment_name
+        if deployment is None:
+            logger.warning("No production deployment found for update")
+            return
+    diagnostic_parameters = models_20210901preview.DiagnosticParameters(app_instance=app_instance, file_path=file_path,
+                                                                        duration=duration)
+    logger.info("JFR is triggered.")
+    return client.deployments.begin_start_jfr(resource_group, service, app, deployment, diagnostic_parameters)
+
+
 def deployment_get(cmd, client, resource_group, service, app, name):
     return client.deployments.get(resource_group, service, app, name)
 

@@ -327,6 +327,21 @@ helps['spring-cloud app deployment create'] = """
       text: az spring-cloud app deployment create -n green-deployment --app MyApp -s MyCluster -g MyResourceGroup --jar-path app.jar --jvm-options="-XX:+UseG1GC -XX:+UseStringDeduplication" --env foo=bar
 """
 
+helps['spring-cloud app deployment generate-heap-dump'] = """
+    type: command
+    short-summary: Generate a heap dump of your target app instance to given file path.
+"""
+
+helps['spring-cloud app deployment generate-thread-dump'] = """
+    type: command
+    short-summary: Generate a thread dump of your target app instance to given file path.
+"""
+
+helps['spring-cloud app deployment start-jfr'] = """
+    type: command
+    short-summary: Start a JFR on your target app instance to given file path.
+"""
+
 helps['spring-cloud config-server'] = """
     type: group
     short-summary: Commands to manage Config Server in Azure Spring Cloud.

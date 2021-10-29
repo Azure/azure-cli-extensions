@@ -101,7 +101,7 @@ helps['aks create'] = """
           short-summary: Enable Azure RBAC to control authorization checks on cluster.
         - name: --aad-admin-group-object-ids
           type: string
-          short-summary: Comma seperated list of aad group object IDs that will be set as cluster admin.
+          short-summary: Comma-separated list of aad group object IDs that will be set as cluster admin.
         - name: --aad-client-app-id
           type: string
           short-summary: The ID of an Azure Active Directory client application of type "Native". This
@@ -291,7 +291,7 @@ helps['aks create'] = """
           short-summary: Specify an existing user assigned identity for kubelet's usage, which is typically used to pull image from ACR.
         - name: --api-server-authorized-ip-ranges
           type: string
-          short-summary: Comma seperated list of authorized apiserver IP ranges. Set to 0.0.0.0/32 to restrict apiserver traffic to node pools.
+          short-summary: Comma-separated list of authorized apiserver IP ranges. Set to 0.0.0.0/32 to restrict apiserver traffic to node pools.
         - name: --aks-custom-headers
           type: string
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
@@ -531,13 +531,13 @@ helps['aks update'] = """
           short-summary: Disable the 'acrpull' role assignment to the ACR specified by name or resource ID.
         - name: --api-server-authorized-ip-ranges
           type: string
-          short-summary: Comma seperated list of authorized apiserver IP ranges. Set to "" to allow all traffic on a previously restricted cluster. Set to 0.0.0.0/32 to restrict apiserver traffic to node pools.
+          short-summary: Comma-separated list of authorized apiserver IP ranges. Set to "" to allow all traffic on a previously restricted cluster. Set to 0.0.0.0/32 to restrict apiserver traffic to node pools.
         - name: --enable-aad
           type: bool
           short-summary: Enable managed AAD feature for cluster.
         - name: --aad-admin-group-object-ids
           type: string
-          short-summary: Comma seperated list of aad group object IDs that will be set as cluster admin.
+          short-summary: Comma-separated list of aad group object IDs that will be set as cluster admin.
         - name: --aad-tenant-id
           type: string
           short-summary: The ID of an Azure Active Directory tenant.

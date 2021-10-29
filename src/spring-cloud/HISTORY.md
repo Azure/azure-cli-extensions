@@ -1,5 +1,8 @@
 Release History
 ===============
+2.11.1
+-----
+* Add support for Diagnostic Operation. Heap dump: 'spring-cloud app deployment generate-heap-dump'. Thread Dump: 'spring-cloud app deployment generate-thread-dump'. JFR: 'spring-cloud app deployment start-jfr'
 
 2.11.2
 -----

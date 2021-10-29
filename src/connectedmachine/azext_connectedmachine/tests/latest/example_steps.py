@@ -48,6 +48,7 @@ def step_extension_create(test, checks=None):
     test.cmd('az connectedmachine extension create '
              '--name "CustomScriptExtension" '
              '--location "eastus2euap" '
+             '--enable-auto-upgrade true '
              '--type "CustomScriptExtension" '
              '--publisher "Microsoft.Compute" '
              '--settings "{{\\"commandToExecute\\":\\"powershell.exe -c \\\\\\"Get-Process | Where-Object {{{{ $_.CPU '
@@ -100,6 +101,7 @@ def step_extension_update(test, checks=None):
         checks = []
     test.cmd('az connectedmachine extension update '
              f'--name "{EXTENSION_NAME}" '
+             '--enable-auto-upgrade false '
              '--settings "{{\\"commandToExecute\\":\\"hostname\\"}}" '
              f'--machine-name "{MACHINE_NAME}" '
              f'--resource-group "{RESOURCE_GROUP}"',
