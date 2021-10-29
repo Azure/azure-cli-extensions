@@ -3,13 +3,14 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=redefined-builtin
+# pylint: disable=redefined-builtin,bare-except,inconsistent-return-statements
 
 import logging
 
-from knack.util import CLIError
+from azure.cli.core.azclierror import (FileOperationError, AzureInternalError,
+                                       InvalidArgumentValueError, AzureResponseError)
 
-from .._client_factory import cf_jobs, _get_data_credentials, base_url
+from .._client_factory import cf_jobs, _get_data_credentials
 from .workspace import WorkspaceInfo
 from .target import TargetInfo
 
@@ -43,11 +44,11 @@ def _check_dotnet_available():
     try:
         import subprocess
         result = subprocess.run(args, stdout=subprocess.PIPE, check=False)
-    except FileNotFoundError:
-        raise CLIError(f"Could not find 'dotnet' on the system.")
+    except FileNotFoundError as e:
+        raise FileOperationError("Could not find 'dotnet' on the system.") from e
 
     if result.returncode != 0:
-        raise CLIError(f"Failed to run 'dotnet'. (Error {result.returncode})")
+        raise FileOperationError(f"Failed to run 'dotnet'. (Error {result.returncode})")
 
 
 def build(cmd, target_id=None, project=None):
@@ -76,9 +77,9 @@ def build(cmd, target_id=None, project=None):
         return {'result': 'ok'}
 
     # If we got here, we might have encountered an error during compilation, so propagate standard output to the user.
-    logger.error(f"Compilation stage failed with error code {result.returncode}")
+    logger.error("Compilation stage failed with error code %s", result.returncode)
     print(result.stdout.decode('ascii'))
-    raise CLIError("Failed to compile program.")
+    raise AzureInternalError("Failed to compile program.")
 
 
 def _generate_submit_args(program_args, ws, target, token, project, job_name, shots, storage, job_params):
@@ -125,6 +126,9 @@ def _generate_submit_args(program_args, ws, target, token, project, job_name, sh
 
     args.append("--location")
     args.append(ws.location)
+
+    args.append("--user-agent")
+    args.append("CLI")
 
     if job_params:
         args.append("--job-params")
@@ -181,16 +185,16 @@ def submit(cmd, program_args, resource_group_name=None, workspace_name=None, loc
     result = subprocess.run(args, stdout=subprocess.PIPE, check=False)
 
     if result.returncode == 0:
-        output = result.stdout.decode('ascii').strip()
+        std_output = result.stdout.decode('ascii').strip()
         # Retrieve the job-id as the last line from standard output.
-        job_id = output.split()[-1]
+        job_id = std_output.split()[-1]
         # Query for the job and return status to caller.
         return get(cmd, job_id, resource_group_name, workspace_name, location)
 
     # The program compiled succesfully, but executing the stand-alone .exe failed to run.
-    logger.error(f"Submission of job failed with error code {result.returncode}")
+    logger.error("Submission of job failed with error code %s", result.returncode)
     print(result.stdout.decode('ascii'))
-    raise CLIError("Failed to submit job.")
+    raise AzureInternalError("Failed to submit job.")
 
 
 def _parse_blob_url(url):
@@ -202,8 +206,8 @@ def _parse_blob_url(url):
         container = o.path.split('/')[-2]
         blob = o.path.split('/')[-1]
         sas_token = o.query
-    except IndexError:
-        raise CLIError(f"Failed to parse malformed blob URL: {url}")
+    except IndexError as e:
+        raise InvalidArgumentValueError(f"Failed to parse malformed blob URL: {url}") from e
 
     return {
         "account_name": account_name,
@@ -253,7 +257,7 @@ def output(cmd, job_id, resource_group_name=None, workspace_name=None, location=
                 while result_start_line >= 0 and not lines[result_start_line].startswith('"'):
                     result_start_line -= 1
             if result_start_line < 0:
-                raise CLIError("Job output is malformed, mismatched quote characters.")
+                raise AzureResponseError("Job output is malformed, mismatched quote characters.")
 
             # Print the job output and then the result of the operation as a histogram.
             # If the result is a string, trim the quotation marks.
