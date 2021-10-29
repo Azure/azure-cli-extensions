@@ -1,5 +1,11 @@
 Release History
 ===============
+0.1.9
+-----
+* Delete all keys and certificates created during execution of az ssh vm.
+* Add --keys-destination-folder to az ssh config
+* By default, save keys created during az ssh config in a directory in the same location as --file
+
 0.1.8
 -----
 * Rollback from version 0.1.7 to 0.1.6 to remove preview features.
