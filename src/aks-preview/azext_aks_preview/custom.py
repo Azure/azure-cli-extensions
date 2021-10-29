@@ -3993,10 +3993,11 @@ def aks_snapshot_delete(cmd,   # pylint: disable=unused-argument
                          client,
                          resource_group_name,
                          name,
-                         no_wait=False):
+                         no_wait=False,
+                         yes=False):
     from knack.prompting import prompt_y_n
     msg = 'This will delete the snapshot "{}" in resource group "{}", Are you sure?'.format(name, resource_group_name)
-    if not prompt_y_n(msg, default="n"):
+    if not yes and not prompt_y_n(msg, default="n"):
         return None
 
     return client.delete(resource_group_name, name)
