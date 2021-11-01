@@ -8,7 +8,7 @@ Release History
   * `az aks snapshot create`
   * `az aks snapshot delete`
   * `az aks snapshot list`
-  * `az aks snapshot show
+  * `az aks snapshot show`
 * Add --snapshot-id to creating/upgrading commands
   * `az aks create --snapshot-id`
   * `az aks nodepool add --snapshot-id`

@@ -82,7 +82,6 @@ from .vendored_sdks.azure_mgmt_preview_aks.v2021_09_01.models import (ContainerS
                                                                       ManagedClusterPodIdentityException,
                                                                       UserAssignedIdentity,
                                                                       PowerState,
-                                                                      WindowsGmsaProfile,
                                                                       Snapshot,
                                                                       CreationData)
 from ._client_factory import cf_resource_groups
@@ -845,6 +844,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                enable_pod_identity_with_kubenet=False,
                enable_encryption_at_host=False,
                enable_ultra_ssd=False,
+               edge_zone=None,
                enable_secret_rotation=False,
                rotation_poll_interval=None,
                disable_local_accounts=False,
@@ -984,6 +984,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
             license_type=windows_license_type)
 
         if enable_windows_gmsa:
+            from .vendored_sdks.azure_mgmt_preview_aks.v2021_09_01.models import WindowsGmsaProfile
             windows_profile.gmsa_profile = WindowsGmsaProfile(
                 enabled=True)
             if gmsa_dns_server is not None and gmsa_root_domain_name is not None:
@@ -1789,6 +1790,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
         instance.windows_profile.admin_password = windows_admin_password
 
     if enable_windows_gmsa:
+        from .vendored_sdks.azure_mgmt_preview_aks.v2021_09_01.models import WindowsGmsaProfile
         instance.windows_profile.gmsa_profile = WindowsGmsaProfile(enabled=True)
         if gmsa_dns_server is not None and gmsa_root_domain_name is not None:
             instance.windows_profile.gmsa_profile.dns_server = gmsa_dns_server
