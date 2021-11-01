@@ -669,29 +669,6 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         ctx_1.set_intermediate("monitoring", True, overwrite_exists=True)
         self.assertEqual(ctx_1.get_no_wait(), False)
 
-    def test_get_enable_secret_rotation(self):
-        # default
-        ctx_1 = AKSPreviewContext(
-            self.cmd,
-            {
-                "enable_secret_rotation": False,
-            },
-            self.models,
-            decorator_mode=DecoratorMode.CREATE,
-        )
-        self.assertEqual(ctx_1.get_enable_secret_rotation(), False)
-        addon_profiles_1 = {
-            CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME: self.models.ManagedClusterAddonProfile(
-                enabled=True,
-                config={CONST_SECRET_ROTATION_ENABLED: "true"},
-            )
-        }
-        mc = self.models.ManagedCluster(
-            location="test_location", addon_profiles=addon_profiles_1
-        )
-        ctx_1.attach_mc(mc)
-        self.assertEqual(ctx_1.get_enable_secret_rotation(), True)
-
     def test_validate_gmsa_options(self):
         # default
         ctx = AKSPreviewContext(
@@ -1401,49 +1378,6 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
             dec_3.context.get_intermediate("ingress_appgw_addon_enabled"), True
         )
 
-    def test_build_azure_keyvault_secrets_provider_addon_profile(self):
-        # default
-        dec_1 = AKSPreviewCreateDecorator(
-            self.cmd,
-            self.client,
-            {"enable_secret_rotation": False},
-            CUSTOM_MGMT_AKS_PREVIEW,
-        )
-
-        azure_keyvault_secrets_provider_addon_profile = (
-            dec_1.build_azure_keyvault_secrets_provider_addon_profile()
-        )
-        ground_truth_azure_keyvault_secrets_provider_addon_profile = (
-            self.models.ManagedClusterAddonProfile(
-                enabled=True, config={CONST_SECRET_ROTATION_ENABLED: "false"}
-            )
-        )
-        self.assertEqual(
-            azure_keyvault_secrets_provider_addon_profile,
-            ground_truth_azure_keyvault_secrets_provider_addon_profile,
-        )
-
-        # custom value
-        dec_2 = AKSPreviewCreateDecorator(
-            self.cmd,
-            self.client,
-            {"enable_secret_rotation": True},
-            CUSTOM_MGMT_AKS_PREVIEW,
-        )
-
-        azure_keyvault_secrets_provider_addon_profile = (
-            dec_2.build_azure_keyvault_secrets_provider_addon_profile()
-        )
-        ground_truth_azure_keyvault_secrets_provider_addon_profile = (
-            self.models.ManagedClusterAddonProfile(
-                enabled=True, config={CONST_SECRET_ROTATION_ENABLED: "true"}
-            )
-        )
-        self.assertEqual(
-            azure_keyvault_secrets_provider_addon_profile,
-            ground_truth_azure_keyvault_secrets_provider_addon_profile,
-        )
-
     def test_build_gitops_addon_profile(self):
         # default
         dec_1 = AKSPreviewCreateDecorator(
@@ -1478,9 +1412,10 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
                 "appgw_subnet_id": None,
                 "appgw_watch_namespace": None,
                 "enable_sgxquotehelper": False,
+                "enable_secret_rotation": False,
+                "rotation_poll_interval": None,
                 "appgw_subnet_prefix": None,
                 "enable_msi_auth_for_monitoring": False,
-                "enable_secret_rotation": False,
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
@@ -1511,7 +1446,7 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
                 "resource_group_name": "test_rg_name",
                 "location": "test_location",
                 "vnet_subnet_id": "test_vnet_subnet_id",
-                "enable_addons": "monitoring,ingress-appgw,gitops,azure-keyvault-secrets-provider",
+                "enable_addons": "monitoring,ingress-appgw,gitops",
                 "workspace_resource_id": "test_workspace_resource_id",
                 "enable_msi_auth_for_monitoring": True,
                 "appgw_name": "test_appgw_name",
@@ -1519,7 +1454,6 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
                 "appgw_id": "test_appgw_id",
                 "appgw_subnet_id": "test_appgw_subnet_id",
                 "appgw_watch_namespace": "test_appgw_watch_namespace",
-                "enable_secret_rotation": True,
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
@@ -1550,10 +1484,6 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
                     CONST_INGRESS_APPGW_SUBNET_CIDR: "test_appgw_subnet_prefix",
                     CONST_INGRESS_APPGW_WATCH_NAMESPACE: "test_appgw_watch_namespace",
                 },
-            ),
-            CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME: self.models.ManagedClusterAddonProfile(
-                enabled=True,
-                config={CONST_SECRET_ROTATION_ENABLED: "true"},
             ),
             CONST_GITOPS_ADDON_NAME: self.models.ManagedClusterAddonProfile(
                 enabled=True,
