@@ -72,17 +72,22 @@ class StaticWebAppFrontDoorClient:
                            "enterprise edge CDN".format(sku_name))
 
 
+def _format_show_response(cmd, name, resource_group_name):
+    staticsite_data = StaticWebAppFrontDoorClient.get(cmd, name=name, resource_group=resource_group_name).json()
+    return {"enterpriseGradeCdnStatus": staticsite_data["properties"]["enterpriseGradeCdnStatus"]}
+
 def enable_staticwebapp_enterprise_edge(cmd, name, resource_group_name):
     logger.warn("For optimal experience and availability please check our documentation https://aka.ms/swaedge")
-    return StaticWebAppFrontDoorClient.set(cmd, name=name, resource_group=resource_group_name, enable=True)
+    StaticWebAppFrontDoorClient.set(cmd, name=name, resource_group=resource_group_name, enable=True)
+    return _format_show_response(cmd, name, resource_group_name)
 
 
 def disable_staticwebapp_enterprise_edge(cmd, name, resource_group_name):
     logger.warn("For optimal experience and availability please check our documentation https://aka.ms/swaedge")
-    return StaticWebAppFrontDoorClient.set(cmd, name=name, resource_group=resource_group_name, enable=False)
+    StaticWebAppFrontDoorClient.set(cmd, name=name, resource_group=resource_group_name, enable=False)
+    return _format_show_response(cmd, name, resource_group_name)
 
 
 def show_staticwebapp_enterprise_edge_status(cmd, name, resource_group_name):
     logger.warn("For optimal experience and availability please check our documentation https://aka.ms/swaedge")
-    staticsite_data = StaticWebAppFrontDoorClient.get(cmd, name=name, resource_group=resource_group_name).json()
-    return {"enterpriseGradeCdnStatus": staticsite_data["properties"]["enterpriseGradeCdnStatus"]}
+    return _format_show_response(cmd, name, resource_group_name)
