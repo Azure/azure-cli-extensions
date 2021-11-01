@@ -10,7 +10,7 @@ import platform
 
 from argcomplete.completers import FilesCompleter
 from azure.cli.core.commands.parameters import (
-    file_type, get_resource_name_completion_list, get_three_state_flag, name_type, tags_type, zones_type, get_enum_type)
+    file_type, get_resource_name_completion_list, get_three_state_flag, name_type, tags_type, zones_type, edge_zone_type, get_enum_type)
 from knack.arguments import CLIArgumentType
 
 from ._completers import (
@@ -75,6 +75,7 @@ def load_arguments(self, _):
         c.argument('aad_tenant_id')
         c.argument('dns_service_ip')
         c.argument('docker_bridge_address')
+        c.argument('edge_zone', edge_zone_type)
         c.argument('load_balancer_sku', type=str, validator=validate_load_balancer_sku)
         c.argument('load_balancer_managed_outbound_ip_count', type=int)
         c.argument('load_balancer_outbound_ips', type=str, validator=validate_load_balancer_outbound_ips)

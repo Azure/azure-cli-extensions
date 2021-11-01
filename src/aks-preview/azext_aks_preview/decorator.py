@@ -216,6 +216,7 @@ class AKSPreviewContext(AKSContext):
             )
             if (
                 agent_pool_profile and
+                hasattr(agent_pool_profile, "workload_runtime") and  # backward compatibility
                 agent_pool_profile.workload_runtime is not None
             ):
                 workload_runtime = agent_pool_profile.workload_runtime
@@ -238,6 +239,7 @@ class AKSPreviewContext(AKSContext):
             )
             if (
                 agent_pool_profile and
+                hasattr(agent_pool_profile, "gpu_instance_profile") and  # backward compatibility
                 agent_pool_profile.gpu_instance_profile is not None
             ):
                 gpu_instance_profile = agent_pool_profile.gpu_instance_profile
@@ -756,6 +758,7 @@ class AKSPreviewContext(AKSContext):
         if (
             self.mc and
             self.mc.windows_profile and
+            hasattr(self.mc.windows_profile, "gmsa_profile") and  # backward compatibility
             self.mc.windows_profile.gmsa_profile and
             self.mc.windows_profile.gmsa_profile.enabled is not None
         ):
@@ -806,6 +809,7 @@ class AKSPreviewContext(AKSContext):
         if (
             self.mc and
             self.mc.windows_profile and
+            hasattr(self.mc.windows_profile, "gmsa_profile") and  # backward compatibility
             self.mc.windows_profile.gmsa_profile and
             self.mc.windows_profile.gmsa_profile.dns_server is not None
         ):
@@ -820,6 +824,7 @@ class AKSPreviewContext(AKSContext):
         if (
             self.mc and
             self.mc.windows_profile and
+            hasattr(self.mc.windows_profile, "gmsa_profile") and  # backward compatibility
             self.mc.windows_profile.gmsa_profile and
             self.mc.windows_profile.gmsa_profile.root_domain_name is not None
         ):
