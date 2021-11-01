@@ -11,6 +11,11 @@ from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 
 class CommunityGalleryScenarioTest(ScenarioTest):
 
+    # At present, due to the relevant Python SDK is not released to public,
+    # the relevant commands in the test are only used through local build and are not released.
+    # Related PR: https://github.com/Azure/azure-cli/pull/20129
+    # So skip this test in CI first
+    @unittest.skip('Relevant commands in main repo have not been released')
     @ResourceGroupPreparer(location='eastus')
     def test_create_vm_with_community_gallery_image(self, resource_group, resource_group_location):
         self.kwargs.update({
