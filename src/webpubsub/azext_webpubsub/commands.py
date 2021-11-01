@@ -7,6 +7,7 @@
 from azure.cli.core.commands import CliCommandType
 from azure.cli.core.util import empty_on_404
 from ._client_factory import (cf_webpubsub, cf_webpubsubhub, cf_webpubsubhub_usage)
+from ._exception_handler import exception_handler
 
 
 def load_command_table(self, _):
@@ -47,14 +48,14 @@ def load_command_table(self, _):
     )
 
     with self.command_group('webpubsub', webpubsub_general_utils) as g:
-        g.command('create', 'webpubsub_create')
+        g.command('create', 'webpubsub_create', exception_handler=exception_handler)
         g.command('delete', 'webpubsub_delete')
         g.command('list', 'webpubsub_list')
         g.show_command('show', 'webpubsub_show', exception_handler=empty_on_404)
         g.command('restart', 'webpubsub_restart', exception_handler=empty_on_404)
         g.generic_update_command('update', getter_name='webpubsub_get',
                                  setter_name='webpubsub_set',
-                                 custom_func_name='update_webpubsub')
+                                 custom_func_name='update_webpubsub', exception_handler=exception_handler)
         g.command('list-usage', 'webpubsub_usage', command_type=webpubsub_usage_utils)
         g.command('list-skus', 'webpubsub_skus')
 
@@ -68,8 +69,8 @@ def load_command_table(self, _):
 
     with self.command_group('webpubsub hub', webpubsub_hub_utils) as g:
         g.command('delete', 'hub_delete')
-        g.generic_update_command('update', getter_name='get_hub', setter_name='set_hub', custom_func_name='update', custom_func_type=webpubsub_hub_utils)
-        g.command('create', 'hub_create')
+        g.generic_update_command('update', getter_name='get_hub', setter_name='set_hub', custom_func_name='update', custom_func_type=webpubsub_hub_utils, exception_handler=exception_handler)
+        g.command('create', 'hub_create', exception_handler=exception_handler)
         g.show_command('show', 'hub_show', exception_handler=empty_on_404)
         g.command('list', 'hub_list')
 
