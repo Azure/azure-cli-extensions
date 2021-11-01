@@ -6,8 +6,7 @@
 # pylint: disable=line-too-long
 from azure.cli.core.commands import CliCommandType
 from azure.cli.core.util import empty_on_404
-from ._client_factory import cf_webpubsub
-from ._client_factory import cf_webpubsubhub
+from ._client_factory import ( cf_webpubsub, cf_webpubsubhub, cf_webpubsubhub_usage )
 
 
 def load_command_table(self, _):
@@ -42,6 +41,11 @@ def load_command_table(self, _):
         client_factory=cf_webpubsub
     )
 
+    webpubsub_usage_utils = CliCommandType(
+        operations_tmpl='azext_webpubsub.custom#{}',
+        client_factory=cf_webpubsubhub_usage
+    )
+
     with self.command_group('webpubsub', webpubsub_general_utils) as g:
         g.command('create', 'webpubsub_create')
         g.command('delete', 'webpubsub_delete')
@@ -51,6 +55,8 @@ def load_command_table(self, _):
         g.generic_update_command('update', getter_name='webpubsub_get',
                                  setter_name='webpubsub_set',
                                  custom_func_name='update_webpubsub')
+        g.command('list-usage', 'webpubsub_usage', command_type=webpubsub_usage_utils)
+        g.command('list-skus', 'webpubsub_skus')
 
     with self.command_group('webpubsub key', webpubsub_key_utils) as g:
         g.show_command('show', 'webpubsub_key_list')
