@@ -6,7 +6,7 @@
 # pylint: disable=line-too-long
 from azure.cli.core.commands import CliCommandType
 from azure.cli.core.util import empty_on_404
-from ._client_factory import ( cf_webpubsub, cf_webpubsubhub, cf_webpubsubhub_usage )
+from ._client_factory import (cf_webpubsub, cf_webpubsubhub, cf_webpubsubhub_usage)
 
 
 def load_command_table(self, _):

@@ -13,6 +13,7 @@ from .vendored_sdks.azure_mgmt_webpubsub.operations import (
     WebPubSubOperations
 )
 
+
 def webpubsub_create(client, resource_group_name, webpubsub_name, sku, unit_count=1, location=None, tags=None):
     sku = ResourceSku(name=sku, capacity=unit_count)
     parameter = WebPubSubResource(
@@ -59,8 +60,10 @@ def update_webpubsub(instance, tags=None, sku=None, unit_count=None):
 
     return instance
 
+
 def webpubsub_usage(client: UsagesOperations, location):
     return client.list(location)
+
 
 def webpubsub_skus(client: WebPubSubOperations, resource_group_name, webpubsub_name):
     return client.list_skus(resource_group_name, webpubsub_name).value

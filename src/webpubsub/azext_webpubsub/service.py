@@ -117,5 +117,6 @@ def _get_service_client(client, resource_group_name, webpubsub_name):
     keys = client.list_keys(resource_group_name, webpubsub_name)
     return WebPubSubServiceClient.from_connection_string(keys.primary_connection_string)
 
+
 def _get_existence_response(success):
     return {"existence": success}
