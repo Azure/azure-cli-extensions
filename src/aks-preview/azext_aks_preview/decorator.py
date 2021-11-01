@@ -1032,9 +1032,6 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
         :return: the ManagedCluster object
         """
         addon_consts = self.context.get_addon_consts()
-        CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME = addon_consts.get(
-            "CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME"
-        )
         CONST_GITOPS_ADDON_NAME = addon_consts.get("CONST_GITOPS_ADDON_NAME")
 
         mc = super().set_up_addon_profiles(mc)
