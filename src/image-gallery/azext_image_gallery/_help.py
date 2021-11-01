@@ -21,7 +21,7 @@ examples:
 
 helps['sig image-definition show-community'] = """
 type: command
-short-summary: Get a community gallery image (preview).
+short-summary: Get an image in a gallery community (preview).
 long-summary: Get a community gallery image that has been community (private preview feature, please contact community image gallery team by email sigpmdev@microsoft.com to register for preview if you're interested in using this feature).
 examples:
   - name: Get an image definition in a gallery community in the given location.
