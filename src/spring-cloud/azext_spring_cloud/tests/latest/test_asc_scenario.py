@@ -105,6 +105,30 @@ class ByosTest(ScenarioTest):
 
         self.cmd('spring-cloud delete -n {serviceName} -g {rg}')
 
+class StartStopAscTest(ScenarioTest):
+
+    def test_stop_and_start_service(self):
+        self.kwargs.update({
+            'serviceName': 'cli-unittest',
+            'resource_group': 'cli',
+            'location': 'eastus'
+        })
+
+        self.cmd('group create -n {resource_group} -l {location}')
+        self.cmd('spring-cloud create -n {serviceName} -g {resource_group} -l {location}')
+        self.cmd('spring-cloud stop -n {serviceName} -g {resource_group}')
+        self.cmd('spring-cloud show --name {serviceName} -g {resource_group}', checks=[
+            self.check('properties.provisioningState', 'Succeeded'),
+            self.check('properties.powerState', 'Stopped')
+        ])
+
+        self.cmd('spring-cloud start -n {serviceName} -g {resource_group}')
+        self.cmd('spring-cloud show --name {serviceName} -g {resource_group}', checks=[
+            self.check('properties.provisioningState', 'Succeeded'),
+            self.check('properties.powerState', 'Running')
+        ])
+
+        self.cmd('spring-cloud delete -n {serviceName} -g {resource_group} --no-wait')
 
 class SslTests(ScenarioTest):
 
