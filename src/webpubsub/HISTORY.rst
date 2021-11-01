@@ -3,7 +3,7 @@
 Release History
 ===============
 
-1.0.1
+1.1.0
 ++++++
 * Add `az webpubsub list-usage`
 * Add `az webpubsub list-skus`
