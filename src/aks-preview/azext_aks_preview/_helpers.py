@@ -21,10 +21,14 @@ def _populate_api_server_access_profile(api_server_authorized_ip_ranges, instanc
     else:
         profile = instance.api_server_access_profile
 
-    if api_server_authorized_ip_ranges == "":
+    if api_server_authorized_ip_ranges is None or api_server_authorized_ip_ranges == "":
         authorized_ip_ranges = []
     else:
         authorized_ip_ranges = [ip.strip() for ip in api_server_authorized_ip_ranges.split(",")]
+
+    if profile.enable_private_cluster and authorized_ip_ranges:
+        raise CLIError(
+            '--api-server-authorized-ip-ranges is not supported for private cluster')
 
     profile.authorized_ip_ranges = authorized_ip_ranges
     return profile
