@@ -816,6 +816,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                enable_pod_identity_with_kubenet=False,
                enable_encryption_at_host=False,
                enable_ultra_ssd=False,
+               edge_zone=None,
                enable_secret_rotation=False,
                rotation_poll_interval=None,
                disable_local_accounts=False,
