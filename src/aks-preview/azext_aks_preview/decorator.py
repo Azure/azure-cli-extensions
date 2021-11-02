@@ -5,9 +5,12 @@
 
 import os
 import time
-from typing import Dict, TypeVar, Union
+from typing import Dict, List, Tuple, TypeVar, Union
 
-from azure.cli.command_modules.acs._consts import DecoratorMode
+from azure.cli.command_modules.acs._consts import (
+    DecoratorEarlyExitException,
+    DecoratorMode,
+)
 from azure.cli.command_modules.acs.decorator import (
     AKSContext,
     AKSCreateDecorator,
@@ -26,12 +29,14 @@ from azure.cli.core.commands import AzCliCommand
 from azure.cli.core.profiles import ResourceType
 from azure.cli.core.util import get_file_json
 from knack.log import get_logger
+from knack.prompting import prompt_y_n
 from msrestazure.azure_exceptions import CloudError
 
 from azext_aks_preview._natgateway import create_nat_gateway_profile
 from azext_aks_preview.addonconfiguration import (
     ensure_container_insights_for_monitoring,
 )
+
 
 logger = get_logger(__name__)
 
@@ -73,6 +78,11 @@ class AKSPreviewModels(AKSModels):
             resource_type=self.resource_type,
             operation_group="managed_clusters",
         )
+        self.WindowsGmsaProfile = self.__cmd.get_models(
+            "WindowsGmsaProfile",
+            resource_type=self.resource_type,
+            operation_group="managed_clusters",
+        )
         # init nat gateway models
         self.init_nat_gateway_models()
 
@@ -110,6 +120,43 @@ class AKSPreviewContext(AKSContext):
         decorator_mode,
     ):
         super().__init__(cmd, raw_parameters, models, decorator_mode)
+
+    # pylint: disable=unused-argument
+    def _get_vm_set_type(self, read_only: bool = False, **kwargs) -> Union[str, None]:
+        """Internal function to dynamically obtain the value of vm_set_type according to the context.
+
+        Note: Inherited and extended in aks-preview to add support for the deprecated option --enable-vmss.
+
+        :return: string or None
+        """
+        vm_set_type = super()._get_vm_set_type(read_only, **kwargs)
+
+        # TODO: Remove the below section when we deprecate the --enable-vmss flag, kept for back-compatibility only.
+        # read the original value passed by the command
+        enable_vmss = self.raw_param.get("enable_vmss")
+
+        if enable_vmss:
+            if vm_set_type and vm_set_type.lower() != "VirtualMachineScaleSets".lower():
+                raise InvalidArgumentValueError(
+                    "--enable-vmss and provided --vm-set-type ({}) are conflicting with each other".format(
+                        vm_set_type
+                    )
+                )
+            vm_set_type = "VirtualMachineScaleSets"
+        return vm_set_type
+
+    def get_zones(self) -> Union[List[str], None]:
+        """Obtain the value of zones.
+
+        Note: Inherited and extended in aks-preview to add support for a different parameter name (node_zones).
+
+        :return: list of strings or None
+        """
+        zones = super().get_zones()
+        if zones is not None:
+            return zones
+        # read the original value passed by the command
+        return self.raw_param.get("node_zones")
 
     def get_pod_subnet_id(self) -> Union[str, None]:
         """Obtain the value of pod_subnet_id.
@@ -169,6 +216,7 @@ class AKSPreviewContext(AKSContext):
             )
             if (
                 agent_pool_profile and
+                hasattr(agent_pool_profile, "workload_runtime") and  # backward compatibility
                 agent_pool_profile.workload_runtime is not None
             ):
                 workload_runtime = agent_pool_profile.workload_runtime
@@ -191,6 +239,7 @@ class AKSPreviewContext(AKSContext):
             )
             if (
                 agent_pool_profile and
+                hasattr(agent_pool_profile, "gpu_instance_profile") and  # backward compatibility
                 agent_pool_profile.gpu_instance_profile is not None
             ):
                 gpu_instance_profile = agent_pool_profile.gpu_instance_profile
@@ -514,20 +563,25 @@ class AKSPreviewContext(AKSContext):
         from azext_aks_preview._consts import (
             ADDONS,
             CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME,
-            CONST_GITOPS_ADDON_NAME,
+            CONST_ROTATION_POLL_INTERVAL,
             CONST_SECRET_ROTATION_ENABLED,
+            CONST_GITOPS_ADDON_NAME,
             CONST_MONITORING_USING_AAD_MSI_AUTH,
+            CONST_SECRET_ROTATION_ENABLED,
         )
 
         addon_consts = super().get_addon_consts()
         addon_consts["ADDONS"] = ADDONS
-        addon_consts["CONST_GITOPS_ADDON_NAME"] = CONST_GITOPS_ADDON_NAME
         addon_consts[
             "CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME"
         ] = CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME
         addon_consts[
+            "CONST_ROTATION_POLL_INTERVAL"
+        ] = CONST_ROTATION_POLL_INTERVAL
+        addon_consts[
             "CONST_SECRET_ROTATION_ENABLED"
         ] = CONST_SECRET_ROTATION_ENABLED
+        addon_consts["CONST_GITOPS_ADDON_NAME"] = CONST_GITOPS_ADDON_NAME
         addon_consts[
             "CONST_MONITORING_USING_AAD_MSI_AUTH"
         ] = CONST_MONITORING_USING_AAD_MSI_AUTH
@@ -647,6 +701,167 @@ class AKSPreviewContext(AKSContext):
         # this parameter does not need dynamic completion
         # this parameter does not need validation
         return enable_secret_rotation
+
+    # pylint: disable=unused-argument,no-self-use
+    def __validate_gmsa_options(
+        self,
+        enable_windows_gmsa,
+        gmsa_dns_server,
+        gmsa_root_domain_name,
+        yes,
+        **kwargs
+    ) -> None:
+        """Helper function to validate gmsa related options.
+
+        When enable_windows_gmsa is specified, if both gmsa_dns_server and gmsa_root_domain_name are not assigned and
+        user does not confirm the operation, a DecoratorEarlyExitException will be raised; if only one of
+        gmsa_dns_server or gmsa_root_domain_name is assigned, raise a RequiredArgumentMissingError. When
+        enable_windows_gmsa is not specified, if any of gmsa_dns_server or gmsa_root_domain_name is assigned, raise
+        a RequiredArgumentMissingError.
+
+        :return: bool
+        """
+        gmsa_dns_server_is_none = gmsa_dns_server is None
+        gmsa_root_domain_name_is_none = gmsa_root_domain_name is None
+        if enable_windows_gmsa:
+            if gmsa_dns_server_is_none == gmsa_root_domain_name_is_none:
+                if gmsa_dns_server_is_none:
+                    msg = (
+                        "Please assure that you have set the DNS server in the vnet used by the cluster "
+                        "when not specifying --gmsa-dns-server and --gmsa-root-domain-name"
+                    )
+                    if not yes and not prompt_y_n(msg, default="n"):
+                        raise DecoratorEarlyExitException()
+            else:
+                raise RequiredArgumentMissingError(
+                    "You must set or not set --gmsa-dns-server and --gmsa-root-domain-name at the same time."
+                )
+        else:
+            if gmsa_dns_server_is_none != gmsa_root_domain_name_is_none:
+                raise RequiredArgumentMissingError(
+                    "You only can set --gmsa-dns-server and --gmsa-root-domain-name "
+                    "when setting --enable-windows-gmsa."
+                )
+
+    # pylint: disable=unused-argument
+    def _get_enable_windows_gmsa(self, enable_validation: bool = False, **kwargs) -> bool:
+        """Internal function to obtain the value of enable_windows_gmsa.
+
+        This function supports the option of enable_validation. Please refer to function __validate_gmsa_options for
+        details of validation.
+
+        :return: bool
+        """
+        # read the original value passed by the command
+        enable_windows_gmsa = self.raw_param.get("enable_windows_gmsa")
+        # try to read the property value corresponding to the parameter from the `mc` object
+        if (
+            self.mc and
+            self.mc.windows_profile and
+            hasattr(self.mc.windows_profile, "gmsa_profile") and  # backward compatibility
+            self.mc.windows_profile.gmsa_profile and
+            self.mc.windows_profile.gmsa_profile.enabled is not None
+        ):
+            enable_windows_gmsa = self.mc.windows_profile.gmsa_profile.enabled
+
+        # this parameter does not need dynamic completion
+        # validation
+        if enable_validation:
+            (
+                gmsa_dns_server,
+                gmsa_root_domain_name,
+            ) = self._get_gmsa_dns_server_and_root_domain_name(
+                enable_validation=False
+            )
+            self.__validate_gmsa_options(
+                enable_windows_gmsa, gmsa_dns_server, gmsa_root_domain_name, self.get_yes()
+            )
+        return enable_windows_gmsa
+
+    def get_enable_windows_gmsa(self) -> bool:
+        """Obtain the value of enable_windows_gmsa.
+
+        This function will verify the parameter by default. When enable_windows_gmsa is specified, if both
+        gmsa_dns_server and gmsa_root_domain_name are not assigned and user does not confirm the operation,
+        a DecoratorEarlyExitException will be raised; if only one of gmsa_dns_server or gmsa_root_domain_name is
+        assigned, raise a RequiredArgumentMissingError. When enable_windows_gmsa is not specified, if any of
+        gmsa_dns_server or gmsa_root_domain_name is assigned, raise a RequiredArgumentMissingError.
+
+        :return: bool
+        """
+        return self._get_enable_windows_gmsa(enable_validation=True)
+
+    # pylint: disable=unused-argument
+    def _get_gmsa_dns_server_and_root_domain_name(self, enable_validation: bool = False, **kwargs):
+        """Internal function to obtain the values of gmsa_dns_server and gmsa_root_domain_name.
+
+        This function supports the option of enable_validation. Please refer to function __validate_gmsa_options for
+        details of validation.
+
+        :return: a tuple containing two elements: gmsa_dns_server of string type or None and gmsa_root_domain_name of
+        string type or None
+        """
+        # gmsa_dns_server
+        # read the original value passed by the command
+        gmsa_dns_server = self.raw_param.get("gmsa_dns_server")
+        # try to read the property value corresponding to the parameter from the `mc` object
+        gmsa_dns_read_from_mc = False
+        if (
+            self.mc and
+            self.mc.windows_profile and
+            hasattr(self.mc.windows_profile, "gmsa_profile") and  # backward compatibility
+            self.mc.windows_profile.gmsa_profile and
+            self.mc.windows_profile.gmsa_profile.dns_server is not None
+        ):
+            gmsa_dns_server = self.mc.windows_profile.gmsa_profile.dns_server
+            gmsa_dns_read_from_mc = True
+
+        # gmsa_root_domain_name
+        # read the original value passed by the command
+        gmsa_root_domain_name = self.raw_param.get("gmsa_root_domain_name")
+        # try to read the property value corresponding to the parameter from the `mc` object
+        gmsa_root_read_from_mc = False
+        if (
+            self.mc and
+            self.mc.windows_profile and
+            hasattr(self.mc.windows_profile, "gmsa_profile") and  # backward compatibility
+            self.mc.windows_profile.gmsa_profile and
+            self.mc.windows_profile.gmsa_profile.root_domain_name is not None
+        ):
+            gmsa_root_domain_name = self.mc.windows_profile.gmsa_profile.root_domain_name
+            gmsa_root_read_from_mc = True
+
+        # consistent check
+        if gmsa_dns_read_from_mc != gmsa_root_read_from_mc:
+            raise CLIInternalError(
+                "Inconsistent state detected, one of gmsa_dns_server and gmsa_root_domain_name "
+                "is read from the `mc` object."
+            )
+
+        # this parameter does not need dynamic completion
+        # validation
+        if enable_validation:
+            self.__validate_gmsa_options(
+                self._get_enable_windows_gmsa(enable_validation=False),
+                gmsa_dns_server,
+                gmsa_root_domain_name,
+                self.get_yes(),
+            )
+        return gmsa_dns_server, gmsa_root_domain_name
+
+    def get_gmsa_dns_server_and_root_domain_name(self) -> Tuple[Union[str, None], Union[str, None]]:
+        """Obtain the values of gmsa_dns_server and gmsa_root_domain_name.
+
+        This function will verify the parameter by default. When enable_windows_gmsa is specified, if both
+        gmsa_dns_server and gmsa_root_domain_name are not assigned and user does not confirm the operation,
+        a DecoratorEarlyExitException will be raised; if only one of gmsa_dns_server or gmsa_root_domain_name is
+        assigned, raise a RequiredArgumentMissingError. When enable_windows_gmsa is not specified, if any of
+        gmsa_dns_server or gmsa_root_domain_name is assigned, raise a RequiredArgumentMissingError.
+
+        :return: a tuple containing two elements: gmsa_dns_server of string type or None and gmsa_root_domain_name of
+        string type or None
+        """
+        return self._get_gmsa_dns_server_and_root_domain_name(enable_validation=True)
 
 
 class AKSPreviewCreateDecorator(AKSCreateDecorator):
@@ -903,6 +1118,26 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
                 CONST_GITOPS_ADDON_NAME
             ] = self.build_gitops_addon_profile()
         mc.addon_profiles = addon_profiles
+        return mc
+
+    def set_up_windows_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up windows profile for the ManagedCluster object.
+
+        Note: Inherited and extended in aks-preview to set gmsa related options.
+
+        :return: the ManagedCluster object
+        """
+        mc = super().set_up_windows_profile(mc)
+        windows_profile = mc.windows_profile
+
+        if windows_profile and self.context.get_enable_windows_gmsa():
+            gmsa_dns_server, gmsa_root_domain_name = self.context.get_gmsa_dns_server_and_root_domain_name()
+            windows_profile.gmsa_profile = self.models.WindowsGmsaProfile(
+                enabled=True,
+                dns_server=gmsa_dns_server,
+                root_domain_name=gmsa_root_domain_name,
+            )
+        mc.windows_profile = windows_profile
         return mc
 
     def construct_preview_mc_profile(self) -> ManagedCluster:

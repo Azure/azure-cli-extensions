@@ -42,6 +42,7 @@ try:
     from ._models_py3 import DeploymentResourceCollection
     from ._models_py3 import DeploymentResourceProperties
     from ._models_py3 import DeploymentSettings
+    from ._models_py3 import DiagnosticParameters
     from ._models_py3 import Error
     from ._models_py3 import GitPatternRepository
     from ._models_py3 import ImageRegistryCredential
@@ -126,6 +127,7 @@ except (SyntaxError, ImportError):
     from ._models import DeploymentResourceCollection  # type: ignore
     from ._models import DeploymentResourceProperties  # type: ignore
     from ._models import DeploymentSettings  # type: ignore
+    from ._models import DiagnosticParameters  # type: ignore
     from ._models import Error  # type: ignore
     from ._models import GitPatternRepository  # type: ignore
     from ._models import ImageRegistryCredential  # type: ignore
@@ -183,6 +185,7 @@ from ._app_platform_management_client_enums import (
     DeploymentResourceStatus,
     ManagedIdentityType,
     MonitoringSettingState,
+    PowerState,
     ProvisioningState,
     ResourceSkuRestrictionsReasonCode,
     ResourceSkuRestrictionsType,
@@ -231,6 +234,7 @@ __all__ = [
     'DeploymentResourceCollection',
     'DeploymentResourceProperties',
     'DeploymentSettings',
+    'DiagnosticParameters',
     'Error',
     'GitPatternRepository',
     'ImageRegistryCredential',
@@ -286,6 +290,7 @@ __all__ = [
     'DeploymentResourceStatus',
     'ManagedIdentityType',
     'MonitoringSettingState',
+    'PowerState',
     'ProvisioningState',
     'ResourceSkuRestrictionsReasonCode',
     'ResourceSkuRestrictionsType',

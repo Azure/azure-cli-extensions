@@ -9,29 +9,13 @@ from unittest.mock import patch
 
 from azext_aks_preview.__init__ import register_aks_preview_resource_type
 from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
-from azext_aks_preview.decorator import (
-    AKSPreviewContext,
-    AKSPreviewCreateDecorator,
-    AKSPreviewModels,
-    AKSPreviewUpdateDecorator,
-)
-from azext_aks_preview.tests.latest.mocks import MockCLI, MockClient, MockCmd
-from azext_aks_preview.tests.latest.test_aks_commands import _get_test_data_file
-from azure.cli.command_modules.acs._consts import DecoratorMode
-from azure.cli.core.azclierror import (
-    ArgumentUsageError,
-    CLIInternalError,
-    InvalidArgumentValueError,
-    MutuallyExclusiveArgumentError,
-    NoTTYError,
-    RequiredArgumentMissingError,
-    UnknownError,
-)
 from azext_aks_preview._consts import (
     ADDONS,
     CONST_ACC_SGX_QUOTE_HELPER_ENABLED,
+    CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME,
     CONST_AZURE_POLICY_ADDON_NAME,
     CONST_CONFCOM_ADDON_NAME,
+    CONST_GITOPS_ADDON_NAME,
     CONST_HTTP_APPLICATION_ROUTING_ADDON_NAME,
     CONST_INGRESS_APPGW_ADDON_NAME,
     CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID,
@@ -42,13 +26,33 @@ from azext_aks_preview._consts import (
     CONST_KUBE_DASHBOARD_ADDON_NAME,
     CONST_MONITORING_ADDON_NAME,
     CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID,
+    CONST_MONITORING_USING_AAD_MSI_AUTH,
     CONST_OPEN_SERVICE_MESH_ADDON_NAME,
+    CONST_ROTATION_POLL_INTERVAL,
+    CONST_SECRET_ROTATION_ENABLED,
     CONST_VIRTUAL_NODE_ADDON_NAME,
     CONST_VIRTUAL_NODE_SUBNET_NAME,
-    CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME,
-    CONST_GITOPS_ADDON_NAME,
-    CONST_SECRET_ROTATION_ENABLED,
-    CONST_MONITORING_USING_AAD_MSI_AUTH,
+)
+from azext_aks_preview.decorator import (
+    AKSPreviewContext,
+    AKSPreviewCreateDecorator,
+    AKSPreviewModels,
+    AKSPreviewUpdateDecorator,
+)
+from azext_aks_preview.tests.latest.mocks import MockCLI, MockClient, MockCmd
+from azext_aks_preview.tests.latest.test_aks_commands import _get_test_data_file
+from azure.cli.command_modules.acs._consts import (
+    DecoratorEarlyExitException,
+    DecoratorMode,
+)
+from azure.cli.core.azclierror import (
+    ArgumentUsageError,
+    CLIInternalError,
+    InvalidArgumentValueError,
+    MutuallyExclusiveArgumentError,
+    NoTTYError,
+    RequiredArgumentMissingError,
+    UnknownError,
 )
 
 
@@ -78,6 +82,13 @@ class AKSPreviewModelsTestCase(unittest.TestCase):
             models.ManagedClusterHTTPProxyConfig,
             getattr(module, "ManagedClusterHTTPProxyConfig"),
         )
+        self.assertEqual(
+            models.ManagedClusterPodIdentityProfile,
+            getattr(module, "ManagedClusterPodIdentityProfile"),
+        )
+        self.assertEqual(
+            models.WindowsGmsaProfile, getattr(module, "WindowsGmsaProfile")
+        )
 
 
 class AKSPreviewContextTestCase(unittest.TestCase):
@@ -87,6 +98,76 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         self.cli_ctx = MockCLI()
         self.cmd = MockCmd(self.cli_ctx)
         self.models = AKSPreviewModels(self.cmd, CUSTOM_MGMT_AKS_PREVIEW)
+
+    def test__get_vm_set_type(self):
+        # default & dynamic completion
+        ctx_1 = AKSPreviewContext(
+            self.cmd,
+            {"vm_set_type": None, "kubernetes_version": "", "enable_vmss": False},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1._get_vm_set_type(read_only=True), None)
+        self.assertEqual(ctx_1.get_vm_set_type(), "VirtualMachineScaleSets")
+        agent_pool_profile = self.models.ManagedClusterAgentPoolProfile(
+            name="test_ap_name", type="test_mc_vm_set_type"
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location", agent_pool_profiles=[agent_pool_profile]
+        )
+        ctx_1.attach_mc(mc)
+        self.assertEqual(ctx_1.get_vm_set_type(), "test_mc_vm_set_type")
+
+        # custom value & dynamic completion
+        ctx_2 = AKSPreviewContext(
+            self.cmd,
+            {"vm_set_type": "availabilityset", "kubernetes_version": "", "enable_vmss": True},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        # fail on invalid vm_set_type when enable_vmss is specified
+        with self.assertRaises(InvalidArgumentValueError):
+            self.assertEqual(ctx_2.get_vm_set_type(), "AvailabilitySet")
+
+        # custom value & dynamic completion
+        ctx_3 = AKSPreviewContext(
+            self.cmd,
+            {"vm_set_type": None, "kubernetes_version": "", "enable_vmss": True},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        # fail on invalid vm_set_type when enable_vmss is specified
+        self.assertEqual(ctx_3.get_vm_set_type(), "VirtualMachineScaleSets")
+
+    def test_get_zones(self):
+        # default
+        ctx_1 = AKSPreviewContext(
+            self.cmd,
+            {"node_zones": None},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_zones(), None)
+        agent_pool_profile = self.models.ManagedClusterAgentPoolProfile(
+            name="test_nodepool_name",
+            availability_zones=["test_mc_zones1", "test_mc_zones2"],
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location", agent_pool_profiles=[agent_pool_profile]
+        )
+        ctx_1.attach_mc(mc)
+        self.assertEqual(
+            ctx_1.get_zones(), ["test_mc_zones1", "test_mc_zones2"]
+        )
+
+        # custom value
+        ctx_2 = AKSPreviewContext(
+            self.cmd,
+            {"node_zones": ["test_zones1", "test_zones2"]},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_2.get_zones(), ["test_zones1", "test_zones2"])
 
     def test_get_pod_subnet_id(self):
         # default
@@ -516,8 +597,10 @@ class AKSPreviewContextTestCase(unittest.TestCase):
             "CONST_VIRTUAL_NODE_ADDON_NAME": CONST_VIRTUAL_NODE_ADDON_NAME,
             "CONST_VIRTUAL_NODE_SUBNET_NAME": CONST_VIRTUAL_NODE_SUBNET_NAME,
             "CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME": CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME,
-            "CONST_GITOPS_ADDON_NAME": CONST_GITOPS_ADDON_NAME,
             "CONST_SECRET_ROTATION_ENABLED": CONST_SECRET_ROTATION_ENABLED,
+            "CONST_ROTATION_POLL_INTERVAL": CONST_ROTATION_POLL_INTERVAL,
+            # new addon consts in aks-preview
+            "CONST_GITOPS_ADDON_NAME": CONST_GITOPS_ADDON_NAME,
             "CONST_MONITORING_USING_AAD_MSI_AUTH": CONST_MONITORING_USING_AAD_MSI_AUTH,
         }
         self.assertEqual(addon_consts, ground_truth_addon_consts)
@@ -608,6 +691,119 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         )
         ctx_1.attach_mc(mc)
         self.assertEqual(ctx_1.get_enable_secret_rotation(), True)
+
+    def test_validate_gmsa_options(self):
+        # default
+        ctx = AKSPreviewContext(
+            self.cmd,
+            {},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        ctx._AKSPreviewContext__validate_gmsa_options(False, None, None, False)
+        ctx._AKSPreviewContext__validate_gmsa_options(True, None, None, True)
+
+        # fail on yes & prompt_y_n not specified
+        with patch(
+            "azext_aks_preview.decorator.prompt_y_n",
+            return_value=False,
+        ), self.assertRaises(DecoratorEarlyExitException):
+            ctx._AKSPreviewContext__validate_gmsa_options(True, None, None, False)
+
+        # fail on gmsa_root_domain_name not specified
+        with self.assertRaises(RequiredArgumentMissingError):
+            ctx._AKSPreviewContext__validate_gmsa_options(True, "test_gmsa_dns_server", None, False)
+
+        # fail on enable_windows_gmsa not specified
+        with self.assertRaises(RequiredArgumentMissingError):
+            ctx._AKSPreviewContext__validate_gmsa_options(False, None, "test_gmsa_root_domain_name", False)
+
+    def test_get_enable_windows_gmsa(self):
+        # default
+        ctx_1 = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_windows_gmsa": False,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_enable_windows_gmsa(), False)
+        windows_gmsa_profile_1 = self.models.WindowsGmsaProfile(enabled=True)
+        windows_profile_1 = self.models.ManagedClusterWindowsProfile(
+            admin_username="test_admin_username",
+            gmsa_profile=windows_gmsa_profile_1,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location", windows_profile=windows_profile_1
+        )
+        ctx_1.attach_mc(mc)
+        with patch(
+            "azext_aks_preview.decorator.prompt_y_n",
+            return_value=True,
+        ):
+            self.assertEqual(ctx_1.get_enable_windows_gmsa(), True)
+
+    def test_get_gmsa_dns_server_and_root_domain_name(self):
+        # default
+        ctx_1 = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_windows_gmsa": False,
+                "gmsa_dns_server": None,
+                "gmsa_root_domain_name": None,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(
+            ctx_1.get_gmsa_dns_server_and_root_domain_name(), (None, None)
+        )
+        windows_gmsa_profile_1 = self.models.WindowsGmsaProfile(
+            enabled=True,
+            dns_server="test_dns_server",
+            root_domain_name="test_root_domain_name",
+        )
+        windows_profile_1 = self.models.ManagedClusterWindowsProfile(
+            admin_username="test_admin_username",
+            gmsa_profile=windows_gmsa_profile_1,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location", windows_profile=windows_profile_1
+        )
+        ctx_1.attach_mc(mc)
+        self.assertEqual(
+            ctx_1.get_gmsa_dns_server_and_root_domain_name(),
+            ("test_dns_server", "test_root_domain_name"),
+        )
+
+        # custom value
+        ctx_2 = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_windows_gmsa": True,
+                "gmsa_dns_server": "test_gmsa_dns_server",
+                "gmsa_root_domain_name": "test_gmsa_root_domain_name",
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        windows_gmsa_profile_2 = self.models.WindowsGmsaProfile(
+            enabled=True,
+            dns_server="test_dns_server",
+            root_domain_name=None,
+        )
+        windows_profile_2 = self.models.ManagedClusterWindowsProfile(
+            admin_username="test_admin_username",
+            gmsa_profile=windows_gmsa_profile_2,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location", windows_profile=windows_profile_2
+        )
+        ctx_2.attach_mc(mc)
+        # fail on inconsistent state
+        with self.assertRaises(CLIInternalError):
+            ctx_2.get_gmsa_dns_server_and_root_domain_name()
 
 
 class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
@@ -1214,15 +1410,17 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
             CUSTOM_MGMT_AKS_PREVIEW,
         )
 
-        azure_keyvault_secrets_provider_addon_profile = dec_1.build_azure_keyvault_secrets_provider_addon_profile()
+        azure_keyvault_secrets_provider_addon_profile = (
+            dec_1.build_azure_keyvault_secrets_provider_addon_profile()
+        )
         ground_truth_azure_keyvault_secrets_provider_addon_profile = (
             self.models.ManagedClusterAddonProfile(
-                enabled=True,
-                config={CONST_SECRET_ROTATION_ENABLED: "false"}
+                enabled=True, config={CONST_SECRET_ROTATION_ENABLED: "false"}
             )
         )
         self.assertEqual(
-            azure_keyvault_secrets_provider_addon_profile, ground_truth_azure_keyvault_secrets_provider_addon_profile
+            azure_keyvault_secrets_provider_addon_profile,
+            ground_truth_azure_keyvault_secrets_provider_addon_profile,
         )
 
         # custom value
@@ -1233,15 +1431,17 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
             CUSTOM_MGMT_AKS_PREVIEW,
         )
 
-        azure_keyvault_secrets_provider_addon_profile = dec_2.build_azure_keyvault_secrets_provider_addon_profile()
+        azure_keyvault_secrets_provider_addon_profile = (
+            dec_2.build_azure_keyvault_secrets_provider_addon_profile()
+        )
         ground_truth_azure_keyvault_secrets_provider_addon_profile = (
             self.models.ManagedClusterAddonProfile(
-                enabled=True,
-                config={CONST_SECRET_ROTATION_ENABLED: "true"}
+                enabled=True, config={CONST_SECRET_ROTATION_ENABLED: "true"}
             )
         )
         self.assertEqual(
-            azure_keyvault_secrets_provider_addon_profile, ground_truth_azure_keyvault_secrets_provider_addon_profile
+            azure_keyvault_secrets_provider_addon_profile,
+            ground_truth_azure_keyvault_secrets_provider_addon_profile,
         )
 
     def test_build_gitops_addon_profile(self):
@@ -1370,6 +1570,66 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
         self.assertEqual(
             dec_2.context.get_intermediate("ingress_appgw_addon_enabled"), True
         )
+
+    def test_set_up_windows_profile(self):
+        # default value in `aks_create`
+        dec_1 = AKSPreviewCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "windows_admin_username": None,
+                "windows_admin_password": None,
+                "enable_ahub": False,
+                "enable_windows_gmsa": False,
+                "gmsa_dns_server": None,
+                "gmsa_root_domain_name": None,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(location="test_location")
+        # fail on passing the wrong mc object
+        with self.assertRaises(CLIInternalError):
+            dec_1.set_up_windows_profile(None)
+        dec_mc_1 = dec_1.set_up_windows_profile(mc_1)
+
+        ground_truth_mc_1 = self.models.ManagedCluster(location="test_location")
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+        # custom value
+        dec_2 = AKSPreviewCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                # [SuppressMessage("Microsoft.Security", "CS002:SecretInNextLine", Justification="fake secrets in unit test")]
+                "windows_admin_username": "test_win_admin_name",
+                "windows_admin_password": "test_win_admin_password",
+                "enable_ahub": True,
+                "enable_windows_gmsa": True,
+                "gmsa_dns_server": "test_gmsa_dns_server",
+                "gmsa_root_domain_name": "test_gmsa_root_domain_name",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_2 = self.models.ManagedCluster(location="test_location")
+        dec_mc_2 = dec_2.set_up_windows_profile(mc_2)
+
+        windows_gmsa_profile_2 = self.models.WindowsGmsaProfile(
+            enabled=True,
+            dns_server="test_gmsa_dns_server",
+            root_domain_name="test_gmsa_root_domain_name",
+        )
+        windows_profile_2 = self.models.ManagedClusterWindowsProfile(
+            # [SuppressMessage("Microsoft.Security", "CS002:SecretInNextLine", Justification="fake secrets in unit test")]
+            admin_username="test_win_admin_name",
+            admin_password="test_win_admin_password",
+            license_type="Windows_Server",
+            gmsa_profile=windows_gmsa_profile_2,
+        )
+
+        ground_truth_mc_2 = self.models.ManagedCluster(
+            location="test_location", windows_profile=windows_profile_2
+        )
+        self.assertEqual(dec_mc_2, ground_truth_mc_2)
 
     def test_construct_preview_mc_profile(self):
         pass

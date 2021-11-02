@@ -15,7 +15,7 @@ from ._actions import (
     EventHandlerTemplateUpdateAction
 )
 
-WEBPUBSUB_KEY_TYPE = ['primary', 'secondary']
+WEBPUBSUB_KEY_TYPE = ['primary', 'secondary', 'salt']
 SKU_TYPE = ['Standard_S1', 'Free_F1']
 PERMISSION_TYPE = ['joinLeaveGroup', 'sendToGroup']
 
@@ -24,6 +24,7 @@ def load_arguments(self, _):
     from azure.cli.core.commands.validators import get_default_location_from_resource_group
 
     webpubsub_name_type = CLIArgumentType(options_list='--webpubsub-name-name', help='Name of the Webpubsub.', id_part='name')
+    webpubsubhub_name_type = CLIArgumentType(help='Name of the hub.', id_part='child_name_1')
 
     with self.argument_context('webpubsub') as c:
         c.argument('tags', tags_type)
@@ -48,14 +49,20 @@ def load_arguments(self, _):
         c.argument('allow', arg_type=get_enum_type(WebPubSubRequestType), nargs='*', help='The allowed virtual network rule. Space-separeted list of scope to assign.', type=WebPubSubRequestType, required=False)
         c.argument('deny', arg_type=get_enum_type(WebPubSubRequestType), nargs='*', help='The denied virtual network rule. Space-separeted list of scope to assign.', type=WebPubSubRequestType, required=False)
 
-    with self.argument_context('webpubsub event-handler update') as c:
-        c.argument('items', help='A JSON-formatted string containing event handler items')
+    for scope in ['webpubsub hub delete',
+                  'webpubsub hub show']:
+        with self.argument_context(scope) as c:
+            c.argument('hub_name', webpubsubhub_name_type)
 
-    with self.argument_context('webpubsub event-handler hub') as c:
-        c.argument('hub_name', help='The hub whose event handler settings need to delete.')
+    for scope in ['webpubsub hub update',
+                  'webpubsub hub create']:
+        with self.argument_context(scope) as c:
+            c.argument('hub_name', help='The hub to manage')
+            c.argument('event_handler', action=EventHandlerTemplateUpdateAction, nargs='*', help='Template item for event handler settings. Use key=value pattern to set properties. Supported keys are "url-template", "user-event-pattern", "system-event", "auth-type" and "auth-resource".')
+            c.argument('allow_anonymous', arg_type=get_three_state_flag(), help='Set if anonymous connections are allowed for this hub')
 
-    with self.argument_context('webpubsub event-handler hub update') as c:
-        c.argument('template', action=EventHandlerTemplateUpdateAction, nargs='+', help='Template item for event handler settings. Use key=value pattern to set properties. Supported keys are "url-template", "user-event-pattern", "system-event-pattern".')
+    with self.argument_context('webpubsub hub list') as c:
+        c.argument('webpubsub_name', webpubsub_name_type, options_list=['--name', '-n'], id_part=None)
 
     with self.argument_context('webpubsub client') as c:
         c.argument('hub_name', help='The hub which client connects to')

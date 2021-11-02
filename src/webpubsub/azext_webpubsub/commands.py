@@ -7,6 +7,7 @@
 from azure.cli.core.commands import CliCommandType
 from azure.cli.core.util import empty_on_404
 from ._client_factory import cf_webpubsub
+from ._client_factory import cf_webpubsubhub
 
 
 def load_command_table(self, _):
@@ -26,9 +27,9 @@ def load_command_table(self, _):
         client_factory=cf_webpubsub
     )
 
-    webpubsub_eventhandler_utils = CliCommandType(
+    webpubsub_hub_utils = CliCommandType(
         operations_tmpl='azext_webpubsub.eventhandler#{}',
-        client_factory=cf_webpubsub
+        client_factory=cf_webpubsubhub
     )
 
     webpubsub_client_utils = CliCommandType(
@@ -41,7 +42,7 @@ def load_command_table(self, _):
         client_factory=cf_webpubsub
     )
 
-    with self.command_group('webpubsub', webpubsub_general_utils, is_preview=True) as g:
+    with self.command_group('webpubsub', webpubsub_general_utils) as g:
         g.command('create', 'webpubsub_create')
         g.command('delete', 'webpubsub_delete')
         g.command('list', 'webpubsub_list')
@@ -59,14 +60,12 @@ def load_command_table(self, _):
         g.show_command('show', 'list_network_rules')
         g.command('update', 'update_network_rules')
 
-    with self.command_group('webpubsub event-handler', webpubsub_eventhandler_utils) as g:
-        g.show_command('show', 'event_handler_list')
-        g.command('update', 'event_handler_update')
-        g.command('clear', 'event_handler_clear')
-
-    with self.command_group('webpubsub event-handler hub', webpubsub_eventhandler_utils) as g:
-        g.command('remove', 'event_handler_hub_remove')
-        g.command('update', 'event_handler_hub_update')
+    with self.command_group('webpubsub hub', webpubsub_hub_utils) as g:
+        g.command('delete', 'hub_delete')
+        g.generic_update_command('update', getter_name='get_hub', setter_name='set_hub', custom_func_name='update', custom_func_type=webpubsub_hub_utils)
+        g.command('create', 'hub_create')
+        g.show_command('show', 'hub_show', exception_handler=empty_on_404)
+        g.command('list', 'hub_list')
 
     with self.command_group('webpubsub client', webpubsub_client_utils) as g:
         g.command('start', 'start_client')
