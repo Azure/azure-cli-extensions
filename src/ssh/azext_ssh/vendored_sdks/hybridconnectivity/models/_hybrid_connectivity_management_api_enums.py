@@ -26,6 +26,12 @@ class _CaseInsensitiveEnumMeta(EnumMeta):
             raise AttributeError(name)
 
 
+class ActionType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Enum. Indicates the action type. "Internal" refers to actions that are for internal only APIs.
+    """
+
+    INTERNAL = "Internal"
+
 class CreatedByType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The type of identity that created the resource.
     """
@@ -35,30 +41,18 @@ class CreatedByType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     MANAGED_IDENTITY = "ManagedIdentity"
     KEY = "Key"
 
-class InstanceViewTypes(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-
-    INSTANCE_VIEW = "instanceView"
-
-class PublicNetworkAccessType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """The network access policy to determine if Azure Arc agents can use public Azure Arc service
-    endpoints. Defaults to disabled (access to Azure Arc services only via private link).
+class Origin(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """The intended executor of the operation; as in Resource Based Access Control (RBAC) and audit
+    logs UX. Default value is "user,system"
     """
 
-    ENABLED = "Enabled"  #: Allows Azure Arc agents to communicate with Azure Arc services over both public (internet) and private endpoints.
-    DISABLED = "Disabled"  #: Does not allow Azure Arc agents to communicate with Azure Arc services over public (internet) endpoints. The agents must use the private link.
+    USER = "user"
+    SYSTEM = "system"
+    USER_SYSTEM = "user,system"
 
-class StatusLevelTypes(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """The level code.
+class Type(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """The type of endpoint.
     """
 
-    INFO = "Info"
-    WARNING = "Warning"
-    ERROR = "Error"
-
-class StatusTypes(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """The status of the hybrid machine agent.
-    """
-
-    CONNECTED = "Connected"
-    DISCONNECTED = "Disconnected"
-    ERROR = "Error"
+    DEFAULT = "default"
+    CUSTOM = "custom"

@@ -6,5 +6,11 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from ._connected_machine import ConnectedMachine
-__all__ = ['ConnectedMachine']
+from ._hybrid_connectivity_management_api import HybridConnectivityManagementAPI
+__all__ = ['HybridConnectivityManagementAPI']
+
+try:
+    from ._patch import patch_sdk  # type: ignore
+    patch_sdk()
+except ImportError:
+    pass

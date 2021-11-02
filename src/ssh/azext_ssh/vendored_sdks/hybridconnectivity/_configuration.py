@@ -20,36 +20,30 @@ if TYPE_CHECKING:
 
 VERSION = "unknown"
 
-class ConnectedMachineConfiguration(Configuration):
-    """Configuration for ConnectedMachine.
+class HybridConnectivityManagementAPIConfiguration(Configuration):
+    """Configuration for HybridConnectivityManagementAPI.
 
     Note that all parameters used to create this instance are saved as instance
     attributes.
 
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials.TokenCredential
-    :param subscription_id: The ID of the target subscription.
-    :type subscription_id: str
     """
 
     def __init__(
         self,
         credential,  # type: "TokenCredential"
-        subscription_id,  # type: str
         **kwargs  # type: Any
     ):
         # type: (...) -> None
         if credential is None:
             raise ValueError("Parameter 'credential' must not be None.")
-        if subscription_id is None:
-            raise ValueError("Parameter 'subscription_id' must not be None.")
-        super(ConnectedMachineConfiguration, self).__init__(**kwargs)
+        super(HybridConnectivityManagementAPIConfiguration, self).__init__(**kwargs)
 
         self.credential = credential
-        self.subscription_id = subscription_id
-        self.api_version = "2021-06-10-preview"
+        self.api_version = "2021-10-06-preview"
         self.credential_scopes = kwargs.pop('credential_scopes', ['https://management.azure.com/.default'])
-        kwargs.setdefault('sdk_moniker', 'connectedmachine/{}'.format(VERSION))
+        kwargs.setdefault('sdk_moniker', 'hybridconnectivitymanagementapi/{}'.format(VERSION))
         self._configure(**kwargs)
 
     def _configure(

@@ -295,6 +295,9 @@ def _arc_get_client_side_proxy():
 # Get the Access Details to connect to Arc Connectivity platform from the HybridCompute Resource Provider
 # TO DO: This is a temporary API call to get the relay info. We will move to a different one in the future.
 def _arc_list_access_details(cmd, resource_group, vm_name):
+    from azext_ssh._client_factory import cf_endpoint
+    client = cf_endpoint(cmd.cli_ctx)
+    '''
     from azext_ssh._client_factory import cf_machine
     client = cf_machine(cmd.cli_ctx)
     status_code, result = client.list_access_details(resource_group_name=resource_group, machine_name=vm_name)
@@ -308,7 +311,7 @@ def _arc_list_access_details(cmd, resource_group, vm_name):
     enc = base64.b64encode(result_bytes)
     base64_result_string = enc.decode("ascii")
     return base64_result_string
-
+    '''
 
 def _decide_op_call(cmd, resource_group_name, vm_name, resource_id, ssh_ip, config_path, overwrite,
                     ssh_client_path, ssh_args, delete_privkey):
