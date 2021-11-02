@@ -46,6 +46,16 @@ helps['spring-cloud delete'] = """
     short-summary: Delete an Azure Spring Cloud.
 """
 
+helps['spring-cloud start'] = """
+    type: command
+    short-summary: Start an Azure Spring Cloud.
+"""
+
+helps['spring-cloud stop'] = """
+    type: command
+    short-summary: Stop an Azure Spring Cloud.
+"""
+
 helps['spring-cloud list'] = """
     type: command
     short-summary: List all Azure Spring Cloud in the given resource group, otherwise list the subscription's.

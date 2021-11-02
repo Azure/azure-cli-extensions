@@ -26,8 +26,10 @@ def load_command_table(self, _):
         g.custom_command('create', 'spring_cloud_create', supports_no_wait=True, client_factory=cf_spring_cloud)
         g.custom_command('update', 'spring_cloud_update', supports_no_wait=True, client_factory=cf_spring_cloud)
         g.custom_command('delete', 'spring_cloud_delete', supports_no_wait=True)
-        g.custom_command('list', 'spring_cloud_list', table_transformer=transform_spring_cloud_table_output)
-        g.custom_show_command('show', 'spring_cloud_get', table_transformer=transform_spring_cloud_table_output)
+        g.custom_command('start', 'spring_cloud_start', supports_no_wait=True, client_factory=cf_spring_cloud_20210901preview)
+        g.custom_command('stop', 'spring_cloud_stop', supports_no_wait=True, client_factory=cf_spring_cloud_20210901preview)
+        g.custom_command('list', 'spring_cloud_list', client_factory=cf_spring_cloud_20210901preview, table_transformer=transform_spring_cloud_table_output)
+        g.custom_show_command('show', 'spring_cloud_get', client_factory=cf_spring_cloud_20210901preview, table_transformer=transform_spring_cloud_table_output)
 
     with self.command_group('spring-cloud test-endpoint', client_factory=cf_spring_cloud,
                             exception_handler=handle_asc_exception) as g:
