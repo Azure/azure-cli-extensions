@@ -1870,9 +1870,8 @@ def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
     fqdn = mc.fqdn if mc.fqdn is not None else mc.private_fqdn
     normalized_container_name = fqdn.replace('.', '-')
     len_of_container_name = normalized_container_name.index("-hcp-")
- 	if  len_of_container_name == -1 {
- 		len_of_container_name = maxContainerNameLength
- 	}
+    if  len_of_container_name == -1:
+        len_of_container_name = maxContainerNameLength
     containerName = containerName[:len_of_container_name]
 
     sas_token = sas_token.strip('?')
