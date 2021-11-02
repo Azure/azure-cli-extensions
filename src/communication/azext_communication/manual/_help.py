@@ -111,3 +111,58 @@ helps['communication wait'] = """
         text: |-
                az communication wait --name "MyCommunicationResource" --resource-group "MyResourceGroup" --deleted
 """
+
+helps['communication identity'] = """
+    type: group
+    short-summary: Manage identity with communication
+"""
+
+helps['communication identity issue-access-token'] = """
+    type: command
+    short-summary: "create user identity and accesstoken"
+    examples:
+      - name: issue-access-token 
+        text: |-
+               az communication identity issue-access-token --scope chat
+      - name: issue-access-token with multiple scopes and id
+        text: |-
+               az communication identity issue-access-token --scope chat voip --id "8:acs:xxxxxx"
+"""
+
+helps['communication sms'] = """
+    type: group
+    short-summary: Manage sms with communication
+"""
+
+helps['communication sms send-sms'] = """
+    type: command
+    short-summary: "Sends SMS to phone number."
+    examples:
+      - name: send sms
+        text: |-
+               az communication sms send-sms --sender "+1833xxxxxxx" \
+--recipient "+1425xxxxxxx" --message "Hello there!!"
+"""
+
+helps['communication phonenumbers'] = """
+    type: group
+    short-summary: Manage phonenumbers with communication
+"""
+
+helps['communication phonenumbers list-phonenumbers'] = """
+    type: command
+    short-summary: "List communication phone numbers"
+    examples:
+      - name: list phonenumbers
+        text: |-
+               az communication phonenumbers list-phonenumbers 
+"""
+
+helps['communication phonenumbers show-phonenumber'] = """
+    type: command
+    short-summary: "show communication phonenumber information"
+    examples:
+      - name: show phonenumber
+        text: |-
+               az communication phonenumbers show-phonenumber --phone-number "+1833xxxxxxx"
+"""
