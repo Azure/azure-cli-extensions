@@ -378,7 +378,7 @@ helps['aks create'] = """
              You must set or not set --gmsa-dns-server and --gmsa-root-domain-name at the same time when setting --enable-windows-gmsa.
         - name: --snapshot-id
           type: string
-          short-summary: The snapshot id used to create this cluster.
+          short-summary: The source snapshot id used to create this cluster.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -432,6 +432,8 @@ helps['aks create'] = """
           text: az aks create -g MyResourceGroup -n MyManagedCluster --load-balancer-sku Standard --network-plugin azure --windows-admin-username azure --windows-admin-password 'replacePassword1234$' --enable-windows-gmsa
         - name: Create a kubernetes cluster with enabling Windows gmsa but without setting DNS server in the vnet used by the cluster.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --load-balancer-sku Standard --network-plugin azure --windows-admin-username azure --windows-admin-password 'replacePassword1234$' --enable-windows-gmsa --gmsa-dns-server "10.240.0.4" --gmsa-root-domain-name "contoso.com"
+        - name: create a kubernetes cluster with a snapshot id.
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --kubernetes-version 1.20.9 --snapshot-id "/subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.ContainerService/snapshots/mysnapshot1"
 """.format(sp_cache=AKS_SERVICE_PRINCIPAL_CACHE)
 
 helps['aks scale'] = """
@@ -997,7 +999,7 @@ helps['aks nodepool add'] = """
           short-summary: GPU instance profile to partition multi-gpu Nvidia GPUs.
         - name: --snapshot-id
           type: string
-          short-summary: The snapshot id used to create this nodepool.
+          short-summary: The source snapshot id used to create this nodepool.
     examples:
         - name: Create a nodepool in an existing AKS cluster with ephemeral os enabled.
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --node-osdisk-type Ephemeral --node-osdisk-size 48
@@ -1007,6 +1009,8 @@ helps['aks nodepool add'] = """
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster  --os-sku Ubuntu
         - name: Create a nodepool which can run wasm workloads.
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster  --workload-runtime WasmWasi
+        - name: create a kubernetes cluster with a snapshot id.
+          text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --kubernetes-version 1.20.9 --snapshot-id "/subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.ContainerService/snapshots/mysnapshot1"
 """
 
 helps['aks nodepool scale'] = """
@@ -1036,7 +1040,7 @@ helps['aks nodepool upgrade'] = """
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
         - name: --snapshot-id
           type: string
-          short-summary: The snapshot id used to upgrade this nodepool.
+          short-summary: The source snapshot id used to upgrade this nodepool.
 """
 
 helps['aks nodepool update'] = """
@@ -1488,7 +1492,7 @@ helps['aks snapshot create'] = """
     parameters:
         - name: --nodepool-id
           type: string
-          short-summary: The source node pool id.
+          short-summary: The source nodepool id from which to create the target snapshot.
         - name: --tags
           type: string
           short-summary: The tags of the snapshot.

@@ -543,10 +543,10 @@ def _get_snapshot(cli_ctx, snapshot_id):
             snapshot = snapshot_client.get(resource_group_name, snapshot_name)
         except CloudError as ex:
             if 'was not found' in ex.message:
-                raise CLIError("Snapshot {} not found.".format(snapshot_id))
+                raise InvalidArgumentValueError("Snapshot {} not found.".format(snapshot_id))
             raise CLIError(ex.message)
         return snapshot
-    raise CLIError(
+    raise InvalidArgumentValueError(
         "Cannot parse snapshot name from provided resource id {}.".format(snapshot_id))
 
 
