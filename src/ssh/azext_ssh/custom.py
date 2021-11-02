@@ -9,7 +9,10 @@ import hashlib
 import json
 import tempfile
 
+from knack import log
 from azure.cli.core import azclierror
+
+logger = log.get_logger(__name__)
 
 from . import ip_utils
 from . import rsa_parser
@@ -40,7 +43,16 @@ def ssh_config(cmd, config_path, resource_group_name=None, vm_name=None, ssh_ip=
 
 
 def ssh_cert(cmd, cert_path=None, public_key_file=None):
-    public_key_file, _, _ = _check_or_create_public_private_files(public_key_file, None, None)
+    if not cert_path and not public_key_file:
+        raise azclierror.RequiredArgumentMissingError("--file or --public-key-file must be provided.")
+    # If user doesn't provide a public key, save key to the same folder as --file
+    keys_folder = None
+    if not public_key_file:
+        keys_folder = os.path.dirname(cert_path)
+        logger.warning("No public key provided. A new key pair will be created in the same directory as the certificate (%s). "
+                       "Please delete keys once the certificate is no longer being used",
+                       keys_folder)
+    public_key_file, _, _ = _check_or_create_public_private_files(public_key_file, None, keys_folder)
     cert_file, _ = _get_and_write_certificate(cmd, public_key_file, cert_path)
     print(cert_file + "\n")
 

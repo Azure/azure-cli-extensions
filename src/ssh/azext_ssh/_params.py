@@ -34,4 +34,5 @@ def load_arguments(self, _):
     with self.argument_context('ssh cert') as c:
         c.argument('cert_path', options_list=['--file', '-f'],
                    help='The file path to write the SSH cert to, defaults to public key path with -aadcert.pub appened')
-        c.argument('public_key_file', options_list=['--public-key-file', '-p'], help='The RSA public key file path')
+        c.argument('public_key_file', options_list=['--public-key-file', '-p'], 
+                   help='The RSA public key file path. If not provided, new key pair is created in the same directpry as --file')
