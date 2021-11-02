@@ -1865,7 +1865,7 @@ def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
     print("Starts collecting diag info for cluster %s " % name)
 
     # Form containerName from fqdn, as it was previously jsut the location of code is changed.
-    # https://docs.microsoft.com/en-us/rest/api/storageservices/naming-and-referencing-containers--blobs--and-metadata#container-names 
+    # https://docs.microsoft.com/en-us/rest/api/storageservices/naming-and-referencing-containers--blobs--and-metadata#container-names
     maxContainerNameLength = 63
     fqdn = mc.fqdn if mc.fqdn is not None else mc.private_fqdn
     normalized_container_name = fqdn.replace('.', '-')
