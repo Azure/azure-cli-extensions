@@ -108,6 +108,7 @@ def write_ssh_config(config_path, resource_group, vm_name, overwrite,
     if not delete_keys:
         path_to_delete = cert_file
     validity = get_ssh_cert_validity(cert_file)
+    validity_warning = ""
     if validity:
         validity_warning = f"The signed public key {cert_file} is {validity.lower()}"
     logger.warning("%s contains sensitive information, please delete it once you no longer need this config file. "

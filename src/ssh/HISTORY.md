@@ -2,11 +2,11 @@ Release History
 ===============
 0.1.9
 -----
-* Delete all keys and certificates created during execution of az ssh vm.
-* Add --keys-destination-folder to az ssh config
-* By default, save keys created during az ssh config in a directory in the same location as --file
-* Users no longer allowed to run az ssh cert with no parameters. 
-* When public key not provided to az ssh cert, new key pair is saved in the same folder as --file.
+* Delete all keys and certificates created during execution of ssh vm.
+* Add --keys-destination-folder to ssh config
+* By default, save keys created during ssh config in a directory in the same location as --file
+* Users no longer allowed to run ssh cert with no parameters. 
+* When public key not provided to ssh cert, new key pair is saved in the same folder as --file.
 
 0.1.8
 -----

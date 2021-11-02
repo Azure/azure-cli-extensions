@@ -151,9 +151,10 @@ def _check_or_create_public_private_files(public_key_file, private_key_file, cre
         delete_keys = True
         if not credentials_folder:
             # az ssh vm: Create keys on temp folder and delete folder once connection succeeds/fails.
-            # az ssh cert: If user didn't provide public key, save it to temp folder
             credentials_folder = tempfile.mkdtemp(prefix="aadsshcert")
         else:
+            # az ssh config: Keys saved to the same folder as --file or to --keys-destination-folder.
+            # az ssh cert: Keys saved to the same folder as --file. 
             if not os.path.isdir(credentials_folder):
                 os.makedirs(credentials_folder)
         public_key_file = os.path.join(credentials_folder, "id_rsa.pub")
