@@ -1,17 +1,14 @@
 Release History
 ===============
-2.11.3
+2.11.2
 -----
 * Add support to stop and start Azure Spring Cloud service instance
 * Add new command `spring-cloud stop` to stop a running Azure Spring Cloud service instance
 * Add new command `spring-cloud start` to start a stopped Azure Spring Cloud service instance
 
-2.11.2
------
-* Add support for Diagnostic Operation. Heap dump: 'spring-cloud app deployment generate-heap-dump'. Thread Dump: 'spring-cloud app deployment generate-thread-dump'. JFR: 'spring-cloud app deployment start-jfr'
-
 2.11.1
 -----
+* Add support for Diagnostic Operation. Heap dump: 'spring-cloud app deployment generate-heap-dump'. Thread Dump: 'spring-cloud app deployment generate-thread-dump'. JFR: 'spring-cloud app deployment start-jfr'
 * Add support for public certificate crud, source could be either key vault or local file
 * Application could load public certificate by using argument `--loaded_public_certificate_file` in batch or
   directly using `spring-cloud app append-loaded-public-certificate` one by one
