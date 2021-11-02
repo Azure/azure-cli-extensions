@@ -1963,7 +1963,7 @@ def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
 
 
 def _read_periscope_yaml():
-    with open("../deploymentyaml/aks-periscope.yaml", "r") as stream:
+    with open("./deploymentyaml/aks-periscope.yaml", "r") as stream:
         try:
             data_loaded = yaml.safe_load(stream)
         except yaml.YAMLError as exc:
