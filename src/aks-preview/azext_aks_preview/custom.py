@@ -1872,14 +1872,15 @@ def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
     len_of_container_name = normalized_container_name.index("-hcp-")
     if  len_of_container_name == -1:
         len_of_container_name = maxContainerNameLength
-    containerName = containerName[:len_of_container_name]
+
+    container_name = normalized_container_name[:len_of_container_name]
 
     sas_token = sas_token.strip('?')
     deployment_yaml = _read_periscope_yaml()
     deployment_yaml = deployment_yaml.replace("# <accountName, base64 encoded>", storage_account_name)
     deployment_yaml = deployment_yaml.replace("# <saskey, base64 encoded>",
                                               (base64.b64encode(bytes("?" + sas_token, 'ascii'))).decode('ascii'))
-    deployment_yaml = deployment_yaml.replace("# <containerName, string>", containerName)
+    deployment_yaml = deployment_yaml.replace("# <containerName, string>", container_name)
 
     yaml_lines = deployment_yaml.splitlines()
     for index, line in enumerate(yaml_lines):
@@ -1944,7 +1945,7 @@ def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
     
     token_in_storage_account_url = readonly_sas_token if readonly_sas_token is not None else sas_token
     log_storage_account_url = f"https://{storage_account_name}.blob.core.windows.net/" \
-                              f"{_trim_fqdn_name_containing_hcp(containerName)}?{token_in_storage_account_url}"
+                              f"{_trim_fqdn_name_containing_hcp(container_name)}?{token_in_storage_account_url}"
 
     print(f'{colorama.Fore.GREEN}Your logs are being uploaded to storage account {format_bright(storage_account_name)}')
 
