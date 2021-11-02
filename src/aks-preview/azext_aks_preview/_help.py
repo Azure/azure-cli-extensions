@@ -1492,7 +1492,7 @@ helps['aks snapshot create'] = """
     parameters:
         - name: --nodepool-id
           type: string
-          short-summary: The source nodepool id from which to create the target snapshot.
+          short-summary: The source nodepool id from which to create this snapshot.
         - name: --tags
           type: string
           short-summary: The tags of the snapshot.
