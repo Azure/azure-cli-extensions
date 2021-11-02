@@ -1872,7 +1872,6 @@ def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
     len_of_container_name = normalized_container_name.index("-hcp-")
     if  len_of_container_name == -1:
         len_of_container_name = maxContainerNameLength
-
     container_name = normalized_container_name[:len_of_container_name]
 
     sas_token = sas_token.strip('?')
@@ -1942,7 +1941,7 @@ def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
         os.remove(temp_yaml_path)
 
     print()
-    
+
     token_in_storage_account_url = readonly_sas_token if readonly_sas_token is not None else sas_token
     log_storage_account_url = f"https://{storage_account_name}.blob.core.windows.net/" \
                               f"{_trim_fqdn_name_containing_hcp(container_name)}?{token_in_storage_account_url}"
@@ -1964,7 +1963,7 @@ def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
 
 
 def _read_periscope_yaml():
-    with open("./deploymentyaml/aks-periscope.yaml", "r") as stream:   
+    with open("./deploymentyaml/aks-periscope.yaml", "r") as stream:
         try:
             data_loaded = yaml.safe_load(stream)
         except yaml.YAMLError as exc:
