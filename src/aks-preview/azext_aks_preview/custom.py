@@ -1864,13 +1864,13 @@ def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
     print()
     print("Starts collecting diag info for cluster %s " % name)
 
-    # Form containerName from fqdn, as it was previosuly jsut the location of code is changed.
+    # Form containerName from fqdn, as it was previously jsut the location of code is changed.
     # https://docs.microsoft.com/en-us/rest/api/storageservices/naming-and-referencing-containers--blobs--and-metadata#container-names 
     maxContainerNameLength = 63
     fqdn = mc.fqdn if mc.fqdn is not None else mc.private_fqdn
     normalized_container_name = fqdn.replace('.', '-')
     len_of_container_name = normalized_container_name.index("-hcp-")
-    if  len_of_container_name == -1:
+    if len_of_container_name == -1:
         len_of_container_name = maxContainerNameLength
     container_name = normalized_container_name[:len_of_container_name]
 
@@ -1963,7 +1963,7 @@ def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
 
 
 def _read_periscope_yaml():
-    with open("./deploymentyaml/aks-periscope.yaml", "r") as stream:
+    with open("../deploymentyaml/aks-periscope.yaml", "r") as stream:
         try:
             data_loaded = yaml.safe_load(stream)
         except yaml.YAMLError as exc:
