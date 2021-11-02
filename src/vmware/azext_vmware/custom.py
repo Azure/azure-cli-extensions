@@ -56,7 +56,7 @@ def privatecloud_create(client: AVSClient, resource_group_name, name, location, 
     return client.private_clouds.begin_create_or_update(resource_group_name, name, cloud)
 
 
-def privatecloud_update(client: AVSClient, resource_group_name, name, cluster_size=None, internet=None, avail_zone=None, avail_secondary_zone=None, identity_type=None, encryption_status=None, enc_kv_key_name=None, enc_kv_key_version=None, enc_kv_url=None, enc_kv_key_state=None, enc_kv_key_vs_type=None):
+def privatecloud_update(client: AVSClient, resource_group_name, name, cluster_size=None, internet=None, avail_zone=None, avail_secondary_zone=None, identity_type=None, enc_status=None, enc_kv_key_name=None, enc_kv_key_version=None, enc_kv_url=None, enc_kv_key_state=None, enc_kv_key_vs_type=None):
     from azext_vmware.vendored_sdks.avs_client.models import PrivateCloudUpdate, ManagementCluster, PrivateCloudIdentity, AvailabilityProperties, Encryption, EncryptionKeyVaultProperties
     private_cloud_update = PrivateCloudUpdate()
     if cluster_size is not None:
@@ -67,8 +67,8 @@ def privatecloud_update(client: AVSClient, resource_group_name, name, cluster_si
         private_cloud_update.availability = AvailabilityProperties(zone=avail_zone, secondary_zone=avail_secondary_zone)
     if type is not None:
         private_cloud_update.identity = PrivateCloudIdentity(type=identity_type)
-    if encryption_status is not None:
-        private_cloud_update.encryption = Encryption(status=encryption_status, key_vault_properties=EncryptionKeyVaultProperties(key_name=enc_kv_key_name, key_version=enc_kv_key_version, key_vault_url=enc_kv_url, key_state=enc_kv_key_state, version_type=enc_kv_key_vs_type))
+    if enc_status is not None:
+        private_cloud_update.encryption = Encryption(status=enc_status, key_vault_properties=EncryptionKeyVaultProperties(key_name=enc_kv_key_name, key_version=enc_kv_key_version, key_vault_url=enc_kv_url, key_state=enc_kv_key_state, version_type=enc_kv_key_vs_type))
     return client.private_clouds.begin_update(resource_group_name, name, private_cloud_update)
 
 

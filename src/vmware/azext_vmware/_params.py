@@ -48,7 +48,7 @@ def load_arguments(self, _):
         c.argument('name', options_list=['--name', '-n'], help='Name of the private cloud.')
         c.argument('avail_zone', help='The primary availability zone for the private cloud')
         c.argument('avail_secondary_zone', help='The secondary availability zone for the private cloud.')
-        c.argument('encryption_status', help='Status of customer managed encryption key. Possible values include "Enabled" and "Disabled".')
+        c.argument('enc_status', help='Status of customer managed encryption key. Possible values include "Enabled" and "Disabled".')
         c.argument('enc_kv_key_name', help='The name of the encryption key vault key.')
         c.argument('enc_kv_key_state', help='The state of encryption key vault key provided. Possible values include "Connected" and "AccessDenied".')
         c.argument('enc_kv_url', help='The URL of the encryption key vault.')
