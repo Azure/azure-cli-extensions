@@ -1876,7 +1876,7 @@ def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
 
     sas_token = sas_token.strip('?')
     deployment_yaml = _read_periscope_yaml()
-    deployment_yaml = deployment_yaml.replace("# <accountName, base64 encoded>", storage_account_name)
+    deployment_yaml = deployment_yaml.replace("# <accountName, string>", storage_account_name)
     deployment_yaml = deployment_yaml.replace("# <saskey, base64 encoded>",
                                               (base64.b64encode(bytes("?" + sas_token, 'ascii'))).decode('ascii'))
     deployment_yaml = deployment_yaml.replace("# <containerName, string>", container_name)
@@ -1949,7 +1949,7 @@ def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
     print(f'{colorama.Fore.GREEN}Your logs are being uploaded to storage account {format_bright(storage_account_name)}')
 
     print()
-    print(f'You can download Azure Stroage Explorer here '
+    print(f'You can download Azure Storage Explorer here '
           f'{format_hyperlink("https://azure.microsoft.com/en-us/features/storage-explorer/")}'
           f' to check the logs by adding the storage account using the following URL:')
     print(f'{format_hyperlink(log_storage_account_url)}')
@@ -1963,11 +1963,10 @@ def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
 
 
 def _read_periscope_yaml():
-    with open("./deploymentyaml/aks-periscope.yaml", "r") as stream:
-        try:
-            data_loaded = yaml.safe_load(stream)
-        except yaml.YAMLError as exc:
-            print(exc)
+    curr_dir = os.path.dirname(os.path.realpath(__file__))
+    periscope_yaml_file = os.path.join(curr_dir, "deploymentyaml", "aks-periscope.yaml")
+    yaml_file = open(periscope_yaml_file, "r")
+    data_loaded = yaml_file.read()
 
     return data_loaded
 
