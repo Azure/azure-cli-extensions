@@ -1,5 +1,26 @@
 Release History
 ===============
+2.11.2
+-----
+* Add support to stop and start Azure Spring Cloud service instance
+* Add new command `spring-cloud stop` to stop a running Azure Spring Cloud service instance
+* Add new command `spring-cloud start` to start a stopped Azure Spring Cloud service instance
+
+2.11.1
+-----
+* Add support for Diagnostic Operation. Heap dump: 'spring-cloud app deployment generate-heap-dump'. Thread Dump: 'spring-cloud app deployment generate-thread-dump'. JFR: 'spring-cloud app deployment start-jfr'
+* Add support for public certificate crud, source could be either key vault or local file
+* Application could load public certificate by using argument `--loaded_public_certificate_file` in batch or
+  directly using `spring-cloud app append-loaded-public-certificate` one by one
+* Add support to list all apps which have loaded the certificate `spring-cloud certificate list-reference-app`
+
+2.11.0
+-----
+* Support functions for Persistent Storage feature.
+* Add new command group 'az spring-cloud storage' to register your own storage to Azure Spring Cloud
+* Add new command `append-persistent-storage` into 'az spring-cloud app' to append persistent storage to applications
+* Add new parameter `--persistent-storage` into 'az spring-cloud app create' and 'az spring-cloud app update' to accept a json file to create persistent storages
+
 2.10.0
 -----
 * Support functions for Java In-Process Agent feature General Available.
@@ -8,7 +29,7 @@ Release History
 * Enabling In-Process Agent is equivalent to enabling application insights.
 * Mark `enable-java-agent` as deprecated, since IPA is GA-ed.
 * Mark application insights related parameter as deprecated in `az spring-cloud update`,
-  it's still supported, but will de decommissioned in the future, 
+  it's still supported, but will de decommissioned in the future,
   and we recommended to use `az spring-cloud app-insights update`.
 * Support `--sampling-rate` in `az spring-cloud create`.
 * Decommissioned `disable-distributed-tracing` parameter.
