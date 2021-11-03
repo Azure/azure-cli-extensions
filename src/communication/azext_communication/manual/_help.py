@@ -121,12 +121,12 @@ helps['communication identity issue-access-token'] = """
     type: command
     short-summary: "create user identity and accesstoken"
     examples:
-      - name: issue-access-token 
+      - name: issue-access-token
         text: |-
                az communication identity issue-access-token --scope chat
-      - name: issue-access-token with multiple scopes and id
+      - name: issue-access-token with multiple scopes and userid
         text: |-
-               az communication identity issue-access-token --scope chat voip --id "8:acs:xxxxxx"
+               az communication identity issue-access-token --scope chat voip --userid "8:acs:xxxxxx"
 """
 
 helps['communication sms'] = """
@@ -155,7 +155,7 @@ helps['communication phonenumbers list-phonenumbers'] = """
     examples:
       - name: list phonenumbers
         text: |-
-               az communication phonenumbers list-phonenumbers 
+               az communication phonenumbers list-phonenumbers
 """
 
 helps['communication phonenumbers show-phonenumber'] = """
@@ -164,5 +164,5 @@ helps['communication phonenumbers show-phonenumber'] = """
     examples:
       - name: show phonenumber
         text: |-
-               az communication phonenumbers show-phonenumber --phone-number "+1833xxxxxxx"
+               az communication phonenumbers show-phonenumber --phonenumber "+1833xxxxxxx"
 """
