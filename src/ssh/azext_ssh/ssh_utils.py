@@ -104,14 +104,16 @@ def write_ssh_config(config_path, resource_group, vm_name, overwrite,
     # Warn users to delete credentials once config file is no longer being used.
     # If user provided keys, only ask them to delete the certificate.
     path_to_delete = os.path.dirname(cert_file)
+    items_to_delete = " (id_rsa, id_rsa.pub, id_rsa.pub-aadcert.pub)"
     if not delete_keys:
         path_to_delete = cert_file
+        items_to_delete = ""
     validity = get_ssh_cert_validity(cert_file)
     validity_warning = ""
     if validity:
         validity_warning = f" {validity.lower()}"
-    logger.warning("%s contains sensitive information%s, please delete it once you no longer need this config file. ",
-                   path_to_delete, validity_warning)
+    logger.warning("%s contains sensitive information%s%s, please delete it once you no longer need this config file. ",
+                   path_to_delete, items_to_delete, validity_warning)
 
     lines = [""]
 
@@ -181,8 +183,8 @@ def _build_args(cert_file, private_key_file, port):
 
 def _do_cleanup(delete_keys, cert_file, private_key, log_file=None, wait=False):
     # if there is a log file, use it to check for the connection success
+    print(os.getpid())
     if log_file:
-        time.sleep(500)
         t0 = time.time()
         match = False
         while (time.time() - t0) < CLEANUP_TOTAL_TIME_LIMIT_IN_SECONDS and not match:

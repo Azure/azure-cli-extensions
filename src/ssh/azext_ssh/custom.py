@@ -57,6 +57,8 @@ def ssh_config(cmd, config_path, resource_group_name=None, vm_name=None, ssh_ip=
 def ssh_cert(cmd, cert_path=None, public_key_file=None):
     if not cert_path and not public_key_file:
         raise azclierror.RequiredArgumentMissingError("--file or --public-key-file must be provided.")
+    if cert_path and not os.path.isdir(os.path.dirname(cert_path)):
+        raise azclierror.InvalidArgumentValueError(f"{os.path.dirname(cert_path)} folder doesn't exist")
     # If user doesn't provide a public key, save generated key pair to the same folder as --file
     keys_folder = None
     if not public_key_file:
