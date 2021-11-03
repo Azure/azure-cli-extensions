@@ -297,6 +297,9 @@ def _arc_get_client_side_proxy():
 def _arc_list_access_details(cmd, resource_group, vm_name):
     from azext_ssh._client_factory import cf_endpoint
     client = cf_endpoint(cmd.cli_ctx)
+    result = client.list_credentials(resource_group_name=resource_group, machine_name=vm_name, endpoint_name="default")
+    print(result)
+
     '''
     from azext_ssh._client_factory import cf_machine
     client = cf_machine(cmd.cli_ctx)

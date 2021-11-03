@@ -33,14 +33,18 @@ class HybridConnectivityManagementAPIConfiguration(Configuration):
     def __init__(
         self,
         credential,  # type: "TokenCredential"
+        subscription_id,  # type: str
         **kwargs  # type: Any
     ):
         # type: (...) -> None
         if credential is None:
             raise ValueError("Parameter 'credential' must not be None.")
+        if subscription_id is None:
+            raise ValueError("Parameter 'subscription_id' must not be None.")
         super(HybridConnectivityManagementAPIConfiguration, self).__init__(**kwargs)
 
         self.credential = credential
+        self.subscription_id = subscription_id
         self.api_version = "2021-10-06-preview"
         self.credential_scopes = kwargs.pop('credential_scopes', ['https://management.azure.com/.default'])
         kwargs.setdefault('sdk_moniker', 'hybridconnectivitymanagementapi/{}'.format(VERSION))

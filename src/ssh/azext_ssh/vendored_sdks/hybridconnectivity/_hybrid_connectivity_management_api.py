@@ -38,13 +38,14 @@ class HybridConnectivityManagementAPI(object):
     def __init__(
         self,
         credential,  # type: "TokenCredential"
+        subscription_id,  # type: str
         base_url=None,  # type: Optional[str]
         **kwargs  # type: Any
     ):
         # type: (...) -> None
         if not base_url:
             base_url = 'https://management.azure.com'
-        self._config = HybridConnectivityManagementAPIConfiguration(credential, **kwargs)
+        self._config = HybridConnectivityManagementAPIConfiguration(credential, subscription_id, **kwargs)
         self._client = ARMPipelineClient(base_url=base_url, config=self._config, **kwargs)
 
         client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
