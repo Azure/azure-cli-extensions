@@ -112,7 +112,7 @@ def write_ssh_config(config_path, resource_group, vm_name, overwrite,
     validity_warning = ""
     if validity:
         validity_warning = f" {validity.lower()}"
-    logger.warning("%s contains sensitive information%s%s, please delete it once you no longer need this config file. ",
+    logger.warning("%s contains sensitive information%s%s\nPlease delete it once you no longer need this config file. ",
                    path_to_delete, items_to_delete, validity_warning)
 
     lines = [""]

@@ -38,8 +38,6 @@ def ssh_config(cmd, config_path, resource_group_name=None, vm_name=None, ssh_ip=
                                             "--public-key-file/-p or --private-key-file/-i.")
     op_call = functools.partial(ssh_utils.write_ssh_config, config_path, resource_group_name, vm_name, overwrite)
     # Default credential location
-    if credentials_folder and not os.path.isdir(credentials_folder):
-        raise azclierror.InvalidArgumentValueError(f"--keys-destination-folder {credentials_folder} doesn't exist")
     if not credentials_folder:
         config_folder = os.path.dirname(config_path)
         if not os.path.isdir(config_folder):
