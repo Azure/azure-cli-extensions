@@ -25,8 +25,8 @@ class CommunicationServiceManagementClientCommandsLoader(AzCommandsLoader):
         communication_custom = CliCommandType(
             operations_tmpl='azext_communication.custom#{}',
             client_factory=cf_communication_cl)
-        parent = super(CommunicationServiceManagementClientCommandsLoader, self)
-        parent.__init__(cli_ctx=cli_ctx, custom_command_type=communication_custom, 
+        parent = super()
+        parent.__init__(cli_ctx=cli_ctx, custom_command_type=communication_custom,
                         command_group_cls=CommunicationCommandGroup)
 
     def load_command_table(self, args):
@@ -51,7 +51,7 @@ class CommunicationServiceManagementClientCommandsLoader(AzCommandsLoader):
 
 class CommunicationCommandGroup(AzCommandGroup):
 
-    def communication_custom_command(self, name, method_name, oauth=False, **kwargs):
+    def communication_custom_command(self, name, method_name, **kwargs):
         command_name = self.custom_command(name, method_name, **kwargs)
         self._register_data_plane_account_arguments(command_name)
 
@@ -69,5 +69,6 @@ class CommunicationCommandGroup(AzCommandGroup):
                              validator=validate_client_parameters, arg_group=group_name,
                              help='Communication connection string. Environment variable: '
                                   'AZURE_COMMUNICATION_CONNECTION_STRING')
-        
+
+
 COMMAND_LOADER_CLS = CommunicationServiceManagementClientCommandsLoader

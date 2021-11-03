@@ -31,7 +31,7 @@ CLASSIFIERS = [
 ]
 
 DEPENDENCIES = ['azure-core', 'azure-communication-identity',
-'azure-communication-phonenumbers', 'azure-communication-sms']
+                'azure-communication-phonenumbers', 'azure-communication-sms']
 
 try:
     from azext_communication.manual.dependency import DEPENDENCIES
