@@ -183,7 +183,6 @@ def _build_args(cert_file, private_key_file, port):
 
 def _do_cleanup(delete_keys, cert_file, private_key, log_file=None, wait=False):
     # if there is a log file, use it to check for the connection success
-    print(os.getpid())
     if log_file:
         t0 = time.time()
         match = False
