@@ -160,9 +160,9 @@ def _assert_args(resource_group, vm_name, ssh_ip):
 
 def _check_or_create_public_private_files(public_key_file, private_key_file, credentials_folder):
     delete_keys = False
-    # If nothing is passed in create a directory with a ephemeral keypair
+    # If nothing is passed, then create a directory with a ephemeral keypair
     if not public_key_file and not private_key_file:
-        # We only want to delete the keys if the user hasn't providede their own keys
+        # We only want to delete the keys if the user hasn't provided their own keys
         # Only ssh vm deletes generated keys.
         delete_keys = True
         if not credentials_folder:
