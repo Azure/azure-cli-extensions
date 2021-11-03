@@ -336,7 +336,7 @@ class NetworkScenarioTest(ScenarioTest):
 
         self.cmd('network manager connect-config create --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} '
                  '--applies-to-groups group-connectivity="None" network-group-id={sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkManagers/{manager_name}/networkGroups/{group_name} '
-                 'is-global=false use-hub-gateway=true --connectivity-topology "HubAndSpoke" --delete-peering true --hubs '
+                 'is-global=false use-hub-gateway=true --connectivity-topology "HubAndSpoke" --delete-existing-peering true --hubs '
                  'resource-id={sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network} '
                  'resource-type="Microsoft.Network/virtualNetworks" --description "Sample Configuration" --is-global true')
         self.cmd('network manager connect-config show --configuration-name {config_name} --network-manager-name {manager_name} -g {rg}')
@@ -372,8 +372,8 @@ class NetworkScenarioTest(ScenarioTest):
         self.cmd('network manager group list-effect-vnet --network-group-name {group_name} --network-manager-name {manager_name} --resource-group {rg}')
         # Internal Server Error
         self.cmd('network manager list-effect-vnet --network-manager-name {manager_name} --resource-group {rg}')
-        self.cmd('network manager list-active-config --network-manager-name {manager_name} --resource-group {rg}')
-        self.cmd('network manager list-effective-config --virtual-network-name {virtual_network} -g {rg}')
+        self.cmd('network manager list-active-connectivity-config --network-manager-name {manager_name} --resource-group {rg}')
+        self.cmd('network manager list-effective-connectivity-config --virtual-network-name {virtual_network} -g {rg}')
         self.cmd('network manager list-effective-security-admin-rule --virtual-network-name {virtual_network} -g {rg}')
         self.cmd('network manager list-active-security-admin-rule --network-manager-name {manager_name} -g {rg} --regions eastus2euap')
         # Internal Server Error

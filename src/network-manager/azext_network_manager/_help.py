@@ -109,23 +109,23 @@ helps['network manager list-effect-vnet'] = """
 --conditional-members "location=\'useast2\'" --resource-group "rg1"
 """
 
-helps['network manager list-active-config'] = """
+helps['network manager list-active-connectivity-config'] = """
     type: command
     short-summary: "Lists active configurations in a network manager."
     examples:
       - name: Get Azure Virtual Network Manager Active Configuration
         text: |-
-               az network manager list-active-config --network-manager-name "testNetworkManager" --resource-group \
+               az network manager list-active-connectivity-config --network-manager-name "testNetworkManager" --resource-group \
 "myResourceGroup"
 """
 
-helps['network manager list-effective-config'] = """
+helps['network manager list-effective-connectivity-config'] = """
     type: command
     short-summary: "Lists effective configuration in a network manager."
     examples:
       - name: Get Azure Virtual Network Manager Effective Configuration
         text: |-
-               az network manager list-effective-config --virtual-network-name "myVirtualNetwork" --resource-group "myResourceGroup"
+               az network manager list-effective-connectivity-config --virtual-network-name "myVirtualNetwork" --resource-group "myResourceGroup"
 """
 
 helps['network manager list-effective-security-admin-rule'] = """
@@ -214,7 +214,7 @@ helps['network manager connect-config create'] = """
 "Sample Configuration" --applies-to-groups group-connectivity="None" is-global=false \
 network-group-id="subscriptions/subscriptionA/resourceGroups/myResourceGroup/providers/Microsoft.Network/networkManager\
 s/testNetworkManager/networkManagerGroups/group1" use-hub-gateway=true --connectivity-topology "HubAndSpoke" \
---delete-peering true --display-name "myTestConnectivityConfig" --hubs resource-id="subscriptions/subscriptionA/resource\
+--delete-existing-peering true --display-name "myTestConnectivityConfig" --hubs resource-id="subscriptions/subscriptionA/resource\
 Groups/myResourceGroup/providers/Microsoft.Network/virtualNetworks/myTestConnectivityConfig" resource-type="Microsoft.Network/virtualNetworks" \
 --is-global true --network-manager-name "testNetworkManager" --resource-group "myResourceGroup"
 """

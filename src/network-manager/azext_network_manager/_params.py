@@ -120,7 +120,7 @@ def load_arguments(self, _):
                    'include a skipToken parameter that specifies a starting point to use for subsequent calls.')
         c.argument('conditional_members', type=str, help='Conditional Members.')
 
-    with self.argument_context('network manager list-effective-config') as c:
+    with self.argument_context('network manager list-effective-connectivity-config') as c:
         c.argument('virtual_network_name', options_list=['--vnet-name', '--virtual-network-name'], type=str, help='The name of the virtual network.', id_part=None)
         c.argument('skip_token', type=str, help='SkipToken is only used if a previous operation returned a partial '
                    'result. If a previous response contains a nextLink element, the value of the nextLink element will '
@@ -146,7 +146,7 @@ def load_arguments(self, _):
                    'include a skipToken parameter that specifies a starting point to use for subsequent calls.')
         c.argument('regions', nargs='+', help='List of locations.')
 
-    with self.argument_context('network manager list-active-config') as c:
+    with self.argument_context('network manager list-active-connectivity-config') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part=None)
         c.argument('top', type=int, help='An optional query parameter which specifies the maximum number of records to '
@@ -183,7 +183,7 @@ def load_arguments(self, _):
         c.argument('applies_to_groups', action=AddConnectivityconfigurationsAppliesToGroups, nargs='+', help='Groups '
                    'for configuration')
         c.argument('hubs', action=AddGroupMembers, nargs='+', help='The hub vnets.')
-        c.argument('delete_existing_peering', options_list=['--delete-peering'], arg_type=get_three_state_flag(), help='Flag if need to remove current '
+        c.argument('delete_existing_peering', arg_type=get_three_state_flag(), help='Flag if need to remove current '
                    'existing peerings.')
 
     with self.argument_context('network manager connect-config update') as c:
@@ -199,7 +199,7 @@ def load_arguments(self, _):
         c.argument('applies_to_groups', action=AddConnectivityconfigurationsAppliesToGroups, nargs='+', help='Groups '
                    'for configuration')
         c.argument('hubs', action=AddGroupMembers, nargs='+', help='The hub vnets.')
-        c.argument('delete_existing_peering', options_list=['--delete-peering'], arg_type=get_three_state_flag(), help='Flag if need to remove current '
+        c.argument('delete_existing_peering', arg_type=get_three_state_flag(), help='Flag if need to remove current '
                    'existing peerings.')
         c.ignore('connectivity_configuration')
 
