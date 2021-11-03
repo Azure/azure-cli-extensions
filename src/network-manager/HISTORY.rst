@@ -3,7 +3,7 @@
 Release History
 ===============
 
-0.1.1
+0.2.0
 +++++
 * Rename `az network manager admin-rule collection` to `az network manager security-admin-config rule-collection`
 * Rename `az network manager user-rule collection` to `az network manager security-user-config rule-collection`
