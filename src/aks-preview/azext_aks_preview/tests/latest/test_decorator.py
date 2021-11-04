@@ -5,7 +5,7 @@
 
 import importlib
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 from azext_aks_preview.__init__ import register_aks_preview_resource_type
 from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
@@ -96,7 +96,9 @@ class AKSPreviewModelsTestCase(unittest.TestCase):
             getattr(module, "ManagedClusterNATGatewayProfile"),
         )
         self.assertEqual(
-            models.nat_gateway_models.get("ManagedClusterManagedOutboundIPProfile"),
+            models.nat_gateway_models.get(
+                "ManagedClusterManagedOutboundIPProfile"
+            ),
             getattr(module, "ManagedClusterManagedOutboundIPProfile"),
         )
 
@@ -832,6 +834,166 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         # fail on inconsistent state
         with self.assertRaises(CLIInternalError):
             ctx_2.get_gmsa_dns_server_and_root_domain_name()
+
+    def test_get_snapshot_id(self):
+        # default
+        ctx_1 = AKSPreviewContext(
+            self.cmd,
+            {
+                "snapshot_id": None,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_snapshot_id(), None)
+        creation_data = self.models.CreationData(
+            source_resource_id="test_source_resource_id"
+        )
+        agent_pool_profile = self.models.ManagedClusterAgentPoolProfile(
+            name="test_nodepool_name", creation_data=creation_data
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location", agent_pool_profiles=[agent_pool_profile]
+        )
+        ctx_1.attach_mc(mc)
+        self.assertEqual(ctx_1.get_snapshot_id(), "test_source_resource_id")
+
+    def test_get_snapshot(self):
+        # custom value
+        ctx_1 = AKSPreviewContext(
+            self.cmd,
+            {
+                "snapshot_id": "test_source_resource_id",
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        mock_snapshot = Mock()
+        with patch(
+            "azext_aks_preview.decorator._get_snapshot",
+            return_value=mock_snapshot,
+        ):
+            self.assertEqual(ctx_1.get_snapshot(), mock_snapshot)
+        # test cache
+        self.assertEqual(ctx_1.get_snapshot(), mock_snapshot)
+
+    def test_get_kubernetes_version(self):
+        # default
+        ctx_1 = AKSPreviewContext(
+            self.cmd,
+            {"kubernetes_version": ""},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_kubernetes_version(), "")
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            kubernetes_version="test_mc_kubernetes_version",
+        )
+        ctx_1.attach_mc(mc)
+        self.assertEqual(
+            ctx_1.get_kubernetes_version(), "test_mc_kubernetes_version"
+        )
+
+        # custom value
+        ctx_2 = AKSPreviewContext(
+            self.cmd,
+            {"kubernetes_version": "", "snapshot_id": "test_snapshot_id"},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        mock_snapshot = Mock(kubernetes_version="test_kubernetes_version")
+        with patch(
+            "azext_aks_preview.decorator._get_snapshot",
+            return_value=mock_snapshot,
+        ):
+            self.assertEqual(
+                ctx_2.get_kubernetes_version(), "test_kubernetes_version"
+            )
+
+        # custom value
+        ctx_3 = AKSPreviewContext(
+            self.cmd,
+            {"kubernetes_version": "custom_kubernetes_version", "snapshot_id": "test_snapshot_id"},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        mock_snapshot = Mock(kubernetes_version="test_kubernetes_version")
+        with patch(
+            "azext_aks_preview.decorator._get_snapshot",
+            return_value=mock_snapshot,
+        ):
+            self.assertEqual(
+                ctx_3.get_kubernetes_version(), "custom_kubernetes_version"
+            )
+
+    def test_get_os_sku(self):
+        # default
+        ctx_1 = AKSPreviewContext(
+            self.cmd,
+            {"os_sku": None},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_os_sku(), None)
+        agent_pool_profile = self.models.ManagedClusterAgentPoolProfile(
+            name="test_nodepool_name", os_sku="test_mc_os_sku"
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location", agent_pool_profiles=[agent_pool_profile]
+        )
+        ctx_1.attach_mc(mc)
+        self.assertEqual(ctx_1.get_os_sku(), "test_mc_os_sku")
+
+        # custom value
+        ctx_2 = AKSPreviewContext(
+            self.cmd,
+            {"os_sku": None, "snapshot_id": "test_snapshot_id"},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        mock_snapshot = Mock(os_sku="test_os_sku")
+        with patch(
+            "azext_aks_preview.decorator._get_snapshot",
+            return_value=mock_snapshot,
+        ):
+            self.assertEqual(
+                ctx_2.get_os_sku(), "test_os_sku"
+            )
+
+    def test_get_node_vm_size(self):
+        # default
+        ctx_1 = AKSPreviewContext(
+            self.cmd,
+            {"node_vm_size": None},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_node_vm_size(), "Standard_DS2_v2")
+        agent_pool_profile = self.models.ManagedClusterAgentPoolProfile(
+            name="test_nodepool_name", vm_size="Standard_ABCD_v2"
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location", agent_pool_profiles=[agent_pool_profile]
+        )
+        ctx_1.attach_mc(mc)
+        self.assertEqual(ctx_1.get_node_vm_size(), "Standard_ABCD_v2")
+
+        # custom value
+        ctx_2 = AKSPreviewContext(
+            self.cmd,
+            {"node_vm_size": None, "snapshot_id": "test_snapshot_id"},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        mock_snapshot = Mock(vm_size="test_vm_size")
+        with patch(
+            "azext_aks_preview.decorator._get_snapshot",
+            return_value=mock_snapshot,
+        ):
+            self.assertEqual(
+                ctx_2.get_node_vm_size(), "test_vm_size"
+            )
 
 
 class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):

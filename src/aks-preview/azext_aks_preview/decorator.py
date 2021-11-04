@@ -932,7 +932,7 @@ class AKSPreviewContext(AKSContext):
         raw_value = self.raw_param.get("kubernetes_version")
         # try to read the property value corresponding to the parameter from the `mc` object
         value_obtained_from_mc = None
-        if self.mc and self.mc.kubernetes_version is not None:
+        if self.mc:
             value_obtained_from_mc = self.mc.kubernetes_version
         # try to retrieve the value from snapshot
         value_obtained_from_snapshot = None
@@ -945,7 +945,8 @@ class AKSPreviewContext(AKSContext):
         # set default value
         if value_obtained_from_mc is not None:
             kubernetes_version = value_obtained_from_mc
-        elif raw_value is not None:
+        # default value is an empty string
+        elif raw_value:
             kubernetes_version = raw_value
         elif not read_only and value_obtained_from_snapshot is not None:
             kubernetes_version = value_obtained_from_snapshot
