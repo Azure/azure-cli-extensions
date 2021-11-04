@@ -27,7 +27,7 @@ def load_arguments(self, _):
                    help='Will use a private IP if available. By default only public IPs are used.')
         c.argument('overwrite', action='store_true', options_list=['--overwrite'],
                    help='Overwrites the config file if this flag is set')
-        c.argument('credentials_folder', options_list=['--keys-destination-folder'],
+        c.argument('credentials_folder', options_list=['--keys-destination-folder', '--keys-dest-folder'],
                    help='Folder where new generated keys will be stored.')
 
     with self.argument_context('ssh cert') as c:
