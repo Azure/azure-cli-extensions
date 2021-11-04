@@ -89,6 +89,16 @@ class AKSPreviewModelsTestCase(unittest.TestCase):
         self.assertEqual(
             models.WindowsGmsaProfile, getattr(module, "WindowsGmsaProfile")
         )
+        self.assertEqual(models.CreationData, getattr(module, "CreationData"))
+        # nat gateway models
+        self.assertEqual(
+            models.nat_gateway_models.get("ManagedClusterNATGatewayProfile"),
+            getattr(module, "ManagedClusterNATGatewayProfile"),
+        )
+        self.assertEqual(
+            models.nat_gateway_models.get("ManagedClusterManagedOutboundIPProfile"),
+            getattr(module, "ManagedClusterManagedOutboundIPProfile"),
+        )
 
 
 class AKSPreviewContextTestCase(unittest.TestCase):
@@ -103,7 +113,11 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         # default & dynamic completion
         ctx_1 = AKSPreviewContext(
             self.cmd,
-            {"vm_set_type": None, "kubernetes_version": "", "enable_vmss": False},
+            {
+                "vm_set_type": None,
+                "kubernetes_version": "",
+                "enable_vmss": False,
+            },
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
@@ -121,7 +135,11 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         # custom value & dynamic completion
         ctx_2 = AKSPreviewContext(
             self.cmd,
-            {"vm_set_type": "availabilityset", "kubernetes_version": "", "enable_vmss": True},
+            {
+                "vm_set_type": "availabilityset",
+                "kubernetes_version": "",
+                "enable_vmss": True,
+            },
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
@@ -132,7 +150,11 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         # custom value & dynamic completion
         ctx_3 = AKSPreviewContext(
             self.cmd,
-            {"vm_set_type": None, "kubernetes_version": "", "enable_vmss": True},
+            {
+                "vm_set_type": None,
+                "kubernetes_version": "",
+                "enable_vmss": True,
+            },
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
@@ -708,15 +730,21 @@ class AKSPreviewContextTestCase(unittest.TestCase):
             "azext_aks_preview.decorator.prompt_y_n",
             return_value=False,
         ), self.assertRaises(DecoratorEarlyExitException):
-            ctx._AKSPreviewContext__validate_gmsa_options(True, None, None, False)
+            ctx._AKSPreviewContext__validate_gmsa_options(
+                True, None, None, False
+            )
 
         # fail on gmsa_root_domain_name not specified
         with self.assertRaises(RequiredArgumentMissingError):
-            ctx._AKSPreviewContext__validate_gmsa_options(True, "test_gmsa_dns_server", None, False)
+            ctx._AKSPreviewContext__validate_gmsa_options(
+                True, "test_gmsa_dns_server", None, False
+            )
 
         # fail on enable_windows_gmsa not specified
         with self.assertRaises(RequiredArgumentMissingError):
-            ctx._AKSPreviewContext__validate_gmsa_options(False, None, "test_gmsa_root_domain_name", False)
+            ctx._AKSPreviewContext__validate_gmsa_options(
+                False, None, "test_gmsa_root_domain_name", False
+            )
 
     def test_get_enable_windows_gmsa(self):
         # default

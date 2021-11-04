@@ -36,6 +36,7 @@ from azext_aks_preview._natgateway import create_nat_gateway_profile
 from azext_aks_preview.addonconfiguration import (
     ensure_container_insights_for_monitoring,
 )
+from azext_aks_preview.custom import _get_snapshot
 
 
 logger = get_logger(__name__)
@@ -51,6 +52,7 @@ LinuxOSConfig = TypeVar("LinuxOSConfig")
 ManagedClusterHTTPProxyConfig = TypeVar("ManagedClusterHTTPProxyConfig")
 ContainerServiceNetworkProfile = TypeVar("ContainerServiceNetworkProfile")
 ManagedClusterAddonProfile = TypeVar("ManagedClusterAddonProfile")
+Snapshot = TypeVar("Snapshot")
 
 
 # pylint: disable=too-many-instance-attributes,too-few-public-methods
@@ -80,6 +82,11 @@ class AKSPreviewModels(AKSModels):
         )
         self.WindowsGmsaProfile = self.__cmd.get_models(
             "WindowsGmsaProfile",
+            resource_type=self.resource_type,
+            operation_group="managed_clusters",
+        )
+        self.CreationData = self.__cmd.get_models(
+            "CreationData",
             resource_type=self.resource_type,
             operation_group="managed_clusters",
         )
@@ -510,6 +517,7 @@ class AKSPreviewContext(AKSContext):
 
         return self._get_enable_pod_identity(enable_validation=True)
 
+    # pylint: disable=unused-argument
     def _get_enable_pod_identity_with_kubenet(self, enable_validation: bool = False, **kwargs) -> bool:
         """Internal function to obtain the value of enable_pod_identity_with_kubenet.
 
@@ -863,6 +871,194 @@ class AKSPreviewContext(AKSContext):
         """
         return self._get_gmsa_dns_server_and_root_domain_name(enable_validation=True)
 
+    def get_snapshot_id(self) -> Union[str, None]:
+        """Obtain the values of snapshot_id.
+
+        :return: string or None
+        """
+        # read the original value passed by the command
+        snapshot_id = self.raw_param.get("snapshot_id")
+        # try to read the property value corresponding to the parameter from the `mc` object
+        if self.mc and self.mc.agent_pool_profiles:
+            agent_pool_profile = safe_list_get(
+                self.mc.agent_pool_profiles, 0, None
+            )
+            if (
+                agent_pool_profile and
+                agent_pool_profile.creation_data and
+                agent_pool_profile.creation_data.source_resource_id is not None
+            ):
+                snapshot_id = (
+                    agent_pool_profile.creation_data.source_resource_id
+                )
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return snapshot_id
+
+    def get_snapshot(self) -> Union[Snapshot, None]:
+        """Helper function to retrieve the Snapshot object corresponding to a snapshot id.
+
+        This fuction will store an intermediate "snapshot" to avoid sending the same request multiple times.
+
+        Function "_get_snapshot" will be called to retrieve the Snapshot object corresponding to a snapshot id, which
+        internally used the snapshot client (snapshots operations belonging to container service client) to send
+        the request.
+
+        :return: Snapshot or None
+        """
+        # try to read from intermediates
+        snapshot = self.get_intermediate("snapshot")
+        if snapshot:
+            return snapshot
+
+        snapshot_id = self.get_snapshot_id()
+        if snapshot_id:
+            snapshot = _get_snapshot(self.cmd.cli_ctx, snapshot_id)
+            self.set_intermediate("snapshot", snapshot, overwrite_exists=True)
+        return snapshot
+
+    # pylint: disable=unused-argument
+    def _get_kubernetes_version(self, read_only: bool = False, **kwargs) -> str:
+        """Internal function to dynamically obtain the value of kubernetes_version according to the context.
+
+        If snapshot_id is specified, dynamic completion will be triggerd, and will try to get the corresponding value
+        from the Snapshot. When determining the value of the parameter, obtaining from `mc` takes precedence over user's
+        explicit input over snapshot over default vaule.
+
+        :return: string
+        """
+        # read the original value passed by the command
+        raw_value = self.raw_param.get("kubernetes_version")
+        # try to read the property value corresponding to the parameter from the `mc` object
+        value_obtained_from_mc = None
+        if self.mc and self.mc.kubernetes_version is not None:
+            value_obtained_from_mc = self.mc.kubernetes_version
+        # try to retrieve the value from snapshot
+        value_obtained_from_snapshot = None
+        # skip dynamic completion if read_only is specified
+        if not read_only:
+            snapshot = self.get_snapshot()
+            if snapshot:
+                value_obtained_from_snapshot = snapshot.kubernetes_version
+
+        # set default value
+        if value_obtained_from_mc is not None:
+            kubernetes_version = value_obtained_from_mc
+        elif raw_value is not None:
+            kubernetes_version = raw_value
+        elif not read_only and value_obtained_from_snapshot is not None:
+            kubernetes_version = value_obtained_from_snapshot
+        else:
+            kubernetes_version = raw_value
+
+        # this parameter does not need validation
+        return kubernetes_version
+
+    def get_kubernetes_version(self) -> str:
+        """Obtain the value of kubernetes_version.
+
+        :return: string
+        """
+        return self._get_kubernetes_version()
+
+    # pylint: disable=unused-argument
+    def _get_os_sku(self, read_only: bool = False, **kwargs) -> Union[str, None]:
+        """Internal function to dynamically obtain the value of os_sku according to the context.
+
+        If snapshot_id is specified, dynamic completion will be triggerd, and will try to get the corresponding value
+        from the Snapshot. When determining the value of the parameter, obtaining from `mc` takes precedence over user's
+        explicit input over snapshot over default vaule.
+
+        :return: string or None
+        """
+        # read the original value passed by the command
+        raw_value = self.raw_param.get("os_sku")
+        # try to read the property value corresponding to the parameter from the `mc` object
+        value_obtained_from_mc = None
+        if self.mc and self.mc.agent_pool_profiles:
+            agent_pool_profile = safe_list_get(
+                self.mc.agent_pool_profiles, 0, None
+            )
+            if agent_pool_profile:
+                value_obtained_from_mc = agent_pool_profile.os_sku
+        # try to retrieve the value from snapshot
+        value_obtained_from_snapshot = None
+        # skip dynamic completion if read_only is specified
+        if not read_only:
+            snapshot = self.get_snapshot()
+            if snapshot:
+                value_obtained_from_snapshot = snapshot.os_sku
+
+        # set default value
+        if value_obtained_from_mc is not None:
+            os_sku = value_obtained_from_mc
+        elif raw_value is not None:
+            os_sku = raw_value
+        elif not read_only and value_obtained_from_snapshot is not None:
+            os_sku = value_obtained_from_snapshot
+        else:
+            os_sku = raw_value
+
+        # this parameter does not need validation
+        return os_sku
+
+    def get_os_sku(self) -> Union[str, None]:
+        """Obtain the value of os_sku.
+
+        :return: string or None
+        """
+        return self._get_os_sku()
+
+    # pylint: disable=unused-argument
+    def _get_node_vm_size(self, read_only: bool = False, **kwargs) -> str:
+        """Internal function to dynamically obtain the value of node_vm_size according to the context.
+
+        If snapshot_id is specified, dynamic completion will be triggerd, and will try to get the corresponding value
+        from the Snapshot. When determining the value of the parameter, obtaining from `mc` takes precedence over user's
+        explicit input over snapshot over default vaule.
+
+        :return: string
+        """
+        default_value = "Standard_DS2_v2"
+        # read the original value passed by the command
+        raw_value = self.raw_param.get("node_vm_size")
+        # try to read the property value corresponding to the parameter from the `mc` object
+        value_obtained_from_mc = None
+        if self.mc and self.mc.agent_pool_profiles:
+            agent_pool_profile = safe_list_get(
+                self.mc.agent_pool_profiles, 0, None
+            )
+            if agent_pool_profile:
+                value_obtained_from_mc = agent_pool_profile.vm_size
+        # try to retrieve the value from snapshot
+        value_obtained_from_snapshot = None
+        # skip dynamic completion if read_only is specified
+        if not read_only:
+            snapshot = self.get_snapshot()
+            if snapshot:
+                value_obtained_from_snapshot = snapshot.vm_size
+
+        # set default value
+        if value_obtained_from_mc is not None:
+            node_vm_size = value_obtained_from_mc
+        elif raw_value is not None:
+            node_vm_size = raw_value
+        elif value_obtained_from_snapshot is not None:
+            node_vm_size = value_obtained_from_snapshot
+        else:
+            node_vm_size = default_value
+
+        # this parameter does not need validation
+        return node_vm_size
+
+    def get_node_vm_size(self) -> str:
+        """Obtain the value of node_vm_size.
+
+        :return: string
+        """
+        return self._get_node_vm_size()
+
 
 class AKSPreviewCreateDecorator(AKSCreateDecorator):
     # pylint: disable=super-init-not-called
@@ -913,6 +1109,17 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
         )
         agent_pool_profile.kubelet_config = self.context.get_kubelet_config()
         agent_pool_profile.linux_os_config = self.context.get_linux_os_config()
+
+        # snapshot creation data
+        creation_data = None
+        snapshot_id = self.context.get_snapshot_id()
+        if snapshot_id:
+            creation_data = self.models.CreationData(
+                source_resource_id=snapshot_id
+            )
+        agent_pool_profile.creation_data = creation_data
+
+        mc.agent_pool_profiles = [agent_pool_profile]
         return mc
 
     def set_up_http_proxy_config(self, mc: ManagedCluster) -> ManagedCluster:
