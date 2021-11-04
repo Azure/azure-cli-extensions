@@ -35,4 +35,4 @@ def load_arguments(self, _):
                    help='The file path to write the SSH cert to, defaults to public key path with -aadcert.pub appened')
         c.argument('public_key_file', options_list=['--public-key-file', '-p'],
                    help='The RSA public key file path. If not provided, '
-                   'generated key pair is stored in the same directory as --file')
+                   'generated key pair is stored in the same directory as --file.')
