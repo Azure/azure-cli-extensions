@@ -39,7 +39,7 @@ class ConnectedMachineOperationsMixin(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-06-10-preview"
+        api_version = "2021-05-20"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -93,7 +93,7 @@ class ConnectedMachineOperationsMixin(object):
         :param machine_name: The name of the hybrid machine.
         :type machine_name: str
         :param extension_upgrade_parameters: Parameters supplied to the Upgrade Extensions operation.
-        :type extension_upgrade_parameters: ~connected_machine.models.MachineExtensionUpgrade
+        :type extension_upgrade_parameters: ~azure.mgmt.hybridcompute.models.MachineExtensionUpgrade
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a

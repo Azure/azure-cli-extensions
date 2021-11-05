@@ -295,16 +295,20 @@ def _arc_get_client_side_proxy():
 # Get the Access Details to connect to Arc Connectivity platform from the HybridCompute Resource Provider
 # TO DO: This is a temporary API call to get the relay info. We will move to a different one in the future.
 def _arc_list_access_details(cmd, resource_group, vm_name):
-    from azext_ssh._client_factory import cf_machine
-    client = cf_machine(cmd.cli_ctx)
-    status_code, result = client.list_access_details(resource_group_name=resource_group, machine_name=vm_name)
-    if status_code in [501, 404]:
-        error = {404: 'Not Found', 501: 'Not Implemented'}
-        raise azclierror.BadRequestError("REST API request for access information returned an invalid status "
-                                         f"\"{error[status_code]}\". Please update the current version of the SSH"
-                                         "extension by runing \"az extension update ssh\".")
-    result = result.replace("\'", "\"")
-    result_bytes = result.encode("ascii")
+    from azext_ssh._client_factory import cf_endpoint
+    client = cf_endpoint(cmd.cli_ctx)
+    result = client.list_credentials(resource_group_name=resource_group, machine_name=vm_name, endpoint_name="default")
+    result_string = json.dumps(
+        {
+            "relay": {
+                "namespaceName": result.namespace_name,
+                "namespaceNameSuffix": result.namespace_name_suffix,
+                "hybridConnectionName": result.hybrid_connection_name,
+                "accessKey": result.access_key,
+                "expiresOn": result.expires_on
+            }
+        })
+    result_bytes = result_string.encode("ascii")
     enc = base64.b64encode(result_bytes)
     base64_result_string = enc.decode("ascii")
     return base64_result_string

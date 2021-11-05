@@ -32,7 +32,7 @@ class PrivateLinkScopesOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~connected_machine.models
+    :type models: ~azure.mgmt.hybridcompute.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -56,7 +56,7 @@ class PrivateLinkScopesOperations(object):
 
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either HybridComputePrivateLinkScopeListResult or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~connected_machine.models.HybridComputePrivateLinkScopeListResult]
+        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.hybridcompute.models.HybridComputePrivateLinkScopeListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.HybridComputePrivateLinkScopeListResult"]
@@ -64,7 +64,7 @@ class PrivateLinkScopesOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-06-10-preview"
+        api_version = "2021-05-20"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -127,7 +127,7 @@ class PrivateLinkScopesOperations(object):
         :type resource_group_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either HybridComputePrivateLinkScopeListResult or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~connected_machine.models.HybridComputePrivateLinkScopeListResult]
+        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.hybridcompute.models.HybridComputePrivateLinkScopeListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.HybridComputePrivateLinkScopeListResult"]
@@ -135,7 +135,7 @@ class PrivateLinkScopesOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-06-10-preview"
+        api_version = "2021-05-20"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -199,7 +199,7 @@ class PrivateLinkScopesOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-06-10-preview"
+        api_version = "2021-05-20"
         accept = "application/json"
 
         # Construct URL
@@ -313,7 +313,7 @@ class PrivateLinkScopesOperations(object):
         :type scope_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: HybridComputePrivateLinkScope, or the result of cls(response)
-        :rtype: ~connected_machine.models.HybridComputePrivateLinkScope
+        :rtype: ~azure.mgmt.hybridcompute.models.HybridComputePrivateLinkScope
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.HybridComputePrivateLinkScope"]
@@ -321,7 +321,7 @@ class PrivateLinkScopesOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-06-10-preview"
+        api_version = "2021-05-20"
         accept = "application/json"
 
         # Construct URL
@@ -375,10 +375,10 @@ class PrivateLinkScopesOperations(object):
         :type scope_name: str
         :param parameters: Properties that need to be specified to create or update a Azure Arc for
          Servers and Clusters PrivateLinkScope.
-        :type parameters: ~connected_machine.models.HybridComputePrivateLinkScope
+        :type parameters: ~azure.mgmt.hybridcompute.models.HybridComputePrivateLinkScope
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: HybridComputePrivateLinkScope, or the result of cls(response)
-        :rtype: ~connected_machine.models.HybridComputePrivateLinkScope
+        :rtype: ~azure.mgmt.hybridcompute.models.HybridComputePrivateLinkScope
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.HybridComputePrivateLinkScope"]
@@ -386,7 +386,7 @@ class PrivateLinkScopesOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-06-10-preview"
+        api_version = "2021-05-20"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -449,10 +449,10 @@ class PrivateLinkScopesOperations(object):
         :type scope_name: str
         :param private_link_scope_tags: Updated tag information to set into the PrivateLinkScope
          instance.
-        :type private_link_scope_tags: ~connected_machine.models.TagsResource
+        :type private_link_scope_tags: ~azure.mgmt.hybridcompute.models.TagsResource
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: HybridComputePrivateLinkScope, or the result of cls(response)
-        :rtype: ~connected_machine.models.HybridComputePrivateLinkScope
+        :rtype: ~azure.mgmt.hybridcompute.models.HybridComputePrivateLinkScope
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.HybridComputePrivateLinkScope"]
@@ -460,7 +460,7 @@ class PrivateLinkScopesOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-06-10-preview"
+        api_version = "2021-05-20"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -517,7 +517,7 @@ class PrivateLinkScopesOperations(object):
         :type private_link_scope_id: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: PrivateLinkScopeValidationDetails, or the result of cls(response)
-        :rtype: ~connected_machine.models.PrivateLinkScopeValidationDetails
+        :rtype: ~azure.mgmt.hybridcompute.models.PrivateLinkScopeValidationDetails
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.PrivateLinkScopeValidationDetails"]
@@ -525,7 +525,7 @@ class PrivateLinkScopesOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-06-10-preview"
+        api_version = "2021-05-20"
         accept = "application/json"
 
         # Construct URL
@@ -578,7 +578,7 @@ class PrivateLinkScopesOperations(object):
         :type machine_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: PrivateLinkScopeValidationDetails, or the result of cls(response)
-        :rtype: ~connected_machine.models.PrivateLinkScopeValidationDetails
+        :rtype: ~azure.mgmt.hybridcompute.models.PrivateLinkScopeValidationDetails
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.PrivateLinkScopeValidationDetails"]
@@ -586,7 +586,7 @@ class PrivateLinkScopesOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-06-10-preview"
+        api_version = "2021-05-20"
         accept = "application/json"
 
         # Construct URL

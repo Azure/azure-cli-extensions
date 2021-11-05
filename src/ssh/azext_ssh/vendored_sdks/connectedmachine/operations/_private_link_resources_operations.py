@@ -30,7 +30,7 @@ class PrivateLinkResourcesOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~connected_machine.models
+    :type models: ~azure.mgmt.hybridcompute.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -60,7 +60,7 @@ class PrivateLinkResourcesOperations(object):
         :type scope_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either PrivateLinkResourceListResult or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~connected_machine.models.PrivateLinkResourceListResult]
+        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.hybridcompute.models.PrivateLinkResourceListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.PrivateLinkResourceListResult"]
@@ -68,7 +68,7 @@ class PrivateLinkResourcesOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-06-10-preview"
+        api_version = "2021-05-20"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -139,7 +139,7 @@ class PrivateLinkResourcesOperations(object):
         :type group_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: PrivateLinkResource, or the result of cls(response)
-        :rtype: ~connected_machine.models.PrivateLinkResource
+        :rtype: ~azure.mgmt.hybridcompute.models.PrivateLinkResource
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.PrivateLinkResource"]
@@ -147,7 +147,7 @@ class PrivateLinkResourcesOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-06-10-preview"
+        api_version = "2021-05-20"
         accept = "application/json"
 
         # Construct URL

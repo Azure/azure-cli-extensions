@@ -12,42 +12,35 @@ from azure.core.configuration import Configuration
 from azure.core.pipeline import policies
 from azure.mgmt.core.policies import ARMHttpLoggingPolicy
 
-from .._version import VERSION
-
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
     from azure.core.credentials_async import AsyncTokenCredential
 
+VERSION = "unknown"
 
-class ConnectedMachineConfiguration(Configuration):
-    """Configuration for ConnectedMachine.
+class HybridConnectivityManagementAPIConfiguration(Configuration):
+    """Configuration for HybridConnectivityManagementAPI.
 
     Note that all parameters used to create this instance are saved as instance
     attributes.
 
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials_async.AsyncTokenCredential
-    :param subscription_id: The ID of the target subscription.
-    :type subscription_id: str
     """
 
     def __init__(
         self,
         credential: "AsyncTokenCredential",
-        subscription_id: str,
         **kwargs: Any
     ) -> None:
         if credential is None:
             raise ValueError("Parameter 'credential' must not be None.")
-        if subscription_id is None:
-            raise ValueError("Parameter 'subscription_id' must not be None.")
-        super(ConnectedMachineConfiguration, self).__init__(**kwargs)
+        super(HybridConnectivityManagementAPIConfiguration, self).__init__(**kwargs)
 
         self.credential = credential
-        self.subscription_id = subscription_id
-        self.api_version = "2021-05-20"
+        self.api_version = "2021-10-06-preview"
         self.credential_scopes = kwargs.pop('credential_scopes', ['https://management.azure.com/.default'])
-        kwargs.setdefault('sdk_moniker', 'mgmt-hybridcompute/{}'.format(VERSION))
+        kwargs.setdefault('sdk_moniker', 'hybridconnectivitymanagementapi/{}'.format(VERSION))
         self._configure(**kwargs)
 
     def _configure(

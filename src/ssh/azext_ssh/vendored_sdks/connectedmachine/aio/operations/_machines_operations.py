@@ -26,7 +26,7 @@ class MachinesOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~connected_machine.models
+    :type models: ~azure.mgmt.hybridcompute.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -40,198 +40,6 @@ class MachinesOperations:
         self._serialize = serializer
         self._deserialize = deserializer
         self._config = config
-
-    async def list_access_details(
-        self,
-        resource_group_name: str,
-        machine_name: str,
-        **kwargs
-    ) -> str:
-        """The operation to create or update a hybrid machine resource identity in Azure.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-        :type resource_group_name: str
-        :param machine_name: The name of the hybrid machine.
-        :type machine_name: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: str, or the result of cls(response)
-        :rtype: str
-        :raises: ~azure.core.exceptions.HttpResponseError
-        """
-        cls = kwargs.pop('cls', None)  # type: ClsType[str]
-        error_map = {
-            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
-        }
-        error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-06-10-preview"
-        accept = "application/json"
-
-        # Construct URL
-        url = self.list_access_details.metadata['url']  # type: ignore
-        path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'machineName': self._serialize.url("machine_name", machine_name, 'str'),
-        }
-        url = self._client.format_url(url, **path_format_arguments)
-
-        # Construct parameters
-        query_parameters = {}  # type: Dict[str, Any]
-        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
-
-        # Construct headers
-        header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
-
-        request = self._client.post(url, query_parameters, header_parameters)
-        pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
-        response = pipeline_response.http_response
-
-        if response.status_code not in [200]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
-
-        deserialized = self._deserialize('str', pipeline_response)
-
-        if cls:
-            return cls(pipeline_response, deserialized, {})
-
-        return deserialized
-    list_access_details.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridCompute/machines/{machineName}/listAccessDetails'}  # type: ignore
-
-    async def create_or_update(
-        self,
-        resource_group_name: str,
-        machine_name: str,
-        parameters: "models.Machine",
-        **kwargs
-    ) -> "models.Machine":
-        """The operation to create or update a hybrid machine resource identity in Azure.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-        :type resource_group_name: str
-        :param machine_name: The name of the hybrid machine.
-        :type machine_name: str
-        :param parameters: Parameters supplied to the Create hybrid machine operation.
-        :type parameters: ~connected_machine.models.Machine
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: Machine, or the result of cls(response)
-        :rtype: ~connected_machine.models.Machine
-        :raises: ~azure.core.exceptions.HttpResponseError
-        """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.Machine"]
-        error_map = {
-            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
-        }
-        error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-06-10-preview"
-        content_type = kwargs.pop("content_type", "application/json")
-        accept = "application/json"
-
-        # Construct URL
-        url = self.create_or_update.metadata['url']  # type: ignore
-        path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'machineName': self._serialize.url("machine_name", machine_name, 'str'),
-        }
-        url = self._client.format_url(url, **path_format_arguments)
-
-        # Construct parameters
-        query_parameters = {}  # type: Dict[str, Any]
-        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
-
-        # Construct headers
-        header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
-        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
-
-        body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(parameters, 'Machine')
-        body_content_kwargs['content'] = body_content
-        request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
-        pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
-        response = pipeline_response.http_response
-
-        if response.status_code not in [200]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
-
-        deserialized = self._deserialize('Machine', pipeline_response)
-
-        if cls:
-            return cls(pipeline_response, deserialized, {})
-
-        return deserialized
-    create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridCompute/machines/{machineName}'}  # type: ignore
-
-    async def update(
-        self,
-        resource_group_name: str,
-        machine_name: str,
-        parameters: "models.MachineUpdate",
-        **kwargs
-    ) -> "models.Machine":
-        """The operation to update a hybrid machine.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-        :type resource_group_name: str
-        :param machine_name: The name of the hybrid machine.
-        :type machine_name: str
-        :param parameters: Parameters supplied to the Update hybrid machine operation.
-        :type parameters: ~connected_machine.models.MachineUpdate
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: Machine, or the result of cls(response)
-        :rtype: ~connected_machine.models.Machine
-        :raises: ~azure.core.exceptions.HttpResponseError
-        """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.Machine"]
-        error_map = {
-            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
-        }
-        error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-06-10-preview"
-        content_type = kwargs.pop("content_type", "application/json")
-        accept = "application/json"
-
-        # Construct URL
-        url = self.update.metadata['url']  # type: ignore
-        path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'machineName': self._serialize.url("machine_name", machine_name, 'str'),
-        }
-        url = self._client.format_url(url, **path_format_arguments)
-
-        # Construct parameters
-        query_parameters = {}  # type: Dict[str, Any]
-        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
-
-        # Construct headers
-        header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
-        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
-
-        body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(parameters, 'MachineUpdate')
-        body_content_kwargs['content'] = body_content
-        request = self._client.patch(url, query_parameters, header_parameters, **body_content_kwargs)
-        pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
-        response = pipeline_response.http_response
-
-        if response.status_code not in [200]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
-
-        deserialized = self._deserialize('Machine', pipeline_response)
-
-        if cls:
-            return cls(pipeline_response, deserialized, {})
-
-        return deserialized
-    update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridCompute/machines/{machineName}'}  # type: ignore
 
     async def delete(
         self,
@@ -255,7 +63,7 @@ class MachinesOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-06-10-preview"
+        api_version = "2021-05-20"
         accept = "application/json"
 
         # Construct URL
@@ -303,10 +111,10 @@ class MachinesOperations:
         :param machine_name: The name of the hybrid machine.
         :type machine_name: str
         :param expand: The expand expression to apply on the operation.
-        :type expand: str or ~connected_machine.models.InstanceViewTypes
+        :type expand: str or ~azure.mgmt.hybridcompute.models.InstanceViewTypes
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: Machine, or the result of cls(response)
-        :rtype: ~connected_machine.models.Machine
+        :rtype: ~azure.mgmt.hybridcompute.models.Machine
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.Machine"]
@@ -314,7 +122,7 @@ class MachinesOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-06-10-preview"
+        api_version = "2021-05-20"
         accept = "application/json"
 
         # Construct URL
@@ -365,7 +173,7 @@ class MachinesOperations:
         :type resource_group_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either MachineListResult or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~connected_machine.models.MachineListResult]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.hybridcompute.models.MachineListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.MachineListResult"]
@@ -373,7 +181,7 @@ class MachinesOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-06-10-preview"
+        api_version = "2021-05-20"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -434,7 +242,7 @@ class MachinesOperations:
 
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either MachineListResult or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~connected_machine.models.MachineListResult]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.hybridcompute.models.MachineListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.MachineListResult"]
@@ -442,7 +250,7 @@ class MachinesOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-06-10-preview"
+        api_version = "2021-05-20"
         accept = "application/json"
 
         def prepare_request(next_link=None):

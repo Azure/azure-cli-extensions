@@ -30,17 +30,17 @@ class ConnectedMachine(ConnectedMachineOperationsMixin):
     """The Hybrid Compute Management Client.
 
     :ivar machines: MachinesOperations operations
-    :vartype machines: connected_machine.aio.operations.MachinesOperations
+    :vartype machines: azure.mgmt.hybridcompute.aio.operations.MachinesOperations
     :ivar machine_extensions: MachineExtensionsOperations operations
-    :vartype machine_extensions: connected_machine.aio.operations.MachineExtensionsOperations
+    :vartype machine_extensions: azure.mgmt.hybridcompute.aio.operations.MachineExtensionsOperations
     :ivar operations: Operations operations
-    :vartype operations: connected_machine.aio.operations.Operations
+    :vartype operations: azure.mgmt.hybridcompute.aio.operations.Operations
     :ivar private_link_scopes: PrivateLinkScopesOperations operations
-    :vartype private_link_scopes: connected_machine.aio.operations.PrivateLinkScopesOperations
+    :vartype private_link_scopes: azure.mgmt.hybridcompute.aio.operations.PrivateLinkScopesOperations
     :ivar private_link_resources: PrivateLinkResourcesOperations operations
-    :vartype private_link_resources: connected_machine.aio.operations.PrivateLinkResourcesOperations
+    :vartype private_link_resources: azure.mgmt.hybridcompute.aio.operations.PrivateLinkResourcesOperations
     :ivar private_endpoint_connections: PrivateEndpointConnectionsOperations operations
-    :vartype private_endpoint_connections: connected_machine.aio.operations.PrivateEndpointConnectionsOperations
+    :vartype private_endpoint_connections: azure.mgmt.hybridcompute.aio.operations.PrivateEndpointConnectionsOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials_async.AsyncTokenCredential
     :param subscription_id: The ID of the target subscription.
@@ -63,6 +63,7 @@ class ConnectedMachine(ConnectedMachineOperationsMixin):
 
         client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
         self._serialize = Serializer(client_models)
+        self._serialize.client_side_validation = False
         self._deserialize = Deserializer(client_models)
 
         self.machines = MachinesOperations(

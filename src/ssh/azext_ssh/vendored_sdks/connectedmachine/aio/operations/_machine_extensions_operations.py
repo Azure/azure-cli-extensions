@@ -28,7 +28,7 @@ class MachineExtensionsOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~connected_machine.models
+    :type models: ~azure.mgmt.hybridcompute.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -56,7 +56,7 @@ class MachineExtensionsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-06-10-preview"
+        api_version = "2021-05-20"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -118,7 +118,7 @@ class MachineExtensionsOperations:
         :param extension_name: The name of the machine extension.
         :type extension_name: str
         :param extension_parameters: Parameters supplied to the Create Machine Extension operation.
-        :type extension_parameters: ~connected_machine.models.MachineExtension
+        :type extension_parameters: ~azure.mgmt.hybridcompute.models.MachineExtension
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
@@ -126,7 +126,7 @@ class MachineExtensionsOperations:
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either MachineExtension or the result of cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~connected_machine.models.MachineExtension]
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.hybridcompute.models.MachineExtension]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
@@ -190,7 +190,7 @@ class MachineExtensionsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-06-10-preview"
+        api_version = "2021-05-20"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -252,7 +252,7 @@ class MachineExtensionsOperations:
         :param extension_name: The name of the machine extension.
         :type extension_name: str
         :param extension_parameters: Parameters supplied to the Create Machine Extension operation.
-        :type extension_parameters: ~connected_machine.models.MachineExtensionUpdate
+        :type extension_parameters: ~azure.mgmt.hybridcompute.models.MachineExtensionUpdate
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
@@ -260,7 +260,7 @@ class MachineExtensionsOperations:
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either MachineExtension or the result of cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~connected_machine.models.MachineExtension]
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.hybridcompute.models.MachineExtension]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
@@ -323,7 +323,7 @@ class MachineExtensionsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-06-10-preview"
+        api_version = "2021-05-20"
         accept = "application/json"
 
         # Construct URL
@@ -444,7 +444,7 @@ class MachineExtensionsOperations:
         :type extension_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: MachineExtension, or the result of cls(response)
-        :rtype: ~connected_machine.models.MachineExtension
+        :rtype: ~azure.mgmt.hybridcompute.models.MachineExtension
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.MachineExtension"]
@@ -452,7 +452,7 @@ class MachineExtensionsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-06-10-preview"
+        api_version = "2021-05-20"
         accept = "application/json"
 
         # Construct URL
@@ -507,7 +507,7 @@ class MachineExtensionsOperations:
         :type expand: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either MachineExtensionsListResult or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~connected_machine.models.MachineExtensionsListResult]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.hybridcompute.models.MachineExtensionsListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.MachineExtensionsListResult"]
@@ -515,7 +515,7 @@ class MachineExtensionsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-06-10-preview"
+        api_version = "2021-05-20"
         accept = "application/json"
 
         def prepare_request(next_link=None):

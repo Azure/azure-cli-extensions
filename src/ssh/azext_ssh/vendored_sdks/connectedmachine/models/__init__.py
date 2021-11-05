@@ -34,10 +34,7 @@ try:
     from ._models_py3 import OperationValue
     from ._models_py3 import OperationValueDisplay
     from ._models_py3 import OsProfile
-    from ._models_py3 import OsProfileLinuxConfiguration
-    from ._models_py3 import OsProfileWindowsConfiguration
     from ._models_py3 import PrivateEndpointConnection
-    from ._models_py3 import PrivateEndpointConnectionDataModel
     from ._models_py3 import PrivateEndpointConnectionListResult
     from ._models_py3 import PrivateEndpointConnectionProperties
     from ._models_py3 import PrivateEndpointProperty
@@ -81,10 +78,7 @@ except (SyntaxError, ImportError):
     from ._models import OperationValue  # type: ignore
     from ._models import OperationValueDisplay  # type: ignore
     from ._models import OsProfile  # type: ignore
-    from ._models import OsProfileLinuxConfiguration  # type: ignore
-    from ._models import OsProfileWindowsConfiguration  # type: ignore
     from ._models import PrivateEndpointConnection  # type: ignore
-    from ._models import PrivateEndpointConnectionDataModel  # type: ignore
     from ._models import PrivateEndpointConnectionListResult  # type: ignore
     from ._models import PrivateEndpointConnectionProperties  # type: ignore
     from ._models import PrivateEndpointProperty  # type: ignore
@@ -137,10 +131,7 @@ __all__ = [
     'OperationValue',
     'OperationValueDisplay',
     'OsProfile',
-    'OsProfileLinuxConfiguration',
-    'OsProfileWindowsConfiguration',
     'PrivateEndpointConnection',
-    'PrivateEndpointConnectionDataModel',
     'PrivateEndpointConnectionListResult',
     'PrivateEndpointConnectionProperties',
     'PrivateEndpointProperty',

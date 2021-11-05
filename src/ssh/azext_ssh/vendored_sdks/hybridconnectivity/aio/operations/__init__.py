@@ -6,14 +6,10 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from ._connected_machine import ConnectedMachine
-from ._version import VERSION
+from ._operations import Operations
+from ._endpoints_operations import EndpointsOperations
 
-__version__ = VERSION
-__all__ = ['ConnectedMachine']
-
-try:
-    from ._patch import patch_sdk  # type: ignore
-    patch_sdk()
-except ImportError:
-    pass
+__all__ = [
+    'Operations',
+    'EndpointsOperations',
+]
