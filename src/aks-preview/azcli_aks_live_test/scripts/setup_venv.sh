@@ -28,7 +28,7 @@ setupAZ(){
     ext_repo=${2:-""}
 
     # install azdev, used later to install azcli and extension
-    pip install azdev==0.1.32
+    pip install azdev
 
     # pre-install-az: check existing az
     which az || az version || az extension list || true
