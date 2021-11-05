@@ -14,6 +14,7 @@ from .vendored_sdks.azure_mgmt_webpubsub.models import WebPubSubRequestType
 from ._actions import (
     EventHandlerTemplateUpdateAction
 )
+from ._validator import validate_network_rule
 
 WEBPUBSUB_KEY_TYPE = ['primary', 'secondary', 'salt']
 SKU_TYPE = ['Standard_S1', 'Free_F1']
@@ -43,7 +44,7 @@ def load_arguments(self, _):
         c.argument('key_type', arg_type=get_enum_type(WEBPUBSUB_KEY_TYPE), help='The name of access key to regenerate')
 
     # Network Rule
-    with self.argument_context('webpubsub network-rule update') as c:
+    with self.argument_context('webpubsub network-rule update', validator=validate_network_rule) as c:
         c.argument('connection_name', nargs='*', help='Space-separeted list of private endpoint connection name.', required=False, arg_group='Private Endpoint Connection')
         c.argument('public_network', arg_type=get_three_state_flag(), help='Set rules for public network.', required=False, arg_group='Public Network')
         c.argument('allow', arg_type=get_enum_type(WebPubSubRequestType), nargs='*', help='The allowed virtual network rule. Space-separeted list of scope to assign.', type=WebPubSubRequestType, required=False)
@@ -58,8 +59,8 @@ def load_arguments(self, _):
                   'webpubsub hub create']:
         with self.argument_context(scope) as c:
             c.argument('hub_name', help='The hub to manage')
-            c.argument('event_handler', action=EventHandlerTemplateUpdateAction, nargs='*', help='Template item for event handler settings. Use key=value pattern to set properties. Supported keys are "url-template", "user-event-pattern", "system-event", "auth-type" and "auth-resource".')
-            c.argument('allow_anonymous', arg_type=get_three_state_flag(), help='Set if anonymous connections are allowed for this hub')
+            c.argument('event_handler', action=EventHandlerTemplateUpdateAction, nargs='*', help='Template item for event handler settings. Use key=value pattern to set properties. Supported keys are "url-template", "user-event-pattern", "system-event", "auth-type" and "auth-resource". Setting multiple "system-event" results in an array and for other properties, only last set takes active.')
+            c.argument('allow_anonymous', arg_type=get_three_state_flag(), help='Set if anonymous connections are allowed for this hub. True means allow and False means deny.')
 
     with self.argument_context('webpubsub hub list') as c:
         c.argument('webpubsub_name', webpubsub_name_type, options_list=['--name', '-n'], id_part=None)

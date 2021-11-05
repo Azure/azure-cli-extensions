@@ -97,6 +97,18 @@ class WebpubsubScenarioTest(ScenarioTest):
             self.exists('secondaryKey')
         ])
 
+        # Test list skus
+        self.cmd('webpubsub list-skus -n {name} -g {rg}', checks=[
+            self.check('[0].sku.name', 'Free_F1'),
+            self.check('[1].sku.name', 'Standard_S1')
+        ])
+
+        # Test list usage
+        self.cmd('webpubsub list-usage -l {location}', checks=[
+            self.check('[0].name.value', 'FreeTierInstances'),
+            self.check('[1].name.value', 'SignalRTotalUnits')
+        ])
+
         # Test key regenerate
         self.cmd('webpubsub key regenerate -n {name} -g {rg} --key-type secondary', checks=[
             self.exists('primaryKey'),
