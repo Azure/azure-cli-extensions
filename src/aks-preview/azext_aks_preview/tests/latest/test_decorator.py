@@ -914,7 +914,10 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         # custom value
         ctx_3 = AKSPreviewContext(
             self.cmd,
-            {"kubernetes_version": "custom_kubernetes_version", "snapshot_id": "test_snapshot_id"},
+            {
+                "kubernetes_version": "custom_kubernetes_version",
+                "snapshot_id": "test_snapshot_id",
+            },
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
@@ -957,9 +960,24 @@ class AKSPreviewContextTestCase(unittest.TestCase):
             "azext_aks_preview.decorator._get_snapshot",
             return_value=mock_snapshot,
         ):
-            self.assertEqual(
-                ctx_2.get_os_sku(), "test_os_sku"
-            )
+            self.assertEqual(ctx_2.get_os_sku(), "test_os_sku")
+
+        # custom value
+        ctx_3 = AKSPreviewContext(
+            self.cmd,
+            {
+                "os_sku": "custom_os_sku",
+                "snapshot_id": "test_snapshot_id",
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        mock_snapshot = Mock(os_sku="test_os_sku")
+        with patch(
+            "azext_aks_preview.decorator._get_snapshot",
+            return_value=mock_snapshot,
+        ):
+            self.assertEqual(ctx_3.get_os_sku(), "custom_os_sku")
 
     def test_get_node_vm_size(self):
         # default
@@ -991,9 +1009,24 @@ class AKSPreviewContextTestCase(unittest.TestCase):
             "azext_aks_preview.decorator._get_snapshot",
             return_value=mock_snapshot,
         ):
-            self.assertEqual(
-                ctx_2.get_node_vm_size(), "test_vm_size"
-            )
+            self.assertEqual(ctx_2.get_node_vm_size(), "test_vm_size")
+
+        # custom value
+        ctx_3 = AKSPreviewContext(
+            self.cmd,
+            {
+                "node_vm_size": "custom_node_vm_size",
+                "snapshot_id": "test_snapshot_id",
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        mock_snapshot = Mock(vm_size="test_vm_size")
+        with patch(
+            "azext_aks_preview.decorator._get_snapshot",
+            return_value=mock_snapshot,
+        ):
+            self.assertEqual(ctx_3.get_node_vm_size(), "custom_node_vm_size")
 
 
 class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
@@ -1035,6 +1068,7 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
                 "workload_runtime": None,
                 "gpu_instance_profile": None,
                 "kubelet_config": None,
+                "snapshot_id": None,
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
@@ -1072,6 +1106,7 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
             workload_runtime=None,
             gpu_instance_profile=None,
             kubelet_config=None,
+            creation_data=None,
         )
         ground_truth_mc_1 = self.models.ManagedCluster(location="test_location")
         ground_truth_mc_1.agent_pool_profiles = [agent_pool_profile_1]
@@ -1087,7 +1122,7 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
                 "nodepool_labels": {"k1": "v1", "k2": "v2"},
                 "node_count": 10,
                 "node_vm_size": "Standard_DSx_vy",
-                "os_sku": "test_os_sku",
+                "os_sku": None,
                 "vnet_subnet_id": "test_vnet_subnet_id",
                 "pod_subnet_id": "test_pod_subnet_id",
                 "ppg": "test_ppg_id",
@@ -1107,11 +1142,21 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
                 "gpu_instance_profile": "test_gpu_instance_profile",
                 "kubelet_config": _get_test_data_file("kubeletconfig.json"),
                 "linux_os_config": _get_test_data_file("linuxosconfig.json"),
+                "snapshot_id": "test_snapshot_id",
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
         mc_2 = self.models.ManagedCluster(location="test_location")
-        dec_mc_2 = dec_2.set_up_agent_pool_profiles(mc_2)
+        mock_snapshot = Mock(
+            kubernetes_version="",
+            os_sku="snapshot_os_sku",
+            vm_size="snapshot_vm_size",
+        )
+        with patch(
+            "azext_aks_preview.decorator._get_snapshot",
+            return_value=mock_snapshot,
+        ):
+            dec_mc_2 = dec_2.set_up_agent_pool_profiles(mc_2)
         agent_pool_profile_2 = self.models.ManagedClusterAgentPoolProfile(
             # Must be 12 chars or less before ACS RP adds to it
             name="test_np_name",
@@ -1120,7 +1165,7 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
             count=10,
             vm_size="Standard_DSx_vy",
             os_type="Linux",
-            os_sku="test_os_sku",
+            os_sku="snapshot_os_sku",
             vnet_subnet_id="test_vnet_subnet_id",
             pod_subnet_id="test_pod_subnet_id",
             proximity_placement_group_id="test_ppg_id",
@@ -1163,6 +1208,9 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
                     "netIpv4IpLocalPortRange": "32000 60000",
                 },
             },
+            creation_data=self.models.CreationData(
+                source_resource_id="test_snapshot_id"
+            ),
         )
         ground_truth_mc_2 = self.models.ManagedCluster(location="test_location")
         ground_truth_mc_2.agent_pool_profiles = [agent_pool_profile_2]
