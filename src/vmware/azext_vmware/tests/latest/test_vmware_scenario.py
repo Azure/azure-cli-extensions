@@ -53,8 +53,8 @@ class VmwareScenarioTest(ScenarioTest):
         # self.cmd('vmware private-cloud listadmincredentials -g {rg} -c {privatecloud}')
 
         # rotate passwords
-        self.cmd('vmware private-cloud rotate-vcenter-password -g {rg} -c {privatecloud}')
-        self.cmd('vmware private-cloud rotate-nsxt-password -g {rg} -c {privatecloud}')
+        # self.cmd('vmware private-cloud rotate-vcenter-password -g {rg} -c {privatecloud}')
+        # self.cmd('vmware private-cloud rotate-nsxt-password -g {rg} -c {privatecloud}')
 
         # update private cloud to changed default cluster size
         self.cmd('vmware private-cloud update -g {rg} -n {privatecloud} --cluster-size 4')
