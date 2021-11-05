@@ -297,7 +297,11 @@ def _arc_get_client_side_proxy():
 def _arc_list_access_details(cmd, resource_group, vm_name):
     from azext_ssh._client_factory import cf_endpoint
     client = cf_endpoint(cmd.cli_ctx)
-    result = client.list_credentials(resource_group_name=resource_group, machine_name=vm_name, endpoint_name="default")
+    try:
+        result = client.list_credentials(resource_group_name=resource_group, machine_name=vm_name, endpoint_name="default")
+    except Exception as e:
+        raise azclierror.ClientRequestError(f"Request for Azure Relay Information Failed: {str(e)}")
+
     result_string = json.dumps(
         {
             "relay": {
