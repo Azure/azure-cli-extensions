@@ -298,15 +298,16 @@ def _arc_list_access_details(cmd, resource_group, vm_name):
     from azext_ssh._client_factory import cf_endpoint
     client = cf_endpoint(cmd.cli_ctx)
     result = client.list_credentials(resource_group_name=resource_group, machine_name=vm_name, endpoint_name="default")
-    result_string = str({
-        "relay": {
-            "namespaceName": result.namespace_name, 
-            "namespaceNameSuffix": result.namespace_name_suffix,
-            "hybridConnectionName": result.hybrid_connection_name,
-            "accessKey": result.access_key,
-            "expiresOn": result.expires_on
-        }     
-    }).replace("\'", "\"")
+    result_string = json.dumps(
+        {
+            "relay": {
+                "namespaceName": result.namespace_name,
+                "namespaceNameSuffix": result.namespace_name_suffix,
+                "hybridConnectionName": result.hybrid_connection_name,
+                "accessKey": result.access_key,
+                "expiresOn": result.expires_on
+            }
+        })
     result_bytes = result_string.encode("ascii")
     enc = base64.b64encode(result_bytes)
     base64_result_string = enc.decode("ascii")
