@@ -316,6 +316,7 @@ def app_create(cmd, client, resource_group, service, name,
                cpu=None,
                memory=None,
                instance_count=None,
+               disable_probe=None,
                runtime_version=None,
                jvm_options=None,
                env=None,
@@ -404,7 +405,7 @@ def app_create(cmd, client, resource_group, service, name,
     logger.warning(
         "[2/4] Creating default deployment with name '{}'".format(DEFAULT_DEPLOYMENT_NAME))
     default_deployment_resource = _default_deployment_resource_builder(cpu, memory, env, jvm_options, runtime_version,
-                                                                       instance_count)
+                                                                       instance_count, disable_probe)
     poller = client.deployments.begin_create_or_update(resource_group,
                                                        service,
                                                        name,
@@ -432,15 +433,19 @@ def app_create(cmd, client, resource_group, service, name,
     return app
 
 
-def _default_deployment_resource_builder(cpu, memory, env, jvm_options, runtime_version, instance_count):
+def _default_deployment_resource_builder(cpu, memory, env, jvm_options, runtime_version, instance_count, disable_probe=None):
     resource_requests = models_20210601preview.ResourceRequests(cpu=cpu, memory=memory)
+    container_probe_settings = None
+    if disable_probe is not None:
+        container_probe_settings = models_20210901preview.DeploymentSettingsContainerProbeSettings(disable_probe=disable_probe)
 
-    deployment_settings = models_20210601preview.DeploymentSettings(
+    deployment_settings = models_20210901preview.DeploymentSettings(
         resource_requests=resource_requests,
         environment_variables=env,
         jvm_options=jvm_options,
         net_core_main_entry_path=None,
-        runtime_version=runtime_version)
+        runtime_version=runtime_version,
+        container_probe_settings=container_probe_settings)
     deployment_settings.cpu = None
     deployment_settings.memory_in_gb = None
 
@@ -448,7 +453,7 @@ def _default_deployment_resource_builder(cpu, memory, env, jvm_options, runtime_
 
     user_source_info = models_20210601preview.UserSourceInfo(
         relative_path='<default>', type=file_type)
-    properties = models_20210601preview.DeploymentResourceProperties(
+    properties = models_20210901preview.DeploymentResourceProperties(
         deployment_settings=deployment_settings,
         source=user_source_info)
 
@@ -470,6 +475,7 @@ def app_update(cmd, client, resource_group, service, name,
                jvm_options=None,
                main_entry=None,
                env=None,
+               disable_probe=None,
                enable_persistent_storage=None,
                https_only=None,
                enable_end_to_end_tls=None,
@@ -553,11 +559,16 @@ def app_update(cmd, client, resource_group, service, name,
             return app_updated
 
     logger.warning("[2/2] Updating deployment '{}'".format(deployment))
+    container_probe_settings = None
+    if disable_probe is not None:
+        container_probe_settings = models_20210901preview.DeploymentSettingsContainerProbeSettings(disable_probe=disable_probe)
+
     deployment_settings = models_20210901preview.DeploymentSettings(
         environment_variables=env,
         jvm_options=jvm_options,
         net_core_main_entry_path=main_entry,
-        runtime_version=runtime_version)
+        runtime_version=runtime_version,
+        container_probe_settings=container_probe_settings)
     deployment_settings.cpu = None
     deployment_settings.memory_in_gb = None
     properties = models_20210901preview.DeploymentResourceProperties(
@@ -672,6 +683,7 @@ def app_deploy(cmd, client, resource_group, service, name,
                jvm_options=None,
                main_entry=None,
                env=None,
+               disable_probe=None,
                no_wait=False):
     logger.warning(LOG_RUNNING_PROMPT)
     if not deployment:
@@ -698,6 +710,7 @@ def app_deploy(cmd, client, resource_group, service, name,
                        None,
                        None,
                        env,
+                       disable_probe,
                        main_entry,
                        target_module,
                        no_wait,
@@ -955,6 +968,7 @@ def deployment_create(cmd, client, resource_group, service, app, name,
                       memory=None,
                       instance_count=None,
                       env=None,
+                      disable_probe=None,
                       no_wait=False):
     cpu = validate_cpu(cpu)
     memory = validate_memory(memory)
@@ -981,6 +995,8 @@ def deployment_create(cmd, client, resource_group, service, app, name,
                 instance_count = instance_count or active_deployment.sku.capacity
                 jvm_options = jvm_options or active_deployment.properties.deployment_settings.jvm_options
                 env = env or active_deployment.properties.deployment_settings.environment_variables
+                if active_deployment.properties.deployment_settings.container_probe_settings is not None:
+                    disable_probe = disable_probe or active_deployment.properties.deployment_settings.container_probe_settings.disable_probe
     else:
         cpu = cpu or "1"
         memory = memory or "1Gi"
@@ -994,6 +1010,7 @@ def deployment_create(cmd, client, resource_group, service, app, name,
                        memory,
                        instance_count,
                        env,
+                       disable_probe,
                        main_entry,
                        target_module,
                        no_wait,
@@ -1548,6 +1565,7 @@ def _get_all_apps(client, resource_group, service):
 def _app_deploy(client, resource_group, service, app, name, version, path, runtime_version, jvm_options, cpu, memory,
                 instance_count,
                 env,
+                disable_probe=None,
                 main_entry=None,
                 target_module=None,
                 no_wait=False,
@@ -1563,7 +1581,7 @@ def _app_deploy(client, resource_group, service, app, name, version, path, runti
             logger.warning(
                 "Creating default deployment without artifact/source folder. Please specify the --artifact-path/--source-path argument explicitly if needed.")
             default_deployment_resource = _default_deployment_resource_builder(cpu, memory, env, jvm_options,
-                                                                               runtime_version, instance_count)
+                                                                               runtime_version, instance_count, disable_probe)
             return sdk_no_wait(no_wait, client.deployments.begin_create_or_update,
                                resource_group, service, app, name, default_deployment_resource)
     upload_url = None
@@ -1582,12 +1600,17 @@ def _app_deploy(client, resource_group, service, app, name, version, path, runti
     if cpu is not None or memory is not None:
         resource_requests = models_20210601preview.ResourceRequests(cpu=cpu, memory=memory)
 
-    deployment_settings = models_20210601preview.DeploymentSettings(
+    container_probe_settings = None
+    if disable_probe is not None:
+        container_probe_settings = models_20210901preview.DeploymentSettingsContainerProbeSettings(disable_probe=disable_probe)
+
+    deployment_settings = models_20210901preview.DeploymentSettings(
         resource_requests=resource_requests,
         environment_variables=env,
         jvm_options=jvm_options,
         net_core_main_entry_path=main_entry,
-        runtime_version=runtime_version)
+        runtime_version=runtime_version,
+        container_probe_settings=container_probe_settings)
     deployment_settings.cpu = None
     deployment_settings.memory_in_gb = None
     sku = models_20210601preview.Sku(name="S0", tier="STANDARD", capacity=instance_count)

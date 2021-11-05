@@ -1,5 +1,9 @@
 Release History
 ===============
+2.12.0
+-----
+* Add --disable-probe argument into 'az spring-cloud app create', 'az spring-cloud app update', 'az spring-cloud app deploy' and 'az spring-cloud app deployment create'
+
 2.11.2
 -----
 * Add support to stop and start Azure Spring Cloud service instance

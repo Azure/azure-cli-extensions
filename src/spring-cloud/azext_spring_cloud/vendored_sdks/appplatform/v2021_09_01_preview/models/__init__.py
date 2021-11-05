@@ -42,6 +42,7 @@ try:
     from ._models_py3 import DeploymentResourceCollection
     from ._models_py3 import DeploymentResourceProperties
     from ._models_py3 import DeploymentSettings
+    from ._models_py3 import DeploymentSettingsContainerProbeSettings
     from ._models_py3 import DiagnosticParameters
     from ._models_py3 import Error
     from ._models_py3 import GitPatternRepository
@@ -127,6 +128,7 @@ except (SyntaxError, ImportError):
     from ._models import DeploymentResourceCollection  # type: ignore
     from ._models import DeploymentResourceProperties  # type: ignore
     from ._models import DeploymentSettings  # type: ignore
+    from ._models import DeploymentSettingsContainerProbeSettings  # type: ignore
     from ._models import DiagnosticParameters  # type: ignore
     from ._models import Error  # type: ignore
     from ._models import GitPatternRepository  # type: ignore
@@ -234,6 +236,7 @@ __all__ = [
     'DeploymentResourceCollection',
     'DeploymentResourceProperties',
     'DeploymentSettings',
+    'DeploymentSettingsContainerProbeSettings',
     'DiagnosticParameters',
     'Error',
     'GitPatternRepository',
