@@ -21,6 +21,22 @@ VMWARE DATA PROCESSING AGREEMENT. Once Professional Services Data is transferred
 ACCEPTANCE OF LEGAL TERMS. By continuing, you agree to the above additional Legal Terms for AVS. If you are an individual accepting these terms on behalf of an entity, you also represent that you have the legal authority to enter into these additional terms on that entity's behalf.
 '''
 
+ROTATE_VCENTER_PASSWORD_TERMS = '''
+Any services connected using these credentials will stop working and may cause you to be locked out of your account.
+
+Check if you're using your cloudadmin credentials for any connected services like backup and disaster recovery appliances, VMware HCX, or any vRealize suite products. Verify you're not using cloudadmin credentials for connected services before generating a new password.
+
+If you are using cloudadmin for connected services, learn how you can setup a connection to an external identity source to create and manage new credentials for your connected services: https://docs.microsoft.com/en-us/azure/azure-vmware/configure-identity-source-vcenter
+
+Press Y to confirm no services are using my cloudadmin credentials to connect to vCenter
+'''
+
+ROTATE_NSXT_PASSWORD_TERMS = '''
+Currently, rotating your NSX-T managed admin credentials isn’t supported.  If you need to rotate your NSX-T manager admin credentials, please submit a support request in the Azure Portal: https://portal.azure.com/#create/Microsoft.Support
+
+Press any key to continue
+'''
+
 
 def privatecloud_list(client: AVSClient, resource_group_name=None):
     if resource_group_name is None:
@@ -99,11 +115,18 @@ def privatecloud_deleteidentitysource(client: AVSClient, resource_group_name, na
 
 
 def privatecloud_rotate_vcenter_password(client: AVSClient, resource_group_name, private_cloud):
+    from knack.prompting import prompt_y_n
+    msg = ROTATE_VCENTER_PASSWORD_TERMS
+    if not prompt_y_n(msg, default="n"):
+        return None
     return client.private_clouds.begin_rotate_vcenter_password(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
 
 
-def privatecloud_rotate_nsxt_password(client: AVSClient, resource_group_name, private_cloud):
-    return client.private_clouds.begin_rotate_nsxt_password(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
+def privatecloud_rotate_nsxt_password():
+    from knack.prompting import prompt
+    msg = ROTATE_NSXT_PASSWORD_TERMS
+    prompt(msg)
+    # return client.private_clouds.begin_rotate_nsxt_password(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
 
 
 def cluster_create(client: AVSClient, resource_group_name, name, sku, private_cloud, size):

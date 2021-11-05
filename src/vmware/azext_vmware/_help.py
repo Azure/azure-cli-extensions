@@ -140,7 +140,7 @@ helps['vmware private-cloud rotate-nsxt-password'] = """
     short-summary: Rotate the NSX-T Manager password.
     examples:
     - name: Rotate the NSX-T Manager password.
-      text: az vmware private-cloud rotate-nsxt-password --resource-group MyResourceGroup --private-cloud MyPrivateCloud
+      text: az vmware private-cloud rotate-nsxt-password
 """
 
 helps['vmware authorization create'] = """
