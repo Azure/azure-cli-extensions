@@ -959,6 +959,8 @@ class AKSPreviewContext(AKSContext):
     def get_kubernetes_version(self) -> str:
         """Obtain the value of kubernetes_version.
 
+        Note: Inherited and extended in aks-preview to add support for getting values from snapshot.
+
         :return: string
         """
         return self._get_kubernetes_version()
@@ -1006,6 +1008,8 @@ class AKSPreviewContext(AKSContext):
 
     def get_os_sku(self) -> Union[str, None]:
         """Obtain the value of os_sku.
+
+        Note: Inherited and extended in aks-preview to add support for getting values from snapshot.
 
         :return: string or None
         """
@@ -1055,6 +1059,8 @@ class AKSPreviewContext(AKSContext):
 
     def get_node_vm_size(self) -> str:
         """Obtain the value of node_vm_size.
+
+        Note: Inherited and extended in aks-preview to add support for getting values from snapshot.
 
         :return: string
         """
