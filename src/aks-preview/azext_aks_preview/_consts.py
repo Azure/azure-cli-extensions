@@ -69,6 +69,7 @@ CONST_PRIVATE_DNS_ZONE_NONE = "none"
 # Azure Keyvault Secrets Provider configuration keys
 CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME = "azureKeyvaultSecretsProvider"
 CONST_SECRET_ROTATION_ENABLED = "enableSecretRotation"
+CONST_ROTATION_POLL_INTERVAL = "rotationPollInterval"
 
 # Scale Down Mode
 CONST_SCALE_DOWN_MODE_DELETE = "Delete"
