@@ -3741,12 +3741,27 @@ def _ensure_pod_identity_kubenet_consent(network_profile, pod_identity_profile, 
     pod_identity_profile.allow_network_plugin_kubenet = True
 
 
+def _fill_defaults_for_pod_identity_exceptions(pod_identity_exceptions):
+    if not pod_identity_exceptions:
+        return
+
+    for exc in pod_identity_exceptions:
+        if exc.pod_labels is None:
+            # in previous version, we accidentally allowed user to specify empty pod labels,
+            # which will be converted to `None` in response. This behavior will break the extension
+            # when using 2021-09-01 version. As a workaround, we always back fill the empty dict value
+            # before sending to the server side.
+            exc.pod_labels = dict()
+
+
 def _update_addon_pod_identity(instance, enable, pod_identities=None, pod_identity_exceptions=None, allow_kubenet_consent=None):
     if not enable:
         # when disable, remove previous saved value
         instance.pod_identity_profile = ManagedClusterPodIdentityProfile(
             enabled=False)
         return
+
+    _fill_defaults_for_pod_identity_exceptions(pod_identity_exceptions)
 
     if not instance.pod_identity_profile:
         # not set before
