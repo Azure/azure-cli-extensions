@@ -24,8 +24,6 @@ def start_ssh_connection(port, ssh_args, ip, username, cert_file, private_key_fi
     ssh_arg_list = []
     if ssh_args:
         ssh_arg_list = ssh_args
-    
-    print(cert_file)
 
     log_file = None
     if delete_keys or delete_cert:

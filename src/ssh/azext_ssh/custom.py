@@ -80,7 +80,7 @@ def _do_ssh_op(cmd, resource_group, vm_name, ssh_ip, public_key_file, private_ke
 
         raise azclierror.ResourceNotFoundError(f"VM '{vm_name}' does not have a public or private IP address to SSH to")
 
-    # If user ptovides local user, no credentials should be deleted.
+    # If user provides local user, no credentials should be deleted.
     delete_keys = False
     delete_cert = False
     # If user provides a local user, use the provided credentials for authentication
@@ -90,6 +90,7 @@ def _do_ssh_op(cmd, resource_group, vm_name, ssh_ip, public_key_file, private_ke
                                                                                            private_key_file,
                                                                                            credentials_folder)
         cert_file, username = _get_and_write_certificate(cmd, public_key_file, None)
+    
     op_call(ssh_ip, username, cert_file, private_key_file, delete_keys, delete_cert)
 
 
