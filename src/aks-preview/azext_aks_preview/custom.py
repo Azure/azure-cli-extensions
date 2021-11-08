@@ -31,7 +31,7 @@ from six.moves.urllib.error import URLError  # pylint: disable=import-error
 import requests
 from knack.log import get_logger
 from knack.util import CLIError
-from knack.prompting import prompt_pass, NoTTYException
+from knack.prompting import prompt_pass, NoTTYException, prompt_y_n
 
 import yaml  # pylint: disable=import-error
 from dateutil.relativedelta import relativedelta  # pylint: disable=import-error
@@ -421,7 +421,6 @@ def delete_role_assignments(cli_ctx, ids=None, assignee=None, role=None, resourc
             assignments_client.delete_by_id(i)
         return
     if not any([ids, assignee, role, resource_group_name, scope, assignee, yes]):
-        from knack.prompting import prompt_y_n
         msg = 'This will delete all role assignments under the subscription. Are you sure?'
         if not prompt_y_n(msg, default="n"):
             return
@@ -1258,7 +1257,10 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                                                           load_balancer_outbound_ports,
                                                           load_balancer_idle_timeout)
     update_aad_profile = not (aad_tenant_id is None and aad_admin_group_object_ids is None)
-    # pylint: disable=too-many-boolean-expressions
+
+    instance = client.get(resource_group_name, name)
+
+     # pylint: disable=too-many-boolean-expressions
     if not update_autoscaler and \
        cluster_autoscaler_profile is None and \
        not update_acr and \
@@ -1273,27 +1275,12 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
        not disable_ahub and \
        not enable_managed_identity and \
        not assign_identity:
-        raise CLIError('Please specify "--enable-cluster-autoscaler" or '
-                       '"--disable-cluster-autoscaler" or '
-                       '"--update-cluster-autoscaler" or '
-                       '"--cluster-autoscaler-profile" or '
-                       '"--enable-pod-security-policy" or '
-                       '"--disable-pod-security-policy" or '
-                       '"--api-server-authorized-ip-ranges" or '
-                       '"--attach-acr" or '
-                       '"--detach-acr" or '
-                       '"--uptime-sla" or '
-                       '"--load-balancer-managed-outbound-ip-count" or '
-                       '"--load-balancer-outbound-ips" or '
-                       '"--load-balancer-outbound-ip-prefixes" or '
-                       '"--enable-aad" or '
-                       '"--aad-tenant-id" or '
-                       '"--aad-admin-group-object-ids" or '
-                       '"--enable-ahub" or '
-                       '"--disable-ahub" or'
-                       '"--enable-managed-identity"')
-
-    instance = client.get(resource_group_name, name)
+        if prompt_y_n("no arguments specicied would you like to reconcile?", default="n"):
+            #duplicating this worse than goto? 
+            headers = get_aks_custom_headers(aks_custom_headers)
+            return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, name, instance, custom_headers=headers)
+        else: 
+            raise CLIError('no arguments specified to update')
 
     if update_autoscaler and len(instance.agent_pool_profiles) > 1:
         raise CLIError('There is more than one node pool in the cluster. Please use "az aks nodepool" command '
@@ -1442,7 +1429,6 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
             goal_identity_type = "userassigned"
 
     if current_identity_type != goal_identity_type:
-        from knack.prompting import prompt_y_n
         msg = ""
         if current_identity_type == "spn":
             msg = ('Your cluster is using service principal, and you are going to update the cluster to use {} managed identity.\n'
@@ -1602,8 +1588,6 @@ def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
 
         readonly_sas_token = readonly_sas_token.strip('?')
 
-    from knack.prompting import prompt_y_n
-
     print()
     print('This will deploy a daemon set to your cluster to collect logs and diagnostic information and '
           f'save them to the storage account '
@@ -1760,7 +1744,6 @@ def aks_upgrade(cmd,    # pylint: disable=unused-argument, too-many-return-state
                 no_wait=False,
                 node_image_only=False,
                 yes=False):
-    from knack.prompting import prompt_y_n
     msg = 'Kubernetes may be unavailable during cluster upgrades.\n Are you sure you want to perform this operation?'
     if not yes and not prompt_y_n(msg, default="n"):
         return None
@@ -2799,7 +2782,6 @@ def _handle_merge(existing, addition, key, replace):
                 if replace or i == j:
                     existing[key].remove(j)
                 else:
-                    from knack.prompting import prompt_y_n
                     msg = 'A different object named {} already exists in your kubeconfig file.\nOverwrite?'
                     overwrite = False
                     try:
