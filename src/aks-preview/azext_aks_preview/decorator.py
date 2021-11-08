@@ -570,25 +570,12 @@ class AKSPreviewContext(AKSContext):
         """
         from azext_aks_preview._consts import (
             ADDONS,
-            CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME,
-            CONST_ROTATION_POLL_INTERVAL,
-            CONST_SECRET_ROTATION_ENABLED,
             CONST_GITOPS_ADDON_NAME,
             CONST_MONITORING_USING_AAD_MSI_AUTH,
-            CONST_SECRET_ROTATION_ENABLED,
         )
 
         addon_consts = super().get_addon_consts()
         addon_consts["ADDONS"] = ADDONS
-        addon_consts[
-            "CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME"
-        ] = CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME
-        addon_consts[
-            "CONST_ROTATION_POLL_INTERVAL"
-        ] = CONST_ROTATION_POLL_INTERVAL
-        addon_consts[
-            "CONST_SECRET_ROTATION_ENABLED"
-        ] = CONST_SECRET_ROTATION_ENABLED
         addon_consts["CONST_GITOPS_ADDON_NAME"] = CONST_GITOPS_ADDON_NAME
         addon_consts[
             "CONST_MONITORING_USING_AAD_MSI_AUTH"
@@ -676,39 +663,6 @@ class AKSPreviewContext(AKSContext):
                 logger.warning("The set option '--no-wait' has been ignored")
                 no_wait = False
         return no_wait
-
-    def get_enable_secret_rotation(self) -> bool:
-        """Obtain the value of enable_secret_rotation.
-
-        :return: bool
-        """
-        # determine the value of constants
-        addon_consts = self.get_addon_consts()
-        CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME = addon_consts.get(
-            "CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME"
-        )
-        CONST_SECRET_ROTATION_ENABLED = addon_consts.get(
-            "CONST_SECRET_ROTATION_ENABLED"
-        )
-
-        # read the original value passed by the command
-        enable_secret_rotation = self.raw_param.get("enable_secret_rotation")
-        # try to read the property value corresponding to the parameter from the `mc` object
-        if (
-            self.mc and
-            self.mc.addon_profiles and
-            CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME in self.mc.addon_profiles and
-            self.mc.addon_profiles.get(
-                CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME
-            ).config.get(CONST_SECRET_ROTATION_ENABLED) is not None
-        ):
-            enable_secret_rotation = self.mc.addon_profiles.get(
-                CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME
-            ).config.get(CONST_SECRET_ROTATION_ENABLED) == "true"
-
-        # this parameter does not need dynamic completion
-        # this parameter does not need validation
-        return enable_secret_rotation
 
     # pylint: disable=unused-argument,no-self-use
     def __validate_gmsa_options(
@@ -1279,24 +1233,6 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
             ingress_appgw_addon_profile.config[CONST_INGRESS_APPGW_SUBNET_CIDR] = appgw_subnet_prefix
         return ingress_appgw_addon_profile
 
-    def build_azure_keyvault_secrets_provider_addon_profile(self) -> ManagedClusterAddonProfile:
-        """Build azure keyvault secrets provider addon profile.
-
-        :return: a ManagedClusterAddonProfile object
-        """
-        # determine the value of constants
-        addon_consts = self.context.get_addon_consts()
-        CONST_SECRET_ROTATION_ENABLED = addon_consts.get(
-            "CONST_SECRET_ROTATION_ENABLED"
-        )
-
-        azure_keyvault_secrets_provider_addon_profile = self.models.ManagedClusterAddonProfile(
-            enabled=True, config={CONST_SECRET_ROTATION_ENABLED: "false"}
-        )
-        if self.context.get_enable_secret_rotation():
-            azure_keyvault_secrets_provider_addon_profile.config[CONST_SECRET_ROTATION_ENABLED] = "true"
-        return azure_keyvault_secrets_provider_addon_profile
-
     def build_gitops_addon_profile(self) -> ManagedClusterAddonProfile:
         """Build gitops addon profile.
 
@@ -1315,18 +1251,11 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
         :return: the ManagedCluster object
         """
         addon_consts = self.context.get_addon_consts()
-        CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME = addon_consts.get(
-            "CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME"
-        )
         CONST_GITOPS_ADDON_NAME = addon_consts.get("CONST_GITOPS_ADDON_NAME")
 
         mc = super().set_up_addon_profiles(mc)
         addon_profiles = mc.addon_profiles
         addons = self.context.get_enable_addons()
-        if "azure-keyvault-secrets-provider" in addons:
-            addon_profiles[
-                CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME
-            ] = self.build_azure_keyvault_secrets_provider_addon_profile()
         if "gitops" in addons:
             addon_profiles[
                 CONST_GITOPS_ADDON_NAME
