@@ -25,6 +25,8 @@ def start_ssh_connection(port, ssh_args, ip, username, cert_file, private_key_fi
     if ssh_args:
         ssh_arg_list = ssh_args
     
+    print(cert_file)
+
     log_file = None
     if delete_keys or delete_cert:
         if '-E' not in ssh_arg_list and set(['-v', '-vv', '-vvv']).isdisjoint(ssh_arg_list):
@@ -55,7 +57,7 @@ def start_ssh_connection(port, ssh_args, ip, username, cert_file, private_key_fi
                 time.sleep(1)
 
         # Make sure all files have been properly removed.
-        _do_cleanup(delete_keys, cert_file, private_key_file)
+        _do_cleanup(delete_keys, delete_cert, cert_file, private_key_file)
         if log_file:
             file_utils.delete_file(log_file, f"Couldn't delete temporary log file {cert_file}. ", True)
         if delete_keys:
