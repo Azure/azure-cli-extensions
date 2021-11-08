@@ -703,7 +703,6 @@ def display_diagnostics_report(kubectl_prior):   # pylint: disable=too-many-stat
     else:
         logger.warning("Could not get network config. "
                        "Please run 'az connectedk8s troubleshoot' command again later to get the analysis results.")
-        logger.debug("Network outbound connectivity is not working on the connected cluster.")
 
     if network_status_array:
         print("Below are the network connectivity results for each node:")
@@ -712,7 +711,6 @@ def display_diagnostics_report(kubectl_prior):   # pylint: disable=too-many-stat
     else:
         logger.warning("Could not get networking status. "
                        "Please run 'az connectedk8s troubleshoot' command again later to get the analysis results.")
-        logger.debug("Network outbound connectivity is not working on the connected cluster.")
 
 def format_diag_status(diag_status):
     for diag in diag_status:
