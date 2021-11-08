@@ -18,28 +18,28 @@ helps['ssh vm'] = """
         - name: Give a resource group and VM to SSH to
           text: |
             az ssh vm --resource-group myResourceGroup --vm-name myVm
-        
+
         - name: Give the public IP (or hostname) of a VM to SSH to
           text: |
             az ssh vm --ip 1.2.3.4
             az ssh vm --hostname example.com
-        
+
         - name: Using a custom private key file
           text: |
             az ssh vm --ip 1.2.3.4 --private-key-file key --public-key-file key.pub
-        
+
         - name: Using additional ssh arguments
           text: |
             az ssh vm --ip 1.2.3.4 -- -A -o ForwardX11=yes
-        
+
         - name: Give a local user name to SSH using local user credentials on the target machine using certificate based authentication.
           text: |
             az ssh vm --local-user username --ip 1.2.3.4 --certificate-file cert.pub --private-key key
-        
+
         - name: Give a local user name to SSH using local user credentials on the target machine using key based authentication.
           text: |
             az ssh vm --local-user username --resource-group myResourceGroup --vm-name myVM --private-key-file key
-        
+
         - name: Give a local user name to SSH using local user credentials on the target machine using password based authentication.
           text: |
             az ssh vm --local-user username --ip 1.2.3.4
@@ -53,19 +53,19 @@ helps['ssh config'] = """
         - name: Give a resource group and VM for which to create a config, and save in a local file
           text: |
             az ssh config --resource-group myResourceGroup --vm-name myVm --file ./sshconfig
-        
+
         - name: Give the public IP (or hostname) of a VM for which to create a config and then ssh
           text: |
             az ssh config --ip 1.2.3.4 --file ./sshconfig
             ssh -F ./sshconfig 1.2.3.4
-        
+
         - name: Create a generic config for use with any host
           text: |
             #Bash
             az ssh config --ip \\* --file ./sshconfig
             #PowerShell
             az ssh config --ip * --file ./sshconfig
-        
+
         - name: Examples with other software
           text: |
             #Bash

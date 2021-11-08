@@ -17,7 +17,7 @@ def load_arguments(self, _):
         c.argument('local_user', options_list=['--local-user'],
                    help='The username for a local user')
         c.argument('cert_file', options_list=['--certificate-file', '-c'],
-                   help='Path to a certificate file used for authentication when using local user credentials.')           
+                   help='Path to a certificate file used for authentication when using local user credentials.')
         c.argument('port', options_list=['--port'], help='SSH port')
         c.positional('ssh_args', nargs='*', help='Additional arguments passed to OpenSSH')
 

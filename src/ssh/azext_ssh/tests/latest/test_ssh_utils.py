@@ -25,11 +25,11 @@ class SSHUtilsTests(unittest.TestCase):
 
         expected_command = ["ssh", "user@ip", "-i", "file", "-o", "option", "-E", "/log/file/path", "-v"]
 
-        ssh_utils.start_ssh_connection(None, None, "ip", "user", "cert", "private", True)
+        ssh_utils.start_ssh_connection("port", None, "ip", "user", "cert", "private", True, True)
 
         mock_path.assert_called_once_with()
         mock_host.assert_called_once_with("user", "ip")
-        mock_build.assert_called_once_with("cert", "private", None)
+        mock_build.assert_called_once_with("cert", "private", "port")
         mock_call.assert_called_once_with(expected_command, shell=platform.system() == 'Windows')
 
     @mock.patch.object(ssh_utils, '_get_ssh_path')
@@ -41,7 +41,7 @@ class SSHUtilsTests(unittest.TestCase):
 
         expected_command = ["ssh", "user@ip", "-i", "private", "-o", "CertificateFile=cert", "-p", "2222", "--thing", "-vv"]
 
-        ssh_utils.start_ssh_connection("2222", ["--thing", "-vv"], "ip", "user", "cert", "private", True)
+        ssh_utils.start_ssh_connection("2222", ["--thing", "-vv"], "ip", "user", "cert", "private", True, True)
 
         mock_path.assert_called_once_with()
         mock_host.assert_called_once_with("user", "ip")
@@ -58,17 +58,19 @@ class SSHUtilsTests(unittest.TestCase):
             "\tHostName 1.2.3.4",
             "\tCertificateFile cert",
             "\tIdentityFile privatekey",
+            "\tPort port",
             "Host 1.2.3.4",
             "\tUser username",
             "\tCertificateFile cert",
-            "\tIdentityFile privatekey"
+            "\tIdentityFile privatekey",
+            "\tPort port"
         ]
 
         with mock.patch('builtins.open') as mock_open:
             mock_file = mock.Mock()
             mock_open.return_value.__enter__.return_value = mock_file
             ssh_utils.write_ssh_config(
-                "path/to/file", "rg", "vm", True, "1.2.3.4", "username", "cert", "privatekey", False
+                "path/to/file", "rg", "vm", True, "port", "1.2.3.4", "username", "cert", "privatekey", True, False
             )
         mock_validity.assert_called_once_with("cert")
         mock_open.assert_called_once_with("path/to/file", "w")
@@ -95,14 +97,14 @@ class SSHUtilsTests(unittest.TestCase):
             mock_file = mock.Mock()
             mock_open.return_value.__enter__.return_value = mock_file
             ssh_utils.write_ssh_config(
-                "path/to/file", "rg", "vm", False, "1.2.3.4", "username", "cert", "privatekey", False
+                "path/to/file", "rg", "vm", False, None, "1.2.3.4", "username", "cert", "privatekey", True, True
             )
 
         mock_validity.assert_called_once_with("cert")
 
         mock_open.assert_called_once_with("path/to/file", "a")
         mock_file.write.assert_called_once_with('\n'.join(expected_lines))
-
+    
     @mock.patch.object(ssh_utils, 'get_ssh_cert_validity')
     def test_write_ssh_config_ip_only(self, mock_validity):
         expected_lines = [
@@ -118,10 +120,10 @@ class SSHUtilsTests(unittest.TestCase):
             mock_file = mock.Mock()
             mock_open.return_value.__enter__.return_value = mock_file
             ssh_utils.write_ssh_config(
-                "path/to/file", None, None, True, "1.2.3.4", "username", "cert", "privatekey", False
+                "path/to/file", None, None, True, None, "1.2.3.4", "username", "cert", "privatekey", False, False
             )
 
-        mock_validity.assert_called_once_with("cert")
+        mock_validity.assert_not_called()
 
         mock_open.assert_called_once_with("path/to/file", "w")
         mock_file.write.assert_called_once_with('\n'.join(expected_lines))

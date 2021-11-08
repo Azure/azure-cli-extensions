@@ -37,7 +37,7 @@ def start_ssh_connection(port, ssh_args, ip, username, cert_file, private_key_fi
             ssh_arg_list = ssh_arg_list + ['-E', log_file, '-v']
         # Create a new process that will wait until the connection is established and then delete keys.
         cleanup_process = mp.Process(target=_do_cleanup, args=(delete_keys, delete_cert, cert_file, private_key_file,
-                                    log_file, True))
+                                     log_file, True))
         cleanup_process.start()
 
     command = [_get_ssh_path(), _get_host(username, ip)]
@@ -114,8 +114,9 @@ def write_ssh_config(config_path, resource_group, vm_name, overwrite, port,
         validity_warning = ""
         if validity:
             validity_warning = f" {validity.lower()}"
-        logger.warning("%s contains sensitive information%s%s\nPlease delete it once you no longer need this config file. ",
-                    path_to_delete, items_to_delete, validity_warning)
+        logger.warning("%s contains sensitive information%s%s\n"
+                       "Please delete it once you no longer need this config file. ",
+                       path_to_delete, items_to_delete, validity_warning)
 
     lines = [""]
 
