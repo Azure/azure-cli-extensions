@@ -19,27 +19,27 @@ interactions:
       ParameterSetName:
       - -g -n --tags -l --sku --unit-count
       User-Agent:
-      - AZURECLI/2.29.0 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.29.1 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/webPubSub/webpubsub000002?api-version=2021-10-01
   response:
     body:
-      string: '{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":1},"properties":{"provisioningState":"Creating","externalIP":null,"hostName":"webpubsub000002.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0-preview","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"chenyl@microsoft.com","createdByType":"User","createdAt":"2021-10-21T04:45:25.3106491Z","lastModifiedBy":"chenyl@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-21T04:45:25.3106491Z"},"location":"eastus","tags":{"key":"value"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002","name":"webpubsub000002","type":"Microsoft.SignalRService/WebPubSub"}'
+      string: '{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":1},"properties":{"provisioningState":"Creating","externalIP":null,"hostName":"webpubsub000002.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0-preview","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"hostNamePrefix":"webpubsub000002","liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"chenyl@microsoft.com","createdByType":"User","createdAt":"2021-11-01T06:05:24.6069727Z","lastModifiedBy":"chenyl@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-11-01T06:05:24.6069727Z"},"location":"eastus","tags":{"key":"value"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002","name":"webpubsub000002","type":"Microsoft.SignalRService/WebPubSub"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/83d85ce2-349b-4667-a4f8-fe6a7c3233e9?api-version=2021-10-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/41049a50-fefb-45fc-8a27-9f12db071c99?api-version=2021-10-01
       cache-control:
       - no-cache
       content-length:
-      - '1144'
+      - '1180'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 21 Oct 2021 04:45:29 GMT
+      - Mon, 01 Nov 2021 06:05:27 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationResults/83d85ce2-349b-4667-a4f8-fe6a7c3233e9?api-version=2021-10-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationResults/41049a50-fefb-45fc-8a27-9f12db071c99?api-version=2021-10-01
       pragma:
       - no-cache
       server:
@@ -51,7 +51,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
       x-rp-server-mvid:
-      - 052104b6-a76f-4c87-b183-74bee8bc2fa4
+      - 83348091-47ca-46e9-a8f8-34fbf8fbca6f
     status:
       code: 201
       message: Created
@@ -69,12 +69,12 @@ interactions:
       ParameterSetName:
       - -g -n --tags -l --sku --unit-count
       User-Agent:
-      - AZURECLI/2.29.0 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.29.1 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/83d85ce2-349b-4667-a4f8-fe6a7c3233e9?api-version=2021-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/41049a50-fefb-45fc-8a27-9f12db071c99?api-version=2021-10-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/83d85ce2-349b-4667-a4f8-fe6a7c3233e9","name":"83d85ce2-349b-4667-a4f8-fe6a7c3233e9","status":"Running","startTime":"2021-10-21T04:45:27.3654094Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/41049a50-fefb-45fc-8a27-9f12db071c99","name":"41049a50-fefb-45fc-8a27-9f12db071c99","status":"Running","startTime":"2021-11-01T06:05:26.4489456Z"}'
     headers:
       cache-control:
       - no-cache
@@ -83,7 +83,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 21 Oct 2021 04:45:59 GMT
+      - Mon, 01 Nov 2021 06:05:58 GMT
       expires:
       - '-1'
       pragma:
@@ -99,7 +99,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-rp-server-mvid:
-      - 052104b6-a76f-4c87-b183-74bee8bc2fa4
+      - 83348091-47ca-46e9-a8f8-34fbf8fbca6f
     status:
       code: 200
       message: OK
@@ -117,12 +117,12 @@ interactions:
       ParameterSetName:
       - -g -n --tags -l --sku --unit-count
       User-Agent:
-      - AZURECLI/2.29.0 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.29.1 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/83d85ce2-349b-4667-a4f8-fe6a7c3233e9?api-version=2021-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/41049a50-fefb-45fc-8a27-9f12db071c99?api-version=2021-10-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/83d85ce2-349b-4667-a4f8-fe6a7c3233e9","name":"83d85ce2-349b-4667-a4f8-fe6a7c3233e9","status":"Running","startTime":"2021-10-21T04:45:27.3654094Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/41049a50-fefb-45fc-8a27-9f12db071c99","name":"41049a50-fefb-45fc-8a27-9f12db071c99","status":"Running","startTime":"2021-11-01T06:05:26.4489456Z"}'
     headers:
       cache-control:
       - no-cache
@@ -131,7 +131,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 21 Oct 2021 04:46:29 GMT
+      - Mon, 01 Nov 2021 06:06:28 GMT
       expires:
       - '-1'
       pragma:
@@ -147,7 +147,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-rp-server-mvid:
-      - 052104b6-a76f-4c87-b183-74bee8bc2fa4
+      - 83348091-47ca-46e9-a8f8-34fbf8fbca6f
     status:
       code: 200
       message: OK
@@ -165,12 +165,12 @@ interactions:
       ParameterSetName:
       - -g -n --tags -l --sku --unit-count
       User-Agent:
-      - AZURECLI/2.29.0 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.29.1 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/83d85ce2-349b-4667-a4f8-fe6a7c3233e9?api-version=2021-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/41049a50-fefb-45fc-8a27-9f12db071c99?api-version=2021-10-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/83d85ce2-349b-4667-a4f8-fe6a7c3233e9","name":"83d85ce2-349b-4667-a4f8-fe6a7c3233e9","status":"Succeeded","startTime":"2021-10-21T04:45:27.3654094Z","endTime":"2021-10-21T04:46:44.3064939Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/41049a50-fefb-45fc-8a27-9f12db071c99","name":"41049a50-fefb-45fc-8a27-9f12db071c99","status":"Succeeded","startTime":"2021-11-01T06:05:26.4489456Z","endTime":"2021-11-01T06:06:29.7948631Z"}'
     headers:
       cache-control:
       - no-cache
@@ -179,7 +179,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 21 Oct 2021 04:47:00 GMT
+      - Mon, 01 Nov 2021 06:06:59 GMT
       expires:
       - '-1'
       pragma:
@@ -195,7 +195,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-rp-server-mvid:
-      - 052104b6-a76f-4c87-b183-74bee8bc2fa4
+      - 83348091-47ca-46e9-a8f8-34fbf8fbca6f
     status:
       code: 200
       message: OK
@@ -213,21 +213,21 @@ interactions:
       ParameterSetName:
       - -g -n --tags -l --sku --unit-count
       User-Agent:
-      - AZURECLI/2.29.0 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.29.1 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/webPubSub/webpubsub000002?api-version=2021-10-01
   response:
     body:
-      string: '{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":1},"properties":{"provisioningState":"Succeeded","externalIP":"20.62.134.186","hostName":"webpubsub000002.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"chenyl@microsoft.com","createdByType":"User","createdAt":"2021-10-21T04:45:25.3106491Z","lastModifiedBy":"chenyl@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-21T04:45:25.3106491Z"},"location":"eastus","tags":{"key":"value"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002","name":"webpubsub000002","type":"Microsoft.SignalRService/WebPubSub"}'
+      string: '{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":1},"properties":{"provisioningState":"Succeeded","externalIP":"20.62.134.189","hostName":"webpubsub000002.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"hostNamePrefix":"webpubsub000002","liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"chenyl@microsoft.com","createdByType":"User","createdAt":"2021-11-01T06:05:24.6069727Z","lastModifiedBy":"chenyl@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-11-01T06:05:24.6069727Z"},"location":"eastus","tags":{"key":"value"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002","name":"webpubsub000002","type":"Microsoft.SignalRService/WebPubSub"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1148'
+      - '1184'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 21 Oct 2021 04:47:00 GMT
+      - Mon, 01 Nov 2021 06:06:59 GMT
       expires:
       - '-1'
       pragma:
@@ -243,7 +243,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-rp-server-mvid:
-      - 052104b6-a76f-4c87-b183-74bee8bc2fa4
+      - 83348091-47ca-46e9-a8f8-34fbf8fbca6f
     status:
       code: 200
       message: OK
@@ -261,21 +261,21 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.29.0 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.29.1 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/webPubSub/webpubsub000002?api-version=2021-10-01
   response:
     body:
-      string: '{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":1},"properties":{"provisioningState":"Succeeded","externalIP":"20.62.134.186","hostName":"webpubsub000002.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"chenyl@microsoft.com","createdByType":"User","createdAt":"2021-10-21T04:45:25.3106491Z","lastModifiedBy":"chenyl@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-21T04:45:25.3106491Z"},"location":"eastus","tags":{"key":"value"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002","name":"webpubsub000002","type":"Microsoft.SignalRService/WebPubSub"}'
+      string: '{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":1},"properties":{"provisioningState":"Succeeded","externalIP":"20.62.134.189","hostName":"webpubsub000002.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"hostNamePrefix":"webpubsub000002","liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"chenyl@microsoft.com","createdByType":"User","createdAt":"2021-11-01T06:05:24.6069727Z","lastModifiedBy":"chenyl@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-11-01T06:05:24.6069727Z"},"location":"eastus","tags":{"key":"value"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002","name":"webpubsub000002","type":"Microsoft.SignalRService/WebPubSub"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1148'
+      - '1184'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 21 Oct 2021 04:47:01 GMT
+      - Mon, 01 Nov 2021 06:07:00 GMT
       expires:
       - '-1'
       pragma:
@@ -291,7 +291,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-rp-server-mvid:
-      - 052104b6-a76f-4c87-b183-74bee8bc2fa4
+      - 83348091-47ca-46e9-a8f8-34fbf8fbca6f
     status:
       code: 200
       message: OK
@@ -309,21 +309,21 @@ interactions:
       ParameterSetName:
       - -g
       User-Agent:
-      - AZURECLI/2.29.0 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.29.1 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/webPubSub?api-version=2021-10-01
   response:
     body:
-      string: '{"value":[{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":1},"properties":{"provisioningState":"Succeeded","externalIP":"20.62.134.186","hostName":"webpubsub000002.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"chenyl@microsoft.com","createdByType":"User","createdAt":"2021-10-21T04:45:25.3106491Z","lastModifiedBy":"chenyl@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-21T04:45:25.3106491Z"},"location":"eastus","tags":{"key":"value"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002","name":"webpubsub000002","type":"Microsoft.SignalRService/WebPubSub"}]}'
+      string: '{"value":[{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":1},"properties":{"provisioningState":"Succeeded","externalIP":"20.62.134.189","hostName":"webpubsub000002.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"hostNamePrefix":"webpubsub000002","liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"chenyl@microsoft.com","createdByType":"User","createdAt":"2021-11-01T06:05:24.6069727Z","lastModifiedBy":"chenyl@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-11-01T06:05:24.6069727Z"},"location":"eastus","tags":{"key":"value"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002","name":"webpubsub000002","type":"Microsoft.SignalRService/WebPubSub"}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1160'
+      - '1196'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 21 Oct 2021 04:47:04 GMT
+      - Mon, 01 Nov 2021 06:07:02 GMT
       expires:
       - '-1'
       pragma:
@@ -339,13 +339,64 @@ interactions:
       x-content-type-options:
       - nosniff
       x-rp-server-mvid:
-      - 052104b6-a76f-4c87-b183-74bee8bc2fa4
+      - 83348091-47ca-46e9-a8f8-34fbf8fbca6f
     status:
       code: 200
       message: OK
 - request:
-    body: '{"tags": {"key": "value2"}, "sku": {"name": "Free_F1"}, "properties": {"publicNetworkAccess":
-      "Enabled", "disableLocalAuth": false, "disableAadAuth": false}}'
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - webpubsub update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --tags --sku
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/webPubSub/webpubsub000002?api-version=2021-10-01
+  response:
+    body:
+      string: '{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":1},"properties":{"provisioningState":"Succeeded","externalIP":"20.62.134.189","hostName":"webpubsub000002.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"hostNamePrefix":"webpubsub000002","liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"chenyl@microsoft.com","createdByType":"User","createdAt":"2021-11-01T06:05:24.6069727Z","lastModifiedBy":"chenyl@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-11-01T06:05:24.6069727Z"},"location":"eastus","tags":{"key":"value"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002","name":"webpubsub000002","type":"Microsoft.SignalRService/WebPubSub"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1184'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 01 Nov 2021 06:07:04 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 83348091-47ca-46e9-a8f8-34fbf8fbca6f
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus", "tags": {"key": "value2"}, "sku": {"name": "Free_F1"},
+      "properties": {"tls": {"clientCertEnabled": false}, "networkACLs": {"defaultAction":
+      "Deny", "publicNetwork": {"allow": ["ServerConnection", "ClientConnection",
+      "RESTAPI", "Trace"]}, "privateEndpoints": []}, "publicNetworkAccess": "Enabled",
+      "disableLocalAuth": false, "disableAadAuth": false}}'
     headers:
       Accept:
       - application/json
@@ -356,13 +407,13 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '157'
+      - '372'
       Content-Type:
       - application/json
       ParameterSetName:
       - -g -n --tags --sku
       User-Agent:
-      - AZURECLI/2.29.0 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.29.1 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
     method: PATCH
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/webPubSub/webpubsub000002?api-version=2021-10-01
   response:
@@ -370,17 +421,17 @@ interactions:
       string: ''
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/78e2034d-af3b-4b7a-bba6-470650bd5239?api-version=2021-10-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/4f1ff08d-9535-4492-8340-a1ef5844abb8?api-version=2021-10-01
       cache-control:
       - no-cache
       content-length:
       - '0'
       date:
-      - Thu, 21 Oct 2021 04:47:06 GMT
+      - Mon, 01 Nov 2021 06:07:06 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationResults/78e2034d-af3b-4b7a-bba6-470650bd5239?api-version=2021-10-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationResults/4f1ff08d-9535-4492-8340-a1ef5844abb8?api-version=2021-10-01
       pragma:
       - no-cache
       server:
@@ -392,7 +443,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
       x-rp-server-mvid:
-      - 052104b6-a76f-4c87-b183-74bee8bc2fa4
+      - 83348091-47ca-46e9-a8f8-34fbf8fbca6f
     status:
       code: 202
       message: Accepted
@@ -410,12 +461,12 @@ interactions:
       ParameterSetName:
       - -g -n --tags --sku
       User-Agent:
-      - AZURECLI/2.29.0 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.29.1 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/78e2034d-af3b-4b7a-bba6-470650bd5239?api-version=2021-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/4f1ff08d-9535-4492-8340-a1ef5844abb8?api-version=2021-10-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/78e2034d-af3b-4b7a-bba6-470650bd5239","name":"78e2034d-af3b-4b7a-bba6-470650bd5239","status":"Running","startTime":"2021-10-21T04:47:06.5521723Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/4f1ff08d-9535-4492-8340-a1ef5844abb8","name":"4f1ff08d-9535-4492-8340-a1ef5844abb8","status":"Running","startTime":"2021-11-01T06:07:06.7649581Z"}'
     headers:
       cache-control:
       - no-cache
@@ -424,7 +475,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 21 Oct 2021 04:47:37 GMT
+      - Mon, 01 Nov 2021 06:07:37 GMT
       expires:
       - '-1'
       pragma:
@@ -433,10 +484,14 @@ interactions:
       - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
       x-rp-server-mvid:
-      - 052104b6-a76f-4c87-b183-74bee8bc2fa4
+      - 83348091-47ca-46e9-a8f8-34fbf8fbca6f
     status:
       code: 200
       message: OK
@@ -454,12 +509,12 @@ interactions:
       ParameterSetName:
       - -g -n --tags --sku
       User-Agent:
-      - AZURECLI/2.29.0 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.29.1 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/78e2034d-af3b-4b7a-bba6-470650bd5239?api-version=2021-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/4f1ff08d-9535-4492-8340-a1ef5844abb8?api-version=2021-10-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/78e2034d-af3b-4b7a-bba6-470650bd5239","name":"78e2034d-af3b-4b7a-bba6-470650bd5239","status":"Running","startTime":"2021-10-21T04:47:06.5521723Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/4f1ff08d-9535-4492-8340-a1ef5844abb8","name":"4f1ff08d-9535-4492-8340-a1ef5844abb8","status":"Running","startTime":"2021-11-01T06:07:06.7649581Z"}'
     headers:
       cache-control:
       - no-cache
@@ -468,7 +523,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 21 Oct 2021 04:48:07 GMT
+      - Mon, 01 Nov 2021 06:08:07 GMT
       expires:
       - '-1'
       pragma:
@@ -477,10 +532,14 @@ interactions:
       - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
       x-rp-server-mvid:
-      - 052104b6-a76f-4c87-b183-74bee8bc2fa4
+      - 83348091-47ca-46e9-a8f8-34fbf8fbca6f
     status:
       code: 200
       message: OK
@@ -498,100 +557,12 @@ interactions:
       ParameterSetName:
       - -g -n --tags --sku
       User-Agent:
-      - AZURECLI/2.29.0 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.29.1 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/78e2034d-af3b-4b7a-bba6-470650bd5239?api-version=2021-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/4f1ff08d-9535-4492-8340-a1ef5844abb8?api-version=2021-10-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/78e2034d-af3b-4b7a-bba6-470650bd5239","name":"78e2034d-af3b-4b7a-bba6-470650bd5239","status":"Running","startTime":"2021-10-21T04:47:06.5521723Z"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '321'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Thu, 21 Oct 2021 04:48:37 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Kestrel
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-rp-server-mvid:
-      - 052104b6-a76f-4c87-b183-74bee8bc2fa4
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - webpubsub update
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -n --tags --sku
-      User-Agent:
-      - AZURECLI/2.29.0 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/78e2034d-af3b-4b7a-bba6-470650bd5239?api-version=2021-10-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/78e2034d-af3b-4b7a-bba6-470650bd5239","name":"78e2034d-af3b-4b7a-bba6-470650bd5239","status":"Running","startTime":"2021-10-21T04:47:06.5521723Z"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '321'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Thu, 21 Oct 2021 04:49:07 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Kestrel
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-rp-server-mvid:
-      - 052104b6-a76f-4c87-b183-74bee8bc2fa4
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - webpubsub update
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -n --tags --sku
-      User-Agent:
-      - AZURECLI/2.29.0 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/78e2034d-af3b-4b7a-bba6-470650bd5239?api-version=2021-10-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/78e2034d-af3b-4b7a-bba6-470650bd5239","name":"78e2034d-af3b-4b7a-bba6-470650bd5239","status":"Succeeded","startTime":"2021-10-21T04:47:06.5521723Z","endTime":"2021-10-21T04:49:10.0443722Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/4f1ff08d-9535-4492-8340-a1ef5844abb8","name":"4f1ff08d-9535-4492-8340-a1ef5844abb8","status":"Succeeded","startTime":"2021-11-01T06:07:06.7649581Z","endTime":"2021-11-01T06:08:11.6030584Z"}'
     headers:
       cache-control:
       - no-cache
@@ -600,7 +571,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 21 Oct 2021 04:49:38 GMT
+      - Mon, 01 Nov 2021 06:08:37 GMT
       expires:
       - '-1'
       pragma:
@@ -609,10 +580,14 @@ interactions:
       - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
       x-rp-server-mvid:
-      - 052104b6-a76f-4c87-b183-74bee8bc2fa4
+      - 83348091-47ca-46e9-a8f8-34fbf8fbca6f
     status:
       code: 200
       message: OK
@@ -630,21 +605,21 @@ interactions:
       ParameterSetName:
       - -g -n --tags --sku
       User-Agent:
-      - AZURECLI/2.29.0 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.29.1 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/webPubSub/webpubsub000002?api-version=2021-10-01
   response:
     body:
-      string: '{"sku":{"name":"Free_F1","tier":"Free","size":"F1","capacity":1},"properties":{"provisioningState":"Succeeded","externalIP":"20.62.134.184","hostName":"webpubsub000002.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"chenyl@microsoft.com","createdByType":"User","createdAt":"2021-10-21T04:45:25.3106491Z","lastModifiedBy":"chenyl@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-21T04:47:05.6938908Z"},"location":"eastus","tags":{"key":"value2"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002","name":"webpubsub000002","type":"Microsoft.SignalRService/WebPubSub"}'
+      string: '{"sku":{"name":"Free_F1","tier":"Free","size":"F1","capacity":1},"properties":{"provisioningState":"Succeeded","externalIP":"20.62.134.184","hostName":"webpubsub000002.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"hostNamePrefix":"webpubsub000002","liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"chenyl@microsoft.com","createdByType":"User","createdAt":"2021-11-01T06:05:24.6069727Z","lastModifiedBy":"chenyl@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-11-01T06:07:05.910159Z"},"location":"eastus","tags":{"key":"value2"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002","name":"webpubsub000002","type":"Microsoft.SignalRService/WebPubSub"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1141'
+      - '1176'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 21 Oct 2021 04:49:38 GMT
+      - Mon, 01 Nov 2021 06:08:37 GMT
       expires:
       - '-1'
       pragma:
@@ -653,10 +628,14 @@ interactions:
       - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
       x-rp-server-mvid:
-      - 052104b6-a76f-4c87-b183-74bee8bc2fa4
+      - 83348091-47ca-46e9-a8f8-34fbf8fbca6f
     status:
       code: 200
       message: OK
@@ -676,7 +655,7 @@ interactions:
       ParameterSetName:
       - -n -g
       User-Agent:
-      - AZURECLI/2.29.0 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.29.1 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/webPubSub/webpubsub000002/listKeys?api-version=2021-10-01
   response:
@@ -690,7 +669,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 21 Oct 2021 04:49:40 GMT
+      - Mon, 01 Nov 2021 06:08:39 GMT
       expires:
       - '-1'
       pragma:
@@ -708,7 +687,104 @@ interactions:
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
       x-rp-server-mvid:
-      - 052104b6-a76f-4c87-b183-74bee8bc2fa4
+      - 83348091-47ca-46e9-a8f8-34fbf8fbca6f
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - webpubsub list-skus
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/webPubSub/webpubsub000002/skus?api-version=2021-10-01
+  response:
+    body:
+      string: '{"value":[{"resourceType":"Microsoft.SignalRService/WebPubSub","sku":{"name":"Free_F1","tier":"Free","capacity":null},"capacity":{"minimum":0,"maximum":1,"default":1,"allowedValues":[0,1],"scaleType":"Manual"}},{"resourceType":"Microsoft.SignalRService/WebPubSub","sku":{"name":"Standard_S1","tier":"Standard","capacity":null},"capacity":{"minimum":0,"maximum":100,"default":1,"allowedValues":[0,1,2,5,10,20,50,100],"scaleType":"Automatic"}}],"nextLink":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '459'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 01 Nov 2021 06:08:41 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 83348091-47ca-46e9-a8f8-34fbf8fbca6f
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - webpubsub list-usage
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -l
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.SignalRService/locations/eastus/usages?api-version=2021-10-01
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.SignalRService/locations/eastus/usages/FreeTierInstances","currentValue":1,"limit":5,"name":{"value":"FreeTierInstances","localizedValue":"Free
+        Tier SignalR Instances per subscription"},"unit":"Count"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.SignalRService/locations/eastus/usages/SignalRTotalUnits","currentValue":5,"limit":150,"name":{"value":"SignalRTotalUnits","localizedValue":"SignalRTotalUnits"},"unit":"Count"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '548'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 01 Nov 2021 06:08:42 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 83348091-47ca-46e9-a8f8-34fbf8fbca6f
     status:
       code: 200
       message: OK
@@ -730,7 +806,7 @@ interactions:
       ParameterSetName:
       - -n -g --key-type
       User-Agent:
-      - AZURECLI/2.29.0 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.29.1 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/webPubSub/webpubsub000002/regenerateKey?api-version=2021-10-01
   response:
@@ -738,7 +814,7 @@ interactions:
       string: '{"primaryKey":"mock_key","secondaryKey":"mock_key","primaryConnectionString":"mock_key","secondaryConnectionString":"mock_key"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/ad317b7e-0f16-4ab9-b360-de17565f7a41?api-version=2021-10-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/9982c85f-5007-4a25-8ac9-2475ea672068?api-version=2021-10-01
       cache-control:
       - no-cache
       content-length:
@@ -746,11 +822,11 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 21 Oct 2021 04:49:42 GMT
+      - Mon, 01 Nov 2021 06:08:43 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationResults/ad317b7e-0f16-4ab9-b360-de17565f7a41?api-version=2021-10-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationResults/9982c85f-5007-4a25-8ac9-2475ea672068?api-version=2021-10-01
       pragma:
       - no-cache
       server:
@@ -762,7 +838,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
       x-rp-server-mvid:
-      - 052104b6-a76f-4c87-b183-74bee8bc2fa4
+      - 83348091-47ca-46e9-a8f8-34fbf8fbca6f
     status:
       code: 202
       message: Accepted
@@ -780,12 +856,12 @@ interactions:
       ParameterSetName:
       - -n -g --key-type
       User-Agent:
-      - AZURECLI/2.29.0 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.29.1 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/ad317b7e-0f16-4ab9-b360-de17565f7a41?api-version=2021-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/9982c85f-5007-4a25-8ac9-2475ea672068?api-version=2021-10-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/ad317b7e-0f16-4ab9-b360-de17565f7a41","name":"ad317b7e-0f16-4ab9-b360-de17565f7a41","status":"Running","startTime":"2021-10-21T04:49:41.9259611Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/9982c85f-5007-4a25-8ac9-2475ea672068","name":"9982c85f-5007-4a25-8ac9-2475ea672068","status":"Running","startTime":"2021-11-01T06:08:43.0685507Z"}'
     headers:
       cache-control:
       - no-cache
@@ -794,7 +870,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 21 Oct 2021 04:50:12 GMT
+      - Mon, 01 Nov 2021 06:09:13 GMT
       expires:
       - '-1'
       pragma:
@@ -810,7 +886,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-rp-server-mvid:
-      - 052104b6-a76f-4c87-b183-74bee8bc2fa4
+      - 83348091-47ca-46e9-a8f8-34fbf8fbca6f
     status:
       code: 200
       message: OK
@@ -828,12 +904,12 @@ interactions:
       ParameterSetName:
       - -n -g --key-type
       User-Agent:
-      - AZURECLI/2.29.0 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.29.1 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/ad317b7e-0f16-4ab9-b360-de17565f7a41?api-version=2021-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/9982c85f-5007-4a25-8ac9-2475ea672068?api-version=2021-10-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/ad317b7e-0f16-4ab9-b360-de17565f7a41","name":"ad317b7e-0f16-4ab9-b360-de17565f7a41","status":"Running","startTime":"2021-10-21T04:49:41.9259611Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/9982c85f-5007-4a25-8ac9-2475ea672068","name":"9982c85f-5007-4a25-8ac9-2475ea672068","status":"Running","startTime":"2021-11-01T06:08:43.0685507Z"}'
     headers:
       cache-control:
       - no-cache
@@ -842,7 +918,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 21 Oct 2021 04:50:42 GMT
+      - Mon, 01 Nov 2021 06:09:43 GMT
       expires:
       - '-1'
       pragma:
@@ -858,7 +934,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-rp-server-mvid:
-      - 052104b6-a76f-4c87-b183-74bee8bc2fa4
+      - 83348091-47ca-46e9-a8f8-34fbf8fbca6f
     status:
       code: 200
       message: OK
@@ -876,12 +952,12 @@ interactions:
       ParameterSetName:
       - -n -g --key-type
       User-Agent:
-      - AZURECLI/2.29.0 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.29.1 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/ad317b7e-0f16-4ab9-b360-de17565f7a41?api-version=2021-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/9982c85f-5007-4a25-8ac9-2475ea672068?api-version=2021-10-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/ad317b7e-0f16-4ab9-b360-de17565f7a41","name":"ad317b7e-0f16-4ab9-b360-de17565f7a41","status":"Succeeded","startTime":"2021-10-21T04:49:41.9259611Z","endTime":"2021-10-21T04:50:56.1740775Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/9982c85f-5007-4a25-8ac9-2475ea672068","name":"9982c85f-5007-4a25-8ac9-2475ea672068","status":"Succeeded","startTime":"2021-11-01T06:08:43.0685507Z","endTime":"2021-11-01T06:09:56.2809563Z"}'
     headers:
       cache-control:
       - no-cache
@@ -890,7 +966,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 21 Oct 2021 04:51:12 GMT
+      - Mon, 01 Nov 2021 06:10:13 GMT
       expires:
       - '-1'
       pragma:
@@ -906,7 +982,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-rp-server-mvid:
-      - 052104b6-a76f-4c87-b183-74bee8bc2fa4
+      - 83348091-47ca-46e9-a8f8-34fbf8fbca6f
     status:
       code: 200
       message: OK
@@ -926,7 +1002,7 @@ interactions:
       ParameterSetName:
       - -n -g --key-type
       User-Agent:
-      - AZURECLI/2.29.0 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.29.1 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/webPubSub/webpubsub000002/listKeys?api-version=2021-10-01
   response:
@@ -940,7 +1016,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 21 Oct 2021 04:51:13 GMT
+      - Mon, 01 Nov 2021 06:10:14 GMT
       expires:
       - '-1'
       pragma:
@@ -958,7 +1034,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-writes:
       - '1198'
       x-rp-server-mvid:
-      - 052104b6-a76f-4c87-b183-74bee8bc2fa4
+      - 83348091-47ca-46e9-a8f8-34fbf8fbca6f
     status:
       code: 200
       message: OK
@@ -980,7 +1056,7 @@ interactions:
       ParameterSetName:
       - -n -g --key-type
       User-Agent:
-      - AZURECLI/2.29.0 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.29.1 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/webPubSub/webpubsub000002/regenerateKey?api-version=2021-10-01
   response:
@@ -988,7 +1064,7 @@ interactions:
       string: '{"primaryKey":"mock_key","secondaryKey":"mock_key","primaryConnectionString":"mock_key","secondaryConnectionString":"mock_key"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/79f82238-160b-4c07-be13-1d217840c07e?api-version=2021-10-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/fc100f6e-c7c7-42d1-8e30-14d23aa79e0a?api-version=2021-10-01
       cache-control:
       - no-cache
       content-length:
@@ -996,11 +1072,11 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 21 Oct 2021 04:51:14 GMT
+      - Mon, 01 Nov 2021 06:10:16 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationResults/79f82238-160b-4c07-be13-1d217840c07e?api-version=2021-10-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationResults/fc100f6e-c7c7-42d1-8e30-14d23aa79e0a?api-version=2021-10-01
       pragma:
       - no-cache
       server:
@@ -1012,7 +1088,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
       x-rp-server-mvid:
-      - 052104b6-a76f-4c87-b183-74bee8bc2fa4
+      - 83348091-47ca-46e9-a8f8-34fbf8fbca6f
     status:
       code: 202
       message: Accepted
@@ -1030,21 +1106,21 @@ interactions:
       ParameterSetName:
       - -n -g --key-type
       User-Agent:
-      - AZURECLI/2.29.0 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.29.1 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/79f82238-160b-4c07-be13-1d217840c07e?api-version=2021-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/fc100f6e-c7c7-42d1-8e30-14d23aa79e0a?api-version=2021-10-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/79f82238-160b-4c07-be13-1d217840c07e","name":"79f82238-160b-4c07-be13-1d217840c07e","status":"Running","startTime":"2021-10-21T04:51:15.1499871Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/fc100f6e-c7c7-42d1-8e30-14d23aa79e0a","name":"fc100f6e-c7c7-42d1-8e30-14d23aa79e0a","status":"Running","startTime":"2021-11-01T06:10:16.189082Z"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '321'
+      - '320'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 21 Oct 2021 04:51:45 GMT
+      - Mon, 01 Nov 2021 06:10:46 GMT
       expires:
       - '-1'
       pragma:
@@ -1060,7 +1136,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-rp-server-mvid:
-      - 052104b6-a76f-4c87-b183-74bee8bc2fa4
+      - 83348091-47ca-46e9-a8f8-34fbf8fbca6f
     status:
       code: 200
       message: OK
@@ -1078,21 +1154,21 @@ interactions:
       ParameterSetName:
       - -n -g --key-type
       User-Agent:
-      - AZURECLI/2.29.0 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.29.1 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/79f82238-160b-4c07-be13-1d217840c07e?api-version=2021-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/fc100f6e-c7c7-42d1-8e30-14d23aa79e0a?api-version=2021-10-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/79f82238-160b-4c07-be13-1d217840c07e","name":"79f82238-160b-4c07-be13-1d217840c07e","status":"Running","startTime":"2021-10-21T04:51:15.1499871Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/fc100f6e-c7c7-42d1-8e30-14d23aa79e0a","name":"fc100f6e-c7c7-42d1-8e30-14d23aa79e0a","status":"Running","startTime":"2021-11-01T06:10:16.189082Z"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '321'
+      - '320'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 21 Oct 2021 04:52:16 GMT
+      - Mon, 01 Nov 2021 06:11:17 GMT
       expires:
       - '-1'
       pragma:
@@ -1108,7 +1184,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-rp-server-mvid:
-      - 052104b6-a76f-4c87-b183-74bee8bc2fa4
+      - 83348091-47ca-46e9-a8f8-34fbf8fbca6f
     status:
       code: 200
       message: OK
@@ -1126,21 +1202,21 @@ interactions:
       ParameterSetName:
       - -n -g --key-type
       User-Agent:
-      - AZURECLI/2.29.0 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.29.1 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/79f82238-160b-4c07-be13-1d217840c07e?api-version=2021-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/fc100f6e-c7c7-42d1-8e30-14d23aa79e0a?api-version=2021-10-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/79f82238-160b-4c07-be13-1d217840c07e","name":"79f82238-160b-4c07-be13-1d217840c07e","status":"Succeeded","startTime":"2021-10-21T04:51:15.1499871Z","endTime":"2021-10-21T04:52:28.1792062Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/fc100f6e-c7c7-42d1-8e30-14d23aa79e0a","name":"fc100f6e-c7c7-42d1-8e30-14d23aa79e0a","status":"Succeeded","startTime":"2021-11-01T06:10:16.189082Z","endTime":"2021-11-01T06:11:29.4516102Z"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '364'
+      - '363'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 21 Oct 2021 04:52:46 GMT
+      - Mon, 01 Nov 2021 06:11:47 GMT
       expires:
       - '-1'
       pragma:
@@ -1156,7 +1232,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-rp-server-mvid:
-      - 052104b6-a76f-4c87-b183-74bee8bc2fa4
+      - 83348091-47ca-46e9-a8f8-34fbf8fbca6f
     status:
       code: 200
       message: OK
@@ -1176,7 +1252,7 @@ interactions:
       ParameterSetName:
       - -n -g --key-type
       User-Agent:
-      - AZURECLI/2.29.0 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.29.1 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/webPubSub/webpubsub000002/listKeys?api-version=2021-10-01
   response:
@@ -1190,7 +1266,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 21 Oct 2021 04:52:46 GMT
+      - Mon, 01 Nov 2021 06:11:47 GMT
       expires:
       - '-1'
       pragma:
@@ -1208,7 +1284,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-writes:
       - '1198'
       x-rp-server-mvid:
-      - 052104b6-a76f-4c87-b183-74bee8bc2fa4
+      - 83348091-47ca-46e9-a8f8-34fbf8fbca6f
     status:
       code: 200
       message: OK
@@ -1224,21 +1300,21 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - AZURECLI/2.29.0 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.29.1 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.SignalRService/webPubSub?api-version=2021-10-01
   response:
     body:
-      string: '{"value":[{"sku":{"name":"Free_F1","tier":"Free","size":"F1","capacity":1},"properties":{"provisioningState":"Succeeded","externalIP":"20.62.134.184","hostName":"webpubsub000002.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"chenyl@microsoft.com","createdByType":"User","createdAt":"2021-10-21T04:45:25.3106491Z","lastModifiedBy":"chenyl@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-21T04:47:05.6938908Z"},"location":"eastus","tags":{"key":"value2"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002","name":"webpubsub000002","type":"Microsoft.SignalRService/WebPubSub"},{"sku":{"name":"Free_F1","tier":"Free","size":"F1","capacity":1},"properties":{"provisioningState":"Succeeded","externalIP":"20.62.134.184","hostName":"webpubsubhygdumf.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"chenyl@microsoft.com","createdByType":"User","createdAt":"2021-10-21T03:43:12.3022473Z","lastModifiedBy":"chenyl@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-21T03:44:52.6480976Z"},"location":"eastus","tags":{"key":"value2"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rgmkhr6wz5bv/providers/Microsoft.SignalRService/WebPubSub/webpubsubhygdumf","name":"webpubsubhygdumf","type":"Microsoft.SignalRService/WebPubSub"},{"sku":{"name":"Free_F1","tier":"Free","size":"F1","capacity":1},"properties":{"provisioningState":"Succeeded","externalIP":"20.62.134.170","hostName":"webpubsubvx7ag2f.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"chenyl@microsoft.com","createdByType":"User","createdAt":"2021-10-21T03:30:35.2048915Z","lastModifiedBy":"chenyl@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-21T03:32:47.5750602Z"},"location":"eastus","tags":{"key":"value2"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rgovpljrzm4n/providers/Microsoft.SignalRService/WebPubSub/webpubsubvx7ag2f","name":"webpubsubvx7ag2f","type":"Microsoft.SignalRService/WebPubSub"},{"sku":{"name":"Free_F1","tier":"Free","size":"F1","capacity":1},"properties":{"provisioningState":"Succeeded","externalIP":"20.62.134.184","hostName":"webpubsubv5zncsq.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"chenyl@microsoft.com","createdByType":"User","createdAt":"2021-10-21T04:33:00.4902154Z","lastModifiedBy":"chenyl@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-21T04:35:12.0534147Z"},"location":"eastus","tags":{"key":"value2"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rgu2kbvwdvzn/providers/Microsoft.SignalRService/WebPubSub/webpubsubv5zncsq","name":"webpubsubv5zncsq","type":"Microsoft.SignalRService/WebPubSub"},{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":1},"properties":{"provisioningState":"Succeeded","externalIP":"20.62.134.180","hostName":"testforux.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"yingyingsun@microsoft.com","createdByType":"User","createdAt":"2021-10-11T03:29:23.1666409Z","lastModifiedBy":"yingyingsun@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-11T03:33:07.5051544Z"},"location":"eastus","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/testforUX/providers/Microsoft.SignalRService/WebPubSub/testforUX","name":"testforUX","type":"Microsoft.SignalRService/WebPubSub"},{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":1},"properties":{"provisioningState":"Succeeded","externalIP":"40.67.122.65","hostName":"wanl-1015.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"hostNamePrefix":"wanl-1015","liveTraceConfiguration":{"enabled":"true","categories":[{"name":"ConnectivityLogs","enabled":"true"},{"name":"MessagingLogs","enabled":"false"},{"name":"HttpRequestLogs","enabled":"true"}]},"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"wanl@microsoft.com","createdByType":"User","createdAt":"2021-10-15T03:26:03.7222422Z","lastModifiedBy":"wanl@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-18T07:49:20.2258609Z"},"location":"westcentralus","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/wanl/providers/Microsoft.SignalRService/WebPubSub/wanl-1015","name":"wanl-1015","type":"Microsoft.SignalRService/WebPubSub"},{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":1},"properties":{"provisioningState":"Succeeded","externalIP":"20.61.103.189","hostName":"dayshen-bug-bash-1.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"dayshen@microsoft.com","createdByType":"User","createdAt":"2021-04-26T08:12:59.6906362Z","lastModifiedBy":"dayshen@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-04-26T08:12:59.6906362Z"},"location":"westeurope","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dayshen-custom-domain/providers/Microsoft.SignalRService/WebPubSub/dayshen-bug-bash-1","name":"dayshen-bug-bash-1","type":"Microsoft.SignalRService/WebPubSub"},{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":1},"properties":{"provisioningState":"Succeeded","externalIP":"20.51.13.41","hostName":"chenylwpswestus2.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"identity":{"type":"SystemAssigned","principalId":"fb8e2e45-09b6-4f71-bdd6-c1634494b3db","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"systemData":{"createdBy":"chenyl@microsoft.com","createdByType":"User","createdAt":"2021-04-21T02:41:57.8560663Z","lastModifiedBy":"chenyl@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-04-29T05:27:48.908128Z"},"location":"westus2","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/chenylwps/providers/Microsoft.SignalRService/WebPubSub/chenylwpswestus2","name":"chenylwpswestus2","type":"Microsoft.SignalRService/WebPubSub"},{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":1},"properties":{"provisioningState":"Failed","externalIP":"168.61.142.65","hostName":"dayshen-wps-2.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"hostNamePrefix":"dayshen-wps-2","liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Allow","publicNetwork":{"allow":[],"deny":[]},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"dayshen@microsoft.com","createdByType":"User","createdAt":"2021-03-18T10:17:23.9778178Z","lastModifiedBy":"dayshen@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-04-26T06:24:35.2322011Z"},"location":"centraluseuap","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dayshen-custom-domain/providers/Microsoft.SignalRService/WebPubSub/dayshen-wps-2","name":"dayshen-wps-2","type":"Microsoft.SignalRService/WebPubSub"}]}'
+      string: '{"value":[{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":1},"properties":{"provisioningState":"Succeeded","externalIP":"20.62.134.189","hostName":"chenylwpseastus.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"hostNamePrefix":"chenylwpseastus","liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"chenyl@microsoft.com","createdByType":"User","createdAt":"2021-10-21T08:46:43.8725304Z","lastModifiedBy":"chenyl@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-21T08:46:43.8725304Z"},"location":"eastus","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/chenylwps/providers/Microsoft.SignalRService/WebPubSub/chenylwpseastus","name":"chenylwpseastus","type":"Microsoft.SignalRService/WebPubSub"},{"sku":{"name":"Free_F1","tier":"Free","size":"F1","capacity":1},"properties":{"provisioningState":"Succeeded","externalIP":"20.62.134.184","hostName":"webpubsub000002.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"hostNamePrefix":"webpubsub000002","liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"chenyl@microsoft.com","createdByType":"User","createdAt":"2021-11-01T06:05:24.6069727Z","lastModifiedBy":"chenyl@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-11-01T06:07:05.910159Z"},"location":"eastus","tags":{"key":"value2"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002","name":"webpubsub000002","type":"Microsoft.SignalRService/WebPubSub"},{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":1},"properties":{"provisioningState":"Succeeded","externalIP":"20.62.134.180","hostName":"testforux.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"hostNamePrefix":"testforux","liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"yingyingsun@microsoft.com","createdByType":"User","createdAt":"2021-10-11T03:29:23.1666409Z","lastModifiedBy":"yingyingsun@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-11T03:33:07.5051544Z"},"location":"eastus","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/testforUX/providers/Microsoft.SignalRService/WebPubSub/testforUX","name":"testforUX","type":"Microsoft.SignalRService/WebPubSub"},{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":1},"properties":{"provisioningState":"Succeeded","externalIP":"52.146.137.108","hostName":"chenylwpsneu.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"hostNamePrefix":"chenylwpsneu","liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"lastModifiedBy":"chenyl@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-11-01T05:05:58.476113Z"},"location":"northeurope","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/chenylwps/providers/Microsoft.SignalRService/WebPubSub/chenylwpsneu","name":"chenylwpsneu","type":"Microsoft.SignalRService/WebPubSub"},{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":1},"properties":{"provisioningState":"Succeeded","externalIP":"40.67.122.70","hostName":"wanl-wcus.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"hostNamePrefix":"wanl-wcus","liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"wanl@microsoft.com","createdByType":"User","createdAt":"2021-10-29T09:44:05.0631803Z","lastModifiedBy":"wanl@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-29T09:44:05.0631803Z"},"location":"westcentralus","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/wanl-bugbash/providers/Microsoft.SignalRService/WebPubSub/wanl-wcus","name":"wanl-wcus","type":"Microsoft.SignalRService/WebPubSub"},{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":1},"properties":{"provisioningState":"Succeeded","externalIP":"40.67.122.65","hostName":"wanl-1015.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"hostNamePrefix":"wanl-1015","liveTraceConfiguration":{"enabled":"true","categories":[{"name":"ConnectivityLogs","enabled":"true"},{"name":"MessagingLogs","enabled":"false"},{"name":"HttpRequestLogs","enabled":"true"}]},"resourceLogConfiguration":{"categories":[{"name":"ConnectivityLogs","enabled":"true"},{"name":"MessagingLogs","enabled":"true"},{"name":"HttpRequestLogs","enabled":"true"}]},"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"wanl@microsoft.com","createdByType":"User","createdAt":"2021-10-15T03:26:03.7222422Z","lastModifiedBy":"wanl@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-18T07:49:20.2258609Z"},"location":"westcentralus","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/wanl/providers/Microsoft.SignalRService/WebPubSub/wanl-1015","name":"wanl-1015","type":"Microsoft.SignalRService/WebPubSub"},{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":1},"properties":{"provisioningState":"Succeeded","externalIP":"20.61.103.189","hostName":"dayshen-bug-bash-1.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"hostNamePrefix":"dayshen-bug-bash-1","liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"dayshen@microsoft.com","createdByType":"User","createdAt":"2021-04-26T08:12:59.6906362Z","lastModifiedBy":"dayshen@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-04-26T08:12:59.6906362Z"},"location":"westeurope","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dayshen-custom-domain/providers/Microsoft.SignalRService/WebPubSub/dayshen-bug-bash-1","name":"dayshen-bug-bash-1","type":"Microsoft.SignalRService/WebPubSub"},{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":1},"properties":{"provisioningState":"Succeeded","externalIP":"20.51.13.41","hostName":"chenylwpswestus2.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"hostNamePrefix":"chenylwpswestus2","liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"identity":{"type":"SystemAssigned","principalId":"fb8e2e45-09b6-4f71-bdd6-c1634494b3db","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"systemData":{"createdBy":"chenyl@microsoft.com","createdByType":"User","createdAt":"2021-04-21T02:41:57.8560663Z","lastModifiedBy":"chenyl@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-04-29T05:27:48.908128Z"},"location":"westus2","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/chenylwps/providers/Microsoft.SignalRService/WebPubSub/chenylwpswestus2","name":"chenylwpswestus2","type":"Microsoft.SignalRService/WebPubSub"},{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":2},"properties":{"provisioningState":"Succeeded","externalIP":"20.51.13.40","hostName":"kkwpsapim.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"hostNamePrefix":"kkwpsapim","liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"kkhurin@microsoft.com","createdByType":"User","createdAt":"2021-10-23T06:35:47.6859269Z","lastModifiedBy":"kkhurin@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-23T06:35:47.6859269Z"},"location":"westus2","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/kkWPS/providers/Microsoft.SignalRService/WebPubSub/kkWPSAPIM","name":"kkWPSAPIM","type":"Microsoft.SignalRService/WebPubSub"},{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":5},"properties":{"provisioningState":"Succeeded","externalIP":"168.61.142.68","hostName":"ruimhu-bugbash-1029.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"hostNamePrefix":"ruimhu-bugbash-1029","liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"ruimhu@microsoft.com","createdByType":"User","createdAt":"2021-10-29T02:10:50.3496807Z","lastModifiedBy":"ruimhu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-29T02:10:50.3496807Z"},"location":"centraluseuap","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/bugbash1029/providers/Microsoft.SignalRService/WebPubSub/ruimhu-bugbash-1029","name":"ruimhu-bugbash-1029","type":"Microsoft.SignalRService/WebPubSub"},{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":1},"properties":{"provisioningState":"Succeeded","externalIP":"168.61.142.68","hostName":"chenylwpscanary.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"hostNamePrefix":"chenylwpscanary","liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"chenyl@microsoft.com","createdByType":"User","createdAt":"2021-10-27T07:21:55.4427694Z","lastModifiedBy":"chenyl@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-11-01T04:40:26.18572Z"},"location":"centraluseuap","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/chenylwps/providers/Microsoft.SignalRService/WebPubSub/chenylwpscanary","name":"chenylwpscanary","type":"Microsoft.SignalRService/WebPubSub"},{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":1},"properties":{"provisioningState":"Succeeded","externalIP":"168.61.142.68","hostName":"dayshen-bb-1.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"hostNamePrefix":"dayshen-bb-1","liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"identity":{"type":"SystemAssigned","principalId":"344704eb-a63c-4f7a-8641-3b635ef7d917","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"systemData":{"createdBy":"dayshen@microsoft.com","createdByType":"User","createdAt":"2021-10-29T05:19:28.0003315Z","lastModifiedBy":"dayshen@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-29T07:08:12.932351Z"},"location":"centraluseuap","tags":{"aaa":"bbb"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dayshen-bb/providers/Microsoft.SignalRService/WebPubSub/dayshen-bb-1","name":"dayshen-bb-1","type":"Microsoft.SignalRService/WebPubSub"},{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":1},"properties":{"provisioningState":"Failed","externalIP":"168.61.142.65","hostName":"dayshen-wps-2.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"hostNamePrefix":"dayshen-wps-2","liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Allow","publicNetwork":{"allow":[],"deny":[]},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"dayshen@microsoft.com","createdByType":"User","createdAt":"2021-03-18T10:17:23.9778178Z","lastModifiedBy":"dayshen@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-04-26T06:24:35.2322011Z"},"location":"centraluseuap","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dayshen-custom-domain/providers/Microsoft.SignalRService/WebPubSub/dayshen-wps-2","name":"dayshen-wps-2","type":"Microsoft.SignalRService/WebPubSub"},{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":1},"properties":{"provisioningState":"Succeeded","externalIP":"168.61.142.68","hostName":"jixin-pve-test.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[{"properties":{"provisioningState":"Succeeded","privateEndpoint":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dayshen-custom-domain/providers/Microsoft.Network/privateEndpoints/jixin-pve-ep1"},"groupIds":["webpubsub"],"privateLinkServiceConnectionState":{"status":"Approved","description":"Auto-Approved","actionsRequired":"None"}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dayshen-custom-domain/providers/Microsoft.SignalRService/WebPubSub/jixin-pve-test/privateEndpointConnections/jixin-pve-test.268ad686-d787-4d2c-b9a6-3274e22dd3ec","name":"jixin-pve-test.268ad686-d787-4d2c-b9a6-3274e22dd3ec","type":"Microsoft.SignalRService/WebPubSub/privateEndpointConnections"}],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"hostNamePrefix":"jixin-pve-test","liveTraceConfiguration":null,"resourceLogConfiguration":{"categories":[{"name":"ConnectivityLogs","enabled":"true"},{"name":"MessagingLogs","enabled":"true"},{"name":"HttpRequestLogs","enabled":"true"}]},"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":[],"deny":[]},"privateEndpoints":[{"name":"jixin-pve-test.268ad686-d787-4d2c-b9a6-3274e22dd3ec","allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null}]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"jixin@microsoft.com","createdByType":"User","createdAt":"2021-10-21T05:36:40.4515317Z","lastModifiedBy":"jixin@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-21T05:36:40.4515317Z"},"location":"centraluseuap","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dayshen-custom-domain/providers/Microsoft.SignalRService/WebPubSub/jixin-pve-test","name":"jixin-pve-test","type":"Microsoft.SignalRService/WebPubSub"},{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":1},"properties":{"provisioningState":"Succeeded","externalIP":"168.61.142.68","hostName":"jixin-teststd.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"hostNamePrefix":"jixin-teststd","liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"identity":{"type":"UserAssigned","userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/chenyltestref/providers/Microsoft.ManagedIdentity/userAssignedIdentities/chenylidentity":{"principalId":"ea340c71-39d1-4c0d-ad05-202f66eefea2","clientId":"9aa3abcd-ed78-494c-96a7-947aac6fb8f8"}}},"systemData":{"createdBy":"jixin@microsoft.com","createdByType":"User","createdAt":"2021-10-29T02:30:51.5796643Z","lastModifiedBy":"jixin@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-29T03:20:05.9037168Z"},"location":"centraluseuap","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jixin-bugbash/providers/Microsoft.SignalRService/WebPubSub/jixin-teststd","name":"jixin-teststd","type":"Microsoft.SignalRService/WebPubSub"},{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":1},"properties":{"provisioningState":"Succeeded","externalIP":"168.61.142.68","hostName":"kenchentest1029.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"hostNamePrefix":"kenchentest1029","liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"kenchen@microsoft.com","createdByType":"User","createdAt":"2021-10-29T06:23:37.6987074Z","lastModifiedBy":"kenchen@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-29T06:23:37.6987074Z"},"location":"centraluseuap","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/kenchentest1029/providers/Microsoft.SignalRService/WebPubSub/kenchentest1029","name":"kenchentest1029","type":"Microsoft.SignalRService/WebPubSub"},{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":1},"properties":{"provisioningState":"Succeeded","externalIP":"168.61.142.68","hostName":"lianwei-bugbash.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"hostNamePrefix":"lianwei-bugbash","liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"lianwei@microsoft.com","createdByType":"User","createdAt":"2021-10-29T02:23:36.391847Z","lastModifiedBy":"lianwei@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-29T02:23:36.391847Z"},"location":"centraluseuap","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/lianwei-bugbash/providers/Microsoft.SignalRService/WebPubSub/lianwei-bugbash","name":"lianwei-bugbash","type":"Microsoft.SignalRService/WebPubSub"},{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":1},"properties":{"provisioningState":"Succeeded","externalIP":"168.61.142.68","hostName":"seungmoon-bugbash-webpubsub.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"hostNamePrefix":"seungmoon-bugbash-webpubsub","liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"seungmoon@microsoft.com","createdByType":"User","createdAt":"2021-10-29T19:44:00.7440896Z","lastModifiedBy":"seungmoon@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-29T19:44:00.7440896Z"},"location":"centraluseuap","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/seungmoon-bugbash-rg/providers/Microsoft.SignalRService/WebPubSub/seungmoon-bugbash-webpubsub","name":"seungmoon-bugbash-webpubsub","type":"Microsoft.SignalRService/WebPubSub"},{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":1},"properties":{"provisioningState":"Succeeded","externalIP":"168.61.142.68","hostName":"bugbash.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"hostNamePrefix":"bugbash","liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"tefa@microsoft.com","createdByType":"User","createdAt":"2021-10-29T07:01:34.6423413Z","lastModifiedBy":"tefa@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-29T08:05:02.4515697Z"},"location":"centraluseuap","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/terencefan/providers/Microsoft.SignalRService/WebPubSub/bugbash","name":"bugbash","type":"Microsoft.SignalRService/WebPubSub"},{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":1},"properties":{"provisioningState":"Succeeded","externalIP":"168.61.142.68","hostName":"wanl-1.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"hostNamePrefix":"wanl-1","liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"wanl@microsoft.com","createdByType":"User","createdAt":"2021-10-29T02:37:01.4400427Z","lastModifiedBy":"wanl@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-29T02:37:01.4400427Z"},"location":"centraluseuap","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/wanl-bugbash/providers/Microsoft.SignalRService/WebPubSub/wanl-1","name":"wanl-1","type":"Microsoft.SignalRService/WebPubSub"},{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":1},"properties":{"provisioningState":"Succeeded","externalIP":"168.61.142.68","hostName":"zzzzz.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[{"properties":{"provisioningState":"Succeeded","privateEndpoint":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/zhyan/providers/Microsoft.Network/privateEndpoints/zzzpe"},"groupIds":["webpubsub"],"privateLinkServiceConnectionState":{"status":"Approved","description":"Auto-Approved","actionsRequired":"None"}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/zhyan/providers/Microsoft.SignalRService/WebPubSub/zzzzz/privateEndpointConnections/zzzzz.912233bd-4912-488e-9a99-ca1d7000d57a","name":"zzzzz.912233bd-4912-488e-9a99-ca1d7000d57a","type":"Microsoft.SignalRService/WebPubSub/privateEndpointConnections"}],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"hostNamePrefix":"zzzzz","liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[{"name":"zzzzz.912233bd-4912-488e-9a99-ca1d7000d57a","allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null}]},"publicNetworkAccess":"Disabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"zhyan@microsoft.com","createdByType":"User","createdAt":"2021-10-29T07:31:44.867332Z","lastModifiedBy":"zhyan@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-29T07:56:31.9933503Z"},"location":"centraluseuap","tags":{"hfgjfh":"fffhfh"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/zhyan/providers/Microsoft.SignalRService/WebPubSub/zzzzz","name":"zzzzz","type":"Microsoft.SignalRService/WebPubSub"},{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":2},"properties":{"provisioningState":"Succeeded","externalIP":"20.51.21.34","hostName":"jw3333.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"hostNamePrefix":"jw3333","liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"juniwang@microsoft.com","createdByType":"User","createdAt":"2021-10-29T09:16:35.7594708Z","lastModifiedBy":"juniwang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-29T09:16:35.7594708Z"},"location":"eastus2euap","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jw1011/providers/Microsoft.SignalRService/WebPubSub/jw3333","name":"jw3333","type":"Microsoft.SignalRService/WebPubSub"},{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":1},"properties":{"provisioningState":"Succeeded","externalIP":"20.51.21.34","hostName":"vcicawpschat1029.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"hostNamePrefix":"vcicawpschat1029","liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"v-cicai@microsoft.com","createdByType":"User","createdAt":"2021-10-29T06:31:51.7730715Z","lastModifiedBy":"v-cicai@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-29T06:31:51.7730715Z"},"location":"eastus2euap","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/vcicawpschat1029/providers/Microsoft.SignalRService/WebPubSub/vcicawpschat1029","name":"vcicawpschat1029","type":"Microsoft.SignalRService/WebPubSub"}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '10507'
+      - '29145'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 21 Oct 2021 04:52:48 GMT
+      - Mon, 01 Nov 2021 06:11:49 GMT
       expires:
       - '-1'
       pragma:
@@ -1250,11 +1326,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-original-request-ids:
-      - 23c9097d-b0bb-4166-ba0d-64e55d17ba21
-      - 6a219435-3fc2-4c50-b33c-eb3d6b02dd2a
-      - 09ad9870-2028-4c98-84c2-3ae9a413b8f1
-      - 07d2bd42-f620-4dc9-87b2-07032c1afbac
-      - 5d11243a-09d9-414b-b4e5-3a61b29e1a2d
+      - d64c889d-d500-495f-ba9d-bd76137cc376
+      - ffd26056-084e-4b7e-a63f-bebceef19ec2
+      - 98f5cca4-e738-410f-951c-497d02bc7339
+      - d521b42c-b1f1-4ad3-a0c2-2b741a9da9aa
+      - 2f243f3b-b92f-497b-a4ac-07fb1adf55b3
+      - d496e442-ad60-4f16-a0f1-3728ae1d29fa
+      - 72742eee-bf4c-49e4-8658-5b981337dbf6
     status:
       code: 200
       message: OK
@@ -1274,25 +1352,19 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.29.0 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.29.1 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
     method: DELETE
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/webPubSub/webpubsub000002?api-version=2021-10-01
   response:
     body:
       string: ''
     headers:
-      azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/3c519e7b-a9e9-4085-b099-ba8fc27b16ca?api-version=2021-10-01
       cache-control:
       - no-cache
-      content-length:
-      - '0'
       date:
-      - Thu, 21 Oct 2021 04:52:51 GMT
+      - Mon, 01 Nov 2021 06:11:55 GMT
       expires:
       - '-1'
-      location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationResults/3c519e7b-a9e9-4085-b099-ba8fc27b16ca?api-version=2021-10-01
       pragma:
       - no-cache
       server:
@@ -1304,54 +1376,10 @@ interactions:
       x-ms-ratelimit-remaining-subscription-deletes:
       - '14999'
       x-rp-server-mvid:
-      - 052104b6-a76f-4c87-b183-74bee8bc2fa4
+      - 83348091-47ca-46e9-a8f8-34fbf8fbca6f
     status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - webpubsub delete
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -n
-      User-Agent:
-      - AZURECLI/2.29.0 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.SignalRService/WebPubSub/webpubsub000002/operationStatuses/3c519e7b-a9e9-4085-b099-ba8fc27b16ca?api-version=2021-10-01
-  response:
-    body:
-      string: '{"error":{"code":"ResourceNotFound","message":"The Resource ''Microsoft.SignalRService/WebPubSub/webpubsub000002''
-        under resource group ''clitest.rg000001'' was not found. For more details
-        please go to https://aka.ms/ARMResourceNotFoundFix"}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '243'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Thu, 21 Oct 2021 04:53:21 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-failure-cause:
-      - gateway
-    status:
-      code: 404
-      message: Not Found
+      code: 204
+      message: No Content
 - request:
     body: null
     headers:
@@ -1364,21 +1392,21 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - AZURECLI/2.29.0 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.29.1 azsdk-python-mgmt-webpubsub/1.0.0 Python/3.9.2 (Windows-10-10.0.19041-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.SignalRService/webPubSub?api-version=2021-10-01
   response:
     body:
-      string: '{"value":[{"sku":{"name":"Free_F1","tier":"Free","size":"F1","capacity":1},"properties":{"provisioningState":"Succeeded","externalIP":"20.62.134.184","hostName":"webpubsubhygdumf.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"chenyl@microsoft.com","createdByType":"User","createdAt":"2021-10-21T03:43:12.3022473Z","lastModifiedBy":"chenyl@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-21T03:44:52.6480976Z"},"location":"eastus","tags":{"key":"value2"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rgmkhr6wz5bv/providers/Microsoft.SignalRService/WebPubSub/webpubsubhygdumf","name":"webpubsubhygdumf","type":"Microsoft.SignalRService/WebPubSub"},{"sku":{"name":"Free_F1","tier":"Free","size":"F1","capacity":1},"properties":{"provisioningState":"Succeeded","externalIP":"20.62.134.170","hostName":"webpubsubvx7ag2f.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"chenyl@microsoft.com","createdByType":"User","createdAt":"2021-10-21T03:30:35.2048915Z","lastModifiedBy":"chenyl@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-21T03:32:47.5750602Z"},"location":"eastus","tags":{"key":"value2"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rgovpljrzm4n/providers/Microsoft.SignalRService/WebPubSub/webpubsubvx7ag2f","name":"webpubsubvx7ag2f","type":"Microsoft.SignalRService/WebPubSub"},{"sku":{"name":"Free_F1","tier":"Free","size":"F1","capacity":1},"properties":{"provisioningState":"Succeeded","externalIP":"20.62.134.184","hostName":"webpubsubv5zncsq.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"chenyl@microsoft.com","createdByType":"User","createdAt":"2021-10-21T04:33:00.4902154Z","lastModifiedBy":"chenyl@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-21T04:35:12.0534147Z"},"location":"eastus","tags":{"key":"value2"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rgu2kbvwdvzn/providers/Microsoft.SignalRService/WebPubSub/webpubsubv5zncsq","name":"webpubsubv5zncsq","type":"Microsoft.SignalRService/WebPubSub"},{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":1},"properties":{"provisioningState":"Succeeded","externalIP":"20.62.134.180","hostName":"testforux.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"yingyingsun@microsoft.com","createdByType":"User","createdAt":"2021-10-11T03:29:23.1666409Z","lastModifiedBy":"yingyingsun@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-11T03:33:07.5051544Z"},"location":"eastus","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/testforUX/providers/Microsoft.SignalRService/WebPubSub/testforUX","name":"testforUX","type":"Microsoft.SignalRService/WebPubSub"},{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":1},"properties":{"provisioningState":"Succeeded","externalIP":"40.67.122.65","hostName":"wanl-1015.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"hostNamePrefix":"wanl-1015","liveTraceConfiguration":{"enabled":"true","categories":[{"name":"ConnectivityLogs","enabled":"true"},{"name":"MessagingLogs","enabled":"false"},{"name":"HttpRequestLogs","enabled":"true"}]},"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"wanl@microsoft.com","createdByType":"User","createdAt":"2021-10-15T03:26:03.7222422Z","lastModifiedBy":"wanl@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-18T07:49:20.2258609Z"},"location":"westcentralus","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/wanl/providers/Microsoft.SignalRService/WebPubSub/wanl-1015","name":"wanl-1015","type":"Microsoft.SignalRService/WebPubSub"},{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":1},"properties":{"provisioningState":"Succeeded","externalIP":"20.61.103.189","hostName":"dayshen-bug-bash-1.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"dayshen@microsoft.com","createdByType":"User","createdAt":"2021-04-26T08:12:59.6906362Z","lastModifiedBy":"dayshen@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-04-26T08:12:59.6906362Z"},"location":"westeurope","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dayshen-custom-domain/providers/Microsoft.SignalRService/WebPubSub/dayshen-bug-bash-1","name":"dayshen-bug-bash-1","type":"Microsoft.SignalRService/WebPubSub"},{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":1},"properties":{"provisioningState":"Succeeded","externalIP":"20.51.13.41","hostName":"chenylwpswestus2.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"identity":{"type":"SystemAssigned","principalId":"fb8e2e45-09b6-4f71-bdd6-c1634494b3db","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"systemData":{"createdBy":"chenyl@microsoft.com","createdByType":"User","createdAt":"2021-04-21T02:41:57.8560663Z","lastModifiedBy":"chenyl@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-04-29T05:27:48.908128Z"},"location":"westus2","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/chenylwps/providers/Microsoft.SignalRService/WebPubSub/chenylwpswestus2","name":"chenylwpswestus2","type":"Microsoft.SignalRService/WebPubSub"},{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":1},"properties":{"provisioningState":"Failed","externalIP":"168.61.142.65","hostName":"dayshen-wps-2.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"hostNamePrefix":"dayshen-wps-2","liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Allow","publicNetwork":{"allow":[],"deny":[]},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"dayshen@microsoft.com","createdByType":"User","createdAt":"2021-03-18T10:17:23.9778178Z","lastModifiedBy":"dayshen@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-04-26T06:24:35.2322011Z"},"location":"centraluseuap","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dayshen-custom-domain/providers/Microsoft.SignalRService/WebPubSub/dayshen-wps-2","name":"dayshen-wps-2","type":"Microsoft.SignalRService/WebPubSub"}]}'
+      string: '{"value":[{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":1},"properties":{"provisioningState":"Succeeded","externalIP":"20.62.134.189","hostName":"chenylwpseastus.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"hostNamePrefix":"chenylwpseastus","liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"chenyl@microsoft.com","createdByType":"User","createdAt":"2021-10-21T08:46:43.8725304Z","lastModifiedBy":"chenyl@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-21T08:46:43.8725304Z"},"location":"eastus","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/chenylwps/providers/Microsoft.SignalRService/WebPubSub/chenylwpseastus","name":"chenylwpseastus","type":"Microsoft.SignalRService/WebPubSub"},{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":1},"properties":{"provisioningState":"Succeeded","externalIP":"20.62.134.180","hostName":"testforux.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"hostNamePrefix":"testforux","liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"yingyingsun@microsoft.com","createdByType":"User","createdAt":"2021-10-11T03:29:23.1666409Z","lastModifiedBy":"yingyingsun@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-11T03:33:07.5051544Z"},"location":"eastus","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/testforUX/providers/Microsoft.SignalRService/WebPubSub/testforUX","name":"testforUX","type":"Microsoft.SignalRService/WebPubSub"},{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":1},"properties":{"provisioningState":"Succeeded","externalIP":"52.146.137.108","hostName":"chenylwpsneu.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"hostNamePrefix":"chenylwpsneu","liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"lastModifiedBy":"chenyl@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-11-01T05:05:58.476113Z"},"location":"northeurope","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/chenylwps/providers/Microsoft.SignalRService/WebPubSub/chenylwpsneu","name":"chenylwpsneu","type":"Microsoft.SignalRService/WebPubSub"},{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":1},"properties":{"provisioningState":"Succeeded","externalIP":"40.67.122.70","hostName":"wanl-wcus.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"hostNamePrefix":"wanl-wcus","liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"wanl@microsoft.com","createdByType":"User","createdAt":"2021-10-29T09:44:05.0631803Z","lastModifiedBy":"wanl@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-29T09:44:05.0631803Z"},"location":"westcentralus","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/wanl-bugbash/providers/Microsoft.SignalRService/WebPubSub/wanl-wcus","name":"wanl-wcus","type":"Microsoft.SignalRService/WebPubSub"},{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":1},"properties":{"provisioningState":"Succeeded","externalIP":"40.67.122.65","hostName":"wanl-1015.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"hostNamePrefix":"wanl-1015","liveTraceConfiguration":{"enabled":"true","categories":[{"name":"ConnectivityLogs","enabled":"true"},{"name":"MessagingLogs","enabled":"false"},{"name":"HttpRequestLogs","enabled":"true"}]},"resourceLogConfiguration":{"categories":[{"name":"ConnectivityLogs","enabled":"true"},{"name":"MessagingLogs","enabled":"true"},{"name":"HttpRequestLogs","enabled":"true"}]},"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"wanl@microsoft.com","createdByType":"User","createdAt":"2021-10-15T03:26:03.7222422Z","lastModifiedBy":"wanl@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-18T07:49:20.2258609Z"},"location":"westcentralus","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/wanl/providers/Microsoft.SignalRService/WebPubSub/wanl-1015","name":"wanl-1015","type":"Microsoft.SignalRService/WebPubSub"},{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":1},"properties":{"provisioningState":"Succeeded","externalIP":"20.61.103.189","hostName":"dayshen-bug-bash-1.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"hostNamePrefix":"dayshen-bug-bash-1","liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"dayshen@microsoft.com","createdByType":"User","createdAt":"2021-04-26T08:12:59.6906362Z","lastModifiedBy":"dayshen@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-04-26T08:12:59.6906362Z"},"location":"westeurope","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dayshen-custom-domain/providers/Microsoft.SignalRService/WebPubSub/dayshen-bug-bash-1","name":"dayshen-bug-bash-1","type":"Microsoft.SignalRService/WebPubSub"},{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":1},"properties":{"provisioningState":"Succeeded","externalIP":"20.51.13.41","hostName":"chenylwpswestus2.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"hostNamePrefix":"chenylwpswestus2","liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"identity":{"type":"SystemAssigned","principalId":"fb8e2e45-09b6-4f71-bdd6-c1634494b3db","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"systemData":{"createdBy":"chenyl@microsoft.com","createdByType":"User","createdAt":"2021-04-21T02:41:57.8560663Z","lastModifiedBy":"chenyl@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-04-29T05:27:48.908128Z"},"location":"westus2","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/chenylwps/providers/Microsoft.SignalRService/WebPubSub/chenylwpswestus2","name":"chenylwpswestus2","type":"Microsoft.SignalRService/WebPubSub"},{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":2},"properties":{"provisioningState":"Succeeded","externalIP":"20.51.13.40","hostName":"kkwpsapim.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"hostNamePrefix":"kkwpsapim","liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"kkhurin@microsoft.com","createdByType":"User","createdAt":"2021-10-23T06:35:47.6859269Z","lastModifiedBy":"kkhurin@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-23T06:35:47.6859269Z"},"location":"westus2","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/kkWPS/providers/Microsoft.SignalRService/WebPubSub/kkWPSAPIM","name":"kkWPSAPIM","type":"Microsoft.SignalRService/WebPubSub"},{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":5},"properties":{"provisioningState":"Succeeded","externalIP":"168.61.142.68","hostName":"ruimhu-bugbash-1029.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"hostNamePrefix":"ruimhu-bugbash-1029","liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"ruimhu@microsoft.com","createdByType":"User","createdAt":"2021-10-29T02:10:50.3496807Z","lastModifiedBy":"ruimhu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-29T02:10:50.3496807Z"},"location":"centraluseuap","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/bugbash1029/providers/Microsoft.SignalRService/WebPubSub/ruimhu-bugbash-1029","name":"ruimhu-bugbash-1029","type":"Microsoft.SignalRService/WebPubSub"},{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":1},"properties":{"provisioningState":"Succeeded","externalIP":"168.61.142.68","hostName":"chenylwpscanary.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"hostNamePrefix":"chenylwpscanary","liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"chenyl@microsoft.com","createdByType":"User","createdAt":"2021-10-27T07:21:55.4427694Z","lastModifiedBy":"chenyl@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-11-01T04:40:26.18572Z"},"location":"centraluseuap","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/chenylwps/providers/Microsoft.SignalRService/WebPubSub/chenylwpscanary","name":"chenylwpscanary","type":"Microsoft.SignalRService/WebPubSub"},{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":1},"properties":{"provisioningState":"Succeeded","externalIP":"168.61.142.68","hostName":"dayshen-bb-1.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"hostNamePrefix":"dayshen-bb-1","liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"identity":{"type":"SystemAssigned","principalId":"344704eb-a63c-4f7a-8641-3b635ef7d917","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"systemData":{"createdBy":"dayshen@microsoft.com","createdByType":"User","createdAt":"2021-10-29T05:19:28.0003315Z","lastModifiedBy":"dayshen@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-29T07:08:12.932351Z"},"location":"centraluseuap","tags":{"aaa":"bbb"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dayshen-bb/providers/Microsoft.SignalRService/WebPubSub/dayshen-bb-1","name":"dayshen-bb-1","type":"Microsoft.SignalRService/WebPubSub"},{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":1},"properties":{"provisioningState":"Failed","externalIP":"168.61.142.65","hostName":"dayshen-wps-2.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"hostNamePrefix":"dayshen-wps-2","liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Allow","publicNetwork":{"allow":[],"deny":[]},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"dayshen@microsoft.com","createdByType":"User","createdAt":"2021-03-18T10:17:23.9778178Z","lastModifiedBy":"dayshen@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-04-26T06:24:35.2322011Z"},"location":"centraluseuap","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dayshen-custom-domain/providers/Microsoft.SignalRService/WebPubSub/dayshen-wps-2","name":"dayshen-wps-2","type":"Microsoft.SignalRService/WebPubSub"},{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":1},"properties":{"provisioningState":"Succeeded","externalIP":"168.61.142.68","hostName":"jixin-pve-test.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[{"properties":{"provisioningState":"Succeeded","privateEndpoint":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dayshen-custom-domain/providers/Microsoft.Network/privateEndpoints/jixin-pve-ep1"},"groupIds":["webpubsub"],"privateLinkServiceConnectionState":{"status":"Approved","description":"Auto-Approved","actionsRequired":"None"}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dayshen-custom-domain/providers/Microsoft.SignalRService/WebPubSub/jixin-pve-test/privateEndpointConnections/jixin-pve-test.268ad686-d787-4d2c-b9a6-3274e22dd3ec","name":"jixin-pve-test.268ad686-d787-4d2c-b9a6-3274e22dd3ec","type":"Microsoft.SignalRService/WebPubSub/privateEndpointConnections"}],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"hostNamePrefix":"jixin-pve-test","liveTraceConfiguration":null,"resourceLogConfiguration":{"categories":[{"name":"ConnectivityLogs","enabled":"true"},{"name":"MessagingLogs","enabled":"true"},{"name":"HttpRequestLogs","enabled":"true"}]},"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":[],"deny":[]},"privateEndpoints":[{"name":"jixin-pve-test.268ad686-d787-4d2c-b9a6-3274e22dd3ec","allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null}]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"jixin@microsoft.com","createdByType":"User","createdAt":"2021-10-21T05:36:40.4515317Z","lastModifiedBy":"jixin@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-21T05:36:40.4515317Z"},"location":"centraluseuap","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dayshen-custom-domain/providers/Microsoft.SignalRService/WebPubSub/jixin-pve-test","name":"jixin-pve-test","type":"Microsoft.SignalRService/WebPubSub"},{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":1},"properties":{"provisioningState":"Succeeded","externalIP":"168.61.142.68","hostName":"jixin-teststd.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"hostNamePrefix":"jixin-teststd","liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"identity":{"type":"UserAssigned","userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/chenyltestref/providers/Microsoft.ManagedIdentity/userAssignedIdentities/chenylidentity":{"principalId":"ea340c71-39d1-4c0d-ad05-202f66eefea2","clientId":"9aa3abcd-ed78-494c-96a7-947aac6fb8f8"}}},"systemData":{"createdBy":"jixin@microsoft.com","createdByType":"User","createdAt":"2021-10-29T02:30:51.5796643Z","lastModifiedBy":"jixin@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-29T03:20:05.9037168Z"},"location":"centraluseuap","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jixin-bugbash/providers/Microsoft.SignalRService/WebPubSub/jixin-teststd","name":"jixin-teststd","type":"Microsoft.SignalRService/WebPubSub"},{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":1},"properties":{"provisioningState":"Succeeded","externalIP":"168.61.142.68","hostName":"kenchentest1029.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"hostNamePrefix":"kenchentest1029","liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"kenchen@microsoft.com","createdByType":"User","createdAt":"2021-10-29T06:23:37.6987074Z","lastModifiedBy":"kenchen@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-29T06:23:37.6987074Z"},"location":"centraluseuap","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/kenchentest1029/providers/Microsoft.SignalRService/WebPubSub/kenchentest1029","name":"kenchentest1029","type":"Microsoft.SignalRService/WebPubSub"},{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":1},"properties":{"provisioningState":"Succeeded","externalIP":"168.61.142.68","hostName":"lianwei-bugbash.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"hostNamePrefix":"lianwei-bugbash","liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"lianwei@microsoft.com","createdByType":"User","createdAt":"2021-10-29T02:23:36.391847Z","lastModifiedBy":"lianwei@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-29T02:23:36.391847Z"},"location":"centraluseuap","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/lianwei-bugbash/providers/Microsoft.SignalRService/WebPubSub/lianwei-bugbash","name":"lianwei-bugbash","type":"Microsoft.SignalRService/WebPubSub"},{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":1},"properties":{"provisioningState":"Succeeded","externalIP":"168.61.142.68","hostName":"seungmoon-bugbash-webpubsub.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"hostNamePrefix":"seungmoon-bugbash-webpubsub","liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"seungmoon@microsoft.com","createdByType":"User","createdAt":"2021-10-29T19:44:00.7440896Z","lastModifiedBy":"seungmoon@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-29T19:44:00.7440896Z"},"location":"centraluseuap","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/seungmoon-bugbash-rg/providers/Microsoft.SignalRService/WebPubSub/seungmoon-bugbash-webpubsub","name":"seungmoon-bugbash-webpubsub","type":"Microsoft.SignalRService/WebPubSub"},{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":1},"properties":{"provisioningState":"Succeeded","externalIP":"168.61.142.68","hostName":"bugbash.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"hostNamePrefix":"bugbash","liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"tefa@microsoft.com","createdByType":"User","createdAt":"2021-10-29T07:01:34.6423413Z","lastModifiedBy":"tefa@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-29T08:05:02.4515697Z"},"location":"centraluseuap","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/terencefan/providers/Microsoft.SignalRService/WebPubSub/bugbash","name":"bugbash","type":"Microsoft.SignalRService/WebPubSub"},{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":1},"properties":{"provisioningState":"Succeeded","externalIP":"168.61.142.68","hostName":"wanl-1.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"hostNamePrefix":"wanl-1","liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"wanl@microsoft.com","createdByType":"User","createdAt":"2021-10-29T02:37:01.4400427Z","lastModifiedBy":"wanl@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-29T02:37:01.4400427Z"},"location":"centraluseuap","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/wanl-bugbash/providers/Microsoft.SignalRService/WebPubSub/wanl-1","name":"wanl-1","type":"Microsoft.SignalRService/WebPubSub"},{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":1},"properties":{"provisioningState":"Succeeded","externalIP":"168.61.142.68","hostName":"zzzzz.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[{"properties":{"provisioningState":"Succeeded","privateEndpoint":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/zhyan/providers/Microsoft.Network/privateEndpoints/zzzpe"},"groupIds":["webpubsub"],"privateLinkServiceConnectionState":{"status":"Approved","description":"Auto-Approved","actionsRequired":"None"}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/zhyan/providers/Microsoft.SignalRService/WebPubSub/zzzzz/privateEndpointConnections/zzzzz.912233bd-4912-488e-9a99-ca1d7000d57a","name":"zzzzz.912233bd-4912-488e-9a99-ca1d7000d57a","type":"Microsoft.SignalRService/WebPubSub/privateEndpointConnections"}],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"hostNamePrefix":"zzzzz","liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[{"name":"zzzzz.912233bd-4912-488e-9a99-ca1d7000d57a","allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null}]},"publicNetworkAccess":"Disabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"zhyan@microsoft.com","createdByType":"User","createdAt":"2021-10-29T07:31:44.867332Z","lastModifiedBy":"zhyan@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-29T07:56:31.9933503Z"},"location":"centraluseuap","tags":{"hfgjfh":"fffhfh"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/zhyan/providers/Microsoft.SignalRService/WebPubSub/zzzzz","name":"zzzzz","type":"Microsoft.SignalRService/WebPubSub"},{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":2},"properties":{"provisioningState":"Succeeded","externalIP":"20.51.21.34","hostName":"jw3333.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"hostNamePrefix":"jw3333","liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"juniwang@microsoft.com","createdByType":"User","createdAt":"2021-10-29T09:16:35.7594708Z","lastModifiedBy":"juniwang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-29T09:16:35.7594708Z"},"location":"eastus2euap","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jw1011/providers/Microsoft.SignalRService/WebPubSub/jw3333","name":"jw3333","type":"Microsoft.SignalRService/WebPubSub"},{"sku":{"name":"Standard_S1","tier":"Standard","size":"S1","capacity":1},"properties":{"provisioningState":"Succeeded","externalIP":"20.51.21.34","hostName":"vcicawpschat1029.webpubsub.azure.com","publicPort":443,"serverPort":443,"version":"1.0","privateEndpointConnections":[],"sharedPrivateLinkResources":[],"tls":{"clientCertEnabled":false},"hostNamePrefix":"vcicawpschat1029","liveTraceConfiguration":null,"resourceLogConfiguration":null,"networkACLs":{"defaultAction":"Deny","publicNetwork":{"allow":["ServerConnection","ClientConnection","RESTAPI","Trace"],"deny":null},"privateEndpoints":[]},"publicNetworkAccess":"Enabled","disableLocalAuth":false,"disableAadAuth":false},"systemData":{"createdBy":"v-cicai@microsoft.com","createdByType":"User","createdAt":"2021-10-29T06:31:51.7730715Z","lastModifiedBy":"v-cicai@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-10-29T06:31:51.7730715Z"},"location":"eastus2euap","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/vcicawpschat1029/providers/Microsoft.SignalRService/WebPubSub/vcicawpschat1029","name":"vcicawpschat1029","type":"Microsoft.SignalRService/WebPubSub"}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '9365'
+      - '27968'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 21 Oct 2021 04:53:24 GMT
+      - Mon, 01 Nov 2021 06:11:57 GMT
       expires:
       - '-1'
       pragma:
@@ -1390,11 +1418,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-original-request-ids:
-      - ddafc4f9-41e4-4030-9c72-befa9a8431fa
-      - 23481d18-d46d-46f1-af9a-0a426fe16a57
-      - f8799eaf-8ef0-486d-b71b-01b2cdd48126
-      - 7f97c6e9-0d1b-451d-8b63-70d575bffdc1
-      - 5dd8325d-af43-4507-8802-9d659537c28f
+      - 12cc4f64-3a9a-41c0-9521-f8deeaf2cb38
+      - df93eb99-ed36-419a-8cbf-539dd8084344
+      - 3694a4bc-3276-4cdf-930c-18cea692d146
+      - bc29714a-c998-4c58-8ae5-172eb0d63356
+      - b50fa423-e48f-4ca3-8450-55d7e9b4bc8e
+      - e06d8a56-aa61-489b-b204-07fa00115498
+      - 77377cfd-e1e9-4d37-8106-6c8d1a2b6eb3
     status:
       code: 200
       message: OK

@@ -5,7 +5,7 @@
 
 import importlib
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 from azext_aks_preview.__init__ import register_aks_preview_resource_type
 from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
@@ -89,6 +89,18 @@ class AKSPreviewModelsTestCase(unittest.TestCase):
         self.assertEqual(
             models.WindowsGmsaProfile, getattr(module, "WindowsGmsaProfile")
         )
+        self.assertEqual(models.CreationData, getattr(module, "CreationData"))
+        # nat gateway models
+        self.assertEqual(
+            models.nat_gateway_models.get("ManagedClusterNATGatewayProfile"),
+            getattr(module, "ManagedClusterNATGatewayProfile"),
+        )
+        self.assertEqual(
+            models.nat_gateway_models.get(
+                "ManagedClusterManagedOutboundIPProfile"
+            ),
+            getattr(module, "ManagedClusterManagedOutboundIPProfile"),
+        )
 
 
 class AKSPreviewContextTestCase(unittest.TestCase):
@@ -103,7 +115,11 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         # default & dynamic completion
         ctx_1 = AKSPreviewContext(
             self.cmd,
-            {"vm_set_type": None, "kubernetes_version": "", "enable_vmss": False},
+            {
+                "vm_set_type": None,
+                "kubernetes_version": "",
+                "enable_vmss": False,
+            },
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
@@ -121,7 +137,11 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         # custom value & dynamic completion
         ctx_2 = AKSPreviewContext(
             self.cmd,
-            {"vm_set_type": "availabilityset", "kubernetes_version": "", "enable_vmss": True},
+            {
+                "vm_set_type": "availabilityset",
+                "kubernetes_version": "",
+                "enable_vmss": True,
+            },
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
@@ -132,7 +152,11 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         # custom value & dynamic completion
         ctx_3 = AKSPreviewContext(
             self.cmd,
-            {"vm_set_type": None, "kubernetes_version": "", "enable_vmss": True},
+            {
+                "vm_set_type": None,
+                "kubernetes_version": "",
+                "enable_vmss": True,
+            },
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
@@ -669,29 +693,6 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         ctx_1.set_intermediate("monitoring", True, overwrite_exists=True)
         self.assertEqual(ctx_1.get_no_wait(), False)
 
-    def test_get_enable_secret_rotation(self):
-        # default
-        ctx_1 = AKSPreviewContext(
-            self.cmd,
-            {
-                "enable_secret_rotation": False,
-            },
-            self.models,
-            decorator_mode=DecoratorMode.CREATE,
-        )
-        self.assertEqual(ctx_1.get_enable_secret_rotation(), False)
-        addon_profiles_1 = {
-            CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME: self.models.ManagedClusterAddonProfile(
-                enabled=True,
-                config={CONST_SECRET_ROTATION_ENABLED: "true"},
-            )
-        }
-        mc = self.models.ManagedCluster(
-            location="test_location", addon_profiles=addon_profiles_1
-        )
-        ctx_1.attach_mc(mc)
-        self.assertEqual(ctx_1.get_enable_secret_rotation(), True)
-
     def test_validate_gmsa_options(self):
         # default
         ctx = AKSPreviewContext(
@@ -708,15 +709,21 @@ class AKSPreviewContextTestCase(unittest.TestCase):
             "azext_aks_preview.decorator.prompt_y_n",
             return_value=False,
         ), self.assertRaises(DecoratorEarlyExitException):
-            ctx._AKSPreviewContext__validate_gmsa_options(True, None, None, False)
+            ctx._AKSPreviewContext__validate_gmsa_options(
+                True, None, None, False
+            )
 
         # fail on gmsa_root_domain_name not specified
         with self.assertRaises(RequiredArgumentMissingError):
-            ctx._AKSPreviewContext__validate_gmsa_options(True, "test_gmsa_dns_server", None, False)
+            ctx._AKSPreviewContext__validate_gmsa_options(
+                True, "test_gmsa_dns_server", None, False
+            )
 
         # fail on enable_windows_gmsa not specified
         with self.assertRaises(RequiredArgumentMissingError):
-            ctx._AKSPreviewContext__validate_gmsa_options(False, None, "test_gmsa_root_domain_name", False)
+            ctx._AKSPreviewContext__validate_gmsa_options(
+                False, None, "test_gmsa_root_domain_name", False
+            )
 
     def test_get_enable_windows_gmsa(self):
         # default
@@ -805,6 +812,199 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         with self.assertRaises(CLIInternalError):
             ctx_2.get_gmsa_dns_server_and_root_domain_name()
 
+    def test_get_snapshot_id(self):
+        # default
+        ctx_1 = AKSPreviewContext(
+            self.cmd,
+            {
+                "snapshot_id": None,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_snapshot_id(), None)
+        creation_data = self.models.CreationData(
+            source_resource_id="test_source_resource_id"
+        )
+        agent_pool_profile = self.models.ManagedClusterAgentPoolProfile(
+            name="test_nodepool_name", creation_data=creation_data
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location", agent_pool_profiles=[agent_pool_profile]
+        )
+        ctx_1.attach_mc(mc)
+        self.assertEqual(ctx_1.get_snapshot_id(), "test_source_resource_id")
+
+    def test_get_snapshot(self):
+        # custom value
+        ctx_1 = AKSPreviewContext(
+            self.cmd,
+            {
+                "snapshot_id": "test_source_resource_id",
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        mock_snapshot = Mock()
+        with patch(
+            "azext_aks_preview.decorator._get_snapshot",
+            return_value=mock_snapshot,
+        ):
+            self.assertEqual(ctx_1.get_snapshot(), mock_snapshot)
+        # test cache
+        self.assertEqual(ctx_1.get_snapshot(), mock_snapshot)
+
+    def test_get_kubernetes_version(self):
+        # default
+        ctx_1 = AKSPreviewContext(
+            self.cmd,
+            {"kubernetes_version": ""},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_kubernetes_version(), "")
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            kubernetes_version="test_mc_kubernetes_version",
+        )
+        ctx_1.attach_mc(mc)
+        self.assertEqual(
+            ctx_1.get_kubernetes_version(), "test_mc_kubernetes_version"
+        )
+
+        # custom value
+        ctx_2 = AKSPreviewContext(
+            self.cmd,
+            {"kubernetes_version": "", "snapshot_id": "test_snapshot_id"},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        mock_snapshot = Mock(kubernetes_version="test_kubernetes_version")
+        with patch(
+            "azext_aks_preview.decorator._get_snapshot",
+            return_value=mock_snapshot,
+        ):
+            self.assertEqual(
+                ctx_2.get_kubernetes_version(), "test_kubernetes_version"
+            )
+
+        # custom value
+        ctx_3 = AKSPreviewContext(
+            self.cmd,
+            {
+                "kubernetes_version": "custom_kubernetes_version",
+                "snapshot_id": "test_snapshot_id",
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        mock_snapshot = Mock(kubernetes_version="test_kubernetes_version")
+        with patch(
+            "azext_aks_preview.decorator._get_snapshot",
+            return_value=mock_snapshot,
+        ):
+            self.assertEqual(
+                ctx_3.get_kubernetes_version(), "custom_kubernetes_version"
+            )
+
+    def test_get_os_sku(self):
+        # default
+        ctx_1 = AKSPreviewContext(
+            self.cmd,
+            {"os_sku": None},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_os_sku(), None)
+        agent_pool_profile = self.models.ManagedClusterAgentPoolProfile(
+            name="test_nodepool_name", os_sku="test_mc_os_sku"
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location", agent_pool_profiles=[agent_pool_profile]
+        )
+        ctx_1.attach_mc(mc)
+        self.assertEqual(ctx_1.get_os_sku(), "test_mc_os_sku")
+
+        # custom value
+        ctx_2 = AKSPreviewContext(
+            self.cmd,
+            {"os_sku": None, "snapshot_id": "test_snapshot_id"},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        mock_snapshot = Mock(os_sku="test_os_sku")
+        with patch(
+            "azext_aks_preview.decorator._get_snapshot",
+            return_value=mock_snapshot,
+        ):
+            self.assertEqual(ctx_2.get_os_sku(), "test_os_sku")
+
+        # custom value
+        ctx_3 = AKSPreviewContext(
+            self.cmd,
+            {
+                "os_sku": "custom_os_sku",
+                "snapshot_id": "test_snapshot_id",
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        mock_snapshot = Mock(os_sku="test_os_sku")
+        with patch(
+            "azext_aks_preview.decorator._get_snapshot",
+            return_value=mock_snapshot,
+        ):
+            self.assertEqual(ctx_3.get_os_sku(), "custom_os_sku")
+
+    def test_get_node_vm_size(self):
+        # default
+        ctx_1 = AKSPreviewContext(
+            self.cmd,
+            {"node_vm_size": None},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_node_vm_size(), "Standard_DS2_v2")
+        agent_pool_profile = self.models.ManagedClusterAgentPoolProfile(
+            name="test_nodepool_name", vm_size="Standard_ABCD_v2"
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location", agent_pool_profiles=[agent_pool_profile]
+        )
+        ctx_1.attach_mc(mc)
+        self.assertEqual(ctx_1.get_node_vm_size(), "Standard_ABCD_v2")
+
+        # custom value
+        ctx_2 = AKSPreviewContext(
+            self.cmd,
+            {"node_vm_size": None, "snapshot_id": "test_snapshot_id"},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        mock_snapshot = Mock(vm_size="test_vm_size")
+        with patch(
+            "azext_aks_preview.decorator._get_snapshot",
+            return_value=mock_snapshot,
+        ):
+            self.assertEqual(ctx_2.get_node_vm_size(), "test_vm_size")
+
+        # custom value
+        ctx_3 = AKSPreviewContext(
+            self.cmd,
+            {
+                "node_vm_size": "custom_node_vm_size",
+                "snapshot_id": "test_snapshot_id",
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        mock_snapshot = Mock(vm_size="test_vm_size")
+        with patch(
+            "azext_aks_preview.decorator._get_snapshot",
+            return_value=mock_snapshot,
+        ):
+            self.assertEqual(ctx_3.get_node_vm_size(), "custom_node_vm_size")
+
 
 class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
     def setUp(self):
@@ -845,6 +1045,7 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
                 "workload_runtime": None,
                 "gpu_instance_profile": None,
                 "kubelet_config": None,
+                "snapshot_id": None,
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
@@ -882,6 +1083,7 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
             workload_runtime=None,
             gpu_instance_profile=None,
             kubelet_config=None,
+            creation_data=None,
         )
         ground_truth_mc_1 = self.models.ManagedCluster(location="test_location")
         ground_truth_mc_1.agent_pool_profiles = [agent_pool_profile_1]
@@ -897,7 +1099,7 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
                 "nodepool_labels": {"k1": "v1", "k2": "v2"},
                 "node_count": 10,
                 "node_vm_size": "Standard_DSx_vy",
-                "os_sku": "test_os_sku",
+                "os_sku": None,
                 "vnet_subnet_id": "test_vnet_subnet_id",
                 "pod_subnet_id": "test_pod_subnet_id",
                 "ppg": "test_ppg_id",
@@ -917,11 +1119,21 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
                 "gpu_instance_profile": "test_gpu_instance_profile",
                 "kubelet_config": _get_test_data_file("kubeletconfig.json"),
                 "linux_os_config": _get_test_data_file("linuxosconfig.json"),
+                "snapshot_id": "test_snapshot_id",
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
         mc_2 = self.models.ManagedCluster(location="test_location")
-        dec_mc_2 = dec_2.set_up_agent_pool_profiles(mc_2)
+        mock_snapshot = Mock(
+            kubernetes_version="",
+            os_sku="snapshot_os_sku",
+            vm_size="snapshot_vm_size",
+        )
+        with patch(
+            "azext_aks_preview.decorator._get_snapshot",
+            return_value=mock_snapshot,
+        ):
+            dec_mc_2 = dec_2.set_up_agent_pool_profiles(mc_2)
         agent_pool_profile_2 = self.models.ManagedClusterAgentPoolProfile(
             # Must be 12 chars or less before ACS RP adds to it
             name="test_np_name",
@@ -930,7 +1142,7 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
             count=10,
             vm_size="Standard_DSx_vy",
             os_type="Linux",
-            os_sku="test_os_sku",
+            os_sku="snapshot_os_sku",
             vnet_subnet_id="test_vnet_subnet_id",
             pod_subnet_id="test_pod_subnet_id",
             proximity_placement_group_id="test_ppg_id",
@@ -973,6 +1185,9 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
                     "netIpv4IpLocalPortRange": "32000 60000",
                 },
             },
+            creation_data=self.models.CreationData(
+                source_resource_id="test_snapshot_id"
+            ),
         )
         ground_truth_mc_2 = self.models.ManagedCluster(location="test_location")
         ground_truth_mc_2.agent_pool_profiles = [agent_pool_profile_2]
@@ -1401,49 +1616,6 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
             dec_3.context.get_intermediate("ingress_appgw_addon_enabled"), True
         )
 
-    def test_build_azure_keyvault_secrets_provider_addon_profile(self):
-        # default
-        dec_1 = AKSPreviewCreateDecorator(
-            self.cmd,
-            self.client,
-            {"enable_secret_rotation": False},
-            CUSTOM_MGMT_AKS_PREVIEW,
-        )
-
-        azure_keyvault_secrets_provider_addon_profile = (
-            dec_1.build_azure_keyvault_secrets_provider_addon_profile()
-        )
-        ground_truth_azure_keyvault_secrets_provider_addon_profile = (
-            self.models.ManagedClusterAddonProfile(
-                enabled=True, config={CONST_SECRET_ROTATION_ENABLED: "false"}
-            )
-        )
-        self.assertEqual(
-            azure_keyvault_secrets_provider_addon_profile,
-            ground_truth_azure_keyvault_secrets_provider_addon_profile,
-        )
-
-        # custom value
-        dec_2 = AKSPreviewCreateDecorator(
-            self.cmd,
-            self.client,
-            {"enable_secret_rotation": True},
-            CUSTOM_MGMT_AKS_PREVIEW,
-        )
-
-        azure_keyvault_secrets_provider_addon_profile = (
-            dec_2.build_azure_keyvault_secrets_provider_addon_profile()
-        )
-        ground_truth_azure_keyvault_secrets_provider_addon_profile = (
-            self.models.ManagedClusterAddonProfile(
-                enabled=True, config={CONST_SECRET_ROTATION_ENABLED: "true"}
-            )
-        )
-        self.assertEqual(
-            azure_keyvault_secrets_provider_addon_profile,
-            ground_truth_azure_keyvault_secrets_provider_addon_profile,
-        )
-
     def test_build_gitops_addon_profile(self):
         # default
         dec_1 = AKSPreviewCreateDecorator(
@@ -1478,9 +1650,10 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
                 "appgw_subnet_id": None,
                 "appgw_watch_namespace": None,
                 "enable_sgxquotehelper": False,
+                "enable_secret_rotation": False,
+                "rotation_poll_interval": None,
                 "appgw_subnet_prefix": None,
                 "enable_msi_auth_for_monitoring": False,
-                "enable_secret_rotation": False,
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
@@ -1511,7 +1684,7 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
                 "resource_group_name": "test_rg_name",
                 "location": "test_location",
                 "vnet_subnet_id": "test_vnet_subnet_id",
-                "enable_addons": "monitoring,ingress-appgw,gitops,azure-keyvault-secrets-provider",
+                "enable_addons": "monitoring,ingress-appgw,gitops",
                 "workspace_resource_id": "test_workspace_resource_id",
                 "enable_msi_auth_for_monitoring": True,
                 "appgw_name": "test_appgw_name",
@@ -1519,7 +1692,6 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
                 "appgw_id": "test_appgw_id",
                 "appgw_subnet_id": "test_appgw_subnet_id",
                 "appgw_watch_namespace": "test_appgw_watch_namespace",
-                "enable_secret_rotation": True,
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
@@ -1550,10 +1722,6 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
                     CONST_INGRESS_APPGW_SUBNET_CIDR: "test_appgw_subnet_prefix",
                     CONST_INGRESS_APPGW_WATCH_NAMESPACE: "test_appgw_watch_namespace",
                 },
-            ),
-            CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME: self.models.ManagedClusterAddonProfile(
-                enabled=True,
-                config={CONST_SECRET_ROTATION_ENABLED: "true"},
             ),
             CONST_GITOPS_ADDON_NAME: self.models.ManagedClusterAddonProfile(
                 enabled=True,

@@ -9,6 +9,7 @@ from ._client_factory import cf_managed_clusters
 from ._client_factory import cf_maintenance_configurations
 from ._client_factory import cf_container_services
 from ._client_factory import cf_agent_pools
+from ._client_factory import cf_snapshots
 from ._format import aks_show_table_format
 from ._format import aks_addon_list_available_table_format, aks_addon_list_table_format, aks_addon_show_table_format
 from ._format import aks_agentpool_show_table_format
@@ -17,6 +18,8 @@ from ._format import aks_versions_table_format
 from ._format import aks_upgrades_table_format
 from ._format import aks_pod_identities_table_format
 from ._format import aks_pod_identity_exceptions_table_format
+from ._format import aks_show_snapshot_table_format
+from ._format import aks_list_snapshot_table_format
 
 
 def load_command_table(self, _):
@@ -47,11 +50,16 @@ def load_command_table(self, _):
         client_factory=cf_maintenance_configurations
     )
 
+    snapshot_sdk = CliCommandType(
+        operations_tmpl='azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks.'
+                        'operations._snapshots_operations#SnapshotsOperations.{}',
+        client_factory=cf_snapshots
+    )
+
     # AKS managed cluster commands
     with self.command_group('aks', managed_clusters_sdk, client_factory=cf_managed_clusters) as g:
         g.custom_command('kollect', 'aks_kollect')
         g.custom_command('kanalyze', 'aks_kanalyze')
-        g.custom_command('browse', 'aks_browse')
         g.custom_command('create', 'aks_create', supports_no_wait=True)
         g.custom_command('update', 'aks_update', supports_no_wait=True)
         g.custom_command('scale', 'aks_scale', supports_no_wait=True)
@@ -131,3 +139,10 @@ def load_command_table(self, _):
     # AKS egress commands
     with self.command_group('aks egress-endpoints', managed_clusters_sdk, client_factory=cf_managed_clusters) as g:
         g.custom_command('list', 'aks_egress_endpoints_list')
+
+    # AKS snapshot commands
+    with self.command_group('aks snapshot', snapshot_sdk, client_factory=cf_snapshots) as g:
+        g.custom_command('list', 'aks_snapshot_list', table_transformer=aks_list_snapshot_table_format)
+        g.custom_show_command('show', 'aks_snapshot_show', table_transformer=aks_show_snapshot_table_format)
+        g.custom_command('create', 'aks_snapshot_create', supports_no_wait=True)
+        g.custom_command('delete', 'aks_snapshot_delete', supports_no_wait=True)
