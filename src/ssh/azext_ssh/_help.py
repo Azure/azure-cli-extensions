@@ -12,7 +12,8 @@ helps['ssh'] = """
 
 helps['ssh vm'] = """
     type: command
-    short-summary: SSH into Azure VMs using an ssh certificate
+    short-summary: SSH into Azure VMs 
+    long-summary: Users can login using AAD issued certificates or using local user credentials. We recommend login using AAD issued certificates as azure automatically rotate SSH CA keys. To SSH as a local user in the target machine, you must provide the local user name using the --local-user argument.
     examples:
         - name: Give a resource group and VM to SSH to
           text: |
@@ -27,6 +28,15 @@ helps['ssh vm'] = """
         - name: Using additional ssh arguments
           text: |
             az ssh vm --ip 1.2.3.4 -- -A -o ForwardX11=yes
+        - name: Give a local user name to SSH using local user credentials on the target machine using certificate based authentication.
+          text: |
+            az ssh vm --local-user username --ip 1.2.3.4 --certificate-file cert.pub --private-key key
+        - name: Give a local user name to SSH using local user credentials on the target machine using key based authentication.
+          text: |
+            az ssh vm --local-user username --resource-group myResourceGroup --vm-name myVM --private-key-file key
+        - name: Give a local user name to SSH using local user credentials on the target machine using password based authentication.
+          text: |
+            az ssh vm --local-user username --ip 1.2.3.4
 """
 
 helps['ssh config'] = """
