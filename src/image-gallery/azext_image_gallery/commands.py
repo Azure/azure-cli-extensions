@@ -31,9 +31,9 @@ def load_command_table(self, _):
     with self.command_group('sig image-definition', community_gallery_image_sdk,
                             client_factory=cf_community_gallery_image) as g:
         g.command('show-community', 'get', is_experimental=True)
-        # g.command('list-community', 'list', is_experimental=True)
+        g.custom_command('list-community', 'sig_community_image_definition_list', is_experimental=True)
 
     with self.command_group('sig image-version', community_gallery_image_version_sdk,
                             client_factory=cf_community_gallery_image_version) as g:
         g.command('show-community', 'get', is_experimental=True)
-        # g.command('list-community', 'list', is_experimental=True)
+        g.custom_command('list-community', 'sig_community_image_version_list', is_experimental=True)
