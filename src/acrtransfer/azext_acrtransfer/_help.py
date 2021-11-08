@@ -78,7 +78,7 @@ helps['acr export-pipeline show'] = """
     type: command
     short-summary: Show an export pipeline in detail.
     examples:
-        - name: Show an export pipeline in detail.
+        - name: Show a specific export pipeline in detail.
           text: az acr export-pipeline show --resource-group $MyRG --registry $MyReg --name $MyPipeline
 """
 
@@ -112,7 +112,7 @@ helps['acr pipeline-run show'] = """
     type: command
     short-summary: Show a pipeline-run in detail.
     examples:
-        - name: Show a pipeline-run in detail.
+        - name: Show a specific pipeline-run in detail.
           text: az acr pipeline-run show --resource-group $MyRG --registry $MyReg --name $MyPipelineRun
 """
 
