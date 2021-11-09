@@ -3025,10 +3025,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('nodeLabels.label1', 'value2')
         ])
 
-        # delete
-        self.cmd(
-            'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
-
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus2')
@@ -3039,7 +3035,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         aks_name = self.create_random_name('cliakstest', 16)
         nodepool1_name = "nodepool1"
         nodepool2_name = "nodepool2"
-        nodepool3_name = "nodepool3"
         tags = "key1=value1"
         new_tags = "key2=value2"
         nodepool_labels = "label1=value1 label2=value2"
