@@ -564,8 +564,7 @@ class VirtualMachinesOperations(object):
         :type resource_group_name: str
         :param vm_name: The name of the virtual machine.
         :type vm_name: str
-        :param force_deletion: Optional parameter to force delete virtual machines.(Feature in
-         Preview).
+        :param force_deletion: Optional parameter to force delete virtual machines.
         :type force_deletion: bool
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
