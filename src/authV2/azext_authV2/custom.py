@@ -119,7 +119,7 @@ def update_auth_settings_v2(cmd, resource_group_name, name, set_string=None, ena
                             runtime_version=None, config_file_path=None, unauthenticated_client_action=None,  # pylint: disable=unused-argument
                             redirect_provider=None, enable_token_store=None, require_https=None,  # pylint: disable=unused-argument
                             proxy_convention=None, proxy_custom_host_header=None,  # pylint: disable=unused-argument
-                            proxy_custom_proto_header=None, excluded_paths = None, slot=None):  # pylint: disable=unused-argument
+                            proxy_custom_proto_header=None, excluded_paths=None, slot=None):  # pylint: disable=unused-argument
     existing_auth = get_auth_settings_v2(cmd, resource_group_name, name, slot)["properties"]
     existing_auth = set_field_in_auth_settings(existing_auth, set_string)
 
@@ -477,7 +477,7 @@ def update_aad_settings(cmd, resource_group_name, name, slot=None,  # pylint: di
     if client_secret is not None and client_secret_certificate_thumbprint is not None:
         raise CLIError('Usage Error: --client-secret and --thumbprint cannot both be '
                        'configured to non empty strings')
-    
+
     if client_secret is not None and client_secret_certificate_san is not None:
         raise CLIError('Usage Error: --client-secret and --san cannot both be '
                        'configured to non empty strings')
@@ -489,9 +489,9 @@ def update_aad_settings(cmd, resource_group_name, name, slot=None,  # pylint: di
     if client_secret_certificate_thumbprint is not None and client_secret_certificate_san is not None:
         raise CLIError('Usage Error: --thumbprint and --san cannot both be '
                        'configured to non empty strings')
-    
+
     if ((client_secret_certificate_san is not None and client_secret_certificate_issuer is None)
-        or (client_secret_certificate_san is None and client_secret_certificate_issuer is not None)):
+            or (client_secret_certificate_san is None and client_secret_certificate_issuer is not None)):
         raise CLIError('Usage Error: --san and --certificate-issuer must both be '
                        'configured to non empty strings')
 
