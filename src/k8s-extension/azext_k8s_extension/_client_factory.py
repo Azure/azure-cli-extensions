@@ -16,6 +16,22 @@ def cf_k8s_extension_operation(cli_ctx, _):
     return cf_k8s_extension(cli_ctx).extensions
 
 
+def cf_k8s_cluster_extension_types_operation(cli_ctx, _):
+    return cf_k8s_extension(cli_ctx).cluster_extension_types
+
+
+def cf_k8s_cluster_extension_type_operation(cli_ctx, _):
+    return cf_k8s_extension(cli_ctx).cluster_extension_type
+
+
+def cf_k8s_location_extension_types_operation(cli_ctx, _):
+    return cf_k8s_extension(cli_ctx).location_extension_types
+
+
+def cf_k8s_extension_type_versions_operation(cli_ctx, _):
+    return cf_k8s_extension(cli_ctx).extension_type_version
+
+
 def cf_resource_groups(cli_ctx, subscription_id=None):
     return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES,
                                    subscription_id=subscription_id).resource_groups

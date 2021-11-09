@@ -23,6 +23,17 @@ if TYPE_CHECKING:
     from typing import Any, Optional
 
     from azure.core.credentials import TokenCredential
+    from azure.core.pipeline.transport import HttpRequest, HttpResponse
+
+from ._configuration import SourceControlConfigurationClientConfiguration
+from .operations import ExtensionsOperations
+from .operations import OperationStatusOperations
+from .operations import Operations
+from .operations import ClusterExtensionTypeOperations
+from .operations import ClusterExtensionTypesOperations
+from .operations import ExtensionTypeVersionsOperations
+from .operations import LocationExtensionTypesOperations
+from . import models
 
 class _SDKClient(object):
     def __init__(self, *args, **kwargs):
@@ -77,6 +88,10 @@ class SourceControlConfigurationClient(MultiApiClientMixin, _SDKClient):
         profile=KnownProfiles.default, # type: KnownProfiles
         **kwargs  # type: Any
     ):
+        # type: (...) -> None
+        if not base_url:
+            base_url = 'https://management.azure.com'
+        
         self._config = SourceControlConfigurationClientConfiguration(credential, subscription_id, **kwargs)
         self._client = ARMPipelineClient(base_url=base_url, config=self._config, **kwargs)
         super(SourceControlConfigurationClient, self).__init__(
@@ -188,12 +203,35 @@ class SourceControlConfigurationClient(MultiApiClientMixin, _SDKClient):
     def extensions(self):
         """Instance depends on the API version:
 
-           * 2020-07-01-preview: :class:`ExtensionsOperations<azure.mgmt.kubernetesconfiguration.v2020_07_01_preview.operations.ExtensionsOperations>`
-           * 2021-05-01-preview: :class:`ExtensionsOperations<azure.mgmt.kubernetesconfiguration.v2021_05_01_preview.operations.ExtensionsOperations>`
-           * 2021-09-01: :class:`ExtensionsOperations<azure.mgmt.kubernetesconfiguration.v2021_09_01.operations.ExtensionsOperations>`
-           * 2021-11-01-preview: :class:`ExtensionsOperations<azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.operations.ExtensionsOperations>`
-           * 2022-01-01-preview: :class:`ExtensionsOperations<azure.mgmt.kubernetesconfiguration.v2022_01_01_preview.operations.ExtensionsOperations>`
-           * 2022-03-01: :class:`ExtensionsOperations<azure.mgmt.kubernetesconfiguration.v2022_03_01.operations.ExtensionsOperations>`
+        client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
+        self._serialize = Serializer(client_models)
+        self._serialize.client_side_validation = False
+        self._deserialize = Deserializer(client_models)
+
+        self.extensions = ExtensionsOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.operation_status = OperationStatusOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.operations = Operations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.cluster_extension_type = ClusterExtensionTypeOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.cluster_extension_types = ClusterExtensionTypesOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.extension_type_version = ExtensionTypeVersionsOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.location_extension_types = LocationExtensionTypesOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+
+    def _send_request(self, http_request, **kwargs):
+        # type: (HttpRequest, Any) -> HttpResponse
+        """Runs the network request through the client's chained policies.
+
+        :param http_request: The network request you want to make. Required.
+        :type http_request: ~azure.core.pipeline.transport.HttpRequest
+        :keyword bool stream: Whether the response payload will be streamed. Defaults to True.
+        :return: The response of your network call. Does not do error handling on your response.
+        :rtype: ~azure.core.pipeline.transport.HttpResponse
         """
         api_version = self._get_api_version('extensions')
         if api_version == '2020-07-01-preview':
