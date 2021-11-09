@@ -81,6 +81,7 @@ from .vendored_sdks.azure_mgmt_preview_aks.v2021_09_01.models import (ContainerS
                                                                       ManagedClusterPodIdentity,
                                                                       ManagedClusterPodIdentityException,
                                                                       UserAssignedIdentity,
+                                                                      WindowsGmsaProfile,
                                                                       PowerState,
                                                                       Snapshot,
                                                                       CreationData)
@@ -132,15 +133,6 @@ from .addonconfiguration import update_addons, enable_addons, ensure_default_log
     add_ingress_appgw_addon_role_assignment, add_virtual_node_role_assignment
 
 logger = get_logger(__name__)
-
-
-def prepare_nat_gateway_models():
-    from .vendored_sdks.azure_mgmt_preview_aks.v2021_09_01.models import ManagedClusterNATGatewayProfile
-    from .vendored_sdks.azure_mgmt_preview_aks.v2021_09_01.models import ManagedClusterManagedOutboundIPProfile
-    nat_gateway_models = {}
-    nat_gateway_models["ManagedClusterNATGatewayProfile"] = ManagedClusterNATGatewayProfile
-    nat_gateway_models["ManagedClusterManagedOutboundIPProfile"] = ManagedClusterManagedOutboundIPProfile
-    return nat_gateway_models
 
 
 def which(binary):
@@ -984,7 +976,6 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
             license_type=windows_license_type)
 
         if enable_windows_gmsa:
-            from .vendored_sdks.azure_mgmt_preview_aks.v2021_09_01.models import WindowsGmsaProfile
             windows_profile.gmsa_profile = WindowsGmsaProfile(
                 enabled=True)
             if gmsa_dns_server is not None and gmsa_root_domain_name is not None:
@@ -1071,11 +1062,9 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         load_balancer_outbound_ports,
         load_balancer_idle_timeout)
 
-    # TODO: uncomment the following after next cli release
-    # from azext_aks_preview.decorator import AKSPreviewModels
-    # # store all the models used by nat gateway
-    # nat_gateway_models = AKSPreviewModels(cmd, CUSTOM_MGMT_AKS_PREVIEW).nat_gateway_models
-    nat_gateway_models = prepare_nat_gateway_models()
+    from azext_aks_preview.decorator import AKSPreviewModels
+    # store all the models used by nat gateway
+    nat_gateway_models = AKSPreviewModels(cmd, CUSTOM_MGMT_AKS_PREVIEW).nat_gateway_models
     nat_gateway_profile = create_nat_gateway_profile(
         nat_gateway_managed_outbound_ip_count,
         nat_gateway_idle_timeout,
@@ -1579,11 +1568,9 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
             instance.network_profile.load_balancer_profile)
 
     if update_natgw_profile:
-        # TODO: uncomment the following after next cli release
-        # from azext_aks_preview.decorator import AKSPreviewModels
-        # # store all the models used by nat gateway
-        # nat_gateway_models = AKSPreviewModels(cmd, CUSTOM_MGMT_AKS_PREVIEW).nat_gateway_models
-        nat_gateway_models = prepare_nat_gateway_models()
+        from azext_aks_preview.decorator import AKSPreviewModels
+        # store all the models used by nat gateway
+        nat_gateway_models = AKSPreviewModels(cmd, CUSTOM_MGMT_AKS_PREVIEW).nat_gateway_models
         instance.network_profile.nat_gateway_profile = update_nat_gateway_profile(
             nat_gateway_managed_outbound_ip_count,
             nat_gateway_idle_timeout,
@@ -1790,7 +1777,6 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
         instance.windows_profile.admin_password = windows_admin_password
 
     if enable_windows_gmsa:
-        from .vendored_sdks.azure_mgmt_preview_aks.v2021_09_01.models import WindowsGmsaProfile
         instance.windows_profile.gmsa_profile = WindowsGmsaProfile(enabled=True)
         if gmsa_dns_server is not None and gmsa_root_domain_name is not None:
             instance.windows_profile.gmsa_profile.dns_server = gmsa_dns_server
