@@ -2,6 +2,7 @@ param (
     [string] $Path,
     [switch] $SkipInstall,
     [switch] $CI,
+    [switch] $ParallelCI,
     [switch] $OnlyPublicTests,
 
     [Parameter(Mandatory=$True)]
@@ -40,9 +41,9 @@ if ($Type -eq 'k8s-extension') {
         }
     }
     if ($OnlyPublicTests) {
-        $testFilePaths = "$PSScriptRoot/test/extensions/public"
+        $testFilePath = "$PSScriptRoot/test/extensions/public"
     } else {
-        $testFilePaths = "$PSScriptRoot/test/extensions/public", "$PSScriptRoot/test/extensions/private-preview"
+        $testFilePath = "$PSScriptRoot/test/extensions"
     }
 } elseif ($Type -eq 'k8s-extension-private') {
     $k8sExtensionPrivateVersion = $ENVCONFIG.extensionVersion.'k8s-extension-private'
@@ -74,7 +75,7 @@ if ($Type -eq 'k8s-extension') {
     $testFilePaths = "$PSScriptRoot/test/configurations"
 }
 
-if ($CI) {
+if ($ParallelCI) {
     # This runs the tests in parallel during the CI pipline to speed up testing
 
     Write-Host "Invoking Pester to run tests from '$testFilePath'..."
@@ -113,6 +114,14 @@ if ($CI) {
         $failedJobs
         throw "One or more tests failed"
     }
+} elseif ($CI) {
+    if ($Path) {
+        $testFilePath = "$PSScriptRoot/$Path"
+    }
+    Write-Host "Invoking Pester to run tests from '$testFilePath'..."
+    $testResult = Invoke-Pester $testFilePath -Passthru -Output Detailed
+    $testName = Split-Path $testFilePath –leaf
+    $testResult | Export-JUnitReport -Path "$testFileDirectory/$testName.xml"
 } else {
     if ($Path) {
         Write-Host "Invoking Pester to run tests from '$PSScriptRoot/$Path'"

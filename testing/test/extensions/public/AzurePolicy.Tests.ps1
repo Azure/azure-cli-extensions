@@ -10,11 +10,11 @@ Describe 'Azure Policy Testing' {
     }
 
     It 'Creates the extension and checks that it onboards correctly' {
-        Invoke-Expression "az $Env:K8sExtensionName create -c $($ENVCONFIG.arcClusterName) -g $($ENVCONFIG.resourceGroup) --cluster-type connectedClusters --extension-type $extensionType -n $extensionName --no-wait" -ErrorVariable badOut
-        $badOut | Should -BeNullOrEmpty        
+        az $Env:K8sExtensionName create -c $($ENVCONFIG.arcClusterName) -g $($ENVCONFIG.resourceGroup) --cluster-type connectedClusters --extension-type $extensionType -n $extensionName --no-wait
+        $? | Should -BeTrue        
 
-        $output = Invoke-Expression "az $Env:K8sExtensionName show -c $($ENVCONFIG.arcClusterName) -g $($ENVCONFIG.resourceGroup) --cluster-type connectedClusters -n $extensionName" -ErrorVariable badOut
-        $badOut | Should -BeNullOrEmpty
+        $output = az $Env:K8sExtensionName show -c $($ENVCONFIG.arcClusterName) -g $($ENVCONFIG.resourceGroup) --cluster-type connectedClusters -n $extensionName
+        $? | Should -BeTrue
 
         $isAutoUpgradeMinorVersion = ($output | ConvertFrom-Json).autoUpgradeMinorVersion 
         $isAutoUpgradeMinorVersion.ToString() -eq "True" | Should -BeTrue
@@ -41,17 +41,17 @@ Describe 'Azure Policy Testing' {
     }
 
     It "Performs a show on the extension" {
-        $output = Invoke-Expression "az $Env:K8sExtensionName show -c $($ENVCONFIG.arcClusterName) -g $($ENVCONFIG.resourceGroup) --cluster-type connectedClusters -n $extensionName" -ErrorVariable badOut
-        $badOut | Should -BeNullOrEmpty
+        $output = az $Env:K8sExtensionName show -c $($ENVCONFIG.arcClusterName) -g $($ENVCONFIG.resourceGroup) --cluster-type connectedClusters -n $extensionName
+        $? | Should -BeTrue
         $output | Should -Not -BeNullOrEmpty
     }
 
     It "Runs an update on the extension on the cluster" {
-        $output = Invoke-Expression "az $Env:K8sExtensionName update -c $($ENVCONFIG.arcClusterName) -g $($ENVCONFIG.resourceGroup) --cluster-type connectedClusters -n $extensionName --auto-upgrade false --no-wait" -ErrorVariable badOut
-        $badOut | Should -BeNullOrEmpty
+        $output = az $Env:K8sExtensionName update -c $($ENVCONFIG.arcClusterName) -g $($ENVCONFIG.resourceGroup) --cluster-type connectedClusters -n $extensionName --auto-upgrade false --no-wait
+        $? | Should -BeTrue
 
-        $output = Invoke-Expression "az $Env:K8sExtensionName show -c $($ENVCONFIG.arcClusterName) -g $($ENVCONFIG.resourceGroup) --cluster-type connectedClusters -n $extensionName" -ErrorVariable badOut
-        $badOut | Should -BeNullOrEmpty
+        $output = az $Env:K8sExtensionName show -c $($ENVCONFIG.arcClusterName) -g $($ENVCONFIG.resourceGroup) --cluster-type connectedClusters -n $extensionName
+        $? | Should -BeTrue
 
         $isAutoUpgradeMinorVersion = ($output | ConvertFrom-Json).autoUpgradeMinorVersion 
         $isAutoUpgradeMinorVersion.ToString() -eq "False" | Should -BeTrue
@@ -71,8 +71,8 @@ Describe 'Azure Policy Testing' {
     }
 
     It "Lists the extensions on the cluster" {
-        $output = Invoke-Expression "az $Env:K8sExtensionName list -c $($ENVCONFIG.arcClusterName) -g $($ENVCONFIG.resourceGroup) --cluster-type connectedClusters" -ErrorVariable badOut
-        $badOut | Should -BeNullOrEmpty
+        $output = az $Env:K8sExtensionName list -c $($ENVCONFIG.arcClusterName) -g $($ENVCONFIG.resourceGroup) --cluster-type connectedClusters
+        $? | Should -BeTrue
 
         $output | Should -Not -BeNullOrEmpty
         $extensionExists = $output | ConvertFrom-Json | Where-Object { $_.extensionType -eq $extensionType }
@@ -80,18 +80,18 @@ Describe 'Azure Policy Testing' {
     }
 
     It "Deletes the extension from the cluster" {
-        $output = Invoke-Expression "az $Env:K8sExtensionName delete -c $($ENVCONFIG.arcClusterName) -g $($ENVCONFIG.resourceGroup) --cluster-type connectedClusters -n $extensionName --force" -ErrorVariable badOut
-        $badOut | Should -BeNullOrEmpty
+        $output = az $Env:K8sExtensionName delete -c $($ENVCONFIG.arcClusterName) -g $($ENVCONFIG.resourceGroup) --cluster-type connectedClusters -n $extensionName --force
+        $? | Should -BeTrue
 
         # Extension should not be found on the cluster
-        $output = Invoke-Expression "az $Env:K8sExtensionName show -c $($ENVCONFIG.arcClusterName) -g $($ENVCONFIG.resourceGroup) --cluster-type connectedClusters -n $extensionName" -ErrorVariable badOut
-        $badOut | Should -Not -BeNullOrEmpty
+        $output = az $Env:K8sExtensionName show -c $($ENVCONFIG.arcClusterName) -g $($ENVCONFIG.resourceGroup) --cluster-type connectedClusters -n $extensionName
+        $? | Should -BeFalse
         $output | Should -BeNullOrEmpty
     }
 
     It "Performs another list after the delete" {
-        $output = Invoke-Expression "az $Env:K8sExtensionName list -c $($ENVCONFIG.arcClusterName) -g $($ENVCONFIG.resourceGroup) --cluster-type connectedClusters" -ErrorVariable badOut
-        $badOut | Should -BeNullOrEmpty
+        $output = az $Env:K8sExtensionName list -c $($ENVCONFIG.arcClusterName) -g $($ENVCONFIG.resourceGroup) --cluster-type connectedClusters
+        $? | Should -BeTrue
         $output | Should -Not -BeNullOrEmpty
         
         $extensionExists = $output | ConvertFrom-Json | Where-Object { $_.extensionType -eq $extensionName }
