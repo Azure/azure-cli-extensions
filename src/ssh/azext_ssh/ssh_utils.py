@@ -22,33 +22,16 @@ logger = log.get_logger(__name__)
 
 
 def start_ssh_connection(relay_info, proxy_path, vm_name, ip, username, cert_file, private_key_file, port,
-                         is_arc, ssh_client_path, ssh_args, delete_privkey):
+                         is_arc, delete_keys, delete_cert, public_key_file, ssh_client_path, ssh_args, delete_privkey):
 
     if not ssh_client_path:
         ssh_client_path = _get_ssh_path()
+    
     ssh_arg_list = []
     if ssh_args:
         ssh_arg_list = ssh_args
+    
     env = os.environ.copy()
-
-    ssh_client_log_file_arg = []
-    # delete_privkey is only true for injected commands in the portal one click ssh experience
-    if delete_privkey and (cert_file or private_key_file):
-        if '-E' in ssh_arg_list:
-            # This condition should rarely be true
-            index = ssh_arg_list.index('-E')
-            log_file = ssh_arg_list[index + 1]
-        else:
-            if cert_file:
-                log_dir = os.path.dirname(cert_file)
-            elif private_key_file:
-                log_dir = os.path.dirname(private_key_file)
-            log_file_name = 'ssh_client_log_' + str(os.getpid())
-            log_file = os.path.join(log_dir, log_file_name)
-            ssh_client_log_file_arg = ['-E', log_file]
-
-        if '-v' not in ssh_arg_list and '-vv' not in ssh_arg_list and '-vvv' not in ssh_arg_list:
-            ssh_client_log_file_arg = ssh_client_log_file_arg + ['-v']
 
     if is_arc:
         env['SSHPROXY_RELAY_INFO'] = relay_info
@@ -62,28 +45,50 @@ def start_ssh_connection(relay_info, proxy_path, vm_name, ip, username, cert_fil
         host = _get_host(username, ip)
         args = _build_args(cert_file, private_key_file, port)
 
-    command = [ssh_client_path, host]
-    command = command + args + ssh_client_log_file_arg + ssh_arg_list
-
-    # If delete_privkey flag is true, we will try to clean the private key file and the certificate file
-    # once the connection has been established. If it's not possible to open the log file, we default to
-    # waiting for about 2 minutes once the ssh process starts before cleaning up the files.
-    if delete_privkey and (cert_file or private_key_file):
-        if os.path.isfile(log_file):
-            file_utils.delete_file(log_file, f"Couldn't delete existing log file {log_file}", True)
-        cleanup_process = mp.Process(target=_do_cleanup, args=(private_key_file, cert_file, log_file))
+    if not cert_file and not private_key_file:
+        # In this case, even if delete_privkey is true, there is nothing to clean-up.
+        delete_privkey = False
+    
+    log_file = None
+    if delete_keys or delete_cert or delete_privkey:
+        if '-E' not in ssh_arg_list and set(['-v', '-vv', '-vvv']).isdisjoint(ssh_arg_list):
+            # If the user either provides his own client log file (-E) or
+            # wants the client log messages to be printed to the console (-vvv/-vv/-v),
+            # we should not use the log files to check for connection success.
+            if cert_file:
+                log_dir = os.path.dirname(cert_file)
+            elif private_key_file:
+                log_dir = os.path.dirname(private_key_file)
+            log_file_name = 'ssh_client_log_' + str(os.getpid())
+            log_file = os.path.join(log_dir, log_file_name)
+            ssh_arg_list = ssh_arg_list + ['-E', log_file, '-v']
+        # Create a new process that will wait until the connection is established and then delete keys.
+        cleanup_process = mp.Process(target=_do_cleanup, args=(delete_keys or delete_privkey, delete_cert or delete_privkey,
+                                                               cert_file, private_key_file, public_key_file, log_file, True))
         cleanup_process.start()
+
+    command = [ssh_client_path, host]
+    command = command + args + ssh_arg_list
 
     logger.debug("Running ssh command %s", ' '.join(command))
     subprocess.call(command, shell=platform.system() == 'Windows', env=env)
 
-    # If the cleanup process is still alive once the ssh process is terminated, we terminate it and make
-    # sure the private key and certificate are deleted.
-    if delete_privkey and (cert_file or private_key_file):
+    if delete_keys or delete_cert or delete_privkey:
         if cleanup_process.is_alive():
             cleanup_process.terminate()
-            time.sleep(1)
-        _do_cleanup(private_key_file, cert_file)
+            # wait for process to terminate
+            t0 = time.time()
+            while cleanup_process.is_alive() and (time.time() - t0) < const.CLEANUP_AWAIT_TERMINATION_IN_SECONDS:
+                time.sleep(1)
+        
+        # Make sure all files have been properly removed.
+        _do_cleanup(delete_keys or delete_privkey, delete_cert or delete_privkey, cert_file, private_key_file, public_key_file)
+        if log_file:
+            file_utils.delete_file(log_file, f"Couldn't delete temporary log file {log_file}. ", True)
+        if delete_keys:
+            # This is only true if keys were generated, so they must be in a temp folder.
+            temp_dir = os.path.dirname(cert_file)
+            file_utils.delete_folder(temp_dir, f"Couldn't delete temporary folder {temp_dir}", True)
 
 
 def create_ssh_keyfile(private_key_file):
@@ -114,8 +119,33 @@ def get_ssh_cert_principals(cert_file):
     return principals
 
 
+def get_ssh_cert_validity(cert_file):
+    info = get_ssh_cert_info(cert_file)
+    for line in info:
+        if "Valid:" in line:
+            return line.strip()
+    return None
+
+
 def write_ssh_config(relay_info, proxy_path, vm_name, ip, username,
-                     cert_file, private_key_file, port, is_arc, config_path, overwrite, resource_group):
+                     cert_file, private_key_file, port, is_arc, delete_keys, delete_cert,
+                     config_path, overwrite, resource_group):
+
+    if delete_keys or delete_cert:
+        # Warn users to delete credentials once config file is no longer being used.
+        # If user provided keys, only ask them to delete the certificate.
+        path_to_delete = os.path.dirname(cert_file)
+        items_to_delete = " (id_rsa, id_rsa.pub, id_rsa.pub-aadcert.pub)"
+        if not delete_keys:
+            path_to_delete = cert_file
+            items_to_delete = ""
+        validity = get_ssh_cert_validity(cert_file)
+        validity_warning = ""
+        if validity:
+            validity_warning = f" {validity.lower()}"
+        logger.warning("%s contains sensitive information%s%s\n"
+                       "Please delete it once you no longer need this config file. ",
+                       path_to_delete, items_to_delete, validity_warning)
 
     common_lines = []
     common_lines.append("\tUser " + username)
@@ -209,11 +239,7 @@ def _build_args(cert_file, private_key_file, port):
     return private_key + certificate + port_arg
 
 
-def _do_cleanup(private_key_file, cert_file, log_file=None):
-    if os.environ.get("AZUREPS_HOST_ENVIRONMENT") != "cloud-shell/1.0":
-        raise azclierror.BadRequestError("Can't delete private key file. "
-                                         "The --delete-private-key flag set to True, "
-                                         "but this is not an Azure Cloud Shell session.")
+def _do_cleanup(delete_keys, delete_cert, cert_file, private_key, public_key, log_file=None, wait=False):
     if log_file:
         t0 = time.time()
         match = False
@@ -221,17 +247,19 @@ def _do_cleanup(private_key_file, cert_file, log_file=None):
             time.sleep(const.CLEANUP_TIME_INTERVAL_IN_SECONDS)
             try:
                 with open(log_file, 'r') as ssh_client_log:
-                    for line in ssh_client_log:
-                        if re.search("debug1: Authentication succeeded", line):
-                            match = True
-                ssh_client_log.close()
+                    match = "debug1: Authentication succeeded" in ssh_client_log.read()
+                    ssh_client_log.close()
             except:
-                t1 = time.time() - t0
-                if t1 < const.CLEANUP_TOTAL_TIME_LIMIT_IN_SECONDS:
-                    time.sleep(const.CLEANUP_TOTAL_TIME_LIMIT_IN_SECONDS - t1)
+                # If there is an exception, wait for a little bit and try again
+                time.sleep(const.CLEANUP_TIME_INTERVAL_IN_SECONDS)
 
-    if private_key_file and os.path.isfile(private_key_file):
-        file_utils.delete_file(private_key_file, f"Failed to delete private key file '{private_key_file}'. ")
+    elif wait:
+        # if we are not checking the logs, but still want to wait for connection before deleting files
+        time.sleep(const.CLEANUP_TOTAL_TIME_LIMIT_IN_SECONDS)
 
-    if cert_file and os.path.isfile(cert_file):
-        file_utils.delete_file(cert_file, f"Failed to delete certificate file '{cert_file}'. ")
+    if delete_keys and private_key:
+        file_utils.delete_file(private_key, f"Couldn't delete private key {private_key}. ", True)
+    if delete_keys and public_key:
+        file_utils.delete_file(public_key, f"Couldn't delete public key {public_key}. ", True)
+    if delete_cert and cert_file:
+        file_utils.delete_file(cert_file, f"Couldn't delete certificate {cert_file}. ", True)

@@ -41,6 +41,8 @@ def load_arguments(self, _):
                    help='The username for a local user')
         c.argument('overwrite', action='store_true', options_list=['--overwrite'],
                    help='Overwrites the config file if this flag is set')
+        c.argument('credentials_folder', options_list=['--keys-destination-folder', '--keys-dest-folder'],
+                   help='Folder where new generated keys will be stored.')
         c.argument('port', options_list=['--port'], help='Port to connect to on the remote host.')
         c.argument('cert_file', options_list=['--certificate-file', '-c'], help='Path to certificate file')
 

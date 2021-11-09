@@ -36,6 +36,17 @@ def delete_file(file_path, message, warning=False):
             raise azclierror.FileOperationError(message + "Error: " + str(e)) from e
 
 
+def delete_folder(dir_path, message, warning=False):
+    if os.path.isdir(dir_path):
+        try:
+            os.rmdir(dir_path)
+        except Exception as e:
+            if warning:
+                logger.warning(message)
+            else:
+                raise azclierror.FileOperationError(message + "Error: " + str(e)) from e
+
+
 def create_directory(file_path, error_message):
     try:
         os.makedirs(file_path)
