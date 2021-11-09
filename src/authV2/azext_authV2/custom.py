@@ -490,8 +490,8 @@ def update_aad_settings(cmd, resource_group_name, name, slot=None,  # pylint: di
         raise CLIError('Usage Error: --thumbprint and --san cannot both be '
                        'configured to non empty strings')
 
-    if ((client_secret_certificate_san is not None and client_secret_certificate_issuer is None)
-            or (client_secret_certificate_san is None and client_secret_certificate_issuer is not None)):
+    if ((client_secret_certificate_san is not None and client_secret_certificate_issuer is None) or
+            (client_secret_certificate_san is None and client_secret_certificate_issuer is not None)):
         raise CLIError('Usage Error: --san and --certificate-issuer must both be '
                        'configured to non empty strings')
 
