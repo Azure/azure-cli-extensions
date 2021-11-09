@@ -119,7 +119,7 @@ def update_auth_settings_v2(cmd, resource_group_name, name, set_string=None, ena
                             runtime_version=None, config_file_path=None, unauthenticated_client_action=None,  # pylint: disable=unused-argument
                             redirect_provider=None, enable_token_store=None, require_https=None,  # pylint: disable=unused-argument
                             proxy_convention=None, proxy_custom_host_header=None,  # pylint: disable=unused-argument
-                            proxy_custom_proto_header=None, slot=None):  # pylint: disable=unused-argument
+                            proxy_custom_proto_header=None, excluded_paths = None, slot=None):  # pylint: disable=unused-argument
     existing_auth = get_auth_settings_v2(cmd, resource_group_name, name, slot)["properties"]
     existing_auth = set_field_in_auth_settings(existing_auth, set_string)
 
@@ -154,6 +154,12 @@ def update_auth_settings_v2(cmd, resource_group_name, name, set_string=None, ena
         if "tokenStore" not in existing_auth["login"].keys():
             existing_auth["login"]["tokenStore"] = {}
         existing_auth["login"]["tokenStore"]["enabled"] = enable_token_store
+
+    if excluded_paths is not None:
+        if "globalValidation" not in existing_auth.keys():
+            existing_auth["globalValidation"] = {}
+        excluded_paths_list_string = excluded_paths[1:-1]
+        existing_auth["globalValidation"]["excludedPaths"] = excluded_paths_list_string.split(",")
 
     existing_auth = update_http_settings_in_auth_settings(existing_auth, require_https,
                                                           proxy_convention, proxy_custom_host_header,
@@ -242,7 +248,11 @@ def is_app_new_to_auth(cmd, resource_group_name, name, slot):
 
 def set_field_in_auth_settings_recursive(field_name_split, field_value, auth_settings):
     if len(field_name_split) == 1:
-        auth_settings[field_name_split[0]] = field_value
+        if not field_value.startswith('[') or not field_value.endswith(']'):
+            auth_settings[field_name_split[0]] = field_value
+        else:
+            field_value_list_string = field_value[1:-1]
+            auth_settings[field_name_split[0]] = field_value_list_string.split(",")
         return auth_settings
 
     remaining_field_names = field_name_split[1:]
@@ -452,9 +462,37 @@ def get_aad_settings(cmd, resource_group_name, name, slot=None):
 def update_aad_settings(cmd, resource_group_name, name, slot=None,  # pylint: disable=unused-argument
                         client_id=None, client_secret_setting_name=None,  # pylint: disable=unused-argument
                         issuer=None, allowed_token_audiences=None, client_secret=None,  # pylint: disable=unused-argument
+                        client_secret_certificate_thumbprint=None,  # pylint: disable=unused-argument
+                        client_secret_certificate_san=None,  # pylint: disable=unused-argument
+                        client_secret_certificate_issuer=None,  # pylint: disable=unused-argument
                         yes=False, tenant_id=None):    # pylint: disable=unused-argument
     if client_secret is not None and client_secret_setting_name is not None:
         raise CLIError('Usage Error: --client-secret and --client-secret-setting-name cannot both be '
+                       'configured to non empty strings')
+
+    if client_secret_setting_name is not None and client_secret_certificate_thumbprint is not None:
+        raise CLIError('Usage Error: --client-secret-setting-name and --thumbprint cannot both be '
+                       'configured to non empty strings')
+
+    if client_secret is not None and client_secret_certificate_thumbprint is not None:
+        raise CLIError('Usage Error: --client-secret and --thumbprint cannot both be '
+                       'configured to non empty strings')
+    
+    if client_secret is not None and client_secret_certificate_san is not None:
+        raise CLIError('Usage Error: --client-secret and --san cannot both be '
+                       'configured to non empty strings')
+
+    if client_secret_setting_name is not None and client_secret_certificate_san is not None:
+        raise CLIError('Usage Error: --client-secret-setting-name and --san cannot both be '
+                       'configured to non empty strings')
+
+    if client_secret_certificate_thumbprint is not None and client_secret_certificate_san is not None:
+        raise CLIError('Usage Error: --thumbprint and --san cannot both be '
+                       'configured to non empty strings')
+    
+    if ((client_secret_certificate_san is not None and client_secret_certificate_issuer is None)
+        or (client_secret_certificate_san is None and client_secret_certificate_issuer is not None)):
+        raise CLIError('Usage Error: --san and --certificate-issuer must both be '
                        'configured to non empty strings')
 
     if issuer is not None and (tenant_id is not None):
@@ -497,7 +535,10 @@ def update_aad_settings(cmd, resource_group_name, name, slot=None,  # pylint: di
     if "azureActiveDirectory" not in existing_auth["identityProviders"].keys():
         existing_auth["identityProviders"]["azureActiveDirectory"] = {}
     if (client_id is not None or client_secret is not None or
-            client_secret_setting_name is not None or openid_issuer is not None):
+            client_secret_setting_name is not None or openid_issuer is not None or
+            client_secret_certificate_thumbprint is not None or
+            client_secret_certificate_san is not None or
+            client_secret_certificate_issuer is not None):
         if "registration" not in existing_auth["identityProviders"]["azureActiveDirectory"].keys():
             existing_auth["identityProviders"]["azureActiveDirectory"]["registration"] = {}
         registration = existing_auth["identityProviders"]["azureActiveDirectory"]["registration"]
@@ -515,13 +556,40 @@ def update_aad_settings(cmd, resource_group_name, name, slot=None,  # pylint: di
         settings = []
         settings.append(MICROSOFT_SECRET_SETTING_NAME + '=' + client_secret)
         update_app_settings(cmd, resource_group_name, name, slot=slot, slot_settings=settings)
+    if client_secret_setting_name is not None or client_secret is not None:
+        if "clientSecretCertificateThumbprint" in registration.keys() and registration["clientSecretCertificateThumbprint"] is not None:
+            registration["clientSecretCertificateThumbprint"] = None
+        if "clientSecretCertificateSubjectAlternativeName" in registration.keys() and registration["clientSecretCertificateSubjectAlternativeName"] is not None:
+            registration["clientSecretCertificateSubjectAlternativeName"] = None
+        if "clientSecretCertificateIssuer" in registration.keys() and registration["clientSecretCertificateIssuer"] is not None:
+            registration["clientSecretCertificateIssuer"] = None
+    if client_secret_certificate_thumbprint is not None:
+        registration["clientSecretCertificateThumbprint"] = client_secret_certificate_thumbprint
+        if "clientSecretSettingName" in registration.keys() and registration["clientSecretSettingName"] is not None:
+            registration["clientSecretSettingName"] = None
+        if "clientSecretCertificateSubjectAlternativeName" in registration.keys() and registration["clientSecretCertificateSubjectAlternativeName"] is not None:
+            registration["clientSecretCertificateSubjectAlternativeName"] = None
+        if "clientSecretCertificateIssuer" in registration.keys() and registration["clientSecretCertificateIssuer"] is not None:
+            registration["clientSecretCertificateIssuer"] = None
+    if client_secret_certificate_san is not None:
+        registration["clientSecretCertificateSubjectAlternativeName"] = client_secret_certificate_san
+    if client_secret_certificate_issuer is not None:
+        registration["clientSecretCertificateIssuer"] = client_secret_certificate_issuer
+    if client_secret_certificate_san is not None and client_secret_certificate_issuer is not None:
+        if "clientSecretSettingName" in registration.keys() and registration["clientSecretSettingName"] is not None:
+            registration["clientSecretSettingName"] = None
+        if "clientSecretCertificateThumbprint" in registration.keys() and registration["clientSecretCertificateThumbprint"] is not None:
+            registration["clientSecretCertificateThumbprint"] = None
     if openid_issuer is not None:
         registration["openIdIssuer"] = openid_issuer
     if allowed_token_audiences is not None:
         validation["allowedAudiences"] = allowed_token_audiences.split(",")
         existing_auth["identityProviders"]["azureActiveDirectory"]["validation"] = validation
     if (client_id is not None or client_secret is not None or
-            client_secret_setting_name is not None or issuer is not None):
+            client_secret_setting_name is not None or issuer is not None or
+            client_secret_certificate_thumbprint is not None or
+            client_secret_certificate_san is not None or
+            client_secret_certificate_issuer is not None):
         existing_auth["identityProviders"]["azureActiveDirectory"]["registration"] = registration
 
     updated_auth_settings = update_auth_settings_v2_rest_call(cmd, resource_group_name, name, existing_auth, slot)
