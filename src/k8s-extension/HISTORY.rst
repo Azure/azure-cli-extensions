@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.2.4
+++++++++++++++++++
+* Support Extensions Types list, list by location, show, and list versions in preview
+
 1.2.3
 ++++++++++++++++++
 * Fix warning message returned on PATCH

@@ -99,7 +99,7 @@ def load_arguments(self, _):
                    validator=get_default_location_from_resource_group)
 
     with self.argument_context(f"{consts.EXTENSION_NAME} extension-types show") as c:
-        c.argument('extension_type',
+        c.argument('name',
                    help='Name of the extension type.')
         c.argument('cluster_name',
                    options_list=['--cluster-name', '-c'],
@@ -110,7 +110,7 @@ def load_arguments(self, _):
                    help='Specify Arc clusters or AKS managed clusters or Arc appliances.')
 
     with self.argument_context(f"{consts.EXTENSION_NAME} extension-types versions list") as c:
-        c.argument('extension_type',
+        c.argument('name',
                    help='Name of the extension type.')
         c.argument('location',
                    validator=get_default_location_from_resource_group)
