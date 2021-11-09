@@ -76,6 +76,7 @@ def _format_show_response(cmd, name, resource_group_name):
     staticsite_data = StaticWebAppFrontDoorClient.get(cmd, name=name, resource_group=resource_group_name).json()
     return {"enterpriseGradeCdnStatus": staticsite_data["properties"]["enterpriseGradeCdnStatus"]}
 
+
 def enable_staticwebapp_enterprise_edge(cmd, name, resource_group_name):
     logger.warn("For optimal experience and availability please check our documentation https://aka.ms/swaedge")
     StaticWebAppFrontDoorClient.set(cmd, name=name, resource_group=resource_group_name, enable=True)
