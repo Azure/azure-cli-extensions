@@ -223,6 +223,18 @@ def load_arguments(self, _):
                 'target_module', help='Child module to be deployed, required for multiple jar packages built from source code.')
             c.argument(
                 'version', help='Deployment version, keep unchanged if not set.')
+            c.argument(
+                'container_image', help='The container image tag.')
+            c.argument(
+                'container_registry', default='docker.io', help='The registry of the container image.')
+            c.argument(
+                'registry_username', help='The username of the container registry.')
+            c.argument(
+                'registry_password', help='The password of the container registry.')
+            c.argument(
+                'container_command', help='The command of the container image.')
+            c.argument(
+                'container_args', help='The arguments of the container image.')
 
     with self.argument_context('spring-cloud app deployment create') as c:
         c.argument('skip_clone_settings', help='Create staging deployment will automatically copy settings from production deployment.',
