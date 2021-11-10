@@ -28,33 +28,6 @@ Describe 'Basic Source Control Configuration Testing' {
         $output | Should -Not -BeNullOrEmpty
     }
 
-    It "Runs an update on the configuration on the cluster" {
-        Set-ItResult -Skipped -Because "Update is not a valid scenario for now"
-
-        az k8s-configuration update -c $ENVCONFIG.arcClusterName -g $ENVCONFIG.resourceGroup --cluster-type connectedClusters -n $configurationName --enable-helm-operator
-        $? | Should -BeTrue
-
-        $output = az k8s-configuration show --cluster-name $ENVCONFIG.arcClusterName -g $ENVCONFIG.resourceGroup --cluster-type connectedClusters -n $configurationName
-        $? | Should -BeTrue
-
-        $helmOperatorEnabled = ($output | ConvertFrom-Json).enableHelmOperator
-        $helmOperatorEnabled.ToString() -eq "True" | Should -BeTrue
-
-        # Loop and retry until the configuration updates
-        $n = 0
-        do {
-            $helmOperatorEnabled = (Get-ConfigData $configurationName).spec.enableHelmOperator
-            if ($helmOperatorEnabled -And $helmOperatorEnabled.ToString() -eq "True") {
-                if (Get-ConfigStatus $configurationName -Match $SUCCESS_MESSAGE) {
-                    break
-                }
-            }
-            Start-Sleep -Seconds 10
-            $n += 1
-        } while ($n -le $MAX_RETRY_ATTEMPTS)
-        $n | Should -BeLessOrEqual $MAX_RETRY_ATTEMPTS
-    }
-
     It "Performs a re-PUT of the configuration on the cluster, with HTTPS in caps" {
         az k8s-configuration create -c $ENVCONFIG.arcClusterName -g $ENVCONFIG.resourceGroup --cluster-type "connectedClusters" -u "HTTPS://github.com/Azure/arc-k8s-demo" -n $configurationName --scope cluster --enable-helm-operator=false --operator-namespace $configurationName
         $? | Should -BeTrue
