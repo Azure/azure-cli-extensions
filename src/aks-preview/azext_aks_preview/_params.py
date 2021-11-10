@@ -65,7 +65,7 @@ def load_arguments(self, _):
         c.argument('nodepool_name', type=str, default='nodepool1',
                    help='Node pool name, upto 12 alphanumeric characters', validator=validate_nodepool_name)
         c.argument('nodepool_tags', nargs='*', validator=validate_nodepool_tags, help='space-separated tags: key[=value] [key[=value] ...]. Use "" to clear existing tags.')
-        c.argument('nodepool_labels', nargs='*', validator=validate_nodepool_labels, help='space-separated labels: key[=value] [key[=value] ...]. You can not change the node labels through CLI after creation. See https://aka.ms/node-labels for syntax of labels.')
+        c.argument('nodepool_labels', nargs='*', validator=validate_nodepool_labels, help='space-separated labels: key[=value] [key[=value] ...]. See https://aka.ms/node-labels for syntax of labels.')
         c.argument('os_sku', type=str, options_list=['--os-sku'], completer=get_ossku_completion_list)
         c.argument('ssh_key_value', required=False, type=file_type, default=os.path.join('~', '.ssh', 'id_rsa.pub'),
                    completer=FilesCompleter(), validator=validate_ssh_key)
@@ -194,6 +194,7 @@ def load_arguments(self, _):
         c.argument('gmsa_dns_server', options_list=['--gmsa-dns-server'])
         c.argument('gmsa_root_domain_name', options_list=['--gmsa-root-domain-name'])
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
+        c.argument('nodepool_labels', nargs='*', validator=validate_nodepool_labels, help='space-separated labels: key[=value] [key[=value] ...]. See https://aka.ms/node-labels for syntax of labels.')
 
     with self.argument_context('aks scale') as c:
         c.argument('nodepool_name', type=str,
@@ -271,6 +272,7 @@ def load_arguments(self, _):
         c.argument('tags', tags_type)
         c.argument('mode', arg_type=get_enum_type([CONST_NODEPOOL_MODE_SYSTEM, CONST_NODEPOOL_MODE_USER]))
         c.argument('max_surge', type=str, validator=validate_max_surge)
+        c.argument('labels', nargs='*', validator=validate_nodepool_labels)
 
     with self.argument_context('aks addon show') as c:
         c.argument('addon', options_list=['--addon', '-a'], validator=validate_addon)

@@ -1316,6 +1316,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                disable_public_fqdn=False,
                yes=False,
                tags=None,
+               nodepool_labels=None,
                windows_admin_password=None,
                enable_azure_rbac=False,
                disable_azure_rbac=False,
@@ -1362,7 +1363,8 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
        not disable_local_accounts and \
        not enable_public_fqdn and \
        not disable_public_fqdn and \
-       not enable_windows_gmsa:
+       not enable_windows_gmsa and \
+       not nodepool_labels:
         raise CLIError('Please specify "--enable-cluster-autoscaler" or '
                        '"--disable-cluster-autoscaler" or '
                        '"--update-cluster-autoscaler" or '
@@ -1399,7 +1401,8 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                        '"--disable-local-accounts" or '
                        '"--enable-public-fqdn" or '
                        '"--disable-public-fqdn"'
-                       '"--enble-windows-gmsa"')
+                       '"--enble-windows-gmsa" or '
+                       '"--nodepool-labels"')
     instance = client.get(resource_group_name, name)
 
     if update_autoscaler and len(instance.agent_pool_profiles) > 1:
@@ -1689,6 +1692,10 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
 
     if tags:
         instance.tags = tags
+
+    if nodepool_labels is not None:
+        for agent_profile in instance.agent_pool_profiles:
+            agent_profile.node_labels = nodepool_labels
 
     if windows_admin_password:
         instance.windows_profile.admin_password = windows_admin_password
@@ -2633,16 +2640,17 @@ def aks_agentpool_update(cmd,   # pylint: disable=unused-argument
                          min_count=None, max_count=None,
                          max_surge=None,
                          mode=None,
+                         labels=None,
                          no_wait=False):
 
     update_autoscaler = enable_cluster_autoscaler + \
         disable_cluster_autoscaler + update_cluster_autoscaler
 
-    if (update_autoscaler != 1 and not tags and not scale_down_mode and not mode and not max_surge):
+    if (update_autoscaler != 1 and not tags and not scale_down_mode and not mode and not max_surge and not labels):
         raise CLIError('Please specify one or more of "--enable-cluster-autoscaler" or '
                        '"--disable-cluster-autoscaler" or '
                        '"--update-cluster-autoscaler" or '
-                       '"--tags" or "--mode" or "--max-surge" or "--scale-down-mode"')
+                       '"--tags" or "--mode" or "--max-surge" or "--scale-down-mode" or "--labels"')
 
     instance = client.get(resource_group_name, cluster_name, nodepool_name)
 
@@ -2696,6 +2704,8 @@ def aks_agentpool_update(cmd,   # pylint: disable=unused-argument
     if mode is not None:
         instance.mode = mode
 
+    if labels is not None:
+        instance.node_labels = labels
     return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, cluster_name, nodepool_name, instance)
 
 
