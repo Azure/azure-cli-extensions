@@ -7,6 +7,7 @@ import importlib
 import unittest
 from unittest.mock import Mock, patch
 
+import requests
 from azext_aks_preview.__init__ import register_aks_preview_resource_type
 from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
 from azext_aks_preview._consts import (
@@ -54,6 +55,7 @@ from azure.cli.core.azclierror import (
     RequiredArgumentMissingError,
     UnknownError,
 )
+from msrestazure.azure_exceptions import CloudError
 
 
 class AKSPreviewModelsTestCase(unittest.TestCase):
@@ -1800,7 +1802,158 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
 
     def test_construct_preview_mc_profile(self):
-        pass
+        import inspect
+
+        import paramiko
+        from azext_aks_preview.custom import aks_create
+
+        optional_params = {}
+        positional_params = []
+        for _, v in inspect.signature(aks_create).parameters.items():
+            if v.default != v.empty:
+                optional_params[v.name] = v.default
+            else:
+                positional_params.append(v.name)
+        ground_truth_positional_params = [
+            "cmd",
+            "client",
+            "resource_group_name",
+            "name",
+            "ssh_key_value",
+        ]
+        self.assertEqual(positional_params, ground_truth_positional_params)
+
+        # prepare ssh key
+        key = paramiko.RSAKey.generate(2048)
+        public_key = "{} {}".format(key.get_name(), key.get_base64())
+
+        # prepare a dictionary of default parameters
+        raw_param_dict = {
+            "resource_group_name": "test_rg_name",
+            "name": "test_name",
+            "ssh_key_value": public_key,
+        }
+        raw_param_dict.update(optional_params)
+        from azure.cli.command_modules.acs.decorator import AKSParamDict
+
+        raw_param_dict = AKSParamDict(raw_param_dict)
+
+        # default value in `aks_create`
+        dec_1 = AKSPreviewCreateDecorator(
+            self.cmd, self.client, raw_param_dict, CUSTOM_MGMT_AKS_PREVIEW
+        )
+
+        mock_profile = Mock(
+            get_subscription_id=Mock(return_value="1234-5678-9012")
+        )
+        with patch(
+            "azure.cli.command_modules.acs.decorator._get_rg_location",
+            return_value="test_location",
+        ), patch(
+            "azure.cli.command_modules.acs.decorator.Profile",
+            return_value=mock_profile,
+        ):
+            dec_mc_1 = dec_1.construct_preview_mc_profile()
+
+        agent_pool_profile_1 = self.models.ManagedClusterAgentPoolProfile(
+            # Must be 12 chars or less before ACS RP adds to it
+            name="nodepool1",
+            # tags=None,
+            # node_labels=None,
+            count=3,
+            vm_size="Standard_DS2_v2",
+            os_type="Linux",
+            enable_node_public_ip=False,
+            enable_encryption_at_host=False,
+            enable_ultra_ssd=False,
+            type="VirtualMachineScaleSets",
+            mode="System",
+            enable_auto_scaling=False,
+            enable_fips=False,
+        )
+        ssh_config_1 = self.models.ContainerServiceSshConfiguration(
+            public_keys=[
+                self.models.ContainerServiceSshPublicKey(key_data=public_key)
+            ]
+        )
+        linux_profile_1 = self.models.ContainerServiceLinuxProfile(
+            admin_username="azureuser", ssh=ssh_config_1
+        )
+        network_profile_1 = self.models.ContainerServiceNetworkProfile(
+            load_balancer_sku="standard",
+        )
+        identity_1 = self.models.ManagedClusterIdentity(type="SystemAssigned")
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            dns_prefix="testname-testrgname-1234-5",
+            kubernetes_version="",
+            addon_profiles={},
+            enable_rbac=True,
+            agent_pool_profiles=[agent_pool_profile_1],
+            linux_profile=linux_profile_1,
+            network_profile=network_profile_1,
+            identity=identity_1,
+            disable_local_accounts=False,
+            enable_pod_security_policy=False,
+        )
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+        raw_param_dict.print_usage_statistics()
+
+    def test_create_mc(self):
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                CONST_MONITORING_ADDON_NAME: self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={
+                        CONST_MONITORING_USING_AAD_MSI_AUTH: True,
+                    },
+                )
+            },
+        )
+        dec_1 = AKSPreviewCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "resource_group_name": "test_rg_name",
+                "name": "test_name",
+                "enable_managed_identity": True,
+                "no_wait": False,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+
+        dec_1.context.attach_mc(mc_1)
+        dec_1.context.set_intermediate(
+            "monitoring", True, overwrite_exists=True
+        )
+        dec_1.context.set_intermediate(
+            "subscription_id", "test_subscription_id", overwrite_exists=True
+        )
+        resp = requests.Response()
+        resp.status_code = 500
+        err = CloudError(resp)
+        err.message = "not found in Active Directory tenant"
+        # fail on mock CloudError
+        with self.assertRaises(CloudError), patch("time.sleep"), patch(
+            "azure.cli.command_modules.acs.decorator.AKSCreateDecorator.create_mc"
+        ), patch(
+            "azext_aks_preview.decorator.ensure_container_insights_for_monitoring",
+            side_effect=err,
+        ) as ensure_monitoring:
+            dec_1.create_mc(mc_1)
+        ensure_monitoring.assert_called_with(
+            self.cmd,
+            mc_1.addon_profiles[CONST_MONITORING_ADDON_NAME],
+            "test_subscription_id",
+            "test_rg_name",
+            "test_name",
+            "test_location",
+            remove_monitoring=False,
+            aad_route=True,
+            create_dcr=False,
+            create_dcra=True,
+        )
 
 
 class AKSPreviewUpdateDecoratorTestCase(unittest.TestCase):
