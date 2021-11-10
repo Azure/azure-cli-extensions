@@ -73,10 +73,6 @@ def load_command_table(self, _):
     with self.command_group('fidalgo', is_preview=True):
         pass
 
-
-    with self.command_group('fidalgo project', client_factory=cf_project) as g:
-        g.custom_command('list', 'list_project')
-
     with self.command_group('fidalgo virtual-machine', fidalgo_virtual_machine, client_factory=cf_virtual_machine) as g:
         g.custom_command('list', 'fidalgo_virtual_machine_list')
         g.custom_show_command('show', 'fidalgo_virtual_machine_show')

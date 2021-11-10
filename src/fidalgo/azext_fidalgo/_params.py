@@ -17,7 +17,7 @@ def load_arguments(self, _):
                    '\'$top=10\'.')
         c.argument('filter_', options_list=['--filter'], type=str, help='An OData $filter clause to apply to the '
                    'operation.')
-        c.argument('devcenter', type=str, help='The Fidalgo DevCenter.')
+        c.argument('dev_center', type=str, help='The Fidalgo DevCenter.')
         c.argument('fidalgo_dns_suffix', type=str, help='Optional DevCenter DNS suffix')
 
     with self.argument_context('fidalgo pool list') as c:
@@ -26,14 +26,14 @@ def load_arguments(self, _):
         c.argument('filter_', options_list=['--filter'], type=str, help='An OData $filter clause to apply to the '
                    'operation.')
         c.argument('project_name', type=str, help='The Fidalgo Project upon which to execute operations.')
-        c.argument('devcenter', type=str, help='The Fidalgo DevCenter.')
+        c.argument('dev_center', type=str, help='The Fidalgo DevCenter.')
         c.argument('fidalgo_dns_suffix', type=str, help='Optional DevCenter DNS suffix')
 
     with self.argument_context('fidalgo pool show') as c:
         c.argument('pool_name', options_list=['--name', '-n', '--pool-name'], type=str, help='The name of a pool of '
                    'virtual machines.')
         c.argument('project_name', options_list=['--project-name', '--project'], type=str, help='The Fidalgo Project upon which to execute operations.')
-        c.argument('devcenter', type=str, help='The Fidalgo DevCenter.')
+        c.argument('dev_center', type=str, help='The Fidalgo DevCenter.')
         c.argument('fidalgo_dns_suffix', type=str, help='Optional DevCenter DNS suffix')
 
     with self.argument_context('fidalgo virtual-machine list') as c:
@@ -44,7 +44,7 @@ def load_arguments(self, _):
         c.argument('project_name', type=str, help='The Fidalgo Project upon which to execute operations.')
         c.argument('user_id', type=str, help='The id of the user. If value is \'me\', the identity is taken from the '
                    'authentication context')
-        c.argument('devcenter', type=str, help='The Fidalgo DevCenter.')
+        c.argument('dev_center', type=str, help='The Fidalgo DevCenter.')
         c.argument('fidalgo_dns_suffix', type=str, help='Optional DevCenter DNS suffix')
 
     with self.argument_context('fidalgo virtual-machine show') as c:
@@ -53,7 +53,7 @@ def load_arguments(self, _):
                    'authentication context')
         c.argument('virtual_machine_name', options_list=['--name', '-n', '--virtual-machine-name'], type=str,
                    help='The name of a virtual machine.')
-        c.argument('devcenter', type=str, help='The Fidalgo DevCenter.')
+        c.argument('dev_center', type=str, help='The Fidalgo DevCenter.')
         c.argument('fidalgo_dns_suffix', type=str, help='Optional DevCenter DNS suffix')
 
     with self.argument_context('fidalgo virtual-machine create') as c:
@@ -63,7 +63,7 @@ def load_arguments(self, _):
         c.argument('virtual_machine_name', options_list=['--name', '-n', '--virtual-machine-name'], type=str,
                    help='The name of a virtual machine.')
         c.argument('pool_name', type=str, help='The name of the virtual machine pool this machine belongs to.')
-        c.argument('devcenter', type=str, help='The Fidalgo DevCenter.')
+        c.argument('dev_center', type=str, help='The Fidalgo DevCenter.')
         c.argument('fidalgo_dns_suffix', type=str, help='Optional DevCenter DNS suffix')
 
     with self.argument_context('fidalgo virtual-machine delete') as c:
@@ -72,7 +72,7 @@ def load_arguments(self, _):
                    'authentication context')
         c.argument('virtual_machine_name', options_list=['--name', '-n', '--virtual-machine-name'], type=str,
                    help='The name of a virtual machine.')
-        c.argument('devcenter', type=str, help='The Fidalgo DevCenter.')
+        c.argument('dev_center', type=str, help='The Fidalgo DevCenter.')
         c.argument('fidalgo_dns_suffix', type=str, help='Optional DevCenter DNS suffix')
 
     with self.argument_context('fidalgo virtual-machine assign') as c:
@@ -82,7 +82,7 @@ def load_arguments(self, _):
         c.argument('virtual_machine_name', options_list=['--name', '-n', '--virtual-machine-name'], type=str,
                    help='The name of a virtual machine.')
         c.argument('new_owner', type=str, help='Identifier of new owner')
-        c.argument('devcenter', type=str, help='The Fidalgo DevCenter.')
+        c.argument('dev_center', type=str, help='The Fidalgo DevCenter.')
         c.argument('fidalgo_dns_suffix', type=str, help='Optional DevCenter DNS suffix')
 
     with self.argument_context('fidalgo virtual-machine get-rdp-file-content') as c:
@@ -91,7 +91,7 @@ def load_arguments(self, _):
                    'authentication context')
         c.argument('virtual_machine_name', options_list=['--name', '-n', '--virtual-machine-name'], type=str,
                    help='The name of a virtual machine.')
-        c.argument('devcenter', type=str, help='The Fidalgo DevCenter.')
+        c.argument('dev_center', type=str, help='The Fidalgo DevCenter.')
         c.argument('fidalgo_dns_suffix', type=str, help='Optional DevCenter DNS suffix')
 
     with self.argument_context('fidalgo virtual-machine start') as c:
@@ -100,7 +100,7 @@ def load_arguments(self, _):
                    'authentication context')
         c.argument('virtual_machine_name', options_list=['--name', '-n', '--virtual-machine-name'], type=str,
                    help='The name of a virtual machine.')
-        c.argument('devcenter', type=str, help='The Fidalgo DevCenter.')
+        c.argument('dev_center', type=str, help='The Fidalgo DevCenter.')
         c.argument('fidalgo_dns_suffix', type=str, help='Optional DevCenter DNS suffix')
 
     with self.argument_context('fidalgo virtual-machine stop') as c:
@@ -109,7 +109,7 @@ def load_arguments(self, _):
                    'authentication context')
         c.argument('virtual_machine_name', options_list=['--name', '-n', '--virtual-machine-name'], type=str,
                    help='The name of a virtual machine.')
-        c.argument('devcenter', type=str, help='The Fidalgo DevCenter.')
+        c.argument('dev_center', type=str, help='The Fidalgo DevCenter.')
         c.argument('fidalgo_dns_suffix', type=str, help='Optional DevCenter DNS suffix')
 
     with self.argument_context('fidalgo environment list') as c:
