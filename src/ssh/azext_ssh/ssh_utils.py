@@ -56,7 +56,7 @@ def start_ssh_connection(port, ssh_args, ip, username, cert_file, private_key_fi
     # Make sure all files have been properly removed.
     _do_cleanup(delete_keys, cert_file, private_key_file)
     if log_file:
-        file_utils.delete_file(log_file, f"Couldn't delete temporary log file {cert_file}. ", True)
+        file_utils.delete_file(log_file, f"Couldn't delete temporary log file {log_file}. ", True)
     if delete_keys:
         temp_dir = os.path.dirname(cert_file)
         file_utils.delete_folder(temp_dir, f"Couldn't delete temporary folder {temp_dir}", True)
