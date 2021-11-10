@@ -226,6 +226,20 @@ class AzureMLKubernetes(DefaultExtension):
             else:
                 configuration_settings['clusterPurpose'] = 'FastProd'
 
+        feIsNodePort = _get_value_from_config_protected_config(
+            self.privateEndpointNodeport, configuration_settings, configuration_protected_settings)
+        if feIsNodePort is not None:
+            feIsNodePort = str(feIsNodePort).lower() == 'true'
+            configuration_settings['scoringFe.serviceType.nodePort'] = feIsNodePort
+
+        feIsInternalLoadBalancer = _get_value_from_config_protected_config(
+            self.privateEndpointILB, configuration_settings, configuration_protected_settings)
+        if feIsInternalLoadBalancer is not None:
+            feIsInternalLoadBalancer = str(feIsInternalLoadBalancer).lower() == 'true'
+            configuration_settings['scoringFe.serviceType.internalLoadBalancer'] = feIsInternalLoadBalancer
+            logger.warning(
+                'Internal load balancer only supported on AKS and AKS Engine Clusters.')
+
     def __validate_config(self, configuration_settings, configuration_protected_settings):
         # perform basic validation of the input config
         config_keys = configuration_settings.keys()
