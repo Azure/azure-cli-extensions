@@ -241,6 +241,7 @@ def _build_args(cert_file, private_key_file, port):
 
 def _do_cleanup(delete_keys, delete_cert, cert_file, private_key, public_key, log_file=None, wait=False):
     if log_file:
+        print("reading log")
         t0 = time.time()
         match = False
         while (time.time() - t0) < const.CLEANUP_TOTAL_TIME_LIMIT_IN_SECONDS and not match:

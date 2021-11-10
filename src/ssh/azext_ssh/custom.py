@@ -134,6 +134,8 @@ def _do_ssh_op(cmd, ssh_ip, public_key_file, private_key_file, username,
                                                                                                private_key_file,
                                                                                                credentials_folder)
         cert_file, username = _get_and_write_certificate(cmd, public_key_file, None)
+    
+    print(cert_file)
 
     op_call(relay_info, proxy_path, vm_name, ssh_ip, username, cert_file, private_key_file, port, is_arc, delete_keys, delete_cert, public_key_file)
 
