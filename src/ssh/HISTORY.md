@@ -7,6 +7,7 @@ Release History
 * Keys generated during ssh config are saved in az_ssh_config folder in the same directory as --file.
 * Users no longer allowed to run ssh cert with no parameters. 
 * When --public-key-file/-f is not provided to ssh cert, generated public and private keys are saved in the same folder as --file.
+* Add support to connect to local users on local machines using key based, cert based, or password based authentication.
 
 0.1.8
 -----

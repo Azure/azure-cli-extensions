@@ -17,11 +17,11 @@ class SshCustomCommandTest(unittest.TestCase):
     @mock.patch('azext_ssh.custom._assert_args')
     def test_ssh_vm(self, mock_assert, mock_do_op):
         cmd = mock.Mock()
-        custom.ssh_vm(cmd, "rg", "vm", "ip", "public", "private", False)
+        custom.ssh_vm(cmd, "rg", "vm", "ip", "public", "private", False, "username", "cert", "port", None)
 
-        mock_assert.assert_called_once_with("rg", "vm", "ip")
+        mock_assert.assert_called_once_with("rg", "vm", "ip", "cert", "username")
         mock_do_op.assert_called_once_with(
-            cmd, "rg", "vm", "ip", "public", "private", False, None, mock.ANY)
+            cmd, "rg", "vm", "ip", "public", "private", False, "username", "cert", None, mock.ANY)
     
     @mock.patch('azext_ssh.custom._do_ssh_op')
     @mock.patch('azext_ssh.ssh_utils.write_ssh_config')
@@ -35,16 +35,16 @@ class SshCustomCommandTest(unittest.TestCase):
         mock_isdir.return_value = True
         mock_join.side_effect = ['az_ssh_config/rg-vm', 'path/to/az_ssh_config/rg-vm']
 
-        def do_op_side_effect(cmd, resource_group, vm_name, ssh_ip, public_key_file, private_key_file, use_private_ip, credentials_folder, op_call):
-            op_call(ssh_ip, "username", "cert_file", private_key_file, False)
+        def do_op_side_effect(cmd, resource_group, vm_name, ssh_ip, public_key_file, private_key_file, use_private_ip, local_user, cert_file, credentials_folder, op_call):
+            op_call(ssh_ip, "username", "cert", private_key_file, False, False)
 
         mock_do_op.side_effect = do_op_side_effect
-        custom.ssh_config(cmd, "path/to/file", "rg", "vm", "ip", "public", "private", False, False, None)
+        custom.ssh_config(cmd, "path/to/file", "rg", "vm", "ip", "public", "private", False, False, "username", "cert", "port", None)
 
-        mock_ssh_utils.assert_called_once_with("path/to/file", "rg", "vm", False, "ip", "username", "cert_file", "private", False)
-        mock_assert.assert_called_once_with("rg", "vm", "ip")
+        mock_ssh_utils.assert_called_once_with("path/to/file", "rg", "vm", False, "port", "ip", "username", "cert", "private", False, False)
+        mock_assert.assert_called_once_with("rg", "vm", "ip", "cert", "username")
         mock_do_op.assert_called_once_with(
-            cmd, "rg", "vm", "ip", "public", "private", False, 'path/to/az_ssh_config/rg-vm', mock.ANY)
+            cmd, "rg", "vm", "ip", "public", "private", False, "username", "cert", 'path/to/az_ssh_config/rg-vm', mock.ANY)
     
     @mock.patch('azext_ssh.ssh_utils.get_ssh_cert_principals')
     @mock.patch('os.path.join')
@@ -53,7 +53,7 @@ class SshCustomCommandTest(unittest.TestCase):
     @mock.patch('azext_ssh.custom._get_modulus_exponent')
     @mock.patch('azure.cli.core._profile.Profile')
     @mock.patch('azext_ssh.custom._write_cert_file')
-    def test_do_ssh_op(self, mock_write_cert, mock_ssh_creds, mock_get_mod_exp, mock_ip,
+    def test_do_ssh_op_aad_user(self, mock_write_cert, mock_ssh_creds, mock_get_mod_exp, mock_ip,
                        mock_check_files, mock_join, mock_principal):
         cmd = mock.Mock()
         cmd.cli_ctx = mock.Mock()
@@ -68,14 +68,28 @@ class SshCustomCommandTest(unittest.TestCase):
         profile.get_msal_token.return_value = "username", "certificate"
         mock_join.return_value = "public-aadcert.pub"
 
-        custom._do_ssh_op(cmd, None, None, "1.2.3.4", "publicfile", "privatefile", False, "cred/folder", mock_op)
+        custom._do_ssh_op(cmd, None, None, "1.2.3.4", "publicfile", "privatefile", False, None, None, "cred/folder", mock_op)
 
         mock_check_files.assert_called_once_with("publicfile", "privatefile", "cred/folder")
         mock_ip.assert_not_called()
         mock_get_mod_exp.assert_called_once_with("public")
         mock_write_cert.assert_called_once_with("certificate", "public-aadcert.pub")
         mock_op.assert_called_once_with(
-            "1.2.3.4", "username", "public-aadcert.pub", "private", False)
+            "1.2.3.4", "username", "public-aadcert.pub", "private", False, True)
+
+    @mock.patch('azext_ssh.custom._check_or_create_public_private_files')
+    @mock.patch('azext_ssh.ip_utils.get_ssh_ip')
+    def test_do_ssh_op_local_user(self, mock_ip, mock_check_files):
+        cmd = mock.Mock()
+        mock_op = mock.Mock()
+        mock_ip.return_value = "1.2.3.4"
+
+        custom._do_ssh_op(cmd, "vm", "rg", None, "publicfile", "privatefile", False, "username", "cert", "cred/folder", mock_op)
+
+        mock_check_files.assert_not_called()
+        mock_ip.assert_called_once_with(cmd, "vm", "rg", False)
+        mock_op.assert_called_once_with(
+            "1.2.3.4", "username", "cert", "privatefile", False, False)
   
     @mock.patch('azext_ssh.custom._check_or_create_public_private_files')
     @mock.patch('azext_ssh.ip_utils.get_ssh_ip')
@@ -88,21 +102,29 @@ class SshCustomCommandTest(unittest.TestCase):
 
         self.assertRaises(
             azclierror.ResourceNotFoundError, custom._do_ssh_op, cmd, "rg", "vm", None,
-            "publicfile", "privatefile", False, "cred/folder", mock_op)
+            "publicfile", "privatefile", False, None, None, "cred/folder", mock_op)
 
         mock_check_files.assert_not_called()
         mock_ip.assert_called_once_with(cmd, "rg", "vm", False)
 
     def test_assert_args_no_ip_or_vm(self):
-        self.assertRaises(azclierror.RequiredArgumentMissingError, custom._assert_args, None, None, None)
+        self.assertRaises(azclierror.RequiredArgumentMissingError, custom._assert_args, None, None, None, None, None)
 
     def test_assert_args_vm_rg_mismatch(self):
-        self.assertRaises(azclierror.MutuallyExclusiveArgumentError, custom._assert_args, "rg", None, None)
-        self.assertRaises(azclierror.MutuallyExclusiveArgumentError, custom._assert_args, None, "vm", None)
+        self.assertRaises(azclierror.MutuallyExclusiveArgumentError, custom._assert_args, "rg", None, None, None, None)
+        self.assertRaises(azclierror.MutuallyExclusiveArgumentError, custom._assert_args, None, "vm", None, None, None)
 
     def test_assert_args_ip_with_vm_or_rg(self):
-        self.assertRaises(azclierror.MutuallyExclusiveArgumentError, custom._assert_args, None, "vm", "ip")
-        self.assertRaises(azclierror.MutuallyExclusiveArgumentError, custom._assert_args, "rg", "vm", "ip")
+        self.assertRaises(azclierror.MutuallyExclusiveArgumentError, custom._assert_args, None, "vm", "ip", None, None)
+        self.assertRaises(azclierror.MutuallyExclusiveArgumentError, custom._assert_args, "rg", "vm", "ip", None, None)
+    
+    def test_assert_args_cert_with_no_user(self):
+        self.assertRaises(azclierror.MutuallyExclusiveArgumentError, custom._assert_args, None, None, "ip", "certificate", None)
+
+    @mock.patch('os.path.isfile')
+    def test_assert_args_invalid_cert_filepath(self, mock_is_file):
+        mock_is_file.return_value = False
+        self.assertRaises(azclierror.FileOperationError, custom._assert_args, 'rg', 'vm', None, 'cert_path', 'username')
  
     @mock.patch('azext_ssh.ssh_utils.create_ssh_keyfile')
     @mock.patch('tempfile.mkdtemp')
