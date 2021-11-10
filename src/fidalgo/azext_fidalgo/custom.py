@@ -5,15 +5,15 @@
 
 from knack.util import CLIError
 
-def list_project(client,
+def fidalgo_list_project(client,
                 dev_center,
                 fidalgo_dns_suffix=None,
                 top=None,
                 filter_=None):
     return client.list_by_dev_center(dev_center=dev_center,
                                      fidalgo_dns_suffix=get_dns_suffix(fidalgo_dns_suffix),
-                                     top=None,
-                                     filter=None)
+                                     top=top,
+                                     filter=filter_)
 
 def fidalgo_pool_list(client,
                       project_name,
