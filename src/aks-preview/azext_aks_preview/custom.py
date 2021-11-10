@@ -550,123 +550,27 @@ def _get_snapshot(cli_ctx, snapshot_id):
         "Cannot parse snapshot name from provided resource id {}.".format(snapshot_id))
 
 
-def aks_browse(cmd,     # pylint: disable=too-many-statements,too-many-branches
-               client,
-               resource_group_name,
-               name,
-               disable_browser=False,
-               listen_address='127.0.0.1',
-               listen_port='8001'):
-    # verify the kube-dashboard addon was not disabled
-    instance = client.get(resource_group_name, name)
-    addon_profiles = instance.addon_profiles or {}
-    # addon name is case insensitive
-    addon_profile = next((addon_profiles[k] for k in addon_profiles
-                          if k.lower() == CONST_KUBE_DASHBOARD_ADDON_NAME.lower()),
-                         ManagedClusterAddonProfile(enabled=False))
+def aks_browse(
+    cmd,
+    client,
+    resource_group_name,
+    name,
+    disable_browser=False,
+    listen_address="127.0.0.1",
+    listen_port="8001",
+):
+    from azure.cli.command_modules.acs.custom import _aks_browse
 
-    # open portal view if addon is not enabled or k8s version >= 1.19.0
-    if StrictVersion(instance.kubernetes_version) >= StrictVersion('1.19.0') or (not addon_profile.enabled):
-        subscription_id = get_subscription_id(cmd.cli_ctx)
-        dashboardURL = (
-            # Azure Portal URL (https://portal.azure.com for public cloud)
-            cmd.cli_ctx.cloud.endpoints.portal +
-            ('/#resource/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.ContainerService'
-             '/managedClusters/{2}/workloads').format(subscription_id, resource_group_name, name)
-        )
-
-        if in_cloud_console():
-            logger.warning(
-                'To view the Kubernetes resources view, please open %s in a new tab', dashboardURL)
-        else:
-            logger.warning('Kubernetes resources view on %s', dashboardURL)
-
-        if not disable_browser:
-            webbrowser.open_new_tab(dashboardURL)
-        return
-
-    # otherwise open the kube-dashboard addon
-    if not which('kubectl'):
-        raise CLIError('Can not find kubectl executable in PATH')
-
-    _, browse_path = tempfile.mkstemp()
-
-    aks_get_credentials(cmd, client, resource_group_name,
-                        name, admin=False, path=browse_path)
-    # find the dashboard pod's name
-    try:
-        dashboard_pod = subprocess.check_output(
-            ["kubectl", "get", "pods", "--kubeconfig", browse_path, "--namespace", "kube-system",
-             "--output", "name", "--selector", "k8s-app=kubernetes-dashboard"],
-            universal_newlines=True)
-    except subprocess.CalledProcessError as err:
-        raise CLIError('Could not find dashboard pod: {}'.format(err))
-    if dashboard_pod:
-        # remove any "pods/" or "pod/" prefix from the name
-        dashboard_pod = str(dashboard_pod).split('/')[-1].strip()
-    else:
-        raise CLIError("Couldn't find the Kubernetes dashboard pod.")
-
-    # find the port
-    try:
-        dashboard_port = subprocess.check_output(
-            ["kubectl", "get", "pods", "--kubeconfig", browse_path, "--namespace", "kube-system",
-             "--selector", "k8s-app=kubernetes-dashboard",
-             "--output", "jsonpath='{.items[0].spec.containers[0].ports[0].containerPort}'"]
-        )
-        # output format: b"'{port}'"
-        dashboard_port = int((dashboard_port.decode('utf-8').replace("'", "")))
-    except subprocess.CalledProcessError as err:
-        raise CLIError('Could not find dashboard port: {}'.format(err))
-
-    # use https if dashboard container is using https
-    if dashboard_port == 8443:
-        protocol = 'https'
-    else:
-        protocol = 'http'
-
-    proxy_url = 'http://{0}:{1}/'.format(listen_address, listen_port)
-    dashboardURL = '{0}/api/v1/namespaces/kube-system/services/{1}:kubernetes-dashboard:/proxy/'.format(proxy_url,
-                                                                                                        protocol)
-    # launch kubectl port-forward locally to access the remote dashboard
-    if in_cloud_console():
-        # TODO: better error handling here.
-        response = requests.post(
-            'http://localhost:8888/openport/{0}'.format(listen_port))
-        result = json.loads(response.text)
-        dashboardURL = '{0}api/v1/namespaces/kube-system/services/{1}:kubernetes-dashboard:/proxy/'.format(
-            result['url'], protocol)
-        term_id = os.environ.get('ACC_TERM_ID')
-        if term_id:
-            response = requests.post('http://localhost:8888/openLink/{0}'.format(term_id),
-                                     json={"url": dashboardURL})
-        logger.warning(
-            'To view the console, please open %s in a new tab', dashboardURL)
-    else:
-        logger.warning('Proxy running on %s', proxy_url)
-
-    logger.warning('Press CTRL+C to close the tunnel...')
-    if not disable_browser:
-        wait_then_open_async(dashboardURL)
-    try:
-        try:
-            subprocess.check_output(["kubectl", "--kubeconfig", browse_path, "proxy", "--address",
-                                     listen_address, "--port", listen_port], stderr=subprocess.STDOUT)
-        except subprocess.CalledProcessError as err:
-            if err.output.find(b'unknown flag: --address'):
-                if listen_address != '127.0.0.1':
-                    logger.warning(
-                        '"--address" is only supported in kubectl v1.13 and later.')
-                    logger.warning(
-                        'The "--listen-address" argument will be ignored.')
-                subprocess.call(["kubectl", "--kubeconfig",
-                                browse_path, "proxy", "--port", listen_port])
-    except KeyboardInterrupt:
-        # Let command processing finish gracefully after the user presses [Ctrl+C]
-        pass
-    finally:
-        if in_cloud_console():
-            requests.post('http://localhost:8888/closeport/8001')
+    return _aks_browse(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        disable_browser,
+        listen_address,
+        listen_port,
+        CUSTOM_MGMT_AKS_PREVIEW,
+    )
 
 
 def _trim_nodepoolname(nodepool_name):
@@ -1827,7 +1731,8 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                                                     no_wait)
 
 
-def aks_show(cmd, client, resource_group_name, name):   # pylint: disable=unused-argument
+# pylint: disable=unused-argument
+def aks_show(cmd, client, resource_group_name, name):
     mc = client.get(resource_group_name, name)
     return _remove_nulls([mc])[0]
 
