@@ -713,7 +713,6 @@ def display_diagnostics_report(kubectl_prior):   # pylint: disable=too-many-stat
                        "Please run 'az connectedk8s troubleshoot' command again later to get the analysis results.")
 
 
-
 def format_diag_status(diag_status):
     for diag in diag_status:
         if diag["Status"]:
