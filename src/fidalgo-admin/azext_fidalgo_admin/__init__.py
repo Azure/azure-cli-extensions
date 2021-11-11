@@ -9,7 +9,7 @@
 # --------------------------------------------------------------------------
 # pylint: disable=unused-import
 
-import azext_fidalgo._help
+import azext_fidalgo_admin._help
 from azure.cli.core import AzCommandsLoader
 
 
@@ -17,7 +17,7 @@ class FidalgoCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        from azext_fidalgo.generated._client_factory import cf_fidalgo_admin_cl
+        from azext_fidalgo_admin.generated._client_factory import cf_fidalgo_admin_cl
         fidalgo_admin_custom = CliCommandType(
             operations_tmpl='azext_fidalgo.custom#{}',
             client_factory=cf_fidalgo_admin_cl)
@@ -25,10 +25,10 @@ class FidalgoCommandsLoader(AzCommandsLoader):
         parent.__init__(cli_ctx=cli_ctx, custom_command_type=fidalgo_admin_custom)
 
     def load_command_table(self, args):
-        from azext_fidalgo.generated.commands import load_command_table
+        from azext_fidalgo_admin.generated.commands import load_command_table
         load_command_table(self, args)
         try:
-            from azext_fidalgo.manual.commands import load_command_table as load_command_table_manual
+            from azext_fidalgo_admin.manual.commands import load_command_table as load_command_table_manual
             load_command_table_manual(self, args)
         except ImportError as e:
             if e.name.endswith('manual.commands'):
@@ -38,10 +38,10 @@ class FidalgoCommandsLoader(AzCommandsLoader):
         return self.command_table
 
     def load_arguments(self, command):
-        from azext_fidalgo.generated._params import load_arguments
+        from azext_fidalgo_admin.generated._params import load_arguments
         load_arguments(self, command)
         try:
-            from azext_fidalgo.manual._params import load_arguments as load_arguments_manual
+            from azext_fidalgo_admin.manual._params import load_arguments as load_arguments_manual
             load_arguments_manual(self, command)
         except ImportError as e:
             if e.name.endswith('manual._params'):

@@ -13,7 +13,7 @@
 # pylint: disable=line-too-long
 
 from azure.cli.core.commands import CliCommandType
-from azext_fidalgo.generated._client_factory import (
+from azext_fidalgo_admin.generated._client_factory import (
     cf_dev_center,
     cf_project,
     cf_environment,
@@ -31,79 +31,79 @@ from azext_fidalgo.generated._client_factory import (
 
 
 fidalgo_admin_catalog = CliCommandType(
-    operations_tmpl='azext_fidalgo.vendored_sdks.fidalgo_admin.operations._catalogs_operations#CatalogsOperations.{}',
+    operations_tmpl='azext_fidalgo_admin.vendored_sdks.fidalgo_admin.operations._catalogs_operations#CatalogsOperations.{}',
     client_factory=cf_catalog)
 
 
 
 fidalgo_admin_catalog_item = CliCommandType(
-    operations_tmpl='azext_fidalgo.vendored_sdks.fidalgo_admin.operations._catalog_items_operations#CatalogItemsOperations.{}',
+    operations_tmpl='azext_fidalgo_admin.vendored_sdks.fidalgo_admin.operations._catalog_items_operations#CatalogItemsOperations.{}',
     client_factory=cf_catalog_item)
 
 
 
 fidalgo_admin_deployment = CliCommandType(
-    operations_tmpl='azext_fidalgo.vendored_sdks.fidalgo_admin.operations._deployments_operations#DeploymentsOperations.{}',
+    operations_tmpl='azext_fidalgo_admin.vendored_sdks.fidalgo_admin.operations._deployments_operations#DeploymentsOperations.{}',
     client_factory=cf_deployment)
 
 
 
 fidalgo_admin_dev_center = CliCommandType(
-    operations_tmpl='azext_fidalgo.vendored_sdks.fidalgo_admin.operations._dev_centers_operations#DevCentersOperations.{}',
+    operations_tmpl='azext_fidalgo_admin.vendored_sdks.fidalgo_admin.operations._dev_centers_operations#DevCentersOperations.{}',
     client_factory=cf_dev_center)
 
 
 
 fidalgo_admin_environment = CliCommandType(
-    operations_tmpl='azext_fidalgo.vendored_sdks.fidalgo_admin.operations._environments_operations#EnvironmentsOperations.{}',
+    operations_tmpl='azext_fidalgo_admin.vendored_sdks.fidalgo_admin.operations._environments_operations#EnvironmentsOperations.{}',
     client_factory=cf_environment)
 
 
 
 fidalgo_admin_environment_type = CliCommandType(
-    operations_tmpl='azext_fidalgo.vendored_sdks.fidalgo_admin.operations._environment_types_operations#EnvironmentTypesOperations.{}',
+    operations_tmpl='azext_fidalgo_admin.vendored_sdks.fidalgo_admin.operations._environment_types_operations#EnvironmentTypesOperations.{}',
     client_factory=cf_environment_type)
 
 
 
 fidalgo_admin_machine_definition = CliCommandType(
-    operations_tmpl='azext_fidalgo.vendored_sdks.fidalgo_admin.operations._machine_definitions_operations#MachineDefinitionsOperations.{}',
+    operations_tmpl='azext_fidalgo_admin.vendored_sdks.fidalgo_admin.operations._machine_definitions_operations#MachineDefinitionsOperations.{}',
     client_factory=cf_machine_definition)
 
 
 
 fidalgo_admin_mapping = CliCommandType(
-    operations_tmpl='azext_fidalgo.vendored_sdks.fidalgo_admin.operations._mappings_operations#MappingsOperations.{}',
+    operations_tmpl='azext_fidalgo_admin.vendored_sdks.fidalgo_admin.operations._mappings_operations#MappingsOperations.{}',
     client_factory=cf_mapping)
 
 
 
 fidalgo_admin_network_setting = CliCommandType(
-    operations_tmpl='azext_fidalgo.vendored_sdks.fidalgo_admin.operations._network_settings_operations#NetworkSettingsOperations.{}',
+    operations_tmpl='azext_fidalgo_admin.vendored_sdks.fidalgo_admin.operations._network_settings_operations#NetworkSettingsOperations.{}',
     client_factory=cf_network_setting)
 
 
 
 fidalgo_admin_operation_statuses = CliCommandType(
-    operations_tmpl='azext_fidalgo.vendored_sdks.fidalgo_admin.operations._operation_statuses_operations#OperationStatusesOperations.{}',
+    operations_tmpl='azext_fidalgo_admin.vendored_sdks.fidalgo_admin.operations._operation_statuses_operations#OperationStatusesOperations.{}',
     client_factory=cf_operation_statuses)
 
 
 
 fidalgo_admin_pool = CliCommandType(
-    operations_tmpl='azext_fidalgo.vendored_sdks.fidalgo_admin.operations._pools_operations#PoolsOperations.{}',
+    operations_tmpl='azext_fidalgo_admin.vendored_sdks.fidalgo_admin.operations._pools_operations#PoolsOperations.{}',
     client_factory=cf_pool)
 
 
 
 fidalgo_admin_project = CliCommandType(
-    operations_tmpl='azext_fidalgo.vendored_sdks.fidalgo_admin.operations._projects_operations#ProjectsOperations.{}',
+    operations_tmpl='azext_fidalgo_admin.vendored_sdks.fidalgo_admin.operations._projects_operations#ProjectsOperations.{}',
     client_factory=cf_project)
 
 
 
 fidalgo_admin_sku = CliCommandType(
-    operations_tmpl='azext_fidalgo.vendored_sdks.fidalgo_admin.operations._skus_operations#SkusOperations.{}',
+    operations_tmpl='azext_fidalgo_admin.vendored_sdks.fidalgo_admin.operations._skus_operations#SkusOperations.{}',
     client_factory=cf_sku)
 
 
