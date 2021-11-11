@@ -446,7 +446,7 @@ def check_connectivity(url='https://azure.microsoft.com', max_retries=5, timeout
             s.head(url, timeout=timeout)
             success = True
     except (requests.exceptions.ConnectionError, requests.exceptions.Timeout) as ex:
-        logger.error('Internet connectivity problem detected. Error: {}'.format(str(ex)))
+        logger.error('{colorama.Fore.YELLOW}The connectivity was impacted. Please check your internet. If this is intended, some troubleshooting checks will not be able to be run on this cluster. Error: {}'.format(str(ex)))
         success = False
     except Exception as ex:  # pylint: disable=broad-except
         logger.error("Failed to check Internet connectivity. Error: %s", str(ex))
