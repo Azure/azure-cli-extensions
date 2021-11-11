@@ -54,7 +54,8 @@ from azure.graphrbac.models import (ApplicationCreateParameters,
                                     KeyCredential,
                                     ServicePrincipalCreateParameters,
                                     GetObjectsParameters)
-from .vendored_sdks.azure_mgmt_preview_aks.v2021_08_01.models import (ContainerServiceLinuxProfile,
+from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
+from .vendored_sdks.azure_mgmt_preview_aks.v2021_09_01.models import (ContainerServiceLinuxProfile,
                                                                       ManagedClusterWindowsProfile,
                                                                       ContainerServiceNetworkProfile,
                                                                       ManagedClusterServicePrincipalProfile,
@@ -79,7 +80,10 @@ from .vendored_sdks.azure_mgmt_preview_aks.v2021_08_01.models import (ContainerS
                                                                       ManagedClusterPodIdentityProfile,
                                                                       ManagedClusterPodIdentity,
                                                                       ManagedClusterPodIdentityException,
-                                                                      UserAssignedIdentity)
+                                                                      UserAssignedIdentity,
+                                                                      PowerState,
+                                                                      Snapshot,
+                                                                      CreationData)
 from ._client_factory import cf_resource_groups
 from ._client_factory import get_auth_management_client
 from ._client_factory import get_graph_rbac_management_client
@@ -89,6 +93,8 @@ from ._client_factory import get_resource_by_name
 from ._client_factory import cf_container_registry_service
 from ._client_factory import cf_storage
 from ._client_factory import cf_agent_pools
+from ._client_factory import cf_snapshots
+from ._client_factory import cf_snapshots_client
 from ._resourcegroup import get_rg_location
 
 from ._roleassignments import add_role_assignment, create_role_assignment, build_role_scope, resolve_role_id, \
@@ -116,7 +122,7 @@ from ._consts import CONST_SCALE_SET_PRIORITY_REGULAR, CONST_SCALE_SET_PRIORITY_
 from ._consts import CONST_SCALE_DOWN_MODE_DELETE
 from ._consts import CONST_CONFCOM_ADDON_NAME, CONST_ACC_SGX_QUOTE_HELPER_ENABLED
 from ._consts import CONST_OPEN_SERVICE_MESH_ADDON_NAME
-from ._consts import CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME, CONST_SECRET_ROTATION_ENABLED
+from ._consts import CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME, CONST_SECRET_ROTATION_ENABLED, CONST_ROTATION_POLL_INTERVAL
 from ._consts import CONST_MANAGED_IDENTITY_OPERATOR_ROLE, CONST_MANAGED_IDENTITY_OPERATOR_ROLE_ID
 from ._consts import CONST_PRIVATE_DNS_ZONE_SYSTEM, CONST_PRIVATE_DNS_ZONE_NONE
 from ._consts import ADDONS, ADDONS_DESCRIPTIONS
@@ -126,6 +132,15 @@ from .addonconfiguration import update_addons, enable_addons, ensure_default_log
     add_ingress_appgw_addon_role_assignment, add_virtual_node_role_assignment
 
 logger = get_logger(__name__)
+
+
+def prepare_nat_gateway_models():
+    from .vendored_sdks.azure_mgmt_preview_aks.v2021_09_01.models import ManagedClusterNATGatewayProfile
+    from .vendored_sdks.azure_mgmt_preview_aks.v2021_09_01.models import ManagedClusterManagedOutboundIPProfile
+    nat_gateway_models = {}
+    nat_gateway_models["ManagedClusterNATGatewayProfile"] = ManagedClusterNATGatewayProfile
+    nat_gateway_models["ManagedClusterManagedOutboundIPProfile"] = ManagedClusterManagedOutboundIPProfile
+    return nat_gateway_models
 
 
 def which(binary):
@@ -511,6 +526,30 @@ def _update_dict(dict1, dict2):
     return cp
 
 
+_re_snapshot_resource_id = re.compile(
+    r'/subscriptions/(.*?)/resourcegroups/(.*?)/providers/microsoft.containerservice/snapshots/(.*)',
+    flags=re.IGNORECASE)
+
+
+def _get_snapshot(cli_ctx, snapshot_id):
+    snapshot_id = snapshot_id.lower()
+    match = _re_snapshot_resource_id.search(snapshot_id)
+    if match:
+        subscription_id = match.group(1)
+        resource_group_name = match.group(2)
+        snapshot_name = match.group(3)
+        snapshot_client = cf_snapshots_client(cli_ctx, subscription_id=subscription_id)
+        try:
+            snapshot = snapshot_client.get(resource_group_name, snapshot_name)
+        except CloudError as ex:
+            if 'was not found' in ex.message:
+                raise InvalidArgumentValueError("Snapshot {} not found.".format(snapshot_id))
+            raise CLIError(ex.message)
+        return snapshot
+    raise InvalidArgumentValueError(
+        "Cannot parse snapshot name from provided resource id {}.".format(snapshot_id))
+
+
 def aks_browse(cmd,     # pylint: disable=too-many-statements,too-many-branches
                client,
                resource_group_name,
@@ -722,7 +761,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                windows_admin_password=None,
                enable_ahub=False,
                kubernetes_version='',
-               node_vm_size="Standard_DS2_v2",
+               node_vm_size=None,
                node_osdisk_type=None,
                node_osdisk_size=0,
                node_osdisk_diskencryptionset_id=None,
@@ -805,12 +844,18 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                enable_pod_identity_with_kubenet=False,
                enable_encryption_at_host=False,
                enable_ultra_ssd=False,
+               edge_zone=None,
                enable_secret_rotation=False,
+               rotation_poll_interval=None,
                disable_local_accounts=False,
                no_wait=False,
                assign_kubelet_identity=None,
                workload_runtime=None,
                gpu_instance_profile=None,
+               enable_windows_gmsa=False,
+               gmsa_dns_server=None,
+               gmsa_root_domain_name=None,
+               snapshot_id=None,
                yes=False):
     if not no_ssh_key:
         try:
@@ -833,6 +878,23 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
     rg_location = get_rg_location(cmd.cli_ctx, resource_group_name)
     if location is None:
         location = rg_location
+
+    creationData = None
+    if snapshot_id:
+        snapshot = _get_snapshot(cmd.cli_ctx, snapshot_id)
+        if not kubernetes_version:
+            kubernetes_version = snapshot.kubernetes_version
+        if not os_sku:
+            os_sku = snapshot.os_sku
+        if not node_vm_size:
+            node_vm_size = snapshot.vm_size
+
+        creationData = CreationData(
+            source_resource_id=snapshot_id
+        )
+
+    if not node_vm_size:
+        node_vm_size = "Standard_DS2_v2"
 
     # Flag to be removed, kept for back-compatibility only. Remove the below section
     # when we deprecate the enable-vmss flag
@@ -872,7 +934,8 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         max_pods=int(max_pods) if max_pods else None,
         type=vm_set_type,
         workload_runtime=workload_runtime,
-        gpu_instance_profile=gpu_instance_profile
+        gpu_instance_profile=gpu_instance_profile,
+        creation_data=creationData
     )
 
     if node_osdisk_size:
@@ -915,9 +978,30 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
             windows_license_type = 'Windows_Server'
 
         windows_profile = ManagedClusterWindowsProfile(
+            # [SuppressMessage("Microsoft.Security", "CS002:SecretInNextLine", Justification="no secret in next line")]
             admin_username=windows_admin_username,
             admin_password=windows_admin_password,
             license_type=windows_license_type)
+
+        if enable_windows_gmsa:
+            from .vendored_sdks.azure_mgmt_preview_aks.v2021_09_01.models import WindowsGmsaProfile
+            windows_profile.gmsa_profile = WindowsGmsaProfile(
+                enabled=True)
+            if gmsa_dns_server is not None and gmsa_root_domain_name is not None:
+                windows_profile.gmsa_profile.dns_server = gmsa_dns_server
+                windows_profile.gmsa_profile.root_domain_name = gmsa_root_domain_name
+            elif gmsa_dns_server is None and gmsa_root_domain_name is None:
+                msg = ('Please assure that you have set the DNS server in the vnet used by the cluster when not specifying --gmsa-dns-server and --gmsa-root-domain-name')
+                from knack.prompting import prompt_y_n
+                if not yes and not prompt_y_n(msg, default="n"):
+                    return None
+            else:
+                raise ArgumentUsageError(
+                    'You must set or not set --gmsa-dns-server and --gmsa-root-domain-name at the same time.')
+        else:
+            if gmsa_dns_server is not None or gmsa_root_domain_name is not None:
+                raise ArgumentUsageError(
+                    'You only can set --gmsa-dns-server and --gmsa-root-domain-name when setting --enable-windows-gmsa.')
 
     service_principal_profile = None
     principal_obj = None
@@ -987,9 +1071,16 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         load_balancer_outbound_ports,
         load_balancer_idle_timeout)
 
+    # TODO: uncomment the following after next cli release
+    # from azext_aks_preview.decorator import AKSPreviewModels
+    # # store all the models used by nat gateway
+    # nat_gateway_models = AKSPreviewModels(cmd, CUSTOM_MGMT_AKS_PREVIEW).nat_gateway_models
+    nat_gateway_models = prepare_nat_gateway_models()
     nat_gateway_profile = create_nat_gateway_profile(
         nat_gateway_managed_outbound_ip_count,
-        nat_gateway_idle_timeout)
+        nat_gateway_idle_timeout,
+        models=nat_gateway_models,
+    )
 
     outbound_type = _set_outbound_type(
         outbound_type, vnet_subnet_id, load_balancer_sku, load_balancer_profile)
@@ -1050,6 +1141,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         aci_subnet_name=aci_subnet_name,
         vnet_subnet_id=vnet_subnet_id,
         enable_secret_rotation=enable_secret_rotation,
+        rotation_poll_interval=rotation_poll_interval,
     )
     monitoring = False
     if CONST_MONITORING_ADDON_NAME in addon_profiles:
@@ -1313,6 +1405,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                disable_pod_identity=False,
                enable_secret_rotation=False,
                disable_secret_rotation=False,
+               rotation_poll_interval=None,
                disable_local_accounts=False,
                enable_local_accounts=False,
                enable_public_fqdn=False,
@@ -1321,7 +1414,10 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                tags=None,
                windows_admin_password=None,
                enable_azure_rbac=False,
-               disable_azure_rbac=False):
+               disable_azure_rbac=False,
+               enable_windows_gmsa=False,
+               gmsa_dns_server=None,
+               gmsa_root_domain_name=None):
     update_autoscaler = enable_cluster_autoscaler or disable_cluster_autoscaler or update_cluster_autoscaler
     update_acr = attach_acr is not None or detach_acr is not None
     update_pod_security = enable_pod_security_policy or disable_pod_security_policy
@@ -1355,12 +1451,14 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
        not disable_pod_identity and \
        not enable_secret_rotation and \
        not disable_secret_rotation and \
+       not rotation_poll_interval and \
        not tags and \
        not windows_admin_password and \
        not enable_local_accounts and \
        not disable_local_accounts and \
        not enable_public_fqdn and \
-       not disable_public_fqdn:
+       not disable_public_fqdn and \
+       not enable_windows_gmsa:
         raise CLIError('Please specify "--enable-cluster-autoscaler" or '
                        '"--disable-cluster-autoscaler" or '
                        '"--update-cluster-autoscaler" or '
@@ -1388,6 +1486,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                        '"--auto-upgrade-channel" or '
                        '"--enable-secret-rotation" or '
                        '"--disable-secret-rotation" or '
+                       '"--rotation-poll-interval" or '
                        '"--tags" or '
                        '"--windows-admin-password" or '
                        '"--enable-azure-rbac" or '
@@ -1395,7 +1494,8 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                        '"--enable-local-accounts" or '
                        '"--disable-local-accounts" or '
                        '"--enable-public-fqdn" or '
-                       '"--disable-public-fqdn"')
+                       '"--disable-public-fqdn"'
+                       '"--enble-windows-gmsa"')
     instance = client.get(resource_group_name, name)
 
     if update_autoscaler and len(instance.agent_pool_profiles) > 1:
@@ -1479,10 +1579,17 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
             instance.network_profile.load_balancer_profile)
 
     if update_natgw_profile:
+        # TODO: uncomment the following after next cli release
+        # from azext_aks_preview.decorator import AKSPreviewModels
+        # # store all the models used by nat gateway
+        # nat_gateway_models = AKSPreviewModels(cmd, CUSTOM_MGMT_AKS_PREVIEW).nat_gateway_models
+        nat_gateway_models = prepare_nat_gateway_models()
         instance.network_profile.nat_gateway_profile = update_nat_gateway_profile(
             nat_gateway_managed_outbound_ip_count,
             nat_gateway_idle_timeout,
-            instance.network_profile.nat_gateway_profile)
+            instance.network_profile.nat_gateway_profile,
+            models=nat_gateway_models,
+        )
 
     if attach_acr and detach_acr:
         raise CLIError(
@@ -1661,21 +1768,45 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
 
     if enable_secret_rotation:
         if not azure_keyvault_secrets_provider_enabled:
-            raise CLIError(
+            raise ArgumentUsageError(
                 '--enable-secret-rotation can only be specified when azure-keyvault-secrets-provider is enabled')
         azure_keyvault_secrets_provider_addon_profile.config[CONST_SECRET_ROTATION_ENABLED] = "true"
 
     if disable_secret_rotation:
         if not azure_keyvault_secrets_provider_enabled:
-            raise CLIError(
+            raise ArgumentUsageError(
                 '--disable-secret-rotation can only be specified when azure-keyvault-secrets-provider is enabled')
         azure_keyvault_secrets_provider_addon_profile.config[CONST_SECRET_ROTATION_ENABLED] = "false"
+    if rotation_poll_interval is not None:
+        if not azure_keyvault_secrets_provider_enabled:
+            raise ArgumentUsageError(
+                '--rotation-poll-interval can only be specified when azure-keyvault-secrets-provider is enabled')
+        azure_keyvault_secrets_provider_addon_profile.config[CONST_ROTATION_POLL_INTERVAL] = rotation_poll_interval
 
     if tags:
         instance.tags = tags
 
     if windows_admin_password:
         instance.windows_profile.admin_password = windows_admin_password
+
+    if enable_windows_gmsa:
+        from .vendored_sdks.azure_mgmt_preview_aks.v2021_09_01.models import WindowsGmsaProfile
+        instance.windows_profile.gmsa_profile = WindowsGmsaProfile(enabled=True)
+        if gmsa_dns_server is not None and gmsa_root_domain_name is not None:
+            instance.windows_profile.gmsa_profile.dns_server = gmsa_dns_server
+            instance.windows_profile.gmsa_profile.root_domain_name = gmsa_root_domain_name
+        elif gmsa_dns_server is None and gmsa_root_domain_name is None:
+            msg = ('Please assure that you have set the DNS server in the vnet used by the cluster when not specifying --gmsa-dns-server and --gmsa-root-domain-name')
+            from knack.prompting import prompt_y_n
+            if not yes and not prompt_y_n(msg, default="n"):
+                return None
+        else:
+            raise ArgumentUsageError(
+                'You must set or not set --gmsa-dns-server and --gmsa-root-domain-name at the same time.')
+    else:
+        if gmsa_dns_server is not None or gmsa_root_domain_name is not None:
+            raise ArgumentUsageError(
+                'You only can set --gmsa-dns-server and --gmsa-root-domain-name when setting --enable-windows-gmsa.')
 
     headers = get_aks_custom_headers(aks_custom_headers)
 
@@ -1864,13 +1995,22 @@ def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
     print()
     print("Starts collecting diag info for cluster %s " % name)
 
+    # Form containerName from fqdn, as it was previously jsut the location of code is changed.
+    # https://docs.microsoft.com/en-us/rest/api/storageservices/naming-and-referencing-containers--blobs--and-metadata#container-names
+    maxContainerNameLength = 63
+    fqdn = mc.fqdn if mc.fqdn is not None else mc.private_fqdn
+    normalized_container_name = fqdn.replace('.', '-')
+    len_of_container_name = normalized_container_name.index("-hcp-")
+    if len_of_container_name == -1:
+        len_of_container_name = maxContainerNameLength
+    container_name = normalized_container_name[:len_of_container_name]
+
     sas_token = sas_token.strip('?')
-    deployment_yaml = urlopen(
-        "https://raw.githubusercontent.com/Azure/aks-periscope/latest/deployment/aks-periscope.yaml").read().decode()
-    deployment_yaml = deployment_yaml.replace("# <accountName, base64 encoded>",
-                                              (base64.b64encode(bytes(storage_account_name, 'ascii'))).decode('ascii'))
+    deployment_yaml = _read_periscope_yaml()
+    deployment_yaml = deployment_yaml.replace("# <accountName, string>", storage_account_name)
     deployment_yaml = deployment_yaml.replace("# <saskey, base64 encoded>",
                                               (base64.b64encode(bytes("?" + sas_token, 'ascii'))).decode('ascii'))
+    deployment_yaml = deployment_yaml.replace("# <containerName, string>", container_name)
 
     yaml_lines = deployment_yaml.splitlines()
     for index, line in enumerate(yaml_lines):
@@ -1932,16 +2072,15 @@ def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
         os.remove(temp_yaml_path)
 
     print()
-    fqdn = mc.fqdn if mc.fqdn is not None else mc.private_fqdn
-    normalized_fqdn = fqdn.replace('.', '-')
+
     token_in_storage_account_url = readonly_sas_token if readonly_sas_token is not None else sas_token
     log_storage_account_url = f"https://{storage_account_name}.blob.core.windows.net/" \
-                              f"{_trim_fqdn_name_containing_hcp(normalized_fqdn)}?{token_in_storage_account_url}"
+                              f"{_trim_fqdn_name_containing_hcp(container_name)}?{token_in_storage_account_url}"
 
     print(f'{colorama.Fore.GREEN}Your logs are being uploaded to storage account {format_bright(storage_account_name)}')
 
     print()
-    print(f'You can download Azure Stroage Explorer here '
+    print(f'You can download Azure Storage Explorer here '
           f'{format_hyperlink("https://azure.microsoft.com/en-us/features/storage-explorer/")}'
           f' to check the logs by adding the storage account using the following URL:')
     print(f'{format_hyperlink(log_storage_account_url)}')
@@ -1952,6 +2091,15 @@ def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
               f"anytime to check the analysis results.")
     else:
         display_diagnostics_report(temp_kubeconfig_path)
+
+
+def _read_periscope_yaml():
+    curr_dir = os.path.dirname(os.path.realpath(__file__))
+    periscope_yaml_file = os.path.join(curr_dir, "deploymentyaml", "aks-periscope.yaml")
+    yaml_file = open(periscope_yaml_file, "r")
+    data_loaded = yaml_file.read()
+
+    return data_loaded
 
 
 def aks_kanalyze(cmd, client, resource_group_name, name):
@@ -2034,7 +2182,7 @@ def aks_upgrade(cmd,    # pylint: disable=unused-argument, too-many-return-state
                                'can only be applied on VirtualMachineScaleSets cluster.')
             agent_pool_client = cf_agent_pools(cmd.cli_ctx)
             _upgrade_single_nodepool_image_version(
-                True, agent_pool_client, resource_group_name, name, agent_pool_profile.name)
+                True, agent_pool_client, resource_group_name, name, agent_pool_profile.name, None)
         mc = client.get(resource_group_name, name)
         return _remove_nulls([mc])[0]
 
@@ -2074,6 +2222,7 @@ def aks_upgrade(cmd,    # pylint: disable=unused-argument, too-many-return-state
     if upgrade_all:
         for agent_profile in instance.agent_pool_profiles:
             agent_profile.orchestrator_version = kubernetes_version
+            agent_profile.creation_data = None
 
     # null out the SP and AAD profile because otherwise validation complains
     instance.service_principal_profile = None
@@ -2084,8 +2233,12 @@ def aks_upgrade(cmd,    # pylint: disable=unused-argument, too-many-return-state
     return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, name, instance, headers=headers)
 
 
-def _upgrade_single_nodepool_image_version(no_wait, client, resource_group_name, cluster_name, nodepool_name):
-    return sdk_no_wait(no_wait, client.begin_upgrade_node_image_version, resource_group_name, cluster_name, nodepool_name)
+def _upgrade_single_nodepool_image_version(no_wait, client, resource_group_name, cluster_name, nodepool_name, snapshot_id=None):
+    headers = {}
+    if snapshot_id:
+        headers["AKSSnapshotId"] = snapshot_id
+
+    return sdk_no_wait(no_wait, client.begin_upgrade_node_image_version, resource_group_name, cluster_name, nodepool_name, headers=headers)
 
 
 def _handle_addons_args(cmd,  # pylint: disable=too-many-statements
@@ -2104,7 +2257,8 @@ def _handle_addons_args(cmd,  # pylint: disable=too-many-statements
                         enable_sgxquotehelper=False,
                         aci_subnet_name=None,
                         vnet_subnet_id=None,
-                        enable_secret_rotation=False):
+                        enable_secret_rotation=False,
+                        rotation_poll_interval=None,):
     if not addon_profiles:
         addon_profiles = {}
     addons = addons_str.split(',') if addons_str else []
@@ -2158,10 +2312,11 @@ def _handle_addons_args(cmd,  # pylint: disable=too-many-statements
         addon_profiles[CONST_OPEN_SERVICE_MESH_ADDON_NAME] = addon_profile
         addons.remove('open-service-mesh')
     if 'azure-keyvault-secrets-provider' in addons:
-        addon_profile = ManagedClusterAddonProfile(
-            enabled=True, config={CONST_SECRET_ROTATION_ENABLED: "false"})
+        addon_profile = ManagedClusterAddonProfile(enabled=True, config={CONST_SECRET_ROTATION_ENABLED: "false", CONST_ROTATION_POLL_INTERVAL: "2m"})
         if enable_secret_rotation:
             addon_profile.config[CONST_SECRET_ROTATION_ENABLED] = "true"
+        if rotation_poll_interval is not None:
+            addon_profile.config[CONST_ROTATION_POLL_INTERVAL] = rotation_poll_interval
         addon_profiles[CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME] = addon_profile
         addons.remove('azure-keyvault-secrets-provider')
     if 'confcom' in addons:
@@ -2360,7 +2515,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
                       pod_subnet_id=None,
                       ppg=None,
                       max_pods=0,
-                      os_type="Linux",
+                      os_type=None,
                       os_sku=None,
                       enable_fips_image=False,
                       min_count=None,
@@ -2381,6 +2536,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
                       enable_ultra_ssd=False,
                       workload_runtime=None,
                       gpu_instance_profile=None,
+                      snapshot_id=None,
                       no_wait=False):
     instances = client.list(resource_group_name, cluster_name)
     for agentpool_profile in instances:
@@ -2390,6 +2546,25 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
 
     upgradeSettings = AgentPoolUpgradeSettings()
     taints_array = []
+
+    creationData = None
+    if snapshot_id:
+        snapshot = _get_snapshot(cmd.cli_ctx, snapshot_id)
+        if not kubernetes_version:
+            kubernetes_version = snapshot.kubernetes_version
+        if not os_type:
+            os_type = snapshot.os_type
+        if not os_sku:
+            os_sku = snapshot.os_sku
+        if not node_vm_size:
+            node_vm_size = snapshot.vm_size
+
+        creationData = CreationData(
+            source_resource_id=snapshot_id
+        )
+
+    if not os_type:
+        os_type = "Linux"
 
     if node_taints is not None:
         for taint in node_taints.split(','):
@@ -2436,7 +2611,8 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
         enable_ultra_ssd=enable_ultra_ssd,
         mode=mode,
         workload_runtime=workload_runtime,
-        gpu_instance_profile=gpu_instance_profile
+        gpu_instance_profile=gpu_instance_profile,
+        creation_data=creationData
     )
 
     if priority == CONST_SCALE_SET_PRIORITY_SPOT:
@@ -2491,7 +2667,9 @@ def aks_agentpool_upgrade(cmd,  # pylint: disable=unused-argument
                           no_wait=False,
                           node_image_only=False,
                           max_surge=None,
-                          aks_custom_headers=None):
+                          aks_custom_headers=None,
+                          snapshot_id=None):
+
     if kubernetes_version != '' and node_image_only:
         raise CLIError('Conflicting flags. Upgrading the Kubernetes version will also upgrade node image version.'
                        'If you only want to upgrade the node version please use the "--node-image-only" option only.')
@@ -2501,10 +2679,22 @@ def aks_agentpool_upgrade(cmd,  # pylint: disable=unused-argument
                                                       client,
                                                       resource_group_name,
                                                       cluster_name,
-                                                      nodepool_name)
+                                                      nodepool_name,
+                                                      snapshot_id)
+
+    creationData = None
+    if snapshot_id:
+        snapshot = _get_snapshot(cmd.cli_ctx, snapshot_id)
+        if not kubernetes_version and not node_image_only:
+            kubernetes_version = snapshot.kubernetes_version
+
+        creationData = CreationData(
+            source_resource_id=snapshot_id
+        )
 
     instance = client.get(resource_group_name, cluster_name, nodepool_name)
     instance.orchestrator_version = kubernetes_version
+    instance.creation_data = creationData
 
     if not instance.upgrade_settings:
         instance.upgrade_settings = AgentPoolUpgradeSettings()
@@ -2604,6 +2794,54 @@ def aks_agentpool_update(cmd,   # pylint: disable=unused-argument
     return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, cluster_name, nodepool_name, instance)
 
 
+def aks_agentpool_stop(cmd,   # pylint: disable=unused-argument
+                       client,
+                       resource_group_name,
+                       cluster_name,
+                       nodepool_name,
+                       aks_custom_headers=None,
+                       no_wait=False):
+    agentpool_exists = False
+    instances = client.list(resource_group_name, cluster_name)
+    for agentpool_profile in instances:
+        if agentpool_profile.name.lower() == nodepool_name.lower():
+            agentpool_exists = True
+            break
+
+    if not agentpool_exists:
+        raise InvalidArgumentValueError(
+            "Node pool {} doesnt exist, use 'aks nodepool list' to get current node pool list".format(nodepool_name))
+
+    instance = client.get(resource_group_name, cluster_name, nodepool_name)
+    power_state = PowerState(code="Stopped")
+    instance.power_state = power_state
+    headers = get_aks_custom_headers(aks_custom_headers)
+    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, cluster_name, nodepool_name, instance, headers=headers)
+
+
+def aks_agentpool_start(cmd,   # pylint: disable=unused-argument
+                        client,
+                        resource_group_name,
+                        cluster_name,
+                        nodepool_name,
+                        aks_custom_headers=None,
+                        no_wait=False):
+    agentpool_exists = False
+    instances = client.list(resource_group_name, cluster_name)
+    for agentpool_profile in instances:
+        if agentpool_profile.name.lower() == nodepool_name.lower():
+            agentpool_exists = True
+            break
+    if not agentpool_exists:
+        raise InvalidArgumentValueError(
+            "Node pool {} doesnt exist, use 'aks nodepool list' to get current node pool list".format(nodepool_name))
+    instance = client.get(resource_group_name, cluster_name, nodepool_name)
+    power_state = PowerState(code="Running")
+    instance.power_state = power_state
+    headers = get_aks_custom_headers(aks_custom_headers)
+    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, cluster_name, nodepool_name, instance, headers=headers)
+
+
 def aks_agentpool_delete(cmd,   # pylint: disable=unused-argument
                          client,
                          resource_group_name,
@@ -2674,13 +2912,13 @@ def aks_addon_show(cmd, client, resource_group_name, name, addon):  # pylint: di
 def aks_addon_enable(cmd, client, resource_group_name, name, addon, workspace_resource_id=None,
                      subnet_name=None, appgw_name=None, appgw_subnet_prefix=None, appgw_subnet_cidr=None, appgw_id=None,
                      appgw_subnet_id=None,
-                     appgw_watch_namespace=None, enable_sgxquotehelper=False, enable_secret_rotation=False,
+                     appgw_watch_namespace=None, enable_sgxquotehelper=False, enable_secret_rotation=False, rotation_poll_interval=None,
                      no_wait=False, enable_msi_auth_for_monitoring=False):
     return enable_addons(cmd, client, resource_group_name, name, addon, workspace_resource_id=workspace_resource_id,
                          subnet_name=subnet_name, appgw_name=appgw_name, appgw_subnet_prefix=appgw_subnet_prefix,
                          appgw_subnet_cidr=appgw_subnet_cidr, appgw_id=appgw_id, appgw_subnet_id=appgw_subnet_id,
                          appgw_watch_namespace=appgw_watch_namespace, enable_sgxquotehelper=enable_sgxquotehelper,
-                         enable_secret_rotation=enable_secret_rotation, no_wait=no_wait,
+                         enable_secret_rotation=enable_secret_rotation, rotation_poll_interval=rotation_poll_interval, no_wait=no_wait,
                          enable_msi_auth_for_monitoring=enable_msi_auth_for_monitoring)
 
 
@@ -2691,7 +2929,7 @@ def aks_addon_disable(cmd, client, resource_group_name, name, addon, no_wait=Fal
 def aks_addon_update(cmd, client, resource_group_name, name, addon, workspace_resource_id=None,
                      subnet_name=None, appgw_name=None, appgw_subnet_prefix=None, appgw_subnet_cidr=None, appgw_id=None,
                      appgw_subnet_id=None,
-                     appgw_watch_namespace=None, enable_sgxquotehelper=False, enable_secret_rotation=False,
+                     appgw_watch_namespace=None, enable_sgxquotehelper=False, enable_secret_rotation=False, rotation_poll_interval=None,
                      no_wait=False, enable_msi_auth_for_monitoring=False):
     addon_profiles = client.get(resource_group_name, name).addon_profiles
     addon_key = ADDONS[addon]
@@ -2704,7 +2942,7 @@ def aks_addon_update(cmd, client, resource_group_name, name, addon, workspace_re
                          subnet_name=subnet_name, appgw_name=appgw_name, appgw_subnet_prefix=appgw_subnet_prefix,
                          appgw_subnet_cidr=appgw_subnet_cidr, appgw_id=appgw_id, appgw_subnet_id=appgw_subnet_id,
                          appgw_watch_namespace=appgw_watch_namespace, enable_sgxquotehelper=enable_sgxquotehelper,
-                         enable_secret_rotation=enable_secret_rotation, no_wait=no_wait,
+                         enable_secret_rotation=enable_secret_rotation, rotation_poll_interval=rotation_poll_interval, no_wait=no_wait,
                          enable_msi_auth_for_monitoring=enable_msi_auth_for_monitoring)
 
 
@@ -2750,7 +2988,7 @@ def aks_disable_addons(cmd, client, resource_group_name, name, addons, no_wait=F
 
 def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_resource_id=None,
                       subnet_name=None, appgw_name=None, appgw_subnet_prefix=None, appgw_subnet_cidr=None, appgw_id=None, appgw_subnet_id=None,
-                      appgw_watch_namespace=None, enable_sgxquotehelper=False, enable_secret_rotation=False, no_wait=False, enable_msi_auth_for_monitoring=False):
+                      appgw_watch_namespace=None, enable_sgxquotehelper=False, enable_secret_rotation=False, rotation_poll_interval=None, no_wait=False, enable_msi_auth_for_monitoring=False):
 
     instance = client.get(resource_group_name, name)
     msi_auth = True if instance.service_principal_profile.client_id == "msi" else False  # this is overwritten by _update_addons(), so the value needs to be recorded here
@@ -2759,7 +2997,7 @@ def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_
     instance = _update_addons(cmd, instance, subscription_id, resource_group_name, name, addons, enable=True,
                               workspace_resource_id=workspace_resource_id, enable_msi_auth_for_monitoring=enable_msi_auth_for_monitoring, subnet_name=subnet_name,
                               appgw_name=appgw_name, appgw_subnet_prefix=appgw_subnet_prefix, appgw_subnet_cidr=appgw_subnet_cidr, appgw_id=appgw_id, appgw_subnet_id=appgw_subnet_id, appgw_watch_namespace=appgw_watch_namespace,
-                              enable_sgxquotehelper=enable_sgxquotehelper, enable_secret_rotation=enable_secret_rotation, no_wait=no_wait)
+                              enable_sgxquotehelper=enable_sgxquotehelper, enable_secret_rotation=enable_secret_rotation, rotation_poll_interval=rotation_poll_interval, no_wait=no_wait)
 
     if CONST_MONITORING_ADDON_NAME in instance.addon_profiles and instance.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled:
         if CONST_MONITORING_USING_AAD_MSI_AUTH in instance.addon_profiles[CONST_MONITORING_ADDON_NAME].config and \
@@ -2839,6 +3077,8 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                    appgw_watch_namespace=None,
                    enable_sgxquotehelper=False,
                    enable_secret_rotation=False,
+                   disable_secret_rotation=False,
+                   rotation_poll_interval=None,
                    no_wait=False):  # pylint: disable=unused-argument
 
     # parse the comma-separated addons argument
@@ -2938,9 +3178,13 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                                    f'"az aks disable-addons -a azure-keyvault-secrets-provider -n {name} -g {resource_group_name}" '
                                    'before enabling it again.')
                 addon_profile = ManagedClusterAddonProfile(
-                    enabled=True, config={CONST_SECRET_ROTATION_ENABLED: "false"})
+                    enabled=True, config={CONST_SECRET_ROTATION_ENABLED: "false", CONST_ROTATION_POLL_INTERVAL: "2m"})
                 if enable_secret_rotation:
                     addon_profile.config[CONST_SECRET_ROTATION_ENABLED] = "true"
+                if disable_secret_rotation:
+                    addon_profile.config[CONST_SECRET_ROTATION_ENABLED] = "false"
+                if rotation_poll_interval is not None:
+                    addon_profile.config[CONST_ROTATION_POLL_INTERVAL] = rotation_poll_interval
                 addon_profiles[CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME] = addon_profile
             addon_profiles[addon] = addon_profile
         else:
@@ -3737,3 +3981,59 @@ def _ensure_cluster_identity_permission_on_kubelet_identity(cli_ctx, cluster_ide
 
 def aks_egress_endpoints_list(cmd, client, resource_group_name, name):   # pylint: disable=unused-argument
     return client.list_outbound_network_dependencies_endpoints(resource_group_name, name)
+
+
+def aks_snapshot_create(cmd,    # pylint: disable=too-many-locals,too-many-statements,too-many-branches
+                        client,
+                        resource_group_name,
+                        name,
+                        nodepool_id,
+                        location=None,
+                        tags=None,
+                        aks_custom_headers=None,
+                        no_wait=False):
+
+    rg_location = get_rg_location(cmd.cli_ctx, resource_group_name)
+    if location is None:
+        location = rg_location
+
+    creationData = CreationData(
+        source_resource_id=nodepool_id
+    )
+
+    snapshot = Snapshot(
+        name=_trim_nodepoolname(name),
+        tags=tags,
+        location=location,
+        creation_data=creationData
+    )
+
+    headers = get_aks_custom_headers(aks_custom_headers)
+    return client.create_or_update(resource_group_name, _trim_nodepoolname(name), snapshot, headers=headers)
+
+
+def aks_snapshot_show(cmd, client, resource_group_name, name):   # pylint: disable=unused-argument
+    snapshot = client.get(resource_group_name, name)
+    return snapshot
+
+
+def aks_snapshot_delete(cmd,    # pylint: disable=unused-argument
+                        client,
+                        resource_group_name,
+                        name,
+                        no_wait=False,
+                        yes=False):
+
+    from knack.prompting import prompt_y_n
+    msg = 'This will delete the snapshot "{}" in resource group "{}", Are you sure?'.format(name, resource_group_name)
+    if not yes and not prompt_y_n(msg, default="n"):
+        return None
+
+    return client.delete(resource_group_name, name)
+
+
+def aks_snapshot_list(cmd, client, resource_group_name=None):  # pylint: disable=unused-argument
+    if resource_group_name is None or resource_group_name == '':
+        return client.list()
+
+    return client.list_by_resource_group(resource_group_name)
