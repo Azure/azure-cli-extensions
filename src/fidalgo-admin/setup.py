@@ -12,7 +12,7 @@ from setuptools import setup, find_packages
 # HISTORY.rst entry.
 VERSION = '0.1.0'
 try:
-    from azext_fidalgo.manual.version import VERSION
+    from azext_fidalgo_admin.manual.version import VERSION
 except ImportError:
     pass
 
@@ -33,7 +33,7 @@ CLASSIFIERS = [
 DEPENDENCIES = []
 
 try:
-    from azext_fidalgo.manual.dependency import DEPENDENCIES
+    from azext_fidalgo_admin.manual.dependency import DEPENDENCIES
 except ImportError:
     pass
 
@@ -54,5 +54,5 @@ setup(
     classifiers=CLASSIFIERS,
     packages=find_packages(),
     install_requires=DEPENDENCIES,
-    package_data={'azext_fidalgo': ['azext_metadata.json']},
+    package_data={'azext_fidalgo_admin': ['azext_metadata.json']},
 )

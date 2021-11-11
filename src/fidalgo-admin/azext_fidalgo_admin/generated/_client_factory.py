@@ -11,7 +11,7 @@
 
 def cf_fidalgo_admin_cl(cli_ctx, *_):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
-    from azext_fidalgo.vendored_sdks.fidalgo_admin import Fidalgo
+    from azext_fidalgo_admin.vendored_sdks.fidalgo_admin import Fidalgo
     return get_mgmt_service_client(cli_ctx,
                                    Fidalgo)
 

@@ -20,7 +20,7 @@ from azure.cli.core.commands.validators import (
     get_default_location_from_resource_group,
     validate_file_or_dict
 )
-from azext_fidalgo.action import (
+from azext_fidalgo_admin.action import (
     AddParameters,
     AddGitHub,
     AddSku,
