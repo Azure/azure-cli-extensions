@@ -35,7 +35,7 @@ def ssh_vm(cmd, resource_group_name=None, vm_name=None, resource_id=None, ssh_ip
     _assert_args(resource_group_name, vm_name, ssh_ip, resource_id, cert_file, local_user)
     credentials_folder = None
     do_ssh_op = _decide_op_call(cmd, resource_group_name, vm_name, resource_id, ssh_ip, None, None,
-                                ssh_client_path, ssh_args, delete_credentials)
+                                ssh_client_path, ssh_args, delete_credentials, credentials_folder)
     do_ssh_op(cmd, ssh_ip, public_key_file, private_key_file, local_user,
               cert_file, port, use_private_ip, credentials_folder)
 
@@ -49,10 +49,7 @@ def ssh_config(cmd, config_path, resource_group_name=None, vm_name=None, ssh_ip=
     if (public_key_file or private_key_file) and credentials_folder:
         raise azclierror.ArgumentUsageError("--keys-destination-folder can't be used in conjunction with "
                                             "--public-key-file/-p or --private-key-file/-i.")
-    
-    do_ssh_op = _decide_op_call(cmd, resource_group_name, vm_name, resource_id, ssh_ip, config_path, overwrite,
-                                None, None, None)
-    
+      
     # Default credential location
     if not credentials_folder:
         config_folder = os.path.dirname(config_path)
@@ -67,6 +64,9 @@ def ssh_config(cmd, config_path, resource_group_name=None, vm_name=None, ssh_ip=
             folder_name = resource_info['resource_group'] + "-" + resource_info['resource_name']
 
         credentials_folder = os.path.join(config_folder, os.path.join("az_ssh_config", folder_name))
+    
+    do_ssh_op = _decide_op_call(cmd, resource_group_name, vm_name, resource_id, ssh_ip, config_path, overwrite,
+                                None, None, False, credentials_folder)
     do_ssh_op(cmd, ssh_ip, public_key_file, private_key_file, local_user,
               cert_file, port, use_private_ip, credentials_folder)
 
@@ -137,8 +137,6 @@ def _do_ssh_op(cmd, ssh_ip, public_key_file, private_key_file, username,
                                                                                                private_key_file,
                                                                                                credentials_folder)
         cert_file, username = _get_and_write_certificate(cmd, public_key_file, None)
-    
-    print(cert_file)
 
     op_call(relay_info, proxy_path, vm_name, ssh_ip, username, cert_file, private_key_file, port, is_arc, delete_keys, delete_cert, public_key_file)
 
@@ -378,7 +376,7 @@ def _arc_list_access_details(cmd, resource_group, vm_name):
 
 
 def _decide_op_call(cmd, resource_group_name, vm_name, resource_id, ssh_ip, config_path, overwrite,
-                    ssh_client_path, ssh_args, delete_credentials):
+                    ssh_client_path, ssh_args, delete_credentials, credentials_folder):
 
     # If the user provides an IP address the target will be treated as an Azure VM even if it is an
     # Arc Server. Which just means that the Connectivity Proxy won't be used to establish connection.
@@ -419,7 +417,7 @@ def _decide_op_call(cmd, resource_group_name, vm_name, resource_id, ssh_ip, conf
 
     if config_path:
         op_call = functools.partial(ssh_utils.write_ssh_config, config_path=config_path, overwrite=overwrite,
-                                    resource_group=resource_group_name)
+                                    resource_group=resource_group_name, credentials_folder=credentials_folder)
     else:
         op_call = functools.partial(ssh_utils.start_ssh_connection, ssh_client_path=ssh_client_path, ssh_args=ssh_args,
                                     delete_credentials=delete_credentials)

@@ -130,7 +130,7 @@ def get_ssh_cert_validity(cert_file):
 
 def write_ssh_config(relay_info, proxy_path, vm_name, ip, username,
                      cert_file, private_key_file, port, is_arc, delete_keys, delete_cert, _,
-                     config_path, overwrite, resource_group):
+                     config_path, overwrite, resource_group, credentials_folder):
 
     common_lines = []
     common_lines.append("\tUser " + username)
@@ -148,7 +148,10 @@ def write_ssh_config(relay_info, proxy_path, vm_name, ip, username,
         elif private_key_file:
             relay_info_dir = os.path.dirname(private_key_file)
         else:
-            relay_info_dir = tempfile.mkdtemp(prefix="ssharcrelayinfo")
+            # create the custom folder
+            relay_info_dir = credentials_folder
+            if not os.path.isdir(relay_info_dir):
+                 os.makedirs(credentials_folder)
         
         if ip:
             relay_info_filename = ip + "-relay_info"
@@ -266,7 +269,6 @@ def _build_args(cert_file, private_key_file, port):
 
 def _do_cleanup(delete_keys, delete_cert, cert_file, private_key, public_key, log_file=None, wait=False):
     if log_file:
-        print("reading log")
         t0 = time.time()
         match = False
         while (time.time() - t0) < const.CLEANUP_TOTAL_TIME_LIMIT_IN_SECONDS and not match:
