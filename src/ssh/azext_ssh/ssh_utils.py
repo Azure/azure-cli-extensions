@@ -22,7 +22,7 @@ logger = log.get_logger(__name__)
 
 
 def start_ssh_connection(relay_info, proxy_path, vm_name, ip, username, cert_file, private_key_file, port,
-                         is_arc, delete_keys, delete_cert, public_key_file, ssh_client_path, ssh_args, delete_privkey):
+                         is_arc, delete_keys, delete_cert, public_key_file, ssh_client_path, ssh_args, delete_credentials):
 
     if not ssh_client_path:
         ssh_client_path = _get_ssh_path()
@@ -46,11 +46,11 @@ def start_ssh_connection(relay_info, proxy_path, vm_name, ip, username, cert_fil
         args = _build_args(cert_file, private_key_file, port)
 
     if not cert_file and not private_key_file:
-        # In this case, even if delete_privkey is true, there is nothing to clean-up.
-        delete_privkey = False
+        # In this case, even if delete_credentials is true, there is nothing to clean-up.
+        delete_credentials = False
     
     log_file = None
-    if delete_keys or delete_cert or delete_privkey:
+    if delete_keys or delete_cert or delete_credentials:
         if '-E' not in ssh_arg_list and set(['-v', '-vv', '-vvv']).isdisjoint(ssh_arg_list):
             # If the user either provides his own client log file (-E) or
             # wants the client log messages to be printed to the console (-vvv/-vv/-v),
@@ -63,7 +63,7 @@ def start_ssh_connection(relay_info, proxy_path, vm_name, ip, username, cert_fil
             log_file = os.path.join(log_dir, log_file_name)
             ssh_arg_list = ssh_arg_list + ['-E', log_file, '-v']
         # Create a new process that will wait until the connection is established and then delete keys.
-        cleanup_process = mp.Process(target=_do_cleanup, args=(delete_keys or delete_privkey, delete_cert or delete_privkey,
+        cleanup_process = mp.Process(target=_do_cleanup, args=(delete_keys or delete_credentials, delete_cert or delete_credentials,
                                                                cert_file, private_key_file, public_key_file, log_file, True))
         cleanup_process.start()
 
@@ -73,7 +73,7 @@ def start_ssh_connection(relay_info, proxy_path, vm_name, ip, username, cert_fil
     logger.debug("Running ssh command %s", ' '.join(command))
     subprocess.call(command, shell=platform.system() == 'Windows', env=env)
 
-    if delete_keys or delete_cert or delete_privkey:
+    if delete_keys or delete_cert or delete_credentials:
         if cleanup_process.is_alive():
             cleanup_process.terminate()
             # wait for process to terminate
@@ -82,7 +82,7 @@ def start_ssh_connection(relay_info, proxy_path, vm_name, ip, username, cert_fil
                 time.sleep(1)
         
         # Make sure all files have been properly removed.
-        _do_cleanup(delete_keys or delete_privkey, delete_cert or delete_privkey, cert_file, private_key_file, public_key_file)
+        _do_cleanup(delete_keys or delete_credentials, delete_cert or delete_credentials, cert_file, private_key_file, public_key_file)
         if log_file:
             file_utils.delete_file(log_file, f"Couldn't delete temporary log file {log_file}. ", True)
         if delete_keys:
@@ -120,32 +120,17 @@ def get_ssh_cert_principals(cert_file):
 
 
 def get_ssh_cert_validity(cert_file):
-    info = get_ssh_cert_info(cert_file)
-    for line in info:
-        if "Valid:" in line:
-            return line.strip()
+    if cert_file:
+        info = get_ssh_cert_info(cert_file)
+        for line in info:
+            if "Valid:" in line:
+                return line.strip()
     return None
 
 
 def write_ssh_config(relay_info, proxy_path, vm_name, ip, username,
-                     cert_file, private_key_file, port, is_arc, delete_keys, delete_cert,
+                     cert_file, private_key_file, port, is_arc, delete_keys, delete_cert, _,
                      config_path, overwrite, resource_group):
-
-    if delete_keys or delete_cert:
-        # Warn users to delete credentials once config file is no longer being used.
-        # If user provided keys, only ask them to delete the certificate.
-        path_to_delete = os.path.dirname(cert_file)
-        items_to_delete = " (id_rsa, id_rsa.pub, id_rsa.pub-aadcert.pub)"
-        if not delete_keys:
-            path_to_delete = cert_file
-            items_to_delete = ""
-        validity = get_ssh_cert_validity(cert_file)
-        validity_warning = ""
-        if validity:
-            validity_warning = f" {validity.lower()}"
-        logger.warning("%s contains sensitive information%s%s\n"
-                       "Please delete it once you no longer need this config file. ",
-                       path_to_delete, items_to_delete, validity_warning)
 
     common_lines = []
     common_lines.append("\tUser " + username)
@@ -155,6 +140,8 @@ def write_ssh_config(relay_info, proxy_path, vm_name, ip, username,
         common_lines.append("\tIdentityFile " + private_key_file)
 
     lines = [""]
+    relay_info_path = None
+    relay_info_filename = None
     if is_arc:
         if cert_file:
             relay_info_dir = os.path.dirname(cert_file)
@@ -162,9 +149,17 @@ def write_ssh_config(relay_info, proxy_path, vm_name, ip, username,
             relay_info_dir = os.path.dirname(private_key_file)
         else:
             relay_info_dir = tempfile.mkdtemp(prefix="ssharcrelayinfo")
-        relay_info_path = os.path.join(relay_info_dir, "relay_info")
+        
+        if ip:
+            relay_info_filename = ip + "-relay_info"
+        if vm_name and resource_group:
+            relay_info_filename = resource_group + "-" + vm_name + "-relay_info"
+        
+        relay_info_path = os.path.join(relay_info_dir, relay_info_filename)
+        # Overwrite relay_info if it already exists in that folder.
+        file_utils.delete_file(relay_info_path, f"{relay_info_path} already exists, and couldn't be overwritten.")
         file_utils.write_to_file(relay_info_path, 'w', relay_info,
-                                 f"Couldn't write relay information to file {relay_info_path}", 'utf-8')
+                                 f"Couldn't write relay information to file {relay_info_path}.", 'utf-8')
         oschmod.set_mode(relay_info_path, stat.S_IRUSR)
 
         lines.append("Host " + resource_group + "-" + vm_name)
@@ -198,6 +193,36 @@ def write_ssh_config(relay_info, proxy_path, vm_name, ip, username,
 
     with open(config_path, mode) as f:
         f.write('\n'.join(lines))
+    
+    if delete_keys or delete_cert or is_arc:
+        # Warn users to delete credentials once config file is no longer being used.
+        # If user provided keys, only ask them to delete the certificate.
+        if is_arc:
+            if delete_keys and delete_cert:
+                path_to_delete = os.path.dirname(cert_file)
+                items_to_delete = f" (id_rsa, id_rsa.pub, id_rsa.pub-aadcert.pub, {relay_info_filename})"
+            elif delete_cert:
+                path_to_delete = os.path.dirname(cert_file)
+                items_to_delete = f" (id_rsa.pub-aadcert.pub, {relay_info_filename})"
+            else:
+                path_to_delete = relay_info_path
+                items_to_delete = ""
+        else:
+            path_to_delete = os.path.dirname(cert_file)
+            items_to_delete = " (id_rsa, id_rsa.pub, id_rsa.pub-aadcert.pub)"
+            if not delete_keys:
+                path_to_delete = cert_file
+                items_to_delete = ""
+
+        validity_warning = ""
+        if delete_cert:
+            validity = get_ssh_cert_validity(cert_file)
+            if validity:
+                validity_warning = f" {validity.lower()}"
+        
+        logger.warning("%s contains sensitive information%s%s\n"
+                       "Please delete it once you no longer need this config file. ",
+                       path_to_delete, items_to_delete, validity_warning)
 
 
 def _get_ssh_path(ssh_command="ssh"):

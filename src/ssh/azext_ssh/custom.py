@@ -27,15 +27,15 @@ logger = log.get_logger(__name__)
 
 def ssh_vm(cmd, resource_group_name=None, vm_name=None, resource_id=None, ssh_ip=None, public_key_file=None,
            private_key_file=None, use_private_ip=False, local_user=None, cert_file=None, port=None,
-           ssh_client_path=None, delete_privkey=False, ssh_args=None):
+           ssh_client_path=None, delete_credentials=False, ssh_args=None):
     
-    if delete_privkey and os.environ.get("AZUREPS_HOST_ENVIRONMENT") != "cloud-shell/1.0":
+    if delete_credentials and os.environ.get("AZUREPS_HOST_ENVIRONMENT") != "cloud-shell/1.0":
         raise azclierror.ArgumentUsageError("Can't use --delete-private-key outside an Azure Cloud Shell session.")
 
     _assert_args(resource_group_name, vm_name, ssh_ip, resource_id, cert_file, local_user)
     credentials_folder = None
     do_ssh_op = _decide_op_call(cmd, resource_group_name, vm_name, resource_id, ssh_ip, None, None,
-                                ssh_client_path, ssh_args, delete_privkey)
+                                ssh_client_path, ssh_args, delete_credentials)
     do_ssh_op(cmd, ssh_ip, public_key_file, private_key_file, local_user,
               cert_file, port, use_private_ip, credentials_folder)
 
@@ -62,10 +62,13 @@ def ssh_config(cmd, config_path, resource_group_name=None, vm_name=None, ssh_ip=
         folder_name = ssh_ip
         if resource_group_name and vm_name:
             folder_name = resource_group_name + "-" + vm_name
+        elif resource_id:
+            resource_info = tools.parse_resource_id(resource_id)
+            folder_name = resource_info['resource_group'] + "-" + resource_info['resource_name']
+
         credentials_folder = os.path.join(config_folder, os.path.join("az_ssh_config", folder_name))
-    
     do_ssh_op(cmd, ssh_ip, public_key_file, private_key_file, local_user,
-              cert_file, port, use_private_ip)
+              cert_file, port, use_private_ip, credentials_folder)
 
 
 def ssh_cert(cmd, cert_path=None, public_key_file=None):
@@ -85,9 +88,9 @@ def ssh_cert(cmd, cert_path=None, public_key_file=None):
 
 
 def ssh_arc(cmd, resource_group_name=None, vm_name=None, resource_id=None, public_key_file=None, private_key_file=None,
-            local_user=None, cert_file=None, port=None, ssh_client_path=None, delete_privkey=False, ssh_args=None):
+            local_user=None, cert_file=None, port=None, ssh_client_path=None, delete_credentials=False, ssh_args=None):
     
-    if delete_privkey and os.environ.get("AZUREPS_HOST_ENVIRONMENT") != "cloud-shell/1.0":
+    if delete_credentials and os.environ.get("AZUREPS_HOST_ENVIRONMENT") != "cloud-shell/1.0":
         raise azclierror.ArgumentUsageError("Can't use --delete-private-key outside an Azure Cloud Shell session.")
     _assert_args(resource_group_name, vm_name, None, resource_id, cert_file, local_user)
 
@@ -104,9 +107,9 @@ def ssh_arc(cmd, resource_group_name=None, vm_name=None, resource_id=None, publi
     credentials_folder = None
 
     op_call = functools.partial(ssh_utils.start_ssh_connection, ssh_client_path=ssh_client_path, ssh_args=ssh_args,
-                                delete_privkey=delete_privkey)
+                                delete_credentials=delete_credentials)
     _do_ssh_op(cmd, None, public_key_file, private_key_file, local_user, cert_file, port,
-               False, resource_group_name, vm_name, op_call, True, credentials_folder)
+               False, credentials_folder, resource_group_name, vm_name, op_call, True)
 
 
 def _do_ssh_op(cmd, ssh_ip, public_key_file, private_key_file, username,
@@ -375,7 +378,7 @@ def _arc_list_access_details(cmd, resource_group, vm_name):
 
 
 def _decide_op_call(cmd, resource_group_name, vm_name, resource_id, ssh_ip, config_path, overwrite,
-                    ssh_client_path, ssh_args, delete_privkey):
+                    ssh_client_path, ssh_args, delete_credentials):
 
     # If the user provides an IP address the target will be treated as an Azure VM even if it is an
     # Arc Server. Which just means that the Connectivity Proxy won't be used to establish connection.
@@ -409,7 +412,7 @@ def _decide_op_call(cmd, resource_group_name, vm_name, resource_id, ssh_ip, conf
             from azure.core.exceptions import ResourceNotFoundError
             if isinstance(arc_error, ResourceNotFoundError) and isinstance(vm_error, ResourceNotFoundError):
                 raise azclierror.ResourceNotFoundError(f"The resource {vm_name} in the resource group "
-                                                       "{resource_group_name} was not found. Erros:\n"
+                                                       f"{resource_group_name} was not found. Erros:\n"
                                                        f"{str(arc_error)}\n{str(vm_error)}")
             raise azclierror.BadRequestError("Unable to determine the target machine type as Azure VM or "
                                              f"Arc Server. Errors:\n{str(arc_error)}\n{str(vm_error)}")
@@ -419,7 +422,7 @@ def _decide_op_call(cmd, resource_group_name, vm_name, resource_id, ssh_ip, conf
                                     resource_group=resource_group_name)
     else:
         op_call = functools.partial(ssh_utils.start_ssh_connection, ssh_client_path=ssh_client_path, ssh_args=ssh_args,
-                                    delete_privkey=delete_privkey)
+                                    delete_credentials=delete_credentials)
     do_ssh_op = functools.partial(_do_ssh_op, resource_group_name=resource_group_name, vm_name=vm_name,
                                   is_arc=is_arc_server, op_call=op_call)
 
