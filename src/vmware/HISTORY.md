@@ -1,11 +1,18 @@
 # Release History
 
-## 4.0.0 (2021-12)
+## 4.0.0 (2021-11)
 
 - Add `az vmware placement-policy` command group
 - Add `az vmware vm` command group
 - Updated `az vmware private-cloud create` with new Identity parameter
 - Updated `az vmware private-cloud update` with new Identity parameter
+- Add `az vmware private-cloud add-availability-zone`
+- Add `az vmware private-cloud delete-availability-zone`
+- Add `az vmware private-cloud add-cmk-encryption`
+- Add `az vmware private-cloud delete-cmk-encryption`
+- [BREAKING CHANGE] `az vmware private-cloud listadmincredentials` has been updated to `az vmware private-cloud list-admin-credentials`
+- [BREAKING CHANGE] `az vmware private-cloud addidentitysource` has been updated to `az vmware private-cloud add-identity-source`
+- [BREAKING CHANGE] `az vmware private-cloud deleteidentitysource` has been updated to `az vmware private-cloud delete-identity-source`
 
 ## 3.2.0 (2021-10)
 

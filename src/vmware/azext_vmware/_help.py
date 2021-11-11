@@ -87,9 +87,49 @@ helps['vmware cluster update'] = """
     short-summary: Update a cluster in a private cloud.
 """
 
-helps['vmware private-cloud addidentitysource'] = """
+helps['vmware private-cloud add-identity-source'] = """
     type: command
     short-summary: Add a vCenter Single Sign On Identity Source to a private cloud.
+"""
+
+helps['vmware private-cloud add-availability-zone'] = """
+    type: command
+    short-summary: Add an Availability Zone to a private cloud.
+"""
+
+helps['vmware private-cloud delete-availability-zone'] = """
+    type: command
+    short-summary: Delete an Availability Zone from a private cloud.
+"""
+
+helps['vmware private-cloud add-cmk-encryption'] = """
+    type: command
+    short-summary: Add a Customer Managed Keys Encryption to a private cloud.
+"""
+
+helps['vmware private-cloud delete-cmk-encryption'] = """
+    type: command
+    short-summary: Delete a Customer Managed Keys Encryption from a private cloud.
+"""
+
+helps['vmware private-cloud identity'] = """
+    type: group
+    short-summary: Commands for Managed Identity in a private cloud.
+"""
+
+helps['vmware private-cloud identity assign'] = """
+    type: command
+    short-summary: Assign a Managed Identity in a private cloud.
+"""
+
+helps['vmware private-cloud identity remove'] = """
+    type: command
+    short-summary: Remove a Managed Identity in a private cloud.
+"""
+
+helps['vmware private-cloud identity show'] = """
+    type: command
+    short-summary: Show Managed Identities in a private cloud.
 """
 
 helps['vmware private-cloud create'] = """
@@ -102,7 +142,7 @@ helps['vmware private-cloud delete'] = """
     short-summary: Delete a private cloud.
 """
 
-helps['vmware private-cloud deleteidentitysource'] = """
+helps['vmware private-cloud delete-identity-source'] = """
     type: command
     short-summary: Delete a vCenter Single Sign On Identity Source for a private cloud.
 """
@@ -112,7 +152,7 @@ helps['vmware private-cloud list'] = """
     short-summary: List the private clouds.
 """
 
-helps['vmware private-cloud listadmincredentials'] = """
+helps['vmware private-cloud list-admin-credentials'] = """
     type: command
     short-summary: List the admin credentials for the private cloud.
 """

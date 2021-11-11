@@ -32,7 +32,7 @@ def privatecloud_show(client: AVSClient, resource_group_name, name):
     return client.private_clouds.get(resource_group_name, name)
 
 
-def privatecloud_create(client: AVSClient, resource_group_name, name, location, sku, cluster_size, network_block, circuit_primary_subnet=None, circuit_secondary_subnet=None, internet=None, vcenter_password=None, nsxt_password=None, tags=None, accept_eula=False, identity_type=None):
+def privatecloud_create(client: AVSClient, resource_group_name, name, sku, cluster_size, network_block, location=None, internet=None, vcenter_password=None, nsxt_password=None, tags=None, accept_eula=False, mi_system_assigned=False):
     from knack.prompting import prompt_y_n
     if not accept_eula:
         print(LEGAL_TERMS)
@@ -41,12 +41,13 @@ def privatecloud_create(client: AVSClient, resource_group_name, name, location, 
             return None
 
     from azext_vmware.vendored_sdks.avs_client.models import PrivateCloud, Circuit, ManagementCluster, Sku, PrivateCloudIdentity
-    if circuit_primary_subnet is not None or circuit_secondary_subnet is not None:
-        circuit = Circuit(primary_subnet=circuit_primary_subnet, secondary_subnet=circuit_secondary_subnet)
-    else:
-        circuit = None
-    management_cluster = ManagementCluster(cluster_size=cluster_size)
-    cloud = PrivateCloud(location=location, sku=Sku(name=sku), circuit=circuit, management_cluster=management_cluster, network_block=network_block, tags=tags, identity=PrivateCloudIdentity(type=identity_type))
+    cloud = PrivateCloud(sku=Sku(name=sku), ciruit=Circuit(), management_cluster=ManagementCluster(cluster_size=cluster_size), network_block=network_block)
+    if location is not None:
+        cloud.location = location
+    if tags is not None:
+        cloud.tags = tags
+    if mi_system_assigned:
+        cloud.identity = PrivateCloudIdentity(type='SystemAssigned')
     if internet is not None:
         cloud.internet = internet
     if vcenter_password is not None:
@@ -56,19 +57,15 @@ def privatecloud_create(client: AVSClient, resource_group_name, name, location, 
     return client.private_clouds.begin_create_or_update(resource_group_name, name, cloud)
 
 
-def privatecloud_update(client: AVSClient, resource_group_name, name, cluster_size=None, internet=None, avail_zone=None, avail_secondary_zone=None, identity_type=None, enc_status=None, enc_kv_key_name=None, enc_kv_key_version=None, enc_kv_url=None, enc_kv_key_state=None, enc_kv_key_vs_type=None):
-    from azext_vmware.vendored_sdks.avs_client.models import PrivateCloudUpdate, ManagementCluster, PrivateCloudIdentity, AvailabilityProperties, Encryption, EncryptionKeyVaultProperties
+def privatecloud_update(client: AVSClient, resource_group_name, name, cluster_size=None, internet=None, tags=None):
+    from azext_vmware.vendored_sdks.avs_client.models import PrivateCloudUpdate, ManagementCluster
     private_cloud_update = PrivateCloudUpdate()
+    if tags is not None:
+        private_cloud_update.tags = tags
     if cluster_size is not None:
         private_cloud_update.management_cluster = ManagementCluster(cluster_size=cluster_size)
     if internet is not None:
         private_cloud_update.internet = internet
-    if avail_zone is not None:
-        private_cloud_update.availability = AvailabilityProperties(zone=avail_zone, secondary_zone=avail_secondary_zone)
-    if type is not None:
-        private_cloud_update.identity = PrivateCloudIdentity(type=identity_type)
-    if enc_status is not None:
-        private_cloud_update.encryption = Encryption(status=enc_status, key_vault_properties=EncryptionKeyVaultProperties(key_name=enc_kv_key_name, key_version=enc_kv_key_version, key_vault_url=enc_kv_url, key_state=enc_kv_key_state, version_type=enc_kv_key_vs_type))
     return client.private_clouds.begin_update(resource_group_name, name, private_cloud_update)
 
 
@@ -102,6 +99,53 @@ def privatecloud_deleteidentitysource(client: AVSClient, resource_group_name, na
         pc.identity_sources.remove(found)
         return client.private_clouds.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, private_cloud=pc)
     return pc
+
+
+def privatecloud_addavailabilityzone(client: AVSClient, resource_group_name, private_cloud, strategy=None, zone=None, secondary_zone=None):
+    from azext_vmware.vendored_sdks.avs_client.models import AvailabilityProperties, PrivateCloudUpdate
+    pc = PrivateCloudUpdate()
+    pc.availability = AvailabilityProperties(strategy=strategy, zone=zone, secondary_zone=secondary_zone)
+    return client.private_clouds.begin_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, private_cloud_update=pc)
+
+
+def privatecloud_deleteavailabilityzone(client: AVSClient, resource_group_name, private_cloud):
+    from azext_vmware.vendored_sdks.avs_client.models import PrivateCloudUpdate
+    pc = PrivateCloudUpdate()
+    pc.availability = None
+    return client.private_clouds.begin_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, private_cloud_update=pc)
+
+
+def privatecloud_addcmkencryption(client: AVSClient, resource_group_name, private_cloud, enc_status=None, enc_kv_key_name=None, enc_kv_key_version=None, enc_kv_url=None):
+    from azext_vmware.vendored_sdks.avs_client.models import Encryption, EncryptionKeyVaultProperties, PrivateCloudUpdate
+    pc = PrivateCloudUpdate()
+    pc.encryption = Encryption(status=enc_status, key_vault_properties=EncryptionKeyVaultProperties(key_name=enc_kv_key_name, key_version=enc_kv_key_version, key_vault_url=enc_kv_url))
+    return client.private_clouds.begin_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, private_cloud_update=pc)
+
+
+def privatecloud_deletecmkenryption(client: AVSClient, resource_group_name, private_cloud):
+    from azext_vmware.vendored_sdks.avs_client.models import PrivateCloudUpdate
+    pc = PrivateCloudUpdate()
+    pc.encryption = None
+    return client.private_clouds.begin_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, private_cloud_update=pc)
+
+
+def privatecloud_identity_assign(client: AVSClient, resource_group_name, private_cloud, system_assigned=False):
+    from azext_vmware.vendored_sdks.avs_client.models import PrivateCloudIdentity, PrivateCloudUpdate
+    pc = PrivateCloudUpdate()
+    if system_assigned:
+        pc.identity = PrivateCloudIdentity(type="SystemAssigned")
+    return client.private_clouds.begin_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, private_cloud_update=pc)
+
+
+def privatecloud_identity_remove(client: AVSClient, resource_group_name, private_cloud):
+    from azext_vmware.vendored_sdks.avs_client.models import PrivateCloudIdentity, PrivateCloudUpdate
+    pc = PrivateCloudUpdate()
+    pc.identity = PrivateCloudIdentity(type=None)
+    return client.private_clouds.begin_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, private_cloud_update=pc)
+
+
+def privatecloud_identity_get(client: AVSClient, resource_group_name, private_cloud):
+    return client.private_clouds.get(resource_group_name, private_cloud).identity
 
 
 def privatecloud_rotate_vcenter_password(client: AVSClient, resource_group_name, private_cloud):
@@ -564,7 +608,11 @@ def placement_policy_update(client: AVSClient, resource_group_name, private_clou
     return client.placement_policies.begin_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=cluster_name, placement_policy_name=placement_policy_name, placement_policy_update=props)
 
 
-def placement_policy_delete(client: AVSClient, resource_group_name, private_cloud, cluster_name, placement_policy_name):
+def placement_policy_delete(client: AVSClient, resource_group_name, private_cloud, cluster_name, placement_policy_name, yes=False):
+    from knack.prompting import prompt_y_n
+    msg = 'This will delete the placement policy. Are you sure?'
+    if not yes and not prompt_y_n(msg, default="n"):
+        return None
     return client.placement_policies.begin_delete(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=cluster_name, placement_policy_name=placement_policy_name)
 
 

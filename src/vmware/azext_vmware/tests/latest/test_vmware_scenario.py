@@ -70,10 +70,10 @@ class VmwareScenarioTest(ScenarioTest):
         self.cmd('vmware authorization delete -g {rg} -c {privatecloud} -n myauthname')
 
         # add identity source
-        self.cmd('vmware private-cloud addidentitysource -g {rg} -c {privatecloud} -n groupName --alias groupAlias --domain domain --base-user-dn "ou=baseUser" --base-group-dn "ou=baseGroup" --primary-server ldaps://1.1.1.1:636 --username someone --password something')
+        self.cmd('vmware private-cloud add-identity-source -g {rg} -c {privatecloud} -n groupName --alias groupAlias --domain domain --base-user-dn "ou=baseUser" --base-group-dn "ou=baseGroup" --primary-server ldaps://1.1.1.1:636 --username someone --password something')
 
         # delete identity source
-        self.cmd('vmware private-cloud deleteidentitysource -g {rg} -c {privatecloud} -n groupName --alias groupAlias --domain domain')
+        self.cmd('vmware private-cloud delete-identity-source -g {rg} -c {privatecloud} -n groupName --alias groupAlias --domain domain')
 
         # cluster list should report 0
         count = len(self.cmd('vmware cluster list -g {rg} -c {privatecloud}').get_output_in_json())
