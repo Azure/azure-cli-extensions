@@ -19,24 +19,24 @@ if TYPE_CHECKING:
     from azure.core.pipeline.transport import HttpRequest, HttpResponse
 
 from ._configuration import SourceControlConfigurationClientConfiguration
-from .operations import SourceControlConfigurationsOperations
-from .operations import Operations
 from .operations import ExtensionsOperations
+from .operations import OperationStatusOperations
+from .operations import Operations
 from . import models
 
 
 class SourceControlConfigurationClient(object):
     """KubernetesConfiguration Client.
 
-    :ivar source_control_configurations: SourceControlConfigurationsOperations operations
-    :vartype source_control_configurations: azure.mgmt.kubernetesconfiguration.v2020_07_01_preview.operations.SourceControlConfigurationsOperations
-    :ivar operations: Operations operations
-    :vartype operations: azure.mgmt.kubernetesconfiguration.v2020_07_01_preview.operations.Operations
     :ivar extensions: ExtensionsOperations operations
-    :vartype extensions: azure.mgmt.kubernetesconfiguration.v2020_07_01_preview.operations.ExtensionsOperations
+    :vartype extensions: azure.mgmt.kubernetesconfiguration.operations.ExtensionsOperations
+    :ivar operation_status: OperationStatusOperations operations
+    :vartype operation_status: azure.mgmt.kubernetesconfiguration.operations.OperationStatusOperations
+    :ivar operations: Operations operations
+    :vartype operations: azure.mgmt.kubernetesconfiguration.operations.Operations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials.TokenCredential
-    :param subscription_id: The Azure subscription ID. This is a GUID-formatted string (e.g. 00000000-0000-0000-0000-000000000000).
+    :param subscription_id: The ID of the target subscription.
     :type subscription_id: str
     :param str base_url: Service URL
     :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
@@ -60,11 +60,11 @@ class SourceControlConfigurationClient(object):
         self._serialize.client_side_validation = False
         self._deserialize = Deserializer(client_models)
 
-        self.source_control_configurations = SourceControlConfigurationsOperations(
+        self.extensions = ExtensionsOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.operation_status = OperationStatusOperations(
             self._client, self._config, self._serialize, self._deserialize)
         self.operations = Operations(
-            self._client, self._config, self._serialize, self._deserialize)
-        self.extensions = ExtensionsOperations(
             self._client, self._config, self._serialize, self._deserialize)
 
     def _send_request(self, http_request, **kwargs):
@@ -78,7 +78,7 @@ class SourceControlConfigurationClient(object):
         :rtype: ~azure.core.pipeline.transport.HttpResponse
         """
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
         }
         http_request.url = self._client.format_url(http_request.url, **path_format_arguments)
         stream = kwargs.pop("stream", True)
