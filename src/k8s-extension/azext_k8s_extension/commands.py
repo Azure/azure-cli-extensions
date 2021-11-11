@@ -26,29 +26,28 @@ def load_command_table(self, _):
 
     # Subgroup - k8s-extension extension-types
     k8s_cluster_extension_type_sdk = CliCommandType(
-        operations_tmpl=consts.EXTENSION_PACKAGE_NAME + '.vendored_sdks.operations._cluster_extension_type_operations#ClusterExtensionTypeOperations.{}',
+        operations_tmpl=consts.EXTENSION_PACKAGE_NAME + '.vendored_sdks.operations#ClusterExtensionTypeOperations.{}',
         client_factory=cf_k8s_cluster_extension_type_operation)
     with self.command_group(consts.EXTENSION_NAME + " extension-types", k8s_cluster_extension_type_sdk, client_factory=cf_k8s_cluster_extension_type_operation) \
             as g:
         g.custom_show_command('show', 'show_k8s_cluster_extension_type', table_transformer=k8s_extension_type_show_table_format)
 
     k8s_cluster_extension_types_sdk = CliCommandType(
-        operations_tmpl=consts.EXTENSION_PACKAGE_NAME + '.vendored_sdks.operations._cluster_extension_types_operations#ClusterExtensionTypesOperations.{}',
+        operations_tmpl=consts.EXTENSION_PACKAGE_NAME + '.vendored_sdks.operations.#ClusterExtensionTypesOperations.{}',
         client_factory=cf_k8s_cluster_extension_types_operation)
     with self.command_group(consts.EXTENSION_NAME + " extension-types", k8s_cluster_extension_types_sdk, client_factory=cf_k8s_cluster_extension_types_operation, is_experimental=True) \
             as g:
         g.custom_command('list', 'list_k8s_cluster_extension_types', table_transformer=k8s_extension_types_list_table_format)
 
     k8s_location_extension_types_sdk = CliCommandType(
-        operations_tmpl=consts.EXTENSION_PACKAGE_NAME + '.vendored_sdks.operations._location_extension_types_operations#LocationExtensionTypesOperations.{}',
+        operations_tmpl=consts.EXTENSION_PACKAGE_NAME + '.vendored_sdks.operations.#LocationExtensionTypesOperations.{}',
         client_factory=cf_k8s_location_extension_types_operation)
     with self.command_group(consts.EXTENSION_NAME + " extension-types", k8s_location_extension_types_sdk, client_factory=cf_k8s_location_extension_types_operation, is_experimental=True) \
             as g:
         g.custom_command('list-by-location', 'list_k8s_location_extension_types', table_transformer=k8s_extension_types_list_table_format)
 
-    # Sub-group - k8s-extension extension-types versions
     k8s_extension_type_versions_sdk = CliCommandType(
-        operations_tmpl=consts.EXTENSION_PACKAGE_NAME + '.vendored_sdks.operations._extension_type_versions_operations#ExtensionTypeVersionsOperations.{}',
+        operations_tmpl=consts.EXTENSION_PACKAGE_NAME + '.vendored_sdks.operations.#ExtensionTypeVersionsOperations.{}',
         client_factory=cf_k8s_extension_type_versions_operation)
     with self.command_group(consts.EXTENSION_NAME + " extension-types", k8s_extension_type_versions_sdk, client_factory=cf_k8s_extension_type_versions_operation, is_experimental=True) \
             as g:
