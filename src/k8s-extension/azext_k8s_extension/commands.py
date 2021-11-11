@@ -28,7 +28,7 @@ def load_command_table(self, _):
     k8s_cluster_extension_type_sdk = CliCommandType(
         operations_tmpl=consts.EXTENSION_PACKAGE_NAME + '.vendored_sdks.operations._cluster_extension_type_operations#ClusterExtensionTypeOperations.{}',
         client_factory=cf_k8s_cluster_extension_type_operation)
-    with self.command_group(consts.EXTENSION_NAME + " extension-types", k8s_cluster_extension_type_sdk, client_factory=cf_k8s_cluster_extension_type_operation, is_experimental=True) \
+    with self.command_group(consts.EXTENSION_NAME + " extension-types", k8s_cluster_extension_type_sdk, client_factory=cf_k8s_cluster_extension_type_operation) \
             as g:
         g.custom_show_command('show', 'show_k8s_cluster_extension_type', table_transformer=k8s_extension_type_show_table_format)
 

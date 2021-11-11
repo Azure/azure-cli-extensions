@@ -8,18 +8,20 @@
 
 from ._extensions_operations import ExtensionsOperations
 from ._operation_status_operations import OperationStatusOperations
-from ._operations import Operations
 from ._cluster_extension_type_operations import ClusterExtensionTypeOperations
 from ._cluster_extension_types_operations import ClusterExtensionTypesOperations
 from ._extension_type_versions_operations import ExtensionTypeVersionsOperations
 from ._location_extension_types_operations import LocationExtensionTypesOperations
+from ._source_control_configurations_operations import SourceControlConfigurationsOperations
+from ._operations import Operations
 
 __all__ = [
     'ExtensionsOperations',
     'OperationStatusOperations',
-    'Operations',
     'ClusterExtensionTypeOperations',
     'ClusterExtensionTypesOperations',
     'ExtensionTypeVersionsOperations',
     'LocationExtensionTypesOperations',
+    'SourceControlConfigurationsOperations',
+    'Operations',
 ]

@@ -6,13 +6,8 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-import datetime
-from typing import Dict, List, Optional, Union
-
 from azure.core.exceptions import HttpResponseError
 import msrest.serialization
-
-from ._source_control_configuration_client_enums import *
 
 
 class ErrorAdditionalInfo(msrest.serialization.Model):
@@ -104,12 +99,10 @@ class ErrorResponse(msrest.serialization.Model):
 
     def __init__(
         self,
-        *,
-        error: Optional["ErrorDetail"] = None,
         **kwargs
     ):
         super(ErrorResponse, self).__init__(**kwargs)
-        self.error = error
+        self.error = kwargs.get('error', None)
 
 
 class Resource(msrest.serialization.Model):
@@ -272,36 +265,24 @@ class Extension(ProxyResource):
 
     def __init__(
         self,
-        *,
-        identity: Optional["Identity"] = None,
-        extension_type: Optional[str] = None,
-        auto_upgrade_minor_version: Optional[bool] = True,
-        release_train: Optional[str] = "Stable",
-        version: Optional[str] = None,
-        scope: Optional["Scope"] = None,
-        configuration_settings: Optional[Dict[str, str]] = None,
-        configuration_protected_settings: Optional[Dict[str, str]] = None,
-        statuses: Optional[List["ExtensionStatus"]] = None,
-        error_info: Optional["ErrorDetail"] = None,
-        aks_assigned_identity: Optional["ExtensionPropertiesAksAssignedIdentity"] = None,
         **kwargs
     ):
         super(Extension, self).__init__(**kwargs)
-        self.identity = identity
+        self.identity = kwargs.get('identity', None)
         self.system_data = None
-        self.extension_type = extension_type
-        self.auto_upgrade_minor_version = auto_upgrade_minor_version
-        self.release_train = release_train
-        self.version = version
-        self.scope = scope
-        self.configuration_settings = configuration_settings
-        self.configuration_protected_settings = configuration_protected_settings
+        self.extension_type = kwargs.get('extension_type', None)
+        self.auto_upgrade_minor_version = kwargs.get('auto_upgrade_minor_version', True)
+        self.release_train = kwargs.get('release_train', "Stable")
+        self.version = kwargs.get('version', None)
+        self.scope = kwargs.get('scope', None)
+        self.configuration_settings = kwargs.get('configuration_settings', None)
+        self.configuration_protected_settings = kwargs.get('configuration_protected_settings', None)
         self.provisioning_state = None
-        self.statuses = statuses
-        self.error_info = error_info
+        self.statuses = kwargs.get('statuses', None)
+        self.error_info = kwargs.get('error_info', None)
         self.custom_location_settings = None
         self.package_uri = None
-        self.aks_assigned_identity = aks_assigned_identity
+        self.aks_assigned_identity = kwargs.get('aks_assigned_identity', None)
 
 
 class ExtensionPropertiesAksAssignedIdentity(msrest.serialization.Model):
@@ -331,14 +312,12 @@ class ExtensionPropertiesAksAssignedIdentity(msrest.serialization.Model):
 
     def __init__(
         self,
-        *,
-        type: Optional[str] = None,
         **kwargs
     ):
         super(ExtensionPropertiesAksAssignedIdentity, self).__init__(**kwargs)
         self.principal_id = None
         self.tenant_id = None
-        self.type = type
+        self.type = kwargs.get('type', None)
 
 
 class ExtensionsList(msrest.serialization.Model):
@@ -397,20 +376,14 @@ class ExtensionStatus(msrest.serialization.Model):
 
     def __init__(
         self,
-        *,
-        code: Optional[str] = None,
-        display_status: Optional[str] = None,
-        level: Optional[Union[str, "LevelType"]] = "Information",
-        message: Optional[str] = None,
-        time: Optional[str] = None,
         **kwargs
     ):
         super(ExtensionStatus, self).__init__(**kwargs)
-        self.code = code
-        self.display_status = display_status
-        self.level = level
-        self.message = message
-        self.time = time
+        self.code = kwargs.get('code', None)
+        self.display_status = kwargs.get('display_status', None)
+        self.level = kwargs.get('level', "Information")
+        self.message = kwargs.get('message', None)
+        self.time = kwargs.get('time', None)
 
 
 class Identity(msrest.serialization.Model):
@@ -440,14 +413,12 @@ class Identity(msrest.serialization.Model):
 
     def __init__(
         self,
-        *,
-        type: Optional[str] = None,
         **kwargs
     ):
         super(Identity, self).__init__(**kwargs)
         self.principal_id = None
         self.tenant_id = None
-        self.type = type
+        self.type = kwargs.get('type', None)
 
 
 class OperationStatusList(msrest.serialization.Model):
@@ -512,20 +483,14 @@ class OperationStatusResult(msrest.serialization.Model):
 
     def __init__(
         self,
-        *,
-        status: str,
-        id: Optional[str] = None,
-        name: Optional[str] = None,
-        properties: Optional[Dict[str, str]] = None,
-        error: Optional["ErrorDetail"] = None,
         **kwargs
     ):
         super(OperationStatusResult, self).__init__(**kwargs)
-        self.id = id
-        self.name = name
-        self.status = status
-        self.properties = properties
-        self.error = error
+        self.id = kwargs.get('id', None)
+        self.name = kwargs.get('name', None)
+        self.status = kwargs['status']
+        self.properties = kwargs.get('properties', None)
+        self.error = kwargs.get('error', None)
 
 
 class PatchExtension(msrest.serialization.Model):
@@ -558,20 +523,14 @@ class PatchExtension(msrest.serialization.Model):
 
     def __init__(
         self,
-        *,
-        auto_upgrade_minor_version: Optional[bool] = True,
-        release_train: Optional[str] = "Stable",
-        version: Optional[str] = None,
-        configuration_settings: Optional[Dict[str, str]] = None,
-        configuration_protected_settings: Optional[Dict[str, str]] = None,
         **kwargs
     ):
         super(PatchExtension, self).__init__(**kwargs)
-        self.auto_upgrade_minor_version = auto_upgrade_minor_version
-        self.release_train = release_train
-        self.version = version
-        self.configuration_settings = configuration_settings
-        self.configuration_protected_settings = configuration_protected_settings
+        self.auto_upgrade_minor_version = kwargs.get('auto_upgrade_minor_version', True)
+        self.release_train = kwargs.get('release_train', "Stable")
+        self.version = kwargs.get('version', None)
+        self.configuration_settings = kwargs.get('configuration_settings', None)
+        self.configuration_protected_settings = kwargs.get('configuration_protected_settings', None)
 
 
 class ResourceProviderOperation(msrest.serialization.Model):
@@ -604,14 +563,11 @@ class ResourceProviderOperation(msrest.serialization.Model):
 
     def __init__(
         self,
-        *,
-        name: Optional[str] = None,
-        display: Optional["ResourceProviderOperationDisplay"] = None,
         **kwargs
     ):
         super(ResourceProviderOperation, self).__init__(**kwargs)
-        self.name = name
-        self.display = display
+        self.name = kwargs.get('name', None)
+        self.display = kwargs.get('display', None)
         self.is_data_action = None
         self.origin = None
 
@@ -638,18 +594,13 @@ class ResourceProviderOperationDisplay(msrest.serialization.Model):
 
     def __init__(
         self,
-        *,
-        provider: Optional[str] = None,
-        resource: Optional[str] = None,
-        operation: Optional[str] = None,
-        description: Optional[str] = None,
         **kwargs
     ):
         super(ResourceProviderOperationDisplay, self).__init__(**kwargs)
-        self.provider = provider
-        self.resource = resource
-        self.operation = operation
-        self.description = description
+        self.provider = kwargs.get('provider', None)
+        self.resource = kwargs.get('resource', None)
+        self.operation = kwargs.get('operation', None)
+        self.description = kwargs.get('description', None)
 
 
 class ResourceProviderOperationList(msrest.serialization.Model):
@@ -675,12 +626,10 @@ class ResourceProviderOperationList(msrest.serialization.Model):
 
     def __init__(
         self,
-        *,
-        value: Optional[List["ResourceProviderOperation"]] = None,
         **kwargs
     ):
         super(ResourceProviderOperationList, self).__init__(**kwargs)
-        self.value = value
+        self.value = kwargs.get('value', None)
         self.next_link = None
 
 
@@ -700,14 +649,11 @@ class Scope(msrest.serialization.Model):
 
     def __init__(
         self,
-        *,
-        cluster: Optional["ScopeCluster"] = None,
-        namespace: Optional["ScopeNamespace"] = None,
         **kwargs
     ):
         super(Scope, self).__init__(**kwargs)
-        self.cluster = cluster
-        self.namespace = namespace
+        self.cluster = kwargs.get('cluster', None)
+        self.namespace = kwargs.get('namespace', None)
 
 
 class ScopeCluster(msrest.serialization.Model):
@@ -724,12 +670,10 @@ class ScopeCluster(msrest.serialization.Model):
 
     def __init__(
         self,
-        *,
-        release_namespace: Optional[str] = None,
         **kwargs
     ):
         super(ScopeCluster, self).__init__(**kwargs)
-        self.release_namespace = release_namespace
+        self.release_namespace = kwargs.get('release_namespace', None)
 
 
 class ScopeNamespace(msrest.serialization.Model):
@@ -746,12 +690,10 @@ class ScopeNamespace(msrest.serialization.Model):
 
     def __init__(
         self,
-        *,
-        target_namespace: Optional[str] = None,
         **kwargs
     ):
         super(ScopeNamespace, self).__init__(**kwargs)
-        self.target_namespace = target_namespace
+        self.target_namespace = kwargs.get('target_namespace', None)
 
 
 class SystemData(msrest.serialization.Model):
@@ -786,19 +728,12 @@ class SystemData(msrest.serialization.Model):
 
     def __init__(
         self,
-        *,
-        created_by: Optional[str] = None,
-        created_by_type: Optional[Union[str, "CreatedByType"]] = None,
-        created_at: Optional[datetime.datetime] = None,
-        last_modified_by: Optional[str] = None,
-        last_modified_by_type: Optional[Union[str, "CreatedByType"]] = None,
-        last_modified_at: Optional[datetime.datetime] = None,
         **kwargs
     ):
         super(SystemData, self).__init__(**kwargs)
-        self.created_by = created_by
-        self.created_by_type = created_by_type
-        self.created_at = created_at
-        self.last_modified_by = last_modified_by
-        self.last_modified_by_type = last_modified_by_type
-        self.last_modified_at = last_modified_at
+        self.created_by = kwargs.get('created_by', None)
+        self.created_by_type = kwargs.get('created_by_type', None)
+        self.created_at = kwargs.get('created_at', None)
+        self.last_modified_by = kwargs.get('last_modified_by', None)
+        self.last_modified_by_type = kwargs.get('last_modified_by_type', None)
+        self.last_modified_at = kwargs.get('last_modified_at', None)

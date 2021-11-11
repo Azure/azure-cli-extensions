@@ -6,13 +6,8 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-import datetime
-from typing import Dict, List, Optional, Union
-
 from azure.core.exceptions import HttpResponseError
 import msrest.serialization
-
-from ._source_control_configuration_client_enums import *
 
 
 class Resource(msrest.serialization.Model):
@@ -46,11 +41,6 @@ class Resource(msrest.serialization.Model):
         self,
         **kwargs
     ):
-<<<<<<< HEAD
-        """
-        """
-=======
->>>>>>> 331f997c (updating to the latest vendored sdk)
         super(Resource, self).__init__(**kwargs)
         self.id = None
         self.name = None
@@ -88,11 +78,6 @@ class ProxyResource(Resource):
         self,
         **kwargs
     ):
-<<<<<<< HEAD
-        """
-        """
-=======
->>>>>>> 331f997c (updating to the latest vendored sdk)
         super(ProxyResource, self).__init__(**kwargs)
 
 
@@ -109,17 +94,10 @@ class ClusterScopeSettings(ProxyResource):
     :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
      "Microsoft.Storage/storageAccounts".
     :vartype type: str
-<<<<<<< HEAD
-    :ivar allow_multiple_instances: Describes if multiple instances of the extension are allowed.
-    :vartype allow_multiple_instances: bool
-    :ivar default_release_namespace: Default extension release namespace.
-    :vartype default_release_namespace: str
-=======
     :param allow_multiple_instances: Describes if multiple instances of the extension are allowed.
     :type allow_multiple_instances: bool
     :param default_release_namespace: Default extension release namespace.
     :type default_release_namespace: str
->>>>>>> 331f997c (updating to the latest vendored sdk)
     """
 
     _validation = {
@@ -138,24 +116,11 @@ class ClusterScopeSettings(ProxyResource):
 
     def __init__(
         self,
-        *,
-        allow_multiple_instances: Optional[bool] = None,
-        default_release_namespace: Optional[str] = None,
         **kwargs
     ):
-<<<<<<< HEAD
-        """
-        :keyword allow_multiple_instances: Describes if multiple instances of the extension are
-         allowed.
-        :paramtype allow_multiple_instances: bool
-        :keyword default_release_namespace: Default extension release namespace.
-        :paramtype default_release_namespace: str
-        """
-=======
->>>>>>> 331f997c (updating to the latest vendored sdk)
         super(ClusterScopeSettings, self).__init__(**kwargs)
-        self.allow_multiple_instances = allow_multiple_instances
-        self.default_release_namespace = default_release_namespace
+        self.allow_multiple_instances = kwargs.get('allow_multiple_instances', None)
+        self.default_release_namespace = kwargs.get('default_release_namespace', None)
 
 
 class ComplianceStatus(msrest.serialization.Model):
@@ -167,15 +132,6 @@ class ComplianceStatus(msrest.serialization.Model):
      "Pending", "Compliant", "Noncompliant", "Installed", "Failed".
     :vartype compliance_state: str or
      ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.ComplianceStateType
-<<<<<<< HEAD
-    :ivar last_config_applied: Datetime the configuration was last applied.
-    :vartype last_config_applied: ~datetime.datetime
-    :ivar message: Message from when the configuration was applied.
-    :vartype message: str
-    :ivar message_level: Level of the message. Possible values include: "Error", "Warning",
-     "Information".
-    :vartype message_level: str or
-=======
     :param last_config_applied: Datetime the configuration was last applied.
     :type last_config_applied: ~datetime.datetime
     :param message: Message from when the configuration was applied.
@@ -183,7 +139,6 @@ class ComplianceStatus(msrest.serialization.Model):
     :param message_level: Level of the message. Possible values include: "Error", "Warning",
      "Information".
     :type message_level: str or
->>>>>>> 331f997c (updating to the latest vendored sdk)
      ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.MessageLevelType
     """
 
@@ -200,42 +155,20 @@ class ComplianceStatus(msrest.serialization.Model):
 
     def __init__(
         self,
-        *,
-        last_config_applied: Optional[datetime.datetime] = None,
-        message: Optional[str] = None,
-        message_level: Optional[Union[str, "MessageLevelType"]] = None,
         **kwargs
     ):
-<<<<<<< HEAD
-        """
-        :keyword last_config_applied: Datetime the configuration was last applied.
-        :paramtype last_config_applied: ~datetime.datetime
-        :keyword message: Message from when the configuration was applied.
-        :paramtype message: str
-        :keyword message_level: Level of the message. Possible values include: "Error", "Warning",
-         "Information".
-        :paramtype message_level: str or
-         ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.MessageLevelType
-        """
-=======
->>>>>>> 331f997c (updating to the latest vendored sdk)
         super(ComplianceStatus, self).__init__(**kwargs)
         self.compliance_state = None
-        self.last_config_applied = last_config_applied
-        self.message = message
-        self.message_level = message_level
+        self.last_config_applied = kwargs.get('last_config_applied', None)
+        self.message = kwargs.get('message', None)
+        self.message_level = kwargs.get('message_level', None)
 
 
 class DependsOnDefinition(msrest.serialization.Model):
     """Specify which kustomizations must succeed reconciliation on the cluster prior to reconciling this kustomization.
 
-<<<<<<< HEAD
-    :ivar kustomization_name: Name of the kustomization to claim dependency on.
-    :vartype kustomization_name: str
-=======
     :param kustomization_name: Name of the kustomization to claim dependency on.
     :type kustomization_name: str
->>>>>>> 331f997c (updating to the latest vendored sdk)
     """
 
     _attribute_map = {
@@ -244,19 +177,10 @@ class DependsOnDefinition(msrest.serialization.Model):
 
     def __init__(
         self,
-        *,
-        kustomization_name: Optional[str] = None,
         **kwargs
     ):
-<<<<<<< HEAD
-        """
-        :keyword kustomization_name: Name of the kustomization to claim dependency on.
-        :paramtype kustomization_name: str
-        """
-=======
->>>>>>> 331f997c (updating to the latest vendored sdk)
         super(DependsOnDefinition, self).__init__(**kwargs)
-        self.kustomization_name = kustomization_name
+        self.kustomization_name = kwargs.get('kustomization_name', None)
 
 
 class ErrorAdditionalInfo(msrest.serialization.Model):
@@ -284,11 +208,6 @@ class ErrorAdditionalInfo(msrest.serialization.Model):
         self,
         **kwargs
     ):
-<<<<<<< HEAD
-        """
-        """
-=======
->>>>>>> 331f997c (updating to the latest vendored sdk)
         super(ErrorAdditionalInfo, self).__init__(**kwargs)
         self.type = None
         self.info = None
@@ -333,11 +252,6 @@ class ErrorDetail(msrest.serialization.Model):
         self,
         **kwargs
     ):
-<<<<<<< HEAD
-        """
-        """
-=======
->>>>>>> 331f997c (updating to the latest vendored sdk)
         super(ErrorDetail, self).__init__(**kwargs)
         self.code = None
         self.message = None
@@ -349,13 +263,8 @@ class ErrorDetail(msrest.serialization.Model):
 class ErrorResponse(msrest.serialization.Model):
     """Common error response for all Azure Resource Manager APIs to return error details for failed operations. (This also follows the OData error response format.).
 
-<<<<<<< HEAD
-    :ivar error: The error object.
-    :vartype error: ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.ErrorDetail
-=======
     :param error: The error object.
     :type error: ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.ErrorDetail
->>>>>>> 331f997c (updating to the latest vendored sdk)
     """
 
     _attribute_map = {
@@ -364,19 +273,10 @@ class ErrorResponse(msrest.serialization.Model):
 
     def __init__(
         self,
-        *,
-        error: Optional["ErrorDetail"] = None,
         **kwargs
     ):
-<<<<<<< HEAD
-        """
-        :keyword error: The error object.
-        :paramtype error: ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.ErrorDetail
-        """
-=======
->>>>>>> 331f997c (updating to the latest vendored sdk)
         super(ErrorResponse, self).__init__(**kwargs)
-        self.error = error
+        self.error = kwargs.get('error', None)
 
 
 class Extension(ProxyResource):
@@ -392,34 +292,6 @@ class Extension(ProxyResource):
     :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
      "Microsoft.Storage/storageAccounts".
     :vartype type: str
-<<<<<<< HEAD
-    :ivar identity: Identity of the Extension resource.
-    :vartype identity: ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.Identity
-    :ivar system_data: Top level metadata
-     https://github.com/Azure/azure-resource-manager-rpc/blob/master/v1.0/common-api-contracts.md#system-metadata-for-all-azure-resources.
-    :vartype system_data: ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.SystemData
-    :ivar extension_type: Type of the Extension, of which this resource is an instance of.  It must
-     be one of the Extension Types registered with Microsoft.KubernetesConfiguration by the
-     Extension publisher.
-    :vartype extension_type: str
-    :ivar auto_upgrade_minor_version: Flag to note if this extension participates in auto upgrade
-     of minor version, or not.
-    :vartype auto_upgrade_minor_version: bool
-    :ivar release_train: ReleaseTrain this extension participates in for auto-upgrade (e.g. Stable,
-     Preview, etc.) - only if autoUpgradeMinorVersion is 'true'.
-    :vartype release_train: str
-    :ivar version: Version of the extension for this extension, if it is 'pinned' to a specific
-     version. autoUpgradeMinorVersion must be 'false'.
-    :vartype version: str
-    :ivar scope: Scope at which the extension is installed.
-    :vartype scope: ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.Scope
-    :ivar configuration_settings: Configuration settings, as name-value pairs for configuring this
-     extension.
-    :vartype configuration_settings: dict[str, str]
-    :ivar configuration_protected_settings: Configuration settings that are sensitive, as
-     name-value pairs for configuring this extension.
-    :vartype configuration_protected_settings: dict[str, str]
-=======
     :param identity: Identity of the Extension resource.
     :type identity: ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.Identity
     :ivar system_data: Top level metadata
@@ -446,18 +318,12 @@ class Extension(ProxyResource):
     :param configuration_protected_settings: Configuration settings that are sensitive, as
      name-value pairs for configuring this extension.
     :type configuration_protected_settings: dict[str, str]
->>>>>>> 331f997c (updating to the latest vendored sdk)
     :ivar provisioning_state: Status of installation of this extension. Possible values include:
      "Succeeded", "Failed", "Canceled", "Creating", "Updating", "Deleting".
     :vartype provisioning_state: str or
      ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.ProvisioningState
-<<<<<<< HEAD
-    :ivar statuses: Status from this extension.
-    :vartype statuses:
-=======
     :param statuses: Status from this extension.
     :type statuses:
->>>>>>> 331f997c (updating to the latest vendored sdk)
      list[~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.ExtensionStatus]
     :ivar error_info: Error information from the Agent - e.g. errors during installation.
     :vartype error_info: ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.ErrorDetail
@@ -465,13 +331,8 @@ class Extension(ProxyResource):
     :vartype custom_location_settings: dict[str, str]
     :ivar package_uri: Uri of the Helm package.
     :vartype package_uri: str
-<<<<<<< HEAD
-    :ivar aks_assigned_identity: Identity of the Extension resource in an AKS cluster.
-    :vartype aks_assigned_identity:
-=======
     :param aks_assigned_identity: Identity of the Extension resource in an AKS cluster.
     :type aks_assigned_identity:
->>>>>>> 331f997c (updating to the latest vendored sdk)
      ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.ExtensionPropertiesAksAssignedIdentity
     """
 
@@ -509,69 +370,24 @@ class Extension(ProxyResource):
 
     def __init__(
         self,
-        *,
-        identity: Optional["Identity"] = None,
-        extension_type: Optional[str] = None,
-        auto_upgrade_minor_version: Optional[bool] = True,
-        release_train: Optional[str] = "Stable",
-        version: Optional[str] = None,
-        scope: Optional["Scope"] = None,
-        configuration_settings: Optional[Dict[str, str]] = None,
-        configuration_protected_settings: Optional[Dict[str, str]] = None,
-        statuses: Optional[List["ExtensionStatus"]] = None,
-        aks_assigned_identity: Optional["ExtensionPropertiesAksAssignedIdentity"] = None,
         **kwargs
     ):
-<<<<<<< HEAD
-        """
-        :keyword identity: Identity of the Extension resource.
-        :paramtype identity: ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.Identity
-        :keyword extension_type: Type of the Extension, of which this resource is an instance of.  It
-         must be one of the Extension Types registered with Microsoft.KubernetesConfiguration by the
-         Extension publisher.
-        :paramtype extension_type: str
-        :keyword auto_upgrade_minor_version: Flag to note if this extension participates in auto
-         upgrade of minor version, or not.
-        :paramtype auto_upgrade_minor_version: bool
-        :keyword release_train: ReleaseTrain this extension participates in for auto-upgrade (e.g.
-         Stable, Preview, etc.) - only if autoUpgradeMinorVersion is 'true'.
-        :paramtype release_train: str
-        :keyword version: Version of the extension for this extension, if it is 'pinned' to a specific
-         version. autoUpgradeMinorVersion must be 'false'.
-        :paramtype version: str
-        :keyword scope: Scope at which the extension is installed.
-        :paramtype scope: ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.Scope
-        :keyword configuration_settings: Configuration settings, as name-value pairs for configuring
-         this extension.
-        :paramtype configuration_settings: dict[str, str]
-        :keyword configuration_protected_settings: Configuration settings that are sensitive, as
-         name-value pairs for configuring this extension.
-        :paramtype configuration_protected_settings: dict[str, str]
-        :keyword statuses: Status from this extension.
-        :paramtype statuses:
-         list[~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.ExtensionStatus]
-        :keyword aks_assigned_identity: Identity of the Extension resource in an AKS cluster.
-        :paramtype aks_assigned_identity:
-         ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.ExtensionPropertiesAksAssignedIdentity
-        """
-=======
->>>>>>> 331f997c (updating to the latest vendored sdk)
         super(Extension, self).__init__(**kwargs)
-        self.identity = identity
+        self.identity = kwargs.get('identity', None)
         self.system_data = None
-        self.extension_type = extension_type
-        self.auto_upgrade_minor_version = auto_upgrade_minor_version
-        self.release_train = release_train
-        self.version = version
-        self.scope = scope
-        self.configuration_settings = configuration_settings
-        self.configuration_protected_settings = configuration_protected_settings
+        self.extension_type = kwargs.get('extension_type', None)
+        self.auto_upgrade_minor_version = kwargs.get('auto_upgrade_minor_version', True)
+        self.release_train = kwargs.get('release_train', "Stable")
+        self.version = kwargs.get('version', None)
+        self.scope = kwargs.get('scope', None)
+        self.configuration_settings = kwargs.get('configuration_settings', None)
+        self.configuration_protected_settings = kwargs.get('configuration_protected_settings', None)
         self.provisioning_state = None
-        self.statuses = statuses
+        self.statuses = kwargs.get('statuses', None)
         self.error_info = None
         self.custom_location_settings = None
         self.package_uri = None
-        self.aks_assigned_identity = aks_assigned_identity
+        self.aks_assigned_identity = kwargs.get('aks_assigned_identity', None)
 
 
 class ExtensionPropertiesAksAssignedIdentity(msrest.serialization.Model):
@@ -583,15 +399,9 @@ class ExtensionPropertiesAksAssignedIdentity(msrest.serialization.Model):
     :vartype principal_id: str
     :ivar tenant_id: The tenant ID of resource.
     :vartype tenant_id: str
-<<<<<<< HEAD
-    :ivar type: The identity type. The only acceptable values to pass in are None and
-     "SystemAssigned". The default value is None.
-    :vartype type: str
-=======
     :param type: The identity type. The only acceptable values to pass in are None and
      "SystemAssigned". The default value is None.
     :type type: str
->>>>>>> 331f997c (updating to the latest vendored sdk)
     """
 
     _validation = {
@@ -607,22 +417,12 @@ class ExtensionPropertiesAksAssignedIdentity(msrest.serialization.Model):
 
     def __init__(
         self,
-        *,
-        type: Optional[str] = None,
         **kwargs
     ):
-<<<<<<< HEAD
-        """
-        :keyword type: The identity type. The only acceptable values to pass in are None and
-         "SystemAssigned". The default value is None.
-        :paramtype type: str
-        """
-=======
->>>>>>> 331f997c (updating to the latest vendored sdk)
         super(ExtensionPropertiesAksAssignedIdentity, self).__init__(**kwargs)
         self.principal_id = None
         self.tenant_id = None
-        self.type = type
+        self.type = kwargs.get('type', None)
 
 
 class ExtensionsList(msrest.serialization.Model):
@@ -650,11 +450,6 @@ class ExtensionsList(msrest.serialization.Model):
         self,
         **kwargs
     ):
-<<<<<<< HEAD
-        """
-        """
-=======
->>>>>>> 331f997c (updating to the latest vendored sdk)
         super(ExtensionsList, self).__init__(**kwargs)
         self.value = None
         self.next_link = None
@@ -663,19 +458,6 @@ class ExtensionsList(msrest.serialization.Model):
 class ExtensionStatus(msrest.serialization.Model):
     """Status from the extension.
 
-<<<<<<< HEAD
-    :ivar code: Status code provided by the Extension.
-    :vartype code: str
-    :ivar display_status: Short description of status of the extension.
-    :vartype display_status: str
-    :ivar level: Level of the status. Possible values include: "Error", "Warning", "Information".
-     Default value: "Information".
-    :vartype level: str or ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.LevelType
-    :ivar message: Detailed message of the status from the Extension.
-    :vartype message: str
-    :ivar time: DateLiteral (per ISO8601) noting the time of installation status.
-    :vartype time: str
-=======
     :param code: Status code provided by the Extension.
     :type code: str
     :param display_status: Short description of status of the extension.
@@ -687,7 +469,6 @@ class ExtensionStatus(msrest.serialization.Model):
     :type message: str
     :param time: DateLiteral (per ISO8601) noting the time of installation status.
     :type time: str
->>>>>>> 331f997c (updating to the latest vendored sdk)
     """
 
     _attribute_map = {
@@ -700,37 +481,14 @@ class ExtensionStatus(msrest.serialization.Model):
 
     def __init__(
         self,
-        *,
-        code: Optional[str] = None,
-        display_status: Optional[str] = None,
-        level: Optional[Union[str, "LevelType"]] = "Information",
-        message: Optional[str] = None,
-        time: Optional[str] = None,
         **kwargs
     ):
-<<<<<<< HEAD
-        """
-        :keyword code: Status code provided by the Extension.
-        :paramtype code: str
-        :keyword display_status: Short description of status of the extension.
-        :paramtype display_status: str
-        :keyword level: Level of the status. Possible values include: "Error", "Warning",
-         "Information". Default value: "Information".
-        :paramtype level: str or
-         ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.LevelType
-        :keyword message: Detailed message of the status from the Extension.
-        :paramtype message: str
-        :keyword time: DateLiteral (per ISO8601) noting the time of installation status.
-        :paramtype time: str
-        """
-=======
->>>>>>> 331f997c (updating to the latest vendored sdk)
         super(ExtensionStatus, self).__init__(**kwargs)
-        self.code = code
-        self.display_status = display_status
-        self.level = level
-        self.message = message
-        self.time = time
+        self.code = kwargs.get('code', None)
+        self.display_status = kwargs.get('display_status', None)
+        self.level = kwargs.get('level', "Information")
+        self.message = kwargs.get('message', None)
+        self.time = kwargs.get('time', None)
 
 
 class ExtensionType(msrest.serialization.Model):
@@ -769,11 +527,6 @@ class ExtensionType(msrest.serialization.Model):
         self,
         **kwargs
     ):
-<<<<<<< HEAD
-        """
-        """
-=======
->>>>>>> 331f997c (updating to the latest vendored sdk)
         super(ExtensionType, self).__init__(**kwargs)
         self.system_data = None
         self.release_trains = None
@@ -784,18 +537,10 @@ class ExtensionType(msrest.serialization.Model):
 class ExtensionTypeList(msrest.serialization.Model):
     """List Extension Types.
 
-<<<<<<< HEAD
-    :ivar value: The list of Extension Types.
-    :vartype value:
-     list[~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.ExtensionType]
-    :ivar next_link: The link to fetch the next page of Extension Types.
-    :vartype next_link: str
-=======
     :param value: The list of Extension Types.
     :type value: list[~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.ExtensionType]
     :param next_link: The link to fetch the next page of Extension Types.
     :type next_link: str
->>>>>>> 331f997c (updating to the latest vendored sdk)
     """
 
     _attribute_map = {
@@ -805,24 +550,11 @@ class ExtensionTypeList(msrest.serialization.Model):
 
     def __init__(
         self,
-        *,
-        value: Optional[List["ExtensionType"]] = None,
-        next_link: Optional[str] = None,
         **kwargs
     ):
-<<<<<<< HEAD
-        """
-        :keyword value: The list of Extension Types.
-        :paramtype value:
-         list[~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.ExtensionType]
-        :keyword next_link: The link to fetch the next page of Extension Types.
-        :paramtype next_link: str
-        """
-=======
->>>>>>> 331f997c (updating to the latest vendored sdk)
         super(ExtensionTypeList, self).__init__(**kwargs)
-        self.value = value
-        self.next_link = next_link
+        self.value = kwargs.get('value', None)
+        self.next_link = kwargs.get('next_link', None)
 
 
 class ExtensionVersionList(msrest.serialization.Model):
@@ -830,19 +562,11 @@ class ExtensionVersionList(msrest.serialization.Model):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-<<<<<<< HEAD
-    :ivar versions: Versions available for this Extension Type.
-    :vartype versions:
-     list[~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.ExtensionVersionListVersionsItem]
-    :ivar next_link: The link to fetch the next page of Extension Types.
-    :vartype next_link: str
-=======
     :param versions: Versions available for this Extension Type.
     :type versions:
      list[~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.ExtensionVersionListVersionsItem]
     :param next_link: The link to fetch the next page of Extension Types.
     :type next_link: str
->>>>>>> 331f997c (updating to the latest vendored sdk)
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
     :vartype system_data: ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.SystemData
     """
@@ -859,41 +583,21 @@ class ExtensionVersionList(msrest.serialization.Model):
 
     def __init__(
         self,
-        *,
-        versions: Optional[List["ExtensionVersionListVersionsItem"]] = None,
-        next_link: Optional[str] = None,
         **kwargs
     ):
-<<<<<<< HEAD
-        """
-        :keyword versions: Versions available for this Extension Type.
-        :paramtype versions:
-         list[~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.ExtensionVersionListVersionsItem]
-        :keyword next_link: The link to fetch the next page of Extension Types.
-        :paramtype next_link: str
-        """
-=======
->>>>>>> 331f997c (updating to the latest vendored sdk)
         super(ExtensionVersionList, self).__init__(**kwargs)
-        self.versions = versions
-        self.next_link = next_link
+        self.versions = kwargs.get('versions', None)
+        self.next_link = kwargs.get('next_link', None)
         self.system_data = None
 
 
 class ExtensionVersionListVersionsItem(msrest.serialization.Model):
     """ExtensionVersionListVersionsItem.
 
-<<<<<<< HEAD
-    :ivar release_train: The release train for this Extension Type.
-    :vartype release_train: str
-    :ivar versions: Versions available for this Extension Type and release train.
-    :vartype versions: list[str]
-=======
     :param release_train: The release train for this Extension Type.
     :type release_train: str
     :param versions: Versions available for this Extension Type and release train.
     :type versions: list[str]
->>>>>>> 331f997c (updating to the latest vendored sdk)
     """
 
     _attribute_map = {
@@ -903,23 +607,11 @@ class ExtensionVersionListVersionsItem(msrest.serialization.Model):
 
     def __init__(
         self,
-        *,
-        release_train: Optional[str] = None,
-        versions: Optional[List[str]] = None,
         **kwargs
     ):
-<<<<<<< HEAD
-        """
-        :keyword release_train: The release train for this Extension Type.
-        :paramtype release_train: str
-        :keyword versions: Versions available for this Extension Type and release train.
-        :paramtype versions: list[str]
-        """
-=======
->>>>>>> 331f997c (updating to the latest vendored sdk)
         super(ExtensionVersionListVersionsItem, self).__init__(**kwargs)
-        self.release_train = release_train
-        self.versions = versions
+        self.release_train = kwargs.get('release_train', None)
+        self.versions = kwargs.get('versions', None)
 
 
 class FluxConfiguration(ProxyResource):
@@ -938,31 +630,6 @@ class FluxConfiguration(ProxyResource):
     :ivar system_data: Top level metadata
      https://github.com/Azure/azure-resource-manager-rpc/blob/master/v1.0/common-api-contracts.md#system-metadata-for-all-azure-resources.
     :vartype system_data: ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.SystemData
-<<<<<<< HEAD
-    :ivar scope: Scope at which the operator will be installed. Possible values include: "cluster",
-     "namespace". Default value: "cluster".
-    :vartype scope: str or ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.ScopeType
-    :ivar namespace: The namespace to which this configuration is installed to. Maximum of 253
-     lower case alphanumeric characters, hyphen and period only.
-    :vartype namespace: str
-    :ivar source_kind: Source Kind to pull the configuration data from. Possible values include:
-     "GitRepository".
-    :vartype source_kind: str or
-     ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.SourceKindType
-    :ivar suspend: Whether this configuration should suspend its reconciliation of its
-     kustomizations and sources.
-    :vartype suspend: bool
-    :ivar git_repository: Parameters to reconcile to the GitRepository source kind type.
-    :vartype git_repository:
-     ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.GitRepositoryDefinition
-    :ivar kustomizations: Array of kustomizations used to reconcile the artifact pulled by the
-     source type on the cluster.
-    :vartype kustomizations: dict[str,
-     ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.KustomizationDefinition]
-    :ivar configuration_protected_settings: Key-value pairs of protected configuration settings for
-     the configuration.
-    :vartype configuration_protected_settings: dict[str, str]
-=======
     :param scope: Scope at which the operator will be installed. Possible values include:
      "cluster", "namespace". Default value: "cluster".
     :type scope: str or ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.ScopeType
@@ -986,7 +653,6 @@ class FluxConfiguration(ProxyResource):
     :param configuration_protected_settings: Key-value pairs of protected configuration settings
      for the configuration.
     :type configuration_protected_settings: dict[str, str]
->>>>>>> 331f997c (updating to the latest vendored sdk)
     :ivar statuses: Statuses of the Flux Kubernetes resources created by the fluxConfiguration or
      created by the managed objects provisioned by the fluxConfiguration.
     :vartype statuses:
@@ -1050,54 +716,17 @@ class FluxConfiguration(ProxyResource):
 
     def __init__(
         self,
-        *,
-        scope: Optional[Union[str, "ScopeType"]] = "cluster",
-        namespace: Optional[str] = "default",
-        source_kind: Optional[Union[str, "SourceKindType"]] = None,
-        suspend: Optional[bool] = False,
-        git_repository: Optional["GitRepositoryDefinition"] = None,
-        kustomizations: Optional[Dict[str, "KustomizationDefinition"]] = None,
-        configuration_protected_settings: Optional[Dict[str, str]] = None,
         **kwargs
     ):
-<<<<<<< HEAD
-        """
-        :keyword scope: Scope at which the operator will be installed. Possible values include:
-         "cluster", "namespace". Default value: "cluster".
-        :paramtype scope: str or
-         ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.ScopeType
-        :keyword namespace: The namespace to which this configuration is installed to. Maximum of 253
-         lower case alphanumeric characters, hyphen and period only.
-        :paramtype namespace: str
-        :keyword source_kind: Source Kind to pull the configuration data from. Possible values include:
-         "GitRepository".
-        :paramtype source_kind: str or
-         ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.SourceKindType
-        :keyword suspend: Whether this configuration should suspend its reconciliation of its
-         kustomizations and sources.
-        :paramtype suspend: bool
-        :keyword git_repository: Parameters to reconcile to the GitRepository source kind type.
-        :paramtype git_repository:
-         ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.GitRepositoryDefinition
-        :keyword kustomizations: Array of kustomizations used to reconcile the artifact pulled by the
-         source type on the cluster.
-        :paramtype kustomizations: dict[str,
-         ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.KustomizationDefinition]
-        :keyword configuration_protected_settings: Key-value pairs of protected configuration settings
-         for the configuration.
-        :paramtype configuration_protected_settings: dict[str, str]
-        """
-=======
->>>>>>> 331f997c (updating to the latest vendored sdk)
         super(FluxConfiguration, self).__init__(**kwargs)
         self.system_data = None
-        self.scope = scope
-        self.namespace = namespace
-        self.source_kind = source_kind
-        self.suspend = suspend
-        self.git_repository = git_repository
-        self.kustomizations = kustomizations
-        self.configuration_protected_settings = configuration_protected_settings
+        self.scope = kwargs.get('scope', "cluster")
+        self.namespace = kwargs.get('namespace', "default")
+        self.source_kind = kwargs.get('source_kind', None)
+        self.suspend = kwargs.get('suspend', False)
+        self.git_repository = kwargs.get('git_repository', None)
+        self.kustomizations = kwargs.get('kustomizations', None)
+        self.configuration_protected_settings = kwargs.get('configuration_protected_settings', None)
         self.statuses = None
         self.repository_public_key = None
         self.last_source_synced_commit_id = None
@@ -1110,25 +739,6 @@ class FluxConfiguration(ProxyResource):
 class FluxConfigurationPatch(msrest.serialization.Model):
     """The Flux Configuration Patch Request object.
 
-<<<<<<< HEAD
-    :ivar source_kind: Source Kind to pull the configuration data from. Possible values include:
-     "GitRepository".
-    :vartype source_kind: str or
-     ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.SourceKindType
-    :ivar suspend: Whether this configuration should suspend its reconciliation of its
-     kustomizations and sources.
-    :vartype suspend: bool
-    :ivar git_repository: Parameters to reconcile to the GitRepository source kind type.
-    :vartype git_repository:
-     ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.GitRepositoryDefinition
-    :ivar kustomizations: Array of kustomizations used to reconcile the artifact pulled by the
-     source type on the cluster.
-    :vartype kustomizations: dict[str,
-     ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.KustomizationDefinition]
-    :ivar configuration_protected_settings: Key-value pairs of protected configuration settings for
-     the configuration.
-    :vartype configuration_protected_settings: dict[str, str]
-=======
     :param source_kind: Source Kind to pull the configuration data from. Possible values include:
      "GitRepository".
     :type source_kind: str or
@@ -1146,7 +756,6 @@ class FluxConfigurationPatch(msrest.serialization.Model):
     :param configuration_protected_settings: Key-value pairs of protected configuration settings
      for the configuration.
     :type configuration_protected_settings: dict[str, str]
->>>>>>> 331f997c (updating to the latest vendored sdk)
     """
 
     _attribute_map = {
@@ -1159,42 +768,14 @@ class FluxConfigurationPatch(msrest.serialization.Model):
 
     def __init__(
         self,
-        *,
-        source_kind: Optional[Union[str, "SourceKindType"]] = None,
-        suspend: Optional[bool] = False,
-        git_repository: Optional["GitRepositoryDefinition"] = None,
-        kustomizations: Optional[Dict[str, "KustomizationDefinition"]] = None,
-        configuration_protected_settings: Optional[Dict[str, str]] = None,
         **kwargs
     ):
-<<<<<<< HEAD
-        """
-        :keyword source_kind: Source Kind to pull the configuration data from. Possible values include:
-         "GitRepository".
-        :paramtype source_kind: str or
-         ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.SourceKindType
-        :keyword suspend: Whether this configuration should suspend its reconciliation of its
-         kustomizations and sources.
-        :paramtype suspend: bool
-        :keyword git_repository: Parameters to reconcile to the GitRepository source kind type.
-        :paramtype git_repository:
-         ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.GitRepositoryDefinition
-        :keyword kustomizations: Array of kustomizations used to reconcile the artifact pulled by the
-         source type on the cluster.
-        :paramtype kustomizations: dict[str,
-         ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.KustomizationDefinition]
-        :keyword configuration_protected_settings: Key-value pairs of protected configuration settings
-         for the configuration.
-        :paramtype configuration_protected_settings: dict[str, str]
-        """
-=======
->>>>>>> 331f997c (updating to the latest vendored sdk)
         super(FluxConfigurationPatch, self).__init__(**kwargs)
-        self.source_kind = source_kind
-        self.suspend = suspend
-        self.git_repository = git_repository
-        self.kustomizations = kustomizations
-        self.configuration_protected_settings = configuration_protected_settings
+        self.source_kind = kwargs.get('source_kind', None)
+        self.suspend = kwargs.get('suspend', False)
+        self.git_repository = kwargs.get('git_repository', None)
+        self.kustomizations = kwargs.get('kustomizations', None)
+        self.configuration_protected_settings = kwargs.get('configuration_protected_settings', None)
 
 
 class FluxConfigurationsList(msrest.serialization.Model):
@@ -1223,11 +804,6 @@ class FluxConfigurationsList(msrest.serialization.Model):
         self,
         **kwargs
     ):
-<<<<<<< HEAD
-        """
-        """
-=======
->>>>>>> 331f997c (updating to the latest vendored sdk)
         super(FluxConfigurationsList, self).__init__(**kwargs)
         self.value = None
         self.next_link = None
@@ -1236,31 +812,6 @@ class FluxConfigurationsList(msrest.serialization.Model):
 class GitRepositoryDefinition(msrest.serialization.Model):
     """Parameters to reconcile to the GitRepository source kind type.
 
-<<<<<<< HEAD
-    :ivar url: The URL to sync for the flux configuration git repository.
-    :vartype url: str
-    :ivar timeout_in_seconds: The maximum time to attempt to reconcile the cluster git repository
-     source with the remote.
-    :vartype timeout_in_seconds: long
-    :ivar sync_interval_in_seconds: The interval at which to re-reconcile the cluster git
-     repository source with the remote.
-    :vartype sync_interval_in_seconds: long
-    :ivar repository_ref: The source reference for the GitRepository object.
-    :vartype repository_ref:
-     ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.RepositoryRefDefinition
-    :ivar ssh_known_hosts: Base64-encoded known_hosts value containing public SSH keys required to
-     access private git repositories over SSH.
-    :vartype ssh_known_hosts: str
-    :ivar https_user: Base64-encoded HTTPS username used to access private git repositories over
-     HTTPS.
-    :vartype https_user: str
-    :ivar https_ca_file: Base64-encoded HTTPS certificate authority contents used to access git
-     private git repositories over HTTPS.
-    :vartype https_ca_file: str
-    :ivar local_auth_ref: Name of a local secret on the Kubernetes cluster to use as the
-     authentication secret rather than the managed or user-provided configuration secrets.
-    :vartype local_auth_ref: str
-=======
     :param url: The URL to sync for the flux configuration git repository.
     :type url: str
     :param timeout_in_seconds: The maximum time to attempt to reconcile the cluster git repository
@@ -1284,7 +835,6 @@ class GitRepositoryDefinition(msrest.serialization.Model):
     :param local_auth_ref: Name of a local secret on the Kubernetes cluster to use as the
      authentication secret rather than the managed or user-provided configuration secrets.
     :type local_auth_ref: str
->>>>>>> 331f997c (updating to the latest vendored sdk)
     """
 
     _attribute_map = {
@@ -1300,70 +850,26 @@ class GitRepositoryDefinition(msrest.serialization.Model):
 
     def __init__(
         self,
-        *,
-        url: Optional[str] = None,
-        timeout_in_seconds: Optional[int] = 600,
-        sync_interval_in_seconds: Optional[int] = 600,
-        repository_ref: Optional["RepositoryRefDefinition"] = None,
-        ssh_known_hosts: Optional[str] = None,
-        https_user: Optional[str] = None,
-        https_ca_file: Optional[str] = None,
-        local_auth_ref: Optional[str] = None,
         **kwargs
     ):
-<<<<<<< HEAD
-        """
-        :keyword url: The URL to sync for the flux configuration git repository.
-        :paramtype url: str
-        :keyword timeout_in_seconds: The maximum time to attempt to reconcile the cluster git
-         repository source with the remote.
-        :paramtype timeout_in_seconds: long
-        :keyword sync_interval_in_seconds: The interval at which to re-reconcile the cluster git
-         repository source with the remote.
-        :paramtype sync_interval_in_seconds: long
-        :keyword repository_ref: The source reference for the GitRepository object.
-        :paramtype repository_ref:
-         ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.RepositoryRefDefinition
-        :keyword ssh_known_hosts: Base64-encoded known_hosts value containing public SSH keys required
-         to access private git repositories over SSH.
-        :paramtype ssh_known_hosts: str
-        :keyword https_user: Base64-encoded HTTPS username used to access private git repositories over
-         HTTPS.
-        :paramtype https_user: str
-        :keyword https_ca_file: Base64-encoded HTTPS certificate authority contents used to access git
-         private git repositories over HTTPS.
-        :paramtype https_ca_file: str
-        :keyword local_auth_ref: Name of a local secret on the Kubernetes cluster to use as the
-         authentication secret rather than the managed or user-provided configuration secrets.
-        :paramtype local_auth_ref: str
-        """
-=======
->>>>>>> 331f997c (updating to the latest vendored sdk)
         super(GitRepositoryDefinition, self).__init__(**kwargs)
-        self.url = url
-        self.timeout_in_seconds = timeout_in_seconds
-        self.sync_interval_in_seconds = sync_interval_in_seconds
-        self.repository_ref = repository_ref
-        self.ssh_known_hosts = ssh_known_hosts
-        self.https_user = https_user
-        self.https_ca_file = https_ca_file
-        self.local_auth_ref = local_auth_ref
+        self.url = kwargs.get('url', None)
+        self.timeout_in_seconds = kwargs.get('timeout_in_seconds', 600)
+        self.sync_interval_in_seconds = kwargs.get('sync_interval_in_seconds', 600)
+        self.repository_ref = kwargs.get('repository_ref', None)
+        self.ssh_known_hosts = kwargs.get('ssh_known_hosts', None)
+        self.https_user = kwargs.get('https_user', None)
+        self.https_ca_file = kwargs.get('https_ca_file', None)
+        self.local_auth_ref = kwargs.get('local_auth_ref', None)
 
 
 class HelmOperatorProperties(msrest.serialization.Model):
     """Properties for Helm operator.
 
-<<<<<<< HEAD
-    :ivar chart_version: Version of the operator Helm chart.
-    :vartype chart_version: str
-    :ivar chart_values: Values override for the operator Helm chart.
-    :vartype chart_values: str
-=======
     :param chart_version: Version of the operator Helm chart.
     :type chart_version: str
     :param chart_values: Values override for the operator Helm chart.
     :type chart_values: str
->>>>>>> 331f997c (updating to the latest vendored sdk)
     """
 
     _attribute_map = {
@@ -1373,42 +879,16 @@ class HelmOperatorProperties(msrest.serialization.Model):
 
     def __init__(
         self,
-        *,
-        chart_version: Optional[str] = None,
-        chart_values: Optional[str] = None,
         **kwargs
     ):
-<<<<<<< HEAD
-        """
-        :keyword chart_version: Version of the operator Helm chart.
-        :paramtype chart_version: str
-        :keyword chart_values: Values override for the operator Helm chart.
-        :paramtype chart_values: str
-        """
-=======
->>>>>>> 331f997c (updating to the latest vendored sdk)
         super(HelmOperatorProperties, self).__init__(**kwargs)
-        self.chart_version = chart_version
-        self.chart_values = chart_values
+        self.chart_version = kwargs.get('chart_version', None)
+        self.chart_values = kwargs.get('chart_values', None)
 
 
 class HelmReleasePropertiesDefinition(msrest.serialization.Model):
     """HelmReleasePropertiesDefinition.
 
-<<<<<<< HEAD
-    :ivar last_revision_applied: The revision number of the last released object change.
-    :vartype last_revision_applied: long
-    :ivar helm_chart_ref: The reference to the HelmChart object used as the source to this
-     HelmRelease.
-    :vartype helm_chart_ref:
-     ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.ObjectReferenceDefinition
-    :ivar failure_count: Total number of times that the HelmRelease failed to install or upgrade.
-    :vartype failure_count: long
-    :ivar install_failure_count: Number of times that the HelmRelease failed to install.
-    :vartype install_failure_count: long
-    :ivar upgrade_failure_count: Number of times that the HelmRelease failed to upgrade.
-    :vartype upgrade_failure_count: long
-=======
     :param last_revision_applied: The revision number of the last released object change.
     :type last_revision_applied: long
     :param helm_chart_ref: The reference to the HelmChart object used as the source to this
@@ -1421,7 +901,6 @@ class HelmReleasePropertiesDefinition(msrest.serialization.Model):
     :type install_failure_count: long
     :param upgrade_failure_count: Number of times that the HelmRelease failed to upgrade.
     :type upgrade_failure_count: long
->>>>>>> 331f997c (updating to the latest vendored sdk)
     """
 
     _attribute_map = {
@@ -1434,38 +913,14 @@ class HelmReleasePropertiesDefinition(msrest.serialization.Model):
 
     def __init__(
         self,
-        *,
-        last_revision_applied: Optional[int] = None,
-        helm_chart_ref: Optional["ObjectReferenceDefinition"] = None,
-        failure_count: Optional[int] = None,
-        install_failure_count: Optional[int] = None,
-        upgrade_failure_count: Optional[int] = None,
         **kwargs
     ):
-<<<<<<< HEAD
-        """
-        :keyword last_revision_applied: The revision number of the last released object change.
-        :paramtype last_revision_applied: long
-        :keyword helm_chart_ref: The reference to the HelmChart object used as the source to this
-         HelmRelease.
-        :paramtype helm_chart_ref:
-         ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.ObjectReferenceDefinition
-        :keyword failure_count: Total number of times that the HelmRelease failed to install or
-         upgrade.
-        :paramtype failure_count: long
-        :keyword install_failure_count: Number of times that the HelmRelease failed to install.
-        :paramtype install_failure_count: long
-        :keyword upgrade_failure_count: Number of times that the HelmRelease failed to upgrade.
-        :paramtype upgrade_failure_count: long
-        """
-=======
->>>>>>> 331f997c (updating to the latest vendored sdk)
         super(HelmReleasePropertiesDefinition, self).__init__(**kwargs)
-        self.last_revision_applied = last_revision_applied
-        self.helm_chart_ref = helm_chart_ref
-        self.failure_count = failure_count
-        self.install_failure_count = install_failure_count
-        self.upgrade_failure_count = upgrade_failure_count
+        self.last_revision_applied = kwargs.get('last_revision_applied', None)
+        self.helm_chart_ref = kwargs.get('helm_chart_ref', None)
+        self.failure_count = kwargs.get('failure_count', None)
+        self.install_failure_count = kwargs.get('install_failure_count', None)
+        self.upgrade_failure_count = kwargs.get('upgrade_failure_count', None)
 
 
 class Identity(msrest.serialization.Model):
@@ -1477,15 +932,9 @@ class Identity(msrest.serialization.Model):
     :vartype principal_id: str
     :ivar tenant_id: The tenant ID of resource.
     :vartype tenant_id: str
-<<<<<<< HEAD
-    :ivar type: The identity type. The only acceptable values to pass in are None and
-     "SystemAssigned". The default value is None.
-    :vartype type: str
-=======
     :param type: The identity type. The only acceptable values to pass in are None and
      "SystemAssigned". The default value is None.
     :type type: str
->>>>>>> 331f997c (updating to the latest vendored sdk)
     """
 
     _validation = {
@@ -1501,55 +950,17 @@ class Identity(msrest.serialization.Model):
 
     def __init__(
         self,
-        *,
-        type: Optional[str] = None,
         **kwargs
     ):
-<<<<<<< HEAD
-        """
-        :keyword type: The identity type. The only acceptable values to pass in are None and
-         "SystemAssigned". The default value is None.
-        :paramtype type: str
-        """
-=======
->>>>>>> 331f997c (updating to the latest vendored sdk)
         super(Identity, self).__init__(**kwargs)
         self.principal_id = None
         self.tenant_id = None
-        self.type = type
+        self.type = kwargs.get('type', None)
 
 
 class KustomizationDefinition(msrest.serialization.Model):
     """The Kustomization defining how to reconcile the artifact pulled by the source type on the cluster.
 
-<<<<<<< HEAD
-    :ivar path: The path in the source reference to reconcile on the cluster.
-    :vartype path: str
-    :ivar depends_on: Specifies other Kustomizations that this Kustomization depends on. This
-     Kustomization will not reconcile until all dependencies have completed their reconciliation.
-    :vartype depends_on:
-     list[~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.DependsOnDefinition]
-    :ivar timeout_in_seconds: The maximum time to attempt to reconcile the Kustomization on the
-     cluster.
-    :vartype timeout_in_seconds: long
-    :ivar sync_interval_in_seconds: The interval at which to re-reconcile the Kustomization on the
-     cluster.
-    :vartype sync_interval_in_seconds: long
-    :ivar retry_interval_in_seconds: The interval at which to re-reconcile the Kustomization on the
-     cluster in the event of failure on reconciliation.
-    :vartype retry_interval_in_seconds: long
-    :ivar prune: Enable/disable garbage collections of Kubernetes objects created by this
-     Kustomization.
-    :vartype prune: bool
-    :ivar validation: Specify whether to validate the Kubernetes objects referenced in the
-     Kustomization before applying them to the cluster. Possible values include: "none", "client",
-     "server". Default value: "none".
-    :vartype validation: str or
-     ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.KustomizationValidationType
-    :ivar force: Enable/disable re-creating Kubernetes resources on the cluster when patching fails
-     due to an immutable field change.
-    :vartype force: bool
-=======
     :param path: The path in the source reference to reconcile on the cluster.
     :type path: str
     :param depends_on: Specifies other Kustomizations that this Kustomization depends on. This
@@ -1576,7 +987,6 @@ class KustomizationDefinition(msrest.serialization.Model):
     :param force: Enable/disable re-creating Kubernetes resources on the cluster when patching
      fails due to an immutable field change.
     :type force: bool
->>>>>>> 331f997c (updating to the latest vendored sdk)
     """
 
     _attribute_map = {
@@ -1592,73 +1002,26 @@ class KustomizationDefinition(msrest.serialization.Model):
 
     def __init__(
         self,
-        *,
-        path: Optional[str] = "",
-        depends_on: Optional[List["DependsOnDefinition"]] = None,
-        timeout_in_seconds: Optional[int] = 600,
-        sync_interval_in_seconds: Optional[int] = 600,
-        retry_interval_in_seconds: Optional[int] = None,
-        prune: Optional[bool] = False,
-        validation: Optional[Union[str, "KustomizationValidationType"]] = "none",
-        force: Optional[bool] = False,
         **kwargs
     ):
-<<<<<<< HEAD
-        """
-        :keyword path: The path in the source reference to reconcile on the cluster.
-        :paramtype path: str
-        :keyword depends_on: Specifies other Kustomizations that this Kustomization depends on. This
-         Kustomization will not reconcile until all dependencies have completed their reconciliation.
-        :paramtype depends_on:
-         list[~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.DependsOnDefinition]
-        :keyword timeout_in_seconds: The maximum time to attempt to reconcile the Kustomization on the
-         cluster.
-        :paramtype timeout_in_seconds: long
-        :keyword sync_interval_in_seconds: The interval at which to re-reconcile the Kustomization on
-         the cluster.
-        :paramtype sync_interval_in_seconds: long
-        :keyword retry_interval_in_seconds: The interval at which to re-reconcile the Kustomization on
-         the cluster in the event of failure on reconciliation.
-        :paramtype retry_interval_in_seconds: long
-        :keyword prune: Enable/disable garbage collections of Kubernetes objects created by this
-         Kustomization.
-        :paramtype prune: bool
-        :keyword validation: Specify whether to validate the Kubernetes objects referenced in the
-         Kustomization before applying them to the cluster. Possible values include: "none", "client",
-         "server". Default value: "none".
-        :paramtype validation: str or
-         ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.KustomizationValidationType
-        :keyword force: Enable/disable re-creating Kubernetes resources on the cluster when patching
-         fails due to an immutable field change.
-        :paramtype force: bool
-        """
-=======
->>>>>>> 331f997c (updating to the latest vendored sdk)
         super(KustomizationDefinition, self).__init__(**kwargs)
-        self.path = path
-        self.depends_on = depends_on
-        self.timeout_in_seconds = timeout_in_seconds
-        self.sync_interval_in_seconds = sync_interval_in_seconds
-        self.retry_interval_in_seconds = retry_interval_in_seconds
-        self.prune = prune
-        self.validation = validation
-        self.force = force
+        self.path = kwargs.get('path', "")
+        self.depends_on = kwargs.get('depends_on', None)
+        self.timeout_in_seconds = kwargs.get('timeout_in_seconds', 600)
+        self.sync_interval_in_seconds = kwargs.get('sync_interval_in_seconds', 600)
+        self.retry_interval_in_seconds = kwargs.get('retry_interval_in_seconds', None)
+        self.prune = kwargs.get('prune', False)
+        self.validation = kwargs.get('validation', "none")
+        self.force = kwargs.get('force', False)
 
 
 class ObjectReferenceDefinition(msrest.serialization.Model):
     """Object reference to a Kubernetes object on a cluster.
 
-<<<<<<< HEAD
-    :ivar name: Name of the object.
-    :vartype name: str
-    :ivar namespace: Namespace of the object.
-    :vartype namespace: str
-=======
     :param name: Name of the object.
     :type name: str
     :param namespace: Namespace of the object.
     :type namespace: str
->>>>>>> 331f997c (updating to the latest vendored sdk)
     """
 
     _attribute_map = {
@@ -1668,40 +1031,16 @@ class ObjectReferenceDefinition(msrest.serialization.Model):
 
     def __init__(
         self,
-        *,
-        name: Optional[str] = None,
-        namespace: Optional[str] = None,
         **kwargs
     ):
-<<<<<<< HEAD
-        """
-        :keyword name: Name of the object.
-        :paramtype name: str
-        :keyword namespace: Namespace of the object.
-        :paramtype namespace: str
-        """
-=======
->>>>>>> 331f997c (updating to the latest vendored sdk)
         super(ObjectReferenceDefinition, self).__init__(**kwargs)
-        self.name = name
-        self.namespace = namespace
+        self.name = kwargs.get('name', None)
+        self.namespace = kwargs.get('namespace', None)
 
 
 class ObjectStatusConditionDefinition(msrest.serialization.Model):
     """Status condition of Kubernetes object.
 
-<<<<<<< HEAD
-    :ivar last_transition_time: Last time this status condition has changed.
-    :vartype last_transition_time: ~datetime.datetime
-    :ivar message: A more verbose description of the object status condition.
-    :vartype message: str
-    :ivar reason: Reason for the specified status condition type status.
-    :vartype reason: str
-    :ivar status: Status of the Kubernetes object condition type.
-    :vartype status: str
-    :ivar type: Object status condition type for this object.
-    :vartype type: str
-=======
     :param last_transition_time: Last time this status condition has changed.
     :type last_transition_time: ~datetime.datetime
     :param message: A more verbose description of the object status condition.
@@ -1712,7 +1051,6 @@ class ObjectStatusConditionDefinition(msrest.serialization.Model):
     :type status: str
     :param type: Object status condition type for this object.
     :type type: str
->>>>>>> 331f997c (updating to the latest vendored sdk)
     """
 
     _attribute_map = {
@@ -1725,62 +1063,19 @@ class ObjectStatusConditionDefinition(msrest.serialization.Model):
 
     def __init__(
         self,
-        *,
-        last_transition_time: Optional[datetime.datetime] = None,
-        message: Optional[str] = None,
-        reason: Optional[str] = None,
-        status: Optional[str] = None,
-        type: Optional[str] = None,
         **kwargs
     ):
-<<<<<<< HEAD
-        """
-        :keyword last_transition_time: Last time this status condition has changed.
-        :paramtype last_transition_time: ~datetime.datetime
-        :keyword message: A more verbose description of the object status condition.
-        :paramtype message: str
-        :keyword reason: Reason for the specified status condition type status.
-        :paramtype reason: str
-        :keyword status: Status of the Kubernetes object condition type.
-        :paramtype status: str
-        :keyword type: Object status condition type for this object.
-        :paramtype type: str
-        """
-=======
->>>>>>> 331f997c (updating to the latest vendored sdk)
         super(ObjectStatusConditionDefinition, self).__init__(**kwargs)
-        self.last_transition_time = last_transition_time
-        self.message = message
-        self.reason = reason
-        self.status = status
-        self.type = type
+        self.last_transition_time = kwargs.get('last_transition_time', None)
+        self.message = kwargs.get('message', None)
+        self.reason = kwargs.get('reason', None)
+        self.status = kwargs.get('status', None)
+        self.type = kwargs.get('type', None)
 
 
 class ObjectStatusDefinition(msrest.serialization.Model):
     """Statuses of objects deployed by the user-specified kustomizations from the git repository.
 
-<<<<<<< HEAD
-    :ivar name: Name of the applied object.
-    :vartype name: str
-    :ivar namespace: Namespace of the applied object.
-    :vartype namespace: str
-    :ivar kind: Kind of the applied object.
-    :vartype kind: str
-    :ivar compliance_state: Compliance state of the applied object showing whether the applied
-     object has come into a ready state on the cluster. Possible values include: "Compliant",
-     "Non-Compliant", "Pending", "Suspended", "Unknown". Default value: "Unknown".
-    :vartype compliance_state: str or
-     ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.FluxComplianceState
-    :ivar applied_by: Object reference to the Kustomization that applied this object.
-    :vartype applied_by:
-     ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.ObjectReferenceDefinition
-    :ivar status_conditions: List of Kubernetes object status conditions present on the cluster.
-    :vartype status_conditions:
-     list[~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.ObjectStatusConditionDefinition]
-    :ivar helm_release_properties: Additional properties that are provided from objects of the
-     HelmRelease kind.
-    :vartype helm_release_properties:
-=======
     :param name: Name of the applied object.
     :type name: str
     :param namespace: Namespace of the applied object.
@@ -1801,7 +1096,6 @@ class ObjectStatusDefinition(msrest.serialization.Model):
     :param helm_release_properties: Additional properties that are provided from objects of the
      HelmRelease kind.
     :type helm_release_properties:
->>>>>>> 331f997c (updating to the latest vendored sdk)
      ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.HelmReleasePropertiesDefinition
     """
 
@@ -1817,50 +1111,16 @@ class ObjectStatusDefinition(msrest.serialization.Model):
 
     def __init__(
         self,
-        *,
-        name: Optional[str] = None,
-        namespace: Optional[str] = None,
-        kind: Optional[str] = None,
-        compliance_state: Optional[Union[str, "FluxComplianceState"]] = "Unknown",
-        applied_by: Optional["ObjectReferenceDefinition"] = None,
-        status_conditions: Optional[List["ObjectStatusConditionDefinition"]] = None,
-        helm_release_properties: Optional["HelmReleasePropertiesDefinition"] = None,
         **kwargs
     ):
-<<<<<<< HEAD
-        """
-        :keyword name: Name of the applied object.
-        :paramtype name: str
-        :keyword namespace: Namespace of the applied object.
-        :paramtype namespace: str
-        :keyword kind: Kind of the applied object.
-        :paramtype kind: str
-        :keyword compliance_state: Compliance state of the applied object showing whether the applied
-         object has come into a ready state on the cluster. Possible values include: "Compliant",
-         "Non-Compliant", "Pending", "Suspended", "Unknown". Default value: "Unknown".
-        :paramtype compliance_state: str or
-         ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.FluxComplianceState
-        :keyword applied_by: Object reference to the Kustomization that applied this object.
-        :paramtype applied_by:
-         ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.ObjectReferenceDefinition
-        :keyword status_conditions: List of Kubernetes object status conditions present on the cluster.
-        :paramtype status_conditions:
-         list[~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.ObjectStatusConditionDefinition]
-        :keyword helm_release_properties: Additional properties that are provided from objects of the
-         HelmRelease kind.
-        :paramtype helm_release_properties:
-         ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.HelmReleasePropertiesDefinition
-        """
-=======
->>>>>>> 331f997c (updating to the latest vendored sdk)
         super(ObjectStatusDefinition, self).__init__(**kwargs)
-        self.name = name
-        self.namespace = namespace
-        self.kind = kind
-        self.compliance_state = compliance_state
-        self.applied_by = applied_by
-        self.status_conditions = status_conditions
-        self.helm_release_properties = helm_release_properties
+        self.name = kwargs.get('name', None)
+        self.namespace = kwargs.get('namespace', None)
+        self.kind = kwargs.get('kind', None)
+        self.compliance_state = kwargs.get('compliance_state', "Unknown")
+        self.applied_by = kwargs.get('applied_by', None)
+        self.status_conditions = kwargs.get('status_conditions', None)
+        self.helm_release_properties = kwargs.get('helm_release_properties', None)
 
 
 class OperationStatusList(msrest.serialization.Model):
@@ -1889,11 +1149,6 @@ class OperationStatusList(msrest.serialization.Model):
         self,
         **kwargs
     ):
-<<<<<<< HEAD
-        """
-        """
-=======
->>>>>>> 331f997c (updating to the latest vendored sdk)
         super(OperationStatusList, self).__init__(**kwargs)
         self.value = None
         self.next_link = None
@@ -1906,16 +1161,6 @@ class OperationStatusResult(msrest.serialization.Model):
 
     All required parameters must be populated in order to send to Azure.
 
-<<<<<<< HEAD
-    :ivar id: Fully qualified ID for the async operation.
-    :vartype id: str
-    :ivar name: Name of the async operation.
-    :vartype name: str
-    :ivar status: Required. Operation status.
-    :vartype status: str
-    :ivar properties: Additional information, if available.
-    :vartype properties: dict[str, str]
-=======
     :param id: Fully qualified ID for the async operation.
     :type id: str
     :param name: Name of the async operation.
@@ -1924,7 +1169,6 @@ class OperationStatusResult(msrest.serialization.Model):
     :type status: str
     :param properties: Additional information, if available.
     :type properties: dict[str, str]
->>>>>>> 331f997c (updating to the latest vendored sdk)
     :ivar error: If present, details of the operation error.
     :vartype error: ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.ErrorDetail
     """
@@ -1944,54 +1188,19 @@ class OperationStatusResult(msrest.serialization.Model):
 
     def __init__(
         self,
-        *,
-        status: str,
-        id: Optional[str] = None,
-        name: Optional[str] = None,
-        properties: Optional[Dict[str, str]] = None,
         **kwargs
     ):
-<<<<<<< HEAD
-        """
-        :keyword id: Fully qualified ID for the async operation.
-        :paramtype id: str
-        :keyword name: Name of the async operation.
-        :paramtype name: str
-        :keyword status: Required. Operation status.
-        :paramtype status: str
-        :keyword properties: Additional information, if available.
-        :paramtype properties: dict[str, str]
-        """
-=======
->>>>>>> 331f997c (updating to the latest vendored sdk)
         super(OperationStatusResult, self).__init__(**kwargs)
-        self.id = id
-        self.name = name
-        self.status = status
-        self.properties = properties
+        self.id = kwargs.get('id', None)
+        self.name = kwargs.get('name', None)
+        self.status = kwargs['status']
+        self.properties = kwargs.get('properties', None)
         self.error = None
 
 
 class PatchExtension(msrest.serialization.Model):
     """The Extension Patch Request object.
 
-<<<<<<< HEAD
-    :ivar auto_upgrade_minor_version: Flag to note if this extension participates in auto upgrade
-     of minor version, or not.
-    :vartype auto_upgrade_minor_version: bool
-    :ivar release_train: ReleaseTrain this extension participates in for auto-upgrade (e.g. Stable,
-     Preview, etc.) - only if autoUpgradeMinorVersion is 'true'.
-    :vartype release_train: str
-    :ivar version: Version of the extension for this extension, if it is 'pinned' to a specific
-     version. autoUpgradeMinorVersion must be 'false'.
-    :vartype version: str
-    :ivar configuration_settings: Configuration settings, as name-value pairs for configuring this
-     extension.
-    :vartype configuration_settings: dict[str, str]
-    :ivar configuration_protected_settings: Configuration settings that are sensitive, as
-     name-value pairs for configuring this extension.
-    :vartype configuration_protected_settings: dict[str, str]
-=======
     :param auto_upgrade_minor_version: Flag to note if this extension participates in auto upgrade
      of minor version, or not.
     :type auto_upgrade_minor_version: bool
@@ -2007,7 +1216,6 @@ class PatchExtension(msrest.serialization.Model):
     :param configuration_protected_settings: Configuration settings that are sensitive, as
      name-value pairs for configuring this extension.
     :type configuration_protected_settings: dict[str, str]
->>>>>>> 331f997c (updating to the latest vendored sdk)
     """
 
     _attribute_map = {
@@ -2020,57 +1228,19 @@ class PatchExtension(msrest.serialization.Model):
 
     def __init__(
         self,
-        *,
-        auto_upgrade_minor_version: Optional[bool] = True,
-        release_train: Optional[str] = "Stable",
-        version: Optional[str] = None,
-        configuration_settings: Optional[Dict[str, str]] = None,
-        configuration_protected_settings: Optional[Dict[str, str]] = None,
         **kwargs
     ):
-<<<<<<< HEAD
-        """
-        :keyword auto_upgrade_minor_version: Flag to note if this extension participates in auto
-         upgrade of minor version, or not.
-        :paramtype auto_upgrade_minor_version: bool
-        :keyword release_train: ReleaseTrain this extension participates in for auto-upgrade (e.g.
-         Stable, Preview, etc.) - only if autoUpgradeMinorVersion is 'true'.
-        :paramtype release_train: str
-        :keyword version: Version of the extension for this extension, if it is 'pinned' to a specific
-         version. autoUpgradeMinorVersion must be 'false'.
-        :paramtype version: str
-        :keyword configuration_settings: Configuration settings, as name-value pairs for configuring
-         this extension.
-        :paramtype configuration_settings: dict[str, str]
-        :keyword configuration_protected_settings: Configuration settings that are sensitive, as
-         name-value pairs for configuring this extension.
-        :paramtype configuration_protected_settings: dict[str, str]
-        """
-=======
->>>>>>> 331f997c (updating to the latest vendored sdk)
         super(PatchExtension, self).__init__(**kwargs)
-        self.auto_upgrade_minor_version = auto_upgrade_minor_version
-        self.release_train = release_train
-        self.version = version
-        self.configuration_settings = configuration_settings
-        self.configuration_protected_settings = configuration_protected_settings
+        self.auto_upgrade_minor_version = kwargs.get('auto_upgrade_minor_version', True)
+        self.release_train = kwargs.get('release_train', "Stable")
+        self.version = kwargs.get('version', None)
+        self.configuration_settings = kwargs.get('configuration_settings', None)
+        self.configuration_protected_settings = kwargs.get('configuration_protected_settings', None)
 
 
 class RepositoryRefDefinition(msrest.serialization.Model):
     """The source reference for the GitRepository object.
 
-<<<<<<< HEAD
-    :ivar branch: The git repository branch name to checkout.
-    :vartype branch: str
-    :ivar tag: The git repository tag name to checkout. This takes precedence over branch.
-    :vartype tag: str
-    :ivar semver: The semver range used to match against git repository tags. This takes precedence
-     over tag.
-    :vartype semver: str
-    :ivar commit: The commit SHA to checkout. This value must be combined with the branch name to
-     be valid. This takes precedence over semver.
-    :vartype commit: str
-=======
     :param branch: The git repository branch name to checkout.
     :type branch: str
     :param tag: The git repository tag name to checkout. This takes precedence over branch.
@@ -2081,7 +1251,6 @@ class RepositoryRefDefinition(msrest.serialization.Model):
     :param commit: The commit SHA to checkout. This value must be combined with the branch name to
      be valid. This takes precedence over semver.
     :type commit: str
->>>>>>> 331f997c (updating to the latest vendored sdk)
     """
 
     _attribute_map = {
@@ -2093,33 +1262,13 @@ class RepositoryRefDefinition(msrest.serialization.Model):
 
     def __init__(
         self,
-        *,
-        branch: Optional[str] = None,
-        tag: Optional[str] = None,
-        semver: Optional[str] = None,
-        commit: Optional[str] = None,
         **kwargs
     ):
-<<<<<<< HEAD
-        """
-        :keyword branch: The git repository branch name to checkout.
-        :paramtype branch: str
-        :keyword tag: The git repository tag name to checkout. This takes precedence over branch.
-        :paramtype tag: str
-        :keyword semver: The semver range used to match against git repository tags. This takes
-         precedence over tag.
-        :paramtype semver: str
-        :keyword commit: The commit SHA to checkout. This value must be combined with the branch name
-         to be valid. This takes precedence over semver.
-        :paramtype commit: str
-        """
-=======
->>>>>>> 331f997c (updating to the latest vendored sdk)
         super(RepositoryRefDefinition, self).__init__(**kwargs)
-        self.branch = branch
-        self.tag = tag
-        self.semver = semver
-        self.commit = commit
+        self.branch = kwargs.get('branch', None)
+        self.tag = kwargs.get('tag', None)
+        self.semver = kwargs.get('semver', None)
+        self.commit = kwargs.get('commit', None)
 
 
 class ResourceProviderOperation(msrest.serialization.Model):
@@ -2127,17 +1276,10 @@ class ResourceProviderOperation(msrest.serialization.Model):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-<<<<<<< HEAD
-    :ivar name: Operation name, in format of {provider}/{resource}/{operation}.
-    :vartype name: str
-    :ivar display: Display metadata associated with the operation.
-    :vartype display:
-=======
     :param name: Operation name, in format of {provider}/{resource}/{operation}.
     :type name: str
     :param display: Display metadata associated with the operation.
     :type display:
->>>>>>> 331f997c (updating to the latest vendored sdk)
      ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.ResourceProviderOperationDisplay
     :ivar is_data_action: The flag that indicates whether the operation applies to data plane.
     :vartype is_data_action: bool
@@ -2159,24 +1301,11 @@ class ResourceProviderOperation(msrest.serialization.Model):
 
     def __init__(
         self,
-        *,
-        name: Optional[str] = None,
-        display: Optional["ResourceProviderOperationDisplay"] = None,
         **kwargs
     ):
-<<<<<<< HEAD
-        """
-        :keyword name: Operation name, in format of {provider}/{resource}/{operation}.
-        :paramtype name: str
-        :keyword display: Display metadata associated with the operation.
-        :paramtype display:
-         ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.ResourceProviderOperationDisplay
-        """
-=======
->>>>>>> 331f997c (updating to the latest vendored sdk)
         super(ResourceProviderOperation, self).__init__(**kwargs)
-        self.name = name
-        self.display = display
+        self.name = kwargs.get('name', None)
+        self.display = kwargs.get('display', None)
         self.is_data_action = None
         self.origin = None
 
@@ -2184,16 +1313,6 @@ class ResourceProviderOperation(msrest.serialization.Model):
 class ResourceProviderOperationDisplay(msrest.serialization.Model):
     """Display metadata associated with the operation.
 
-<<<<<<< HEAD
-    :ivar provider: Resource provider: Microsoft KubernetesConfiguration.
-    :vartype provider: str
-    :ivar resource: Resource on which the operation is performed.
-    :vartype resource: str
-    :ivar operation: Type of operation: get, read, delete, etc.
-    :vartype operation: str
-    :ivar description: Description of this operation.
-    :vartype description: str
-=======
     :param provider: Resource provider: Microsoft KubernetesConfiguration.
     :type provider: str
     :param resource: Resource on which the operation is performed.
@@ -2202,7 +1321,6 @@ class ResourceProviderOperationDisplay(msrest.serialization.Model):
     :type operation: str
     :param description: Description of this operation.
     :type description: str
->>>>>>> 331f997c (updating to the latest vendored sdk)
     """
 
     _attribute_map = {
@@ -2214,31 +1332,13 @@ class ResourceProviderOperationDisplay(msrest.serialization.Model):
 
     def __init__(
         self,
-        *,
-        provider: Optional[str] = None,
-        resource: Optional[str] = None,
-        operation: Optional[str] = None,
-        description: Optional[str] = None,
         **kwargs
     ):
-<<<<<<< HEAD
-        """
-        :keyword provider: Resource provider: Microsoft KubernetesConfiguration.
-        :paramtype provider: str
-        :keyword resource: Resource on which the operation is performed.
-        :paramtype resource: str
-        :keyword operation: Type of operation: get, read, delete, etc.
-        :paramtype operation: str
-        :keyword description: Description of this operation.
-        :paramtype description: str
-        """
-=======
->>>>>>> 331f997c (updating to the latest vendored sdk)
         super(ResourceProviderOperationDisplay, self).__init__(**kwargs)
-        self.provider = provider
-        self.resource = resource
-        self.operation = operation
-        self.description = description
+        self.provider = kwargs.get('provider', None)
+        self.resource = kwargs.get('resource', None)
+        self.operation = kwargs.get('operation', None)
+        self.description = kwargs.get('description', None)
 
 
 class ResourceProviderOperationList(msrest.serialization.Model):
@@ -2246,13 +1346,8 @@ class ResourceProviderOperationList(msrest.serialization.Model):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-<<<<<<< HEAD
-    :ivar value: List of operations supported by this resource provider.
-    :vartype value:
-=======
     :param value: List of operations supported by this resource provider.
     :type value:
->>>>>>> 331f997c (updating to the latest vendored sdk)
      list[~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.ResourceProviderOperation]
     :ivar next_link: URL to the next set of results, if any.
     :vartype next_link: str
@@ -2269,38 +1364,20 @@ class ResourceProviderOperationList(msrest.serialization.Model):
 
     def __init__(
         self,
-        *,
-        value: Optional[List["ResourceProviderOperation"]] = None,
         **kwargs
     ):
-<<<<<<< HEAD
-        """
-        :keyword value: List of operations supported by this resource provider.
-        :paramtype value:
-         list[~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.ResourceProviderOperation]
-        """
-=======
->>>>>>> 331f997c (updating to the latest vendored sdk)
         super(ResourceProviderOperationList, self).__init__(**kwargs)
-        self.value = value
+        self.value = kwargs.get('value', None)
         self.next_link = None
 
 
 class Scope(msrest.serialization.Model):
     """Scope of the extension. It can be either Cluster or Namespace; but not both.
 
-<<<<<<< HEAD
-    :ivar cluster: Specifies that the scope of the extension is Cluster.
-    :vartype cluster: ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.ScopeCluster
-    :ivar namespace: Specifies that the scope of the extension is Namespace.
-    :vartype namespace:
-     ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.ScopeNamespace
-=======
     :param cluster: Specifies that the scope of the extension is Cluster.
     :type cluster: ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.ScopeCluster
     :param namespace: Specifies that the scope of the extension is Namespace.
     :type namespace: ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.ScopeNamespace
->>>>>>> 331f997c (updating to the latest vendored sdk)
     """
 
     _attribute_map = {
@@ -2310,38 +1387,19 @@ class Scope(msrest.serialization.Model):
 
     def __init__(
         self,
-        *,
-        cluster: Optional["ScopeCluster"] = None,
-        namespace: Optional["ScopeNamespace"] = None,
         **kwargs
     ):
-<<<<<<< HEAD
-        """
-        :keyword cluster: Specifies that the scope of the extension is Cluster.
-        :paramtype cluster: ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.ScopeCluster
-        :keyword namespace: Specifies that the scope of the extension is Namespace.
-        :paramtype namespace:
-         ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.ScopeNamespace
-        """
-=======
->>>>>>> 331f997c (updating to the latest vendored sdk)
         super(Scope, self).__init__(**kwargs)
-        self.cluster = cluster
-        self.namespace = namespace
+        self.cluster = kwargs.get('cluster', None)
+        self.namespace = kwargs.get('namespace', None)
 
 
 class ScopeCluster(msrest.serialization.Model):
     """Specifies that the scope of the extension is Cluster.
 
-<<<<<<< HEAD
-    :ivar release_namespace: Namespace where the extension Release must be placed, for a Cluster
-     scoped extension.  If this namespace does not exist, it will be created.
-    :vartype release_namespace: str
-=======
     :param release_namespace: Namespace where the extension Release must be placed, for a Cluster
      scoped extension.  If this namespace does not exist, it will be created.
     :type release_namespace: str
->>>>>>> 331f997c (updating to the latest vendored sdk)
     """
 
     _attribute_map = {
@@ -2350,34 +1408,18 @@ class ScopeCluster(msrest.serialization.Model):
 
     def __init__(
         self,
-        *,
-        release_namespace: Optional[str] = None,
         **kwargs
     ):
-<<<<<<< HEAD
-        """
-        :keyword release_namespace: Namespace where the extension Release must be placed, for a Cluster
-         scoped extension.  If this namespace does not exist, it will be created.
-        :paramtype release_namespace: str
-        """
-=======
->>>>>>> 331f997c (updating to the latest vendored sdk)
         super(ScopeCluster, self).__init__(**kwargs)
-        self.release_namespace = release_namespace
+        self.release_namespace = kwargs.get('release_namespace', None)
 
 
 class ScopeNamespace(msrest.serialization.Model):
     """Specifies that the scope of the extension is Namespace.
 
-<<<<<<< HEAD
-    :ivar target_namespace: Namespace where the extension will be created for an Namespace scoped
-     extension.  If this namespace does not exist, it will be created.
-    :vartype target_namespace: str
-=======
     :param target_namespace: Namespace where the extension will be created for an Namespace scoped
      extension.  If this namespace does not exist, it will be created.
     :type target_namespace: str
->>>>>>> 331f997c (updating to the latest vendored sdk)
     """
 
     _attribute_map = {
@@ -2386,20 +1428,10 @@ class ScopeNamespace(msrest.serialization.Model):
 
     def __init__(
         self,
-        *,
-        target_namespace: Optional[str] = None,
         **kwargs
     ):
-<<<<<<< HEAD
-        """
-        :keyword target_namespace: Namespace where the extension will be created for an Namespace
-         scoped extension.  If this namespace does not exist, it will be created.
-        :paramtype target_namespace: str
-        """
-=======
->>>>>>> 331f997c (updating to the latest vendored sdk)
         super(ScopeNamespace, self).__init__(**kwargs)
-        self.target_namespace = target_namespace
+        self.target_namespace = kwargs.get('target_namespace', None)
 
 
 class SourceControlConfiguration(ProxyResource):
@@ -2418,27 +1450,6 @@ class SourceControlConfiguration(ProxyResource):
     :ivar system_data: Top level metadata
      https://github.com/Azure/azure-resource-manager-rpc/blob/master/v1.0/common-api-contracts.md#system-metadata-for-all-azure-resources.
     :vartype system_data: ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.SystemData
-<<<<<<< HEAD
-    :ivar repository_url: Url of the SourceControl Repository.
-    :vartype repository_url: str
-    :ivar operator_namespace: The namespace to which this operator is installed to. Maximum of 253
-     lower case alphanumeric characters, hyphen and period only.
-    :vartype operator_namespace: str
-    :ivar operator_instance_name: Instance name of the operator - identifying the specific
-     configuration.
-    :vartype operator_instance_name: str
-    :ivar operator_type: Type of the operator. Possible values include: "Flux".
-    :vartype operator_type: str or
-     ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.OperatorType
-    :ivar operator_params: Any Parameters for the Operator instance in string format.
-    :vartype operator_params: str
-    :ivar configuration_protected_settings: Name-value pairs of protected configuration settings
-     for the configuration.
-    :vartype configuration_protected_settings: dict[str, str]
-    :ivar operator_scope: Scope at which the operator will be installed. Possible values include:
-     "cluster", "namespace". Default value: "cluster".
-    :vartype operator_scope: str or
-=======
     :param repository_url: Url of the SourceControl Repository.
     :type repository_url: str
     :param operator_namespace: The namespace to which this operator is installed to. Maximum of 253
@@ -2458,20 +1469,10 @@ class SourceControlConfiguration(ProxyResource):
     :param operator_scope: Scope at which the operator will be installed. Possible values include:
      "cluster", "namespace". Default value: "cluster".
     :type operator_scope: str or
->>>>>>> 331f997c (updating to the latest vendored sdk)
      ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.OperatorScopeType
     :ivar repository_public_key: Public Key associated with this SourceControl configuration
      (either generated within the cluster or provided by the user).
     :vartype repository_public_key: str
-<<<<<<< HEAD
-    :ivar ssh_known_hosts_contents: Base64-encoded known_hosts contents containing public SSH keys
-     required to access private Git instances.
-    :vartype ssh_known_hosts_contents: str
-    :ivar enable_helm_operator: Option to enable Helm Operator for this git configuration.
-    :vartype enable_helm_operator: bool
-    :ivar helm_operator_properties: Properties for Helm operator.
-    :vartype helm_operator_properties:
-=======
     :param ssh_known_hosts_contents: Base64-encoded known_hosts contents containing public SSH keys
      required to access private Git instances.
     :type ssh_known_hosts_contents: str
@@ -2479,7 +1480,6 @@ class SourceControlConfiguration(ProxyResource):
     :type enable_helm_operator: bool
     :param helm_operator_properties: Properties for Helm operator.
     :type helm_operator_properties:
->>>>>>> 331f997c (updating to the latest vendored sdk)
      ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.HelmOperatorProperties
     :ivar provisioning_state: The provisioning state of the resource provider. Possible values
      include: "Accepted", "Deleting", "Running", "Succeeded", "Failed".
@@ -2522,65 +1522,21 @@ class SourceControlConfiguration(ProxyResource):
 
     def __init__(
         self,
-        *,
-        repository_url: Optional[str] = None,
-        operator_namespace: Optional[str] = "default",
-        operator_instance_name: Optional[str] = None,
-        operator_type: Optional[Union[str, "OperatorType"]] = None,
-        operator_params: Optional[str] = None,
-        configuration_protected_settings: Optional[Dict[str, str]] = None,
-        operator_scope: Optional[Union[str, "OperatorScopeType"]] = "cluster",
-        ssh_known_hosts_contents: Optional[str] = None,
-        enable_helm_operator: Optional[bool] = None,
-        helm_operator_properties: Optional["HelmOperatorProperties"] = None,
         **kwargs
     ):
-<<<<<<< HEAD
-        """
-        :keyword repository_url: Url of the SourceControl Repository.
-        :paramtype repository_url: str
-        :keyword operator_namespace: The namespace to which this operator is installed to. Maximum of
-         253 lower case alphanumeric characters, hyphen and period only.
-        :paramtype operator_namespace: str
-        :keyword operator_instance_name: Instance name of the operator - identifying the specific
-         configuration.
-        :paramtype operator_instance_name: str
-        :keyword operator_type: Type of the operator. Possible values include: "Flux".
-        :paramtype operator_type: str or
-         ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.OperatorType
-        :keyword operator_params: Any Parameters for the Operator instance in string format.
-        :paramtype operator_params: str
-        :keyword configuration_protected_settings: Name-value pairs of protected configuration settings
-         for the configuration.
-        :paramtype configuration_protected_settings: dict[str, str]
-        :keyword operator_scope: Scope at which the operator will be installed. Possible values
-         include: "cluster", "namespace". Default value: "cluster".
-        :paramtype operator_scope: str or
-         ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.OperatorScopeType
-        :keyword ssh_known_hosts_contents: Base64-encoded known_hosts contents containing public SSH
-         keys required to access private Git instances.
-        :paramtype ssh_known_hosts_contents: str
-        :keyword enable_helm_operator: Option to enable Helm Operator for this git configuration.
-        :paramtype enable_helm_operator: bool
-        :keyword helm_operator_properties: Properties for Helm operator.
-        :paramtype helm_operator_properties:
-         ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.HelmOperatorProperties
-        """
-=======
->>>>>>> 331f997c (updating to the latest vendored sdk)
         super(SourceControlConfiguration, self).__init__(**kwargs)
         self.system_data = None
-        self.repository_url = repository_url
-        self.operator_namespace = operator_namespace
-        self.operator_instance_name = operator_instance_name
-        self.operator_type = operator_type
-        self.operator_params = operator_params
-        self.configuration_protected_settings = configuration_protected_settings
-        self.operator_scope = operator_scope
+        self.repository_url = kwargs.get('repository_url', None)
+        self.operator_namespace = kwargs.get('operator_namespace', "default")
+        self.operator_instance_name = kwargs.get('operator_instance_name', None)
+        self.operator_type = kwargs.get('operator_type', None)
+        self.operator_params = kwargs.get('operator_params', None)
+        self.configuration_protected_settings = kwargs.get('configuration_protected_settings', None)
+        self.operator_scope = kwargs.get('operator_scope', "cluster")
         self.repository_public_key = None
-        self.ssh_known_hosts_contents = ssh_known_hosts_contents
-        self.enable_helm_operator = enable_helm_operator
-        self.helm_operator_properties = helm_operator_properties
+        self.ssh_known_hosts_contents = kwargs.get('ssh_known_hosts_contents', None)
+        self.enable_helm_operator = kwargs.get('enable_helm_operator', None)
+        self.helm_operator_properties = kwargs.get('helm_operator_properties', None)
         self.provisioning_state = None
         self.compliance_status = None
 
@@ -2611,11 +1567,6 @@ class SourceControlConfigurationList(msrest.serialization.Model):
         self,
         **kwargs
     ):
-<<<<<<< HEAD
-        """
-        """
-=======
->>>>>>> 331f997c (updating to the latest vendored sdk)
         super(SourceControlConfigurationList, self).__init__(**kwargs)
         self.value = None
         self.next_link = None
@@ -2624,17 +1575,10 @@ class SourceControlConfigurationList(msrest.serialization.Model):
 class SupportedScopes(msrest.serialization.Model):
     """Extension scopes.
 
-<<<<<<< HEAD
-    :ivar default_scope: Default extension scopes: cluster or namespace.
-    :vartype default_scope: str
-    :ivar cluster_scope_settings: Scope settings.
-    :vartype cluster_scope_settings:
-=======
     :param default_scope: Default extension scopes: cluster or namespace.
     :type default_scope: str
     :param cluster_scope_settings: Scope settings.
     :type cluster_scope_settings:
->>>>>>> 331f997c (updating to the latest vendored sdk)
      ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.ClusterScopeSettings
     """
 
@@ -2645,47 +1589,16 @@ class SupportedScopes(msrest.serialization.Model):
 
     def __init__(
         self,
-        *,
-        default_scope: Optional[str] = None,
-        cluster_scope_settings: Optional["ClusterScopeSettings"] = None,
         **kwargs
     ):
-<<<<<<< HEAD
-        """
-        :keyword default_scope: Default extension scopes: cluster or namespace.
-        :paramtype default_scope: str
-        :keyword cluster_scope_settings: Scope settings.
-        :paramtype cluster_scope_settings:
-         ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.ClusterScopeSettings
-        """
-=======
->>>>>>> 331f997c (updating to the latest vendored sdk)
         super(SupportedScopes, self).__init__(**kwargs)
-        self.default_scope = default_scope
-        self.cluster_scope_settings = cluster_scope_settings
+        self.default_scope = kwargs.get('default_scope', None)
+        self.cluster_scope_settings = kwargs.get('cluster_scope_settings', None)
 
 
 class SystemData(msrest.serialization.Model):
     """Metadata pertaining to creation and last modification of the resource.
 
-<<<<<<< HEAD
-    :ivar created_by: The identity that created the resource.
-    :vartype created_by: str
-    :ivar created_by_type: The type of identity that created the resource. Possible values include:
-     "User", "Application", "ManagedIdentity", "Key".
-    :vartype created_by_type: str or
-     ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.CreatedByType
-    :ivar created_at: The timestamp of resource creation (UTC).
-    :vartype created_at: ~datetime.datetime
-    :ivar last_modified_by: The identity that last modified the resource.
-    :vartype last_modified_by: str
-    :ivar last_modified_by_type: The type of identity that last modified the resource. Possible
-     values include: "User", "Application", "ManagedIdentity", "Key".
-    :vartype last_modified_by_type: str or
-     ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.CreatedByType
-    :ivar last_modified_at: The timestamp of resource last modification (UTC).
-    :vartype last_modified_at: ~datetime.datetime
-=======
     :param created_by: The identity that created the resource.
     :type created_by: str
     :param created_by_type: The type of identity that created the resource. Possible values
@@ -2702,7 +1615,6 @@ class SystemData(msrest.serialization.Model):
      ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.CreatedByType
     :param last_modified_at: The timestamp of resource last modification (UTC).
     :type last_modified_at: ~datetime.datetime
->>>>>>> 331f997c (updating to the latest vendored sdk)
     """
 
     _attribute_map = {
@@ -2716,40 +1628,12 @@ class SystemData(msrest.serialization.Model):
 
     def __init__(
         self,
-        *,
-        created_by: Optional[str] = None,
-        created_by_type: Optional[Union[str, "CreatedByType"]] = None,
-        created_at: Optional[datetime.datetime] = None,
-        last_modified_by: Optional[str] = None,
-        last_modified_by_type: Optional[Union[str, "CreatedByType"]] = None,
-        last_modified_at: Optional[datetime.datetime] = None,
         **kwargs
     ):
-<<<<<<< HEAD
-        """
-        :keyword created_by: The identity that created the resource.
-        :paramtype created_by: str
-        :keyword created_by_type: The type of identity that created the resource. Possible values
-         include: "User", "Application", "ManagedIdentity", "Key".
-        :paramtype created_by_type: str or
-         ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.CreatedByType
-        :keyword created_at: The timestamp of resource creation (UTC).
-        :paramtype created_at: ~datetime.datetime
-        :keyword last_modified_by: The identity that last modified the resource.
-        :paramtype last_modified_by: str
-        :keyword last_modified_by_type: The type of identity that last modified the resource. Possible
-         values include: "User", "Application", "ManagedIdentity", "Key".
-        :paramtype last_modified_by_type: str or
-         ~azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models.CreatedByType
-        :keyword last_modified_at: The timestamp of resource last modification (UTC).
-        :paramtype last_modified_at: ~datetime.datetime
-        """
-=======
->>>>>>> 331f997c (updating to the latest vendored sdk)
         super(SystemData, self).__init__(**kwargs)
-        self.created_by = created_by
-        self.created_by_type = created_by_type
-        self.created_at = created_at
-        self.last_modified_by = last_modified_by
-        self.last_modified_by_type = last_modified_by_type
-        self.last_modified_at = last_modified_at
+        self.created_by = kwargs.get('created_by', None)
+        self.created_by_type = kwargs.get('created_by_type', None)
+        self.created_at = kwargs.get('created_at', None)
+        self.last_modified_by = kwargs.get('last_modified_by', None)
+        self.last_modified_by_type = kwargs.get('last_modified_by_type', None)
+        self.last_modified_at = kwargs.get('last_modified_at', None)

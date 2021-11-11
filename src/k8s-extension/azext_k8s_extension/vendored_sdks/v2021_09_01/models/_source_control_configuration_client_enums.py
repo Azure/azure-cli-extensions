@@ -6,12 +6,27 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from enum import Enum
+from enum import Enum, EnumMeta
 from six import with_metaclass
-from azure.core import CaseInsensitiveEnumMeta
+
+class _CaseInsensitiveEnumMeta(EnumMeta):
+    def __getitem__(self, name):
+        return super().__getitem__(name.upper())
+
+    def __getattr__(cls, name):
+        """Return the enum member matching `name`
+        We use __getattr__ instead of descriptors or inserting into the enum
+        class' __dict__ in order to support `name` and `value` being both
+        properties for enum members (which live in the class' __dict__) and
+        enum members themselves.
+        """
+        try:
+            return cls._member_map_[name.upper()]
+        except KeyError:
+            raise AttributeError(name)
 
 
-class CreatedByType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
+class CreatedByType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The type of identity that created the resource.
     """
 
@@ -20,17 +35,17 @@ class CreatedByType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     MANAGED_IDENTITY = "ManagedIdentity"
     KEY = "Key"
 
-class Enum0(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
+class Enum0(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
 
     MICROSOFT_CONTAINER_SERVICE = "Microsoft.ContainerService"
     MICROSOFT_KUBERNETES = "Microsoft.Kubernetes"
 
-class Enum1(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
+class Enum1(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
 
     MANAGED_CLUSTERS = "managedClusters"
     CONNECTED_CLUSTERS = "connectedClusters"
 
-class LevelType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
+class LevelType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Level of the status.
     """
 
@@ -38,7 +53,7 @@ class LevelType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     WARNING = "Warning"
     INFORMATION = "Information"
 
-class ProvisioningState(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
+class ProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The provisioning state of the extension resource.
     """
 

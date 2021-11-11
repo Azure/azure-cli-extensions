@@ -54,15 +54,23 @@ class SourceControlConfigurationClient(MultiApiClientMixin, _SDKClient):
     :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
     """
 
+<<<<<<< HEAD
     DEFAULT_API_VERSION = '2022-03-01'
+=======
+    DEFAULT_API_VERSION = '2021-09-01'
+>>>>>>> 331f997c (updating to the latest vendored sdk)
     _PROFILE_TAG = "azure.mgmt.kubernetesconfiguration.SourceControlConfigurationClient"
     LATEST_PROFILE = ProfileDefinition({
         _PROFILE_TAG: {
             None: DEFAULT_API_VERSION,
+<<<<<<< HEAD
             'cluster_extension_type': '2022-01-01-preview',
             'cluster_extension_types': '2022-01-01-preview',
             'extension_type_versions': '2022-01-01-preview',
             'location_extension_types': '2022-01-01-preview',
+=======
+            'source_control_configurations': '2021-03-01',
+>>>>>>> 331f997c (updating to the latest vendored sdk)
         }},
         _PROFILE_TAG + " latest"
     )
@@ -72,7 +80,11 @@ class SourceControlConfigurationClient(MultiApiClientMixin, _SDKClient):
         credential: "AsyncTokenCredential",
         subscription_id: str,
         api_version: Optional[str] = None,
+<<<<<<< HEAD
         base_url: str = "https://management.azure.com",
+=======
+        base_url: Optional[str] = None,
+>>>>>>> 331f997c (updating to the latest vendored sdk)
         profile: KnownProfiles = KnownProfiles.default,
         **kwargs  # type: Any
     ) -> None:
@@ -97,8 +109,11 @@ class SourceControlConfigurationClient(MultiApiClientMixin, _SDKClient):
            * 2021-05-01-preview: :mod:`v2021_05_01_preview.models<azure.mgmt.kubernetesconfiguration.v2021_05_01_preview.models>`
            * 2021-09-01: :mod:`v2021_09_01.models<azure.mgmt.kubernetesconfiguration.v2021_09_01.models>`
            * 2021-11-01-preview: :mod:`v2021_11_01_preview.models<azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.models>`
+<<<<<<< HEAD
            * 2022-01-01-preview: :mod:`v2022_01_01_preview.models<azure.mgmt.kubernetesconfiguration.v2022_01_01_preview.models>`
            * 2022-03-01: :mod:`v2022_03_01.models<azure.mgmt.kubernetesconfiguration.v2022_03_01.models>`
+=======
+>>>>>>> 331f997c (updating to the latest vendored sdk)
         """
         if api_version == '2020-07-01-preview':
             from ..v2020_07_01_preview import models
@@ -118,12 +133,15 @@ class SourceControlConfigurationClient(MultiApiClientMixin, _SDKClient):
         elif api_version == '2021-11-01-preview':
             from ..v2021_11_01_preview import models
             return models
+<<<<<<< HEAD
         elif api_version == '2022-01-01-preview':
             from ..v2022_01_01_preview import models
             return models
         elif api_version == '2022-03-01':
             from ..v2022_03_01 import models
             return models
+=======
+>>>>>>> 331f997c (updating to the latest vendored sdk)
         raise ValueError("API version {} is not available".format(api_version))
 
     @property
@@ -132,15 +150,21 @@ class SourceControlConfigurationClient(MultiApiClientMixin, _SDKClient):
 
            * 2021-05-01-preview: :class:`ClusterExtensionTypeOperations<azure.mgmt.kubernetesconfiguration.v2021_05_01_preview.aio.operations.ClusterExtensionTypeOperations>`
            * 2021-11-01-preview: :class:`ClusterExtensionTypeOperations<azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.aio.operations.ClusterExtensionTypeOperations>`
+<<<<<<< HEAD
            * 2022-01-01-preview: :class:`ClusterExtensionTypeOperations<azure.mgmt.kubernetesconfiguration.v2022_01_01_preview.aio.operations.ClusterExtensionTypeOperations>`
+=======
+>>>>>>> 331f997c (updating to the latest vendored sdk)
         """
         api_version = self._get_api_version('cluster_extension_type')
         if api_version == '2021-05-01-preview':
             from ..v2021_05_01_preview.aio.operations import ClusterExtensionTypeOperations as OperationClass
         elif api_version == '2021-11-01-preview':
             from ..v2021_11_01_preview.aio.operations import ClusterExtensionTypeOperations as OperationClass
+<<<<<<< HEAD
         elif api_version == '2022-01-01-preview':
             from ..v2022_01_01_preview.aio.operations import ClusterExtensionTypeOperations as OperationClass
+=======
+>>>>>>> 331f997c (updating to the latest vendored sdk)
         else:
             raise ValueError("API version {} does not have operation group 'cluster_extension_type'".format(api_version))
         return OperationClass(self._client, self._config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
@@ -151,15 +175,21 @@ class SourceControlConfigurationClient(MultiApiClientMixin, _SDKClient):
 
            * 2021-05-01-preview: :class:`ClusterExtensionTypesOperations<azure.mgmt.kubernetesconfiguration.v2021_05_01_preview.aio.operations.ClusterExtensionTypesOperations>`
            * 2021-11-01-preview: :class:`ClusterExtensionTypesOperations<azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.aio.operations.ClusterExtensionTypesOperations>`
+<<<<<<< HEAD
            * 2022-01-01-preview: :class:`ClusterExtensionTypesOperations<azure.mgmt.kubernetesconfiguration.v2022_01_01_preview.aio.operations.ClusterExtensionTypesOperations>`
+=======
+>>>>>>> 331f997c (updating to the latest vendored sdk)
         """
         api_version = self._get_api_version('cluster_extension_types')
         if api_version == '2021-05-01-preview':
             from ..v2021_05_01_preview.aio.operations import ClusterExtensionTypesOperations as OperationClass
         elif api_version == '2021-11-01-preview':
             from ..v2021_11_01_preview.aio.operations import ClusterExtensionTypesOperations as OperationClass
+<<<<<<< HEAD
         elif api_version == '2022-01-01-preview':
             from ..v2022_01_01_preview.aio.operations import ClusterExtensionTypesOperations as OperationClass
+=======
+>>>>>>> 331f997c (updating to the latest vendored sdk)
         else:
             raise ValueError("API version {} does not have operation group 'cluster_extension_types'".format(api_version))
         return OperationClass(self._client, self._config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
@@ -170,15 +200,21 @@ class SourceControlConfigurationClient(MultiApiClientMixin, _SDKClient):
 
            * 2021-05-01-preview: :class:`ExtensionTypeVersionsOperations<azure.mgmt.kubernetesconfiguration.v2021_05_01_preview.aio.operations.ExtensionTypeVersionsOperations>`
            * 2021-11-01-preview: :class:`ExtensionTypeVersionsOperations<azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.aio.operations.ExtensionTypeVersionsOperations>`
+<<<<<<< HEAD
            * 2022-01-01-preview: :class:`ExtensionTypeVersionsOperations<azure.mgmt.kubernetesconfiguration.v2022_01_01_preview.aio.operations.ExtensionTypeVersionsOperations>`
+=======
+>>>>>>> 331f997c (updating to the latest vendored sdk)
         """
         api_version = self._get_api_version('extension_type_versions')
         if api_version == '2021-05-01-preview':
             from ..v2021_05_01_preview.aio.operations import ExtensionTypeVersionsOperations as OperationClass
         elif api_version == '2021-11-01-preview':
             from ..v2021_11_01_preview.aio.operations import ExtensionTypeVersionsOperations as OperationClass
+<<<<<<< HEAD
         elif api_version == '2022-01-01-preview':
             from ..v2022_01_01_preview.aio.operations import ExtensionTypeVersionsOperations as OperationClass
+=======
+>>>>>>> 331f997c (updating to the latest vendored sdk)
         else:
             raise ValueError("API version {} does not have operation group 'extension_type_versions'".format(api_version))
         return OperationClass(self._client, self._config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
@@ -191,8 +227,11 @@ class SourceControlConfigurationClient(MultiApiClientMixin, _SDKClient):
            * 2021-05-01-preview: :class:`ExtensionsOperations<azure.mgmt.kubernetesconfiguration.v2021_05_01_preview.aio.operations.ExtensionsOperations>`
            * 2021-09-01: :class:`ExtensionsOperations<azure.mgmt.kubernetesconfiguration.v2021_09_01.aio.operations.ExtensionsOperations>`
            * 2021-11-01-preview: :class:`ExtensionsOperations<azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.aio.operations.ExtensionsOperations>`
+<<<<<<< HEAD
            * 2022-01-01-preview: :class:`ExtensionsOperations<azure.mgmt.kubernetesconfiguration.v2022_01_01_preview.aio.operations.ExtensionsOperations>`
            * 2022-03-01: :class:`ExtensionsOperations<azure.mgmt.kubernetesconfiguration.v2022_03_01.aio.operations.ExtensionsOperations>`
+=======
+>>>>>>> 331f997c (updating to the latest vendored sdk)
         """
         api_version = self._get_api_version('extensions')
         if api_version == '2020-07-01-preview':
@@ -203,10 +242,13 @@ class SourceControlConfigurationClient(MultiApiClientMixin, _SDKClient):
             from ..v2021_09_01.aio.operations import ExtensionsOperations as OperationClass
         elif api_version == '2021-11-01-preview':
             from ..v2021_11_01_preview.aio.operations import ExtensionsOperations as OperationClass
+<<<<<<< HEAD
         elif api_version == '2022-01-01-preview':
             from ..v2022_01_01_preview.aio.operations import ExtensionsOperations as OperationClass
         elif api_version == '2022-03-01':
             from ..v2022_03_01.aio.operations import ExtensionsOperations as OperationClass
+=======
+>>>>>>> 331f997c (updating to the latest vendored sdk)
         else:
             raise ValueError("API version {} does not have operation group 'extensions'".format(api_version))
         return OperationClass(self._client, self._config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
@@ -216,16 +258,22 @@ class SourceControlConfigurationClient(MultiApiClientMixin, _SDKClient):
         """Instance depends on the API version:
 
            * 2021-11-01-preview: :class:`FluxConfigOperationStatusOperations<azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.aio.operations.FluxConfigOperationStatusOperations>`
+<<<<<<< HEAD
            * 2022-01-01-preview: :class:`FluxConfigOperationStatusOperations<azure.mgmt.kubernetesconfiguration.v2022_01_01_preview.aio.operations.FluxConfigOperationStatusOperations>`
            * 2022-03-01: :class:`FluxConfigOperationStatusOperations<azure.mgmt.kubernetesconfiguration.v2022_03_01.aio.operations.FluxConfigOperationStatusOperations>`
+=======
+>>>>>>> 331f997c (updating to the latest vendored sdk)
         """
         api_version = self._get_api_version('flux_config_operation_status')
         if api_version == '2021-11-01-preview':
             from ..v2021_11_01_preview.aio.operations import FluxConfigOperationStatusOperations as OperationClass
+<<<<<<< HEAD
         elif api_version == '2022-01-01-preview':
             from ..v2022_01_01_preview.aio.operations import FluxConfigOperationStatusOperations as OperationClass
         elif api_version == '2022-03-01':
             from ..v2022_03_01.aio.operations import FluxConfigOperationStatusOperations as OperationClass
+=======
+>>>>>>> 331f997c (updating to the latest vendored sdk)
         else:
             raise ValueError("API version {} does not have operation group 'flux_config_operation_status'".format(api_version))
         return OperationClass(self._client, self._config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
@@ -235,16 +283,22 @@ class SourceControlConfigurationClient(MultiApiClientMixin, _SDKClient):
         """Instance depends on the API version:
 
            * 2021-11-01-preview: :class:`FluxConfigurationsOperations<azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.aio.operations.FluxConfigurationsOperations>`
+<<<<<<< HEAD
            * 2022-01-01-preview: :class:`FluxConfigurationsOperations<azure.mgmt.kubernetesconfiguration.v2022_01_01_preview.aio.operations.FluxConfigurationsOperations>`
            * 2022-03-01: :class:`FluxConfigurationsOperations<azure.mgmt.kubernetesconfiguration.v2022_03_01.aio.operations.FluxConfigurationsOperations>`
+=======
+>>>>>>> 331f997c (updating to the latest vendored sdk)
         """
         api_version = self._get_api_version('flux_configurations')
         if api_version == '2021-11-01-preview':
             from ..v2021_11_01_preview.aio.operations import FluxConfigurationsOperations as OperationClass
+<<<<<<< HEAD
         elif api_version == '2022-01-01-preview':
             from ..v2022_01_01_preview.aio.operations import FluxConfigurationsOperations as OperationClass
         elif api_version == '2022-03-01':
             from ..v2022_03_01.aio.operations import FluxConfigurationsOperations as OperationClass
+=======
+>>>>>>> 331f997c (updating to the latest vendored sdk)
         else:
             raise ValueError("API version {} does not have operation group 'flux_configurations'".format(api_version))
         return OperationClass(self._client, self._config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
@@ -255,15 +309,21 @@ class SourceControlConfigurationClient(MultiApiClientMixin, _SDKClient):
 
            * 2021-05-01-preview: :class:`LocationExtensionTypesOperations<azure.mgmt.kubernetesconfiguration.v2021_05_01_preview.aio.operations.LocationExtensionTypesOperations>`
            * 2021-11-01-preview: :class:`LocationExtensionTypesOperations<azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.aio.operations.LocationExtensionTypesOperations>`
+<<<<<<< HEAD
            * 2022-01-01-preview: :class:`LocationExtensionTypesOperations<azure.mgmt.kubernetesconfiguration.v2022_01_01_preview.aio.operations.LocationExtensionTypesOperations>`
+=======
+>>>>>>> 331f997c (updating to the latest vendored sdk)
         """
         api_version = self._get_api_version('location_extension_types')
         if api_version == '2021-05-01-preview':
             from ..v2021_05_01_preview.aio.operations import LocationExtensionTypesOperations as OperationClass
         elif api_version == '2021-11-01-preview':
             from ..v2021_11_01_preview.aio.operations import LocationExtensionTypesOperations as OperationClass
+<<<<<<< HEAD
         elif api_version == '2022-01-01-preview':
             from ..v2022_01_01_preview.aio.operations import LocationExtensionTypesOperations as OperationClass
+=======
+>>>>>>> 331f997c (updating to the latest vendored sdk)
         else:
             raise ValueError("API version {} does not have operation group 'location_extension_types'".format(api_version))
         return OperationClass(self._client, self._config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
@@ -275,8 +335,11 @@ class SourceControlConfigurationClient(MultiApiClientMixin, _SDKClient):
            * 2021-05-01-preview: :class:`OperationStatusOperations<azure.mgmt.kubernetesconfiguration.v2021_05_01_preview.aio.operations.OperationStatusOperations>`
            * 2021-09-01: :class:`OperationStatusOperations<azure.mgmt.kubernetesconfiguration.v2021_09_01.aio.operations.OperationStatusOperations>`
            * 2021-11-01-preview: :class:`OperationStatusOperations<azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.aio.operations.OperationStatusOperations>`
+<<<<<<< HEAD
            * 2022-01-01-preview: :class:`OperationStatusOperations<azure.mgmt.kubernetesconfiguration.v2022_01_01_preview.aio.operations.OperationStatusOperations>`
            * 2022-03-01: :class:`OperationStatusOperations<azure.mgmt.kubernetesconfiguration.v2022_03_01.aio.operations.OperationStatusOperations>`
+=======
+>>>>>>> 331f997c (updating to the latest vendored sdk)
         """
         api_version = self._get_api_version('operation_status')
         if api_version == '2021-05-01-preview':
@@ -285,10 +348,13 @@ class SourceControlConfigurationClient(MultiApiClientMixin, _SDKClient):
             from ..v2021_09_01.aio.operations import OperationStatusOperations as OperationClass
         elif api_version == '2021-11-01-preview':
             from ..v2021_11_01_preview.aio.operations import OperationStatusOperations as OperationClass
+<<<<<<< HEAD
         elif api_version == '2022-01-01-preview':
             from ..v2022_01_01_preview.aio.operations import OperationStatusOperations as OperationClass
         elif api_version == '2022-03-01':
             from ..v2022_03_01.aio.operations import OperationStatusOperations as OperationClass
+=======
+>>>>>>> 331f997c (updating to the latest vendored sdk)
         else:
             raise ValueError("API version {} does not have operation group 'operation_status'".format(api_version))
         return OperationClass(self._client, self._config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
@@ -303,8 +369,11 @@ class SourceControlConfigurationClient(MultiApiClientMixin, _SDKClient):
            * 2021-05-01-preview: :class:`Operations<azure.mgmt.kubernetesconfiguration.v2021_05_01_preview.aio.operations.Operations>`
            * 2021-09-01: :class:`Operations<azure.mgmt.kubernetesconfiguration.v2021_09_01.aio.operations.Operations>`
            * 2021-11-01-preview: :class:`Operations<azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.aio.operations.Operations>`
+<<<<<<< HEAD
            * 2022-01-01-preview: :class:`Operations<azure.mgmt.kubernetesconfiguration.v2022_01_01_preview.aio.operations.Operations>`
            * 2022-03-01: :class:`Operations<azure.mgmt.kubernetesconfiguration.v2022_03_01.aio.operations.Operations>`
+=======
+>>>>>>> 331f997c (updating to the latest vendored sdk)
         """
         api_version = self._get_api_version('operations')
         if api_version == '2020-07-01-preview':
@@ -319,10 +388,13 @@ class SourceControlConfigurationClient(MultiApiClientMixin, _SDKClient):
             from ..v2021_09_01.aio.operations import Operations as OperationClass
         elif api_version == '2021-11-01-preview':
             from ..v2021_11_01_preview.aio.operations import Operations as OperationClass
+<<<<<<< HEAD
         elif api_version == '2022-01-01-preview':
             from ..v2022_01_01_preview.aio.operations import Operations as OperationClass
         elif api_version == '2022-03-01':
             from ..v2022_03_01.aio.operations import Operations as OperationClass
+=======
+>>>>>>> 331f997c (updating to the latest vendored sdk)
         else:
             raise ValueError("API version {} does not have operation group 'operations'".format(api_version))
         return OperationClass(self._client, self._config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
@@ -336,8 +408,11 @@ class SourceControlConfigurationClient(MultiApiClientMixin, _SDKClient):
            * 2021-03-01: :class:`SourceControlConfigurationsOperations<azure.mgmt.kubernetesconfiguration.v2021_03_01.aio.operations.SourceControlConfigurationsOperations>`
            * 2021-05-01-preview: :class:`SourceControlConfigurationsOperations<azure.mgmt.kubernetesconfiguration.v2021_05_01_preview.aio.operations.SourceControlConfigurationsOperations>`
            * 2021-11-01-preview: :class:`SourceControlConfigurationsOperations<azure.mgmt.kubernetesconfiguration.v2021_11_01_preview.aio.operations.SourceControlConfigurationsOperations>`
+<<<<<<< HEAD
            * 2022-01-01-preview: :class:`SourceControlConfigurationsOperations<azure.mgmt.kubernetesconfiguration.v2022_01_01_preview.aio.operations.SourceControlConfigurationsOperations>`
            * 2022-03-01: :class:`SourceControlConfigurationsOperations<azure.mgmt.kubernetesconfiguration.v2022_03_01.aio.operations.SourceControlConfigurationsOperations>`
+=======
+>>>>>>> 331f997c (updating to the latest vendored sdk)
         """
         api_version = self._get_api_version('source_control_configurations')
         if api_version == '2020-07-01-preview':
@@ -350,10 +425,13 @@ class SourceControlConfigurationClient(MultiApiClientMixin, _SDKClient):
             from ..v2021_05_01_preview.aio.operations import SourceControlConfigurationsOperations as OperationClass
         elif api_version == '2021-11-01-preview':
             from ..v2021_11_01_preview.aio.operations import SourceControlConfigurationsOperations as OperationClass
+<<<<<<< HEAD
         elif api_version == '2022-01-01-preview':
             from ..v2022_01_01_preview.aio.operations import SourceControlConfigurationsOperations as OperationClass
         elif api_version == '2022-03-01':
             from ..v2022_03_01.aio.operations import SourceControlConfigurationsOperations as OperationClass
+=======
+>>>>>>> 331f997c (updating to the latest vendored sdk)
         else:
             raise ValueError("API version {} does not have operation group 'source_control_configurations'".format(api_version))
         return OperationClass(self._client, self._config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
