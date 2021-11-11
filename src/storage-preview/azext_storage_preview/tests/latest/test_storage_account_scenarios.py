@@ -6,13 +6,13 @@ from azure.cli.testsdk import (ScenarioTest, JMESPathCheck, ResourceGroupPrepare
                                api_version_constraint)
 from azure_devtools.scenario_tests import AllowLargeResponse
 from .storage_test_util import StorageScenarioMixin
-from ...profiles import CUSTOM_MGMT_PREVIEW_STORAGE
+from ...profiles import CUSTOM_MGMT_STORAGE
 from knack.util import CLIError
 
 
-@api_version_constraint(CUSTOM_MGMT_PREVIEW_STORAGE, min_api='2016-12-01')
+@api_version_constraint(CUSTOM_MGMT_STORAGE, min_api='2016-12-01')
 class StorageAccountNetworkRuleTests(StorageScenarioMixin, ScenarioTest):
-    @api_version_constraint(CUSTOM_MGMT_PREVIEW_STORAGE, min_api='2017-06-01')
+    @api_version_constraint(CUSTOM_MGMT_STORAGE, min_api='2017-06-01')
     @ResourceGroupPreparer(name_prefix='cli_test_storage_service_endpoints')
     @StorageAccountPreparer()
     def test_storage_account_network_rules(self, resource_group):
@@ -70,7 +70,7 @@ class StorageAccountNetworkRuleTests(StorageScenarioMixin, ScenarioTest):
             JMESPathCheck('length(virtualNetworkRules)', 0)
         ])
 
-    @api_version_constraint(CUSTOM_MGMT_PREVIEW_STORAGE, min_api='2020-08-01-preview')
+    @api_version_constraint(CUSTOM_MGMT_STORAGE, min_api='2020-08-01-preview')
     @ResourceGroupPreparer(name_prefix='cli_test_storage_service_endpoints')
     @StorageAccountPreparer()
     def test_storage_account_resource_access_rules(self, resource_group, storage_account):
@@ -123,95 +123,6 @@ class StorageAccountNetworkRuleTests(StorageScenarioMixin, ScenarioTest):
         ])
 
 
-class StorageAccountBlobInventoryScenarioTest(StorageScenarioMixin, ScenarioTest):
-    @AllowLargeResponse()
-    @api_version_constraint(CUSTOM_MGMT_PREVIEW_STORAGE, min_api='2020-08-01-preview')
-    @ResourceGroupPreparer(name_prefix='cli_test_blob_inventory', location='eastus2')
-    @StorageAccountPreparer(location='eastus2euap', kind='StorageV2')
-    def test_storage_account_blob_inventory_policy(self, resource_group, storage_account):
-        import os
-        curr_dir = os.path.dirname(os.path.realpath(__file__))
-        policy_file = os.path.join(curr_dir, 'blob_inventory_policy.json').replace('\\', '\\\\')
-        policy_file_no_type = os.path.join(curr_dir, 'blob_inventory_policy_no_type.json').replace('\\', '\\\\')
-        self.kwargs = {'rg': resource_group,
-                       'sa': storage_account,
-                       'policy': policy_file,
-                       'policy_no_type': policy_file_no_type}
-        account_info = self.get_account_info(resource_group, storage_account)
-        self.storage_cmd('storage container create -n mycontainer', account_info)
-
-        # Create policy without type specified
-        self.cmd('storage account blob-inventory-policy create --account-name {sa} -g {rg} --policy @"{policy_no_type}"',
-                 checks=[JMESPathCheck("name", "DefaultInventoryPolicy"),
-                         JMESPathCheck("policy.destination", "mycontainer"),
-                         JMESPathCheck("policy.enabled", True),
-                         JMESPathCheck("policy.rules[0].definition.filters.blobTypes[0]", "blockBlob"),
-                         JMESPathCheck("policy.rules[0].definition.filters.includeBlobVersions", None),
-                         JMESPathCheck("policy.rules[0].definition.filters.includeSnapshots", None),
-                         JMESPathCheck("policy.rules[0].definition.filters.prefixMatch", []),
-                         JMESPathCheck("policy.rules[0].enabled", True),
-                         JMESPathCheck("policy.rules[0].name", "inventoryPolicyRule1"),
-                         JMESPathCheck("policy.type", "Inventory"),
-                         JMESPathCheck("resourceGroup", resource_group),
-                         JMESPathCheck("systemData", None)])
-
-        self.cmd('storage account blob-inventory-policy show --account-name {sa} -g {rg}',
-                 checks=[JMESPathCheck("name", "DefaultInventoryPolicy"),
-                         JMESPathCheck("policy.destination", "mycontainer"),
-                         JMESPathCheck("policy.enabled", True),
-                         JMESPathCheck("policy.rules[0].definition.filters.blobTypes[0]", "blockBlob"),
-                         JMESPathCheck("policy.rules[0].definition.filters.includeBlobVersions", None),
-                         JMESPathCheck("policy.rules[0].definition.filters.includeSnapshots", None),
-                         JMESPathCheck("policy.rules[0].definition.filters.prefixMatch", []),
-                         JMESPathCheck("policy.rules[0].enabled", True),
-                         JMESPathCheck("policy.rules[0].name", "inventoryPolicyRule1"),
-                         JMESPathCheck("policy.type", "Inventory"),
-                         JMESPathCheck("resourceGroup", resource_group),
-                         JMESPathCheck("systemData", None)])
-
-        # Enable Versioning for Storage Account when includeBlobInventory=true in policy
-        self.cmd('storage account blob-service-properties update -n {sa} -g {rg} --enable-versioning', checks=[
-                 JMESPathCheck('isVersioningEnabled', True)])
-
-        self.cmd('storage account blob-inventory-policy create --account-name {sa} -g {rg} --policy @"{policy}"',
-                 checks=[JMESPathCheck("name", "DefaultInventoryPolicy"),
-                         JMESPathCheck("policy.destination", "mycontainer"),
-                         JMESPathCheck("policy.enabled", True),
-                         JMESPathCheck("policy.rules[0].definition.filters.blobTypes[0]", "blockBlob"),
-                         JMESPathCheck("policy.rules[0].definition.filters.includeBlobVersions", True),
-                         JMESPathCheck("policy.rules[0].definition.filters.includeSnapshots", True),
-                         JMESPathCheck("policy.rules[0].definition.filters.prefixMatch[0]", "inventoryprefix1"),
-                         JMESPathCheck("policy.rules[0].definition.filters.prefixMatch[1]", "inventoryprefix2"),
-                         JMESPathCheck("policy.rules[0].enabled", True),
-                         JMESPathCheck("policy.rules[0].name", "inventoryPolicyRule1"),
-                         JMESPathCheck("policy.type", "Inventory"),
-                         JMESPathCheck("resourceGroup", resource_group),
-                         JMESPathCheck("systemData", None)])
-
-        self.cmd('storage account blob-inventory-policy show --account-name {sa} -g {rg}',
-                 checks=[JMESPathCheck("name", "DefaultInventoryPolicy"),
-                         JMESPathCheck("policy.destination", "mycontainer"),
-                         JMESPathCheck("policy.enabled", True),
-                         JMESPathCheck("policy.rules[0].definition.filters.blobTypes[0]", "blockBlob"),
-                         JMESPathCheck("policy.rules[0].definition.filters.includeBlobVersions", True),
-                         JMESPathCheck("policy.rules[0].definition.filters.includeSnapshots", True),
-                         JMESPathCheck("policy.rules[0].definition.filters.prefixMatch[0]", "inventoryprefix1"),
-                         JMESPathCheck("policy.rules[0].definition.filters.prefixMatch[1]", "inventoryprefix2"),
-                         JMESPathCheck("policy.rules[0].enabled", True),
-                         JMESPathCheck("policy.rules[0].name", "inventoryPolicyRule1"),
-                         JMESPathCheck("policy.type", "Inventory"),
-                         JMESPathCheck("resourceGroup", resource_group),
-                         JMESPathCheck("systemData", None)])
-
-        self.cmd('storage account blob-inventory-policy update --account-name {sa} -g {rg}'
-                 ' --set "policy.rules[0].name=newname"')
-        self.cmd('storage account blob-inventory-policy show --account-name {sa} -g {rg}',
-                 checks=JMESPathCheck('policy.rules[0].name', 'newname'))
-
-        self.cmd('storage account blob-inventory-policy delete --account-name {sa} -g {rg} -y')
-        self.cmd('storage account blob-inventory-policy show --account-name {sa} -g {rg}', expect_failure=True)
-
-
 class FileServicePropertiesTests(StorageScenarioMixin, ScenarioTest):
     @ResourceGroupPreparer(name_prefix='cli_file_soft_delete')
     @StorageAccountPreparer(name_prefix='filesoftdelete', kind='StorageV2', location='eastus2euap')
@@ -262,7 +173,7 @@ class FileServicePropertiesTests(StorageScenarioMixin, ScenarioTest):
             JMESPathCheck('shareDeleteRetentionPolicy.enabled', True),
             JMESPathCheck('shareDeleteRetentionPolicy.days', 1))
 
-    @api_version_constraint(CUSTOM_MGMT_PREVIEW_STORAGE, min_api='2020-08-01-preview')
+    @api_version_constraint(CUSTOM_MGMT_STORAGE, min_api='2020-08-01-preview')
     @ResourceGroupPreparer(name_prefix='cli_file_smb')
     @StorageAccountPreparer(parameter_name='storage_account1', name_prefix='filesmb1', kind='FileStorage',
                             sku='Premium_LRS', location='centraluseuap')
@@ -301,38 +212,3 @@ class FileServicePropertiesTests(StorageScenarioMixin, ScenarioTest):
         self.cmd(
             '{cmd} update --enable-smb-multichannel true -n {sa} -g {rg}').assert_with_checks(
             JMESPathCheck('protocolSettings.smb.multichannel.enabled', True))
-
-    @api_version_constraint(CUSTOM_MGMT_PREVIEW_STORAGE, min_api='2020-08-01-preview')
-    @ResourceGroupPreparer(name_prefix='cli_file_smb')
-    @StorageAccountPreparer(name_prefix='filesmb', kind='FileStorage', sku='Premium_LRS', location='centraluseuap')
-    def test_storage_account_file_secured_smb(self, resource_group, storage_account):
-        self.kwargs.update({
-            'sa': storage_account,
-            'rg': resource_group,
-            'cmd': 'storage account file-service-properties'
-        })
-
-        self.cmd('{cmd} show -n {sa} -g {rg}').assert_with_checks(
-            JMESPathCheck('shareDeleteRetentionPolicy', None),
-            JMESPathCheck('protocolSettings.smb.multichannel.enabled', False),
-            JMESPathCheck('protocolSettings.smb.authenticationMethods', None),
-            JMESPathCheck('protocolSettings.smb.channelEncryption', None),
-            JMESPathCheck('protocolSettings.smb.kerberosTicketEncryption', None),
-            JMESPathCheck('protocolSettings.smb.versions', None))
-
-        self.cmd(
-            '{cmd} update --versions "SMB2.1;SMB3.0;SMB3.1.1" --auth-methods "NTLMv2;Kerberos" '
-            '--kerb-ticket-encryption "RC4-HMAC;AES-256" --channel-encryption "AES-CCM-128;AES-GCM-128;AES-GCM-256"'
-            ' -n {sa} -g {rg}').assert_with_checks(
-            JMESPathCheck('protocolSettings.smb.authenticationMethods', "NTLMv2;Kerberos"),
-            JMESPathCheck('protocolSettings.smb.channelEncryption', "AES-CCM-128;AES-GCM-128;AES-GCM-256"),
-            JMESPathCheck('protocolSettings.smb.kerberosTicketEncryption', "RC4-HMAC;AES-256"),
-            JMESPathCheck('protocolSettings.smb.versions', "SMB2.1;SMB3.0;SMB3.1.1"))
-
-        self.cmd('{cmd} show -n {sa} -g {rg}').assert_with_checks(
-            JMESPathCheck('shareDeleteRetentionPolicy', None),
-            JMESPathCheck('protocolSettings.smb.multichannel.enabled', False),
-            JMESPathCheck('protocolSettings.smb.authenticationMethods', "NTLMv2;Kerberos"),
-            JMESPathCheck('protocolSettings.smb.channelEncryption', "AES-CCM-128;AES-GCM-128;AES-GCM-256"),
-            JMESPathCheck('protocolSettings.smb.kerberosTicketEncryption', "RC4-HMAC;AES-256"),
-            JMESPathCheck('protocolSettings.smb.versions', "SMB2.1;SMB3.0;SMB3.1.1"))
