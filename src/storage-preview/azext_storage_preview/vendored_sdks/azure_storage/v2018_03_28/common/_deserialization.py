@@ -246,8 +246,8 @@ def _convert_xml_to_service_properties(response):
                 <AllowedOrigins>comma-separated-list-of-allowed-origins</AllowedOrigins>
                 <AllowedMethods>comma-separated-list-of-HTTP-verb</AllowedMethods>
                 <MaxAgeInSeconds>max-caching-age-in-seconds</MaxAgeInSeconds>
-                <ExposedHeaders>comma-seperated-list-of-response-headers</ExposedHeaders>
-                <AllowedHeaders>comma-seperated-list-of-request-headers</AllowedHeaders>
+                <ExposedHeaders>comma-separated-list-of-response-headers</ExposedHeaders>
+                <AllowedHeaders>comma-separated-list-of-request-headers</AllowedHeaders>
             </CorsRule>
         </Cors>
         <DeleteRetentionPolicy>

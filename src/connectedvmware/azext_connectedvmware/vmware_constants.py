@@ -4,20 +4,27 @@
 # --------------------------------------------------------------------------------------------
 
 VMWARE_NAMESPACE = "Microsoft.ConnectedVmwarevSphere"
-VCENTER_RESOURCE_TYPE = "VCenters"
-RESOURCEPOOL_RESOURCE_TYPE = "resourcepools"
-VMTEMPLATE_RESOURCE_TYPE = "virtualmachinetemplates"
-VIRTUALNETWORK_RESOURCE_TYPE = "virtualnetworks"
-
-DEFAULT_VCENTER_PORT = 443
+VCENTER_RESOURCE_TYPE = "vcenters"
+RESOURCEPOOL_RESOURCE_TYPE = "resourcePools"
+CLUSTER_RESOURCE_TYPE = "clusters"
+DATASTORE_RESOURCE_TYPE = "datastores"
+HOST_RESOURCE_TYPE = "hosts"
+VMTEMPLATE_RESOURCE_TYPE = "virtualmachineTemplates"
+VIRTUALNETWORK_RESOURCE_TYPE = "virtualNetworks"
+VIRTUALMACHINE_RESOURCE_TYPE = "virtualMachines"
 
 EXTENDED_LOCATION_NAMESPACE = "Microsoft.ExtendedLocation"
 CUSTOM_LOCATION_RESOURCE_TYPE = "CustomLocations"
 EXTENDED_LOCATION_TYPE = "CustomLocation"
 INVENTORY_ITEM_TYPE = "InventoryItems"
+DEFAULT_GUEST_AGENT_NAME = "default"
 
+VM_SYSTEM_ASSIGNED_INDENTITY_TYPE = "SystemAssigned"
+GUEST_AGENT_PROVISIONING_ACTION_INSTALL = "install"
 NAME_PARAMETER = "name"
 DEVICE_KEY = "device-key"
+
+DEFAULT_VCENTER_PORT = 443
 
 # Nic parameters.
 NETWORK = "network"

@@ -46,6 +46,9 @@ def load_arguments(self, _):
         c.argument('tags', tags_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
+        c.argument('managed_by', type=str, help='Azure resource id. Indicates if this resource is managed by another '
+                   'Azure resource.')
+        c.argument('managed_by_extended', nargs='+', help='List of Azure resource ids that manage this resource.')
         c.argument('availability_zones', nargs='+', help='Logical zone for Disk Pool resource; example: ["1"].')
         c.argument('disks', action=AddDiskPoolCreateDisks, nargs='+', help='List of Azure Managed Disks to attach to a '
                    'Disk Pool.')
@@ -57,6 +60,10 @@ def load_arguments(self, _):
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('disk_pool_name', options_list=['--name', '-n', '--disk-pool-name'], type=str, help='The name of '
                    'the Disk Pool.', id_part='name')
+        c.argument('managed_by', type=str, help='Azure resource id. Indicates if this resource is managed by another '
+                   'Azure resource.')
+        c.argument('managed_by_extended', nargs='+', help='List of Azure resource ids that manage this resource.')
+        c.argument('sku', action=AddSku, nargs='+', help='Determines the SKU of the Disk Pool')
         c.argument('tags', tags_type)
         c.argument('disks', action=AddDiskPoolUpdateDisks, nargs='+', help='List of Azure Managed Disks to attach to a '
                    'Disk Pool.')
@@ -71,8 +78,10 @@ def load_arguments(self, _):
         c.argument('disk_pool_name', options_list=['--name', '-n', '--disk-pool-name'], type=str, help='The name of '
                    'the Disk Pool.')
 
-    with self.argument_context('disk-pool list-skus') as c:
-        c.argument('location', arg_type=get_location_type(self.cli_ctx))
+    with self.argument_context('disk-pool redeploy') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('disk_pool_name', options_list=['--name', '-n', '--disk-pool-name'], type=str, help='The name of '
+                   'the Disk Pool.', id_part='name')
 
     with self.argument_context('disk-pool start') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -89,6 +98,12 @@ def load_arguments(self, _):
         c.argument('disk_pool_name', options_list=['--name', '-n', '--disk-pool-name'], type=str, help='The name of '
                    'the Disk Pool.', id_part='name')
 
+    with self.argument_context('disk-pool list-skus') as c:
+        c.argument('location', arg_type=get_location_type(self.cli_ctx))
+
+    with self.argument_context('disk-pool list-zones') as c:
+        c.argument('location', arg_type=get_location_type(self.cli_ctx))
+
     with self.argument_context('disk-pool iscsi-target list') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('disk_pool_name', type=str, help='The name of the Disk Pool.')
@@ -104,6 +119,9 @@ def load_arguments(self, _):
         c.argument('disk_pool_name', type=str, help='The name of the Disk Pool.')
         c.argument('iscsi_target_name', options_list=['--name', '-n', '--iscsi-target-name'], type=str, help='The name '
                    'of the iSCSI Target.')
+        c.argument('managed_by', type=str, help='Azure resource id. Indicates if this resource is managed by another '
+                   'Azure resource.')
+        c.argument('managed_by_extended', nargs='+', help='List of Azure resource ids that manage this resource.')
         c.argument('acl_mode', arg_type=get_enum_type(['Dynamic', 'Static']), help='Mode for Target connectivity.')
         c.argument('target_iqn', type=str, help='iSCSI Target IQN (iSCSI Qualified Name); example: '
                    '"iqn.2005-03.org.iscsi:server".')
@@ -117,6 +135,9 @@ def load_arguments(self, _):
         c.argument('disk_pool_name', type=str, help='The name of the Disk Pool.', id_part='name')
         c.argument('iscsi_target_name', options_list=['--name', '-n', '--iscsi-target-name'], type=str, help='The name '
                    'of the iSCSI Target.', id_part='child_name_1')
+        c.argument('managed_by', type=str, help='Azure resource id. Indicates if this resource is managed by another '
+                   'Azure resource.')
+        c.argument('managed_by_extended', nargs='+', help='List of Azure resource ids that manage this resource.')
         c.argument('static_acls', action=AddDiskPoolIscsiTargetUpdateStaticAcls, nargs='+', help='Access Control List '
                    '(ACL) for an iSCSI Target; defines LUN masking policy')
         c.argument('luns', action=AddDiskPoolIscsiTargetUpdateLuns, nargs='+', help='List of LUNs to be exposed '
