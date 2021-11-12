@@ -114,26 +114,3 @@ def sig_share_update(cmd, client, resource_group_name, gallery_name, subscriptio
     return client.begin_update(resource_group_name=resource_group_name,
                                gallery_name=gallery_name,
                                sharing_update=sharing_update)
-
-
-def list_image_galleries(cmd, resource_group_name=None):
-    client = _compute_client_factory(cmd.cli_ctx)
-    if resource_group_name:
-        return client.galleries.list_by_resource_group(resource_group_name)
-    return client.galleries.list()
-
-
-def update_image_galleries(cmd, resource_group_name, gallery_name, gallery, permissions=None,
-                           soft_delete=None, **kwargs):
-    if permissions:
-        if gallery.sharing_profile is None:
-            from .vendored_sdks.azure_mgmt_compute.models._models_py3 import SharingProfile
-            gallery.sharing_profile = SharingProfile(permissions=permissions)
-        else:
-            gallery.sharing_profile.permissions = permissions
-    if soft_delete is not None:
-        gallery.soft_delete_policy.is_soft_delete_enabled = soft_delete
-
-    client = _compute_client_factory(cmd.cli_ctx)
-
-    return client.galleries.begin_create_or_update(resource_group_name, gallery_name, gallery, **kwargs)
