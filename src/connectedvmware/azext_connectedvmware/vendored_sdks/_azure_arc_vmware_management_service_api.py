@@ -21,6 +21,9 @@ if TYPE_CHECKING:
 from ._configuration import AzureArcVMwareManagementServiceAPIConfiguration
 from .operations import Operations
 from .operations import ResourcePoolsOperations
+from .operations import ClustersOperations
+from .operations import HostsOperations
+from .operations import DatastoresOperations
 from .operations import VCentersOperations
 from .operations import VirtualMachinesOperations
 from .operations import VirtualMachineTemplatesOperations
@@ -39,6 +42,12 @@ class AzureArcVMwareManagementServiceAPI(object):
     :vartype operations: azure_arc_vmware_management_service_api.operations.Operations
     :ivar resource_pools: ResourcePoolsOperations operations
     :vartype resource_pools: azure_arc_vmware_management_service_api.operations.ResourcePoolsOperations
+    :ivar clusters: ClustersOperations operations
+    :vartype clusters: azure_arc_vmware_management_service_api.operations.ClustersOperations
+    :ivar hosts: HostsOperations operations
+    :vartype hosts: azure_arc_vmware_management_service_api.operations.HostsOperations
+    :ivar datastores: DatastoresOperations operations
+    :vartype datastores: azure_arc_vmware_management_service_api.operations.DatastoresOperations
     :ivar vcenters: VCentersOperations operations
     :vartype vcenters: azure_arc_vmware_management_service_api.operations.VCentersOperations
     :ivar virtual_machines: VirtualMachinesOperations operations
@@ -84,6 +93,12 @@ class AzureArcVMwareManagementServiceAPI(object):
         self.operations = Operations(
             self._client, self._config, self._serialize, self._deserialize)
         self.resource_pools = ResourcePoolsOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.clusters = ClustersOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.hosts = HostsOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.datastores = DatastoresOperations(
             self._client, self._config, self._serialize, self._deserialize)
         self.vcenters = VCentersOperations(
             self._client, self._config, self._serialize, self._deserialize)

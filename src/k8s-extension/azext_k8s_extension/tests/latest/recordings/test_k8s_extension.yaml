@@ -13,28 +13,158 @@ interactions:
       ParameterSetName:
       - -g -n -c --cluster-type --extension-type --release-train --version
       User-Agent:
-      - AZURECLI/2.24.2 azsdk-python-azure-mgmt-resource/18.0.0 Python/3.9.0 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.25.0 azsdk-python-azure-mgmt-resource/18.0.0 Python/3.8.0 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg1006/providers/Microsoft.Kubernetes/connectedClusters/nanthiaks1006?api-version=2020-01-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg1006/providers/Microsoft.Kubernetes/connectedClusters/nanthiaks1006","name":"nanthiaks1006","type":"microsoft.kubernetes/connectedclusters","location":"eastus2euap","tags":{},"identity":{"principalId":"4819e8b8-75f1-43c0-b1f3-c2866dcaada2","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"provisioningState":"Succeeded","connectivityStatus":"Connected","agentPublicKeyCertificate":"MIICCgKCAgEA5Av/NZAJ5+V5E9Mswh5fjqTK8pEXVGhcYLO2/qBPxGctQ2jYWvqnrqxumZQhD8AXwUAPNm5NZ4NOhkoZo2YN3xPf8Tsxr2wrKkl/EeX55Jlnvw3U9jjQRES7fMR4Io7e0EUavLlKI0SHA3i9AsGzG041Df8BKEcRBpjvpmIkG9BWvikHELCOmhv0dr6Lx4ovMDBf8uP17QdilDhyxorEZeLbd/VIZWjdFHYK+rO4tCadaeecF2GdtNUVdv9uEyRRq4LshZnw5BQjMquqm9W/aIDsPMU959Uotf9aW4UDlW9iybyBRSFtLOuxd+cmJ9oHw9riAq3Fi5UoHDa29kDNp4PaJJBgpUaSfGdKpymDxrtOtchbBdaV0dPaXeVCUMNHXhN9GRkWIHKPVV+qMPOOchbgNf/G/F325h3qfRwuW9pV4Y8MD24h3BZ3PEuyT15CY0BiaPKdpOtER2+K5aUZnI9ihXYEXS1jsxaa5aIimVEZOREPCPk7mI7A3vqjPe4hBGvRtGFLa/dg44WXLetorJU8kFZdP2/hdbxZPMz8XdLbm0kroebp+D+ruDk7QSqsac+kJ8q8ABGHX1QeWUo0DGIMTS9pJyRaFzG8ftudtkYsOBR1NDTkAi3iK+XPntpzcIJHQ/nk/WAMMoAFYJYvzFblxEzOMVD44dnADrucE3cCAwEAAQ==","aadProfile":{"tenantId":"","clientAppId":"","serverAppId":""},"distribution":"aks","infrastructure":"azure","kubernetesVersion":"1.22.1","totalNodeCount":3,"agentVersion":"1.5.2","totalCoreCount":6,"lastConnectivityTime":"2021-10-13T22:54:04.715Z","managedIdentityCertificateExpirationTime":"2022-01-04T23:12:00Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1527'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Oct 2021 22:54:10 GMT
+      etag:
+      - '"0d006390-0000-3400-0000-616763920000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.25.1
+    method: GET
+    uri: https://raw.githubusercontent.com/Azure/osm-azure/v0.9.2/charts/osm-arc/values.yaml
+  response:
+    body:
+      string: "# Default values for osm-arc.\n# This is a YAML-formatted file.\n#
+        Declare variables to be passed into your templates.\n\n## Values populated
+        by Azure Arc K8s RP during the installation of the extension\nAzure:\n  Cluster:\n
+        \   Distribution: <cluster_distribution>\n\nOpenServiceMesh:\n  ignoreNamespaces:
+        \"kube-system azure-arc arc-osm-system\"\n  testedDistros: \"aks gke eks openshift
+        rancher_rke\"\n\nosm:\n  OpenServiceMesh:\n    enableDebugServer: false\n
+        \   enablePermissiveTrafficPolicy: true\n    image:\n      registry: mcr.microsoft.com/oss/openservicemesh\n
+        \   enforceSingleMesh: true\n    deployPrometheus: false\n    deployJaeger:
+        false\n    webhookConfigNamePrefix: arc-osm-webhook\n    sidecarImage: mcr.microsoft.com/oss/envoyproxy/envoy:v1.18.3\n
+        \   osmController:\n      podLabels: {\n        app.kubernetes.io/component:
+        osm-controller\n      }\n    injector:\n      podLabels: {\n        app.kubernetes.io/component:
+        osm-controller\n      }\n\nalpine:\n  image:\n    name: \"mcr.microsoft.com/azure-policy/alpine\"\n
+        \   tag: \"prod_20200505.1\"\n\nkubectl:\n  image:\n    name: \"bitnami/kubectl\"\n
+        \   tag: \"latest\"\n\nhelm:\n  image:\n    name: \"alpine/helm\"\n    tag:
+        \"latest\"\n"
+    headers:
+      accept-ranges:
+      - bytes
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - max-age=300
+      connection:
+      - keep-alive
+      content-length:
+      - '1146'
+      content-security-policy:
+      - default-src 'none'; style-src 'unsafe-inline'; sandbox
+      content-type:
+      - text/plain; charset=utf-8
+      date:
+      - Wed, 13 Oct 2021 22:54:11 GMT
+      etag:
+      - W/"bb73fdc51d1aed007544edbbcb7b2c2da2c236cd18aeae0f55e91530aba0ef44"
+      expires:
+      - Wed, 13 Oct 2021 22:59:11 GMT
+      source-age:
+      - '0'
+      strict-transport-security:
+      - max-age=31536000
+      vary:
+      - Authorization,Accept-Encoding,Origin
+      via:
+      - 1.1 varnish
+      x-cache:
+      - MISS
+      x-cache-hits:
+      - '0'
+      x-content-type-options:
+      - nosniff
+      x-fastly-request-id:
+      - ca005840835efe516f998ff0e96afecafc5ca333
+      x-frame-options:
+      - deny
+      x-github-request-id:
+      - 534E:1F28:48016A:6A26FC:61675E67
+      x-served-by:
+      - cache-sea4436-SEA
+      x-timer:
+      - S1634165651.917353,VS0,VE160
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - k8s-extension create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -c --cluster-type --extension-type --release-train --version
+      User-Agent:
+      - AZURECLI/2.25.0 azsdk-python-azure-mgmt-resource/18.0.0 Python/3.8.0 (Windows-10-10.0.19041-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.KubernetesConfiguration?api-version=2021-04-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.KubernetesConfiguration","namespace":"Microsoft.KubernetesConfiguration","authorizations":[{"applicationId":"c699bf69-fb1d-4eaf-999b-99e6b2ae4d85","roleDefinitionId":"90155430-a360-410f-af5d-89dc284d85c6"},{"applicationId":"03db181c-e9d3-4868-9097-f0b728327182","roleDefinitionId":"DE2ADB97-42D8-49C8-8FCF-DBB53EF936AC"},{"applicationId":"a0f92522-89de-4c5e-9a75-0044ccf66efd","roleDefinitionId":"b3429810-7d5c-420e-8605-cf280f3099f2"},{"applicationId":"bd9b7cd5-dac1-495f-b013-ac871e98fa5f","roleDefinitionId":"0d44c8f0-08b9-44d4-9f59-e51c83f95200"}],"resourceTypes":[{"resourceType":"sourceControlConfigurations","locations":["East
-        US","West Europe","West Central US","West US 2","South Central US","East US
-        2","North Europe","UK South","Southeast Asia","Australia East","France Central","East
-        US 2 EUAP"],"apiVersions":["2021-03-01","2020-10-01-preview","2020-07-01-preview","2019-11-01-preview"],"defaultApiVersion":"2021-03-01","capabilities":"SupportsExtension"},{"resourceType":"extensions","locations":["East
-        US","West Europe","West Central US","West US 2","South Central US","East US
-        2","North Europe","UK South","Southeast Asia","Australia East","France Central","East
-        US 2 EUAP"],"apiVersions":["2021-05-01-preview","2020-07-01-preview"],"capabilities":"SystemAssignedResourceIdentity,
-        SupportsExtension"},{"resourceType":"operations","locations":[],"apiVersions":["2021-05-01-preview","2021-03-01","2020-10-01-preview","2020-07-01-preview","2019-11-01-preview"],"capabilities":"None"}],"registrationState":"Registered","registrationPolicy":"RegistrationRequired"}'
+        US","West Europe","West Central US","West US 2","West US 3","South Central
+        US","East US 2","North Europe","UK South","Southeast Asia","Australia East","France
+        Central","Central US","North Central US","West US","Korea Central","East Asia","Japan
+        East","East US 2 EUAP"],"apiVersions":["2021-03-01","2020-10-01-preview","2020-07-01-preview","2019-11-01-preview"],"defaultApiVersion":"2021-03-01","capabilities":"SupportsExtension"},{"resourceType":"extensions","locations":["East
+        US","West Europe","West Central US","West US 2","West US 3","South Central
+        US","East US 2","North Europe","UK South","Southeast Asia","Australia East","France
+        Central","Central US","North Central US","West US","Korea Central","East Asia","Japan
+        East","East US 2 EUAP"],"apiVersions":["2021-05-01-preview","2020-07-01-preview"],"capabilities":"SystemAssignedResourceIdentity,
+        SupportsExtension"},{"resourceType":"operations","locations":[],"apiVersions":["2021-09-01","2021-06-01-preview","2021-05-01-preview","2021-03-01","2020-10-01-preview","2020-07-01-preview","2019-11-01-preview"],"capabilities":"None"}],"registrationState":"Registered","registrationPolicy":"RegistrationRequired"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1654'
+      - '1878'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 22 Jun 2021 23:19:11 GMT
+      - Wed, 13 Oct 2021 22:54:10 GMT
       expires:
       - '-1'
       pragma:
@@ -49,10 +179,9 @@ interactions:
       code: 200
       message: OK
 - request:
-    body: '{"location": "", "properties": {"extensionType": "microsoft.openservicemesh",
-      "autoUpgradeMinorVersion": false, "releaseTrain": "pilot", "version": "0.8.3",
-      "scope": {"cluster": {}}, "configurationSettings": {}, "configurationProtectedSettings":
-      {}}}'
+    body: '{"properties": {"extensionType": "microsoft.openservicemesh", "releaseTrain":
+      "pilot", "version": "0.9.2", "scope": {"cluster": {}}, "configurationSettings":
+      {}, "configurationProtectedSettings": {}}}'
     headers:
       Accept:
       - application/json
@@ -63,48 +192,232 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '250'
+      - '200'
       Content-Type:
-      - application/json; charset=utf-8
+      - application/json
       ParameterSetName:
       - -g -n -c --cluster-type --extension-type --release-train --version
       User-Agent:
-      - python/3.9.0 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.4
-        azure-mgmt-kubernetesconfiguration/0.3.0 Azure-SDK-For-Python AZURECLI/2.24.2
-      accept-language:
-      - en-US
+      - AZURECLI/2.25.0 azsdk-python-mgmt-kubernetesconfiguration/1.0.0b1 Python/3.8.0
+        (Windows-10-10.0.19041-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/extensions/openservicemesh?api-version=2020-07-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg1006/providers/Microsoft.Kubernetes/connectedClusters/nanthiaks1006/providers/Microsoft.KubernetesConfiguration/extensions/openservicemesh?api-version=2021-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/extensions/openservicemesh","name":"openservicemesh","type":"Microsoft.KubernetesConfiguration/extensions","properties":{"configurationSettings":{},"statuses":[],"extensionType":"microsoft.openservicemesh","autoUpgradeMinorVersion":false,"releaseTrain":"pilot","version":"0.8.3","scope":{"cluster":{"releaseNamespace":"arc-osm-system"}},"installState":"Pending","lastStatusTime":null,"errorInfo":{},"creationTime":"2021-06-22T23:19:13.9750935+00:00","lastModifiedTime":"2021-06-22T23:19:13.9750935+00:00"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg1006/providers/Microsoft.Kubernetes/connectedClusters/nanthiaks1006/providers/Microsoft.KubernetesConfiguration/extensions/openservicemesh","name":"openservicemesh","type":"Microsoft.KubernetesConfiguration/extensions","properties":{"extensionType":"microsoft.openservicemesh","autoUpgradeMinorVersion":false,"releaseTrain":"pilot","version":"0.9.2","scope":{"cluster":{"releaseNamespace":"arc-osm-system"}},"provisioningState":"Creating","installState":"Unknown","configurationSettings":{},"configurationProtectedSettings":{},"statuses":[],"aksAssignedIdentity":null},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"2021-10-07T00:09:54.4243492+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2021-10-13T22:54:12.9030808+00:00"}}'
     headers:
       api-supported-versions:
-      - 2020-07-01-Preview, 2021-05-01-preview
+      - 2020-07-01-Preview, 2021-05-01-preview, 2021-09-01
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg1006/providers/Microsoft.Kubernetes/ConnectedClusters/nanthiaks1006/providers/Microsoft.KubernetesConfiguration/extensions/openservicemesh/operations/b5613d65-be6a-422d-aae0-a7d0a6492f1d?api-Version=2021-09-01
       cache-control:
       - no-cache
       content-length:
-      - '704'
+      - '853'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 22 Jun 2021 23:19:13 GMT
+      - Wed, 13 Oct 2021 22:54:12 GMT
+      expires:
+      - '-1'
+      location:
+      - https://eastus2euap.rp.kubernetesconfiguration.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg1006/providers/Microsoft.Kubernetes/ConnectedClusters/nanthiaks1006/providers/Microsoft.KubernetesConfiguration/extensions/openservicemesh
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - k8s-extension create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -c --cluster-type --extension-type --release-train --version
+      User-Agent:
+      - AZURECLI/2.25.0 azsdk-python-mgmt-kubernetesconfiguration/1.0.0b1 Python/3.8.0
+        (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg1006/providers/Microsoft.Kubernetes/ConnectedClusters/nanthiaks1006/providers/Microsoft.KubernetesConfiguration/extensions/openservicemesh/operations/b5613d65-be6a-422d-aae0-a7d0a6492f1d?api-Version=2021-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg1006/providers/Microsoft.Kubernetes/ConnectedClusters/nanthiaks1006/providers/Microsoft.KubernetesConfiguration/extensions/openservicemesh/operations/b5613d65-be6a-422d-aae0-a7d0a6492f1d","name":"b5613d65-be6a-422d-aae0-a7d0a6492f1d","status":"Creating"}'
+    headers:
+      api-supported-versions:
+      - 2019-11-01-Preview, 2021-05-01-preview, 2021-06-01-preview, 2021-09-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '336'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Oct 2021 22:54:43 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - openresty/1.15.8.2
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
       - chunked
       vary:
-      - Accept-Encoding,Accept-Encoding
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - k8s-extension create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -c --cluster-type --extension-type --release-train --version
+      User-Agent:
+      - AZURECLI/2.25.0 azsdk-python-mgmt-kubernetesconfiguration/1.0.0b1 Python/3.8.0
+        (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg1006/providers/Microsoft.Kubernetes/ConnectedClusters/nanthiaks1006/providers/Microsoft.KubernetesConfiguration/extensions/openservicemesh/operations/b5613d65-be6a-422d-aae0-a7d0a6492f1d?api-Version=2021-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg1006/providers/Microsoft.Kubernetes/ConnectedClusters/nanthiaks1006/providers/Microsoft.KubernetesConfiguration/extensions/openservicemesh/operations/b5613d65-be6a-422d-aae0-a7d0a6492f1d","name":"b5613d65-be6a-422d-aae0-a7d0a6492f1d","status":"Creating"}'
+    headers:
+      api-supported-versions:
+      - 2019-11-01-Preview, 2021-05-01-preview, 2021-06-01-preview, 2021-09-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '336'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Oct 2021 22:55:14 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - k8s-extension create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -c --cluster-type --extension-type --release-train --version
+      User-Agent:
+      - AZURECLI/2.25.0 azsdk-python-mgmt-kubernetesconfiguration/1.0.0b1 Python/3.8.0
+        (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg1006/providers/Microsoft.Kubernetes/ConnectedClusters/nanthiaks1006/providers/Microsoft.KubernetesConfiguration/extensions/openservicemesh/operations/b5613d65-be6a-422d-aae0-a7d0a6492f1d?api-Version=2021-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg1006/providers/Microsoft.Kubernetes/ConnectedClusters/nanthiaks1006/providers/Microsoft.KubernetesConfiguration/extensions/openservicemesh/operations/b5613d65-be6a-422d-aae0-a7d0a6492f1d","name":"b5613d65-be6a-422d-aae0-a7d0a6492f1d","status":"Succeeded"}'
+    headers:
+      api-supported-versions:
+      - 2019-11-01-Preview, 2021-05-01-preview, 2021-06-01-preview, 2021-09-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '337'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Oct 2021 22:55:44 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - k8s-extension create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -c --cluster-type --extension-type --release-train --version
+      User-Agent:
+      - AZURECLI/2.25.0 azsdk-python-mgmt-kubernetesconfiguration/1.0.0b1 Python/3.8.0
+        (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg1006/providers/Microsoft.Kubernetes/connectedClusters/nanthiaks1006/providers/Microsoft.KubernetesConfiguration/extensions/openservicemesh?api-version=2021-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg1006/providers/Microsoft.Kubernetes/connectedClusters/nanthiaks1006/providers/Microsoft.KubernetesConfiguration/extensions/openservicemesh","name":"openservicemesh","type":"Microsoft.KubernetesConfiguration/extensions","properties":{"extensionType":"microsoft.openservicemesh","autoUpgradeMinorVersion":false,"releaseTrain":"pilot","version":"0.9.2","scope":{"cluster":{"releaseNamespace":"arc-osm-system"}},"provisioningState":"Succeeded","installState":"Installed","configurationSettings":{},"configurationProtectedSettings":{},"statuses":[],"aksAssignedIdentity":null},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"2021-10-07T00:09:54.4243492+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2021-10-13T22:54:12.9030808+00:00"}}'
+    headers:
+      api-supported-versions:
+      - 2020-07-01-Preview, 2021-05-01-preview, 2021-09-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '856'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Oct 2021 22:55:45 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
     status:
       code: 200
       message: OK
@@ -122,38 +435,40 @@ interactions:
       ParameterSetName:
       - -c -g --cluster-type
       User-Agent:
-      - python/3.9.0 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.4
-        azure-mgmt-kubernetesconfiguration/0.3.0 Azure-SDK-For-Python AZURECLI/2.24.2
-      accept-language:
-      - en-US
+      - AZURECLI/2.25.0 azsdk-python-mgmt-kubernetesconfiguration/1.0.0b1 Python/3.8.0
+        (Windows-10-10.0.19041-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/extensions?api-version=2020-07-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg1006/providers/Microsoft.Kubernetes/connectedClusters/nanthiaks1006/providers/Microsoft.KubernetesConfiguration/extensions?api-version=2021-09-01
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/extensions/openservicemesh","name":"openservicemesh","type":"Microsoft.KubernetesConfiguration/extensions","properties":{"extensionType":"microsoft.openservicemesh","autoUpgradeMinorVersion":false,"releaseTrain":"pilot","version":"0.8.3","scope":{"cluster":{"releaseNamespace":"arc-osm-system"}},"installState":"Pending","lastStatusTime":null,"errorInfo":{},"creationTime":"2021-06-22T23:19:13.9750935+00:00","lastModifiedTime":"2021-06-22T23:19:13.9750935+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/extensions/hci22jan21","name":"hci22jan21","type":"Microsoft.KubernetesConfiguration/extensions","properties":{"extensionType":"microsoft.azstackhci.operator","autoUpgradeMinorVersion":true,"releaseTrain":"stable","version":"1.0.0","scope":{"cluster":{"releaseNamespace":null}},"installState":"Pending","lastStatusTime":null,"errorInfo":{},"creationTime":"2021-01-22T20:49:34.3336157+00:00","lastModifiedTime":"2021-01-22T20:49:34.3336249+00:00"}}],"nextLink":null}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg1006/providers/Microsoft.Kubernetes/connectedClusters/nanthiaks1006/providers/Microsoft.KubernetesConfiguration/extensions/openservicemesh","name":"openservicemesh","type":"Microsoft.KubernetesConfiguration/extensions","properties":{"extensionType":"microsoft.openservicemesh","autoUpgradeMinorVersion":false,"releaseTrain":"pilot","version":"0.9.2","scope":{"cluster":{"releaseNamespace":"arc-osm-system"}},"provisioningState":"Succeeded","installState":"Installed","configurationSettings":{},"configurationProtectedSettings":{},"statuses":[],"aksAssignedIdentity":null},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"2021-10-07T00:09:54.4243492+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2021-10-13T22:54:12.9030808+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg1006/providers/Microsoft.Kubernetes/connectedClusters/nanthiaks1006/providers/Microsoft.KubernetesConfiguration/extensions/azuremonitor-containers","name":"azuremonitor-containers","type":"Microsoft.KubernetesConfiguration/extensions","properties":{"extensionType":"microsoft.azuremonitor.containers","autoUpgradeMinorVersion":true,"releaseTrain":"Stable","version":"2.8.2","scope":{"cluster":{"releaseNamespace":"azuremonitor-containers"}},"provisioningState":"Failed","installState":"Failed","configurationSettings":{"logAnalyticsWorkspaceResourceID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/defaultresourcegroup-eus/providers/microsoft.operationalinsights/workspaces/defaultworkspace-0e750457-5252-493e-95a3-e40e6a460bf0-eus"},"configurationProtectedSettings":{"omsagent.secret.wsid":"","omsagent.secret.key":""},"statuses":[{"code":"InstallationFailed","displayStatus":null,"level":null,"message":"Error:
+        {failed to install chart from path [] for release [azuremonitor-containers]:
+        err [unable to build kubernetes objects from release manifest: [unable to
+        recognize \"\": no matches for kind \"ClusterRole\" in version \"rbac.authorization.k8s.io/v1beta1\",
+        unable to recognize \"\": no matches for kind \"ClusterRoleBinding\" in version
+        \"rbac.authorization.k8s.io/v1beta1\"]]} occurred while doing the operation
+        : {Installing the extension} on the config","time":null}],"aksAssignedIdentity":null},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"2021-10-07T20:18:32.2074073+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2021-10-07T20:18:32.2074073+00:00"},"identity":{"type":"SystemAssigned","principalId":"e0e4d71f-00be-4972-9395-e4babc04bdd9"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg1006/providers/Microsoft.Kubernetes/connectedClusters/nanthiaks1006/providers/Microsoft.KubernetesConfiguration/extensions/cassandra","name":"cassandra","type":"Microsoft.KubernetesConfiguration/extensions","properties":{"extensionType":"cassandradatacentersoperator","autoUpgradeMinorVersion":true,"releaseTrain":"Stable","version":"1.1.18","scope":{"namespace":{"targetNamespace":"cassandrans"}},"provisioningState":"Succeeded","installState":"Installed","configurationSettings":{},"configurationProtectedSettings":{},"statuses":[],"aksAssignedIdentity":null},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"2021-10-07T00:56:12.7708078+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2021-10-07T00:56:12.7708078+00:00"},"identity":{"type":"SystemAssigned","principalId":"93e7c7d2-2fe0-4e30-9742-3d4230a3cd6a"}}],"nextLink":null}'
     headers:
       api-supported-versions:
-      - 2020-07-01-Preview, 2021-05-01-preview
+      - 2020-07-01-Preview, 2021-05-01-preview, 2021-09-01
       cache-control:
       - no-cache
       content-length:
-      - '1337'
+      - '3627'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 22 Jun 2021 23:19:14 GMT
+      - Wed, 13 Oct 2021 22:55:47 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - openresty/1.15.8.2
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
       - chunked
       vary:
-      - Accept-Encoding,Accept-Encoding
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
     status:
@@ -173,38 +488,34 @@ interactions:
       ParameterSetName:
       - -c -g -n --cluster-type
       User-Agent:
-      - python/3.9.0 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.4
-        azure-mgmt-kubernetesconfiguration/0.3.0 Azure-SDK-For-Python AZURECLI/2.24.2
-      accept-language:
-      - en-US
+      - AZURECLI/2.25.0 azsdk-python-mgmt-kubernetesconfiguration/1.0.0b1 Python/3.8.0
+        (Windows-10-10.0.19041-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/extensions/openservicemesh?api-version=2020-07-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg1006/providers/Microsoft.Kubernetes/connectedClusters/nanthiaks1006/providers/Microsoft.KubernetesConfiguration/extensions/openservicemesh?api-version=2021-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/extensions/openservicemesh","name":"openservicemesh","type":"Microsoft.KubernetesConfiguration/extensions","properties":{"configurationSettings":{},"statuses":[],"extensionType":"microsoft.openservicemesh","autoUpgradeMinorVersion":false,"releaseTrain":"pilot","version":"0.8.3","scope":{"cluster":{"releaseNamespace":"arc-osm-system"}},"installState":"Pending","lastStatusTime":null,"errorInfo":{},"creationTime":"2021-06-22T23:19:13.9750935+00:00","lastModifiedTime":"2021-06-22T23:19:13.9750935+00:00"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg1006/providers/Microsoft.Kubernetes/connectedClusters/nanthiaks1006/providers/Microsoft.KubernetesConfiguration/extensions/openservicemesh","name":"openservicemesh","type":"Microsoft.KubernetesConfiguration/extensions","properties":{"extensionType":"microsoft.openservicemesh","autoUpgradeMinorVersion":false,"releaseTrain":"pilot","version":"0.9.2","scope":{"cluster":{"releaseNamespace":"arc-osm-system"}},"provisioningState":"Succeeded","installState":"Installed","configurationSettings":{},"configurationProtectedSettings":{},"statuses":[],"aksAssignedIdentity":null},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"2021-10-07T00:09:54.4243492+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2021-10-13T22:54:12.9030808+00:00"}}'
     headers:
       api-supported-versions:
-      - 2020-07-01-Preview, 2021-05-01-preview
+      - 2020-07-01-Preview, 2021-05-01-preview, 2021-09-01
       cache-control:
       - no-cache
       content-length:
-      - '704'
+      - '856'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 22 Jun 2021 23:19:15 GMT
+      - Wed, 13 Oct 2021 22:55:48 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - openresty/1.15.8.2
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
       - chunked
       vary:
-      - Accept-Encoding,Accept-Encoding
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
     status:
@@ -224,38 +535,34 @@ interactions:
       ParameterSetName:
       - -g -c -n --cluster-type -y
       User-Agent:
-      - python/3.9.0 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.4
-        azure-mgmt-kubernetesconfiguration/0.3.0 Azure-SDK-For-Python AZURECLI/2.24.2
-      accept-language:
-      - en-US
+      - AZURECLI/2.25.0 azsdk-python-mgmt-kubernetesconfiguration/1.0.0b1 Python/3.8.0
+        (Windows-10-10.0.19041-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/extensions/openservicemesh?api-version=2020-07-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg1006/providers/Microsoft.Kubernetes/connectedClusters/nanthiaks1006/providers/Microsoft.KubernetesConfiguration/extensions/openservicemesh?api-version=2021-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/extensions/openservicemesh","name":"openservicemesh","type":"Microsoft.KubernetesConfiguration/extensions","properties":{"configurationSettings":{},"statuses":[],"extensionType":"microsoft.openservicemesh","autoUpgradeMinorVersion":false,"releaseTrain":"pilot","version":"0.8.3","scope":{"cluster":{"releaseNamespace":"arc-osm-system"}},"installState":"Pending","lastStatusTime":null,"errorInfo":{},"creationTime":"2021-06-22T23:19:13.9750935+00:00","lastModifiedTime":"2021-06-22T23:19:13.9750935+00:00"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg1006/providers/Microsoft.Kubernetes/connectedClusters/nanthiaks1006/providers/Microsoft.KubernetesConfiguration/extensions/openservicemesh","name":"openservicemesh","type":"Microsoft.KubernetesConfiguration/extensions","properties":{"extensionType":"microsoft.openservicemesh","autoUpgradeMinorVersion":false,"releaseTrain":"pilot","version":"0.9.2","scope":{"cluster":{"releaseNamespace":"arc-osm-system"}},"provisioningState":"Succeeded","installState":"Installed","configurationSettings":{},"configurationProtectedSettings":{},"statuses":[],"aksAssignedIdentity":null},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"2021-10-07T00:09:54.4243492+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2021-10-13T22:54:12.9030808+00:00"}}'
     headers:
       api-supported-versions:
-      - 2020-07-01-Preview, 2021-05-01-preview
+      - 2020-07-01-Preview, 2021-05-01-preview, 2021-09-01
       cache-control:
       - no-cache
       content-length:
-      - '704'
+      - '856'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 22 Jun 2021 23:19:16 GMT
+      - Wed, 13 Oct 2021 22:55:50 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - openresty/1.15.8.2
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
       - chunked
       vary:
-      - Accept-Encoding,Accept-Encoding
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
     status:
@@ -277,32 +584,73 @@ interactions:
       ParameterSetName:
       - -g -c -n --cluster-type -y
       User-Agent:
-      - python/3.9.0 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.4
-        azure-mgmt-kubernetesconfiguration/0.3.0 Azure-SDK-For-Python AZURECLI/2.24.2
-      accept-language:
-      - en-US
+      - AZURECLI/2.25.0 azsdk-python-mgmt-kubernetesconfiguration/1.0.0b1 Python/3.8.0
+        (Windows-10-10.0.19041-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/extensions/openservicemesh?api-version=2020-07-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg1006/providers/Microsoft.Kubernetes/connectedClusters/nanthiaks1006/providers/Microsoft.KubernetesConfiguration/extensions/openservicemesh?api-version=2021-09-01&forceDelete=false
   response:
     body:
-      string: '{"content":null,"statusCode":200,"headers":[],"version":"1.1","reasonPhrase":"OK","trailingHeaders":[],"requestMessage":null,"isSuccessStatusCode":true}'
+      string: ''
     headers:
       api-supported-versions:
-      - 2020-07-01-Preview, 2021-05-01-preview
+      - 2020-07-01-Preview, 2021-05-01-preview, 2021-09-01
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg1006/providers/Microsoft.Kubernetes/ConnectedClusters/nanthiaks1006/providers/Microsoft.KubernetesConfiguration/extensions/openservicemesh/operations/c242312c-0d18-413d-8b0a-efd7cfd0ad0e?api-Version=2021-09-01
       cache-control:
       - no-cache
       content-length:
-      - '152'
-      content-type:
-      - application/json; charset=utf-8
+      - '0'
       date:
-      - Tue, 22 Jun 2021 23:19:17 GMT
+      - Wed, 13 Oct 2021 22:55:51 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - openresty/1.15.8.2
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - k8s-extension delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -c -n --cluster-type -y
+      User-Agent:
+      - AZURECLI/2.25.0 azsdk-python-mgmt-kubernetesconfiguration/1.0.0b1 Python/3.8.0
+        (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg1006/providers/Microsoft.Kubernetes/ConnectedClusters/nanthiaks1006/providers/Microsoft.KubernetesConfiguration/extensions/openservicemesh/operations/c242312c-0d18-413d-8b0a-efd7cfd0ad0e?api-Version=2021-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg1006/providers/Microsoft.Kubernetes/ConnectedClusters/nanthiaks1006/providers/Microsoft.KubernetesConfiguration/extensions/openservicemesh/operations/c242312c-0d18-413d-8b0a-efd7cfd0ad0e","name":"c242312c-0d18-413d-8b0a-efd7cfd0ad0e","status":"Deleting"}'
+    headers:
+      api-supported-versions:
+      - 2019-11-01-Preview, 2021-05-01-preview, 2021-06-01-preview, 2021-09-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '336'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Oct 2021 22:56:21 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
@@ -311,8 +659,147 @@ interactions:
       - Accept-Encoding
       x-content-type-options:
       - nosniff
-      x-ms-ratelimit-remaining-subscription-deletes:
-      - '14999'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - k8s-extension delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -c -n --cluster-type -y
+      User-Agent:
+      - AZURECLI/2.25.0 azsdk-python-mgmt-kubernetesconfiguration/1.0.0b1 Python/3.8.0
+        (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg1006/providers/Microsoft.Kubernetes/ConnectedClusters/nanthiaks1006/providers/Microsoft.KubernetesConfiguration/extensions/openservicemesh/operations/c242312c-0d18-413d-8b0a-efd7cfd0ad0e?api-Version=2021-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg1006/providers/Microsoft.Kubernetes/ConnectedClusters/nanthiaks1006/providers/Microsoft.KubernetesConfiguration/extensions/openservicemesh/operations/c242312c-0d18-413d-8b0a-efd7cfd0ad0e","name":"c242312c-0d18-413d-8b0a-efd7cfd0ad0e","status":"Deleting"}'
+    headers:
+      api-supported-versions:
+      - 2019-11-01-Preview, 2021-05-01-preview, 2021-06-01-preview, 2021-09-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '336'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Oct 2021 22:56:52 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - k8s-extension delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -c -n --cluster-type -y
+      User-Agent:
+      - AZURECLI/2.25.0 azsdk-python-mgmt-kubernetesconfiguration/1.0.0b1 Python/3.8.0
+        (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg1006/providers/Microsoft.Kubernetes/ConnectedClusters/nanthiaks1006/providers/Microsoft.KubernetesConfiguration/extensions/openservicemesh/operations/c242312c-0d18-413d-8b0a-efd7cfd0ad0e?api-Version=2021-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg1006/providers/Microsoft.Kubernetes/ConnectedClusters/nanthiaks1006/providers/Microsoft.KubernetesConfiguration/extensions/openservicemesh/operations/c242312c-0d18-413d-8b0a-efd7cfd0ad0e","name":"c242312c-0d18-413d-8b0a-efd7cfd0ad0e","status":"Deleting"}'
+    headers:
+      api-supported-versions:
+      - 2019-11-01-Preview, 2021-05-01-preview, 2021-06-01-preview, 2021-09-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '336'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Oct 2021 22:57:23 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - k8s-extension delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -c -n --cluster-type -y
+      User-Agent:
+      - AZURECLI/2.25.0 azsdk-python-mgmt-kubernetesconfiguration/1.0.0b1 Python/3.8.0
+        (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg1006/providers/Microsoft.Kubernetes/ConnectedClusters/nanthiaks1006/providers/Microsoft.KubernetesConfiguration/extensions/openservicemesh/operations/c242312c-0d18-413d-8b0a-efd7cfd0ad0e?api-Version=2021-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg1006/providers/Microsoft.Kubernetes/ConnectedClusters/nanthiaks1006/providers/Microsoft.KubernetesConfiguration/extensions/openservicemesh/operations/c242312c-0d18-413d-8b0a-efd7cfd0ad0e","name":"c242312c-0d18-413d-8b0a-efd7cfd0ad0e","status":"Succeeded"}'
+    headers:
+      api-supported-versions:
+      - 2019-11-01-Preview, 2021-05-01-preview, 2021-06-01-preview, 2021-09-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '337'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Oct 2021 22:57:53 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
     status:
       code: 200
       message: OK
@@ -330,38 +817,40 @@ interactions:
       ParameterSetName:
       - -c -g --cluster-type
       User-Agent:
-      - python/3.9.0 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.4
-        azure-mgmt-kubernetesconfiguration/0.3.0 Azure-SDK-For-Python AZURECLI/2.24.2
-      accept-language:
-      - en-US
+      - AZURECLI/2.25.0 azsdk-python-mgmt-kubernetesconfiguration/1.0.0b1 Python/3.8.0
+        (Windows-10-10.0.19041-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/extensions?api-version=2020-07-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg1006/providers/Microsoft.Kubernetes/connectedClusters/nanthiaks1006/providers/Microsoft.KubernetesConfiguration/extensions?api-version=2021-09-01
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/extensions/hci22jan21","name":"hci22jan21","type":"Microsoft.KubernetesConfiguration/extensions","properties":{"extensionType":"microsoft.azstackhci.operator","autoUpgradeMinorVersion":true,"releaseTrain":"stable","version":"1.0.0","scope":{"cluster":{"releaseNamespace":null}},"installState":"Pending","lastStatusTime":null,"errorInfo":{},"creationTime":"2021-01-22T20:49:34.3336157+00:00","lastModifiedTime":"2021-01-22T20:49:34.3336249+00:00"}}],"nextLink":null}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg1006/providers/Microsoft.Kubernetes/connectedClusters/nanthiaks1006/providers/Microsoft.KubernetesConfiguration/extensions/azuremonitor-containers","name":"azuremonitor-containers","type":"Microsoft.KubernetesConfiguration/extensions","properties":{"extensionType":"microsoft.azuremonitor.containers","autoUpgradeMinorVersion":true,"releaseTrain":"Stable","version":"2.8.2","scope":{"cluster":{"releaseNamespace":"azuremonitor-containers"}},"provisioningState":"Failed","installState":"Failed","configurationSettings":{"logAnalyticsWorkspaceResourceID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/defaultresourcegroup-eus/providers/microsoft.operationalinsights/workspaces/defaultworkspace-0e750457-5252-493e-95a3-e40e6a460bf0-eus"},"configurationProtectedSettings":{"omsagent.secret.wsid":"","omsagent.secret.key":""},"statuses":[{"code":"InstallationFailed","displayStatus":null,"level":null,"message":"Error:
+        {failed to install chart from path [] for release [azuremonitor-containers]:
+        err [unable to build kubernetes objects from release manifest: [unable to
+        recognize \"\": no matches for kind \"ClusterRole\" in version \"rbac.authorization.k8s.io/v1beta1\",
+        unable to recognize \"\": no matches for kind \"ClusterRoleBinding\" in version
+        \"rbac.authorization.k8s.io/v1beta1\"]]} occurred while doing the operation
+        : {Installing the extension} on the config","time":null}],"aksAssignedIdentity":null},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"2021-10-07T20:18:32.2074073+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2021-10-07T20:18:32.2074073+00:00"},"identity":{"type":"SystemAssigned","principalId":"e0e4d71f-00be-4972-9395-e4babc04bdd9"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg1006/providers/Microsoft.Kubernetes/connectedClusters/nanthiaks1006/providers/Microsoft.KubernetesConfiguration/extensions/cassandra","name":"cassandra","type":"Microsoft.KubernetesConfiguration/extensions","properties":{"extensionType":"cassandradatacentersoperator","autoUpgradeMinorVersion":true,"releaseTrain":"Stable","version":"1.1.18","scope":{"namespace":{"targetNamespace":"cassandrans"}},"provisioningState":"Succeeded","installState":"Installed","configurationSettings":{},"configurationProtectedSettings":{},"statuses":[],"aksAssignedIdentity":null},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"2021-10-07T00:56:12.7708078+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2021-10-07T00:56:12.7708078+00:00"},"identity":{"type":"SystemAssigned","principalId":"93e7c7d2-2fe0-4e30-9742-3d4230a3cd6a"}}],"nextLink":null}'
     headers:
       api-supported-versions:
-      - 2020-07-01-Preview, 2021-05-01-preview
+      - 2020-07-01-Preview, 2021-05-01-preview, 2021-09-01
       cache-control:
       - no-cache
       content-length:
-      - '673'
+      - '2770'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 22 Jun 2021 23:19:19 GMT
+      - Wed, 13 Oct 2021 22:57:55 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - openresty/1.15.8.2
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
       - chunked
       vary:
-      - Accept-Encoding,Accept-Encoding
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
     status:

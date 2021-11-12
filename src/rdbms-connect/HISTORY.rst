@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.1.4
+++++++
++ GA release for 'az mysql flexible-server connect' and 'az mysql flexible-server execute' commands.
+
 0.1.3
 ++++++
 * Introduce query/sql file execution command as 'flexible server execute' command. 
