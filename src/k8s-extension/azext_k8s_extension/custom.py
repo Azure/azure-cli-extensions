@@ -358,10 +358,14 @@ def delete_k8s_extension(
     )
 
 
-def list_k8s_extension_type_versions(client, location, name):
+def list_k8s_extension_type_versions(client, location, extension_type):
     """ List available extension type versions
     """
-    return client.list(location, name)
+    versions_list = client.list(location, extension_type)
+    # if not versions_list.__dict__['_kwargs']: 
+    #     # versions_list returned null 
+    #     message = "Extension Type {0} does not have any supported versions.".format(extension_type)
+    return []
 
 
 def list_k8s_cluster_extension_types(client, resource_group_name, cluster_name, cluster_type):
@@ -377,7 +381,7 @@ def list_k8s_location_extension_types(client, location):
     return client.list(location)
 
 
-def show_k8s_cluster_extension_type(client, resource_group_name, cluster_type, cluster_name, name):
+def show_k8s_cluster_extension_type(client, resource_group_name, cluster_type, cluster_name, extension_type):
     """Get an existing Extension Type.
     """
     # Determine ClusterRP
@@ -385,20 +389,20 @@ def show_k8s_cluster_extension_type(client, resource_group_name, cluster_type, c
 
     try:
         extension_type = client.get(resource_group_name,
-                               cluster_rp, cluster_type, cluster_name, name)
+                               cluster_rp, cluster_type, cluster_name, extension_type)
         return extension_type
     except HttpResponseError as ex:
         # Customize the error message for resources not found
         if ex.response.status_code == 404:
             # If Cluster not found
             if ex.message.__contains__("(ResourceNotFound)"):
-                message = "{0} Verify that the cluster-type is correct and the resource exists.".format(
+                message = "{0} Verify that the extension type is correct and the resource exists.".format(
                     ex.message)
             # If Configuration not found
             elif ex.message.__contains__("Operation returned an invalid status code 'Not Found'"):
                 message = "(ExtensionNotFound) The Resource {0}/{1}/{2}/Microsoft.KubernetesConfiguration/" \
                           "extensions/{3} could not be found!".format(
-                              cluster_rp, cluster_type, cluster_name, name)
+                              cluster_rp, cluster_type, cluster_name, extension_type)
             else:
                 message = ex.message
             raise ResourceNotFoundError(message) from ex

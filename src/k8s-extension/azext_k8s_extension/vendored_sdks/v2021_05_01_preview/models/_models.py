@@ -460,7 +460,7 @@ class ExtensionType(msrest.serialization.Model):
     _attribute_map = {
         'system_data': {'key': 'systemData', 'type': 'SystemData'},
         'release_trains': {'key': 'properties.releaseTrains', 'type': '[str]'},
-        'cluster_types': {'key': 'properties.clusterTypes', 'type': 'str'},
+        'cluster_types': {'key': 'properties.clusterTypes', 'type': '[str]'},
         'supported_scopes': {'key': 'properties.supportedScopes', 'type': 'SupportedScopes'},
     }
 

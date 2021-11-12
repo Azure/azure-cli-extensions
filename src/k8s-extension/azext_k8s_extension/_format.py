@@ -25,22 +25,36 @@ def __get_table_row(result):
 
 
 def k8s_extension_types_list_table_format(results):
-    return [__get_extension_type_table_row(result) for result in results]
+    return [__get_extension_type_table_row(result, False) for result in results]
 
 
 def k8s_extension_type_show_table_format(result):
-    return __get_extension_type_table_row(result)
+    return __get_extension_type_table_row(result, True)
 
 
-def __get_extension_type_table_row(result):
-    return OrderedDict([
-        ('name', result['name']),
-        ('default_scope', result.get('default_scope', '')),
-        ('release_trains', result.get('release_trains', '')),
-        ('cluster_types', result.get('cluster_types', '')),
-        ('allow_multiple_instances', result.get('allow_multiple_instances', '')),
-        ('default_release_namespace', result.get('default_release_namespace', ''))
+def __get_extension_type_table_row(result, showReleaseTrains):
+    # Populate the values to be returned if they are not undefined
+    clusterTypes = ', '.join(result['clusterTypes'])
+    defaultScope, name, allowMultipleInstances, defaultReleaseNamespace = '','','',''
+    if result['supportedScopes']:
+        defaultScope = result['supportedScopes']['defaultScope']
+        if result['supportedScopes']['clusterScopeSettings']:
+            name = result['supportedScopes']['clusterScopeSettings']['name']
+            allowMultipleInstances = result['supportedScopes']['clusterScopeSettings']['allowMultipleInstances']
+            defaultReleaseNamespace = result['supportedScopes']['clusterScopeSettings']['defaultReleaseNamespace']
+    
+    retVal = OrderedDict([
+        ('name', name),
+        ('defaultScope', defaultScope),
+        ('clusterTypes', clusterTypes),
+        ('allowMultipleInstances', allowMultipleInstances),
+        ('defaultReleaseNamespace', defaultReleaseNamespace)
     ])
+    if showReleaseTrains:
+        releaseTrains = ', '.join(result['releaseTrains'])
+        retVal['releaseTrains'] = releaseTrains
+    
+    return retVal
 
 
 def k8s_extension_type_versions_list_table_format(results):
@@ -48,7 +62,8 @@ def k8s_extension_type_versions_list_table_format(results):
 
 
 def __get_extension_type_versions_table_row(result):
+    versions = ", ".join(result['versions'])
     return OrderedDict([
-        ('release_train', result['release_train']),
-        ('versions', result['versions'])
+        ('releaseTrain', result['releaseTrain']),
+        ('versions', versions)
     ])

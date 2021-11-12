@@ -98,7 +98,7 @@ helps[f'{consts.EXTENSION_NAME} extension-types show'] = f"""
       - name: Show Kubernetes Extension Type 
         text: |-
           az {consts.EXTENSION_NAME} extension-types show --resource-group my-resource-group \
---cluster-name mycluster --cluster-type connectedClusters --name cassandradatacenteroperator
+--cluster-name mycluster --cluster-type connectedClusters --extension_type cassandradatacenteroperator
 """
 
 helps[f'{consts.EXTENSION_NAME} extension-types versions list'] = f"""
@@ -108,5 +108,5 @@ helps[f'{consts.EXTENSION_NAME} extension-types versions list'] = f"""
       - name: List versions for an Extension Type
         text: |-
           az {consts.EXTENSION_NAME} extension-types versions list --location eastus2euap \
---name cassandradatacenteroperator
+--extension_type cassandradatacenteroperator
 """
