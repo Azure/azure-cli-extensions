@@ -1552,7 +1552,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, storage_account
         except ValueError as ex:
             tr_logger.error(str(ex))
         except Exception as ex:
-            tr_logger.error("Error while checking the expiration time of {}: {}".format(consts.AZURE_IDENTITY_CERTIFICATE_SECRET ,str(ex)))
+            tr_logger.error("Error while checking the expiration time of {}: {}".format(consts.AZURE_IDENTITY_CERTIFICATE_SECRET, str(ex)))
 
         storage_account_name, sas_token, readonly_sas_token = utils.setup_validate_storage_account(cmd.cli_ctx, storage_account, sas_token, resource_group_name)
         container_name = container_name + "-" + time.strftime("%Y%m%d-%H%M%S")
