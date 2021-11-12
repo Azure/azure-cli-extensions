@@ -137,5 +137,3 @@ def update_image_galleries(cmd, resource_group_name, gallery_name, gallery, perm
     client = _compute_client_factory(cmd.cli_ctx)
 
     return client.galleries.begin_create_or_update(resource_group_name, gallery_name, gallery, **kwargs)
-
-
