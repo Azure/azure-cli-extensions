@@ -11,10 +11,12 @@ import tempfile
 import urllib.request
 import base64
 import stat
+import time
 from glob import glob
 
 from knack import log
 from azure.cli.core import azclierror
+from azure.cli.core import telemetry
 
 from . import ip_utils
 from . import rsa_parser
@@ -147,6 +149,7 @@ def _get_and_write_certificate(cmd, public_key_file, cert_file):
     from azure.cli.core._profile import Profile
     profile = Profile(cli_ctx=cmd.cli_ctx)
 
+    t0 = time.time()
     # We currently are using the presence of get_msal_token to detect if we are running on an older azure cli client
     # TODO: Remove when adal has been deprecated for a while
     if hasattr(profile, "get_msal_token"):
@@ -156,6 +159,9 @@ def _get_and_write_certificate(cmd, public_key_file, cert_file):
         credential, _, _ = profile.get_login_credentials(subscription_id=profile.get_subscription()["id"])
         certificatedata = credential.get_token(*scopes, data=data)
         certificate = certificatedata.token
+
+    time_elapsed = time.time() - t0
+    telemetry.add_extension_event('ssh', {'Context.Default.AzureCLI.GetSSHCertificateTime': time_elapsed})
 
     if not cert_file:
         cert_file = public_key_file + "-aadcert.pub"
@@ -287,6 +293,9 @@ def _arc_get_client_side_proxy():
     elif machine == '':
         raise azclierror.BadRequestError("Couldn't identify the platform architecture.")
     else:
+        telemetry.set_exception(exception='Unsuported architecture for installing proxy',
+                                fault_type=consts.Proxy_Unsuported_Arch_Fault_Type,
+                                summary=f'{machine} is not supported for installing client proxy')
         raise azclierror.BadRequestError(f"Unsuported architecture: {machine} is not currently supported")
 
     # define the request url and install location based on the os and architecture
@@ -301,6 +310,9 @@ def _arc_get_client_side_proxy():
         install_location = install_location + ".exe"
         older_version_location = older_version_location + ".exe"
     elif operating_system not in ('Linux', 'Darwin'):
+        telemetry.set_exception(exception='Unsuported OS for installing ssh client proxy',
+                                fault_type=consts.Proxy_Unsuported_OS_Fault_Type,
+                                summary=f'{operating_system} is not supported for installing client proxy')
         raise azclierror.BadRequestError(f"Unsuported OS: {operating_system} platform is not currently supported")
 
     install_location = os.path.expanduser(os.path.join('~', install_location))
@@ -309,15 +321,25 @@ def _arc_get_client_side_proxy():
 
     # Only download new proxy if it doesn't exist already
     if not os.path.isfile(install_location):
+        t0 = time.time()
         # download the executable
         try:
             with urllib.request.urlopen(request_uri) as response:
                 response_content = response.read()
                 response.close()
         except Exception as e:
+            telemetry.set_exception(exception=e, fault_type=consts.Proxy_Download_Failed_Fault_Type, 
+                                    summary=f'Failed to download proxy from {request_uri}')
             raise azclierror.ClientRequestError(f"Failed to download client proxy executable from {request_uri}. "
                                                 "Error: " + str(e)) from e
+        time_elapsed = time.time() - t0
 
+        proxy_data = {
+            'Context.Default.AzureCLI.SSHProxyDownloadTime': time_elapsed,
+            'Context.Default.AzureCLI.SSHProxyVersion': consts.CLIENT_PROXY_VERSION
+        }
+        telemetry.add_extension_event('ssh', proxy_data)
+        
         # if directory doesn't exist, create it
         if not os.path.exists(install_dir):
             file_utils.create_directory(install_dir, f"Failed to create client proxy directory '{install_dir}'. ")
@@ -340,9 +362,15 @@ def _arc_list_access_details(cmd, resource_group, vm_name):
     from azext_ssh._client_factory import cf_endpoint
     client = cf_endpoint(cmd.cli_ctx)
     try:
+        t0 = time.time()
         result = client.list_credentials(resource_group_name=resource_group, machine_name=vm_name,
                                          endpoint_name="default")
+        time_elapsed = time.time()-t0
+        telemetry.add_extension_event('ssh', {'Context.Default.AzureCLI.listCredentialsTime': time_elapsed})
     except Exception as e:
+        telemetry.set_exception(exception='Call to listCredentials failed',
+                                fault_type=consts.List_Credentials_Failed,
+                                summary=f'listCredentials failed with error: {str(e)}.')
         raise azclierror.ClientRequestError(f"Request for Azure Relay Information Failed: {str(e)}")
 
     result_string = json.dumps(

@@ -12,6 +12,7 @@ import oschmod
 
 from knack import log
 from azure.cli.core import azclierror
+from azure.cli.core import telemetry
 
 from . import file_utils
 from . import constants as const
@@ -55,12 +56,29 @@ def start_ssh_connection(relay_info, proxy_path, vm_name, ip, username, cert_fil
     command = [ssh_client_path, host]
     command = command + args + ssh_arg_list
 
+    t0 = time.time()
+    
     logger.debug("Running ssh command %s", ' '.join(command))
     subprocess.call(command, shell=platform.system() == 'Windows', env=env)
+
+    connection_duration = time.time() - t0
+
+    ssh_connection_data = {'Context.Default.AzureCLI.SSHConnectionDurationInSeconds': connection_duration}
+    if log_file and _get_connection_status(log_file):
+        ssh_connection_data['Context.Default.AzureCLI.SSHConnectionStatus'] = True
+    telemetry.add_extension_event('ssh', ssh_connection_data)
 
     _terminate_cleanup(delete_keys, delete_cert, delete_credentials, cleanup_process, cert_file,
                        private_key_file, public_key_file, log_file)
 
+def _get_connection_status(log_file):
+    try:
+        with open(log_file, 'r') as ssh_client_log:
+            match = "debug1: Authentication succeeded" in ssh_client_log.read()
+            ssh_client_log.close()
+    except:
+        return False
+    return match
 
 def create_ssh_keyfile(private_key_file):
     command = [_get_ssh_path("ssh-keygen"), "-f", private_key_file, "-t", "rsa", "-q", "-N", ""]
