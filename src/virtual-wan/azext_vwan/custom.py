@@ -575,7 +575,7 @@ def create_vpn_gateway_connection(cmd, resource_group_name, gateway_name, connec
                                   remote_vpn_site, vpn_site_link=None, routing_weight=None, protocol_type=None,
                                   connection_bandwidth=None, shared_key=None, enable_bgp=None,
                                   enable_rate_limiting=None, enable_internet_security=None, no_wait=False,
-                                  associated_route_table=None, propagated_route_tables=None, with_link=False, labels=None):
+                                  associated_route_table=None, propagated_route_tables=None, with_link=None, labels=None):
     client = network_client_factory(cmd.cli_ctx).vpn_connections
     (VpnConnection,
      SubResource,
@@ -804,7 +804,7 @@ def create_vpn_site(cmd, resource_group_name, vpn_site_name, ip_address,
                     virtual_wan=None, location=None, tags=None,
                     site_key=None, address_prefixes=None, is_security_site=None,
                     device_vendor=None, device_model=None, link_speed=None,
-                    peer_weight=None, with_link=False, no_wait=False):
+                    peer_weight=None, with_link=None, no_wait=False):
     client = network_client_factory(cmd.cli_ctx).vpn_sites
     VpnSite, VpnSiteLink, SubResource = cmd.get_models('VpnSite', 'VpnSiteLink', 'SubResource')
     

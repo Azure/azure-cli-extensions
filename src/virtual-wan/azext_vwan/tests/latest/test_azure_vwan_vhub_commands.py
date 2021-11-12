@@ -399,14 +399,6 @@ class AzureVWanVHubScenario(ScenarioTest):
         self.cmd('network vpn-site create -g {rg} -n {vpn_site} --ip-address 10.0.1.110')
         with self.assertRaisesRegexp(HttpResponseError, 'MissingDefaultLinkForVpnSiteDuringMigrationToLinkFormat'):
             self.cmd('network vpn-site link add -g {rg} -n {vpn_site} --vpn-site-link-name {vpn_site_link_name} --ip-address 10.0.1.111 --asn 1234 --bgp-peering-address 192.168.0.0')
-        self.cmd('network vpn-site delete -g {rg} -n {vpn_site}')
-
-        self.cmd('network vpn-site create -g {rg} -n {vpn_site} --ip-address 10.0.1.110 --with-link')
-        self.cmd('network vpn-site link add -g {rg} -n {vpn_site} --vpn-site-link-name {vpn_site_link_name} --ip-address 10.0.1.111 --asn 1234 --bgp-peering-address 192.168.1.0')
-        self.cmd('network vpn-site link add -g {rg} -n {vpn_site} --vpn-site-link-name {vpn_site_link_2_name} --ip-address 10.0.1.112 --asn 1234 --bgp-peering-address 192.168.2.0')
-        self.cmd('network vpn-site link list -g {rg} -n {vpn_site}')
-        self.cmd('network vpn-site link remove -g {rg} -n {vpn_site} --index 1')
-
         # Test ipsec policy
         self.cmd('network vpn-gateway connection create '
                  '-g {rg} '
@@ -420,6 +412,13 @@ class AzureVWanVHubScenario(ScenarioTest):
         self.cmd('network vpn-gateway connection ipsec-policy list -g {rg} --gateway-name {vpngateway} --connection-name {connection}')
         self.cmd('network vpn-gateway connection ipsec-policy remove -g {rg} --gateway-name {vpngateway} --connection-name {connection}')
         self.cmd('network vpn-gateway connection delete -g {rg} -n {connection} --gateway-name {vpngateway}')
+        self.cmd('network vpn-site delete -g {rg} -n {vpn_site}')
+
+        self.cmd('network vpn-site create -g {rg} -n {vpn_site} --ip-address 10.0.1.110 --with-link')
+        self.cmd('network vpn-site link add -g {rg} -n {vpn_site} --vpn-site-link-name {vpn_site_link_name} --ip-address 10.0.1.111 --asn 1234 --bgp-peering-address 192.168.1.0')
+        self.cmd('network vpn-site link add -g {rg} -n {vpn_site} --vpn-site-link-name {vpn_site_link_2_name} --ip-address 10.0.1.112 --asn 1234 --bgp-peering-address 192.168.2.0')
+        self.cmd('network vpn-site link list -g {rg} -n {vpn_site}')
+        self.cmd('network vpn-site link remove -g {rg} -n {vpn_site} --index 1')
 
         # Test vpn gateway connection with links
         self.cmd('network vpn-gateway connection create '
@@ -452,6 +451,7 @@ class AzureVWanVHubScenario(ScenarioTest):
                  '--gateway-name {vpngateway} '
                  '--index 2')
 
+        # Test issue:
         # Ipsec policy setted on conneciton will fail due to multi-links on connection
         with self.assertRaisesRegexp(HttpResponseError, 'VpnConnectionPropertyIsDeprecated'):
             self.cmd('network vpn-gateway connection ipsec-policy add -g {rg} --gateway-name {vpngateway} --connection-name {connection} '

@@ -130,6 +130,8 @@ def load_arguments(self, _):
         c.argument('protocol_type', arg_type=get_enum_type(VirtualNetworkGatewayConnectionProtocol), help='Connection protocol.')
         c.argument('routing_weight', type=int, help='Routing weight.')
         c.argument('shared_key', help='Shared key.')
+        c.argument("vpn_site_link", help='The resource ID of VPN Site Link.')
+        c.argument('with_link', help='Create VpnConnection with default link.', arg_type=get_three_state_flag())
 
     with self.argument_context('network vpn-gateway connection list') as c:
         # List commands cannot use --ids flag
@@ -144,8 +146,8 @@ def load_arguments(self, _):
         c.argument('enable_rate_limiting', options_list='--rate-limiting', arg_type=get_three_state_flag(), help='Enable rate limiting.')
         c.argument('connection_bandwidth', help='Expected bandwidth in Mbps.', type=int)
         c.argument('enable_bgp', arg_type=get_three_state_flag(), help='Enable BGP.')
-        c.argument('use_local_azure_ip_address', help='Use local azure ip to initiate connection.', type=bool)
-        c.argument('use_policy_based_traffic_selectors', help='Enable policy-based traffic selectors.', type=bool)
+        c.argument('use_local_azure_ip_address', arg_type=get_three_state_flag(), help='Use local azure ip to initiate connection.')
+        c.argument('use_policy_based_traffic_selectors', arg_type=get_three_state_flag(), help='Enable policy-based traffic selectors.')
         c.argument('vpn_connection_protocol_type', help='Connection protocol used for this connection.', arg_type=get_enum_type(['IKEv2', 'IKEv1']))
         c.argument('vpn_link_connection_mode', help='Vpn link connection mode.', arg_type=get_enum_type(['Default', 'ResponderOnly', 'InitiatorOnly']))
         c.argument('index', type=int, help='List index of the item (starting with 1).')
@@ -175,7 +177,7 @@ def load_arguments(self, _):
         c.argument('ip_address', help='IP address of the VPN site.')
         c.argument('site_key', help='Key for the VPN site that can be used for connections.')
         c.argument('address_prefixes', nargs='+', help='Space-separated list of CIDR address prefixes.')
-        c.argument('with_link', help='Create VPN site with default link.')
+        c.argument('with_link', help='Create VPN site with default link.', arg_type=get_three_state_flag())
 
     with self.argument_context('network vpn-site', arg_group='Device Property') as c:
         c.argument('device_model', help='Model of the device.')
