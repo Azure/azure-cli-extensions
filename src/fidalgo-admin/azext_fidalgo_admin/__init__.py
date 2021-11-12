@@ -19,7 +19,7 @@ class FidalgoCommandsLoader(AzCommandsLoader):
         from azure.cli.core.commands import CliCommandType
         from azext_fidalgo_admin.generated._client_factory import cf_fidalgo_admin_cl
         fidalgo_admin_custom = CliCommandType(
-            operations_tmpl='azext_fidalgo.custom#{}',
+            operations_tmpl='azext_fidalgo_admin.custom#{}',
             client_factory=cf_fidalgo_admin_cl)
         parent = super(FidalgoCommandsLoader, self)
         parent.__init__(cli_ctx=cli_ctx, custom_command_type=fidalgo_admin_custom)
