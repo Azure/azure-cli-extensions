@@ -632,16 +632,33 @@ def display_diagnostics_report(kubectl_prior):   # pylint: disable=too-many-stat
             logger.warning("Node %s is not Ready. Current state is: %s.", columns[0], columns[1])
         else:
             ready_nodes[columns[0]] = False
-
     logger.debug('There are %s ready nodes in the cluster', str(len(ready_nodes)))
-
     if not ready_nodes:
         logger.warning('No nodes are ready in the current cluster. Diagnostics info might not be available.')
+
+    subprocess_cmd =  kubectl_prior + ["get", "pods", "-n", "aks-periscope", "--no-headers"]
+    pods = subprocess.check_output(
+        subprocess_cmd,
+        universal_newlines=True)
+    logger.debug(pods)
+    pod_lines = pods.splitlines()
+    running_pods = {}
+    for pod_line in pod_lines:
+        columns = pod_line.split()
+        logger.debug(pod_line)
+        if columns[2] != "Running":
+            logger.warning("Pod %s is not in running state. Current state is %s.", columns[0], columns[2])
+        else:
+            running_pods[columns[0]] = False 
+    logger.debug('There are %s ready nodes in the cluster', str(len(ready_nodes)))
+    if not running_pods:
+        logger.warning('We were unable to install diagnostic resources. A possible cause could be lack of resources on your cluster.')
+        return
 
     network_config_array = []
     network_status_array = []
     apds_created = False
-
+    apd_lines = []
     max_retry = 10
     for retry in range(0, max_retry):
         if not apds_created:
@@ -660,15 +677,22 @@ def display_diagnostics_report(kubectl_prior):   # pylint: disable=too-many-stat
                                                                             len(ready_nodes),
                                                                             '.' * retry), end='')
             if len(apd_lines) < len(ready_nodes):
-                time.sleep(3)
+                logger.warning("Warning: There are %s apd resources resources, but there are %s nodes running on the cluster."
+                                "A possible reason might be because your nodes have taints that are preventing the diagnostic resources from being installed."
+                                "If you want diagnostic results for all of the cluster nodes, please run 'kubectl taint node --all node-role.kubernetes.io/master-' and retry the az connectedk8s troubleshoot command.",
+                                len(apd_lines), len(ready_nodes))
+                if len(apd_lines) < len(running_pods):
+                    time.sleep(3)
+                else:
+                    apds_created = True
             else:
                 apds_created = True
                 print()
         else:
-            for node_name in ready_nodes:
-                if ready_nodes[node_name]:
-                    continue
-                apdName = "aks-periscope-diagnostic-" + node_name
+            for apd_line in apd_lines:
+                columns = apd_line.split()
+                apdName = columns[0]
+                node_name = apdName[25:]
                 try:
                     subprocess_cmd = kubectl_prior + ["get", "apd", apdName, "-n", "aks-periscope", "-o=jsonpath={.spec.networkconfig}"]
                     network_config = subprocess.check_output(
@@ -693,6 +717,8 @@ def display_diagnostics_report(kubectl_prior):   # pylint: disable=too-many-stat
                     ready_nodes[node_name] = True
                 except subprocess.CalledProcessError as err:
                     raise CLIInternalError(err.output)
+            if network_config_array and network_status_array:
+                break
 
     print()
     if network_config_array:
