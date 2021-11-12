@@ -92,6 +92,11 @@ helps['vmware private-cloud add-identity-source'] = """
     short-summary: Add a vCenter Single Sign On Identity Source to a private cloud.
 """
 
+helps['vmware private-cloud addidentitysource'] = """
+    type: command
+    short-summary: Add a vCenter Single Sign On Identity Source to a private cloud.
+"""
+
 helps['vmware private-cloud add-availability-zone'] = """
     type: command
     short-summary: Add an Availability Zone to a private cloud.
@@ -147,12 +152,22 @@ helps['vmware private-cloud delete-identity-source'] = """
     short-summary: Delete a vCenter Single Sign On Identity Source for a private cloud.
 """
 
+helps['vmware private-cloud deleteidentitysource'] = """
+    type: command
+    short-summary: Delete a vCenter Single Sign On Identity Source for a private cloud.
+"""
+
 helps['vmware private-cloud list'] = """
     type: command
     short-summary: List the private clouds.
 """
 
 helps['vmware private-cloud list-admin-credentials'] = """
+    type: command
+    short-summary: List the admin credentials for the private cloud.
+"""
+
+helps['vmware private-cloud listadmincredentials'] = """
     type: command
     short-summary: List the admin credentials for the private cloud.
 """

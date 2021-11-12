@@ -37,7 +37,7 @@ def load_arguments(self, _):
         c.argument('nsxt_password', help='NSX-T Manager password.')
         c.argument('accept_eula', help='Accept the end-user license agreement without prompting.')
         c.argument('network_block', help='A subnet at least of size /22. Make sure the CIDR format is conformed to (A.B.C.D/X) where A,B,C,D are between 0 and 255, and X is between 0 and 22.')
-        c.argument('mi_system_assigned', help='Enables a system assigned identity.')
+        c.argument('mi_system_assigned', help='Enable a system assigned identity.')
 
     with self.argument_context('vmware private-cloud show') as c:
         c.argument('name', options_list=['--name', '-n'], help='Name of the private cloud.')
@@ -75,13 +75,30 @@ def load_arguments(self, _):
         c.argument('ssl', help='Protect LDAP communication using SSL certificate (LDAPS). Specify "Enabled" or "Disabled".')
         c.argument('username', help='The ID of an Active Directory user with a minimum of read-only access to Base DN for users and group.')
 
+    with self.argument_context('vmware private-cloud addidentitysource') as c:
+        c.argument('alias', help='The domain\'s NetBIOS name.')
+        c.argument('base_group_dn', help='The base distinguished name for groups.')
+        c.argument('base_user_dn', help='The base distinguished name for users.')
+        c.argument('domain', help='The domain\'s dns name.')
+        c.argument('name', options_list=['--name', '-n'], help='The name of the identity source.')
+        c.argument('password', help='The password of the Active Directory user with a minimum of read-only access to Base DN for users and groups.')
+        c.argument('primary_server', help='Primary server URL.')
+        c.argument('secondary_server', help='Secondary server URL.')
+        c.argument('ssl', help='Protect LDAP communication using SSL certificate (LDAPS). Specify "Enabled" or "Disabled".')
+        c.argument('username', help='The ID of an Active Directory user with a minimum of read-only access to Base DN for users and group.')
+
     with self.argument_context('vmware private-cloud delete-identity-source') as c:
         c.argument('alias', help='The domain\'s NetBIOS name.')
         c.argument('domain', help='The domain\'s dns name.')
         c.argument('name', options_list=['--name', '-n'], help='The name of the identity source.')
 
+    with self.argument_context('vmware private-cloud deleteidentitysource') as c:
+        c.argument('alias', help='The domain\'s NetBIOS name.')
+        c.argument('domain', help='The domain\'s dns name.')
+        c.argument('name', options_list=['--name', '-n'], help='The name of the identity source.')
+
     with self.argument_context('vmware private-cloud identity') as c:
-        c.argument('system_assigned', help='Enables a system assigned identity.')
+        c.argument('system_assigned', help='Enable a system assigned identity.')
 
     with self.argument_context('vmware private-cloud update') as c:
         c.argument('name', options_list=['--name', '-n'], help='Name of the private cloud.')

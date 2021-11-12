@@ -10,9 +10,12 @@
 - Add `az vmware private-cloud delete-availability-zone`
 - Add `az vmware private-cloud add-cmk-encryption`
 - Add `az vmware private-cloud delete-cmk-encryption`
-- [BREAKING CHANGE] `az vmware private-cloud listadmincredentials` has been updated to `az vmware private-cloud list-admin-credentials`
-- [BREAKING CHANGE] `az vmware private-cloud addidentitysource` has been updated to `az vmware private-cloud add-identity-source`
-- [BREAKING CHANGE] `az vmware private-cloud deleteidentitysource` has been updated to `az vmware private-cloud delete-identity-source`
+- Add `az vmware private-cloud list-admin-credentials`
+- Add `az vmware private-cloud add-identity-source`
+- Add `az vmware private-cloud delete-identity-source`
+- Deprecate `az vmware private-cloud listadmincredentials`
+- Deprecate `az vmware private-cloud addidentitysource`
+- Deprecate `az vmware private-cloud deleteidentitysource`
 
 ## 3.2.0 (2021-10)
 
