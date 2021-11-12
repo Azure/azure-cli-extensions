@@ -614,7 +614,7 @@ def display_diagnostics_report(kubectl_prior):   # pylint: disable=too-many-stat
     if not ready_nodes:
         logger.warning('No nodes are ready in the current cluster. Diagnostics info might not be available.')
 
-    subprocess_cmd =  kubectl_prior + ["get", "pods", "-n", "aks-periscope", "--no-headers"]
+    subprocess_cmd = kubectl_prior + ["get", "pods", "-n", "aks-periscope", "--no-headers"]
     pods = subprocess.check_output(
         subprocess_cmd,
         universal_newlines=True)
@@ -627,7 +627,7 @@ def display_diagnostics_report(kubectl_prior):   # pylint: disable=too-many-stat
         if columns[2] != "Running":
             logger.warning("Pod %s is not in running state. Current state is %s.", columns[0], columns[2])
         else:
-            running_pods[columns[0]] = False 
+            running_pods[columns[0]] = False
     logger.debug('There are %s ready nodes in the cluster', str(len(ready_nodes)))
     if not running_pods:
         logger.warning('We were unable to install diagnostic resources. A possible cause could be lack of resources on your cluster.')
@@ -656,9 +656,9 @@ def display_diagnostics_report(kubectl_prior):   # pylint: disable=too-many-stat
                                                                             '.' * retry), end='')
             if len(apd_lines) < len(ready_nodes):
                 logger.warning("Warning: There are %s apd resources resources, but there are %s nodes running on the cluster."
-                                "A possible reason might be because your nodes have taints that are preventing the diagnostic resources from being installed."
-                                "If you want diagnostic results for all of the cluster nodes, please run 'kubectl taint node --all node-role.kubernetes.io/master-' and retry the az connectedk8s troubleshoot command.",
-                                len(apd_lines), len(ready_nodes))
+                    "A possible reason might be because your nodes have taints that are preventing the diagnostic resources from being installed."
+                    "If you want diagnostic results for all of the cluster nodes, please run 'kubectl taint node --all node-role.kubernetes.io/master-' and retry the az connectedk8s troubleshoot command.",
+                    len(apd_lines), len(ready_nodes))
                 if len(apd_lines) < len(running_pods):
                     time.sleep(3)
                 else:
