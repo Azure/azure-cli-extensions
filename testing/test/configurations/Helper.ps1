@@ -19,6 +19,27 @@ function Get-ConfigStatus {
     return $null
 }
 
+function Get-FluxConfigData {
+    param(
+        [string]$configName
+    )
+
+    $output = kubectl get fc -A -o json | ConvertFrom-Json
+    return $output.items | Where-Object { $_.metadata.name -eq $configurationName }
+}
+
+function Get-FluxConfigStatus {
+    param(
+        [string]$configName
+    )
+
+    $configData = Get-FluxConfigData $configName
+    if ($configData -ne $null) {
+        return $configData.status.provisioningState
+    }
+    return $null
+}
+
 function Get-PodStatus {
     param(  
         [string]$podName,
