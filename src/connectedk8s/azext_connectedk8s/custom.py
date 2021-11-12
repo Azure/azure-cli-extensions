@@ -1531,17 +1531,18 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, storage_account
                 if pod.status.phase == "Pending":
                     pods_pending += 1
             if pods_pending > 0:
-                logger.warning("Some pods in the azure-arc namespace are stuck in a pending state. Insufficient resources may sometimes cause this. Please run kubectl get pods -n azure-arc to ensure your pods are in a running state.")
+                tr_logger.warning("Some pods in the azure-arc namespace are stuck in a pending state. Insufficient resources may sometimes cause this.")
+                logger.warning("{colorama.Fore.RED}Some pods in the azure-arc namespace are stuck in a pending state. Insufficient resources may sometimes cause this. Please run kubectl get pods -n azure-arc to ensure your pods are in a running state.")
             if pods_count == 0:
                 tr_logger.warning("No pods found in azure-arc namespace.")
 
         except Exception as ex:
-            tr_logger.error("Error occured while fetching pod's statues : {}".format(str(ex)))
+            tr_logger.error("An error has occured while fetching pod's status : {}".format(str(ex)))
 
         cert_secret = utils.get_kubernetes_secret(kapi_instance, consts.Arc_Namespace, consts.AZURE_IDENTITY_CERTIFICATE_SECRET, custom_logger=tr_logger)
         if (not cert_secret) or (not hasattr(cert_secret, 'data')) or (consts.AZURE_IDENTITY_CERTIFICATE_SECRET not in cert_secret.data):
             tr_logger.error("{} secret is not present on the cluster.".format(consts.AZURE_IDENTITY_CERTIFICATE_SECRET))
-            logger.error("{} secret is not present on the cluster.".format(consts.AZURE_IDENTITY_CERTIFICATE_SECRET))
+            logger.error("{colorama.Fore.RED}{} secret is not present on the cluster.".format(consts.AZURE_IDENTITY_CERTIFICATE_SECRET))
 
         try:
             current_time = datetime.now(timezone.utc)
@@ -1551,7 +1552,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, storage_account
         except ValueError as ex:
             tr_logger.error(str(ex))
         except Exception as ex:
-            tr_logger.error("Error while checking MSI cert expiration time: {}".format(str(ex)))
+            tr_logger.error("Error while checking the expiration time of {}: {}".format(consts.AZURE_IDENTITY_CERTIFICATE_SECRET ,str(ex)))
 
         storage_account_name, sas_token, readonly_sas_token = utils.setup_validate_storage_account(cmd.cli_ctx, storage_account, sas_token, resource_group_name)
         container_name = container_name + "-" + time.strftime("%Y%m%d-%H%M%S")
@@ -1565,8 +1566,8 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, storage_account
             utils.try_archive_log_file(troubleshoot_log_path, output_file)
 
     except Exception as ex:
-        tr_logger.error("Exception caught while running troubleshoot: {}".format(str(ex)), exc_info=True)
-        raise CLIInternalError("Exception caught while running troubleshoot: {}".format(str(ex)))
+        tr_logger.error("An exception has occured while running troubleshoot: {}".format(str(ex)), exc_info=True)
+        raise CLIInternalError("An exception has occured while running troubleshoot: {}".format(str(ex)))
 
 
 def load_kubernetes_configuration(filename):

@@ -456,13 +456,6 @@ def check_connectivity(url='https://azure.microsoft.com', max_retries=5, timeout
     return success
 
 
-def validate_azure_management_reachability(subscription_id):
-    try:
-        get_subscription_client().get(subscription_id)
-    except Exception as ex:
-        logger.warning("Not able to reach azure management endpoints. Exception: " + str(ex))
-
-
 # Returns a list of kubernetes pod objects in a given namespace. Object description at: https://github.com/kubernetes-client/python/blob/master/kubernetes/docs/V1PodList.md
 def get_pod_list(api_instance, namespace, label_selector="", field_selector=""):
     try:
@@ -530,21 +523,6 @@ def can_create_clusterrolebindings(configuration):
     except Exception as ex:
         logger.warning("Couldn't check for the permission to create clusterrolebindings on this k8s cluster. Error: {}".format(str(ex)))
         return "Unknown"
-
-
-def check_delete_job(configuration, namespace):
-    try:
-        api_instance = kube_client.BatchV1Api(kube_client.ApiClient(configuration))
-        api_response = api_instance.list_namespaced_job(namespace)
-        for item in list(api_response.items):
-            annotations = item.metadata.annotations
-            if annotations.get("helm.sh/hook") == "pre-delete":
-                job_status = item.status
-                if job_status.succeeded == 0 or job_status.active > 0:
-                    logger.warning("Delete Job status conditions: {}".format(job_status.conditions))
-                break
-    except Exception as e:
-        logger.debug("Error occurred while retrieving status of the delete job: {}".format(str(e)))
 
 
 def try_upload_log_file(storage_account_name, storage_token, container_name, log_file_path):
@@ -874,7 +852,7 @@ def validate_node_api_response(api_instance, node_api_response):
             node_api_response = api_instance.list_node()
             return node_api_response
         except Exception as ex:
-            logger.debug("Error occcured while listing nodes on this kubernetes cluster: {}".format(str(ex)))
+            logger.debug("Error occured while listing nodes on this kubernetes cluster: {}".format(str(ex)))
             return None
     else:
         return node_api_response
