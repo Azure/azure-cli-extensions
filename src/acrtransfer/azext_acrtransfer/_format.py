@@ -5,7 +5,9 @@
 # pylint: disable=line-too-long
 
 from collections import OrderedDict
-from distutils import log as logger
+from knack.log import get_logger
+
+logger = get_logger(__name__)
 
 
 def import_pipeline_output_format(result):
@@ -91,5 +93,5 @@ def _get_duration(start_time, finish_time):
         seconds = "{0:02d}".format(duration.seconds % 60)
         return "{0}:{1}:{2}".format(hours, minutes, seconds)
     except (ValueError, TypeError):
-        logger.debug("Unable to get duration with start_time '%s' and finish_time '%s'", start_time, finish_time)
+        logger.debug(f'Unable to get duration with start_time {start_time}and finish_time {finish_time}')
         return ' '

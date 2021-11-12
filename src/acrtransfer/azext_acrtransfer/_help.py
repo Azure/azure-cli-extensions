@@ -123,3 +123,13 @@ helps['acr pipeline-run delete'] = """
         - name: Delete a pipeline-run.
           text: az acr pipeline-run delete --resource-group $MyRG --registry $MyReg --name $MyPipelineRun
 """
+
+helps['acr pipeline-run clean'] = """
+    type: command
+    short-summary: Delete all failed pipeline-runs on the registry.
+    examples:
+        - name: Delete all failed pipeline-runs on the registry.
+          text: az acr pipeline-run clean --resource-group $MyRG --registry $MyReg
+        - name: List the failed pipeline-runs that would have been deleted, but do not delete any.
+          text: az acr pipeline-run clean --resource-group $MyRG --registry $MyReg --dry-run -o table
+"""
