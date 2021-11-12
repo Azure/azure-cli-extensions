@@ -328,7 +328,7 @@ def _arc_get_client_side_proxy():
                 response_content = response.read()
                 response.close()
         except Exception as e:
-            telemetry.set_exception(exception=e, fault_type=consts.Proxy_Download_Failed_Fault_Type, 
+            telemetry.set_exception(exception=e, fault_type=consts.Proxy_Download_Failed_Fault_Type,
                                     summary=f'Failed to download proxy from {request_uri}')
             raise azclierror.ClientRequestError(f"Failed to download client proxy executable from {request_uri}. "
                                                 "Error: " + str(e)) from e
@@ -339,7 +339,7 @@ def _arc_get_client_side_proxy():
             'Context.Default.AzureCLI.SSHProxyVersion': consts.CLIENT_PROXY_VERSION
         }
         telemetry.add_extension_event('ssh', proxy_data)
-        
+
         # if directory doesn't exist, create it
         if not os.path.exists(install_dir):
             file_utils.create_directory(install_dir, f"Failed to create client proxy directory '{install_dir}'. ")
@@ -365,7 +365,7 @@ def _arc_list_access_details(cmd, resource_group, vm_name):
         t0 = time.time()
         result = client.list_credentials(resource_group_name=resource_group, machine_name=vm_name,
                                          endpoint_name="default")
-        time_elapsed = time.time()-t0
+        time_elapsed = time.time() - t0
         telemetry.add_extension_event('ssh', {'Context.Default.AzureCLI.listCredentialsTime': time_elapsed})
     except Exception as e:
         telemetry.set_exception(exception='Call to listCredentials failed',
