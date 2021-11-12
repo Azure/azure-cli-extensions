@@ -15,7 +15,6 @@ from glob import glob
 
 from knack import log
 from azure.cli.core import azclierror
-from msrestazure import tools
 
 from . import ip_utils
 from . import rsa_parser
@@ -25,31 +24,31 @@ from . import file_utils
 
 logger = log.get_logger(__name__)
 
-def ssh_vm(cmd, resource_group_name=None, vm_name=None, resource_id=None, ssh_ip=None, public_key_file=None,
+
+def ssh_vm(cmd, resource_group_name=None, vm_name=None, ssh_ip=None, public_key_file=None,
            private_key_file=None, use_private_ip=False, local_user=None, cert_file=None, port=None,
-           ssh_client_path=None, delete_credentials=False, ssh_args=None):
-    
+           ssh_client_path=None, delete_credentials=False, resource_type=None, ssh_args=None):
+
     if delete_credentials and os.environ.get("AZUREPS_HOST_ENVIRONMENT") != "cloud-shell/1.0":
         raise azclierror.ArgumentUsageError("Can't use --delete-private-key outside an Azure Cloud Shell session.")
 
-    _assert_args(resource_group_name, vm_name, ssh_ip, resource_id, cert_file, local_user)
+    _assert_args(resource_group_name, vm_name, ssh_ip, resource_type, cert_file, local_user)
     credentials_folder = None
-    do_ssh_op = _decide_op_call(cmd, resource_group_name, vm_name, resource_id, ssh_ip, None, None,
+    do_ssh_op = _decide_op_call(cmd, resource_group_name, vm_name, ssh_ip, resource_type, None, None,
                                 ssh_client_path, ssh_args, delete_credentials, credentials_folder)
-    do_ssh_op(cmd, ssh_ip, public_key_file, private_key_file, local_user,
+    do_ssh_op(cmd, vm_name, resource_group_name, ssh_ip, public_key_file, private_key_file, local_user,
               cert_file, port, use_private_ip, credentials_folder)
 
 
-def ssh_config(cmd, config_path, resource_group_name=None, vm_name=None, ssh_ip=None, resource_id=None,
+def ssh_config(cmd, config_path, resource_group_name=None, vm_name=None, ssh_ip=None,
                public_key_file=None, private_key_file=None, overwrite=False, use_private_ip=False,
-               local_user=None, cert_file=None, port=None, credentials_folder=None):
+               local_user=None, cert_file=None, port=None, resource_type=None, credentials_folder=None):
 
-    _assert_args(resource_group_name, vm_name, ssh_ip, resource_id, cert_file, local_user)
-    
     if (public_key_file or private_key_file) and credentials_folder:
         raise azclierror.ArgumentUsageError("--keys-destination-folder can't be used in conjunction with "
                                             "--public-key-file/-p or --private-key-file/-i.")
-      
+    _assert_args(resource_group_name, vm_name, ssh_ip, resource_type, cert_file, local_user)
+
     # Default credential location
     if not credentials_folder:
         config_folder = os.path.dirname(config_path)
@@ -59,15 +58,12 @@ def ssh_config(cmd, config_path, resource_group_name=None, vm_name=None, ssh_ip=
         folder_name = ssh_ip
         if resource_group_name and vm_name:
             folder_name = resource_group_name + "-" + vm_name
-        elif resource_id:
-            resource_info = tools.parse_resource_id(resource_id)
-            folder_name = resource_info['resource_group'] + "-" + resource_info['resource_name']
 
         credentials_folder = os.path.join(config_folder, os.path.join("az_ssh_config", folder_name))
-    
-    do_ssh_op = _decide_op_call(cmd, resource_group_name, vm_name, resource_id, ssh_ip, config_path, overwrite,
+
+    do_ssh_op = _decide_op_call(cmd, resource_group_name, vm_name, ssh_ip, resource_type, config_path, overwrite,
                                 None, None, False, credentials_folder)
-    do_ssh_op(cmd, ssh_ip, public_key_file, private_key_file, local_user,
+    do_ssh_op(cmd, vm_name, resource_group_name, ssh_ip, public_key_file, private_key_file, local_user,
               cert_file, port, use_private_ip, credentials_folder)
 
 
@@ -87,33 +83,24 @@ def ssh_cert(cmd, cert_path=None, public_key_file=None):
     print(cert_file + "\n")
 
 
-def ssh_arc(cmd, resource_group_name=None, vm_name=None, resource_id=None, public_key_file=None, private_key_file=None,
+def ssh_arc(cmd, resource_group_name=None, vm_name=None, public_key_file=None, private_key_file=None,
             local_user=None, cert_file=None, port=None, ssh_client_path=None, delete_credentials=False, ssh_args=None):
-    
+
     if delete_credentials and os.environ.get("AZUREPS_HOST_ENVIRONMENT") != "cloud-shell/1.0":
         raise azclierror.ArgumentUsageError("Can't use --delete-private-key outside an Azure Cloud Shell session.")
-    _assert_args(resource_group_name, vm_name, None, resource_id, cert_file, local_user)
 
-    if resource_id:
-        resource_info = tools.parse_resource_id(resource_id)
-        if not set(['resource_group', 'resource_name', 'resource_namespace']).issubset(set(resource_info.keys())):
-            raise azclierror.InvalidArgumentValueError("Resource ID not formated correctly.")
-        if resource_info['resource_namespace'] != "Microsoft.HybridCompute":
-            raise azclierror.InvalidArgumentValueError("Resource provider in the Resource ID must be "
-                                                       "'Microsoft.HybridCompute'")
-        resource_group_name = resource_info['resource_group']
-        vm_name = resource_info['resource_name']
+    _assert_args(resource_group_name, vm_name, None, "Microsoft.HybridCompute", cert_file, local_user)
 
     credentials_folder = None
 
     op_call = functools.partial(ssh_utils.start_ssh_connection, ssh_client_path=ssh_client_path, ssh_args=ssh_args,
                                 delete_credentials=delete_credentials)
-    _do_ssh_op(cmd, None, public_key_file, private_key_file, local_user, cert_file, port,
-               False, credentials_folder, resource_group_name, vm_name, op_call, True)
+    _do_ssh_op(cmd, vm_name, resource_group_name, None, public_key_file, private_key_file, local_user, cert_file, port,
+               False, credentials_folder, op_call, True)
 
 
-def _do_ssh_op(cmd, ssh_ip, public_key_file, private_key_file, username,
-               cert_file, port, use_private_ip, credentials_folder, resource_group_name, vm_name, op_call, is_arc):
+def _do_ssh_op(cmd, vm_name, resource_group_name, ssh_ip, public_key_file, private_key_file, username,
+               cert_file, port, use_private_ip, credentials_folder, op_call, is_arc):
 
     proxy_path = None
     relay_info = None
@@ -127,7 +114,7 @@ def _do_ssh_op(cmd, ssh_ip, public_key_file, private_key_file, username,
                 raise azclierror.ResourceNotFoundError(f"VM '{vm_name}' does not have a public IP address to SSH to")
             raise azclierror.ResourceNotFoundError(f"VM '{vm_name}' does not have a public or private IP address to"
                                                    "SSH to")
-    
+
     # If user provides local user, no credentials should be deleted.
     delete_keys = False
     delete_cert = False
@@ -138,7 +125,9 @@ def _do_ssh_op(cmd, ssh_ip, public_key_file, private_key_file, username,
                                                                                                credentials_folder)
         cert_file, username = _get_and_write_certificate(cmd, public_key_file, None)
 
-    op_call(relay_info, proxy_path, vm_name, ssh_ip, username, cert_file, private_key_file, port, is_arc, delete_keys, delete_cert, public_key_file)
+    print(cert_file)
+    op_call(relay_info, proxy_path, vm_name, ssh_ip, username, cert_file, private_key_file, port, is_arc, delete_keys,
+            delete_cert, public_key_file)
 
 
 def _get_and_write_certificate(cmd, public_key_file, cert_file):
@@ -197,11 +186,15 @@ def _prepare_jwk_data(public_key_file):
     return data
 
 
-def _assert_args(resource_group, vm_name, ssh_ip, resource_id, cert_file, username):
-    if not (resource_group or vm_name or ssh_ip or resource_id):
+def _assert_args(resource_group, vm_name, ssh_ip, resource_type, cert_file, username):
+    if resource_type and resource_type != "Microsoft.Compute" and resource_type != "Microsoft.HybridCompute":
+        raise azclierror.InvalidArgumentValueError("--resource-type must be either \"Microsoft.Compute\" "
+                                                   "for Azure VMs or \"Microsoft.HybridCompute\" for Arc Servers.")
+
+    if not (resource_group or vm_name or ssh_ip):
         raise azclierror.RequiredArgumentMissingError(
             "The VM must be specified by --ip or --resource-group and "
-            "--vm-name/--name or --resource_id")
+            "--vm-name/--name")
 
     if resource_group and not vm_name or vm_name and not resource_group:
         raise azclierror.MutuallyExclusiveArgumentError(
@@ -210,14 +203,6 @@ def _assert_args(resource_group, vm_name, ssh_ip, resource_id, cert_file, userna
     if ssh_ip and (vm_name or resource_group):
         raise azclierror.MutuallyExclusiveArgumentError(
             "--ip cannot be used with --resource-group or --vm-name/--name")
-
-    if ssh_ip and resource_id:
-        raise azclierror.MutuallyExclusiveArgumentError(
-            "--ip cannot be used with --resource-id")
-
-    if resource_id and (vm_name or resource_group):
-        raise azclierror.MutuallyExclusiveArgumentError(
-            "--resource-id cannot be used with --resource-group or --vm-name/--name")
 
     if cert_file and not username:
         raise azclierror.MutuallyExclusiveArgumentError(
@@ -355,7 +340,8 @@ def _arc_list_access_details(cmd, resource_group, vm_name):
     from azext_ssh._client_factory import cf_endpoint
     client = cf_endpoint(cmd.cli_ctx)
     try:
-        result = client.list_credentials(resource_group_name=resource_group, machine_name=vm_name, endpoint_name="default")
+        result = client.list_credentials(resource_group_name=resource_group, machine_name=vm_name,
+                                         endpoint_name="default")
     except Exception as e:
         raise azclierror.ClientRequestError(f"Request for Azure Relay Information Failed: {str(e)}")
 
@@ -375,7 +361,7 @@ def _arc_list_access_details(cmd, resource_group, vm_name):
     return base64_result_string
 
 
-def _decide_op_call(cmd, resource_group_name, vm_name, resource_id, ssh_ip, config_path, overwrite,
+def _decide_op_call(cmd, resource_group_name, vm_name, ssh_ip, resource_type, config_path, overwrite,
                     ssh_client_path, ssh_args, delete_credentials, credentials_folder):
 
     # If the user provides an IP address the target will be treated as an Azure VM even if it is an
@@ -385,18 +371,9 @@ def _decide_op_call(cmd, resource_group_name, vm_name, resource_id, ssh_ip, conf
     if ssh_ip:
         is_arc_server = False
 
-    elif resource_id:
-        resource_info = tools.parse_resource_id(resource_id)
-        if not set(['resource_group', 'resource_name', 'resource_namespace']).issubset(set(resource_info.keys())):
-            raise azclierror.InvalidArgumentValueError("Resource ID not formated correctly.")
-        resource_group_name = resource_info['resource_group']
-        vm_name = resource_info['resource_name']
-        if resource_info['resource_namespace'] == "Microsoft.HybridCompute":
+    elif resource_type:
+        if resource_type == "Microsoft.HybridCompute":
             is_arc_server = True
-        elif resource_info['resource_namespace'] != "Microsoft.Compute":
-            error = ("Invalid Resource ID. Resource provider must be Microsoft.Compute if resource is an "
-                     "Azure Virtual Machine, or Microsoft.HybridCompute if it is an Arc Server.")
-            raise azclierror.InvalidArgumentValueError(error)
 
     else:
         vm_error, is_azure_vm = _check_if_azure_vm(cmd, resource_group_name, vm_name)
@@ -404,8 +381,7 @@ def _decide_op_call(cmd, resource_group_name, vm_name, resource_id, ssh_ip, conf
 
         if is_azure_vm and is_arc_server:
             raise azclierror.BadRequestError(f"{resource_group_name} has Azure VM and Arc Server with the "
-                                             f"same name: {vm_name}. Please try with --resource-id instead "
-                                             "of --vm-name and --resource-group")
+                                             f"same name: {vm_name}. Please provide a --resource-type.")
         if not is_azure_vm and not is_arc_server:
             from azure.core.exceptions import ResourceNotFoundError
             if isinstance(arc_error, ResourceNotFoundError) and isinstance(vm_error, ResourceNotFoundError):
@@ -421,9 +397,7 @@ def _decide_op_call(cmd, resource_group_name, vm_name, resource_id, ssh_ip, conf
     else:
         op_call = functools.partial(ssh_utils.start_ssh_connection, ssh_client_path=ssh_client_path, ssh_args=ssh_args,
                                     delete_credentials=delete_credentials)
-    do_ssh_op = functools.partial(_do_ssh_op, resource_group_name=resource_group_name, vm_name=vm_name,
-                                  is_arc=is_arc_server, op_call=op_call)
-
+    do_ssh_op = functools.partial(_do_ssh_op, is_arc=is_arc_server, op_call=op_call)
     return do_ssh_op
 
 
