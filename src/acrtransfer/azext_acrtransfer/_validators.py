@@ -7,8 +7,8 @@
 from knack.log import get_logger
 from azure.cli.core.azclierror import InvalidArgumentValueError
 
-
 logger = get_logger(__name__)
+
 
 def validate_storage_account_container_uri(namespace):
     uri = namespace.storage_account_container_uri
@@ -59,7 +59,7 @@ def validate_import_options(namespace):
         valid = False
 
     if not valid:
-        logger.warning("Allowed options are: " + str(allowed_options_list))
+        logger.warning("Allowed options are: %s", str(allowed_options_list))
         logger.warning("Invalid option found in options parameter. Please provide a space-separated list of allowed options.")
 
 
@@ -76,7 +76,7 @@ def validate_export_options(namespace):
         valid = False
 
     if not valid:
-        logger.warning("Allowed options are: " + str(allowed_options_list))
+        logger.warning('Allowed options are: %s', str(allowed_options_list))
         logger.warning("Invalid option found in options parameter. Please provide a space-separated list of allowed options.")
 
 
@@ -90,15 +90,15 @@ def validate_pipeline_type(namespace):
     if not valid:
         logger.warning("Invalid pipeline type. Pipeline type must be import or export.")
 
+
 def validate_top(namespace):
     n = namespace.top
 
-    if(n is None):
+    if n is None:
         return
 
     try:
         int(n)
 
-    except:
-        raise InvalidArgumentValueError(f'Argument provided for parameter top \'{n}\' is not an integer. Please provide an integer for the top parameter.')
-
+    except ValueError as e:
+        raise InvalidArgumentValueError(f'Argument provided for parameter top \'{n}\' is not an integer. Please provide an integer for the top parameter.') from e

@@ -49,11 +49,11 @@ def delete_exportpipeline(client, resource_group_name, registry_name, export_pip
 
     try:
         client.export_pipelines.get(resource_group_name=resource_group_name,
-                                       registry_name=registry_name,
-                                       export_pipeline_name=export_pipeline_name)
+                                    registry_name=registry_name,
+                                    export_pipeline_name=export_pipeline_name)
 
-    except:
-        raise ResourceNotFoundError(f'Export pipeline {export_pipeline_name} not found on registry {registry_name} in the {resource_group_name} resource group.')
+    except Exception as e:
+        raise ResourceNotFoundError(f'Export pipeline {export_pipeline_name} not found on registry {registry_name} in the {resource_group_name} resource group.') from e
 
     return client.export_pipelines.begin_delete(resource_group_name=resource_group_name,
                                                 registry_name=registry_name,

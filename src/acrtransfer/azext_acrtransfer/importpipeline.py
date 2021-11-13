@@ -49,11 +49,11 @@ def delete_importpipeline(client, resource_group_name, registry_name, import_pip
 
     try:
         client.import_pipelines.get(resource_group_name=resource_group_name,
-                                       registry_name=registry_name,
-                                       import_pipeline_name=import_pipeline_name)
+                                    registry_name=registry_name,
+                                    import_pipeline_name=import_pipeline_name)
 
-    except:
-        raise ResourceNotFoundError(f'Import pipeline {import_pipeline_name} not found on registry {registry_name} in the {resource_group_name} resource group.')
+    except Exception as e:
+        raise ResourceNotFoundError(f'Import pipeline {import_pipeline_name} not found on registry {registry_name} in the {resource_group_name} resource group.') from e
 
     return client.import_pipelines.begin_delete(resource_group_name=resource_group_name,
                                                 registry_name=registry_name,

@@ -6,10 +6,11 @@
 
 import time
 from knack.log import get_logger
-from azure.cli.core.azclierror import ResourceNotFoundError, RequiredArgumentMissingError
+from azure.cli.core.azclierror import ResourceNotFoundError, RequiredArgumentMissingError, ClientRequestError, AzureConnectionError, AzureResponseError, AzureInternalError
 from .vendored_sdks.containerregistry.v2019_12_01_preview.models._models_py3 import PipelineRun, PipelineRunRequest, PipelineRunSourceProperties, PipelineRunTargetProperties
 
 logger = get_logger(__name__)
+
 
 def create_pipelinerun(client, resource_group_name, registry_name, pipeline_name, pipeline_run_name, pipeline_type, storage_blob_name, artifacts=None, force_update_tag=False):
     '''Create a pipeline run.'''
@@ -19,8 +20,8 @@ def create_pipelinerun(client, resource_group_name, registry_name, pipeline_name
             raw_result = client.import_pipelines.get(resource_group_name=resource_group_name,
                                                      registry_name=registry_name,
                                                      import_pipeline_name=pipeline_name)
-        except:
-            raise ResourceNotFoundError(f'Import pipeline {pipeline_name} not found on registry {registry_name} in the {resource_group_name} resource group.')
+        except Exception as e:
+            raise ResourceNotFoundError(f'Import pipeline {pipeline_name} not found on registry {registry_name} in the {resource_group_name} resource group.') from e
 
         pipeline_resource_id = raw_result.id
         pipeline_run_source = PipelineRunSourceProperties(name=storage_blob_name)
@@ -31,8 +32,8 @@ def create_pipelinerun(client, resource_group_name, registry_name, pipeline_name
             raw_result = client.export_pipelines.get(resource_group_name=resource_group_name,
                                                      registry_name=registry_name,
                                                      export_pipeline_name=pipeline_name)
-        except:
-            raise ResourceNotFoundError(f'Export pipeline {pipeline_name} not found on registry {registry_name} in the {resource_group_name} resource group.')
+        except Exception as e:
+            raise ResourceNotFoundError(f'Export pipeline {pipeline_name} not found on registry {registry_name} in the {resource_group_name} resource group.') from e
 
         pipeline_resource_id = raw_result.id
         if artifacts is None:
@@ -68,11 +69,11 @@ def delete_pipelinerun(client, resource_group_name, registry_name, pipeline_run_
 
     try:
         client.pipeline_runs.get(resource_group_name=resource_group_name,
-                                    registry_name=registry_name,
-                                    pipeline_run_name=pipeline_run_name)
+                                 registry_name=registry_name,
+                                 pipeline_run_name=pipeline_run_name)
 
-    except:
-        raise ResourceNotFoundError(f'Pipeline-run {pipeline_run_name} not found on registry {registry_name} in the {resource_group_name} resource group.')
+    except Exception as e:
+        raise ResourceNotFoundError(f'Pipeline-run {pipeline_run_name} not found on registry {registry_name} in the {resource_group_name} resource group.') from e
 
     return client.pipeline_runs.begin_delete(resource_group_name=resource_group_name,
                                              registry_name=registry_name,
@@ -98,7 +99,7 @@ def clean_pipelinerun(client, resource_group_name, registry_name, dry_run=False)
     failed_pipelineruns = list(filter(lambda x: (x.provisioning_state == 'Failed'), pipelineruns))
     num_failed_pipelineruns = len(failed_pipelineruns)
 
-    logger.warning(f'Found {num_failed_pipelineruns} failed pipeline-runs to delete.')
+    logger.warning('Found %s failed pipeline-runs to delete.', num_failed_pipelineruns)
 
     if dry_run:
         logger.warning('The following failed pipeline-runs would have been deleted:')
@@ -109,16 +110,18 @@ def clean_pipelinerun(client, resource_group_name, registry_name, dry_run=False)
     for pipelinerun in failed_pipelineruns:
         try:
             client.pipeline_runs.begin_delete(resource_group_name=resource_group_name,
-                                          registry_name=registry_name,
-                                          pipeline_run_name=pipelinerun.name)
+                                              registry_name=registry_name,
+                                              pipeline_run_name=pipelinerun.name)
 
             succ_count += 1
 
-        except:
+        except (ClientRequestError, AzureConnectionError, AzureResponseError, AzureInternalError, ResourceNotFoundError):
             failed_count += 1
 
-        if succ_count % 100 == 0:
-            logger.warning(f'Deletion in progress: Deleted {succ_count}/{num_failed_pipelineruns} failed pipeline-runs. {failed_count} deletions failed.')
+        if succ_count % 10 == 0:
+            logger.warning('Deletion in progress: Deleted %s/%s failed pipeline-runs. %s deletions failed.', succ_count, num_failed_pipelineruns, failed_count)
 
-    logger.warning(f'Deletion complete: Deleted {succ_count} failed pipeline-runs.')
-    logger.warning(f'{failed_count} deletions failed.')
+    logger.warning('Deletion complete: Deleted %s failed pipeline-runs.', succ_count)
+    logger.warning('%s deletions failed.', failed_count)
+
+    return None
