@@ -21,23 +21,23 @@ def load_arguments(self, _):
         c.argument('private_cloud', options_list=['--private-cloud', '-c'], help='Name of the private cloud.')
 
     with self.argument_context('vmware private-cloud') as c:
-        c.argument('circuit_primary_subnet', help='A /30 subnet for the primary circuit in the Express Route to configure routing between your network and Microsoft\'s Enterprise edge (MSEEs) routers.')
-        c.argument('circuit_secondary_subnet', help='A /30 subnet for the secondary circuit in the Express Route to configure routing between your network and Microsoft\'s Enterprise edge (MSEEs) routers.')
         c.argument('cluster_size', help='Number of hosts for the default management cluster. Minimum of 3 and maximum of 16.')
-        c.argument('network_block', help='A subnet at least of size /22. Make sure the CIDR format is conformed to (A.B.C.D/X) where A,B,C,D are between 0 and 255, and X is between 0 and 22.')
+        c.argument('internet', help='Connectivity to internet. Specify "Enabled" or "Disabled".')
 
     with self.argument_context('vmware cluster') as c:
         c.argument('name', options_list=['--name', '-n'], help='Name of the cluster.')
         c.argument('sku', help='The product SKU.')
         c.argument('size', help='Number of hosts for the cluster. Minimum of 3 and a maximum of 16.')
+        c.argument('hosts', nargs='+', help='A cluster\'s hosts in the private cloud.')
 
     with self.argument_context('vmware private-cloud create') as c:
         c.argument('name', options_list=['--name', '-n'], help='Name of the private cloud.')
         c.argument('sku', help='The product SKU.')
-        c.argument('internet', help='Connectivity to internet. Specify "Enabled" or "Disabled".')
         c.argument('vcenter_password', help='vCenter admin password.')
         c.argument('nsxt_password', help='NSX-T Manager password.')
         c.argument('accept_eula', help='Accept the end-user license agreement without prompting.')
+        c.argument('network_block', help='A subnet at least of size /22. Make sure the CIDR format is conformed to (A.B.C.D/X) where A,B,C,D are between 0 and 255, and X is between 0 and 22.')
+        c.argument('mi_system_assigned', help='Enable a system assigned identity.')
 
     with self.argument_context('vmware private-cloud show') as c:
         c.argument('name', options_list=['--name', '-n'], help='Name of the private cloud.')
@@ -52,6 +52,29 @@ def load_arguments(self, _):
     with self.argument_context('vmware authorization') as c:
         c.argument('name', options_list=['--name', '-n'], help='Name of the authorization.')
 
+    with self.argument_context('vmware private-cloud add-availability-zone') as c:
+        c.argument('strategy', help='The availability strategy for the private cloud. Possible values include: "SingleZone", "DualZone".')
+        c.argument('zone', help='The primary availability zone for the private cloud')
+        c.argument('secondary_zone', help='The secondary availability zone for the private cloud.')
+
+    with self.argument_context('vmware private-cloud add-cmk-encryption') as c:
+        c.argument('enc_status', help='Status of customer managed encryption key. Possible values include "Enabled" and "Disabled".')
+        c.argument('enc_kv_key_name', help='The name of the encryption key vault key.')
+        c.argument('enc_kv_url', help='The URL of the encryption key vault.')
+        c.argument('enc_kv_key_version', help='The version of the encryption key vault key.')
+
+    with self.argument_context('vmware private-cloud add-identity-source') as c:
+        c.argument('alias', help='The domain\'s NetBIOS name.')
+        c.argument('base_group_dn', help='The base distinguished name for groups.')
+        c.argument('base_user_dn', help='The base distinguished name for users.')
+        c.argument('domain', help='The domain\'s dns name.')
+        c.argument('name', options_list=['--name', '-n'], help='The name of the identity source.')
+        c.argument('password', help='The password of the Active Directory user with a minimum of read-only access to Base DN for users and groups.')
+        c.argument('primary_server', help='Primary server URL.')
+        c.argument('secondary_server', help='Secondary server URL.')
+        c.argument('ssl', help='Protect LDAP communication using SSL certificate (LDAPS). Specify "Enabled" or "Disabled".')
+        c.argument('username', help='The ID of an Active Directory user with a minimum of read-only access to Base DN for users and group.')
+
     with self.argument_context('vmware private-cloud addidentitysource') as c:
         c.argument('alias', help='The domain\'s NetBIOS name.')
         c.argument('base_group_dn', help='The base distinguished name for groups.')
@@ -64,14 +87,21 @@ def load_arguments(self, _):
         c.argument('ssl', help='Protect LDAP communication using SSL certificate (LDAPS). Specify "Enabled" or "Disabled".')
         c.argument('username', help='The ID of an Active Directory user with a minimum of read-only access to Base DN for users and group.')
 
+    with self.argument_context('vmware private-cloud delete-identity-source') as c:
+        c.argument('alias', help='The domain\'s NetBIOS name.')
+        c.argument('domain', help='The domain\'s dns name.')
+        c.argument('name', options_list=['--name', '-n'], help='The name of the identity source.')
+
     with self.argument_context('vmware private-cloud deleteidentitysource') as c:
         c.argument('alias', help='The domain\'s NetBIOS name.')
         c.argument('domain', help='The domain\'s dns name.')
         c.argument('name', options_list=['--name', '-n'], help='The name of the identity source.')
 
+    with self.argument_context('vmware private-cloud identity') as c:
+        c.argument('system_assigned', help='Enable a system assigned identity.')
+
     with self.argument_context('vmware private-cloud update') as c:
         c.argument('name', options_list=['--name', '-n'], help='Name of the private cloud.')
-        c.argument('internet', help='Connectivity to internet. Specify "Enabled" or "Disabled".')
 
     with self.argument_context('vmware hcx-enterprise-site') as c:
         c.argument('name', options_list=['--name', '-n'], help='The name of the HCX Enterprise Site.')
@@ -112,6 +142,7 @@ def load_arguments(self, _):
     with self.argument_context('vmware global-reach-connection create') as c:
         c.argument('peer_express_route_circuit', help='Identifier of the ExpressRoute Circuit to peer with.')
         c.argument('authorization_key', help='Authorization key from the peer express route.')
+        c.argument('express_route_id', help="The ID of the Private Cloud's ExpressRoute Circuit that is participating in the global reach connection.")
 
     with self.argument_context('vmware cloud-link') as c:
         c.argument('name', options_list=['--name', '-n'], help='The name of the cloud link.')
@@ -200,3 +231,18 @@ def load_arguments(self, _):
 
     with self.argument_context('vmware workload-network gateway') as c:
         c.argument('gateway', help="NSX Gateway identifier. Generally the same as the Gateway's display name.")
+
+    with self.argument_context('vmware placement-policy') as c:
+        c.argument('cluster_name', help="Name of the cluster in the private cloud.")
+        c.argument('placement_policy_name', help="Name of the VMware vSphere Distributed Resource Scheduler (DRS) placement policy.")
+        c.argument('state', help="Whether the placement policy is enabled or disabled. Possible values include: 'Enabled', 'Disabled'.")
+        c.argument('display_name', help="Display name of the placement policy.")
+        c.argument('vm_members', nargs='+', help="Virtual machine members list.")
+        c.argument('affinity_type', help="Placement policy affinity type. Possible values include: 'Affinity', 'AntiAffinity'.")
+        c.argument('host_members', nargs='+', help='Host members list.')
+        c.argument('yes', help='Deletes without confirmation.')
+
+    with self.argument_context('vmware vm') as c:
+        c.argument('cluster_name', help='Name of the cluster in the private cloud.')
+        c.argument('virtual_machine', help='Virtual Machine identifier.')
+        c.argument('restrict_movement', help='Whether VM DRS-driven movement is restricted (enabled) or not (disabled).')

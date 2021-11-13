@@ -21,8 +21,8 @@ from ... import models as _models
 T = TypeVar('T')
 ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
 
-class CloudLinksOperations:
-    """CloudLinksOperations async operations.
+class VirtualMachinesOperations:
+    """VirtualMachinesOperations async operations.
 
     You should not instantiate this class directly. Instead, you should create a Client instance that
     instantiates it for you and attaches it as an attribute.
@@ -47,22 +47,25 @@ class CloudLinksOperations:
         self,
         resource_group_name: str,
         private_cloud_name: str,
+        cluster_name: str,
         **kwargs: Any
-    ) -> AsyncIterable["_models.CloudLinkList"]:
-        """List cloud link in a private cloud.
+    ) -> AsyncIterable["_models.VirtualMachinesList"]:
+        """List of virtual machines in a private cloud cluster.
 
-        List cloud link in a private cloud.
+        List of virtual machines in a private cloud cluster.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param private_cloud_name: Name of the private cloud.
         :type private_cloud_name: str
+        :param cluster_name: Name of the cluster in the private cloud.
+        :type cluster_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either CloudLinkList or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~avs_client.models.CloudLinkList]
+        :return: An iterator like instance of either VirtualMachinesList or the result of cls(response)
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~avs_client.models.VirtualMachinesList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.CloudLinkList"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.VirtualMachinesList"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -82,6 +85,7 @@ class CloudLinksOperations:
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
                     'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
                     'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+                    'clusterName': self._serialize.url("cluster_name", cluster_name, 'str'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
@@ -96,7 +100,7 @@ class CloudLinksOperations:
             return request
 
         async def extract_data(pipeline_response):
-            deserialized = self._deserialize('CloudLinkList', pipeline_response)
+            deserialized = self._deserialize('VirtualMachinesList', pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
@@ -117,31 +121,34 @@ class CloudLinksOperations:
         return AsyncItemPaged(
             get_next, extract_data
         )
-    list.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/cloudLinks'}  # type: ignore
+    list.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/clusters/{clusterName}/virtualMachines'}  # type: ignore
 
     async def get(
         self,
         resource_group_name: str,
         private_cloud_name: str,
-        cloud_link_name: str,
+        cluster_name: str,
+        virtual_machine_id: str,
         **kwargs: Any
-    ) -> "_models.CloudLink":
-        """Get an cloud link by name in a private cloud.
+    ) -> "_models.VirtualMachine":
+        """Get a virtual machine by id in a private cloud cluster.
 
-        Get an cloud link by name in a private cloud.
+        Get a virtual machine by id in a private cloud cluster.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param private_cloud_name: Name of the private cloud.
         :type private_cloud_name: str
-        :param cloud_link_name: Name of the cloud link resource.
-        :type cloud_link_name: str
+        :param cluster_name: Name of the cluster in the private cloud.
+        :type cluster_name: str
+        :param virtual_machine_id: Virtual Machine identifier.
+        :type virtual_machine_id: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: CloudLink, or the result of cls(response)
-        :rtype: ~avs_client.models.CloudLink
+        :return: VirtualMachine, or the result of cls(response)
+        :rtype: ~avs_client.models.VirtualMachine
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.CloudLink"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.VirtualMachine"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -155,7 +162,8 @@ class CloudLinksOperations:
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
-            'cloudLinkName': self._serialize.url("cloud_link_name", cloud_link_name, 'str'),
+            'clusterName': self._serialize.url("cluster_name", cluster_name, 'str'),
+            'virtualMachineId': self._serialize.url("virtual_machine_id", virtual_machine_id, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -175,40 +183,42 @@ class CloudLinksOperations:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('CloudLink', pipeline_response)
+        deserialized = self._deserialize('VirtualMachine', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/cloudLinks/{cloudLinkName}'}  # type: ignore
+    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/clusters/{clusterName}/virtualMachines/{virtualMachineId}'}  # type: ignore
 
-    async def _create_or_update_initial(
+    async def _restrict_movement_initial(
         self,
         resource_group_name: str,
         private_cloud_name: str,
-        cloud_link_name: str,
-        linked_cloud: Optional[str] = None,
+        cluster_name: str,
+        virtual_machine_id: str,
+        restrict_movement: Optional[Union[str, "_models.VirtualMachineRestrictMovementState"]] = None,
         **kwargs: Any
-    ) -> "_models.CloudLink":
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.CloudLink"]
+    ) -> None:
+        cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        _cloud_link = _models.CloudLink(linked_cloud=linked_cloud)
+        _restrict_movement = _models.VirtualMachineRestrictMovement(restrict_movement=restrict_movement)
         api_version = "2021-12-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
         # Construct URL
-        url = self._create_or_update_initial.metadata['url']  # type: ignore
+        url = self._restrict_movement_initial.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
-            'cloudLinkName': self._serialize.url("cloud_link_name", cloud_link_name, 'str'),
+            'clusterName': self._serialize.url("cluster_name", cluster_name, 'str'),
+            'virtualMachineId': self._serialize.url("virtual_machine_id", virtual_machine_id, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -222,169 +232,45 @@ class CloudLinksOperations:
         header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_cloud_link, 'CloudLink')
+        body_content = self._serialize.body(_restrict_movement, 'VirtualMachineRestrictMovement')
         body_content_kwargs['content'] = body_content
-        request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
+        request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
-        if response.status_code not in [200, 201]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
-
-        if response.status_code == 200:
-            deserialized = self._deserialize('CloudLink', pipeline_response)
-
-        if response.status_code == 201:
-            deserialized = self._deserialize('CloudLink', pipeline_response)
-
-        if cls:
-            return cls(pipeline_response, deserialized, {})
-
-        return deserialized
-    _create_or_update_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/cloudLinks/{cloudLinkName}'}  # type: ignore
-
-    async def begin_create_or_update(
-        self,
-        resource_group_name: str,
-        private_cloud_name: str,
-        cloud_link_name: str,
-        linked_cloud: Optional[str] = None,
-        **kwargs: Any
-    ) -> AsyncLROPoller["_models.CloudLink"]:
-        """Create or update a cloud link in a private cloud.
-
-        Create or update a cloud link in a private cloud.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-        :type resource_group_name: str
-        :param private_cloud_name: The name of the private cloud.
-        :type private_cloud_name: str
-        :param cloud_link_name: Name of the cloud link resource.
-        :type cloud_link_name: str
-        :param linked_cloud: Identifier of the other private cloud participating in the link.
-        :type linked_cloud: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling.
-         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
-        :return: An instance of AsyncLROPoller that returns either CloudLink or the result of cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~avs_client.models.CloudLink]
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-        polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.CloudLink"]
-        lro_delay = kwargs.pop(
-            'polling_interval',
-            self._config.polling_interval
-        )
-        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
-        if cont_token is None:
-            raw_result = await self._create_or_update_initial(
-                resource_group_name=resource_group_name,
-                private_cloud_name=private_cloud_name,
-                cloud_link_name=cloud_link_name,
-                linked_cloud=linked_cloud,
-                cls=lambda x,y,z: x,
-                **kwargs
-            )
-
-        kwargs.pop('error_map', None)
-        kwargs.pop('content_type', None)
-
-        def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize('CloudLink', pipeline_response)
-
-            if cls:
-                return cls(pipeline_response, deserialized, {})
-            return deserialized
-
-        path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
-            'cloudLinkName': self._serialize.url("cloud_link_name", cloud_link_name, 'str'),
-        }
-
-        if polling is True: polling_method = AsyncARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
-        elif polling is False: polling_method = AsyncNoPolling()
-        else: polling_method = polling
-        if cont_token:
-            return AsyncLROPoller.from_continuation_token(
-                polling_method=polling_method,
-                continuation_token=cont_token,
-                client=self._client,
-                deserialization_callback=get_long_running_output
-            )
-        else:
-            return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    begin_create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/cloudLinks/{cloudLinkName}'}  # type: ignore
-
-    async def _delete_initial(
-        self,
-        resource_group_name: str,
-        private_cloud_name: str,
-        cloud_link_name: str,
-        **kwargs: Any
-    ) -> None:
-        cls = kwargs.pop('cls', None)  # type: ClsType[None]
-        error_map = {
-            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
-        }
-        error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-12-01"
-        accept = "application/json"
-
-        # Construct URL
-        url = self._delete_initial.metadata['url']  # type: ignore
-        path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
-            'cloudLinkName': self._serialize.url("cloud_link_name", cloud_link_name, 'str'),
-        }
-        url = self._client.format_url(url, **path_format_arguments)
-
-        # Construct parameters
-        query_parameters = {}  # type: Dict[str, Any]
-        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
-
-        # Construct headers
-        header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
-
-        request = self._client.delete(url, query_parameters, header_parameters)
-        pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
-        response = pipeline_response.http_response
-
-        if response.status_code not in [200, 202, 204]:
+        if response.status_code not in [202]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         if cls:
             return cls(pipeline_response, None, {})
 
-    _delete_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/cloudLinks/{cloudLinkName}'}  # type: ignore
+    _restrict_movement_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/clusters/{clusterName}/virtualMachines/{virtualMachineId}/restrictMovement'}  # type: ignore
 
-    async def begin_delete(
+    async def begin_restrict_movement(
         self,
         resource_group_name: str,
         private_cloud_name: str,
-        cloud_link_name: str,
+        cluster_name: str,
+        virtual_machine_id: str,
+        restrict_movement: Optional[Union[str, "_models.VirtualMachineRestrictMovementState"]] = None,
         **kwargs: Any
     ) -> AsyncLROPoller[None]:
-        """Delete a cloud link in a private cloud.
+        """Enable or disable DRS-driven VM movement restriction.
 
-        Delete a cloud link in a private cloud.
+        Enable or disable DRS-driven VM movement restriction.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param private_cloud_name: Name of the private cloud.
         :type private_cloud_name: str
-        :param cloud_link_name: Name of the cloud link resource.
-        :type cloud_link_name: str
+        :param cluster_name: Name of the cluster in the private cloud.
+        :type cluster_name: str
+        :param virtual_machine_id: Virtual Machine identifier.
+        :type virtual_machine_id: str
+        :param restrict_movement: Whether VM DRS-driven movement is restricted (enabled) or not
+         (disabled).
+        :type restrict_movement: str or ~avs_client.models.VirtualMachineRestrictMovementState
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be AsyncARMPolling.
@@ -403,10 +289,12 @@ class CloudLinksOperations:
         )
         cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
         if cont_token is None:
-            raw_result = await self._delete_initial(
+            raw_result = await self._restrict_movement_initial(
                 resource_group_name=resource_group_name,
                 private_cloud_name=private_cloud_name,
-                cloud_link_name=cloud_link_name,
+                cluster_name=cluster_name,
+                virtual_machine_id=virtual_machine_id,
+                restrict_movement=restrict_movement,
                 cls=lambda x,y,z: x,
                 **kwargs
             )
@@ -422,7 +310,8 @@ class CloudLinksOperations:
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
-            'cloudLinkName': self._serialize.url("cloud_link_name", cloud_link_name, 'str'),
+            'clusterName': self._serialize.url("cluster_name", cluster_name, 'str'),
+            'virtualMachineId': self._serialize.url("virtual_machine_id", virtual_machine_id, 'str'),
         }
 
         if polling is True: polling_method = AsyncARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
@@ -437,4 +326,4 @@ class CloudLinksOperations:
             )
         else:
             return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    begin_delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/cloudLinks/{cloudLinkName}'}  # type: ignore
+    begin_restrict_movement.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/clusters/{clusterName}/virtualMachines/{virtualMachineId}/restrictMovement'}  # type: ignore
