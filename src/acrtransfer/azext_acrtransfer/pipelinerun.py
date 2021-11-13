@@ -118,7 +118,7 @@ def clean_pipelinerun(client, resource_group_name, registry_name, dry_run=False)
         except (ClientRequestError, AzureConnectionError, AzureResponseError, AzureInternalError, ResourceNotFoundError):
             failed_count += 1
 
-        if succ_count % 10 == 0:
+        if succ_count % 100 == 0:
             logger.warning('Deletion in progress: Deleted %s/%s failed pipeline-runs. %s deletions failed.', succ_count, num_failed_pipelineruns, failed_count)
 
     logger.warning('Deletion complete: Deleted %s failed pipeline-runs.', succ_count)
