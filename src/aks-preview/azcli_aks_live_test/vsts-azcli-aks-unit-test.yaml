@@ -2,6 +2,9 @@ name: $(Date:yyyyMMdd)$(Rev:.r)_Python$(PYTHON_VERSION)_Coverage-$(COVERAGE)_Mod
 
 trigger: none
 
+pool:
+  name: 1ES-AKS-Elastic-DevInfra-Normal-Pool
+
 pr:
   branches:
     include:
@@ -25,8 +28,6 @@ variables:
 
 jobs:
 - job: UnitTest
-  pool:
-    vmImage: 'ubuntu-18.04'
   timeoutInMinutes: 360
   displayName: "Unit Test with Python"
   steps:

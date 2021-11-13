@@ -20,7 +20,7 @@ from .. import models as _models
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
-    from typing import Any, Callable, Dict, Generic, Iterable, Optional, TypeVar, Union
+    from typing import Any, Callable, Dict, Generic, Iterable, List, Optional, TypeVar, Union
 
     T = TypeVar('T')
     ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
@@ -72,7 +72,7 @@ class ClustersOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-06-01"
+        api_version = "2021-12-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -85,7 +85,7 @@ class ClustersOperations(object):
                 url = self.list.metadata['url']  # type: ignore
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
-                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
                     'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
@@ -152,14 +152,14 @@ class ClustersOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-06-01"
+        api_version = "2021-12-01"
         accept = "application/json"
 
         # Construct URL
         url = self.get.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
             'clusterName': self._serialize.url("cluster_name", cluster_name, 'str'),
         }
@@ -194,8 +194,7 @@ class ClustersOperations(object):
         resource_group_name,  # type: str
         private_cloud_name,  # type: str
         cluster_name,  # type: str
-        sku,  # type: "_models.Sku"
-        cluster_size=None,  # type: Optional[int]
+        cluster,  # type: "_models.Cluster"
         **kwargs  # type: Any
     ):
         # type: (...) -> "_models.Cluster"
@@ -204,9 +203,7 @@ class ClustersOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-
-        _cluster = _models.Cluster(sku=sku, cluster_size=cluster_size)
-        api_version = "2021-06-01"
+        api_version = "2021-12-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -214,7 +211,7 @@ class ClustersOperations(object):
         url = self._create_or_update_initial.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
             'clusterName': self._serialize.url("cluster_name", cluster_name, 'str'),
         }
@@ -230,7 +227,7 @@ class ClustersOperations(object):
         header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_cluster, 'Cluster')
+        body_content = self._serialize.body(cluster, 'Cluster')
         body_content_kwargs['content'] = body_content
         request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
@@ -257,8 +254,7 @@ class ClustersOperations(object):
         resource_group_name,  # type: str
         private_cloud_name,  # type: str
         cluster_name,  # type: str
-        sku,  # type: "_models.Sku"
-        cluster_size=None,  # type: Optional[int]
+        cluster,  # type: "_models.Cluster"
         **kwargs  # type: Any
     ):
         # type: (...) -> LROPoller["_models.Cluster"]
@@ -272,10 +268,8 @@ class ClustersOperations(object):
         :type private_cloud_name: str
         :param cluster_name: Name of the cluster in the private cloud.
         :type cluster_name: str
-        :param sku: The cluster SKU.
-        :type sku: ~avs_client.models.Sku
-        :param cluster_size: The cluster size.
-        :type cluster_size: int
+        :param cluster: A cluster in the private cloud.
+        :type cluster: ~avs_client.models.Cluster
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling.
@@ -298,8 +292,7 @@ class ClustersOperations(object):
                 resource_group_name=resource_group_name,
                 private_cloud_name=private_cloud_name,
                 cluster_name=cluster_name,
-                sku=sku,
-                cluster_size=cluster_size,
+                cluster=cluster,
                 cls=lambda x,y,z: x,
                 **kwargs
             )
@@ -316,7 +309,7 @@ class ClustersOperations(object):
 
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
             'clusterName': self._serialize.url("cluster_name", cluster_name, 'str'),
         }
@@ -341,6 +334,7 @@ class ClustersOperations(object):
         private_cloud_name,  # type: str
         cluster_name,  # type: str
         cluster_size=None,  # type: Optional[int]
+        hosts=None,  # type: Optional[List[str]]
         **kwargs  # type: Any
     ):
         # type: (...) -> "_models.Cluster"
@@ -350,8 +344,8 @@ class ClustersOperations(object):
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        _cluster_update = _models.ClusterUpdate(cluster_size=cluster_size)
-        api_version = "2021-06-01"
+        _cluster_update = _models.ClusterUpdate(cluster_size=cluster_size, hosts=hosts)
+        api_version = "2021-12-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -359,7 +353,7 @@ class ClustersOperations(object):
         url = self._update_initial.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
             'clusterName': self._serialize.url("cluster_name", cluster_name, 'str'),
         }
@@ -403,6 +397,7 @@ class ClustersOperations(object):
         private_cloud_name,  # type: str
         cluster_name,  # type: str
         cluster_size=None,  # type: Optional[int]
+        hosts=None,  # type: Optional[List[str]]
         **kwargs  # type: Any
     ):
         # type: (...) -> LROPoller["_models.Cluster"]
@@ -418,6 +413,8 @@ class ClustersOperations(object):
         :type cluster_name: str
         :param cluster_size: The cluster size.
         :type cluster_size: int
+        :param hosts: The hosts.
+        :type hosts: list[str]
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling.
@@ -441,6 +438,7 @@ class ClustersOperations(object):
                 private_cloud_name=private_cloud_name,
                 cluster_name=cluster_name,
                 cluster_size=cluster_size,
+                hosts=hosts,
                 cls=lambda x,y,z: x,
                 **kwargs
             )
@@ -457,7 +455,7 @@ class ClustersOperations(object):
 
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
             'clusterName': self._serialize.url("cluster_name", cluster_name, 'str'),
         }
@@ -489,14 +487,14 @@ class ClustersOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-06-01"
+        api_version = "2021-12-01"
         accept = "application/json"
 
         # Construct URL
         url = self._delete_initial.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
             'clusterName': self._serialize.url("cluster_name", cluster_name, 'str'),
         }
@@ -576,7 +574,7 @@ class ClustersOperations(object):
 
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
             'clusterName': self._serialize.url("cluster_name", cluster_name, 'str'),
         }
