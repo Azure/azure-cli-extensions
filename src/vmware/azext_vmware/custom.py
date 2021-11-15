@@ -48,12 +48,12 @@ def privatecloud_show(client: AVSClient, resource_group_name, name):
     return client.private_clouds.get(resource_group_name, name)
 
 
-def privatecloud_create(client: AVSClient, resource_group_name, name, sku, cluster_size, network_block, location=None, internet=None, vcenter_password=None, nsxt_password=None, tags=None, accept_eula=False, mi_system_assigned=False):
+def privatecloud_create(client: AVSClient, resource_group_name, name, sku, cluster_size, network_block, location=None, internet=None, vcenter_password=None, nsxt_password=None, tags=None, accept_eula=False, mi_system_assigned=False, yes=False):
     from knack.prompting import prompt_y_n
     if not accept_eula:
         print(LEGAL_TERMS)
         msg = 'Do you agree to the above additional terms for AVS?'
-        if not prompt_y_n(msg, default="n"):
+        if not yes and not prompt_y_n(msg, default="n"):
             return None
 
     from azext_vmware.vendored_sdks.avs_client.models import PrivateCloud, Circuit, ManagementCluster, Sku, PrivateCloudIdentity
@@ -107,7 +107,11 @@ def privatecloud_addidentitysource(client: AVSClient, resource_group_name, name,
     return client.private_clouds.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, private_cloud=pc)
 
 
-def privatecloud_deleteidentitysource(client: AVSClient, resource_group_name, name, private_cloud, alias, domain):
+def privatecloud_deleteidentitysource(client: AVSClient, resource_group_name, name, private_cloud, alias, domain, yes=False):
+    from knack.prompting import prompt_y_n
+    msg = 'This will delete the identity source. Are you sure?'
+    if not yes and not prompt_y_n(msg, default="n"):
+        return None
     pc = client.private_clouds.get(resource_group_name, private_cloud)
     found = next((ids for ids in pc.identity_sources
                  if ids.name == name and ids.alias == alias and ids.domain == domain), None)
@@ -124,7 +128,11 @@ def privatecloud_addavailabilityzone(client: AVSClient, resource_group_name, pri
     return client.private_clouds.begin_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, private_cloud_update=pc)
 
 
-def privatecloud_deleteavailabilityzone(client: AVSClient, resource_group_name, private_cloud):
+def privatecloud_deleteavailabilityzone(client: AVSClient, resource_group_name, private_cloud, yes=False):
+    from knack.prompting import prompt_y_n
+    msg = 'This will delete the availability zone. Are you sure?'
+    if not yes and not prompt_y_n(msg, default="n"):
+        return None
     from azext_vmware.vendored_sdks.avs_client.models import PrivateCloudUpdate
     pc = PrivateCloudUpdate()
     pc.availability = None
@@ -138,7 +146,11 @@ def privatecloud_addcmkencryption(client: AVSClient, resource_group_name, privat
     return client.private_clouds.begin_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, private_cloud_update=pc)
 
 
-def privatecloud_deletecmkenryption(client: AVSClient, resource_group_name, private_cloud):
+def privatecloud_deletecmkenryption(client: AVSClient, resource_group_name, private_cloud, yes=False):
+    from knack.prompting import prompt_y_n
+    msg = 'This will delete the managed keys encryption. Are you sure?'
+    if not yes and not prompt_y_n(msg, default="n"):
+        return None
     from azext_vmware.vendored_sdks.avs_client.models import PrivateCloudUpdate
     pc = PrivateCloudUpdate()
     pc.encryption = None
@@ -164,10 +176,10 @@ def privatecloud_identity_get(client: AVSClient, resource_group_name, private_cl
     return client.private_clouds.get(resource_group_name, private_cloud).identity
 
 
-def privatecloud_rotate_vcenter_password(client: AVSClient, resource_group_name, private_cloud):
+def privatecloud_rotate_vcenter_password(client: AVSClient, resource_group_name, private_cloud, yes=False):
     from knack.prompting import prompt_y_n
     msg = ROTATE_VCENTER_PASSWORD_TERMS
-    if not prompt_y_n(msg, default="n"):
+    if not yes and not prompt_y_n(msg, default="n"):
         return None
     return client.private_clouds.begin_rotate_vcenter_password(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
 
@@ -196,7 +208,11 @@ def cluster_show(client: AVSClient, resource_group_name, private_cloud, name):
     return client.clusters.get(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=name)
 
 
-def cluster_delete(client: AVSClient, resource_group_name, private_cloud, name):
+def cluster_delete(client: AVSClient, resource_group_name, private_cloud, name, yes=False):
+    from knack.prompting import prompt_y_n
+    msg = 'This will delete the cluster. Are you sure?'
+    if not yes and not prompt_y_n(msg, default="n"):
+        return None
     return client.clusters.begin_delete(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=name)
 
 
@@ -220,7 +236,11 @@ def authorization_show(client: AVSClient, resource_group_name, private_cloud, na
     return client.authorizations.get(resource_group_name=resource_group_name, private_cloud_name=private_cloud, authorization_name=name)
 
 
-def authorization_delete(client: AVSClient, resource_group_name, private_cloud, name):
+def authorization_delete(client: AVSClient, resource_group_name, private_cloud, name, yes=False):
+    from knack.prompting import prompt_y_n
+    msg = 'This will delete the authorization. Are you sure?'
+    if not yes and not prompt_y_n(msg, default="n"):
+        return None
     return client.authorizations.begin_delete(resource_group_name=resource_group_name, private_cloud_name=private_cloud, authorization_name=name)
 
 
@@ -236,7 +256,11 @@ def hcxenterprisesite_show(client: AVSClient, resource_group_name, private_cloud
     return client.hcx_enterprise_sites.get(resource_group_name=resource_group_name, private_cloud_name=private_cloud, hcx_enterprise_site_name=name)
 
 
-def hcxenterprisesite_delete(client: AVSClient, resource_group_name, private_cloud, name):
+def hcxenterprisesite_delete(client: AVSClient, resource_group_name, private_cloud, name, yes=False):
+    from knack.prompting import prompt_y_n
+    msg = 'This will delete the HCX enterprise site. Are you sure?'
+    if not yes and not prompt_y_n(msg, default="n"):
+        return None
     return client.hcx_enterprise_sites.delete(resource_group_name=resource_group_name, private_cloud_name=private_cloud, hcx_enterprise_site_name=name)
 
 
@@ -264,7 +288,11 @@ def datastore_show(client: AVSClient, resource_group_name, private_cloud, cluste
     return client.datastores.get(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=cluster, datastore_name=name)
 
 
-def datastore_delete(client: AVSClient, resource_group_name, private_cloud, cluster, name):
+def datastore_delete(client: AVSClient, resource_group_name, private_cloud, cluster, name, yes=False):
+    from knack.prompting import prompt_y_n
+    msg = 'This will delete the datastore. Are you sure?'
+    if not yes and not prompt_y_n(msg, default="n"):
+        return None
     return client.datastores.begin_delete(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=cluster, datastore_name=name)
 
 
@@ -320,15 +348,27 @@ def addon_srm_update(client: AVSClient, resource_group_name, private_cloud, lice
     return client.addons.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, addon_name="srm", properties=properties)
 
 
-def addon_vr_delete(client: AVSClient, resource_group_name, private_cloud):
+def addon_vr_delete(client: AVSClient, resource_group_name, private_cloud, yes=False):
+    from knack.prompting import prompt_y_n
+    msg = 'This will delete the VR addon. Are you sure?'
+    if not yes and not prompt_y_n(msg, default="n"):
+        return None
     return client.addons.begin_delete(resource_group_name=resource_group_name, private_cloud_name=private_cloud, addon_name="vr")
 
 
-def addon_hcx_delete(client: AVSClient, resource_group_name, private_cloud):
+def addon_hcx_delete(client: AVSClient, resource_group_name, private_cloud, yes=False):
+    from knack.prompting import prompt_y_n
+    msg = 'This will delete the HCX addon. Are you sure?'
+    if not yes and not prompt_y_n(msg, default="n"):
+        return None
     return client.addons.begin_delete(resource_group_name=resource_group_name, private_cloud_name=private_cloud, addon_name="hcx")
 
 
-def addon_srm_delete(client: AVSClient, resource_group_name, private_cloud):
+def addon_srm_delete(client: AVSClient, resource_group_name, private_cloud, yes=False):
+    from knack.prompting import prompt_y_n
+    msg = 'This will delete the SRM addon. Are you sure?'
+    if not yes and not prompt_y_n(msg, default="n"):
+        return None
     return client.addons.begin_delete(resource_group_name=resource_group_name, private_cloud_name=private_cloud, addon_name="srm")
 
 
@@ -345,7 +385,11 @@ def globalreachconnection_show(client: AVSClient, resource_group_name, private_c
     return client.global_reach_connections.get(resource_group_name=resource_group_name, private_cloud_name=private_cloud, global_reach_connection_name=name)
 
 
-def globalreachconnection_delete(client: AVSClient, resource_group_name, private_cloud, name):
+def globalreachconnection_delete(client: AVSClient, resource_group_name, private_cloud, name, yes=False):
+    from knack.prompting import prompt_y_n
+    msg = 'This will delete the global reach connection. Are you sure?'
+    if not yes and not prompt_y_n(msg, default="n"):
+        return None
     return client.global_reach_connections.begin_delete(resource_group_name=resource_group_name, private_cloud_name=private_cloud, global_reach_connection_name=name)
 
 
@@ -361,7 +405,11 @@ def cloud_link_show(client: AVSClient, resource_group_name, private_cloud, name)
     return client.cloud_links.get(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cloud_link_name=name)
 
 
-def cloud_link_delete(client: AVSClient, resource_group_name, private_cloud, name):
+def cloud_link_delete(client: AVSClient, resource_group_name, private_cloud, name, yes=False):
+    from knack.prompting import prompt_y_n
+    msg = 'This will delete the cloud link. Are you sure?'
+    if not yes and not prompt_y_n(msg, default="n"):
+        return None
     return client.cloud_links.begin_delete(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cloud_link_name=name)
 
 
@@ -397,7 +445,11 @@ def script_execution_show(client: AVSClient, resource_group_name, private_cloud,
     return client.script_executions.get(resource_group_name=resource_group_name, private_cloud_name=private_cloud, script_execution_name=name)
 
 
-def script_execution_delete(client: AVSClient, resource_group_name, private_cloud, name):
+def script_execution_delete(client: AVSClient, resource_group_name, private_cloud, name, yes=False):
+    from knack.prompting import prompt_y_n
+    msg = 'This will delete the script execution. Are you sure?'
+    if not yes and not prompt_y_n(msg, default="n"):
+        return None
     return client.script_executions.begin_delete(resource_group_name=resource_group_name, private_cloud_name=private_cloud, script_execution_name=name)
 
 
@@ -429,7 +481,11 @@ def workload_network_dhcp_relay_update(client: AVSClient, resource_group_name, p
     return client.workload_networks.begin_update_dhcp(resource_group_name=resource_group_name, private_cloud_name=private_cloud, dhcp_id=dhcp, properties=properties)
 
 
-def workload_network_dhcp_delete(client: AVSClient, resource_group_name, private_cloud, dhcp: str):
+def workload_network_dhcp_delete(client: AVSClient, resource_group_name, private_cloud, dhcp: str, yes=False):
+    from knack.prompting import prompt_y_n
+    msg = 'This will delete the workload network DHCP. Are you sure?'
+    if not yes and not prompt_y_n(msg, default="n"):
+        return None
     return client.workload_networks.begin_delete_dhcp(resource_group_name=resource_group_name, private_cloud_name=private_cloud, dhcp_id=dhcp)
 
 
@@ -461,7 +517,11 @@ def workload_network_dns_services_update(client: AVSClient, resource_group_name,
     return client.workload_networks.begin_update_dns_service(resource_group_name=resource_group_name, private_cloud_name=private_cloud, dns_service_id=dns_service, workload_network_dns_service=prop)
 
 
-def workload_network_dns_services_delete(client: AVSClient, resource_group_name, private_cloud, dns_service):
+def workload_network_dns_services_delete(client: AVSClient, resource_group_name, private_cloud, dns_service, yes=False):
+    from knack.prompting import prompt_y_n
+    msg = 'This will delete the workload network DNS services. Are you sure?'
+    if not yes and not prompt_y_n(msg, default="n"):
+        return None
     return client.workload_networks.begin_delete_dns_service(resource_group_name=resource_group_name, private_cloud_name=private_cloud, dns_service_id=dns_service)
 
 
@@ -485,7 +545,11 @@ def workload_network_dns_zone_update(client: AVSClient, resource_group_name, pri
     return client.workload_networks.begin_update_dns_zone(resource_group_name=resource_group_name, private_cloud_name=private_cloud, dns_zone_id=dns_zone, workload_network_dns_zone=prop)
 
 
-def workload_network_dns_zone_delete(client: AVSClient, resource_group_name, private_cloud, dns_zone):
+def workload_network_dns_zone_delete(client: AVSClient, resource_group_name, private_cloud, dns_zone, yes=False):
+    from knack.prompting import prompt_y_n
+    msg = 'This will delete the workload network DNS zone. Are you sure?'
+    if not yes and not prompt_y_n(msg, default="n"):
+        return None
     return client.workload_networks.begin_delete_dns_zone(resource_group_name=resource_group_name, private_cloud_name=private_cloud, dns_zone_id=dns_zone)
 
 
@@ -509,7 +573,11 @@ def workload_network_port_mirroring_update(client: AVSClient, resource_group_nam
     return client.workload_networks.begin_update_port_mirroring(resource_group_name=resource_group_name, private_cloud_name=private_cloud, port_mirroring_id=port_mirroring, workload_network_port_mirroring=prop)
 
 
-def workload_network_port_mirroring_delete(client: AVSClient, resource_group_name, private_cloud, port_mirroring):
+def workload_network_port_mirroring_delete(client: AVSClient, resource_group_name, private_cloud, port_mirroring, yes=False):
+    from knack.prompting import prompt_y_n
+    msg = 'This will delete the workload network port mirroring. Are you sure?'
+    if not yes and not prompt_y_n(msg, default="n"):
+        return None
     return client.workload_networks.begin_delete_port_mirroring(resource_group_name=resource_group_name, private_cloud_name=private_cloud, port_mirroring_id=port_mirroring)
 
 
@@ -541,7 +609,11 @@ def workload_network_segment_update(client: AVSClient, resource_group_name, priv
     return client.workload_networks.begin_update_segments(resource_group_name=resource_group_name, private_cloud_name=private_cloud, segment_id=segment, workload_network_segment=segmentObj)
 
 
-def workload_network_segment_delete(client: AVSClient, resource_group_name, private_cloud, segment):
+def workload_network_segment_delete(client: AVSClient, resource_group_name, private_cloud, segment, yes=False):
+    from knack.prompting import prompt_y_n
+    msg = 'This will delete the workload network segment. Are you sure?'
+    if not yes and not prompt_y_n(msg, default="n"):
+        return None
     return client.workload_networks.begin_delete_segment(resource_group_name=resource_group_name, private_cloud_name=private_cloud, segment_id=segment)
 
 
@@ -557,7 +629,11 @@ def workload_network_public_ip_create(client: AVSClient, resource_group_name, pr
     return client.workload_networks.begin_create_public_ip(resource_group_name=resource_group_name, private_cloud_name=private_cloud, public_ip_id=public_ip, display_name=display_name, number_of_public_i_ps=number_of_public_ips)
 
 
-def workload_network_public_ip_delete(client: AVSClient, resource_group_name, private_cloud, public_ip):
+def workload_network_public_ip_delete(client: AVSClient, resource_group_name, private_cloud, public_ip, yes=False):
+    from knack.prompting import prompt_y_n
+    msg = 'This will delete the workload network public IP. Are you sure?'
+    if not yes and not prompt_y_n(msg, default="n"):
+        return None
     return client.workload_networks.begin_delete_public_ip(resource_group_name=resource_group_name, private_cloud_name=private_cloud, public_ip_id=public_ip)
 
 
@@ -581,7 +657,11 @@ def workload_network_vm_group_update(client: AVSClient, resource_group_name, pri
     return client.workload_networks.begin_update_vm_group(resource_group_name=resource_group_name, private_cloud_name=private_cloud, vm_group_id=vm_group, workload_network_vm_group=vmGroup)
 
 
-def workload_network_vm_group_delete(client: AVSClient, resource_group_name, private_cloud, vm_group):
+def workload_network_vm_group_delete(client: AVSClient, resource_group_name, private_cloud, vm_group, yes=False):
+    from knack.prompting import prompt_y_n
+    msg = 'This will delete the workload network VM group. Are you sure?'
+    if not yes and not prompt_y_n(msg, default="n"):
+        return None
     return client.workload_networks.begin_delete_vm_group(resource_group_name=resource_group_name, private_cloud_name=private_cloud, vm_group_id=vm_group)
 
 

@@ -45,7 +45,7 @@ class VmwareHcxScenarioTest(ScenarioTest):
 
         self.cmd('vmware hcx-enterprise-site show -g {rg} -c {privatecloud} -n myhcx')
 
-        self.cmd('vmware hcx-enterprise-site delete -g {rg} -c {privatecloud} -n myhcx')
+        self.cmd('vmware hcx-enterprise-site delete -g {rg} -c {privatecloud} -n myhcx --yes')
 
         # hcx-enterprise-site list should report 1
         count = len(self.cmd('vmware hcx-enterprise-site list -g {rg} -c {privatecloud}').get_output_in_json())

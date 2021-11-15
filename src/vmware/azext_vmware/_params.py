@@ -23,12 +23,14 @@ def load_arguments(self, _):
     with self.argument_context('vmware private-cloud') as c:
         c.argument('cluster_size', help='Number of hosts for the default management cluster. Minimum of 3 and maximum of 16.')
         c.argument('internet', help='Connectivity to internet. Specify "Enabled" or "Disabled".')
+        c.argument('yes', help='Deletes without confirmation.')
 
     with self.argument_context('vmware cluster') as c:
         c.argument('name', options_list=['--name', '-n'], help='Name of the cluster.')
         c.argument('sku', help='The product SKU.')
         c.argument('size', help='Number of hosts for the cluster. Minimum of 3 and a maximum of 16.')
         c.argument('hosts', nargs='+', help='A cluster\'s hosts in the private cloud.')
+        c.argument('yes', help='Deletes without confirmation.')
 
     with self.argument_context('vmware private-cloud create') as c:
         c.argument('name', options_list=['--name', '-n'], help='Name of the private cloud.')
@@ -47,10 +49,10 @@ def load_arguments(self, _):
 
     with self.argument_context('vmware private-cloud delete') as c:
         c.argument('name', options_list=['--name', '-n'], help='Name of the private cloud.')
-        c.argument('yes', help='Deletes without confirmation.')
 
     with self.argument_context('vmware authorization') as c:
         c.argument('name', options_list=['--name', '-n'], help='Name of the authorization.')
+        c.argument('yes', help='Deletes without confirmation.')
 
     with self.argument_context('vmware private-cloud add-availability-zone') as c:
         c.argument('strategy', help='The availability strategy for the private cloud. Possible values include: "SingleZone", "DualZone".')
@@ -105,11 +107,13 @@ def load_arguments(self, _):
 
     with self.argument_context('vmware hcx-enterprise-site') as c:
         c.argument('name', options_list=['--name', '-n'], help='The name of the HCX Enterprise Site.')
+        c.argument('yes', help='Deletes without confirmation.')
 
     with self.argument_context('vmware datastore') as c:
         c.argument('name', options_list=['--name', '-n'], help='The name of the datastore.')
         c.argument('cluster', help='The name of the cluster.')
         c.argument('lun_name', help='Name of the LUN to be used.')
+        c.argument('yes', help='Deletes without confirmation.')
 
     with self.argument_context('vmware datastore create') as c:
         c.argument('nfs_provider_ip', help='IP address of the NFS provider.')
@@ -126,6 +130,7 @@ def load_arguments(self, _):
 
     with self.argument_context('vmware addon') as c:
         c.argument('name', options_list=['--name', '-n'], help='Name of the addon.')
+        c.argument('yes', help='Deletes without confirmation.')
 
     with self.argument_context('vmware addon vr') as c:
         c.argument('vrs_count', help='The vSphere Replication Server (VRS) count.')
@@ -138,6 +143,7 @@ def load_arguments(self, _):
 
     with self.argument_context('vmware global-reach-connection') as c:
         c.argument('name', options_list=['--name', '-n'], help='Name of the global reach connection.')
+        c.argument('yes', help='Deletes without confirmation.')
 
     with self.argument_context('vmware global-reach-connection create') as c:
         c.argument('peer_express_route_circuit', help='Identifier of the ExpressRoute Circuit to peer with.')
@@ -147,6 +153,7 @@ def load_arguments(self, _):
     with self.argument_context('vmware cloud-link') as c:
         c.argument('name', options_list=['--name', '-n'], help='The name of the cloud link.')
         c.argument('linked_cloud', help='Identifier of the other private cloud participating in the link.')
+        c.argument('yes', help='Deletes without confirmation.')
 
     with self.argument_context('vmware script-package') as c:
         c.argument('name', options_list=['--name', '-n'], help='Name of the script package.')
@@ -157,6 +164,7 @@ def load_arguments(self, _):
 
     with self.argument_context('vmware script-execution') as c:
         c.argument('name', options_list=['--name', '-n'], help='Name of the script execution.')
+        c.argument('yes', help='Deletes without confirmation.')
 
     with self.argument_context('vmware script-execution create') as c:
         c.argument('timeout', help='Time limit for execution.')
@@ -172,6 +180,7 @@ def load_arguments(self, _):
         c.argument('dhcp', help='NSX DHCP identifier. Generally the same as the DHCP display name.')
         c.argument('display_name', help='Display name of the DHCP entity.')
         c.argument('revision', help='NSX revision number.')
+        c.argument('yes', help='Deletes without confirmation.')
 
     with self.argument_context('vmware workload-network dhcp server') as c:
         c.argument('server_address', help='DHCP Server Address.')
@@ -188,6 +197,7 @@ def load_arguments(self, _):
         c.argument('fqdn_zones', nargs='+', help='FQDN zones of the DNS service.')
         c.argument('log_level', arg_type=get_enum_type(["DEBUG", "INFO", "WARNING", "ERROR", "FATAL"]), help='DNS service log level. Possible values include: "DEBUG", "INFO", "WARNING", "ERROR", "FATAL".')
         c.argument('revision', help='NSX revision number.')
+        c.argument('yes', help='Deletes without confirmation.')
 
     with self.argument_context('vmware workload-network dns-zone') as c:
         c.argument('dns_zone', help="NSX DNS zone identifier. Generally the same as the DNS zone's display name.")
@@ -197,6 +207,7 @@ def load_arguments(self, _):
         c.argument('source_ip', help='Source IP of the DNS zone.')
         c.argument('dns_services', help='Number of DNS services using the DNS zone.')
         c.argument('revision', help='NSX revision number.')
+        c.argument('yes', help='Deletes without confirmation.')
 
     with self.argument_context('vmware workload-network port-mirroring') as c:
         c.argument('port_mirroring', help="NSX Port Mirroring identifier. Generally the same as the Port Mirroring display name.")
@@ -205,6 +216,7 @@ def load_arguments(self, _):
         c.argument('source', help='Source VM Group.')
         c.argument('destination', help='Destination VM Group.')
         c.argument('revision', help='NSX revision number.')
+        c.argument('yes', help='Deletes without confirmation.')
 
     with self.argument_context('vmware workload-network segment') as c:
         c.argument('segment', help="NSX Segment identifier. Generally the same as the Segment's display name.")
@@ -214,17 +226,20 @@ def load_arguments(self, _):
         c.argument('dhcp_ranges', nargs='+', help='DHCP Range assigned for subnet.')
         c.argument('gateway_address', help='Gateway address.')
         c.argument('port_name', help='Name of port or VIF attached to segment.')
+        c.argument('yes', help='Deletes without confirmation.')
 
     with self.argument_context('vmware workload-network public-ip') as c:
         c.argument('public_ip', help="NSX Public IP Block identifier. Generally the same as the Public IP.")
         c.argument('display_name', help='Display name of the Public IP Block.')
         c.argument('number_of_public_ips', help='Number of Public IPs requested.')
+        c.argument('yes', help='Deletes without confirmation.')
 
     with self.argument_context('vmware workload-network vm-group') as c:
         c.argument('vm_group', help="NSX VM Group identifier. Generally the same as the VM Group's display name.")
         c.argument('display_name', help='Display name of the VM group.')
         c.argument('members', nargs='+', help='Virtual machine members of this group.')
         c.argument('revision', help='NSX revision number.')
+        c.argument('yes', help='Deletes without confirmation.')
 
     with self.argument_context('vmware workload-network vm') as c:
         c.argument('virtual_machine', help="Virtual Machine identifier.")
