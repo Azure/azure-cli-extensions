@@ -187,17 +187,6 @@ def validate_env_file_dogfood(values_file, values_file_provided):
     return dp_endpoint, release_train
 
 
-def check_faulty_helm_version(helm_core_utils):
-    # Check helm version
-    helm_version = helm_core_utils.check_helm_version()
-    telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.HelmVersion': helm_version})
-
-    # Check for faulty pre-release helm versions
-    if "3.3.0-rc" in helm_version:
-        raise ClientRequestError("The current helm version is not supported for azure-arc onboarding.",
-                                 recommendation="Please upgrade helm to a stable version and try again.")
-
-
 def validate_helm_environment_file(cmd, values_file, values_file_provided):
     # Validate the helm environment file for Dogfood.
     dp_endpoint_dogfood = None

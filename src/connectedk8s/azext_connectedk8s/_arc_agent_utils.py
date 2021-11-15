@@ -16,6 +16,23 @@ import azext_connectedk8s._utils as utils
 logger = get_logger(__name__)
 
 
+def _execute_helm_command(cmd_helm, error=None):
+    response_helm_cmd = Popen(cmd_helm, stdout=PIPE, stderr=PIPE)
+    _, error_helm_cmd = response_helm_cmd.communicate()
+    if response_helm_cmd.returncode != 0:
+        if ('forbidden' in error_helm_cmd.decode("ascii") or
+                'timed out waiting for the condition' in error_helm_cmd.decode("ascii")):
+            telemetry.set_user_fault()
+        telemetry.set_exception(exception=error_helm_cmd.decode("ascii"),
+                                fault_type=consts.Install_HelmRelease_Fault_Type,
+                                summary='Unable to install helm release')
+        logger.warning("Please check if the azure-arc namespace was deployed and run" +
+                        " 'kubectl get pods -n azure-arc' to check if all the pods are" +
+                        " in running state. A possible cause for pods stuck in pending" +
+                        " state could be insufficient resources on the kubernetes cluster" +
+                        " to onboard to arc.")
+        raise CLIInternalError(str.format(error, error_helm_cmd.decode("ascii")))
+
 class ArcAgentUtils:
 
     __proxy_details = {}
@@ -74,7 +91,7 @@ class ArcAgentUtils:
             onboarding_timeout = onboarding_timeout + "s"
             cmd_helm_install.extend(["--wait", "--timeout", "{}".format(onboarding_timeout)])
 
-        self.__execute_helm_command(cmd_helm_install, "Unable to install helm release: ")
+        _execute_helm_command(cmd_helm_install, "Unable to install helm release: ")
 
     def execute_arc_agent_update(self, chart_path, release_namespace, helm_client_location):
 
@@ -83,7 +100,7 @@ class ArcAgentUtils:
 
         cmd_helm_upgrade = self.__set_params(cmd_helm_upgrade)
 
-        self.__execute_helm_command(cmd_helm_upgrade, consts.Update_Agent_Failure)
+        _execute_helm_command(cmd_helm_upgrade, consts.Update_Agent_Failure)
 
     def execute_arc_agent_upgrade(self, chart_path, release_namespace, upgrade_timeout, existing_user_values, helm_client_location):
 
@@ -115,7 +132,7 @@ class ArcAgentUtils:
 
         cmd_helm_upgrade = self.__set_params(cmd_helm_upgrade)
 
-        self.__execute_helm_command(cmd_helm_upgrade, consts.Upgrade_Agent_Failure)
+        _execute_helm_command(cmd_helm_upgrade, consts.Upgrade_Agent_Failure)
 
     def execute_arc_agent_enable_features(self, chart_path, release_namespace, enable_azure_rbac,
                                           enable_cluster_connect, enable_cl, custom_locations_oid,
@@ -141,7 +158,7 @@ class ArcAgentUtils:
             cmd_helm_upgrade.extend(["--set", "systemDefaultValues.customLocations.oid={}"
                                      .format(custom_locations_oid)])
 
-        self.__execute_helm_command(cmd_helm_upgrade, consts.Error_enabling_Features)
+        _execute_helm_command(cmd_helm_upgrade, consts.Error_enabling_Features)
 
     def execute_arc_agent_disable_features(self, chart_path, release_namespace, disable_azure_rbac,
                                            disable_cluster_connect, disable_cl, helm_client_location):
@@ -159,14 +176,14 @@ class ArcAgentUtils:
             cmd_helm_upgrade.extend(["--set", "systemDefaultValues.customLocations.enabled=false"])
             cmd_helm_upgrade.extend(["--set", "systemDefaultValues.customLocations.oid={}".format("")])
 
-        self.__execute_helm_command(cmd_helm_upgrade, consts.Error_disabling_Features)
+        _execute_helm_command(cmd_helm_upgrade, consts.Error_disabling_Features)
 
     def execute_delete_arc_agents(self, release_namespace, configuration, helm_client_location):
         cmd_helm_delete = [helm_client_location, "delete", "azure-arc", "--namespace", release_namespace]
 
         cmd_helm_delete = self.__set_params(cmd_helm_delete)
 
-        self.__execute_helm_command(cmd_helm_delete, "Error occured while cleaning up arc agents. " +
+        _execute_helm_command(cmd_helm_delete, "Error occured while cleaning up arc agents. " +
                                     "Helm release deletion failed: ")
 
         kube_core_utils.ensure_namespace_cleanup(configuration)
@@ -202,20 +219,3 @@ class ArcAgentUtils:
             cmd_helm.extend(["--kube-context", self.__kube_context])
 
         return cmd_helm
-
-    def __execute_helm_command(self, cmd_helm, error=None):
-        response_helm_cmd = Popen(cmd_helm, stdout=PIPE, stderr=PIPE)
-        _, error_helm_cmd = response_helm_cmd.communicate()
-        if response_helm_cmd.returncode != 0:
-            if ('forbidden' in error_helm_cmd.decode("ascii") or
-                    'timed out waiting for the condition' in error_helm_cmd.decode("ascii")):
-                telemetry.set_user_fault()
-            telemetry.set_exception(exception=error_helm_cmd.decode("ascii"),
-                                    fault_type=consts.Install_HelmRelease_Fault_Type,
-                                    summary='Unable to install helm release')
-            logger.warning("Please check if the azure-arc namespace was deployed and run" +
-                           " 'kubectl get pods -n azure-arc' to check if all the pods are" +
-                           " in running state. A possible cause for pods stuck in pending" +
-                           " state could be insufficient resources on the kubernetes cluster" +
-                           " to onboard to arc.")
-            raise CLIInternalError(str.format(error, error_helm_cmd.decode("ascii")))

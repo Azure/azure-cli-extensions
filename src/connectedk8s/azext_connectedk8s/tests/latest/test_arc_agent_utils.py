@@ -48,7 +48,7 @@ class ArcAgentUtilsTest(unittest.TestCase):
                                                 self.kubernetes_infra, self.resource_group_name, self.cluster_name,
                                                 self.location, self.onboarding_tenant_id, self.private_key_pem,
                                                 self.no_wait, self.cloud_name, self.enable_custom_locations,
-                                                self.custom_locations_oid)
+                                                "helm", self.custom_locations_oid)
         except Exception:
             self.fail("No error should have occured")
 
@@ -56,7 +56,7 @@ class ArcAgentUtilsTest(unittest.TestCase):
     def test_execute_arc_agent_update(self, input):
         arc_agent = ArcAgentUtils()
         try:
-            arc_agent.execute_arc_agent_update(self.chart_path, self.release_namespace)
+            arc_agent.execute_arc_agent_update(self.chart_path, self.release_namespace, "helm")
         except Exception:
             self.fail("No error should have occured")
 
@@ -67,7 +67,7 @@ class ArcAgentUtilsTest(unittest.TestCase):
         existing_user_values = "{'global': {'isProxyEnabled' : 'True', 'httpProxy': 'testProxy'," \
                                " 'kubernetesDistro': 'default', 'kubernetesInfra' : 'generic' } }"
         try:
-            arc_agent.execute_arc_agent_upgrade(self.chart_path, self.release_namespace, 100, existing_user_values)
+            arc_agent.execute_arc_agent_upgrade(self.chart_path, self.release_namespace, 100, existing_user_values, "helm")
         except Exception:
             self.fail("No error should have occured")
 
@@ -77,7 +77,7 @@ class ArcAgentUtilsTest(unittest.TestCase):
 
         try:
             arc_agent.execute_arc_agent_enable_features(self.chart_path, self.release_namespace, True,
-                                                        True, True, self.custom_locations_oid,
+                                                        True, True, self.custom_locations_oid, "helm"
                                                         "test_azrbac_client_id", "test_azrbac_client_secret",
                                                         True)
         except Exception:
@@ -89,7 +89,7 @@ class ArcAgentUtilsTest(unittest.TestCase):
 
         try:
             arc_agent.execute_arc_agent_disable_features(self.chart_path, self.release_namespace, True,
-                                                         True, True)
+                                                         True, True, "helm")
         except Exception:
             self.fail("No error should have occured")
 
@@ -99,6 +99,6 @@ class ArcAgentUtilsTest(unittest.TestCase):
         arc_agent = ArcAgentUtils()
 
         try:
-            arc_agent.execute_delete_arc_agents(self.chart_path, None)
+            arc_agent.execute_delete_arc_agents(self.chart_path, None, "helm")
         except Exception:
             self.fail("No error should have occured")

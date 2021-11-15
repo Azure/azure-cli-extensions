@@ -132,12 +132,12 @@ class ConnectedClusterUtilsTest(unittest.TestCase):
         resource_client.set_providers(mock_rp_client)
 
         try:
-            cc_utils.validate_location("t", resource_client) 
+            cc_utils.validate_location("t", resource_client)
         except Exception:
             self.fail("No exception should be raised")
 
         try:
-            cc_utils.validate_location("test_", resource_client) 
+            cc_utils.validate_location("test_", resource_client)
             self.fail("Exception should be raised")
         except Exception:
             pass

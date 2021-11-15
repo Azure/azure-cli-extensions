@@ -25,6 +25,8 @@ def get_custom_locations_oid(cmd, cl_oid):
                              .format(result[0].object_id) + " RP app. Proceeding with the correct one...")
             return result[0].object_id  # Using the fetched OID
 
+        #Below if else might not execute check? sp_graph_client.list(filter=(' and '.join(sub_filters))) 
+        # is None then list(None) will throw exception
         if cl_oid is None:
             logger.warning("Failed to enable Custom Locations feature on the cluster." +
                            " Unable to fetch Object ID of Azure AD application used by" +

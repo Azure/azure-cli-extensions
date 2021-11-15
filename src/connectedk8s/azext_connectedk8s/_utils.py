@@ -78,11 +78,15 @@ def check_features_to_update(features_to_update):
     return update_cluster_connect, update_azure_rbac, update_cl
 
 
+def user_input(message):
+    return prompt_y_n(message)
+
+
 def user_confirmation(message, yes=False):
     if yes:
         return
     try:
-        if not prompt_y_n(message):
+        if not user_input(message):
             raise ManualInterrupt('Operation cancelled.')
     except NoTTYException:
         raise CLIInternalError('Unable to prompt for confirmation as no tty available. Use --yes.')
