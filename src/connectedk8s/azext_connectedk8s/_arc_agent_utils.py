@@ -144,8 +144,8 @@ class ArcAgentUtils:
         self.__execute_helm_command(cmd_helm_upgrade, consts.Error_enabling_Features)
 
     def execute_arc_agent_disable_features(self, chart_path, release_namespace, disable_azure_rbac,
-                                           disable_cluster_connect, disable_cl):
-        cmd_helm_upgrade = ["helm", "upgrade", "azure-arc", chart_path, "--namespace", release_namespace,
+                                           disable_cluster_connect, disable_cl, helm_client_location):
+        cmd_helm_upgrade = [helm_client_location, "upgrade", "azure-arc", chart_path, "--namespace", release_namespace,
                             "--reuse-values",
                             "--wait", "--output", "json"]
 

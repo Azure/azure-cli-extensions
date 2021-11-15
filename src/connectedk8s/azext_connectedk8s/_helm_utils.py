@@ -5,6 +5,8 @@
 
 import os
 import shutil
+import platform
+import urllib
 
 import yaml
 from knack.log import get_logger

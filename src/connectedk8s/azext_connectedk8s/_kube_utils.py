@@ -269,7 +269,6 @@ def insert_token_in_kubeconfig(data, token):
     b64kubeconfig = b64encode(kubeconfig).decode("utf-8")
     return b64kubeconfig
 
-
 def add_kubernetes_telemetry_extension_event(connected_cluster, configuration, api_instance):
     # Get kubernetes cluster info for telemetry
     node_api_response = None
