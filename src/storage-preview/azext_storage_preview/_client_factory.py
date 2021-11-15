@@ -137,6 +137,10 @@ def cf_mgmt_file_services(cli_ctx, _):
     return storage_client_factory(cli_ctx).file_services
 
 
+def cf_local_users(cli_ctx, _):
+    return storage_client_factory(cli_ctx).local_users
+
+
 def get_account_url(cli_ctx, account_name, service):
     if account_name is None:
         raise CLIError("Please provide storage account name or connection string.")

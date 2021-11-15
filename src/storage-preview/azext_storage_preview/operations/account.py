@@ -316,3 +316,11 @@ def update_file_service_properties(cmd, instance, enable_delete_retention=None,
         params['protocol_settings'].smb.channel_encryption = channel_encryption
 
     return params
+
+
+def create_local_user(client, resource_group_name, account_name, username, permission_scopes, home_directory, has_ssh_password, ssh_authorized_keys):
+    LocalUser, PermissionScope = cmd.get_models('LocalUser', 'PermissionScope')
+    local_user = LocalUser(permissionScopes=permission_scopes, homeDirectory=home_directory,
+                           hasSshPassword=has_ssh_password, sshAuthorizedKeys=ssh_authorized_keys)
+    return client.create_or_update(resource_group_name=resource_group_name, account_name=account_name,
+                                   username=username, properties=local_user)
