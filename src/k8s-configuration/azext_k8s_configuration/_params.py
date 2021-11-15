@@ -78,7 +78,7 @@ def load_arguments(self, _):
                    help='Base64-encoded private ssh key for private repository sync')
         c.argument('ssh_private_key_file',
                    arg_group="Auth",
-                   help='Filepath to private ssh key for private repository sync')
+                   help='File path to private ssh key for private repository sync')
         c.argument('https_user',
                    arg_group="Auth",
                    help='HTTPS username for private repository sync')
@@ -90,13 +90,13 @@ def load_arguments(self, _):
                    help='Base64-encoded HTTPS CA certificate for TLS communication with private repository sync')
         c.argument('https_ca_cert_file',
                    arg_group="Auth",
-                   help='Filepath to HTTPS CA certificate file for TLS communication with private repository sync')
+                   help='File path to HTTPS CA certificate file for TLS communication with private repository sync')
         c.argument('known_hosts',
                    arg_group="Auth",
                    help='Base64-encoded known_hosts data containing public SSH keys required to access private Git instances')
         c.argument('known_hosts_file',
                    arg_group="Auth",
-                   help='Filepath to known_hosts contents containing public SSH keys required to access private Git instances')
+                   help='File path to known_hosts contents containing public SSH keys required to access private Git instances')
         c.argument('local_auth_ref',
                    options_list=['--local-auth-ref', '--local-ref'],
                    arg_group="Auth",
@@ -163,7 +163,7 @@ def load_arguments(self, _):
                    help='Specify Base64-encoded private ssh key for private repository sync')
         c.argument('ssh_private_key_file',
                    arg_group="Auth",
-                   help='Specify filepath to private ssh key for private repository sync')
+                   help='Specify file path to private ssh key for private repository sync')
         c.argument('https_user',
                    arg_group="Auth",
                    help='Specify HTTPS username for private repository sync')
@@ -175,7 +175,7 @@ def load_arguments(self, _):
                    help='Specify Base64-encoded known_hosts contents containing public SSH keys required to access private Git instances')
         c.argument('ssh_known_hosts_file',
                    arg_group="Auth",
-                   help='Specify filepath to known_hosts contents containing public SSH keys required to access private Git instances')
+                   help='Specify file path to known_hosts contents containing public SSH keys required to access private Git instances')
 
     with self.argument_context('k8s-configuration flux kustomization') as c:
         c.argument('kustomization_name',
