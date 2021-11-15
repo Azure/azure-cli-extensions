@@ -3258,6 +3258,8 @@ class LocalUser(Resource):
     :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
      "Microsoft.Storage/storageAccounts".
     :vartype type: str
+    :ivar system_data: Metadata pertaining to creation and last modification of the resource.
+    :vartype system_data: ~azure.mgmt.storage.v2021_08_01.models.SystemData
     :param permission_scopes: The permission scopes of the local user.
     :type permission_scopes: list[~azure.mgmt.storage.v2021_08_01.models.PermissionScope]
     :param home_directory: Optional, local user home directory.
@@ -3286,6 +3288,7 @@ class LocalUser(Resource):
         'id': {'readonly': True},
         'name': {'readonly': True},
         'type': {'readonly': True},
+        'system_data': {'readonly': True},
         'sid': {'readonly': True},
         'shared_key': {'readonly': True},
         'ssh_password': {'readonly': True},
@@ -3295,6 +3298,7 @@ class LocalUser(Resource):
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
         'permission_scopes': {'key': 'properties.permissionScopes', 'type': '[PermissionScope]'},
         'home_directory': {'key': 'properties.homeDirectory', 'type': 'str'},
         'ssh_authorized_keys': {'key': 'properties.sshAuthorizedKeys', 'type': '[SshPublicKey]'},
@@ -3311,6 +3315,7 @@ class LocalUser(Resource):
         **kwargs
     ):
         super(LocalUser, self).__init__(**kwargs)
+        self.system_data = None
         self.permission_scopes = kwargs.get('permission_scopes', None)
         self.home_directory = kwargs.get('home_directory', None)
         self.ssh_authorized_keys = kwargs.get('ssh_authorized_keys', None)
@@ -3417,12 +3422,21 @@ class LocalUserProperties(msrest.serialization.Model):
 class LocalUsers(msrest.serialization.Model):
     """List storage account local users.
 
+    Variables are only populated by the server, and will be ignored when sending a request.
+
     :param value: The local users associated with the storage account.
     :type value: list[~azure.mgmt.storage.v2021_08_01.models.LocalUser]
+    :ivar system_data: Metadata pertaining to creation and last modification of the resource.
+    :vartype system_data: ~azure.mgmt.storage.v2021_08_01.models.SystemData
     """
+
+    _validation = {
+        'system_data': {'readonly': True},
+    }
 
     _attribute_map = {
         'value': {'key': 'value', 'type': '[LocalUser]'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
     }
 
     def __init__(
@@ -3431,6 +3445,7 @@ class LocalUsers(msrest.serialization.Model):
     ):
         super(LocalUsers, self).__init__(**kwargs)
         self.value = kwargs.get('value', None)
+        self.system_data = None
 
 
 class ManagementPolicy(Resource):
