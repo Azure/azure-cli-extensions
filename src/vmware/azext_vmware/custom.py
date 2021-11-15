@@ -32,7 +32,7 @@ def privatecloud_show(client: AVSClient, resource_group_name, name):
     return client.private_clouds.get(resource_group_name, name)
 
 
-def privatecloud_create(client: AVSClient, resource_group_name, name, location, sku, cluster_size, network_block, circuit_primary_subnet=None, circuit_secondary_subnet=None, internet=None, vcenter_password=None, nsxt_password=None, tags=None, accept_eula=False):
+def privatecloud_create(client: AVSClient, resource_group_name, name, sku, cluster_size, network_block, location=None, internet=None, vcenter_password=None, nsxt_password=None, tags=None, accept_eula=False, mi_system_assigned=False):
     from knack.prompting import prompt_y_n
     if not accept_eula:
         print(LEGAL_TERMS)
@@ -40,13 +40,14 @@ def privatecloud_create(client: AVSClient, resource_group_name, name, location, 
         if not prompt_y_n(msg, default="n"):
             return None
 
-    from azext_vmware.vendored_sdks.avs_client.models import PrivateCloud, Circuit, ManagementCluster, Sku
-    if circuit_primary_subnet is not None or circuit_secondary_subnet is not None:
-        circuit = Circuit(primary_subnet=circuit_primary_subnet, secondary_subnet=circuit_secondary_subnet)
-    else:
-        circuit = None
-    management_cluster = ManagementCluster(cluster_size=cluster_size)
-    cloud = PrivateCloud(location=location, sku=Sku(name=sku), circuit=circuit, management_cluster=management_cluster, network_block=network_block, tags=tags)
+    from azext_vmware.vendored_sdks.avs_client.models import PrivateCloud, Circuit, ManagementCluster, Sku, PrivateCloudIdentity
+    cloud = PrivateCloud(sku=Sku(name=sku), ciruit=Circuit(), management_cluster=ManagementCluster(cluster_size=cluster_size), network_block=network_block)
+    if location is not None:
+        cloud.location = location
+    if tags is not None:
+        cloud.tags = tags
+    if mi_system_assigned:
+        cloud.identity = PrivateCloudIdentity(type='SystemAssigned')
     if internet is not None:
         cloud.internet = internet
     if vcenter_password is not None:
@@ -56,9 +57,11 @@ def privatecloud_create(client: AVSClient, resource_group_name, name, location, 
     return client.private_clouds.begin_create_or_update(resource_group_name, name, cloud)
 
 
-def privatecloud_update(client: AVSClient, resource_group_name, name, cluster_size=None, internet=None):
+def privatecloud_update(client: AVSClient, resource_group_name, name, cluster_size=None, internet=None, tags=None):
     from azext_vmware.vendored_sdks.avs_client.models import PrivateCloudUpdate, ManagementCluster
     private_cloud_update = PrivateCloudUpdate()
+    if tags is not None:
+        private_cloud_update.tags = tags
     if cluster_size is not None:
         private_cloud_update.management_cluster = ManagementCluster(cluster_size=cluster_size)
     if internet is not None:
@@ -98,6 +101,53 @@ def privatecloud_deleteidentitysource(client: AVSClient, resource_group_name, na
     return pc
 
 
+def privatecloud_addavailabilityzone(client: AVSClient, resource_group_name, private_cloud, strategy=None, zone=None, secondary_zone=None):
+    from azext_vmware.vendored_sdks.avs_client.models import AvailabilityProperties, PrivateCloudUpdate
+    pc = PrivateCloudUpdate()
+    pc.availability = AvailabilityProperties(strategy=strategy, zone=zone, secondary_zone=secondary_zone)
+    return client.private_clouds.begin_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, private_cloud_update=pc)
+
+
+def privatecloud_deleteavailabilityzone(client: AVSClient, resource_group_name, private_cloud):
+    from azext_vmware.vendored_sdks.avs_client.models import PrivateCloudUpdate
+    pc = PrivateCloudUpdate()
+    pc.availability = None
+    return client.private_clouds.begin_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, private_cloud_update=pc)
+
+
+def privatecloud_addcmkencryption(client: AVSClient, resource_group_name, private_cloud, enc_status=None, enc_kv_key_name=None, enc_kv_key_version=None, enc_kv_url=None):
+    from azext_vmware.vendored_sdks.avs_client.models import Encryption, EncryptionKeyVaultProperties, PrivateCloudUpdate
+    pc = PrivateCloudUpdate()
+    pc.encryption = Encryption(status=enc_status, key_vault_properties=EncryptionKeyVaultProperties(key_name=enc_kv_key_name, key_version=enc_kv_key_version, key_vault_url=enc_kv_url))
+    return client.private_clouds.begin_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, private_cloud_update=pc)
+
+
+def privatecloud_deletecmkenryption(client: AVSClient, resource_group_name, private_cloud):
+    from azext_vmware.vendored_sdks.avs_client.models import PrivateCloudUpdate
+    pc = PrivateCloudUpdate()
+    pc.encryption = None
+    return client.private_clouds.begin_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, private_cloud_update=pc)
+
+
+def privatecloud_identity_assign(client: AVSClient, resource_group_name, private_cloud, system_assigned=False):
+    from azext_vmware.vendored_sdks.avs_client.models import PrivateCloudIdentity, PrivateCloudUpdate
+    pc = PrivateCloudUpdate()
+    if system_assigned:
+        pc.identity = PrivateCloudIdentity(type="SystemAssigned")
+    return client.private_clouds.begin_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, private_cloud_update=pc)
+
+
+def privatecloud_identity_remove(client: AVSClient, resource_group_name, private_cloud):
+    from azext_vmware.vendored_sdks.avs_client.models import PrivateCloudIdentity, PrivateCloudUpdate
+    pc = PrivateCloudUpdate()
+    pc.identity = PrivateCloudIdentity(type=None)
+    return client.private_clouds.begin_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, private_cloud_update=pc)
+
+
+def privatecloud_identity_get(client: AVSClient, resource_group_name, private_cloud):
+    return client.private_clouds.get(resource_group_name, private_cloud).identity
+
+
 def privatecloud_rotate_vcenter_password(client: AVSClient, resource_group_name, private_cloud):
     return client.private_clouds.begin_rotate_vcenter_password(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
 
@@ -106,13 +156,13 @@ def privatecloud_rotate_nsxt_password(client: AVSClient, resource_group_name, pr
     return client.private_clouds.begin_rotate_nsxt_password(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
 
 
-def cluster_create(client: AVSClient, resource_group_name, name, sku, private_cloud, size):
-    from azext_vmware.vendored_sdks.avs_client.models import Sku
-    return client.clusters.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=name, sku=Sku(name=sku), cluster_size=size)
+def cluster_create(client: AVSClient, resource_group_name, name, sku, private_cloud, size, hosts):
+    from azext_vmware.vendored_sdks.avs_client.models import Sku, Cluster
+    return client.clusters.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=name, cluster=Cluster(sku=Sku(name=sku), cluster_size=size, hosts=hosts))
 
 
-def cluster_update(client: AVSClient, resource_group_name, name, private_cloud, size):
-    return client.clusters.begin_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=name, cluster_size=size)
+def cluster_update(client: AVSClient, resource_group_name, name, private_cloud, size=None, hosts=None):
+    return client.clusters.begin_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=name, cluster_size=size, hosts=hosts)
 
 
 def cluster_list(client: AVSClient, resource_group_name, private_cloud):
@@ -259,8 +309,9 @@ def addon_srm_delete(client: AVSClient, resource_group_name, private_cloud):
     return client.addons.begin_delete(resource_group_name=resource_group_name, private_cloud_name=private_cloud, addon_name="srm")
 
 
-def globalreachconnection_create(client: AVSClient, resource_group_name, private_cloud, name, authorization_key=None, peer_express_route_circuit=None):
-    return client.global_reach_connections.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, global_reach_connection_name=name, authorization_key=authorization_key, peer_express_route_circuit=peer_express_route_circuit)
+def globalreachconnection_create(client: AVSClient, resource_group_name, private_cloud, name, authorization_key=None, peer_express_route_circuit=None, express_route_id=None):
+    from azext_vmware.vendored_sdks.avs_client.models import GlobalReachConnection
+    return client.global_reach_connections.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, global_reach_connection_name=name, global_reach_connection=GlobalReachConnection(authorization_key=authorization_key, peer_express_route_circuit=peer_express_route_circuit, express_route_id=express_route_id))
 
 
 def globalreachconnection_list(client: AVSClient, resource_group_name, private_cloud):
@@ -329,3 +380,250 @@ def script_execution_delete(client: AVSClient, resource_group_name, private_clou
 
 def script_execution_logs(client: AVSClient, resource_group_name, private_cloud, name):
     return client.script_executions.get_execution_logs(resource_group_name=resource_group_name, private_cloud_name=private_cloud, script_execution_name=name)
+
+
+def workload_network_dhcp_server_create(client: AVSClient, resource_group_name, private_cloud, dhcp: str, display_name=None, revision=None, server_address=None, lease_time=None):
+    from azext_vmware.vendored_sdks.avs_client.models import WorkloadNetworkDhcpServer
+    properties = WorkloadNetworkDhcpServer(display_name=display_name, revision=revision, server_address=server_address, lease_time=lease_time)
+    return client.workload_networks.begin_create_dhcp(resource_group_name=resource_group_name, private_cloud_name=private_cloud, dhcp_id=dhcp, properties=properties)
+
+
+def workload_network_dhcp_relay_create(client: AVSClient, resource_group_name, private_cloud, dhcp: str, display_name=None, revision=None, server_addresses=None):
+    from azext_vmware.vendored_sdks.avs_client.models import WorkloadNetworkDhcpRelay
+    properties = WorkloadNetworkDhcpRelay(display_name=display_name, revision=revision, server_addresses=server_addresses)
+    return client.workload_networks.begin_create_dhcp(resource_group_name=resource_group_name, private_cloud_name=private_cloud, dhcp_id=dhcp, properties=properties)
+
+
+def workload_network_dhcp_server_update(client: AVSClient, resource_group_name, private_cloud, dhcp: str, display_name=None, revision=None, server_address=None, lease_time=None):
+    from azext_vmware.vendored_sdks.avs_client.models import WorkloadNetworkDhcpServer
+    properties = WorkloadNetworkDhcpServer(display_name=display_name, revision=revision, server_address=server_address, lease_time=lease_time)
+    return client.workload_networks.begin_update_dhcp(resource_group_name=resource_group_name, private_cloud_name=private_cloud, dhcp_id=dhcp, properties=properties)
+
+
+def workload_network_dhcp_relay_update(client: AVSClient, resource_group_name, private_cloud, dhcp: str, display_name=None, revision=None, server_addresses=None):
+    from azext_vmware.vendored_sdks.avs_client.models import WorkloadNetworkDhcpRelay
+    properties = WorkloadNetworkDhcpRelay(display_name=display_name, revision=revision, server_addresses=server_addresses)
+    return client.workload_networks.begin_update_dhcp(resource_group_name=resource_group_name, private_cloud_name=private_cloud, dhcp_id=dhcp, properties=properties)
+
+
+def workload_network_dhcp_delete(client: AVSClient, resource_group_name, private_cloud, dhcp: str):
+    return client.workload_networks.begin_delete_dhcp(resource_group_name=resource_group_name, private_cloud_name=private_cloud, dhcp_id=dhcp)
+
+
+def workload_network_dhcp_list(client: AVSClient, resource_group_name, private_cloud):
+    return client.workload_networks.list_dhcp(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
+
+
+def workload_network_dhcp_show(client: AVSClient, resource_group_name, private_cloud, dhcp: str):
+    return client.workload_networks.get_dhcp(resource_group_name=resource_group_name, private_cloud_name=private_cloud, dhcp_id=dhcp)
+
+
+def workload_network_dns_services_list(client: AVSClient, resource_group_name, private_cloud):
+    return client.workload_networks.list_dns_services(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
+
+
+def workload_network_dns_services_get(client: AVSClient, resource_group_name, private_cloud, dns_service):
+    return client.workload_networks.get_dns_service(resource_group_name=resource_group_name, private_cloud_name=private_cloud, dns_service_id=dns_service)
+
+
+def workload_network_dns_services_create(client: AVSClient, resource_group_name, private_cloud, dns_service, display_name=None, dns_service_ip=None, default_dns_zone=None, fqdn_zones=None, log_level=None, revision=None):
+    from azext_vmware.vendored_sdks.avs_client.models import WorkloadNetworkDnsService
+    prop = WorkloadNetworkDnsService(display_name=display_name, dns_service_ip=dns_service_ip, default_dns_zone=default_dns_zone, log_level=log_level, revision=revision, fqdn_zones=fqdn_zones)
+    return client.workload_networks.begin_create_dns_service(resource_group_name=resource_group_name, private_cloud_name=private_cloud, dns_service_id=dns_service, workload_network_dns_service=prop)
+
+
+def workload_network_dns_services_update(client: AVSClient, resource_group_name, private_cloud, dns_service, display_name=None, dns_service_ip=None, default_dns_zone=None, fqdn_zones=None, log_level=None, revision=None):
+    from azext_vmware.vendored_sdks.avs_client.models import WorkloadNetworkDnsService
+    prop = WorkloadNetworkDnsService(display_name=display_name, dns_service_ip=dns_service_ip, default_dns_zone=default_dns_zone, fqdn_zones=fqdn_zones, log_level=log_level, revision=revision)
+    return client.workload_networks.begin_update_dns_service(resource_group_name=resource_group_name, private_cloud_name=private_cloud, dns_service_id=dns_service, workload_network_dns_service=prop)
+
+
+def workload_network_dns_services_delete(client: AVSClient, resource_group_name, private_cloud, dns_service):
+    return client.workload_networks.begin_delete_dns_service(resource_group_name=resource_group_name, private_cloud_name=private_cloud, dns_service_id=dns_service)
+
+
+def workload_network_dns_zone_list(client: AVSClient, resource_group_name, private_cloud):
+    return client.workload_networks.list_dns_zones(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
+
+
+def workload_network_dns_zone_get(client: AVSClient, resource_group_name, private_cloud, dns_zone):
+    return client.workload_networks.get_dns_zone(resource_group_name=resource_group_name, private_cloud_name=private_cloud, dns_zone_id=dns_zone)
+
+
+def workload_network_dns_zone_create(client: AVSClient, resource_group_name, private_cloud, dns_zone, display_name=None, domain=None, dns_server_ips=None, source_ip=None, dns_services=None, revision=None):
+    from azext_vmware.vendored_sdks.avs_client.models import WorkloadNetworkDnsZone
+    prop = WorkloadNetworkDnsZone(display_name=display_name, domain=domain, dns_server_ips=dns_server_ips, source_ip=source_ip, dns_services=dns_services, revision=revision)
+    return client.workload_networks.begin_create_dns_zone(resource_group_name=resource_group_name, private_cloud_name=private_cloud, dns_zone_id=dns_zone, workload_network_dns_zone=prop)
+
+
+def workload_network_dns_zone_update(client: AVSClient, resource_group_name, private_cloud, dns_zone, display_name=None, domain=None, dns_server_ips=None, source_ip=None, dns_services=None, revision=None):
+    from azext_vmware.vendored_sdks.avs_client.models import WorkloadNetworkDnsZone
+    prop = WorkloadNetworkDnsZone(display_name=display_name, domain=domain, dns_server_ips=dns_server_ips, source_ip=source_ip, dns_services=dns_services, revision=revision)
+    return client.workload_networks.begin_update_dns_zone(resource_group_name=resource_group_name, private_cloud_name=private_cloud, dns_zone_id=dns_zone, workload_network_dns_zone=prop)
+
+
+def workload_network_dns_zone_delete(client: AVSClient, resource_group_name, private_cloud, dns_zone):
+    return client.workload_networks.begin_delete_dns_zone(resource_group_name=resource_group_name, private_cloud_name=private_cloud, dns_zone_id=dns_zone)
+
+
+def workload_network_port_mirroring_list(client: AVSClient, resource_group_name, private_cloud):
+    return client.workload_networks.list_port_mirroring(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
+
+
+def workload_network_port_mirroring_get(client: AVSClient, resource_group_name, private_cloud, port_mirroring):
+    return client.workload_networks.get_port_mirroring(resource_group_name=resource_group_name, private_cloud_name=private_cloud, port_mirroring_id=port_mirroring)
+
+
+def workload_network_port_mirroring_create(client: AVSClient, resource_group_name, private_cloud, port_mirroring, display_name=None, direction=None, source=None, destination=None, revision=None):
+    from azext_vmware.vendored_sdks.avs_client.models import WorkloadNetworkPortMirroring
+    prop = WorkloadNetworkPortMirroring(display_name=display_name, direction=direction, source=source, destination=destination, revision=revision)
+    return client.workload_networks.begin_create_port_mirroring(resource_group_name=resource_group_name, private_cloud_name=private_cloud, port_mirroring_id=port_mirroring, workload_network_port_mirroring=prop)
+
+
+def workload_network_port_mirroring_update(client: AVSClient, resource_group_name, private_cloud, port_mirroring, display_name=None, direction=None, source=None, destination=None, revision=None):
+    from azext_vmware.vendored_sdks.avs_client.models import WorkloadNetworkPortMirroring
+    prop = WorkloadNetworkPortMirroring(display_name=display_name, direction=direction, source=source, destination=destination, revision=revision)
+    return client.workload_networks.begin_update_port_mirroring(resource_group_name=resource_group_name, private_cloud_name=private_cloud, port_mirroring_id=port_mirroring, workload_network_port_mirroring=prop)
+
+
+def workload_network_port_mirroring_delete(client: AVSClient, resource_group_name, private_cloud, port_mirroring):
+    return client.workload_networks.begin_delete_port_mirroring(resource_group_name=resource_group_name, private_cloud_name=private_cloud, port_mirroring_id=port_mirroring)
+
+
+def workload_network_segment_list(client: AVSClient, resource_group_name, private_cloud):
+    return client.workload_networks.list_segments(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
+
+
+def workload_network_segment_get(client: AVSClient, resource_group_name, private_cloud, segment):
+    return client.workload_networks.get_segment(resource_group_name=resource_group_name, private_cloud_name=private_cloud, segment_id=segment)
+
+
+def workload_network_segment_create(client: AVSClient, resource_group_name, private_cloud, segment, display_name=None, connected_gateway=None, revision=None, dhcp_ranges=None, gateway_address=None, port_name=None):
+    from azext_vmware.vendored_sdks.avs_client.models import WorkloadNetworkSegmentPortVif
+    from azext_vmware.vendored_sdks.avs_client.models import WorkloadNetworkSegmentSubnet
+    from azext_vmware.vendored_sdks.avs_client.models import WorkloadNetworkSegment
+    portVif = WorkloadNetworkSegmentPortVif(port_name=port_name)
+    subnet = WorkloadNetworkSegmentSubnet(dhcp_ranges=dhcp_ranges, gateway_address=gateway_address)
+    segmentObj = WorkloadNetworkSegment(display_name=display_name, connected_gateway=connected_gateway, subnet=subnet, port_vif=portVif, revision=revision)
+    return client.workload_networks.begin_create_segments(resource_group_name=resource_group_name, private_cloud_name=private_cloud, segment_id=segment, workload_network_segment=segmentObj)
+
+
+def workload_network_segment_update(client: AVSClient, resource_group_name, private_cloud, segment, display_name=None, connected_gateway=None, revision=None, dhcp_ranges=None, gateway_address=None, port_name=None):
+    from azext_vmware.vendored_sdks.avs_client.models import WorkloadNetworkSegmentPortVif
+    from azext_vmware.vendored_sdks.avs_client.models import WorkloadNetworkSegmentSubnet
+    from azext_vmware.vendored_sdks.avs_client.models import WorkloadNetworkSegment
+    portVif = WorkloadNetworkSegmentPortVif(port_name=port_name)
+    subnet = WorkloadNetworkSegmentSubnet(dhcp_ranges=dhcp_ranges, gateway_address=gateway_address)
+    segmentObj = WorkloadNetworkSegment(display_name=display_name, connected_gateway=connected_gateway, subnet=subnet, port_vif=portVif, revision=revision)
+    return client.workload_networks.begin_update_segments(resource_group_name=resource_group_name, private_cloud_name=private_cloud, segment_id=segment, workload_network_segment=segmentObj)
+
+
+def workload_network_segment_delete(client: AVSClient, resource_group_name, private_cloud, segment):
+    return client.workload_networks.begin_delete_segment(resource_group_name=resource_group_name, private_cloud_name=private_cloud, segment_id=segment)
+
+
+def workload_network_public_ip_list(client: AVSClient, resource_group_name, private_cloud):
+    return client.workload_networks.list_public_i_ps(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
+
+
+def workload_network_public_ip_get(client: AVSClient, resource_group_name, private_cloud, public_ip):
+    return client.workload_networks.get_public_ip(resource_group_name=resource_group_name, private_cloud_name=private_cloud, public_ip_id=public_ip)
+
+
+def workload_network_public_ip_create(client: AVSClient, resource_group_name, private_cloud, public_ip, display_name=None, number_of_public_ips=None):
+    return client.workload_networks.begin_create_public_ip(resource_group_name=resource_group_name, private_cloud_name=private_cloud, public_ip_id=public_ip, display_name=display_name, number_of_public_i_ps=number_of_public_ips)
+
+
+def workload_network_public_ip_delete(client: AVSClient, resource_group_name, private_cloud, public_ip):
+    return client.workload_networks.begin_delete_public_ip(resource_group_name=resource_group_name, private_cloud_name=private_cloud, public_ip_id=public_ip)
+
+
+def workload_network_vm_group_list(client: AVSClient, resource_group_name, private_cloud):
+    return client.workload_networks.list_vm_groups(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
+
+
+def workload_network_vm_group_get(client: AVSClient, resource_group_name, private_cloud, vm_group):
+    return client.workload_networks.get_vm_group(resource_group_name=resource_group_name, private_cloud_name=private_cloud, vm_group_id=vm_group)
+
+
+def workload_network_vm_group_create(client: AVSClient, resource_group_name, private_cloud, vm_group, display_name=None, members=None, revision=None):
+    from azext_vmware.vendored_sdks.avs_client.models import WorkloadNetworkVMGroup
+    vmGroup = WorkloadNetworkVMGroup(display_name=display_name, members=members, revision=revision)
+    return client.workload_networks.begin_create_vm_group(resource_group_name=resource_group_name, private_cloud_name=private_cloud, vm_group_id=vm_group, workload_network_vm_group=vmGroup)
+
+
+def workload_network_vm_group_update(client: AVSClient, resource_group_name, private_cloud, vm_group, display_name=None, members=None, revision=None):
+    from azext_vmware.vendored_sdks.avs_client.models import WorkloadNetworkVMGroup
+    vmGroup = WorkloadNetworkVMGroup(display_name=display_name, members=members, revision=revision)
+    return client.workload_networks.begin_update_vm_group(resource_group_name=resource_group_name, private_cloud_name=private_cloud, vm_group_id=vm_group, workload_network_vm_group=vmGroup)
+
+
+def workload_network_vm_group_delete(client: AVSClient, resource_group_name, private_cloud, vm_group):
+    return client.workload_networks.begin_delete_vm_group(resource_group_name=resource_group_name, private_cloud_name=private_cloud, vm_group_id=vm_group)
+
+
+def workload_network_vm_list(client: AVSClient, resource_group_name, private_cloud):
+    return client.workload_networks.list_virtual_machines(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
+
+
+def workload_network_vm_get(client: AVSClient, resource_group_name, private_cloud, virtual_machine):
+    return client.workload_networks.get_virtual_machine(resource_group_name=resource_group_name, private_cloud_name=private_cloud, virtual_machine_id=virtual_machine)
+
+
+def workload_network_gateway_list(client: AVSClient, resource_group_name, private_cloud):
+    return client.workload_networks.list_gateways(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
+
+
+def workload_network_gateway_get(client: AVSClient, resource_group_name, private_cloud, gateway):
+    return client.workload_networks.get_gateway(resource_group_name=resource_group_name, private_cloud_name=private_cloud, gateway_id=gateway)
+
+
+def placement_policy_list(client: AVSClient, resource_group_name, private_cloud, cluster_name):
+    return client.placement_policies.list(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=cluster_name)
+
+
+def placement_policy_get(client: AVSClient, resource_group_name, private_cloud, cluster_name, placement_policy_name):
+    return client.placement_policies.get(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=cluster_name, placement_policy_name=placement_policy_name)
+
+
+def placement_policy_vm_create(client: AVSClient, resource_group_name, private_cloud, cluster_name, placement_policy_name, state=None, display_name=None, vm_members=None, affinity_type=None):
+    from azext_vmware.vendored_sdks.avs_client.models import VmPlacementPolicyProperties
+    if vm_members is not None and affinity_type is not None:
+        vmProperties = VmPlacementPolicyProperties(type="VmVm", state=state, display_name=display_name, vm_members=vm_members, affinity_type=affinity_type)
+        return client.placement_policies.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=cluster_name, placement_policy_name=placement_policy_name, properties=vmProperties)
+    return client.placement_policies.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=cluster_name, placement_policy_name=placement_policy_name)
+
+
+def placement_policy_vm_host_create(client: AVSClient, resource_group_name, private_cloud, cluster_name, placement_policy_name, state=None, display_name=None, vm_members=None, host_members=None, affinity_type=None):
+    from azext_vmware.vendored_sdks.avs_client.models import VmHostPlacementPolicyProperties
+    if vm_members is not None and host_members is not None and affinity_type is not None:
+        vmHostProperties = VmHostPlacementPolicyProperties(type="VmHost", state=state, display_name=display_name, vm_members=vm_members, host_members=host_members, affinity_type=affinity_type)
+        return client.placement_policies.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=cluster_name, placement_policy_name=placement_policy_name, properties=vmHostProperties)
+    return client.placement_policies.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=cluster_name, placement_policy_name=placement_policy_name)
+
+
+def placement_policy_update(client: AVSClient, resource_group_name, private_cloud, cluster_name, placement_policy_name, state=None, vm_members=None, host_members=None):
+    from azext_vmware.vendored_sdks.avs_client.models import PlacementPolicyUpdate
+    props = PlacementPolicyUpdate(state=state, vm_members=vm_members, host_members=host_members)
+    return client.placement_policies.begin_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=cluster_name, placement_policy_name=placement_policy_name, placement_policy_update=props)
+
+
+def placement_policy_delete(client: AVSClient, resource_group_name, private_cloud, cluster_name, placement_policy_name, yes=False):
+    from knack.prompting import prompt_y_n
+    msg = 'This will delete the placement policy. Are you sure?'
+    if not yes and not prompt_y_n(msg, default="n"):
+        return None
+    return client.placement_policies.begin_delete(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=cluster_name, placement_policy_name=placement_policy_name)
+
+
+def virtual_machine_get(client: AVSClient, resource_group_name, private_cloud, cluster_name, virtual_machine):
+    return client.virtual_machines.get(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=cluster_name, virtual_machine_id=virtual_machine)
+
+
+def virtual_machine_list(client: AVSClient, resource_group_name, private_cloud, cluster_name):
+    return client.virtual_machines.list(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=cluster_name)
+
+
+def virtual_machine_restrict(client: AVSClient, resource_group_name, private_cloud, cluster_name, virtual_machine, restrict_movement):
+    from azext_vmware.vendored_sdks.avs_client.models import VirtualMachineRestrictMovementState
+    return client.virtual_machines.begin_restrict_movement(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=cluster_name, virtual_machine_id=virtual_machine, restrict_movement=VirtualMachineRestrictMovementState(restrict_movement))

@@ -16,8 +16,15 @@ from azure.cli.core.commands.parameters import (
     resource_group_name_type,
     get_location_type
 )
-from azure.cli.core.commands.validators import get_default_location_from_resource_group
-from azext_maintenance.action import AddExtensionProperties
+from azure.cli.core.commands.validators import (
+    get_default_location_from_resource_group,
+    validate_file_or_dict
+)
+from azext_maintenance.action import (
+    AddExtensionProperties,
+    AddWindowsParameters,
+    AddLinuxParameters
+)
 
 
 def load_arguments(self, _):
@@ -36,14 +43,20 @@ def load_arguments(self, _):
     with self.argument_context('maintenance applyupdate create') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('provider_name', type=str, help='Resource provider name')
-        c.argument('resource_parent_type', type=str, help='Resource parent type')
-        c.argument('resource_parent_name', type=str, help='Resource parent identifier')
         c.argument('resource_type', type=str, help='Resource type')
         c.argument('resource_name', type=str, help='Resource identifier')
 
     with self.argument_context('maintenance applyupdate update') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('provider_name', type=str, help='Resource provider name')
+        c.argument('resource_type', type=str, help='Resource type')
+        c.argument('resource_name', type=str, help='Resource identifier')
+
+    with self.argument_context('maintenance applyupdate create-or-update-parent') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('provider_name', type=str, help='Resource provider name')
+        c.argument('resource_parent_type', type=str, help='Resource parent type')
+        c.argument('resource_parent_name', type=str, help='Resource parent identifier')
         c.argument('resource_type', type=str, help='Resource type')
         c.argument('resource_name', type=str, help='Resource identifier')
 
@@ -63,11 +76,17 @@ def load_arguments(self, _):
         c.argument('resource_type', type=str, help='Resource type')
         c.argument('resource_name', type=str, help='Resource identifier')
 
+    with self.argument_context('maintenance assignment show') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('provider_name', type=str, help='Resource provider name')
+        c.argument('resource_type', type=str, help='Resource type')
+        c.argument('resource_name', type=str, help='Resource identifier')
+        c.argument('configuration_assignment_name', options_list=['--name', '-n', '--configuration-assignment-name'],
+                   type=str, help='Configuration assignment name')
+
     with self.argument_context('maintenance assignment create') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('provider_name', type=str, help='Resource provider name')
-        c.argument('resource_parent_type', type=str, help='Resource parent type')
-        c.argument('resource_parent_name', type=str, help='Resource parent identifier')
         c.argument('resource_type', type=str, help='Resource type')
         c.argument('resource_name', type=str, help='Resource identifier')
         c.argument('configuration_assignment_name', options_list=['--name', '-n', '--configuration-assignment-name'],
@@ -88,8 +107,31 @@ def load_arguments(self, _):
                    validator=get_default_location_from_resource_group)
         c.argument('maintenance_configuration_id', type=str, help='The maintenance configuration Id')
         c.argument('resource_id', type=str, help='The unique resourceId')
+        c.ignore('configuration_assignment')
 
     with self.argument_context('maintenance assignment delete') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('provider_name', type=str, help='Resource provider name')
+        c.argument('resource_type', type=str, help='Resource type')
+        c.argument('resource_name', type=str, help='Resource identifier')
+        c.argument('configuration_assignment_name', options_list=['--name', '-n', '--configuration-assignment-name'],
+                   type=str, help='Unique configuration assignment name')
+
+    with self.argument_context('maintenance assignment create-or-update-parent') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('provider_name', type=str, help='Resource provider name')
+        c.argument('resource_parent_type', type=str, help='Resource parent type')
+        c.argument('resource_parent_name', type=str, help='Resource parent identifier')
+        c.argument('resource_type', type=str, help='Resource type')
+        c.argument('resource_name', type=str, help='Resource identifier')
+        c.argument('configuration_assignment_name', options_list=['--name', '-n', '--configuration-assignment-name'],
+                   type=str, help='Configuration assignment name')
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
+                   validator=get_default_location_from_resource_group)
+        c.argument('maintenance_configuration_id', type=str, help='The maintenance configuration Id')
+        c.argument('resource_id', type=str, help='The unique resourceId')
+
+    with self.argument_context('maintenance assignment delete-parent') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('provider_name', type=str, help='Resource provider name')
         c.argument('resource_parent_type', type=str, help='Resource parent type')
@@ -106,6 +148,16 @@ def load_arguments(self, _):
         c.argument('resource_parent_name', type=str, help='Resource parent identifier')
         c.argument('resource_type', type=str, help='Resource type')
         c.argument('resource_name', type=str, help='Resource identifier')
+
+    with self.argument_context('maintenance assignment show-parent') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('provider_name', type=str, help='Resource provider name')
+        c.argument('resource_parent_type', type=str, help='Resource parent type')
+        c.argument('resource_parent_name', type=str, help='Resource parent identifier')
+        c.argument('resource_type', type=str, help='Resource type')
+        c.argument('resource_name', type=str, help='Resource identifier')
+        c.argument('configuration_assignment_name', options_list=['--name', '-n', '--configuration-assignment-name'],
+                   type=str, help='Configuration assignment name')
 
     with self.argument_context('maintenance configuration show') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -152,9 +204,27 @@ def load_arguments(self, _):
                    'Weekly schedule examples are recurEvery: 3Weeks, recurEvery: Week Saturday,Sunday. Monthly '
                    'schedules are formatted as [Frequency as integer][\'Month(s)\'] [Comma separated list of month '
                    'days] or [Frequency as integer][\'Month(s)\'] [Week of Month (First, Second, Third, Fourth, Last)] '
-                   '[Weekday Monday-Sunday]. Monthly schedule examples are recurEvery: Month, recurEvery: 2Months, '
-                   'recurEvery: Month day23,day24, recurEvery: Month Last Sunday, recurEvery: Month Fourth Monday.',
-                   arg_group='Maintenance Window')
+                   '[Weekday Monday-Sunday] [Optional Offset(No. of days)]. Offset value must be between -6 to 6 '
+                   'inclusive. Monthly schedule examples are recurEvery: Month, recurEvery: 2Months, recurEvery: Month '
+                   'day23,day24, recurEvery: Month Last Sunday, recurEvery: Month Fourth Monday, recurEvery: Month '
+                   'Last Sunday Offset-3, recurEvery: Month Third Sunday Offset6.', arg_group='Maintenance Window')
+        c.argument('reboot_setting', arg_type=get_enum_type(['IfRequired', 'Never', 'Always']), help='Possible reboot '
+                   'preference as defined by the user based on which it would be decided to reboot the machine or not '
+                   'after the patch operation is completed.', arg_group='Install Patches')
+        c.argument('windows_parameters', options_list=['--install-patches-windows-parameters', '--windows-parameters'],
+                   action=AddWindowsParameters, nargs='+', help='Input parameters specific to patching a Windows '
+                   'machine. For Linux machines, do not pass this property.', arg_group='Install Patches')
+        c.argument('linux_parameters', options_list=['--install-patches-linux-parameters', '--linux-parameters'],
+                   action=AddLinuxParameters, nargs='+', help='Input parameters specific to patching Linux machine. '
+                   'For Windows machines, do not pass this property.', arg_group='Install Patches')
+        c.argument('pre_tasks', options_list=['--install-patches-pre-tasks', '--pre-tasks'],
+                   type=validate_file_or_dict, help='List of pre tasks. e.g. [{\'source\' :\'runbook\', \'taskScope\': '
+                   '\'Global\', \'parameters\': { \'arg1\': \'value1\'}}] Expected value: '
+                   'json-string/json-file/@json-file.', arg_group='Install Patches Tasks')
+        c.argument('post_tasks', options_list=['--install-patches-post-tasks', '--post-tasks'],
+                   type=validate_file_or_dict, help='List of post tasks. e.g. [{\'source\' :\'runbook\', '
+                   '\'taskScope\': \'Resource\', \'parameters\': { \'arg1\': \'value1\'}}] Expected value: '
+                   'json-string/json-file/@json-file.', arg_group='Install Patches Tasks')
 
     with self.argument_context('maintenance configuration update') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -197,19 +267,31 @@ def load_arguments(self, _):
                    'Weekly schedule examples are recurEvery: 3Weeks, recurEvery: Week Saturday,Sunday. Monthly '
                    'schedules are formatted as [Frequency as integer][\'Month(s)\'] [Comma separated list of month '
                    'days] or [Frequency as integer][\'Month(s)\'] [Week of Month (First, Second, Third, Fourth, Last)] '
-                   '[Weekday Monday-Sunday]. Monthly schedule examples are recurEvery: Month, recurEvery: 2Months, '
-                   'recurEvery: Month day23,day24, recurEvery: Month Last Sunday, recurEvery: Month Fourth Monday.',
-                   arg_group='Maintenance Window')
+                   '[Weekday Monday-Sunday] [Optional Offset(No. of days)]. Offset value must be between -6 to 6 '
+                   'inclusive. Monthly schedule examples are recurEvery: Month, recurEvery: 2Months, recurEvery: Month '
+                   'day23,day24, recurEvery: Month Last Sunday, recurEvery: Month Fourth Monday, recurEvery: Month '
+                   'Last Sunday Offset-3, recurEvery: Month Third Sunday Offset6.', arg_group='Maintenance Window')
+        c.argument('reboot_setting', arg_type=get_enum_type(['IfRequired', 'Never', 'Always']), help='Possible reboot '
+                   'preference as defined by the user based on which it would be decided to reboot the machine or not '
+                   'after the patch operation is completed.', arg_group='Install Patches')
+        c.argument('windows_parameters', options_list=['--install-patches-windows-parameters', '--windows-parameters'],
+                   action=AddWindowsParameters, nargs='+', help='Input parameters specific to patching a Windows '
+                   'machine. For Linux machines, do not pass this property.', arg_group='Install Patches')
+        c.argument('linux_parameters', options_list=['--install-patches-linux-parameters', '--linux-parameters'],
+                   action=AddLinuxParameters, nargs='+', help='Input parameters specific to patching Linux machine. '
+                   'For Windows machines, do not pass this property.', arg_group='Install Patches')
+        c.argument('pre_tasks', options_list=['--install-patches-pre-tasks', '--pre-tasks'],
+                   type=validate_file_or_dict, help='List of pre tasks. e.g. [{\'source\' :\'runbook\', \'taskScope\': '
+                   '\'Global\', \'parameters\': { \'arg1\': \'value1\'}}] Expected value: '
+                   'json-string/json-file/@json-file.', arg_group='Install Patches Tasks')
+        c.argument('post_tasks', options_list=['--install-patches-post-tasks', '--post-tasks'],
+                   type=validate_file_or_dict, help='List of post tasks. e.g. [{\'source\' :\'runbook\', '
+                   '\'taskScope\': \'Resource\', \'parameters\': { \'arg1\': \'value1\'}}] Expected value: '
+                   'json-string/json-file/@json-file.', arg_group='Install Patches Tasks')
 
     with self.argument_context('maintenance configuration delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('resource_name', type=str, help='Maintenance Configuration Name')
-
-    with self.argument_context('maintenance configuration-for-resource-group list') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-
-    with self.argument_context('maintenance applyupdate-for-resource-group list') as c:
-        c.argument('resource_group_name', resource_group_name_type)
 
     with self.argument_context('maintenance update list') as c:
         c.argument('resource_group_name', resource_group_name_type)

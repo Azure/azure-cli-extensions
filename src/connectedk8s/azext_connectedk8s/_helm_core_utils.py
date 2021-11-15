@@ -40,8 +40,8 @@ class HelmCoreUtils:
             cmd_helm.extend(["--kube-context", self.__kube_context])
         return cmd_helm
 
-    def pull_helm_chart(self, registry_path):
-        cmd_helm_chart_pull = ["helm", "chart", "pull", registry_path]
+    def pull_helm_chart(self, registry_path, helm_client_location):
+        cmd_helm_chart_pull = [helm_client_location, "chart", "pull", registry_path]
 
         cmd_helm_chart_pull = self.__set_param(cmd_helm_chart_pull)
 
@@ -50,8 +50,8 @@ class HelmCoreUtils:
                                     "Unable to pull helm chart from the registry '{}': "
                                     .format(registry_path))
 
-    def export_helm_chart(self, registry_path, chart_export_path):
-        cmd_helm_chart_export = ["helm", "chart", "export", registry_path,
+    def export_helm_chart(self, registry_path, chart_export_path, helm_client_location):
+        cmd_helm_chart_export = [helm_client_location, "chart", "export", registry_path,
                                  "--destination", chart_export_path]
 
         cmd_helm_chart_export = self.__set_param(cmd_helm_chart_export)
@@ -61,8 +61,8 @@ class HelmCoreUtils:
                                     "Unable to export helm chart from the registry '{}': "
                                     .format(registry_path))
 
-    def add_helm_repo(self, repo_name, repo_url):
-        cmd_helm_repo = ["helm", "repo", "add", repo_name, repo_url]
+    def add_helm_repo(self, repo_name, repo_url, helm_client_location):
+        cmd_helm_repo = [helm_client_location, "repo", "add", repo_name, repo_url]
 
         cmd_helm_repo = self.__set_param(cmd_helm_repo)
 
@@ -80,8 +80,8 @@ class HelmCoreUtils:
                                            "Unable to determine helm version: ",
                                            Command.HELM_VERSION)
 
-    def get_release_namespace(self):
-        cmd_helm_release = ["helm", "list", "-a", "--all-namespaces", "--output", "json"]
+    def get_release_namespace(self, helm_client_location):
+        cmd_helm_release = [helm_client_location, "list", "-a", "--all-namespaces", "--output", "json"]
 
         cmd_helm_release = self.__set_param(cmd_helm_release)
 
@@ -98,8 +98,8 @@ class HelmCoreUtils:
                 return release['namespace']
         return None
 
-    def get_all_helm_values(self, release_namespace):
-        cmd_helm_values = ["helm", "get", "values", "--all", "azure-arc", "--namespace",
+    def get_all_helm_values(self, release_namespace, helm_client_location):
+        cmd_helm_values = [helm_client_location, "get", "values", "--all", "azure-arc", "--namespace",
                            release_namespace]
 
         cmd_helm_values = self.__set_param(cmd_helm_values)
@@ -139,37 +139,3 @@ class HelmCoreUtils:
                                   "Learn more at https://aka.ms/arc/k8s/onboarding-helm-install")
 
         return output.decode('ascii')
-
-    def check_helm_install(self):
-        cmd_helm_installed = ["helm", "--debug"]
-        cmd_helm_installed = self.__set_param(cmd_helm_installed)
-
-        try:
-            response_helm_installed = Popen(cmd_helm_installed, stdout=PIPE, stderr=PIPE)
-            _, error_helm_installed = response_helm_installed.communicate()
-            if response_helm_installed.returncode != 0:
-                if "unknown flag" in error_helm_installed.decode("ascii"):
-                    telemetry.set_exception(exception='Helm 3 not found',
-                                            fault_type=consts.Helm_Version_Fault_Type,
-                                            summary='Helm3 not found on the machine')
-                    raise ValidationError("Helm 3 not found",
-                                          recommendation="Please install the latest version of " +
-                                          "Helm. Learn more at" +
-                                          " https://aka.ms/arc/k8s/onboarding-helm-install")
-                telemetry.set_exception(exception=error_helm_installed.decode("ascii"),
-                                        fault_type=consts.Helm_Installation_Fault_Type,
-                                        summary='Helm3 not installed on the machine')
-                raise ValidationError(error_helm_installed.decode("ascii"))
-        except FileNotFoundError as e:
-            telemetry.set_exception(exception=e, fault_type=consts.Check_HelmInstallation_Fault_Type,
-                                    summary='Unable to verify helm installation')
-            raise ValidationError("Helm is not installed or the helm binary is not accessible to" +
-                                  " the connectedk8s cli. Could be a permission issue.",
-                                  recommendation="Ensure that you have the latest version of" +
-                                  " Helm installed on your machine and run using admin " +
-                                  "privilege. Learn more at" +
-                                  " https://aka.ms/arc/k8s/onboarding-helm-install")
-        except Exception as e2:
-            telemetry.set_exception(exception=e2, fault_type=consts.Check_HelmInstallation_Fault_Type,
-                                    summary='Error while verifying helm installation')
-            raise ValidationError("Error occured while verifying helm installation: " + str(e2))

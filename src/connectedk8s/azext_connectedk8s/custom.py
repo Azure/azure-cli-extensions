@@ -8,6 +8,7 @@ import json
 import stat
 import platform
 import urllib.request
+import shutil
 
 import yaml
 from knack.log import get_logger
@@ -121,11 +122,8 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
                        " features like Azure Monitor and Azure Defender are natively available on AKS. Learn"
                        " more at {}.".format(" https://go.microsoft.com/fwlink/?linkid=2144200"))
 
-    helm_core_utils = HelmCoreUtils(kube_config, kube_context)
-    # Checking helm installation
-    helm_core_utils.check_helm_install()
-
-    helm_utils.check_faulty_helm_version(helm_core_utils)
+    # Install helm client
+    helm_client_location = helm.utils.install_helm_client()
 
     # Validate location
     cc_utils.validate_location(location, resource_client)
@@ -134,7 +132,8 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     arc_agent_utils = ArcAgentUtils(kube_config, kube_context)
 
     # Check Release Existance
-    release_namespace = helm_core_utils.get_release_namespace()
+    release_namespace = helm_core_utils.get_release_namespace(helm_client_location)
+
     if release_namespace:
         # Loading config map
         configmap = kube_core_utils.load_config_map(configuration)
@@ -161,7 +160,8 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
                                          .format(configmap_rg_name, configmap_cluster_name))
         else:
             # Cleanup agents and continue with put
-            arc_agent_utils.execute_delete_arc_agents(release_namespace, configuration)
+            arc_agent_utils.execute_delete_arc_agents(release_namespace, configuration, helm_client_location)
+
     else:
         if cc_utils.connected_cluster_exists(client, resource_group_name, cluster_name):
             telemetry.set_exception(exception='The connected cluster resource already exists',
@@ -219,9 +219,10 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
             cc_utils.arm_exception_handler(e, consts.Create_ResourceGroup_Fault_Type,
                                            'Failed to create the resource group')
 
+    helm_core_utils = HelmCoreUtils(kube_config, kube_context)
     # Adding helm repo
     if os.getenv('HELMREPONAME') and os.getenv('HELMREPOURL'):
-        helm_core_utils.add_helm_repo(os.getenv('HELMREPONAME'), os.getenv('HELMREPOURL'))
+        helm_core_utils.add_helm_repo(os.getenv('HELMREPONAME'), os.getenv('HELMREPOURL'), helm_client_location)
 
     # Setting the config dataplane endpoint
     config_dp_endpoint = helm_utils.get_config_dp_endpoint(cmd, location)
@@ -235,7 +236,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.AgentVersion': azure_arc_agent_version})
 
     # Get helm chart path
-    chart_path = helm_utils.get_chart_path(registry_path, kube_config, kube_context)
+    chart_path = helm_utils.get_chart_path(registry_path, kube_config, kube_context, helm_client_location)
 
     public_key, private_key_pem = utils.generate_public_private_key()
 
@@ -263,7 +264,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     arc_agent_utils.execute_arc_agent_install(chart_path, subscription_id, kubernetes_distro, kubernetes_infra,
                                               resource_group_name, cluster_name, location, onboarding_tenant_id,
                                               private_key_pem, no_wait, azure_cloud, enable_custom_locations,
-                                              custom_locations_oid, onboarding_timeout)
+                                              custom_locations_oid, helm_client_location, onboarding_timeout)
     return put_cc_response
 
 
@@ -286,15 +287,13 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
     # AKS clusters if the user had not logged in.
     kube_core_utils.check_kube_connection(configuration)
 
+    # Install helm client
+    helm_client_location = helm_utils.install_helm_client()
+
     helm_core_utils = HelmCoreUtils(kube_config, kube_context)
-    # Checking helm installation
-    helm_core_utils.check_helm_install()
-
-    # Check helm version
-    helm_core_utils.check_helm_version()
-
     # Check Release Existance
-    release_namespace = helm_core_utils.get_release_namespace()
+    release_namespace = helm_core_utils.get_release_namespace(helm_client_location)
+
     if not release_namespace:
         cc_utils.delete_cc_resource(client, resource_group_name, cluster_name, no_wait)
         return
@@ -344,7 +343,7 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
 
     arc_agent_utils = ArcAgentUtils(kube_config, kube_context)
     # Deleting the azure-arc agents
-    arc_agent_utils.execute_delete_arc_agents(release_namespace, configuration)
+    arc_agent_utils.execute_delete_arc_agents(release_namespace, configuration, helm_client_location)
 
 
 def update_connectedk8s(cmd, instance, tags=None):
@@ -391,30 +390,30 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
 
     kube_core_utils.try_list_node_fix()
 
-    helm_core_utils = HelmCoreUtils(kube_config, kube_context)
-    # Checking helm installation
-    helm_core_utils.check_helm_install()
-
-    helm_utils.check_faulty_helm_version(helm_core_utils)
+    # Install helm client
+    helm_client_location = helm_utils.install_helm_client()
 
     release_namespace = kube_core_utils.validate_release_namespace(client, cluster_name, resource_group_name,
-                                                                   configuration, kube_config, kube_context)
+                                                                   configuration, kube_config, kube_context, 
+                                                                   helm_client_location)
 
     # Fetch Connected Cluster for agent version
     connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
     api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
 
-    kube_utils.add_kubernetes_telemetry_extension_event(connected_cluster, configuration, api_instance)
+    kube_utils.add_kubernetes_telemetry_extenstion_event(connected_cluster, configuration, api_instance)
+    
+    helm_core_utils = HelmCoreUtils(kube_config, kube_context)
     registry_path = helm_utils.get_helm_registry_path(cmd, connected_cluster.location, helm_core_utils,
                                                       connected_cluster.agent_version, dp_endpoint_dogfood,
-                                                      release_train_dogfood)
+                                                      release_train_dogfood, helm_client_location)
 
     # Get Helm chart path
-    chart_path = helm_utils.get_chart_path(registry_path, kube_config, kube_context)
+    chart_path = helm_utils.get_chart_path(registry_path, kube_config, kube_context, helm_client_location)
 
     arc_agent_utils = ArcAgentUtils(kube_config, kube_context, values_file, proxy_details, auto_upgrade)
 
-    arc_agent_utils.execute_arc_agent_update(chart_path, release_namespace)
+    arc_agent_utils.execute_arc_agent_update(chart_path, release_namespace, helm_client_location)
 
     return str.format(consts.Update_Agent_Success, cluster_name)
 
@@ -448,13 +447,12 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
     api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
 
     helm_core_utils = HelmCoreUtils(kube_config, kube_context)
-    # Checking helm installation
-    helm_core_utils.check_helm_install()
 
-    helm_utils.check_faulty_helm_version(helm_core_utils)
-
+    # Install helm client
+    helm_client_location = helm_utils.install_helm_client()
     # Check Release Existance
-    release_namespace = helm_core_utils.get_release_namespace()
+    release_namespace = helm_core_utils.get_release_namespace(helm_client_location)
+
     if release_namespace:
         # Loading config map
         configmap = kube_core_utils.load_config_map(configuration)
@@ -506,15 +504,15 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
     # Fetch Connected Cluster for agent version
     connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
 
-    kube_utils.add_kubernetes_telemetry_extension_event(connected_cluster, configuration, api_instance)
-
+    kube_utils.add_kubernetes_telemetry_extenstion_event(connected_cluster, configuration, api_instance)
     registry_path = helm_utils.get_helm_registry_path(cmd, connected_cluster.location, helm_core_utils,
-                                                      arc_agent_version, dp_endpoint_dogfood, release_train_dogfood)
+                                                      arc_agent_version, dp_endpoint_dogfood, release_train_dogfood,
+                                                      helm_client_location)
 
     # Get Helm chart path
-    chart_path = helm_utils.get_chart_path(registry_path, kube_config, kube_context)
+    chart_path = helm_utils.get_chart_path(registry_path, kube_config, kube_context, helm_client_location)
 
-    existing_user_values = helm_core_utils.get_all_helm_values(release_namespace)
+    existing_user_values = helm_core_utils.get_all_helm_values(release_namespace, helm_client_location)
 
     # Change --timeout format for helm client to understand
     upgrade_timeout = upgrade_timeout + "s"
@@ -522,7 +520,6 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
     arc_agent_utils = ArcAgentUtils(kube_config, kube_context, values_file)
 
     arc_agent_utils.execute_arc_agent_upgrade(chart_path, release_namespace, upgrade_timeout, existing_user_values)
-
     return str.format(consts.Upgrade_Agent_Success, connected_cluster.name)
 
 
@@ -582,26 +579,20 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
     api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
 
     helm_core_utils = HelmCoreUtils(kube_config, kube_context)
-    # Checking helm installation
-    helm_core_utils.check_helm_install()
-
-    helm_utils.check_faulty_helm_version(helm_core_utils)
-
+    # Install helm client
+    helm_client_location = helm_utils.install_helm_client()
     release_namespace = kube_core_utils.validate_release_namespace(client, cluster_name, resource_group_name,
-                                                                   configuration, kube_config, kube_context)
+                                                                   configuration, kube_config, kube_context,
+                                                                   helm_client_location)
 
     # Fetch Connected Cluster for agent version
     connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
 
     kube_utils.add_kubernetes_telemetry_extension_event(connected_cluster, configuration, api_instance)
 
-    # Adding helm repo
-    if os.getenv('HELMREPONAME') and os.getenv('HELMREPOURL'):
-        helm_core_utils.add_helm_repo(os.getenv('HELMREPONAME'), os.getenv('HELMREPOURL'))
-
     registry_path = helm_utils.get_helm_registry_path(cmd, connected_cluster.location, helm_core_utils,
                                                       connected_cluster.agent_version, dp_endpoint_dogfood,
-                                                      release_train_dogfood)
+                                                      release_train_dogfood, helm_client_location)
 
     # Get Helm chart path
     chart_path = helm_utils.get_chart_path(registry_path, kube_config, kube_context)
@@ -610,8 +601,9 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
 
     arc_agent_utils.execute_arc_agent_enable_features(chart_path, release_namespace, enable_azure_rbac,
                                                       enable_cluster_connect, enable_cl, custom_locations_oid,
-                                                      azrbac_client_id, azrbac_client_secret, azrbac_skip_authz_check)
-
+                                                      helm_client_location, azrbac_client_id, azrbac_client_secret,
+                                                      azrbac_skip_authz_check)
+                                                      
     return str.format(consts.Successfully_Enabled_Features, features, connected_cluster.name)
 
 
@@ -651,13 +643,10 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
     api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
 
     helm_core_utils = HelmCoreUtils(kube_config, kube_context)
-    # Checking helm installation
-    helm_core_utils.check_helm_install()
-
-    helm_utils.check_faulty_helm_version(helm_core_utils)
-
+    # Install helm client
+    helm_client_location = helm_utils.install_helm_client()
     release_namespace = kube_core_utils.validate_release_namespace(client, cluster_name, resource_group_name,
-                                                                   configuration, kube_config, kube_context)
+                                                                   configuration, kube_config, kube_context, helm_client_location)
 
     # Fetch Connected Cluster for agent version
     connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
@@ -667,12 +656,13 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
     helm_core_utils = HelmCoreUtils(kube_config, kube_context)
     if disable_cluster_connect:
         try:
-            helm_values = helm_core_utils.get_all_helm_values(release_namespace)
-            if (not disable_cl and
-                    helm_values.get('systemDefaultValues').get('customLocations').get('enabled') is True and
-                    helm_values.get('systemDefaultValues').get('customLocations').get('oid') != ""):
+            helm_values = helm_core_utils.get_all_helm_values(release_namespace, helm_client_location)
+            if not disable_cl and \
+            helm_values.get('systemDefaultValues').get('customLocations').get('enabled') is True and \
+            helm_values.get('systemDefaultValues').get('customLocations').get('oid') != "":
                 raise Exception("Disabling 'cluster-connect' feature is not allowed when 'custom-locations' feature "
                                 "is enabled.")
+
         except AttributeError as e:
             pass
         except Exception as ex:
@@ -684,15 +674,14 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
 
     registry_path = helm_utils.get_helm_registry_path(cmd, connected_cluster.location, helm_core_utils,
                                                       connected_cluster.agent_version, dp_endpoint_dogfood,
-                                                      release_train_dogfood)
+                                                      release_train_dogfood, helm_client_location)
 
     # Get Helm chart path
-    chart_path = helm_utils.get_chart_path(registry_path, kube_config, kube_context)
-
+    chart_path = helm_utils.get_chart_path(registry_path, kube_config, kube_context, helm_client_location)
     arc_agent_utils = ArcAgentUtils(kube_config, kube_context, values_file)
 
     arc_agent_utils.execute_arc_agent_disable_features(chart_path, release_namespace, disable_azure_rbac,
-                                                       disable_cluster_connect, disable_cl)
+                                                       disable_cluster_connect, disable_cl, helm_client_location)
 
     return str.format(consts.Successfully_Disabled_Features, features, connected_cluster.name)
 

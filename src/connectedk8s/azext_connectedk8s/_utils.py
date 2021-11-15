@@ -167,7 +167,6 @@ def generate_request_payload(location, public_key, tags, kubernetes_distro, kube
 
 
 def initial_log_warning():
-    logger.warning("Ensure that you have the latest helm version installed before proceeding.")
     logger.warning("This operation might take a while...\n")
 
 

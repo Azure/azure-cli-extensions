@@ -8,4 +8,4 @@ EXTENSION_NAME = 'k8s-extension'
 EXTENSION_PACKAGE_NAME = "azext_k8s_extension"
 PROVIDER_NAMESPACE = 'Microsoft.KubernetesConfiguration'
 REGISTERED = "Registered"
-DF_RM_ENDPOINT = 'https://api-dogfood.resources.windows-int.net/'
+DF_RM_HOSTNAME = 'api-dogfood.resources.windows-int.net'

@@ -33,18 +33,28 @@ def disk_pool_create(client,
                      location,
                      subnet_id,
                      tags=None,
+                     managed_by=None,
+                     managed_by_extended=None,
                      availability_zones=None,
                      disks=None,
                      additional_capabilities=None,
                      no_wait=False):
     disk_pool_create_payload = {}
     disk_pool_create_payload['sku'] = sku
-    disk_pool_create_payload['tags'] = tags
+    if tags is not None:
+        disk_pool_create_payload['tags'] = tags
     disk_pool_create_payload['location'] = location
-    disk_pool_create_payload['availability_zones'] = availability_zones
-    disk_pool_create_payload['disks'] = disks
+    if managed_by is not None:
+        disk_pool_create_payload['managed_by'] = managed_by
+    if managed_by_extended is not None:
+        disk_pool_create_payload['managed_by_extended'] = managed_by_extended
+    if availability_zones is not None:
+        disk_pool_create_payload['availability_zones'] = availability_zones
+    if disks is not None:
+        disk_pool_create_payload['disks'] = disks
     disk_pool_create_payload['subnet_id'] = subnet_id
-    disk_pool_create_payload['additional_capabilities'] = additional_capabilities
+    if additional_capabilities is not None:
+        disk_pool_create_payload['additional_capabilities'] = additional_capabilities
     return sdk_no_wait(no_wait,
                        client.begin_create_or_update,
                        resource_group_name=resource_group_name,
@@ -55,12 +65,23 @@ def disk_pool_create(client,
 def disk_pool_update(client,
                      resource_group_name,
                      disk_pool_name,
+                     managed_by=None,
+                     managed_by_extended=None,
+                     sku=None,
                      tags=None,
                      disks=None,
                      no_wait=False):
     disk_pool_update_payload = {}
-    disk_pool_update_payload['tags'] = tags
-    disk_pool_update_payload['disks'] = disks
+    if managed_by is not None:
+        disk_pool_update_payload['managed_by'] = managed_by
+    if managed_by_extended is not None:
+        disk_pool_update_payload['managed_by_extended'] = managed_by_extended
+    if sku is not None:
+        disk_pool_update_payload['sku'] = sku
+    if tags is not None:
+        disk_pool_update_payload['tags'] = tags
+    if disks is not None:
+        disk_pool_update_payload['disks'] = disks
     return sdk_no_wait(no_wait,
                        client.begin_update,
                        resource_group_name=resource_group_name,
@@ -85,9 +106,14 @@ def disk_pool_list_outbound_network_dependency_endpoint(client,
                                                                disk_pool_name=disk_pool_name)
 
 
-def disk_pool_list_skus(client,
-                        location):
-    return client.list(location=location)
+def disk_pool_redeploy(client,
+                       resource_group_name,
+                       disk_pool_name,
+                       no_wait=False):
+    return sdk_no_wait(no_wait,
+                       client.begin_upgrade,
+                       resource_group_name=resource_group_name,
+                       disk_pool_name=disk_pool_name)
 
 
 def disk_pool_start(client,
@@ -108,6 +134,16 @@ def disk_pool_stop(client,
                        client.begin_deallocate,
                        resource_group_name=resource_group_name,
                        disk_pool_name=disk_pool_name)
+
+
+def disk_pool_list_skus(client,
+                        location):
+    return client.list(location=location)
+
+
+def disk_pool_list_zones(client,
+                         location):
+    return client.list(location=location)
 
 
 def disk_pool_iscsi_target_list(client,
@@ -131,15 +167,24 @@ def disk_pool_iscsi_target_create(client,
                                   disk_pool_name,
                                   iscsi_target_name,
                                   acl_mode,
+                                  managed_by=None,
+                                  managed_by_extended=None,
                                   target_iqn=None,
                                   static_acls=None,
                                   luns=None,
                                   no_wait=False):
     iscsi_target_create_payload = {}
+    if managed_by is not None:
+        iscsi_target_create_payload['managed_by'] = managed_by
+    if managed_by_extended is not None:
+        iscsi_target_create_payload['managed_by_extended'] = managed_by_extended
     iscsi_target_create_payload['acl_mode'] = acl_mode
-    iscsi_target_create_payload['target_iqn'] = target_iqn
-    iscsi_target_create_payload['static_acls'] = static_acls
-    iscsi_target_create_payload['luns'] = luns
+    if target_iqn is not None:
+        iscsi_target_create_payload['target_iqn'] = target_iqn
+    if static_acls is not None:
+        iscsi_target_create_payload['static_acls'] = static_acls
+    if luns is not None:
+        iscsi_target_create_payload['luns'] = luns
     return sdk_no_wait(no_wait,
                        client.begin_create_or_update,
                        resource_group_name=resource_group_name,
@@ -152,12 +197,20 @@ def disk_pool_iscsi_target_update(client,
                                   resource_group_name,
                                   disk_pool_name,
                                   iscsi_target_name,
+                                  managed_by=None,
+                                  managed_by_extended=None,
                                   static_acls=None,
                                   luns=None,
                                   no_wait=False):
     iscsi_target_update_payload = {}
-    iscsi_target_update_payload['static_acls'] = static_acls
-    iscsi_target_update_payload['luns'] = luns
+    if managed_by is not None:
+        iscsi_target_update_payload['managed_by'] = managed_by
+    if managed_by_extended is not None:
+        iscsi_target_update_payload['managed_by_extended'] = managed_by_extended
+    if static_acls is not None:
+        iscsi_target_update_payload['static_acls'] = static_acls
+    if luns is not None:
+        iscsi_target_update_payload['luns'] = luns
     return sdk_no_wait(no_wait,
                        client.begin_update,
                        resource_group_name=resource_group_name,

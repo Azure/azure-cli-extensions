@@ -16,6 +16,20 @@ helps['confluent'] = """
     short-summary: Manage confluent resources
 """
 
+helps['confluent terms'] = """
+    type: group
+    short-summary: Manage marketplace agreement with confluent. This command group will be deprecated, please use 'az term' instead.
+"""
+
+helps['confluent terms list'] = """
+    type: command
+    short-summary: "List Confluent marketplace agreements in the subscription. This command will be deprecated, please use 'az term show' instead."
+    examples:
+      - name: MarketplaceAgreements_List
+        text: |-
+               az confluent terms list
+"""
+
 helps['confluent organization create'] = """
     type: command
     short-summary: "Create Organization resource."

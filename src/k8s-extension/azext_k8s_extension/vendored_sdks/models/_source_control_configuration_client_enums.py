@@ -26,15 +26,14 @@ class _CaseInsensitiveEnumMeta(EnumMeta):
             raise AttributeError(name)
 
 
-class ComplianceStateType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """The compliance state of the configuration.
+class CreatedByType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """The type of identity that created the resource.
     """
 
-    PENDING = "Pending"
-    COMPLIANT = "Compliant"
-    NONCOMPLIANT = "Noncompliant"
-    INSTALLED = "Installed"
-    FAILED = "Failed"
+    USER = "User"
+    APPLICATION = "Application"
+    MANAGED_IDENTITY = "ManagedIdentity"
+    KEY = "Key"
 
 class Enum0(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
 
@@ -46,14 +45,6 @@ class Enum1(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     MANAGED_CLUSTERS = "managedClusters"
     CONNECTED_CLUSTERS = "connectedClusters"
 
-class InstallStateType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """Status of installation of this instance of the extension.
-    """
-
-    PENDING = "Pending"
-    INSTALLED = "Installed"
-    FAILED = "Failed"
-
 class LevelType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Level of the status.
     """
@@ -62,41 +53,13 @@ class LevelType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     WARNING = "Warning"
     INFORMATION = "Information"
 
-class MessageLevelType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """Level of the message.
+class ProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """The provisioning state of the extension resource.
     """
 
-    ERROR = "Error"
-    WARNING = "Warning"
-    INFORMATION = "Information"
-
-class OperatorScopeType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """Scope at which the operator will be installed.
-    """
-
-    CLUSTER = "cluster"
-    NAMESPACE = "namespace"
-
-class OperatorType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """Type of the operator
-    """
-
-    FLUX = "Flux"
-
-class ProvisioningStateType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """The provisioning state of the resource provider.
-    """
-
-    ACCEPTED = "Accepted"
-    DELETING = "Deleting"
-    RUNNING = "Running"
     SUCCEEDED = "Succeeded"
     FAILED = "Failed"
-
-class ResourceIdentityType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """The type of identity used for the configuration. Type 'SystemAssigned' will use an implicitly
-    created identity. Type 'None' will not use Managed Identity for the configuration.
-    """
-
-    SYSTEM_ASSIGNED = "SystemAssigned"
-    NONE = "None"
+    CANCELED = "Canceled"
+    CREATING = "Creating"
+    UPDATING = "Updating"
+    DELETING = "Deleting"
