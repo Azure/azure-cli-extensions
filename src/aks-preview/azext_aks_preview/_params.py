@@ -10,7 +10,7 @@ import platform
 
 from argcomplete.completers import FilesCompleter
 from azure.cli.core.commands.parameters import (
-    file_type, get_resource_name_completion_list, get_three_state_flag, name_type, tags_type, zones_type, get_enum_type)
+    file_type, get_resource_name_completion_list, get_three_state_flag, name_type, tags_type, zones_type, edge_zone_type, get_enum_type)
 from knack.arguments import CLIArgumentType
 
 from ._completers import (
@@ -18,19 +18,24 @@ from ._completers import (
 from ._validators import (
     validate_cluster_autoscaler_profile, validate_create_parameters, validate_k8s_version, validate_linux_host_name,
     validate_ssh_key, validate_nodes_count, validate_ip_ranges,
-    validate_nodepool_name, validate_vm_set_type, validate_load_balancer_sku,
-    validate_load_balancer_outbound_ips, validate_load_balancer_outbound_ip_prefixes,
+    validate_nodepool_name, validate_vm_set_type, validate_load_balancer_sku, validate_nodepool_id, validate_snapshot_id,
+    validate_load_balancer_outbound_ips, validate_load_balancer_outbound_ip_prefixes, validate_nat_gateway_managed_outbound_ip_count,
     validate_taints, validate_priority, validate_eviction_policy, validate_spot_max_price, validate_acr, validate_user,
-    validate_load_balancer_outbound_ports, validate_load_balancer_idle_timeout, validate_nodepool_tags,
+    validate_load_balancer_outbound_ports, validate_load_balancer_idle_timeout, validate_nat_gateway_idle_timeout, validate_nodepool_tags, validate_addon,
     validate_nodepool_labels, validate_vnet_subnet_id, validate_pod_subnet_id, validate_max_surge, validate_assign_identity, validate_addons,
     validate_pod_identity_pod_labels, validate_pod_identity_resource_name, validate_pod_identity_resource_namespace, validate_assign_kubelet_identity)
-from ._consts import CONST_OUTBOUND_TYPE_LOAD_BALANCER, \
-    CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING, CONST_SCALE_SET_PRIORITY_REGULAR, CONST_SCALE_SET_PRIORITY_SPOT, \
+from ._consts import CONST_OUTBOUND_TYPE_LOAD_BALANCER, CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING, CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY, \
+    CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY, CONST_SCALE_SET_PRIORITY_REGULAR, CONST_SCALE_SET_PRIORITY_SPOT, \
     CONST_SPOT_EVICTION_POLICY_DELETE, CONST_SPOT_EVICTION_POLICY_DEALLOCATE, \
     CONST_SCALE_DOWN_MODE_DELETE, CONST_SCALE_DOWN_MODE_DEALLOCATE, \
     CONST_NODEPOOL_MODE_SYSTEM, CONST_NODEPOOL_MODE_USER, \
     CONST_OS_DISK_TYPE_MANAGED, CONST_OS_DISK_TYPE_EPHEMERAL, \
-    CONST_RAPID_UPGRADE_CHANNEL, CONST_STABLE_UPGRADE_CHANNEL, CONST_PATCH_UPGRADE_CHANNEL, CONST_NODE_IMAGE_UPGRADE_CHANNEL, CONST_NONE_UPGRADE_CHANNEL
+    CONST_RAPID_UPGRADE_CHANNEL, CONST_STABLE_UPGRADE_CHANNEL, CONST_PATCH_UPGRADE_CHANNEL, CONST_NODE_IMAGE_UPGRADE_CHANNEL, CONST_NONE_UPGRADE_CHANNEL, \
+    CONST_WORKLOAD_RUNTIME_OCI_CONTAINER, CONST_WORKLOAD_RUNTIME_WASM_WASI
+from ._consts import CONST_GPU_INSTANCE_PROFILE_MIG1_G, CONST_GPU_INSTANCE_PROFILE_MIG2_G, CONST_GPU_INSTANCE_PROFILE_MIG3_G, CONST_GPU_INSTANCE_PROFILE_MIG4_G, CONST_GPU_INSTANCE_PROFILE_MIG7_G
+
+workload_runtimes = [CONST_WORKLOAD_RUNTIME_OCI_CONTAINER, CONST_WORKLOAD_RUNTIME_WASM_WASI]
+gpu_instance_profiles = [CONST_GPU_INSTANCE_PROFILE_MIG1_G, CONST_GPU_INSTANCE_PROFILE_MIG2_G, CONST_GPU_INSTANCE_PROFILE_MIG3_G, CONST_GPU_INSTANCE_PROFILE_MIG4_G, CONST_GPU_INSTANCE_PROFILE_MIG7_G]
 
 
 def load_arguments(self, _):
@@ -60,7 +65,7 @@ def load_arguments(self, _):
         c.argument('nodepool_name', type=str, default='nodepool1',
                    help='Node pool name, upto 12 alphanumeric characters', validator=validate_nodepool_name)
         c.argument('nodepool_tags', nargs='*', validator=validate_nodepool_tags, help='space-separated tags: key[=value] [key[=value] ...]. Use "" to clear existing tags.')
-        c.argument('nodepool_labels', nargs='*', validator=validate_nodepool_labels, help='space-separated labels: key[=value] [key[=value] ...]. You can not change the node labels through CLI after creation. See https://aka.ms/node-labels for syntax of labels.')
+        c.argument('nodepool_labels', nargs='*', validator=validate_nodepool_labels, help='space-separated labels: key[=value] [key[=value] ...]. See https://aka.ms/node-labels for syntax of labels.')
         c.argument('os_sku', type=str, options_list=['--os-sku'], completer=get_ossku_completion_list)
         c.argument('ssh_key_value', required=False, type=file_type, default=os.path.join('~', '.ssh', 'id_rsa.pub'),
                    completer=FilesCompleter(), validator=validate_ssh_key)
@@ -70,14 +75,19 @@ def load_arguments(self, _):
         c.argument('aad_tenant_id')
         c.argument('dns_service_ip')
         c.argument('docker_bridge_address')
+        c.argument('edge_zone', edge_zone_type)
         c.argument('load_balancer_sku', type=str, validator=validate_load_balancer_sku)
         c.argument('load_balancer_managed_outbound_ip_count', type=int)
         c.argument('load_balancer_outbound_ips', type=str, validator=validate_load_balancer_outbound_ips)
         c.argument('load_balancer_outbound_ip_prefixes', type=str, validator=validate_load_balancer_outbound_ip_prefixes)
         c.argument('load_balancer_outbound_ports', type=int, validator=validate_load_balancer_outbound_ports)
         c.argument('load_balancer_idle_timeout', type=int, validator=validate_load_balancer_idle_timeout)
+        c.argument('nat_gateway_managed_outbound_ip_count', type=int, validator=validate_nat_gateway_managed_outbound_ip_count)
+        c.argument('nat_gateway_idle_timeout', type=int, validator=validate_nat_gateway_idle_timeout)
         c.argument('outbound_type', arg_type=get_enum_type([CONST_OUTBOUND_TYPE_LOAD_BALANCER,
-                                                            CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING]))
+                                                            CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
+                                                            CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY,
+                                                            CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY]))
         c.argument('enable_addons', options_list=['--enable-addons', '-a'], validator=validate_addons)
         c.argument('disable_rbac', action='store_true')
         c.argument('enable_rbac', action='store_true', options_list=['--enable-rbac', '-r'],
@@ -134,9 +144,16 @@ def load_arguments(self, _):
         c.argument('enable_encryption_at_host', arg_type=get_three_state_flag(), help='Enable EncryptionAtHost.')
         c.argument('enable_ultra_ssd', action='store_true')
         c.argument('enable_secret_rotation', action='store_true')
+        c.argument('rotation_poll_interval', type=str)
         c.argument('assign_kubelet_identity', type=str, validator=validate_assign_kubelet_identity)
         c.argument('disable_local_accounts', action='store_true')
+        c.argument('gpu_instance_profile', arg_type=get_enum_type(gpu_instance_profiles))
+        c.argument('enable_windows_gmsa', action='store_true', options_list=['--enable-windows-gmsa'])
+        c.argument('gmsa_dns_server', options_list=['--gmsa-dns-server'])
+        c.argument('gmsa_root_domain_name', options_list=['--gmsa-root-domain-name'])
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
+        c.argument('workload_runtime', arg_type=get_enum_type(workload_runtimes), default=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER)
+        c.argument('snapshot_id', type=str, validator=validate_snapshot_id, is_preview=True)
 
     with self.argument_context('aks update') as c:
         c.argument('enable_cluster_autoscaler', options_list=["--enable-cluster-autoscaler", "-e"], action='store_true')
@@ -152,6 +169,8 @@ def load_arguments(self, _):
         c.argument('load_balancer_outbound_ip_prefixes', type=str, validator=validate_load_balancer_outbound_ip_prefixes)
         c.argument('load_balancer_outbound_ports', type=int, validator=validate_load_balancer_outbound_ports)
         c.argument('load_balancer_idle_timeout', type=int, validator=validate_load_balancer_idle_timeout)
+        c.argument('nat_gateway_managed_outbound_ip_count', type=int, validator=validate_nat_gateway_managed_outbound_ip_count)
+        c.argument('nat_gateway_idle_timeout', type=int, validator=validate_nat_gateway_idle_timeout)
         c.argument('api_server_authorized_ip_ranges', type=str, validator=validate_ip_ranges)
         c.argument('enable_pod_security_policy', action='store_true')
         c.argument('disable_pod_security_policy', action='store_true')
@@ -167,10 +186,15 @@ def load_arguments(self, _):
         c.argument('disable_pod_identity', action='store_true')
         c.argument('enable_secret_rotation', action='store_true')
         c.argument('disable_secret_rotation', action='store_true')
+        c.argument('rotation_poll_interval', type=str)
         c.argument('windows_admin_password', options_list=['--windows-admin-password'])
         c.argument('disable_local_accounts', action='store_true')
         c.argument('enable_local_accounts', action='store_true')
+        c.argument('enable_windows_gmsa', action='store_true', options_list=['--enable-windows-gmsa'])
+        c.argument('gmsa_dns_server', options_list=['--gmsa-dns-server'])
+        c.argument('gmsa_root_domain_name', options_list=['--gmsa-root-domain-name'])
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
+        c.argument('nodepool_labels', nargs='*', validator=validate_nodepool_labels, help='space-separated labels: key[=value] [key[=value] ...]. See https://aka.ms/node-labels for syntax of labels.')
 
     with self.argument_context('aks scale') as c:
         c.argument('nodepool_name', type=str,
@@ -227,6 +251,9 @@ def load_arguments(self, _):
             c.argument('linux_os_config', type=str)
             c.argument('enable_encryption_at_host', options_list=['--enable-encryption-at-host'], action='store_true')
             c.argument('enable_ultra_ssd', action='store_true')
+            c.argument('workload_runtime', arg_type=get_enum_type(workload_runtimes), default=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER)
+            c.argument('gpu_instance_profile', arg_type=get_enum_type(gpu_instance_profiles))
+            c.argument('snapshot_id', type=str, validator=validate_snapshot_id, is_preview=True)
 
     for scope in ['aks nodepool show', 'aks nodepool delete', 'aks nodepool scale', 'aks nodepool upgrade', 'aks nodepool update']:
         with self.argument_context(scope) as c:
@@ -235,6 +262,7 @@ def load_arguments(self, _):
     with self.argument_context('aks nodepool upgrade') as c:
         c.argument('max_surge', type=str, validator=validate_max_surge)
         c.argument('aks_custom_headers')
+        c.argument('snapshot_id', type=str, validator=validate_snapshot_id, is_preview=True)
 
     with self.argument_context('aks nodepool update') as c:
         c.argument('enable_cluster_autoscaler', options_list=["--enable-cluster-autoscaler", "-e"], action='store_true')
@@ -244,6 +272,45 @@ def load_arguments(self, _):
         c.argument('tags', tags_type)
         c.argument('mode', arg_type=get_enum_type([CONST_NODEPOOL_MODE_SYSTEM, CONST_NODEPOOL_MODE_USER]))
         c.argument('max_surge', type=str, validator=validate_max_surge)
+        c.argument('labels', nargs='*', validator=validate_nodepool_labels)
+
+    with self.argument_context('aks addon show') as c:
+        c.argument('addon', options_list=['--addon', '-a'], validator=validate_addon)
+
+    with self.argument_context('aks addon enable') as c:
+        c.argument('addon', options_list=['--addon', '-a'], validator=validate_addon)
+        c.argument('subnet_name', options_list=['--subnet-name', '-s'])
+        c.argument('enable_sgxquotehelper', action='store_true')
+        c.argument('osm_mesh_name', options_list=['--osm-mesh-name'])
+        c.argument('appgw_name', options_list=['--appgw-name'], arg_group='Application Gateway')
+        c.argument('appgw_subnet_prefix', options_list=['--appgw-subnet-prefix'], arg_group='Application Gateway', deprecate_info=c.deprecate(redirect='--appgw-subnet-cidr', hide=True))
+        c.argument('appgw_subnet_cidr', options_list=['--appgw-subnet-cidr'], arg_group='Application Gateway')
+        c.argument('appgw_id', options_list=['--appgw-id'], arg_group='Application Gateway')
+        c.argument('appgw_subnet_id', options_list=['--appgw-subnet-id'], arg_group='Application Gateway')
+        c.argument('appgw_watch_namespace', options_list=['--appgw-watch-namespace'], arg_group='Application Gateway')
+        c.argument('enable_secret_rotation', action='store_true')
+        c.argument('rotation_poll_interval', type=str)
+        c.argument('workspace_resource_id')
+        c.argument('enable_msi_auth_for_monitoring', arg_type=get_three_state_flag(), is_preview=True)
+
+    with self.argument_context('aks addon disable') as c:
+        c.argument('addon', options_list=['--addon', '-a'], validator=validate_addon)
+
+    with self.argument_context('aks addon update') as c:
+        c.argument('addon', options_list=['--addon', '-a'], validator=validate_addon)
+        c.argument('subnet_name', options_list=['--subnet-name', '-s'])
+        c.argument('enable_sgxquotehelper', action='store_true')
+        c.argument('osm_mesh_name', options_list=['--osm-mesh-name'])
+        c.argument('appgw_name', options_list=['--appgw-name'], arg_group='Application Gateway')
+        c.argument('appgw_subnet_prefix', options_list=['--appgw-subnet-prefix'], arg_group='Application Gateway', deprecate_info=c.deprecate(redirect='--appgw-subnet-cidr', hide=True))
+        c.argument('appgw_subnet_cidr', options_list=['--appgw-subnet-cidr'], arg_group='Application Gateway')
+        c.argument('appgw_id', options_list=['--appgw-id'], arg_group='Application Gateway')
+        c.argument('appgw_subnet_id', options_list=['--appgw-subnet-id'], arg_group='Application Gateway')
+        c.argument('appgw_watch_namespace', options_list=['--appgw-watch-namespace'], arg_group='Application Gateway')
+        c.argument('enable_secret_rotation', action='store_true')
+        c.argument('rotation_poll_interval', type=str)
+        c.argument('workspace_resource_id')
+        c.argument('enable_msi_auth_for_monitoring', arg_type=get_three_state_flag(), is_preview=True)
 
     with self.argument_context('aks disable-addons') as c:
         c.argument('addons', options_list=['--addons', '-a'], validator=validate_addons)
@@ -260,6 +327,7 @@ def load_arguments(self, _):
         c.argument('appgw_subnet_id', options_list=['--appgw-subnet-id'], arg_group='Application Gateway')
         c.argument('appgw_watch_namespace', options_list=['--appgw-watch-namespace'], arg_group='Application Gateway')
         c.argument('enable_secret_rotation', action='store_true')
+        c.argument('rotation_poll_interval', type=str)
         c.argument('workspace_resource_id')
         c.argument('enable_msi_auth_for_monitoring', arg_type=get_three_state_flag(), is_preview=True)
 
@@ -318,6 +386,18 @@ def load_arguments(self, _):
         c.argument('pod_labels', nargs='*', required=True,
                    help='pod labels in key=value [key=value ...].',
                    validator=validate_pod_identity_pod_labels)
+
+    for scope in ['aks snapshot create']:
+        with self.argument_context(scope) as c:
+            c.argument('snapshot_name', type=str, options_list=['--name', '-n'], required=True, validator=validate_linux_host_name, help='The snapshot name.')
+            c.argument('tags', tags_type)
+            c.argument('nodepool_id', type=str, required=True, validator=validate_nodepool_id, help='The nodepool id.')
+            c.argument('aks_custom_headers')
+
+    for scope in ['aks snapshot show', 'aks snapshot delete']:
+        with self.argument_context(scope) as c:
+            c.argument('snapshot_name', type=str, options_list=['--name', '-n'], required=True, validator=validate_linux_host_name, help='The snapshot name.')
+            c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
 
 
 def _get_default_install_location(exe_name):

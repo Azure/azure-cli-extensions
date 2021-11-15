@@ -172,11 +172,12 @@ def can_create_clusterrolebindings(configuration):
         return "Unknown"
 
 
-def validate_release_namespace(client, cluster_name, resource_group_name, configuration, kube_config, kube_context):
+def validate_release_namespace(client, cluster_name, resource_group_name, configuration, kube_config, kube_context,
+                               helm_client_location):
 
     helm_core_utils = HelmCoreUtils(kube_config, kube_context)
     # Check Release Existance
-    release_namespace = helm_core_utils.get_release_namespace()
+    release_namespace = helm_core_utils.get_release_namespace(helm_client_location)
     if release_namespace:
         # Loading config map
         api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))

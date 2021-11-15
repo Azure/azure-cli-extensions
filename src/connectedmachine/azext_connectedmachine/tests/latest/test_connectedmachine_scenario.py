@@ -68,7 +68,7 @@ def call_scenario(test):
         test.check('resourceGroup', RESOURCE_GROUP)
     ])
     step_list(test, checks=[
-        test.check('length(@)', 3)
+        test.check('length(@)', 2)
     ])
     step_extension_create(test, checks=[
         test.check('name', EXTENSION_NAME),

@@ -70,7 +70,7 @@ class ClustersOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-01-01"
+        api_version = "2021-08-27"
         accept = "application/json"
 
         # Construct URL
@@ -121,7 +121,7 @@ class ClustersOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-01-01"
+        api_version = "2021-08-27"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -156,7 +156,10 @@ class ClustersOperations(object):
 
         if response.status_code not in [200, 201]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            #import jsonpickle
+            #data = jsonpickle.encode(response)
+            #print(data)
+            #raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         if response.status_code == 200:
             deserialized = self._deserialize('Cluster', pipeline_response)
@@ -267,7 +270,7 @@ class ClustersOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-01-01"
+        api_version = "2021-08-27"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -407,7 +410,7 @@ class ClustersOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-01-01"
+        api_version = "2021-08-27"
         accept = "application/json"
 
         # Construct URL
@@ -517,7 +520,7 @@ class ClustersOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-01-01"
+        api_version = "2021-08-27"
         accept = "application/json"
 
         # Construct URL
@@ -627,7 +630,7 @@ class ClustersOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-01-01"
+        api_version = "2021-08-27"
         accept = "application/json"
 
         # Construct URL
@@ -749,7 +752,7 @@ class ClustersOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-01-01"
+        api_version = "2021-08-27"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -814,7 +817,7 @@ class ClustersOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-01-01"
+        api_version = "2021-08-27"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -933,7 +936,7 @@ class ClustersOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-01-01"
+        api_version = "2021-08-27"
         accept = "application/json"
 
         # Construct URL
@@ -1060,7 +1063,7 @@ class ClustersOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-01-01"
+        api_version = "2021-08-27"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -1128,7 +1131,7 @@ class ClustersOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-01-01"
+        api_version = "2021-08-27"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -1195,7 +1198,7 @@ class ClustersOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-01-01"
+        api_version = "2021-08-27"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -1268,7 +1271,7 @@ class ClustersOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-01-01"
+        api_version = "2021-08-27"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -1331,7 +1334,7 @@ class ClustersOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-01-01"
+        api_version = "2021-08-27"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -1383,6 +1386,81 @@ class ClustersOperations(object):
         )
     list_skus_by_resource.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Kusto/clusters/{clusterName}/skus'}  # type: ignore
 
+    def list_outbound_network_dependencies_endpoints(
+        self,
+        resource_group_name,  # type: str
+        cluster_name,  # type: str
+        **kwargs  # type: Any
+    ):
+        # type: (...) -> Iterable["models.OutboundNetworkDependenciesEndpointListResult"]
+        """Gets the network endpoints of all outbound dependencies of a Kusto cluster.
+
+        :param resource_group_name: The name of the resource group containing the Kusto cluster.
+        :type resource_group_name: str
+        :param cluster_name: The name of the Kusto cluster.
+        :type cluster_name: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :return: An iterator like instance of either OutboundNetworkDependenciesEndpointListResult or the result of cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~kusto_management_client.models.OutboundNetworkDependenciesEndpointListResult]
+        :raises: ~azure.core.exceptions.HttpResponseError
+        """
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.OutboundNetworkDependenciesEndpointListResult"]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
+        api_version = "2021-08-27"
+        accept = "application/json"
+
+        def prepare_request(next_link=None):
+            # Construct headers
+            header_parameters = {}  # type: Dict[str, Any]
+            header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+
+            if not next_link:
+                # Construct URL
+                url = self.list_outbound_network_dependencies_endpoints.metadata['url']  # type: ignore
+                path_format_arguments = {
+                    'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+                    'clusterName': self._serialize.url("cluster_name", cluster_name, 'str'),
+                }
+                url = self._client.format_url(url, **path_format_arguments)
+                # Construct parameters
+                query_parameters = {}  # type: Dict[str, Any]
+                query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+
+                request = self._client.get(url, query_parameters, header_parameters)
+            else:
+                url = next_link
+                query_parameters = {}  # type: Dict[str, Any]
+                request = self._client.get(url, query_parameters, header_parameters)
+            return request
+
+        def extract_data(pipeline_response):
+            deserialized = self._deserialize('OutboundNetworkDependenciesEndpointListResult', pipeline_response)
+            list_of_elem = deserialized.value
+            if cls:
+                list_of_elem = cls(list_of_elem)
+            return deserialized.next_link or None, iter(list_of_elem)
+
+        def get_next(next_link=None):
+            request = prepare_request(next_link)
+
+            pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+            response = pipeline_response.http_response
+
+            if response.status_code not in [200]:
+                map_error(status_code=response.status_code, response=response, error_map=error_map)
+                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+
+            return pipeline_response
+
+        return ItemPaged(
+            get_next, extract_data
+        )
+    list_outbound_network_dependencies_endpoints.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Kusto/clusters/{clusterName}/outboundNetworkDependenciesEndpoints'}  # type: ignore
+
     def list_language_extensions(
         self,
         resource_group_name,  # type: str
@@ -1406,7 +1484,7 @@ class ClustersOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-01-01"
+        api_version = "2021-08-27"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -1471,7 +1549,7 @@ class ClustersOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-01-01"
+        api_version = "2021-08-27"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -1591,7 +1669,7 @@ class ClustersOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-01-01"
+        api_version = "2021-08-27"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 

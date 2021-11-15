@@ -44,9 +44,10 @@ class ArcAgentUtils:
     def execute_arc_agent_install(self, chart_path, subscription_id, kubernetes_distro,
                                   kubernetes_infra, resource_group_name, cluster_name, location,
                                   onboarding_tenant_id, private_key_pem, no_wait, cloud_name,
-                                  enable_custom_locations, custom_locations_oid, onboarding_timeout="300"):
+                                  enable_custom_locations, custom_locations_oid, helm_client_location,
+                                  onboarding_timeout="300"):
 
-        cmd_helm_install = ["helm", "upgrade", "--install", "azure-arc", chart_path,
+        cmd_helm_install = [helm_client_location, "upgrade", "--install", "azure-arc", chart_path,
                             "--set", "global.subscriptionId={}".format(subscription_id),
                             "--set", "global.kubernetesDistro={}".format(kubernetes_distro),
                             "--set", "global.kubernetesInfra={}".format(kubernetes_infra),
@@ -75,18 +76,18 @@ class ArcAgentUtils:
 
         self.__execute_helm_command(cmd_helm_install, "Unable to install helm release: ")
 
-    def execute_arc_agent_update(self, chart_path, release_namespace):
+    def execute_arc_agent_update(self, chart_path, release_namespace, helm_client_location):
 
-        cmd_helm_upgrade = ["helm", "upgrade", "azure-arc", chart_path, "--namespace",
+        cmd_helm_upgrade = [helm_client_location, "upgrade", "azure-arc", chart_path, "--namespace",
                             release_namespace, "--reuse-values", "--wait", "--output", "json"]
 
         cmd_helm_upgrade = self.__set_params(cmd_helm_upgrade)
 
         self.__execute_helm_command(cmd_helm_upgrade, consts.Update_Agent_Failure)
 
-    def execute_arc_agent_upgrade(self, chart_path, release_namespace, upgrade_timeout, existing_user_values):
+    def execute_arc_agent_upgrade(self, chart_path, release_namespace, upgrade_timeout, existing_user_values, helm_client_location):
 
-        cmd_helm_upgrade = ["helm", "upgrade", "azure-arc", chart_path, "--namespace",
+        cmd_helm_upgrade = [helm_client_location, "upgrade", "azure-arc", chart_path, "--namespace",
                             release_namespace, "--output", "json", "--atomic", "--wait", "--timeout",
                             "{}".format(upgrade_timeout)]
 
@@ -118,9 +119,9 @@ class ArcAgentUtils:
 
     def execute_arc_agent_enable_features(self, chart_path, release_namespace, enable_azure_rbac,
                                           enable_cluster_connect, enable_cl, custom_locations_oid,
-                                          azrbac_client_id=None, azrbac_client_secret=None,
-                                          azrbac_skip_authz_check=None):
-        cmd_helm_upgrade = ["helm", "upgrade", "azure-arc", chart_path, "--namespace",
+                                          helm_client_location, azrbac_client_id=None,
+                                          azrbac_client_secret=None, azrbac_skip_authz_check=None):
+        cmd_helm_upgrade = [helm_client_location, "upgrade", "azure-arc", chart_path, "--namespace",
                             release_namespace, "--reuse-values", "--wait", "--output", "json"]
 
         cmd_helm_upgrade = self.__set_params(cmd_helm_upgrade)
@@ -160,8 +161,8 @@ class ArcAgentUtils:
 
         self.__execute_helm_command(cmd_helm_upgrade, consts.Error_disabling_Features)
 
-    def execute_delete_arc_agents(self, release_namespace, configuration):
-        cmd_helm_delete = ["helm", "delete", "azure-arc", "--namespace", release_namespace]
+    def execute_delete_arc_agents(self, release_namespace, configuration, helm_client_location):
+        cmd_helm_delete = [helm_client_location, "delete", "azure-arc", "--namespace", release_namespace]
 
         cmd_helm_delete = self.__set_params(cmd_helm_delete)
 

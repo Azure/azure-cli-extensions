@@ -17,12 +17,87 @@ import azext_connectedk8s._constants as consts
 logger = get_logger(__name__)
 
 
-def get_chart_path(registry_path, kube_config, kube_context):
+def install_helm_client():
+    # Return helm client path set by user
+    if os.getenv('HELM_CLIENT_PATH'):
+        return os.getenv('HELM_CLIENT_PATH')
+
+    # Fetch system related info
+    operating_system = platform.system().lower()
+    machine_type = platform.machine()
+
+    # Send machine telemetry
+    telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.MachineType': machine_type})
+
+    # Set helm binary download & install locations
+    if(operating_system == 'windows'):
+        download_location_string = f'.azure\\helm\\{consts.HELM_VERSION}\\helm-{consts.HELM_VERSION}-{operating_system}-amd64.zip'
+        install_location_string = f'.azure\\helm\\{consts.HELM_VERSION}\\{operating_system}-amd64\\helm.exe'
+        requestUri = f'{consts.HELM_STORAGE_URL}/helm/helm-{consts.HELM_VERSION}-{operating_system}-amd64.zip'
+    elif(operating_system == 'linux' or operating_system == 'darwin'):
+        download_location_string = f'.azure/helm/{consts.HELM_VERSION}/helm-{consts.HELM_VERSION}-{operating_system}-amd64.tar.gz'
+        install_location_string = f'.azure/helm/{consts.HELM_VERSION}/{operating_system}-amd64/helm'
+        requestUri = f'{consts.HELM_STORAGE_URL}/helm/helm-{consts.HELM_VERSION}-{operating_system}-amd64.tar.gz'
+    else:
+        telemetry.set_exception(exception='Unsupported OS for installing helm client', fault_type=consts.Helm_Unsupported_OS_Fault_Type,
+                                summary=f'{operating_system} is not supported for installing helm client')
+        raise ClientRequestError(f'The {operating_system} platform is not currently supported for installing helm client.')
+
+    download_location = os.path.expanduser(os.path.join('~', download_location_string))
+    download_dir = os.path.dirname(download_location)
+    install_location = os.path.expanduser(os.path.join('~', install_location_string))
+
+    # Download compressed halm binary if not already present
+    if not os.path.isfile(download_location):
+        # Creating the helm folder if it doesnt exist
+        if not os.path.exists(download_dir):
+            try:
+                os.makedirs(download_dir)
+            except Exception as e:
+                telemetry.set_exception(exception=e, fault_type=consts.Create_Directory_Fault_Type,
+                                        summary='Unable to create helm directory')
+                raise ClientRequestError("Failed to create helm directory." + str(e))
+
+        # Downloading compressed helm client executable
+        logger.warning("Downloading helm client for first time. This can take few minutes...")
+        try:
+            response = urllib.request.urlopen(requestUri)
+        except Exception as e:
+            telemetry.set_exception(exception=e, fault_type=consts.Download_Helm_Fault_Type,
+                                    summary='Unable to download helm client.')
+            raise CLIInternalError("Failed to download helm client.", recommendation="Please check your internet connection." + str(e))
+
+        responseContent = response.read()
+        response.close()
+
+        # Creating the compressed helm binaries
+        try:
+            with open(download_location, 'wb') as f:
+                f.write(responseContent)
+        except Exception as e:
+            telemetry.set_exception(exception=e, fault_type=consts.Create_HelmExe_Fault_Type,
+                                    summary='Unable to create helm executable')
+            raise ClientRequestError("Failed to create helm executable." + str(e), recommendation="Please ensure that you delete the directory '{}' before trying again.".format(download_dir))
+
+    # Extract compressed helm binary
+    if not os.path.isfile(install_location):
+        try:
+            shutil.unpack_archive(download_location, download_dir)
+            os.chmod(install_location, os.stat(install_location).st_mode | stat.S_IXUSR)
+        except Exception as e:
+            telemetry.set_exception(exception=e, fault_type=consts.Extract_HelmExe_Fault_Type,
+                                    summary='Unable to extract helm executable')
+            raise ClientRequestError("Failed to extract helm executable." + str(e), recommendation="Please ensure that you delete the directory '{}' before trying again.".format(download_dir))
+
+    return install_location
+
+
+def get_chart_path(registry_path, kube_config, kube_context, helm_client_location):
     # Pulling helm chart from registry
     os.environ['HELM_EXPERIMENTAL_OCI'] = '1'
 
     helm_core_utils = HelmCoreUtils(kube_config, kube_context)
-    helm_core_utils.pull_helm_chart(registry_path)
+    helm_core_utils.pull_helm_chart(registry_path, helm_client_location)
 
     # Exporting helm chart after cleanup
     chart_export_path = os.path.join(os.path.expanduser('~'), '.azure', 'AzureArcCharts')
@@ -33,7 +108,7 @@ def get_chart_path(registry_path, kube_config, kube_context):
         logger.warning("Unable to cleanup the azure-arc helm charts already present on the machine." +
                        " In case of failure, please cleanup the directory '%s' and try again.",
                        chart_export_path)
-    helm_core_utils.export_helm_chart(registry_path, chart_export_path)
+    helm_core_utils.export_helm_chart(registry_path, chart_export_path, helm_client_location)
 
     # Returning helm chart path
     helm_chart_path = os.path.join(chart_export_path, 'azure-arc-k8sagents')
@@ -140,10 +215,10 @@ def get_config_dp_endpoint(cmd, location):
 
 
 def get_helm_registry_path(cmd, location, helm_core_utils, arc_agent_version, dp_endpoint_dogfood,
-                           release_train_dogfood):
+                           release_train_dogfood, helm_client_location):
     # Adding helm repo
     if os.getenv('HELMREPONAME') and os.getenv('HELMREPOURL'):
-        helm_core_utils.add_helm_repo(os.getenv('HELMREPONAME'), os.getenv('HELMREPOURL'))
+        helm_core_utils.add_helm_repo(os.getenv('HELMREPONAME'), os.getenv('HELMREPOURL'), helm_client_location)
 
     # Setting the config dataplane endpoint
     config_dp_endpoint = get_config_dp_endpoint(cmd, location)

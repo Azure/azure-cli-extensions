@@ -11,8 +11,9 @@ from ._validators import (validate_env, validate_cosmos_type, validate_resource_
                           validate_name, validate_app_name, validate_deployment_name, validate_log_lines,
                           validate_log_limit, validate_log_since, validate_sku, validate_jvm_options,
                           validate_vnet, validate_vnet_required_parameters, validate_node_resource_group,
-                          validate_tracing_parameters, validate_app_insights_parameters, validate_java_agent_parameters,
-                          validate_instance_count)
+                          validate_tracing_parameters_asc_create, validate_tracing_parameters_asc_update,
+                          validate_app_insights_parameters, validate_instance_count, validate_java_agent_parameters,
+                          validate_jar)
 from ._utils import ApiType
 
 from .vendored_sdks.appplatform.v2020_07_01.models import RuntimeVersion, TestKeyType
@@ -33,36 +34,69 @@ def load_arguments(self, _):
         c.argument('name', options_list=[
             '--name', '-n'], help='Name of Azure Spring Cloud.')
 
+    # A refactoring work item to move validators to command level to reduce the duplications.
+    # https://dev.azure.com/msazure/AzureDMSS/_workitems/edit/11002857/
     with self.argument_context('spring-cloud create') as c:
         c.argument('location', arg_type=get_location_type(self.cli_ctx), validator=validate_location)
-        c.argument('sku', type=str, validator=validate_sku, help='Name of SKU, the value is "Basic" or "Standard"')
         c.argument('reserved_cidr_range', help='Comma-separated list of IP address ranges in CIDR format. The IP ranges are reserved to host underlying Azure Spring Cloud infrastructure, which should be 3 at least /16 unused IP ranges, must not overlap with any Subnet IP ranges.', validator=validate_vnet_required_parameters)
         c.argument('vnet', help='The name or ID of an existing Virtual Network into which to deploy the Spring Cloud instance.', validator=validate_vnet_required_parameters)
         c.argument('app_subnet', help='The name or ID of an existing subnet in "vnet" into which to deploy the Spring Cloud app. Required when deploying into a Virtual Network. Smaller subnet sizes are supported, please refer: https://aka.ms/azure-spring-cloud-smaller-subnet-vnet-docs', validator=validate_vnet_required_parameters)
         c.argument('service_runtime_subnet', options_list=['--service-runtime-subnet', '--svc-subnet'], help='The name or ID of an existing subnet in "vnet" into which to deploy the Spring Cloud service runtime. Required when deploying into a Virtual Network.', validator=validate_vnet)
         c.argument('service_runtime_network_resource_group', options_list=['--service-runtime-network-resource-group', '--svc-nrg'], help='The resource group where all network resources for Azure Spring Cloud service runtime will be created in.', validator=validate_node_resource_group)
         c.argument('app_network_resource_group', options_list=['--app-network-resource-group', '--app-nrg'], help='The resource group where all network resources for apps will be created in.', validator=validate_node_resource_group)
-        c.argument('enable_java_agent', is_preview=True, arg_type=get_three_state_flag(), help="Enable java in-process agent", validator=validate_java_agent_parameters)
+        c.argument('enable_java_agent',
+                   arg_type=get_three_state_flag(),
+                   help="Java in process agent is now GA-ed and used by default when Application Insights enabled. "
+                        "This parameter is no longer needed and will be removed in future release.",
+                   validator=validate_java_agent_parameters,
+                   deprecate_info=c.deprecate(target='--enable-java-agent', hide=True))
+        c.argument('app_insights_key',
+                   help="Connection string (recommended) or Instrumentation key of the existing Application Insights.",
+                   validator=validate_tracing_parameters_asc_create)
+        c.argument('app_insights',
+                   help="Name of the existing Application Insights in the same Resource Group. "
+                        "Or Resource ID of the existing Application Insights in a different Resource Group.",
+                   validator=validate_tracing_parameters_asc_create)
+        c.argument('sampling_rate',
+                   type=float,
+                   help="Sampling Rate of application insights. Minimum is 0, maximum is 100.",
+                   validator=validate_tracing_parameters_asc_create)
+        c.argument('disable_app_insights',
+                   arg_type=get_three_state_flag(),
+                   help="Disable Application Insights, "
+                        "if not disabled and no existing Application Insights specified with "
+                        "--app-insights-key or --app-insights, "
+                        "will create a new Application Insights instance in the same resource group.",
+                   validator=validate_tracing_parameters_asc_create)
+
     with self.argument_context('spring-cloud update') as c:
-        c.argument('sku', type=str, validator=validate_sku, help='Name of SKU, the value is "Basic" or "Standard"')
+        c.argument('app_insights_key',
+                   help="Connection string (recommended) or Instrumentation key of the existing Application Insights.",
+                   validator=validate_tracing_parameters_asc_update,
+                   deprecate_info=c.deprecate(target='az spring-cloud update --app-insights-key',
+                                              redirect='az spring-cloud app-insights update --app-insights-key',
+                                              hide=True))
+        c.argument('app_insights',
+                   help="Name of the existing Application Insights in the same Resource Group. "
+                        "Or Resource ID of the existing Application Insights in a different Resource Group.",
+                   validator=validate_tracing_parameters_asc_update,
+                   deprecate_info=c.deprecate(target='az spring-cloud update --app-insights',
+                                              redirect='az spring-cloud app-insights update --app-insights',
+                                              hide=True))
+        c.argument('disable_app_insights',
+                   arg_type=get_three_state_flag(),
+                   help="Disable Application Insights, "
+                        "if not disabled and no existing Application Insights specified with "
+                        "--app-insights-key or --app-insights, "
+                        "will create a new Application Insights instance in the same resource group.",
+                   validator=validate_tracing_parameters_asc_update,
+                   deprecate_info=c.deprecate(target='az spring-cloud update --disable-app-insights',
+                                              redirect='az spring-cloud app-insights update --disable',
+                                              hide=True))
 
     for scope in ['spring-cloud create', 'spring-cloud update']:
         with self.argument_context(scope) as c:
-            c.argument('app_insights_key',
-                       help="Instrumentation key of the existing Application Insights.",
-                       validator=validate_tracing_parameters)
-            c.argument('app_insights',
-                       help="Name of the existing Application Insights in the same Resource Group. Or Resource ID of the existing Application Insights in a different Resource Group.",
-                       validator=validate_tracing_parameters)
-            c.argument('disable_distributed_tracing',
-                       arg_type=get_three_state_flag(),
-                       help="Disable distributed tracing, if not disabled and no existing Application Insights specified with --app-insights-key or --app-insights, will create a new Application Insights instance in the same resource group.",
-                       validator=validate_tracing_parameters,
-                       deprecate_info=c.deprecate(target='--disable-distributed-tracing', redirect='--disable-app-insights', hide=True))
-            c.argument('disable_app_insights',
-                       arg_type=get_three_state_flag(),
-                       help="Disable Application Insights, if not disabled and no existing Application Insights specified with --app-insights-key or --app-insights, will create a new Application Insights instance in the same resource group.",
-                       validator=validate_tracing_parameters)
+            c.argument('sku', type=str, validator=validate_sku, help='Name of SKU, the value is "Basic" or "Standard"')
             c.argument('tags', arg_type=tags_type)
 
     with self.argument_context('spring-cloud test-endpoint renew-key') as c:
@@ -85,6 +119,10 @@ def load_arguments(self, _):
                    help='Memory resource quantity. Should be 512Mi or #Gi, e.g., 1Gi, 3Gi.')
         c.argument('instance_count', type=int,
                    default=1, help='Number of instance.', validator=validate_instance_count)
+        c.argument('persistent_storage', type=str,
+                   help='A json file path for the persistent storages to be mounted to the app')
+        c.argument('loaded_public_certificate_file', options_list=['--loaded-public-certificate-file', '-f'], type=str,
+                   help='A json file path indicates the certificates which would be loaded to app')
 
     with self.argument_context('spring-cloud app update') as c:
         c.argument('assign_endpoint', arg_type=get_three_state_flag(),
@@ -92,6 +130,21 @@ def load_arguments(self, _):
                    options_list=['--assign-endpoint', c.deprecate(target='--is-public', redirect='--assign-endpoint', hide=True)])
         c.argument('https_only', arg_type=get_three_state_flag(), help='If true, access app via https', default=False)
         c.argument('enable_end_to_end_tls', arg_type=get_three_state_flag(), help='If true, enable end to end tls')
+        c.argument('persistent_storage', type=str,
+                   help='A json file path for the persistent storages to be mounted to the app')
+        c.argument('loaded_public_certificate_file', type=str, options_list=['--loaded-public-certificate-file', '-f'],
+                   help='A json file path indicates the certificates which would be loaded to app')
+
+    with self.argument_context('spring-cloud app append-persistent-storage') as c:
+        c.argument('storage_name', type=str,
+                   help='Name of the storage resource you created in Azure Spring Cloud.')
+        c.argument('persistent_storage_type', options_list=['--persistent-storage-type', '-t'], type=str, help='Type of the persistent storage volumed.')
+        c.argument('share_name', type=str,
+                   help="The name of the pre-created file share. "
+                        "ShareName should be provided only if the type of the persistent storage volume is AzureFileVolume.")
+        c.argument('mount_path', type=str, help='The path for the persistent storage volume to be mounted.')
+        c.argument('mount_options', nargs='+', help='[optional] The mount options for the persistent storage volume.', default=None)
+        c.argument('read_only', arg_type=get_three_state_flag(), help='[optional] If true, the persistent storage volume will be read only.', default=False)
 
     for scope in ['spring-cloud app update', 'spring-cloud app start', 'spring-cloud app stop', 'spring-cloud app restart', 'spring-cloud app deploy', 'spring-cloud app scale', 'spring-cloud app set-deployment', 'spring-cloud app show-deploy-log']:
         with self.argument_context(scope) as c:
@@ -138,6 +191,7 @@ def load_arguments(self, _):
             c.argument('jvm_options', type=str, validator=validate_jvm_options,
                        help="A string containing jvm options, use '=' instead of ' ' for this argument to avoid bash parse error, eg: --jvm-options='-Xms1024m -Xmx2048m'")
             c.argument('env', env_type)
+            c.argument('disable_probe', arg_type=get_three_state_flag(), help='If true, disable the liveness and readiness probe.')
 
     with self.argument_context('spring-cloud app scale') as c:
         c.argument('cpu', type=str, help='CPU resource quantity. Should be 500m or number of CPU cores.')
@@ -147,8 +201,16 @@ def load_arguments(self, _):
     for scope in ['spring-cloud app deploy', 'spring-cloud app deployment create']:
         with self.argument_context(scope) as c:
             c.argument(
-                'artifact_path', options_list=[
-                    '--artifact-path', '--jar-path', '-p'], help='If provided, deploy pre-built artifact (jar or netcore zip), otherwise deploy current folder as tar.')
+                'artifact_path', options_list=['--artifact-path',
+                                               c.deprecate(target='--jar-path', redirect='--artifact-path', hide=True),
+                                               c.deprecate(target='-p', redirect='--artifact-path', hide=True)],
+                help='Deploy the specified pre-built artifact (jar or netcore zip).', validator=validate_jar)
+            c.argument(
+                'source_path', nargs='?', const='.',
+                help="Deploy the specified source folder. The folder will be packed into tar, uploaded, and built using kpack. Default to the current folder if no value provided.")
+            c.argument(
+                'disable_validation', arg_type=get_three_state_flag(),
+                help='If true, disable jar validation.')
             c.argument(
                 'main_entry', options_list=[
                     '--main-entry', '-m'], help="A string containing the path to the .NET executable relative to zip root.")
@@ -168,6 +230,24 @@ def load_arguments(self, _):
         c.argument('app', app_name_type, help='Name of app.',
                    validator=validate_app_name)
         c.argument('name', name_type, help='Name of deployment.')
+
+    for scope in ['spring-cloud app deployment generate-heap-dump', 'spring-cloud app deployment generate-thread-dump']:
+        with self.argument_context(scope) as c:
+            c.argument('deployment', options_list=[
+                '--deployment', '-d'], help='Name of an existing deployment of the app. Default to the production deployment if not specified.', validator=validate_deployment_name)
+            c.argument('app_instance', help='Target app instance you want to dump.')
+            c.argument('file_path', help='The mount file path for your dump file.')
+
+    with self.argument_context('spring-cloud app deployment start-jfr') as c:
+        c.argument('deployment', options_list=[
+            '--deployment', '-d'], help='Name of an existing deployment of the app. Default to the production deployment if not specified.', validator=validate_deployment_name)
+        c.argument('app_instance', help='Target app instance you want to dump.')
+        c.argument('file_path', help='The mount file path for your dump file.')
+        c.argument('duration', type=str, default="60s", help='Duration of JFR.')
+
+    with self.argument_context('spring-cloud app deployment') as c:
+        c.argument('app', app_name_type, help='Name of app.',
+                   validator=validate_app_name)
 
     with self.argument_context('spring-cloud app binding') as c:
         c.argument('app', app_name_type, help='Name of app.',
@@ -203,6 +283,10 @@ def load_arguments(self, _):
             c.argument('key', help='Api key of the service.')
             c.argument('disable_ssl', arg_type=get_three_state_flag(), help='If true, disable SSL. If false, enable SSL.', default=False)
 
+    with self.argument_context('spring-cloud app append-loaded-public-certificate') as c:
+        c.argument('certificate_name', help='Name of the certificate to be appended')
+        c.argument('load_trust_store', arg_type=get_three_state_flag(), help='If true, the certificate would be loaded into trust store for Java applications', default=False)
+
     with self.argument_context('spring-cloud config-server set') as c:
         c.argument('config_file',
                    help='A yaml file path for the configuration of Spring Cloud config server')
@@ -237,6 +321,20 @@ def load_arguments(self, _):
         c.argument('deployment', options_list=[
             '--deployment', '-d'], help='Name of an existing deployment of the app. Default to the production deployment if not specified.', validator=validate_deployment_name)
 
+    with self.argument_context('spring-cloud storage') as c:
+        c.argument('service', service_name_type)
+        c.argument('name', help='Name of storage.')
+
+    with self.argument_context('spring-cloud storage add') as c:
+        c.argument('storage_type', help='The type of the torage. e.g. StorageAccount')
+        c.argument('account_name', help='The name of the storage account.')
+        c.argument('account_key', help='The account key of the storage account.')
+
+    with self.argument_context('spring-cloud storage update') as c:
+        c.argument('storage_type', help='The type of the torage. e.g. StorageAccount')
+        c.argument('account_name', help='The name of the storage account.')
+        c.argument('account_key', help='The account key of the storage account.')
+
     with self.argument_context('spring-cloud certificate') as c:
         c.argument('service', service_name_type)
         c.argument('name', help='Name of certificate.')
@@ -244,6 +342,14 @@ def load_arguments(self, _):
     with self.argument_context('spring-cloud certificate add') as c:
         c.argument('vault_uri', help='The key vault uri where store the certificate')
         c.argument('vault_certificate_name', help='The certificate name in key vault')
+        c.argument('only_public_cert', arg_type=get_three_state_flag(),
+                   help='If true, only import public certificate part from key vault.', default=False)
+        c.argument('public_certificate_file', options_list=['--public-certificate-file', '-f'],
+                   help='A file path for the public certificate to be uploaded')
+
+    with self.argument_context('spring-cloud certificate list') as c:
+        c.argument('certificate_type', help='Type of uploaded certificate',
+                   arg_type=get_enum_type(['KeyVaultCertificate', 'ContentCertificate']))
 
     with self.argument_context('spring-cloud app custom-domain') as c:
         c.argument('service', service_name_type)
@@ -260,10 +366,11 @@ def load_arguments(self, _):
 
     with self.argument_context('spring-cloud app-insights update') as c:
         c.argument('app_insights_key',
-                   help="Instrumentation key of the existing Application Insights",
+                   help="Connection string (recommended) or Instrumentation key of the existing Application Insights.",
                    validator=validate_app_insights_parameters)
         c.argument('app_insights',
-                   help="Name of the existing Application Insights in the same Resource Group. Or Resource ID of the existing Application Insights in a different Resource Group.",
+                   help="Name of the existing Application Insights in the same Resource Group. "
+                        "Or Resource ID of the existing Application Insights in a different Resource Group.",
                    validator=validate_app_insights_parameters)
         c.argument('sampling_rate',
                    type=float,

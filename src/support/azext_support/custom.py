@@ -135,12 +135,12 @@ def create_support_tickets(cmd, client,
     logger.debug("Sending create request with below payload: ")
     logger.debug(json.dumps(body, indent=4))
 
-    custom_headers = {}
     if partner_tenant_id is not None:
-        custom_headers["x-ms-authorization-auxiliary"] = get_bearer_token(cmd, partner_tenant_id)
+        external_bearer_token = get_bearer_token(cmd, partner_tenant_id)
+        return client.begin_create(support_ticket_name=ticket_name, create_support_ticket_parameters=body,
+                                   headers={'x-ms-authorization-auxiliary': external_bearer_token})
 
-    return client.create(support_ticket_name=ticket_name, create_support_ticket_parameters=body,
-                         custom_headers=custom_headers)
+    return client.begin_create(support_ticket_name=ticket_name, create_support_ticket_parameters=body)
 
 
 def create_support_tickets_communications(cmd, client,
@@ -154,5 +154,5 @@ def create_support_tickets_communications(cmd, client,
     body["subject"] = communication_subject
     body["body"] = communication_body
 
-    return client.create(support_ticket_name=ticket_name, communication_name=communication_name,
-                         create_communication_parameters=body)
+    return client.begin_create(support_ticket_name=ticket_name, communication_name=communication_name,
+                               create_communication_parameters=body)
