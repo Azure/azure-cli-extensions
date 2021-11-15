@@ -72,13 +72,13 @@ examples:
       az managed-cassandra cluster list
 """
 
-helps['managed-cassandra cluster backups'] = """
+helps['managed-cassandra cluster backup list'] = """
 type: command
 short-summary: List the backups of this cluster that are available to restore.
 examples:
   - name: This command lists the backups of this cluster that are available to restore.
     text: |
-      az managed-cassandra cluster backups --resource-group MyResourceGroup --cluster-name MyCluster
+      az managed-cassandra cluster backup list --resource-group MyResourceGroup --cluster-name MyCluster
 """
 
 helps['managed-cassandra cluster invoke-command'] = """

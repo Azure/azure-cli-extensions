@@ -8,6 +8,7 @@
 from azext_cosmosdb_preview._validators import (
     validate_gossip_certificates,
     validate_client_certificates,
+    validate_server_certificates,
     validate_seednodes,
     validate_node_count)
 
@@ -16,7 +17,7 @@ from azext_cosmosdb_preview.actions import (
 
 
 def load_arguments(self, _):
-    from azure.cli.core.commands.parameters import tags_type, get_enum_type
+    from azure.cli.core.commands.parameters import tags_type, get_enum_type, get_three_state_flag
 
     # Managed Cassandra Cluster
     for scope in [
@@ -62,8 +63,8 @@ def load_arguments(self, _):
             c.argument('command_name', options_list=['--command-name'], help="The command which should be run", required=True)
             c.argument('host', options_list=['--host'], help="IP address of the cassandra host to run the command on", required=True)
             c.argument('arguments', options_list=['--arguments'], action=InvokeCommandArgumentsAddAction, nargs='+', help="The key=value of arguments for the command.")
-            c.argument('cassandra_stop_start', options_list=['--cassandra-stop-start'], help="If true, stops cassandra before executing the command and then start it again.")
-            c.argument('readwrite', options_list=['--readwrite'], help="If true, allows the command to *write* to the cassandra directory, otherwise read-only.")
+            c.argument('cassandra_stop_start', options_list=['--cassandra-stop-start'], arg_type=get_three_state_flag(), help="If true, stops cassandra before executing the command and then start it again.")
+            c.argument('readwrite', options_list=['--readwrite'], arg_type=get_three_state_flag(), help="If true, allows the command to *write* to the cassandra directory, otherwise read-only.")
 
     # Managed Cassandra Cluster
     for scope in ['managed-cassandra cluster backup show']:
@@ -91,6 +92,13 @@ def load_arguments(self, _):
             c.argument('delegated_subnet_id', options_list=['--delegated-subnet-id', '-s'], help="The resource id of a subnet where ip addresses of the Cassandra virtual machines will be allocated. This must be in the same region as data_center_location.")
             c.argument('managed_disk_customer_key_uri', options_list=['--managed-disk-customer-key-uri', '-k'], help="Key uri to use for encryption of managed disks. Ensure the system assigned identity of the cluster has been assigned appropriate permissions(key get/wrap/unwrap permissions) on the key.")
             c.argument('backup_storage_customer_key_uri', options_list=['--backup-storage-customer-key-uri', '-p'], help="Indicates the Key Uri of the customer key to use for encryption of the backup storage account.")
+            c.argument('server_hostname', options_list=['--ldap-server-hostname'], help="Hostname of the LDAP server.")
+            c.argument('server_port', options_list=['--ldap-server-port'], help="Port of the LDAP server.")
+            c.argument('service_user_distinguished_name', options_list=['--ldap-service-user-distinguished-name'], help="Distinguished name of the look up user account, who can look up user details on authentication.")
+            c.argument('service_user_password', options_list=['--ldap-service-user-password'], help="Password of the look up user.")
+            c.argument('search_base_distinguished_name', options_list=['--ldap-search-base-distinguished-name'], help="Distinguished name of the object to start the recursive search of users from.")
+            c.argument('search_filter_template', options_list=['--ldap-search-filter-template'], help="Template to use for searching. Defaults to (cn=%s) where %s will be replaced by the username used to login.")
+            c.argument('server_certificates', nargs='+', validator=validate_server_certificates, options_list=['--ldap-server-certificates'], help="LDAP server certificate.")
 
     # Managed Cassandra Datacenter
     with self.argument_context('managed-cassandra datacenter create') as c:
@@ -100,7 +108,7 @@ def load_arguments(self, _):
         c.argument('sku', options_list=['--sku'], help="Virtual Machine SKU used for data centers. Default value is Standard_DS14_v2")
         c.argument('disk_sku', options_list=['--disk-sku'], help="Disk SKU used for data centers. Default value is P30.")
         c.argument('disk_capacity', options_list=['--disk-capacity'], help="Number of disk used for data centers. Default value is 4.")
-        c.argument('availability_zone', options_list=['--availability-zone', '-z'], help="If the data center haves Availability Zone feature, apply it to the Virtual Machine ScaleSet that host the data center virtual machines.")
+        c.argument('availability_zone', options_list=['--availability-zone', '-z'], arg_type=get_three_state_flag(), help="If the data center haves Availability Zone feature, apply it to the Virtual Machine ScaleSet that host the data center virtual machines.")
 
     # Managed Cassandra Datacenter
     with self.argument_context('managed-cassandra datacenter list') as c:
