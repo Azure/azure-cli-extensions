@@ -81,6 +81,7 @@ from .vendored_sdks.azure_mgmt_preview_aks.v2021_09_01.models import (ContainerS
                                                                       ManagedClusterPodIdentity,
                                                                       ManagedClusterPodIdentityException,
                                                                       UserAssignedIdentity,
+                                                                      WindowsGmsaProfile,
                                                                       PowerState,
                                                                       Snapshot,
                                                                       CreationData)
@@ -132,15 +133,6 @@ from .addonconfiguration import update_addons, enable_addons, ensure_default_log
     add_ingress_appgw_addon_role_assignment, add_virtual_node_role_assignment
 
 logger = get_logger(__name__)
-
-
-def prepare_nat_gateway_models():
-    from .vendored_sdks.azure_mgmt_preview_aks.v2021_09_01.models import ManagedClusterNATGatewayProfile
-    from .vendored_sdks.azure_mgmt_preview_aks.v2021_09_01.models import ManagedClusterManagedOutboundIPProfile
-    nat_gateway_models = {}
-    nat_gateway_models["ManagedClusterNATGatewayProfile"] = ManagedClusterNATGatewayProfile
-    nat_gateway_models["ManagedClusterManagedOutboundIPProfile"] = ManagedClusterManagedOutboundIPProfile
-    return nat_gateway_models
 
 
 def which(binary):
@@ -550,123 +542,27 @@ def _get_snapshot(cli_ctx, snapshot_id):
         "Cannot parse snapshot name from provided resource id {}.".format(snapshot_id))
 
 
-def aks_browse(cmd,     # pylint: disable=too-many-statements,too-many-branches
-               client,
-               resource_group_name,
-               name,
-               disable_browser=False,
-               listen_address='127.0.0.1',
-               listen_port='8001'):
-    # verify the kube-dashboard addon was not disabled
-    instance = client.get(resource_group_name, name)
-    addon_profiles = instance.addon_profiles or {}
-    # addon name is case insensitive
-    addon_profile = next((addon_profiles[k] for k in addon_profiles
-                          if k.lower() == CONST_KUBE_DASHBOARD_ADDON_NAME.lower()),
-                         ManagedClusterAddonProfile(enabled=False))
+def aks_browse(
+    cmd,
+    client,
+    resource_group_name,
+    name,
+    disable_browser=False,
+    listen_address="127.0.0.1",
+    listen_port="8001",
+):
+    from azure.cli.command_modules.acs.custom import _aks_browse
 
-    # open portal view if addon is not enabled or k8s version >= 1.19.0
-    if StrictVersion(instance.kubernetes_version) >= StrictVersion('1.19.0') or (not addon_profile.enabled):
-        subscription_id = get_subscription_id(cmd.cli_ctx)
-        dashboardURL = (
-            # Azure Portal URL (https://portal.azure.com for public cloud)
-            cmd.cli_ctx.cloud.endpoints.portal +
-            ('/#resource/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.ContainerService'
-             '/managedClusters/{2}/workloads').format(subscription_id, resource_group_name, name)
-        )
-
-        if in_cloud_console():
-            logger.warning(
-                'To view the Kubernetes resources view, please open %s in a new tab', dashboardURL)
-        else:
-            logger.warning('Kubernetes resources view on %s', dashboardURL)
-
-        if not disable_browser:
-            webbrowser.open_new_tab(dashboardURL)
-        return
-
-    # otherwise open the kube-dashboard addon
-    if not which('kubectl'):
-        raise CLIError('Can not find kubectl executable in PATH')
-
-    _, browse_path = tempfile.mkstemp()
-
-    aks_get_credentials(cmd, client, resource_group_name,
-                        name, admin=False, path=browse_path)
-    # find the dashboard pod's name
-    try:
-        dashboard_pod = subprocess.check_output(
-            ["kubectl", "get", "pods", "--kubeconfig", browse_path, "--namespace", "kube-system",
-             "--output", "name", "--selector", "k8s-app=kubernetes-dashboard"],
-            universal_newlines=True)
-    except subprocess.CalledProcessError as err:
-        raise CLIError('Could not find dashboard pod: {}'.format(err))
-    if dashboard_pod:
-        # remove any "pods/" or "pod/" prefix from the name
-        dashboard_pod = str(dashboard_pod).split('/')[-1].strip()
-    else:
-        raise CLIError("Couldn't find the Kubernetes dashboard pod.")
-
-    # find the port
-    try:
-        dashboard_port = subprocess.check_output(
-            ["kubectl", "get", "pods", "--kubeconfig", browse_path, "--namespace", "kube-system",
-             "--selector", "k8s-app=kubernetes-dashboard",
-             "--output", "jsonpath='{.items[0].spec.containers[0].ports[0].containerPort}'"]
-        )
-        # output format: b"'{port}'"
-        dashboard_port = int((dashboard_port.decode('utf-8').replace("'", "")))
-    except subprocess.CalledProcessError as err:
-        raise CLIError('Could not find dashboard port: {}'.format(err))
-
-    # use https if dashboard container is using https
-    if dashboard_port == 8443:
-        protocol = 'https'
-    else:
-        protocol = 'http'
-
-    proxy_url = 'http://{0}:{1}/'.format(listen_address, listen_port)
-    dashboardURL = '{0}/api/v1/namespaces/kube-system/services/{1}:kubernetes-dashboard:/proxy/'.format(proxy_url,
-                                                                                                        protocol)
-    # launch kubectl port-forward locally to access the remote dashboard
-    if in_cloud_console():
-        # TODO: better error handling here.
-        response = requests.post(
-            'http://localhost:8888/openport/{0}'.format(listen_port))
-        result = json.loads(response.text)
-        dashboardURL = '{0}api/v1/namespaces/kube-system/services/{1}:kubernetes-dashboard:/proxy/'.format(
-            result['url'], protocol)
-        term_id = os.environ.get('ACC_TERM_ID')
-        if term_id:
-            response = requests.post('http://localhost:8888/openLink/{0}'.format(term_id),
-                                     json={"url": dashboardURL})
-        logger.warning(
-            'To view the console, please open %s in a new tab', dashboardURL)
-    else:
-        logger.warning('Proxy running on %s', proxy_url)
-
-    logger.warning('Press CTRL+C to close the tunnel...')
-    if not disable_browser:
-        wait_then_open_async(dashboardURL)
-    try:
-        try:
-            subprocess.check_output(["kubectl", "--kubeconfig", browse_path, "proxy", "--address",
-                                     listen_address, "--port", listen_port], stderr=subprocess.STDOUT)
-        except subprocess.CalledProcessError as err:
-            if err.output.find(b'unknown flag: --address'):
-                if listen_address != '127.0.0.1':
-                    logger.warning(
-                        '"--address" is only supported in kubectl v1.13 and later.')
-                    logger.warning(
-                        'The "--listen-address" argument will be ignored.')
-                subprocess.call(["kubectl", "--kubeconfig",
-                                browse_path, "proxy", "--port", listen_port])
-    except KeyboardInterrupt:
-        # Let command processing finish gracefully after the user presses [Ctrl+C]
-        pass
-    finally:
-        if in_cloud_console():
-            requests.post('http://localhost:8888/closeport/8001')
+    return _aks_browse(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        disable_browser,
+        listen_address,
+        listen_port,
+        CUSTOM_MGMT_AKS_PREVIEW,
+    )
 
 
 def _trim_nodepoolname(nodepool_name):
@@ -984,7 +880,6 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
             license_type=windows_license_type)
 
         if enable_windows_gmsa:
-            from .vendored_sdks.azure_mgmt_preview_aks.v2021_09_01.models import WindowsGmsaProfile
             windows_profile.gmsa_profile = WindowsGmsaProfile(
                 enabled=True)
             if gmsa_dns_server is not None and gmsa_root_domain_name is not None:
@@ -1071,11 +966,9 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         load_balancer_outbound_ports,
         load_balancer_idle_timeout)
 
-    # TODO: uncomment the following after next cli release
-    # from azext_aks_preview.decorator import AKSPreviewModels
-    # # store all the models used by nat gateway
-    # nat_gateway_models = AKSPreviewModels(cmd, CUSTOM_MGMT_AKS_PREVIEW).nat_gateway_models
-    nat_gateway_models = prepare_nat_gateway_models()
+    from azext_aks_preview.decorator import AKSPreviewModels
+    # store all the models used by nat gateway
+    nat_gateway_models = AKSPreviewModels(cmd, CUSTOM_MGMT_AKS_PREVIEW).nat_gateway_models
     nat_gateway_profile = create_nat_gateway_profile(
         nat_gateway_managed_outbound_ip_count,
         nat_gateway_idle_timeout,
@@ -1412,6 +1305,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                disable_public_fqdn=False,
                yes=False,
                tags=None,
+               nodepool_labels=None,
                windows_admin_password=None,
                enable_azure_rbac=False,
                disable_azure_rbac=False,
@@ -1458,7 +1352,8 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
        not disable_local_accounts and \
        not enable_public_fqdn and \
        not disable_public_fqdn and \
-       not enable_windows_gmsa:
+       not enable_windows_gmsa and \
+       not nodepool_labels:
         raise CLIError('Please specify "--enable-cluster-autoscaler" or '
                        '"--disable-cluster-autoscaler" or '
                        '"--update-cluster-autoscaler" or '
@@ -1495,7 +1390,8 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                        '"--disable-local-accounts" or '
                        '"--enable-public-fqdn" or '
                        '"--disable-public-fqdn"'
-                       '"--enble-windows-gmsa"')
+                       '"--enble-windows-gmsa" or '
+                       '"--nodepool-labels"')
     instance = client.get(resource_group_name, name)
 
     if update_autoscaler and len(instance.agent_pool_profiles) > 1:
@@ -1579,11 +1475,9 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
             instance.network_profile.load_balancer_profile)
 
     if update_natgw_profile:
-        # TODO: uncomment the following after next cli release
-        # from azext_aks_preview.decorator import AKSPreviewModels
-        # # store all the models used by nat gateway
-        # nat_gateway_models = AKSPreviewModels(cmd, CUSTOM_MGMT_AKS_PREVIEW).nat_gateway_models
-        nat_gateway_models = prepare_nat_gateway_models()
+        from azext_aks_preview.decorator import AKSPreviewModels
+        # store all the models used by nat gateway
+        nat_gateway_models = AKSPreviewModels(cmd, CUSTOM_MGMT_AKS_PREVIEW).nat_gateway_models
         instance.network_profile.nat_gateway_profile = update_nat_gateway_profile(
             nat_gateway_managed_outbound_ip_count,
             nat_gateway_idle_timeout,
@@ -1786,11 +1680,14 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
     if tags:
         instance.tags = tags
 
+    if nodepool_labels is not None:
+        for agent_profile in instance.agent_pool_profiles:
+            agent_profile.node_labels = nodepool_labels
+
     if windows_admin_password:
         instance.windows_profile.admin_password = windows_admin_password
 
     if enable_windows_gmsa:
-        from .vendored_sdks.azure_mgmt_preview_aks.v2021_09_01.models import WindowsGmsaProfile
         instance.windows_profile.gmsa_profile = WindowsGmsaProfile(enabled=True)
         if gmsa_dns_server is not None and gmsa_root_domain_name is not None:
             instance.windows_profile.gmsa_profile.dns_server = gmsa_dns_server
@@ -1827,7 +1724,8 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                                                     no_wait)
 
 
-def aks_show(cmd, client, resource_group_name, name):   # pylint: disable=unused-argument
+# pylint: disable=unused-argument
+def aks_show(cmd, client, resource_group_name, name):
     mc = client.get(resource_group_name, name)
     return _remove_nulls([mc])[0]
 
@@ -2728,16 +2626,17 @@ def aks_agentpool_update(cmd,   # pylint: disable=unused-argument
                          min_count=None, max_count=None,
                          max_surge=None,
                          mode=None,
+                         labels=None,
                          no_wait=False):
 
     update_autoscaler = enable_cluster_autoscaler + \
         disable_cluster_autoscaler + update_cluster_autoscaler
 
-    if (update_autoscaler != 1 and not tags and not scale_down_mode and not mode and not max_surge):
+    if (update_autoscaler != 1 and not tags and not scale_down_mode and not mode and not max_surge and not labels):
         raise CLIError('Please specify one or more of "--enable-cluster-autoscaler" or '
                        '"--disable-cluster-autoscaler" or '
                        '"--update-cluster-autoscaler" or '
-                       '"--tags" or "--mode" or "--max-surge" or "--scale-down-mode"')
+                       '"--tags" or "--mode" or "--max-surge" or "--scale-down-mode" or "--labels"')
 
     instance = client.get(resource_group_name, cluster_name, nodepool_name)
 
@@ -2791,6 +2690,8 @@ def aks_agentpool_update(cmd,   # pylint: disable=unused-argument
     if mode is not None:
         instance.mode = mode
 
+    if labels is not None:
+        instance.node_labels = labels
     return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, cluster_name, nodepool_name, instance)
 
 
@@ -3741,12 +3642,27 @@ def _ensure_pod_identity_kubenet_consent(network_profile, pod_identity_profile, 
     pod_identity_profile.allow_network_plugin_kubenet = True
 
 
+def _fill_defaults_for_pod_identity_exceptions(pod_identity_exceptions):
+    if not pod_identity_exceptions:
+        return
+
+    for exc in pod_identity_exceptions:
+        if exc.pod_labels is None:
+            # in previous version, we accidentally allowed user to specify empty pod labels,
+            # which will be converted to `None` in response. This behavior will break the extension
+            # when using 2021-09-01 version. As a workaround, we always back fill the empty dict value
+            # before sending to the server side.
+            exc.pod_labels = dict()
+
+
 def _update_addon_pod_identity(instance, enable, pod_identities=None, pod_identity_exceptions=None, allow_kubenet_consent=None):
     if not enable:
         # when disable, remove previous saved value
         instance.pod_identity_profile = ManagedClusterPodIdentityProfile(
             enabled=False)
         return
+
+    _fill_defaults_for_pod_identity_exceptions(pod_identity_exceptions)
 
     if not instance.pod_identity_profile:
         # not set before

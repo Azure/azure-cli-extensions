@@ -969,7 +969,7 @@ helps['aks nodepool add'] = """
           short-summary: Public IP prefix ID used to assign public IPs to VMSS nodes.
         - name: --labels
           type: string
-          short-summary: The node labels for the node pool. You can't change the node labels through CLI after the node pool is created. See https://aka.ms/node-labels for syntax of labels.
+          short-summary: The node labels for the node pool. See https://aka.ms/node-labels for syntax of labels.
         - name: --mode
           type: string
           short-summary: The mode for a node pool which defines a node pool's primary function. If set as "System", AKS prefers system pods scheduling to node pools with mode `System`. Learn more at https://aka.ms/aks/nodepool/mode.
@@ -1071,6 +1071,9 @@ helps['aks nodepool update'] = """
         - name: --mode
           type: string
           short-summary: The mode for a node pool which defines a node pool's primary function. If set as "System", AKS prefers system pods scheduling to node pools with mode `System`. Learn more at https://aka.ms/aks/nodepool/mode.
+        - name: --labels
+          type: string
+          short-summary: The node labels for the node pool. See https://aka.ms/node-labels for syntax of labels.
     examples:
       - name: Enable cluster-autoscaler within node count range [1,5]
         text: az aks nodepool update --enable-cluster-autoscaler --min-count 1 --max-count 5 -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster

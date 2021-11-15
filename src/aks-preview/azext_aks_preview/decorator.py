@@ -23,6 +23,7 @@ from azure.cli.core import AzCommandsLoader
 from azure.cli.core.azclierror import (
     CLIInternalError,
     InvalidArgumentValueError,
+    MutuallyExclusiveArgumentError,
     RequiredArgumentMissingError,
 )
 from azure.cli.core.commands import AzCliCommand
@@ -32,10 +33,17 @@ from knack.log import get_logger
 from knack.prompting import prompt_y_n
 from msrestazure.azure_exceptions import CloudError
 
+from azext_aks_preview._consts import (
+    CONST_OUTBOUND_TYPE_LOAD_BALANCER,
+    CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY,
+    CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY,
+    CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
+)
 from azext_aks_preview._natgateway import create_nat_gateway_profile
 from azext_aks_preview.addonconfiguration import (
     ensure_container_insights_for_monitoring,
 )
+from azext_aks_preview.custom import _get_snapshot
 
 
 logger = get_logger(__name__)
@@ -51,6 +59,7 @@ LinuxOSConfig = TypeVar("LinuxOSConfig")
 ManagedClusterHTTPProxyConfig = TypeVar("ManagedClusterHTTPProxyConfig")
 ContainerServiceNetworkProfile = TypeVar("ContainerServiceNetworkProfile")
 ManagedClusterAddonProfile = TypeVar("ManagedClusterAddonProfile")
+Snapshot = TypeVar("Snapshot")
 
 
 # pylint: disable=too-many-instance-attributes,too-few-public-methods
@@ -80,6 +89,11 @@ class AKSPreviewModels(AKSModels):
         )
         self.WindowsGmsaProfile = self.__cmd.get_models(
             "WindowsGmsaProfile",
+            resource_type=self.resource_type,
+            operation_group="managed_clusters",
+        )
+        self.CreationData = self.__cmd.get_models(
+            "CreationData",
             resource_type=self.resource_type,
             operation_group="managed_clusters",
         )
@@ -510,6 +524,7 @@ class AKSPreviewContext(AKSContext):
 
         return self._get_enable_pod_identity(enable_validation=True)
 
+    # pylint: disable=unused-argument
     def _get_enable_pod_identity_with_kubenet(self, enable_validation: bool = False, **kwargs) -> bool:
         """Internal function to obtain the value of enable_pod_identity_with_kubenet.
 
@@ -562,25 +577,12 @@ class AKSPreviewContext(AKSContext):
         """
         from azext_aks_preview._consts import (
             ADDONS,
-            CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME,
-            CONST_ROTATION_POLL_INTERVAL,
-            CONST_SECRET_ROTATION_ENABLED,
             CONST_GITOPS_ADDON_NAME,
             CONST_MONITORING_USING_AAD_MSI_AUTH,
-            CONST_SECRET_ROTATION_ENABLED,
         )
 
         addon_consts = super().get_addon_consts()
         addon_consts["ADDONS"] = ADDONS
-        addon_consts[
-            "CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME"
-        ] = CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME
-        addon_consts[
-            "CONST_ROTATION_POLL_INTERVAL"
-        ] = CONST_ROTATION_POLL_INTERVAL
-        addon_consts[
-            "CONST_SECRET_ROTATION_ENABLED"
-        ] = CONST_SECRET_ROTATION_ENABLED
         addon_consts["CONST_GITOPS_ADDON_NAME"] = CONST_GITOPS_ADDON_NAME
         addon_consts[
             "CONST_MONITORING_USING_AAD_MSI_AUTH"
@@ -669,38 +671,108 @@ class AKSPreviewContext(AKSContext):
                 no_wait = False
         return no_wait
 
-    def get_enable_secret_rotation(self) -> bool:
-        """Obtain the value of enable_secret_rotation.
+    # pylint: disable=unused-argument
+    def _get_outbound_type(
+        self,
+        enable_validation: bool = False,
+        read_only: bool = False,
+        load_balancer_profile: ManagedClusterLoadBalancerProfile = None,
+        **kwargs
+    ) -> Union[str, None]:
+        """Internal function to dynamically obtain the value of outbound_type according to the context.
 
-        :return: bool
+        Note: Inherited and extended in aks-preview to add support for the newly added nat related constants.
+
+        Note: All the external parameters involved in the validation are not verified in their own getters.
+
+        When outbound_type is not assigned, dynamic completion will be triggerd. By default, the value is set to
+        CONST_OUTBOUND_TYPE_LOAD_BALANCER.
+
+        This function supports the option of enable_validation. When enabled, if the value of outbound_type is one of
+        CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY, CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY or
+        CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING, the following checks will be performed. If load_balancer_sku is set
+        to basic, an InvalidArgumentValueError will be raised. If the value of outbound_type is not
+        CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING and vnet_subnet_id is not assigned, a RequiredArgumentMissingError
+        will be raised. If the value of outbound_type equals to CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING and
+        any of load_balancer_managed_outbound_ip_count, load_balancer_outbound_ips or load_balancer_outbound_ip_prefixes
+        is assigned, a MutuallyExclusiveArgumentError will be raised.
+        This function supports the option of read_only. When enabled, it will skip dynamic completion and validation.
+        This function supports the option of load_balancer_profile, if provided, when verifying loadbalancer-related
+        parameters, the value in load_balancer_profile will be used for validation.
+
+        :return: string or None
         """
-        # determine the value of constants
-        addon_consts = self.get_addon_consts()
-        CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME = addon_consts.get(
-            "CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME"
-        )
-        CONST_SECRET_ROTATION_ENABLED = addon_consts.get(
-            "CONST_SECRET_ROTATION_ENABLED"
-        )
-
         # read the original value passed by the command
-        enable_secret_rotation = self.raw_param.get("enable_secret_rotation")
+        outbound_type = self.raw_param.get("outbound_type")
         # try to read the property value corresponding to the parameter from the `mc` object
+        read_from_mc = False
         if (
             self.mc and
-            self.mc.addon_profiles and
-            CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME in self.mc.addon_profiles and
-            self.mc.addon_profiles.get(
-                CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME
-            ).config.get(CONST_SECRET_ROTATION_ENABLED) is not None
+            self.mc.network_profile and
+            self.mc.network_profile.outbound_type is not None
         ):
-            enable_secret_rotation = self.mc.addon_profiles.get(
-                CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME
-            ).config.get(CONST_SECRET_ROTATION_ENABLED) == "true"
+            outbound_type = self.mc.network_profile.outbound_type
+            read_from_mc = True
 
-        # this parameter does not need dynamic completion
-        # this parameter does not need validation
-        return enable_secret_rotation
+        # skip dynamic completion & validation if option read_only is specified
+        if read_only:
+            return outbound_type
+
+        # dynamic completion
+        if (
+            not read_from_mc and
+            outbound_type != CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY and
+            outbound_type != CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY and
+            outbound_type != CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING
+        ):
+            outbound_type = CONST_OUTBOUND_TYPE_LOAD_BALANCER
+
+        # validation
+        # Note: The parameters involved in the validation are not verified in their own getters.
+        if enable_validation:
+            if outbound_type in [
+                CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY,
+                CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY,
+                CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
+            ]:
+                # Should not enable read_only for get_load_balancer_sku, since its default value is None, and it has
+                # not been decorated into the mc object at this time, only the value after dynamic completion is
+                # meaningful here.
+                if safe_lower(self._get_load_balancer_sku(enable_validation=False)) == "basic":
+                    raise InvalidArgumentValueError("{} doesn't support basic load balancer sku".format(outbound_type))
+                if outbound_type == CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY:
+                    if self.get_vnet_subnet_id() in ["", None]:
+                        raise RequiredArgumentMissingError(
+                            "--vnet-subnet-id must be specified for userAssignedNATGateway and it must "
+                            "be pre-associated with a NAT gateway with outbound public IPs or IP prefixes"
+                        )
+                if outbound_type == CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING:
+                    if self.get_vnet_subnet_id() in ["", None]:
+                        raise RequiredArgumentMissingError(
+                            "--vnet-subnet-id must be specified for userDefinedRouting and it must "
+                            "be pre-configured with a route table with egress rules"
+                        )
+                    if load_balancer_profile:
+                        if (
+                            load_balancer_profile.managed_outbound_i_ps or
+                            load_balancer_profile.outbound_i_ps or
+                            load_balancer_profile.outbound_ip_prefixes
+                        ):
+                            raise MutuallyExclusiveArgumentError(
+                                "userDefinedRouting doesn't support customizing "
+                                "a standard load balancer with IP addresses"
+                            )
+                    else:
+                        if (
+                            self.get_load_balancer_managed_outbound_ip_count() or
+                            self.get_load_balancer_outbound_ips() or
+                            self.get_load_balancer_outbound_ip_prefixes()
+                        ):
+                            raise MutuallyExclusiveArgumentError(
+                                "userDefinedRouting doesn't support customizing "
+                                "a standard load balancer with IP addresses"
+                            )
+        return outbound_type
 
     # pylint: disable=unused-argument,no-self-use
     def __validate_gmsa_options(
@@ -863,6 +935,201 @@ class AKSPreviewContext(AKSContext):
         """
         return self._get_gmsa_dns_server_and_root_domain_name(enable_validation=True)
 
+    def get_snapshot_id(self) -> Union[str, None]:
+        """Obtain the values of snapshot_id.
+
+        :return: string or None
+        """
+        # read the original value passed by the command
+        snapshot_id = self.raw_param.get("snapshot_id")
+        # try to read the property value corresponding to the parameter from the `mc` object
+        if self.mc and self.mc.agent_pool_profiles:
+            agent_pool_profile = safe_list_get(
+                self.mc.agent_pool_profiles, 0, None
+            )
+            if (
+                agent_pool_profile and
+                agent_pool_profile.creation_data and
+                agent_pool_profile.creation_data.source_resource_id is not None
+            ):
+                snapshot_id = (
+                    agent_pool_profile.creation_data.source_resource_id
+                )
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return snapshot_id
+
+    def get_snapshot(self) -> Union[Snapshot, None]:
+        """Helper function to retrieve the Snapshot object corresponding to a snapshot id.
+
+        This fuction will store an intermediate "snapshot" to avoid sending the same request multiple times.
+
+        Function "_get_snapshot" will be called to retrieve the Snapshot object corresponding to a snapshot id, which
+        internally used the snapshot client (snapshots operations belonging to container service client) to send
+        the request.
+
+        :return: Snapshot or None
+        """
+        # try to read from intermediates
+        snapshot = self.get_intermediate("snapshot")
+        if snapshot:
+            return snapshot
+
+        snapshot_id = self.get_snapshot_id()
+        if snapshot_id:
+            snapshot = _get_snapshot(self.cmd.cli_ctx, snapshot_id)
+            self.set_intermediate("snapshot", snapshot, overwrite_exists=True)
+        return snapshot
+
+    # pylint: disable=unused-argument
+    def _get_kubernetes_version(self, read_only: bool = False, **kwargs) -> str:
+        """Internal function to dynamically obtain the value of kubernetes_version according to the context.
+
+        If snapshot_id is specified, dynamic completion will be triggerd, and will try to get the corresponding value
+        from the Snapshot. When determining the value of the parameter, obtaining from `mc` takes precedence over user's
+        explicit input over snapshot over default vaule.
+
+        :return: string
+        """
+        # read the original value passed by the command
+        raw_value = self.raw_param.get("kubernetes_version")
+        # try to read the property value corresponding to the parameter from the `mc` object
+        value_obtained_from_mc = None
+        if self.mc:
+            value_obtained_from_mc = self.mc.kubernetes_version
+        # try to retrieve the value from snapshot
+        value_obtained_from_snapshot = None
+        # skip dynamic completion if read_only is specified
+        if not read_only:
+            snapshot = self.get_snapshot()
+            if snapshot:
+                value_obtained_from_snapshot = snapshot.kubernetes_version
+
+        # set default value
+        if value_obtained_from_mc is not None:
+            kubernetes_version = value_obtained_from_mc
+        # default value is an empty string
+        elif raw_value:
+            kubernetes_version = raw_value
+        elif not read_only and value_obtained_from_snapshot is not None:
+            kubernetes_version = value_obtained_from_snapshot
+        else:
+            kubernetes_version = raw_value
+
+        # this parameter does not need validation
+        return kubernetes_version
+
+    def get_kubernetes_version(self) -> str:
+        """Obtain the value of kubernetes_version.
+
+        Note: Inherited and extended in aks-preview to add support for getting values from snapshot.
+
+        :return: string
+        """
+        return self._get_kubernetes_version()
+
+    # pylint: disable=unused-argument
+    def _get_os_sku(self, read_only: bool = False, **kwargs) -> Union[str, None]:
+        """Internal function to dynamically obtain the value of os_sku according to the context.
+
+        If snapshot_id is specified, dynamic completion will be triggerd, and will try to get the corresponding value
+        from the Snapshot. When determining the value of the parameter, obtaining from `mc` takes precedence over user's
+        explicit input over snapshot over default vaule.
+
+        :return: string or None
+        """
+        # read the original value passed by the command
+        raw_value = self.raw_param.get("os_sku")
+        # try to read the property value corresponding to the parameter from the `mc` object
+        value_obtained_from_mc = None
+        if self.mc and self.mc.agent_pool_profiles:
+            agent_pool_profile = safe_list_get(
+                self.mc.agent_pool_profiles, 0, None
+            )
+            if agent_pool_profile:
+                value_obtained_from_mc = agent_pool_profile.os_sku
+        # try to retrieve the value from snapshot
+        value_obtained_from_snapshot = None
+        # skip dynamic completion if read_only is specified
+        if not read_only:
+            snapshot = self.get_snapshot()
+            if snapshot:
+                value_obtained_from_snapshot = snapshot.os_sku
+
+        # set default value
+        if value_obtained_from_mc is not None:
+            os_sku = value_obtained_from_mc
+        elif raw_value is not None:
+            os_sku = raw_value
+        elif not read_only and value_obtained_from_snapshot is not None:
+            os_sku = value_obtained_from_snapshot
+        else:
+            os_sku = raw_value
+
+        # this parameter does not need validation
+        return os_sku
+
+    def get_os_sku(self) -> Union[str, None]:
+        """Obtain the value of os_sku.
+
+        Note: Inherited and extended in aks-preview to add support for getting values from snapshot.
+
+        :return: string or None
+        """
+        return self._get_os_sku()
+
+    # pylint: disable=unused-argument
+    def _get_node_vm_size(self, read_only: bool = False, **kwargs) -> str:
+        """Internal function to dynamically obtain the value of node_vm_size according to the context.
+
+        If snapshot_id is specified, dynamic completion will be triggerd, and will try to get the corresponding value
+        from the Snapshot. When determining the value of the parameter, obtaining from `mc` takes precedence over user's
+        explicit input over snapshot over default vaule.
+
+        :return: string
+        """
+        default_value = "Standard_DS2_v2"
+        # read the original value passed by the command
+        raw_value = self.raw_param.get("node_vm_size")
+        # try to read the property value corresponding to the parameter from the `mc` object
+        value_obtained_from_mc = None
+        if self.mc and self.mc.agent_pool_profiles:
+            agent_pool_profile = safe_list_get(
+                self.mc.agent_pool_profiles, 0, None
+            )
+            if agent_pool_profile:
+                value_obtained_from_mc = agent_pool_profile.vm_size
+        # try to retrieve the value from snapshot
+        value_obtained_from_snapshot = None
+        # skip dynamic completion if read_only is specified
+        if not read_only:
+            snapshot = self.get_snapshot()
+            if snapshot:
+                value_obtained_from_snapshot = snapshot.vm_size
+
+        # set default value
+        if value_obtained_from_mc is not None:
+            node_vm_size = value_obtained_from_mc
+        elif raw_value is not None:
+            node_vm_size = raw_value
+        elif value_obtained_from_snapshot is not None:
+            node_vm_size = value_obtained_from_snapshot
+        else:
+            node_vm_size = default_value
+
+        # this parameter does not need validation
+        return node_vm_size
+
+    def get_node_vm_size(self) -> str:
+        """Obtain the value of node_vm_size.
+
+        Note: Inherited and extended in aks-preview to add support for getting values from snapshot.
+
+        :return: string
+        """
+        return self._get_node_vm_size()
+
 
 class AKSPreviewCreateDecorator(AKSCreateDecorator):
     # pylint: disable=super-init-not-called
@@ -913,6 +1180,17 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
         )
         agent_pool_profile.kubelet_config = self.context.get_kubelet_config()
         agent_pool_profile.linux_os_config = self.context.get_linux_os_config()
+
+        # snapshot creation data
+        creation_data = None
+        snapshot_id = self.context.get_snapshot_id()
+        if snapshot_id:
+            creation_data = self.models.CreationData(
+                source_resource_id=snapshot_id
+            )
+        agent_pool_profile.creation_data = creation_data
+
+        mc.agent_pool_profiles = [agent_pool_profile]
         return mc
 
     def set_up_http_proxy_config(self, mc: ManagedCluster) -> ManagedCluster:
@@ -1065,24 +1343,6 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
             ingress_appgw_addon_profile.config[CONST_INGRESS_APPGW_SUBNET_CIDR] = appgw_subnet_prefix
         return ingress_appgw_addon_profile
 
-    def build_azure_keyvault_secrets_provider_addon_profile(self) -> ManagedClusterAddonProfile:
-        """Build azure keyvault secrets provider addon profile.
-
-        :return: a ManagedClusterAddonProfile object
-        """
-        # determine the value of constants
-        addon_consts = self.context.get_addon_consts()
-        CONST_SECRET_ROTATION_ENABLED = addon_consts.get(
-            "CONST_SECRET_ROTATION_ENABLED"
-        )
-
-        azure_keyvault_secrets_provider_addon_profile = self.models.ManagedClusterAddonProfile(
-            enabled=True, config={CONST_SECRET_ROTATION_ENABLED: "false"}
-        )
-        if self.context.get_enable_secret_rotation():
-            azure_keyvault_secrets_provider_addon_profile.config[CONST_SECRET_ROTATION_ENABLED] = "true"
-        return azure_keyvault_secrets_provider_addon_profile
-
     def build_gitops_addon_profile(self) -> ManagedClusterAddonProfile:
         """Build gitops addon profile.
 
@@ -1101,18 +1361,11 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
         :return: the ManagedCluster object
         """
         addon_consts = self.context.get_addon_consts()
-        CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME = addon_consts.get(
-            "CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME"
-        )
         CONST_GITOPS_ADDON_NAME = addon_consts.get("CONST_GITOPS_ADDON_NAME")
 
         mc = super().set_up_addon_profiles(mc)
         addon_profiles = mc.addon_profiles
         addons = self.context.get_enable_addons()
-        if "azure-keyvault-secrets-provider" in addons:
-            addon_profiles[
-                CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME
-            ] = self.build_azure_keyvault_secrets_provider_addon_profile()
         if "gitops" in addons:
             addon_profiles[
                 CONST_GITOPS_ADDON_NAME

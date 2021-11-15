@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.1.3
+++++++
+* Fixed inventory item issue.
+
 0.1.2
 ++++++
 * Added support for cluster, datastore and host.

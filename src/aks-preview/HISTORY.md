@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.5.41
+++++++
+* Fix default value behavior for pod identity exception pod labels.
+
 0.5.40
 +++++
 * Add support for new snapshot commands
