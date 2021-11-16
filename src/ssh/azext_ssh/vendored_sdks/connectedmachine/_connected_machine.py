@@ -32,17 +32,17 @@ class ConnectedMachine(ConnectedMachineOperationsMixin):
     """The Hybrid Compute Management Client.
 
     :ivar machines: MachinesOperations operations
-    :vartype machines: connected_machine.operations.MachinesOperations
+    :vartype machines: azure.mgmt.hybridcompute.operations.MachinesOperations
     :ivar machine_extensions: MachineExtensionsOperations operations
-    :vartype machine_extensions: connected_machine.operations.MachineExtensionsOperations
+    :vartype machine_extensions: azure.mgmt.hybridcompute.operations.MachineExtensionsOperations
     :ivar operations: Operations operations
-    :vartype operations: connected_machine.operations.Operations
+    :vartype operations: azure.mgmt.hybridcompute.operations.Operations
     :ivar private_link_scopes: PrivateLinkScopesOperations operations
-    :vartype private_link_scopes: connected_machine.operations.PrivateLinkScopesOperations
+    :vartype private_link_scopes: azure.mgmt.hybridcompute.operations.PrivateLinkScopesOperations
     :ivar private_link_resources: PrivateLinkResourcesOperations operations
-    :vartype private_link_resources: connected_machine.operations.PrivateLinkResourcesOperations
+    :vartype private_link_resources: azure.mgmt.hybridcompute.operations.PrivateLinkResourcesOperations
     :ivar private_endpoint_connections: PrivateEndpointConnectionsOperations operations
-    :vartype private_endpoint_connections: connected_machine.operations.PrivateEndpointConnectionsOperations
+    :vartype private_endpoint_connections: azure.mgmt.hybridcompute.operations.PrivateEndpointConnectionsOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials.TokenCredential
     :param subscription_id: The ID of the target subscription.
@@ -66,6 +66,7 @@ class ConnectedMachine(ConnectedMachineOperationsMixin):
 
         client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
         self._serialize = Serializer(client_models)
+        self._serialize.client_side_validation = False
         self._deserialize = Deserializer(client_models)
 
         self.machines = MachinesOperations(

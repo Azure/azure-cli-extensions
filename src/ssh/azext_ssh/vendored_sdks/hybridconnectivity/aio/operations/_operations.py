@@ -26,7 +26,7 @@ class Operations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.hybridcompute.models
+    :type models: ~hybrid_connectivity_management_api.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -45,11 +45,11 @@ class Operations:
         self,
         **kwargs
     ) -> AsyncIterable["models.OperationListResult"]:
-        """Gets a list of hybrid compute operations.
+        """Lists the available Hybrid Connectivity REST API operations.
 
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either OperationListResult or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.hybridcompute.models.OperationListResult]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~hybrid_connectivity_management_api.models.OperationListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.OperationListResult"]
@@ -57,7 +57,7 @@ class Operations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-05-20"
+        api_version = "2021-10-06-preview"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -84,7 +84,7 @@ class Operations:
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
-            return None, AsyncList(list_of_elem)
+            return deserialized.next_link or None, AsyncList(list_of_elem)
 
         async def get_next(next_link=None):
             request = prepare_request(next_link)
@@ -102,4 +102,4 @@ class Operations:
         return AsyncItemPaged(
             get_next, extract_data
         )
-    list.metadata = {'url': '/providers/Microsoft.HybridCompute/operations'}  # type: ignore
+    list.metadata = {'url': '/providers/Microsoft.HybridConnectivity/operations'}  # type: ignore
