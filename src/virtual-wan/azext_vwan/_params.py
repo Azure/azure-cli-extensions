@@ -139,7 +139,9 @@ def load_arguments(self, _):
         c.argument('gateway_name', id_part=None)
 
     with self.argument_context('network vpn-gateway connection vpn-site-link-conn') as c:
-        c.argument("vpn_site_link_conn_name", help='Name of the VPN gateway connection.', id_part='child_name_1')
+        c.argument("connection_name", help='Name of the VPN gateway connection.', options_list=['--connection-name'])
+        c.argument("item_name", help='Name of the VPN gateway connection.', options_list=['--connection-name'])
+        c.argument("vpn_site_link_conn_name", help='Name of the VPN site link connection.', options_list=['--name', '-n'], id_part='child_name_1')
         c.argument("vpn_site_link", help='The resource ID of VPN Site Link.')
         c.argument('routing_weight', type=int, help='Routing weight.')
         c.argument('shared_key', help='Shared key.')
@@ -193,7 +195,8 @@ def load_arguments(self, _):
         c.argument('link_speed', help='Link speed in Mbps.', type=int)
 
     with self.argument_context('network vpn-site link') as c:
-        c.argument('vpn_site_link_name', help='The name of vpn site link.')
+        c.argument('vpn_site_name', vpn_site_name_type)
+        c.argument('vpn_site_link_name', help='The name of vpn site link.', options_list=['--name', '-n'])
         c.argument('fqdn', help='FQDN of vpn-site-link.')
         c.argument('link_provider_name', help='Name of the link provider.')
         c.argument('link_speed_in_mbps', help='Link speed.', type=int)
