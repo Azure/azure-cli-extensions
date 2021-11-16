@@ -398,7 +398,7 @@ class AzureVWanVHubScenario(ScenarioTest):
         # Test vpn site with links
         self.cmd('network vpn-site create -g {rg} -n {vpn_site} --ip-address 10.0.1.110')
         with self.assertRaisesRegexp(HttpResponseError, 'MissingDefaultLinkForVpnSiteDuringMigrationToLinkFormat'):
-            self.cmd('network vpn-site link add -g {rg} -n {vpn_site} --vpn-site-link-name {vpn_site_link_name} --ip-address 10.0.1.111 --asn 1234 --bgp-peering-address 192.168.0.0')
+            self.cmd('network vpn-site link add -g {rg} --site-name {vpn_site} -n {vpn_site_link_name} --ip-address 10.0.1.111 --asn 1234 --bgp-peering-address 192.168.0.0')
         # Test ipsec policy
         self.cmd('network vpn-gateway connection create '
                  '-g {rg} '
@@ -415,10 +415,10 @@ class AzureVWanVHubScenario(ScenarioTest):
         self.cmd('network vpn-site delete -g {rg} -n {vpn_site}')
 
         self.cmd('network vpn-site create -g {rg} -n {vpn_site} --ip-address 10.0.1.110 --with-link')
-        self.cmd('network vpn-site link add -g {rg} -n {vpn_site} --vpn-site-link-name {vpn_site_link_name} --ip-address 10.0.1.111 --asn 1234 --bgp-peering-address 192.168.1.0')
-        self.cmd('network vpn-site link add -g {rg} -n {vpn_site} --vpn-site-link-name {vpn_site_link_2_name} --ip-address 10.0.1.112 --asn 1234 --bgp-peering-address 192.168.2.0')
-        self.cmd('network vpn-site link list -g {rg} -n {vpn_site}')
-        self.cmd('network vpn-site link remove -g {rg} -n {vpn_site} --index 2')
+        self.cmd('network vpn-site link add -g {rg} --site-name {vpn_site} -n {vpn_site_link_name} --ip-address 10.0.1.111 --asn 1234 --bgp-peering-address 192.168.1.0')
+        self.cmd('network vpn-site link add -g {rg} --site-name {vpn_site} -n {vpn_site_link_2_name} --ip-address 10.0.1.112 --asn 1234 --bgp-peering-address 192.168.2.0')
+        self.cmd('network vpn-site link list -g {rg} --site-name {vpn_site}')
+        self.cmd('network vpn-site link remove -g {rg} --site-name {vpn_site} --index 2')
 
     @ResourceGroupPreparer(name_prefix='cli_test_azure_vwan_vpn_gateway_connection_vpn_site_link_conn', location='westus')
     def test_azure_vwan_vpn_gateway_connection_vpn_site_link_conn(self):
@@ -451,7 +451,7 @@ class AzureVWanVHubScenario(ScenarioTest):
                  checks=[])
 
         self.cmd('network vpn-site create -g {rg} -n {vpn_site} --ip-address 10.0.1.110 --with-link')
-        self.cmd('network vpn-site link add -g {rg} -n {vpn_site} --vpn-site-link-name {vpn_site_link_name} --ip-address 10.0.1.111 --asn 1234 --bgp-peering-address 192.168.1.0')
+        self.cmd('network vpn-site link add -g {rg} --site-name {vpn_site} -n {vpn_site_link_name} --ip-address 10.0.1.111 --asn 1234 --bgp-peering-address 192.168.1.0')
 
         # Test vpn gateway connection with links
         self.cmd('network vpn-gateway connection create '
@@ -467,20 +467,20 @@ class AzureVWanVHubScenario(ScenarioTest):
 
         self.cmd('network vpn-gateway connection vpn-site-link-conn add '
                  '-g {rg} '
-                 '-n {connection} '
+                 '--connection-name {connection} '
                  '--gateway-name {vpngateway} '
-                 '--vpn-site-link-conn-name {vpn_site_link_conn} '
+                 '-n {vpn_site_link_conn} '
                  '--vpn-site-link "{sub}/resourceGroups/{rg}/providers/Microsoft.Network/vpnSites/{vpn_site}/vpnSiteLinks/{vpn_site_link_name}" '
                  '--vpn-connection-protocol-type IKEv2')
 
         self.cmd('network vpn-gateway connection vpn-site-link-conn list '
                  '-g {rg} '
-                 '-n {connection} '
+                 '--connection-name {connection} '
                  '--gateway-name {vpngateway}')
 
         self.cmd('network vpn-gateway connection vpn-site-link-conn remove '
                  '-g {rg} '
-                 '-n {connection} '
+                 '--connection-name {connection} '
                  '--gateway-name {vpngateway} '
                  '--index 2')
 
@@ -515,7 +515,7 @@ class AzureVWanVHubScenario(ScenarioTest):
                  checks=[])
 
         self.cmd('network vpn-site create -g {rg} -n {vpn_site} --ip-address 10.0.1.110 --with-link')
-        self.cmd('network vpn-site link add -g {rg} -n {vpn_site} --vpn-site-link-name {vpn_site_link_name} --ip-address 10.0.1.111 --asn 1234 --bgp-peering-address 192.168.1.0')
+        self.cmd('network vpn-site link add -g {rg} --site-name {vpn_site} -n {vpn_site_link_name} --ip-address 10.0.1.111 --asn 1234 --bgp-peering-address 192.168.1.0')
 
         # Test vpn gateway connection with links
         self.cmd('network vpn-gateway connection create '
@@ -537,11 +537,11 @@ class AzureVWanVHubScenario(ScenarioTest):
                     '--ike-integrity SHA384 --dh-group DHGroup14 --pfs-group PFS14')
 
         # Test link-conn ipsec policy
-        self.cmd('network vpn-gateway connection vpn-site-link-conn ipsec-policy add -g {rg} --gateway-name {vpngateway} -n {connection} '
-                 '--vpn-site-link-conn-name {connection} --ipsec-encryption AES256 --ipsec-integrity SHA256 --sa-lifetime 86471 '
+        self.cmd('network vpn-gateway connection vpn-site-link-conn ipsec-policy add -g {rg} --gateway-name {vpngateway} --connection-name {connection} '
+                 '-n {connection} --ipsec-encryption AES256 --ipsec-integrity SHA256 --sa-lifetime 86471 '
                  '--sa-data-size 429496 --ike-encryption AES256 --ike-integrity SHA384 --dh-group DHGroup14 --pfs-group PFS14')
-        self.cmd('network vpn-gateway connection vpn-site-link-conn ipsec-policy list -g {rg} --gateway-name {vpngateway} -n {connection} --vpn-site-link-conn-name {connection}')
-        self.cmd('network vpn-gateway connection vpn-site-link-conn ipsec-policy remove -g {rg} --gateway-name {vpngateway} -n {connection} --vpn-site-link-conn-name {connection} --index 1')
+        self.cmd('network vpn-gateway connection vpn-site-link-conn ipsec-policy list -g {rg} --gateway-name {vpngateway} --connection-name {connection} -n {connection}')
+        self.cmd('network vpn-gateway connection vpn-site-link-conn ipsec-policy remove -g {rg} --gateway-name {vpngateway} --connection-name {connection} -n {connection} --index 1')
 
     @ResourceGroupPreparer(name_prefix='cli_test_azure_vwan_vhub_bgpconnection', location='westus')
     @VirtualNetworkPreparer()

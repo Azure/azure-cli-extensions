@@ -205,7 +205,7 @@ def load_arguments(self, _):
     with self.argument_context('network vpn-site link list') as c:
         c.argument('resource_name', vpn_gateway_name_type, id_part=None)
         c.argument('virtual_wan_name', vwan_name_type, id_part=None)
-        c.argument('vpn_site_name', vpn_site_name_type, options_list=['--name', '-n'], id_part=None)
+        c.argument('vpn_site_name', vpn_site_name_type, options_list=['--site-name'], id_part=None)
 
     for scope in ['vpn-site', 'vpn-gateway']:
         with self.argument_context('network {}'.format(scope), arg_group='BGP Peering') as c:
