@@ -58,7 +58,7 @@ class TestPodIdentityHelpers(unittest.TestCase):
         # Empty value should not throw error
         profile = ManagedClusterPodIdentityProfile()
         _fill_defaults_for_pod_identity_profile(profile)
-        self.assertEqual(len(profile.user_assigned_identity_exceptions), 0)
+        self.assertIsNone(profile.user_assigned_identity_exceptions)
 
         # Backfill pod labels
         profile = ManagedClusterPodIdentityProfile(
