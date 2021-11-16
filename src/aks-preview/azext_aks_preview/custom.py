@@ -1393,7 +1393,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                        '"--enble-windows-gmsa" or '
                        '"--nodepool-labels"')
     instance = client.get(resource_group_name, name)
-    _fill_defaults_for_pod_identity_profile(isntance.pod_identity_profile)
+    _fill_defaults_for_pod_identity_profile(instance.pod_identity_profile)
 
     if update_autoscaler and len(instance.agent_pool_profiles) > 1:
         raise CLIError('There is more than one node pool in the cluster. Please use "az aks nodepool" command '
