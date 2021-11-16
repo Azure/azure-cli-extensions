@@ -736,7 +736,7 @@ def remove_vpn_gateway_connection_vpn_site_link_conn(cmd, resource_group_name, g
 
 
 # pylint: disable=inconsistent-return-statements
-def add_vpn_gateway_connection_link_ipsec_policy(cmd, resource_group_name, gateway_name, connection_name, vpn_site_link_conn_name, 
+def add_vpn_gateway_connection_link_ipsec_policy(cmd, resource_group_name, gateway_name, connection_name, vpn_site_link_conn_name,
                                                  sa_life_time_seconds, sa_data_size_kilobytes, ipsec_encryption,
                                                  ipsec_integrity, ike_encryption, ike_integrity, dh_group, pfs_group,
                                                  no_wait=False):
