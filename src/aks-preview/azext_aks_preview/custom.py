@@ -1393,6 +1393,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                        '"--enble-windows-gmsa" or '
                        '"--nodepool-labels"')
     instance = client.get(resource_group_name, name)
+    _fill_defaults_for_pod_identity_profile(isntance.pod_identity_profile)
 
     if update_autoscaler and len(instance.agent_pool_profiles) > 1:
         raise CLIError('There is more than one node pool in the cluster. Please use "az aks nodepool" command '
@@ -2020,6 +2021,7 @@ def aks_scale(cmd,  # pylint: disable=unused-argument
               nodepool_name="",
               no_wait=False):
     instance = client.get(resource_group_name, name)
+    _fill_defaults_for_pod_identity_profile(instance.pod_identity_profile)
 
     if len(instance.agent_pool_profiles) > 1 and nodepool_name == "":
         raise CLIError('There are more than one node pool in the cluster. '
@@ -2055,6 +2057,7 @@ def aks_upgrade(cmd,    # pylint: disable=unused-argument, too-many-return-state
         return None
 
     instance = client.get(resource_group_name, name)
+    _fill_defaults_for_pod_identity_profile(instance.pod_identity_profile)
 
     vmas_cluster = False
     for agent_profile in instance.agent_pool_profiles:
@@ -3653,6 +3656,13 @@ def _fill_defaults_for_pod_identity_exceptions(pod_identity_exceptions):
             # when using 2021-09-01 version. As a workaround, we always back fill the empty dict value
             # before sending to the server side.
             exc.pod_labels = dict()
+
+
+def _fill_defaults_for_pod_identity_profile(pod_identity_profile):
+    if not pod_identity_profile:
+        return
+
+    _fill_defaults_for_pod_identity_exceptions(pod_identity_profile.user_assigned_identity_exceptions)
 
 
 def _update_addon_pod_identity(instance, enable, pod_identities=None, pod_identity_exceptions=None, allow_kubenet_consent=None):
