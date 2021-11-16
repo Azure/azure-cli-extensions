@@ -152,6 +152,14 @@ def load_arguments(self, _):
         c.argument('vpn_link_connection_mode', help='Vpn link connection mode.', arg_type=get_enum_type(['Default', 'ResponderOnly', 'InitiatorOnly']))
         c.argument('index', type=int, help='List index of the item (starting with 1).')
 
+    with self.argument_context('network vpn-gateway connection vpn-site-link-conn list') as c:
+        c.argument('resource_name', vpn_gateway_name_type, id_part=None)
+        c.argument('gateway_name', id_part=None)
+
+    with self.argument_context('network vpn-gateway connection vpn-site-link-conn ipsec-policy list') as c:
+        c.argument('resource_name', vpn_gateway_name_type, id_part=None)
+        c.argument('gateway_name', id_part=None)
+
     with self.argument_context('network vpn-gateway connection', arg_group='IP Security') as c:
         c.argument('sa_life_time_seconds', options_list='--sa-lifetime', help='IPSec Security Association (also called Quick Mode or Phase 2 SA) lifetime in seconds for a site-to-site VPN tunnel.', type=int)
         c.argument('sa_data_size_kilobytes', options_list='--sa-data-size', help='IPSec Security Association (also called Quick Mode or Phase 2 SA) payload size in KB for a site-to-site VPN tunnel.', type=int)
@@ -190,6 +198,11 @@ def load_arguments(self, _):
         c.argument('link_provider_name', help='Name of the link provider.')
         c.argument('link_speed_in_mbps', help='Link speed.', type=int)
         c.argument('index', type=int, help='List index of the item (starting with 1).')
+
+    with self.argument_context('network vpn-site link list') as c:
+        c.argument('resource_name', vpn_gateway_name_type, id_part=None)
+        c.argument('virtual_wan_name', vwan_name_type, id_part=None)
+        c.argument('vpn_site_name', vpn_site_name_type, options_list=['--name', '-n'], id_part=None)
 
     for scope in ['vpn-site', 'vpn-gateway']:
         with self.argument_context('network {}'.format(scope), arg_group='BGP Peering') as c:

@@ -411,6 +411,46 @@ helps['network vpn-gateway connection ipsec-policy remove'] = """
     type: command
     short-summary: Remove an IPSec policy from a site-to-site VPN gateway connection.
 """
+
+helps['network vpn-gateway connection vpn-site-link-conn'] = """
+    type: group
+    short-summary: Manage site-to-site VPN gateway connection VPN site link connection.
+"""
+
+helps['network vpn-gateway connection vpn-site-link-conn add'] = """
+    type: command
+    short-summary: Add a VPN site link connection to a site-to-site VPN gateway connection.
+"""
+
+helps['network vpn-gateway connection vpn-site-link-conn list'] = """
+    type: command
+    short-summary: List site-to-site VPN gateway connection VPN site link connection.
+"""
+
+helps['network vpn-gateway connection vpn-site-link-conn remove'] = """
+    type: command
+    short-summary: Remove a VPN site link connection from a site-to-site VPN gateway connection.
+"""
+
+helps['network vpn-gateway connection vpn-site-link-conn ipsec-policy'] = """
+    type: group
+    short-summary: Manage site-to-site VPN gateway connection VPN site link IPSec policies.
+"""
+
+helps['network vpn-gateway connection vpn-site-link-conn ipsec-policy add'] = """
+    type: command
+    short-summary: Add an IPSec policy to a site-to-site VPN gateway connection VPN site link.
+"""
+
+helps['network vpn-gateway connection vpn-site-link-conn ipsec-policy list'] = """
+    type: command
+    short-summary: List site-to-site VPN gateway connection VPN site link IPSec policies.
+"""
+
+helps['network vpn-gateway connection vpn-site-link-conn ipsec-policy remove'] = """
+    type: command
+    short-summary: Remove an IPSec policy from a site-to-site VPN gateway connection VPN site link.
+"""
 # endregion
 
 # region VpnSite
@@ -447,6 +487,27 @@ helps['network vpn-site delete'] = """
 helps['network vpn-site download'] = """
     type: command
     short-summary: Provide a SAS-URL to download the configuration for a VPN site.
+"""
+
+
+helps['network vpn-site link'] = """
+    type: group
+    short-summary: Manage VPN site link.
+"""
+
+helps['network vpn-site link add'] = """
+    type: command
+    short-summary: Add a VPN site link to VPN site configuration.
+"""
+
+helps['network vpn-site link list'] = """
+    type: command
+    short-summary: List VPN site links to VPN site configuration.
+"""
+
+helps['network vpn-site link remove'] = """
+    type: command
+    short-summary: Remove a VPN site link to VPN site configuration.
 """
 # endregion
 
