@@ -161,7 +161,7 @@ def _get_and_write_certificate(cmd, public_key_file, cert_file):
         certificate = certificatedata.token
 
     time_elapsed = time.time() - t0
-    telemetry.add_extension_event('ssh', {'Context.Default.AzureCLI.GetSSHCertificateTime': time_elapsed})
+    telemetry.add_extension_event('ssh', {'Context.Default.AzureCLI.SSHGetCertificateTime': time_elapsed})
 
     if not cert_file:
         cert_file = public_key_file + "-aadcert.pub"
@@ -366,7 +366,7 @@ def _arc_list_access_details(cmd, resource_group, vm_name):
         result = client.list_credentials(resource_group_name=resource_group, machine_name=vm_name,
                                          endpoint_name="default")
         time_elapsed = time.time() - t0
-        telemetry.add_extension_event('ssh', {'Context.Default.AzureCLI.listCredentialsTime': time_elapsed})
+        telemetry.add_extension_event('ssh', {'Context.Default.AzureCLI.SSHListCredentialsTime': time_elapsed})
     except Exception as e:
         telemetry.set_exception(exception='Call to listCredentials failed',
                                 fault_type=consts.List_Credentials_Failed,
