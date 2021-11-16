@@ -88,6 +88,34 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.argument('resource_id', help='The resource id to add in network rule.')
         c.argument('tenant_id', help='The tenant id to add in network rule.')
 
+    with self.argument_context('storage account local-user create') as c:
+        c.argument('account_name', acct_name_type, options_list='--account-name', id_part=None)
+        c.argument('username', options_list=['--username', '--name', '-n'],
+                   help='The name of local user. The username must contain lowercase letters and numbers '
+                        'only. It must be unique only within the storage account.')
+        c.argument('permission_scope', nargs='+', action='append',
+                   help='The permission scope argument list which includes the permissions, service, and resource_name.'
+                        'The permissions can be a combination of the below possible values: '
+                        'Read(r), Write (w), Delete (d), List (l), and Create (c). '
+                        'The service has possible values: blob, file. '
+                        'The resource-name is the container name or the file share name. '
+                        'Example: --permission-scope permissions=r service=blob resource-name=container1'
+                        'Can specify multiple permission scopes: '
+                        '--permission-scope permissions=rw service=blob resource-name=container1'
+                        '--permission-scope permissions=rwd service=file resource-name=share2')
+        c.argument('home_directory', help='The home directory.')
+        c.argument('ssh_authorized_key', nargs='+', action='append',
+                   help='SSH authorized keys for SFTP. Includes a description and key. '
+                        'The key is the base64 encoded SSH public key , with format: '
+                        '<keyType> <keyData> e.g. ssh-rsa AAAABBBB.'
+                        'Example: --ssh_authorized_key description=description key="ssh-ras AAAABBBB"')
+        c.argument('has_shared_key', arg_type=get_enum_type(["true", "false"]),
+                   help='Indicates whether shared key exists. Set it to false to remove existing shared key.')
+        c.argument('has_ssh_key', arg_type=get_enum_type(["true", "false"]),
+                   help='Indicates whether ssh key exists. Set it to false to remove existing SSH key.')
+        c.argument('has_ssh_password', arg_type=get_enum_type(["true", "false"]),
+                   help='Indicates whether ssh password exists. Set it to false to remove existing SSH password.')
+
     with self.argument_context('storage blob service-properties update') as c:
         c.argument('delete_retention', arg_type=get_three_state_flag(), arg_group='Soft Delete',
                    help='Enable soft-delete.')

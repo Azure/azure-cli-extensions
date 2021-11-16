@@ -318,9 +318,36 @@ def update_file_service_properties(cmd, instance, enable_delete_retention=None,
     return params
 
 
-def create_local_user(client, resource_group_name, account_name, username, permission_scopes, home_directory, has_ssh_password, ssh_authorized_keys):
-    LocalUser, PermissionScope = cmd.get_models('LocalUser', 'PermissionScope')
-    local_user = LocalUser(permissionScopes=permission_scopes, homeDirectory=home_directory,
-                           hasSshPassword=has_ssh_password, sshAuthorizedKeys=ssh_authorized_keys)
+def create_local_user(cmd, client, resource_group_name, account_name, username, permission_scope=None, home_directory=None,
+                      has_shared_key=None, has_ssh_key=None, has_ssh_password=None, ssh_authorized_key=None, **kwargs):
+    LocalUser, PermissionScope, SshPublicKey = cmd.get_models('LocalUser', 'PermissionScope', 'SshPublicKey')
+    permission_scopes = []
+    for scope in permission_scope:
+        permissions, service, resource_name = '', '', ''
+        for s in scope:
+            if "permissions" in s:
+                permissions = s.split('=')[1]
+            elif "service" in s:
+                service = s.split('=')[1]
+            elif "resource-name" in s:
+                resource_name = s.split('=')[1]
+        permission_scopes.append(
+            PermissionScope(permissions=permissions, service=service, resource_name=resource_name))
+
+    ssh_authorized_keys = []
+    for ssh_key in ssh_authorized_key:
+        description, key = '', ''
+        for k in ssh_key:
+            if "description" in k:
+                description = k.split('=')[1]
+            elif "key" in k:
+                key = k.split('=')[1]
+        ssh_authorized_keys.append(
+            SshPublicKey(description=description, key=key))
+
+    local_user = LocalUser(permission_scopes=permission_scopes, ssh_authorized_keys=ssh_authorized_keys)
+
+    if home_directory:
+        local_user.home_directory = home_directory
     return client.create_or_update(resource_group_name=resource_group_name, account_name=account_name,
                                    username=username, properties=local_user)
