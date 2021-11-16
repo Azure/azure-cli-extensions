@@ -95,6 +95,16 @@ helps['webpubsub restart'] = """
     short-summary: Restart a Webpubsub.
 """
 
+helps['webpubsub list-usage'] = """
+    type: command
+    short-summary: List resource usage quotas by location.
+"""
+
+helps['webpubsub list-skus'] = """
+    type: command
+    short-summary: List all available skus of the resource.
+"""
+
 helps['webpubsub key show'] = """
     type: command
     short-summary: Show connetion strings and keys for a WebPubSub Service
@@ -179,7 +189,7 @@ helps['webpubsub client start'] = """
 
 helps['webpubsub service broadcast'] = """
     type: command
-    short-summary: Broadcast messages to hub.
+    short-summary: Broadcast messages to hub. Error throws if operation fails.
     examples:
       - name: Send a message to hub
         text: >
@@ -188,47 +198,47 @@ helps['webpubsub service broadcast'] = """
 
 helps['webpubsub service connection exist'] = """
     type: command
-    short-summary: Check whether client connection exists
+    short-summary: Check whether client connection exists.
 """
 
 helps['webpubsub service connection close'] = """
     type: command
-    short-summary: Close a specific client connection
+    short-summary: Close a specific client connection. Error throws if operation fails.
 """
 
 helps['webpubsub service connection send'] = """
     type: command
-    short-summary: Send a message to connection
+    short-summary: Send a message to connection. Error throws if operation fails.
 """
 
 helps['webpubsub service group add-connection'] = """
     type: command
-    short-summary: Add a connection to group
+    short-summary: Add a connection to group. Error throws if operation fails.
 """
 
 helps['webpubsub service group remove-connection'] = """
     type: command
-    short-summary: Remove a connection from group
+    short-summary: Remove a connection from group. Error throws if operation fails.
 """
 
 helps['webpubsub service group add-user'] = """
     type: command
-    short-summary: Add a user to group
+    short-summary: Add a user to group. Error throws if operation fails.
 """
 
 helps['webpubsub service group remove-user'] = """
     type: command
-    short-summary: Remove a user from group
+    short-summary: Remove a user from group. Error throws if operation fails.
 """
 
 helps['webpubsub service group send'] = """
     type: command
-    short-summary: Send a message to group
+    short-summary: Send a message to group. Error throws if operation fails.
 """
 
 helps['webpubsub service user send'] = """
     type: command
-    short-summary: Send a message to user
+    short-summary: Send a message to user. Error throws if operation fails.
 """
 
 helps['webpubsub service user exist'] = """
@@ -238,15 +248,15 @@ helps['webpubsub service user exist'] = """
 
 helps['webpubsub service permission grant'] = """
     type: command
-    short-summary: Grant a group permission to the connection.
+    short-summary: Grant a group permission to the connection. Error throws if operation fails.
 """
 
 helps['webpubsub service permission revoke'] = """
     type: command
-    short-summary: Revoke a group permission from the connection.
+    short-summary: Revoke a group permission from the connection. Error throws if operation fails.
 """
 
 helps['webpubsub service permission check'] = """
     type: command
-    short-summary: Check if a connection has permission to the specified group
+    short-summary: Check if a connection has permission to the specified group.
 """

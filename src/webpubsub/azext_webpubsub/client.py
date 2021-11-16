@@ -128,7 +128,8 @@ class Publisher(threading.Thread):
                     payload = json.dumps({
                         'type': 'event',
                         'event': event,
-                        'data': data
+                        'data': data,
+                        'ackId': self._get_ack_id()
                     })
                     await self.ws.send(payload)
 

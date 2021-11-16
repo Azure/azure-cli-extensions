@@ -14,6 +14,27 @@ import msrest.serialization
 from ._kusto_management_client_enums import *
 
 
+class AcceptedAudiences(msrest.serialization.Model):
+    """Represents an accepted audience trusted by the cluster.
+
+    :param value: GUID or valid URL representing an accepted audience.
+    :type value: str
+    """
+
+    _attribute_map = {
+        'value': {'key': 'value', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        value: Optional[str] = None,
+        **kwargs
+    ):
+        super(AcceptedAudiences, self).__init__(**kwargs)
+        self.value = value
+
+
 class Resource(msrest.serialization.Model):
     """Common fields that are returned in the response for all Azure Resource Manager resources.
 
@@ -147,6 +168,43 @@ class AttachedDatabaseConfigurationListResult(msrest.serialization.Model):
     ):
         super(AttachedDatabaseConfigurationListResult, self).__init__(**kwargs)
         self.value = value
+
+
+class AttachedDatabaseConfigurationsCheckNameRequest(msrest.serialization.Model):
+    """The result returned from a AttachedDatabaseConfigurations check name availability request.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param name: Required. Attached database resource name.
+    :type name: str
+    :ivar type: Required. The type of resource, for instance
+     Microsoft.Kusto/clusters/attachedDatabaseConfigurations. Default value:
+     "Microsoft.Kusto/clusters/attachedDatabaseConfigurations".
+    :vartype type: str
+    """
+
+    _validation = {
+        'name': {'required': True},
+        'type': {'required': True, 'constant': True},
+    }
+
+    _attribute_map = {
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+    }
+
+    type = "Microsoft.Kusto/clusters/attachedDatabaseConfigurations"
+
+    def __init__(
+        self,
+        *,
+        name: str,
+        **kwargs
+    ):
+        super(AttachedDatabaseConfigurationsCheckNameRequest, self).__init__(**kwargs)
+        self.name = name
 
 
 class AzureCapacity(msrest.serialization.Model):
@@ -452,6 +510,8 @@ class Cluster(TrackedResource):
     :type location: str
     :param sku: Required. The SKU of the cluster.
     :type sku: ~kusto_management_client.models.AzureSku
+    :ivar system_data: Metadata pertaining to creation and last modification of the resource.
+    :vartype system_data: ~kusto_management_client.models.SystemData
     :param zones: The availability zones of the cluster.
     :type zones: list[str]
     :param identity: The identity of the cluster, if configured.
@@ -492,8 +552,28 @@ class Cluster(TrackedResource):
     :param enable_double_encryption: A boolean value that indicates if double encryption is
      enabled.
     :type enable_double_encryption: bool
+    :param public_network_access: Public network access to the cluster is enabled by default. When
+     disabled, only private endpoint connection to the cluster is allowed. Possible values include:
+     "Enabled", "Disabled". Default value: "Enabled".
+    :type public_network_access: str or ~kusto_management_client.models.PublicNetworkAccess
+    :param allowed_ip_range_list: The list of ips in the format of CIDR allowed to connect to the
+     cluster.
+    :type allowed_ip_range_list: list[str]
     :param engine_type: The engine type. Possible values include: "V2", "V3". Default value: "V3".
     :type engine_type: str or ~kusto_management_client.models.EngineType
+    :param accepted_audiences: The cluster's accepted audiences.
+    :type accepted_audiences: list[~kusto_management_client.models.AcceptedAudiences]
+    :param enable_auto_stop: A boolean value that indicates if the cluster could be automatically
+     stopped (due to lack of data or no activity for many days).
+    :type enable_auto_stop: bool
+    :param restrict_outbound_network_access: Whether or not to restrict outbound network access.
+     Value is optional but if passed in, must be 'Enabled' or 'Disabled'. Possible values include:
+     "Enabled", "Disabled".
+    :type restrict_outbound_network_access: str or
+     ~kusto_management_client.models.ClusterNetworkAccessFlag
+    :param allowed_fqdn_list: List of allowed FQDNs(Fully Qualified Domain Name) for egress from
+     Cluster.
+    :type allowed_fqdn_list: list[str]
     """
 
     _validation = {
@@ -502,6 +582,7 @@ class Cluster(TrackedResource):
         'type': {'readonly': True},
         'location': {'required': True},
         'sku': {'required': True},
+        'system_data': {'readonly': True},
         'etag': {'readonly': True},
         'state': {'readonly': True},
         'provisioning_state': {'readonly': True},
@@ -518,6 +599,7 @@ class Cluster(TrackedResource):
         'tags': {'key': 'tags', 'type': '{str}'},
         'location': {'key': 'location', 'type': 'str'},
         'sku': {'key': 'sku', 'type': 'AzureSku'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
         'zones': {'key': 'zones', 'type': '[str]'},
         'identity': {'key': 'identity', 'type': 'Identity'},
         'etag': {'key': 'etag', 'type': 'str'},
@@ -535,7 +617,13 @@ class Cluster(TrackedResource):
         'enable_purge': {'key': 'properties.enablePurge', 'type': 'bool'},
         'language_extensions': {'key': 'properties.languageExtensions', 'type': 'LanguageExtensionsList'},
         'enable_double_encryption': {'key': 'properties.enableDoubleEncryption', 'type': 'bool'},
+        'public_network_access': {'key': 'properties.publicNetworkAccess', 'type': 'str'},
+        'allowed_ip_range_list': {'key': 'properties.allowedIpRangeList', 'type': '[str]'},
         'engine_type': {'key': 'properties.engineType', 'type': 'str'},
+        'accepted_audiences': {'key': 'properties.acceptedAudiences', 'type': '[AcceptedAudiences]'},
+        'enable_auto_stop': {'key': 'properties.enableAutoStop', 'type': 'bool'},
+        'restrict_outbound_network_access': {'key': 'properties.restrictOutboundNetworkAccess', 'type': 'str'},
+        'allowed_fqdn_list': {'key': 'properties.allowedFqdnList', 'type': '[str]'},
     }
 
     def __init__(
@@ -554,11 +642,18 @@ class Cluster(TrackedResource):
         key_vault_properties: Optional["KeyVaultProperties"] = None,
         enable_purge: Optional[bool] = False,
         enable_double_encryption: Optional[bool] = False,
+        public_network_access: Optional[Union[str, "PublicNetworkAccess"]] = "Enabled",
+        allowed_ip_range_list: Optional[List[str]] = None,
         engine_type: Optional[Union[str, "EngineType"]] = "V3",
+        accepted_audiences: Optional[List["AcceptedAudiences"]] = None,
+        enable_auto_stop: Optional[bool] = True,
+        restrict_outbound_network_access: Optional[Union[str, "ClusterNetworkAccessFlag"]] = None,
+        allowed_fqdn_list: Optional[List[str]] = None,
         **kwargs
     ):
         super(Cluster, self).__init__(tags=tags, location=location, **kwargs)
         self.sku = sku
+        self.system_data = None
         self.zones = zones
         self.identity = identity
         self.etag = None
@@ -576,7 +671,13 @@ class Cluster(TrackedResource):
         self.enable_purge = enable_purge
         self.language_extensions = None
         self.enable_double_encryption = enable_double_encryption
+        self.public_network_access = public_network_access
+        self.allowed_ip_range_list = allowed_ip_range_list
         self.engine_type = engine_type
+        self.accepted_audiences = accepted_audiences
+        self.enable_auto_stop = enable_auto_stop
+        self.restrict_outbound_network_access = restrict_outbound_network_access
+        self.allowed_fqdn_list = allowed_fqdn_list
 
 
 class ClusterCheckNameRequest(msrest.serialization.Model):
@@ -821,8 +922,28 @@ class ClusterUpdate(Resource):
     :param enable_double_encryption: A boolean value that indicates if double encryption is
      enabled.
     :type enable_double_encryption: bool
+    :param public_network_access: Public network access to the cluster is enabled by default. When
+     disabled, only private endpoint connection to the cluster is allowed. Possible values include:
+     "Enabled", "Disabled". Default value: "Enabled".
+    :type public_network_access: str or ~kusto_management_client.models.PublicNetworkAccess
+    :param allowed_ip_range_list: The list of ips in the format of CIDR allowed to connect to the
+     cluster.
+    :type allowed_ip_range_list: list[str]
     :param engine_type: The engine type. Possible values include: "V2", "V3". Default value: "V3".
     :type engine_type: str or ~kusto_management_client.models.EngineType
+    :param accepted_audiences: The cluster's accepted audiences.
+    :type accepted_audiences: list[~kusto_management_client.models.AcceptedAudiences]
+    :param enable_auto_stop: A boolean value that indicates if the cluster could be automatically
+     stopped (due to lack of data or no activity for many days).
+    :type enable_auto_stop: bool
+    :param restrict_outbound_network_access: Whether or not to restrict outbound network access.
+     Value is optional but if passed in, must be 'Enabled' or 'Disabled'. Possible values include:
+     "Enabled", "Disabled".
+    :type restrict_outbound_network_access: str or
+     ~kusto_management_client.models.ClusterNetworkAccessFlag
+    :param allowed_fqdn_list: List of allowed FQDNs(Fully Qualified Domain Name) for egress from
+     Cluster.
+    :type allowed_fqdn_list: list[str]
     """
 
     _validation = {
@@ -859,7 +980,13 @@ class ClusterUpdate(Resource):
         'enable_purge': {'key': 'properties.enablePurge', 'type': 'bool'},
         'language_extensions': {'key': 'properties.languageExtensions', 'type': 'LanguageExtensionsList'},
         'enable_double_encryption': {'key': 'properties.enableDoubleEncryption', 'type': 'bool'},
+        'public_network_access': {'key': 'properties.publicNetworkAccess', 'type': 'str'},
+        'allowed_ip_range_list': {'key': 'properties.allowedIpRangeList', 'type': '[str]'},
         'engine_type': {'key': 'properties.engineType', 'type': 'str'},
+        'accepted_audiences': {'key': 'properties.acceptedAudiences', 'type': '[AcceptedAudiences]'},
+        'enable_auto_stop': {'key': 'properties.enableAutoStop', 'type': 'bool'},
+        'restrict_outbound_network_access': {'key': 'properties.restrictOutboundNetworkAccess', 'type': 'str'},
+        'allowed_fqdn_list': {'key': 'properties.allowedFqdnList', 'type': '[str]'},
     }
 
     def __init__(
@@ -877,7 +1004,13 @@ class ClusterUpdate(Resource):
         key_vault_properties: Optional["KeyVaultProperties"] = None,
         enable_purge: Optional[bool] = False,
         enable_double_encryption: Optional[bool] = False,
+        public_network_access: Optional[Union[str, "PublicNetworkAccess"]] = "Enabled",
+        allowed_ip_range_list: Optional[List[str]] = None,
         engine_type: Optional[Union[str, "EngineType"]] = "V3",
+        accepted_audiences: Optional[List["AcceptedAudiences"]] = None,
+        enable_auto_stop: Optional[bool] = True,
+        restrict_outbound_network_access: Optional[Union[str, "ClusterNetworkAccessFlag"]] = None,
+        allowed_fqdn_list: Optional[List[str]] = None,
         **kwargs
     ):
         super(ClusterUpdate, self).__init__(**kwargs)
@@ -899,7 +1032,13 @@ class ClusterUpdate(Resource):
         self.enable_purge = enable_purge
         self.language_extensions = None
         self.enable_double_encryption = enable_double_encryption
+        self.public_network_access = public_network_access
+        self.allowed_ip_range_list = allowed_ip_range_list
         self.engine_type = engine_type
+        self.accepted_audiences = accepted_audiences
+        self.enable_auto_stop = enable_auto_stop
+        self.restrict_outbound_network_access = restrict_outbound_network_access
+        self.allowed_fqdn_list = allowed_fqdn_list
 
 
 class ComponentsSgqdofSchemasIdentityPropertiesUserassignedidentitiesAdditionalproperties(msrest.serialization.Model):
@@ -1466,6 +1605,53 @@ class DiagnoseVirtualNetworkResult(msrest.serialization.Model):
         self.findings = findings
 
 
+class EndpointDependency(msrest.serialization.Model):
+    """A domain name that a service is reached at, including details of the current connection status.
+
+    :param domain_name: The domain name of the dependency.
+    :type domain_name: str
+    :param endpoint_details: The ports used when connecting to DomainName.
+    :type endpoint_details: list[~kusto_management_client.models.EndpointDetail]
+    """
+
+    _attribute_map = {
+        'domain_name': {'key': 'domainName', 'type': 'str'},
+        'endpoint_details': {'key': 'endpointDetails', 'type': '[EndpointDetail]'},
+    }
+
+    def __init__(
+        self,
+        *,
+        domain_name: Optional[str] = None,
+        endpoint_details: Optional[List["EndpointDetail"]] = None,
+        **kwargs
+    ):
+        super(EndpointDependency, self).__init__(**kwargs)
+        self.domain_name = domain_name
+        self.endpoint_details = endpoint_details
+
+
+class EndpointDetail(msrest.serialization.Model):
+    """Current TCP connectivity information from the Kusto cluster to a single endpoint.
+
+    :param port: The port an endpoint is connected to.
+    :type port: int
+    """
+
+    _attribute_map = {
+        'port': {'key': 'port', 'type': 'int'},
+    }
+
+    def __init__(
+        self,
+        *,
+        port: Optional[int] = None,
+        **kwargs
+    ):
+        super(EndpointDetail, self).__init__(**kwargs)
+        self.port = port
+
+
 class EventGridDataConnection(DataConnection):
     """Class representing an Event Grid data connection.
 
@@ -1880,22 +2066,15 @@ class IotHubDataConnection(DataConnection):
 class KeyVaultProperties(msrest.serialization.Model):
     """Properties of the key vault.
 
-    All required parameters must be populated in order to send to Azure.
-
-    :param key_name: Required. The name of the key vault key.
+    :param key_name: The name of the key vault key.
     :type key_name: str
     :param key_version: The version of the key vault key.
     :type key_version: str
-    :param key_vault_uri: Required. The Uri of the key vault.
+    :param key_vault_uri: The Uri of the key vault.
     :type key_vault_uri: str
     :param user_identity: The user assigned identity (ARM resource id) that has access to the key.
     :type user_identity: str
     """
-
-    _validation = {
-        'key_name': {'required': True},
-        'key_vault_uri': {'required': True},
-    }
 
     _attribute_map = {
         'key_name': {'key': 'keyName', 'type': 'str'},
@@ -1907,9 +2086,9 @@ class KeyVaultProperties(msrest.serialization.Model):
     def __init__(
         self,
         *,
-        key_name: str,
-        key_vault_uri: str,
+        key_name: Optional[str] = None,
         key_version: Optional[str] = None,
+        key_vault_uri: Optional[str] = None,
         user_identity: Optional[str] = None,
         **kwargs
     ):
@@ -1982,6 +2161,132 @@ class ListResourceSkusResult(msrest.serialization.Model):
     ):
         super(ListResourceSkusResult, self).__init__(**kwargs)
         self.value = value
+
+
+class ManagedPrivateEndpoint(Resource):
+    """Class representing a managed private endpoint.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Fully qualified resource ID for the resource. Ex -
+     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
+    :vartype type: str
+    :ivar system_data: Metadata pertaining to creation and last modification of the resource.
+    :vartype system_data: ~kusto_management_client.models.SystemData
+    :param private_link_resource_id: The ARM resource ID of the resource for which the managed
+     private endpoint is created.
+    :type private_link_resource_id: str
+    :param private_link_resource_region: The region of the resource to which the managed private
+     endpoint is created.
+    :type private_link_resource_region: str
+    :param group_id: The groupId in which the managed private endpoint is created.
+    :type group_id: str
+    :param request_message: The user request message.
+    :type request_message: str
+    :ivar provisioning_state: The provisioned state of the resource. Possible values include:
+     "Running", "Creating", "Deleting", "Succeeded", "Failed", "Moving".
+    :vartype provisioning_state: str or ~kusto_management_client.models.ProvisioningState
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+        'system_data': {'readonly': True},
+        'provisioning_state': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
+        'private_link_resource_id': {'key': 'properties.privateLinkResourceId', 'type': 'str'},
+        'private_link_resource_region': {'key': 'properties.privateLinkResourceRegion', 'type': 'str'},
+        'group_id': {'key': 'properties.groupId', 'type': 'str'},
+        'request_message': {'key': 'properties.requestMessage', 'type': 'str'},
+        'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        private_link_resource_id: Optional[str] = None,
+        private_link_resource_region: Optional[str] = None,
+        group_id: Optional[str] = None,
+        request_message: Optional[str] = None,
+        **kwargs
+    ):
+        super(ManagedPrivateEndpoint, self).__init__(**kwargs)
+        self.system_data = None
+        self.private_link_resource_id = private_link_resource_id
+        self.private_link_resource_region = private_link_resource_region
+        self.group_id = group_id
+        self.request_message = request_message
+        self.provisioning_state = None
+
+
+class ManagedPrivateEndpointListResult(msrest.serialization.Model):
+    """The list managed private endpoints operation response.
+
+    :param value: The list of managed private endpoints.
+    :type value: list[~kusto_management_client.models.ManagedPrivateEndpoint]
+    """
+
+    _attribute_map = {
+        'value': {'key': 'value', 'type': '[ManagedPrivateEndpoint]'},
+    }
+
+    def __init__(
+        self,
+        *,
+        value: Optional[List["ManagedPrivateEndpoint"]] = None,
+        **kwargs
+    ):
+        super(ManagedPrivateEndpointListResult, self).__init__(**kwargs)
+        self.value = value
+
+
+class ManagedPrivateEndpointsCheckNameRequest(msrest.serialization.Model):
+    """The result returned from a managedPrivateEndpoints check name availability request.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param name: Required. Managed private endpoint resource name.
+    :type name: str
+    :ivar type: Required. The type of resource, for instance
+     Microsoft.Kusto/clusters/managedPrivateEndpoints. Default value:
+     "Microsoft.Kusto/clusters/managedPrivateEndpoints".
+    :vartype type: str
+    """
+
+    _validation = {
+        'name': {'required': True},
+        'type': {'required': True, 'constant': True},
+    }
+
+    _attribute_map = {
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+    }
+
+    type = "Microsoft.Kusto/clusters/managedPrivateEndpoints"
+
+    def __init__(
+        self,
+        *,
+        name: str,
+        **kwargs
+    ):
+        super(ManagedPrivateEndpointsCheckNameRequest, self).__init__(**kwargs)
+        self.name = name
 
 
 class Operation(msrest.serialization.Model):
@@ -2199,6 +2504,317 @@ class OptimizedAutoscale(msrest.serialization.Model):
         self.is_enabled = is_enabled
         self.minimum = minimum
         self.maximum = maximum
+
+
+class OutboundNetworkDependenciesEndpoint(Resource):
+    """Endpoints accessed for a common purpose that the Kusto Service Environment requires outbound network access to.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Fully qualified resource ID for the resource. Ex -
+     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
+    :vartype type: str
+    :ivar etag: A unique read-only string that changes whenever the resource is updated.
+    :vartype etag: str
+    :param category: The type of service accessed by the Kusto Service Environment, e.g., Azure
+     Storage, Azure SQL Database, and Azure Active Directory.
+    :type category: str
+    :param endpoints: The endpoints that the Kusto Service Environment reaches the service at.
+    :type endpoints: list[~kusto_management_client.models.EndpointDependency]
+    :ivar provisioning_state: The provisioned state of the resource. Possible values include:
+     "Running", "Creating", "Deleting", "Succeeded", "Failed", "Moving".
+    :vartype provisioning_state: str or ~kusto_management_client.models.ProvisioningState
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+        'etag': {'readonly': True},
+        'provisioning_state': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'etag': {'key': 'etag', 'type': 'str'},
+        'category': {'key': 'properties.category', 'type': 'str'},
+        'endpoints': {'key': 'properties.endpoints', 'type': '[EndpointDependency]'},
+        'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        category: Optional[str] = None,
+        endpoints: Optional[List["EndpointDependency"]] = None,
+        **kwargs
+    ):
+        super(OutboundNetworkDependenciesEndpoint, self).__init__(**kwargs)
+        self.etag = None
+        self.category = category
+        self.endpoints = endpoints
+        self.provisioning_state = None
+
+
+class OutboundNetworkDependenciesEndpointListResult(msrest.serialization.Model):
+    """Collection of Outbound Environment Endpoints.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param value: Required. Collection of resources.
+    :type value: list[~kusto_management_client.models.OutboundNetworkDependenciesEndpoint]
+    :ivar next_link: Link to next page of resources.
+    :vartype next_link: str
+    """
+
+    _validation = {
+        'value': {'required': True},
+        'next_link': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'value': {'key': 'value', 'type': '[OutboundNetworkDependenciesEndpoint]'},
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        value: List["OutboundNetworkDependenciesEndpoint"],
+        **kwargs
+    ):
+        super(OutboundNetworkDependenciesEndpointListResult, self).__init__(**kwargs)
+        self.value = value
+        self.next_link = None
+
+
+class PrivateEndpointConnection(Resource):
+    """A private endpoint connection.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Fully qualified resource ID for the resource. Ex -
+     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
+    :vartype type: str
+    :ivar system_data: Metadata pertaining to creation and last modification of the resource.
+    :vartype system_data: ~kusto_management_client.models.SystemData
+    :ivar private_endpoint: Private endpoint which the connection belongs to.
+    :vartype private_endpoint: ~kusto_management_client.models.PrivateEndpointProperty
+    :param private_link_service_connection_state: Connection State of the Private Endpoint
+     Connection.
+    :type private_link_service_connection_state:
+     ~kusto_management_client.models.PrivateLinkServiceConnectionStateProperty
+    :ivar group_id: Group id of the private endpoint.
+    :vartype group_id: str
+    :ivar provisioning_state: Provisioning state of the private endpoint.
+    :vartype provisioning_state: str
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+        'system_data': {'readonly': True},
+        'private_endpoint': {'readonly': True},
+        'group_id': {'readonly': True},
+        'provisioning_state': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
+        'private_endpoint': {'key': 'properties.privateEndpoint', 'type': 'PrivateEndpointProperty'},
+        'private_link_service_connection_state': {'key': 'properties.privateLinkServiceConnectionState', 'type': 'PrivateLinkServiceConnectionStateProperty'},
+        'group_id': {'key': 'properties.groupId', 'type': 'str'},
+        'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        private_link_service_connection_state: Optional["PrivateLinkServiceConnectionStateProperty"] = None,
+        **kwargs
+    ):
+        super(PrivateEndpointConnection, self).__init__(**kwargs)
+        self.system_data = None
+        self.private_endpoint = None
+        self.private_link_service_connection_state = private_link_service_connection_state
+        self.group_id = None
+        self.provisioning_state = None
+
+
+class PrivateEndpointConnectionListResult(msrest.serialization.Model):
+    """A list of private endpoint connections.
+
+    :param value: Array of private endpoint connections.
+    :type value: list[~kusto_management_client.models.PrivateEndpointConnection]
+    """
+
+    _attribute_map = {
+        'value': {'key': 'value', 'type': '[PrivateEndpointConnection]'},
+    }
+
+    def __init__(
+        self,
+        *,
+        value: Optional[List["PrivateEndpointConnection"]] = None,
+        **kwargs
+    ):
+        super(PrivateEndpointConnectionListResult, self).__init__(**kwargs)
+        self.value = value
+
+
+class PrivateEndpointProperty(msrest.serialization.Model):
+    """Private endpoint which the connection belongs to.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Resource id of the private endpoint.
+    :vartype id: str
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(PrivateEndpointProperty, self).__init__(**kwargs)
+        self.id = None
+
+
+class PrivateLinkResource(Resource):
+    """A private link resource.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Fully qualified resource ID for the resource. Ex -
+     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
+    :vartype type: str
+    :ivar system_data: Metadata pertaining to creation and last modification of the resource.
+    :vartype system_data: ~kusto_management_client.models.SystemData
+    :ivar group_id: The private link resource group id.
+    :vartype group_id: str
+    :ivar required_members: The private link resource required member names.
+    :vartype required_members: list[str]
+    :ivar required_zone_names: The private link resource required zone names.
+    :vartype required_zone_names: list[str]
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+        'system_data': {'readonly': True},
+        'group_id': {'readonly': True},
+        'required_members': {'readonly': True},
+        'required_zone_names': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
+        'group_id': {'key': 'properties.groupId', 'type': 'str'},
+        'required_members': {'key': 'properties.requiredMembers', 'type': '[str]'},
+        'required_zone_names': {'key': 'properties.requiredZoneNames', 'type': '[str]'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(PrivateLinkResource, self).__init__(**kwargs)
+        self.system_data = None
+        self.group_id = None
+        self.required_members = None
+        self.required_zone_names = None
+
+
+class PrivateLinkResourceListResult(msrest.serialization.Model):
+    """A list of private link resources.
+
+    :param value: Array of private link resources.
+    :type value: list[~kusto_management_client.models.PrivateLinkResource]
+    """
+
+    _attribute_map = {
+        'value': {'key': 'value', 'type': '[PrivateLinkResource]'},
+    }
+
+    def __init__(
+        self,
+        *,
+        value: Optional[List["PrivateLinkResource"]] = None,
+        **kwargs
+    ):
+        super(PrivateLinkResourceListResult, self).__init__(**kwargs)
+        self.value = value
+
+
+class PrivateLinkServiceConnectionStateProperty(msrest.serialization.Model):
+    """Connection State of the Private Endpoint Connection.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :param status: The private link service connection status.
+    :type status: str
+    :param description: The private link service connection description.
+    :type description: str
+    :ivar actions_required: Any action that is required beyond basic workflow (approve/ reject/
+     disconnect).
+    :vartype actions_required: str
+    """
+
+    _validation = {
+        'actions_required': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'status': {'key': 'status', 'type': 'str'},
+        'description': {'key': 'description', 'type': 'str'},
+        'actions_required': {'key': 'actionsRequired', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        status: Optional[str] = None,
+        description: Optional[str] = None,
+        **kwargs
+    ):
+        super(PrivateLinkServiceConnectionStateProperty, self).__init__(**kwargs)
+        self.status = status
+        self.description = description
+        self.actions_required = None
 
 
 class ProxyResource(Resource):

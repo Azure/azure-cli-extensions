@@ -1378,6 +1378,9 @@ class DeploymentSettings(msrest.serialization.Model):
     :param runtime_version: Runtime version. Possible values include: "Java_8", "Java_11",
      "NetCore_31". Default value: "Java_8".
     :type runtime_version: str or ~azure.mgmt.appplatform.v2021_09_01_preview.models.RuntimeVersion
+    :param container_probe_settings: Container liveness and readiness probe settings.
+    :type container_probe_settings:
+     ~azure.mgmt.appplatform.v2021_09_01_preview.models.DeploymentSettingsContainerProbeSettings
     """
 
     _attribute_map = {
@@ -1388,6 +1391,7 @@ class DeploymentSettings(msrest.serialization.Model):
         'net_core_main_entry_path': {'key': 'netCoreMainEntryPath', 'type': 'str'},
         'environment_variables': {'key': 'environmentVariables', 'type': '{str}'},
         'runtime_version': {'key': 'runtimeVersion', 'type': 'str'},
+        'container_probe_settings': {'key': 'containerProbeSettings', 'type': 'DeploymentSettingsContainerProbeSettings'},
     }
 
     def __init__(
@@ -1402,6 +1406,26 @@ class DeploymentSettings(msrest.serialization.Model):
         self.net_core_main_entry_path = kwargs.get('net_core_main_entry_path', None)
         self.environment_variables = kwargs.get('environment_variables', None)
         self.runtime_version = kwargs.get('runtime_version', "Java_8")
+        self.container_probe_settings = kwargs.get('container_probe_settings', None)
+
+
+class DeploymentSettingsContainerProbeSettings(msrest.serialization.Model):
+    """Container liveness and readiness probe settings.
+
+    :param disable_probe: Indicates whether disable the liveness and readiness probe.
+    :type disable_probe: bool
+    """
+
+    _attribute_map = {
+        'disable_probe': {'key': 'disableProbe', 'type': 'bool'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(DeploymentSettingsContainerProbeSettings, self).__init__(**kwargs)
+        self.disable_probe = kwargs.get('disable_probe', None)
 
 
 class DiagnosticParameters(msrest.serialization.Model):
