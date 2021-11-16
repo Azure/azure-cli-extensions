@@ -297,7 +297,7 @@ def _arc_get_client_side_proxy():
         raise azclierror.BadRequestError("Couldn't identify the platform architecture.")
     else:
         telemetry.set_exception(exception='Unsuported architecture for installing proxy',
-                                fault_type=consts.Proxy_Unsuported_Arch_Fault_Type,
+                                fault_type=consts.PROXY_UNSUPPORTED_ARCH_FAULT_TYPE,
                                 summary=f'{machine} is not supported for installing client proxy')
         raise azclierror.BadRequestError(f"Unsuported architecture: {machine} is not currently supported")
 
@@ -314,7 +314,7 @@ def _arc_get_client_side_proxy():
         older_version_location = older_version_location + ".exe"
     elif operating_system not in ('Linux', 'Darwin'):
         telemetry.set_exception(exception='Unsuported OS for installing ssh client proxy',
-                                fault_type=consts.Proxy_Unsuported_OS_Fault_Type,
+                                fault_type=consts.PROXY_UNSUPPORTED_OS_FAULT_TYPE,
                                 summary=f'{operating_system} is not supported for installing client proxy')
         raise azclierror.BadRequestError(f"Unsuported OS: {operating_system} platform is not currently supported")
 
@@ -331,7 +331,7 @@ def _arc_get_client_side_proxy():
                 response_content = response.read()
                 response.close()
         except Exception as e:
-            telemetry.set_exception(exception=e, fault_type=consts.Proxy_Download_Failed_Fault_Type,
+            telemetry.set_exception(exception=e, fault_type=consts.PROXY_DOWNLOAD_FAILED_FAULT_TYPE,
                                     summary=f'Failed to download proxy from {request_uri}')
             raise azclierror.ClientRequestError(f"Failed to download client proxy executable from {request_uri}. "
                                                 "Error: " + str(e)) from e
@@ -359,8 +359,7 @@ def _arc_get_client_side_proxy():
     return install_location
 
 
-# Get the Access Details to connect to Arc Connectivity platform from the HybridCompute Resource Provider
-# TO DO: This is a temporary API call to get the relay info. We will move to a different one in the future.
+# Get the Access Details to connect to Arc Connectivity platform from the HybridConnectivity RP
 def _arc_list_access_details(cmd, resource_group, vm_name):
     from azext_ssh._client_factory import cf_endpoint
     client = cf_endpoint(cmd.cli_ctx)
@@ -372,7 +371,7 @@ def _arc_list_access_details(cmd, resource_group, vm_name):
         telemetry.add_extension_event('ssh', {'Context.Default.AzureCLI.SSHListCredentialsTime': time_elapsed})
     except Exception as e:
         telemetry.set_exception(exception='Call to listCredentials failed',
-                                fault_type=consts.List_Credentials_Failed,
+                                fault_type=consts.LIST_CREDENTIALS_FAILED_FAULT_TYPE,
                                 summary=f'listCredentials failed with error: {str(e)}.')
         raise azclierror.ClientRequestError(f"Request for Azure Relay Information Failed: {str(e)}")
 

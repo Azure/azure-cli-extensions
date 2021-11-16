@@ -18,13 +18,12 @@ def load_arguments(self, _):
         c.argument('cert_file', options_list=['--certificate-file', '-c'],
                    help='Path to a certificate file used for authentication when using local user credentials.')
         c.argument('port', options_list=['--port'], help='SSH port')
-        # how to have completer
         c.argument('resource_type', options_list=['--resource-type'],
-                   help='Either Microsoft.Compute or Microsoft.HybridCompute',
+                   help='Resource type should be either Microsoft.Compute or Microsoft.HybridCompute',
                    completer=["Microsoft.HybridCompute", "Microsoft.Compute"])
         c.argument('ssh_client_path', options_list=['--ssh-client-path'],
                    help='Path to ssh executable. Default to ssh pre-installed if not provided.')
-        c.argument('delete_credentials', options_list=['--delete-private-key'],
+        c.argument('delete_credentials', options_list=['--force-delete-credentials', '--delete-private-key'],
                    help=('This is an internal argument. This argument is used by Azure Portal to provide a one click '
                          'SSH login experience in Cloud shell.'),
                    deprecate_info=c.deprecate(hide=True), action='store_true')
@@ -46,7 +45,7 @@ def load_arguments(self, _):
                    help='Folder where new generated keys will be stored.')
         c.argument('port', options_list=['--port'], help='Port to connect to on the remote host.')
         c.argument('resource_type', options_list=['--resource-type'],
-                   help='Either Microsoft.Compute or Microsoft.HybridCompute')
+                   help='Resource type should be either Microsoft.Compute or Microsoft.HybridCompute')
         c.argument('cert_file', options_list=['--certificate-file', '-c'], help='Path to certificate file')
 
     with self.argument_context('ssh cert') as c:
@@ -66,7 +65,7 @@ def load_arguments(self, _):
         c.argument('port', options_list=['--port'], help='Port to connect to on the remote host.')
         c.argument('ssh_client_path', options_list=['--ssh-client-path'],
                    help='Path to ssh executable. Default to ssh pre-installed if not provided.')
-        c.argument('delete_credentials', options_list=['--delete-private-key'],
+        c.argument('delete_credentials', options_list=['--force-delete-credentials', '--delete-private-key'],
                    help=('This is an internal argument. This argument is used by Azure Portal to provide a one click '
                          'SSH login experience in Cloud shell.'),
                    deprecate_info=c.deprecate(hide=True), action='store_true')

@@ -28,9 +28,9 @@ helps['ssh vm'] = """
         - name: Using additional ssh arguments
           text: |
             az ssh vm --ip 1.2.3.4 -- -A -o ForwardX11=yes
-        - name: Give the Resource ID of a VM to SSH using AAD issued certificates. Using the resource ID to identify the target machine is useful when there is an Azure VM and a Arc Server with the same name in the same resource group.
+        - name: Give the Resource Type of a VM to SSH using AAD issued certificates. Using the resource type is useful when there is an Azure VM and a Arc Server with the same name in the same resource group.
           text: |
-            az ssh vm --resource-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRG/providers/Microsoft.Compute/virtualMachines/myVM
+            az ssh vm --resource-type Microsoft.Compute --resource-group myResourceGroup --vm-name myVM
         - name: Give a local user name to SSH using local user credentials on the target machine using certificate based authentication.
           text: |
             az ssh vm --local-user username --ip 1.2.3.4 --certificate-file cert.pub --private-key key
@@ -39,7 +39,7 @@ helps['ssh vm'] = """
             az ssh vm --local-user username --resource-group myResourceGroup --vm-name myVM --private-key-file key
         - name: Give a local user name to SSH using local user credentials on the target machine using password based authentication.
           text: |
-            az ssh vm --local-user username --resource-id /subscriptions/mySubsription/resourceGroups/myResourceGroup/providers/Microsoft.HybridCompute/machines/myArcServer
+            az ssh vm --local-user username --resource-group myResourceGroup --vm-name myArcServer
 """
 
 helps['ssh config'] = """
@@ -85,9 +85,6 @@ helps['ssh arc'] = """
         - name: Give a resource group and Arc Server Name to SSH using AAD issued certificates
           text: |
             az ssh arc --resource-group myResourceGroup --vm-name myArcServer
-        - name: Give the Resource ID of an Arc Server to SSH using AAD issued certificates
-          text: |
-            az ssh arc --resource-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRG/providers/Microsoft.HybridCompute/machines/myArcServer
         - name: Using a custom private key file
           text: |
             az ssh arc --resource-group myResourceGroup --vm-name myArcServer --private-key-file key --public-key-file key.pub
@@ -99,5 +96,5 @@ helps['ssh arc'] = """
             az ssh arc --resource-group myRG --vm-name myVM --local-user name --private-key-file key
         - name: Give a local user name to SSH to a local user using password-based authentication
           text: |
-            az ssh arc --resource-id /subscriptions/mySubsription/resourceGroups/myRG/providers/Microsoft.HybridCompute/machines/myArcServer --local-user username
+            az ssh arc --resource-group myResourceGroup --vm-name myArcServer --local-user username
 """

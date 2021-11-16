@@ -61,7 +61,7 @@ def start_ssh_connection(relay_info, proxy_path, vm_name, ip, username, cert_fil
     logger.debug("Running ssh command %s", ' '.join(command))
     subprocess.call(command, shell=platform.system() == 'Windows', env=env)
 
-    connection_duration = (time.time() - connection_duration)/60
+    connection_duration = (time.time() - connection_duration) / 60
 
     ssh_connection_data = {'Context.Default.AzureCLI.SSHConnectionDurationInMinutes': connection_duration}
     if log_file and _get_connection_status(log_file):
