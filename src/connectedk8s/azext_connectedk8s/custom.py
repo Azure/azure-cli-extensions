@@ -661,8 +661,8 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
         try:
             helm_values = helm_core_utils.get_all_helm_values(release_namespace, helm_client_location)
             if (not disable_cl and
-                helm_values.get('systemDefaultValues').get('customLocations').get('enabled') is True and
-                helm_values.get('systemDefaultValues').get('customLocations').get('oid') != ""):
+                    helm_values.get('systemDefaultValues').get('customLocations').get('enabled') is True and
+                    helm_values.get('systemDefaultValues').get('customLocations').get('oid') != ""):
                 raise Exception("Disabling 'cluster-connect' feature is not allowed when 'custom-locations' feature "
                                 "is enabled.")
 

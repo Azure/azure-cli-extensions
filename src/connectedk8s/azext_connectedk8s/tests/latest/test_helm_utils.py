@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import unittest
-import mock
+import unittest.mock
 import os
 
 import azext_connectedk8s._helm_utils as helm_utils
@@ -13,11 +13,11 @@ class HelmUtilsTest(unittest.TestCase):
 
     def test_get_chart_path(self):
 
-        mocked_HelmCoreUtils = mock.Mock()
+        mocked_HelmCoreUtils = unittest.mock.Mock()
         mocked_instance = mocked_HelmCoreUtils.return_value
         mocked_instance.pull_helm_chart.return_value = None
 
-        with mock.patch('azext_connectedk8s._helm_utils.HelmCoreUtils', mocked_HelmCoreUtils):
+        with unittest.mock.patch('azext_connectedk8s._helm_utils.HelmCoreUtils', mocked_HelmCoreUtils):
             try:
                 chart_path = helm_utils.get_chart_path("test_registry_path", None, None, "helm")
             except Exception as e:
