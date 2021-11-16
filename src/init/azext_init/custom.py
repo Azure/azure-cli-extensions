@@ -13,8 +13,10 @@ from azure.cli.core.style import Style, print_styled_text
 from azure.cli.core.util import ConfiguredDefaultSetter
 from azure.cli.core.commands import DEFAULT_CACHE_TTL
 from ._configs import (OUTPUT_LIST, INTERACTIVE_CONFIG_BUNDLE)
-from ._text import (MSG_WELCOME, MSG_PROMPT_MANAGE_GLOBAL, MSG_NO_CONFIGURATION, MSG_PROMPT_GLOBAL_OUTPUT,
-                    MSG_PROMPT_TELEMETRY, MSG_PROMPT_FILE_LOGGING, MSG_PROMPT_CACHE_TTL, INIT_OPTION)
+from ._text import (MSG_WELCOME, MSG_SELECT_STEP, MSG_PROMPT_MANAGE_GLOBAL, MSG_NO_CONFIGURATION,
+                    MSG_PROMPT_GLOBAL_OUTPUT, MSG_PROMPT_TELEMETRY, MSG_PROMPT_FILE_LOGGING, MSG_PROMPT_CACHE_TTL,
+                    INIT_STEP_OPTION_LIST)
+from ._utils import prompt_option_list
 
 
 logger = get_logger(__name__)
@@ -26,12 +28,14 @@ def handle_init(cmd):
 
     load_existing_configuration(cmd)
 
-    choose_val = prompt_choice_list("\nTry an option", INIT_OPTION)
+    print_styled_text((Style.PRIMARY, MSG_SELECT_STEP))
 
-    if choose_val in [0, 1]:
+    choose_value = prompt_option_list(INIT_STEP_OPTION_LIST)
+
+    if choose_value in [0, 1]:
         set_build_in_bundles(cmd)
 
-    if choose_val == 2:
+    if choose_value == 2:
         handle_interactive_mode(cmd, INTERACTIVE_CONFIG_BUNDLE)
 
 
