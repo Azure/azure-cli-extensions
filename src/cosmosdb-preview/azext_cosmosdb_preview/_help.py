@@ -93,7 +93,7 @@ helps['managed-cassandra datacenter create'] = """
 type: command
 short-summary: Create a Datacenter in an Azure Managed Cassandra Cluster.
 examples:
-  - name: Create a Managed Cassandra Datacenter in a Cassandra Cluster. Each datacenter should atleast have 3 nodes.
+  - name: Create a Managed Cassandra Datacenter in a Cassandra Cluster. Each datacenter should at least have 3 nodes.
     text: |
       az managed-cassandra datacenter create \\
       --resource-group MyResourceGroup \\
@@ -101,7 +101,10 @@ examples:
       --data-center-name MyDataCenter \\
       --data-center-location westus2 \\
       --node-count 3 \\
-      --delegated-subnet-id /subscriptions/94d9b402-77b4-4049-b4c1-947bc6b7729b/resourceGroups/My-vnet/providers/Microsoft.Network/virtualNetworks/test-vnet/subnets/test-subnet
+      --delegated-subnet-id /subscriptions/94d9b402-77b4-4049-b4c1-947bc6b7729b/resourceGroups/My-vnet/providers/Microsoft.Network/virtualNetworks/test-vnet/subnets/test-subnet \\
+      --sku Standard_DS14_v2 \\
+      --disk-sku P30 \\
+      --disk-capacity 4
 """
 
 helps['managed-cassandra datacenter update'] = """

@@ -2780,6 +2780,12 @@ class DataCenterResourceProperties(msrest.serialization.Model):
      file to be included in the cassandra.yaml for all nodes in this data center. The fragment
      should be Base64 encoded, and only a subset of keys are allowed.
     :type base64_encoded_cassandra_yaml_fragment: str
+    :param sku: The VM sku the data center should be used.
+    :type sku: str
+    :param disk_sku: The Disk Sku the data center should be used.
+    :type disk_sku: str
+    :param disk_capacity: Number of disks each node of data center should use.
+    :type disk_capacity: int
     """
 
     _validation = {
@@ -2793,6 +2799,9 @@ class DataCenterResourceProperties(msrest.serialization.Model):
         'node_count': {'key': 'nodeCount', 'type': 'int'},
         'seed_nodes': {'key': 'seedNodes', 'type': '[SeedNode]'},
         'base64_encoded_cassandra_yaml_fragment': {'key': 'base64EncodedCassandraYamlFragment', 'type': 'str'},
+        'sku': {'key': 'sku', 'type': 'str'},
+        'disk_sku': {'key': 'diskSku', 'type': 'str'},
+        'disk_capacity': {'key': 'diskCapacity', 'type': 'int'},
     }
 
     def __init__(
@@ -2806,6 +2815,9 @@ class DataCenterResourceProperties(msrest.serialization.Model):
         self.node_count = kwargs.get('node_count', None)
         self.seed_nodes = None
         self.base64_encoded_cassandra_yaml_fragment = kwargs.get('base64_encoded_cassandra_yaml_fragment', None)
+        self.sku = kwargs.get('sku', None)
+        self.disk_sku = kwargs.get('disk_sku', None)
+        self.disk_capacity = kwargs.get('disk_capacity', None)
 
 
 class RegionalServiceResource(msrest.serialization.Model):

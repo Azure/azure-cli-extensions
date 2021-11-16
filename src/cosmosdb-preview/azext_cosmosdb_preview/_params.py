@@ -74,6 +74,9 @@ def load_arguments(self, _):
         c.argument('data_center_location', options_list=['--data-center-location', '-l'], help="Azure Location of the Datacenter", required=True)
         c.argument('delegated_subnet_id', options_list=['--delegated-subnet-id', '-s'], help="The resource id of a subnet where ip addresses of the Cassandra virtual machines will be allocated. This must be in the same region as data_center_location.", required=True)
         c.argument('node_count', options_list=['--node-count', '-n'], validator=validate_node_count, help="The number of Cassandra virtual machines in this data center. The minimum value is 3.", required=True)
+        c.argument('sku', options_list=['--sku'], validator=validate_node_count, help="The virtual machines SKU for Cassandra virtual machines in this data center. The default value is Standard_DS14_v2.", required=False)
+        c.argument('disk_sku', options_list=['--disk-sku'], validator=validate_node_count, help="The disk SKU for Cassandra virtual machines in this data center. The default value is P30.", required=False)
+        c.argument('disk_capacity', options_list=['--disk-capacity'], validator=validate_node_count, help="The number of disks in Cassandra virtual machines in this data center. The minimum value is 1.", required=False)
 
     # Managed Cassandra Datacenter
     with self.argument_context('managed-cassandra datacenter list') as c:
