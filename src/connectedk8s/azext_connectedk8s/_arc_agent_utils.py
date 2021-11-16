@@ -210,8 +210,8 @@ class ArcAgentUtils:
         if self.__proxy_details and self.__proxy_details.get('proxy_cert'):
             cmd_helm.extend(["--set-file", "global.proxyCert={}"
                             .format(self.__proxy_details.get('proxy_cert'))])
-        if (self.__proxy_details and (self.__proxy_details.get('https_proxy') or \
-                self.__proxy_details.get('http_proxy') or self.__proxy_details.get('no_proxy'))):
+        if (self.__proxy_details and (self.__proxy_details.get('https_proxy') or
+                                      self.__proxy_details.get('http_proxy') or self.__proxy_details.get('no_proxy'))):
             cmd_helm.extend(["--set", "global.isProxyEnabled={}".format(True)])
         if self.__proxy_details and self.__proxy_details.get('disable_proxy'):
             cmd_helm.extend(["--set", "global.isProxyEnabled={}".format(False)])
