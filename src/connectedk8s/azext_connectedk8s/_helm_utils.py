@@ -7,6 +7,7 @@ import os
 import shutil
 import platform
 import urllib
+import stat
 
 import yaml
 from knack.log import get_logger

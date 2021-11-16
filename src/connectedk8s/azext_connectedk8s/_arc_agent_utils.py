@@ -27,11 +27,12 @@ def _execute_helm_command(cmd_helm, error=None):
                                 fault_type=consts.Install_HelmRelease_Fault_Type,
                                 summary='Unable to install helm release')
         logger.warning("Please check if the azure-arc namespace was deployed and run" +
-                        " 'kubectl get pods -n azure-arc' to check if all the pods are" +
-                        " in running state. A possible cause for pods stuck in pending" +
-                        " state could be insufficient resources on the kubernetes cluster" +
-                        " to onboard to arc.")
+                       " 'kubectl get pods -n azure-arc' to check if all the pods are" +
+                       " in running state. A possible cause for pods stuck in pending" +
+                       " state could be insufficient resources on the kubernetes cluster" +
+                       " to onboard to arc.")
         raise CLIInternalError(str.format(error, error_helm_cmd.decode("ascii")))
+
 
 class ArcAgentUtils:
 
@@ -102,7 +103,8 @@ class ArcAgentUtils:
 
         _execute_helm_command(cmd_helm_upgrade, consts.Update_Agent_Failure)
 
-    def execute_arc_agent_upgrade(self, chart_path, release_namespace, upgrade_timeout, existing_user_values, helm_client_location):
+    def execute_arc_agent_upgrade(self, chart_path, release_namespace, upgrade_timeout, existing_user_values,
+                                  helm_client_location):
 
         cmd_helm_upgrade = [helm_client_location, "upgrade", "azure-arc", chart_path, "--namespace",
                             release_namespace, "--output", "json", "--atomic", "--wait", "--timeout",
@@ -184,7 +186,7 @@ class ArcAgentUtils:
         cmd_helm_delete = self.__set_params(cmd_helm_delete)
 
         _execute_helm_command(cmd_helm_delete, "Error occured while cleaning up arc agents. " +
-                                    "Helm release deletion failed: ")
+                              "Helm release deletion failed: ")
 
         kube_core_utils.ensure_namespace_cleanup(configuration)
 
@@ -209,7 +211,7 @@ class ArcAgentUtils:
             cmd_helm.extend(["--set-file", "global.proxyCert={}"
                             .format(self.__proxy_details.get('proxy_cert'))])
         if (self.__proxy_details and (self.__proxy_details.get('https_proxy') or
-                self.__proxy_details.get('http_proxy') or self.__proxy_details.get('no_proxy'))):
+            self.__proxy_details.get('http_proxy') or self.__proxy_details.get('no_proxy'))):
             cmd_helm.extend(["--set", "global.isProxyEnabled={}".format(True)])
         if self.__proxy_details and self.__proxy_details.get('disable_proxy'):
             cmd_helm.extend(["--set", "global.isProxyEnabled={}".format(False)])

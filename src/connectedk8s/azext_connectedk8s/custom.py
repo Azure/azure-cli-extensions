@@ -305,11 +305,11 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
         configmap = api_instance.read_namespaced_config_map('azure-clusterconfig', 'azure-arc')
     except Exception as e:  # pylint: disable=broad-except
         kube_core_utils.kubernetes_exception_handler(e, consts.Read_ConfigMap_Fault_Type, 'Unable to read ConfigMap',
-                                                error_message="Unable to read ConfigMap 'azure-clusterconfig' in"
-                                                " 'azure-arc' namespace: ", message_for_not_found="The helm release"
-                                                " 'azure-arc' is present but the azure-arc namespace/configmap is"
-                                                " missing. Please run 'helm delete azure-arc --no-hooks' to cleanup"
-                                                " the release before onboarding the cluster again.")
+                                                     error_message="Unable to read ConfigMap 'azure-clusterconfig' in"
+                                                     " 'azure-arc' namespace: ", message_for_not_found="The helm release"
+                                                     " 'azure-arc' is present but the azure-arc namespace/configmap is"
+                                                     " missing. Please run 'helm delete azure-arc --no-hooks' to cleanup"
+                                                     " the release before onboarding the cluster again.")
 
     subscription_id = get_subscription_id(cmd.cli_ctx)
 
@@ -395,7 +395,7 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
     helm_client_location = helm_utils.install_helm_client()
 
     release_namespace = kube_core_utils.validate_release_namespace(client, cluster_name, resource_group_name,
-                                                                   configuration, kube_config, kube_context, 
+                                                                   configuration, kube_config, kube_context,
                                                                    helm_client_location)
 
     # Fetch Connected Cluster for agent version
@@ -403,7 +403,7 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
     api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
 
     kube_utils.add_kubernetes_telemetry_extension_event(connected_cluster, configuration, api_instance)
-    
+
     helm_core_utils = HelmCoreUtils(kube_config, kube_context)
     registry_path = helm_utils.get_helm_registry_path(cmd, connected_cluster.location, helm_core_utils,
                                                       connected_cluster.agent_version, dp_endpoint_dogfood,
@@ -520,7 +520,8 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
 
     arc_agent_utils = ArcAgentUtils(kube_config, kube_context, values_file)
 
-    arc_agent_utils.execute_arc_agent_upgrade(chart_path, release_namespace, upgrade_timeout, existing_user_values, helm_client_location)
+    arc_agent_utils.execute_arc_agent_upgrade(chart_path, release_namespace, upgrade_timeout, existing_user_values,
+                                              helm_client_location)
     return str.format(consts.Upgrade_Agent_Success, connected_cluster.name)
 
 
@@ -604,7 +605,7 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
                                                       enable_cluster_connect, enable_cl, custom_locations_oid,
                                                       helm_client_location, azrbac_client_id, azrbac_client_secret,
                                                       azrbac_skip_authz_check)
-                                                      
+
     return str.format(consts.Successfully_Enabled_Features, features, connected_cluster.name)
 
 
@@ -647,7 +648,7 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
     # Install helm client
     helm_client_location = helm_utils.install_helm_client()
     release_namespace = kube_core_utils.validate_release_namespace(client, cluster_name, resource_group_name,
-                                                                   configuration, kube_config, kube_context, 
+                                                                   configuration, kube_config, kube_context,
                                                                    helm_client_location)
 
     # Fetch Connected Cluster for agent version
@@ -659,9 +660,9 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
     if disable_cluster_connect:
         try:
             helm_values = helm_core_utils.get_all_helm_values(release_namespace, helm_client_location)
-            if not disable_cl and \
-            helm_values.get('systemDefaultValues').get('customLocations').get('enabled') is True and \
-            helm_values.get('systemDefaultValues').get('customLocations').get('oid') != "":
+            if (not disable_cl and
+                helm_values.get('systemDefaultValues').get('customLocations').get('enabled') is True and
+                helm_values.get('systemDefaultValues').get('customLocations').get('oid') != ""):
                 raise Exception("Disabling 'cluster-connect' feature is not allowed when 'custom-locations' feature "
                                 "is enabled.")
 
