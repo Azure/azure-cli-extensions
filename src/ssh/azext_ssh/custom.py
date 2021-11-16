@@ -286,6 +286,9 @@ def _arc_get_client_side_proxy():
     operating_system = platform.system()
     machine = platform.machine()
 
+    logger.debug("Platform OS: %s", operating_system)
+    logger.debug("Platform architecture: %s", machine)
+
     if machine.endswith('64'):
         architecture = 'amd64'
     elif machine.endswith('86'):
