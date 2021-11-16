@@ -7,6 +7,7 @@ This package provides commands to
 - List the different versions of databases and collections that were modified
 - Trigger a point in time restore on the Azure CosmosDB continuous mode backup accounts
 - Update the backup interval and backup retention of periodic mode backup accounts
+- Update the identities associated with a Cosmos DB account
 
 ## How to use ##
 
