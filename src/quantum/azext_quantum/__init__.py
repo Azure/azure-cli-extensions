@@ -11,13 +11,13 @@ import azext_quantum._help  # pylint: disable=unused-import
 # This is the version reported by the CLI to the service when submitting requests.
 # This should be in sync with the extension version in 'setup.py', unless we need to
 # submit using a different version.
-CLI_REPORTED_VERSION = "0.8.0"
+CLI_REPORTED_VERSION = "0.9.0"
 
 
 class QuantumCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
-        super(QuantumCommandsLoader, self).__init__(cli_ctx=cli_ctx)
+        super().__init__(cli_ctx=cli_ctx)
 
         # Save the CLI context config for use in load_arguments
         self.cli_ctx_config = cli_ctx.config

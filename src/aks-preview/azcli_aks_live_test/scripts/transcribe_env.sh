@@ -39,6 +39,7 @@ set -o xtrace
 [[ -z "${CLI_BRANCH}" ]] && (echo "CLI_BRANCH is empty"; exit 1)
 [[ -z "${EXT_REPO}" ]] && (echo "EXT_REPO is empty"; exit 1)
 [[ -z "${EXT_BRANCH}" ]] && (echo "EXT_BRANCH is empty"; exit 1)
+[[ -z "${BACKWARD_COMPATIBILITY_TEST}" ]] && (echo "BACKWARD_COMPATIBILITY_TEST is empty")
 # base directories for acs, aks-preview and live test
 [[ -z "${ACS_BASE_DIR}" ]] && (echo "ACS_BASE_DIR is empty"; exit 1)
 [[ -z "${AKS_PREVIEW_BASE_DIR}" ]] && (echo "AKS_PREVIEW_BASE_DIR is empty"; exit 1)
@@ -90,3 +91,6 @@ echo "CLI_REPO=${CLI_REPO}" >> env.list
 echo "CLI_BRANCH=${CLI_BRANCH}" >> env.list
 echo "EXT_REPO=${EXT_REPO}" >> env.list
 echo "EXT_BRANCH=${EXT_BRANCH}" >> env.list
+
+# backward compatibility
+echo "BACKWARD_COMPATIBILITY_TEST=${BACKWARD_COMPATIBILITY_TEST}" >> env.list

@@ -2,10 +2,12 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-# pylint: disable=line-too-long,protected-access
+
+# pylint: disable=line-too-long,protected-access,no-self-use,too-many-statements
 
 import argparse
-from knack.arguments import CLIArgumentType, CLIError
+from knack.arguments import CLIArgumentType
+from azure.cli.core.azclierror import InvalidArgumentValueError
 
 
 class JobParamsAction(argparse._AppendAction):
@@ -19,8 +21,8 @@ class JobParamsAction(argparse._AppendAction):
             try:
                 key, value = item.split('=', 1)
                 params[key] = value
-            except ValueError:
-                raise CLIError('Usage error: {} KEY=VALUE [KEY=VALUE ...]'.format(option_string))
+            except ValueError as e:
+                raise InvalidArgumentValueError('Usage error: {} KEY=VALUE [KEY=VALUE ...]'.format(option_string)) from e
         return params
 
 

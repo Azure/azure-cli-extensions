@@ -13,21 +13,71 @@ interactions:
       ParameterSetName:
       - -l
       User-Agent:
-      - AZURECLI/2.24.2 azsdk-python-storagepoolmanagement/unknown Python/3.8.3 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.29.1 azsdk-python-mgmt-storagepool/1.0.0b1 Python/3.9.6 (Windows-10-10.0.19043-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StoragePool/locations/eastus/diskPoolZones?api-version=2021-04-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StoragePool/locations/eastus2euap/skus?api-version=2021-08-01
   response:
     body:
-      string: '{"value":[{"availabilityZones":["3","1","2"],"sku":{"name":"Basic","tier":"Basic"}},{"availabilityZones":["3","1","2"],"sku":{"name":"Standard","tier":"Standard"}},{"availabilityZones":["3","1","2"],"sku":{"name":"Premium","tier":"Premium"}}]}'
+      string: '{"value":[{"apiVersion":"2021-08-01","capabilities":[{"name":"MaxNumberOfDisks","value":"32"}],"locationInfo":{"location":"EastUS2EUAP","zones":["3","2","1"]},"resourceType":"diskPools","name":"Standard_S1","tier":"Standard"},{"apiVersion":"2021-08-01","capabilities":[{"name":"MaxNumberOfDisks","value":"32"}],"locationInfo":{"location":"EastUS2EUAP","zones":["3","2","1"]},"resourceType":"diskPools","name":"Premium_P1","tier":"Premium"},{"apiVersion":"2021-08-01","capabilities":[{"name":"MaxNumberOfDisks","value":"16"}],"locationInfo":{"location":"EastUS2EUAP","zones":["3","2","1"]},"resourceType":"diskPools","name":"Basic_B1","tier":"Basic"}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '243'
+      - '651'
+      content-security-policy:
+      - default-src 'self'; frame-ancestors 'none'
       content-type:
-      - application/json
+      - application/json; charset=UTF-8
       date:
-      - Thu, 10 Jun 2021 09:31:53 GMT
+      - Fri, 22 Oct 2021 10:09:51 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-return-client-request-id:
+      - 'true'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - disk-pool list-zones
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -l
+      User-Agent:
+      - AZURECLI/2.29.1 azsdk-python-mgmt-storagepool/1.0.0b1 Python/3.9.6 (Windows-10-10.0.19043-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StoragePool/locations/eastus2euap/diskPoolZones?api-version=2021-08-01
+  response:
+    body:
+      string: '{"value":[{"availabilityZones":[],"sku":{"name":"Basic_B1","tier":"Basic"}},{"availabilityZones":[],"sku":{"name":"Standard_S1","tier":"Standard"}},{"availabilityZones":[],"sku":{"name":"Premium_P1","tier":"Premium"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '219'
+      content-security-policy:
+      - default-src 'self'; frame-ancestors 'none'
+      content-type:
+      - application/json; charset=UTF-8
+      date:
+      - Fri, 22 Oct 2021 10:09:56 GMT
       expires:
       - '-1'
       pragma:

@@ -10,7 +10,6 @@
 import copy
 from hashlib import md5
 from typing import Any, Dict, List, Tuple
-from azext_k8s_extension.partner_extensions.DefaultExtension import DefaultExtension
 
 import azure.mgmt.relay
 import azure.mgmt.relay.models
@@ -30,7 +29,7 @@ from msrestazure.azure_exceptions import CloudError
 from .._client_factory import cf_resources
 from .DefaultExtension import DefaultExtension, user_confirmation_factory
 from ..vendored_sdks.models import (
-    ExtensionInstance,
+    Extension,
     Scope,
     ScopeCluster
 )
@@ -145,7 +144,7 @@ class AzureMLKubernetes(DefaultExtension):
             release_train = 'stable'
 
         create_identity = True
-        extension_instance = ExtensionInstance(
+        extension = Extension(
             extension_type=extension_type,
             auto_upgrade_minor_version=auto_upgrade_minor_version,
             release_train=release_train,
@@ -156,7 +155,7 @@ class AzureMLKubernetes(DefaultExtension):
             identity=None,
             location=""
         )
-        return extension_instance, name, create_identity
+        return extension, name, create_identity
 
     def Delete(self, cmd, client, resource_group_name, cluster_name, name, cluster_type, yes):
         # Give a warning message
@@ -190,7 +189,7 @@ class AzureMLKubernetes(DefaultExtension):
             self.__set_up_inference_ssl(configuration_settings, configuration_protected_settings)
         elif not (enable_training or enable_inference):
             raise InvalidArgumentValueError(
-                "Please create Microsoft.AzureML.Kubernetes extension instance either "
+                "Please create Microsoft.AzureML.Kubernetes extension, either "
                 "for Machine Learning training or inference by specifying "
                 f"'--configuration-settings {self.ENABLE_TRAINING}=true' or '--configuration-settings {self.ENABLE_INFERENCE}=true'")
 
@@ -478,9 +477,9 @@ def _get_cluster_rp_api_version(cluster_type) -> Tuple[str, str]:
     elif cluster_type.lower() == 'appliances':
         rp = 'Microsoft.ResourceConnector'
         parent_api_version = '2020-09-15-privatepreview'
-    elif cluster_type.lower() == '':
+    elif cluster_type.lower() == '' or cluster_type.lower() == 'managedclusters':
         rp = 'Microsoft.ContainerService'
-        parent_api_version = '2017-07-01'
+        parent_api_version = '2021-05-01'
     else:
         raise InvalidArgumentValueError("Error! Cluster type '{}' is not supported".format(cluster_type))
     return rp, parent_api_version

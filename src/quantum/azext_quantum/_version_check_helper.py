@@ -3,6 +3,8 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+# pylint: disable=bare-except
+
 from azure.cli.core.extension.operations import list_versions
 from azure.cli.core.util import ConfiguredDefaultSetter
 
@@ -46,3 +48,5 @@ def check_version(config, reported_version, today):
             return (f"\nVersion {reported_version} of the quantum extension is installed locally,"
                     f" but version {latest_version} is now available.\n"
                     "You can use 'az extension update -n quantum' to upgrade.\n")
+
+    return None

@@ -120,7 +120,13 @@ def load_arguments(self, _):
                    'include a skipToken parameter that specifies a starting point to use for subsequent calls.')
         c.argument('conditional_members', type=str, help='Conditional Members.')
 
-    with self.argument_context('network manager list-effective-config') as c:
+    with self.argument_context('network manager list-effective-connectivity-config') as c:
+        c.argument('virtual_network_name', options_list=['--vnet-name', '--virtual-network-name'], type=str, help='The name of the virtual network.', id_part=None)
+        c.argument('skip_token', type=str, help='SkipToken is only used if a previous operation returned a partial '
+                   'result. If a previous response contains a nextLink element, the value of the nextLink element will '
+                   'include a skipToken parameter that specifies a starting point to use for subsequent calls.')
+
+    with self.argument_context('network manager list-effective-security-admin-rule') as c:
         c.argument('virtual_network_name', options_list=['--vnet-name', '--virtual-network-name'], type=str, help='The name of the virtual network.', id_part=None)
         c.argument('skip_token', type=str, help='SkipToken is only used if a previous operation returned a partial '
                    'result. If a previous response contains a nextLink element, the value of the nextLink element will '
@@ -140,7 +146,7 @@ def load_arguments(self, _):
                    'include a skipToken parameter that specifies a starting point to use for subsequent calls.')
         c.argument('regions', nargs='+', help='List of locations.')
 
-    with self.argument_context('network manager list-active-config') as c:
+    with self.argument_context('network manager list-active-connectivity-config') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part=None)
         c.argument('top', type=int, help='An optional query parameter which specifies the maximum number of records to '
@@ -177,7 +183,7 @@ def load_arguments(self, _):
         c.argument('applies_to_groups', action=AddConnectivityconfigurationsAppliesToGroups, nargs='+', help='Groups '
                    'for configuration')
         c.argument('hubs', action=AddGroupMembers, nargs='+', help='The hub vnets.')
-        c.argument('delete_existing_peering', options_list=['--delete-peering'], arg_type=get_three_state_flag(), help='Flag if need to remove current '
+        c.argument('delete_existing_peering', arg_type=get_three_state_flag(), help='Flag if need to remove current '
                    'existing peerings.')
 
     with self.argument_context('network manager connect-config update') as c:
@@ -193,7 +199,7 @@ def load_arguments(self, _):
         c.argument('applies_to_groups', action=AddConnectivityconfigurationsAppliesToGroups, nargs='+', help='Groups '
                    'for configuration')
         c.argument('hubs', action=AddGroupMembers, nargs='+', help='The hub vnets.')
-        c.argument('delete_existing_peering', options_list=['--delete-peering'], arg_type=get_three_state_flag(), help='Flag if need to remove current '
+        c.argument('delete_existing_peering', arg_type=get_three_state_flag(), help='Flag if need to remove current '
                    'existing peerings.')
         c.ignore('connectivity_configuration')
 
@@ -228,7 +234,7 @@ def load_arguments(self, _):
                    'changes.')
         c.argument('display_name', type=str, help='A friendly name for the network group.')
         c.argument('description', type=str, help='A description of the network group.')
-        c.argument('member_type', arg_type=get_enum_type(['VirtualNetwork', 'Subnet']), help='Group member type.')
+        c.argument('member_type', arg_type=get_enum_type(['Microsoft.Network/virtualNetworks', 'Microsoft.Network/virtualNetworks/subnets']), help='Group member type.')
         c.argument('group_members', action=AddGroupMembers, nargs='+', help='Group members of network group.')
         c.argument('conditional_membership', type=str, help='Network group conditional filter.')
 
@@ -296,7 +302,7 @@ def load_arguments(self, _):
         c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.',
                    id_part='child_name_1')
 
-    with self.argument_context('network manager admin-rule list') as c:
+    with self.argument_context('network manager security-admin-config rule-collection rule list') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part=None)
         c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.')
@@ -349,7 +355,7 @@ def load_arguments(self, _):
         c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.',
                    id_part='child_name_1')
 
-    with self.argument_context('network manager admin-rule collection create') as c:
+    with self.argument_context('network manager security-admin-config rule-collection create') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part='name')
         c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.',
@@ -360,7 +366,7 @@ def load_arguments(self, _):
         c.argument('applies_to_groups', action=AddConnectivityconfigurationsAppliesToGroups, nargs='+', help='Groups '
                    'for configuration')
 
-    with self.argument_context('network manager admin-rule collection update') as c:
+    with self.argument_context('network manager security-admin-config rule-collection update') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part='name')
         c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.',
@@ -371,7 +377,7 @@ def load_arguments(self, _):
         c.argument('applies_to_groups', action=AddConnectivityconfigurationsAppliesToGroups, nargs='+', help='Groups '
                    'for configuration')
 
-    with self.argument_context('network manager admin-rule collection list') as c:
+    with self.argument_context('network manager security-admin-config rule-collection list') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part=None)
         c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.',
@@ -382,21 +388,21 @@ def load_arguments(self, _):
                    'result. If a previous response contains a nextLink element, the value of the nextLink element will '
                    'include a skipToken parameter that specifies a starting point to use for subsequent calls.')
 
-    with self.argument_context('network manager admin-rule collection show') as c:
+    with self.argument_context('network manager security-admin-config rule-collection show') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part='name')
         c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.',
                    id_part='child_name_1')
         c.argument('rule_collection_name', type=str, help='The name of the admin rule collection.')
 
-    with self.argument_context('network manager admin-rule collection delete') as c:
+    with self.argument_context('network manager security-admin-config rule-collection delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part='name')
         c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.',
                    id_part='child_name_1')
         c.argument('rule_collection_name', type=str, help='The name of the admin rule collection.')
 
-    with self.argument_context('network manager admin-rule') as c:
+    with self.argument_context('network manager security-admin-config rule-collection rule') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part='name')
         c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.',
@@ -404,7 +410,7 @@ def load_arguments(self, _):
         c.argument('rule_name', type=str, help='The name of the rule.', id_part='child_name_2')
         c.argument('rule_collection_name', type=str, help='The name of the admin rule collection.')
 
-    with self.argument_context('network manager admin-rule create') as c:
+    with self.argument_context('network manager security-admin-config rule-collection rule create') as c:
         c.argument('access', type=str, help='Indicates the access allowed for this particular rule.', arg_type=get_enum_type(['Allow', 'Deny', 'AlwaysAllow']))
         c.argument('flag', type=str, help='Default rule flag.')
         c.argument('kind', type=str, help='Required. Whether the rule is custom or default.Constant filled by server.', arg_type=get_enum_type(['Custom', 'Default']))
@@ -421,7 +427,7 @@ def load_arguments(self, _):
         c.argument('direction', arg_type=get_enum_type(['Inbound', 'Outbound']), help='Indicates if the traffic '
                    'matched against the rule in inbound or outbound.')
 
-    with self.argument_context('network manager admin-rule update') as c:
+    with self.argument_context('network manager security-admin-config rule-collection rule update') as c:
         c.argument('access', type=str, help='Indicates the access allowed for this particular rule.', arg_type=get_enum_type(['Allow', 'Deny', 'AlwaysAllow']))
         c.argument('flag', type=str, help='Default rule flag.')
         c.argument('kind', type=str, help='Required. Whether the rule is custom or default.Constant filled by server.', arg_type=get_enum_type(['Custom', 'Default']))
@@ -438,7 +444,7 @@ def load_arguments(self, _):
         c.argument('direction', arg_type=get_enum_type(['Inbound', 'Outbound']), help='Indicates if the traffic '
                    'matched against the rule in inbound or outbound.')
 
-    with self.argument_context('network manager user-rule collection create') as c:
+    with self.argument_context('network manager security-user-config rule-collection create') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part='name')
         c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.',
@@ -449,7 +455,7 @@ def load_arguments(self, _):
         c.argument('applies_to_groups', action=AddConnectivityconfigurationsAppliesToGroups, nargs='+', help='Groups '
                    'for configuration')
 
-    with self.argument_context('network manager user-rule collection update') as c:
+    with self.argument_context('network manager security-user-config rule-collection update') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part='name')
         c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.',
@@ -460,7 +466,7 @@ def load_arguments(self, _):
         c.argument('applies_to_groups', action=AddConnectivityconfigurationsAppliesToGroups, nargs='+', help='Groups '
                    'for configuration')
 
-    with self.argument_context('network manager user-rule collection list') as c:
+    with self.argument_context('network manager security-user-config rule-collection list') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part=None)
         c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.',
@@ -471,28 +477,28 @@ def load_arguments(self, _):
                    'result. If a previous response contains a nextLink element, the value of the nextLink element will '
                    'include a skipToken parameter that specifies a starting point to use for subsequent calls.')
 
-    with self.argument_context('network manager user-rule collection show') as c:
+    with self.argument_context('network manager security-user-config rule-collection show') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part='name')
         c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.',
                    id_part='child_name_1')
         c.argument('rule_collection_name', type=str, help='The name of the admin rule collection.')
 
-    with self.argument_context('network manager user-rule collection delete') as c:
+    with self.argument_context('network manager security-user-config rule-collection delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part='name')
         c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.',
                    id_part='child_name_1')
         c.argument('rule_collection_name', type=str, help='The name of the admin rule collection.')
 
-    with self.argument_context('network manager user-rule') as c:
+    with self.argument_context('network manager security-user-config rule-collection rule') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('network_manager_name', type=str, help='The name of the network manager.')
         c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.')
         c.argument('rule_collection_name', type=str, help='The name of the admin rule collection.')
         c.argument('rule_name', type=str, help='The name of the rule.', id_part='child_name_2')
 
-    with self.argument_context('network manager user-rule list') as c:
+    with self.argument_context('network manager security-user-config rule-collection rule list') as c:
         c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part=None)
         c.argument('top', type=int, help='An optional query parameter which specifies the maximum number of records to '
                    'be returned by the server.')
@@ -500,7 +506,7 @@ def load_arguments(self, _):
                    'result. If a previous response contains a nextLink element, the value of the nextLink element will '
                    'include a skipToken parameter that specifies a starting point to use for subsequent calls.')
 
-    with self.argument_context('network manager user-rule create') as c:
+    with self.argument_context('network manager security-user-config rule-collection rule create') as c:
         c.argument('display_name', type=str, help='A friendly name for the rule.')
         c.argument('description', type=str, help='A description for this rule. Restricted to 140 chars.')
         c.argument('protocol', arg_type=get_enum_type(['Tcp', 'Udp', 'Icmp', 'Esp', 'Any', 'Ah']), help='Network '
@@ -515,7 +521,7 @@ def load_arguments(self, _):
         c.argument('flag', type=str, help='Default rule flag.')
         c.argument('kind', type=str, help='Required. Whether the rule is custom or default.Constant filled by server.', arg_type=get_enum_type(['Custom', 'Default']))
 
-    with self.argument_context('network manager user-rule update') as c:
+    with self.argument_context('network manager security-user-config rule-collection rule update') as c:
         c.argument('display_name', type=str, help='A friendly name for the rule.')
         c.argument('description', type=str, help='A description for this rule. Restricted to 140 chars.')
         c.argument('protocol', arg_type=get_enum_type(['Tcp', 'Udp', 'Icmp', 'Esp', 'Any', 'Ah']), help='Network '
