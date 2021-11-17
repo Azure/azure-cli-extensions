@@ -444,7 +444,6 @@ helps['network vpn-gateway connection vpn-site-link-conn remove'] = """
       - name: Remove aVPN site link connection from site-to-site VPN gateway connection
         text: |
             az network vpn-gateway connection vpn-site-link-conn remove -g MyRG --connection-name MyConnection --gateway-name MyGateway --index 1
-"
 """
 
 helps['network vpn-gateway connection vpn-site-link-conn ipsec-policy'] = """
