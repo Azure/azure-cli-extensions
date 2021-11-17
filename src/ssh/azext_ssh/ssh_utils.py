@@ -244,7 +244,7 @@ def _start_cleanup(cert_file, private_key_file, public_key_file, delete_credenti
                 log_dir = os.path.dirname(private_key_file)
             log_file_name = 'ssh_client_log_' + str(os.getpid())
             log_file = os.path.join(log_dir, log_file_name)
-            ssh_arg_list = ssh_arg_list + ['-E', log_file, '-v']
+            ssh_arg_list = ['-E', log_file, '-v'] + ssh_arg_list
         # Create a new process that will wait until the connection is established and then delete keys.
         cleanup_process = mp.Process(target=_do_cleanup, args=(delete_keys or delete_credentials,
                                                                delete_cert or delete_credentials,
