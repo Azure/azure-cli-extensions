@@ -3,6 +3,6 @@
 Release History
 ===============
 
-0.1.0
+1.0.0
 ++++++
-* Initial release.
+* Support managed HSM Geo replication.
