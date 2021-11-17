@@ -9,6 +9,10 @@ MSG_WELCOME = "\nWelcome to AZ INIT! This command will guide you to set up commo
 
 MSG_SELECT_STEP = "\nSelect an option by typing it's number\n"
 
+MSG_INPUT_SELECTION = "Your selection: "
+
+MSG_CURRENT_SETTINGS = "Your current config settings:\n"
+
 MSG_INTRO = "\nWelcome to the Azure CLI! This command will guide you through logging in and " \
             "setting some default values.\n"
 
@@ -47,14 +51,16 @@ MSG_PROMPT_CACHE_TTL = "\nCLI object cache time-to-live (TTL) in minutes [Defaul
 INIT_STEP_OPTION_LIST = [
     {
         "name": "Optimize for humans",
-        "secondary": "There settings improve the output legibility and optimize for human machine interaction"
+        "desc": "There settings improve the output legibility and optimize for human machine interaction"
     },
     {
         "name": "Optimize for machines",
-        "secondary": "These settings optimize for machine efficiency"
+        "desc": "These settings optimize for machine efficiency"
     },
     {
         "name": "Customize settings",
-        "secondary": "This is an individual walk through where you could customize a set of common configs"
+        "desc": "This is an individual walk through where you could customize a set of common configs"
     }
 ]
+
+MSG_CUSTOM_SETTING_APPLIED = "Custom config settings applied! Your new config settings:\n"
