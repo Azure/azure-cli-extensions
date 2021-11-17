@@ -42,6 +42,7 @@ from azext_aks_preview._consts import (
 from azext_aks_preview._natgateway import create_nat_gateway_profile
 from azext_aks_preview.addonconfiguration import (
     ensure_container_insights_for_monitoring,
+    ensure_default_log_analytics_workspace_for_monitoring,
 )
 from azext_aks_preview.custom import _get_snapshot
 
@@ -671,6 +672,77 @@ class AKSPreviewContext(AKSContext):
                 no_wait = False
         return no_wait
 
+    # TOOD: may remove this function after the fix for the internal function get merged and released
+    # pylint: disable=unused-argument
+    def _get_workspace_resource_id(
+        self, enable_validation: bool = False, read_only: bool = False, **kwargs
+    ) -> Union[str, None]:  # pragma: no cover
+        """Internal function to dynamically obtain the value of workspace_resource_id according to the context.
+
+        Note: Overwritten in aks-preview to replace the internal function.
+
+        When workspace_resource_id is not assigned, dynamic completion will be triggerd. Function
+        "ensure_default_log_analytics_workspace_for_monitoring" will be called to create a workspace with
+        subscription_id and resource_group_name, which internally used ResourceManagementClient to send the request.
+
+        This function supports the option of enable_validation. When enabled, it will check if workspace_resource_id is
+        assigned but 'monitoring' is not specified in enable_addons, if so, raise a RequiredArgumentMissingError.
+        This function supports the option of read_only. When enabled, it will skip dynamic completion and validation.
+
+        :return: string or None
+        """
+        # determine the value of constants
+        addon_consts = self.get_addon_consts()
+        CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
+        CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID = addon_consts.get(
+            "CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID"
+        )
+
+        # read the original value passed by the command
+        workspace_resource_id = self.raw_param.get("workspace_resource_id")
+        # try to read the property value corresponding to the parameter from the `mc` object
+        read_from_mc = False
+        if (
+            self.mc and
+            self.mc.addon_profiles and
+            CONST_MONITORING_ADDON_NAME in self.mc.addon_profiles and
+            self.mc.addon_profiles.get(
+                CONST_MONITORING_ADDON_NAME
+            ).config.get(CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID) is not None
+        ):
+            workspace_resource_id = self.mc.addon_profiles.get(
+                CONST_MONITORING_ADDON_NAME
+            ).config.get(CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID)
+            read_from_mc = True
+
+        # skip dynamic completion & validation if option read_only is specified
+        if read_only:
+            return workspace_resource_id
+
+        # dynamic completion
+        if not read_from_mc:
+            if workspace_resource_id is None:
+                # use default workspace if exists else create default workspace
+                workspace_resource_id = (
+                    ensure_default_log_analytics_workspace_for_monitoring(
+                        self.cmd,
+                        self.get_subscription_id(),
+                        self.get_resource_group_name(),
+                    )
+                )
+            # normalize
+            workspace_resource_id = "/" + workspace_resource_id.strip(" /")
+
+        # validation
+        if enable_validation:
+            enable_addons = self._get_enable_addons(enable_validation=False)
+            if workspace_resource_id and "monitoring" not in enable_addons:
+                raise RequiredArgumentMissingError(
+                    '"--workspace-resource-id" requires "--enable-addons monitoring".')
+
+        # this parameter does not need validation
+        return workspace_resource_id
+
     # pylint: disable=unused-argument
     def _get_outbound_type(
         self,
@@ -681,7 +753,7 @@ class AKSPreviewContext(AKSContext):
     ) -> Union[str, None]:
         """Internal function to dynamically obtain the value of outbound_type according to the context.
 
-        Note: Inherited and extended in aks-preview to add support for the newly added nat related constants.
+        Note: Overwritten in aks-preview to add support for the newly added nat related constants.
 
         Note: All the external parameters involved in the validation are not verified in their own getters.
 
