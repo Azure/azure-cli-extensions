@@ -44,7 +44,7 @@ def _pipeline_run_format_group(item):
     if "importPipelines" in _get_value(item, 'request', 'pipelineResourceId'):
         d = OrderedDict([
             ('NAME', _get_value(item, 'name')),
-            ('PIPELINE', _get_value(item, 'request', 'pipelineResourceId').split('/', maxsplit=1)[-1]),
+            ('PIPELINE', _get_value(item, 'request', 'pipelineResourceId').split('/', maxsplit=-1)[-1]),
             ('START_TIME', _get_value(item, 'response', 'startTime').split('.', maxsplit=1)[0]),
             ('DURATION', _get_duration(_get_value(item, 'response', 'startTime'), _get_value(item, 'response', 'finishTime'))),
             ('SOURCE_TRIGGER', str('_' in _get_value(item, 'name'))),
@@ -55,7 +55,7 @@ def _pipeline_run_format_group(item):
     else:
         d = OrderedDict([
             ('NAME', _get_value(item, 'name')),
-            ('PIPELINE', _get_value(item, 'request', 'pipelineResourceId').split('/', maxsplit=1)[-1]),
+            ('PIPELINE', _get_value(item, 'request', 'pipelineResourceId').split('/', maxsplit=-1)[-1]),
             ('START_TIME', _get_value(item, 'response', 'startTime').split('.', maxsplit=1)[0]),
             ('DURATION', _get_duration(_get_value(item, 'response', 'startTime'), _get_value(item, 'response', 'finishTime'))),
             ('STATUS', _get_value(item, 'response', 'status')),
