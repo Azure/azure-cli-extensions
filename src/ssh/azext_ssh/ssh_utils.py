@@ -43,7 +43,6 @@ def start_ssh_connection(port, ssh_args, ip, username, cert_file, private_key_fi
     command = [_get_ssh_path(), _get_host(username, ip)]
     command = command + _build_args(cert_file, private_key_file, port) + ssh_arg_list
 
-    print(command)
     logger.debug("Running ssh command %s", ' '.join(command))
     subprocess.call(command, shell=platform.system() == 'Windows')
 
