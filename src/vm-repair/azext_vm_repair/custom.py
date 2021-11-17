@@ -68,10 +68,6 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             os_image_urn = _fetch_compatible_windows_os_urn(source_vm)
             os_type = 'Windows'
 
-        # check hyperv Generation
-        # if enable_nested and (is_gen2 == 2):
-        #    raise SkuDoesNotSupportHyperV('Cannot support V2 HyperV generation. Please run command without --enabled-nested')
-
         # Set up base create vm command
         if is_linux:
             create_repair_vm_command = 'az vm create -g {g} -n {n} --tag {tag} --image {image} --admin-username {username} --admin-password {password} --public-ip-address {option} --custom-data {cloud_init_script}' \
