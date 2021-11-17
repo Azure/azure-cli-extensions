@@ -250,9 +250,8 @@ def cli_cosmosdb_managed_cassandra_datacenter_create(client,
                                                      server_certificates=None):
 
     """Creates an Azure Managed Cassandra Datacenter"""
-    
 
-    authentication_method_ldap_properties = AuthenticationMethodLdapProperties(
+    ldap_properties = AuthenticationMethodLdapProperties(
         server_hostname=server_hostname,
         server_port=server_port,
         service_user_distinguished_name=service_user_distinguished_name,
@@ -263,12 +262,9 @@ def cli_cosmosdb_managed_cassandra_datacenter_create(client,
     )
 
     isAllNone = True
-    for attr, value in vars(authentication_method_ldap_properties).items():
+    for value in vars(ldap_properties).values():
         if value is not None:
             isAllNone = False
-
-    if isAllNone is True:
-        authentication_method_ldap_properties = None
 
     data_center_properties = DataCenterResourceProperties(
         data_center_location=data_center_location,
@@ -280,9 +276,11 @@ def cli_cosmosdb_managed_cassandra_datacenter_create(client,
         disk_capacity=disk_capacity,
         availability_zone=availability_zone,
         managed_disk_customer_key_uri=managed_disk_customer_key_uri,
-        backup_storage_customer_key_uri=backup_storage_customer_key_uri,
-        authentication_method_ldap_properties=authentication_method_ldap_properties
+        backup_storage_customer_key_uri=backup_storage_customer_key_uri
     )
+
+    if isAllNone is False:
+        data_center_properties.authentication_method_ldap_properties=ldap_properties
 
     data_center_resource = DataCenterResource(
         properties=data_center_properties
@@ -320,7 +318,9 @@ def cli_cosmosdb_managed_cassandra_datacenter_update(client,
     if backup_storage_customer_key_uri is None:
         backup_storage_customer_key_uri = data_center_resource.properties.backup_storage_customer_key_uri
 
-    is_ldap_properties_none = data_center_resource.properties.authentication_method_ldap_properties is None:
+    is_ldap_properties_none = False
+    if data_center_resource.properties.authentication_method_ldap_properties is None:
+        is_ldap_properties_none = True
 
     if server_hostname is None and is_ldap_properties_none is False:
         server_hostname = data_center_resource.properties.authentication_method_ldap_properties.server_hostname
@@ -351,13 +351,10 @@ def cli_cosmosdb_managed_cassandra_datacenter_update(client,
     )
 
     isAllNone = True
-    for attr, value in vars(authentication_method_ldap_properties).items():
+    for value in vars(authentication_method_ldap_properties).values():
         if value is not None:
             isAllNone = False
 
-    if isAllNone is True:
-        authentication_method_ldap_properties = None
-        
     data_center_properties = DataCenterResourceProperties(
         data_center_location=data_center_resource.properties.data_center_location,
         delegated_subnet_id=data_center_resource.properties.delegated_subnet_id,
@@ -365,9 +362,11 @@ def cli_cosmosdb_managed_cassandra_datacenter_update(client,
         seed_nodes=data_center_resource.properties.seed_nodes,
         base64_encoded_cassandra_yaml_fragment=base64_encoded_cassandra_yaml_fragment,
         managed_disk_customer_key_uri=managed_disk_customer_key_uri,
-        backup_storage_customer_key_uri=backup_storage_customer_key_uri,
-        authentication_method_ldap_properties=authentication_method_ldap_properties
+        backup_storage_customer_key_uri=backup_storage_customer_key_uri
     )
+
+    if isAllNone is False:
+        data_center_properties.authentication_method_ldap_properties=authentication_method_ldap_properties
 
     data_center_resource = DataCenterResource(
         properties=data_center_properties
