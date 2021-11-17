@@ -34,7 +34,7 @@ def start_ssh_connection(port, ssh_args, ip, username, cert_file, private_key_fi
             log_file_dir = os.path.dirname(cert_file)
             log_file_name = 'ssh_client_log_' + str(os.getpid())
             log_file = os.path.join(log_file_dir, log_file_name)
-            ssh_arg_list = ssh_arg_list + ['-E', log_file, '-v']
+            ssh_arg_list = ['-E', log_file, '-v'] + ssh_arg_list
         # Create a new process that will wait until the connection is established and then delete keys.
         cleanup_process = mp.Process(target=_do_cleanup, args=(delete_keys, delete_cert, cert_file, private_key_file,
                                      log_file, True))
@@ -43,6 +43,7 @@ def start_ssh_connection(port, ssh_args, ip, username, cert_file, private_key_fi
     command = [_get_ssh_path(), _get_host(username, ip)]
     command = command + _build_args(cert_file, private_key_file, port) + ssh_arg_list
 
+    print(command)
     logger.debug("Running ssh command %s", ' '.join(command))
     subprocess.call(command, shell=platform.system() == 'Windows')
 
