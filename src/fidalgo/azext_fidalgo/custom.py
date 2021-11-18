@@ -5,7 +5,7 @@
 
 from knack.util import CLIError
 
-def fidalgo_list_project(client,
+def fidalgo_project_list(client,
                 dev_center,
                 fidalgo_dns_suffix=None,
                 top=None,
