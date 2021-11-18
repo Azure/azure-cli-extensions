@@ -31,5 +31,5 @@ class VmwareCloudLinkScenarioTest(ScenarioTest):
         self.assertEqual(rsp['type'], 'Microsoft.AVS/privateClouds/cloudLinks')
         self.assertEqual(rsp['name'], self.kwargs.get('cloud_link'))
 
-        rsp = self.cmd('vmware cloud-link delete -g {rg} -c {privatecloud} -n {cloud_link}').output
+        rsp = self.cmd('vmware cloud-link delete -g {rg} -c {privatecloud} -n {cloud_link} --yes').output
         self.assertEqual(len(rsp), 0)
