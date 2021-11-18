@@ -23,6 +23,7 @@ from azure.cli.core import AzCommandsLoader
 from azure.cli.core.azclierror import (
     CLIInternalError,
     InvalidArgumentValueError,
+    MutuallyExclusiveArgumentError,
     RequiredArgumentMissingError,
 )
 from azure.cli.core.commands import AzCliCommand
@@ -32,9 +33,16 @@ from knack.log import get_logger
 from knack.prompting import prompt_y_n
 from msrestazure.azure_exceptions import CloudError
 
+from azext_aks_preview._consts import (
+    CONST_OUTBOUND_TYPE_LOAD_BALANCER,
+    CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY,
+    CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY,
+    CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
+)
 from azext_aks_preview._natgateway import create_nat_gateway_profile
 from azext_aks_preview.addonconfiguration import (
     ensure_container_insights_for_monitoring,
+    ensure_default_log_analytics_workspace_for_monitoring,
 )
 from azext_aks_preview.custom import _get_snapshot
 
@@ -663,6 +671,180 @@ class AKSPreviewContext(AKSContext):
                 logger.warning("The set option '--no-wait' has been ignored")
                 no_wait = False
         return no_wait
+
+    # TOOD: may remove this function after the fix for the internal function get merged and released
+    # pylint: disable=unused-argument
+    def _get_workspace_resource_id(
+        self, enable_validation: bool = False, read_only: bool = False, **kwargs
+    ) -> Union[str, None]:  # pragma: no cover
+        """Internal function to dynamically obtain the value of workspace_resource_id according to the context.
+
+        Note: Overwritten in aks-preview to replace the internal function.
+
+        When workspace_resource_id is not assigned, dynamic completion will be triggerd. Function
+        "ensure_default_log_analytics_workspace_for_monitoring" will be called to create a workspace with
+        subscription_id and resource_group_name, which internally used ResourceManagementClient to send the request.
+
+        This function supports the option of enable_validation. When enabled, it will check if workspace_resource_id is
+        assigned but 'monitoring' is not specified in enable_addons, if so, raise a RequiredArgumentMissingError.
+        This function supports the option of read_only. When enabled, it will skip dynamic completion and validation.
+
+        :return: string or None
+        """
+        # determine the value of constants
+        addon_consts = self.get_addon_consts()
+        CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
+        CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID = addon_consts.get(
+            "CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID"
+        )
+
+        # read the original value passed by the command
+        workspace_resource_id = self.raw_param.get("workspace_resource_id")
+        # try to read the property value corresponding to the parameter from the `mc` object
+        read_from_mc = False
+        if (
+            self.mc and
+            self.mc.addon_profiles and
+            CONST_MONITORING_ADDON_NAME in self.mc.addon_profiles and
+            self.mc.addon_profiles.get(
+                CONST_MONITORING_ADDON_NAME
+            ).config.get(CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID) is not None
+        ):
+            workspace_resource_id = self.mc.addon_profiles.get(
+                CONST_MONITORING_ADDON_NAME
+            ).config.get(CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID)
+            read_from_mc = True
+
+        # skip dynamic completion & validation if option read_only is specified
+        if read_only:
+            return workspace_resource_id
+
+        # dynamic completion
+        if not read_from_mc:
+            if workspace_resource_id is None:
+                # use default workspace if exists else create default workspace
+                workspace_resource_id = (
+                    ensure_default_log_analytics_workspace_for_monitoring(
+                        self.cmd,
+                        self.get_subscription_id(),
+                        self.get_resource_group_name(),
+                    )
+                )
+            # normalize
+            workspace_resource_id = "/" + workspace_resource_id.strip(" /")
+
+        # validation
+        if enable_validation:
+            enable_addons = self._get_enable_addons(enable_validation=False)
+            if workspace_resource_id and "monitoring" not in enable_addons:
+                raise RequiredArgumentMissingError(
+                    '"--workspace-resource-id" requires "--enable-addons monitoring".')
+
+        # this parameter does not need validation
+        return workspace_resource_id
+
+    # pylint: disable=unused-argument
+    def _get_outbound_type(
+        self,
+        enable_validation: bool = False,
+        read_only: bool = False,
+        load_balancer_profile: ManagedClusterLoadBalancerProfile = None,
+        **kwargs
+    ) -> Union[str, None]:
+        """Internal function to dynamically obtain the value of outbound_type according to the context.
+
+        Note: Overwritten in aks-preview to add support for the newly added nat related constants.
+
+        Note: All the external parameters involved in the validation are not verified in their own getters.
+
+        When outbound_type is not assigned, dynamic completion will be triggerd. By default, the value is set to
+        CONST_OUTBOUND_TYPE_LOAD_BALANCER.
+
+        This function supports the option of enable_validation. When enabled, if the value of outbound_type is one of
+        CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY, CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY or
+        CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING, the following checks will be performed. If load_balancer_sku is set
+        to basic, an InvalidArgumentValueError will be raised. If the value of outbound_type is not
+        CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING and vnet_subnet_id is not assigned, a RequiredArgumentMissingError
+        will be raised. If the value of outbound_type equals to CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING and
+        any of load_balancer_managed_outbound_ip_count, load_balancer_outbound_ips or load_balancer_outbound_ip_prefixes
+        is assigned, a MutuallyExclusiveArgumentError will be raised.
+        This function supports the option of read_only. When enabled, it will skip dynamic completion and validation.
+        This function supports the option of load_balancer_profile, if provided, when verifying loadbalancer-related
+        parameters, the value in load_balancer_profile will be used for validation.
+
+        :return: string or None
+        """
+        # read the original value passed by the command
+        outbound_type = self.raw_param.get("outbound_type")
+        # try to read the property value corresponding to the parameter from the `mc` object
+        read_from_mc = False
+        if (
+            self.mc and
+            self.mc.network_profile and
+            self.mc.network_profile.outbound_type is not None
+        ):
+            outbound_type = self.mc.network_profile.outbound_type
+            read_from_mc = True
+
+        # skip dynamic completion & validation if option read_only is specified
+        if read_only:
+            return outbound_type
+
+        # dynamic completion
+        if (
+            not read_from_mc and
+            outbound_type != CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY and
+            outbound_type != CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY and
+            outbound_type != CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING
+        ):
+            outbound_type = CONST_OUTBOUND_TYPE_LOAD_BALANCER
+
+        # validation
+        # Note: The parameters involved in the validation are not verified in their own getters.
+        if enable_validation:
+            if outbound_type in [
+                CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY,
+                CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY,
+                CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
+            ]:
+                # Should not enable read_only for get_load_balancer_sku, since its default value is None, and it has
+                # not been decorated into the mc object at this time, only the value after dynamic completion is
+                # meaningful here.
+                if safe_lower(self._get_load_balancer_sku(enable_validation=False)) == "basic":
+                    raise InvalidArgumentValueError("{} doesn't support basic load balancer sku".format(outbound_type))
+                if outbound_type == CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY:
+                    if self.get_vnet_subnet_id() in ["", None]:
+                        raise RequiredArgumentMissingError(
+                            "--vnet-subnet-id must be specified for userAssignedNATGateway and it must "
+                            "be pre-associated with a NAT gateway with outbound public IPs or IP prefixes"
+                        )
+                if outbound_type == CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING:
+                    if self.get_vnet_subnet_id() in ["", None]:
+                        raise RequiredArgumentMissingError(
+                            "--vnet-subnet-id must be specified for userDefinedRouting and it must "
+                            "be pre-configured with a route table with egress rules"
+                        )
+                    if load_balancer_profile:
+                        if (
+                            load_balancer_profile.managed_outbound_i_ps or
+                            load_balancer_profile.outbound_i_ps or
+                            load_balancer_profile.outbound_ip_prefixes
+                        ):
+                            raise MutuallyExclusiveArgumentError(
+                                "userDefinedRouting doesn't support customizing "
+                                "a standard load balancer with IP addresses"
+                            )
+                    else:
+                        if (
+                            self.get_load_balancer_managed_outbound_ip_count() or
+                            self.get_load_balancer_outbound_ips() or
+                            self.get_load_balancer_outbound_ip_prefixes()
+                        ):
+                            raise MutuallyExclusiveArgumentError(
+                                "userDefinedRouting doesn't support customizing "
+                                "a standard load balancer with IP addresses"
+                            )
+        return outbound_type
 
     # pylint: disable=unused-argument,no-self-use
     def __validate_gmsa_options(
