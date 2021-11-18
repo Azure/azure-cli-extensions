@@ -38,4 +38,4 @@ def load_arguments(self, _):
         c.argument('top', validator=validate_top, help='List only the last n pipeline-runs. Must be an integer.')
 
     with self.argument_context('acr pipeline-run clean') as c:
-        c.argument('dry_run', options_list=['--dry-run'], action='store_true', help='List the failed pipeline-runs that would have been deleted, but do not delete any.')
+        c.argument('dry_run', action='store_true', help='List the failed pipeline-runs that would have been deleted, but do not delete any.')
