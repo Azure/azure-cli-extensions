@@ -15,6 +15,10 @@ def cf_mhsm(cli_ctx, _):
     return keyvault_mgmt_client_factory(cli_ctx).managed_hsms
 
 
+def cf_mhsm_region(cli_ctx, _):
+    return keyvault_mgmt_client_factory(cli_ctx).mhsm_regions
+
+
 def is_azure_stack_profile(cmd=None, cli_ctx=None):
     cli_ctx = cmd.cli_ctx if cmd else cli_ctx
     if not cli_ctx:
