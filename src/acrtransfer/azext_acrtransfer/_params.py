@@ -35,7 +35,7 @@ def load_arguments(self, _):
         c.argument('force_update_tag', options_list=['--force-redeploy', '-f'], action='store_true', help='Flag that forces ARM to redeploy resource even if no parameters have changed.')
         c.argument('storage_blob_name', options_list=['--storage-blob', '-b'], help='Name of the storage blob to be imported or exported.')
         c.argument('artifacts', options_list=['--artifacts', '-a'], nargs='+', help='Space-separated list of container artifacts. Artifacts must be either of the form `repository:tag` or `repository@digest` such as hello-world:latest or hello-world@sha256:90659bf80b44ce6be8234e6ff90a1ac34acbeb826903b02cfa0da11c82cbc042.')
-        c.argument('top', options_list=['--top'], validator=validate_top, help='List only the last n pipeline-runs. Must be an integer.')
+        c.argument('top', validator=validate_top, help='List only the last n pipeline-runs. Must be an integer.')
 
     with self.argument_context('acr pipeline-run clean') as c:
         c.argument('dry_run', options_list=['--dry-run'], action='store_true', help='List the failed pipeline-runs that would have been deleted, but do not delete any.')
