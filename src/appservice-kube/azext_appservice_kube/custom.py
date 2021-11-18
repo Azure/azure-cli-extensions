@@ -42,7 +42,8 @@ from azure.cli.command_modules.appservice.custom import (
     _configure_default_logging,
     assign_identity,
     delete_app_settings,
-    update_app_settings)
+    update_app_settings,
+    list_hostnames)
 from azure.cli.command_modules.appservice.utils import retryable_method
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.commands import LongRunningOperation
@@ -1675,3 +1676,92 @@ def _fill_ftp_publishing_url(cmd, webapp, resource_group_name, name, slot=None):
         pass
 
     return webapp
+
+
+def _update_host_name_ssl_state(cmd, resource_group_name, webapp_name, webapp,
+                                host_name, ssl_state, thumbprint, slot=None):
+    from azure.mgmt.web.models import HostNameSslState
+
+    webapp.host_name_ssl_states = [HostNameSslState(name=host_name,
+                                                    ssl_state=ssl_state,
+                                                    thumbprint=thumbprint,
+                                                    to_update=True)]
+
+    webapp_dict = webapp.serialize()
+
+    if webapp.extended_location is not None:
+        webapp_dict["extendedLocation"]["type"] = "customLocation"
+
+    management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+    api_version = "2020-12-01"
+    sub_id = get_subscription_id(cmd.cli_ctx)
+    url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/sites/{}?api-version={}"
+    request_url = url_fmt.format(
+        management_hostname.strip('/'),
+        sub_id,
+        resource_group_name,
+        webapp_name,
+        api_version)
+
+    return send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(webapp_dict))
+
+
+def _match_host_names_from_cert(hostnames_from_cert, hostnames_in_webapp):
+    # the goal is to match '*.foo.com' with host name like 'admin.foo.com', 'logs.foo.com', etc
+    matched = set()
+    for hostname in hostnames_from_cert:
+        if hostname.startswith('*'):
+            for h in hostnames_in_webapp:
+                if hostname[hostname.find('.'):] == h[h.find('.'):]:
+                    matched.add(h)
+        elif hostname in hostnames_in_webapp:
+            matched.add(hostname)
+    return matched
+
+
+def _update_ssl_binding(cmd, resource_group_name, name, certificate_thumbprint, ssl_type, slot=None):
+    client = web_client_factory(cmd.cli_ctx)
+    webapp = client.web_apps.get(resource_group_name, name)
+    if not webapp:
+        raise ResourceNotFoundError("'{}' app doesn't exist".format(name))
+
+    cert_resource_group_name = parse_resource_id(webapp.server_farm_id)['resource_group']
+    webapp_certs = client.certificates.list_by_resource_group(cert_resource_group_name)
+
+    found_cert = None
+    for webapp_cert in webapp_certs:
+        if webapp_cert.thumbprint == certificate_thumbprint:
+            found_cert = webapp_cert
+    if not found_cert:
+        webapp_certs = client.certificates.list_by_resource_group(resource_group_name)
+        for webapp_cert in webapp_certs:
+            if webapp_cert.thumbprint == certificate_thumbprint:
+                found_cert = webapp_cert
+    if found_cert:
+        if len(found_cert.host_names) == 1 and not found_cert.host_names[0].startswith('*'):
+            return _update_host_name_ssl_state(cmd, resource_group_name, name, webapp,
+                                               found_cert.host_names[0], ssl_type,
+                                               certificate_thumbprint, slot)
+
+        query_result = list_hostnames(cmd, resource_group_name, name, slot)
+        hostnames_in_webapp = [x.name.split('/')[-1] for x in query_result]
+        to_update = _match_host_names_from_cert(found_cert.host_names, hostnames_in_webapp)
+        for h in to_update:
+            _update_host_name_ssl_state(cmd, resource_group_name, name, webapp,
+                                        h, ssl_type, certificate_thumbprint, slot)
+
+        return show_webapp(cmd, resource_group_name, name, slot)
+
+    raise ResourceNotFoundError("Certificate for thumbprint '{}' not found.".format(certificate_thumbprint))
+
+
+def bind_ssl_cert(cmd, resource_group_name, name, certificate_thumbprint, ssl_type, slot=None):
+    SslState = cmd.get_models('SslState')
+    return _update_ssl_binding(cmd, resource_group_name, name, certificate_thumbprint,
+                               SslState.sni_enabled if ssl_type == 'SNI' else SslState.ip_based_enabled, slot)
+
+
+def unbind_ssl_cert(cmd, resource_group_name, name, certificate_thumbprint, slot=None):
+    SslState = cmd.get_models('SslState')
+    return _update_ssl_binding(cmd, resource_group_name, name,
+                               certificate_thumbprint, SslState.disabled, slot)
