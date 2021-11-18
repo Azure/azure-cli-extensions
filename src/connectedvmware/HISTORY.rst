@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.1.4
+++++++
+* Added vm extension support.
+
 0.1.3
 ++++++
 * Fixed inventory item issue.

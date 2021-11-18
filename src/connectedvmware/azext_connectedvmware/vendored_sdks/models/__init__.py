@@ -24,6 +24,7 @@ try:
     from ._models_py3 import GuestCredential
     from ._models_py3 import HardwareProfile
     from ._models_py3 import Host
+    from ._models_py3 import HostInventoryItem
     from ._models_py3 import HostsList
     from ._models_py3 import HttpProxyConfiguration
     from ._models_py3 import HybridIdentityMetadata
@@ -95,6 +96,7 @@ except (SyntaxError, ImportError):
     from ._models import GuestCredential  # type: ignore
     from ._models import HardwareProfile  # type: ignore
     from ._models import Host  # type: ignore
+    from ._models import HostInventoryItem  # type: ignore
     from ._models import HostsList  # type: ignore
     from ._models import HttpProxyConfiguration  # type: ignore
     from ._models import HybridIdentityMetadata  # type: ignore
@@ -153,6 +155,7 @@ from ._azure_arc_vmware_management_service_api_enums import (
     CreatedByType,
     DiskMode,
     DiskType,
+    FirmwareType,
     IPAddressAllocationMethod,
     IdentityType,
     InventoryType,
@@ -185,6 +188,7 @@ __all__ = [
     'GuestCredential',
     'HardwareProfile',
     'Host',
+    'HostInventoryItem',
     'HostsList',
     'HttpProxyConfiguration',
     'HybridIdentityMetadata',
@@ -241,6 +245,7 @@ __all__ = [
     'CreatedByType',
     'DiskMode',
     'DiskType',
+    'FirmwareType',
     'IPAddressAllocationMethod',
     'IdentityType',
     'InventoryType',
