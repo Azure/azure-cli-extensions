@@ -386,9 +386,9 @@ def load_arguments(self, _):
         c.argument('force_update_tag', type=str, help='How the extension handler should be forced to update even if '
                    'the extension configuration has not changed.')
         c.argument('publisher', type=str, help='The name of the extension handler publisher.')
-        c.argument('type_', options_list=['--type'], type=str, help='Specifies the type of the extension; an example '
+        c.argument('type_', options_list=['--type'], type=str, help='Specify the type of the extension; an example '
                    'is "CustomScriptExtension".')
-        c.argument('type_handler_version', type=str, help='Specifies the version of the script handler.')
+        c.argument('type_handler_version', type=str, help='Specify the version of the script handler.')
         c.argument('auto_upgrade_minor', arg_type=get_three_state_flag(), help='Indicate whether the extension should '
                    'use a newer minor version if one is available at deployment time. Once deployed, however, the '
                    'extension will not upgrade minor versions unless redeployed, even with this property set to true.')
