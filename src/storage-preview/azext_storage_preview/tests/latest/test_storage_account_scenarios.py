@@ -243,9 +243,7 @@ class StorageAccountLocalUserTests(StorageScenarioMixin, ScenarioTest):
         )
 
         self.cmd('{cmd} update --account-name {sa} -g {rg} -n {username} --home-directory home2 '
-                 '--permission-scope permissions=rw service=file resource-name=share2 '
-                 '--has-shared-key true').assert_with_checks(
-            JMESPathCheck('hasSharedKey', True),
+                 '--permission-scope permissions=rw service=file resource-name=share2').assert_with_checks(
             JMESPathCheck('homeDirectory', 'home2'),
             JMESPathCheck('length(permissionScopes)', 1),
             JMESPathCheck('permissionScopes[0].permissions', 'rw'),
@@ -254,7 +252,6 @@ class StorageAccountLocalUserTests(StorageScenarioMixin, ScenarioTest):
         )
 
         self.cmd('{cmd} list --account-name {sa} -g {rg}').assert_with_checks(
-            JMESPathCheck('value[0].hasSharedKey', True),
             JMESPathCheck('value[0].hasSshKey', False),
             JMESPathCheck('value[0].hasSshPassword', False),
             JMESPathCheck('value[0].homeDirectory', 'home2'),
@@ -263,7 +260,6 @@ class StorageAccountLocalUserTests(StorageScenarioMixin, ScenarioTest):
         )
 
         self.cmd('{cmd} show --account-name {sa} -g {rg} -n {username}').assert_with_checks(
-            JMESPathCheck('hasSharedKey', True),
             JMESPathCheck('hasSshKey', False),
             JMESPathCheck('hasSshPassword', False),
             JMESPathCheck('homeDirectory', 'home2'),
