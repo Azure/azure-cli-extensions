@@ -30,7 +30,7 @@ def get_int_option(option_description, min_option, max_option, default_option):
     print_styled_text([(Style.ACTION, ' ? '), (Style.PRIMARY, option_description)], end='')
     option = read_int(default_option)
     while option < min_option or option > max_option:
-        print_styled_text([Style.PRIMARY, "Please enter a valid option ({}-{}): ".format(min_option, max_option)],
+        print_styled_text([(Style.PRIMARY, "Please enter a valid option ({}-{}): ".format(min_option, max_option))],
                           end='')
         option = read_int(default_option)
     return option
@@ -45,7 +45,7 @@ def print_successful_styled_text(message):
     print_styled_text([(Style.SUCCESS, prefix_text), (Style.PRIMARY, message)])
 
 
-def prompt_option_list(option_list):
+def prompt_option_list(option_list, start_index=1):
 
     if not option_list or not isinstance(option_list, list):
         return
@@ -53,9 +53,14 @@ def prompt_option_list(option_list):
     for index, choice_item in enumerate(option_list):
         if 'name' not in choice_item or not choice_item['name']:
             continue
-        print_styled_text([(Style.ACTION, "[" + str(index) + "] "), (Style.PRIMARY, choice_item['name'])])
 
+        option_item = [(Style.ACTION, "[" + str(index + start_index) + "] "), (Style.PRIMARY, choice_item['name'])]
+        if 'tag' in choice_item and choice_item['tag']:
+            option_item.append((Style.SECONDARY, " ({})".format(choice_item['tag'])))
         if 'secondary' in choice_item and choice_item['secondary']:
-            print_styled_text([(Style.PRIMARY, '    '), (Style.SECONDARY, choice_item['secondary'])])
+            option_item.append((Style.SECONDARY, "          {}".format(choice_item['secondary'])))
+        print_styled_text(option_item)
 
+        if 'desc' in choice_item and choice_item['desc']:
+            print_styled_text([(Style.PRIMARY, '    '), (Style.SECONDARY, choice_item['desc'])])
         print()
