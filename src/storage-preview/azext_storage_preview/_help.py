@@ -154,10 +154,10 @@ helps['storage account local-user create'] = """
     short-summary: Create a local user for a given storage account.
     examples:
         - name: Create a local-user with two permission scopes and an ssh-authorized-key
-          text: > 
-              az storage account local-user create --account-name {account-name} -g {resource-group} -n {username} 
-              --home-directory home --permission-scope permissions=r service=blob resource-name=container1 
-              --permission-scope permissions=rw service=file resource-name=share2 --ssh-authorized-key key="ssh-rsa a2V5" 
+          text: >
+              az storage account local-user create --account-name {account-name} -g {resource-group} -n {username}
+              --home-directory home --permission-scope permissions=r service=blob resource-name=container1
+              --permission-scope permissions=rw service=file resource-name=share2 --ssh-authorized-key key="ssh-rsa a2V5"
               --has-ssh-key true --has-ssh-password --has-shared-key false
 """
 
@@ -166,10 +166,10 @@ helps['storage account local-user update'] = """
     short-summary: Update properties for a local user.
     examples:
         - name: Update a local-user with one permission scopes and no ssh-key
-          text: > 
-              az storage account local-user update --account-name {account-name} -g {resource-group} -n {username} 
+          text: >
+              az storage account local-user update --account-name {account-name} -g {resource-group} -n {username}
               --permission-scope permissions=rw service=file resource-name=share2
-              --has-ssh-key false 
+              --has-ssh-key false
 """
 
 helps['storage account local-user delete'] = """
