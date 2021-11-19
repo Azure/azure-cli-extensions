@@ -230,34 +230,27 @@ class StorageAccountLocalUserTests(StorageScenarioMixin, ScenarioTest):
         self.cmd('{cmd} create --account-name {sa} -g {rg} -n {username} --home-directory home '
                  '--permission-scope permissions=r service=blob resource-name=container1 '
                  '--permission-scope permissions=rw service=file resource-name=share2 '
-                 '--ssh-authorized-key key="ssh-rsa a2V5" '
-                 '--has-ssh-key true --has-ssh-password --has-shared-key false').assert_with_checks(
+                 '--has-ssh-key false --has-shared-key false').assert_with_checks(
             JMESPathCheck('hasSharedKey', False),
-            JMESPathCheck('hasSshKey', True),
-            JMESPathCheck('hasSshPassword', True),
+            JMESPathCheck('hasSshKey', False),
+            JMESPathCheck('hasSshPassword', None),
             JMESPathCheck('homeDirectory', 'home'),
             JMESPathCheck('name', username),
             JMESPathCheck('length(permissionScopes)', 2),
             JMESPathCheck('permissionScopes[0].permissions', 'r'),
             JMESPathCheck('permissionScopes[0].service', 'blob'),
-            JMESPathCheck('permissionScopes[0].resourceName', 'container1'),
-            JMESPathCheck('length(sshAuthorizedKeys)', 1),
-            JMESPathCheck('sshAuthorizedKeys[0].description', ''),
-            JMESPathCheck('sshAuthorizedKeys[0].key', 'ssh-rsa a2V5')
+            JMESPathCheck('permissionScopes[0].resourceName', 'container1')
         )
 
         self.cmd('{cmd} update --account-name {sa} -g {rg} -n {username} --home-directory home2 '
                  '--permission-scope permissions=rw service=file resource-name=share2 '
-                 '--has-ssh-key false --has-ssh-password false --has-shared-key true').assert_with_checks(
+                 '--has-shared-key true').assert_with_checks(
             JMESPathCheck('hasSharedKey', True),
-            JMESPathCheck('hasSshKey', False),
-            JMESPathCheck('hasSshPassword', False),
             JMESPathCheck('homeDirectory', 'home2'),
             JMESPathCheck('length(permissionScopes)', 1),
             JMESPathCheck('permissionScopes[0].permissions', 'rw'),
             JMESPathCheck('permissionScopes[0].service', 'file'),
-            JMESPathCheck('permissionScopes[0].resourceName', 'share2'),
-            JMESPathCheck('sshAuthorizedKeys', None)
+            JMESPathCheck('permissionScopes[0].resourceName', 'share2')
         )
 
         self.cmd('{cmd} list --account-name {sa} -g {rg}').assert_with_checks(
@@ -281,13 +274,11 @@ class StorageAccountLocalUserTests(StorageScenarioMixin, ScenarioTest):
             JMESPathCheck('sshAuthorizedKeys', None)
         )
 
-        self.cmd('{cmd} update --account-name {sa} -g {rg} -n {username} --has-ssh-key true '
+        self.cmd('{cmd} update --account-name {sa} -g {rg} -n {username} '
                  '--ssh-authorized-key key="ssh-rsa a2V5" ')
 
         self.cmd('{cmd} list-keys --account-name {sa} -g {rg} -n {username}').assert_with_checks(
-            JMESPathCheckExists('sharedKey'),
-            JMESPathCheck('sshAuthorizedKeys[0].description', ''),
-            JMESPathCheck('sshAuthorizedKeys[0].key', 'ssh-rsa a2V5')
+            JMESPathCheck('sshAuthorizedKeys', None)
         )
 
         self.cmd('{cmd} regenerate-password --account-name {sa} -g {rg} -n {username}').assert_with_checks(
