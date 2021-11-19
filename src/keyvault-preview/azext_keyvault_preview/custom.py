@@ -49,8 +49,6 @@ def _create_network_rule_set(cmd, bypass=None, default_action=None):
 
 
 def add_hsm_region(cmd, client, resource_group_name, name, region_names, no_wait=False):
-    ManagedHsm = cmd.get_models('ManagedHsm', resource_type=CUSTOM_MGMT_KEYVAULT)
-    ManagedHsmProperties = cmd.get_models('ManagedHsmProperties', resource_type=CUSTOM_MGMT_KEYVAULT)
     MHSMGeoReplicatedRegion = cmd.get_models('MHSMGeoReplicatedRegion', resource_type=CUSTOM_MGMT_KEYVAULT)
 
     hsm = client.get(resource_group_name=resource_group_name, name=name)
@@ -64,21 +62,15 @@ def add_hsm_region(cmd, client, resource_group_name, name, region_names, no_wait
             new_region = MHSMGeoReplicatedRegion(name=region_name)
             new_regions.append(new_region)
 
-    regions = existing_regions.extend(new_regions)
-    properties = ManagedHsmProperties(tenant_id=hsm.properties.tenant_id,
-                                      initial_admin_object_ids=hsm.properties.initial_admin_object_ids,
-                                      regions=regions)
+    existing_regions.extend(new_regions)
+    hsm.properties.regions = existing_regions
     return sdk_no_wait(no_wait, client.begin_update,
                        resource_group_name=resource_group_name,
                        name=name,
-                       parameters=ManagedHsm(sku=hsm.sku,
-                                             properties=properties))
+                       parameters=hsm)
 
 
 def remove_hsm_region(cmd, client, resource_group_name, name, region_names, no_wait=False):
-    ManagedHsm = cmd.get_models('ManagedHsm', resource_type=CUSTOM_MGMT_KEYVAULT)
-    ManagedHsmProperties = cmd.get_models('ManagedHsmProperties', resource_type=CUSTOM_MGMT_KEYVAULT)
-
     hsm = client.get(resource_group_name=resource_group_name, name=name)
     existing_regions = hsm.properties.regions or []
     existing_region_names = (region.name for region in existing_regions)
@@ -90,10 +82,8 @@ def remove_hsm_region(cmd, client, resource_group_name, name, region_names, no_w
     for region in existing_regions:
         if region.name not in region_names:
             regions.append(region)
-    properties = ManagedHsmProperties(tenant_id=hsm.properties.tenant_id,
-                                      initial_admin_object_ids=hsm.properties.initial_admin_object_ids,
-                                      regions=regions)
+    hsm.properties.regions = regions
     return sdk_no_wait(no_wait, client.begin_update,
                        resource_group_name=resource_group_name,
                        name=name,
-                       parameters=ManagedHsm(properties=properties))
+                       parameters=hsm)
