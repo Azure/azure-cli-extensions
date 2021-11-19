@@ -41,5 +41,5 @@ short-summary: Place the CLI in a waiting state until a condition of the HSM is 
 examples:
   - name: Pause CLI until the regions are updated.
     text: |
-        az keyvault regions wait --name myhsm --updated
+        az keyvault region wait --name myhsm --updated
 """
