@@ -1135,6 +1135,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000002/localUsers/cli000003/regeneratePassword?api-version=2021-08-01
   response:
     body:
+      # [SuppressMessage("Microsoft.Security", "CS002:SecretInNextLine", Justification="test sshPassword generate")]
       string: '{"hasSshPassword":true,"sshPassword":"PRmfWgVK0Xiy9Kgs4HOgUu7GxeEshC0f7s2caiJmQBqWNp8CeJcni7U/qxk25Fi0k5t8UpShQkJAh4ncq8s4Yw==","permissionScopes":[{"permissions":"rw","service":"file","resourceName":"share2"}],"homeDirectory":"home2","sid":"S-1-2-0-3254297188-3560541359-2726258011-1000","hasSharedKey":false,"hasSshKey":false}'
     headers:
       cache-control:
