@@ -229,7 +229,7 @@ def spring_cloud_stop(cmd, client, resource_group, name, no_wait=False):
 
 def spring_cloud_list(cmd, client, resource_group=None):
     if resource_group is None:
-        return client.list_by_subscription()
+        return client.services.list_by_subscription()
     return client.services.list(resource_group)
 
 
