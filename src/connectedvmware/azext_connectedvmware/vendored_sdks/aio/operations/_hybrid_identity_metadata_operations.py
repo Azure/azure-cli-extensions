@@ -47,7 +47,7 @@ class HybridIdentityMetadataOperations:
         virtual_machine_name: str,
         metadata_name: str,
         body: Optional["_models.HybridIdentityMetadata"] = None,
-        **kwargs
+        **kwargs: Any
     ) -> "_models.HybridIdentityMetadata":
         """Implements HybridIdentityMetadata PUT method.
 
@@ -122,7 +122,7 @@ class HybridIdentityMetadataOperations:
         resource_group_name: str,
         virtual_machine_name: str,
         metadata_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> "_models.HybridIdentityMetadata":
         """Gets HybridIdentityMetadata.
 
@@ -187,7 +187,7 @@ class HybridIdentityMetadataOperations:
         resource_group_name: str,
         virtual_machine_name: str,
         metadata_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> None:
         """Deletes an HybridIdentityMetadata.
 
@@ -248,7 +248,7 @@ class HybridIdentityMetadataOperations:
         self,
         resource_group_name: str,
         virtual_machine_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> AsyncIterable["_models.HybridIdentityMetadataList"]:
         """Implements GET HybridIdentityMetadata in a vm.
 

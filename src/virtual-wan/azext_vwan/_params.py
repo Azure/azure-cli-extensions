@@ -130,9 +130,35 @@ def load_arguments(self, _):
         c.argument('protocol_type', arg_type=get_enum_type(VirtualNetworkGatewayConnectionProtocol), help='Connection protocol.')
         c.argument('routing_weight', type=int, help='Routing weight.')
         c.argument('shared_key', help='Shared key.')
+        c.argument("vpn_site_link", help='The resource ID of VPN Site Link.')
+        c.argument('with_link', help='Create VpnConnection with default link.', arg_type=get_three_state_flag())
 
     with self.argument_context('network vpn-gateway connection list') as c:
         # List commands cannot use --ids flag
+        c.argument('resource_name', vpn_gateway_name_type, id_part=None)
+        c.argument('gateway_name', id_part=None)
+
+    with self.argument_context('network vpn-gateway connection vpn-site-link-conn') as c:
+        c.argument("connection_name", help='Name of the VPN gateway connection.', options_list=['--connection-name'])
+        c.argument("item_name", help='Name of the VPN gateway connection.', options_list=['--connection-name'])
+        c.argument("vpn_site_link_conn_name", help='Name of the VPN site link connection.', options_list=['--name', '-n'], id_part='child_name_1')
+        c.argument("vpn_site_link", help='The resource ID of VPN Site Link.')
+        c.argument('routing_weight', type=int, help='Routing weight.')
+        c.argument('shared_key', help='Shared key.')
+        c.argument('enable_rate_limiting', options_list='--rate-limiting', arg_type=get_three_state_flag(), help='Enable rate limiting.')
+        c.argument('connection_bandwidth', help='Expected bandwidth in Mbps.', type=int)
+        c.argument('enable_bgp', arg_type=get_three_state_flag(), help='Enable BGP.')
+        c.argument('use_local_azure_ip_address', arg_type=get_three_state_flag(), help='Use local azure ip to initiate connection.')
+        c.argument('use_policy_based_traffic_selectors', arg_type=get_three_state_flag(), help='Enable policy-based traffic selectors.')
+        c.argument('vpn_connection_protocol_type', help='Connection protocol used for this connection.', arg_type=get_enum_type(['IKEv2', 'IKEv1']))
+        c.argument('vpn_link_connection_mode', help='Vpn link connection mode.', arg_type=get_enum_type(['Default', 'ResponderOnly', 'InitiatorOnly']))
+        c.argument('index', type=int, help='List index of the item (starting with 1).')
+
+    with self.argument_context('network vpn-gateway connection vpn-site-link-conn list') as c:
+        c.argument('resource_name', vpn_gateway_name_type, id_part=None)
+        c.argument('gateway_name', id_part=None)
+
+    with self.argument_context('network vpn-gateway connection vpn-site-link-conn ipsec-policy list') as c:
         c.argument('resource_name', vpn_gateway_name_type, id_part=None)
         c.argument('gateway_name', id_part=None)
 
@@ -161,11 +187,25 @@ def load_arguments(self, _):
         c.argument('ip_address', help='IP address of the VPN site.')
         c.argument('site_key', help='Key for the VPN site that can be used for connections.')
         c.argument('address_prefixes', nargs='+', help='Space-separated list of CIDR address prefixes.')
+        c.argument('with_link', help='Create VPN site with default link.', arg_type=get_three_state_flag())
 
     with self.argument_context('network vpn-site', arg_group='Device Property') as c:
         c.argument('device_model', help='Model of the device.')
         c.argument('device_vendor', help='Name of the device vendor.')
         c.argument('link_speed', help='Link speed in Mbps.', type=int)
+
+    with self.argument_context('network vpn-site link') as c:
+        c.argument('vpn_site_name', vpn_site_name_type)
+        c.argument('vpn_site_link_name', help='The name of vpn site link.', options_list=['--name', '-n'])
+        c.argument('fqdn', help='FQDN of vpn-site-link.')
+        c.argument('link_provider_name', help='Name of the link provider.')
+        c.argument('link_speed_in_mbps', help='Link speed.', type=int)
+        c.argument('index', type=int, help='List index of the item (starting with 1).')
+
+    with self.argument_context('network vpn-site link list') as c:
+        c.argument('resource_name', vpn_gateway_name_type, id_part=None)
+        c.argument('virtual_wan_name', vwan_name_type, id_part=None)
+        c.argument('vpn_site_name', vpn_site_name_type, options_list=['--site-name'], id_part=None)
 
     for scope in ['vpn-site', 'vpn-gateway']:
         with self.argument_context('network {}'.format(scope), arg_group='BGP Peering') as c:

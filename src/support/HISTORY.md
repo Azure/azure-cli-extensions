@@ -1,6 +1,10 @@
 Release History
 ===============
 
+1.0.3
+-----
+* Migrate to track 2 SDK
+
 1.0.2
 -----
 * Removed custom error message in lieu of error message coming from backend.

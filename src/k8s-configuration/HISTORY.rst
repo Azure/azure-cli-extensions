@@ -3,6 +3,15 @@
 Release History
 ===============
 
+1.2.0
+++++++++++++++++++
+* Add Flux v2 support with command subgroups
+* Add update support to Flux v2 resources
+
+1.1.1
+++++++++++++++++++
+* Enable helm-operator chart version 1.4.0
+
 1.1.0
 ++++++++++++++++++
 * Update sourceControlConfiguration resource models to Track2
