@@ -95,5 +95,14 @@ class VmwareScenarioTest(ScenarioTest):
         # delete the private cloud
         self.cmd('vmware private-cloud delete -g {rg} -n {privatecloud} --yes')
 
+        # set managed identity
+        self.cmd('vmware private-cloud identity assign -g {rg} -c {privatecloud} --system-assigned')
+
+        # remove managed identity
+        self.cmd('vmware private-cloud identity remove -g {rg} -c {privatecloud}')
+
+        # show managed identity
+        self.cmd('vmware private-cloud identity show -g {rg} -c {privatecloud}')
+
         count = len(self.cmd('vmware private-cloud list -g {rg}').get_output_in_json())
         self.assertEqual(count, 1, 'private cloud count expected to be 1')

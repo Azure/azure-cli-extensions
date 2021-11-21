@@ -168,7 +168,7 @@ def privatecloud_identity_assign(client: AVSClient, resource_group_name, private
 def privatecloud_identity_remove(client: AVSClient, resource_group_name, private_cloud):
     from azext_vmware.vendored_sdks.avs_client.models import PrivateCloudIdentity, PrivateCloudUpdate
     pc = PrivateCloudUpdate()
-    pc.identity = PrivateCloudIdentity(type=None)
+    pc.identity = PrivateCloudIdentity(type="None")
     return client.private_clouds.begin_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, private_cloud_update=pc)
 
 
