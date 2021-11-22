@@ -41,8 +41,15 @@ def print_successful_styled_text(message):
 
     prefix_text = '\nDone: '
     if is_modern_terminal():
-        prefix_text = '\n(✓ )Done: '
-    print_styled_text([(Style.SUCCESS, prefix_text), (Style.PRIMARY, message)])
+        prefix_text = '\n(✓)Done: '
+    prompt_text = [(Style.SUCCESS, prefix_text)]
+
+    message_text = message
+    if isinstance(message, str):
+        message_text = [(Style.PRIMARY, message)]
+    prompt_text.extend(message_text)
+
+    print_styled_text(prompt_text)
 
 
 def prompt_option_list(option_list, start_index=1):

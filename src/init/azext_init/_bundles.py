@@ -15,6 +15,5 @@ default_config_bundle = {
     ('core', 'errors_only'): 'false',
     ('core', 'error_recommendations'): 'on',
     ('core', 'syntax_highlighting'): 'on',
-    ('core', 'updates'): 'prompt',
-    ('logging', 'enable_log_file'): 'yes'
+    ('core', 'updates'): 'prompt'
 }

@@ -131,8 +131,6 @@ def handle_interactive_mode(cmd, config_list):
 
         selected_option = get_int_option(MSG_INPUT_SELECTION, 1, len(config["options"]), default_value)
         selected_item = config["options"][selected_option - 1]
-        selected_value = selected_item["value"] if "value" in selected_item and selected_item["value"] \
-            else selected_item["name"]
 
         section, option = config["configuration"].split('.')
         modify_status = None
@@ -145,7 +143,7 @@ def handle_interactive_mode(cmd, config_list):
 
         if not original_config_value:
             modify_status = "(added)"
-        elif original_config_value != selected_value:
+        elif original_config_value != selected_item["value"]:
             modify_status = "(changed)"
 
         custom_settings[config["configuration"]] = {
@@ -154,8 +152,10 @@ def handle_interactive_mode(cmd, config_list):
             "modify_status": modify_status
         }
 
-        cmd.cli_ctx.config.set_value(section, option, selected_value)
-        print_successful_styled_text("{} set to: {}\n".format(config["brief"], selected_item["name"]))
+        cmd.cli_ctx.config.set_value(section, option, selected_item["value"])
+        success_prompt_text = [(Style.PRIMARY, "{} set to: ".format(config["brief"])),
+                                (Style.IMPORTANT, selected_item["name"])]
+        print_successful_styled_text(success_prompt_text)
 
     print_successful_styled_text(MSG_CUSTOM_SETTING_APPLIED)
 

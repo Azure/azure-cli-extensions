@@ -31,31 +31,38 @@ INTERACTIVE_CONFIG_LIST = [
         "options": [
             {
                 "name": "json",
+                "value": "json",
                 "desc": "JSON formatted output that most closely matches API responses.",
                 "tag": "default"
             },
             {
                 "name": "jsonc",
+                "value": "jsonc",
                 "desc": "Colored JSON formatted output that most closely matches API responses."
             },
             {
                 "name": "table",
+                "value": "table",
                 "desc": "Human-readable output format."
             },
             {
                 "name": "tsv",
+                "value": "tsv",
                 "desc": "Tab- and Newline-delimited. Great for GREP, AWK, etc."
             },
             {
                 "name": "yaml",
+                "value": "yaml",
                 "desc": "YAML formatted output. An alternative to JSON. Great for configuration files."
             },
             {
                 "name": "yamlc",
+                "value": "yamlc",
                 "desc": "Colored YAML formatted output. An alternative to JSON. Great for configuration files."
             },
             {
                 "name": "none",
+                "value": "none",
                 "desc": "No output, except for errors and warnings."
             }
         ]
@@ -63,7 +70,7 @@ INTERACTIVE_CONFIG_LIST = [
     {
         "configuration": "core.errors_only",
         "brief": "Standard error stream (stderr)",
-        "description": "",
+        "description": "The options to control whether only error messages are showed in stderr stream",
         "options": [
             {
                 "name": "All events",
@@ -81,7 +88,7 @@ INTERACTIVE_CONFIG_LIST = [
     {
         "configuration": "core.error_recommendations",
         "brief": "Error output",
-        "description": "",
+        "description": "The options to enable/disable message recommendations which ease your error recovery",
         "options": [
             {
                 "name": "Show recommendations",
@@ -99,7 +106,7 @@ INTERACTIVE_CONFIG_LIST = [
     {
         "configuration": "core.syntax_highlighting",
         "brief": "Syntax highlighting",
-        "description": "",
+        "description": "The options to enable/disable colored syntax highlighting",
         "options": [
             {
                 "name": "On",
@@ -117,7 +124,7 @@ INTERACTIVE_CONFIG_LIST = [
     {
         "configuration": "core.updates",
         "brief": "Updates",
-        "description": "",
+        "description": "The options to automatically upgrade to the latest version of CLI",
         "options": [
             {
                 "name": "Ask first",
@@ -134,24 +141,6 @@ INTERACTIVE_CONFIG_LIST = [
                 "name": "None",
                 "value": "none",
                 "desc": "Azure CLI will not notify you about available updates"
-            }
-        ]
-    },
-    {
-        "configuration": "logging.enable_log_file",
-        "brief": "Enable logging to file",
-        "description": "Would you like to enable logging to file?",
-        "options": [
-            {
-                "name": "yes",
-                "value": "true",
-                "desc": "enable logging to file",
-                "tag": "default"
-            },
-            {
-                "name": "no",
-                "value": "false",
-                "desc": "not enable logging to file"
             }
         ]
     }
