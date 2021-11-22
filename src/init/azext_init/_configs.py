@@ -31,38 +31,31 @@ INTERACTIVE_CONFIG_LIST = [
         "options": [
             {
                 "name": "json",
-                "option": "json",
                 "desc": "JSON formatted output that most closely matches API responses.",
                 "tag": "default"
             },
             {
                 "name": "jsonc",
-                "option": "jsonc",
                 "desc": "Colored JSON formatted output that most closely matches API responses."
             },
             {
                 "name": "table",
-                "option": "table",
                 "desc": "Human-readable output format."
             },
             {
                 "name": "tsv",
-                "option": "tsv",
                 "desc": "Tab- and Newline-delimited. Great for GREP, AWK, etc."
             },
             {
                 "name": "yaml",
-                "option": "yaml",
                 "desc": "YAML formatted output. An alternative to JSON. Great for configuration files."
             },
             {
                 "name": "yamlc",
-                "option": "yamlc",
                 "desc": "Colored YAML formatted output. An alternative to JSON. Great for configuration files."
             },
             {
                 "name": "none",
-                "option": "none",
                 "desc": "No output, except for errors and warnings."
             }
         ]
@@ -74,13 +67,13 @@ INTERACTIVE_CONFIG_LIST = [
         "options": [
             {
                 "name": "All events",
-                "option": "false",
+                "value": "false",
                 "desc": "The stderr stream shows all events, including errors and system messages",
                 "tag": "default"
             },
             {
                 "name": "Errors only",
-                "option": "true",
+                "value": "true",
                 "desc": "The stderr stream shows error messages only"
             }
         ]
@@ -92,13 +85,13 @@ INTERACTIVE_CONFIG_LIST = [
         "options": [
             {
                 "name": "Show recommendations",
-                "option": "on",
+                "value": "on",
                 "desc": "Error message might include recommendations or Help links",
                 "tag": "default"
             },
             {
                 "name": "Hide recommendations",
-                "option": "off",
+                "value": "off",
                 "desc": "Error messages will only show the error"
             }
         ]
@@ -110,13 +103,13 @@ INTERACTIVE_CONFIG_LIST = [
         "options": [
             {
                 "name": "On",
-                "option": "on",
+                "value": "on",
                 "desc": "Colored syntax highlighting. Easier for humans to read",
                 "tag": "default"
             },
             {
                 "name": "Off",
-                "option": "off",
+                "value": "off",
                 "desc": "Monochrome text. Harder for humans to read"
             }
         ]
@@ -128,18 +121,18 @@ INTERACTIVE_CONFIG_LIST = [
         "options": [
             {
                 "name": "Ask first",
-                "option": "prompt",
+                "value": "prompt",
                 "desc": "Azure CLI will ask you before installing available updates",
                 "tag": "default"
             },
             {
                 "name": "Automatic",
-                "option": "auto",
+                "value": "auto",
                 "desc": "Azure CLI will automatically install all available updates"
             },
             {
                 "name": "None",
-                "option": "none",
+                "value": "none",
                 "desc": "Azure CLI will not notify you about available updates"
             }
         ]
@@ -151,13 +144,13 @@ INTERACTIVE_CONFIG_LIST = [
         "options": [
             {
                 "name": "yes",
-                "option": "true",
+                "value": "true",
                 "desc": "enable logging to file",
                 "tag": "default"
             },
             {
                 "name": "no",
-                "option": "false",
+                "value": "false",
                 "desc": "not enable logging to file"
             }
         ]
