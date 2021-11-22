@@ -1448,7 +1448,7 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
 
 def troubleshoot(cmd, client, resource_group_name, cluster_name, storage_account, sas_token=None, container_name="connectedk8stroubleshoot", kube_config=None, kube_context=None,
                  output_file=os.path.join(os.path.expanduser('~'), '.azure', 'az_connectedk8s_troubleshoot_output.tar.gz')):
-    colorama.init()
+    colorama.init(autoreset=True)
     print(f"Troubleshooting issues with your Azure Arc-enabled Kubernetes cluster....")
     utils.check_connectivity()  # Checks internet connectivity
     troubleshoot_log_path = os.path.join(os.path.expanduser('~'), '.azure', 'connected8s_troubleshoot.log')
@@ -1467,12 +1467,32 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, storage_account
         tr_logger.info("azure-cli-core version installed locally: {}".format(azure_cli_core_version))
         if latest_connectedk8s_version and local_connectedk8s_version != 'Unknown' and local_connectedk8s_version != 'NotFound':
             if version.parse(local_connectedk8s_version) < version.parse(latest_connectedk8s_version):
-                print("{colorama.Fore.YELLOW}The connectedk8s CLI extension is not on the latest version. We recommend that you update this to the latest version v{} using the command 'az extension update -n connectedk8s'".format(latest_connectedk8s_version))
+                print(f"{colorama.Fore.YELLOW}The connectedk8s CLI extension is not on the latest version. We recommend that you update this to the latest version v{latest_connectedk8s_version} using the command 'az extension update -n connectedk8s'")
 
         try:
             # Fetch ConnectedCluster
             connected_cluster = client.get(resource_group_name, cluster_name)
             tr_logger.info("Connected cluster resource: {}".format(connected_cluster))
+            try:
+                if connected_cluster.agent_version is not None:
+                    # Checking whether optional extra values file has been provided.
+                    values_file_provided, values_file = utils.get_values_file()
+
+                    # Validate the helm environment file for Dogfood.
+                    dp_endpoint_dogfood = None
+                    release_train_dogfood = None
+                    if cmd.cli_ctx.cloud.endpoints.resource_manager == consts.Dogfood_RMEndpoint:
+                        azure_cloud = consts.Azure_DogfoodCloudName
+                        dp_endpoint_dogfood, release_train_dogfood = validate_env_file_dogfood(values_file, values_file_provided)
+                    
+                    config_dp_endpoint = get_config_dp_endpoint(cmd, connected_cluster.location)
+                    registry_path = utils.get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood, release_train_dogfood)
+                    latest_agent_version = registry_path.split(':')[1]
+                    is_supported_agent_version = utils.is_supported_agent_version(connected_cluster.agent_version,latest_agent_version)
+                    if not is_supported_agent_version:    
+                        print(f"{colorama.Fore.RED}The agent version your cluster is currently running on is: {connected_cluster.agent_version}. This is an older version which is not supported. Please find the support policy here - https://aka.ms/ArcK8sAgentVersionSupportPolicy . Please upgrade to the latest agent version: {latest_agent_version} by using 'az connectedk8s upgrade'. Refer to this documentation for more details about agent upgrade - https://aka.ms/ArcK8sAgentUpgradeDocs")
+            except Exception as ex:
+                print("exception is {}".format(str(ex)))            
         except Exception as ex:
             not_found = False
             try:
