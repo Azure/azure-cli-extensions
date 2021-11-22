@@ -1477,22 +1477,19 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, storage_account
                 if connected_cluster.agent_version is not None:
                     # Checking whether optional extra values file has been provided.
                     values_file_provided, values_file = utils.get_values_file()
-
                     # Validate the helm environment file for Dogfood.
                     dp_endpoint_dogfood = None
                     release_train_dogfood = None
                     if cmd.cli_ctx.cloud.endpoints.resource_manager == consts.Dogfood_RMEndpoint:
-                        azure_cloud = consts.Azure_DogfoodCloudName
                         dp_endpoint_dogfood, release_train_dogfood = validate_env_file_dogfood(values_file, values_file_provided)
-                    
                     config_dp_endpoint = get_config_dp_endpoint(cmd, connected_cluster.location)
                     registry_path = utils.get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood, release_train_dogfood)
                     latest_agent_version = registry_path.split(':')[1]
-                    is_supported_agent_version = utils.is_supported_agent_version(connected_cluster.agent_version,latest_agent_version)
+                    is_supported_agent_version = utils.is_supported_agent_version(connected_cluster.agent_version, latest_agent_version)
                     if not is_supported_agent_version:    
                         print(f"{colorama.Fore.RED}The agent version your cluster is currently running on is: {connected_cluster.agent_version}. This is an older version which is not supported. Please find the support policy here - https://aka.ms/ArcK8sAgentVersionSupportPolicy . Please upgrade to the latest agent version: {latest_agent_version} by using 'az connectedk8s upgrade'. Refer to this documentation for more details about agent upgrade - https://aka.ms/ArcK8sAgentUpgradeDocs")
             except Exception as ex:
-                print("exception is {}".format(str(ex)))            
+                pass            
         except Exception as ex:
             not_found = False
             try:
