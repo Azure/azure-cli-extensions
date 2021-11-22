@@ -132,7 +132,7 @@ def handle_interactive_mode(cmd, config_list):
         selected_option = get_int_option(MSG_INPUT_SELECTION, 1, len(config["options"]), default_value)
         selected_item = config["options"][selected_option - 1]
         selected_value = selected_item["value"] if "value" in selected_item and selected_item["value"] \
-            else selected_item["name"]
+            else selected_item["option"]
 
         section, option = config["configuration"].split('.')
         modify_status = None

@@ -12,5 +12,9 @@ default_config_bundle = {
     ('core', 'output'): OUTPUT_LIST[0]['name'],
     ('core', 'collect_telemetry'): 'no',
     ('core', 'cache_ttl'): DEFAULT_CACHE_TTL,
+    ('core', 'errors_only'): 'false',
+    ('core', 'error_recommendations'): 'on',
+    ('core', 'syntax_highlighting'): 'on',
+    ('core', 'updates'): 'prompt',
     ('logging', 'enable_log_file'): 'yes'
 }
