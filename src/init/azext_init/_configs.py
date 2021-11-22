@@ -61,17 +61,96 @@ INTERACTIVE_CONFIG_LIST = [
         ]
     },
     {
+        "configuration": "core.errors_only",
+        "brief": "Standard error stream (stderr)",
+        "description": "",
+        "options": [
+            {
+                "name": "All events",
+                "value": "false",
+                "desc": "The stderr stream shows all events, including errors and system messages",
+                "tag": "default"
+            },
+            {
+                "name": "Errors only",
+                "value": "true",
+                "desc": "The stderr stream shows error messages only"
+            }
+        ]
+    },
+    {
+        "configuration": "core.error_recommendations",
+        "brief": "Error output",
+        "description": "",
+        "options": [
+            {
+                "name": "Show recommendations",
+                "value": "on",
+                "desc": "Error message might include recommendations or Help links",
+                "tag": "default"
+            },
+            {
+                "name": "Hide recommendations",
+                "value": "off",
+                "desc": "Error messages will only show the error"
+            }
+        ]
+    },
+    {
+        "configuration": "core.syntax_highlighting",
+        "brief": "Syntax highlighting",
+        "description": "",
+        "options": [
+            {
+                "name": "On",
+                "value": "on",
+                "desc": "Colored syntax highlighting. Easier for humans to read",
+                "tag": "default"
+            },
+            {
+                "name": "Off",
+                "value": "off",
+                "desc": "Monochrome text. Harder for humans to read"
+            }
+        ]
+    },
+    {
+        "configuration": "core.updates",
+        "brief": "Updates",
+        "description": "",
+        "options": [
+            {
+                "name": "Ask first",
+                "value": "prompt",
+                "desc": "Azure CLI will ask you before installing available updates",
+                "tag": "default"
+            },
+            {
+                "name": "Automatic",
+                "value": "auto",
+                "desc": "Azure CLI will automatically install all available updates"
+            },
+            {
+                "name": "None",
+                "value": "none",
+                "desc": "Azure CLI will not notify you about available updates"
+            }
+        ]
+    },
+    {
         "configuration": "logging.enable_log_file",
         "brief": "Enable logging to file",
         "description": "Would you like to enable logging to file?",
         "options": [
             {
                 "name": "yes",
+                "value": "true",
                 "desc": "enable logging to file",
                 "tag": "default"
             },
             {
                 "name": "no",
+                "value": "false",
                 "desc": "not enable logging to file"
             }
         ]
