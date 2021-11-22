@@ -1486,10 +1486,10 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, storage_account
                     registry_path = utils.get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood, release_train_dogfood)
                     latest_agent_version = registry_path.split(':')[1]
                     is_supported_agent_version = utils.is_supported_agent_version(connected_cluster.agent_version, latest_agent_version)
-                    if not is_supported_agent_version:    
+                    if not is_supported_agent_version:
                         print(f"{colorama.Fore.RED}The agent version your cluster is currently running on is: {connected_cluster.agent_version}. This is an older version which is not supported. Please find the support policy here - https://aka.ms/ArcK8sAgentVersionSupportPolicy . Please upgrade to the latest agent version: {latest_agent_version} by using 'az connectedk8s upgrade'. Refer to this documentation for more details about agent upgrade - https://aka.ms/ArcK8sAgentUpgradeDocs")
-            except Exception as ex:
-                pass            
+            except Exception:
+                pass
         except Exception as ex:
             not_found = False
             try:
