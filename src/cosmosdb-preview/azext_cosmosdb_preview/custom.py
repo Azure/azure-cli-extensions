@@ -251,7 +251,7 @@ def cli_cosmosdb_managed_cassandra_datacenter_create(client,
 
     """Creates an Azure Managed Cassandra Datacenter"""
 
-    ldap_properties = AuthenticationMethodLdapProperties(
+    authentication_method_ldap_properties = AuthenticationMethodLdapProperties(
         server_hostname=server_hostname,
         server_port=server_port,
         service_user_distinguished_name=service_user_distinguished_name,
@@ -260,11 +260,6 @@ def cli_cosmosdb_managed_cassandra_datacenter_create(client,
         search_filter_template=search_filter_template,
         server_certificates=server_certificates
     )
-
-    isAllNone = True
-    for value in vars(ldap_properties).values():
-        if value is not None:
-            isAllNone = False
 
     data_center_properties = DataCenterResourceProperties(
         data_center_location=data_center_location,
@@ -276,11 +271,9 @@ def cli_cosmosdb_managed_cassandra_datacenter_create(client,
         disk_capacity=disk_capacity,
         availability_zone=availability_zone,
         managed_disk_customer_key_uri=managed_disk_customer_key_uri,
-        backup_storage_customer_key_uri=backup_storage_customer_key_uri
+        backup_storage_customer_key_uri=backup_storage_customer_key_uri,
+        authentication_method_ldap_properties=authentication_method_ldap_properties
     )
-
-    if isAllNone is False:
-        data_center_properties.authentication_method_ldap_properties=ldap_properties
 
     data_center_resource = DataCenterResource(
         properties=data_center_properties
@@ -350,11 +343,6 @@ def cli_cosmosdb_managed_cassandra_datacenter_update(client,
         server_certificates=server_certificates
     )
 
-    isAllNone = True
-    for value in vars(authentication_method_ldap_properties).values():
-        if value is not None:
-            isAllNone = False
-
     data_center_properties = DataCenterResourceProperties(
         data_center_location=data_center_resource.properties.data_center_location,
         delegated_subnet_id=data_center_resource.properties.delegated_subnet_id,
@@ -362,11 +350,9 @@ def cli_cosmosdb_managed_cassandra_datacenter_update(client,
         seed_nodes=data_center_resource.properties.seed_nodes,
         base64_encoded_cassandra_yaml_fragment=base64_encoded_cassandra_yaml_fragment,
         managed_disk_customer_key_uri=managed_disk_customer_key_uri,
-        backup_storage_customer_key_uri=backup_storage_customer_key_uri
+        backup_storage_customer_key_uri=backup_storage_customer_key_uri,
+        authentication_method_ldap_properties=authentication_method_ldap_properties
     )
-
-    if isAllNone is False:
-        data_center_properties.authentication_method_ldap_properties=authentication_method_ldap_properties
 
     data_center_resource = DataCenterResource(
         properties=data_center_properties
