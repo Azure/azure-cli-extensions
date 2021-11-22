@@ -15,12 +15,6 @@ OUTPUT_LIST = [
     {"name": "none", "desc": "No output, except for errors and warnings."}
 ]
 
-LOGIN_METHOD_LIST = [
-    "Device code authentication, we will provide a code you enter into a web page and log into",
-    "Username and password (MFA enforced accounts or MSA accounts such as live-id not supported)",
-    "Service Principal with secret",
-    "Skip this step (login is available with the \'az login\' command)"
-]
 
 INTERACTIVE_CONFIG_LIST = [
     {

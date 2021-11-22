@@ -15,7 +15,8 @@ from azure.cli.core.commands import DEFAULT_CACHE_TTL
 from ._configs import OUTPUT_LIST, INTERACTIVE_CONFIG_LIST
 from ._text import (MSG_WELCOME, MSG_SELECT_STEP, MSG_INPUT_SELECTION, MSG_PROMPT_MANAGE_GLOBAL, MSG_NO_CONFIGURATION,
                     MSG_CURRENT_SETTINGS, MSG_PROMPT_GLOBAL_OUTPUT, MSG_PROMPT_TELEMETRY, MSG_PROMPT_FILE_LOGGING,
-                    MSG_PROMPT_CACHE_TTL, INIT_STEP_OPTION_LIST, MSG_CUSTOM_SETTING_APPLIED)
+                    MSG_PROMPT_CACHE_TTL, INIT_STEP_OPTION_LIST, MSG_CUSTOM_SETTING_APPLIED, MSG_MORE_CONFIG_SETTINGS,
+                    MSG_MORE_CONFIG_LINK, CONTENT_INDENT_BROADBAND)
 from ._utils import prompt_option_list, get_int_option, print_successful_styled_text
 
 
@@ -30,7 +31,7 @@ def handle_init(cmd):
 
     print_styled_text((Style.PRIMARY, MSG_SELECT_STEP))
 
-    prompt_option_list(INIT_STEP_OPTION_LIST)
+    prompt_option_list(INIT_STEP_OPTION_LIST, content_indent=CONTENT_INDENT_BROADBAND)
 
     selected_option = get_int_option(MSG_INPUT_SELECTION, 1, 3, 3)
 
@@ -49,7 +50,7 @@ def load_existing_configuration(cmd):
 
             for section in sections:
                 items = cmd.cli_ctx.config.items(section)
-                print_styled_text((Style.PRIMARY, "\n[" + section + "]"))
+                print_styled_text((Style.ACTION, "\n[" + section + "]"))
                 for item in items:
                     print_styled_text((Style.PRIMARY, item['name'] + " = " + item['value']))
         else:
@@ -121,7 +122,7 @@ def handle_interactive_mode(cmd, config_list):
 
         print_styled_text((Style.PRIMARY, "\n{}:\n".format(config["brief"])))
         print_styled_text((Style.PRIMARY, "{}\n".format(config["description"])))
-        prompt_option_list(config["options"])
+        prompt_option_list(config["options"], content_indent=CONTENT_INDENT_BROADBAND)
 
         default_value = 1
         for index, option_item in enumerate(config["options"]):
@@ -148,7 +149,7 @@ def handle_interactive_mode(cmd, config_list):
 
         custom_settings[config["configuration"]] = {
             "brief": config["brief"],
-            "selected": selected_item["name"],
+            "option": selected_item["name"],
             "modify_status": modify_status
         }
 
@@ -160,8 +161,13 @@ def handle_interactive_mode(cmd, config_list):
     print_successful_styled_text(MSG_CUSTOM_SETTING_APPLIED)
 
     for setting in custom_settings.values():
-        new_config_list = [(Style.PRIMARY, "{}: {} ".format(setting["brief"], setting["selected"]))]
+        new_config_list = [(Style.PRIMARY, "{}: {} ".format(CONTENT_INDENT_BROADBAND + setting["brief"],
+                                                            setting["option"]))]
         if setting["modify_status"]:
             new_config_list.append((Style.IMPORTANT, setting["modify_status"]))
         print_styled_text(new_config_list)
         print()
+
+    print_styled_text([(Style.PRIMARY, CONTENT_INDENT_BROADBAND + MSG_MORE_CONFIG_SETTINGS),
+                       (Style.HYPERLINK, MSG_MORE_CONFIG_LINK)])
+    print()

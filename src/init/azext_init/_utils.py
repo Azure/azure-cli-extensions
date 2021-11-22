@@ -52,7 +52,7 @@ def print_successful_styled_text(message):
     print_styled_text(prompt_text)
 
 
-def prompt_option_list(option_list, start_index=1):
+def prompt_option_list(option_list, start_index=1, content_indent=None):
 
     if not option_list or not isinstance(option_list, list):
         return
@@ -62,6 +62,8 @@ def prompt_option_list(option_list, start_index=1):
             continue
 
         option_item = [(Style.ACTION, "[" + str(index + start_index) + "] "), (Style.PRIMARY, choice_item['name'])]
+        if content_indent:
+            option_item.insert(0, (Style.PRIMARY, content_indent))
         if 'tag' in choice_item and choice_item['tag']:
             option_item.append((Style.SECONDARY, " ({})".format(choice_item['tag'])))
         if 'secondary' in choice_item and choice_item['secondary']:
@@ -69,5 +71,8 @@ def prompt_option_list(option_list, start_index=1):
         print_styled_text(option_item)
 
         if 'desc' in choice_item and choice_item['desc']:
-            print_styled_text([(Style.PRIMARY, '    '), (Style.SECONDARY, choice_item['desc'])])
+            desc_item = [(Style.PRIMARY, '    '), (Style.SECONDARY, choice_item['desc'])]
+            if content_indent:
+                desc_item.insert(0, (Style.PRIMARY, content_indent))
+            print_styled_text(desc_item)
         print()
