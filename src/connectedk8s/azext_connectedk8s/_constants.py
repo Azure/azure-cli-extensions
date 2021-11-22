@@ -130,3 +130,4 @@ STORAGE_CONTAINER_NAME_MAX_LENGTH = 63
 CSP_Storage_Url = "https://k8sconnectcsp.azureedge.net"
 HELM_STORAGE_URL = "https://k8connecthelm.azureedge.net"
 HELM_VERSION = 'v3.6.3'
+AGENT_VERSION_SUPPORT_WINDOW = 2

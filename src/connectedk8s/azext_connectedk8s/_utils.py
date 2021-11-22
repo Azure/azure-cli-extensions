@@ -878,3 +878,15 @@ def validate_node_api_response(api_instance, node_api_response):
             return None
     else:
         return node_api_response
+
+def is_supported_agent_version(current_agent_version, latest_agent_version):
+    current_agent_version_parts = current_agent_version.split('.')
+    latest_agent_version_parts = latest_agent_version.split('.')
+    v1 = int(current_agent_version_parts[0])*10 + int(current_agent_version_parts[1])
+    v2 = int(latest_agent_version_parts[0])*10 + int(latest_agent_version_parts[1])
+    #computing the difference between latest version and current version by ignoring the patch
+    diff = v2 - v1
+    if(diff > int(consts.AGENT_VERSION_SUPPORT_WINDOW)):
+        return False
+    else:
+        return True
