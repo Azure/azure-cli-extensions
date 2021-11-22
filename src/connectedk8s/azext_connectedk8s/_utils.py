@@ -653,9 +653,9 @@ def display_diagnostics_report(kubectl_prior):   # pylint: disable=too-many-stat
             print("Got {} diagnostic results for {} ready nodes{}\r".format(len(apd_lines), len(ready_nodes), '.' * retry), end='')
             if len(apd_lines) < len(ready_nodes):
                 logger.warning("Warning: There are %s apd resources, but there are %s nodes running on the cluster."
-                        "A possible reason might be because your nodes have taints that are preventing the diagnostic resources from being installed."
-                                    "If you want diagnostic results for all of the cluster nodes, please run 'kubectl taint node --all node-role.kubernetes.io/master-' and retry the az connectedk8s troubleshoot command.",
-                                len(apd_lines), len(ready_nodes))
+                            "A possible reason might be because your nodes have taints that are preventing the diagnostic resources from being installed."
+                            "If you want diagnostic results for all of the cluster nodes, please run 'kubectl taint node --all node-role.kubernetes.io/master-' and retry the az connectedk8s troubleshoot command.",
+                            len(apd_lines), len(ready_nodes))
                 if len(apd_lines) < len(running_pods):
                     time.sleep(3)
                 else:
