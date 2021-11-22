@@ -1807,11 +1807,15 @@ def connectedvmware_extension_list(
     client: MachineExtensionsOperations,
     resource_group_name,
     vm_name,
-    expand=None
+    expand=None,
+    instance_view=False
 ):
     """
     List all the vm extension of a given vm.
     """
+
+    if instance_view:
+        expand = 'instanceView'
 
     return client.list(resource_group_name=resource_group_name,
                        name=vm_name,

@@ -665,7 +665,7 @@ helps['connectedvmware vm extension create'] = """
     type: command
     short-summary: "The operation to Create the extension."
     examples:
-      - name: Create or Update a VM Extension
+      - name: Create a VM Extension
         text: |-
                az connectedvmware vm extension create --name "CustomScriptExtension" --location "eastus2euap" --type \
 "CustomScriptExtension" --publisher "Microsoft.Compute" --settings "{\\"commandToExecute\\":\\"powershell.exe -c \
@@ -677,7 +677,7 @@ helps['connectedvmware vm extension update'] = """
     type: command
     short-summary: "The operation to create or update the extension."
     examples:
-      - name: Create or Update a VM Extension
+      - name: Update a VM Extension
         text: |-
                az connectedvmware vm extension update --name "CustomScriptExtension" --type "CustomScriptExtension" \
 --publisher "Microsoft.Compute" --settings "{\\"commandToExecute\\":\\"powershell.exe -c \\\\\\"Get-Process | \

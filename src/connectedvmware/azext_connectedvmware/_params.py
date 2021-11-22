@@ -117,14 +117,10 @@ def load_arguments(self, _):
 
     with self.argument_context('connectedvmware vm create') as c:
         c.argument(
-            'vm_template',
-            options_list=['--vm-template'],
-            help="Name or ID of the vm template for deploying the vm.",
+            'vm_template', help="Name or ID of the vm template for deploying the vm.",
         )
         c.argument(
-            'resource_pool',
-            options_list=['--resource-pool'],
-            help="Name or ID of the resource pool for deploying the vm.",
+            'resource_pool', help="Name or ID of the resource pool for deploying the vm.",
         )
         c.argument(
             'cluster',
@@ -289,7 +285,7 @@ def load_arguments(self, _):
 
     with self.argument_context('connectedvmware vm disk delete') as c:
         c.argument(
-            'vm_name', options_list=['--vm-name'], help="Name of the virtual machine."
+            'vm_name', help="Name of the virtual machine."
         )
         c.argument(
             'disk_names',
@@ -300,7 +296,7 @@ def load_arguments(self, _):
 
     with self.argument_context('connectedvmware vm disk list') as c:
         c.argument(
-            'vm_name', options_list=['--vm-name'], help="Name of the virtual machine."
+            'vm_name', help="Name of the virtual machine."
         )
 
     with self.argument_context('connectedvmware vm disk show') as c:
@@ -312,7 +308,7 @@ def load_arguments(self, _):
     with self.argument_context('connectedvmware vm disk update') as c:
         c.argument('disk_name', options_list=['--name', '-n'], help="Name of the Disk.")
         c.argument(
-            'vm_name', options_list=['--vm-name'], help="Name of the virtual machine."
+            'vm_name', help="Name of the virtual machine."
         )
         c.argument(
             'disk_size',
@@ -344,7 +340,7 @@ def load_arguments(self, _):
 
     with self.argument_context('connectedvmware vm guest-agent enable') as c:
         c.argument(
-            'vm_name', options_list=['--vm-name'], help="Name of the VM."
+            'vm_name', help="Name of the VM."
         )
         c.argument(
             'username',
@@ -364,65 +360,58 @@ def load_arguments(self, _):
 
     with self.argument_context('connectedvmware vm guest-agent show') as c:
         c.argument(
-            'vm_name', options_list=['--vm-name'], help="Name of the VM.",
+            'vm_name', help="Name of the VM.",
         )
 
     with self.argument_context('connectedvmware vm extension list') as c:
-        c.argument('vm_name', options_list=['--vm-name'], type=str, help='The name of the vm containing the extension.')
-        c.argument('expand', type=str, help='The expand expression to apply on the operation.')
+        c.argument('vm_name', type=str, help='The name of the vm containing the extension.')
+        c.argument(
+            'expand', help='The expand expression to apply on the operation.',
+            deprecate_info=c.deprecate(hide=True))
+        c.argument('instance_view', action='store_true', help='Track the run command progress')
 
     with self.argument_context('connectedvmware vm extension show') as c:
         c.argument(
-            'vm_name', options_list=['--vm-name'], type=str, help='The name of the vm containing the extension.',
+            'vm_name', type=str, help='The name of the vm containing the extension.',
             id_part='name')
         c.argument('name', type=str, help='The name of the vm extension.', id_part='child_name_1')
 
+    for scope in ['connectedvmware vm extension update', 'connectedvmware vm extension create']:
+        with self.argument_context(scope) as c:
+            c.argument(
+                'vm_name', type=str, help='The name of the vm where the extension '
+                'should be created or updated.')
+            c.argument('name', type=str, help='The name of the vm extension.')
+            c.argument('tags', tags_type)
+            c.argument(
+                'force_update_tag', type=str, help='How the extension handler should be forced to update even if '
+                'the extension configuration has not changed.')
+            c.argument('publisher', type=str, help='The name of the extension handler publisher.')
+            c.argument(
+                'type_', options_list=['--type'], type=str, help='Specify the type of the extension; an example '
+                'is "CustomScriptExtension".')
+            c.argument('type_handler_version', type=str, help='Specifies the version of the script handler.')
+            c.argument(
+                'auto_upgrade_minor', arg_type=get_three_state_flag(), help='Indicate whether the extension should '
+                'use a newer minor version if one is available at deployment time. Once deployed, however, the '
+                'extension will not upgrade minor versions unless redeployed, even with this property set to true.')
+            c.argument(
+                'settings', type=validate_file_or_dict, help='Json formatted public settings for the extension. '
+                'Expected value: json-string/json-file/@json-file.')
+            c.argument(
+                'protected_settings', type=validate_file_or_dict, help='The extension can contain either '
+                'protectedSettings or protectedSettingsFromKeyVault or no protected settings at all. Expected '
+                'value: json-string/json-file/@json-file.')
+
     with self.argument_context('connectedvmware vm extension create') as c:
         c.argument(
-            'vm_name', options_list=['--vm-name'], type=str, help='The name of the vm where the extension '
-            'should be created or updated.')
-        c.argument('name', type=str, help='The name of the vm extension.')
-        c.argument('tags', tags_type)
-        c.argument('force_update_tag', type=str, help='How the extension handler should be forced to update even if '
-                   'the extension configuration has not changed.')
-        c.argument('publisher', type=str, help='The name of the extension handler publisher.')
-        c.argument('type_', options_list=['--type'], type=str, help='Specifies the type of the extension; an example '
-                   'is "CustomScriptExtension".')
-        c.argument('type_handler_version', type=str, help='Specifies the version of the script handler.')
-        c.argument('auto_upgrade_minor', arg_type=get_three_state_flag(), help='Indicate whether the extension should '
-                   'use a newer minor version if one is available at deployment time. Once deployed, however, the '
-                   'extension will not upgrade minor versions unless redeployed, even with this property set to true.')
-        c.argument('settings', type=validate_file_or_dict, help='Json formatted public settings for the extension. '
-                   'Expected value: json-string/json-file/@json-file.')
-        c.argument('protected_settings', type=validate_file_or_dict, help='The extension can contain either '
-                   'protectedSettings or protectedSettingsFromKeyVault or no protected settings at all. Expected '
-                   'value: json-string/json-file/@json-file.')
-        c.argument('instance_view_type', type=str, help='Specify the type of the extension; an example is '
-                   '"CustomScriptExtension".', arg_group='Instance View')
-        c.argument('inst_handler_version', type=str, help='Specify the version of the script handler.',
-                   arg_group='Instance View')
-
-    with self.argument_context('connectedvmware vm extension update') as c:
-        c.argument('vm_name', options_list=['--vm-name'], type=str, help='The name of the vm where the extension '
-                   'should be created or updated.', id_part='name')
-        c.argument('name', type=str, help='The name of the vm extension.', id_part='child_name_1')
-        c.argument('tags', tags_type)
-        c.argument('force_update_tag', type=str, help='How the extension handler should be forced to update even if '
-                   'the extension configuration has not changed.')
-        c.argument('publisher', type=str, help='The name of the extension handler publisher.')
-        c.argument('type_', options_list=['--type'], type=str, help='Specifies the type of the extension; an example '
-                   'is "CustomScriptExtension".')
-        c.argument('type_handler_version', type=str, help='Specifies the version of the script handler.')
-        c.argument('auto_upgrade_minor', arg_type=get_three_state_flag(), help='Indicate whether the extension should '
-                   'use a newer minor version if one is available at deployment time. Once deployed, however, the '
-                   'extension will not upgrade minor versions unless redeployed, even with this property set to true.')
-        c.argument('settings', type=validate_file_or_dict, help='Json formatted public settings for the extension. '
-                   'Expected value: json-string/json-file/@json-file.')
-        c.argument('protected_settings', type=validate_file_or_dict, help='The extension can contain either '
-                   'protectedSettings or protectedSettingsFromKeyVault or no protected settings at all. Expected '
-                   'value: json-string/json-file/@json-file.')
+            'instance_view_type', type=str, help='Specify the type of the extension; an example is '
+            '"CustomScriptExtension".', arg_group='Instance View')
+        c.argument(
+            'inst_handler_version', type=str, help='Specify the version of the script handler.',
+            arg_group='Instance View')
 
     with self.argument_context('connectedvmware vm extension delete') as c:
-        c.argument('vm_name', options_list=['--vm-name'], type=str, help='The name of the vm where the extension '
+        c.argument('vm_name', type=str, help='The name of the vm where the extension '
                    'should be deleted.', id_part='name')
         c.argument('name', type=str, help='The name of the vm extension.', id_part='child_name_1')
