@@ -62,3 +62,12 @@ examples:
         az sig image-version list-community --public-gallery-name publicGalleryName \\
         --gallery-image-definition MyImage --location myLocation
 """
+
+helps['sig share enable-community'] = """
+type: command
+short-summary: Allow to share gallery to the community
+examples:
+  - name: Allow to share gallery to the community
+    text: |
+        az sig share enable-community --resource-group MyResourceGroup --gallery-name MyGallery
+"""

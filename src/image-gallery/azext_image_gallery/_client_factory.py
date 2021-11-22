@@ -28,3 +28,7 @@ def cf_community_gallery_image(cli_ctx, *_):
 
 def cf_community_gallery_image_version(cli_ctx, *_):
     return _compute_client_factory(cli_ctx).community_gallery_image_versions
+
+
+def cf_community_gallery_sharing_profile(cli_ctx, *_):
+    return _compute_client_factory(cli_ctx).gallery_sharing_profile

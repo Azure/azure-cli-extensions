@@ -5,7 +5,7 @@ Release History
 
 0.1.4
 ++++++
-* Added vm extension support.
+* Add vm extension support.
 
 0.1.3
 ++++++
