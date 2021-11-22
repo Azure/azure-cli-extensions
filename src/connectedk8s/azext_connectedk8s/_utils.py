@@ -650,7 +650,6 @@ def display_diagnostics_report(kubectl_prior):   # pylint: disable=too-many-stat
             apd_lines = apd.splitlines()
             if apd_lines and 'No resources found' in apd_lines[0]:
                 apd_lines.pop(0)
-
             print("Got {} diagnostic results for {} ready nodes{}\r".format(len(apd_lines), len(ready_nodes), '.' * retry), end='')
             if len(apd_lines) < len(ready_nodes):
                 logger.warning("Warning: There are %s apd resources, but there are %s nodes running on the cluster."
