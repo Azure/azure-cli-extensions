@@ -1763,11 +1763,10 @@ class EncryptionService(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :param enabled: A boolean indicating whether or not the service encrypts the data as it is
-     stored.
+     stored. Encryption at rest is enabled by default today and cannot be disabled.
     :type enabled: bool
     :ivar last_enabled_time: Gets a rough estimate of the date/time when the encryption was last
-     enabled by the user. Only returned when encryption is enabled. There might be some unencrypted
-     blobs which were written after this time, as it is just a rough estimate.
+     enabled by the user. Data is encrypted at rest by default today and cannot be disabled.
     :vartype last_enabled_time: ~datetime.datetime
     :param key_type: Encryption key type to be used for the encryption service. 'Account' key type
      implies that an account-scoped encryption key will be used. 'Service' key type implies that a
@@ -3679,21 +3678,12 @@ class LocalUserProperties(msrest.serialization.Model):
 class LocalUsers(msrest.serialization.Model):
     """List storage account local users.
 
-    Variables are only populated by the server, and will be ignored when sending a request.
-
     :param value: The local users associated with the storage account.
     :type value: list[~azure.mgmt.storage.v2021_08_01.models.LocalUser]
-    :ivar system_data: Metadata pertaining to creation and last modification of the resource.
-    :vartype system_data: ~azure.mgmt.storage.v2021_08_01.models.SystemData
     """
-
-    _validation = {
-        'system_data': {'readonly': True},
-    }
 
     _attribute_map = {
         'value': {'key': 'value', 'type': '[LocalUser]'},
-        'system_data': {'key': 'systemData', 'type': 'SystemData'},
     }
 
     def __init__(
@@ -3704,7 +3694,6 @@ class LocalUsers(msrest.serialization.Model):
     ):
         super(LocalUsers, self).__init__(**kwargs)
         self.value = value
-        self.system_data = None
 
 
 class ManagementPolicy(Resource):
@@ -5426,8 +5415,8 @@ class StorageAccount(TrackedResource):
      queue, or table object from the secondary location of the storage account. Only available if
      the SKU name is Standard_RAGRS.
     :vartype secondary_endpoints: ~azure.mgmt.storage.v2021_08_01.models.Endpoints
-    :ivar encryption: Gets the encryption settings on the account. If unspecified, the account is
-     unencrypted.
+    :ivar encryption: Encryption settings to be used for server-side encryption for the storage
+     account.
     :vartype encryption: ~azure.mgmt.storage.v2021_08_01.models.Encryption
     :ivar access_tier: Required for storage accounts where kind = BlobStorage. The access tier used
      for billing. Possible values include: "Hot", "Cool".
@@ -5720,8 +5709,8 @@ class StorageAccountCreateParameters(msrest.serialization.Model):
      Only one custom domain is supported per storage account at this time. To clear the existing
      custom domain, use an empty string for the custom domain name property.
     :type custom_domain: ~azure.mgmt.storage.v2021_08_01.models.CustomDomain
-    :param encryption: Not applicable. Azure Storage encryption is enabled for all storage accounts
-     and cannot be disabled.
+    :param encryption: Encryption settings to be used for server-side encryption for the storage
+     account.
     :type encryption: ~azure.mgmt.storage.v2021_08_01.models.Encryption
     :param network_rule_set: Network rule set.
     :type network_rule_set: ~azure.mgmt.storage.v2021_08_01.models.NetworkRuleSet
@@ -6114,8 +6103,8 @@ class StorageAccountUpdateParameters(msrest.serialization.Model):
      CNAME source. Only one custom domain is supported per storage account at this time. To clear
      the existing custom domain, use an empty string for the custom domain name property.
     :type custom_domain: ~azure.mgmt.storage.v2021_08_01.models.CustomDomain
-    :param encryption: Provides the encryption settings on the account. The default setting is
-     unencrypted.
+    :param encryption: Not applicable. Azure Storage encryption at rest is enabled by default for
+     all storage accounts and cannot be disabled.
     :type encryption: ~azure.mgmt.storage.v2021_08_01.models.Encryption
     :param sas_policy: SasPolicy assigned to the storage account.
     :type sas_policy: ~azure.mgmt.storage.v2021_08_01.models.SasPolicy
