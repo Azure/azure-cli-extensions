@@ -5,7 +5,7 @@ Release History
 
 0.10.0
 ++++++
-* [2021-11-22] Version intended to work with QDK version v0.20.2111.XXXXXX
+* [2021-11-22] Version intended to work with QDK version v0.20.2111.177148
 * Fixed issue where the update prompt shows during test automation and should be suppressed.
 
 0.9.0
