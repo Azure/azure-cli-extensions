@@ -18,7 +18,7 @@ from ._virtual_networks_operations import VirtualNetworksOperations
 from ._inventory_items_operations import InventoryItemsOperations
 from ._hybrid_identity_metadata_operations import HybridIdentityMetadataOperations
 from ._machine_extensions_operations import MachineExtensionsOperations
-from ._guest_agent_operations import GuestAgentOperations
+from ._guest_agents_operations import GuestAgentsOperations
 
 __all__ = [
     'Operations',
@@ -33,5 +33,5 @@ __all__ = [
     'InventoryItemsOperations',
     'HybridIdentityMetadataOperations',
     'MachineExtensionsOperations',
-    'GuestAgentOperations',
+    'GuestAgentsOperations',
 ]
