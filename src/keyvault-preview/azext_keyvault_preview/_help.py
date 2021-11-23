@@ -23,7 +23,7 @@ short-summary: Add regions for the managed HSM Pool.
 examples:
   - name: Add regions for the managed HSM.
     text: |
-        az keyvault region add --region-names westus2 eastus2 --hsm-name myhsm --resource-group myrg
+        az keyvault region add --region-name westus2 --hsm-name myhsm --resource-group myrg
 """
 
 helps['keyvault region remove'] = """
@@ -32,7 +32,7 @@ short-summary: Remove regions for the managed HSM Pool.
 examples:
   - name: Remove regions for the managed HSM.
     text: |
-        az keyvault region remove --region-names westus2 eastus2 --hsm-name myhsm --resource-group myrg
+        az keyvault region remove --region-name westus2 --hsm-name myhsm --resource-group myrg
 """
 
 helps['keyvault region wait'] = """
