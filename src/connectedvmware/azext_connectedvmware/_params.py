@@ -366,9 +366,7 @@ def load_arguments(self, _):
     with self.argument_context('connectedvmware vm extension list') as c:
         c.argument('vm_name', type=str, help='The name of the vm containing the extension.')
         c.argument(
-            'expand', help='The expand expression to apply on the operation.',
-            deprecate_info=c.deprecate(hide=True))
-        c.argument('instance_view', action='store_true', help='Track the run command progress')
+            'expand', help='The expand expression to apply on the operation.')
 
     with self.argument_context('connectedvmware vm extension show') as c:
         c.argument(
