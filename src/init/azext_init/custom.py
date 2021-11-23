@@ -12,13 +12,12 @@ from azure.cli.core.util import ScopedConfig
 from azure.cli.core.style import Style, print_styled_text
 from azure.cli.core.util import ConfiguredDefaultSetter
 from azure.cli.core.commands import DEFAULT_CACHE_TTL
-from ._configs import OUTPUT_LIST, INTERACTIVE_CONFIG_LIST
-from ._text import (MSG_WELCOME, MSG_SELECT_STEP, MSG_INPUT_SELECTION, MSG_PROMPT_MANAGE_GLOBAL, MSG_NO_CONFIGURATION,
-                    MSG_CURRENT_SETTINGS, MSG_PROMPT_GLOBAL_OUTPUT, MSG_PROMPT_TELEMETRY, MSG_PROMPT_FILE_LOGGING,
-                    MSG_PROMPT_CACHE_TTL, INIT_STEP_OPTION_LIST, MSG_CUSTOM_SETTING_APPLIED, MSG_MORE_CONFIG_SETTINGS,
+from ._configs import INTERACTIVE_CONFIG_LIST
+from ._text import (MSG_WELCOME, MSG_SELECT_STEP, MSG_INPUT_SELECTION, MSG_CURRENT_SETTINGS, MSG_NO_CONFIGURATION,
+                    MSG_BUNDLE_SETTING_APPLIED, INIT_STEP_OPTION_LIST, MSG_CUSTOM_SETTING_APPLIED, MSG_MORE_CONFIG_SETTINGS,
                     MSG_MORE_CONFIG_LINK, CONTENT_INDENT_BROADBAND, MSG_MROE_COMMANDS_PROMPT, MSG_MORE_COMMANDS)
 from ._utils import prompt_option_list, get_int_option, print_successful_styled_text
-
+from ._bundles import (default_automation_config_bundle, default_interaction_config_bundle)
 
 logger = get_logger(__name__)
 
@@ -35,8 +34,11 @@ def handle_init(cmd):
 
     selected_option = get_int_option(MSG_INPUT_SELECTION, 1, 3, 3)
 
-    if selected_option in [1, 2]:
-        set_build_in_bundles(cmd)
+    if selected_option == 1:
+        set_build_in_bundles(cmd, default_interaction_config_bundle)
+
+    if selected_option == 2:
+        set_build_in_bundles(cmd, default_automation_config_bundle)
 
     if selected_option == 3:
         handle_interactive_mode(cmd, INTERACTIVE_CONFIG_LIST)
@@ -57,62 +59,40 @@ def load_existing_configuration(cmd):
             print_styled_text((Style.PRIMARY, MSG_NO_CONFIGURATION))
 
 
-def set_build_in_bundles(cmd):
+def set_build_in_bundles(cmd, bundle):
 
-    from azure.cli.core.cloud import cloud_forbid_telemetry
-
-    cloud_forbid_telemetry = cloud_forbid_telemetry(cmd.cli_ctx)
     config = cmd.cli_ctx.config
-    # print location of global configuration
-    print_styled_text((Style.PRIMARY, 'Your settings can be found at {}'.format(config.config_path)))
-    # set up the config parsers
-    file_config = configparser.ConfigParser()
-    config_exists = file_config.read([config.config_path])
-    should_modify_global_config = False
-    answers = {}
-    if config_exists:
-        # print current config and prompt to allow global config modification
-        should_modify_global_config = prompt_y_n(MSG_PROMPT_MANAGE_GLOBAL, default='n')
-        answers['modify_global_prompt'] = should_modify_global_config
+    custom_settings = {}
 
-    if not config_exists or should_modify_global_config:
-        # no config exists yet so configure global config or user wants to modify global config
-        with ConfiguredDefaultSetter(config, False):
-            output_index = prompt_choice_list(MSG_PROMPT_GLOBAL_OUTPUT, OUTPUT_LIST,
-                                              default=get_default_from_config(config, 'core', 'output', OUTPUT_LIST))
-            answers['output_type_prompt'] = output_index
-            answers['output_type_options'] = str(OUTPUT_LIST)
-            enable_file_logging = prompt_y_n(MSG_PROMPT_FILE_LOGGING, default='n')
-            if cloud_forbid_telemetry:
-                allow_telemetry = False
-            else:
-                allow_telemetry = prompt_y_n(MSG_PROMPT_TELEMETRY, default='y')
-            answers['telemetry_prompt'] = allow_telemetry
-            cache_ttl = None
-            while not cache_ttl:
-                try:
-                    cache_ttl = prompt(MSG_PROMPT_CACHE_TTL) or DEFAULT_CACHE_TTL
-                    # ensure valid int by casting
-                    cache_value = int(cache_ttl)
-                    if cache_value < 1:
-                        raise ValueError
-                except ValueError:
-                    logger.error('TTL must be a positive integer')
-                    cache_ttl = None
-            # save the global config
-            config.set_value('core', 'output', OUTPUT_LIST[output_index]['name'])
-            config.set_value('core', 'collect_telemetry', 'yes' if allow_telemetry else 'no')
-            config.set_value('core', 'cache_ttl', cache_ttl)
-            config.set_value('logging', 'enable_log_file', 'yes' if enable_file_logging else 'no')
+    for config in bundle["config_list"]:
+        section, option = config["configuration"].split('.')
+        modify_status = None
+        original_config_value = None
+        from configparser import NoOptionError, NoSectionError
+        try:
+            original_config_value = cmd.cli_ctx.config.get(section, option)
+        except (NoOptionError, NoSectionError):
+            pass
 
+        if not original_config_value:
+            modify_status = "(added)"
+        elif original_config_value != config["value"]:
+            modify_status = "(changed)"
+        cmd.cli_ctx.config.set_value(section, option, config["value"])
 
-def get_default_from_config(config, section, option, choice_list, fallback=1):
-    try:
-        config_val = config.get(section, option)
-        return [i for i, x in enumerate(choice_list)
-                if 'name' in x and x['name'] == config_val][0] + 1
-    except (IndexError, configparser.NoSectionError, configparser.NoOptionError):
-        return fallback
+        custom_settings[config["configuration"]] = {
+            "desc": config["desc"],
+            "modify_status": modify_status
+        }
+            
+    print_successful_styled_text(MSG_BUNDLE_SETTING_APPLIED.format(bundle["bundle_name"]))
+
+    for setting in custom_settings.values():
+        new_config_list = [(Style.PRIMARY, setting["desc"])]
+        if setting["modify_status"]:
+            new_config_list.append((Style.IMPORTANT, setting["modify_status"]))
+        print_styled_text(new_config_list)
+        print()
 
 
 def handle_interactive_mode(cmd, config_list):

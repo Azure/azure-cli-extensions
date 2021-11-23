@@ -4,18 +4,6 @@
 # --------------------------------------------------------------------------------------------
 
 
-OUTPUT_LIST = [
-    {"name": "json", "desc": "JSON formatted output that most closely matches API responses."},
-    {"name": "jsonc",
-     "desc": "Colored JSON formatted output that most closely matches API responses."},
-    {"name": "table", "desc": "Human-readable output format."},
-    {"name": "tsv", "desc": "Tab- and Newline-delimited. Great for GREP, AWK, etc."},
-    {"name": "yaml", "desc": "YAML formatted output. An alternative to JSON. Great for configuration files."},
-    {"name": "yamlc", "desc": "Colored YAML formatted output. An alternative to JSON. Great for configuration files."},
-    {"name": "none", "desc": "No output, except for errors and warnings."}
-]
-
-
 INTERACTIVE_CONFIG_LIST = [
     {
         "configuration": "core.output",
