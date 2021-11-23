@@ -518,7 +518,7 @@ def ensure_container_insights_for_monitoring(cmd,
 
     if aad_route:
         cluster_resource_id = f"/subscriptions/{cluster_subscription}/resourceGroups/{cluster_resource_group_name}/providers/Microsoft.ContainerService/managedClusters/{cluster_name}"
-        dataCollectionRuleName = f"DCR-{workspace_name}"
+        dataCollectionRuleName = f"MSCI-{workspace_name}"
         dcr_resource_id = f"/subscriptions/{subscription_id}/resourceGroups/{resource_group}/providers/Microsoft.Insights/dataCollectionRules/{dataCollectionRuleName}"
         from azure.cli.core.util import send_raw_request
         from azure.cli.core.profiles import ResourceType
