@@ -625,7 +625,6 @@ helps[
                --vm-name "vm name"
 """
 
-
 helps[
     'connectedvmware vm guest-agent show'
 ] = """
@@ -638,6 +637,63 @@ helps[
                --vm-name "name of the vm"
 """
 
+helps['connectedvmware vm extension'] = """
+    type: group
+    short-summary: Manage vm extension with connectedvmware
+"""
+
+helps['connectedvmware vm extension list'] = """
+    type: command
+    short-summary: "The operation to get all extensions of a non-Azure vm."
+    examples:
+      - name: Get all VM Extensions
+        text: |-
+               az connectedvmware vm extension list --vm-name "vm name" --resource-group "myResourceGroup"
+"""
+
+helps['connectedvmware vm extension show'] = """
+    type: command
+    short-summary: "The operation to get the extension."
+    examples:
+      - name: Get VM Extension
+        text: |-
+               az connectedvmware vm extension show --name "CustomScriptExtension" --vm-name "vm name" \
+--resource-group "myResourceGroup"
+"""
+
+helps['connectedvmware vm extension create'] = """
+    type: command
+    short-summary: "The operation to create the extension."
+    examples:
+      - name: Create a VM Extension
+        text: |-
+               az connectedvmware vm extension create --name "CustomScriptExtension" --location "eastus2euap" --type \
+"CustomScriptExtension" --publisher "Microsoft.Compute" --settings "{\\"commandToExecute\\":\\"powershell.exe -c \
+\\\\\\"Get-Process | Where-Object { $_.CPU -gt 10000 }\\\\\\"\\"}" --type-handler-version "1.10" --vm-name \
+"vm name" --resource-group "myResourceGroup"
+"""
+
+helps['connectedvmware vm extension update'] = """
+    type: command
+    short-summary: "The operation to update the extension."
+    examples:
+      - name: Update a VM Extension
+        text: |-
+               az connectedvmware vm extension update --name "CustomScriptExtension" --type "CustomScriptExtension" \
+--publisher "Microsoft.Compute" --settings "{\\"commandToExecute\\":\\"powershell.exe -c \\\\\\"Get-Process | \
+Where-Object { $_.CPU -lt 100 }\\\\\\"\\"}" --type-handler-version "1.10" --vm-name "vm name" --resource-group \
+"myResourceGroup"
+"""
+
+helps['connectedvmware vm extension delete'] = """
+    type: command
+    short-summary: "The operation to delete the extension."
+    examples:
+      - name: Delete a VM Extension
+        text: |-
+               az connectedvmware vm extension delete --name "vm extension name" --vm-name "vm name" --resource-group \
+"myResourceGroup"
+"""
 
 helps[
     'connectedvmware vm-template'
