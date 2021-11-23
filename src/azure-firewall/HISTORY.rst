@@ -3,7 +3,7 @@
 Release History
 ===============
 
-0.12.0
+0.13.0
 ++++++
 * `az network firewall policy`: fix a bug that will raise an error due to updating premium only property on standard policy
 
