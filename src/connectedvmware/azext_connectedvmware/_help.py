@@ -663,7 +663,7 @@ helps['connectedvmware vm extension show'] = """
 
 helps['connectedvmware vm extension create'] = """
     type: command
-    short-summary: "The operation to Create the extension."
+    short-summary: "The operation to create the extension."
     examples:
       - name: Create a VM Extension
         text: |-
@@ -675,7 +675,7 @@ helps['connectedvmware vm extension create'] = """
 
 helps['connectedvmware vm extension update'] = """
     type: command
-    short-summary: "The operation to create or update the extension."
+    short-summary: "The operation to update the extension."
     examples:
       - name: Update a VM Extension
         text: |-
