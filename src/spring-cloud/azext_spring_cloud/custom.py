@@ -605,6 +605,8 @@ def app_start(cmd, client,
         if deployment is None:
             logger.warning(NO_PRODUCTION_DEPLOYMENT_SET_ERROR)
             raise CLIError(NO_PRODUCTION_DEPLOYMENT_ERROR)
+
+    logger.warning("Successfully triggered the action 'start' for the app '{}'".format(name))
     return sdk_no_wait(no_wait, client.deployments.begin_start,
                        resource_group, service, name, deployment)
 
@@ -621,6 +623,8 @@ def app_stop(cmd, client,
         if deployment is None:
             logger.warning(NO_PRODUCTION_DEPLOYMENT_SET_ERROR)
             raise CLIError(NO_PRODUCTION_DEPLOYMENT_ERROR)
+
+    logger.warning("Successfully triggered the action 'stop' for the app '{}'".format(name))
     return sdk_no_wait(no_wait, client.deployments.begin_stop,
                        resource_group, service, name, deployment)
 
@@ -637,6 +641,8 @@ def app_restart(cmd, client,
         if deployment is None:
             logger.warning(NO_PRODUCTION_DEPLOYMENT_SET_ERROR)
             raise CLIError(NO_PRODUCTION_DEPLOYMENT_ERROR)
+
+    logger.warning("Successfully triggered the action 'restart' for the app '{}'".format(name))
     return sdk_no_wait(no_wait, client.deployments.begin_restart,
                        resource_group, service, name, deployment)
 
