@@ -100,7 +100,7 @@ class NetworkScenarioTest(ScenarioTest):
                  '--resource-group {rg}')
 
         self.cmd('network manager security-user-config create --configuration-name {name} --network-manager-name {manager_name} -g {rg} '
-                 '--description {description} --delete-existing-ns-gs true --security-type "UserPolicy" --display-name MyTestConfig')
+                 '--description {description} --delete-existing-ns-gs true --display-name MyTestConfig')
 
         self.cmd('network manager security-user-config update --configuration-name {name} --network-manager-name {manager_name} -g {rg} '
                  '--description "test_description"')
@@ -126,7 +126,7 @@ class NetworkScenarioTest(ScenarioTest):
                  '--resource-group {rg}')
 
         self.cmd('network manager security-admin-config create --configuration-name {name} --network-manager-name {manager_name} -g {rg} '
-                 '--description {description} --delete-existing-ns-gs true --security-type "AdminPolicy" --display-name MyTestConfig')
+                 '--description {description} --delete-existing-ns-gs true --display-name MyTestConfig')
 
         self.cmd('network manager security-admin-config update --configuration-name {name} --network-manager-name {manager_name} -g {rg} '
                  '--description "test_description"')
@@ -171,7 +171,7 @@ class NetworkScenarioTest(ScenarioTest):
                  '--group-members resource-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}" ')
 
         self.cmd('network manager security-admin-config create --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} '
-                 '--description {description} --delete-existing-ns-gs true --security-type "AdminPolicy" --display-name MyTestConfig')
+                 '--description {description} --delete-existing-ns-gs true --display-name MyTestConfig')
 
         self.cmd('network manager security-admin-config rule-collection create --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} '
                  '--rule-collection-name {collection_name} --description {description} --display-name ASampleCollection '
@@ -213,7 +213,7 @@ class NetworkScenarioTest(ScenarioTest):
                  '--group-members resource-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}" ')
 
         self.cmd('network manager security-admin-config create --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} '
-                 '--description {description} --delete-existing-ns-gs true --security-type "AdminPolicy" --display-name MyTestConfig')
+                 '--description {description} --delete-existing-ns-gs true --display-name MyTestConfig')
 
         self.cmd('network manager security-admin-config rule-collection create --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} '
                  '--rule-collection-name {collection_name} --description {description} --display-name ASampleCollection '
@@ -257,7 +257,7 @@ class NetworkScenarioTest(ScenarioTest):
                  '--group-members resource-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}" ')
 
         self.cmd('network manager security-user-config create --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} '
-                 '--description {description} --delete-existing-ns-gs true --security-type "UserPolicy" --display-name MyTestConfig')
+                 '--description {description} --delete-existing-ns-gs true --display-name MyTestConfig')
 
         self.cmd('network manager security-user-config rule-collection create --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} '
                  '--rule-collection-name {collection_name} --description {description} --display-name ASampleCollection '
@@ -297,7 +297,7 @@ class NetworkScenarioTest(ScenarioTest):
                  '--group-members resource-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}" ')
 
         self.cmd('network manager security-user-config create --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} '
-                 '--description {description} --delete-existing-ns-gs true --security-type "UserPolicy" --display-name MyTestConfig')
+                 '--description {description} --delete-existing-ns-gs true --display-name MyTestConfig')
 
         self.cmd('network manager security-user-config rule-collection create --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} '
                  '--rule-collection-name {collection_name} --description {description} --display-name ASampleCollection '
@@ -370,9 +370,8 @@ class NetworkScenarioTest(ScenarioTest):
 
         self.cmd('network manager list-deploy-status --network-manager-name {manager_name} --deployment-types "Connectivity" --regions "eastus2euap" --resource-group {rg}')
         self.cmd('network manager group list-effect-vnet --network-group-name {group_name} --network-manager-name {manager_name} --resource-group {rg}')
-        # Internal Server Error
         self.cmd('network manager list-effect-vnet --network-manager-name {manager_name} --resource-group {rg}')
-        self.cmd('network manager list-active-connectivity-config --network-manager-name {manager_name} --resource-group {rg}')
+        self.cmd('network manager list-active-connectivity-config --network-manager-name {manager_name} --resource-group {rg} --regions eastus westus')
         self.cmd('network manager list-effective-connectivity-config --virtual-network-name {virtual_network} -g {rg}')
         self.cmd('network manager list-effective-security-admin-rule --virtual-network-name {virtual_network} -g {rg}')
         self.cmd('network manager list-active-security-admin-rule --network-manager-name {manager_name} -g {rg} --regions eastus2euap')
