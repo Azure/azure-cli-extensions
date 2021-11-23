@@ -38,5 +38,5 @@ def load_arguments(self, _):
                         'Enabling this functionality is irreversible.')
 
     with self.argument_context('keyvault region') as c:
-        c.argument('region_names', options_list=['--region-names', '--regions', '-r'], nargs='+',
-                   help='Space-separated list of region name.')
+        c.argument('region_name', options_list=['--region-name', '--region', '-r'],
+                   help='The region name.')

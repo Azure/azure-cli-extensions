@@ -48,21 +48,16 @@ def _create_network_rule_set(cmd, bypass=None, default_action=None):
                           default_action=default_action or NetworkRuleAction.allow.value)
 
 
-def add_hsm_region(cmd, client, resource_group_name, name, region_names, no_wait=False):
+def add_hsm_region(cmd, client, resource_group_name, name, region_name, no_wait=False):
     MHSMGeoReplicatedRegion = cmd.get_models('MHSMGeoReplicatedRegion', resource_type=CUSTOM_MGMT_KEYVAULT)
 
     hsm = client.get(resource_group_name=resource_group_name, name=name)
     existing_regions = hsm.properties.regions or []
-    existing_region_names = (region.name for region in existing_regions)
-    new_regions = []
-    for region_name in region_names:
-        if region_name in existing_region_names:
-            logger.warning("{} has already existed" % region_name)
-        else:
-            new_region = MHSMGeoReplicatedRegion(name=region_name)
-            new_regions.append(new_region)
-
-    existing_regions.extend(new_regions)
+    for existing_region in existing_regions:
+        if region_name == existing_region.name:
+            logger.warning("{} has already existed".format(region_name))
+            return hsm
+    existing_regions.append(MHSMGeoReplicatedRegion(name=region_name))
     hsm.properties.regions = existing_regions
     return sdk_no_wait(no_wait, client.begin_update,
                        resource_group_name=resource_group_name,
@@ -70,20 +65,15 @@ def add_hsm_region(cmd, client, resource_group_name, name, region_names, no_wait
                        parameters=hsm)
 
 
-def remove_hsm_region(cmd, client, resource_group_name, name, region_names, no_wait=False):
+def remove_hsm_region(client, resource_group_name, name, region_name, no_wait=False):
     hsm = client.get(resource_group_name=resource_group_name, name=name)
     existing_regions = hsm.properties.regions or []
-    existing_region_names = (region.name for region in existing_regions)
-    for region_name in region_names:
-        if region_name not in existing_region_names:
-            logger.warning("{} doesn't exist" % region_name)
-
-    regions = []
-    for region in existing_regions:
-        if region.name not in region_names:
-            regions.append(region)
-    hsm.properties.regions = regions
-    return sdk_no_wait(no_wait, client.begin_update,
-                       resource_group_name=resource_group_name,
-                       name=name,
-                       parameters=hsm)
+    for existing_region in existing_regions:
+        if region_name == existing_region.name:
+            existing_regions.remove(existing_region)
+            hsm.properties.regions = existing_regions
+            return sdk_no_wait(no_wait, client.begin_update,
+                               resource_group_name=resource_group_name,
+                               name=name, parameters=hsm)
+    logger.warning("{} doesn't exist".format(region_name))
+    return hsm
