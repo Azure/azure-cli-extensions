@@ -48,7 +48,7 @@ class VirtualMachineTemplatesOperations:
         resource_group_name: str,
         virtual_machine_template_name: str,
         body: Optional["_models.VirtualMachineTemplate"] = None,
-        **kwargs
+        **kwargs: Any
     ) -> "_models.VirtualMachineTemplate":
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.VirtualMachineTemplate"]
         error_map = {
@@ -109,7 +109,7 @@ class VirtualMachineTemplatesOperations:
         resource_group_name: str,
         virtual_machine_template_name: str,
         body: Optional["_models.VirtualMachineTemplate"] = None,
-        **kwargs
+        **kwargs: Any
     ) -> AsyncLROPoller["_models.VirtualMachineTemplate"]:
         """Implements virtual machine template PUT method.
 
@@ -123,8 +123,8 @@ class VirtualMachineTemplatesOperations:
         :type body: ~azure_arc_vmware_management_service_api.models.VirtualMachineTemplate
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
-         False for no polling, or your own initialized polling object for a personal polling strategy.
+        :keyword polling: By default, your polling method will be AsyncARMPolling.
+         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either VirtualMachineTemplate or the result of cls(response)
@@ -181,7 +181,7 @@ class VirtualMachineTemplatesOperations:
         self,
         resource_group_name: str,
         virtual_machine_template_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> "_models.VirtualMachineTemplate":
         """Gets a virtual machine template.
 
@@ -243,7 +243,7 @@ class VirtualMachineTemplatesOperations:
         resource_group_name: str,
         virtual_machine_template_name: str,
         body: Optional["_models.ResourcePatch"] = None,
-        **kwargs
+        **kwargs: Any
     ) -> "_models.VirtualMachineTemplate":
         """Updates a virtual machine template.
 
@@ -315,7 +315,7 @@ class VirtualMachineTemplatesOperations:
         resource_group_name: str,
         virtual_machine_template_name: str,
         force: Optional[bool] = None,
-        **kwargs
+        **kwargs: Any
     ) -> None:
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = {
@@ -363,7 +363,7 @@ class VirtualMachineTemplatesOperations:
         resource_group_name: str,
         virtual_machine_template_name: str,
         force: Optional[bool] = None,
-        **kwargs
+        **kwargs: Any
     ) -> AsyncLROPoller[None]:
         """Deletes an virtual machine template.
 
@@ -377,8 +377,8 @@ class VirtualMachineTemplatesOperations:
         :type force: bool
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
-         False for no polling, or your own initialized polling object for a personal polling strategy.
+        :keyword polling: By default, your polling method will be AsyncARMPolling.
+         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)
@@ -430,7 +430,7 @@ class VirtualMachineTemplatesOperations:
 
     def list(
         self,
-        **kwargs
+        **kwargs: Any
     ) -> AsyncIterable["_models.VirtualMachineTemplatesList"]:
         """Implements GET virtualMachineTemplates in a subscription.
 
@@ -500,7 +500,7 @@ class VirtualMachineTemplatesOperations:
     def list_by_resource_group(
         self,
         resource_group_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> AsyncIterable["_models.VirtualMachineTemplatesList"]:
         """Implements GET virtualMachineTemplates in a resource group.
 

@@ -20,11 +20,23 @@ def load_command_table(self, _):
         g.custom_command('create', 'privatecloud_create')
         g.custom_command('update', 'privatecloud_update')
         g.custom_command('delete', 'privatecloud_delete')
-        g.custom_command('listadmincredentials', 'privatecloud_listadmincredentials')
-        g.custom_command('addidentitysource', 'privatecloud_addidentitysource')
-        g.custom_command('deleteidentitysource', 'privatecloud_deleteidentitysource')
+        g.custom_command('listadmincredentials', 'privatecloud_listadmincredentials', deprecate_info=g.deprecate(redirect='az vmware private-cloud list-admin-credentials', hide=True))
+        g.custom_command('list-admin-credentials', 'privatecloud_listadmincredentials')
+        g.custom_command('addidentitysource', 'privatecloud_addidentitysource', deprecate_info=g.deprecate(redirect='az vmware private-cloud add-identity-source', hide=True))
+        g.custom_command('add-identity-source', 'privatecloud_addidentitysource')
+        g.custom_command('deleteidentitysource', 'privatecloud_deleteidentitysource', deprecate_info=g.deprecate(redirect='az vmware private-cloud delete-identity-source', hide=True))
+        g.custom_command('delete-identity-source', 'privatecloud_deleteidentitysource')
+        g.custom_command('add-availability-zone', 'privatecloud_addavailabilityzone')
+        g.custom_command('delete-availability-zone', 'privatecloud_deleteavailabilityzone')
+        g.custom_command('add-cmk-encryption', 'privatecloud_addcmkencryption')
+        g.custom_command('delete-cmk-encryption', 'privatecloud_deletecmkenryption')
         g.custom_command('rotate-vcenter-password', 'privatecloud_rotate_vcenter_password')
         g.custom_command('rotate-nsxt-password', 'privatecloud_rotate_nsxt_password')
+
+    with self.command_group('vmware private-cloud identity', vmware_sdk, client_factory=cf_vmware) as g:
+        g.custom_command('assign', 'privatecloud_identity_assign')
+        g.custom_command('remove', 'privatecloud_identity_remove')
+        g.custom_show_command('show', 'privatecloud_identity_get')
 
     with self.command_group('vmware cluster', vmware_sdk, client_factory=cf_vmware) as g:
         g.custom_command('create', 'cluster_create')
@@ -107,3 +119,85 @@ def load_command_table(self, _):
         g.custom_command('list', 'script_execution_list')
         g.custom_command('delete', 'script_execution_delete')
         g.custom_show_command('show', 'script_execution_show')
+
+    with self.command_group('vmware workload-network dhcp', vmware_sdk, client_factory=cf_vmware) as g:
+        g.custom_command('list', 'workload_network_dhcp_list')
+        g.custom_show_command('show', 'workload_network_dhcp_show')
+
+    with self.command_group('vmware workload-network dhcp server', vmware_sdk, client_factory=cf_vmware) as g:
+        g.custom_command('create', 'workload_network_dhcp_server_create')
+        g.custom_command('delete', 'workload_network_dhcp_delete')
+        g.custom_command('update', 'workload_network_dhcp_server_update')
+
+    with self.command_group('vmware workload-network dhcp relay', vmware_sdk, client_factory=cf_vmware) as g:
+        g.custom_command('create', 'workload_network_dhcp_relay_create')
+        g.custom_command('delete', 'workload_network_dhcp_delete')
+        g.custom_command('update', 'workload_network_dhcp_relay_update')
+
+    with self.command_group('vmware workload-network dns-service', vmware_sdk, client_factory=cf_vmware) as g:
+        g.custom_command('list', 'workload_network_dns_services_list')
+        g.custom_show_command('show', 'workload_network_dns_services_get')
+        g.custom_command('create', 'workload_network_dns_services_create')
+        g.custom_command('update', 'workload_network_dns_services_update')
+        g.custom_command('delete', 'workload_network_dns_services_delete')
+
+    with self.command_group('vmware workload-network dns-zone', vmware_sdk, client_factory=cf_vmware) as g:
+        g.custom_command('list', 'workload_network_dns_zone_list')
+        g.custom_show_command('show', 'workload_network_dns_zone_get')
+        g.custom_command('create', 'workload_network_dns_zone_create')
+        g.custom_command('update', 'workload_network_dns_zone_update')
+        g.custom_command('delete', 'workload_network_dns_zone_delete')
+
+    with self.command_group('vmware workload-network port-mirroring', vmware_sdk, client_factory=cf_vmware) as g:
+        g.custom_command('list', 'workload_network_port_mirroring_list')
+        g.custom_show_command('show', 'workload_network_port_mirroring_get')
+        g.custom_command('create', 'workload_network_port_mirroring_create')
+        g.custom_command('update', 'workload_network_port_mirroring_update')
+        g.custom_command('delete', 'workload_network_port_mirroring_delete')
+
+    with self.command_group('vmware workload-network segment', vmware_sdk, client_factory=cf_vmware) as g:
+        g.custom_command('list', 'workload_network_segment_list')
+        g.custom_show_command('show', 'workload_network_segment_get')
+        g.custom_command('create', 'workload_network_segment_create')
+        g.custom_command('update', 'workload_network_segment_update')
+        g.custom_command('delete', 'workload_network_segment_delete')
+
+    with self.command_group('vmware workload-network public-ip', vmware_sdk, client_factory=cf_vmware) as g:
+        g.custom_command('list', 'workload_network_public_ip_list')
+        g.custom_show_command('show', 'workload_network_public_ip_get')
+        g.custom_command('create', 'workload_network_public_ip_create')
+        g.custom_command('delete', 'workload_network_public_ip_delete')
+
+    with self.command_group('vmware workload-network vm-group', vmware_sdk, client_factory=cf_vmware) as g:
+        g.custom_command('list', 'workload_network_vm_group_list')
+        g.custom_show_command('show', 'workload_network_vm_group_get')
+        g.custom_command('create', 'workload_network_vm_group_create')
+        g.custom_command('update', 'workload_network_vm_group_update')
+        g.custom_command('delete', 'workload_network_vm_group_delete')
+
+    with self.command_group('vmware workload-network vm', vmware_sdk, client_factory=cf_vmware) as g:
+        g.custom_command('list', 'workload_network_vm_list')
+        g.custom_show_command('show', 'workload_network_vm_get')
+
+    with self.command_group('vmware workload-network gateway', vmware_sdk, client_factory=cf_vmware) as g:
+        g.custom_command('list', 'workload_network_gateway_list')
+        g.custom_show_command('show', 'workload_network_gateway_get')
+
+    with self.command_group('vmware placement-policy', vmware_sdk, client_factory=cf_vmware) as g:
+        g.custom_command('list', 'placement_policy_list')
+        g.custom_show_command('show', 'placement_policy_get')
+
+    with self.command_group('vmware placement-policy vm', vmware_sdk, client_factory=cf_vmware) as g:
+        g.custom_command('create', 'placement_policy_vm_create')
+        g.custom_command('update', 'placement_policy_update')
+        g.custom_command('delete', 'placement_policy_delete')
+
+    with self.command_group('vmware placement-policy vm-host', vmware_sdk, client_factory=cf_vmware) as g:
+        g.custom_command('create', 'placement_policy_vm_host_create')
+        g.custom_command('update', 'placement_policy_update')
+        g.custom_command('delete', 'placement_policy_delete')
+
+    with self.command_group('vmware vm', vmware_sdk, client_factory=cf_vmware) as g:
+        g.custom_command('list', 'virtual_machine_list')
+        g.custom_show_command('show', 'virtual_machine_get')
+        g.custom_command('restrict-movement', 'virtual_machine_restrict')
