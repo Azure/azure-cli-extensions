@@ -16,7 +16,7 @@ from ._configs import OUTPUT_LIST, INTERACTIVE_CONFIG_LIST
 from ._text import (MSG_WELCOME, MSG_SELECT_STEP, MSG_INPUT_SELECTION, MSG_PROMPT_MANAGE_GLOBAL, MSG_NO_CONFIGURATION,
                     MSG_CURRENT_SETTINGS, MSG_PROMPT_GLOBAL_OUTPUT, MSG_PROMPT_TELEMETRY, MSG_PROMPT_FILE_LOGGING,
                     MSG_PROMPT_CACHE_TTL, INIT_STEP_OPTION_LIST, MSG_CUSTOM_SETTING_APPLIED, MSG_MORE_CONFIG_SETTINGS,
-                    MSG_MORE_CONFIG_LINK, CONTENT_INDENT_BROADBAND)
+                    MSG_MORE_CONFIG_LINK, CONTENT_INDENT_BROADBAND, MSG_MORE_COMMANDS)
 from ._utils import prompt_option_list, get_int_option, print_successful_styled_text
 
 
@@ -170,4 +170,8 @@ def handle_interactive_mode(cmd, config_list):
 
     print_styled_text([(Style.PRIMARY, CONTENT_INDENT_BROADBAND + MSG_MORE_CONFIG_SETTINGS),
                        (Style.HYPERLINK, MSG_MORE_CONFIG_LINK)])
+    print_styled_text((Style.PRIMARY, MSG_MORE_COMMANDS[0]['prompt']))
+    for msg in MSG_MORE_COMMANDS[0]['commands']:
+        print_styled_text([(Style.PRIMARY, CONTENT_INDENT_BROADBAND + msg['name']),
+                           (Style.SECONDARY, CONTENT_INDENT_BROADBAND + msg['desc'])])
     print()

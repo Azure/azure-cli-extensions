@@ -51,3 +51,35 @@ INIT_STEP_OPTION_LIST = [
         "desc": "This is an individual walk through where you could customize a set of common configs"
     }
 ]
+
+MSG_MORE_COMMANDS = [
+    {
+        "prompt": "\nCommands to try:\n",
+        "commands": [
+            {
+                "name": "az config\n",
+                "desc": "Display your config summary.\n",
+            },
+            {
+                "name": "az config list available\n",
+                "desc": "Show all options that you can configure.\n"
+            },
+            {
+                "name": "az config set <group> <key>=<value>\n",
+                "desc": "Set a config.\n",
+            },
+            {
+                "name": "az interactive",
+                "desc": "Start an interactive mode designed to help you learn.\n",
+            },
+            {
+                "name": "az next\n",
+                "desc": "Find the next set of commands.\n",
+            },
+            {
+                "name": "az <sub command> --help\n",
+                "desc": "Display help related to a command or subcommand.\n",
+            },
+        ]
+    }
+]
