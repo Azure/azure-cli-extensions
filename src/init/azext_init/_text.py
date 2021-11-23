@@ -56,27 +56,27 @@ MSG_MROE_COMMANDS_PROMPT = "\nCommands to try:\n"
 
 MSG_MORE_COMMANDS = [
     {
-        "name": "az config\n",
-        "desc": "Display your config summary.\n",
+        "name": "az config",
+        "desc": "Display your config summary.",
     },
     {
-        "name": "az config list available\n",
-        "desc": "Show all options that you can configure.\n"
+        "name": "az config list available",
+        "desc": "Show all options that you can configure."
     },
     {
-        "name": "az config set <group> <key>=<value>\n",
-        "desc": "Set a config.\n",
+        "name": "az config set <group> <key>=<value>",
+        "desc": "Set a config.",
     },
     {
         "name": "az interactive",
-        "desc": "Start an interactive mode designed to help you learn.\n",
+        "desc": "Start an interactive mode designed to help you learn.",
     },
     {
-        "name": "az next\n",
-        "desc": "Find the next set of commands.\n",
+        "name": "az next",
+        "desc": "Find the next set of commands.",
     },
     {
-        "name": "az <sub command> --help\n",
-        "desc": "Display help related to a command or subcommand.\n",
+        "name": "az <sub command> --help",
+        "desc": "Display help related to a command or sub-command.",
     }
 ]

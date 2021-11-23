@@ -50,9 +50,9 @@ def load_existing_configuration(cmd):
 
             for section in sections:
                 items = cmd.cli_ctx.config.items(section)
-                print_styled_text((Style.ACTION, "\n[" + section + "]"))
+                print_styled_text((Style.ACTION, "\n" + CONTENT_INDENT_BROADBAND + "[" + section + "]"))
                 for item in items:
-                    print_styled_text((Style.PRIMARY, item['name'] + " = " + item['value']))
+                    print_styled_text((Style.PRIMARY, CONTENT_INDENT_BROADBAND + item['name'] + " = " + item['value']))
         else:
             print_styled_text((Style.PRIMARY, MSG_NO_CONFIGURATION))
 
@@ -170,8 +170,9 @@ def handle_interactive_mode(cmd, config_list):
 
     print_styled_text([(Style.PRIMARY, CONTENT_INDENT_BROADBAND + MSG_MORE_CONFIG_SETTINGS),
                        (Style.HYPERLINK, MSG_MORE_CONFIG_LINK)])
+
     print_styled_text((Style.PRIMARY, CONTENT_INDENT_BROADBAND + MSG_MROE_COMMANDS_PROMPT))
-    for msg in MSG_MORE_COMMANDS:
-        print_styled_text([(Style.PRIMARY, CONTENT_INDENT_BROADBAND + msg['name']),
-                           (Style.SECONDARY, CONTENT_INDENT_BROADBAND + msg['desc'])])
-    print()
+    for more_commands_item in MSG_MORE_COMMANDS:
+        print_styled_text([(Style.PRIMARY, CONTENT_INDENT_BROADBAND + more_commands_item['name'])])
+        print_styled_text([(Style.SECONDARY, CONTENT_INDENT_BROADBAND + more_commands_item['desc'])])
+        print()
