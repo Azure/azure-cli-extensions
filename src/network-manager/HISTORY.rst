@@ -3,7 +3,7 @@
 Release History
 ===============
 
-0.2.0
+0.3.0
 +++++
 * `az network manager list-active-connectivity-config`: rename parameter `region` to `regions`
 * `az network manager security-user-config create`: remove parameter `security-type`
