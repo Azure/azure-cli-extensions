@@ -36,9 +36,6 @@ def handle_init(cmd):
     if selected_option == 3:
         handle_walk_through(cmd, WALK_THROUGH_CONFIG_LIST)
 
-    if selected_option == 4:
-        return
-
 
 def load_existing_configuration(cmd):
     with ScopedConfig(cmd.cli_ctx.config, False):
