@@ -41,6 +41,10 @@ INIT_STEP_OPTION_LIST = [
     {
         "option": "Customize settings",
         "desc": "This is an individual walk through where you could customize a set of common configs"
+    },
+    {
+        "option": "Exit",
+        "desc": "Return to the command prompt",
     }
 ]
 
