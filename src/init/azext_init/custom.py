@@ -25,7 +25,7 @@ def handle_init(cmd):
 
     print_styled_text((Style.PRIMARY, MSG_SELECT_STEP))
     prompt_option_list(INIT_STEP_OPTION_LIST, content_indent=CONTENT_INDENT_BROADBAND)
-    selected_option = get_int_option(MSG_INPUT_SELECTION, 1, 3, 3)
+    selected_option = get_int_option(MSG_INPUT_SELECTION, 1, 4, 4)
 
     if selected_option == 1:
         set_build_in_bundles(cmd, BUILD_IN_INTERACTION_BUNDLES, MSG_BUILD_IN_INTERACTION_BUNDLES)
@@ -35,6 +35,9 @@ def handle_init(cmd):
 
     if selected_option == 3:
         handle_walk_through(cmd, WALK_THROUGH_CONFIG_LIST)
+
+    if selected_option == 4:
+        return
 
 
 def load_existing_configuration(cmd):
