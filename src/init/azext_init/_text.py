@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from azure.cli.core.commands import DEFAULT_CACHE_TTL
+CONTENT_INDENT_BROADBAND = "     "
 
 MSG_WELCOME = "\nWelcome to AZ INIT! This command will guide you to set up common config\n"
 
@@ -13,31 +13,21 @@ MSG_INPUT_SELECTION = "Your selection: "
 
 MSG_CURRENT_SETTINGS = "Your current config settings:"
 
-MSG_BUNDLE_SETTING_APPLIED = "{} settings applied! Your new config settings:\n"
+MSG_NO_CONFIGURATION = "You have no existing config in place. Let's get started!\n"
+
+MSG_BUILD_IN_INTERACTION_BUNDLES = "Optimized fo human readability and interaction!"
+
+MSG_BUILD_IN_AUTOMATION_BUNDLES = "Optimized fo machine scripting and automation!"
+
+MSG_BUNDLE_SETTING_APPLIED = "{} Your new config settings:\n"
 
 MSG_CUSTOM_SETTING_APPLIED = "Custom config settings applied! Your new config settings:\n"
-
-MSG_NO_CONFIGURATION = "You have no existing config in place. Let's get started!\n"
 
 MSG_MORE_CONFIG_SETTINGS = "More config settings: "
 
 MSG_MORE_CONFIG_LINK = "https://aka.ms/config_ref"
 
-CONTENT_INDENT_BROADBAND = "     "
-
-MSG_PROMPT_MANAGE_GLOBAL = "\nDo you wish to change your settings?"
-
-MSG_PROMPT_GLOBAL_OUTPUT = "\nWhat default output format would you like?"
-
-MSG_PROMPT_TELEMETRY = "\nMicrosoft would like to collect anonymous Azure CLI usage data to " \
-                       "improve our CLI.  Participation is voluntary and when you choose to " \
-                       "participate, your device automatically sends information to Microsoft " \
-                       "about how you use Azure CLI.  To update your choice, run \"az init\" " \
-                       "again.\nSelect y to enable data collection."
-
-MSG_PROMPT_FILE_LOGGING = "\nWould you like to enable logging to file?"
-
-MSG_PROMPT_CACHE_TTL = "\nCLI object cache time-to-live (TTL) in minutes [Default: {}]: ".format(DEFAULT_CACHE_TTL)
+MSG_MORE_COMMANDS_PROMPT = "\nCommands to try:\n"
 
 INIT_STEP_OPTION_LIST = [
     {
@@ -54,9 +44,7 @@ INIT_STEP_OPTION_LIST = [
     }
 ]
 
-MSG_MROE_COMMANDS_PROMPT = "\nCommands to try:\n"
-
-MSG_MORE_COMMANDS = [
+MORE_COMMANDS_LIST = [
     {
         "name": "az config",
         "desc": "Display your config summary.",

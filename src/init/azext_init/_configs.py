@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 
-INTERACTIVE_CONFIG_LIST = [
+WALK_THROUGH_CONFIG_LIST = [
     {
         "configuration": "core.output",
         "brief": "Output format",
@@ -12,38 +12,38 @@ INTERACTIVE_CONFIG_LIST = [
                        "table output, whereas automation users prefer json or yaml",
         "options": [
             {
-                "name": "json",
+                "name": "JSON",
                 "value": "json",
                 "desc": "JSON formatted output that most closely matches API responses.",
                 "tag": "default"
             },
             {
-                "name": "jsonc",
+                "name": "JSONC",
                 "value": "jsonc",
                 "desc": "Colored JSON formatted output that most closely matches API responses."
             },
             {
-                "name": "table",
+                "name": "Table",
                 "value": "table",
                 "desc": "Human-readable output format."
             },
             {
-                "name": "tsv",
+                "name": "TSV",
                 "value": "tsv",
                 "desc": "Tab- and Newline-delimited. Great for GREP, AWK, etc."
             },
             {
-                "name": "yaml",
+                "name": "YAML",
                 "value": "yaml",
                 "desc": "YAML formatted output. An alternative to JSON. Great for configuration files."
             },
             {
-                "name": "yamlc",
+                "name": "YAMLC",
                 "value": "yamlc",
                 "desc": "Colored YAML formatted output. An alternative to JSON. Great for configuration files."
             },
             {
-                "name": "none",
+                "name": "None",
                 "value": "none",
                 "desc": "No output, except for errors and warnings."
             }

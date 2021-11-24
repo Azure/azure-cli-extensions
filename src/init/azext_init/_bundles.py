@@ -3,67 +3,68 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from azure.cli.core.commands import DEFAULT_CACHE_TTL
+BUILD_IN_INTERACTION_BUNDLES = [
+    {
+        "configuration": "core.output",
+        "brief": "Output format",
+        "option": "JSON",
+        "value": "json"
+    },
+    {
+        "configuration": "core.errors_only",
+        "brief": "Standard error stream (stderr)",
+        "option": "All events",
+        "value": "false",
+    },
+    {
+        "configuration": "core.error_recommendations",
+        "brief": "Error output",
+        "option": "Show recommendations",
+        "value": "on",
+    },
+    {
+        "configuration": "core.syntax_highlighting",
+        "brief": "Syntax highlighting",
+        "option": "On",
+        "value": "on",
+    },
+    {
+        "configuration": "core.updates",
+        "brief": "Auto Upgrade",
+        "option": "Ask first",
+        "value": "prompt",
+    }
+]
 
-# TODO Distinguish between automation and interaction
-default_interaction_config_bundle = {
-    "bundle_name": "Interaction bundle",
-    "config_list": [
-        {
-            "configuration": "core.output",
-            "desc": "Output format: json",
-            "value": "json"
-        },
-        {
-            "configuration": "core.errors_only",
-            "desc": "Standard error stream (stderr): All events",
-            "value": "false",
-        },
-        {
-            "configuration": "core.error_recommendations",
-            "desc": "Error output: Show recommendations",
-            "value": "on",
-        },
-        {
-            "configuration": "core.syntax_highlighting",
-            "desc": "Syntax highlighting: On",
-            "value": "on",
-        },
-        {
-            "configuration": "core.updates",
-            "desc": "Updates: Ask first",
-            "value": "propmt",
-        }
-    ]
-}
-
-default_automation_config_bundle = {
-    "bundle_name": "Automation bundle",
-    "config_list": [
-        {
-            "configuration": "core.output",
-            "desc": "Output format: json",
-            "value": "json"
-        },
-        {
-            "configuration": "core.errors_only",
-            "desc": "Standard error stream (stderr): Errors only",
-            "value": "true",
-        },
-        {
-            "configuration": "core.error_recommendations",
-            "desc": "Error output: Hide recommendations",
-            "value": "off",
-        },
-        {
-            "configuration": "core.syntax_highlighting",
-            "desc": "Syntax highlighting: On",
-            "value": "on",
-        },
-        {
-            "configuration": "core.updates",
-            "desc": "Updates: Automatic",
-            "value": "auto",
-        }
-    ]
-}
+BUILD_IN_AUTOMATION_BUNDLES = [
+    {
+        "configuration": "core.output",
+        "brief": "Output format",
+        "option": "JSON",
+        "value": "json"
+    },
+    {
+        "configuration": "core.errors_only",
+        "brief": "Standard error stream (stderr)",
+        "option": "Errors only",
+        "value": "true",
+    },
+    {
+        "configuration": "core.error_recommendations",
+        "brief": "Error output",
+        "option": "Hide recommendations",
+        "value": "off",
+    },
+    {
+        "configuration": "core.syntax_highlighting",
+        "brief": "Syntax highlighting",
+        "option": "On",
+        "value": "on",
+    },
+    {
+        "configuration": "core.updates",
+        "brief": "Auto Upgrade",
+        "option": "Automatic",
+        "value": "auto",
+    }
+]
