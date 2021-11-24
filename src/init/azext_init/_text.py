@@ -13,6 +13,8 @@ MSG_INPUT_SELECTION = "Your selection: "
 
 MSG_CURRENT_SETTINGS = "Your current config settings:"
 
+MSG_BUNDLE_SETTING_APPLIED = "{} settings applied! Your new config settings:\n"
+
 MSG_CUSTOM_SETTING_APPLIED = "Custom config settings applied! Your new config settings:\n"
 
 MSG_NO_CONFIGURATION = "You have no existing config in place. Let's get started!\n"
