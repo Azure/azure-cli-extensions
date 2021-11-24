@@ -12,38 +12,38 @@ WALK_THROUGH_CONFIG_LIST = [
                        "table output, whereas automation users prefer json or yaml",
         "options": [
             {
-                "name": "JSON",
+                "option": "JSON",
                 "value": "json",
                 "desc": "JSON formatted output that most closely matches API responses.",
                 "tag": "default"
             },
             {
-                "name": "JSONC",
+                "option": "JSONC",
                 "value": "jsonc",
                 "desc": "Colored JSON formatted output that most closely matches API responses."
             },
             {
-                "name": "Table",
+                "option": "Table",
                 "value": "table",
                 "desc": "Human-readable output format."
             },
             {
-                "name": "TSV",
+                "option": "TSV",
                 "value": "tsv",
                 "desc": "Tab- and Newline-delimited. Great for GREP, AWK, etc."
             },
             {
-                "name": "YAML",
+                "option": "YAML",
                 "value": "yaml",
                 "desc": "YAML formatted output. An alternative to JSON. Great for configuration files."
             },
             {
-                "name": "YAMLC",
+                "option": "YAMLC",
                 "value": "yamlc",
                 "desc": "Colored YAML formatted output. An alternative to JSON. Great for configuration files."
             },
             {
-                "name": "None",
+                "option": "None",
                 "value": "none",
                 "desc": "No output, except for errors and warnings."
             }
@@ -55,13 +55,13 @@ WALK_THROUGH_CONFIG_LIST = [
         "description": "The options to control whether only error messages are showed in stderr stream",
         "options": [
             {
-                "name": "All events",
+                "option": "All events",
                 "value": "false",
                 "desc": "The stderr stream shows all events, including errors and system messages",
                 "tag": "default"
             },
             {
-                "name": "Errors only",
+                "option": "Errors only",
                 "value": "true",
                 "desc": "The stderr stream shows error messages only"
             }
@@ -73,13 +73,13 @@ WALK_THROUGH_CONFIG_LIST = [
         "description": "The options to enable/disable message recommendations which ease your error recovery",
         "options": [
             {
-                "name": "Show recommendations",
+                "option": "Show recommendations",
                 "value": "on",
                 "desc": "Error message might include recommendations or Help links",
                 "tag": "default"
             },
             {
-                "name": "Hide recommendations",
+                "option": "Hide recommendations",
                 "value": "off",
                 "desc": "Error messages will only show the error"
             }
@@ -91,13 +91,13 @@ WALK_THROUGH_CONFIG_LIST = [
         "description": "The options to enable/disable colored syntax highlighting",
         "options": [
             {
-                "name": "On",
+                "option": "On",
                 "value": "on",
                 "desc": "Colored syntax highlighting. Easier for humans to read",
                 "tag": "default"
             },
             {
-                "name": "Off",
+                "option": "Off",
                 "value": "off",
                 "desc": "Monochrome text. Harder for humans to read"
             }
@@ -109,18 +109,18 @@ WALK_THROUGH_CONFIG_LIST = [
         "description": "The options to automatically upgrade to the latest version of CLI",
         "options": [
             {
-                "name": "Ask first",
+                "option": "Ask first",
                 "value": "prompt",
                 "desc": "Azure CLI will ask you before installing available updates",
                 "tag": "default"
             },
             {
-                "name": "Automatic",
+                "option": "Automatic",
                 "value": "auto",
                 "desc": "Azure CLI will automatically install all available updates"
             },
             {
-                "name": "None",
+                "option": "None",
                 "value": "none",
                 "desc": "Azure CLI will not notify you about available updates"
             }

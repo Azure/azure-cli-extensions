@@ -64,6 +64,8 @@ def set_build_in_bundles(cmd, bundles, bundle_name):
         bundle_settings[bundle_item["configuration"]] = {
             "brief": bundle_item["brief"],
             "option": bundle_item["option"],
+            "configuration": bundle_item["configuration"],
+            "value": bundle_item["value"],
             "modify_status": _get_modify_status(original_config_value, bundle_item["value"])
         }
 
@@ -97,11 +99,13 @@ def handle_walk_through(cmd, config_list):
         cmd.cli_ctx.config.set_value(section, option, selected_item["value"])
 
         print_successful_styled_text([(Style.PRIMARY, "{} set to: ".format(config_item["brief"])),
-                                      (Style.IMPORTANT, selected_item["name"])])
+                                      (Style.IMPORTANT, selected_item["option"])])
 
         custom_settings[config_item["configuration"]] = {
             "brief": config_item["brief"],
-            "option": selected_item["name"],
+            "option": selected_item["option"],
+            "configuration": config_item["configuration"],
+            "value": selected_item["value"],
             "modify_status": _get_modify_status(original_config_value, selected_item["value"])
         }
 
@@ -133,12 +137,15 @@ def _get_modify_status(original_value, new_value):
 
 
 def _get_config_setting_status(custom_settings):
-    for setting in custom_settings.values():
-        new_config_list = [(Style.PRIMARY, "{}: {} ".format(CONTENT_INDENT_BROADBAND + setting["brief"],
-                                                            setting["option"]))]
-        if setting["modify_status"]:
-            new_config_list.append((Style.IMPORTANT, setting["modify_status"]))
-        print_styled_text(new_config_list)
+    for setting_item in custom_settings.values():
+        setting_status = [(Style.PRIMARY, "{}: {} ".format(CONTENT_INDENT_BROADBAND + setting_item["brief"],
+                                                           setting_item["option"]))]
+        if setting_item["modify_status"]:
+            setting_status.append((Style.IMPORTANT, setting_item["modify_status"]))
+        print_styled_text(setting_status)
+
+        print_styled_text((Style.SECONDARY, CONTENT_INDENT_BROADBAND +
+                           "[{} = {}]".format(setting_item["configuration"], setting_item["value"])))
         print()
 
     print_styled_text([(Style.PRIMARY, CONTENT_INDENT_BROADBAND + MSG_MORE_CONFIG_SETTINGS),
@@ -149,6 +156,6 @@ def _get_more_commands():
     print_styled_text((Style.PRIMARY, CONTENT_INDENT_BROADBAND + MSG_MORE_COMMANDS_PROMPT))
 
     for more_commands_item in MORE_COMMANDS_LIST:
-        print_styled_text([(Style.PRIMARY, CONTENT_INDENT_BROADBAND + more_commands_item['name'])])
+        print_styled_text([(Style.PRIMARY, CONTENT_INDENT_BROADBAND + more_commands_item['option'])])
         print_styled_text([(Style.SECONDARY, CONTENT_INDENT_BROADBAND + more_commands_item['desc'])])
         print()

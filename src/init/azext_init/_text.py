@@ -31,42 +31,42 @@ MSG_MORE_COMMANDS_PROMPT = "\nCommands to try:\n"
 
 INIT_STEP_OPTION_LIST = [
     {
-        "name": "Optimize for humans",
+        "option": "Optimize for humans",
         "desc": "There settings improve the output legibility and optimize for human machine interaction"
     },
     {
-        "name": "Optimize for machines",
+        "option": "Optimize for machines",
         "desc": "These settings optimize for machine efficiency"
     },
     {
-        "name": "Customize settings",
+        "option": "Customize settings",
         "desc": "This is an individual walk through where you could customize a set of common configs"
     }
 ]
 
 MORE_COMMANDS_LIST = [
     {
-        "name": "az config",
+        "option": "az config",
         "desc": "Display your config summary.",
     },
     {
-        "name": "az config list available",
+        "option": "az config list available",
         "desc": "Show all options that you can configure."
     },
     {
-        "name": "az config set <group> <key>=<value>",
+        "option": "az config set <group> <key>=<value>",
         "desc": "Set a config.",
     },
     {
-        "name": "az interactive",
+        "option": "az interactive",
         "desc": "Start an interactive mode designed to help you learn.",
     },
     {
-        "name": "az next",
+        "option": "az next",
         "desc": "Find the next set of commands.",
     },
     {
-        "name": "az <sub command> --help",
+        "option": "az <sub command> --help",
         "desc": "Display help related to a command or sub-command.",
     }
 ]

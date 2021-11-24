@@ -58,10 +58,10 @@ def prompt_option_list(option_list, start_index=1, content_indent=None):
         return
 
     for index, choice_item in enumerate(option_list):
-        if 'name' not in choice_item or not choice_item['name']:
+        if 'option' not in choice_item or not choice_item['option']:
             continue
 
-        option_item = [(Style.ACTION, "[" + str(index + start_index) + "] "), (Style.PRIMARY, choice_item['name'])]
+        option_item = [(Style.ACTION, "[" + str(index + start_index) + "] "), (Style.PRIMARY, choice_item['option'])]
         if content_indent:
             option_item.insert(0, (Style.PRIMARY, content_indent))
         if 'tag' in choice_item and choice_item['tag']:
