@@ -2868,7 +2868,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                      '--dns-name-prefix={dns_name_prefix} --node-count=1 ' \
                      '--windows-admin-username={windows_admin_username} --windows-admin-password={windows_admin_password} ' \
                      '--load-balancer-sku=standard --vm-set-type=virtualmachinescalesets --network-plugin=azure ' \
-                     '--ssh-key-value={ssh_key_value} --enable-windows-gmsa --yes'
+                     '--ssh-key-value={ssh_key_value} --enable-windows-gmsa --yes ' \
+                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AKSWindowsGmsaPreview'
         self.cmd(create_cmd, checks=[
             self.exists('fqdn'),
             self.exists('nodeResourceGroup'),
@@ -2929,7 +2930,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
         # update Windows gmsa
-        self.cmd('aks update --resource-group={resource_group} --name={name} --enable-windows-gmsa --yes', checks=[
+        update_cmd = "aks update --resource-group={resource_group} --name={name} --enable-windows-gmsa --yes " \
+                     "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AKSWindowsGmsaPreview"
+        self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('windowsProfile.gmsaProfile.enabled', 'True')
         ])
