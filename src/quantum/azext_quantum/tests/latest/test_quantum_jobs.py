@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import json
 import os
 import unittest
 
@@ -11,6 +12,7 @@ from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 
 from .utils import get_test_subscription_id, get_test_resource_group, get_test_workspace, get_test_workspace_location
 from ..._client_factory import _get_data_credentials
+from ...commands import transform_output
 from ...operations.workspace import WorkspaceInfo
 from ...operations.target import TargetInfo
 from ...operations.job import _generate_submit_args, _parse_blob_url
@@ -88,3 +90,17 @@ class QuantumJobsScenarioTest(ScenarioTest):
         self.assertEquals(args['container'], "qio")
         self.assertEquals(args['blob'], "rawOutputData")
         self.assertEquals(args['sas_token'], sas)
+
+    def test_transform_output(self):
+        # Call with a good histogram
+        test_job_results = '{"Histogram":["[0,0,0]",0.125,"[1,0,0]",0.125,"[0,1,0]",0.125,"[1,1,0]",0.125,"[0,0,1]",0.125,"[1,0,1]",0.125,"[0,1,1]",0.125,"[1,1,1]",0.125]}'
+        table = transform_output(json.loads(test_job_results))   # Returns an array of OrderedDict. '' is the key for the histogram row.
+        table_row = table[0]
+        hist_row = table_row['']
+        second_char = hist_row[1]
+        #self.assertEquals(second_char, " ")        # This would have worked before the bug fix 
+        self.assertEquals(second_char, "\u2588")    # This character is also hard-coded in commands.py 
+
+        # Give it a malformed histogram
+        #TODO 
+        
