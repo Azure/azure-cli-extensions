@@ -11,7 +11,7 @@ MSG_SELECT_STEP = "\nSelect an option by typing it's number\n"
 
 MSG_INPUT_SELECTION = "Your selection: "
 
-MSG_CURRENT_SETTINGS = "Your current config settings:"
+MSG_CURRENT_SETTINGS = "Your current config settings:\n"
 
 MSG_NO_CONFIGURATION = "You have no existing config in place. Let's get started!\n"
 
@@ -32,7 +32,7 @@ MSG_MORE_COMMANDS_PROMPT = "\nCommands to try:\n"
 INIT_STEP_OPTION_LIST = [
     {
         "option": "Optimize for humans",
-        "desc": "There settings improve the output legibility and optimize for human machine interaction"
+        "desc": "These settings improve the output legibility and optimize for human machine interaction"
     },
     {
         "option": "Optimize for machines",
@@ -45,6 +45,7 @@ INIT_STEP_OPTION_LIST = [
     {
         "option": "Exit",
         "desc": "Return to the command prompt",
+        "tag": "default"
     }
 ]
 

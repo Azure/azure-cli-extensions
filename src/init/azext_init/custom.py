@@ -3,7 +3,6 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 from knack.log import get_logger
-from azure.cli.core.util import ScopedConfig
 from azure.cli.core.style import Style, print_styled_text
 
 from ._utils import prompt_option_list, get_int_option, print_successful_styled_text
@@ -38,18 +37,31 @@ def handle_init(cmd):
 
 
 def load_existing_configuration(cmd):
-    with ScopedConfig(cmd.cli_ctx.config, False):
-        sections = cmd.cli_ctx.config.sections()
-        if sections:
-            print_styled_text((Style.PRIMARY, MSG_CURRENT_SETTINGS))
+    has_existing_configs = False
+    for config_item in WALK_THROUGH_CONFIG_LIST:
+        section, option = config_item["configuration"].split('.')
+        exists_config_value = _get_existing_config_value(cmd, section, option)
+        if exists_config_value is None:
+            continue
 
-            for section in sections:
-                items = cmd.cli_ctx.config.items(section)
-                print_styled_text((Style.ACTION, "\n" + CONTENT_INDENT_BROADBAND + "[" + section + "]"))
-                for item in items:
-                    print_styled_text((Style.PRIMARY, CONTENT_INDENT_BROADBAND + item['name'] + " = " + item['value']))
-        else:
-            print_styled_text((Style.PRIMARY, MSG_NO_CONFIGURATION))
+        if not has_existing_configs:
+            print_styled_text((Style.PRIMARY, MSG_CURRENT_SETTINGS))
+            has_existing_configs = True
+
+        option_meaning = exists_config_value
+        for option_item in config_item["options"]:
+            if option_item['value'] == exists_config_value:
+                option_meaning = option_item['option']
+                break
+
+        print_styled_text([(Style.PRIMARY, "{}: {} ".format(CONTENT_INDENT_BROADBAND + config_item["brief"],
+                                                            option_meaning))])
+        print_styled_text((Style.SECONDARY, CONTENT_INDENT_BROADBAND + "[{} = {}]".format(config_item["configuration"],
+                                                                                          exists_config_value)))
+        print()
+
+    if not has_existing_configs:
+        print_styled_text((Style.PRIMARY, MSG_NO_CONFIGURATION))
 
 
 def set_build_in_bundles(cmd, bundles, bundle_name):
