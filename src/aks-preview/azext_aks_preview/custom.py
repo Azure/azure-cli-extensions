@@ -3443,14 +3443,14 @@ def aks_snapshot_create(cmd,    # pylint: disable=too-many-locals,too-many-state
     )
 
     snapshot = Snapshot(
-        name=_trim_nodepoolname(name),
+        name=name,
         tags=tags,
         location=location,
         creation_data=creationData
     )
 
     headers = get_aks_custom_headers(aks_custom_headers)
-    return client.create_or_update(resource_group_name, _trim_nodepoolname(name), snapshot, headers=headers)
+    return client.create_or_update(resource_group_name, name, snapshot, headers=headers)
 
 
 def aks_snapshot_show(cmd, client, resource_group_name, name):   # pylint: disable=unused-argument
