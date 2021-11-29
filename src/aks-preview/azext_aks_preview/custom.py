@@ -55,7 +55,7 @@ from azure.graphrbac.models import (ApplicationCreateParameters,
                                     ServicePrincipalCreateParameters,
                                     GetObjectsParameters)
 from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
-from .vendored_sdks.azure_mgmt_preview_aks.v2021_09_01.models import (ContainerServiceLinuxProfile,
+from .vendored_sdks.azure_mgmt_preview_aks.v2021_10_01.models import (ContainerServiceLinuxProfile,
                                                                       ManagedClusterWindowsProfile,
                                                                       ContainerServiceNetworkProfile,
                                                                       ManagedClusterServicePrincipalProfile,
