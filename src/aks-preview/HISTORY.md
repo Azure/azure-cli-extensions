@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.5.45
+++++++
+* Update to use 2021-10-01 api-version
+
 0.5.44
 ++++++
 * In AKS Monitoring addon, fix DCR resource naming convention from DCR-<workspaceName> to MSCI-<workspaceName> to make consistent naming across.
