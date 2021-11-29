@@ -68,3 +68,24 @@ def __get_fluxconfig_kustomization_table_row(key, value):
         ('prune', value['prune']),
         ('force', value['force'])
     ])
+
+
+def fluxconfig_deployed_object_list_table_format(results):
+    return [__get_fluxconfig_deployed_object_table_row(result) for result in results]
+
+
+def fluxconfig_deployed_object_show_table_format(result):
+    return __get_fluxconfig_deployed_object_table_row(result)
+
+
+def __get_fluxconfig_deployed_object_table_row(result):
+    applied_by = 'None'
+    if result['appliedBy']:
+        applied_by = result['appliedBy']['namespace'] + result['appliedBy']['name']
+    return OrderedDict([
+        ('kind', result['kind']),
+        ('name', result['name']),
+        ('namespace', result['namespace']),
+        ('complianceState', result['complianceState']),
+        ('appliedBy', applied_by)
+    ])

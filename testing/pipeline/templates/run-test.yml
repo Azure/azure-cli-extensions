@@ -109,4 +109,4 @@ jobs:
       inlineScript: |
         .\Cleanup.ps1 -CI
       workingDirectory: $(TEST_PATH)
-    condition: succeededOrFailed()
+    condition: always()

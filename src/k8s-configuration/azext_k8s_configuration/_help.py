@@ -174,3 +174,29 @@ helps['k8s-configuration flux kustomization delete'] = """
           --cluster-name mycluster --cluster-type connectedClusters --name myconfig \\
           --kustomization-name my-kustomization
 """
+
+helps['k8s-configuration flux deployed-object'] = """
+    type: group
+    short-summary: Commands to see deployed objects associated with Flux v2 Kubernetes configurations.
+"""
+
+helps['k8s-configuration flux deployed-object list'] = """
+    type: command
+    short-summary: List deployed objects associated with a Kubernetes Flux v2 Configuration.
+    examples:
+      - name: List all deployed objects associated with a Kubernetes Flux v2 Configuration on a cluster
+        text: |-
+          az k8s-configuration flux deployed-object list --resource-group my-resource-group \\
+          --cluster-name mycluster --name myconfig --cluster-type connectedClusters
+"""
+
+helps['k8s-configuration flux deployed-object show'] = """
+    type: command
+    short-summary: Show a deployed object associated with a Flux v2 Configuration.
+    examples:
+      - name: Show details of a deployed object associated with a Kubernetes Flux v2 Configuration
+        text: |-
+          az k8s-configuration flux deployed-object show --resource-group my-resource-group \\
+          --cluster-name mycluster --cluster-type connectedClusters --name myconfig \\
+          --object-name my-object --object-namespace my-namespace --object-kind GitRepository
+"""
