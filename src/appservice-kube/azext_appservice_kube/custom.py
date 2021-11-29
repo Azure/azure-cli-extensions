@@ -435,6 +435,8 @@ def create_app_service_plan(cmd, resource_group_name, name, is_linux, hyper_v, p
                             custom_location=None,
                             app_service_environment=None, sku=None,
                             number_of_workers=None, location=None, tags=None, no_wait=False):
+    custom_location = _get_custom_location_id(cmd, custom_location, resource_group_name)
+
     if not sku:
         sku = 'B1' if not custom_location else KUBE_DEFAULT_SKU
 
@@ -670,6 +672,22 @@ def _is_webapp_kube(custom_location, plan_info, SkuDescription):
         isinstance(plan_info.sku, SkuDescription) and plan_info.sku.name.upper() == KUBE_DEFAULT_SKU)
 
 
+def _get_custom_location_id(cmd, custom_location, resource_group_name):
+    from msrestazure.tools import resource_id
+
+    if custom_location is None:
+        return None
+    if is_valid_resource_id(custom_location):
+        return custom_location
+
+    return resource_id(
+        subscription=get_subscription_id(cmd.cli_ctx),
+        resource_group=resource_group_name,
+        namespace='microsoft.extendedlocation',
+        type='customlocations',
+        name=custom_location)
+
+
 def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custom_location=None, startup_file=None,  # pylint: disable=too-many-statements,too-many-branches
                   deployment_container_image_name=None, deployment_source_url=None, deployment_source_branch='master',
                   deployment_local_git=None, docker_registry_server_password=None, docker_registry_server_user=None,
@@ -680,6 +698,8 @@ def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custo
         'SiteConfig', 'SkuDescription', 'Site', 'NameValuePair', "AppServicePlan")
     if deployment_source_url and deployment_local_git:
         raise CLIError('usage error: --deployment-source-url <url> | --deployment-local-git')
+
+    custom_location = _get_custom_location_id(cmd, custom_location, resource_group_name)
 
     if not plan and not custom_location:
         raise RequiredArgumentMissingError("Either Plan or Custom Location must be specified")
@@ -945,6 +965,7 @@ def create_function(cmd, resource_group_name, name, storage_account, plan=None, 
     SiteConfig, Site, NameValuePair = cmd.get_models('SiteConfig', 'Site', 'NameValuePair')
     docker_registry_server_url = parse_docker_image_name(deployment_container_image_name)
 
+    custom_location = _get_custom_location_id(cmd, custom_location, resource_group_name)
     site_config = SiteConfig(app_settings=[])
     functionapp_def = Site(location=None, site_config=site_config, tags=tags)
     client = web_client_factory(cmd.cli_ctx)
