@@ -3168,7 +3168,7 @@ def _fill_defaults_for_pod_identity_exceptions(pod_identity_exceptions):
         if exc.pod_labels is None:
             # in previous version, we accidentally allowed user to specify empty pod labels,
             # which will be converted to `None` in response. This behavior will break the extension
-            # when using 2021-09-01 version. As a workaround, we always back fill the empty dict value
+            # when using 2021-10-01 version. As a workaround, we always back fill the empty dict value
             # before sending to the server side.
             exc.pod_labels = dict()
 
