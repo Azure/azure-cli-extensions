@@ -93,14 +93,15 @@ class QuantumJobsScenarioTest(ScenarioTest):
 
     def test_transform_output(self):
         # Call with a good histogram
-        test_job_results = '{"Histogram":["[0,0,0]",0.125,"[1,0,0]",0.125,"[0,1,0]",0.125,"[1,1,0]",0.125,"[0,0,1]",0.125,"[1,0,1]",0.125,"[0,1,1]",0.125,"[1,1,1]",0.125]}'
-        table = transform_output(json.loads(test_job_results))   # Returns an array of OrderedDict. '' is the key for the histogram row.
+        test_job_results = '{"Histogram":["[0,0,0]",0.125,"[1,0,0]",0.125,"[0,1,0]",0.125,"[1,1,0]",0.125]}'
+        table = transform_output(json.loads(test_job_results))
         table_row = table[0]
         hist_row = table_row['']
         second_char = hist_row[1]
-        #self.assertEquals(second_char, " ")        # This would have worked before the bug fix 
-        self.assertEquals(second_char, "\u2588")    # This character is also hard-coded in commands.py 
+        self.assertEquals(second_char, "\u2588")    # Expecting a "Full Block" character here 
 
         # Give it a malformed histogram
-        #TODO 
+        test_job_results = '{"Histogram":["[0,0,0]",0.125,"[1,0,0]",0.125,"[0,1,0]",0.125,"[1,1,0]"]}'
+        table = transform_output(json.loads(test_job_results))
+        self.assertEquals(table, json.loads(test_job_results))    # No transform should be done if input param is bad
         
