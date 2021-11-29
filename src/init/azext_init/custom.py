@@ -48,12 +48,7 @@ def load_existing_configuration(cmd):
             print_styled_text((Style.PRIMARY, MSG_CURRENT_SETTINGS))
             has_existing_configs = True
 
-        option_meaning = exists_config_value
-        for option_item in config_item["options"]:
-            if option_item['value'] == exists_config_value:
-                option_meaning = option_item['option']
-                break
-
+        option_meaning = _get_option_meaning(exists_config_value, config_item["options"])
         print_styled_text([(Style.PRIMARY, "{}: {} ".format(CONTENT_INDENT_BROADBAND + config_item["brief"],
                                                             option_meaning))])
         print_styled_text((Style.SECONDARY, CONTENT_INDENT_BROADBAND + "[{} = {}]".format(config_item["configuration"],
@@ -66,6 +61,9 @@ def load_existing_configuration(cmd):
 
 def set_build_in_bundles(cmd, bundles, bundle_name):
     bundle_settings = {}
+    config_info_map = {}
+    for config_item in WALK_THROUGH_CONFIG_LIST:
+        config_info_map[config_item["configuration"]] = config_item
 
     for bundle_item in bundles:
         section, option = bundle_item["configuration"].split('.')
@@ -73,9 +71,11 @@ def set_build_in_bundles(cmd, bundles, bundle_name):
 
         cmd.cli_ctx.config.set_value(section, option, bundle_item["value"])
 
+        config_info = config_info_map[bundle_item["configuration"]]
+        option_meaning = _get_option_meaning(bundle_item["value"], config_info["options"])
         bundle_settings[bundle_item["configuration"]] = {
-            "brief": bundle_item["brief"],
-            "option": bundle_item["option"],
+            "brief": config_info["brief"],
+            "option": option_meaning,
             "configuration": bundle_item["configuration"],
             "value": bundle_item["value"],
             "modify_status": _get_modify_status(original_config_value, bundle_item["value"])
@@ -136,6 +136,15 @@ def _get_existing_config_value(cmd, section, option):
         return None
 
     return original_config_value
+
+
+def _get_option_meaning(option_value, option_list):
+    option_meaning = option_value
+    for option_item in option_list:
+        if option_item['value'] == option_value:
+            option_meaning = option_item['option']
+            break
+    return option_meaning
 
 
 def _get_modify_status(original_value, new_value):

@@ -31,11 +31,11 @@ MSG_MORE_COMMANDS_PROMPT = "\nCommands to try:\n"
 
 INIT_STEP_OPTION_LIST = [
     {
-        "option": "Optimize for humans",
-        "desc": "These settings improve the output legibility and optimize for human machine interaction"
+        "option": "Optimize for interaction",
+        "desc": "These settings improve the output legibility and optimize for human interaction"
     },
     {
-        "option": "Optimize for machines",
+        "option": "Optimize for automation",
         "desc": "These settings optimize for machine efficiency"
     },
     {
@@ -51,16 +51,12 @@ INIT_STEP_OPTION_LIST = [
 
 MORE_COMMANDS_LIST = [
     {
-        "option": "az config",
-        "desc": "Display your config summary.",
-    },
-    {
-        "option": "az config list available",
-        "desc": "Show all options that you can configure."
-    },
-    {
-        "option": "az config set <group> <key>=<value>",
+        "option": "az config set <group>.<key>=<value>",
         "desc": "Set a config.",
+    },
+    {
+        "option": "az configure",
+        "desc": "Display your config summary.",
     },
     {
         "option": "az interactive",
