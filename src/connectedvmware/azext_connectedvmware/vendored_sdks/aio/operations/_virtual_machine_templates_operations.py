@@ -28,7 +28,7 @@ class VirtualMachineTemplatesOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure_arc_vmware_management_service_api.models
+    :type models: ~azure.mgmt.connectedvmware.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -120,7 +120,7 @@ class VirtualMachineTemplatesOperations:
         :param virtual_machine_template_name: Name of the virtual machine template resource.
         :type virtual_machine_template_name: str
         :param body: Request payload.
-        :type body: ~azure_arc_vmware_management_service_api.models.VirtualMachineTemplate
+        :type body: ~azure.mgmt.connectedvmware.models.VirtualMachineTemplate
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be AsyncARMPolling.
@@ -128,7 +128,7 @@ class VirtualMachineTemplatesOperations:
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either VirtualMachineTemplate or the result of cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~azure_arc_vmware_management_service_api.models.VirtualMachineTemplate]
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.connectedvmware.models.VirtualMachineTemplate]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
@@ -193,7 +193,7 @@ class VirtualMachineTemplatesOperations:
         :type virtual_machine_template_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: VirtualMachineTemplate, or the result of cls(response)
-        :rtype: ~azure_arc_vmware_management_service_api.models.VirtualMachineTemplate
+        :rtype: ~azure.mgmt.connectedvmware.models.VirtualMachineTemplate
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.VirtualMachineTemplate"]
@@ -254,10 +254,10 @@ class VirtualMachineTemplatesOperations:
         :param virtual_machine_template_name: Name of the virtual machine template resource.
         :type virtual_machine_template_name: str
         :param body: Resource properties to update.
-        :type body: ~azure_arc_vmware_management_service_api.models.ResourcePatch
+        :type body: ~azure.mgmt.connectedvmware.models.ResourcePatch
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: VirtualMachineTemplate, or the result of cls(response)
-        :rtype: ~azure_arc_vmware_management_service_api.models.VirtualMachineTemplate
+        :rtype: ~azure.mgmt.connectedvmware.models.VirtualMachineTemplate
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.VirtualMachineTemplate"]
@@ -438,7 +438,7 @@ class VirtualMachineTemplatesOperations:
 
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either VirtualMachineTemplatesList or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure_arc_vmware_management_service_api.models.VirtualMachineTemplatesList]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.connectedvmware.models.VirtualMachineTemplatesList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.VirtualMachineTemplatesList"]
@@ -510,7 +510,7 @@ class VirtualMachineTemplatesOperations:
         :type resource_group_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either VirtualMachineTemplatesList or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure_arc_vmware_management_service_api.models.VirtualMachineTemplatesList]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.connectedvmware.models.VirtualMachineTemplatesList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.VirtualMachineTemplatesList"]

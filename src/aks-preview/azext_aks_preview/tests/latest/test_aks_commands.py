@@ -1272,7 +1272,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # delete
         self.cmd(
             'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
-    
+
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus')
     def test_aks_nodepool_add_with_workload_runtime(self, resource_group, resource_group_location):
@@ -1344,7 +1344,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # delete
         self.cmd(
             'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
-    
+
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='centraluseuap')
     def test_aks_nodepool_stop_and_start(self, resource_group, resource_group_location):
@@ -1356,7 +1356,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'nodepool_name' : nodepool_name,
             'ssh_key_value': self.generate_ssh_keys()
         })
-        
+
         # create aks cluster
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --ssh-key-value={ssh_key_value}'
         self.cmd(create_cmd, checks=[
@@ -1367,7 +1367,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('provisioningState', 'Succeeded')
         ])
         # stop nodepool
-        self.cmd('aks nodepool stop --resource-group={resource_group} --cluster-name={name} --nodepool-name={nodepool_name} --aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/PreviewStartStopAgentPool', checks=[ 
+        self.cmd('aks nodepool stop --resource-group={resource_group} --cluster-name={name} --nodepool-name={nodepool_name} --aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/PreviewStartStopAgentPool', checks=[
             self.check('powerState.code', 'Stopped')
         ])
         #start nodepool
@@ -1562,7 +1562,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                                                '--node-image-only --no-wait ' \
                                                '--snapshot-id {snapshot_resource_id} -o json'
         self.cmd(upgrade_node_image_only_nodepool_cmd)
-        
+
         get_nodepool_cmd = 'aks nodepool show ' \
                            '--resource-group={resource_group} ' \
                            '--cluster-name={aks_name2} ' \
@@ -1571,7 +1571,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('provisioningState', 'UpgradingNodeImageVersion'),
             self.check('creationData.sourceResourceId', snapshot_resource_id)
         ])
-        
+
         # delete the 2nd AKS cluster
         self.cmd('aks delete -g {resource_group} -n {aks_name2} --yes --no-wait', checks=[self.is_empty()])
 
@@ -1684,7 +1684,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('windowsProfile.adminUsername', 'azureuser1')
         ])
 
-        # add Windows nodepool 
+        # add Windows nodepool
         self.cmd('aks nodepool add --resource-group={resource_group} --cluster-name={name} --name={nodepool2_name} --os-type Windows --node-count=1', checks=[
             self.check('provisioningState', 'Succeeded')
         ])
@@ -2018,7 +2018,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         workspace_resource_group = workspace_resource_id.split("/")[4]
 
         # check that the DCR was created
-        dataCollectionRuleName = f"DCR-{workspace_name}"
+        dataCollectionRuleName = f"MSCI-{workspace_name}"
         dcr_resource_id = f"/subscriptions/{subscription}/resourceGroups/{workspace_resource_group}/providers/Microsoft.Insights/dataCollectionRules/{dataCollectionRuleName}"
         get_cmd = f'rest --method get --url https://management.azure.com{dcr_resource_id}?api-version=2019-11-01-preview'
         self.cmd(get_cmd, checks=[
@@ -2092,7 +2092,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         workspace_resource_group = workspace_resource_id.split("/")[4]
 
         # check that the DCR was created
-        dataCollectionRuleName = f"DCR-{workspace_name}"
+        dataCollectionRuleName = f"MSCI-{workspace_name}"
         dcr_resource_id = f"/subscriptions/{subscription}/resourceGroups/{workspace_resource_group}/providers/Microsoft.Insights/dataCollectionRules/{dataCollectionRuleName}"
         get_cmd = f'rest --method get --url https://management.azure.com{dcr_resource_id}?api-version=2019-11-01-preview'
         self.cmd(get_cmd, checks=[
@@ -2146,7 +2146,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         try:
             # check that the DCR was created
-            dataCollectionRuleName = f"DCR-{workspace_name}"
+            dataCollectionRuleName = f"MSCI-{workspace_name}"
             dcr_resource_id = f"/subscriptions/{subscription}/resourceGroups/{workspace_resource_group}/providers/Microsoft.Insights/dataCollectionRules/{dataCollectionRuleName}"
             get_cmd = f'rest --method get --url https://management.azure.com{dcr_resource_id}?api-version=2019-11-01-preview'
             self.cmd(get_cmd, checks=[
@@ -2868,7 +2868,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                      '--dns-name-prefix={dns_name_prefix} --node-count=1 ' \
                      '--windows-admin-username={windows_admin_username} --windows-admin-password={windows_admin_password} ' \
                      '--load-balancer-sku=standard --vm-set-type=virtualmachinescalesets --network-plugin=azure ' \
-                     '--ssh-key-value={ssh_key_value} --enable-windows-gmsa --yes'
+                     '--ssh-key-value={ssh_key_value} --enable-windows-gmsa --yes ' \
+                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AKSWindowsGmsaPreview'
         self.cmd(create_cmd, checks=[
             self.exists('fqdn'),
             self.exists('nodeResourceGroup'),
@@ -2929,7 +2930,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
         # update Windows gmsa
-        self.cmd('aks update --resource-group={resource_group} --name={name} --enable-windows-gmsa --yes', checks=[
+        update_cmd = "aks update --resource-group={resource_group} --name={name} --enable-windows-gmsa --yes " \
+                     "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AKSWindowsGmsaPreview"
+        self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('windowsProfile.gmsaProfile.enabled', 'True')
         ])

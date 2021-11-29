@@ -2,6 +2,18 @@
 
 Release History
 ===============
+0.5.44
+++++++
+* In AKS Monitoring addon, fix DCR resource naming convention from DCR-<workspaceName> to MSCI-<workspaceName> to make consistent naming across.
+
+0.5.43
+++++++
+* Enable the new implementation in command `aks create`, and change the dependent cli version to at least 2.30.0
+
+0.5.42
+++++++
+* Fix default value behavior for pod identity exception pod labels in upgrade/scale calls.
+
 0.5.41
 ++++++
 * Fix default value behavior for pod identity exception pod labels.
@@ -24,7 +36,7 @@ Release History
 
 0.5.38
 +++++
-* Add parameter `--rotation-poll-interval` for Azure Keyvault Secrets Provider Addon. 
+* Add parameter `--rotation-poll-interval` for Azure Keyvault Secrets Provider Addon.
 
 0.5.37
 +++++

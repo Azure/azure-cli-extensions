@@ -3,6 +3,18 @@
 Release History
 ===============
 
+0.1.5
+++++++
+* Fixed inventory item id issue.
+
+0.1.4
+++++++
+* Add vm extension support.
+
+0.1.3
+++++++
+* Fixed inventory item issue.
+
 0.1.2
 ++++++
 * Added support for cluster, datastore and host.

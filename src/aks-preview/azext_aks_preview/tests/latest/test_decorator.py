@@ -29,6 +29,9 @@ from azext_aks_preview._consts import (
     CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID,
     CONST_MONITORING_USING_AAD_MSI_AUTH,
     CONST_OPEN_SERVICE_MESH_ADDON_NAME,
+    CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY,
+    CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY,
+    CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
     CONST_ROTATION_POLL_INTERVAL,
     CONST_SECRET_ROTATION_ENABLED,
     CONST_VIRTUAL_NODE_ADDON_NAME,
@@ -47,13 +50,10 @@ from azure.cli.command_modules.acs._consts import (
     DecoratorMode,
 )
 from azure.cli.core.azclierror import (
-    ArgumentUsageError,
     CLIInternalError,
     InvalidArgumentValueError,
     MutuallyExclusiveArgumentError,
-    NoTTYError,
     RequiredArgumentMissingError,
-    UnknownError,
 )
 from msrestazure.azure_exceptions import CloudError
 
@@ -1007,6 +1007,128 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         ):
             self.assertEqual(ctx_3.get_node_vm_size(), "custom_node_vm_size")
 
+    def test_test_get_outbound_type(self):
+        # default
+        ctx_1 = AKSPreviewContext(
+            self.cmd,
+            {
+                "outbound_type": None,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1._get_outbound_type(read_only=True), None)
+        self.assertEqual(ctx_1.get_outbound_type(), "loadBalancer")
+        network_profile_1 = self.models.ContainerServiceNetworkProfile(
+            outbound_type="test_outbound_type"
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location", network_profile=network_profile_1
+        )
+        ctx_1.attach_mc(mc)
+        self.assertEqual(ctx_1.get_outbound_type(), "test_outbound_type")
+
+        # invalid parameter
+        ctx_2 = AKSPreviewContext(
+            self.cmd,
+            {
+                "outbound_type": CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY,
+                "load_balancer_sku": "basic",
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        # fail on invalid load_balancer_sku (basic) when outbound_type is CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY
+        with self.assertRaises(InvalidArgumentValueError):
+            ctx_2.get_outbound_type()
+
+        # invalid parameter
+        ctx_3 = AKSPreviewContext(
+            self.cmd,
+            {
+                "outbound_type": CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY,
+                "load_balancer_sku": "basic",
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        # fail on invalid load_balancer_sku (basic) when outbound_type is CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY
+        with self.assertRaises(InvalidArgumentValueError):
+            ctx_3.get_outbound_type()
+
+        # invalid parameter
+        ctx_4 = AKSPreviewContext(
+            self.cmd,
+            {
+                "outbound_type": CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY,
+                "vnet_subnet_id": None,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        # fail on vnet_subnet_id not specified
+        with self.assertRaises(RequiredArgumentMissingError):
+            ctx_4.get_outbound_type()
+
+        # invalid parameter
+        ctx_5 = AKSPreviewContext(
+            self.cmd,
+            {
+                "outbound_type": CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
+                "vnet_subnet_id": None,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        # fail on vnet_subnet_id not specified
+        with self.assertRaises(RequiredArgumentMissingError):
+            ctx_5.get_outbound_type()
+
+        # invalid parameter
+        ctx_6 = AKSPreviewContext(
+            self.cmd,
+            {
+                "outbound_type": CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
+                "vnet_subnet_id": "test_vnet_subnet_id",
+                "load_balancer_managed_outbound_ip_count": 10,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        # fail on mutually exclusive outbound_type and managed_outbound_ip_count/outbound_ips/outbound_ip_prefixes of
+        # load balancer
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx_6.get_outbound_type()
+
+        # invalid parameter
+        ctx_7 = AKSPreviewContext(
+            self.cmd,
+            {
+                "outbound_type": CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
+                "vnet_subnet_id": "test_vnet_subnet_id",
+            },
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        load_balancer_profile = self.models.lb_models.get(
+            "ManagedClusterLoadBalancerProfile"
+        )(
+            outbound_ip_prefixes=self.models.lb_models.get(
+                "ManagedClusterLoadBalancerProfileOutboundIPPrefixes"
+            )(
+                public_ip_prefixes=[
+                    self.models.lb_models.get("ResourceReference")(
+                        id="test_public_ip_prefix"
+                    )
+                ]
+            )
+        )
+        # fail on mutually exclusive outbound_type and managed_outbound_ip_count/outbound_ips/outbound_ip_prefixes of
+        # load balancer
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx_7.get_outbound_type(
+                load_balancer_profile=load_balancer_profile,
+            )
 
 class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
     def setUp(self):
@@ -1847,7 +1969,7 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
             get_subscription_id=Mock(return_value="1234-5678-9012")
         )
         with patch(
-            "azure.cli.command_modules.acs.decorator._get_rg_location",
+            "azure.cli.command_modules.acs.decorator.get_rg_location",
             return_value="test_location",
         ), patch(
             "azure.cli.command_modules.acs.decorator.Profile",
