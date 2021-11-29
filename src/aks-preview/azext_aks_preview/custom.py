@@ -786,6 +786,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                cluster_autoscaler_profile=None,
                min_count=None, max_count=None, no_wait=False,
                load_balancer_managed_outbound_ip_count=None,
+               load_balancer_managed_outbound_ipv6_count=None,
                load_balancer_outbound_ips=None,
                load_balancer_outbound_ip_prefixes=None,
                load_balancer_outbound_ports=None,
@@ -831,6 +832,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
     update_acr = attach_acr is not None or detach_acr is not None
     update_pod_security = enable_pod_security_policy or disable_pod_security_policy
     update_lb_profile = is_load_balancer_profile_provided(load_balancer_managed_outbound_ip_count,
+                                                          load_balancer_managed_outbound_ipv6_count,
                                                           load_balancer_outbound_ips,
                                                           load_balancer_outbound_ip_prefixes,
                                                           load_balancer_outbound_ports,
@@ -984,6 +986,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
     if update_lb_profile:
         instance.network_profile.load_balancer_profile = update_load_balancer_profile(
             load_balancer_managed_outbound_ip_count,
+            load_balancer_managed_outbound_ipv6_count,
             load_balancer_outbound_ips,
             load_balancer_outbound_ip_prefixes,
             load_balancer_outbound_ports,
