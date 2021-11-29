@@ -1695,13 +1695,23 @@ def _update_host_name_ssl_state(cmd, resource_group_name, webapp_name, webapp,
     management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
     api_version = "2020-12-01"
     sub_id = get_subscription_id(cmd.cli_ctx)
-    url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/sites/{}?api-version={}"
-    request_url = url_fmt.format(
-        management_hostname.strip('/'),
-        sub_id,
-        resource_group_name,
-        webapp_name,
-        api_version)
+    if slot is None:
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/sites/{}?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            webapp_name,
+            api_version)
+    else:
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/sites/{}/slots/{}?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            webapp_name,
+            slot,
+            api_version)
 
     return send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(webapp_dict))
 
@@ -1720,7 +1730,7 @@ def _match_host_names_from_cert(hostnames_from_cert, hostnames_in_webapp):
 
 
 def _update_ssl_binding(cmd, resource_group_name, name, certificate_thumbprint, ssl_type, slot=None):
-    client = web_client_factory(cmd.cli_ctx)
+    client = web_client_factory(cmd.cli_ctx, api_version="2021-01-01")
     webapp = client.web_apps.get(resource_group_name, name)
     if not webapp:
         raise ResourceNotFoundError("'{}' app doesn't exist".format(name))
