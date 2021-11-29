@@ -7,32 +7,32 @@ BUILD_IN_INTERACTION_BUNDLES = [
     {
         "configuration": "core.output",
         "brief": "Output format",
-        "option": "JSON",
-        "value": "json"
+        "option": "Table",
+        "value": "table"
     },
     {
-        "configuration": "core.errors_only",
+        "configuration": "core.only_show_errors",
         "brief": "Standard error stream (stderr)",
         "option": "All events",
         "value": "false",
     },
     {
-        "configuration": "core.error_recommendations",
+        "configuration": "core.error_recommendation",
         "brief": "Error output",
         "option": "Show recommendations",
         "value": "on",
     },
     {
-        "configuration": "core.syntax_highlighting",
+        "configuration": "core.no_color",
         "brief": "Syntax highlighting",
         "option": "On",
-        "value": "on",
+        "value": "false",
     },
     {
-        "configuration": "core.updates",
-        "brief": "Auto Upgrade",
-        "option": "Ask first",
-        "value": "prompt",
+        "configuration": "core.disable_progress_bar",
+        "brief": "Progress Bar",
+        "option": "On",
+        "value": "false",
     }
 ]
 
@@ -44,27 +44,27 @@ BUILD_IN_AUTOMATION_BUNDLES = [
         "value": "json"
     },
     {
-        "configuration": "core.errors_only",
+        "configuration": "core.only_show_errors",
         "brief": "Standard error stream (stderr)",
         "option": "Errors only",
         "value": "true",
     },
     {
-        "configuration": "core.error_recommendations",
+        "configuration": "core.error_recommendation",
         "brief": "Error output",
         "option": "Hide recommendations",
         "value": "off",
     },
     {
-        "configuration": "core.syntax_highlighting",
+        "configuration": "core.no_color",
         "brief": "Syntax highlighting",
-        "option": "On",
-        "value": "on",
+        "option": "Off",
+        "value": "true",
     },
     {
-        "configuration": "core.updates",
-        "brief": "Auto Upgrade",
-        "option": "Automatic",
-        "value": "auto",
+        "configuration": "core.disable_progress_bar",
+        "brief": "Progress Bar",
+        "option": "Off",
+        "value": "true",
     }
 ]

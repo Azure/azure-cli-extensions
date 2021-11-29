@@ -50,9 +50,9 @@ WALK_THROUGH_CONFIG_LIST = [
         ]
     },
     {
-        "configuration": "core.errors_only",
+        "configuration": "core.only_show_errors",
         "brief": "Standard error stream (stderr)",
-        "description": "The options to control whether only error messages are showed in stderr stream",
+        "description": "This options to control whether only error messages are showed in stderr stream",
         "options": [
             {
                 "option": "All events",
@@ -68,9 +68,9 @@ WALK_THROUGH_CONFIG_LIST = [
         ]
     },
     {
-        "configuration": "core.error_recommendations",
+        "configuration": "core.error_recommendation",
         "brief": "Error output",
-        "description": "The options to enable/disable message recommendations which ease your error recovery",
+        "description": "This options to enable/disable message recommendations which ease your error recovery",
         "options": [
             {
                 "option": "Show recommendations",
@@ -86,43 +86,38 @@ WALK_THROUGH_CONFIG_LIST = [
         ]
     },
     {
-        "configuration": "core.syntax_highlighting",
+        "configuration": "core.no_color",
         "brief": "Syntax highlighting",
-        "description": "The options to enable/disable colored syntax highlighting",
+        "description": "This options to enable/disable colored syntax highlighting",
         "options": [
             {
                 "option": "On",
-                "value": "on",
+                "value": "false",
                 "desc": "Colored syntax highlighting. Easier for humans to read",
                 "tag": "default"
             },
             {
                 "option": "Off",
-                "value": "off",
+                "value": "true",
                 "desc": "Monochrome text. Harder for humans to read"
             }
         ]
     },
     {
-        "configuration": "core.updates",
-        "brief": "Updates",
-        "description": "The options to automatically upgrade to the latest version of CLI",
+        "configuration": "core.disable_progress_bar",
+        "brief": "Progress Bar",
+        "description": "This option is used to enable/disable the progress bar for long run operations",
         "options": [
             {
-                "option": "Ask first",
-                "value": "prompt",
-                "desc": "Azure CLI will ask you before installing available updates",
+                "option": "On",
+                "value": "false",
+                "desc": "The progress bar will be displayed in stderr during long run operations",
                 "tag": "default"
             },
             {
-                "option": "Automatic",
-                "value": "auto",
-                "desc": "Azure CLI will automatically install all available updates"
-            },
-            {
-                "option": "None",
-                "value": "none",
-                "desc": "Azure CLI will not notify you about available updates"
+                "option": "Off",
+                "value": "true",
+                "desc": "Disable the progress bar during long run operations"
             }
         ]
     }
