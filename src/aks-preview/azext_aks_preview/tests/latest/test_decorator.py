@@ -1969,7 +1969,7 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
             get_subscription_id=Mock(return_value="1234-5678-9012")
         )
         with patch(
-            "azure.cli.command_modules.acs.decorator._get_rg_location",
+            "azure.cli.command_modules.acs.decorator.get_rg_location",
             return_value="test_location",
         ), patch(
             "azure.cli.command_modules.acs.decorator.Profile",
