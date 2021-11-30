@@ -96,7 +96,7 @@ if [[ -z ${BACKWARD_COMPATIBILITY_TEST} || ${BACKWARD_COMPATIBILITY_TEST} != "on
     fi
 
     # case selection
-    selection_options = ""
+    selection_options=""
     # enable selection
     if [[ -n ${ENABLE_SELECTION} ]]; then
         selection_options+=" --enable-selection"
@@ -227,7 +227,7 @@ if [[ -n ${BACKWARD_COMPATIBILITY_TEST} ]]; then
     fi
 
     # case selection
-    selection_options = ""
+    selection_options=""
     # enable selection
     if [[ -n ${ENABLE_SELECTION} ]]; then
         selection_options+=" --enable-selection"

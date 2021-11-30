@@ -92,7 +92,7 @@ if [[ -n ${CLI_TEST_COVERAGE} ]]; then
 fi
 
 # case selection
-selection_options = ""
+selection_options=""
 # enable selection
 if [[ -n ${ENABLE_SELECTION} ]]; then
     selection_options+=" --enable-selection"
