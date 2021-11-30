@@ -8,6 +8,6 @@ from knack.help_files import helps  # pylint: disable=unused-import
 
 
 helps['init'] = """
-    type: group
+    type: command
     short-summary: It's an effortless setting up tool for configs.
 """

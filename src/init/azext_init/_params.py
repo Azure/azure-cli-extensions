@@ -4,10 +4,10 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long
 
-from knack.arguments import CLIArgumentType # pylint: disable=unused-import
+from knack.arguments import CLIArgumentType  # pylint: disable=unused-import
 
 
-def load_arguments(self, _): # pylint: disable=unused-argument
-    
-    with self.argument_context('init') as c:
+def load_arguments(self, _):  # pylint: disable=unused-argument
+
+    with self.argument_context('init'):
         pass
