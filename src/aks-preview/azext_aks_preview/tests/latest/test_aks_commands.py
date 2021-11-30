@@ -1461,7 +1461,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         aks_name2 = self.create_random_name('cliakstest', 16)
         nodepool_name = self.create_random_name('c', 6)
         nodepool_name2 = self.create_random_name('c', 6)
-        snapshot_name = self.create_random_name('s', 6)
+        snapshot_name = self.create_random_name('s', 16)
 
         self.kwargs.update({
             'resource_group': resource_group,
