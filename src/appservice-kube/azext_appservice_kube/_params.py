@@ -138,6 +138,9 @@ def load_arguments(self, _):
                 c.argument('ssl_type', help='The ssl cert type', arg_type=get_enum_type(['SNI', 'IP']))
                 c.argument('certificate_thumbprint', help='The ssl cert thumbprint')
 
+            with self.argument_context(scope + ' config ssl unbind') as c:
+                c.argument('certificate_thumbprint', help='The ssl cert thumbprint')
+
     with self.argument_context('appservice') as c:
         c.argument('resource_group_name', arg_type=resource_group_name_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx))
