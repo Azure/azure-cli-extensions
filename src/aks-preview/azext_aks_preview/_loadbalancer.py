@@ -26,30 +26,30 @@ def set_load_balancer_sku(sku, kubernetes_version):
     return "standard"
 
 
-def update_load_balancer_profile(managed_outbound_ip_count, managed_outbound_ipv6_count, outbound_ips, outbound_ip_prefixes,
-                                 outbound_ports, idle_timeout, profile):
+def update_load_balancer_profile(managed_outbound_ip_count, managed_outbound_ipv6_count, outbound_ips,
+                                 outbound_ip_prefixes, outbound_ports, idle_timeout, profile):
     """parse and update an existing load balancer profile"""
-    if not is_load_balancer_profile_provided(managed_outbound_ip_count, managed_outbound_ipv6_count, outbound_ips, outbound_ip_prefixes,
-                                             outbound_ports, idle_timeout):
+    if not is_load_balancer_profile_provided(managed_outbound_ip_count, managed_outbound_ipv6_count, outbound_ips,
+                                             outbound_ip_prefixes, outbound_ports, idle_timeout):
         return profile
-    return configure_load_balancer_profile(managed_outbound_ip_count, managed_outbound_ipv6_count, outbound_ips, outbound_ip_prefixes,
-                                           outbound_ports, idle_timeout, profile)
+    return configure_load_balancer_profile(managed_outbound_ip_count, managed_outbound_ipv6_count, outbound_ips,
+                                           outbound_ip_prefixes, outbound_ports, idle_timeout, profile)
 
 
-def create_load_balancer_profile(managed_outbound_ip_count, managed_outbound_ipv6_count, outbound_ips, outbound_ip_prefixes,
-                                 outbound_ports, idle_timeout):
+def create_load_balancer_profile(managed_outbound_ip_count, managed_outbound_ipv6_count, outbound_ips,
+                                 outbound_ip_prefixes, outbound_ports, idle_timeout):
     """parse and build load balancer profile"""
-    if not is_load_balancer_profile_provided(managed_outbound_ip_count, managed_outbound_ipv6_count, outbound_ips, outbound_ip_prefixes,
-                                             outbound_ports, idle_timeout):
+    if not is_load_balancer_profile_provided(managed_outbound_ip_count, managed_outbound_ipv6_count, outbound_ips,
+                                             outbound_ip_prefixes, outbound_ports, idle_timeout):
         return None
 
     profile = ManagedClusterLoadBalancerProfile()
-    return configure_load_balancer_profile(managed_outbound_ip_count, managed_outbound_ipv6_count, outbound_ips, outbound_ip_prefixes,
-                                           outbound_ports, idle_timeout, profile)
+    return configure_load_balancer_profile(managed_outbound_ip_count, managed_outbound_ipv6_count, outbound_ips,
+                                           outbound_ip_prefixes, outbound_ports, idle_timeout, profile)
 
 
-def configure_load_balancer_profile(managed_outbound_ip_count, managed_outbound_ipv6_count, outbound_ips, outbound_ip_prefixes, outbound_ports,
-                                    idle_timeout, profile):
+def configure_load_balancer_profile(managed_outbound_ip_count, managed_outbound_ipv6_count, outbound_ips,
+                                    outbound_ip_prefixes, outbound_ports, idle_timeout, profile):
     """configure a load balancer with customer supplied values"""
     if not profile:
         return profile
@@ -57,12 +57,21 @@ def configure_load_balancer_profile(managed_outbound_ip_count, managed_outbound_
     outbound_ip_resources = _get_load_balancer_outbound_ips(outbound_ips)
     outbound_ip_prefix_resources = _get_load_balancer_outbound_ip_prefixes(outbound_ip_prefixes)
 
-    if managed_outbound_ip_count or outbound_ip_resources or outbound_ip_prefix_resources:
+    if (managed_outbound_ip_count or managed_outbound_ipv6_count or
+            outbound_ip_resources or outbound_ip_prefix_resources):
         # ips -> i_ps due to track 2 naming issue
         profile.managed_outbound_i_ps = None
         # ips -> i_ps due to track 2 naming issue
         profile.outbound_i_ps = None
         profile.outbound_ip_prefixes = None
+        if managed_outbound_ipv6_count:
+            if profile.managed_outbound_i_ps:
+                profile.managed_outbound_i_ps.count_ipv6 = managed_outbound_ipv6_count
+            else:
+                # ips -> i_ps due to track 2 naming issue
+                profile.managed_outbound_i_ps = ManagedClusterLoadBalancerProfileManagedOutboundIPs(
+                    count_ipv6=managed_outbound_ipv6_count
+                )
         if managed_outbound_ip_count:
             # ips -> i_ps due to track 2 naming issue
             profile.managed_outbound_i_ps = ManagedClusterLoadBalancerProfileManagedOutboundIPs(
@@ -92,8 +101,8 @@ def configure_load_balancer_profile(managed_outbound_ip_count, managed_outbound_
     return profile
 
 
-def is_load_balancer_profile_provided(managed_outbound_ip_count, managed_outbound_ipv6_count, outbound_ips, ip_prefixes,
-                                      outbound_ports, idle_timeout):
+def is_load_balancer_profile_provided(managed_outbound_ip_count, managed_outbound_ipv6_count, outbound_ips,
+                                      ip_prefixes, outbound_ports, idle_timeout):
     return any([managed_outbound_ip_count,
                 managed_outbound_ipv6_count,
                 outbound_ips,
