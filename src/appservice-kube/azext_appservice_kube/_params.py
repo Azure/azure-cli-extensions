@@ -136,6 +136,7 @@ def load_arguments(self, _):
 
             with self.argument_context(scope + ' config ssl bind') as c:
                 c.argument('ssl_type', help='The ssl cert type', arg_type=get_enum_type(['SNI', 'IP']))
+                c.argument('certificate_thumbprint', help='The ssl cert thumbprint')
 
     with self.argument_context('appservice') as c:
         c.argument('resource_group_name', arg_type=resource_group_name_type)
