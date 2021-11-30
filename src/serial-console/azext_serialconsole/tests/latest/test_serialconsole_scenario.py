@@ -18,6 +18,7 @@ from azure.cli.core.azclierror import ForbiddenError, ResourceNotFoundError
 from azure.cli.core.azclierror import AzureConnectionError
 from azure.cli.core.azclierror import ForbiddenError
 from azure.core.exceptions import ResourceNotFoundError as ComputeClientResourceNotFoundError
+from azure_devtools.scenario_tests import AllowLargeResponse
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
@@ -117,6 +118,7 @@ class CheckResourceTest(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='cli_test_serialconsole', location='westus2')
     @StorageAccountPreparer(name_prefix='cli', location="westus2")
+    @AllowLargeResponse()
     def test_check_resource_VM(self, resource_group, storage_account):
         name = self.create_random_name(prefix='cli', length=24)
         self.kwargs.update({

@@ -49,9 +49,9 @@ helps['network manager create'] = """
     examples:
       - name: Create/Update Azure Virtual Network Manager
         text: |-
-               az network manager create --name "TestNetworkManager" --description "My Test Network Manager" \
---display-name "TestNetworkManager" --scope-accesses "Security" "Routing" "Connectivity" \
---network-manager-scopes management-groups="/Microsoft.Management/testmg" subscriptions="/subscriptions/00000000-0000-0\
+               az network manager create --name "TestNetworkManager" -l eastus2euap --description "My Test Network Manager" \
+--display-name "TestNetworkManager" --scope-accesses "SecurityAdmin" "Connectivity" \
+--network-manager-scopes management-groups="/providers/Microsoft.Management/testmg" subscriptions="/subscriptions/00000000-0000-0\
 000-0000-000000000000" --resource-group "rg1"
 """
 
@@ -96,7 +96,7 @@ helps['network manager list-deploy-status'] = """
       - name: Post Azure Virtual Network Manager Deployment Status
         text: |-
                az network manager list-deploy-status --network-manager-name "testNetworkManager" --deployment-types \
-"Connectivity" "AdminPolicy" --regions "eastus" "westus" --resource-group "resoureGroupSample"
+"Connectivity" "SecurityAdmin" --regions "eastus" "westus" --resource-group "resoureGroupSample"
 """
 
 helps['network manager list-effect-vnet'] = """
@@ -109,23 +109,32 @@ helps['network manager list-effect-vnet'] = """
 --conditional-members "location=\'useast2\'" --resource-group "rg1"
 """
 
-helps['network manager list-active-config'] = """
+helps['network manager list-active-connectivity-config'] = """
     type: command
     short-summary: "Lists active configurations in a network manager."
     examples:
       - name: Get Azure Virtual Network Manager Active Configuration
         text: |-
-               az network manager list-active-config --network-manager-name "testNetworkManager" --resource-group \
+               az network manager list-active-connectivity-config --network-manager-name "testNetworkManager" --resource-group \
 "myResourceGroup"
 """
 
-helps['network manager list-effective-config'] = """
+helps['network manager list-effective-connectivity-config'] = """
     type: command
     short-summary: "Lists effective configuration in a network manager."
     examples:
       - name: Get Azure Virtual Network Manager Effective Configuration
         text: |-
-               az network manager list-effective-config --virtual-network-name "myVirtualNetwork" --resource-group "myResourceGroup"
+               az network manager list-effective-connectivity-config --virtual-network-name "myVirtualNetwork" --resource-group "myResourceGroup"
+"""
+
+helps['network manager list-effective-security-admin-rule'] = """
+    type: command
+    short-summary: "Lists effective configuration in a network manager."
+    examples:
+      - name: Get Azure Virtual Network Manager Effective Configuration
+        text: |-
+               az network manager list-effective-security-admin-rule --virtual-network-name "myVirtualNetwork" --resource-group "myResourceGroup"
 """
 
 helps['network manager list-active-security-admin-rule'] = """
@@ -135,7 +144,7 @@ helps['network manager list-active-security-admin-rule'] = """
       - name: Get Azure Virtual Network Manager Active Security Admin Rule
         text: |-
                az network manager list-active-security-admin-rule --network-manager-name "testNetworkManager" --resource-group \
-"myResourceGroup --region eastus2euap"
+"myResourceGroup" --region "eastus2euap"
 """
 
 helps['network manager list-active-security-user-rule'] = """
@@ -205,7 +214,7 @@ helps['network manager connect-config create'] = """
 "Sample Configuration" --applies-to-groups group-connectivity="None" is-global=false \
 network-group-id="subscriptions/subscriptionA/resourceGroups/myResourceGroup/providers/Microsoft.Network/networkManager\
 s/testNetworkManager/networkManagerGroups/group1" use-hub-gateway=true --connectivity-topology "HubAndSpoke" \
---delete-peering true --display-name "myTestConnectivityConfig" --hubs resource-id="subscriptions/subscriptionA/resource\
+--delete-existing-peering true --display-name "myTestConnectivityConfig" --hubs resource-id="subscriptions/subscriptionA/resource\
 Groups/myResourceGroup/providers/Microsoft.Network/virtualNetworks/myTestConnectivityConfig" resource-type="Microsoft.Network/virtualNetworks" \
 --is-global true --network-manager-name "testNetworkManager" --resource-group "myResourceGroup"
 """
@@ -289,7 +298,7 @@ helps['network manager group create'] = """
                az network manager group create --name "TestNetworkGroup" --network-manager-name "testNetworkManager" \
 --description "A sample group" --conditional-membership "" --display-name "My Network Group" --group-members \
 resource-id="/subscriptions/subscriptionC/resourceGroup/rg1/providers/Microsoft.Network/virtualnetworks/vnet1" \
---member-type "VirtualNetwork" --resource-group "rg1"
+--member-type "Microsoft.Network/virtualNetworks" --resource-group "rg1"
 """
 
 helps['network manager group update'] = """
@@ -360,7 +369,7 @@ helps['network manager security-user-config create'] = """
         text: |-
                az network manager security-user-config create --configuration-name "myTestSecurityConfig" \
 --network-manager-name "testNetworkManager" --resource-group "rg1" --description "A sample policy" \
---delete-existing-ns-gs true --security-type "UserPolicy"
+--delete-existing-ns-gs true
 """
 
 helps['network manager security-user-config update'] = """
@@ -412,7 +421,7 @@ helps['network manager security-admin-config create'] = """
         text: |-
                az network manager security-admin-config create --configuration-name "myTestSecurityConfig" \
 --network-manager-name "testNetworkManager" --resource-group "rg1" --description "A sample policy" \
---delete-existing-ns-gs true --security-type "AdminPolicy"
+--delete-existing-ns-gs true
 """
 
 helps['network manager security-admin-config update'] = """
@@ -430,69 +439,69 @@ helps['network manager security-admin-config delete'] = """
 --network-manager-name "testNetworkManager" --resource-group "rg1"
 """
 
-helps['network manager admin-rule collection'] = """
+helps['network manager security-admin-config rule-collection'] = """
     type: group
     short-summary: Manage admin rule collection with network
 """
 
-helps['network manager admin-rule collection create'] = """
+helps['network manager security-admin-config rule-collection create'] = """
     type: command
     short-summary: "Create a network manager security configuration admin rule collection."
     examples:
       - name: Create security admin rule collections
         text: |-
-               az network manager admin-rule collection create --configuration-name "myTestSecurityConfig" --network-manager-name "testNetworkManager"  -g "rg1" \
+               az network manager security-admin-config rule-collection create --configuration-name "myTestSecurityConfig" --network-manager-name "testNetworkManager"  -g "rg1" \
 --rule-collection-name "myTestCollection" --description "A sample description" --display-name "ASampleCollection" \
---applies-to-groups  network-group-id="sub_id/resourceGroups/rgid/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkGroup"
+--applies-to-groups  network-group-id="/subscriptions/sub_id/resourceGroups/rgid/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkGroup"
 """
 
-helps['network manager admin-rule collection list'] = """
+helps['network manager security-admin-config rule-collection list'] = """
     type: command
     short-summary: "List network manager security configuration admin rule collections."
     examples:
       - name: List security admin rule collections
         text: |-
-               az network manager admin-rule collection list --configuration-name "myTestSecurityConfig" --network-manager-name \
+               az network manager security-admin-config rule-collection list --configuration-name "myTestSecurityConfig" --network-manager-name \
 "testNetworkManager" --resource-group "rg1"
 """
 
-helps['network manager admin-rule collection update'] = """
+helps['network manager security-admin-config rule-collection update'] = """
     type: command
     short-summary: "Update a network manager security configuration admin rule collection in a subscription."
     examples:
       - name: Update security admin rule collection
         text: |-
-               az network manager admin-rule collection update --configuration-name "myTestSecurityConfig" --network-manager-name \
+               az network manager security-admin-config rule-collection update --configuration-name "myTestSecurityConfig" --network-manager-name \
 "testNetworkManager" --resource-group "rg1" --rule-collection-name "myTestCollection" --display-name "ASampleCollection2"
 """
 
-helps['network manager admin-rule collection show'] = """
+helps['network manager security-admin-config rule-collection show'] = """
     type: command
     short-summary: "Gets a network manager security configuration admin rule collection in a subscription."
     examples:
       - name: Gets security admin rule collection
         text: |-
-               az network manager admin-rule collection show --configuration-name "myTestSecurityConfig" --network-manager-name \
+               az network manager security-admin-config rule-collection show --configuration-name "myTestSecurityConfig" --network-manager-name \
 "testNetworkManager" --resource-group "rg1" --rule-collection-name "myTestCollection"
 """
 
-helps['network manager admin-rule collection delete'] = """
+helps['network manager security-admin-config rule-collection delete'] = """
     type: command
     short-summary: "Delete an admin rule collection."
     examples:
       - name: Delete an admin rule collection.
         text: |-
-               az network manager admin-rule collection delete --configuration-name "myTestSecurityConfig" --network-manager-name "testNetworkManager" \
+               az network manager security-admin-config rule-collection delete --configuration-name "myTestSecurityConfig" --network-manager-name "testNetworkManager" \
 --resource-group "rg1" --rule-collection-name "myTestCollection"
 """
 
 
-helps['network manager admin-rule'] = """
+helps['network manager security-admin-config rule-collection rule'] = """
     type: group
     short-summary: Manage adminrule with network
 """
 
-helps['network manager admin-rule create'] = """
+helps['network manager security-admin-config rule-collection rule create'] = """
     type: command
     short-summary: "Create a network manager security configuration admin rule."
     parameters:
@@ -517,22 +526,22 @@ helps['network manager admin-rule create'] = """
     examples:
       - name: Create security admin rules
         text: |-
-               az network manager admin-rule create --configuration-name "myTestSecurityConfig" --network-manager-name "testNetworkManager" \
+               az network manager security-admin-config rule-collection rule create --configuration-name "myTestSecurityConfig" --network-manager-name "testNetworkManager" \
 --resource-group "rg1" --rule-collection-name "myTestCollection" --rule-name "SampleAdminRule" \
 --kind "Custom" --protocol "Tcp" --access "Allow" --priority 32 --direction "Inbound"
 """
 
-helps['network manager admin-rule list'] = """
+helps['network manager security-admin-config rule-collection rule list'] = """
     type: command
     short-summary: "Retrieves a network manager security configuration admin rule."
     examples:
       - name: List security admin rules
         text: |-
-               az network manager admin-rule list --configuration-name "myTestSecurityConfig" --network-manager-name \
+               az network manager security-admin-config rule-collection rule list --configuration-name "myTestSecurityConfig" --network-manager-name \
 "testNetworkManager" --resource-group "rg1" --rule-collection-name "myTestCollection"
 """
 
-helps['network manager admin-rule update'] = """
+helps['network manager security-admin-config rule-collection rule update'] = """
     type: command
     short-summary: "Update a network manager security configuration admin rule in a subscription."
     parameters:
@@ -557,112 +566,112 @@ helps['network manager admin-rule update'] = """
     examples:
       - name: Update security admin rule
         text: |-
-               az network manager admin-rule update --configuration-name "myTestSecurityConfig" --network-manager-name \
+               az network manager security-admin-config rule-collection rule update --configuration-name "myTestSecurityConfig" --network-manager-name \
 "testNetworkManager" --resource-group "rg1" --rule-collection-name "myTestCollection" --rule-name "SampleAdminRule" --access "Deny"
 """
 
-helps['network manager admin-rule show'] = """
+helps['network manager security-admin-config rule-collection rule show'] = """
     type: command
     short-summary: "Gets a network manager security configuration admin rule in a subscription."
     examples:
       - name: Gets security admin rule
         text: |-
-               az network manager admin-rule show --configuration-name "myTestSecurityConfig" --network-manager-name \
+               az network manager security-admin-config rule-collection rule show --configuration-name "myTestSecurityConfig" --network-manager-name \
 "testNetworkManager" --resource-group "rg1" --rule-collection-name "myTestCollection" --rule-name "SampleAdminRule"
 """
 
-helps['network manager admin-rule delete'] = """
+helps['network manager security-admin-config rule-collection rule delete'] = """
     type: command
     short-summary: "Deletes an admin rule."
     examples:
       - name: Deletes an admin rule.
         text: |-
-               az network manager admin-rule delete --configuration-name "myTestSecurityConfig" --network-manager-name \
+               az network manager security-admin-config rule-collection rule delete --configuration-name "myTestSecurityConfig" --network-manager-name \
 "testNetworkManager" --resource-group "rg1" --rule-collection-name "myTestCollection" --rule-name "SampleAdminRule"
 """
 
-helps['network manager user-rule collection'] = """
+helps['network manager security-user-config rule-collection'] = """
     type: group
     short-summary: Manage user rule collection with network
 """
 
-helps['network manager user-rule collection create'] = """
+helps['network manager security-user-config rule-collection create'] = """
     type: command
     short-summary: "Create a network manager security configuration user rule collection."
     examples:
       - name: Create security user rule collections
         text: |-
-               az network manager user-rule collection create --configuration-name "myTestSecurityConfig" --network-manager-name "testNetworkManager"  -g "rg1" \
+               az network manager security-user-config rule-collection create --configuration-name "myTestSecurityConfig" --network-manager-name "testNetworkManager"  -g "rg1" \
 --rule-collection-name myTestCollection --description "A sample description" --display-name "ASampleCollection" \
---applies-to-groups  network-group-id=sub_id/resourceGroups/rgid/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkGroup
+--applies-to-groups  network-group-id=/subscriptions/sub_id/resourceGroups/rgid/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkGroup
 """
 
-helps['network manager user-rule collection list'] = """
+helps['network manager security-user-config rule-collection list'] = """
     type: command
     short-summary: "List network manager security configuration user rule collections."
     examples:
       - name: List security user rule collections
         text: |-
-               az network manager user-rule collection list --configuration-name "myTestSecurityConfig" --network-manager-name \
+               az network manager security-user-config rule-collection list --configuration-name "myTestSecurityConfig" --network-manager-name \
 "testNetworkManager" --resource-group "rg1"
 """
 
-helps['network manager user-rule collection update'] = """
+helps['network manager security-user-config rule-collection update'] = """
     type: command
     short-summary: "Update a network manager security configuration user rule collection in a subscription."
     examples:
       - name: Update security user rule collection
         text: |-
-               az network manager user-rule collection update --configuration-name "myTestSecurityConfig" --network-manager-name \
+               az network manager security-user-config rule-collection update --configuration-name "myTestSecurityConfig" --network-manager-name \
 "testNetworkManager" --resource-group "rg1" --rule-collection-name "myTestCollection" --display-name "ASampleCollection2"
 """
 
-helps['network manager user-rule collection show'] = """
+helps['network manager security-user-config rule-collection show'] = """
     type: command
     short-summary: "Gets a network manager security configuration user rule collection in a subscription."
     examples:
       - name: Gets security user rule collection
         text: |-
-               az network manager user-rule collection show --configuration-name "myTestSecurityConfig" --network-manager-name \
+               az network manager security-user-config rule-collection show --configuration-name "myTestSecurityConfig" --network-manager-name \
 "testNetworkManager" --resource-group "rg1" --rule-collection-name "myTestCollection"
 """
 
-helps['network manager user-rule collection delete'] = """
+helps['network manager security-user-config rule-collection delete'] = """
     type: command
     short-summary: "Delete an user rule collection."
     examples:
       - name: Delete an user rule collection.
         text: |-
-               az network manager user-rule collection delete --configuration-name "myTestSecurityConfig" --network-manager-name \
+               az network manager security-user-config rule-collection delete --configuration-name "myTestSecurityConfig" --network-manager-name \
 "testNetworkManager" --resource-group "rg1" --rule-collection-name "myTestCollection"
 """
 
-helps['network manager user-rule'] = """
+helps['network manager security-user-config rule-collection rule'] = """
     type: group
     short-summary: Manage userrule with network
 """
 
-helps['network manager user-rule list'] = """
+helps['network manager security-user-config rule-collection rule list'] = """
     type: command
     short-summary: "Lists all user rules in a security configuration."
     examples:
       - name: List security user rules
         text: |-
-               az network manager user-rule list --configuration-name "myTestConnectivityConfig" \
+               az network manager security-user-config rule-collection rule list --configuration-name "myTestConnectivityConfig" \
 --network-manager-name "testNetworkManager" --resource-group "rg1" --rule-collection-name "myTestCollection"
 """
 
-helps['network manager user-rule show'] = """
+helps['network manager security-user-config rule-collection rule show'] = """
     type: command
     short-summary: "Gets a user rule."
     examples:
       - name: Gets a user rule
         text: |-
-               az network manager user-rule show --configuration-name "myTestSecurityConfig" --network-manager-name \
+               az network manager security-user-config rule-collection rule show --configuration-name "myTestSecurityConfig" --network-manager-name \
 "testNetworkManager" --resource-group "rg1" --rule-name "SampleUserRule" --rule-collection-name "myTestCollection"
 """
 
-helps['network manager user-rule create'] = """
+helps['network manager security-user-config rule-collection rule create'] = """
     type: command
     short-summary: "Create a user rule."
     parameters:
@@ -687,13 +696,13 @@ helps['network manager user-rule create'] = """
     examples:
       - name: Create a user rule
         text: |-
-               az network manager user-rule create --configuration-name "myTestSecurityConfig" --network-manager-name \
+               az network manager security-user-config rule-collection rule create --configuration-name "myTestSecurityConfig" --network-manager-name \
 "testNetworkManager" --resource-group "rg1" --rule-collection-name "myTestCollection" --rule-name "SampleUserRule" --description "Sample User Rule" \
 --destinations address-prefix="*" address-prefix-type="IPPrefix" --dest-port-ranges 22 --direction "Inbound" \
 --sources address-prefix="*" address-prefix-type="IPPrefix" --source-port-ranges "0-65535" --protocol "Tcp"
 """
 
-helps['network manager user-rule update'] = """
+helps['network manager security-user-config rule-collection rule update'] = """
     type: command
     short-summary: "Update a user rule."
     parameters:
@@ -718,16 +727,16 @@ helps['network manager user-rule update'] = """
     examples:
       - name: Update a user rule
         text: |-
-               az network manager user-rule update --configuration-name "myTestSecurityConfig" --network-manager-name \
+               az network manager security-user-config rule-collection rule update --configuration-name "myTestSecurityConfig" --network-manager-name \
 "testNetworkManager" --resource-group "rg1" --rule-collection-name "myTestCollection" --rule-name "SampleUserRule" --description "Sample User Rule"
 """
 
-helps['network manager user-rule delete'] = """
+helps['network manager security-user-config rule-collection rule delete'] = """
     type: command
     short-summary: "Deletes a user rule."
     examples:
       - name: Delete a user rule.
         text: |-
-               az network manager user-rule delete --configuration-name "myTestSecurityConfig" --network-manager-name \
+               az network manager security-user-config rule-collection rule delete --configuration-name "myTestSecurityConfig" --network-manager-name \
 "testNetworkManager" --resource-group "rg1" --rule-collection-name "myTestCollection" --rule-name "SampleUserRule"
 """

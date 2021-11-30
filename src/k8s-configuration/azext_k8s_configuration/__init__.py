@@ -12,12 +12,12 @@ class K8sConfigurationCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        from azext_k8s_configuration._client_factory import cf_k8s_configuration
+        from azext_k8s_configuration._client_factory import k8s_configuration_client
         k8s_configuration_custom = CliCommandType(
             operations_tmpl='azext_k8s_configuration.custom#{}',
-            client_factory=cf_k8s_configuration)
-        super(K8sConfigurationCommandsLoader, self).__init__(cli_ctx=cli_ctx,
-                                                             custom_command_type=k8s_configuration_custom)
+            client_factory=k8s_configuration_client)
+        super().__init__(cli_ctx=cli_ctx,
+                         custom_command_type=k8s_configuration_custom)
 
     def load_command_table(self, args):
         from azext_k8s_configuration.commands import load_command_table

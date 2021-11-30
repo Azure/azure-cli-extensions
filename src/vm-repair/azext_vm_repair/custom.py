@@ -12,6 +12,7 @@ from knack.log import get_logger
 from azure.cli.command_modules.vm.custom import get_vm, _is_linux_os
 from azure.cli.command_modules.storage.storage_url_helpers import StorageResourceIdentifier
 from msrestazure.tools import parse_resource_id
+from .exceptions import SkuDoesNotSupportHyperV
 
 from .command_helper_class import command_helper
 from .repair_utils import (
@@ -32,20 +33,27 @@ from .repair_utils import (
     _unlock_singlepass_encrypted_disk,
     _invoke_run_command,
     _check_hyperV_gen,
-    _get_cloud_init_script
+    _get_cloud_init_script,
+    _set_repair_map_url,
+    _is_gen2
 )
 from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError, SkuDoesNotSupportHyperV, ScriptReturnsError
 logger = get_logger(__name__)
 
 
 def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, unlock_encrypted_vm=False, enable_nested=False, associate_public_ip=False):
+
     # Init command helper object
     command = command_helper(logger, cmd, 'vm repair create')
     # Main command calling block
     try:
         # Fetch source VM data
         source_vm = get_vm(cmd, resource_group_name, vm_name)
+        source_vm_instance_view = get_vm(cmd, resource_group_name, vm_name, 'instanceView')
+
         is_linux = _is_linux_os(source_vm)
+        is_gen2 = _is_gen2(source_vm_instance_view)
+
         target_disk_name = source_vm.storage_profile.os_disk.name
         is_managed = _uses_managed_disk(source_vm)
         copy_disk_id = None
@@ -59,9 +67,6 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         else:
             os_image_urn = _fetch_compatible_windows_os_urn(source_vm)
             os_type = 'Windows'
-        # check hyperv Generation
-        if enable_nested:
-            _check_hyperV_gen(source_vm)
 
         # Set up base create vm command
         if is_linux:
@@ -96,6 +101,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             disk_sku, location, os_type, hyperV_generation = _fetch_disk_info(resource_group_name, target_disk_name)
             copy_disk_command = 'az disk create -g {g} -n {n} --source {s} --sku {sku} --location {loc} --os-type {os_type} --query id -o tsv' \
                                 .format(g=resource_group_name, n=copy_disk_name, s=target_disk_name, sku=disk_sku, loc=location, os_type=os_type)
+
             # Only add hyperV variable when available
             if hyperV_generation:
                 copy_disk_command += ' --hyper-v-generation {hyperV}'.format(hyperV=hyperV_generation)
@@ -177,8 +183,8 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         if enable_nested:
             logger.info("Running Script win-enable-nested-hyperv.ps1 to install HyperV")
 
-            run_hyperv_command = "az vm repair run -g {g} -n {name} --run-id win-enable-nested-hyperv" \
-                .format(g=repair_group_name, name=repair_vm_name)
+            run_hyperv_command = "az vm repair run -g {g} -n {name} --run-id win-enable-nested-hyperv --parameters gen={gen}" \
+                .format(g=repair_group_name, name=repair_vm_name, gen=is_gen2)
             ret_enable_nested = _call_az_command(run_hyperv_command)
 
             logger.debug("az vm repair run hyperv command returned: %s", ret_enable_nested)
@@ -343,12 +349,14 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
     return return_dict
 
 
-def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custom_script_file=None, parameters=None, run_on_repair=False):
+def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custom_script_file=None, parameters=None, run_on_repair=False, preview=None):
 
     # Init command helper object
     command = command_helper(logger, cmd, 'vm repair run')
     LINUX_RUN_SCRIPT_NAME = 'linux-run-driver.sh'
     WINDOWS_RUN_SCRIPT_NAME = 'win-run-driver.ps1'
+    if preview:
+        _set_repair_map_url(preview)
 
     try:
         # Fetch VM data
@@ -373,6 +381,9 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
             # Fetch run path from GitHub
             repair_script_path = _fetch_run_script_path(run_id)
             run_command_params.append('script_path="./{}"'.format(repair_script_path))
+
+            if preview:
+                run_command_params.append('preview_path="{}"'.format(preview))
         # Custom script scenario for script testers
         else:
             run_command_params.append('script_path=no-op')
@@ -469,10 +480,12 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
     return return_dict
 
 
-def list_scripts(cmd):
+def list_scripts(cmd, preview=None):
 
     # Init command helper object
     command = command_helper(logger, cmd, 'vm repair list-scripts')
+    if preview:
+        _set_repair_map_url(preview)
 
     try:
         run_map = _fetch_run_script_map()

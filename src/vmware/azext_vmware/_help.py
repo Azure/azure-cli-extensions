@@ -87,9 +87,54 @@ helps['vmware cluster update'] = """
     short-summary: Update a cluster in a private cloud.
 """
 
+helps['vmware private-cloud add-identity-source'] = """
+    type: command
+    short-summary: Add a vCenter Single Sign On Identity Source to a private cloud.
+"""
+
 helps['vmware private-cloud addidentitysource'] = """
     type: command
     short-summary: Add a vCenter Single Sign On Identity Source to a private cloud.
+"""
+
+helps['vmware private-cloud add-availability-zone'] = """
+    type: command
+    short-summary: Add an Availability Zone to a private cloud.
+"""
+
+helps['vmware private-cloud delete-availability-zone'] = """
+    type: command
+    short-summary: Delete an Availability Zone from a private cloud.
+"""
+
+helps['vmware private-cloud add-cmk-encryption'] = """
+    type: command
+    short-summary: Add a Customer Managed Keys Encryption to a private cloud.
+"""
+
+helps['vmware private-cloud delete-cmk-encryption'] = """
+    type: command
+    short-summary: Delete a Customer Managed Keys Encryption from a private cloud.
+"""
+
+helps['vmware private-cloud identity'] = """
+    type: group
+    short-summary: Commands for Managed Identity in a private cloud.
+"""
+
+helps['vmware private-cloud identity assign'] = """
+    type: command
+    short-summary: Assign a Managed Identity in a private cloud.
+"""
+
+helps['vmware private-cloud identity remove'] = """
+    type: command
+    short-summary: Remove a Managed Identity in a private cloud.
+"""
+
+helps['vmware private-cloud identity show'] = """
+    type: command
+    short-summary: Show Managed Identities in a private cloud.
 """
 
 helps['vmware private-cloud create'] = """
@@ -102,6 +147,11 @@ helps['vmware private-cloud delete'] = """
     short-summary: Delete a private cloud.
 """
 
+helps['vmware private-cloud delete-identity-source'] = """
+    type: command
+    short-summary: Delete a vCenter Single Sign On Identity Source for a private cloud.
+"""
+
 helps['vmware private-cloud deleteidentitysource'] = """
     type: command
     short-summary: Delete a vCenter Single Sign On Identity Source for a private cloud.
@@ -110,6 +160,11 @@ helps['vmware private-cloud deleteidentitysource'] = """
 helps['vmware private-cloud list'] = """
     type: command
     short-summary: List the private clouds.
+"""
+
+helps['vmware private-cloud list-admin-credentials'] = """
+    type: command
+    short-summary: List the admin credentials for the private cloud.
 """
 
 helps['vmware private-cloud listadmincredentials'] = """
@@ -140,7 +195,7 @@ helps['vmware private-cloud rotate-nsxt-password'] = """
     short-summary: Rotate the NSX-T Manager password.
     examples:
     - name: Rotate the NSX-T Manager password.
-      text: az vmware private-cloud rotate-nsxt-password --resource-group MyResourceGroup --private-cloud MyPrivateCloud
+      text: az vmware private-cloud rotate-nsxt-password
 """
 
 helps['vmware authorization create'] = """
@@ -880,4 +935,112 @@ helps['vmware workload-network gateway show'] = """
     examples:
     - name: Get a Gateway by ID in a workload network.
       text: az vmware workload-network gateway show --resource-group group1 --private-cloud cloud1 --gateway gateway1
+"""
+
+helps['vmware placement-policy'] = """
+    type: group
+    short-summary: Commands to manage placement policies.
+"""
+
+helps['vmware placement-policy list'] = """
+    type: command
+    short-summary: List placement policies in a private cloud cluster.
+    examples:
+    - name: List placement policies.
+      text: az vmware placement-policy list --resource-group group1 --private-cloud cloud1 --cluster-name cluster1
+"""
+
+helps['vmware placement-policy show'] = """
+    type: command
+    short-summary: Get a placement policy by name in a private cloud cluster.
+    examples:
+    - name: Get a placement policy by name.
+      text: az vmware placement-policy show --resource-group group1 --private-cloud cloud1 --cluster-name cluster1 --placement-policy-name policy1
+"""
+
+helps['vmware placement-policy vm-host'] = """
+    type: group
+    short-summary: Commands to manage VM Host placement policies.
+"""
+
+helps['vmware placement-policy vm-host create'] = """
+    type: command
+    short-summary: Create a VM Host placement policy in a private cloud cluster.
+    examples:
+    - name: Create a VM Host placement policy.
+      text: az vmware placement-policy vm-host create --resource-group group1 --private-cloud cloud1 --cluster-name cluster1 --placement-policy-name policy1 --state Enabled --display-name policy1 --vm-members /subscriptions/subId/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/virtualMachines/vm-128 /subscriptions/subId/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/virtualMachines/vm-256 --host-members fakehost22.nyc1.kubernetes.center fakehost23.nyc1.kubernetes.center --affinity-type AntiAffinity
+"""
+
+helps['vmware placement-policy vm-host update'] = """
+    type: command
+    short-summary: Update a VM Host placement policy in a private cloud cluster.
+    examples:
+    - name: Update a VM Host placement policy.
+      text: az vmware placement-policy vm-host update --resource-group group1 --private-cloud cloud1 --cluster-name cluster1 --placement-policy-name policy1 --state Enabled --vm-members /subscriptions/subId/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/virtualMachines/vm-128 /subscriptions/subId/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/virtualMachines/vm-256 --host-members fakehost22.nyc1.kubernetes.center fakehost23.nyc1.kubernetes.center
+"""
+
+helps['vmware placement-policy vm-host delete'] = """
+    type: command
+    short-summary: Delete a VM Host placement policy in a private cloud cluster.
+    examples:
+    - name: Delete a VM Host placement policy.
+      text: az vmware placement-policy vm-host delete --resource-group group1 --private-cloud cloud1 --cluster-name cluster1 --placement-policy-name policy1
+"""
+
+helps['vmware placement-policy vm'] = """
+    type: group
+    short-summary: Commands to manage VM placement policies.
+"""
+
+helps['vmware placement-policy vm create'] = """
+    type: command
+    short-summary: Create a VM placement policy in a private cloud cluster.
+    examples:
+    - name: Create a VM placement policy.
+      text: az vmware placement-policy vm create --resource-group group1 --private-cloud cloud1 --cluster-name cluster1 --placement-policy-name policy1 --state Enabled --display-name policy1 --vm-members /subscriptions/subId/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/virtualMachines/vm-128 /subscriptions/subId/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/virtualMachines/vm-256 --affinity-type AntiAffinity
+"""
+
+helps['vmware placement-policy vm update'] = """
+    type: command
+    short-summary: Update a VM placement policy in a private cloud cluster.
+    examples:
+    - name: Update a VM placement policy.
+      text: az vmware placement-policy vm update --resource-group group1 --private-cloud cloud1 --cluster-name cluster1 --placement-policy-name policy1 --state Enabled --vm-members /subscriptions/subId/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/virtualMachines/vm-128 /subscriptions/subId/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/virtualMachines/vm-256
+"""
+
+helps['vmware placement-policy vm delete'] = """
+    type: command
+    short-summary: Delete a VM placement policy in a private cloud cluster.
+    examples:
+    - name: Delete a VM placement policy.
+      text: az vmware placement-policy vm delete --resource-group group1 --private-cloud cloud1 --cluster-name cluster1 --placement-policy-name policy1
+"""
+
+helps['vmware vm'] = """
+    type: group
+    short-summary: Commands to manage Virtual Machines.
+"""
+
+helps['vmware vm show'] = """
+    type: command
+    short-summary: Get a virtual machine by ID in a private cloud cluster.
+    examples:
+    - name: Get a virtual machine by ID.
+      text: az vmware vm show --resource-group group1 --private-cloud cloud1 --cluster-name cluster1 --virtual-machine vm-209
+"""
+
+helps['vmware vm list'] = """
+    type: command
+    short-summary: List of virtual machines in a private cloud cluster.
+    examples:
+    - name: List of virtual machines.
+      text: az vmware vm list --resource-group group1 --private-cloud cloud1 --cluster-name cluster1
+"""
+
+helps['vmware vm restrict-movement'] = """
+    type: command
+    short-summary: Enable or disable DRS-driven VM movement restriction.
+    examples:
+    - name: Enable or disable DRS-driven VM movement restriction.
+      text: az vmware vm restrict-movement --resource-group group1 --private-cloud cloud1 --cluster-name cluster1 --virtual-machine vm-209 --restrict-movement Enabled
 """

@@ -3,14 +3,14 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=redefined-builtin
+# pylint: disable=redefined-builtin,bare-except,inconsistent-return-statements
 
 import logging
 
 from azure.cli.core.azclierror import (FileOperationError, AzureInternalError,
                                        InvalidArgumentValueError, AzureResponseError)
 
-from .._client_factory import cf_jobs, _get_data_credentials, base_url
+from .._client_factory import cf_jobs, _get_data_credentials
 from .workspace import WorkspaceInfo
 from .target import TargetInfo
 
@@ -77,7 +77,7 @@ def build(cmd, target_id=None, project=None):
         return {'result': 'ok'}
 
     # If we got here, we might have encountered an error during compilation, so propagate standard output to the user.
-    logger.error(f"Compilation stage failed with error code {result.returncode}")
+    logger.error("Compilation stage failed with error code %s", result.returncode)
     print(result.stdout.decode('ascii'))
     raise AzureInternalError("Failed to compile program.")
 
@@ -185,14 +185,14 @@ def submit(cmd, program_args, resource_group_name=None, workspace_name=None, loc
     result = subprocess.run(args, stdout=subprocess.PIPE, check=False)
 
     if result.returncode == 0:
-        output = result.stdout.decode('ascii').strip()
+        std_output = result.stdout.decode('ascii').strip()
         # Retrieve the job-id as the last line from standard output.
-        job_id = output.split()[-1]
+        job_id = std_output.split()[-1]
         # Query for the job and return status to caller.
         return get(cmd, job_id, resource_group_name, workspace_name, location)
 
     # The program compiled succesfully, but executing the stand-alone .exe failed to run.
-    logger.error(f"Submission of job failed with error code {result.returncode}")
+    logger.error("Submission of job failed with error code %s", result.returncode)
     print(result.stdout.decode('ascii'))
     raise AzureInternalError("Failed to submit job.")
 

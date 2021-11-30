@@ -18,12 +18,12 @@ class K8sExtensionScenarioTest(ScenarioTest):
         resource_type = 'microsoft.openservicemesh'
         self.kwargs.update({
             'name': 'openservicemesh',
-            'rg': 'nanthirg0923',
-            'cluster_name': 'nanthicluster0923',
+            'rg': 'nanthirg1006',
+            'cluster_name': 'nanthiaks1006',
             'cluster_type': 'connectedClusters',
             'extension_type': resource_type,
             'release_train': 'pilot',
-            'version': '0.8.3'
+            'version': '0.9.2'
         })
 
         self.cmd('k8s-extension create -g {rg} -n {name} -c {cluster_name} --cluster-type {cluster_type} '
@@ -35,9 +35,9 @@ class K8sExtensionScenarioTest(ScenarioTest):
                      self.check('resourceGroup', '{rg}'),
                      self.check('extensionType', '{extension_type}')
                  ]
-                )
+                 )
 
-        # Update is disabled for now
+        # Update requires agent running in k8s cluster that is connected to Azure - so no update tests here
         # self.cmd('k8s-extension update -g {rg} -n {name} --tags foo=boo', checks=[
         #     self.check('tags.foo', 'boo')
         # ])
