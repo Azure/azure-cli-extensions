@@ -1,5 +1,9 @@
 # Release History
 
+## 4.0.1 (2021-11)
+
+- Fix publishing extension
+
 ## 4.0.0 (2021-11)
 
 - Add `az vmware placement-policy` command group
