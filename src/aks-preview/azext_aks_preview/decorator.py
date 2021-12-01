@@ -1304,7 +1304,7 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
         """
         mc = super().set_up_network_profile(mc)
         network_profile = mc.network_profile
-        
+
         ip_families = self.context.raw_param.get('ip_families')
 
         if ip_families:
@@ -1313,7 +1313,7 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
         pod_cidrs = self.context.raw_param.get('pod_cidrs')
         if pod_cidrs:
             network_profile.pod_cidrs = pod_cidrs.split(',')
-        
+
         service_cidrs = self.context.raw_param.get('service_cidrs')
         if service_cidrs:
             network_profile.service_cidrs = service_cidrs.split(',')
