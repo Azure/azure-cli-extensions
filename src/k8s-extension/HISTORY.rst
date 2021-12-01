@@ -4,7 +4,6 @@ Release History
 ===============
 1.0.1
 ++++++++++++++++++
-* Enable Microsoft.PolicyInsights extension type
 * microsoft.azureml.kubernetes: Retrieve relay and service bus connection string when update the configuration protected settings of the extension.
 
 1.0.0
