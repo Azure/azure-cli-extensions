@@ -15,11 +15,15 @@ MSG_CURRENT_SETTINGS = "Your current config settings:\n"
 
 MSG_NO_CONFIGURATION = "You have no existing config in place. Let's get started!\n"
 
-MSG_BUILD_IN_INTERACTION_BUNDLES = "Optimized fo human readability and interaction!"
+MSG_BUILD_IN_INTERACTION_BUNDLES = "human readability and interaction"
 
-MSG_BUILD_IN_AUTOMATION_BUNDLES = "Optimized fo machine scripting and automation!"
+MSG_BUILD_IN_AUTOMATION_BUNDLES = "machine scripting and automation"
 
-MSG_BUNDLE_SETTING_APPLIED = "{} Your new config settings:\n"
+MSG_BUNDLE_SETTING_APPLIED = "Optimized for {}! Your new config settings:\n"
+
+MSG_RECOMMEND_BUNDLE_SETTINGS = "For {}, we recommend the following settings:\n"
+
+MSG_THANKS_FOR_TRYING = "Thank you for trying it!\n"
 
 MSG_CUSTOM_SETTING_APPLIED = "Custom config settings applied! Your new config settings:\n"
 
@@ -40,7 +44,7 @@ INIT_STEP_OPTION_LIST = [
     },
     {
         "option": "Customize settings",
-        "desc": "This is an individual walk through where you could customize a set of common configs"
+        "desc": "A walk through to customize common configurations"
     },
     {
         "option": "Exit",
@@ -55,19 +59,19 @@ MORE_COMMANDS_LIST = [
         "desc": "Set a config.",
     },
     {
-        "option": "az configure",
+        "option": "az config get",
         "desc": "Display your config summary.",
     },
     {
-        "option": "az interactive",
-        "desc": "Start an interactive mode designed to help you learn.",
+        "option": "az <sub command> --help",
+        "desc": "Display help related to a command or sub-command.",
     },
     {
         "option": "az next",
         "desc": "Find the next set of commands.",
     },
     {
-        "option": "az <sub command> --help",
-        "desc": "Display help related to a command or sub-command.",
+        "option": "az interactive",
+        "desc": "Start an interactive mode designed to help you learn.",
     }
 ]

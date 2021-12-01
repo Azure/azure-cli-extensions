@@ -5,11 +5,12 @@
 from knack.log import get_logger
 from azure.cli.core.style import Style, print_styled_text
 
-from ._utils import prompt_option_list, get_int_option, print_successful_styled_text
+from ._utils import prompt_option_list, get_int_option, print_successful_styled_text, get_yes_or_no_option
 from ._text import (MSG_WELCOME, MSG_SELECT_STEP, MSG_INPUT_SELECTION, MSG_CURRENT_SETTINGS, MSG_NO_CONFIGURATION,
                     MSG_BUNDLE_SETTING_APPLIED, INIT_STEP_OPTION_LIST, MSG_CUSTOM_SETTING_APPLIED,
                     MSG_MORE_CONFIG_SETTINGS, MSG_MORE_CONFIG_LINK, CONTENT_INDENT_BROADBAND, MSG_MORE_COMMANDS_PROMPT,
-                    MORE_COMMANDS_LIST, MSG_BUILD_IN_INTERACTION_BUNDLES, MSG_BUILD_IN_AUTOMATION_BUNDLES)
+                    MORE_COMMANDS_LIST, MSG_BUILD_IN_INTERACTION_BUNDLES, MSG_BUILD_IN_AUTOMATION_BUNDLES,
+                    MSG_RECOMMEND_BUNDLE_SETTINGS, MSG_THANKS_FOR_TRYING)
 from ._bundles import BUILD_IN_INTERACTION_BUNDLES, BUILD_IN_AUTOMATION_BUNDLES
 from ._configs import WALK_THROUGH_CONFIG_LIST
 
@@ -25,6 +26,7 @@ def handle_init(cmd):
     print_styled_text((Style.PRIMARY, MSG_SELECT_STEP))
     prompt_option_list(INIT_STEP_OPTION_LIST, content_indent=CONTENT_INDENT_BROADBAND)
     selected_option = get_int_option(MSG_INPUT_SELECTION, 1, 4, 4)
+    print()
 
     if selected_option == 1:
         set_build_in_bundles(cmd, BUILD_IN_INTERACTION_BUNDLES, MSG_BUILD_IN_INTERACTION_BUNDLES)
@@ -34,6 +36,9 @@ def handle_init(cmd):
 
     if selected_option == 3:
         handle_walk_through(cmd, WALK_THROUGH_CONFIG_LIST)
+
+    if selected_option == 4:
+        print_styled_text((Style.PRIMARY, CONTENT_INDENT_BROADBAND + MSG_THANKS_FOR_TRYING))
 
 
 def load_existing_configuration(cmd):
@@ -60,11 +65,27 @@ def load_existing_configuration(cmd):
 
 
 def set_build_in_bundles(cmd, bundles, bundle_name):
-    bundle_settings = {}
     config_info_map = {}
     for config_item in WALK_THROUGH_CONFIG_LIST:
         config_info_map[config_item["configuration"]] = config_item
 
+    print_styled_text((Style.PRIMARY, CONTENT_INDENT_BROADBAND + MSG_RECOMMEND_BUNDLE_SETTINGS.format(bundle_name)))
+    for bundle_item in bundles:
+        config_info = config_info_map[bundle_item["configuration"]]
+        option_meaning = _get_option_meaning(bundle_item["value"], config_info["options"])
+        print_styled_text([(Style.PRIMARY, "{}{}: ".format(CONTENT_INDENT_BROADBAND, config_info["brief"])),
+                           (Style.IMPORTANT, option_meaning)])
+        print_styled_text((Style.PRIMARY, CONTENT_INDENT_BROADBAND + bundle_item["brief"]))
+        print_styled_text((Style.SECONDARY, CONTENT_INDENT_BROADBAND + "[{} = {}]".format(bundle_item["configuration"],
+                                                                                          bundle_item["value"])))
+        print()
+
+    confirmation = get_yes_or_no_option("Are you sure to apply these settings? (y/n): ")
+    if not confirmation:
+        print_styled_text((Style.PRIMARY, "\n"+ CONTENT_INDENT_BROADBAND + MSG_THANKS_FOR_TRYING))
+        return
+
+    bundle_settings = {}
     for bundle_item in bundles:
         section, option = bundle_item["configuration"].split('.')
         original_config_value = _get_existing_config_value(cmd, section, option)
@@ -91,8 +112,7 @@ def handle_walk_through(cmd, config_list):
 
     custom_settings = {}
     for config_item in config_list:
-
-        print_styled_text((Style.PRIMARY, "\n{}:\n".format(config_item["brief"])))
+        print_styled_text((Style.PRIMARY, "{}:\n".format(config_item["brief"])))
         print_styled_text((Style.PRIMARY, "{}\n".format(config_item["description"])))
         prompt_option_list(config_item["options"], content_indent=CONTENT_INDENT_BROADBAND)
 

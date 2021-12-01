@@ -10,6 +10,10 @@ def read_int(default_value=0):
     if ret == '' or ret is None:
         return default_value
     while not ret.isnumeric():
+        ret = ret.strip()
+        if ret.isnumeric():
+            break
+
         ret = input("Please input a legal number: ")
         if ret == '' or ret is None:
             return default_value
@@ -30,7 +34,7 @@ def get_int_option(option_description, min_option, max_option, default_option):
     print_styled_text([(Style.ACTION, ' ? '), (Style.PRIMARY, option_description)], end='')
     option = read_int(default_option)
     while option < min_option or option > max_option:
-        print_styled_text([(Style.PRIMARY, "Please enter a valid option ({}-{}): ".format(min_option, max_option))],
+        print_styled_text([(Style.PRIMARY, "Please input available option ({}-{}): ".format(min_option, max_option))],
                           end='')
         option = read_int(default_option)
     return option

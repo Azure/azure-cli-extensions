@@ -106,18 +106,18 @@ WALK_THROUGH_CONFIG_LIST = [
     {
         "configuration": "core.disable_progress_bar",
         "brief": "Progress Bar",
-        "description": "This option is used to enable/disable the progress bar for long run operations",
+        "description": "This option is used to enable/disable the progress bar for long running commands",
         "options": [
             {
                 "option": "On",
                 "value": "false",
-                "desc": "The progress bar will be displayed in stderr during long run operations",
+                "desc": "The progress bar will be displayed in stderr during long running commands",
                 "tag": "default"
             },
             {
                 "option": "Off",
                 "value": "true",
-                "desc": "Disable the progress bar during long run operations"
+                "desc": "Disable the progress bar during long running commands"
             }
         ]
     }
