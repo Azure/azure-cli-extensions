@@ -13,29 +13,29 @@ def cf_fidalgo_dataplane(cli_ctx, *_):
     return get_mgmt_service_client(cli_ctx, FidalgoDataplaneClient, subscription_bound=False, base_url_bound=False)
 
 
-def cf_project(cli_ctx, *_):
+def cf_project_dp(cli_ctx, *_):
     return cf_fidalgo_dataplane(cli_ctx).project
 
 
-def cf_pool(cli_ctx, *_):
+def cf_pool_dp(cli_ctx, *_):
     return cf_fidalgo_dataplane(cli_ctx).pool
 
 
-def cf_virtual_machine(cli_ctx, *_):
+def cf_virtual_machine_dp(cli_ctx, *_):
     return cf_fidalgo_dataplane(cli_ctx).virtual_machine
 
 
-def cf_environment(cli_ctx, *_):
+def cf_environment_dp(cli_ctx, *_):
     return cf_fidalgo_dataplane(cli_ctx).environments
 
 
-def cf_deployment(cli_ctx, *_):
+def cf_deployment_dp(cli_ctx, *_):
     return cf_fidalgo_dataplane(cli_ctx).deployments
 
 
-def cf_catalog_item(cli_ctx, *_):
+def cf_catalog_item_dp(cli_ctx, *_):
     return cf_fidalgo_dataplane(cli_ctx).catalog_item
 
 
-def cf_environment_type(cli_ctx, *_):
+def cf_environment_type_dp(cli_ctx, *_):
     return cf_fidalgo_dataplane(cli_ctx).environment_type

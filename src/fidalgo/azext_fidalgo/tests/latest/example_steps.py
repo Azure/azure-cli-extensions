@@ -17,13 +17,13 @@ from .. import try_manual
 def step_dev_center_create(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin dev-center create '
+    test.cmd('az fidalgo dev-center create '
              '--location "centralus" '
              '--tags CostCode="12345" '
              '--name "{myDevCenter}" '
              '--resource-group "{rg}"',
              checks=[])
-    test.cmd('az fidalgo-admin dev-center wait --created '
+    test.cmd('az fidalgo dev-center wait --created '
              '--name "{myDevCenter}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -34,7 +34,7 @@ def step_dev_center_create(test, checks=None):
 def step_dev_center_create2(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin dev-center create '
+    test.cmd('az fidalgo dev-center create '
              '--type "UserAssigned" '
              '--user-assigned-identities "{{\\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ident'
              'ityGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testidentity1\\":{{}}}}" '
@@ -43,7 +43,7 @@ def step_dev_center_create2(test, checks=None):
              '--name "{myDevCenter}" '
              '--resource-group "{rg}"',
              checks=[])
-    test.cmd('az fidalgo-admin dev-center wait --created '
+    test.cmd('az fidalgo dev-center wait --created '
              '--name "{myDevCenter}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -54,7 +54,7 @@ def step_dev_center_create2(test, checks=None):
 def step_dev_center_show(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin dev-center show '
+    test.cmd('az fidalgo dev-center show '
              '--name "{myDevCenter}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -65,7 +65,7 @@ def step_dev_center_show(test, checks=None):
 def step_dev_center_list(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin dev-center list '
+    test.cmd('az fidalgo dev-center list '
              '--resource-group "{rg}"',
              checks=checks)
 
@@ -75,7 +75,7 @@ def step_dev_center_list(test, checks=None):
 def step_dev_center_list2(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin dev-center list '
+    test.cmd('az fidalgo dev-center list '
              '-g ""',
              checks=checks)
 
@@ -85,7 +85,7 @@ def step_dev_center_list2(test, checks=None):
 def step_dev_center_update(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin dev-center update '
+    test.cmd('az fidalgo dev-center update '
              '--tags CostCode="12345" '
              '--name "{myDevCenter}" '
              '--resource-group "{rg}"',
@@ -97,14 +97,14 @@ def step_dev_center_update(test, checks=None):
 def step_catalog_create(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin catalog create '
+    test.cmd('az fidalgo catalog create '
              '--ado-git path="/templates" branch="main" secret-identifier="https://contosokv.vault.azure.net/secrets/Ce'
              'ntralRepoPat" uri="https://contoso@dev.azure.com/contoso/contosoOrg/_git/centralrepo-fakecontoso" '
              '--name "{myCatalog}" '
              '--dev-center-name "{myDevCenter}" '
              '--resource-group "{rg}"',
              checks=[])
-    test.cmd('az fidalgo-admin catalog wait --created '
+    test.cmd('az fidalgo catalog wait --created '
              '--name "{myCatalog}" '
              '--dev-center-name "{myDevCenter}" '
              '--resource-group "{rg}"',
@@ -116,14 +116,14 @@ def step_catalog_create(test, checks=None):
 def step_catalog_create2(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin catalog create '
+    test.cmd('az fidalgo catalog create '
              '--git-hub path="/templates" branch="main" secret-identifier="https://contosokv.vault.azure.net/secrets/Ce'
              'ntralRepoPat" uri="https://github.com/Contoso/centralrepo-fake.git" '
              '--name "{myCatalog}" '
              '--dev-center-name "{myDevCenter}" '
              '--resource-group "{rg}"',
              checks=[])
-    test.cmd('az fidalgo-admin catalog wait --created '
+    test.cmd('az fidalgo catalog wait --created '
              '--name "{myCatalog}" '
              '--dev-center-name "{myDevCenter}" '
              '--resource-group "{rg}"',
@@ -135,7 +135,7 @@ def step_catalog_create2(test, checks=None):
 def step_catalog_show(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin catalog show '
+    test.cmd('az fidalgo catalog show '
              '--name "{myCatalog}" '
              '--dev-center-name "{myDevCenter}" '
              '--resource-group "{rg}"',
@@ -147,7 +147,7 @@ def step_catalog_show(test, checks=None):
 def step_catalog_list(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin catalog list '
+    test.cmd('az fidalgo catalog list '
              '--dev-center-name "{myDevCenter}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -158,7 +158,7 @@ def step_catalog_list(test, checks=None):
 def step_catalog_update(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin catalog update '
+    test.cmd('az fidalgo catalog update '
              '--git-hub path="/environments" '
              '--name "{myCatalog}" '
              '--dev-center-name "{myDevCenter}" '
@@ -171,7 +171,7 @@ def step_catalog_update(test, checks=None):
 def step_catalog_sync(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin catalog sync '
+    test.cmd('az fidalgo catalog sync '
              '--name "{myCatalog}" '
              '--dev-center-name "{myDevCenter}" '
              '--resource-group "{rg}"',
@@ -183,7 +183,7 @@ def step_catalog_sync(test, checks=None):
 def step_catalog_item_create(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin catalog-item create '
+    test.cmd('az fidalgo catalog-item create '
              '--description "Hello world template to deploy a basic API service" '
              '--parameters name="app_name" type="string" description="The name of the application. This must be '
              'provided when deploying an environment with this template." '
@@ -200,7 +200,7 @@ def step_catalog_item_create(test, checks=None):
 def step_catalog_item_show(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin catalog-item show '
+    test.cmd('az fidalgo catalog-item show '
              '--name "{myCatalogItem2}" '
              '--catalog-name "{myCatalog}" '
              '--dev-center-name "{myDevCenter}" '
@@ -213,7 +213,7 @@ def step_catalog_item_show(test, checks=None):
 def step_catalog_item_list(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin catalog-item list '
+    test.cmd('az fidalgo catalog-item list '
              '--catalog-name "{myCatalog}" '
              '--dev-center-name "{myDevCenter}" '
              '--resource-group "{rg}"',
@@ -225,7 +225,7 @@ def step_catalog_item_list(test, checks=None):
 def step_catalog_item_list2(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin catalog-item list '
+    test.cmd('az fidalgo catalog-item list '
              '--project-name "{myProject}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -236,7 +236,7 @@ def step_catalog_item_list2(test, checks=None):
 def step_catalog_item_update(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin catalog-item update '
+    test.cmd('az fidalgo catalog-item update '
              '--description "Hello world template to deploy a basic API service" '
              '--name "{myCatalogItem2}" '
              '--catalog-name "{myCatalog}" '
@@ -250,7 +250,7 @@ def step_catalog_item_update(test, checks=None):
 def step_environment_create(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin environment create '
+    test.cmd('az fidalgo environment create '
              '--location "centralus" '
              '--description "Personal Dev Environment" '
              '--catalog-item-name "{myCatalogItem}" '
@@ -261,7 +261,7 @@ def step_environment_create(test, checks=None):
              '--project-name "{myProject}" '
              '--resource-group "{rg}"',
              checks=[])
-    test.cmd('az fidalgo-admin environment wait --created '
+    test.cmd('az fidalgo environment wait --created '
              '--name "{myEnvironment}" '
              '--project-name "{myProject}" '
              '--resource-group "{rg}"',
@@ -273,7 +273,7 @@ def step_environment_create(test, checks=None):
 def step_environment_create2(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin environment create '
+    test.cmd('az fidalgo environment create '
              '--location "centralus" '
              '--description "Personal Dev Environment" '
              '--deployment-parameters "{{\\"app_name\\":\\"mydevApi\\"}}" '
@@ -285,7 +285,7 @@ def step_environment_create2(test, checks=None):
              '--project-name "{myProject}" '
              '--resource-group "{rg}"',
              checks=[])
-    test.cmd('az fidalgo-admin environment wait --created '
+    test.cmd('az fidalgo environment wait --created '
              '--name "{myEnvironment}" '
              '--project-name "{myProject}" '
              '--resource-group "{rg}"',
@@ -297,7 +297,7 @@ def step_environment_create2(test, checks=None):
 def step_environment_show(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin environment show '
+    test.cmd('az fidalgo environment show '
              '--name "{myEnvironment}" '
              '--project-name "{myProject}" '
              '--resource-group "{rg}"',
@@ -309,7 +309,7 @@ def step_environment_show(test, checks=None):
 def step_environment_list(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin environment list '
+    test.cmd('az fidalgo environment list '
              '--project-name "{myProject}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -320,7 +320,7 @@ def step_environment_list(test, checks=None):
 def step_environment_update(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin environment update '
+    test.cmd('az fidalgo environment update '
              '--description "Personal Dev Environment 2" '
              '--tags ProjectType="WebApi" Role="Development" Tech="NetCore" '
              '--name "{myEnvironment}" '
@@ -334,7 +334,7 @@ def step_environment_update(test, checks=None):
 def step_environment_deploy(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin environment deploy '
+    test.cmd('az fidalgo environment deploy '
              '--name "{myEnvironment}" '
              '--project-name "{myProject}" '
              '--resource-group "{rg}"',
@@ -346,7 +346,7 @@ def step_environment_deploy(test, checks=None):
 def step_catalog_item_delete(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin catalog-item delete -y '
+    test.cmd('az fidalgo catalog-item delete -y '
              '--name "{myCatalogItem2}" '
              '--catalog-name "{myCatalog}" '
              '--dev-center-name "{myDevCenter}" '
@@ -359,7 +359,7 @@ def step_catalog_item_delete(test, checks=None):
 def step_catalog_delete(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin catalog delete -y '
+    test.cmd('az fidalgo catalog delete -y '
              '--name "{myCatalog}" '
              '--dev-center-name "{myDevCenter}" '
              '--resource-group "{rg}"',
@@ -371,7 +371,7 @@ def step_catalog_delete(test, checks=None):
 def step_deployment_list(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin deployment list '
+    test.cmd('az fidalgo deployment list '
              '--environment-name "{myEnvironment}" '
              '--project-name "{myProject}" '
              '--resource-group "{rg}"',
@@ -383,7 +383,7 @@ def step_deployment_list(test, checks=None):
 def step_environment_type_create(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin environment-type create '
+    test.cmd('az fidalgo environment-type create '
              '--description "Developer/Testing environment" '
              '--dev-center-name "{myDevCenter}" '
              '--name "{myEnvironmentType}" '
@@ -396,7 +396,7 @@ def step_environment_type_create(test, checks=None):
 def step_environment_type_update(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin environment-type update '
+    test.cmd('az fidalgo environment-type update '
              '--description "Updated description" '
              '--dev-center-name "{myDevCenter}" '
              '--name "{myEnvironmentType}" '
@@ -409,7 +409,7 @@ def step_environment_type_update(test, checks=None):
 def step_dev_center_delete(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin dev-center delete -y '
+    test.cmd('az fidalgo dev-center delete -y '
              '--name "{myDevCenter}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -420,7 +420,7 @@ def step_dev_center_delete(test, checks=None):
 def step_environment_delete(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin environment delete -y '
+    test.cmd('az fidalgo environment delete -y '
              '--name "{myEnvironment}" '
              '--project-name "{myProject}" '
              '--resource-group "{rg}"',
@@ -432,7 +432,7 @@ def step_environment_delete(test, checks=None):
 def step_environment_type_show(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin environment-type show '
+    test.cmd('az fidalgo environment-type show '
              '--dev-center-name "{myDevCenter}" '
              '--name "{myEnvironmentType}" '
              '--resource-group "{rg}"',
@@ -444,7 +444,7 @@ def step_environment_type_show(test, checks=None):
 def step_environment_type_list(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin environment-type list '
+    test.cmd('az fidalgo environment-type list '
              '--dev-center-name "{myDevCenter}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -455,7 +455,7 @@ def step_environment_type_list(test, checks=None):
 def step_environment_type_list2(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin environment-type list '
+    test.cmd('az fidalgo environment-type list '
              '--project-name "{myProject2}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -466,7 +466,7 @@ def step_environment_type_list2(test, checks=None):
 def step_environment_type_delete(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin environment-type delete -y '
+    test.cmd('az fidalgo environment-type delete -y '
              '--dev-center-name "{myDevCenter}" '
              '--name "{myEnvironmentType}" '
              '--resource-group "{rg}"',
@@ -478,14 +478,14 @@ def step_environment_type_delete(test, checks=None):
 def step_machine_definition_create(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin machine-definition create '
+    test.cmd('az fidalgo machine-definition create '
              '--location "centralus" '
              '--image-reference id="/subscriptions/{subscription_id}/resourceGroups/{rg_2}/providers/Microsoft.Compute/'
              'images/exampleImage" '
              '--name "{myMachineDefinition}" '
              '--resource-group "{rg}"',
              checks=[])
-    test.cmd('az fidalgo-admin machine-definition wait --created '
+    test.cmd('az fidalgo machine-definition wait --created '
              '--name "{myMachineDefinition}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -496,7 +496,7 @@ def step_machine_definition_create(test, checks=None):
 def step_machine_definition_show(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin machine-definition show '
+    test.cmd('az fidalgo machine-definition show '
              '--name "{myMachineDefinition}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -507,7 +507,7 @@ def step_machine_definition_show(test, checks=None):
 def step_machine_definition_list(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin machine-definition list '
+    test.cmd('az fidalgo machine-definition list '
              '--resource-group "{rg}"',
              checks=checks)
 
@@ -517,7 +517,7 @@ def step_machine_definition_list(test, checks=None):
 def step_machine_definition_list2(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin machine-definition list '
+    test.cmd('az fidalgo machine-definition list '
              '-g ""',
              checks=checks)
 
@@ -527,7 +527,7 @@ def step_machine_definition_list2(test, checks=None):
 def step_machine_definition_update(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin machine-definition update '
+    test.cmd('az fidalgo machine-definition update '
              '--image-reference id="/subscriptions/{subscription_id}/resourceGroups/{rg_2}/providers/Microsoft.Compute/'
              'images/image2" '
              '--name "{myMachineDefinition}" '
@@ -540,7 +540,7 @@ def step_machine_definition_update(test, checks=None):
 def step_machine_definition_delete(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin machine-definition delete -y '
+    test.cmd('az fidalgo machine-definition delete -y '
              '--name "{myMachineDefinition}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -551,7 +551,7 @@ def step_machine_definition_delete(test, checks=None):
 def step_mapping_create(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin mapping create '
+    test.cmd('az fidalgo mapping create '
              '--environment-type "Sandbox" '
              '--mapped-subscription-id "/subscriptions/{subscription_id}" '
              '--project-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Fidalgo/projects/{'
@@ -567,7 +567,7 @@ def step_mapping_create(test, checks=None):
 def step_mapping_show(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin mapping show '
+    test.cmd('az fidalgo mapping show '
              '--dev-center-name "{myDevCenter}" '
              '--name "{myMapping}" '
              '--resource-group "{rg}"',
@@ -579,7 +579,7 @@ def step_mapping_show(test, checks=None):
 def step_mapping_list(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin mapping list '
+    test.cmd('az fidalgo mapping list '
              '--dev-center-name "{myDevCenter}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -590,7 +590,7 @@ def step_mapping_list(test, checks=None):
 def step_mapping_update(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin mapping update '
+    test.cmd('az fidalgo mapping update '
              '--mapped-subscription-id "/subscriptions/{subscription_id}" '
              '--dev-center-name "{myDevCenter}" '
              '--name "{myMapping}" '
@@ -603,7 +603,7 @@ def step_mapping_update(test, checks=None):
 def step_mapping_delete(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin mapping delete -y '
+    test.cmd('az fidalgo mapping delete -y '
              '--dev-center-name "{myDevCenter}" '
              '--name "{myMapping}" '
              '--resource-group "{rg}"',
@@ -615,7 +615,7 @@ def step_mapping_delete(test, checks=None):
 def step_network_setting_create(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin network-setting create '
+    test.cmd('az fidalgo network-setting create '
              '--location "centralus" '
              '--domain-name "mydomaincontroller.local" '
              '--domain-password "Password value for user" '
@@ -626,7 +626,7 @@ def step_network_setting_create(test, checks=None):
              '--name "{myNetworkSetting}" '
              '--resource-group "{rg}"',
              checks=[])
-    test.cmd('az fidalgo-admin network-setting wait --created '
+    test.cmd('az fidalgo network-setting wait --created '
              '--name "{myNetworkSetting}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -637,7 +637,7 @@ def step_network_setting_create(test, checks=None):
 def step_network_setting_show(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin network-setting show '
+    test.cmd('az fidalgo network-setting show '
              '--name "{myNetworkSetting}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -648,7 +648,7 @@ def step_network_setting_show(test, checks=None):
 def step_network_setting_show_health_detail(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin network-setting show-health-detail '
+    test.cmd('az fidalgo network-setting show-health-detail '
              '--name "{myNetworkSetting}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -659,7 +659,7 @@ def step_network_setting_show_health_detail(test, checks=None):
 def step_network_setting_list(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin network-setting list '
+    test.cmd('az fidalgo network-setting list '
              '--resource-group "{rg}"',
              checks=checks)
 
@@ -669,7 +669,7 @@ def step_network_setting_list(test, checks=None):
 def step_network_setting_list2(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin network-setting list '
+    test.cmd('az fidalgo network-setting list '
              '-g ""',
              checks=checks)
 
@@ -679,7 +679,7 @@ def step_network_setting_list2(test, checks=None):
 def step_network_setting_update(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin network-setting update '
+    test.cmd('az fidalgo network-setting update '
              '--domain-password "New Password value for user" '
              '--name "{myNetworkSetting}" '
              '--resource-group "{rg}"',
@@ -691,7 +691,7 @@ def step_network_setting_update(test, checks=None):
 def step_network_setting_delete(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin network-setting delete -y '
+    test.cmd('az fidalgo network-setting delete -y '
              '--name "{myNetworkSetting}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -702,7 +702,7 @@ def step_network_setting_delete(test, checks=None):
 def step_operation_statuses_show(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin operation-statuses show '
+    test.cmd('az fidalgo operation-statuses show '
              '--operation-id "{{operationId}}" '
              '--location "{{location}}"',
              checks=checks)
@@ -713,7 +713,7 @@ def step_operation_statuses_show(test, checks=None):
 def step_project_create(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin project create '
+    test.cmd('az fidalgo project create '
              '--location "centralus" '
              '--description "This is my first project." '
              '--dev-center-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Fidalgo/devcent'
@@ -722,7 +722,7 @@ def step_project_create(test, checks=None):
              '--name "{myProject}" '
              '--resource-group "{rg}"',
              checks=[])
-    test.cmd('az fidalgo-admin project wait --created '
+    test.cmd('az fidalgo project wait --created '
              '--name "{myProject}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -733,7 +733,7 @@ def step_project_create(test, checks=None):
 def step_project_show(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin project show '
+    test.cmd('az fidalgo project show '
              '--name "{myProject}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -744,7 +744,7 @@ def step_project_show(test, checks=None):
 def step_project_list(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin project list '
+    test.cmd('az fidalgo project list '
              '--resource-group "{rg}"',
              checks=checks)
 
@@ -754,7 +754,7 @@ def step_project_list(test, checks=None):
 def step_project_list2(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin project list '
+    test.cmd('az fidalgo project list '
              '-g ""',
              checks=checks)
 
@@ -764,7 +764,7 @@ def step_project_list2(test, checks=None):
 def step_project_update(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin project update '
+    test.cmd('az fidalgo project update '
              '--description "This is my first project." '
              '--tags CostCenter="R&D" '
              '--name "{myProject}" '
@@ -777,7 +777,7 @@ def step_project_update(test, checks=None):
 def step_pool_create(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin pool create '
+    test.cmd('az fidalgo pool create '
              '--location "centralus" '
              '--machine-definition-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Fidalgo'
              '/machinedefinitions/{myMachineDefinition}" '
@@ -788,7 +788,7 @@ def step_pool_create(test, checks=None):
              '--project-name "{myProject}" '
              '--resource-group "{rg}"',
              checks=[])
-    test.cmd('az fidalgo-admin pool wait --created '
+    test.cmd('az fidalgo pool wait --created '
              '--name "{myPool}" '
              '--project-name "{myProject}" '
              '--resource-group "{rg}"',
@@ -800,7 +800,7 @@ def step_pool_create(test, checks=None):
 def step_pool_show(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin pool show '
+    test.cmd('az fidalgo pool show '
              '--name "{myPool}" '
              '--project-name "{myProject}" '
              '--resource-group "{rg}"',
@@ -812,7 +812,7 @@ def step_pool_show(test, checks=None):
 def step_pool_list(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin pool list '
+    test.cmd('az fidalgo pool list '
              '--project-name "{myProject}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -823,7 +823,7 @@ def step_pool_list(test, checks=None):
 def step_pool_update(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin pool update '
+    test.cmd('az fidalgo pool update '
              '--machine-definition-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Fidalgo'
              '/machinedefinitions/{myMachineDefinition}" '
              '--name "{myPool}" '
@@ -837,7 +837,7 @@ def step_pool_update(test, checks=None):
 def step_pool_delete(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin pool delete -y '
+    test.cmd('az fidalgo pool delete -y '
              '--name "{myPool2}" '
              '--project-name "{myProject}" '
              '--resource-group "{rg}"',
@@ -849,7 +849,7 @@ def step_pool_delete(test, checks=None):
 def step_project_delete(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin project delete -y '
+    test.cmd('az fidalgo project delete -y '
              '--name "{myProject}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -860,5 +860,5 @@ def step_project_delete(test, checks=None):
 def step_sku_list(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az fidalgo-admin sku list',
+    test.cmd('az fidalgo sku list',
              checks=checks)

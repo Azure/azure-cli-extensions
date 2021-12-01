@@ -12,30 +12,30 @@
 from azure.cli.core.util import sdk_no_wait
 
 
-def fidalgo_admin_dev_center_list(client,
-                                  resource_group_name=None,
-                                  top=None):
+def fidalgo_dev_center_list(client,
+                            resource_group_name=None,
+                            top=None):
     if resource_group_name:
         return client.list_by_resource_group(resource_group_name=resource_group_name,
                                              top=top)
     return client.list_by_subscription(top=top)
 
 
-def fidalgo_admin_dev_center_show(client,
-                                  resource_group_name,
-                                  dev_center_name):
+def fidalgo_dev_center_show(client,
+                            resource_group_name,
+                            dev_center_name):
     return client.get(resource_group_name=resource_group_name,
                       dev_center_name=dev_center_name)
 
 
-def fidalgo_admin_dev_center_create(client,
-                                    resource_group_name,
-                                    dev_center_name,
-                                    location,
-                                    tags=None,
-                                    type_=None,
-                                    user_assigned_identities=None,
-                                    no_wait=False):
+def fidalgo_dev_center_create(client,
+                              resource_group_name,
+                              dev_center_name,
+                              location,
+                              tags=None,
+                              type_=None,
+                              user_assigned_identities=None,
+                              no_wait=False):
     body = {}
     if tags is not None:
         body['tags'] = tags
@@ -54,14 +54,14 @@ def fidalgo_admin_dev_center_create(client,
                        body=body)
 
 
-def fidalgo_admin_dev_center_update(client,
-                                    resource_group_name,
-                                    dev_center_name,
-                                    tags=None,
-                                    location=None,
-                                    type_=None,
-                                    user_assigned_identities=None,
-                                    no_wait=False):
+def fidalgo_dev_center_update(client,
+                              resource_group_name,
+                              dev_center_name,
+                              tags=None,
+                              location=None,
+                              type_=None,
+                              user_assigned_identities=None,
+                              no_wait=False):
     body = {}
     if tags is not None:
         body['tags'] = tags
@@ -81,40 +81,40 @@ def fidalgo_admin_dev_center_update(client,
                        body=body)
 
 
-def fidalgo_admin_dev_center_delete(client,
-                                    resource_group_name,
-                                    dev_center_name,
-                                    no_wait=False):
+def fidalgo_dev_center_delete(client,
+                              resource_group_name,
+                              dev_center_name,
+                              no_wait=False):
     return sdk_no_wait(no_wait,
                        client.begin_delete,
                        resource_group_name=resource_group_name,
                        dev_center_name=dev_center_name)
 
 
-def fidalgo_admin_project_list(client,
-                               resource_group_name=None,
-                               top=None):
+def fidalgo_project_list(client,
+                         resource_group_name=None,
+                         top=None):
     if resource_group_name:
         return client.list_by_resource_group(resource_group_name=resource_group_name,
                                              top=top)
     return client.list_by_subscription(top=top)
 
 
-def fidalgo_admin_project_show(client,
-                               resource_group_name,
-                               project_name):
+def fidalgo_project_show(client,
+                         resource_group_name,
+                         project_name):
     return client.get(resource_group_name=resource_group_name,
                       project_name=project_name)
 
 
-def fidalgo_admin_project_create(client,
-                                 resource_group_name,
-                                 project_name,
-                                 location,
-                                 tags=None,
-                                 dev_center_id=None,
-                                 description=None,
-                                 no_wait=False):
+def fidalgo_project_create(client,
+                           resource_group_name,
+                           project_name,
+                           location,
+                           tags=None,
+                           dev_center_id=None,
+                           description=None,
+                           no_wait=False):
     body = {}
     if tags is not None:
         body['tags'] = tags
@@ -130,14 +130,14 @@ def fidalgo_admin_project_create(client,
                        body=body)
 
 
-def fidalgo_admin_project_update(client,
-                                 resource_group_name,
-                                 project_name,
-                                 tags=None,
-                                 location=None,
-                                 dev_center_id=None,
-                                 description=None,
-                                 no_wait=False):
+def fidalgo_project_update(client,
+                           resource_group_name,
+                           project_name,
+                           tags=None,
+                           location=None,
+                           dev_center_id=None,
+                           description=None,
+                           no_wait=False):
     body = {}
     if tags is not None:
         body['tags'] = tags
@@ -154,46 +154,46 @@ def fidalgo_admin_project_update(client,
                        body=body)
 
 
-def fidalgo_admin_project_delete(client,
-                                 resource_group_name,
-                                 project_name,
-                                 no_wait=False):
+def fidalgo_project_delete(client,
+                           resource_group_name,
+                           project_name,
+                           no_wait=False):
     return sdk_no_wait(no_wait,
                        client.begin_delete,
                        resource_group_name=resource_group_name,
                        project_name=project_name)
 
 
-def fidalgo_admin_environment_list(client,
-                                   resource_group_name,
-                                   project_name,
-                                   top=None):
+def fidalgo_environment_list(client,
+                             resource_group_name,
+                             project_name,
+                             top=None):
     return client.list_by_project(resource_group_name=resource_group_name,
                                   project_name=project_name,
                                   top=top)
 
 
-def fidalgo_admin_environment_show(client,
-                                   resource_group_name,
-                                   project_name,
-                                   environment_name):
+def fidalgo_environment_show(client,
+                             resource_group_name,
+                             project_name,
+                             environment_name):
     return client.get(resource_group_name=resource_group_name,
                       project_name=project_name,
                       environment_name=environment_name)
 
 
-def fidalgo_admin_environment_create(client,
-                                     resource_group_name,
-                                     project_name,
-                                     environment_name,
-                                     location,
-                                     tags=None,
-                                     description=None,
-                                     catalog_item_name=None,
-                                     template_uri=None,
-                                     deployment_parameters=None,
-                                     environment_type=None,
-                                     no_wait=False):
+def fidalgo_environment_create(client,
+                               resource_group_name,
+                               project_name,
+                               environment_name,
+                               location,
+                               tags=None,
+                               description=None,
+                               catalog_item_name=None,
+                               template_uri=None,
+                               deployment_parameters=None,
+                               environment_type=None,
+                               no_wait=False):
     body = {}
     if tags is not None:
         body['tags'] = tags
@@ -216,17 +216,17 @@ def fidalgo_admin_environment_create(client,
                        body=body)
 
 
-def fidalgo_admin_environment_update(client,
-                                     resource_group_name,
-                                     project_name,
-                                     environment_name,
-                                     tags=None,
-                                     location=None,
-                                     description=None,
-                                     catalog_item_name=None,
-                                     template_uri=None,
-                                     deployment_parameters=None,
-                                     no_wait=False):
+def fidalgo_environment_update(client,
+                               resource_group_name,
+                               project_name,
+                               environment_name,
+                               tags=None,
+                               location=None,
+                               description=None,
+                               catalog_item_name=None,
+                               template_uri=None,
+                               deployment_parameters=None,
+                               no_wait=False):
     body = {}
     if tags is not None:
         body['tags'] = tags
@@ -248,11 +248,11 @@ def fidalgo_admin_environment_update(client,
                        body=body)
 
 
-def fidalgo_admin_environment_delete(client,
-                                     resource_group_name,
-                                     project_name,
-                                     environment_name,
-                                     no_wait=False):
+def fidalgo_environment_delete(client,
+                               resource_group_name,
+                               project_name,
+                               environment_name,
+                               no_wait=False):
     return sdk_no_wait(no_wait,
                        client.begin_delete,
                        resource_group_name=resource_group_name,
@@ -260,12 +260,12 @@ def fidalgo_admin_environment_delete(client,
                        environment_name=environment_name)
 
 
-def fidalgo_admin_environment_deploy(client,
-                                     resource_group_name,
-                                     project_name,
-                                     environment_name,
-                                     parameters=None,
-                                     no_wait=False):
+def fidalgo_environment_deploy(client,
+                               resource_group_name,
+                               project_name,
+                               environment_name,
+                               parameters=None,
+                               no_wait=False):
     deployment = {}
     if parameters is not None:
         deployment['parameters'] = parameters
@@ -277,22 +277,22 @@ def fidalgo_admin_environment_deploy(client,
                        deployment=deployment)
 
 
-def fidalgo_admin_deployment_list(client,
-                                  resource_group_name,
-                                  project_name,
-                                  environment_name,
-                                  top=None):
+def fidalgo_deployment_list(client,
+                            resource_group_name,
+                            project_name,
+                            environment_name,
+                            top=None):
     return client.list_by_environment(resource_group_name=resource_group_name,
                                       project_name=project_name,
                                       environment_name=environment_name,
                                       top=top)
 
 
-def fidalgo_admin_environment_type_list(client,
-                                        resource_group_name,
-                                        project_name=None,
-                                        top=None,
-                                        dev_center_name=None):
+def fidalgo_environment_type_list(client,
+                                  resource_group_name,
+                                  project_name=None,
+                                  top=None,
+                                  dev_center_name=None):
     if resource_group_name and project_name is not None:
         return client.list_by_project(resource_group_name=resource_group_name,
                                       project_name=project_name,
@@ -302,21 +302,21 @@ def fidalgo_admin_environment_type_list(client,
                                      top=top)
 
 
-def fidalgo_admin_environment_type_show(client,
-                                        resource_group_name,
-                                        dev_center_name,
-                                        environment_type_name):
+def fidalgo_environment_type_show(client,
+                                  resource_group_name,
+                                  dev_center_name,
+                                  environment_type_name):
     return client.get(resource_group_name=resource_group_name,
                       dev_center_name=dev_center_name,
                       environment_type_name=environment_type_name)
 
 
-def fidalgo_admin_environment_type_create(client,
-                                          resource_group_name,
-                                          dev_center_name,
-                                          environment_type_name,
-                                          tags=None,
-                                          description=None):
+def fidalgo_environment_type_create(client,
+                                    resource_group_name,
+                                    dev_center_name,
+                                    environment_type_name,
+                                    tags=None,
+                                    description=None):
     body = {}
     if tags is not None:
         body['tags'] = tags
@@ -328,12 +328,12 @@ def fidalgo_admin_environment_type_create(client,
                                    body=body)
 
 
-def fidalgo_admin_environment_type_update(client,
-                                          resource_group_name,
-                                          dev_center_name,
-                                          environment_type_name,
-                                          tags=None,
-                                          description=None):
+def fidalgo_environment_type_update(client,
+                                    resource_group_name,
+                                    dev_center_name,
+                                    environment_type_name,
+                                    tags=None,
+                                    description=None):
     body = {}
     if tags is not None:
         body['tags'] = tags
@@ -345,11 +345,11 @@ def fidalgo_admin_environment_type_update(client,
                          body=body)
 
 
-def fidalgo_admin_environment_type_delete(client,
-                                          resource_group_name,
-                                          dev_center_name,
-                                          environment_type_name,
-                                          no_wait=False):
+def fidalgo_environment_type_delete(client,
+                                    resource_group_name,
+                                    dev_center_name,
+                                    environment_type_name,
+                                    no_wait=False):
     return sdk_no_wait(no_wait,
                        client.begin_delete,
                        resource_group_name=resource_group_name,
@@ -357,12 +357,12 @@ def fidalgo_admin_environment_type_delete(client,
                        environment_type_name=environment_type_name)
 
 
-def fidalgo_admin_catalog_item_list(client,
-                                    resource_group_name,
-                                    dev_center_name=None,
-                                    catalog_name=None,
-                                    top=None,
-                                    project_name=None):
+def fidalgo_catalog_item_list(client,
+                              resource_group_name,
+                              dev_center_name=None,
+                              catalog_name=None,
+                              top=None,
+                              project_name=None):
     if resource_group_name and dev_center_name is not None and catalog_name is not None:
         return client.list_by_catalog(resource_group_name=resource_group_name,
                                       dev_center_name=dev_center_name,
@@ -373,25 +373,25 @@ def fidalgo_admin_catalog_item_list(client,
                                   top=top)
 
 
-def fidalgo_admin_catalog_item_show(client,
-                                    resource_group_name,
-                                    dev_center_name,
-                                    catalog_name,
-                                    catalog_item_name):
+def fidalgo_catalog_item_show(client,
+                              resource_group_name,
+                              dev_center_name,
+                              catalog_name,
+                              catalog_item_name):
     return client.get(resource_group_name=resource_group_name,
                       dev_center_name=dev_center_name,
                       catalog_name=catalog_name,
                       catalog_item_name=catalog_item_name)
 
 
-def fidalgo_admin_catalog_item_create(client,
-                                      resource_group_name,
-                                      dev_center_name,
-                                      catalog_name,
-                                      catalog_item_name,
-                                      description=None,
-                                      template_path=None,
-                                      parameters=None):
+def fidalgo_catalog_item_create(client,
+                                resource_group_name,
+                                dev_center_name,
+                                catalog_name,
+                                catalog_item_name,
+                                description=None,
+                                template_path=None,
+                                parameters=None):
     body = {}
     if description is not None:
         body['description'] = description
@@ -410,13 +410,13 @@ def fidalgo_admin_catalog_item_create(client,
                                    body=body)
 
 
-def fidalgo_admin_catalog_item_update(client,
-                                      resource_group_name,
-                                      dev_center_name,
-                                      catalog_name,
-                                      catalog_item_name,
-                                      tags=None,
-                                      description=None):
+def fidalgo_catalog_item_update(client,
+                                resource_group_name,
+                                dev_center_name,
+                                catalog_name,
+                                catalog_item_name,
+                                tags=None,
+                                description=None):
     body = {}
     if tags is not None:
         body['tags'] = tags
@@ -429,42 +429,42 @@ def fidalgo_admin_catalog_item_update(client,
                          body=body)
 
 
-def fidalgo_admin_catalog_item_delete(client,
-                                      resource_group_name,
-                                      dev_center_name,
-                                      catalog_name,
-                                      catalog_item_name):
+def fidalgo_catalog_item_delete(client,
+                                resource_group_name,
+                                dev_center_name,
+                                catalog_name,
+                                catalog_item_name):
     return client.delete(resource_group_name=resource_group_name,
                          dev_center_name=dev_center_name,
                          catalog_name=catalog_name,
                          catalog_item_name=catalog_item_name)
 
 
-def fidalgo_admin_catalog_list(client,
-                               resource_group_name,
-                               dev_center_name,
-                               top=None):
+def fidalgo_catalog_list(client,
+                         resource_group_name,
+                         dev_center_name,
+                         top=None):
     return client.list_by_dev_center(resource_group_name=resource_group_name,
                                      dev_center_name=dev_center_name,
                                      top=top)
 
 
-def fidalgo_admin_catalog_show(client,
-                               resource_group_name,
-                               dev_center_name,
-                               catalog_name):
+def fidalgo_catalog_show(client,
+                         resource_group_name,
+                         dev_center_name,
+                         catalog_name):
     return client.get(resource_group_name=resource_group_name,
                       dev_center_name=dev_center_name,
                       catalog_name=catalog_name)
 
 
-def fidalgo_admin_catalog_create(client,
-                                 resource_group_name,
-                                 dev_center_name,
-                                 catalog_name,
-                                 git_hub=None,
-                                 ado_git=None,
-                                 no_wait=False):
+def fidalgo_catalog_create(client,
+                           resource_group_name,
+                           dev_center_name,
+                           catalog_name,
+                           git_hub=None,
+                           ado_git=None,
+                           no_wait=False):
     body = {}
     if git_hub is not None:
         body['git_hub'] = git_hub
@@ -478,14 +478,14 @@ def fidalgo_admin_catalog_create(client,
                        body=body)
 
 
-def fidalgo_admin_catalog_update(client,
-                                 resource_group_name,
-                                 dev_center_name,
-                                 catalog_name,
-                                 tags=None,
-                                 git_hub=None,
-                                 ado_git=None,
-                                 no_wait=False):
+def fidalgo_catalog_update(client,
+                           resource_group_name,
+                           dev_center_name,
+                           catalog_name,
+                           tags=None,
+                           git_hub=None,
+                           ado_git=None,
+                           no_wait=False):
     body = {}
     if tags is not None:
         body['tags'] = tags
@@ -501,11 +501,11 @@ def fidalgo_admin_catalog_update(client,
                        body=body)
 
 
-def fidalgo_admin_catalog_delete(client,
-                                 resource_group_name,
-                                 dev_center_name,
-                                 catalog_name,
-                                 no_wait=False):
+def fidalgo_catalog_delete(client,
+                           resource_group_name,
+                           dev_center_name,
+                           catalog_name,
+                           no_wait=False):
     return sdk_no_wait(no_wait,
                        client.begin_delete,
                        resource_group_name=resource_group_name,
@@ -513,11 +513,11 @@ def fidalgo_admin_catalog_delete(client,
                        catalog_name=catalog_name)
 
 
-def fidalgo_admin_catalog_sync(client,
-                               resource_group_name,
-                               dev_center_name,
-                               catalog_name,
-                               no_wait=False):
+def fidalgo_catalog_sync(client,
+                         resource_group_name,
+                         dev_center_name,
+                         catalog_name,
+                         no_wait=False):
     return sdk_no_wait(no_wait,
                        client.begin_sync,
                        resource_group_name=resource_group_name,
@@ -525,31 +525,31 @@ def fidalgo_admin_catalog_sync(client,
                        catalog_name=catalog_name)
 
 
-def fidalgo_admin_mapping_list(client,
-                               resource_group_name,
-                               dev_center_name,
-                               top=None):
+def fidalgo_mapping_list(client,
+                         resource_group_name,
+                         dev_center_name,
+                         top=None):
     return client.list_by_dev_center(resource_group_name=resource_group_name,
                                      dev_center_name=dev_center_name,
                                      top=top)
 
 
-def fidalgo_admin_mapping_show(client,
-                               resource_group_name,
-                               dev_center_name,
-                               mapping_name):
+def fidalgo_mapping_show(client,
+                         resource_group_name,
+                         dev_center_name,
+                         mapping_name):
     return client.get(resource_group_name=resource_group_name,
                       dev_center_name=dev_center_name,
                       mapping_name=mapping_name)
 
 
-def fidalgo_admin_mapping_create(client,
-                                 resource_group_name,
-                                 dev_center_name,
-                                 mapping_name,
-                                 mapped_subscription_id=None,
-                                 environment_type=None,
-                                 project_id=None):
+def fidalgo_mapping_create(client,
+                           resource_group_name,
+                           dev_center_name,
+                           mapping_name,
+                           mapped_subscription_id=None,
+                           environment_type=None,
+                           project_id=None):
     body = {}
     if mapped_subscription_id is not None:
         body['mapped_subscription_id'] = mapped_subscription_id
@@ -563,11 +563,11 @@ def fidalgo_admin_mapping_create(client,
                                    body=body)
 
 
-def fidalgo_admin_mapping_update(client,
-                                 resource_group_name,
-                                 dev_center_name,
-                                 mapping_name,
-                                 mapped_subscription_id=None):
+def fidalgo_mapping_update(client,
+                           resource_group_name,
+                           dev_center_name,
+                           mapping_name,
+                           mapped_subscription_id=None):
     body = {}
     if mapped_subscription_id is not None:
         body['mapped_subscription_id'] = mapped_subscription_id
@@ -577,55 +577,55 @@ def fidalgo_admin_mapping_update(client,
                          body=body)
 
 
-def fidalgo_admin_mapping_delete(client,
-                                 resource_group_name,
-                                 dev_center_name,
-                                 mapping_name):
+def fidalgo_mapping_delete(client,
+                           resource_group_name,
+                           dev_center_name,
+                           mapping_name):
     return client.delete(resource_group_name=resource_group_name,
                          dev_center_name=dev_center_name,
                          mapping_name=mapping_name)
 
 
-def fidalgo_admin_operation_statuses_show(client,
-                                          location,
-                                          operation_id):
+def fidalgo_operation_statuses_show(client,
+                                    location,
+                                    operation_id):
     return client.get(location=location,
                       operation_id=operation_id)
 
 
-def fidalgo_admin_sku_list(client,
-                           top=None):
+def fidalgo_sku_list(client,
+                     top=None):
     return client.list_by_subscription(top=top)
 
 
-def fidalgo_admin_pool_list(client,
-                            resource_group_name,
-                            project_name,
-                            top=None):
+def fidalgo_pool_list(client,
+                      resource_group_name,
+                      project_name,
+                      top=None):
     return client.list_by_project(resource_group_name=resource_group_name,
                                   project_name=project_name,
                                   top=top)
 
 
-def fidalgo_admin_pool_show(client,
-                            resource_group_name,
-                            project_name,
-                            pool_name):
+def fidalgo_pool_show(client,
+                      resource_group_name,
+                      project_name,
+                      pool_name):
     return client.get(resource_group_name=resource_group_name,
                       project_name=project_name,
                       pool_name=pool_name)
 
 
-def fidalgo_admin_pool_create(client,
-                              resource_group_name,
-                              project_name,
-                              pool_name,
-                              location,
-                              tags=None,
-                              sku=None,
-                              machine_definition_id=None,
-                              network_settings_id=None,
-                              no_wait=False):
+def fidalgo_pool_create(client,
+                        resource_group_name,
+                        project_name,
+                        pool_name,
+                        location,
+                        tags=None,
+                        sku=None,
+                        machine_definition_id=None,
+                        network_settings_id=None,
+                        no_wait=False):
     body = {}
     if tags is not None:
         body['tags'] = tags
@@ -644,16 +644,16 @@ def fidalgo_admin_pool_create(client,
                        body=body)
 
 
-def fidalgo_admin_pool_update(client,
-                              resource_group_name,
-                              project_name,
-                              pool_name,
-                              tags=None,
-                              location=None,
-                              sku=None,
-                              machine_definition_id=None,
-                              network_settings_id=None,
-                              no_wait=False):
+def fidalgo_pool_update(client,
+                        resource_group_name,
+                        project_name,
+                        pool_name,
+                        tags=None,
+                        location=None,
+                        sku=None,
+                        machine_definition_id=None,
+                        network_settings_id=None,
+                        no_wait=False):
     body = {}
     if tags is not None:
         body['tags'] = tags
@@ -673,11 +673,11 @@ def fidalgo_admin_pool_update(client,
                        body=body)
 
 
-def fidalgo_admin_pool_delete(client,
-                              resource_group_name,
-                              project_name,
-                              pool_name,
-                              no_wait=False):
+def fidalgo_pool_delete(client,
+                        resource_group_name,
+                        project_name,
+                        pool_name,
+                        no_wait=False):
     return sdk_no_wait(no_wait,
                        client.begin_delete,
                        resource_group_name=resource_group_name,
@@ -685,29 +685,29 @@ def fidalgo_admin_pool_delete(client,
                        pool_name=pool_name)
 
 
-def fidalgo_admin_machine_definition_list(client,
-                                          resource_group_name=None,
-                                          top=None):
+def fidalgo_machine_definition_list(client,
+                                    resource_group_name=None,
+                                    top=None):
     if resource_group_name:
         return client.list_by_resource_group(resource_group_name=resource_group_name,
                                              top=top)
     return client.list_by_subscription(top=top)
 
 
-def fidalgo_admin_machine_definition_show(client,
-                                          resource_group_name,
-                                          machine_definition_name):
+def fidalgo_machine_definition_show(client,
+                                    resource_group_name,
+                                    machine_definition_name):
     return client.get(resource_group_name=resource_group_name,
                       machine_definition_name=machine_definition_name)
 
 
-def fidalgo_admin_machine_definition_create(client,
-                                            resource_group_name,
-                                            machine_definition_name,
-                                            location,
-                                            tags=None,
-                                            image_reference=None,
-                                            no_wait=False):
+def fidalgo_machine_definition_create(client,
+                                      resource_group_name,
+                                      machine_definition_name,
+                                      location,
+                                      tags=None,
+                                      image_reference=None,
+                                      no_wait=False):
     body = {}
     if tags is not None:
         body['tags'] = tags
@@ -721,13 +721,13 @@ def fidalgo_admin_machine_definition_create(client,
                        body=body)
 
 
-def fidalgo_admin_machine_definition_update(client,
-                                            resource_group_name,
-                                            machine_definition_name,
-                                            tags=None,
-                                            location=None,
-                                            image_reference=None,
-                                            no_wait=False):
+def fidalgo_machine_definition_update(client,
+                                      resource_group_name,
+                                      machine_definition_name,
+                                      tags=None,
+                                      location=None,
+                                      image_reference=None,
+                                      no_wait=False):
     body = {}
     if tags is not None:
         body['tags'] = tags
@@ -742,44 +742,44 @@ def fidalgo_admin_machine_definition_update(client,
                        body=body)
 
 
-def fidalgo_admin_machine_definition_delete(client,
-                                            resource_group_name,
-                                            machine_definition_name,
-                                            no_wait=False):
+def fidalgo_machine_definition_delete(client,
+                                      resource_group_name,
+                                      machine_definition_name,
+                                      no_wait=False):
     return sdk_no_wait(no_wait,
                        client.begin_delete,
                        resource_group_name=resource_group_name,
                        machine_definition_name=machine_definition_name)
 
 
-def fidalgo_admin_network_setting_list(client,
-                                       resource_group_name=None,
-                                       top=None):
+def fidalgo_network_setting_list(client,
+                                 resource_group_name=None,
+                                 top=None):
     if resource_group_name:
         return client.list_by_resource_group(resource_group_name=resource_group_name,
                                              top=top)
     return client.list_by_subscription(top=top)
 
 
-def fidalgo_admin_network_setting_show(client,
-                                       resource_group_name,
-                                       network_setting_name):
+def fidalgo_network_setting_show(client,
+                                 resource_group_name,
+                                 network_setting_name):
     return client.get(resource_group_name=resource_group_name,
                       network_setting_name=network_setting_name)
 
 
-def fidalgo_admin_network_setting_create(client,
-                                         resource_group_name,
-                                         network_setting_name,
-                                         location,
-                                         tags=None,
-                                         subnet_id=None,
-                                         networking_resource_group_id=None,
-                                         domain_name=None,
-                                         organization_unit=None,
-                                         domain_username=None,
-                                         domain_password=None,
-                                         no_wait=False):
+def fidalgo_network_setting_create(client,
+                                   resource_group_name,
+                                   network_setting_name,
+                                   location,
+                                   tags=None,
+                                   subnet_id=None,
+                                   networking_resource_group_id=None,
+                                   domain_name=None,
+                                   organization_unit=None,
+                                   domain_username=None,
+                                   domain_password=None,
+                                   no_wait=False):
     body = {}
     if tags is not None:
         body['tags'] = tags
@@ -803,18 +803,18 @@ def fidalgo_admin_network_setting_create(client,
                        body=body)
 
 
-def fidalgo_admin_network_setting_update(client,
-                                         resource_group_name,
-                                         network_setting_name,
-                                         tags=None,
-                                         location=None,
-                                         subnet_id=None,
-                                         networking_resource_group_id=None,
-                                         domain_name=None,
-                                         organization_unit=None,
-                                         domain_username=None,
-                                         domain_password=None,
-                                         no_wait=False):
+def fidalgo_network_setting_update(client,
+                                   resource_group_name,
+                                   network_setting_name,
+                                   tags=None,
+                                   location=None,
+                                   subnet_id=None,
+                                   networking_resource_group_id=None,
+                                   domain_name=None,
+                                   organization_unit=None,
+                                   domain_username=None,
+                                   domain_password=None,
+                                   no_wait=False):
     body = {}
     if tags is not None:
         body['tags'] = tags
@@ -839,18 +839,18 @@ def fidalgo_admin_network_setting_update(client,
                        body=body)
 
 
-def fidalgo_admin_network_setting_delete(client,
-                                         resource_group_name,
-                                         network_setting_name,
-                                         no_wait=False):
+def fidalgo_network_setting_delete(client,
+                                   resource_group_name,
+                                   network_setting_name,
+                                   no_wait=False):
     return sdk_no_wait(no_wait,
                        client.begin_delete,
                        resource_group_name=resource_group_name,
                        network_setting_name=network_setting_name)
 
 
-def fidalgo_admin_network_setting_show_health_detail(client,
-                                                     resource_group_name,
-                                                     network_setting_name):
+def fidalgo_network_setting_show_health_detail(client,
+                                               resource_group_name,
+                                               network_setting_name):
     return client.get_health_details(resource_group_name=resource_group_name,
                                      network_setting_name=network_setting_name)
