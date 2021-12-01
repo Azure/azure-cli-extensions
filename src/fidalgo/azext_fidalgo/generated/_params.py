@@ -7,14 +7,8 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
-# pylint: disable=wildcard-import
-# pylint: disable=unused-wildcard-import
+# pylint: disable=too-many-lines
+# pylint: disable=too-many-statements
 
-from .generated.custom import *  # noqa: F403
-try:
-    from .manual.custom import *  # noqa: F403
-except ImportError as e:
-    if e.name.endswith('manual.custom'):
-        pass
-    else:
-        raise e
+def load_arguments(self, _):
+    pass

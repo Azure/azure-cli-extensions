@@ -18,11 +18,11 @@ import argparse
 from collections import defaultdict
 from knack.util import CLIError
 
+
 class AddParameters(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
         super(AddParameters, self).__call__(parser, namespace, action, option_string)
-        
 
     def get_action(self, values, option_string):
         try:
@@ -36,24 +36,23 @@ class AddParameters(argparse._AppendAction):
         for k in properties:
             kl = k.lower()
             v = properties[k]
-            
-            
+
             if kl == 'name':
                 d['name'] = v[0]
-            
+
             elif kl == 'type':
                 d['type'] = v[0]
-            
+
             elif kl == 'description':
                 d['description'] = v[0]
-            
-            else:
-                raise CLIError('Unsupported Key {} is provided for parameter parameters. All possible keys are: name, type, description'.
-                format(k))
-            
-        
-        return d
 
+            else:
+                raise CLIError(
+                    'Unsupported Key {} is provided for parameter parameters. All possible keys are: name, type,'
+                    ' description'.format(k)
+                )
+
+        return d
 
 
 class AddGitHub(argparse.Action):
@@ -73,27 +72,26 @@ class AddGitHub(argparse.Action):
         for k in properties:
             kl = k.lower()
             v = properties[k]
-            
-            
+
             if kl == 'uri':
                 d['uri'] = v[0]
-            
+
             elif kl == 'branch':
                 d['branch'] = v[0]
-            
+
             elif kl == 'secret-identifier':
                 d['secret_identifier'] = v[0]
-            
+
             elif kl == 'path':
                 d['path'] = v[0]
-            
-            else:
-                raise CLIError('Unsupported Key {} is provided for parameter git-hub. All possible keys are: uri, branch, secret-identifier, path'.
-                format(k))
-            
-        
-        return d
 
+            else:
+                raise CLIError(
+                    'Unsupported Key {} is provided for parameter git-hub. All possible keys are: uri, branch,'
+                    ' secret-identifier, path'.format(k)
+                )
+
+        return d
 
 
 class AddSku(argparse.Action):
@@ -113,30 +111,29 @@ class AddSku(argparse.Action):
         for k in properties:
             kl = k.lower()
             v = properties[k]
-            
-            
+
             if kl == 'name':
                 d['name'] = v[0]
-            
+
             elif kl == 'tier':
                 d['tier'] = v[0]
-            
+
             elif kl == 'size':
                 d['size'] = v[0]
-            
+
             elif kl == 'family':
                 d['family'] = v[0]
-            
+
             elif kl == 'capacity':
                 d['capacity'] = v[0]
-            
-            else:
-                raise CLIError('Unsupported Key {} is provided for parameter sku. All possible keys are: name, tier, size, family, capacity'.
-                format(k))
-            
-        
-        return d
 
+            else:
+                raise CLIError(
+                    'Unsupported Key {} is provided for parameter sku. All possible keys are: name, tier, size, family,'
+                    ' capacity'.format(k)
+                )
+
+        return d
 
 
 class AddImageReference(argparse.Action):
@@ -156,25 +153,23 @@ class AddImageReference(argparse.Action):
         for k in properties:
             kl = k.lower()
             v = properties[k]
-            
-            
+
             if kl == 'id':
                 d['id'] = v[0]
-            
+
             elif kl == 'publisher':
                 d['publisher'] = v[0]
-            
+
             elif kl == 'offer':
                 d['offer'] = v[0]
-            
+
             elif kl == 'sku':
                 d['sku'] = v[0]
-            
+
             else:
-                raise CLIError('Unsupported Key {} is provided for parameter image-reference. All possible keys are: id, publisher, offer, sku'.
-                format(k))
-            
-        
+                raise CLIError(
+                    'Unsupported Key {} is provided for parameter image-reference. All possible keys are: id,'
+                    ' publisher, offer, sku'.format(k)
+                )
+
         return d
-
-
