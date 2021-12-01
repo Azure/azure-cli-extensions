@@ -2891,34 +2891,34 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(
             'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
 
-    @AllowLargeResponse()
-    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
-    def test_aks_create_with_default_dualstack_network(self, resource_group, resource_group_location):
-        # reset the count so in replay mode the random names will start with 0
-        self.test_resources_count = 0
-        # kwargs for string formatting
-        aks_name = self.create_random_name('cliakstest', 16)
-        self.kwargs.update({
-            'resource_group': resource_group,
-            'name': aks_name,
-            'location': resource_group_location,
-            'resource_type': 'Microsoft.ContainerService/ManagedClusters',
-            'ssh_key_value': self.generate_ssh_keys()
-        })
+    # @AllowLargeResponse()
+    # @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    # def test_aks_create_with_default_dualstack_network(self, resource_group, resource_group_location):
+    #     # reset the count so in replay mode the random names will start with 0
+    #     self.test_resources_count = 0
+    #     # kwargs for string formatting
+    #     aks_name = self.create_random_name('cliakstest', 16)
+    #     self.kwargs.update({
+    #         'resource_group': resource_group,
+    #         'name': aks_name,
+    #         'location': resource_group_location,
+    #         'resource_type': 'Microsoft.ContainerService/ManagedClusters',
+    #         'ssh_key_value': self.generate_ssh_keys()
+    #     })
 
-        # create
-        create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
-                     '--ip-families IPv4,IPv6 --pod-cidr 10.244.0.0/16 --service-cidr 10.0.0.0/16 ' \
-                     '--pod-cidrs 10.244.0.0/16,2001:abcd::/64 --service-cidrs 10.0.0.0/16,2001:ffff::/108 ' \
-                     '--load-balancer-managed-outbound-ipv6-count 3 --network-plugin kubenet ' \
-                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AKS-EnableDualStack'
-        self.cmd(create_cmd, checks=[
-            self.check('provisioningState', 'Succeeded'),
-        ])
+    #     # create
+    #     create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
+    #                  '--ip-families IPv4,IPv6 --pod-cidr 10.244.0.0/16 --service-cidr 10.0.0.0/16 ' \
+    #                  '--pod-cidrs 10.244.0.0/16,2001:abcd::/64 --service-cidrs 10.0.0.0/16,2001:ffff::/108 ' \
+    #                  '--load-balancer-managed-outbound-ipv6-count 3 --network-plugin kubenet ' \
+    #                  '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AKS-EnableDualStack'
+    #     self.cmd(create_cmd, checks=[
+    #         self.check('provisioningState', 'Succeeded'),
+    #     ])
 
-        # delete
-        self.cmd(
-            'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
+    #     # delete
+    #     self.cmd(
+    #         'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
     
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='centraluseuap')
