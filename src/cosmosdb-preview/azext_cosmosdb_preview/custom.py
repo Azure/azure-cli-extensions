@@ -6,6 +6,7 @@
 from knack.util import CLIError
 from knack.log import get_logger
 from azure.core.exceptions import HttpResponseError
+from azure.cli.core.azclierror import InvalidArgumentValueError
 from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     ClusterResource,
     ClusterResourceProperties,
@@ -13,7 +14,9 @@ from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     DataCenterResourceProperties,
     GraphResource,
     GraphResourceCreateUpdateParameters,
-    ServiceResourceCreateUpdateParameters
+    ServiceResourceCreateUpdateParameters,
+    MongoRoleDefinitionCreateUpdateParameters,
+    MongoUserDefinitionCreateUpdateParameters
 )
 
 logger = get_logger(__name__)
@@ -264,6 +267,152 @@ def cli_cosmosdb_service_update(client,
                                                    instance_size=instance_size)
 
     return client.begin_create(resource_group_name, account_name, service_name, create_update_parameters=params)
+
+def cli_cosmosdb_mongo_role_definition_create(client,
+                                            resource_group_name,
+                                            account_name,
+                                            mongo_role_definition_body):
+    '''Creates an Azure Cosmos DB Mongo Role Definition '''
+    mongo_role_definition_create_resource = MongoRoleDefinitionCreateUpdateParameters(
+        role_name=mongo_role_definition_body['RoleName'],
+        type=mongo_role_definition_body['Type'],
+        database_name=mongo_role_definition_body['DatabaseName'],
+        privileges=mongo_role_definition_body['Privileges'],
+        roles=mongo_role_definition_body['Roles'])
+
+    return client.begin_create_update_mongo_role_definition(mongo_role_definition_body['Id'], resource_group_name, account_name, mongo_role_definition_create_resource)
+
+
+def cli_cosmosdb_mongo_role_definition_update(client,
+                                            resource_group_name,
+                                            account_name,
+                                            mongo_role_definition_body):
+    '''Update an existing Azure Cosmos DB Mongo Role Definition'''
+    logger.debug('reading Mongo role definition')
+    mongo_role_definition = client.get_mongo_role_definition(mongo_role_definition_body['Id'], resource_group_name, account_name)
+
+    if mongo_role_definition_body['RoleName'] != mongo_role_definition.role_name:
+        raise InvalidArgumentValueError(
+                'Cannot update Mongo Role Definition Name.')
+
+    mongo_role_definition_update_resource = MongoRoleDefinitionCreateUpdateParameters(
+        role_name=mongo_role_definition.role_name,
+        type=mongo_role_definition_body['Type'],
+        database_name=mongo_role_definition_body['DatabaseName'],
+        privileges=mongo_role_definition_body['Privileges'],
+        roles=mongo_role_definition_body['Roles'])
+
+    return client.begin_create_update_mongo_role_definition(mongo_role_definition_body['Id'], resource_group_name, account_name, mongo_role_definition_update_resource)
+
+
+def cli_cosmosdb_mongo_role_definition_exists(client,
+                                            resource_group_name,
+                                            account_name,
+                                            mongo_role_definition_id):
+    """Checks if an Azure Cosmos DB Mongo Role Definition exists"""
+    try:
+        client.get_mongo_role_definition(mongo_role_definition_id, resource_group_name, account_name)
+    except Exception as ex:
+        return _handle_exists_exception(ex.response)
+
+    return True
+
+
+def cli_cosmosdb_mongo_role_definition_delete(client,
+                                            resource_group_name,
+                                            account_name,
+                                            mongo_role_definition_id):
+    """Delete an Azure Cosmos DB Mongo Role Definition if exists"""
+    try:
+        client.begin_delete_mongo_role_definition(mongo_role_definition_id, resource_group_name, account_name)
+    except Exception as ex:
+        return _handle_exists_exception(ex.response)
+
+    return True
+
+
+def cli_cosmosdb_mongo_role_definition_list(client,
+                                            resource_group_name,
+                                            account_name):
+    """List All the Mongo Role Definitions on an Azure Cosmos DB Mongo Account"""
+    try:
+        return client.list_mongo_role_definitions(resource_group_name, account_name)
+    except Exception as ex:
+        return _handle_exists_exception(ex.response)
+
+
+def cli_cosmosdb_mongo_user_definition_create(client,
+                                            resource_group_name,
+                                            account_name,
+                                            mongo_user_definition_body):
+    '''Creates an Azure Cosmos DB Mongo User Definition '''
+    mongo_user_definition_create_resource = MongoUserDefinitionCreateUpdateParameters(
+        user_name=mongo_user_definition_body['UserName'],
+        password=mongo_user_definition_body['Password'],
+        database_name=mongo_user_definition_body['DatabaseName'],
+        custom_data=mongo_user_definition_body['CustomData'],
+        mechanisms=mongo_user_definition_body['Mechanisms'],
+        roles=mongo_user_definition_body['Roles'])
+
+    return client.begin_create_update_mongo_user_definition(mongo_user_definition_body['Id'], resource_group_name, account_name, mongo_user_definition_create_resource)
+
+
+def cli_cosmosdb_mongo_user_definition_update(client,
+                                            resource_group_name,
+                                            account_name,
+                                            mongo_user_definition_body):
+    '''Update an existing Azure Cosmos DB Mongo User Definition'''
+    logger.debug('reading Mongo user definition')
+    try:
+        mongo_user_definition = client.get_mongo_user_definition(mongo_user_definition_body['Id'], resource_group_name, account_name)
+        
+        mongo_user_definition_update_resource = MongoUserDefinitionCreateUpdateParameters(
+        user_name=mongo_user_definition.user_name,
+        password=mongo_user_definition_body['Password'],
+        database_name=mongo_user_definition_body['DatabaseName'],
+        custom_data=mongo_user_definition_body['CustomData'],
+        mechanisms=mongo_user_definition_body['Mechanisms'],
+        roles=mongo_user_definition_body['Roles'])
+
+        return client.begin_create_update_mongo_user_definition(mongo_user_definition_body['Id'], resource_group_name, account_name, mongo_user_definition_update_resource)
+    except Exception as ex:
+        return _handle_exists_exception(ex.response)
+    
+
+def cli_cosmosdb_mongo_user_definition_exists(client,
+                                            resource_group_name,
+                                            account_name,
+                                            mongo_user_definition_id):
+    """Checks if an Azure Cosmos DB Mongo User Definition exists"""
+    try:
+        client.get_mongo_user_definition(mongo_user_definition_id, resource_group_name, account_name)
+    except Exception as ex:
+        return _handle_exists_exception(ex.response)
+
+    return True
+
+
+def cli_cosmosdb_mongo_user_definition_delete(client,
+                                            resource_group_name,
+                                            account_name,
+                                            mongo_user_definition_id):
+    """Delete an Azure Cosmos DB Mongo User Definition if exists"""
+    try:
+        client.begin_delete_mongo_user_definition(mongo_user_definition_id, resource_group_name, account_name)
+    except Exception as ex:
+        return _handle_exists_exception(ex.response)
+
+    return True
+
+
+def cli_cosmosdb_mongo_user_definition_list(client,
+                                            resource_group_name,
+                                            account_name):
+    """List All the Mongo User Definitions on an Azure Cosmos DB Mongo Account"""
+    try:
+        return client.list_mongo_user_definitions(resource_group_name, account_name)
+    except Exception as ex:
+        return _handle_exists_exception(ex.response)
 
 
 def _gen_guid():

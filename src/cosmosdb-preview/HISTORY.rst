@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.11.0
+++++++
+* Create and manage Role Definitions and User Definitions for enforcing data plane RBAC on Cosmos DB MongoDB accounts
+
 0.10.0
 ++++++
 * Adding support for Services APIs and Graph Resources.
