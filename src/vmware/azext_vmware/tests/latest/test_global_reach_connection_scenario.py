@@ -22,15 +22,16 @@ class VmwareGlobalReachConnectionScenarioTest(ScenarioTest):
             'privatecloud': 'cloud1',
             'global_reach_connection': 'connection1',
             'peer_express_route_circuit': '/subscriptions/12341234-1234-1234-1234-123412341234/resourceGroups/mygroup/providers/Microsoft.Network/expressRouteCircuits/mypeer',
-            'authorization_key': '01010101-0101-0101-0101-010101010101'
+            'authorization_key': '01010101-0101-0101-0101-010101010101',
+            'express_route_id': '/subscriptions/{subscription-id}/resourceGroups/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2/providers/Microsoft.Network/expressroutecircuits/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2-xconnect'
         })
 
-        self.cmd('az vmware private-cloud create -g {rg} -n {privatecloud} --location {loc} --sku av20 --cluster-size 4 --network-block 192.168.48.0/22 --nsxt-password 5rqdLj4GF3cePUe6( --vcenter-password UpfBXae9ZquZSDXk( --accept-eula')
+        self.cmd('az vmware private-cloud create -g {rg} -n {privatecloud} --location {loc} --sku av20 --cluster-size 4 --network-block 192.168.48.0/22 --nsxt-password 5rqdLj4GF3cePUe6 --vcenter-password UpfBXae9ZquZSDXk --accept-eula')
 
         count = len(self.cmd('az vmware global-reach-connection list -g {rg} -c {privatecloud}').get_output_in_json())
-        self.assertEqual(count, 0, 'count expected to be 0')
+        self.assertEqual(count, 1, 'count expected to be 1')
 
-        rsp = self.cmd('az vmware global-reach-connection create -g {rg} -c {privatecloud} -n {global_reach_connection} --peer-express-route-circuit {peer_express_route_circuit} --authorization-key {authorization_key}').get_output_in_json()
+        rsp = self.cmd('az vmware global-reach-connection create -g {rg} -c {privatecloud} -n {global_reach_connection} --peer-express-route-circuit {peer_express_route_circuit} --authorization-key {authorization_key} --express-route-id {express_route_id}').get_output_in_json()
         self.assertEqual(rsp['type'], 'Microsoft.AVS/privateClouds/globalReachConnections')
         self.assertEqual(rsp['name'], self.kwargs.get('global_reach_connection'))
 
@@ -41,8 +42,8 @@ class VmwareGlobalReachConnectionScenarioTest(ScenarioTest):
         self.assertEqual(rsp['type'], 'Microsoft.AVS/privateClouds/globalReachConnections')
         self.assertEqual(rsp['name'], self.kwargs.get('global_reach_connection'))
 
-        rsp = self.cmd('vmware global-reach-connection delete -g {rg} -c {privatecloud} -n {global_reach_connection}').output
+        rsp = self.cmd('vmware global-reach-connection delete -g {rg} -c {privatecloud} -n {global_reach_connection} --yes').output
         self.assertEqual(len(rsp), 0)
 
         count = len(self.cmd('az vmware global-reach-connection list -g {rg} -c {privatecloud}').get_output_in_json())
-        self.assertEqual(count, 0, 'count expected to be 0')
+        self.assertEqual(count, 1, 'count expected to be 1')

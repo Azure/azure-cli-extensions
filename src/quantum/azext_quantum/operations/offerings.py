@@ -7,7 +7,6 @@
 
 from azure.cli.core.azclierror import InvalidArgumentValueError, RequiredArgumentMissingError
 from .._client_factory import cf_offerings, cf_vm_image_term
-import time
 
 PUBLISHER_NOT_AVAILABLE = "N/A"
 OFFER_NOT_AVAILABLE = "N/A"
@@ -33,7 +32,7 @@ def _get_publisher_and_offer_from_provider_id(providers, provider_id):
     publisher_id = None
     offer_id = None
     for p in providers:
-        if (p.id.lower() == provider_id.lower()):
+        if p.id.lower() == provider_id.lower():
             offer_id = p.properties.managed_application.offer_id
             publisher_id = p.properties.managed_application.publisher_id
             break
@@ -54,7 +53,7 @@ def list_offerings(cmd, location=None):
     """
     Get the list of all provider offerings available on the given location.
     """
-    if (not location):
+    if not location:
         raise RequiredArgumentMissingError("A location is required to list offerings available.")
     client = cf_offerings(cmd.cli_ctx)
     return client.list(location_name=location)

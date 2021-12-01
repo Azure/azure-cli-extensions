@@ -16,6 +16,7 @@ from ._client_factory import (
     cf_effectivevirtualnetwork,
     cf_activeconnectivityconfiguration,
     cf_effectiveconnectivityconfiguration,
+    cf_effectivesecurityadminrule,
     cf_activesecurityadminrule,
     cf_activesecurityuserrule
 )
@@ -40,8 +41,8 @@ def network_manager_show(client,
 def network_manager_create(client,
                            resource_group_name,
                            network_manager_name,
+                           location,
                            id_=None,
-                           location=None,
                            tags=None,
                            display_name=None,
                            description=None,
@@ -98,7 +99,7 @@ def network_manager_commit_post(cmd,
                                 client,
                                 resource_group_name,
                                 network_manager_name,
-                                target_locations=None,
+                                target_locations,
                                 configuration_ids=None,
                                 commit_type=None):
     client = cf_networkmanagercommit(cmd.cli_ctx)
@@ -166,11 +167,11 @@ def network_manager_active_config_list(cmd,
                                        resource_group_name,
                                        network_manager_name,
                                        skip_token=None,
-                                       region=None):
+                                       regions=None):
     client = cf_activeconnectivityconfiguration(cmd.cli_ctx)
     parameters = {}
     parameters['skip_token'] = skip_token
-    parameters['region'] = region
+    parameters['regions'] = regions
     return client.list(resource_group_name=resource_group_name,
                        network_manager_name=network_manager_name,
                        parameters=parameters)
@@ -182,6 +183,19 @@ def network_manager_effective_config_list(cmd,
                                           virtual_network_name,
                                           skip_token=None):
     client = cf_effectiveconnectivityconfiguration(cmd.cli_ctx)
+    parameters = {}
+    parameters['skip_token'] = skip_token
+    return client.list(resource_group_name=resource_group_name,
+                       virtual_network_name=virtual_network_name,
+                       parameters=parameters)
+
+
+def network_manager_effective_security_admin_rule_list(cmd,
+                                                       client,
+                                                       resource_group_name,
+                                                       virtual_network_name,
+                                                       skip_token=None):
+    client = cf_effectivesecurityadminrule(cmd.cli_ctx)
     parameters = {}
     parameters['skip_token'] = skip_token
     return client.list(resource_group_name=resource_group_name,
@@ -256,12 +270,12 @@ def network_manager_connect_config_create(client,
                                           resource_group_name,
                                           network_manager_name,
                                           configuration_name,
+                                          applies_to_groups,
                                           display_name=None,
                                           description=None,
                                           connectivity_topology=None,
                                           hubs=None,
                                           is_global=None,
-                                          applies_to_groups=None,
                                           delete_existing_peering=None):
     connectivity_configuration = {}
     connectivity_configuration['display_name'] = display_name
@@ -415,12 +429,10 @@ def network_manager_security_user_config_create(client,
                                                 configuration_name,
                                                 display_name=None,
                                                 description=None,
-                                                security_type=None,
                                                 delete_existing_ns_gs=None):
     security_configuration = {}
     security_configuration['display_name'] = display_name
     security_configuration['description'] = description
-    security_configuration['security_type'] = security_type
     security_configuration['delete_existing_ns_gs'] = delete_existing_ns_gs
     return client.create_or_update(resource_group_name=resource_group_name,
                                    network_manager_name=network_manager_name,
@@ -482,12 +494,10 @@ def network_manager_security_admin_config_create(client,
                                                  configuration_name,
                                                  display_name=None,
                                                  description=None,
-                                                 security_type=None,
                                                  delete_existing_ns_gs=None):
     security_configuration = {}
     security_configuration['display_name'] = display_name
     security_configuration['description'] = description
-    security_configuration['security_type'] = security_type
     security_configuration['delete_existing_ns_gs'] = delete_existing_ns_gs
     return client.create_or_update(resource_group_name=resource_group_name,
                                    network_manager_name=network_manager_name,
@@ -501,14 +511,11 @@ def network_manager_security_admin_config_update(instance,
                                                  configuration_name,
                                                  display_name=None,
                                                  description=None,
-                                                 security_type=None,
                                                  delete_existing_ns_gs=None):
     if display_name is not None:
         instance.display_name = display_name
     if description is not None:
         instance.description = description
-    if security_type is not None:
-        instance.security_type = security_type
     if delete_existing_ns_gs is not None:
         instance.delete_existing_ns_gs = delete_existing_ns_gs
     return instance
@@ -541,9 +548,9 @@ def network_manager_admin_rule_collection_create(client,
                                                  network_manager_name,
                                                  configuration_name,
                                                  rule_collection_name,
+                                                 applies_to_groups,
                                                  display_name=None,
-                                                 description=None,
-                                                 applies_to_groups=None):
+                                                 description=None):
     rule_collection = {}
     rule_collection['display_name'] = display_name
     rule_collection['description'] = description
@@ -737,9 +744,9 @@ def network_manager_user_rule_collection_create(client,
                                                 network_manager_name,
                                                 configuration_name,
                                                 rule_collection_name,
+                                                applies_to_groups,
                                                 display_name=None,
-                                                description=None,
-                                                applies_to_groups=None):
+                                                description=None):
     rule_collection = {}
     rule_collection['display_name'] = display_name
     rule_collection['description'] = description

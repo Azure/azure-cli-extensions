@@ -9,14 +9,17 @@
 ### <a name="CommandGroups">Command groups in `az kusto` extension </a>
 |CLI Command Group|Group Swagger name|Commands|
 |---------|------------|--------|
+|az kusto attached-database-configuration|AttachedDatabaseConfigurations|[commands](#CommandsInAttachedDatabaseConfigurations)|
 |az kusto cluster|Clusters|[commands](#CommandsInClusters)|
 |az kusto cluster-principal-assignment|ClusterPrincipalAssignments|[commands](#CommandsInClusterPrincipalAssignments)|
+|az kusto data-connection|DataConnections|[commands](#CommandsInDataConnections)|
 |az kusto database|Databases|[commands](#CommandsInDatabases)|
 |az kusto database-principal-assignment|DatabasePrincipalAssignments|[commands](#CommandsInDatabasePrincipalAssignments)|
-|az kusto script|Scripts|[commands](#CommandsInScripts)|
-|az kusto attached-database-configuration|AttachedDatabaseConfigurations|[commands](#CommandsInAttachedDatabaseConfigurations)|
-|az kusto data-connection|DataConnections|[commands](#CommandsInDataConnections)|
+|az kusto managed-private-endpoint|ManagedPrivateEndpoints|[commands](#CommandsInManagedPrivateEndpoints)|
 |az kusto operation-result|OperationsResults|[commands](#CommandsInOperationsResults)|
+|az kusto private-endpoint-connection|PrivateEndpointConnections|[commands](#CommandsInPrivateEndpointConnections)|
+|az kusto private-link-resource|PrivateLinkResources|[commands](#CommandsInPrivateLinkResources)|
+|az kusto script|Scripts|[commands](#CommandsInScripts)|
 
 ## COMMANDS
 ### <a name="CommandsInAttachedDatabaseConfigurations">Commands in `az kusto attached-database-configuration` group</a>
@@ -42,6 +45,7 @@
 |[az kusto cluster diagnose-virtual-network](#ClustersDiagnoseVirtualNetwork)|DiagnoseVirtualNetwork|[Parameters](#ParametersClustersDiagnoseVirtualNetwork)|[Example](#ExamplesClustersDiagnoseVirtualNetwork)|
 |[az kusto cluster list-follower-database](#ClustersListFollowerDatabases)|ListFollowerDatabases|[Parameters](#ParametersClustersListFollowerDatabases)|[Example](#ExamplesClustersListFollowerDatabases)|
 |[az kusto cluster list-language-extension](#ClustersListLanguageExtensions)|ListLanguageExtensions|[Parameters](#ParametersClustersListLanguageExtensions)|[Example](#ExamplesClustersListLanguageExtensions)|
+|[az kusto cluster list-outbound-network-dependency-endpoint](#ClustersListOutboundNetworkDependenciesEndpoints)|ListOutboundNetworkDependenciesEndpoints|[Parameters](#ParametersClustersListOutboundNetworkDependenciesEndpoints)|[Example](#ExamplesClustersListOutboundNetworkDependenciesEndpoints)|
 |[az kusto cluster list-sku](#ClustersListSkusByResource)|ListSkusByResource|[Parameters](#ParametersClustersListSkusByResource)|[Example](#ExamplesClustersListSkusByResource)|
 |[az kusto cluster list-sku](#ClustersListSkus)|ListSkus|[Parameters](#ParametersClustersListSkus)|[Example](#ExamplesClustersListSkus)|
 |[az kusto cluster remove-language-extension](#ClustersRemoveLanguageExtensions)|RemoveLanguageExtensions|[Parameters](#ParametersClustersRemoveLanguageExtensions)|[Example](#ExamplesClustersRemoveLanguageExtensions)|
@@ -94,10 +98,34 @@
 |[az kusto database-principal-assignment update](#DatabasePrincipalAssignmentsCreateOrUpdate#Update)|CreateOrUpdate#Update|[Parameters](#ParametersDatabasePrincipalAssignmentsCreateOrUpdate#Update)|Not Found|
 |[az kusto database-principal-assignment delete](#DatabasePrincipalAssignmentsDelete)|Delete|[Parameters](#ParametersDatabasePrincipalAssignmentsDelete)|[Example](#ExamplesDatabasePrincipalAssignmentsDelete)|
 
+### <a name="CommandsInManagedPrivateEndpoints">Commands in `az kusto managed-private-endpoint` group</a>
+|CLI Command|Operation Swagger name|Parameters|Examples|
+|---------|------------|--------|-----------|
+|[az kusto managed-private-endpoint list](#ManagedPrivateEndpointsList)|List|[Parameters](#ParametersManagedPrivateEndpointsList)|[Example](#ExamplesManagedPrivateEndpointsList)|
+|[az kusto managed-private-endpoint show](#ManagedPrivateEndpointsGet)|Get|[Parameters](#ParametersManagedPrivateEndpointsGet)|[Example](#ExamplesManagedPrivateEndpointsGet)|
+|[az kusto managed-private-endpoint create](#ManagedPrivateEndpointsCreateOrUpdate#Create)|CreateOrUpdate#Create|[Parameters](#ParametersManagedPrivateEndpointsCreateOrUpdate#Create)|[Example](#ExamplesManagedPrivateEndpointsCreateOrUpdate#Create)|
+|[az kusto managed-private-endpoint update](#ManagedPrivateEndpointsUpdate)|Update|[Parameters](#ParametersManagedPrivateEndpointsUpdate)|[Example](#ExamplesManagedPrivateEndpointsUpdate)|
+|[az kusto managed-private-endpoint delete](#ManagedPrivateEndpointsDelete)|Delete|[Parameters](#ParametersManagedPrivateEndpointsDelete)|[Example](#ExamplesManagedPrivateEndpointsDelete)|
+
 ### <a name="CommandsInOperationsResults">Commands in `az kusto operation-result` group</a>
 |CLI Command|Operation Swagger name|Parameters|Examples|
 |---------|------------|--------|-----------|
 |[az kusto operation-result show](#OperationsResultsGet)|Get|[Parameters](#ParametersOperationsResultsGet)|[Example](#ExamplesOperationsResultsGet)|
+
+### <a name="CommandsInPrivateEndpointConnections">Commands in `az kusto private-endpoint-connection` group</a>
+|CLI Command|Operation Swagger name|Parameters|Examples|
+|---------|------------|--------|-----------|
+|[az kusto private-endpoint-connection list](#PrivateEndpointConnectionsList)|List|[Parameters](#ParametersPrivateEndpointConnectionsList)|[Example](#ExamplesPrivateEndpointConnectionsList)|
+|[az kusto private-endpoint-connection show](#PrivateEndpointConnectionsGet)|Get|[Parameters](#ParametersPrivateEndpointConnectionsGet)|[Example](#ExamplesPrivateEndpointConnectionsGet)|
+|[az kusto private-endpoint-connection create](#PrivateEndpointConnectionsCreateOrUpdate#Create)|CreateOrUpdate#Create|[Parameters](#ParametersPrivateEndpointConnectionsCreateOrUpdate#Create)|[Example](#ExamplesPrivateEndpointConnectionsCreateOrUpdate#Create)|
+|[az kusto private-endpoint-connection update](#PrivateEndpointConnectionsCreateOrUpdate#Update)|CreateOrUpdate#Update|[Parameters](#ParametersPrivateEndpointConnectionsCreateOrUpdate#Update)|Not Found|
+|[az kusto private-endpoint-connection delete](#PrivateEndpointConnectionsDelete)|Delete|[Parameters](#ParametersPrivateEndpointConnectionsDelete)|[Example](#ExamplesPrivateEndpointConnectionsDelete)|
+
+### <a name="CommandsInPrivateLinkResources">Commands in `az kusto private-link-resource` group</a>
+|CLI Command|Operation Swagger name|Parameters|Examples|
+|---------|------------|--------|-----------|
+|[az kusto private-link-resource list](#PrivateLinkResourcesList)|List|[Parameters](#ParametersPrivateLinkResourcesList)|[Example](#ExamplesPrivateLinkResourcesList)|
+|[az kusto private-link-resource show](#PrivateLinkResourcesGet)|Get|[Parameters](#ParametersPrivateLinkResourcesGet)|[Example](#ExamplesPrivateLinkResourcesGet)|
 
 ### <a name="CommandsInScripts">Commands in `az kusto script` group</a>
 |CLI Command|Operation Swagger name|Parameters|Examples|
@@ -110,7 +138,6 @@
 
 
 ## COMMAND DETAILS
-
 ### group `az kusto attached-database-configuration`
 #### <a name="AttachedDatabaseConfigurationsListByCluster">Command `az kusto attached-database-configuration list`</a>
 
@@ -164,6 +191,7 @@ materialized-views-to-include="MaterializedViewTable1" tables-to-exclude="Table2
 
 #### <a name="AttachedDatabaseConfigurationsCreateOrUpdate#Update">Command `az kusto attached-database-configuration update`</a>
 
+
 ##### <a name="ParametersAttachedDatabaseConfigurationsCreateOrUpdate#Update">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
@@ -211,6 +239,7 @@ az kusto cluster list
 ##### <a name="ParametersClustersList">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
+
 #### <a name="ClustersGet">Command `az kusto cluster show`</a>
 
 ##### <a name="ExamplesClustersGet">Example</a>
@@ -228,18 +257,19 @@ az kusto cluster show --name "kustoclusterrptest4" --resource-group "kustorptest
 ##### <a name="ExamplesClustersCreateOrUpdate#Create">Example</a>
 ```
 az kusto cluster create --name "kustoclusterrptest4" --type "SystemAssigned" --location "westus" \
---enable-double-encryption false --enable-purge true --enable-streaming-ingest true --sku name="Standard_L8s" \
-capacity=2 tier="Standard" --resource-group "kustorptest"
+--allowed-ip-range-list "0.0.0.0/0" --enable-auto-stop true --enable-double-encryption false --enable-purge true \
+--enable-streaming-ingest true --public-network-access "Enabled" --sku name="Standard_L8s" capacity=2 tier="Standard" \
+--resource-group "kustorptest"
 ```
 ##### <a name="ParametersClustersCreateOrUpdate#Create">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
 |**--resource-group-name**|string|The name of the resource group containing the Kusto cluster.|resource_group_name|resourceGroupName|
 |**--cluster-name**|string|The name of the Kusto cluster.|cluster_name|clusterName|
-|**--location**|string|The geo-location where the resource lives|location|location|
-|**--sku**|object|The SKU of the cluster.|sku|sku|
 |**--if-match**|string|The ETag of the cluster. Omit this value to always overwrite the current cluster. Specify the last-seen ETag value to prevent accidentally overwriting concurrent changes.|if_match|IfMatch|
 |**--if-none-match**|string|Set to '*' to allow a new cluster to be created, but to prevent updating an existing cluster. Other values will result in a 412 Pre-condition Failed response.|if_none_match|IfNoneMatch|
+|**--location**|string|The geo-location where the resource lives|location|location|
+|**--sku**|object|The SKU of the cluster.|sku|sku|
 |**--tags**|dictionary|Resource tags.|tags|tags|
 |**--zones**|array|The availability zones of the cluster.|zones|zones|
 |**--trusted-external-tenants**|array|The cluster's external tenants.|trusted_external_tenants|trustedExternalTenants|
@@ -250,7 +280,13 @@ capacity=2 tier="Standard" --resource-group "kustorptest"
 |**--key-vault-properties**|object|KeyVault properties for the cluster encryption.|key_vault_properties|keyVaultProperties|
 |**--enable-purge**|boolean|A boolean value that indicates if the purge operations are enabled.|enable_purge|enablePurge|
 |**--enable-double-encryption**|boolean|A boolean value that indicates if double encryption is enabled.|enable_double_encryption|enableDoubleEncryption|
+|**--public-network-access**|choice|Public network access to the cluster is enabled by default. When disabled, only private endpoint connection to the cluster is allowed|public_network_access|publicNetworkAccess|
+|**--allowed-ip-range-list**|array|The list of ips in the format of CIDR allowed to connect to the cluster.|allowed_ip_range_list|allowedIpRangeList|
 |**--engine-type**|choice|The engine type|engine_type|engineType|
+|**--accepted-audiences**|array|The cluster's accepted audiences.|accepted_audiences|acceptedAudiences|
+|**--enable-auto-stop**|boolean|A boolean value that indicates if the cluster could be automatically stopped (due to lack of data or no activity for many days).|enable_auto_stop|enableAutoStop|
+|**--restrict-outbound-network-access**|choice|Whether or not to restrict outbound network access.  Value is optional but if passed in, must be 'Enabled' or 'Disabled'|restrict_outbound_network_access|restrictOutboundNetworkAccess|
+|**--allowed-fqdn-list**|array|List of allowed FQDNs(Fully Qualified Domain Name) for egress from Cluster.|allowed_fqdn_list|allowedFqdnList|
 |**--type**|choice|The type of managed identity used. The type 'SystemAssigned, UserAssigned' includes both an implicitly created identity and a set of user-assigned identities. The type 'None' will remove all identities.|type|type|
 |**--user-assigned-identities**|dictionary|The list of user identities associated with the Kusto cluster. The user identity dictionary key references will be ARM resource ids in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}'.|user_assigned_identities|userAssignedIdentities|
 
@@ -258,9 +294,10 @@ capacity=2 tier="Standard" --resource-group "kustorptest"
 
 ##### <a name="ExamplesClustersUpdate">Example</a>
 ```
-az kusto cluster update --name "kustoclusterrptest4" --type "SystemAssigned" --location "westus" --enable-purge true \
---enable-streaming-ingest true --engine-type "V2" --key-vault-properties key-name="keyName" \
-key-vault-uri="https://dummy.keyvault.com" key-version="keyVersion" --resource-group "kustorptest"
+az kusto cluster update --name "kustoclusterrptest4" --type "SystemAssigned" --location "westus" --enable-auto-stop \
+true --enable-purge true --enable-streaming-ingest true --engine-type "V3" --key-vault-properties key-name="keyName" \
+key-vault-uri="https://dummy.keyvault.com" key-version="keyVersion" --restrict-outbound-network-access "Disabled" \
+--resource-group "kustorptest"
 ```
 ##### <a name="ParametersClustersUpdate">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -279,7 +316,13 @@ key-vault-uri="https://dummy.keyvault.com" key-version="keyVersion" --resource-g
 |**--key-vault-properties**|object|KeyVault properties for the cluster encryption.|key_vault_properties|keyVaultProperties|
 |**--enable-purge**|boolean|A boolean value that indicates if the purge operations are enabled.|enable_purge|enablePurge|
 |**--enable-double-encryption**|boolean|A boolean value that indicates if double encryption is enabled.|enable_double_encryption|enableDoubleEncryption|
+|**--public-network-access**|choice|Public network access to the cluster is enabled by default. When disabled, only private endpoint connection to the cluster is allowed|public_network_access|publicNetworkAccess|
+|**--allowed-ip-range-list**|array|The list of ips in the format of CIDR allowed to connect to the cluster.|allowed_ip_range_list|allowedIpRangeList|
 |**--engine-type**|choice|The engine type|engine_type|engineType|
+|**--accepted-audiences**|array|The cluster's accepted audiences.|accepted_audiences|acceptedAudiences|
+|**--enable-auto-stop**|boolean|A boolean value that indicates if the cluster could be automatically stopped (due to lack of data or no activity for many days).|enable_auto_stop|enableAutoStop|
+|**--restrict-outbound-network-access**|choice|Whether or not to restrict outbound network access.  Value is optional but if passed in, must be 'Enabled' or 'Disabled'|restrict_outbound_network_access|restrictOutboundNetworkAccess|
+|**--allowed-fqdn-list**|array|List of allowed FQDNs(Fully Qualified Domain Name) for egress from Cluster.|allowed_fqdn_list|allowedFqdnList|
 |**--type**|choice|The type of managed identity used. The type 'SystemAssigned, UserAssigned' includes both an implicitly created identity and a set of user-assigned identities. The type 'None' will remove all identities.|type|type|
 |**--user-assigned-identities**|dictionary|The list of user identities associated with the Kusto cluster. The user identity dictionary key references will be ARM resource ids in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}'.|user_assigned_identities|userAssignedIdentities|
 
@@ -361,6 +404,18 @@ az kusto cluster list-language-extension --name "kustoclusterrptest4" --resource
 |**--resource-group-name**|string|The name of the resource group containing the Kusto cluster.|resource_group_name|resourceGroupName|
 |**--cluster-name**|string|The name of the Kusto cluster.|cluster_name|clusterName|
 
+#### <a name="ClustersListOutboundNetworkDependenciesEndpoints">Command `az kusto cluster list-outbound-network-dependency-endpoint`</a>
+
+##### <a name="ExamplesClustersListOutboundNetworkDependenciesEndpoints">Example</a>
+```
+az kusto cluster list-outbound-network-dependency-endpoint --name "kustoclusterrptest" --resource-group "kustorptest"
+```
+##### <a name="ParametersClustersListOutboundNetworkDependenciesEndpoints">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The name of the resource group containing the Kusto cluster.|resource_group_name|resourceGroupName|
+|**--cluster-name**|string|The name of the Kusto cluster.|cluster_name|clusterName|
+
 #### <a name="ClustersListSkusByResource">Command `az kusto cluster list-sku`</a>
 
 ##### <a name="ExamplesClustersListSkusByResource">Example</a>
@@ -382,6 +437,7 @@ az kusto cluster list-sku
 ##### <a name="ParametersClustersListSkus">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
+
 #### <a name="ClustersRemoveLanguageExtensions">Command `az kusto cluster remove-language-extension`</a>
 
 ##### <a name="ExamplesClustersRemoveLanguageExtensions">Example</a>
@@ -468,6 +524,7 @@ az kusto cluster-principal-assignment create --cluster-name "kustoclusterrptest4
 
 #### <a name="ClusterPrincipalAssignmentsCreateOrUpdate#Update">Command `az kusto cluster-principal-assignment update`</a>
 
+
 ##### <a name="ParametersClusterPrincipalAssignmentsCreateOrUpdate#Update">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
@@ -525,6 +582,7 @@ az kusto data-connection show --cluster-name "kustoclusterrptest4" --name "DataC
 
 #### <a name="DataConnectionsCreateOrUpdate#Create#EventGrid">Command `az kusto data-connection event-grid create`</a>
 
+
 ##### <a name="ParametersDataConnectionsCreateOrUpdate#Create#EventGrid">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
@@ -572,6 +630,7 @@ az kusto data-connection event-hub create --cluster-name "kustoclusterrptest4" -
 
 #### <a name="DataConnectionsCreateOrUpdate#Create#IotHub">Command `az kusto data-connection iot-hub create`</a>
 
+
 ##### <a name="ParametersDataConnectionsCreateOrUpdate#Create#IotHub">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
@@ -589,6 +648,7 @@ az kusto data-connection event-hub create --cluster-name "kustoclusterrptest4" -
 |**--shared-access-policy-name**|string|The name of the share access policy|iot_hub_shared_access_policy_name|sharedAccessPolicyName|
 
 #### <a name="DataConnectionsUpdate#EventGrid">Command `az kusto data-connection event-grid update`</a>
+
 
 ##### <a name="ParametersDataConnectionsUpdate#EventGrid">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -637,6 +697,7 @@ az kusto data-connection event-hub update --cluster-name "kustoclusterrptest4" -
 
 #### <a name="DataConnectionsUpdate#IotHub">Command `az kusto data-connection iot-hub update`</a>
 
+
 ##### <a name="ParametersDataConnectionsUpdate#IotHub">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
@@ -669,6 +730,7 @@ az kusto data-connection delete --cluster-name "kustoclusterrptest4" --name "kus
 |**--data-connection-name**|string|The name of the data connection.|data_connection_name|dataConnectionName|
 
 #### <a name="DataConnectionsdataConnectionValidation#EventGrid">Command `az kusto data-connection event-grid data-connection-validation`</a>
+
 
 ##### <a name="ParametersDataConnectionsdataConnectionValidation#EventGrid">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -717,6 +779,7 @@ az kusto data-connection event-hub data-connection-validation --cluster-name "ku
 
 #### <a name="DataConnectionsdataConnectionValidation#IotHub">Command `az kusto data-connection iot-hub data-connection-validation`</a>
 
+
 ##### <a name="ParametersDataConnectionsdataConnectionValidation#IotHub">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
@@ -764,8 +827,8 @@ az kusto database show --cluster-name "kustoclusterrptest4" --database-name "Kus
 
 ##### <a name="ExamplesDatabasesCreateOrUpdate#Create">Example</a>
 ```
-az kusto database create --cluster-name "kustoclusterrptest4" --database-name "KustoDatabase8" --parameters \
-"{\\"location\\":\\"westus\\",\\"properties\\":{\\"softDeletePeriod\\":\\"P1D\\"}}" --resource-group "kustorptest"
+az kusto database create --cluster-name "kustoclusterrptest4" --database-name "KustoDatabase8" --read-write-database \
+location="westus" soft-delete-period="P1D" --resource-group "kustorptest"
 ```
 ##### <a name="ParametersDatabasesCreateOrUpdate#Create">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -780,8 +843,8 @@ az kusto database create --cluster-name "kustoclusterrptest4" --database-name "K
 
 ##### <a name="ExamplesDatabasesUpdate">Example</a>
 ```
-az kusto database update --cluster-name "kustoclusterrptest4" --database-name "KustoDatabase8" --parameters \
-"{\\"properties\\":{\\"hotCachePeriod\\":\\"P1D\\"}}" --resource-group "kustorptest"
+az kusto database update --cluster-name "kustoclusterrptest4" --database-name "KustoDatabase8" --read-write-database \
+hot-cache-period="P1D" --resource-group "kustorptest"
 ```
 ##### <a name="ParametersDatabasesUpdate">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -908,6 +971,7 @@ az kusto database-principal-assignment create --cluster-name "kustoclusterrptest
 
 #### <a name="DatabasePrincipalAssignmentsCreateOrUpdate#Update">Command `az kusto database-principal-assignment update`</a>
 
+
 ##### <a name="ParametersDatabasePrincipalAssignmentsCreateOrUpdate#Update">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
@@ -935,6 +999,87 @@ az kusto database-principal-assignment delete --cluster-name "kustoclusterrptest
 |**--database-name**|string|The name of the database in the Kusto cluster.|database_name|databaseName|
 |**--principal-assignment-name**|string|The name of the Kusto principalAssignment.|principal_assignment_name|principalAssignmentName|
 
+### group `az kusto managed-private-endpoint`
+#### <a name="ManagedPrivateEndpointsList">Command `az kusto managed-private-endpoint list`</a>
+
+##### <a name="ExamplesManagedPrivateEndpointsList">Example</a>
+```
+az kusto managed-private-endpoint list --cluster-name "kustoclusterrptest4" --resource-group "kustorptest"
+```
+##### <a name="ParametersManagedPrivateEndpointsList">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The name of the resource group containing the Kusto cluster.|resource_group_name|resourceGroupName|
+|**--cluster-name**|string|The name of the Kusto cluster.|cluster_name|clusterName|
+
+#### <a name="ManagedPrivateEndpointsGet">Command `az kusto managed-private-endpoint show`</a>
+
+##### <a name="ExamplesManagedPrivateEndpointsGet">Example</a>
+```
+az kusto managed-private-endpoint show --cluster-name "kustoclusterrptest4" --name "kustoManagedPrivateEndpoint1" \
+--resource-group "kustorptest"
+```
+##### <a name="ParametersManagedPrivateEndpointsGet">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The name of the resource group containing the Kusto cluster.|resource_group_name|resourceGroupName|
+|**--cluster-name**|string|The name of the Kusto cluster.|cluster_name|clusterName|
+|**--managed-private-endpoint-name**|string|The name of the managed private endpoint.|managed_private_endpoint_name|managedPrivateEndpointName|
+
+#### <a name="ManagedPrivateEndpointsCreateOrUpdate#Create">Command `az kusto managed-private-endpoint create`</a>
+
+##### <a name="ExamplesManagedPrivateEndpointsCreateOrUpdate#Create">Example</a>
+```
+az kusto managed-private-endpoint create --cluster-name "kustoclusterrptest4" --name "kustoManagedPrivateEndpoint1" \
+--group-id "blob" --private-link-resource-id "/subscriptions/12345678-1234-1234-1234-123456789098/resourceGroups/kustor\
+ptest/providers/Microsoft.Storage/storageAccounts/storageAccountTest" --request-message "Please Approve." \
+--resource-group "kustorptest"
+```
+##### <a name="ParametersManagedPrivateEndpointsCreateOrUpdate#Create">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The name of the resource group containing the Kusto cluster.|resource_group_name|resourceGroupName|
+|**--cluster-name**|string|The name of the Kusto cluster.|cluster_name|clusterName|
+|**--managed-private-endpoint-name**|string|The name of the managed private endpoint.|managed_private_endpoint_name|managedPrivateEndpointName|
+|**--private-link-resource-id**|string|The ARM resource ID of the resource for which the managed private endpoint is created.|private_link_resource_id|privateLinkResourceId|
+|**--private-link-resource-region**|string|The region of the resource to which the managed private endpoint is created.|private_link_resource_region|privateLinkResourceRegion|
+|**--group-id**|string|The groupId in which the managed private endpoint is created.|group_id|groupId|
+|**--request-message**|string|The user request message.|request_message|requestMessage|
+
+#### <a name="ManagedPrivateEndpointsUpdate">Command `az kusto managed-private-endpoint update`</a>
+
+##### <a name="ExamplesManagedPrivateEndpointsUpdate">Example</a>
+```
+az kusto managed-private-endpoint update --cluster-name "kustoclusterrptest4" --name "kustoManagedPrivateEndpoint1" \
+--group-id "blob" --private-link-resource-id "/subscriptions/12345678-1234-1234-1234-123456789098/resourceGroups/kustor\
+ptest/providers/Microsoft.Storage/storageAccounts/storageAccountTest" --request-message "Please Approve Managed \
+Private Endpoint Request." --resource-group "kustorptest"
+```
+##### <a name="ParametersManagedPrivateEndpointsUpdate">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The name of the resource group containing the Kusto cluster.|resource_group_name|resourceGroupName|
+|**--cluster-name**|string|The name of the Kusto cluster.|cluster_name|clusterName|
+|**--managed-private-endpoint-name**|string|The name of the managed private endpoint.|managed_private_endpoint_name|managedPrivateEndpointName|
+|**--private-link-resource-id**|string|The ARM resource ID of the resource for which the managed private endpoint is created.|private_link_resource_id|privateLinkResourceId|
+|**--private-link-resource-region**|string|The region of the resource to which the managed private endpoint is created.|private_link_resource_region|privateLinkResourceRegion|
+|**--group-id**|string|The groupId in which the managed private endpoint is created.|group_id|groupId|
+|**--request-message**|string|The user request message.|request_message|requestMessage|
+
+#### <a name="ManagedPrivateEndpointsDelete">Command `az kusto managed-private-endpoint delete`</a>
+
+##### <a name="ExamplesManagedPrivateEndpointsDelete">Example</a>
+```
+az kusto managed-private-endpoint delete --cluster-name "kustoclusterrptest4" --name "kustoManagedPrivateEndpoint1" \
+--resource-group "kustorptest"
+```
+##### <a name="ParametersManagedPrivateEndpointsDelete">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The name of the resource group containing the Kusto cluster.|resource_group_name|resourceGroupName|
+|**--cluster-name**|string|The name of the Kusto cluster.|cluster_name|clusterName|
+|**--managed-private-endpoint-name**|string|The name of the managed private endpoint.|managed_private_endpoint_name|managedPrivateEndpointName|
+
 ### group `az kusto operation-result`
 #### <a name="OperationsResultsGet">Command `az kusto operation-result show`</a>
 
@@ -947,6 +1092,101 @@ az kusto operation-result show --operation-id "30972f1b-b61d-4fd8-bd34-3dcfa2467
 |------|----|-----------|----------|------------|
 |**--location**|string|Azure location (region) name.|location|location|
 |**--operation-id**|string|The Guid of the operation ID|operation_id|operationId|
+
+### group `az kusto private-endpoint-connection`
+#### <a name="PrivateEndpointConnectionsList">Command `az kusto private-endpoint-connection list`</a>
+
+##### <a name="ExamplesPrivateEndpointConnectionsList">Example</a>
+```
+az kusto private-endpoint-connection list --cluster-name "kustoclusterrptest4" --resource-group "kustorptest"
+```
+##### <a name="ParametersPrivateEndpointConnectionsList">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The name of the resource group containing the Kusto cluster.|resource_group_name|resourceGroupName|
+|**--cluster-name**|string|The name of the Kusto cluster.|cluster_name|clusterName|
+
+#### <a name="PrivateEndpointConnectionsGet">Command `az kusto private-endpoint-connection show`</a>
+
+##### <a name="ExamplesPrivateEndpointConnectionsGet">Example</a>
+```
+az kusto private-endpoint-connection show --cluster-name "kustoclusterrptest4" --name "privateEndpointConnectionName" \
+--resource-group "kustorptest"
+```
+##### <a name="ParametersPrivateEndpointConnectionsGet">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The name of the resource group containing the Kusto cluster.|resource_group_name|resourceGroupName|
+|**--cluster-name**|string|The name of the Kusto cluster.|cluster_name|clusterName|
+|**--private-endpoint-connection-name**|string|The name of the private endpoint connection.|private_endpoint_connection_name|privateEndpointConnectionName|
+
+#### <a name="PrivateEndpointConnectionsCreateOrUpdate#Create">Command `az kusto private-endpoint-connection create`</a>
+
+##### <a name="ExamplesPrivateEndpointConnectionsCreateOrUpdate#Create">Example</a>
+```
+az kusto private-endpoint-connection create --cluster-name "kustoclusterrptest4" --private-link-service-connection-stat\
+e description="Approved by johndoe@contoso.com" status="Approved" --name "privateEndpointConnectionName" \
+--resource-group "kustorptest"
+```
+##### <a name="ParametersPrivateEndpointConnectionsCreateOrUpdate#Create">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The name of the resource group containing the Kusto cluster.|resource_group_name|resourceGroupName|
+|**--cluster-name**|string|The name of the Kusto cluster.|cluster_name|clusterName|
+|**--private-endpoint-connection-name**|string|The name of the private endpoint connection.|private_endpoint_connection_name|privateEndpointConnectionName|
+|**--private-link-service-connection-state**|object|Connection State of the Private Endpoint Connection.|private_link_service_connection_state|privateLinkServiceConnectionState|
+
+#### <a name="PrivateEndpointConnectionsCreateOrUpdate#Update">Command `az kusto private-endpoint-connection update`</a>
+
+
+##### <a name="ParametersPrivateEndpointConnectionsCreateOrUpdate#Update">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The name of the resource group containing the Kusto cluster.|resource_group_name|resourceGroupName|
+|**--cluster-name**|string|The name of the Kusto cluster.|cluster_name|clusterName|
+|**--private-endpoint-connection-name**|string|The name of the private endpoint connection.|private_endpoint_connection_name|privateEndpointConnectionName|
+|**--private-link-service-connection-state**|object|Connection State of the Private Endpoint Connection.|private_link_service_connection_state|privateLinkServiceConnectionState|
+
+#### <a name="PrivateEndpointConnectionsDelete">Command `az kusto private-endpoint-connection delete`</a>
+
+##### <a name="ExamplesPrivateEndpointConnectionsDelete">Example</a>
+```
+az kusto private-endpoint-connection delete --cluster-name "kustoclusterrptest4" --name "privateEndpointConnectionName"\
+ --resource-group "kustorptest"
+```
+##### <a name="ParametersPrivateEndpointConnectionsDelete">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The name of the resource group containing the Kusto cluster.|resource_group_name|resourceGroupName|
+|**--cluster-name**|string|The name of the Kusto cluster.|cluster_name|clusterName|
+|**--private-endpoint-connection-name**|string|The name of the private endpoint connection.|private_endpoint_connection_name|privateEndpointConnectionName|
+
+### group `az kusto private-link-resource`
+#### <a name="PrivateLinkResourcesList">Command `az kusto private-link-resource list`</a>
+
+##### <a name="ExamplesPrivateLinkResourcesList">Example</a>
+```
+az kusto private-link-resource list --cluster-name "kustoclusterrptest4" --resource-group "kustorptest"
+```
+##### <a name="ParametersPrivateLinkResourcesList">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The name of the resource group containing the Kusto cluster.|resource_group_name|resourceGroupName|
+|**--cluster-name**|string|The name of the Kusto cluster.|cluster_name|clusterName|
+
+#### <a name="PrivateLinkResourcesGet">Command `az kusto private-link-resource show`</a>
+
+##### <a name="ExamplesPrivateLinkResourcesGet">Example</a>
+```
+az kusto private-link-resource show --cluster-name "kustoclusterrptest4" --name "cluster" --resource-group \
+"kustorptest"
+```
+##### <a name="ParametersPrivateLinkResourcesGet">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The name of the resource group containing the Kusto cluster.|resource_group_name|resourceGroupName|
+|**--cluster-name**|string|The name of the Kusto cluster.|cluster_name|clusterName|
+|**--private-link-resource-name**|string|The name of the private link resource.|private_link_resource_name|privateLinkResourceName|
 
 ### group `az kusto script`
 #### <a name="ScriptsListByDatabase">Command `az kusto script list`</a>
