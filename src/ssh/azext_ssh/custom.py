@@ -159,8 +159,8 @@ def _get_and_write_certificate(cmd, public_key_file, cert_file):
         certificatedata = credential.get_token(*scopes, data=data)
         certificate = certificatedata.token
 
-    time_elapsed = str(time.time() - t0)
-    telemetry.add_extension_event('ssh', {'Context.Default.AzureCLI.SSHGetCertificateTimeElapsed': time_elapsed})
+    time_elapsed = time.time() - t0
+    telemetry.add_extension_event('ssh', {'Context.Default.AzureCLI.SSHGetCertificateTime': time_elapsed})
 
     if not cert_file:
         cert_file = public_key_file + "-aadcert.pub"
@@ -334,10 +334,10 @@ def _arc_get_client_side_proxy():
                                     summary=f'Failed to download proxy from {request_uri}')
             raise azclierror.ClientRequestError(f"Failed to download client proxy executable from {request_uri}. "
                                                 "Error: " + str(e)) from e
-        time_elapsed = str(time.time() - t0)
+        time_elapsed = time.time() - t0
 
         proxy_data = {
-            'Context.Default.AzureCLI.SSHProxyDownloadTimeElapsed': time_elapsed,
+            'Context.Default.AzureCLI.SSHProxyDownloadTime': time_elapsed,
             'Context.Default.AzureCLI.SSHProxyVersion': consts.CLIENT_PROXY_VERSION
         }
         telemetry.add_extension_event('ssh', proxy_data)
@@ -366,8 +366,8 @@ def _arc_list_access_details(cmd, resource_group, vm_name):
         t0 = time.time()
         result = client.list_credentials(resource_group_name=resource_group, machine_name=vm_name,
                                          endpoint_name="default")
-        time_elapsed = str(time.time() - t0)
-        telemetry.add_extension_event('ssh', {'Context.Default.AzureCLI.SSHListCredentialsTimeElapsed': time_elapsed})
+        time_elapsed = time.time() - t0
+        telemetry.add_extension_event('ssh', {'Context.Default.AzureCLI.SSHListCredentialsTime': time_elapsed})
     except Exception as e:
         telemetry.set_exception(exception='Call to listCredentials failed',
                                 fault_type=consts.LIST_CREDENTIALS_FAILED_FAULT_TYPE,
