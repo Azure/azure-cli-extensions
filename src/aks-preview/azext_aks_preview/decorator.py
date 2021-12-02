@@ -747,6 +747,44 @@ class AKSPreviewContext(AKSContext):
         # this parameter does not need validation
         return workspace_resource_id
 
+    def get_ip_families(self) -> Union[List[str], None]:
+        """IPFamilies used for the cluster network.
+
+        :return: List[str] or None
+        """
+        return self._get_list_attr('ip_families')
+
+    def get_pod_cidrs(self) -> Union[List[str], None]:
+        """Obtain the CIDR ranges used for pod subnets.
+
+        :return: List[str] or None
+        """
+        return self._get_list_attr('pod_cidrs')
+
+    def get_service_cidrs(self) -> Union[List[str], None]:
+        """Obtain the CIDR ranges for the service subnet.
+
+        :return: List[str] or None
+        """
+        return self._get_list_attr('service_cidrs')
+
+    def _get_list_attr(self, param_key) -> Union[List[str], None]:
+        param = self.raw_param.get(param_key)
+
+        if param and isinstance(param, str):
+            return param.split(',')
+        
+        return None
+
+    def get_load_balancer_managed_outbound_ipv6_count(self) -> Union[int, None]:
+        """Obtain the expected count of IPv6 managed outbound IPs.
+
+        :return: int or None
+        """
+        count_ipv6 = self.raw_param.get('load_balancer_managed_outbound_ipv6_count')
+
+        return count_ipv6 if count_ipv6 else None
+
     # pylint: disable=unused-argument
     def _get_outbound_type(
         self,
@@ -1305,26 +1343,23 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
         mc = super().set_up_network_profile(mc)
         network_profile = mc.network_profile
 
-        ip_families = self.context.raw_param.get('ip_families')
-
-        if ip_families:
-            network_profile.ip_families = ip_families.split(',')
-
-        pod_cidrs = self.context.raw_param.get('pod_cidrs')
+        pod_cidrs = self.context.get_pod_cidrs()
         if pod_cidrs:
-            network_profile.pod_cidrs = pod_cidrs.split(',')
-
-        service_cidrs = self.context.raw_param.get('service_cidrs')
+            network_profile.pod_cidrs = pod_cidrs
+            network_profile.pod_cidr = pod_cidrs[0] # overwrite
+        
+        service_cidrs = self.context.get_service_cidrs()
         if service_cidrs:
-            network_profile.service_cidrs = service_cidrs.split(',')
+            network_profile.service_cidrs = service_cidrs
+            network_profile.service_cidr = service_cidrs[0] # overwrite 
 
-        ipv6_count = self.context.raw_param.get('load_balancer_managed_outbound_ipv6_count')
-        if ipv6_count:
-            print('pre + ' + str(network_profile))
+        network_profile.ip_families = self.context.get_ip_families()
+
+        if self.context.get_load_balancer_managed_outbound_ipv6_count():
             if network_profile.load_balancer_profile:
                 network_profile.load_balancer_profile = update_load_balancer_profile(
                     self.context.get_load_balancer_managed_outbound_ip_count(),
-                    ipv6_count,
+                    self.context.get_load_balancer_managed_outbound_ipv6_count(),
                     self.context.get_load_balancer_outbound_ips(),
                     self.context.get_load_balancer_outbound_ip_prefixes(),
                     self.context.get_load_balancer_outbound_ports(),
@@ -1334,13 +1369,12 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
             else:
                 network_profile.load_balancer_profile = create_load_balancer_profile(
                     self.context.get_load_balancer_managed_outbound_ip_count(),
-                    ipv6_count,
+                    self.context.get_load_balancer_managed_outbound_ipv6_count(),
                     self.context.get_load_balancer_outbound_ips(),
                     self.context.get_load_balancer_outbound_ip_prefixes(),
                     self.context.get_load_balancer_outbound_ports(),
                     self.context.get_load_balancer_idle_timeout(),
                 )
-            print('post + ' + str(network_profile))
 
         # build nat gateway profile, which is part of the network profile
         nat_gateway_profile = create_nat_gateway_profile(

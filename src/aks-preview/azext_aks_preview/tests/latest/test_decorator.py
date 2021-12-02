@@ -213,6 +213,46 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         ctx_1.attach_mc(mc)
         self.assertEqual(ctx_1.get_pod_subnet_id(), "test_mc_pod_subnet_id")
 
+    def test_get_pod_cidrs(self):
+        # default
+        ctx_1 = AKSPreviewContext(
+            self.cmd,
+            {'pod_cidrs': '10.244.0.0/16,2001:abcd::/64'},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_pod_cidrs(), ['10.244.0.0/16','2001:abcd::/64'])
+
+    def test_get_service_cidrs(self):
+        # default
+        ctx_1 = AKSPreviewContext(
+            self.cmd,
+            {'service_cidrs': '10.244.0.0/16,2001:abcd::/64'},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_service_cidrs(), ['10.244.0.0/16','2001:abcd::/64'])
+
+    def test_get_ip_families(self):
+        # default
+        ctx_1 = AKSPreviewContext(
+            self.cmd,
+            {'ip_families': 'IPv4,IPv6'},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_ip_families(), ['IPv4','IPv6'])
+
+    def test_get_ipv6_count(self):
+        # default
+        ctx_1 = AKSPreviewContext(
+            self.cmd,
+            {'load_balancer_managed_outbound_ipv6_count': 4},
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        self.assertEqual(ctx_1.get_load_balancer_managed_outbound_ipv6_count(), 4)
+
     def test_get_enable_fips_image(self):
         # default
         ctx_1 = AKSPreviewContext(
@@ -1480,6 +1520,64 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
             location="test_location", network_profile=network_profile_2
         )
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
+        # dual-stack
+        dec_3 = AKSPreviewCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "load_balancer_sku": None,
+                "load_balancer_managed_outbound_ip_count": None,
+                "load_balancer_managed_outbound_ipv6_count": 3,
+                "load_balancer_outbound_ips": None,
+                "load_balancer_outbound_ip_prefixes": None,
+                "load_balancer_outbound_ports": None,
+                "load_balancer_idle_timeout": None,
+                "outbound_type": None,
+                "network_plugin": "kubenet",
+                "pod_cidr": None,
+                "service_cidr": None,
+                "pod_cidrs": "10.246.0.0/16,2001:abcd::/64",
+                "service_cidrs": "10.0.0.0/16,2001:ffff::/108",
+                "ip_families": "IPv4,IPv6",
+                "dns_service_ip": None,
+                "docker_bridge_cidr": None,
+                "network_policy": None,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_3 = self.models.ManagedCluster(location="test_location")
+        dec_mc_3 = dec_3.set_up_network_profile(mc_3)
+
+        network_profile_3 = self.models.ContainerServiceNetworkProfile(
+            network_plugin="kubenet",
+            pod_cidr="10.246.0.0/16",
+            service_cidr="10.0.0.0/16",
+            dns_service_ip=None,  # overwritten to None
+            docker_bridge_cidr=None,  # overwritten to None
+            load_balancer_sku="standard",
+            outbound_type="loadBalancer",
+            ip_families=["IPv4", "IPv6"],
+            pod_cidrs=["10.246.0.0/16", "2001:abcd::/64"],
+            service_cidrs=["10.0.0.0/16", "2001:ffff::/108"],
+        )
+        load_balancer_profile = self.models.lb_models.get(
+            "ManagedClusterLoadBalancerProfile"
+        )(
+            managed_outbound_i_ps=self.models.lb_models.get(
+                "ManagedClusterLoadBalancerProfileManagedOutboundIPs"
+            )(
+                count=1,
+                count_ipv6=3,
+            )
+        )
+
+        network_profile_3.load_balancer_profile = load_balancer_profile
+
+        ground_truth_mc_3 = self.models.ManagedCluster(
+            location="test_location", network_profile=network_profile_3
+        )
+        self.assertEqual(dec_mc_3, ground_truth_mc_3)
 
     def test_set_up_pod_security_policy(self):
         # default value in `aks_create`
