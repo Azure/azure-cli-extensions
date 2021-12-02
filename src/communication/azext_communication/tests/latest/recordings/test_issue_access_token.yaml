@@ -1,0 +1,53 @@
+interactions:
+- request:
+    body: '{"createTokenWithScopes": ["chat"]}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '35'
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 18 Nov 2021 07:24:29 GMT
+      User-Agent:
+      - azsdk-python-communication-identity/1.0.1 Python/3.8.10 (Windows-10-10.0.22000-SP0)
+      x-ms-content-sha256:
+      - kWpGozyV35fifbpKdY8mbdG64VG0Pdq5upzo7YKAFM0=
+      x-ms-return-client-request-id:
+      - 'true'
+    method: POST
+    uri: https://acstelephonyportaltesting.communication.azure.com/identities?api-version=2021-03-07
+  response:
+    body:
+      string: '{"identity":{"id":"8:acs:ab12b0ea-85ea-4f83-b0b6-84d90209c7c4_0000000d-d1d0-6a92-78fe-343a0d0009c0"},"accessToken":{"token":"eyJhbGciOiJSUzI1NiIsImtpZCI6IjEwMyIsIng1dCI6Ikc5WVVVTFMwdlpLQTJUNjFGM1dzYWdCdmFMbyIsInR5cCI6IkpXVCJ9.eyJza3lwZWlkIjoiYWNzOmFiMTJiMGVhLTg1ZWEtNGY4My1iMGI2LTg0ZDkwMjA5YzdjNF8wMDAwMDAwZC1kMWQwLTZhOTItNzhmZS0zNDNhMGQwMDA5YzAiLCJzY3AiOjE3OTIsImNzaSI6IjE2MzcyMjAyNzEiLCJleHAiOjE2MzczMDY2NzEsImFjc1Njb3BlIjoiY2hhdCIsInJlc291cmNlSWQiOiJhYjEyYjBlYS04NWVhLTRmODMtYjBiNi04NGQ5MDIwOWM3YzQiLCJpYXQiOjE2MzcyMjAyNzF9.m0Zm3Jhuhr9yakCe7miqUcztVMebzcs1RjrCoKxN42g2vByaajmdpSC19Nvav_s_hoFlJSfhRhz5FiWTziqxq5Y9nMWcepczJbzd5YTxct5RGtAaItcD736T8phQLOyZJ5kQ2Ri6obcK-kLWSoOURaDuhrB4ePepVL-DA3JVdAfMWmEj42B-T_BbNKm_4m6EzcALmJwrIzd3kQyXqsBQPyerILShCSQexBTUvAlfBcfFgGdWpbV4uQ4IvHs9dv5-oz3nTLBf16nWfFWzrMU9h_TZ5Bxh9peaSITuaj3dyqcIjKK58gBdGk-ZyQOaTG1dH2Nbf7rl_bt_HcOK-IWAKg","expiresOn":"2021-11-19T07:24:31.7822804+00:00"}}'
+    headers:
+      api-supported-versions:
+      - 2020-07-20-preview2, 2021-02-22-preview1, 2021-03-07, 2021-03-31-preview1,
+        2021-10-31-preview, 2021-11-01
+      content-length:
+      - '920'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 18 Nov 2021 07:24:31 GMT
+      ms-cv:
+      - +3FtGVLhVU2mA5uUIDkMGA.2.0
+      request-context:
+      - appId=
+      strict-transport-security:
+      - max-age=2592000
+      x-azure-ref:
+      - 0rf+VYQAAAADd5naS09G2Tq/HaFlKM261REVMMDFFREdFMDUxNAA5ZmM3YjUxOS1hOGNjLTRmODktOTM1ZS1jOTE0OGFlMDllODE=
+      x-cache:
+      - CONFIG_NOCACHE
+      x-processing-time:
+      - 34ms
+    status:
+      code: 201
+      message: Created
+version: 1
