@@ -773,7 +773,7 @@ class AKSPreviewContext(AKSContext):
 
         if param and isinstance(param, str):
             return param.split(',')
-        
+
         return None
 
     def get_load_balancer_managed_outbound_ipv6_count(self) -> Union[int, None]:
@@ -781,7 +781,8 @@ class AKSPreviewContext(AKSContext):
 
         :return: int or None
         """
-        count_ipv6 = self.raw_param.get('load_balancer_managed_outbound_ipv6_count')
+        count_ipv6 = self.raw_param.get(
+            'load_balancer_managed_outbound_ipv6_count')
 
         return count_ipv6 if count_ipv6 else None
 
@@ -1346,12 +1347,12 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
         pod_cidrs = self.context.get_pod_cidrs()
         if pod_cidrs:
             network_profile.pod_cidrs = pod_cidrs
-            network_profile.pod_cidr = pod_cidrs[0] # overwrite
-        
+            network_profile.pod_cidr = pod_cidrs[0]  # overwrite
+
         service_cidrs = self.context.get_service_cidrs()
         if service_cidrs:
             network_profile.service_cidrs = service_cidrs
-            network_profile.service_cidr = service_cidrs[0] # overwrite 
+            network_profile.service_cidr = service_cidrs[0]  # overwrite
 
         network_profile.ip_families = self.context.get_ip_families()
 
