@@ -582,6 +582,50 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         ctx_1.attach_mc(mc)
         self.assertEqual(ctx_1.get_enable_pod_security_policy(), True)
 
+        # custom value
+        ctx_2 = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_pod_security_policy": True,
+                "disable_pod_security_policy": True,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        # fail on mutually exclusive enable_pod_security_policy and disable_pod_security_policy
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx_2.get_enable_pod_security_policy()
+
+    def test_get_disable_pod_security_policy(self):
+        # default
+        ctx_1 = AKSPreviewContext(
+            self.cmd,
+            {"disable_pod_security_policy": False},
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        self.assertEqual(ctx_1.get_disable_pod_security_policy(), False)
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            enable_pod_security_policy=False,
+        )
+        ctx_1.attach_mc(mc)
+        self.assertEqual(ctx_1.get_disable_pod_security_policy(), False)
+
+        # custom value
+        ctx_2 = AKSPreviewContext(
+            self.cmd,
+            {
+                "enable_pod_security_policy": True,
+                "disable_pod_security_policy": True,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        # fail on mutually exclusive enable_pod_security_policy and disable_pod_security_policy
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx_2.get_disable_pod_security_policy()
+
     def test_get_enable_managed_identity(self):
         # custom value
         ctx_1 = AKSPreviewContext(
@@ -1218,6 +1262,7 @@ class AKSPreviewContextTestCase(unittest.TestCase):
             ctx_7.get_outbound_type(
                 load_balancer_profile=load_balancer_profile,
             )
+
 
 class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
     def setUp(self):
@@ -2168,7 +2213,7 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
         raw_param_dict.print_usage_statistics()
 
-    def test_create_mc(self):
+    def test_create_preview_mc(self):
         mc_1 = self.models.ManagedCluster(
             location="test_location",
             addon_profiles={
@@ -2210,7 +2255,7 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
             "azext_aks_preview.decorator.ensure_container_insights_for_monitoring",
             side_effect=err,
         ) as ensure_monitoring:
-            dec_1.create_mc(mc_1)
+            dec_1.create_preview_mc(mc_1)
         ensure_monitoring.assert_called_with(
             self.cmd,
             mc_1.addon_profiles[CONST_MONITORING_ADDON_NAME],
@@ -2268,3 +2313,75 @@ class AKSPreviewUpdateDecoratorTestCase(unittest.TestCase):
             mc.network_profile.load_balancer_profile.managed_outbound_i_ps.count, 3)
         self.assertEquals(
             mc.network_profile.load_balancer_profile.managed_outbound_i_ps.count_ipv6, 4)
+
+    def test_update_pod_security_policy(self):
+        # default value in `aks_update`
+        dec_1 = AKSPreviewUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_pod_security_policy": False,
+                "disable_pod_security_policy": False,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        # fail on passing the wrong mc object
+        with self.assertRaises(CLIInternalError):
+            dec_1.update_pod_security_policy(None)
+
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            enable_pod_security_policy=True,
+        )
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.update_pod_security_policy(mc_1)
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            enable_pod_security_policy=True,
+        )
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+        # custom value
+        dec_2 = AKSPreviewUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_pod_security_policy": True,
+                "disable_pod_security_policy": False,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            enable_pod_security_policy=False,
+        )
+        dec_2.context.attach_mc(mc_2)
+        dec_mc_2 = dec_2.update_pod_security_policy(mc_2)
+        ground_truth_mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            enable_pod_security_policy=True,
+        )
+        self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
+        # custom value
+        dec_3 = AKSPreviewUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_pod_security_policy": False,
+                "disable_pod_security_policy": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+
+        mc_3 = self.models.ManagedCluster(
+            location="test_location",
+            enable_pod_security_policy=True,
+        )
+        dec_3.context.attach_mc(mc_3)
+        dec_mc_3 = dec_3.update_pod_security_policy(mc_3)
+        ground_truth_mc_3 = self.models.ManagedCluster(
+            location="test_location",
+            enable_pod_security_policy=False,
+        )
+        self.assertEqual(dec_mc_3, ground_truth_mc_3)

@@ -777,7 +777,7 @@ def aks_create(cmd,
         # exit gracefully
         return None
     # send request to create a real managed cluster
-    return aks_create_decorator.create_mc(mc)
+    return aks_create_decorator.create_preview_mc(mc)
 
 
 def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,too-many-locals
