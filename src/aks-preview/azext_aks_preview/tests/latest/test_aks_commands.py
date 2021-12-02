@@ -2909,12 +2909,14 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # create
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
                      '--ip-families IPv4 --pod-cidr 172.126.0.0/16 --service-cidr 172.56.0.0/16 ' \
-                     '--dns-service-ip 172.56.0.10 --pod-cidrs 10.244.0.0/16 --service-cidrs 10.0.0.0/16 ' \
-                     '--network-plugin kubenet'
+                     '--dns-service-ip 172.56.0.10 --pod-cidrs 172.126.0.0/16 --service-cidrs 172.56.0.0/16 ' \
+                     '--network-plugin kubenet --ssh-key-value={ssh_key_value}'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('networkProfile.podCidrs', ['10.244.0.0/16']),
-            self.check('networkProfile.serviceCidrs', ['10.0.0.0/16']),
+            self.check('networkProfile.podCidrs', ['172.126.0.0/16']),
+            self.check('networkProfile.podCidr', '172.126.0.0/16'),
+            self.check('networkProfile.serviceCidr', '172.56.0.0/16'),
+            self.check('networkProfile.serviceCidrs', ['172.56.0.0/16']),
             self.check('networkProfile.ipFamilies', ['IPv4'])
         ])
 
