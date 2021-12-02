@@ -203,7 +203,7 @@ def update_k8s_extension(cmd, client, resource_group_name, cluster_name, name, c
     # Get the extension class based on the extension type
     extension_class = ExtensionFactory(extension_type_lower)
 
-    upd_extension = extension_class.Update(auto_upgrade_minor_version, release_train, version,
+    upd_extension = extension_class.Update(cmd, resource_group_name, cluster_name, auto_upgrade_minor_version, release_train, version,
                                            config_settings, config_protected_settings)
 
     return sdk_no_wait(no_wait, client.begin_update, resource_group_name, cluster_rp, cluster_type,
