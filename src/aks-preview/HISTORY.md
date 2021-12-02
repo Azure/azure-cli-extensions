@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.5.46
+++++++
+* Update to use 2021-10-01 api-version
+
 0.5.45
 ++++++
 * Remove the snapshot name trimming in `az aks snapshot create` command.
