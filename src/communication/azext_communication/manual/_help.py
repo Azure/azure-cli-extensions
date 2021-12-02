@@ -114,12 +114,12 @@ helps['communication wait'] = """
 
 helps['communication identity'] = """
     type: group
-    short-summary: Manage identity with communication
+    short-summary: Commands to manage User Identity for a CommunicationService resource.
 """
 
 helps['communication identity issue-access-token'] = """
     type: command
-    short-summary: "create user identity and accesstoken"
+    short-summary: "Issues a new access token with the specified scopes for a given User Identity. If no User Identity is specified, creates a new User Identity as well."
     examples:
       - name: issue-access-token
         text: |-
@@ -131,12 +131,12 @@ helps['communication identity issue-access-token'] = """
 
 helps['communication sms'] = """
     type: group
-    short-summary: Manage sms with communication
+    short-summary: Commands to manage SMS for a CommunicationService resource.
 """
 
 helps['communication sms send-sms'] = """
     type: command
-    short-summary: "Sends SMS to phone number."
+    short-summary: "Sends an SMS from the sender phone number to the recipient phone number."
     examples:
       - name: send sms
         text: |-
@@ -146,12 +146,12 @@ helps['communication sms send-sms'] = """
 
 helps['communication phonenumbers'] = """
     type: group
-    short-summary: Manage phonenumbers with communication
+    short-summary: Commands to manage phone numbers for a CommunicationService resource.
 """
 
 helps['communication phonenumbers list-phonenumbers'] = """
     type: command
-    short-summary: "List communication phone numbers"
+    short-summary: "Lists all phone numbers associated with the CommunicationService resource."
     examples:
       - name: list phonenumbers
         text: |-
@@ -160,7 +160,7 @@ helps['communication phonenumbers list-phonenumbers'] = """
 
 helps['communication phonenumbers show-phonenumber'] = """
     type: command
-    short-summary: "show communication phonenumber information"
+    short-summary: "Shows the details for a phone number associated with the CommunicationService resource."
     examples:
       - name: show phonenumber
         text: |-
