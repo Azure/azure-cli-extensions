@@ -229,7 +229,7 @@ class AKSPreviewContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
-        self.assertEqual(ctx_2.get_pod_cidrs(), None)
+        self.assertEqual(ctx_2.get_pod_cidrs(), [])
 
         ctx_3 = AKSPreviewContext(
             self.cmd,
@@ -255,7 +255,7 @@ class AKSPreviewContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
-        self.assertEqual(ctx_2.get_service_cidrs(), None)
+        self.assertEqual(ctx_2.get_service_cidrs(), [])
 
         ctx_3 = AKSPreviewContext(
             self.cmd,
@@ -281,7 +281,7 @@ class AKSPreviewContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
-        self.assertEqual(ctx_2.get_ip_families(), None)
+        self.assertEqual(ctx_2.get_ip_families(), [])
 
         ctx_3 = AKSPreviewContext(
             self.cmd,
