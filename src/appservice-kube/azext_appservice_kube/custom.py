@@ -588,7 +588,7 @@ def create_app_service_plan_inner(cmd, resource_group_name, name, is_linux, hype
             if kube_env is not None:
                 location = kube_env["location"]
             else:
-                raise CLIError("Kube Environment '{}' not found in subscription.".format(kube_id))
+                raise ResourceNotFoundError("Kube Environment '{}' not found in subscription.".format(kube_id))
     else:
         kube_def = None
 
