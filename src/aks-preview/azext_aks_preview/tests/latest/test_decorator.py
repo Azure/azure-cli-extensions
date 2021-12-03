@@ -41,10 +41,10 @@ from azext_aks_preview.decorator import (
     AKSPreviewContext,
     AKSPreviewCreateDecorator,
     AKSPreviewModels,
-    AKSPreviewUpdateDecorator,
 )
 from azext_aks_preview.tests.latest.mocks import MockCLI, MockClient, MockCmd
 from azext_aks_preview.tests.latest.test_aks_commands import _get_test_data_file
+from azext_aks_preview._loadbalancer import update_load_balancer_profile
 from azure.cli.command_modules.acs._consts import (
     DecoratorEarlyExitException,
     DecoratorMode,
@@ -223,6 +223,22 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         )
         self.assertEqual(ctx_1.get_pod_cidrs(), ['10.244.0.0/16','2001:abcd::/64'])
 
+        ctx_2 = AKSPreviewContext(
+            self.cmd,
+            {'pod_cidrs': ''},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_2.get_pod_cidrs(), None)
+
+        ctx_3 = AKSPreviewContext(
+            self.cmd,
+            {'pod_cidrs': None},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_3.get_pod_cidrs(), None)
+
     def test_get_service_cidrs(self):
         # default
         ctx_1 = AKSPreviewContext(
@@ -232,6 +248,22 @@ class AKSPreviewContextTestCase(unittest.TestCase):
             decorator_mode=DecoratorMode.CREATE,
         )
         self.assertEqual(ctx_1.get_service_cidrs(), ['10.244.0.0/16','2001:abcd::/64'])
+
+        ctx_2 = AKSPreviewContext(
+            self.cmd,
+            {'service_cidrs': ''},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_2.get_service_cidrs(), None)
+
+        ctx_3 = AKSPreviewContext(
+            self.cmd,
+            {'service_cidrs': None},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_3.get_service_cidrs(), None)
 
     def test_get_ip_families(self):
         # default
@@ -243,15 +275,97 @@ class AKSPreviewContextTestCase(unittest.TestCase):
         )
         self.assertEqual(ctx_1.get_ip_families(), ['IPv4','IPv6'])
 
+        ctx_2 = AKSPreviewContext(
+            self.cmd,
+            {'ip_families': ''},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_2.get_ip_families(), None)
+
+        ctx_3 = AKSPreviewContext(
+            self.cmd,
+            {'ip_families': None},
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_3.get_ip_families(), None)
+
     def test_get_ipv6_count(self):
         # default
         ctx_1 = AKSPreviewContext(
             self.cmd,
             {'load_balancer_managed_outbound_ipv6_count': 4},
             self.models,
-            decorator_mode=DecoratorMode.UPDATE,
+            decorator_mode=DecoratorMode.CREATE,
         )
         self.assertEqual(ctx_1.get_load_balancer_managed_outbound_ipv6_count(), 4)
+
+        # test preserve ipv6 count during update of ip count
+        ctx_2 = AKSPreviewContext(
+            self.cmd,
+            {
+                'load_balancer_managed_outbound_ip_count': 3,
+                'load_balancer_managed_outbound_ipv6_count': None,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        lb_profile = self.models.lb_models.get(
+            'ManagedClusterLoadBalancerProfile'
+        )(
+            managed_outbound_i_ps=self.models.lb_models.get(
+                "ManagedClusterLoadBalancerProfileManagedOutboundIPs"
+            )(
+                count=3,
+                count_ipv6=7,
+            )
+        )
+
+        p = update_load_balancer_profile(
+            ctx_2.get_load_balancer_managed_outbound_ip_count(),
+            ctx_2.get_load_balancer_managed_outbound_ipv6_count(),
+            ctx_2.get_load_balancer_outbound_ips(),
+            ctx_2.get_load_balancer_outbound_ip_prefixes(),
+            ctx_2.get_load_balancer_outbound_ports(),
+            ctx_2.get_load_balancer_idle_timeout(),
+            lb_profile)
+
+        self.assertEquals(p.managed_outbound_i_ps.count, 3)
+        self.assertEquals(p.managed_outbound_i_ps.count_ipv6, 7)
+
+        # test preserve ip count during update of ipv6 count
+        ctx_3 = AKSPreviewContext(
+            self.cmd,
+            {
+                'load_balancer_managed_outbound_ip_count': None,
+                'load_balancer_managed_outbound_ipv6_count': 2,
+            },
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        lb_profile = self.models.lb_models.get(
+            'ManagedClusterLoadBalancerProfile'
+        )(
+            managed_outbound_i_ps=self.models.lb_models.get(
+                "ManagedClusterLoadBalancerProfileManagedOutboundIPs"
+            )(
+                count=4,
+                count_ipv6=7,
+            )
+        )
+
+        p = update_load_balancer_profile(
+            ctx_3.get_load_balancer_managed_outbound_ip_count(),
+            ctx_3.get_load_balancer_managed_outbound_ipv6_count(),
+            ctx_3.get_load_balancer_outbound_ips(),
+            ctx_3.get_load_balancer_outbound_ip_prefixes(),
+            ctx_3.get_load_balancer_outbound_ports(),
+            ctx_3.get_load_balancer_idle_timeout(),
+            lb_profile)
+
+        self.assertEquals(p.managed_outbound_i_ps.count, 4)
+        self.assertEquals(p.managed_outbound_i_ps.count_ipv6, 2)
 
     def test_get_enable_fips_image(self):
         # default
@@ -1551,8 +1665,8 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
 
         network_profile_3 = self.models.ContainerServiceNetworkProfile(
             network_plugin="kubenet",
-            pod_cidr="10.246.0.0/16",
-            service_cidr="10.0.0.0/16",
+            pod_cidr=None,  # overwritten to None
+            service_cidr=None,  # overwritten to None
             dns_service_ip=None,  # overwritten to None
             docker_bridge_cidr=None,  # overwritten to None
             load_balancer_sku="standard",
