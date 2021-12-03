@@ -1461,7 +1461,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         aks_name2 = self.create_random_name('cliakstest', 16)
         nodepool_name = self.create_random_name('c', 6)
         nodepool_name2 = self.create_random_name('c', 6)
-        snapshot_name = self.create_random_name('s', 6)
+        snapshot_name = self.create_random_name('s', 16)
 
         self.kwargs.update({
             'resource_group': resource_group,
@@ -3030,7 +3030,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
 
     @AllowLargeResponse()
-    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus2')
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_update_label_msi(self, resource_group, resource_group_location):
         # reset the count so in replay mode the random names will start with 0
         self.test_resources_count = 0
