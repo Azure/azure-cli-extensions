@@ -293,8 +293,7 @@ def cli_cosmosdb_mongo_role_definition_update(client,
     mongo_role_definition = client.get_mongo_role_definition(mongo_role_definition_body['Id'], resource_group_name, account_name)
 
     if mongo_role_definition_body['RoleName'] != mongo_role_definition.role_name:
-        raise InvalidArgumentValueError(
-                'Cannot update Mongo Role Definition Name.')
+        raise InvalidArgumentValueError('Cannot update Mongo Role Definition Name.')
 
     mongo_role_definition_update_resource = MongoRoleDefinitionCreateUpdateParameters(
         role_name=mongo_role_definition.role_name,
@@ -368,18 +367,18 @@ def cli_cosmosdb_mongo_user_definition_update(client,
         mongo_user_definition = client.get_mongo_user_definition(mongo_user_definition_body['Id'], resource_group_name, account_name)
 
         mongo_user_definition_update_resource = MongoUserDefinitionCreateUpdateParameters(
-        user_name=mongo_user_definition.user_name,
-        password=mongo_user_definition_body['Password'],
-        database_name=mongo_user_definition_body['DatabaseName'],
-        custom_data=mongo_user_definition_body['CustomData'],
-        mechanisms=mongo_user_definition_body['Mechanisms'],
-        roles=mongo_user_definition_body['Roles'])
+            user_name=mongo_user_definition.user_name,
+            password=mongo_user_definition_body['Password'],
+            database_name=mongo_user_definition_body['DatabaseName'],
+            custom_data=mongo_user_definition_body['CustomData'],
+            mechanisms=mongo_user_definition_body['Mechanisms'],
+            roles=mongo_user_definition_body['Roles'])
 
         return client.begin_create_update_mongo_user_definition(mongo_user_definition_body['Id'], resource_group_name, account_name, mongo_user_definition_update_resource)
     except Exception as ex:
         return _handle_exists_exception(ex.response)
 
-        
+
 def cli_cosmosdb_mongo_user_definition_exists(client,
                                               resource_group_name,
                                               account_name,

@@ -17,25 +17,26 @@ from azext_cosmosdb_preview._validators import (
     validate_mongo_user_definition_id)
 
 MONGO_ROLE_DEFINITION_EXAMPLE = """--body "{
-\\"Id\\": \\"be79875a-2cc4-40d5-8958-566017875b39\\", 
-\\"RoleName\\": \\"MyRWRole\\", 
+\\"Id\\": \\"be79875a-2cc4-40d5-8958-566017875b39\\",
+\\"RoleName\\": \\"MyRWRole\\",
 \\"Type\\": \\"CustomRole\\"
-\\"DatabaseName\\": \\"MyDb\\", 
+\\"DatabaseName\\": \\"MyDb\\",
 \\"Privileges\\": [ {\\"Resource\\": {\\"Db\\": \\"MyDB\\",\\"Collection\\": \\"MyCol\\"},\\"Actions\\": [\\"insert\\",\\"find\\"]}],
 \\"Roles\\": [ {\\"Role\\": \\"myInheritedRole\\",\\"Db\\": \\"MyTestDb\\"}]
 }"
 """
 
 MONGO_USER_DEFINITION_EXAMPLE = """--body "{
-\\"Id\\": \\"be79875a-2cc4-40d5-8958-566017875b39\\", 
-\\"UserName\\": \\"MyUserName\\", 
-\\"Password\\": \\"MyPass\\", 
+\\"Id\\": \\"be79875a-2cc4-40d5-8958-566017875b39\\",
+\\"UserName\\": \\"MyUserName\\",
+\\"Password\\": \\"MyPass\\",
 \\"CustomData\\": \\"MyCustomData\\",
 \\"Mechanisms\\": \\"SCRAM-SHA-256\\"
-\\"DatabaseName\\": \\"MyDb\\", 
+\\"DatabaseName\\": \\"MyDb\\",
 \\"Roles\\": [ {\\"Role\\": \\"myReadRole\\",\\"Db\\": \\"MyDb\\"}]
 }"
 """
+
 
 def load_arguments(self, _):
     from azure.cli.core.commands.parameters import tags_type
@@ -114,13 +115,13 @@ def load_arguments(self, _):
         c.argument('graph_name', options_list=['--name', '-n'], help="Graph name")
 
     # Services
-        with self.argument_context('cosmosdb service') as c:
-            c.argument('account_name', completer=None, options_list=['--account-name', '-a'], help='Name of the Cosmos DB database account.', id_part=None)
-            c.argument('resource_group_name', completer=None, options_list=['--resource-group-name', '-g'], help='Name of the resource group of the database account.', id_part=None)
-            c.argument('service_kind', options_list=['--kind', '-k'], help="Service kind")
-            c.argument('service_name', options_list=['--name', '-n'], help="Service Name.")
-            c.argument('instance_count', options_list=['--count', '-c'], help="Instance Count.")
-            c.argument('instance_size', options_list=['--size'], help="Instance Size. Possible values are: Cosmos.D4s, Cosmos.D8s, Cosmos.D16s etc")
+    with self.argument_context('cosmosdb service') as c:
+        c.argument('account_name', completer=None, options_list=['--account-name', '-a'], help='Name of the Cosmos DB database account.', id_part=None)
+        c.argument('resource_group_name', completer=None, options_list=['--resource-group-name', '-g'], help='Name of the resource group of the database account.', id_part=None)
+        c.argument('service_kind', options_list=['--kind', '-k'], help="Service kind")
+        c.argument('service_name', options_list=['--name', '-n'], help="Service Name.")
+        c.argument('instance_count', options_list=['--count', '-c'], help="Instance Count.")
+        c.argument('instance_size', options_list=['--size'], help="Instance Size. Possible values are: Cosmos.D4s, Cosmos.D8s, Cosmos.D16s etc")
 
      # Mongo role definition
     with self.argument_context('cosmosdb mongodb role definition') as c:
