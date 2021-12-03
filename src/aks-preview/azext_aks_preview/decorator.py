@@ -747,6 +747,13 @@ class AKSPreviewContext(AKSContext):
         # this parameter does not need validation
         return workspace_resource_id
 
+    def get_pod_cidrs_and_service_cidrs_and_ip_families(self) -> Tuple[
+        Union[List[str], None],
+        Union[List[str], None],
+        Union[List[str], None],
+    ]:
+        return self.get_pod_cidrs(), self.get_service_cidrs(), self.get_ip_families()
+
     def get_ip_families(self) -> Union[List[str], None]:
         """IPFamilies used for the cluster network.
 
@@ -784,7 +791,7 @@ class AKSPreviewContext(AKSContext):
         count_ipv6 = self.raw_param.get(
             'load_balancer_managed_outbound_ipv6_count')
 
-        return count_ipv6 if count_ipv6 else None
+        return count_ipv6
 
     # pylint: disable=unused-argument
     def _get_outbound_type(
@@ -1344,17 +1351,38 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
         mc = super().set_up_network_profile(mc)
         network_profile = mc.network_profile
 
-        pod_cidrs = self.context.get_pod_cidrs()
-        if pod_cidrs:
+        (
+            pod_cidr,
+            service_cidr,
+            dns_service_ip,
+            _,
+            _,
+        ) = self.context._get_pod_cidr_and_service_cidr_and_dns_service_ip_and_docker_bridge_address_and_network_policy(enable_validation=False)
+
+        (
+            pod_cidrs,
+            service_cidrs,
+            ip_families
+        ) = self.context.get_pod_cidrs_and_service_cidrs_and_ip_families()
+
+        # set dns_service_ip, pod_cidr(s), service(s) with user provided values if
+        # of them are set. Largely follows the base function which will potentially
+        # overwrite default SDK values.
+        if any([
+            dns_service_ip,
+            pod_cidr,
+            pod_cidrs,
+            service_cidr,
+            service_cidrs,
+        ]):
+            network_profile.dns_service_ip = dns_service_ip
+            network_profile.pod_cidr = pod_cidr
             network_profile.pod_cidrs = pod_cidrs
-            network_profile.pod_cidr = pod_cidrs[0]  # overwrite
-
-        service_cidrs = self.context.get_service_cidrs()
-        if service_cidrs:
+            network_profile.service_cidr = service_cidr
             network_profile.service_cidrs = service_cidrs
-            network_profile.service_cidr = service_cidrs[0]  # overwrite
 
-        network_profile.ip_families = self.context.get_ip_families()
+        if ip_families:
+            network_profile.ip_families = ip_families
 
         if self.context.get_load_balancer_managed_outbound_ipv6_count():
             if network_profile.load_balancer_profile:
