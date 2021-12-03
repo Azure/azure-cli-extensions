@@ -13,9 +13,13 @@
 - Add `az vmware private-cloud list-admin-credentials`
 - Add `az vmware private-cloud add-identity-source`
 - Add `az vmware private-cloud delete-identity-source`
+- Add `az vmware private-cloud identity` command group
 - Deprecate `az vmware private-cloud listadmincredentials`
 - Deprecate `az vmware private-cloud addidentitysource`
 - Deprecate `az vmware private-cloud deleteidentitysource`
+- [BREAKING CHANGE] Add confirmation prompt to `az vmware private-cloud rotate-vcenter-password`
+- [BREAKING CHANGE] Add confirmation prompt to `az vmware private-cloud rotate-nsxt-password`
+- [BREAKING CHANGE] Add confirmation prompt to all delete commands
 
 ## 3.2.0 (2021-10)
 

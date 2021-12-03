@@ -626,7 +626,7 @@ def update_azure_firewall_policies(cmd,
 
 
 def set_azure_firewall_policies(cmd, resource_group_name, firewall_policy_name, parameters):
-    if parameters.identity is None:
+    if parameters.identity is None and parameters.sku.tier == 'Premium':
         ManagedServiceIdentity = cmd.get_models('ManagedServiceIdentity')
 
         identity = ManagedServiceIdentity(type="None", user_assigned_identities=None)
