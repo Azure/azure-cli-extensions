@@ -778,8 +778,8 @@ class AKSPreviewContext(AKSContext):
     def _get_list_attr(self, param_key) -> Union[List[str], None]:
         param = self.raw_param.get(param_key)
 
-        if param and isinstance(param, str):
-            return param.split(',')
+        if param is not None:
+            return param.split(',') if param else []
 
         return None
 
