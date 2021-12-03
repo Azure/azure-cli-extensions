@@ -295,6 +295,15 @@ examples:
     text: az cosmosdb mongodb role definition update --account-name MyAccount --resource-group MyResourceGroup --body @mongo-role-definition.json
 """
 
+helps['cosmosdb mongodb user'] = """
+type: group
+short-summary: Manage Azure Cosmos DB Mongo user resources.
+"""
+
+helps['cosmosdb mongodb user definition'] = """
+type: group
+short-summary: Manage Azure Cosmos DB Mongo user definitions.
+"""
 
 helps['cosmosdb mongodb user definition create'] = """
 type: command
