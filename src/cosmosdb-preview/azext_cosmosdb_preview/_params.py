@@ -123,7 +123,7 @@ def load_arguments(self, _):
         c.argument('instance_count', options_list=['--count', '-c'], help="Instance Count.")
         c.argument('instance_size', options_list=['--size'], help="Instance Size. Possible values are: Cosmos.D4s, Cosmos.D8s, Cosmos.D16s etc")
 
-     # Mongo role definition
+    # Mongo role definition
     with self.argument_context('cosmosdb mongodb role definition') as c:
         c.argument('account_name', account_name_type, id_part=None)
         c.argument('mongo_role_definition_id', options_list=['--id', '-i'], validator=validate_mongo_role_definition_id, help="Unique ID for the Mongo Role Definition.")

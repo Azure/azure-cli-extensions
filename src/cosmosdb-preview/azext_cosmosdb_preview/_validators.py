@@ -143,7 +143,7 @@ def validate_mongo_role_definition_body(cmd, ns):
                 if 'Resource' not in privilege or not isinstance(privilege['Resource'], dict):
                     raise InvalidArgumentValueError(
                         'Role creation failed. Invalid Mongo role Resources for Privileges. A valid dictionary JSON representation is expected.')
-                else: 
+                else:
                     if 'Db' not in privilege['Resource'] or not isinstance(privilege['Resource']['Db'], str):
                         raise InvalidArgumentValueError(
                             'Role creation failed. Invalid Mongo database name under Privileges->Resoures. A valid string database name is expected.')
