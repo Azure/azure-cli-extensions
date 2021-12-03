@@ -71,6 +71,7 @@ def _gen_guid():
     import uuid
     return uuid.uuid4()
 
+
 def _parse_resource_path(resource,
                          to_fully_qualified,
                          resource_type=None,
@@ -102,6 +103,7 @@ def _parse_resource_path(resource,
 
     return result['resource_id']
 
+
 def validate_mongo_role_definition_body(cmd, ns):
     """ Extracts role definition body """
     from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import RoleDefinitionType
@@ -116,63 +118,65 @@ def validate_mongo_role_definition_body(cmd, ns):
 
         if not isinstance(mongo_role_definition, dict):
             raise InvalidArgumentValueError(
-                'Invalid Mongo role definition. A valid dictionary JSON representation is expected.')
+                'Role creation failed. Invalid Mongo role definition. A valid dictionary JSON representation is expected.')
 
         if 'Id' in mongo_role_definition:
             mongo_role_definition['Id'] = _parse_resource_path(mongo_role_definition['Id'], False, "mongodbRoleDefinitions")
         else:
             raise InvalidArgumentValueError(
-                'Invalid Mongo role id. A valid string <DatabaseName>.<RoleName> is expected.')
+                'Role creation failed. Invalid Mongo role id. A valid string <DatabaseName>.<RoleName> is expected.')
 
         if 'RoleName' not in mongo_role_definition or not isinstance(mongo_role_definition['RoleName'], str) :
             raise InvalidArgumentValueError(
-                'Invalid Mongo role name. A valid string role name is expected.')
+                'Role creation failed. Invalid Mongo role name. A valid string role name is expected.')
 
         if 'DatabaseName' not in mongo_role_definition or not isinstance(mongo_role_definition['DatabaseName'], str) :
             raise InvalidArgumentValueError(
-                'Invalid Mongo database name. A valid string database name is expected.')
+                'Role creation failed. Invalid Mongo database name. A valid string database name is expected.')
 
         if 'Privileges' not in mongo_role_definition or not isinstance(mongo_role_definition['Privileges'], list):
             raise InvalidArgumentValueError(
-                'Invalid Mongo role Privileges. A valid List JSON representation is expected.')
+                'Role creation failed. Invalid Mongo role Privileges. A valid List JSON representation is expected.')
         else:
 
             for privilege in mongo_role_definition['Privileges']:
                 if 'Resource' not in privilege or not isinstance(privilege['Resource'], dict):
                     raise InvalidArgumentValueError(
-                        'Invalid Mongo role Resources for Privileges. A valid dictionary JSON representation is expected.')
+                        'Role creation failed. Invalid Mongo role Resources for Privileges. A valid dictionary JSON representation is expected.')
                 else: 
                     if 'Db' not in privilege['Resource'] or not isinstance(privilege['Resource']['Db'], str) :
                         raise InvalidArgumentValueError(
-                            'Invalid Mongo database name under Privileges->Resoures. A valid string database name is expected.')
+                            'Role creation failed. Invalid Mongo database name under Privileges->Resoures. A valid string database name is expected.')
 
                     if 'Collection' in privilege['Resource'] and not isinstance(privilege['Resource']['Collection'], str) :
                         raise InvalidArgumentValueError(
-                            'Invalid Mongo database Collection name under Privileges->Resoures. A valid string database name is expected.')
+                            'Role creation failed. Invalid Mongo database Collection name under Privileges->Resoures. A valid string database name is expected.')
 
                 if 'Actions' not in privilege or not isinstance(privilege['Actions'], list):
                     raise InvalidArgumentValueError(
-                        'Invalid Mongo role Actions for Privileges. A valid list of strings is expected.')
+                        'Role creation failed. Invalid Mongo role Actions for Privileges. A valid list of strings is expected.')
 
         if 'Roles' in mongo_role_definition:
             if not isinstance(mongo_role_definition['Roles'], list):
                 raise InvalidArgumentValueError(
-                    'Invalid Mongo Roles. A valid dictionary JSON representation is expected')
+                    'Role creation failed. Invalid Mongo Roles. A valid dictionary JSON representation is expected')
             else:
                 for Role in mongo_role_definition['Roles']:
                     if 'Role' not in Role or not isinstance(Role['Role'], str) :
                         raise InvalidArgumentValueError(
-                            'Invalid Mongo Role. A valid string Role is expected.')
+                            'Role creation failed. Invalid Mongo Role. A valid string Role is expected.')
                 
         if 'Type' not in mongo_role_definition:
             mongo_role_definition['Type'] = RoleDefinitionType.custom_role
 
         ns.mongo_role_definition_body = mongo_role_definition
 
+
 def validate_mongo_role_definition_id(ns):
     """ Extracts Guid role definition Id """
     if ns.mongo_role_definition_id is not None:
         ns.mongo_role_definition_id = _parse_resource_path(ns.mongo_role_definition_id, False, "mongodbRoleDefinitions")
+
 
 def validate_mongo_user_definition_body(cmd, ns):
     """ Extracts user definition body """
@@ -188,48 +192,49 @@ def validate_mongo_user_definition_body(cmd, ns):
 
         if not isinstance(mongo_user_definition, dict):
             raise InvalidArgumentValueError(
-                'Invalid Mongo user definition. A valid dictionary JSON representation is expected.')
+                'User creation failed. Invalid Mongo user definition. A valid dictionary JSON representation is expected.')
 
         if 'Id' in mongo_user_definition:
             mongo_user_definition['Id'] = _parse_resource_path(mongo_user_definition['Id'], False, "mongodbUserDefinitions")
         else:
             raise InvalidArgumentValueError(
-                'Invalid Mongo User ID. A valid string of <DatabaseName>.<Username> is expected.')
+                'User creation failed. Invalid Mongo User ID. A valid string of <DatabaseName>.<Username> is expected.')
 
         if 'UserName' not in mongo_user_definition or not isinstance(mongo_user_definition['UserName'], str) :
             raise InvalidArgumentValueError(
-                'Invalid Mongo User definition user name. A valid string user name is expected.')
+                'User creation failed. Invalid Mongo User definition user name. A valid string user name is expected.')
 
         if 'Password' not in mongo_user_definition or not isinstance(mongo_user_definition['Password'], str) :
             raise InvalidArgumentValueError(
-                'Invalid Mongo User definition password. A valid string password is expected.')
+                'User creation failed. Invalid Mongo User definition password. A valid string password is expected.')
 
         if 'DatabaseName' not in mongo_user_definition or not isinstance(mongo_user_definition['DatabaseName'], str) :
             raise InvalidArgumentValueError(
-                'Invalid Mongo database name. A valid string database name is expected.')
+                'User creation failed. User creation failed. Invalid Mongo database name. A valid string database name is expected.')
 
         if 'CustomData' not in mongo_user_definition or not isinstance(mongo_user_definition['CustomData'], str) :
             raise InvalidArgumentValueError(
-                'Invalid Mongo Custom Data parameter. A valid string custom data is expected.')
+                'User creation failed. Invalid Mongo Custom Data parameter. A valid string custom data is expected.')
 
         if 'Mechanisms' in mongo_user_definition and not isinstance(mongo_user_definition['Mechanisms'], str) :
             raise InvalidArgumentValueError(
-                'Invalid Mongo Mechanisms parameter. A valid string Mechanisms is expected.')
+                'User creation failed. Invalid Mongo Mechanisms parameter. A valid string Mechanisms is expected.')
 
         if 'Roles' in mongo_user_definition:
             if not isinstance(mongo_user_definition['Roles'], list):
                 raise InvalidArgumentValueError(
-                    'Invalid Mongo Roles. A valid dictionary JSON representation is expected')
+                    'User creation failed. Invalid Mongo Roles. A valid dictionary JSON representation is expected')
             else:
                 for Role in mongo_user_definition['Roles']:
                     if 'Role' not in Role or not isinstance(Role['Role'], str) :
                         raise InvalidArgumentValueError(
-                            'Invalid Mongo Role. A valid string Role is expected.')
+                            'User creation failed. Invalid Mongo Role. A valid string Role is expected.')
                     if 'Db' in Role and not isinstance(Role['Db'], str) :
                         raise InvalidArgumentValueError(
-                            'Invalid Mongo Db. A valid string database name is expected.')
+                            'User creation failed. Invalid Mongo Db. A valid string database name is expected.')
 
         ns.mongo_user_definition_body = mongo_user_definition
+
 
 def validate_mongo_user_definition_id(ns):
     """ Extracts Guid user definition Id """
