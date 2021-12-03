@@ -481,7 +481,6 @@ def app_update(cmd, client, resource_group, service, name,
                enable_end_to_end_tls=None,
                persistent_storage=None,
                loaded_public_certificate_file=None):
-    _check_active_deployment_exist(client, resource_group, service, name)
     resource = client.services.get(resource_group, service)
     location = resource.location
 
@@ -549,16 +548,7 @@ def app_update(cmd, client, resource_group, service, name,
 
     app_updated = client.apps.get(resource_group, service, name)
 
-    if deployment is None:
-        logger.warning(
-            "No '--deployment' given, will update app's production deployment")
-        deployment = client.apps.get(
-            resource_group, service, name).properties.active_deployment_name
-        if deployment is None:
-            logger.warning("No production deployment found for update")
-            return app_updated
-
-    logger.warning("[2/2] Updating deployment '{}'".format(deployment))
+    logger.warning("[2/2] Updating deployment '{}'".format(deployment.name))
     container_probe_settings = None
     if disable_probe is not None:
         container_probe_settings = models_20210901preview.DeploymentSettingsContainerProbeSettings(disable_probe=disable_probe)
@@ -575,12 +565,12 @@ def app_update(cmd, client, resource_group, service, name,
         deployment_settings=deployment_settings)
     deployment_resource = models.DeploymentResource(properties=properties)
     poller = client.deployments.begin_update(
-        resource_group, service, name, deployment, deployment_resource)
+        resource_group, service, name, deployment.name, deployment_resource)
     while poller.done() is False:
         sleep(DEPLOYMENT_CREATE_OR_UPDATE_SLEEP_INTERVAL)
 
     deployment = client.deployments.get(
-        resource_group, service, name, deployment)
+        resource_group, service, name, deployment.name)
     app_updated.properties.active_deployment = deployment
     return app_updated
 
@@ -599,16 +589,9 @@ def app_start(cmd, client,
               name,
               deployment=None,
               no_wait=False):
-    if deployment is None:
-        deployment = client.apps.get(
-            resource_group, service, name).properties.active_deployment_name
-        if deployment is None:
-            logger.warning(NO_PRODUCTION_DEPLOYMENT_SET_ERROR)
-            raise CLIError(NO_PRODUCTION_DEPLOYMENT_ERROR)
-
     logger.warning("Successfully triggered the action 'start' for the app '{}'".format(name))
     return sdk_no_wait(no_wait, client.deployments.begin_start,
-                       resource_group, service, name, deployment)
+                       resource_group, service, name, deployment.name)
 
 
 def app_stop(cmd, client,
@@ -617,16 +600,9 @@ def app_stop(cmd, client,
              name,
              deployment=None,
              no_wait=False):
-    if deployment is None:
-        deployment = client.apps.get(
-            resource_group, service, name).properties.active_deployment_name
-        if deployment is None:
-            logger.warning(NO_PRODUCTION_DEPLOYMENT_SET_ERROR)
-            raise CLIError(NO_PRODUCTION_DEPLOYMENT_ERROR)
-
     logger.warning("Successfully triggered the action 'stop' for the app '{}'".format(name))
     return sdk_no_wait(no_wait, client.deployments.begin_stop,
-                       resource_group, service, name, deployment)
+                       resource_group, service, name, deployment.name)
 
 
 def app_restart(cmd, client,
@@ -635,16 +611,9 @@ def app_restart(cmd, client,
                 name,
                 deployment=None,
                 no_wait=False):
-    if deployment is None:
-        deployment = client.apps.get(
-            resource_group, service, name).properties.active_deployment_name
-        if deployment is None:
-            logger.warning(NO_PRODUCTION_DEPLOYMENT_SET_ERROR)
-            raise CLIError(NO_PRODUCTION_DEPLOYMENT_ERROR)
-
     logger.warning("Successfully triggered the action 'restart' for the app '{}'".format(name))
     return sdk_no_wait(no_wait, client.deployments.begin_restart,
-                       resource_group, service, name, deployment)
+                       resource_group, service, name, deployment.name)
 
 
 def app_list(cmd, client,
@@ -654,11 +623,8 @@ def app_list(cmd, client,
     deployments = list(
         client.deployments.list_for_cluster(resource_group, service))
     for app in apps:
-        if app.properties.active_deployment_name:
-            deployment = next(
-                (x for x in deployments if x.properties.app_name == app.name))
-            app.properties.active_deployment = deployment
-
+        app.properties.active_deployment = next(iter(x for x in deployments
+                                                if x.properties.active and x.id.startswith(app.id + '/deployments/')), None)
     return apps
 
 
@@ -692,22 +658,13 @@ def app_deploy(cmd, client, resource_group, service, name,
                disable_probe=None,
                no_wait=False):
     logger.warning(LOG_RUNNING_PROMPT)
-    if not deployment:
-        deployment = client.apps.get(
-            resource_group, service, name).properties.active_deployment_name
-        if not deployment:
-            logger.warning(NO_PRODUCTION_DEPLOYMENT_SET_ERROR)
-            raise CLIError(NO_PRODUCTION_DEPLOYMENT_ERROR)
-
-    client.deployments.get(resource_group, service, name, deployment)
-
     file_type, file_path = _get_upload_local_file(runtime_version, artifact_path, source_path)
 
     return _app_deploy(client,
                        resource_group,
                        service,
                        name,
-                       deployment,
+                       deployment.name,
                        version,
                        file_path,
                        runtime_version,
@@ -732,12 +689,6 @@ def app_scale(cmd, client, resource_group, service, name,
               no_wait=False):
     cpu = validate_cpu(cpu)
     memory = validate_memory(memory)
-    if deployment is None:
-        deployment = client.apps.get(
-            resource_group, service, name).properties.active_deployment_name
-        if deployment is None:
-            logger.warning(NO_PRODUCTION_DEPLOYMENT_SET_ERROR)
-            raise CLIError(NO_PRODUCTION_DEPLOYMENT_ERROR)
 
     resource = client.services.get(resource_group, service)
     _validate_instance_count(resource.sku.tier, instance_count)
@@ -752,36 +703,22 @@ def app_scale(cmd, client, resource_group, service, name,
     sku = models_20210601preview.Sku(name="S0", tier="STANDARD", capacity=instance_count)
     deployment_resource = models.DeploymentResource(properties=properties, sku=sku)
     return sdk_no_wait(no_wait, client.deployments.begin_update,
-                       resource_group, service, name, deployment, deployment_resource)
+                       resource_group, service, name, deployment.name, deployment_resource)
 
 
-def app_get_build_log(cmd, client, resource_group, service, name, deployment=None):
-    if deployment is None:
-        deployment = client.apps.get(
-            resource_group, service, name).properties.active_deployment_name
-    if deployment is None:
-        raise CLIError(NO_PRODUCTION_DEPLOYMENT_ERROR)
-    deployment_properties = client.deployments.get(
-        resource_group, service, name, deployment).properties
-    if deployment_properties.source.type == "Jar" or deployment_properties.source.type == "NetCoreZip":
-        raise CLIError("{} deployment has no build logs.".format(deployment_properties.source.type))
-    return stream_logs(client.deployments, resource_group, service, name, deployment)
+def app_get_build_log(cmd, client, resource_group, service, name, deployment):
+    if deployment.properties.source.type != "Source":
+        raise CLIError("{} deployment has no build logs.".format(deployment.properties.source.type))
+    return stream_logs(client.deployments, resource_group, service, name, deployment.name)
 
 
 def app_tail_log(cmd, client, resource_group, service, name,
                  deployment=None, instance=None, follow=False, lines=50, since=None, limit=2048, format_json=None):
     if not instance:
-        if deployment is None:
-            deployment = client.apps.get(
-                resource_group, service, name).properties.active_deployment_name
-        if not deployment:
-            raise CLIError(NO_PRODUCTION_DEPLOYMENT_ERROR)
-        deployment_properties = client.deployments.get(
-            resource_group, service, name, deployment).properties
-        if not deployment_properties.instances:
+        if not deployment.properties.instances:
             raise CLIError("No instances found for deployment '{0}' in app '{1}'".format(
-                deployment, name))
-        instances = deployment_properties.instances
+                deployment.name, name))
+        instances = deployment.properties.instances
         if len(instances) > 1:
             logger.warning("Multiple app instances found:")
             for temp_instance in instances:
@@ -1041,48 +978,24 @@ def deployment_list(cmd, client, resource_group, service, app):
 
 
 def deployment_generate_heap_dump(cmd, client, resource_group, service, app, app_instance, file_path, deployment=None):
-    if deployment is None:
-        logger.warning(
-            "No '--deployment' given, will update app's production deployment")
-        deployment = client.apps.get(
-            resource_group, service, app).properties.active_deployment_name
-        if deployment is None:
-            logger.warning("No production deployment found for update")
-            return
     diagnostic_parameters = models_20210901preview.DiagnosticParameters(app_instance=app_instance, file_path=file_path)
     logger.info("Heap dump is triggered.")
-    return client.deployments.begin_generate_heap_dump(resource_group, service, app, deployment, diagnostic_parameters)
+    return client.deployments.begin_generate_heap_dump(resource_group, service, app, deployment.name, diagnostic_parameters)
 
 
 def deployment_generate_thread_dump(cmd, client, resource_group, service, app, app_instance, file_path,
                                     deployment=None):
-    if deployment is None:
-        logger.warning(
-            "No '--deployment' given, will update app's production deployment")
-        deployment = client.apps.get(
-            resource_group, service, app).properties.active_deployment_name
-        if deployment is None:
-            logger.warning("No production deployment found for update")
-            return
     diagnostic_parameters = models_20210901preview.DiagnosticParameters(app_instance=app_instance, file_path=file_path)
     logger.info("Thread dump is triggered.")
-    return client.deployments.begin_generate_thread_dump(resource_group, service, app, deployment, diagnostic_parameters)
+    return client.deployments.begin_generate_thread_dump(resource_group, service, app, deployment.name, diagnostic_parameters)
 
 
 def deployment_start_jfr(cmd, client, resource_group, service, app, app_instance, file_path, duration=None,
                          deployment=None):
-    if deployment is None:
-        logger.warning(
-            "No '--deployment' given, will update app's production deployment")
-        deployment = client.apps.get(
-            resource_group, service, app).properties.active_deployment_name
-        if deployment is None:
-            logger.warning("No production deployment found for update")
-            return
     diagnostic_parameters = models_20210901preview.DiagnosticParameters(app_instance=app_instance, file_path=file_path,
                                                                         duration=duration)
     logger.info("JFR is triggered.")
-    return client.deployments.begin_start_jfr(resource_group, service, app, deployment, diagnostic_parameters)
+    return client.deployments.begin_start_jfr(resource_group, service, app, deployment.name, diagnostic_parameters)
 
 
 def deployment_get(cmd, client, resource_group, service, app, name):
