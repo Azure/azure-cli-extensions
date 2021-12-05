@@ -64,6 +64,9 @@ DELETE_KUSTOMIZATION_NO_EXIST_HELP = "You can view all kustomizations on a confi
 SHOW_KUSTOMIZATION_NO_EXIST_ERROR = "Error! Kustomization with name '{0}' does not exist on configuration '{1}'."
 SHOW_KUSTOMIZATION_NO_EXIST_HELP = "You can view all kustomizations on a configuration with 'az k8s-configuration flux kustomization list'"
 
+SHOW_DEPLOYED_OBJECT_NO_EXIST_ERROR = "Error! Deployed object with name '{0}', namespace '{1}', and kind '{2}' does not exist on configuration '{3}'."
+SHOW_DEPLOYED_OBJECT_NO_EXIST_HELP = "You can view all deployed objects on a configuration with 'az k8s-configuration flux deployed-object list'"
+
 SSH_PRIVATE_KEY_WITH_HTTP_URL_ERROR = "Error! An --ssh-private-key cannot be used with an http(s) url"
 SSH_PRIVATE_KEY_WITH_HTTP_URL_HELP = "Verify the url provided is a valid ssh url and not an http(s) url"
 
