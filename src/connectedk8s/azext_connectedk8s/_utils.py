@@ -413,16 +413,16 @@ def use_msal_cache():
             return False
 
 
-def az_cli (args_str):
+def az_cli(args_str):
     args = args_str.split()
     cli = get_default_cli()
-    cli.invoke(args, out_file = open(os.devnull, 'w'))
+    cli.invoke(args, out_file=open(os.devnull, 'w'))
     if cli.result.result:
         return cli.result.result
     elif cli.result.error:
         raise cli.result.error
     return True
-            
+          
 
 def check_provider_registrations(cli_ctx):
     try:

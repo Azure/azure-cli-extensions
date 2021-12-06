@@ -57,6 +57,7 @@ logger = get_logger(__name__)
 # pylint: disable=too-many-statements
 # pylint: disable=line-too-long
 
+
 def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="", proxy_cert="", location=None,
                         kube_config=None, kube_context=None, no_wait=False, tags=None, distribution='auto', infrastructure='auto',
                         disable_auto_upgrade=False, cl_oid=None, onboarding_timeout="600"):
@@ -1764,18 +1765,17 @@ def client_side_proxy_wrapper(cmd,
             if user_type == "user":
                 response_user_objectid = az_cli("ad signed-in-user show --query objectId -o tsv")
                 token_cache_location = os.path.expanduser(os.path.join('~', msal_token_cache_user))
-                persistence=msal_extensions.FilePersistenceWithDataProtection(token_cache_location)
-                token_cache=msal_extensions.PersistedTokenCache(persistence)
+                persistence = msal_extensions.FilePersistenceWithDataProtection(token_cache_location)
+                token_cache = msal_extensions.PersistedTokenCache(persistence)
                 token_cache._reload_if_necessary()
                 home_account_id = response_user_objectid + "." + tenantId
-                owned_by_home_account = {
-                "home_account_id": home_account_id}
+                owned_by_home_account = {"home_account_id": home_account_id}
                 creds_info = token_cache.find(PersistedTokenCache.CredentialType.REFRESH_TOKEN, query=owned_by_home_account)
                 creds = creds_info[0]['secret']
             else:
                 token_cache_location = os.path.expanduser(os.path.join('~', msal_token_cache_spn))
-                persistence=msal_extensions.FilePersistenceWithDataProtection(token_cache_location)
-                token_cache=msal_extensions.PersistedTokenCache(persistence)
+                persistence = msal_extensions.FilePersistenceWithDataProtection(token_cache_location)
+                token_cache = msal_extensions.PersistedTokenCache(persistence)
                 token_cache._reload_if_necessary()
                 token_cache_string = token_cache.serialize()
                 cache_list = json.loads(token_cache_string)
