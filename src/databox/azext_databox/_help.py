@@ -8,6 +8,10 @@
 # pylint: disable=line-too-long
 from knack.help_files import helps  # pylint: disable=unused-import
 
+helps['databox'] = """
+    type: group
+    short-summary: Manage databox.
+"""
 
 helps['databox job'] = """
     type: group

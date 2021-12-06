@@ -45,12 +45,6 @@ def load_arguments(self, _):
         c.argument('resource_name', type=str, help='The name of the resource. It must be a minimum of 3 characters, '
                    'and a maximum of 63.', id_part='name')
 
-    with self.argument_context('dnc delegated-network list') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-
-    with self.argument_context('dnc orchestrator-instance-service list') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-
     with self.argument_context('dnc orchestrator-instance-service show') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('resource_name', type=str, help='The name of the resource. It must be a minimum of 3 characters, '
@@ -86,9 +80,6 @@ def load_arguments(self, _):
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('resource_name', type=str, help='The name of the resource. It must be a minimum of 3 characters, '
                    'and a maximum of 63.', id_part='name')
-
-    with self.argument_context('dnc delegated-subnet-service list') as c:
-        c.argument('resource_group_name', resource_group_name_type)
 
     with self.argument_context('dnc delegated-subnet-service show') as c:
         c.argument('resource_group_name', resource_group_name_type)

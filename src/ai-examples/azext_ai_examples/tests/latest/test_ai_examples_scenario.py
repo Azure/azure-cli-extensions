@@ -6,7 +6,7 @@
 
 import json
 import unittest
-import mock
+from unittest import mock
 import requests
 
 from azure_devtools.scenario_tests import AllowLargeResponse

@@ -26,7 +26,7 @@ class InventoryItemsOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure_arc_vmware_management_service_api.models
+    :type models: ~azure.mgmt.connectedvmware.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -47,7 +47,7 @@ class InventoryItemsOperations:
         vcenter_name: str,
         inventory_item_name: str,
         body: Optional["_models.InventoryItem"] = None,
-        **kwargs
+        **kwargs: Any
     ) -> "_models.InventoryItem":
         """Implements InventoryItem PUT method.
 
@@ -60,10 +60,10 @@ class InventoryItemsOperations:
         :param inventory_item_name: Name of the inventoryItem.
         :type inventory_item_name: str
         :param body: Request payload.
-        :type body: ~azure_arc_vmware_management_service_api.models.InventoryItem
+        :type body: ~azure.mgmt.connectedvmware.models.InventoryItem
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: InventoryItem, or the result of cls(response)
-        :rtype: ~azure_arc_vmware_management_service_api.models.InventoryItem
+        :rtype: ~azure.mgmt.connectedvmware.models.InventoryItem
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.InventoryItem"]
@@ -122,7 +122,7 @@ class InventoryItemsOperations:
         resource_group_name: str,
         vcenter_name: str,
         inventory_item_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> "_models.InventoryItem":
         """Gets InventoryItem.
 
@@ -136,7 +136,7 @@ class InventoryItemsOperations:
         :type inventory_item_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: InventoryItem, or the result of cls(response)
-        :rtype: ~azure_arc_vmware_management_service_api.models.InventoryItem
+        :rtype: ~azure.mgmt.connectedvmware.models.InventoryItem
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.InventoryItem"]
@@ -187,7 +187,7 @@ class InventoryItemsOperations:
         resource_group_name: str,
         vcenter_name: str,
         inventory_item_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> None:
         """Deletes an inventoryItem.
 
@@ -248,7 +248,7 @@ class InventoryItemsOperations:
         self,
         resource_group_name: str,
         vcenter_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> AsyncIterable["_models.InventoryItemsList"]:
         """Implements GET inventoryItems in a vCenter.
 
@@ -260,7 +260,7 @@ class InventoryItemsOperations:
         :type vcenter_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either InventoryItemsList or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure_arc_vmware_management_service_api.models.InventoryItemsList]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.connectedvmware.models.InventoryItemsList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.InventoryItemsList"]

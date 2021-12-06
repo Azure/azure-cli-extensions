@@ -26,7 +26,7 @@ class DatasetsOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~data_factory_management_client.models
+    :type models: ~azure.mgmt.datafactory.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -55,7 +55,7 @@ class DatasetsOperations:
         :type factory_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either DatasetListResponse or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~data_factory_management_client.models.DatasetListResponse]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.datafactory.models.DatasetListResponse]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DatasetListResponse"]
@@ -133,13 +133,13 @@ class DatasetsOperations:
         :param dataset_name: The dataset name.
         :type dataset_name: str
         :param dataset: Dataset resource definition.
-        :type dataset: ~data_factory_management_client.models.DatasetResource
+        :type dataset: ~azure.mgmt.datafactory.models.DatasetResource
         :param if_match: ETag of the dataset entity.  Should only be specified for update, for which it
          should match existing entity or can be * for unconditional update.
         :type if_match: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: DatasetResource, or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.DatasetResource
+        :rtype: ~azure.mgmt.datafactory.models.DatasetResource
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DatasetResource"]
@@ -212,7 +212,7 @@ class DatasetsOperations:
         :type if_none_match: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: DatasetResource, or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.DatasetResource or None
+        :rtype: ~azure.mgmt.datafactory.models.DatasetResource or None
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType[Optional["models.DatasetResource"]]

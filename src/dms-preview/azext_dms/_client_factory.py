@@ -4,11 +4,11 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
-from azext_dms.vendored_sdks.datamigration import DataMigrationServiceClient
+from azext_dms.vendored_sdks.datamigration import DataMigrationManagementClient
 
 
 def dms_client_factory(cli_ctx, **_):
-    return get_mgmt_service_client(cli_ctx, DataMigrationServiceClient)
+    return get_mgmt_service_client(cli_ctx, DataMigrationManagementClient)
 
 
 def dms_cf_projects(cli_ctx, *_):

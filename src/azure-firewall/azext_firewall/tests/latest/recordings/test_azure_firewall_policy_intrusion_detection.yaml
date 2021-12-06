@@ -13,24 +13,21 @@ interactions:
       ParameterSetName:
       - -g -n --sku --idps-mode
       User-Agent:
-      - python/3.8.3 (Windows-10-10.0.18362-SP0) msrest/0.6.21 msrest_azure/0.6.3
-        azure-mgmt-resource/12.1.0 Azure-SDK-For-Python AZURECLI/2.22.1
-      accept-language:
-      - en-US
+      - AZURECLI/2.26.1 azsdk-python-azure-mgmt-resource/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test_azure_firewall_policy_intrusion_detection000001?api-version=2020-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test_azure_firewall_policy_intrusion_detection000001?api-version=2021-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001","name":"test_azure_firewall_policy_intrusion_detection000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2021-04-21T04:24:56Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001","name":"test_azure_firewall_policy_intrusion_detection000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2021-08-02T02:38:34Z","StorageType":"Standard_LRS","type":"test"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '428'
+      - '471'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 21 Apr 2021 04:25:02 GMT
+      - Mon, 02 Aug 2021 02:38:41 GMT
       expires:
       - '-1'
       pragma:
@@ -63,7 +60,7 @@ interactions:
       ParameterSetName:
       - -g -n --sku --idps-mode
       User-Agent:
-      - AZURECLI/2.22.1 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.26.1 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy?api-version=2020-07-01
   response:
@@ -75,10 +72,10 @@ interactions:
         [],\r\n        \"bypassTrafficSettings\": []\r\n      }\r\n    },\r\n    \"provisioningState\":
         \"Updating\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy\",\r\n
         \ \"name\": \"myFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \ \"etag\": \"e44ddd17-7fec-4f37-919c-2f83b6feca46\",\r\n  \"location\": \"westus\"\r\n}"
+        \ \"etag\": \"66675ff5-e136-4617-864d-94c9a6c6d2f7\",\r\n  \"location\": \"westus\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/nfvOperations/78e2df26-aab7-4985-889a-131f805eea9a?api-version=2020-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/nfvOperations/f59a4285-7016-4723-ad05-d107cfb8b068?api-version=2020-07-01
       cache-control:
       - no-cache
       content-length:
@@ -86,7 +83,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 21 Apr 2021 04:25:09 GMT
+      - Mon, 02 Aug 2021 02:38:49 GMT
       expires:
       - '-1'
       pragma:
@@ -98,7 +95,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
+      - '1199'
     status:
       code: 201
       message: Created
@@ -116,9 +113,9 @@ interactions:
       ParameterSetName:
       - -g -n --sku --idps-mode
       User-Agent:
-      - AZURECLI/2.22.1 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.26.1 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/nfvOperations/78e2df26-aab7-4985-889a-131f805eea9a?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/nfvOperations/f59a4285-7016-4723-ad05-d107cfb8b068?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -130,7 +127,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 21 Apr 2021 04:25:19 GMT
+      - Mon, 02 Aug 2021 02:39:00 GMT
       expires:
       - '-1'
       pragma:
@@ -162,7 +159,7 @@ interactions:
       ParameterSetName:
       - -g -n --sku --idps-mode
       User-Agent:
-      - AZURECLI/2.22.1 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.26.1 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy?api-version=2020-07-01
   response:
@@ -174,7 +171,7 @@ interactions:
         [],\r\n        \"bypassTrafficSettings\": []\r\n      }\r\n    },\r\n    \"provisioningState\":
         \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy\",\r\n
         \ \"name\": \"myFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \ \"etag\": \"e44ddd17-7fec-4f37-919c-2f83b6feca46\",\r\n  \"location\": \"westus\"\r\n}"
+        \ \"etag\": \"66675ff5-e136-4617-864d-94c9a6c6d2f7\",\r\n  \"location\": \"westus\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -183,9 +180,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 21 Apr 2021 04:25:19 GMT
+      - Mon, 02 Aug 2021 02:39:00 GMT
       etag:
-      - '"e44ddd17-7fec-4f37-919c-2f83b6feca46"'
+      - '"66675ff5-e136-4617-864d-94c9a6c6d2f7"'
       expires:
       - '-1'
       pragma:
@@ -217,7 +214,7 @@ interactions:
       ParameterSetName:
       - -g -n --idps-mode
       User-Agent:
-      - AZURECLI/2.22.1 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.26.1 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy?api-version=2020-07-01
   response:
@@ -229,7 +226,7 @@ interactions:
         [],\r\n        \"bypassTrafficSettings\": []\r\n      }\r\n    },\r\n    \"provisioningState\":
         \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy\",\r\n
         \ \"name\": \"myFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \ \"etag\": \"e44ddd17-7fec-4f37-919c-2f83b6feca46\",\r\n  \"location\": \"westus\"\r\n}"
+        \ \"etag\": \"66675ff5-e136-4617-864d-94c9a6c6d2f7\",\r\n  \"location\": \"westus\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -238,9 +235,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 21 Apr 2021 04:25:23 GMT
+      - Mon, 02 Aug 2021 02:39:03 GMT
       etag:
-      - '"e44ddd17-7fec-4f37-919c-2f83b6feca46"'
+      - '"66675ff5-e136-4617-864d-94c9a6c6d2f7"'
       expires:
       - '-1'
       pragma:
@@ -279,7 +276,7 @@ interactions:
       ParameterSetName:
       - -g -n --idps-mode
       User-Agent:
-      - AZURECLI/2.22.1 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.26.1 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy?api-version=2020-07-01
   response:
@@ -291,11 +288,11 @@ interactions:
         [],\r\n        \"bypassTrafficSettings\": []\r\n      }\r\n    },\r\n    \"provisioningState\":
         \"Updating\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy\",\r\n
         \ \"name\": \"myFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \ \"etag\": \"27f2620e-fafd-45de-a95a-206fea1020c4\",\r\n  \"location\": \"westus\",\r\n
+        \ \"etag\": \"e917a502-fe89-4675-80a7-4db381644466\",\r\n  \"location\": \"westus\",\r\n
         \ \"identity\": {\r\n    \"type\": \"None\"\r\n  }\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/nfvOperations/af4f5ace-172e-47ed-8c2d-3ab465065f60?api-version=2020-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/nfvOperations/9bcfad81-0c3f-4e24-94b4-f95d420f69a8?api-version=2020-07-01
       cache-control:
       - no-cache
       content-length:
@@ -303,7 +300,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 21 Apr 2021 04:25:28 GMT
+      - Mon, 02 Aug 2021 02:39:07 GMT
       expires:
       - '-1'
       pragma:
@@ -337,9 +334,9 @@ interactions:
       ParameterSetName:
       - -g -n --idps-mode
       User-Agent:
-      - AZURECLI/2.22.1 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.26.1 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/nfvOperations/af4f5ace-172e-47ed-8c2d-3ab465065f60?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/nfvOperations/9bcfad81-0c3f-4e24-94b4-f95d420f69a8?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -351,7 +348,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 21 Apr 2021 04:25:39 GMT
+      - Mon, 02 Aug 2021 02:39:18 GMT
       expires:
       - '-1'
       pragma:
@@ -383,7 +380,7 @@ interactions:
       ParameterSetName:
       - -g -n --idps-mode
       User-Agent:
-      - AZURECLI/2.22.1 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.26.1 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy?api-version=2020-07-01
   response:
@@ -395,7 +392,7 @@ interactions:
         [],\r\n        \"bypassTrafficSettings\": []\r\n      }\r\n    },\r\n    \"provisioningState\":
         \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy\",\r\n
         \ \"name\": \"myFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \ \"etag\": \"27f2620e-fafd-45de-a95a-206fea1020c4\",\r\n  \"location\": \"westus\"\r\n}"
+        \ \"etag\": \"e917a502-fe89-4675-80a7-4db381644466\",\r\n  \"location\": \"westus\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -404,9 +401,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 21 Apr 2021 04:25:39 GMT
+      - Mon, 02 Aug 2021 02:39:18 GMT
       etag:
-      - '"27f2620e-fafd-45de-a95a-206fea1020c4"'
+      - '"e917a502-fe89-4675-80a7-4db381644466"'
       expires:
       - '-1'
       pragma:
@@ -438,7 +435,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name --mode --signature-id
       User-Agent:
-      - AZURECLI/2.22.1 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.26.1 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy?api-version=2020-07-01
   response:
@@ -450,7 +447,7 @@ interactions:
         [],\r\n        \"bypassTrafficSettings\": []\r\n      }\r\n    },\r\n    \"provisioningState\":
         \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy\",\r\n
         \ \"name\": \"myFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \ \"etag\": \"27f2620e-fafd-45de-a95a-206fea1020c4\",\r\n  \"location\": \"westus\"\r\n}"
+        \ \"etag\": \"e917a502-fe89-4675-80a7-4db381644466\",\r\n  \"location\": \"westus\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -459,9 +456,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 21 Apr 2021 04:25:41 GMT
+      - Mon, 02 Aug 2021 02:39:20 GMT
       etag:
-      - '"27f2620e-fafd-45de-a95a-206fea1020c4"'
+      - '"e917a502-fe89-4675-80a7-4db381644466"'
       expires:
       - '-1'
       pragma:
@@ -500,7 +497,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name --mode --signature-id
       User-Agent:
-      - AZURECLI/2.22.1 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.26.1 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy?api-version=2020-07-01
   response:
@@ -514,10 +511,10 @@ interactions:
         []\r\n      }\r\n    },\r\n    \"provisioningState\": \"Updating\"\r\n  },\r\n
         \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy\",\r\n
         \ \"name\": \"myFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \ \"etag\": \"73945ca4-4a84-4da2-a2a0-63d9ebd0cc3f\",\r\n  \"location\": \"westus\"\r\n}"
+        \ \"etag\": \"662ea361-f458-4977-89db-c120ccd016a0\",\r\n  \"location\": \"westus\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/nfvOperations/f6bc4775-0af8-475e-b727-cbfdea84aafb?api-version=2020-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/nfvOperations/8aa848f6-dec4-4544-8b00-ce720a540373?api-version=2020-07-01
       cache-control:
       - no-cache
       content-length:
@@ -525,7 +522,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 21 Apr 2021 04:25:43 GMT
+      - Mon, 02 Aug 2021 02:39:21 GMT
       expires:
       - '-1'
       pragma:
@@ -559,9 +556,9 @@ interactions:
       ParameterSetName:
       - -g --policy-name --mode --signature-id
       User-Agent:
-      - AZURECLI/2.22.1 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.26.1 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/nfvOperations/f6bc4775-0af8-475e-b727-cbfdea84aafb?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/nfvOperations/8aa848f6-dec4-4544-8b00-ce720a540373?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -573,7 +570,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 21 Apr 2021 04:25:53 GMT
+      - Mon, 02 Aug 2021 02:39:31 GMT
       expires:
       - '-1'
       pragma:
@@ -605,7 +602,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name --mode --signature-id
       User-Agent:
-      - AZURECLI/2.22.1 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.26.1 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy?api-version=2020-07-01
   response:
@@ -619,7 +616,7 @@ interactions:
         []\r\n      }\r\n    },\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n
         \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy\",\r\n
         \ \"name\": \"myFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \ \"etag\": \"73945ca4-4a84-4da2-a2a0-63d9ebd0cc3f\",\r\n  \"location\": \"westus\"\r\n}"
+        \ \"etag\": \"662ea361-f458-4977-89db-c120ccd016a0\",\r\n  \"location\": \"westus\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -628,9 +625,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 21 Apr 2021 04:25:54 GMT
+      - Mon, 02 Aug 2021 02:39:32 GMT
       etag:
-      - '"73945ca4-4a84-4da2-a2a0-63d9ebd0cc3f"'
+      - '"662ea361-f458-4977-89db-c120ccd016a0"'
       expires:
       - '-1'
       pragma:
@@ -662,7 +659,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name --mode --signature-id
       User-Agent:
-      - AZURECLI/2.22.1 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.26.1 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy?api-version=2020-07-01
   response:
@@ -676,7 +673,7 @@ interactions:
         []\r\n      }\r\n    },\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n
         \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy\",\r\n
         \ \"name\": \"myFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \ \"etag\": \"73945ca4-4a84-4da2-a2a0-63d9ebd0cc3f\",\r\n  \"location\": \"westus\"\r\n}"
+        \ \"etag\": \"662ea361-f458-4977-89db-c120ccd016a0\",\r\n  \"location\": \"westus\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -685,9 +682,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 21 Apr 2021 04:25:55 GMT
+      - Mon, 02 Aug 2021 02:39:34 GMT
       etag:
-      - '"73945ca4-4a84-4da2-a2a0-63d9ebd0cc3f"'
+      - '"662ea361-f458-4977-89db-c120ccd016a0"'
       expires:
       - '-1'
       pragma:
@@ -727,7 +724,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name --mode --signature-id
       User-Agent:
-      - AZURECLI/2.22.1 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.26.1 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy?api-version=2020-07-01
   response:
@@ -742,10 +739,10 @@ interactions:
         []\r\n      }\r\n    },\r\n    \"provisioningState\": \"Updating\"\r\n  },\r\n
         \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy\",\r\n
         \ \"name\": \"myFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \ \"etag\": \"f30566e2-5915-4e9b-b2dd-cc1e66966f17\",\r\n  \"location\": \"westus\"\r\n}"
+        \ \"etag\": \"ee9c24d5-b404-4cd2-875e-922db3f08a64\",\r\n  \"location\": \"westus\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/nfvOperations/ba8849dc-7eef-4713-9301-7f387e1554ba?api-version=2020-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/nfvOperations/34d4c331-1cc7-4aa4-bbe2-138736eb2b76?api-version=2020-07-01
       cache-control:
       - no-cache
       content-length:
@@ -753,7 +750,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 21 Apr 2021 04:25:56 GMT
+      - Mon, 02 Aug 2021 02:39:35 GMT
       expires:
       - '-1'
       pragma:
@@ -769,7 +766,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1196'
+      - '1199'
     status:
       code: 200
       message: OK
@@ -787,9 +784,9 @@ interactions:
       ParameterSetName:
       - -g --policy-name --mode --signature-id
       User-Agent:
-      - AZURECLI/2.22.1 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.26.1 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/nfvOperations/ba8849dc-7eef-4713-9301-7f387e1554ba?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/nfvOperations/34d4c331-1cc7-4aa4-bbe2-138736eb2b76?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -801,7 +798,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 21 Apr 2021 04:26:07 GMT
+      - Mon, 02 Aug 2021 02:39:45 GMT
       expires:
       - '-1'
       pragma:
@@ -833,7 +830,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name --mode --signature-id
       User-Agent:
-      - AZURECLI/2.22.1 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.26.1 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy?api-version=2020-07-01
   response:
@@ -848,7 +845,7 @@ interactions:
         []\r\n      }\r\n    },\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n
         \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy\",\r\n
         \ \"name\": \"myFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \ \"etag\": \"f30566e2-5915-4e9b-b2dd-cc1e66966f17\",\r\n  \"location\": \"westus\"\r\n}"
+        \ \"etag\": \"ee9c24d5-b404-4cd2-875e-922db3f08a64\",\r\n  \"location\": \"westus\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -857,9 +854,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 21 Apr 2021 04:26:08 GMT
+      - Mon, 02 Aug 2021 02:39:45 GMT
       etag:
-      - '"f30566e2-5915-4e9b-b2dd-cc1e66966f17"'
+      - '"ee9c24d5-b404-4cd2-875e-922db3f08a64"'
       expires:
       - '-1'
       pragma:
@@ -892,7 +889,7 @@ interactions:
       - -g --policy-name --rule-name --rule-protocol --rule-src-addresses --rule-dest-addresses
         --rule-dest-ports
       User-Agent:
-      - AZURECLI/2.22.1 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.26.1 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy?api-version=2020-07-01
   response:
@@ -907,7 +904,7 @@ interactions:
         []\r\n      }\r\n    },\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n
         \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy\",\r\n
         \ \"name\": \"myFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \ \"etag\": \"f30566e2-5915-4e9b-b2dd-cc1e66966f17\",\r\n  \"location\": \"westus\"\r\n}"
+        \ \"etag\": \"ee9c24d5-b404-4cd2-875e-922db3f08a64\",\r\n  \"location\": \"westus\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -916,9 +913,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 21 Apr 2021 04:26:10 GMT
+      - Mon, 02 Aug 2021 02:39:48 GMT
       etag:
-      - '"f30566e2-5915-4e9b-b2dd-cc1e66966f17"'
+      - '"ee9c24d5-b404-4cd2-875e-922db3f08a64"'
       expires:
       - '-1'
       pragma:
@@ -961,7 +958,7 @@ interactions:
       - -g --policy-name --rule-name --rule-protocol --rule-src-addresses --rule-dest-addresses
         --rule-dest-ports
       User-Agent:
-      - AZURECLI/2.22.1 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.26.1 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy?api-version=2020-07-01
   response:
@@ -982,10 +979,10 @@ interactions:
         \       ]\r\n      }\r\n    },\r\n    \"provisioningState\": \"Updating\"\r\n
         \ },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy\",\r\n
         \ \"name\": \"myFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \ \"etag\": \"5a53c3d8-9754-4b67-a241-33c8422472c3\",\r\n  \"location\": \"westus\"\r\n}"
+        \ \"etag\": \"661f9f90-bd9d-4526-8d37-81085ad30b99\",\r\n  \"location\": \"westus\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/nfvOperations/1f68089b-d90a-4903-b12c-06ba907a4aa7?api-version=2020-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/nfvOperations/9c790310-8e37-4da1-a909-f1fec0d1a863?api-version=2020-07-01
       cache-control:
       - no-cache
       content-length:
@@ -993,7 +990,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 21 Apr 2021 04:26:11 GMT
+      - Mon, 02 Aug 2021 02:39:49 GMT
       expires:
       - '-1'
       pragma:
@@ -1009,7 +1006,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1197'
     status:
       code: 200
       message: OK
@@ -1028,9 +1025,9 @@ interactions:
       - -g --policy-name --rule-name --rule-protocol --rule-src-addresses --rule-dest-addresses
         --rule-dest-ports
       User-Agent:
-      - AZURECLI/2.22.1 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.26.1 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/nfvOperations/1f68089b-d90a-4903-b12c-06ba907a4aa7?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/nfvOperations/9c790310-8e37-4da1-a909-f1fec0d1a863?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -1042,7 +1039,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 21 Apr 2021 04:26:21 GMT
+      - Mon, 02 Aug 2021 02:39:59 GMT
       expires:
       - '-1'
       pragma:
@@ -1075,7 +1072,7 @@ interactions:
       - -g --policy-name --rule-name --rule-protocol --rule-src-addresses --rule-dest-addresses
         --rule-dest-ports
       User-Agent:
-      - AZURECLI/2.22.1 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.26.1 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy?api-version=2020-07-01
   response:
@@ -1096,7 +1093,7 @@ interactions:
         \       ]\r\n      }\r\n    },\r\n    \"provisioningState\": \"Succeeded\"\r\n
         \ },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy\",\r\n
         \ \"name\": \"myFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \ \"etag\": \"5a53c3d8-9754-4b67-a241-33c8422472c3\",\r\n  \"location\": \"westus\"\r\n}"
+        \ \"etag\": \"661f9f90-bd9d-4526-8d37-81085ad30b99\",\r\n  \"location\": \"westus\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -1105,9 +1102,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 21 Apr 2021 04:26:21 GMT
+      - Mon, 02 Aug 2021 02:39:59 GMT
       etag:
-      - '"5a53c3d8-9754-4b67-a241-33c8422472c3"'
+      - '"661f9f90-bd9d-4526-8d37-81085ad30b99"'
       expires:
       - '-1'
       pragma:
@@ -1139,7 +1136,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name
       User-Agent:
-      - AZURECLI/2.22.1 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.26.1 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy?api-version=2020-07-01
   response:
@@ -1160,7 +1157,7 @@ interactions:
         \       ]\r\n      }\r\n    },\r\n    \"provisioningState\": \"Succeeded\"\r\n
         \ },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy\",\r\n
         \ \"name\": \"myFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \ \"etag\": \"5a53c3d8-9754-4b67-a241-33c8422472c3\",\r\n  \"location\": \"westus\"\r\n}"
+        \ \"etag\": \"661f9f90-bd9d-4526-8d37-81085ad30b99\",\r\n  \"location\": \"westus\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -1169,9 +1166,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 21 Apr 2021 04:26:23 GMT
+      - Mon, 02 Aug 2021 02:40:00 GMT
       etag:
-      - '"5a53c3d8-9754-4b67-a241-33c8422472c3"'
+      - '"661f9f90-bd9d-4526-8d37-81085ad30b99"'
       expires:
       - '-1'
       pragma:
@@ -1203,7 +1200,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name --rule-name --signature-id
       User-Agent:
-      - AZURECLI/2.22.1 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.26.1 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy?api-version=2020-07-01
   response:
@@ -1224,7 +1221,7 @@ interactions:
         \       ]\r\n      }\r\n    },\r\n    \"provisioningState\": \"Succeeded\"\r\n
         \ },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy\",\r\n
         \ \"name\": \"myFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \ \"etag\": \"5a53c3d8-9754-4b67-a241-33c8422472c3\",\r\n  \"location\": \"westus\"\r\n}"
+        \ \"etag\": \"661f9f90-bd9d-4526-8d37-81085ad30b99\",\r\n  \"location\": \"westus\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -1233,9 +1230,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 21 Apr 2021 04:26:25 GMT
+      - Mon, 02 Aug 2021 02:40:03 GMT
       etag:
-      - '"5a53c3d8-9754-4b67-a241-33c8422472c3"'
+      - '"661f9f90-bd9d-4526-8d37-81085ad30b99"'
       expires:
       - '-1'
       pragma:
@@ -1274,7 +1271,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name --rule-name --signature-id
       User-Agent:
-      - AZURECLI/2.22.1 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.26.1 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy?api-version=2020-07-01
   response:
@@ -1288,10 +1285,10 @@ interactions:
         []\r\n      }\r\n    },\r\n    \"provisioningState\": \"Updating\"\r\n  },\r\n
         \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy\",\r\n
         \ \"name\": \"myFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \ \"etag\": \"27dece3f-ec59-4586-93ae-6a9928d2ab11\",\r\n  \"location\": \"westus\"\r\n}"
+        \ \"etag\": \"71a01c9e-0ec7-4150-b292-cfb46952ac27\",\r\n  \"location\": \"westus\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/nfvOperations/833811c7-2ff6-49b1-aa6a-9586ee1239e3?api-version=2020-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/nfvOperations/c9c91cc8-2bba-4ddc-b027-a5ec4d841cfe?api-version=2020-07-01
       cache-control:
       - no-cache
       content-length:
@@ -1299,7 +1296,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 21 Apr 2021 04:26:26 GMT
+      - Mon, 02 Aug 2021 02:40:04 GMT
       expires:
       - '-1'
       pragma:
@@ -1333,9 +1330,9 @@ interactions:
       ParameterSetName:
       - -g --policy-name --rule-name --signature-id
       User-Agent:
-      - AZURECLI/2.22.1 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.26.1 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/nfvOperations/833811c7-2ff6-49b1-aa6a-9586ee1239e3?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/nfvOperations/c9c91cc8-2bba-4ddc-b027-a5ec4d841cfe?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -1347,7 +1344,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 21 Apr 2021 04:26:37 GMT
+      - Mon, 02 Aug 2021 02:40:14 GMT
       expires:
       - '-1'
       pragma:
@@ -1379,7 +1376,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name --rule-name --signature-id
       User-Agent:
-      - AZURECLI/2.22.1 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.26.1 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy?api-version=2020-07-01
   response:
@@ -1393,7 +1390,7 @@ interactions:
         []\r\n      }\r\n    },\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n
         \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy\",\r\n
         \ \"name\": \"myFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \ \"etag\": \"27dece3f-ec59-4586-93ae-6a9928d2ab11\",\r\n  \"location\": \"westus\"\r\n}"
+        \ \"etag\": \"71a01c9e-0ec7-4150-b292-cfb46952ac27\",\r\n  \"location\": \"westus\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -1402,9 +1399,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 21 Apr 2021 04:26:37 GMT
+      - Mon, 02 Aug 2021 02:40:14 GMT
       etag:
-      - '"27dece3f-ec59-4586-93ae-6a9928d2ab11"'
+      - '"71a01c9e-0ec7-4150-b292-cfb46952ac27"'
       expires:
       - '-1'
       pragma:
@@ -1436,7 +1433,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name
       User-Agent:
-      - AZURECLI/2.22.1 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
+      - AZURECLI/2.26.1 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy?api-version=2020-07-01
   response:
@@ -1450,7 +1447,7 @@ interactions:
         []\r\n      }\r\n    },\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n
         \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy\",\r\n
         \ \"name\": \"myFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \ \"etag\": \"27dece3f-ec59-4586-93ae-6a9928d2ab11\",\r\n  \"location\": \"westus\"\r\n}"
+        \ \"etag\": \"71a01c9e-0ec7-4150-b292-cfb46952ac27\",\r\n  \"location\": \"westus\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -1459,9 +1456,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 21 Apr 2021 04:26:38 GMT
+      - Mon, 02 Aug 2021 02:40:17 GMT
       etag:
-      - '"27dece3f-ec59-4586-93ae-6a9928d2ab11"'
+      - '"71a01c9e-0ec7-4150-b292-cfb46952ac27"'
       expires:
       - '-1'
       pragma:

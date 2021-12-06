@@ -21,6 +21,9 @@ if TYPE_CHECKING:
 from ._configuration import AzureArcVMwareManagementServiceAPIConfiguration
 from .operations import Operations
 from .operations import ResourcePoolsOperations
+from .operations import ClustersOperations
+from .operations import HostsOperations
+from .operations import DatastoresOperations
 from .operations import VCentersOperations
 from .operations import VirtualMachinesOperations
 from .operations import VirtualMachineTemplatesOperations
@@ -28,7 +31,7 @@ from .operations import VirtualNetworksOperations
 from .operations import InventoryItemsOperations
 from .operations import HybridIdentityMetadataOperations
 from .operations import MachineExtensionsOperations
-from .operations import GuestAgentOperations
+from .operations import GuestAgentsOperations
 from . import models
 
 
@@ -36,25 +39,31 @@ class AzureArcVMwareManagementServiceAPI(object):
     """Self service experience for VMware.
 
     :ivar operations: Operations operations
-    :vartype operations: azure_arc_vmware_management_service_api.operations.Operations
+    :vartype operations: azure.mgmt.connectedvmware.operations.Operations
     :ivar resource_pools: ResourcePoolsOperations operations
-    :vartype resource_pools: azure_arc_vmware_management_service_api.operations.ResourcePoolsOperations
+    :vartype resource_pools: azure.mgmt.connectedvmware.operations.ResourcePoolsOperations
+    :ivar clusters: ClustersOperations operations
+    :vartype clusters: azure.mgmt.connectedvmware.operations.ClustersOperations
+    :ivar hosts: HostsOperations operations
+    :vartype hosts: azure.mgmt.connectedvmware.operations.HostsOperations
+    :ivar datastores: DatastoresOperations operations
+    :vartype datastores: azure.mgmt.connectedvmware.operations.DatastoresOperations
     :ivar vcenters: VCentersOperations operations
-    :vartype vcenters: azure_arc_vmware_management_service_api.operations.VCentersOperations
+    :vartype vcenters: azure.mgmt.connectedvmware.operations.VCentersOperations
     :ivar virtual_machines: VirtualMachinesOperations operations
-    :vartype virtual_machines: azure_arc_vmware_management_service_api.operations.VirtualMachinesOperations
+    :vartype virtual_machines: azure.mgmt.connectedvmware.operations.VirtualMachinesOperations
     :ivar virtual_machine_templates: VirtualMachineTemplatesOperations operations
-    :vartype virtual_machine_templates: azure_arc_vmware_management_service_api.operations.VirtualMachineTemplatesOperations
+    :vartype virtual_machine_templates: azure.mgmt.connectedvmware.operations.VirtualMachineTemplatesOperations
     :ivar virtual_networks: VirtualNetworksOperations operations
-    :vartype virtual_networks: azure_arc_vmware_management_service_api.operations.VirtualNetworksOperations
+    :vartype virtual_networks: azure.mgmt.connectedvmware.operations.VirtualNetworksOperations
     :ivar inventory_items: InventoryItemsOperations operations
-    :vartype inventory_items: azure_arc_vmware_management_service_api.operations.InventoryItemsOperations
+    :vartype inventory_items: azure.mgmt.connectedvmware.operations.InventoryItemsOperations
     :ivar hybrid_identity_metadata: HybridIdentityMetadataOperations operations
-    :vartype hybrid_identity_metadata: azure_arc_vmware_management_service_api.operations.HybridIdentityMetadataOperations
+    :vartype hybrid_identity_metadata: azure.mgmt.connectedvmware.operations.HybridIdentityMetadataOperations
     :ivar machine_extensions: MachineExtensionsOperations operations
-    :vartype machine_extensions: azure_arc_vmware_management_service_api.operations.MachineExtensionsOperations
-    :ivar guest_agent: GuestAgentOperations operations
-    :vartype guest_agent: azure_arc_vmware_management_service_api.operations.GuestAgentOperations
+    :vartype machine_extensions: azure.mgmt.connectedvmware.operations.MachineExtensionsOperations
+    :ivar guest_agents: GuestAgentsOperations operations
+    :vartype guest_agents: azure.mgmt.connectedvmware.operations.GuestAgentsOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials.TokenCredential
     :param subscription_id: The Subscription ID.
@@ -85,6 +94,12 @@ class AzureArcVMwareManagementServiceAPI(object):
             self._client, self._config, self._serialize, self._deserialize)
         self.resource_pools = ResourcePoolsOperations(
             self._client, self._config, self._serialize, self._deserialize)
+        self.clusters = ClustersOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.hosts = HostsOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.datastores = DatastoresOperations(
+            self._client, self._config, self._serialize, self._deserialize)
         self.vcenters = VCentersOperations(
             self._client, self._config, self._serialize, self._deserialize)
         self.virtual_machines = VirtualMachinesOperations(
@@ -99,7 +114,7 @@ class AzureArcVMwareManagementServiceAPI(object):
             self._client, self._config, self._serialize, self._deserialize)
         self.machine_extensions = MachineExtensionsOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.guest_agent = GuestAgentOperations(
+        self.guest_agents = GuestAgentsOperations(
             self._client, self._config, self._serialize, self._deserialize)
 
     def _send_request(self, http_request, **kwargs):

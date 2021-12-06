@@ -5,21 +5,59 @@
 # pylint: disable= too-many-statements
 
 from knack.arguments import CLIArgumentType
-from azure.cli.core.commands.parameters import tags_type
-from azure.cli.core.commands.validators import get_default_location_from_resource_group
+from azure.cli.core.commands.parameters import (
+    tags_type,
+    get_three_state_flag,
+)
+from azure.cli.core.commands.validators import (
+    get_default_location_from_resource_group,
+    validate_file_or_dict
+)
 from ._actions import VmNicAddAction, VmDiskAddAction
 
 
 def load_arguments(self, _):
-    connectedvmware_name_type = CLIArgumentType(
+    resource_name = CLIArgumentType(
         options_list='--resource-name', help='Name of the resource.', id_part='name'
+    )
+
+    custom_location = CLIArgumentType(
+        options_list=['--custom-location', '-c'],
+        help='Name or ID of the custom location that will manage this resource.',
+    )
+
+    vcenter = CLIArgumentType(
+        options_list=['--vcenter', '-v'],
+        help='Name or ID of the vCenter that is managing this resource.',
+    )
+
+    mo_ref_id = CLIArgumentType(
+        options_list=['--mo-ref-id', '-m'],
+        help='VCenter MoRef (Managed Object Reference) ID for the existing resource.',
+    )
+
+    inventory_item = CLIArgumentType(
+        options_list=['--inventory-item', '-i'],
+        help='Name or ID of the inventory item.',
     )
 
     with self.argument_context('connectedvmware') as c:
         c.argument('tags', tags_type)
         c.argument('location', validator=get_default_location_from_resource_group)
         c.argument(
-            'resource_name', connectedvmware_name_type, options_list=['--name', '-n']
+            'resource_name', resource_name, options_list=['--name', '-n']
+        )
+        c.argument(
+            'custom_location', custom_location, options_list=['--custom-location', '-c']
+        )
+        c.argument(
+            'vcenter', vcenter, options_list=['--vcenter', '-v']
+        )
+        c.argument(
+            'mo_ref_id', mo_ref_id, options_list=['--mo-ref-id', '-m']
+        )
+        c.argument(
+            'inventory_item', inventory_item, options_list=['--inventory-item', '-i']
         )
 
     with self.argument_context('connectedvmware vcenter connect') as c:
@@ -28,11 +66,6 @@ def load_arguments(self, _):
         )
         c.argument(
             'port', type=int, options_list=['--port'], help="The port of the vCenter."
-        )
-        c.argument(
-            'custom_location',
-            options_list=['--custom-location'],
-            help="Name or ID of the custom location that will manage this vCenter.",
         )
         c.argument(
             'username',
@@ -48,116 +81,61 @@ def load_arguments(self, _):
     with self.argument_context('connectedvmware vcenter delete') as c:
         c.argument('force', action='store_true', help="Whether force delete or not.")
 
-    with self.argument_context('connectedvmware resource-pool create') as c:
-        c.argument(
-            'custom_location',
-            options_list=['--custom-location'],
-            help="Name or ID of the custom location that is managing this resource pool.",
-        )
-        c.argument(
-            'vcenter',
-            options_list=['--vcenter'],
-            help="Name or ID of the vCenter that is managing this resource pool.",
-        )
-        c.argument(
-            'mo_ref_id',
-            options_list=['--mo-ref-id'],
-            help="VCenter MoRef (Managed Object Reference) ID for the existing resource pool.",
-        )
-        c.argument(
-            'inventory_item',
-            options_list=['--inventory-item'],
-            help="Name or ID of the inventory item.",
-        )
+    self.argument_context('connectedvmware vcenter inventory-item list')
+
+    self.argument_context('connectedvmware vcenter inventory-item show')
+
+    self.argument_context('connectedvmware resource-pool create')
 
     with self.argument_context('connectedvmware resource-pool delete') as c:
         c.argument('force', action='store_true', help="Whether force delete or not.")
 
-    with self.argument_context('connectedvmware virtual-network create') as c:
-        c.argument(
-            'custom_location',
-            options_list=['--custom-location'],
-            help="Name or ID of the custom location that is managing this virtual network.",
-        )
-        c.argument(
-            'vcenter',
-            options_list=['--vcenter'],
-            help="Name or ID of the vCenter that is managing this virtual network.",
-        )
-        c.argument(
-            'mo_ref_id',
-            options_list=['--mo-ref-id'],
-            help="VCenter MoRef (Managed Object Reference) ID for the existing virtual network.",
-        )
-        c.argument(
-            'inventory_item',
-            options_list=['--inventory-item'],
-            help="Name or ID of the inventory item.",
-        )
+    self.argument_context('connectedvmware cluster create')
+
+    with self.argument_context('connectedvmware cluster delete') as c:
+        c.argument('force', action='store_true', help="Whether force delete or not.")
+
+    self.argument_context('connectedvmware datastore create')
+
+    with self.argument_context('connectedvmware datastore delete') as c:
+        c.argument('force', action='store_true', help="Whether force delete or not.")
+
+    self.argument_context('connectedvmware host create')
+
+    with self.argument_context('connectedvmware host delete') as c:
+        c.argument('force', action='store_true', help="Whether force delete or not.")
+
+    self.argument_context('connectedvmware virtual-network create')
 
     with self.argument_context('connectedvmware virtual-network delete') as c:
         c.argument('force', action='store_true', help="Whether force delete or not.")
 
-    with self.argument_context('connectedvmware vm-template create') as c:
-        c.argument(
-            'arc_zone',
-            options_list=['--arc-zone'],
-            help="Name or ID of the Arc zone that is managing this vm template.",
-        )
-        c.argument(
-            'vcenter',
-            options_list=['--vcenter'],
-            help="Name or ID of the vCenter that is managing this vm template.",
-        )
-        c.argument(
-            'mo_ref_id',
-            options_list=['--mo-ref-id'],
-            help="VCenter MoRef (Managed Object Reference) ID for the existing vm template.",
-        )
-        c.argument(
-            'custom_location',
-            options_list=['--custom-location'],
-            help="Name or ID of the custom location that will manage this vCenter.",
-        )
-        c.argument(
-            'inventory_item',
-            options_list=['--inventory-item'],
-            help="Name or ID of the inventory item.",
-        )
+    self.argument_context('connectedvmware vm-template create')
 
     with self.argument_context('connectedvmware vm-template delete') as c:
         c.argument('force', action='store_true', help="Whether force delete or not.")
 
     with self.argument_context('connectedvmware vm create') as c:
         c.argument(
-            'arc_zone',
-            options_list=['--arc-zone'],
-            help="Name or ID of the Arc zone to deploy the vm.",
+            'vm_template', help="Name or ID of the vm template for deploying the vm.",
         )
         c.argument(
-            'custom_location',
-            options_list=['--custom-location'],
-            help="Name or ID of the custom location that will manage this vm.",
+            'resource_pool', help="Name or ID of the resource pool for deploying the vm.",
         )
         c.argument(
-            'vcenter',
-            options_list=['--vcenter'],
-            help="Name or ID of the vCenter to deploy the vm.",
+            'cluster',
+            options_list=['--cluster'],
+            help="Name or ID of the cluster for deploying the VM.",
         )
         c.argument(
-            'vm_template',
-            options_list=['--vm-template'],
-            help="Name or ID of the vm template for deploying the vm.",
+            'host',
+            options_list=['--host'],
+            help="Name or ID of the host for deploying the VM.",
         )
         c.argument(
-            'resource_pool',
-            options_list=['--resource-pool'],
-            help="Name or ID of the resource pool for deploying the vm.",
-        )
-        c.argument(
-            'inventory_item',
-            options_list=['--inventory-item'],
-            help="Name or ID of the inventory item.",
+            'datastore',
+            options_list=['--datastore'],
+            help="Name or ID of the datastore for deploying the VM.",
         )
         c.argument(
             'admin_username',
@@ -307,7 +285,7 @@ def load_arguments(self, _):
 
     with self.argument_context('connectedvmware vm disk delete') as c:
         c.argument(
-            'vm_name', options_list=['--vm-name'], help="Name of the virtual machine."
+            'vm_name', help="Name of the virtual machine."
         )
         c.argument(
             'disk_names',
@@ -318,7 +296,7 @@ def load_arguments(self, _):
 
     with self.argument_context('connectedvmware vm disk list') as c:
         c.argument(
-            'vm_name', options_list=['--vm-name'], help="Name of the virtual machine."
+            'vm_name', help="Name of the virtual machine."
         )
 
     with self.argument_context('connectedvmware vm disk show') as c:
@@ -330,7 +308,7 @@ def load_arguments(self, _):
     with self.argument_context('connectedvmware vm disk update') as c:
         c.argument('disk_name', options_list=['--name', '-n'], help="Name of the Disk.")
         c.argument(
-            'vm_name', options_list=['--vm-name'], help="Name of the virtual machine."
+            'vm_name', help="Name of the virtual machine."
         )
         c.argument(
             'disk_size',
@@ -360,16 +338,78 @@ def load_arguments(self, _):
             help="The device key for the disk.",
         )
 
-    with self.argument_context('connectedvmware inventory-item list') as c:
+    with self.argument_context('connectedvmware vm guest-agent enable') as c:
         c.argument(
-            'vcenter_name', options_list=['--vcenter-name'], help="Name of the vCenter."
+            'vm_name', help="Name of the VM."
+        )
+        c.argument(
+            'username',
+            options_list=['--username'],
+            help="Username to use for connecting to the vm.",
+        )
+        c.argument(
+            'password', options_list=['--password'],
+            help="Username password credentials to use for connecting to the VM.",
         )
 
-    with self.argument_context('connectedvmware inventory-item show') as c:
+    with self.argument_context('connectedvmware vm guest-agent show') as c:
         c.argument(
-            'inventory_item_name',
-            options_list=['--inventory-item-name'], help="Name of the inventory item.",
+            'password', options_list=['--password'],
+            help="Username password credentials to use for connecting to the VM.",
         )
+
+    with self.argument_context('connectedvmware vm guest-agent show') as c:
         c.argument(
-            'vcenter_name', options_list=['--vcenter-name'], help="Name of the vCenter.",
+            'vm_name', help="Name of the VM.",
         )
+
+    with self.argument_context('connectedvmware vm extension list') as c:
+        c.argument('vm_name', type=str, help='The name of the vm containing the extension.')
+        c.argument(
+            'expand', help='The expand expression to apply on the operation.')
+
+    with self.argument_context('connectedvmware vm extension show') as c:
+        c.argument(
+            'vm_name', type=str, help='The name of the vm containing the extension.',
+            id_part='name')
+        c.argument('name', type=str, help='The name of the vm extension.', id_part='child_name_1')
+
+    for scope in ['connectedvmware vm extension update', 'connectedvmware vm extension create']:
+        with self.argument_context(scope) as c:
+            c.argument(
+                'vm_name', type=str, help='The name of the vm where the extension '
+                'should be created or updated.')
+            c.argument('name', type=str, help='The name of the vm extension.')
+            c.argument('tags', tags_type)
+            c.argument(
+                'force_update_tag', type=str, help='How the extension handler should be forced to update even if '
+                'the extension configuration has not changed.')
+            c.argument('publisher', type=str, help='The name of the extension handler publisher.')
+            c.argument(
+                'type_', options_list=['--type'], type=str, help='Specify the type of the extension; an example '
+                'is "CustomScriptExtension".')
+            c.argument('type_handler_version', type=str, help='Specifies the version of the script handler.')
+            c.argument(
+                'auto_upgrade_minor', arg_type=get_three_state_flag(), help='Indicate whether the extension should '
+                'use a newer minor version if one is available at deployment time. Once deployed, however, the '
+                'extension will not upgrade minor versions unless redeployed, even with this property set to true.')
+            c.argument(
+                'settings', type=validate_file_or_dict, help='Json formatted public settings for the extension. '
+                'Expected value: json-string/json-file/@json-file.')
+            c.argument(
+                'protected_settings', type=validate_file_or_dict, help='The extension can contain either '
+                'protectedSettings or protectedSettingsFromKeyVault or no protected settings at all. Expected '
+                'value: json-string/json-file/@json-file.')
+
+    with self.argument_context('connectedvmware vm extension create') as c:
+        c.argument(
+            'instance_view_type', type=str, help='Specify the type of the extension; an example is '
+            '"CustomScriptExtension".', arg_group='Instance View')
+        c.argument(
+            'inst_handler_version', type=str, help='Specify the version of the script handler.',
+            arg_group='Instance View')
+
+    with self.argument_context('connectedvmware vm extension delete') as c:
+        c.argument('vm_name', type=str, help='The name of the vm where the extension '
+                   'should be deleted.', id_part='name')
+        c.argument('name', type=str, help='The name of the vm extension.', id_part='child_name_1')

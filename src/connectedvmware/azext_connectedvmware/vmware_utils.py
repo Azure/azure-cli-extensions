@@ -21,10 +21,11 @@ def get_resource_id(
     Gets the resource id for the resource if name is given.
     """
 
-    if not is_valid_resource_id(resource):
-        resource_ids = None
-        if child_type_1 and child_name_1:
-            resource_ids = resource_id(
+    _resource_id = None
+    if child_type_1 and child_name_1:
+        if not is_valid_resource_id(child_name_1):
+            resource = resource.split('/')[-1]
+            _resource_id = resource_id(
                 subscription=get_subscription_id(cmd.cli_ctx),
                 resource_group=resource_group_name,
                 namespace=provider_name_space,
@@ -34,18 +35,19 @@ def get_resource_id(
                 child_name_1=child_name_1,
             )
         else:
-            resource_ids = resource_id(
+            _resource_id = child_name_1
+    else:
+        if not is_valid_resource_id(resource):
+            _resource_id = resource_id(
                 subscription=get_subscription_id(cmd.cli_ctx),
                 resource_group=resource_group_name,
                 namespace=provider_name_space,
                 type=resource_type,
                 name=resource,
             )
-
-    else:
-        resource_ids = resource
-
-    return resource_ids
+        else:
+            _resource_id = resource
+    return _resource_id
 
 
 def create_dictionary_from_arg_string(values, option_string=None):

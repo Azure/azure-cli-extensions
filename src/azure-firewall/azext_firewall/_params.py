@@ -237,6 +237,7 @@ def load_arguments(self, _):
     with self.argument_context('network firewall policy rule-collection-group collection', arg_group='Network Rule') as c:
         c.argument('destination_ip_groups', options_list=['--destination-ip-groups', '--dest-ipg'], nargs='+', validator=validate_ip_groups,
                    help='Space-separated list of name or resource id of destination IpGroups')
+        c.argument('destination_fqdns')
 
     with self.argument_context('network firewall policy rule-collection-group collection add-filter-collection') as c:
         c.argument('filter_action', options_list=['--action'], arg_type=get_enum_type(['Allow', 'Deny']), help='The action type of a rule collection.')

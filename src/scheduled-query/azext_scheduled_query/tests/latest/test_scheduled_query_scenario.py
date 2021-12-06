@@ -18,13 +18,16 @@ class Scheduled_queryScenarioTest(ScenarioTest):
     def test_scheduled_query(self, resource_group):
         from azure.mgmt.core.tools import resource_id
         import time
-        import mock
+        from unittest import mock
         self.kwargs.update({
             'name1': 'sq01',
             'name2': 'sq02',
+            'name3': 'sq03',
             'rg': resource_group,
             'vm': 'myvm1',
-            'ws': self.create_random_name('clitest', 20)
+            'ws': self.create_random_name('clitest', 20),
+            'action_group1': self.create_random_name('clitest', 20),
+            'action_group2': self.create_random_name('clitest', 20)
         })
         with mock.patch('azure.cli.command_modules.vm.custom._gen_guid', side_effect=self.create_guid):
             vm = self.cmd('vm create -n {vm} -g {rg} --image UbuntuLTS --nsg-rule None --workspace {ws} --generate-ssh-keys').get_output_in_json()
@@ -46,7 +49,12 @@ class Scheduled_queryScenarioTest(ScenarioTest):
                      self.check('criteria.allOf[0].timeAggregation', 'Count'),
                      self.check('criteria.allOf[0].operator', 'GreaterThan'),
                      self.check('criteria.allOf[0].failingPeriods.minFailingPeriodsToAlert', 1),
-                     self.check('criteria.allOf[0].failingPeriods.numberOfEvaluationPeriods', 1)
+                     self.check('criteria.allOf[0].failingPeriods.numberOfEvaluationPeriods', 1),
+                     self.check('criteria.allOf[0].failingPeriods.minFailingPeriodsToAlert', 1),
+                     self.check('criteria.allOf[0].failingPeriods.numberOfEvaluationPeriods', 1),
+                     self.check('autoMitigate', True),
+                     self.check('skipQueryValidation', False),
+                     self.check('checkWorkspaceAlertsStorageConfigured', False)
                  ])
         self.cmd('monitor scheduled-query create -g {rg} -n {name2} --scopes {rg_id} --condition "count \'union Event, Syslog | where TimeGenerated > ago(1h)\' > 360 resource id _ResourceId" --description "Test rule"',
                  checks=[
@@ -68,13 +76,33 @@ class Scheduled_queryScenarioTest(ScenarioTest):
                      self.check('criteria.allOf[0].failingPeriods.minFailingPeriodsToAlert', 2),
                      self.check('criteria.allOf[0].failingPeriods.numberOfEvaluationPeriods', 3)
                  ])
+        self.cmd('monitor scheduled-query update -g {rg} -n {name1} --mad PT30M --auto-mitigate False --skip-query-validation True',
+                 checks=[
+                     self.check('skipQueryValidation', True),
+                     self.check('muteActionsDuration', '0:30:00'),
+                     self.check('autoMitigate', False)
+                 ])
+        action_group_1 = self.cmd('monitor action-group create -n {action_group1} -g {rg}').get_output_in_json()
+        action_group_2 = self.cmd('monitor action-group create -n {action_group2} -g {rg}').get_output_in_json()
+        self.kwargs.update({
+            'action_group_id_1': action_group_1['id'],
+            'action_group_id_2': action_group_2['id']
+        })
+        self.cmd('monitor scheduled-query create -g {rg} -n {name3} --scopes {rg_id} --condition "count \'union Event, Syslog | where TimeGenerated > ago(1h)\' > 360 resource id _ResourceId" --description "Test rule" --action-groups {action_group_id_1} --custom-properties k1=v1', checks=[
+            self.check('actions.actionGroups', [action_group_1['id']]),
+            self.check('actions.customProperties', {'k1':'v1'})
+        ])
+        self.cmd('monitor scheduled-query update -g {rg} -n {name3} --action-groups {action_group_id_2} --custom-properties k2=v2', checks=[
+            self.check('actions.actionGroups', [action_group_2['id']]),
+            self.check('actions.customProperties', {'k2':'v2'})
+        ])
         self.cmd('monitor scheduled-query show -g {rg} -n {name1}',
                  checks=[
                      self.check('name', '{name1}')
                  ])
         self.cmd('monitor scheduled-query list -g {rg}',
                  checks=[
-                     self.check('length(@)', 2)
+                     self.check('length(@)', 3)
                  ])
         self.cmd('monitor scheduled-query list',
                  checks=[

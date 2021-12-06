@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.4.0
++++++
+* `az confluent terms`: Deprecate this command group.
+
 0.3.0
 +++++
 * `az confluent offer-detail show`: Remove the properties `isRIRequired` and `msrp` from the output.

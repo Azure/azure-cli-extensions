@@ -3,10 +3,18 @@
 Release History
 ===============
 
+0.4.1	
++++++	
+* Add the enable-auto-upgrade parameter in az connectedmachine extension create/update functions
+
+0.4.0	
++++++	
+* Add private link scope and private endpoint connection commands	
+
 0.3.0	
 +++++	
-* Renamed machine-extension subgroup to extension
-* Moved all commands under the machine subgroup to the extension level	
+* Rename machine-extension subgroup to extension
+* Move all commands under the machine subgroup to the extension level	
 
 0.2.0	
 +++++	

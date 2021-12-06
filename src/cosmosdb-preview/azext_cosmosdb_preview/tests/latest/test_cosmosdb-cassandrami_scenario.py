@@ -4,9 +4,10 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-import mock
+from unittest import mock
 
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
+from azure_devtools.scenario_tests import AllowLargeResponse
 
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
@@ -39,6 +40,7 @@ class ManagedCassandraScenarioTest(ScenarioTest):
 
     # pylint: disable=broad-except
     @ResourceGroupPreparer(name_prefix='cli_managed_cassandra')
+    @AllowLargeResponse()
     def test_managed_cassandra_verify_lists(self, resource_group):
 
         self.kwargs.update({
@@ -53,13 +55,22 @@ class ManagedCassandraScenarioTest(ScenarioTest):
         cluster = self.cmd('az managed-cassandra cluster show -c {c} -g {rg}').get_output_in_json()
         assert cluster['properties']['provisioningState'] == 'Succeeded'
 
+        # Create Datacenter
+        self.cmd('az managed-cassandra datacenter create -c {c} -d {d} -l eastus2 -g {rg} -n 3 -s {subnet_id}')
+        datacenter = self.cmd('az managed-cassandra datacenter show -c {c} -d {d} -g {rg}').get_output_in_json()
+        assert datacenter['properties']['provisioningState'] == 'Succeeded'
+
+        # List Datacenters in Cluster
+        datacenters = self.cmd('az managed-cassandra datacenter list -c {c} -g {rg}').get_output_in_json()
+        assert len(datacenters) == 1
+
         # List Clusters in ResourceGroup
         clusters = self.cmd('az managed-cassandra cluster list -g {rg}').get_output_in_json()
         assert len(clusters) == 1
 
         # List Clusters in Subscription
         clusters_sub = self.cmd('az managed-cassandra cluster list').get_output_in_json()
-        assert len(clusters_sub) >= 0
+        assert len(clusters_sub) >= 1
 
         # Delete Cluster
         try:

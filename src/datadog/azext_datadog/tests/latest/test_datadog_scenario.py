@@ -9,7 +9,7 @@
 # --------------------------------------------------------------------------
 
 import os
-import mock
+from unittest import mock
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk import ResourceGroupPreparer
 from azure_devtools.scenario_tests import AllowLargeResponse

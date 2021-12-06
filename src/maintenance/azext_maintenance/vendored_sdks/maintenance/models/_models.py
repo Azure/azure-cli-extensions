@@ -23,7 +23,7 @@ class Resource(msrest.serialization.Model):
     :vartype type: str
     :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
      information.
-    :vartype system_data: ~maintenance_client.models.SystemData
+    :vartype system_data: ~maintenance_management_client.models.SystemData
     """
 
     _validation = {
@@ -64,10 +64,10 @@ class ApplyUpdate(Resource):
     :vartype type: str
     :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
      information.
-    :vartype system_data: ~maintenance_client.models.SystemData
+    :vartype system_data: ~maintenance_management_client.models.SystemData
     :param status: The status. Possible values include: "Pending", "InProgress", "Completed",
      "RetryNow", "RetryLater".
-    :type status: str or ~maintenance_client.models.UpdateStatus
+    :type status: str or ~maintenance_management_client.models.UpdateStatus
     :param resource_id: The resourceId.
     :type resource_id: str
     :param last_update_time: Last Update time.
@@ -114,7 +114,7 @@ class ConfigurationAssignment(Resource):
     :vartype type: str
     :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
      information.
-    :vartype system_data: ~maintenance_client.models.SystemData
+    :vartype system_data: ~maintenance_management_client.models.SystemData
     :param location: Location of the resource.
     :type location: str
     :param maintenance_configuration_id: The maintenance configuration Id.
@@ -174,11 +174,110 @@ class ErrorDetails(msrest.serialization.Model):
         self.message = kwargs.get('message', None)
 
 
+class InputLinuxParameters(msrest.serialization.Model):
+    """Input properties for patching a Linux machine.
+
+    :param package_name_masks_to_exclude: Package names to be excluded for patching.
+    :type package_name_masks_to_exclude: list[str]
+    :param package_name_masks_to_include: Package names to be included for patching.
+    :type package_name_masks_to_include: list[str]
+    :param classifications_to_include: Classification category of patches to be patched.
+    :type classifications_to_include: list[str]
+    """
+
+    _attribute_map = {
+        'package_name_masks_to_exclude': {'key': 'packageNameMasksToExclude', 'type': '[str]'},
+        'package_name_masks_to_include': {'key': 'packageNameMasksToInclude', 'type': '[str]'},
+        'classifications_to_include': {'key': 'classificationsToInclude', 'type': '[str]'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(InputLinuxParameters, self).__init__(**kwargs)
+        self.package_name_masks_to_exclude = kwargs.get('package_name_masks_to_exclude', None)
+        self.package_name_masks_to_include = kwargs.get('package_name_masks_to_include', None)
+        self.classifications_to_include = kwargs.get('classifications_to_include', None)
+
+
+class InputPatchConfiguration(msrest.serialization.Model):
+    """Input configuration for a patch run.
+
+    :param reboot_setting: Possible reboot preference as defined by the user based on which it
+     would be decided to reboot the machine or not after the patch operation is completed. Possible
+     values include: "IfRequired", "Never", "Always". Default value: "IfRequired".
+    :type reboot_setting: str or ~maintenance_management_client.models.RebootOptions
+    :param windows_parameters: Input parameters specific to patching a Windows machine. For Linux
+     machines, do not pass this property.
+    :type windows_parameters: ~maintenance_management_client.models.InputWindowsParameters
+    :param linux_parameters: Input parameters specific to patching Linux machine. For Windows
+     machines, do not pass this property.
+    :type linux_parameters: ~maintenance_management_client.models.InputLinuxParameters
+    :param pre_tasks: List of pre tasks. e.g. [{'source' :'runbook', 'taskScope': 'Global',
+     'parameters': { 'arg1': 'value1'}}].
+    :type pre_tasks: list[~maintenance_management_client.models.TaskProperties]
+    :param post_tasks: List of post tasks. e.g. [{'source' :'runbook', 'taskScope': 'Resource',
+     'parameters': { 'arg1': 'value1'}}].
+    :type post_tasks: list[~maintenance_management_client.models.TaskProperties]
+    """
+
+    _attribute_map = {
+        'reboot_setting': {'key': 'rebootSetting', 'type': 'str'},
+        'windows_parameters': {'key': 'windowsParameters', 'type': 'InputWindowsParameters'},
+        'linux_parameters': {'key': 'linuxParameters', 'type': 'InputLinuxParameters'},
+        'pre_tasks': {'key': 'tasks.preTasks', 'type': '[TaskProperties]'},
+        'post_tasks': {'key': 'tasks.postTasks', 'type': '[TaskProperties]'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(InputPatchConfiguration, self).__init__(**kwargs)
+        self.reboot_setting = kwargs.get('reboot_setting', "IfRequired")
+        self.windows_parameters = kwargs.get('windows_parameters', None)
+        self.linux_parameters = kwargs.get('linux_parameters', None)
+        self.pre_tasks = kwargs.get('pre_tasks', None)
+        self.post_tasks = kwargs.get('post_tasks', None)
+
+
+class InputWindowsParameters(msrest.serialization.Model):
+    """Input properties for patching a Windows machine.
+
+    :param kb_numbers_to_exclude: Windows KBID to be excluded for patching.
+    :type kb_numbers_to_exclude: list[str]
+    :param kb_numbers_to_include: Windows KBID to be included for patching.
+    :type kb_numbers_to_include: list[str]
+    :param classifications_to_include: Classification category of patches to be patched.
+    :type classifications_to_include: list[str]
+    :param exclude_kbs_requiring_reboot: Exclude patches which need reboot.
+    :type exclude_kbs_requiring_reboot: bool
+    """
+
+    _attribute_map = {
+        'kb_numbers_to_exclude': {'key': 'kbNumbersToExclude', 'type': '[str]'},
+        'kb_numbers_to_include': {'key': 'kbNumbersToInclude', 'type': '[str]'},
+        'classifications_to_include': {'key': 'classificationsToInclude', 'type': '[str]'},
+        'exclude_kbs_requiring_reboot': {'key': 'excludeKbsRequiringReboot', 'type': 'bool'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(InputWindowsParameters, self).__init__(**kwargs)
+        self.kb_numbers_to_exclude = kwargs.get('kb_numbers_to_exclude', None)
+        self.kb_numbers_to_include = kwargs.get('kb_numbers_to_include', None)
+        self.classifications_to_include = kwargs.get('classifications_to_include', None)
+        self.exclude_kbs_requiring_reboot = kwargs.get('exclude_kbs_requiring_reboot', None)
+
+
 class ListApplyUpdate(msrest.serialization.Model):
     """Response for ApplyUpdate list.
 
     :param value: The list of apply updates.
-    :type value: list[~maintenance_client.models.ApplyUpdate]
+    :type value: list[~maintenance_management_client.models.ApplyUpdate]
     """
 
     _attribute_map = {
@@ -197,7 +296,7 @@ class ListConfigurationAssignmentsResult(msrest.serialization.Model):
     """Response for ConfigurationAssignments list.
 
     :param value: The list of configuration Assignments.
-    :type value: list[~maintenance_client.models.ConfigurationAssignment]
+    :type value: list[~maintenance_management_client.models.ConfigurationAssignment]
     """
 
     _attribute_map = {
@@ -216,7 +315,7 @@ class ListMaintenanceConfigurationsResult(msrest.serialization.Model):
     """Response for MaintenanceConfigurations list.
 
     :param value: The list of maintenance Configurations.
-    :type value: list[~maintenance_client.models.MaintenanceConfiguration]
+    :type value: list[~maintenance_management_client.models.MaintenanceConfiguration]
     """
 
     _attribute_map = {
@@ -235,7 +334,7 @@ class ListUpdatesResult(msrest.serialization.Model):
     """Response for Updates list.
 
     :param value: The pending updates.
-    :type value: list[~maintenance_client.models.Update]
+    :type value: list[~maintenance_management_client.models.Update]
     """
 
     _attribute_map = {
@@ -263,7 +362,7 @@ class MaintenanceConfiguration(Resource):
     :vartype type: str
     :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
      information.
-    :vartype system_data: ~maintenance_client.models.SystemData
+    :vartype system_data: ~maintenance_management_client.models.SystemData
     :param location: Gets or sets location of the resource.
     :type location: str
     :param tags: A set of tags. Gets or sets tags of the resource.
@@ -274,10 +373,12 @@ class MaintenanceConfiguration(Resource):
     :type extension_properties: dict[str, str]
     :param maintenance_scope: Gets or sets maintenanceScope of the configuration. Possible values
      include: "Host", "OSImage", "Extension", "InGuestPatch", "SQLDB", "SQLManagedInstance".
-    :type maintenance_scope: str or ~maintenance_client.models.MaintenanceScope
+    :type maintenance_scope: str or ~maintenance_management_client.models.MaintenanceScope
     :param visibility: Gets or sets the visibility of the configuration. The default value is
      'Custom'. Possible values include: "Custom", "Public".
-    :type visibility: str or ~maintenance_client.models.Visibility
+    :type visibility: str or ~maintenance_management_client.models.Visibility
+    :param install_patches: The input parameters to be passed to the patch run operation.
+    :type install_patches: ~maintenance_management_client.models.InputPatchConfiguration
     :param start_date_time: Effective start date of the maintenance window in YYYY-MM-DD hh:mm
      format. The start date can be set to either the current date or future date. The window will be
      created in the time zone provided and adjusted to daylight savings according to that time zone.
@@ -302,9 +403,11 @@ class MaintenanceConfiguration(Resource):
      Monday-Sunday]. Weekly schedule examples are recurEvery: 3Weeks, recurEvery: Week
      Saturday,Sunday. Monthly schedules are formatted as [Frequency as integer]['Month(s)'] [Comma
      separated list of month days] or [Frequency as integer]['Month(s)'] [Week of Month (First,
-     Second, Third, Fourth, Last)] [Weekday Monday-Sunday]. Monthly schedule examples are
-     recurEvery: Month, recurEvery: 2Months, recurEvery: Month day23,day24, recurEvery: Month Last
-     Sunday, recurEvery: Month Fourth Monday.
+     Second, Third, Fourth, Last)] [Weekday Monday-Sunday] [Optional Offset(No. of days)]. Offset
+     value must be between -6 to 6 inclusive. Monthly schedule examples are recurEvery: Month,
+     recurEvery: 2Months, recurEvery: Month day23,day24, recurEvery: Month Last Sunday, recurEvery:
+     Month Fourth Monday, recurEvery: Month Last Sunday Offset-3, recurEvery: Month Third Sunday
+     Offset6.
     :type recur_every: str
     """
 
@@ -326,6 +429,7 @@ class MaintenanceConfiguration(Resource):
         'extension_properties': {'key': 'properties.extensionProperties', 'type': '{str}'},
         'maintenance_scope': {'key': 'properties.maintenanceScope', 'type': 'str'},
         'visibility': {'key': 'properties.visibility', 'type': 'str'},
+        'install_patches': {'key': 'properties.installPatches', 'type': 'InputPatchConfiguration'},
         'start_date_time': {'key': 'properties.maintenanceWindow.startDateTime', 'type': 'str'},
         'expiration_date_time': {'key': 'properties.maintenanceWindow.expirationDateTime', 'type': 'str'},
         'duration': {'key': 'properties.maintenanceWindow.duration', 'type': 'str'},
@@ -344,6 +448,7 @@ class MaintenanceConfiguration(Resource):
         self.extension_properties = kwargs.get('extension_properties', None)
         self.maintenance_scope = kwargs.get('maintenance_scope', None)
         self.visibility = kwargs.get('visibility', None)
+        self.install_patches = kwargs.get('install_patches', None)
         self.start_date_time = kwargs.get('start_date_time', None)
         self.expiration_date_time = kwargs.get('expiration_date_time', None)
         self.duration = kwargs.get('duration', None)
@@ -355,7 +460,7 @@ class MaintenanceError(msrest.serialization.Model):
     """An error response received from the Azure Maintenance service.
 
     :param error: Details of the error.
-    :type error: ~maintenance_client.models.ErrorDetails
+    :type error: ~maintenance_management_client.models.ErrorDetails
     """
 
     _attribute_map = {
@@ -376,7 +481,7 @@ class Operation(msrest.serialization.Model):
     :param name: Name of the operation.
     :type name: str
     :param display: Display name of the operation.
-    :type display: ~maintenance_client.models.OperationInfo
+    :type display: ~maintenance_management_client.models.OperationInfo
     :param origin: Origin of the operation.
     :type origin: str
     :param properties: Properties of the operation.
@@ -440,7 +545,7 @@ class OperationsListResult(msrest.serialization.Model):
     """Result of the List Operations operation.
 
     :param value: A collection of operations.
-    :type value: list[~maintenance_client.models.Operation]
+    :type value: list[~maintenance_management_client.models.Operation]
     """
 
     _attribute_map = {
@@ -462,14 +567,14 @@ class SystemData(msrest.serialization.Model):
     :type created_by: str
     :param created_by_type: The type of identity that created the resource. Possible values
      include: "User", "Application", "ManagedIdentity", "Key".
-    :type created_by_type: str or ~maintenance_client.models.CreatedByType
+    :type created_by_type: str or ~maintenance_management_client.models.CreatedByType
     :param created_at: The timestamp of resource creation (UTC).
     :type created_at: ~datetime.datetime
     :param last_modified_by: The identity that last modified the resource.
     :type last_modified_by: str
     :param last_modified_by_type: The type of identity that last modified the resource. Possible
      values include: "User", "Application", "ManagedIdentity", "Key".
-    :type last_modified_by_type: str or ~maintenance_client.models.CreatedByType
+    :type last_modified_by_type: str or ~maintenance_management_client.models.CreatedByType
     :param last_modified_at: The timestamp of resource last modification (UTC).
     :type last_modified_at: ~datetime.datetime
     """
@@ -496,18 +601,46 @@ class SystemData(msrest.serialization.Model):
         self.last_modified_at = kwargs.get('last_modified_at', None)
 
 
+class TaskProperties(msrest.serialization.Model):
+    """Task properties of the software update configuration.
+
+    :param parameters: Gets or sets the parameters of the task.
+    :type parameters: dict[str, str]
+    :param source: Gets or sets the name of the runbook.
+    :type source: str
+    :param task_scope: Global Task execute once when schedule trigger. Resource task execute for
+     each VM. Possible values include: "Global", "Resource". Default value: "Global".
+    :type task_scope: str or ~maintenance_management_client.models.TaskScope
+    """
+
+    _attribute_map = {
+        'parameters': {'key': 'parameters', 'type': '{str}'},
+        'source': {'key': 'source', 'type': 'str'},
+        'task_scope': {'key': 'taskScope', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(TaskProperties, self).__init__(**kwargs)
+        self.parameters = kwargs.get('parameters', None)
+        self.source = kwargs.get('source', None)
+        self.task_scope = kwargs.get('task_scope', "Global")
+
+
 class Update(msrest.serialization.Model):
     """Maintenance update on a resource.
 
     :param maintenance_scope: The impact area. Possible values include: "Host", "OSImage",
      "Extension", "InGuestPatch", "SQLDB", "SQLManagedInstance".
-    :type maintenance_scope: str or ~maintenance_client.models.MaintenanceScope
+    :type maintenance_scope: str or ~maintenance_management_client.models.MaintenanceScope
     :param impact_type: The impact type. Possible values include: "None", "Freeze", "Restart",
      "Redeploy".
-    :type impact_type: str or ~maintenance_client.models.ImpactType
+    :type impact_type: str or ~maintenance_management_client.models.ImpactType
     :param status: The status. Possible values include: "Pending", "InProgress", "Completed",
      "RetryNow", "RetryLater".
-    :type status: str or ~maintenance_client.models.UpdateStatus
+    :type status: str or ~maintenance_management_client.models.UpdateStatus
     :param impact_duration_in_sec: Duration of impact in seconds.
     :type impact_duration_in_sec: int
     :param not_before: Time when Azure will start force updates if not self-updated by customer

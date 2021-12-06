@@ -25,7 +25,7 @@ class ExposureControlOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~data_factory_management_client.models
+    :type models: ~azure.mgmt.datafactory.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -51,10 +51,10 @@ class ExposureControlOperations:
         :param location_id: The location identifier.
         :type location_id: str
         :param exposure_control_request: The exposure control request.
-        :type exposure_control_request: ~data_factory_management_client.models.ExposureControlRequest
+        :type exposure_control_request: ~azure.mgmt.datafactory.models.ExposureControlRequest
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ExposureControlResponse, or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.ExposureControlResponse
+        :rtype: ~azure.mgmt.datafactory.models.ExposureControlResponse
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ExposureControlResponse"]
@@ -116,10 +116,10 @@ class ExposureControlOperations:
         :param factory_name: The factory name.
         :type factory_name: str
         :param exposure_control_request: The exposure control request.
-        :type exposure_control_request: ~data_factory_management_client.models.ExposureControlRequest
+        :type exposure_control_request: ~azure.mgmt.datafactory.models.ExposureControlRequest
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ExposureControlResponse, or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.ExposureControlResponse
+        :rtype: ~azure.mgmt.datafactory.models.ExposureControlResponse
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ExposureControlResponse"]
@@ -182,10 +182,10 @@ class ExposureControlOperations:
         :param factory_name: The factory name.
         :type factory_name: str
         :param exposure_control_batch_request: The exposure control request for list of features.
-        :type exposure_control_batch_request: ~data_factory_management_client.models.ExposureControlBatchRequest
+        :type exposure_control_batch_request: ~azure.mgmt.datafactory.models.ExposureControlBatchRequest
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ExposureControlBatchResponse, or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.ExposureControlBatchResponse
+        :rtype: ~azure.mgmt.datafactory.models.ExposureControlBatchResponse
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ExposureControlBatchResponse"]
