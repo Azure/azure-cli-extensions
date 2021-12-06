@@ -14,6 +14,7 @@ from base64 import b64encode, b64decode
 import stat
 import platform
 from azure.core.exceptions import ClientAuthenticationError
+from msal_extensions.token_cache import PersistedTokenCache
 import yaml
 import requests
 import urllib.request
@@ -25,6 +26,7 @@ from knack.log import get_logger
 from knack.prompting import prompt_y_n
 from knack.prompting import NoTTYException
 from azure.cli.core.commands.client_factory import get_subscription_id
+from msal import PublicClientApplication, ConfidentialClientApplication
 from azure.cli.core._profile import Profile
 from azure.cli.core.util import sdk_no_wait
 from azure.cli.core import telemetry
@@ -41,9 +43,11 @@ from azext_connectedk8s._client_factory import _resource_providers_client
 from azext_connectedk8s._client_factory import get_graph_client_service_principals
 import azext_connectedk8s._constants as consts
 import azext_connectedk8s._utils as utils
+from azext_connectedk8s._utils import az_cli
 from glob import glob
 from .vendored_sdks.models import ConnectedCluster, ConnectedClusterIdentity
 from threading import Timer, Thread
+import msal_extensions
 import sys
 import hashlib
 import re
@@ -53,7 +57,6 @@ logger = get_logger(__name__)
 # pylint: disable=too-many-branches
 # pylint: disable=too-many-statements
 # pylint: disable=line-too-long
-
 
 def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="", proxy_cert="", location=None,
                         kube_config=None, kube_context=None, no_wait=False, tags=None, distribution='auto', infrastructure='auto',
@@ -1596,12 +1599,16 @@ def client_side_proxy_wrapper(cmd,
         requestUri = f'{consts.CSP_Storage_Url}/{consts.RELEASE_DATE_WINDOWS}/arcProxy{operating_system}{consts.CLIENT_PROXY_VERSION}.exe'
         older_version_string = f'.clientproxy\\arcProxy{operating_system}*.exe'
         creds_string = r'.azure\accessTokens.json'
+        msal_token_cache_user = r'.azure\msal_token_cache.bin'
+        msal_token_cache_spn = r'.azure\service_principal_entries.bin'
 
     elif(operating_system == 'Linux' or operating_system == 'Darwin'):
         install_location_string = f'.clientproxy/arcProxy{operating_system}{consts.CLIENT_PROXY_VERSION}'
         requestUri = f'{consts.CSP_Storage_Url}/{consts.RELEASE_DATE_LINUX}/arcProxy{operating_system}{consts.CLIENT_PROXY_VERSION}'
         older_version_string = f'.clientproxy/arcProxy{operating_system}*'
         creds_string = r'.azure/accessTokens.json'
+        msal_token_cache_user = r'.azure/msal_token_cache.bin'
+        msal_token_cache_spn = r'.azure/service_principal_entries.bin'
 
     else:
         telemetry.set_exception(exception='Unsupported OS', fault_type=consts.Unsupported_Fault_Type,
@@ -1699,21 +1706,41 @@ def client_side_proxy_wrapper(cmd,
             raise FileOperationError("Failed to load credentials." + str(e))
 
         user_name = account['user']['name']
+        use_msal_cache = utils.use_msal_cache()
+        if not use_msal_cache:
+            if user_type == 'user':
+                key = 'userId'
+                key2 = 'refreshToken'
+            else:
+                key = 'servicePrincipalId'
+                key2 = 'accessToken'
 
-        if user_type == 'user':
-            key = 'userId'
-            key2 = 'refreshToken'
+            for i in range(len(creds_list)):
+                creds_obj = creds_list[i]
+
+                if key in creds_obj and creds_obj[key] == user_name:
+                    creds = creds_obj[key2]
+                    break
         else:
-            key = 'servicePrincipalId'
-            key2 = 'accessToken'
-
-        for i in range(len(creds_list)):
-            creds_obj = creds_list[i]
-
-            if key in creds_obj and creds_obj[key] == user_name:
-                creds = creds_obj[key2]
-                break
-
+            if user_type == "user":
+                response_user_objectid = az_cli("ad signed-in-user show --query objectId -o tsv")
+                token_cache_location = os.path.expanduser(os.path.join('~', msal_token_cache_user))
+                persistence=msal_extensions.FilePersistenceWithDataProtection(token_cache_location)
+                token_cache=msal_extensions.PersistedTokenCache(persistence)
+                token_cache._reload_if_necessary()
+                home_account_id = response_user_objectid + "." + tenantId
+                owned_by_home_account = {
+                "home_account_id": home_account_id}
+                creds_info = token_cache.find(PersistedTokenCache.CredentialType.REFRESH_TOKEN, query=owned_by_home_account)
+                creds = creds_info[0]['secret']
+            else:
+                token_cache_location = os.path.expanduser(os.path.join('~', msal_token_cache_spn))
+                persistence=msal_extensions.FilePersistenceWithDataProtection(token_cache_location)
+                token_cache=msal_extensions.PersistedTokenCache(persistence)
+                token_cache._reload_if_necessary()
+                token_cache_string = token_cache.serialize()
+                cache_list = json.loads(token_cache_string)
+                creds = cache_list[0]['client_secret']
         if creds == '':
             telemetry.set_exception(exception='Credentials of user not found.', fault_type=consts.Creds_NotFound_Fault_Type,
                                     summary='Unable to find creds of user')

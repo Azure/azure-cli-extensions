@@ -102,6 +102,7 @@ Error_enabling_Features = 'Error while updating agents for enabling features. Pl
 Error_disabling_Features = 'Error while updating agents for disabling features. Please run \"kubectl get pods -n azure-arc\" to check the pods in case of timeout error. Error: {}'
 Proxy_Kubeconfig_During_Deletion_Fault_Type = 'Encountered proxy kubeconfig during deletion.'
 CLIENT_PROXY_VERSION = '1.1.0'
+AZ_CLI_ADAL_TO_MSAL_MIGRATE_VERSION = '2.30.0'
 API_SERVER_PORT = 47011
 CLIENT_PROXY_PORT = 47010
 CLIENTPROXY_CLIENT_ID = '04b07795-8ddb-461a-bbee-02f9e1bf7b46'
