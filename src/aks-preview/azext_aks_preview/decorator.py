@@ -1671,13 +1671,13 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
 
         if self.context.get_load_balancer_managed_outbound_ipv6_count() is not None:
             lb_profile = update_load_balancer_profile(
-                    self.context.get_load_balancer_managed_outbound_ip_count(),
-                    self.context.get_load_balancer_managed_outbound_ipv6_count(),
-                    self.context.get_load_balancer_outbound_ips(),
-                    self.context.get_load_balancer_outbound_ip_prefixes(),
-                    self.context.get_load_balancer_outbound_ports(),
-                    self.context.get_load_balancer_idle_timeout(),
-                    lb_profile,
+                self.context.get_load_balancer_managed_outbound_ip_count(),
+                self.context.get_load_balancer_managed_outbound_ipv6_count(),
+                self.context.get_load_balancer_outbound_ips(),
+                self.context.get_load_balancer_outbound_ip_prefixes(),
+                self.context.get_load_balancer_outbound_ports(),
+                self.context.get_load_balancer_idle_timeout(),
+                lb_profile,
             )
         mc.network_profile.load_balancer_profile = lb_profile
         return mc
