@@ -2892,6 +2892,37 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
 
     @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='centraluseuap')
+    def test_aks_create_dualstack_with_default_network(self, resource_group, resource_group_location):
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        # kwargs for string formatting
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'location': resource_group_location,
+            'resource_type': 'Microsoft.ContainerService/ManagedClusters',
+            'ssh_key_value': self.generate_ssh_keys(),
+        })
+
+        # create
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
+                     '--ip-families IPv4,IPv6 --ssh-key-value={ssh_key_value} --kubernetes-version 1.22.1 ' \
+                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AKS-EnableDualStack'
+
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('networkProfile.podCidrs[] | length(@)', 2),
+            self.check('networkProfile.serviceCidrs[] | length(@)', 2),
+            self.check('networkProfile.ipFamilies', ['IPv4', 'IPv6'])
+        ])
+
+        # delete
+        self.cmd(
+            'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
+
+    @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_create_with_default_network(self, resource_group, resource_group_location):
         # reset the count so in replay mode the random names will start with 0
@@ -2954,7 +2985,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('networkProfile.serviceCidrs', ['172.56.0.0/16', '2001:ffff::/108']),
             self.check('networkProfile.ipFamilies', ['IPv4', 'IPv6']),
             self.check('networkProfile.loadBalancerProfile.managedOutboundIPs.countIpv6', 2),
-            self.check('networkProfile.loadBalancerProfile.managedOutboundIPs.count', 1)
+            self.check('networkProfile.loadBalancerProfile.managedOutboundIPs.count', 1),
+            self.check('networkProfile.loadBalancerProfile.effectiveOutboundIPs[] | length(@)', 3)
         ])
 
         # update
@@ -2968,7 +3000,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('networkProfile.serviceCidrs', ['172.56.0.0/16', '2001:ffff::/108']),
             self.check('networkProfile.ipFamilies', ['IPv4', 'IPv6']),
             self.check('networkProfile.loadBalancerProfile.managedOutboundIPs.countIpv6', 4),
-            self.check('networkProfile.loadBalancerProfile.managedOutboundIPs.count', 1)
+            self.check('networkProfile.loadBalancerProfile.managedOutboundIPs.count', 1),
+            self.check('networkProfile.loadBalancerProfile.effectiveOutboundIPs[] | length(@)', 5)
         ])
 
         # delete
