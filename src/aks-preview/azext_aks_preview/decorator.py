@@ -791,6 +791,18 @@ class AKSPreviewContext(AKSContext):
         count_ipv6 = self.raw_param.get(
             'load_balancer_managed_outbound_ipv6_count')
 
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.mc and
+                self.mc.network_profile and
+                self.mc.network_profile.load_balancer_profile and
+                self.mc.network_profile.load_balancer_profile.managed_outbound_i_ps and
+                self.mc.network_profile.load_balancer_profile.managed_outbound_i_ps.count_ipv6 is not None
+            ):
+                count_ipv6 = (
+                    self.mc.network_profile.load_balancer_profile.managed_outbound_i_ps.count_ipv6
+                )
+
         return count_ipv6
 
     # pylint: disable=unused-argument
@@ -1384,26 +1396,15 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
         if ip_families:
             network_profile.ip_families = ip_families
 
-        if self.context.get_load_balancer_managed_outbound_ipv6_count():
-            if network_profile.load_balancer_profile:
-                network_profile.load_balancer_profile = update_load_balancer_profile(
-                    self.context.get_load_balancer_managed_outbound_ip_count(),
-                    self.context.get_load_balancer_managed_outbound_ipv6_count(),
-                    self.context.get_load_balancer_outbound_ips(),
-                    self.context.get_load_balancer_outbound_ip_prefixes(),
-                    self.context.get_load_balancer_outbound_ports(),
-                    self.context.get_load_balancer_idle_timeout(),
-                    network_profile.load_balancer_profile,
-                )
-            else:
-                network_profile.load_balancer_profile = create_load_balancer_profile(
-                    self.context.get_load_balancer_managed_outbound_ip_count(),
-                    self.context.get_load_balancer_managed_outbound_ipv6_count(),
-                    self.context.get_load_balancer_outbound_ips(),
-                    self.context.get_load_balancer_outbound_ip_prefixes(),
-                    self.context.get_load_balancer_outbound_ports(),
-                    self.context.get_load_balancer_idle_timeout(),
-                )
+        if self.context.get_load_balancer_managed_outbound_ipv6_count() is not None:
+            network_profile.load_balancer_profile = create_load_balancer_profile(
+                self.context.get_load_balancer_managed_outbound_ip_count(),
+                self.context.get_load_balancer_managed_outbound_ipv6_count(),
+                self.context.get_load_balancer_outbound_ips(),
+                self.context.get_load_balancer_outbound_ip_prefixes(),
+                self.context.get_load_balancer_outbound_ports(),
+                self.context.get_load_balancer_idle_timeout(),
+            )
 
         # build nat gateway profile, which is part of the network profile
         nat_gateway_profile = create_nat_gateway_profile(
@@ -1659,3 +1660,24 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
             self.models,
             decorator_mode=DecoratorMode.UPDATE,
         )
+
+    def update_load_balancer_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update load balancer profile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        mc = super().update_load_balancer_profile(mc)
+        lb_profile = mc.network_profile.load_balancer_profile
+
+        if self.context.get_load_balancer_managed_outbound_ipv6_count() is not None:
+            lb_profile = update_load_balancer_profile(
+                    self.context.get_load_balancer_managed_outbound_ip_count(),
+                    self.context.get_load_balancer_managed_outbound_ipv6_count(),
+                    self.context.get_load_balancer_outbound_ips(),
+                    self.context.get_load_balancer_outbound_ip_prefixes(),
+                    self.context.get_load_balancer_outbound_ports(),
+                    self.context.get_load_balancer_idle_timeout(),
+                    lb_profile,
+            )
+        mc.network_profile.load_balancer_profile = lb_profile
+        return mc

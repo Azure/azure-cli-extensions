@@ -41,10 +41,10 @@ from azext_aks_preview.decorator import (
     AKSPreviewContext,
     AKSPreviewCreateDecorator,
     AKSPreviewModels,
+    AKSPreviewUpdateDecorator,
 )
 from azext_aks_preview.tests.latest.mocks import MockCLI, MockClient, MockCmd
 from azext_aks_preview.tests.latest.test_aks_commands import _get_test_data_file
-from azext_aks_preview._loadbalancer import update_load_balancer_profile
 from azure.cli.command_modules.acs._consts import (
     DecoratorEarlyExitException,
     DecoratorMode,
@@ -299,73 +299,8 @@ class AKSPreviewContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
-        self.assertEqual(ctx_1.get_load_balancer_managed_outbound_ipv6_count(), 4)
-
-        # test preserve ipv6 count during update of ip count
-        ctx_2 = AKSPreviewContext(
-            self.cmd,
-            {
-                'load_balancer_managed_outbound_ip_count': 3,
-                'load_balancer_managed_outbound_ipv6_count': None,
-            },
-            self.models,
-            decorator_mode=DecoratorMode.UPDATE,
-        )
-        lb_profile = self.models.lb_models.get(
-            'ManagedClusterLoadBalancerProfile'
-        )(
-            managed_outbound_i_ps=self.models.lb_models.get(
-                "ManagedClusterLoadBalancerProfileManagedOutboundIPs"
-            )(
-                count=3,
-                count_ipv6=7,
-            )
-        )
-
-        p = update_load_balancer_profile(
-            ctx_2.get_load_balancer_managed_outbound_ip_count(),
-            ctx_2.get_load_balancer_managed_outbound_ipv6_count(),
-            ctx_2.get_load_balancer_outbound_ips(),
-            ctx_2.get_load_balancer_outbound_ip_prefixes(),
-            ctx_2.get_load_balancer_outbound_ports(),
-            ctx_2.get_load_balancer_idle_timeout(),
-            lb_profile)
-
-        self.assertEquals(p.managed_outbound_i_ps.count, 3)
-        self.assertEquals(p.managed_outbound_i_ps.count_ipv6, 7)
-
-        # test preserve ip count during update of ipv6 count
-        ctx_3 = AKSPreviewContext(
-            self.cmd,
-            {
-                'load_balancer_managed_outbound_ip_count': None,
-                'load_balancer_managed_outbound_ipv6_count': 2,
-            },
-            self.models,
-            decorator_mode=DecoratorMode.UPDATE,
-        )
-        lb_profile = self.models.lb_models.get(
-            'ManagedClusterLoadBalancerProfile'
-        )(
-            managed_outbound_i_ps=self.models.lb_models.get(
-                "ManagedClusterLoadBalancerProfileManagedOutboundIPs"
-            )(
-                count=4,
-                count_ipv6=7,
-            )
-        )
-
-        p = update_load_balancer_profile(
-            ctx_3.get_load_balancer_managed_outbound_ip_count(),
-            ctx_3.get_load_balancer_managed_outbound_ipv6_count(),
-            ctx_3.get_load_balancer_outbound_ips(),
-            ctx_3.get_load_balancer_outbound_ip_prefixes(),
-            ctx_3.get_load_balancer_outbound_ports(),
-            ctx_3.get_load_balancer_idle_timeout(),
-            lb_profile)
-
-        self.assertEquals(p.managed_outbound_i_ps.count, 4)
-        self.assertEquals(p.managed_outbound_i_ps.count_ipv6, 2)
+        self.assertEqual(
+            ctx_1.get_load_balancer_managed_outbound_ipv6_count(), 4)
 
     def test_get_enable_fips_image(self):
         # default
@@ -2298,3 +2233,38 @@ class AKSPreviewUpdateDecoratorTestCase(unittest.TestCase):
         self.cmd = MockCmd(self.cli_ctx)
         self.models = AKSPreviewModels(self.cmd, CUSTOM_MGMT_AKS_PREVIEW)
         self.client = MockClient()
+
+    def test_update_ipv6_count(self):
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                load_balancer_profile=self.models.lb_models.get(
+                    'ManagedClusterLoadBalancerProfile'
+                )(
+                    managed_outbound_i_ps=self.models.lb_models.get(
+                        "ManagedClusterLoadBalancerProfileManagedOutboundIPs"
+                    )(
+                        count=3,
+                        count_ipv6=7,
+                    )
+                )
+            )
+        )
+        self.client.get = Mock(return_value=mc_1)
+        dec_1 = AKSPreviewUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "name": "test_cluster",
+                "resource_group_name": "test_rg_name",
+                "load_balancer_managed_outbound_ipv6_count": 4,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+
+        mc = dec_1.fetch_mc()
+        mc = dec_1.update_load_balancer_profile(mc)
+        self.assertEquals(
+            mc.network_profile.load_balancer_profile.managed_outbound_i_ps.count, 3)
+        self.assertEquals(
+            mc.network_profile.load_balancer_profile.managed_outbound_i_ps.count_ipv6, 4)
