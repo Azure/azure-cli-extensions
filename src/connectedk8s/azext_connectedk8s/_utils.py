@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+from logging import exception
 import os
 import shutil
 import subprocess
@@ -25,7 +26,8 @@ from kubernetes.client.rest import ApiException
 from azext_connectedk8s._client_factory import _resource_client_factory
 import azext_connectedk8s._constants as consts
 from kubernetes import client as kube_client
-from azure.cli.core.azclierror import CLIInternalError, ClientRequestError, ArgumentUsageError, ManualInterrupt, AzureResponseError, AzureInternalError, ValidationError
+from azure.cli.core import get_default_cli
+from packaging import version
 
 logger = get_logger(__name__)
 
@@ -389,3 +391,27 @@ def try_list_node_fix():
         V1ContainerImage.names = V1ContainerImage.names.setter(names)
     except Exception as ex:
         logger.debug("Error while trying to monkey patch the fix for list_node(): {}".format(str(ex)))
+
+
+def use_msal_cache():
+        response_cli_version = az_cli("version --output json")
+        try:
+            cli_version = response_cli_version['azure-cli']
+        except Exception as ex:
+            raise CLIInternalError("Unable to decode the az cli version installed: {}".format(str(ex)))
+        if version.parse(cli_version) >= version.parse(consts.AZ_CLI_ADAL_TO_MSAL_MIGRATE_VERSION):
+            return True
+        else:
+            return False
+
+
+def az_cli (args_str):
+    args = args_str.split()
+    cli = get_default_cli()
+    cli.invoke(args, out_file = open(os.devnull, 'w'))
+    if cli.result.result:
+        return cli.result.result
+    elif cli.result.error:
+        raise cli.result.error
+    return True
+            
