@@ -2,6 +2,9 @@
 
 Release History
 ===============
+1.0.16
+++++++
+* az network front-door routing-rule update: Fix unexpected configuration override when updating routing rule.
 
 1.0.15
 ++++++

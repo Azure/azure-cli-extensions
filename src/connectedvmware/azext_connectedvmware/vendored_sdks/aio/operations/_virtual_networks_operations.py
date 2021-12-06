@@ -28,7 +28,7 @@ class VirtualNetworksOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure_arc_vmware_management_service_api.models
+    :type models: ~azure.mgmt.connectedvmware.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -48,7 +48,7 @@ class VirtualNetworksOperations:
         resource_group_name: str,
         virtual_network_name: str,
         body: Optional["_models.VirtualNetwork"] = None,
-        **kwargs
+        **kwargs: Any
     ) -> "_models.VirtualNetwork":
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.VirtualNetwork"]
         error_map = {
@@ -109,7 +109,7 @@ class VirtualNetworksOperations:
         resource_group_name: str,
         virtual_network_name: str,
         body: Optional["_models.VirtualNetwork"] = None,
-        **kwargs
+        **kwargs: Any
     ) -> AsyncLROPoller["_models.VirtualNetwork"]:
         """Implements virtual network PUT method.
 
@@ -120,15 +120,15 @@ class VirtualNetworksOperations:
         :param virtual_network_name: Name of the virtual network resource.
         :type virtual_network_name: str
         :param body: Request payload.
-        :type body: ~azure_arc_vmware_management_service_api.models.VirtualNetwork
+        :type body: ~azure.mgmt.connectedvmware.models.VirtualNetwork
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
-         False for no polling, or your own initialized polling object for a personal polling strategy.
+        :keyword polling: By default, your polling method will be AsyncARMPolling.
+         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either VirtualNetwork or the result of cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~azure_arc_vmware_management_service_api.models.VirtualNetwork]
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.connectedvmware.models.VirtualNetwork]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
@@ -181,7 +181,7 @@ class VirtualNetworksOperations:
         self,
         resource_group_name: str,
         virtual_network_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> "_models.VirtualNetwork":
         """Gets a virtual network.
 
@@ -193,7 +193,7 @@ class VirtualNetworksOperations:
         :type virtual_network_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: VirtualNetwork, or the result of cls(response)
-        :rtype: ~azure_arc_vmware_management_service_api.models.VirtualNetwork
+        :rtype: ~azure.mgmt.connectedvmware.models.VirtualNetwork
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.VirtualNetwork"]
@@ -243,7 +243,7 @@ class VirtualNetworksOperations:
         resource_group_name: str,
         virtual_network_name: str,
         body: Optional["_models.ResourcePatch"] = None,
-        **kwargs
+        **kwargs: Any
     ) -> "_models.VirtualNetwork":
         """Updates a virtual network.
 
@@ -254,10 +254,10 @@ class VirtualNetworksOperations:
         :param virtual_network_name: Name of the virtual network resource.
         :type virtual_network_name: str
         :param body: Resource properties to update.
-        :type body: ~azure_arc_vmware_management_service_api.models.ResourcePatch
+        :type body: ~azure.mgmt.connectedvmware.models.ResourcePatch
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: VirtualNetwork, or the result of cls(response)
-        :rtype: ~azure_arc_vmware_management_service_api.models.VirtualNetwork
+        :rtype: ~azure.mgmt.connectedvmware.models.VirtualNetwork
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.VirtualNetwork"]
@@ -315,7 +315,7 @@ class VirtualNetworksOperations:
         resource_group_name: str,
         virtual_network_name: str,
         force: Optional[bool] = None,
-        **kwargs
+        **kwargs: Any
     ) -> None:
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = {
@@ -363,7 +363,7 @@ class VirtualNetworksOperations:
         resource_group_name: str,
         virtual_network_name: str,
         force: Optional[bool] = None,
-        **kwargs
+        **kwargs: Any
     ) -> AsyncLROPoller[None]:
         """Deletes an virtual network.
 
@@ -377,8 +377,8 @@ class VirtualNetworksOperations:
         :type force: bool
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
-         False for no polling, or your own initialized polling object for a personal polling strategy.
+        :keyword polling: By default, your polling method will be AsyncARMPolling.
+         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)
@@ -430,7 +430,7 @@ class VirtualNetworksOperations:
 
     def list(
         self,
-        **kwargs
+        **kwargs: Any
     ) -> AsyncIterable["_models.VirtualNetworksList"]:
         """Implements GET virtualNetworks in a subscription.
 
@@ -438,7 +438,7 @@ class VirtualNetworksOperations:
 
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either VirtualNetworksList or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure_arc_vmware_management_service_api.models.VirtualNetworksList]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.connectedvmware.models.VirtualNetworksList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.VirtualNetworksList"]
@@ -500,7 +500,7 @@ class VirtualNetworksOperations:
     def list_by_resource_group(
         self,
         resource_group_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> AsyncIterable["_models.VirtualNetworksList"]:
         """Implements GET virtualNetworks in a resource group.
 
@@ -510,7 +510,7 @@ class VirtualNetworksOperations:
         :type resource_group_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either VirtualNetworksList or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure_arc_vmware_management_service_api.models.VirtualNetworksList]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.connectedvmware.models.VirtualNetworksList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.VirtualNetworksList"]

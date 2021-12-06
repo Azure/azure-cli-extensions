@@ -63,6 +63,18 @@ def _upsert_frontdoor_subresource(cmd, resource_group_name, front_door_name, col
     return item
 
 
+def _update_cache_configuration(cache_configuration,
+                                dynamic_compression,
+                                query_parameter_strip_directive,
+                                query_parameters,
+                                cache_duration):
+    with UpdateContext(cache_configuration) as c:
+        c.update_param('dynamic_compression', dynamic_compression, False)
+        c.update_param('query_parameter_strip_directive', query_parameter_strip_directive, False)
+        c.update_param('query_parameters', query_parameters, True)
+        c.update_param('cache_duration', cache_duration, False)
+
+
 def list_frontdoor_resource_property(resource, prop):
     """ Factory method for creating list functions. """
 
@@ -690,16 +702,28 @@ def update_fd_routing_rule(parent, instance, item_name, frontend_endpoints=None,
                 c.update_param('custom_forwarding_path', custom_forwarding_path, False)
                 c.update_param('forwarding_protocol', forwarding_protocol, False)
                 c.update_param('backend_pool', SubResource(id=backend_pool) if backend_pool else None, False)
-            if caching:
+
+            if caching is None:
+                # Allow caching configuration field be able to be updated individually
+                if hasattr(instance.route_configuration, 'cache_configuration'):
+                    _update_cache_configuration(
+                        instance.route_configuration.cache_configuration,
+                        dynamic_compression,
+                        query_parameter_strip_directive,
+                        query_parameters,
+                        cache_duration)
+            elif caching:
                 if instance.route_configuration.cache_configuration is None:
                     from azext_front_door.vendored_sdks.models import CacheConfiguration
                     instance.route_configuration.cache_configuration = CacheConfiguration(
                         query_parameter_strip_directive='StripNone', dynamic_compression='Enabled')
-                with UpdateContext(instance.route_configuration.cache_configuration) as c:
-                    c.update_param('dynamic_compression', dynamic_compression, False)
-                    c.update_param('query_parameter_strip_directive', query_parameter_strip_directive, False)
-                    c.update_param('query_parameters', query_parameters, True)
-                    c.update_param('cache_duration', cache_duration, False)
+
+                _update_cache_configuration(
+                    instance.route_configuration.cache_configuration,
+                    dynamic_compression,
+                    query_parameter_strip_directive,
+                    query_parameters,
+                    cache_duration)
             else:
                 if hasattr(instance.route_configuration, 'cache_configuration'):
                     instance.route_configuration.cache_configuration = None

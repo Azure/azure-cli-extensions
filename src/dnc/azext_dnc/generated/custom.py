@@ -45,20 +45,6 @@ def dnc_controller_delete(client,
                        resource_name=resource_name)
 
 
-def dnc_delegated_network_list(client,
-                               resource_group_name=None):
-    if resource_group_name:
-        return client.list_by_resource_group(resource_group_name=resource_group_name)
-    return client.list_by_subscription()
-
-
-def dnc_orchestrator_instance_service_list(client,
-                                           resource_group_name=None):
-    if resource_group_name:
-        return client.list_by_resource_group(resource_group_name=resource_group_name)
-    return client.list_by_subscription()
-
-
 def dnc_orchestrator_instance_service_show(client,
                                            resource_group_name,
                                            resource_name):
@@ -110,13 +96,6 @@ def dnc_orchestrator_instance_service_delete(client,
                        resource_group_name=resource_group_name,
                        resource_name=resource_name,
                        force_delete=force_delete)
-
-
-def dnc_delegated_subnet_service_list(client,
-                                      resource_group_name=None):
-    if resource_group_name:
-        return client.list_by_resource_group(resource_group_name=resource_group_name)
-    return client.list_by_subscription()
 
 
 def dnc_delegated_subnet_service_show(client,

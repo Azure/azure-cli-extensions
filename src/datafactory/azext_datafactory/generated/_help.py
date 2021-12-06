@@ -12,10 +12,10 @@
 from knack.help_files import helps
 
 
-helps['datafactory'] = """
+helps['datafactory'] = '''
     type: group
-    short-summary: Manage factory with datafactory
-"""
+    short-summary: Manage Data Factory
+'''
 
 helps['datafactory list'] = """
     type: command
@@ -447,11 +447,6 @@ helps['datafactory linked-service create'] = """
 helps['datafactory linked-service update'] = """
     type: command
     short-summary: "Update a linked service."
-    examples:
-      - name: LinkedServices_Update
-        text: |-
-               az datafactory linked-service update --factory-name "exampleFactoryName" --description "Example \
-description" --name "exampleLinkedService" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory linked-service delete'] = """
@@ -512,13 +507,6 @@ helps['datafactory dataset update'] = """
             Usage: --folder name=XX
 
             name: The name of the folder that this Dataset is in.
-    examples:
-      - name: Datasets_Update
-        text: |-
-               az datafactory dataset update --description "Example description" --linked-service-name \
-"{\\"type\\":\\"LinkedServiceReference\\",\\"referenceName\\":\\"exampleLinkedService\\"}" --parameters \
-"{\\"MyFileName\\":{\\"type\\":\\"String\\"},\\"MyFolderPath\\":{\\"type\\":\\"String\\"}}" --name "exampleDataset" \
---factory-name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory dataset delete'] = """
@@ -756,11 +744,6 @@ requency\\":\\"Minute\\",\\"interval\\":4,\\"startTime\\":\\"2018-06-16T00:39:13
 helps['datafactory trigger update'] = """
     type: command
     short-summary: "Update a trigger."
-    examples:
-      - name: Triggers_Update
-        text: |-
-               az datafactory trigger update --factory-name "exampleFactoryName" --resource-group \
-"exampleResourceGroup" --description "Example description" --name "exampleTrigger"
 """
 
 helps['datafactory trigger delete'] = """
@@ -901,4 +884,98 @@ helps['datafactory trigger-run rerun'] = """
         text: |-
                az datafactory trigger-run rerun --factory-name "exampleFactoryName" --resource-group \
 "exampleResourceGroup" --run-id "2f7fdb90-5df1-4b8e-ac2f-064cfa58202b" --trigger-name "exampleTrigger"
+"""
+
+helps['datafactory managed-virtual-network'] = """
+    type: group
+    short-summary: Manage managed virtual network with datafactory
+"""
+
+helps['datafactory managed-virtual-network list'] = """
+    type: command
+    short-summary: "Lists managed Virtual Networks."
+    examples:
+      - name: ManagedVirtualNetworks_ListByFactory
+        text: |-
+               az datafactory managed-virtual-network list --factory-name "exampleFactoryName" --resource-group \
+"exampleResourceGroup"
+"""
+
+helps['datafactory managed-virtual-network show'] = """
+    type: command
+    short-summary: "Gets a managed Virtual Network."
+    examples:
+      - name: ManagedVirtualNetworks_Get
+        text: |-
+               az datafactory managed-virtual-network show --factory-name "exampleFactoryName" --name \
+"exampleManagedVirtualNetworkName" --resource-group "exampleResourceGroup"
+"""
+
+helps['datafactory managed-virtual-network create'] = """
+    type: command
+    short-summary: "Create a managed Virtual Network."
+    examples:
+      - name: ManagedVirtualNetworks_Create
+        text: |-
+               az datafactory managed-virtual-network create --factory-name "exampleFactoryName" --name \
+"exampleManagedVirtualNetworkName" --resource-group "exampleResourceGroup"
+"""
+
+helps['datafactory managed-virtual-network update'] = """
+    type: command
+    short-summary: "Update a managed Virtual Network."
+"""
+
+helps['datafactory managed-private-endpoint'] = """
+    type: group
+    short-summary: Manage managed private endpoint with datafactory
+"""
+
+helps['datafactory managed-private-endpoint list'] = """
+    type: command
+    short-summary: "Lists managed private endpoints."
+    examples:
+      - name: ManagedPrivateEndpoints_ListByFactory
+        text: |-
+               az datafactory managed-private-endpoint list --factory-name "exampleFactoryName" \
+--managed-virtual-network-name "exampleManagedVirtualNetworkName" --resource-group "exampleResourceGroup"
+"""
+
+helps['datafactory managed-private-endpoint show'] = """
+    type: command
+    short-summary: "Gets a managed private endpoint."
+    examples:
+      - name: ManagedPrivateEndpoints_Get
+        text: |-
+               az datafactory managed-private-endpoint show --factory-name "exampleFactoryName" --name \
+"exampleManagedPrivateEndpointName" --managed-virtual-network-name "exampleManagedVirtualNetworkName" --resource-group \
+"exampleResourceGroup"
+"""
+
+helps['datafactory managed-private-endpoint create'] = """
+    type: command
+    short-summary: "Create a managed private endpoint."
+    examples:
+      - name: ManagedPrivateEndpoints_Create
+        text: |-
+               az datafactory managed-private-endpoint create --factory-name "exampleFactoryName" --group-id "blob" \
+--private-link-resource-id "/subscriptions/12345678-1234-1234-1234-12345678abc/resourceGroups/exampleResourceGroup/prov\
+iders/Microsoft.Storage/storageAccounts/exampleBlobStorage" --name "exampleManagedPrivateEndpointName" \
+--managed-virtual-network-name "exampleManagedVirtualNetworkName" --resource-group "exampleResourceGroup"
+"""
+
+helps['datafactory managed-private-endpoint update'] = """
+    type: command
+    short-summary: "Update a managed private endpoint."
+"""
+
+helps['datafactory managed-private-endpoint delete'] = """
+    type: command
+    short-summary: "Deletes a managed private endpoint."
+    examples:
+      - name: ManagedPrivateEndpoints_Delete
+        text: |-
+               az datafactory managed-private-endpoint delete --factory-name "exampleFactoryName" --name \
+"exampleManagedPrivateEndpointName" --managed-virtual-network-name "exampleManagedVirtualNetworkName" --resource-group \
+"exampleResourceGroup"
 """

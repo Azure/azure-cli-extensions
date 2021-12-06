@@ -17,7 +17,11 @@ helps['quantum execute'] = """
     examples:
       - name: Submit the Q# program from the current folder and wait for the result.
         text: |-
-            az quantum execute -g MyResourceGroup -w MyWorkspace -l MyLocation
+            az quantum execute -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget
+      - name: Submit and wait for a Q# program from the current folder with job and program parameters.
+        text: |-
+            az quantum execute -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget \\
+                --job-params key1=value1 key2=value2 -- --n-qubits=3
 """
 
 helps['quantum run'] = """
@@ -26,7 +30,11 @@ helps['quantum run'] = """
     examples:
       - name: Submit the Q# program from the current folder and wait for the result.
         text: |-
-            az quantum run -g MyResourceGroup -w MyWorkspace -l MyLocation
+            az quantum run -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget
+      - name: Submit and wait for a Q# program from the current folder with job and program parameters.
+        text: |-
+            az quantum run -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget \\
+                --job-params key1=value1 key2=value2 -- --n-qubits=3
 """
 
 helps['quantum job'] = """
@@ -70,7 +78,15 @@ helps['quantum job submit'] = """
       - name: Submit the Q# program from the current folder.
         text: |-
             az quantum job submit -g MyResourceGroup -w MyWorkspace -l MyLocation \\
-               -l MyLocation --job-name MyJob
+               --job-name MyJob
+      - name: Submit the Q# program from the current folder with job parameters for a target.
+        text: |-
+            az quantum job submit -g MyResourceGroup -w MyWorkspace -l MyLocation \\
+               --job-name MyJob --job-params param1=value1 param2=value2
+      - name: Submit the Q# program with program parameters (e.g. n-qubits = 2).
+        text: |-
+            az quantum job submit -g MyResourceGroup -w MyWorkspace -l MyLocation \\
+               --job-name MyJob -- --n-qubits=2
 """
 
 helps['quantum job wait'] = """
@@ -81,6 +97,16 @@ helps['quantum job wait'] = """
         text: |-
             az quantum job wait -g MyResourceGroup -w MyWorkspace -l MyLocation \\
                 -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy --max-poll-wait-secs 60 -o table
+"""
+
+helps['quantum job cancel'] = """
+    type: command
+    short-summary: Request to cancel a job on Azure Quantum if it hasn't completed.
+    examples:
+      - name: Cancel an Azure Quantum job by id.
+        text: |-
+            az quantum job cancel -g MyResourceGroup -w MyWorkspace -l MyLocation \\
+                -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy
 """
 
 helps['quantum offerings'] = """

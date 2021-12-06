@@ -20,10 +20,6 @@ def cf_controller(cli_ctx, *_):
     return cf_dnc_cl(cli_ctx).controller
 
 
-def cf_delegated_network(cli_ctx, *_):
-    return cf_dnc_cl(cli_ctx).delegated_network
-
-
 def cf_orchestrator_instance_service(cli_ctx, *_):
     return cf_dnc_cl(cli_ctx).orchestrator_instance_service
 

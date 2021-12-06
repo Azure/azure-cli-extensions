@@ -32,7 +32,7 @@ class VirtualMachinesOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure_arc_vmware_management_service_api.models
+    :type models: ~azure.mgmt.connectedvmware.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -126,15 +126,15 @@ class VirtualMachinesOperations(object):
         :param virtual_machine_name: Name of the virtual machine resource.
         :type virtual_machine_name: str
         :param body: Request payload.
-        :type body: ~azure_arc_vmware_management_service_api.models.VirtualMachine
+        :type body: ~azure.mgmt.connectedvmware.models.VirtualMachine
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: Pass in True if you'd like the ARMPolling polling method,
-         False for no polling, or your own initialized polling object for a personal polling strategy.
+        :keyword polling: By default, your polling method will be ARMPolling.
+         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of LROPoller that returns either VirtualMachine or the result of cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~azure_arc_vmware_management_service_api.models.VirtualMachine]
+        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.connectedvmware.models.VirtualMachine]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
@@ -200,7 +200,7 @@ class VirtualMachinesOperations(object):
         :type virtual_machine_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: VirtualMachine, or the result of cls(response)
-        :rtype: ~azure_arc_vmware_management_service_api.models.VirtualMachine
+        :rtype: ~azure.mgmt.connectedvmware.models.VirtualMachine
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.VirtualMachine"]
@@ -324,15 +324,15 @@ class VirtualMachinesOperations(object):
         :param virtual_machine_name: Name of the virtual machine resource.
         :type virtual_machine_name: str
         :param body: Resource properties to update.
-        :type body: ~azure_arc_vmware_management_service_api.models.VirtualMachineUpdate
+        :type body: ~azure.mgmt.connectedvmware.models.VirtualMachineUpdate
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: Pass in True if you'd like the ARMPolling polling method,
-         False for no polling, or your own initialized polling object for a personal polling strategy.
+        :keyword polling: By default, your polling method will be ARMPolling.
+         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of LROPoller that returns either VirtualMachine or the result of cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~azure_arc_vmware_management_service_api.models.VirtualMachine]
+        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.connectedvmware.models.VirtualMachine]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
@@ -450,8 +450,8 @@ class VirtualMachinesOperations(object):
         :type force: bool
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: Pass in True if you'd like the ARMPolling polling method,
-         False for no polling, or your own initialized polling object for a personal polling strategy.
+        :keyword polling: By default, your polling method will be ARMPolling.
+         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of LROPoller that returns either None or the result of cls(response)
@@ -573,11 +573,11 @@ class VirtualMachinesOperations(object):
         :param virtual_machine_name: Name of the virtual machine resource.
         :type virtual_machine_name: str
         :param body: Virtualmachine stop action payload.
-        :type body: ~azure_arc_vmware_management_service_api.models.StopVirtualMachineOptions
+        :type body: ~azure.mgmt.connectedvmware.models.StopVirtualMachineOptions
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: Pass in True if you'd like the ARMPolling polling method,
-         False for no polling, or your own initialized polling object for a personal polling strategy.
+        :keyword polling: By default, your polling method will be ARMPolling.
+         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of LROPoller that returns either None or the result of cls(response)
@@ -690,8 +690,8 @@ class VirtualMachinesOperations(object):
         :type virtual_machine_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: Pass in True if you'd like the ARMPolling polling method,
-         False for no polling, or your own initialized polling object for a personal polling strategy.
+        :keyword polling: By default, your polling method will be ARMPolling.
+         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of LROPoller that returns either None or the result of cls(response)
@@ -803,8 +803,8 @@ class VirtualMachinesOperations(object):
         :type virtual_machine_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: Pass in True if you'd like the ARMPolling polling method,
-         False for no polling, or your own initialized polling object for a personal polling strategy.
+        :keyword polling: By default, your polling method will be ARMPolling.
+         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of LROPoller that returns either None or the result of cls(response)
@@ -864,7 +864,7 @@ class VirtualMachinesOperations(object):
 
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either VirtualMachinesList or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~azure_arc_vmware_management_service_api.models.VirtualMachinesList]
+        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.connectedvmware.models.VirtualMachinesList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.VirtualMachinesList"]
@@ -937,7 +937,7 @@ class VirtualMachinesOperations(object):
         :type resource_group_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either VirtualMachinesList or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~azure_arc_vmware_management_service_api.models.VirtualMachinesList]
+        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.connectedvmware.models.VirtualMachinesList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.VirtualMachinesList"]

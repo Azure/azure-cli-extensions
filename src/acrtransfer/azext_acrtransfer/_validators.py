@@ -4,8 +4,10 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long
 
-from distutils import log as logger
-from knack.util import CLIError
+from knack.log import get_logger
+from azure.cli.core.azclierror import InvalidArgumentValueError
+
+logger = get_logger(__name__)
 
 
 def validate_storage_account_container_uri(namespace):
@@ -16,7 +18,7 @@ def validate_storage_account_container_uri(namespace):
         valid = False
 
     if not valid:
-        logger.warn("Invalid storage account container URI. Please provide a storage account container URI of the form https://$MyStorageAccount.blob.core.windows.net/$MyContainer. Note - The exact URI form may be different outside of AzureCloud.")
+        logger.warning("Invalid storage account container URI. Please provide a storage account container URI of the form https://$MyStorageAccount.blob.core.windows.net/$MyContainer. Note - The exact URI form may be different outside of AzureCloud.")
 
 
 def validate_keyvault_secret_uri(namespace):
@@ -27,7 +29,7 @@ def validate_keyvault_secret_uri(namespace):
         valid = False
 
     if not valid:
-        logger.warn("Invalid keyvault secret URI. Please provide a keyvault secret URI of the form https://$MyKeyvault.vault.azure.net/secrets/$MySecret. Note - The exact URI form may be different outside of AzureCloud.")
+        logger.warning("Invalid keyvault secret URI. Please provide a keyvault secret URI of the form https://$MyKeyvault.vault.azure.net/secrets/$MySecret. Note - The exact URI form may be different outside of AzureCloud.")
 
 
 def validate_user_assigned_identity_resource_id(namespace):
@@ -41,7 +43,7 @@ def validate_user_assigned_identity_resource_id(namespace):
         valid = False
 
     if not valid:
-        logger.warn("Invalid user assigned identity resource ID. Please provide a user assigned identity resource ID of the form /subscriptions/$MySubID/resourceGroups/$MyRG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/$MyIdentity.")
+        logger.warning("Invalid user assigned identity resource ID. Please provide a user assigned identity resource ID of the form /subscriptions/$MySubID/resourceGroups/$MyRG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/$MyIdentity.")
 
 
 def validate_import_options(namespace):
@@ -57,8 +59,8 @@ def validate_import_options(namespace):
         valid = False
 
     if not valid:
-        logger.warn("Allowed options are: " + str(allowed_options_list))
-        logger.warn("Invalid option found in options parameter. Please provide a space-separated list of allowed options.")
+        logger.warning("Allowed options are: %s", str(allowed_options_list))
+        logger.warning("Invalid option found in options parameter. Please provide a space-separated list of allowed options.")
 
 
 def validate_export_options(namespace):
@@ -74,8 +76,8 @@ def validate_export_options(namespace):
         valid = False
 
     if not valid:
-        logger.warn("Allowed options are: " + str(allowed_options_list))
-        logger.warn("Invalid option found in options parameter. Please provide a space-separated list of allowed options.")
+        logger.warning('Allowed options are: %s', str(allowed_options_list))
+        logger.warning("Invalid option found in options parameter. Please provide a space-separated list of allowed options.")
 
 
 def validate_pipeline_type(namespace):
@@ -86,4 +88,17 @@ def validate_pipeline_type(namespace):
         valid = False
 
     if not valid:
-        logger.warn("Invalid pipeline type. Pipeline type must be import or export.")
+        logger.warning("Invalid pipeline type. Pipeline type must be import or export.")
+
+
+def validate_top(namespace):
+    n = namespace.top
+
+    if n is None:
+        return
+
+    try:
+        int(n)
+
+    except ValueError as e:
+        raise InvalidArgumentValueError(f'Argument provided for parameter top \'{n}\' is not an integer. Please provide an integer for the top parameter.') from e

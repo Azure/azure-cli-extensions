@@ -12,7 +12,7 @@ az extension add --name k8s-extension
 
 ### Included Features
 #### Kubernetes Extensions:
-Kubernetes Extensions: [more info](https://docs.microsoft.com/en-us/azure/kubernetessconfiguration/)\
+Kubernetes Extensions: [more info](https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/extensions)\
 *Examples:*
 
 ##### Create a KubernetesExtension
@@ -56,4 +56,18 @@ az k8s-extension list \
     --cluster-type clusterType
 ```
 
-If you have issues, please give feedback by opening an issue at https://github.com/Azure/azure-cli-extensions/issues.
+##### Update an existing KubernetesExtension of a cluster
+```
+az k8s-extension update \
+    --resource-group groupName \
+    --cluster-name clusterName \
+    --cluster-type clusterType \
+    --name extensionName \
+    --auto-upgrade true/false \
+    --version extensionVersion \
+    --release-train releaseTrain \
+    --configuration-settings settingsKey=settingsValue \
+    --configuration-protected-settings protectedSettingsKey=protectedValue \
+    --configuration-settings-file configSettingsFile \
+    --configuration-protected-settings-file protectedSettingsFile
+```

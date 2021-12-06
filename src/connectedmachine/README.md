@@ -1,104 +1,128 @@
-# Microsoft Azure CLI 'connectedmachine' Extension
+# Azure CLI connectedmachine Extension #
+This is the extension for connectedmachine
 
-This package is for the 'connectedmachine' extension, i.e. 'az connectedmachine'.
-
-## Prerequisite
-
-In order to use this extension,
-first follow the quick start for
-[Hybrid Compute](https://docs.microsoft.com/en-us/azure/azure-arc/servers/learn/quick-enable-hybrid-vm)
-and onboard your machine(s).
-
-## How to use
-
+### How to use ###
 Install this extension using the below CLI command
-
-```sh
+```
 az extension add --name connectedmachine
 ```
 
-### Included Features
-
-#### Connected Machine Management
-
-*Examples:*
-
-##### Show connected machine
-
-```sh
-az connectedmachine show \
-    --subscription subscription_id \
-    --resource-group my-rg \
-    --name my-cluster
+### Included Features ###
+#### connectedmachine ####
+##### List #####
 ```
-
-##### List connected machines in resource group
-
-```sh
-az connectedmachine list --resource-group my-rg
+az connectedmachine list --resource-group "myResourceGroup"
 ```
-
-##### Delete a connected machine
-
-```sh
-az connectedmachine delete \
-    --subscription subscription_id \
-    --resource-group my-rg \
-    --name my-machine
+##### Show #####
 ```
-
-#### Connected Machine Extension Management
-
-*Examples:*
-
-##### Create or Update a Machine Extension
-
-```sh
-az connectedmachine extension create \
-    --machine-name "myMachine" \
-    --name "customScriptExtension" \
-    --location "eastus2euap" \
-    --type "CustomScriptExtension" \
+az connectedmachine show --name "myMachine" --resource-group "myResourceGroup"
+```
+##### Delete #####
+```
+az connectedmachine delete --name "myMachine" --resource-group "myResourceGroup"
+```
+#### connectedmachine extension ####
+##### Create #####
+```
+az connectedmachine extension create --n "CustomScriptExtension" --location "eastus2euap" \
+    --type "CustomScriptExtension" --publisher "Microsoft.Compute" \
+    --settings "{\\"commandToExecute\\":\\"powershell.exe -c \\\\\\"Get-Process | Where-Object { $_.CPU -gt 10000 }\\\\\\"\\"}" \
+    --type-handler-version "1.10" --machine-name "myMachine" --resource-group "myResourceGroup" 
+```
+##### Show #####
+```
+az connectedmachine extension show --n "CustomScriptExtension" --machine-name "myMachine" \
+    --resource-group "myResourceGroup" 
+```
+##### List #####
+```
+az connectedmachine extension list --machine-name "myMachine" --resource-group "myResourceGroup"
+```
+##### Update #####
+```
+az connectedmachine extension update --n "CustomScriptExtension" --type "CustomScriptExtension" \
     --publisher "Microsoft.Compute" \
-    --settings "{\"commandToExecute\":\"powershell.exe -c \\\"Get-Process | Where-Object { $_.CPU -gt 10000 }\\\"\"}" \
-    --type-handler-version "1.10" \
-    --resource-group "myResourceGroup"
+    --settings "{\\"commandToExecute\\":\\"powershell.exe -c \\\\\\"Get-Process | Where-Object { $_.CPU -lt 100 }\\\\\\"\\"}" \
+    --type-handler-version "1.10" --machine-name "myMachine" --resource-group "myResourceGroup" 
 ```
-
-##### Get all Machine Extensions
-
-```sh
-az connectedmachine extension list \
-    --machine-name "myMachine" \
-    --resource-group "myResourceGroup"
+##### Delete #####
 ```
-
-##### Get a Machine Extension
-
-```sh
-az connectedmachine extension show \
-    --machine-name "myMachine" \
-    --name "CustomScriptExtension" \
-    --resource-group "myResourceGroup"
+az connectedmachine extension delete --n "MMA" --machine-name "myMachine" --resource-group "myResourceGroup"
 ```
-
-##### Update a Machine Extension
-
-```sh
-az connectedmachine extension update \
-    --machine-name "myMachine" \
-    --name "CustomScriptExtension" \
-    --type "CustomScriptExtension" \
-    --publisher "Microsoft.Compute" \
-    --settings "{\"commandToExecute\":\"powershell.exe -c \\\"Get-Process | Where-Object { $_.CPU -lt 100 }\\\"\"}" \ --type-handler-version "1.10" \
-    --resource-group "myResourceGroup"
+#### connectedmachine ####
+##### Upgrade-extension #####
 ```
-
-##### Delete a Machine Extension
-
-```sh
-az connectedmachine extension delete \
-    --machine-name "myMachine" \
-    --name "MMA" \
-    --resource-group "myResourceGroup"
+az connectedmachine upgrade-extension \
+    --extension-targets "{\\"Microsoft.Azure.Monitoring\\":{\\"targetVersion\\":\\"2.0\\"},\\"Microsoft.Compute.CustomScriptExtension\\":{\\"targetVersion\\":\\"1.10\\"}}" \
+    --machine-name "myMachine" --resource-group "myResourceGroup" 
+```
+#### connectedmachine private-link-scope ####
+##### Create #####
+```
+az connectedmachine private-link-scope create --location "westus" --resource-group "my-resource-group" \
+    --scope-name "my-privatelinkscope" 
+```
+##### Update #####
+```
+az connectedmachine private-link-scope update --location "westus" --tags Tag1="Value1" \
+    --resource-group "my-resource-group" --scope-name "my-privatelinkscope" 
+```
+##### List #####
+```
+az connectedmachine private-link-scope list --resource-group "my-resource-group"
+```
+##### Show #####
+```
+az connectedmachine private-link-scope show --resource-group "my-resource-group" --scope-name "my-privatelinkscope"
+```
+##### Show-validation-detail #####
+```
+az connectedmachine private-link-scope show-validation-detail --location "wus2" \
+    --private-link-scope-id "f5dc51d3-92ed-4d7e-947a-775ea79b4919" 
+```
+##### Show-validation-detail-for-machine #####
+```
+az connectedmachine private-link-scope show-validation-detail-for-machine --machine-name "machineName" \
+    --resource-group "my-resource-group" 
+```
+##### Update-tag #####
+```
+az connectedmachine private-link-scope update-tag --tags Tag1="Value1" Tag2="Value2" \
+    --resource-group "my-resource-group" --scope-name "my-privatelinkscope" 
+```
+##### Delete #####
+```
+az connectedmachine private-link-scope delete --resource-group "my-resource-group" --scope-name "my-privatelinkscope"
+```
+#### connectedmachine private-link-resource ####
+##### List #####
+```
+az connectedmachine private-link-resource list --resource-group "myResourceGroup" --scope-name "myPrivateLinkScope"
+```
+##### Show #####
+```
+az connectedmachine private-link-resource show --group-name "hybridcompute" --resource-group "myResourceGroup" \
+    --scope-name "myPrivateLinkScope" 
+```
+#### connectedmachine private-endpoint-connection ####
+##### Update #####
+```
+az connectedmachine private-endpoint-connection update \
+    --private-link-service-connection-state description="Approved by johndoe@contoso.com" status="Approved" \
+    --name "private-endpoint-connection-name" --resource-group "myResourceGroup" --scope-name "myPrivateLinkScope" 
+```
+##### Show #####
+```
+az connectedmachine private-endpoint-connection show --name "private-endpoint-connection-name" \
+    --resource-group "myResourceGroup" --scope-name "myPrivateLinkScope" 
+```
+##### List #####
+```
+az connectedmachine private-endpoint-connection list --resource-group "myResourceGroup" \
+    --scope-name "myPrivateLinkScope" 
+```
+##### Delete #####
+```
+az connectedmachine private-endpoint-connection delete --name "private-endpoint-connection-name" \
+    --resource-group "myResourceGroup" --scope-name "myPrivateLinkScope" 
 ```

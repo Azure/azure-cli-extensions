@@ -45,20 +45,15 @@ class CommunicationServiceOperations:
 
     async def check_name_availability(
         self,
-        type: Optional[str] = None,
-        name: Optional[str] = None,
+        name_availability_parameters: Optional["models.NameAvailabilityParameters"] = None,
         **kwargs
     ) -> "models.NameAvailability":
         """Check Name Availability.
 
         Checks that the CommunicationService name is valid and is not already in use.
 
-        :param type: The resource type. Should be always
-         "Microsoft.Communication/CommunicationServices".
-        :type type: str
-        :param name: The CommunicationService name to validate. e.g."my-CommunicationService-name-
-         here".
-        :type name: str
+        :param name_availability_parameters: Parameters supplied to the operation.
+        :type name_availability_parameters: ~communication_service_management_client.models.NameAvailabilityParameters
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: NameAvailability, or the result of cls(response)
         :rtype: ~communication_service_management_client.models.NameAvailability
@@ -69,9 +64,7 @@ class CommunicationServiceOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-
-        name_availability_parameters = models.NameAvailabilityParameters(type=type, name=name)
-        api_version = "2020-08-20-preview"
+        api_version = "2020-08-20"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -118,23 +111,19 @@ class CommunicationServiceOperations:
         self,
         resource_group_name: str,
         communication_service_name: str,
-        resource_id: Optional[str] = None,
-        connection_string: Optional[str] = None,
+        link_notification_hub_parameters: Optional["models.LinkNotificationHubParameters"] = None,
         **kwargs
     ) -> "models.LinkedNotificationHub":
         """Link Notification Hub.
 
         Links an Azure Notification Hub to this communication service.
 
-        :param resource_group_name: The name of the resource group that contains the resource. You can
-         obtain this value from the Azure Resource Manager API or the portal.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param communication_service_name: The name of the CommunicationService resource.
         :type communication_service_name: str
-        :param resource_id: The resource ID of the notification hub.
-        :type resource_id: str
-        :param connection_string: Connection string for the notification hub.
-        :type connection_string: str
+        :param link_notification_hub_parameters: Parameters supplied to the operation.
+        :type link_notification_hub_parameters: ~communication_service_management_client.models.LinkNotificationHubParameters
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: LinkedNotificationHub, or the result of cls(response)
         :rtype: ~communication_service_management_client.models.LinkedNotificationHub
@@ -145,9 +134,7 @@ class CommunicationServiceOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-
-        link_notification_hub_parameters = models.LinkNotificationHubParameters(resource_id=resource_id, connection_string=connection_string)
-        api_version = "2020-08-20-preview"
+        api_version = "2020-08-20"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -155,8 +142,8 @@ class CommunicationServiceOperations:
         url = self.link_notification_hub.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'communicationServiceName': self._serialize.url("communication_service_name", communication_service_name, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
+            'communicationServiceName': self._serialize.url("communication_service_name", communication_service_name, 'str', max_length=63, min_length=1, pattern=r'^[-\w]+$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -210,7 +197,7 @@ class CommunicationServiceOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-08-20-preview"
+        api_version = "2020-08-20"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -270,8 +257,7 @@ class CommunicationServiceOperations:
 
         Handles requests to list all resources in a resource group.
 
-        :param resource_group_name: The name of the resource group that contains the resource. You can
-         obtain this value from the Azure Resource Manager API or the portal.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either CommunicationServiceResourceList or the result of cls(response)
@@ -283,7 +269,7 @@ class CommunicationServiceOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-08-20-preview"
+        api_version = "2020-08-20"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -296,7 +282,7 @@ class CommunicationServiceOperations:
                 url = self.list_by_resource_group.metadata['url']  # type: ignore
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
-                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
@@ -339,20 +325,19 @@ class CommunicationServiceOperations:
         self,
         resource_group_name: str,
         communication_service_name: str,
-        tags: Optional[Dict[str, str]] = None,
+        parameters: Optional["models.CommunicationServiceResource"] = None,
         **kwargs
     ) -> "models.CommunicationServiceResource":
         """Update.
 
         Operation to update an existing CommunicationService.
 
-        :param resource_group_name: The name of the resource group that contains the resource. You can
-         obtain this value from the Azure Resource Manager API or the portal.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param communication_service_name: The name of the CommunicationService resource.
         :type communication_service_name: str
-        :param tags: Tags of the service which is a list of key value pairs that describe the resource.
-        :type tags: dict[str, str]
+        :param parameters: Parameters for the update operation.
+        :type parameters: ~communication_service_management_client.models.CommunicationServiceResource
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: CommunicationServiceResource, or the result of cls(response)
         :rtype: ~communication_service_management_client.models.CommunicationServiceResource
@@ -363,9 +348,7 @@ class CommunicationServiceOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-
-        parameters = models.TaggedResource(tags=tags)
-        api_version = "2020-08-20-preview"
+        api_version = "2020-08-20"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -373,8 +356,8 @@ class CommunicationServiceOperations:
         url = self.update.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'communicationServiceName': self._serialize.url("communication_service_name", communication_service_name, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
+            'communicationServiceName': self._serialize.url("communication_service_name", communication_service_name, 'str', max_length=63, min_length=1, pattern=r'^[-\w]+$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -389,7 +372,7 @@ class CommunicationServiceOperations:
 
         body_content_kwargs = {}  # type: Dict[str, Any]
         if parameters is not None:
-            body_content = self._serialize.body(parameters, 'TaggedResource')
+            body_content = self._serialize.body(parameters, 'CommunicationServiceResource')
         else:
             body_content = None
         body_content_kwargs['content'] = body_content
@@ -420,8 +403,7 @@ class CommunicationServiceOperations:
 
         Get the CommunicationService and its properties.
 
-        :param resource_group_name: The name of the resource group that contains the resource. You can
-         obtain this value from the Azure Resource Manager API or the portal.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param communication_service_name: The name of the CommunicationService resource.
         :type communication_service_name: str
@@ -435,15 +417,15 @@ class CommunicationServiceOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-08-20-preview"
+        api_version = "2020-08-20"
         accept = "application/json"
 
         # Construct URL
         url = self.get.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'communicationServiceName': self._serialize.url("communication_service_name", communication_service_name, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
+            'communicationServiceName': self._serialize.url("communication_service_name", communication_service_name, 'str', max_length=63, min_length=1, pattern=r'^[-\w]+$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -476,9 +458,7 @@ class CommunicationServiceOperations:
         self,
         resource_group_name: str,
         communication_service_name: str,
-        location: Optional[str] = None,
-        tags: Optional[Dict[str, str]] = None,
-        data_location: Optional[str] = None,
+        parameters: Optional["models.CommunicationServiceResource"] = None,
         **kwargs
     ) -> "models.CommunicationServiceResource":
         cls = kwargs.pop('cls', None)  # type: ClsType["models.CommunicationServiceResource"]
@@ -486,9 +466,7 @@ class CommunicationServiceOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-
-        parameters = models.CommunicationServiceResource(location=location, tags=tags, data_location=data_location)
-        api_version = "2020-08-20-preview"
+        api_version = "2020-08-20"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -496,8 +474,8 @@ class CommunicationServiceOperations:
         url = self._create_or_update_initial.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'communicationServiceName': self._serialize.url("communication_service_name", communication_service_name, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
+            'communicationServiceName': self._serialize.url("communication_service_name", communication_service_name, 'str', max_length=63, min_length=1, pattern=r'^[-\w]+$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -543,26 +521,19 @@ class CommunicationServiceOperations:
         self,
         resource_group_name: str,
         communication_service_name: str,
-        location: Optional[str] = None,
-        tags: Optional[Dict[str, str]] = None,
-        data_location: Optional[str] = None,
+        parameters: Optional["models.CommunicationServiceResource"] = None,
         **kwargs
     ) -> AsyncLROPoller["models.CommunicationServiceResource"]:
         """Create Or Update.
 
         Create a new CommunicationService or update an existing CommunicationService.
 
-        :param resource_group_name: The name of the resource group that contains the resource. You can
-         obtain this value from the Azure Resource Manager API or the portal.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param communication_service_name: The name of the CommunicationService resource.
         :type communication_service_name: str
-        :param location: The Azure location where the CommunicationService is running.
-        :type location: str
-        :param tags: Tags of the service which is a list of key value pairs that describe the resource.
-        :type tags: dict[str, str]
-        :param data_location: The location where the communication service stores its data at rest.
-        :type data_location: str
+        :param parameters: Parameters for the create or update operation.
+        :type parameters: ~communication_service_management_client.models.CommunicationServiceResource
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
@@ -584,9 +555,7 @@ class CommunicationServiceOperations:
             raw_result = await self._create_or_update_initial(
                 resource_group_name=resource_group_name,
                 communication_service_name=communication_service_name,
-                location=location,
-                tags=tags,
-                data_location=data_location,
+                parameters=parameters,
                 cls=lambda x,y,z: x,
                 **kwargs
             )
@@ -606,11 +575,11 @@ class CommunicationServiceOperations:
 
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'communicationServiceName': self._serialize.url("communication_service_name", communication_service_name, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
+            'communicationServiceName': self._serialize.url("communication_service_name", communication_service_name, 'str', max_length=63, min_length=1, pattern=r'^[-\w]+$'),
         }
 
-        if polling is True: polling_method = AsyncARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
+        if polling is True: polling_method = AsyncARMPolling(lro_delay, lro_options={'final-state-via': 'azure-async-operation'}, path_format_arguments=path_format_arguments,  **kwargs)
         elif polling is False: polling_method = AsyncNoPolling()
         else: polling_method = polling
         if cont_token:
@@ -635,15 +604,15 @@ class CommunicationServiceOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-08-20-preview"
+        api_version = "2020-08-20"
         accept = "application/json"
 
         # Construct URL
         url = self._delete_initial.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'communicationServiceName': self._serialize.url("communication_service_name", communication_service_name, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
+            'communicationServiceName': self._serialize.url("communication_service_name", communication_service_name, 'str', max_length=63, min_length=1, pattern=r'^[-\w]+$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -683,8 +652,7 @@ class CommunicationServiceOperations:
 
         Operation to delete a CommunicationService.
 
-        :param resource_group_name: The name of the resource group that contains the resource. You can
-         obtain this value from the Azure Resource Manager API or the portal.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param communication_service_name: The name of the CommunicationService resource.
         :type communication_service_name: str
@@ -722,11 +690,11 @@ class CommunicationServiceOperations:
 
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'communicationServiceName': self._serialize.url("communication_service_name", communication_service_name, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
+            'communicationServiceName': self._serialize.url("communication_service_name", communication_service_name, 'str', max_length=63, min_length=1, pattern=r'^[-\w]+$'),
         }
 
-        if polling is True: polling_method = AsyncARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
+        if polling is True: polling_method = AsyncARMPolling(lro_delay, lro_options={'final-state-via': 'location'}, path_format_arguments=path_format_arguments,  **kwargs)
         elif polling is False: polling_method = AsyncNoPolling()
         else: polling_method = polling
         if cont_token:
@@ -740,7 +708,7 @@ class CommunicationServiceOperations:
             return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)
     begin_delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Communication/communicationServices/{communicationServiceName}'}  # type: ignore
 
-    async def list_key(
+    async def list_keys(
         self,
         resource_group_name: str,
         communication_service_name: str,
@@ -750,8 +718,7 @@ class CommunicationServiceOperations:
 
         Get the access keys of the CommunicationService resource.
 
-        :param resource_group_name: The name of the resource group that contains the resource. You can
-         obtain this value from the Azure Resource Manager API or the portal.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param communication_service_name: The name of the CommunicationService resource.
         :type communication_service_name: str
@@ -765,15 +732,15 @@ class CommunicationServiceOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-08-20-preview"
+        api_version = "2020-08-20"
         accept = "application/json"
 
         # Construct URL
-        url = self.list_key.metadata['url']  # type: ignore
+        url = self.list_keys.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'communicationServiceName': self._serialize.url("communication_service_name", communication_service_name, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
+            'communicationServiceName': self._serialize.url("communication_service_name", communication_service_name, 'str', max_length=63, min_length=1, pattern=r'^[-\w]+$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -800,13 +767,13 @@ class CommunicationServiceOperations:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    list_key.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Communication/communicationServices/{communicationServiceName}/listKeys'}  # type: ignore
+    list_keys.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Communication/communicationServices/{communicationServiceName}/listKeys'}  # type: ignore
 
     async def regenerate_key(
         self,
         resource_group_name: str,
         communication_service_name: str,
-        key_type: Optional[Union[str, "models.KeyType"]] = None,
+        parameters: "models.RegenerateKeyParameters",
         **kwargs
     ) -> "models.CommunicationServiceKeys":
         """Regenerate Key.
@@ -814,14 +781,12 @@ class CommunicationServiceOperations:
         Regenerate CommunicationService access key. PrimaryKey and SecondaryKey cannot be regenerated
         at the same time.
 
-        :param resource_group_name: The name of the resource group that contains the resource. You can
-         obtain this value from the Azure Resource Manager API or the portal.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param communication_service_name: The name of the CommunicationService resource.
         :type communication_service_name: str
-        :param key_type: The keyType to regenerate. Must be either 'primary' or 'secondary'(case-
-         insensitive).
-        :type key_type: str or ~communication_service_management_client.models.KeyType
+        :param parameters: Parameter that describes the Regenerate Key Operation.
+        :type parameters: ~communication_service_management_client.models.RegenerateKeyParameters
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: CommunicationServiceKeys, or the result of cls(response)
         :rtype: ~communication_service_management_client.models.CommunicationServiceKeys
@@ -832,9 +797,7 @@ class CommunicationServiceOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-
-        parameters = models.RegenerateKeyParameters(key_type=key_type)
-        api_version = "2020-08-20-preview"
+        api_version = "2020-08-20"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -842,8 +805,8 @@ class CommunicationServiceOperations:
         url = self.regenerate_key.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'communicationServiceName': self._serialize.url("communication_service_name", communication_service_name, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
+            'communicationServiceName': self._serialize.url("communication_service_name", communication_service_name, 'str', max_length=63, min_length=1, pattern=r'^[-\w]+$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -857,25 +820,18 @@ class CommunicationServiceOperations:
         header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        if parameters is not None:
-            body_content = self._serialize.body(parameters, 'RegenerateKeyParameters')
-        else:
-            body_content = None
+        body_content = self._serialize.body(parameters, 'RegenerateKeyParameters')
         body_content_kwargs['content'] = body_content
         request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
-        if response.status_code not in [200, 201]:
+        if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        if response.status_code == 200:
-            deserialized = self._deserialize('CommunicationServiceKeys', pipeline_response)
-
-        if response.status_code == 201:
-            deserialized = self._deserialize('CommunicationServiceKeys', pipeline_response)
+        deserialized = self._deserialize('CommunicationServiceKeys', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})

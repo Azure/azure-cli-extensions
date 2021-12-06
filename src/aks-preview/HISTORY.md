@@ -2,6 +2,133 @@
 
 Release History
 ===============
+0.5.46
+++++++
+* Update to use 2021-10-01 api-version
+
+0.5.45
+++++++
+* Remove the snapshot name trimming in `az aks snapshot create` command.
+
+0.5.44
+++++++
+* In AKS Monitoring addon, fix DCR resource naming convention from DCR-<workspaceName> to MSCI-<workspaceName> to make consistent naming across.
+
+0.5.43
+++++++
+* Enable the new implementation in command `aks create`, and change the dependent cli version to at least 2.30.0
+
+0.5.42
+++++++
+* Fix default value behavior for pod identity exception pod labels in upgrade/scale calls.
+
+0.5.41
+++++++
+* Fix default value behavior for pod identity exception pod labels.
+
+0.5.40
++++++
+* Add support for new snapshot commands
+  * `az aks snapshot create`
+  * `az aks snapshot delete`
+  * `az aks snapshot list`
+  * `az aks snapshot show`
+* Add --snapshot-id to creating/upgrading commands
+  * `az aks create --snapshot-id`
+  * `az aks nodepool add --snapshot-id`
+  * `az aks nodepool upgrade --snapshot-id`
+
+0.5.39
++++++
+* Add commands for agentpool start stop feature
+
+0.5.38
++++++
+* Add parameter `--rotation-poll-interval` for Azure Keyvault Secrets Provider Addon.
+
+0.5.37
++++++
+* Add Windows gMSA v2 support. Add parameters `--enable-windows-gmsa`, `--gmsa-dns-server` and `--gmsa-root-domain-name`
+
+0.5.36
++++++
+* Update to use 2021-09-01 api-version
+
+0.5.35
++++++
+* Add support for multi-instance GPU configuration (`--gpu_instance_profile`) in `az aks create`
+and `az aks nodepool add`.
+
+0.5.34
++++++
+* Add support for WASM nodepools (`--workload-runtime WasmWasi`) in `az aks create`
+and `az aks nodepool add`
+
+0.5.33
++++++
+* Add support for new addon commands
+  * `az aks addon list`
+  * `az aks addon list-available`
+  * `az aks addon show`
+  * `az aks addon enable`
+  * `az aks addon disable`
+  * `az aks addon update`
+* Refactored code to bring addon specific functionality into a separate file.
+
+0.5.32
++++++
+* Update to use 2021-08-01 api-version
+
+0.5.31
++++++
+* Add support for new outbound types: 'managedNATGateway' and 'userAssignedNATGateway'
+
+0.5.30
++++++
+* Add preview support for setting scaleDownMode field on nodepools. Requires registering the feature flag "Microsoft.ContainerService/AKS-ScaleDownModePreview" for setting the value to "Deallocate".
+
+0.5.29
++++++
+* Fix update (failed due to "ERROR: (BadRequest) Feature Microsoft.ContainerService/AutoUpgradePreview is not enabled" even when autoupgrade was not specified)
+* Add podMaxPids argument for kubelet-config
+
+0.5.28
++++++
+* Update to adopt 2021-07-01 api-version
+
+0.5.27
++++++
+* GA private cluster public FQDN feature, breaking change to replace create parameter `--enable-public-fqdn` with `--disable-public-fqdn` since now it's enabled by default for private cluster during cluster creation.
+
+0.5.26
++++++
+* Correct containerLogMaxSizeMb to containerLogMaxSizeMB in customized kubelet config
+
+0.5.25
++++++
+* Add support for http proxy
+
+0.5.24
++++++
+* * Add "--aks-custom-headers" for "az aks nodepool upgrade"
+
+0.5.23
++++++
+* Fix issue that `maintenanceconfiguration add` subcommand cannot work
+
+0.5.22
++++++
+* Fix issue in dcr template
+
+0.5.21
++++++
+* Fix issue when disable monitoring on an AKS cluster would fail in regions where Data Collection Rules are not enabled
+
+0.5.20
++++++
+* Support enabling monitoring on AKS clusters with msi auth
+* Add `--enable-msi-auth-for-monitoring` option in aks create and aks enable-addons
+
 0.5.19
 +++++
 * Remove azure-defender from list of available addons to install via `az aks enable-addons` command

@@ -135,15 +135,24 @@ def dataprotection_backup_instance_create(client,
                                           friendly_name=None,
                                           data_source_info=None,
                                           data_source_set_info=None,
+                                          secret_store_based_auth_credentials=None,
                                           object_type=None,
                                           policy_id=None,
                                           policy_parameters=None,
                                           no_wait=False):
+    all_datasource_auth_credentials = []
+    if secret_store_based_auth_credentials is not None:
+        all_datasource_auth_credentials.append(secret_store_based_auth_credentials)
+    if len(all_datasource_auth_credentials) > 1:
+        raise CLIError('at most one of  secret_store_based_auth_credentials is needed for datasource_auth_credentials!')
+    datasource_auth_credentials = all_datasource_auth_credentials[0] if len(all_datasource_auth_credentials) == 1 else \
+        None
     parameters = {}
     parameters['properties'] = {}
     parameters['properties']['friendly_name'] = friendly_name
     parameters['properties']['data_source_info'] = data_source_info
     parameters['properties']['data_source_set_info'] = data_source_set_info
+    parameters['properties']['datasource_auth_credentials'] = datasource_auth_credentials
     parameters['properties']['object_type'] = object_type
     parameters['properties']['policy_info'] = {}
     parameters['properties']['policy_info']['policy_id'] = policy_id
@@ -210,13 +219,22 @@ def dataprotection_backup_instance_validate_for_backup(client,
                                                        policy_id,
                                                        friendly_name=None,
                                                        data_source_set_info=None,
+                                                       secret_store_based_auth_credentials=None,
                                                        policy_parameters=None,
                                                        no_wait=False):
+    all_datasource_auth_credentials = []
+    if secret_store_based_auth_credentials is not None:
+        all_datasource_auth_credentials.append(secret_store_based_auth_credentials)
+    if len(all_datasource_auth_credentials) > 1:
+        raise CLIError('at most one of  secret_store_based_auth_credentials is needed for datasource_auth_credentials!')
+    datasource_auth_credentials = all_datasource_auth_credentials[0] if len(all_datasource_auth_credentials) == 1 else \
+        None
     parameters = {}
     parameters['backup_instance'] = {}
     parameters['backup_instance']['friendly_name'] = friendly_name
     parameters['backup_instance']['data_source_info'] = data_source_info
     parameters['backup_instance']['data_source_set_info'] = data_source_set_info
+    parameters['backup_instance']['datasource_auth_credentials'] = datasource_auth_credentials
     parameters['backup_instance']['object_type'] = object_type
     parameters['backup_instance']['policy_info'] = {}
     parameters['backup_instance']['policy_info']['policy_id'] = policy_id
@@ -287,15 +305,15 @@ def dataprotection_job_show(client,
 def dataprotection_restorable_time_range_find(client,
                                               vault_name,
                                               resource_group_name,
-                                              backup_instances,
+                                              backup_instance_name,
                                               source_data_store_type,
-                                              start_time,
-                                              end_time):
+                                              start_time=None,
+                                              end_time=None):
     parameters = {}
     parameters['source_data_store_type'] = source_data_store_type
     parameters['start_time'] = start_time
     parameters['end_time'] = end_time
     return client.find(vault_name=vault_name,
                        resource_group_name=resource_group_name,
-                       backup_instances=backup_instances,
+                       backup_instance_name=backup_instance_name,
                        parameters=parameters)
