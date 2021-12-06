@@ -422,7 +422,7 @@ def az_cli(args_str):
     elif cli.result.error:
         raise cli.result.error
     return True
-          
+
 
 def check_provider_registrations(cli_ctx):
     try:
