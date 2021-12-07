@@ -101,7 +101,7 @@ az managementgroup entity list
 
 ##### <a name="ExamplesHierarchySettingsList">Example</a>
 ```
-az managementgroup hierarchy-setting list --group-id "groupName"
+az managementgroup hierarchy-setting list --group-id "root"
 ```
 ##### <a name="ParametersHierarchySettingsList">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -112,7 +112,7 @@ az managementgroup hierarchy-setting list --group-id "groupName"
 
 ##### <a name="ExamplesHierarchySettingsGet">Example</a>
 ```
-az managementgroup hierarchy-setting show --group-id "groupName"
+az managementgroup hierarchy-setting show --group-id "root"
 ```
 ##### <a name="ParametersHierarchySettingsGet">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -124,7 +124,7 @@ az managementgroup hierarchy-setting show --group-id "groupName"
 ##### <a name="ExamplesHierarchySettingsCreateOrUpdate#Create">Example</a>
 ```
 az managementgroup hierarchy-setting create --default-management-group "/providers/Microsoft.Management/managementGroup\
-s/DefaultGroup" --require-authorization-for-group-creation true --group-id "groupName"
+s/DefaultGroup" --require-authorization-for-group-creation true --group-id "root"
 ```
 ##### <a name="ParametersHierarchySettingsCreateOrUpdate#Create">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -138,7 +138,7 @@ s/DefaultGroup" --require-authorization-for-group-creation true --group-id "grou
 ##### <a name="ExamplesHierarchySettingsUpdate">Example</a>
 ```
 az managementgroup hierarchy-setting update --default-management-group "/providers/Microsoft.Management/managementGroup\
-s/DefaultGroup" --require-authorization-for-group-creation true --group-id "groupName"
+s/DefaultGroup" --require-authorization-for-group-creation true --group-id "root"
 ```
 ##### <a name="ParametersHierarchySettingsUpdate">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -151,7 +151,7 @@ s/DefaultGroup" --require-authorization-for-group-creation true --group-id "grou
 
 ##### <a name="ExamplesHierarchySettingsDelete">Example</a>
 ```
-az managementgroup hierarchy-setting delete --group-id "groupName"
+az managementgroup hierarchy-setting delete --group-id "root"
 ```
 ##### <a name="ParametersHierarchySettingsDelete">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -194,7 +194,7 @@ az managementgroup management-group show --expand "children" --recurse true --gr
 ##### <a name="ExamplesManagementGroupsCreateOrUpdate#Create">Example</a>
 ```
 az managementgroup management-group create --display-name "ChildGroup" --id "/providers/Microsoft.Management/management\
-Groups/ParentName" --group-id "ChildGroup"
+Groups/RootGroup" --group-id "ChildGroup"
 ```
 ##### <a name="ParametersManagementGroupsCreateOrUpdate#Create">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -209,7 +209,7 @@ Groups/ParentName" --group-id "ChildGroup"
 ##### <a name="ExamplesManagementGroupsUpdate">Example</a>
 ```
 az managementgroup management-group update --group-id "ChildGroup" --display-name "AlternateDisplayName" \
---parent-group-id "/providers/Microsoft.Management/managementGroups/AlternateParentGroup"
+--parent-group-id "/providers/Microsoft.Management/managementGroups/AlternateRootGroup"
 ```
 ##### <a name="ParametersManagementGroupsUpdate">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|

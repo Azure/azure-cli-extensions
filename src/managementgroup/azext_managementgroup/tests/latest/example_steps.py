@@ -29,7 +29,7 @@ def step_hierarchy_setting_create(test, checks=None):
     test.cmd('az managementgroup hierarchy-setting create '
              '--default-management-group "/providers/Microsoft.Management/managementGroups/DefaultGroup" '
              '--require-authorization-for-group-creation true '
-             '--group-id "groupName"',
+             '--group-id "root"',
              checks=checks)
 
 
@@ -39,7 +39,7 @@ def step_hierarchy_setting_show(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az managementgroup hierarchy-setting show '
-             '--group-id "groupName"',
+             '--group-id "root"',
              checks=checks)
 
 
@@ -49,7 +49,7 @@ def step_hierarchy_setting_list(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az managementgroup hierarchy-setting list '
-             '--group-id "groupName"',
+             '--group-id "root"',
              checks=checks)
 
 
@@ -61,7 +61,7 @@ def step_hierarchy_setting_update(test, checks=None):
     test.cmd('az managementgroup hierarchy-setting update '
              '--default-management-group "/providers/Microsoft.Management/managementGroups/DefaultGroup" '
              '--require-authorization-for-group-creation true '
-             '--group-id "groupName"',
+             '--group-id "root"',
              checks=checks)
 
 
@@ -71,7 +71,7 @@ def step_hierarchy_setting_delete(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az managementgroup hierarchy-setting delete -y '
-             '--group-id "groupName"',
+             '--group-id "root"',
              checks=checks)
 
 
@@ -100,7 +100,7 @@ def step_management_group_create(test, checks=None):
         checks = []
     test.cmd('az managementgroup management-group create '
              '--display-name "ChildGroup" '
-             '--id "/providers/Microsoft.Management/managementGroups/ParentName" '
+             '--id "/providers/Microsoft.Management/managementGroups/RootGroup" '
              '--group-id "ChildGroup"',
              checks=checks)
 
@@ -187,7 +187,7 @@ def step_management_group_update(test, checks=None):
     test.cmd('az managementgroup management-group update '
              '--group-id "ChildGroup" '
              '--display-name "AlternateDisplayName" '
-             '--parent-group-id "/providers/Microsoft.Management/managementGroups/AlternateParentGroup"',
+             '--parent-group-id "/providers/Microsoft.Management/managementGroups/AlternateRootGroup"',
              checks=checks)
 
 

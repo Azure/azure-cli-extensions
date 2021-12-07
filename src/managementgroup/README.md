@@ -12,23 +12,26 @@ az extension add --name managementgroup
 ##### Create #####
 ```
 az managementgroup management-group create --display-name "ChildGroup" \
-    --id "/providers/Microsoft.Management/managementGroups/ParentName" --group-id "ChildGroup" 
+    --id "/providers/Microsoft.Management/managementGroups/GroupName" --group-id "ChildGroup" 
 ```
 ##### Show #####
 ```
-az managementgroup management-group show --group-id "20000000-0001-0000-0000-000000000000"
+az managementgroup management-group show --cache-control "no-cache" --group-id "20000000-0001-0000-0000-000000000000"
 ```
 ##### Show #####
 ```
-az managementgroup management-group show --expand "ancestors" --group-id "20000000-0001-0000-0000-00000000000"
+az managementgroup management-group show --expand "ancestors" \
+    --group-id "20000000-0001-0000-0000-00000000000" 
 ```
 ##### Show #####
 ```
-az managementgroup management-group show --expand "children" --group-id "20000000-0001-0000-0000-000000000000"
+az managementgroup management-group show --expand "children" \
+    --group-id "20000000-0001-0000-0000-000000000000" 
 ```
 ##### Show #####
 ```
-az managementgroup management-group show --expand "path" --group-id "20000000-0001-0000-0000-000000000000"
+az managementgroup management-group show --expand "path" \
+    --group-id "20000000-0001-0000-0000-000000000000" 
 ```
 ##### Show #####
 ```
@@ -41,7 +44,8 @@ az managementgroup management-group list
 ```
 ##### Update #####
 ```
-az managementgroup management-group update --group-id "ChildGroup" --display-name "AlternateDisplayName" \
+az managementgroup management-group update --group-id "ChildGroup" \
+    --display-name "AlternateDisplayName" \
     --parent-group-id "/providers/Microsoft.Management/managementGroups/AlternateParentGroup" 
 ```
 ##### Show-descendant #####
@@ -81,21 +85,21 @@ az managementgroup hierarchy-setting create \
 ```
 ##### Show #####
 ```
-az managementgroup hierarchy-setting show --group-id "groupName"
+az managementgroup hierarchy-setting show --group-id "root"
 ```
 ##### List #####
 ```
-az managementgroup hierarchy-setting list --group-id "groupName"
+az managementgroup hierarchy-setting list --group-id "root"
 ```
 ##### Update #####
 ```
 az managementgroup hierarchy-setting update \
     --default-management-group "/providers/Microsoft.Management/managementGroups/DefaultGroup" \
-    --require-authorization-for-group-creation true --group-id "groupName" 
+    --require-authorization-for-group-creation true --group-id "root" 
 ```
 ##### Delete #####
 ```
-az managementgroup hierarchy-setting delete --group-id "groupName"
+az managementgroup hierarchy-setting delete --group-id "root"
 ```
 #### managementgroup ####
 ##### Start-tenant-backfill #####

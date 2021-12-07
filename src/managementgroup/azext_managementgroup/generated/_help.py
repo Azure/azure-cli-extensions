@@ -64,7 +64,7 @@ request is issued with different properties, the management group properties wil
       - name: PutManagementGroup
         text: |-
                az managementgroup management-group create --display-name "ChildGroup" --id \
-"/providers/Microsoft.Management/managementGroups/ParentName" --group-id "ChildGroup"
+"/providers/Microsoft.Management/managementGroups/RootGroup" --group-id "ChildGroup"
 """
 
 helps['managementgroup management-group update'] = """
@@ -74,7 +74,7 @@ helps['managementgroup management-group update'] = """
       - name: PatchManagementGroup
         text: |-
                az managementgroup management-group update --group-id "ChildGroup" --display-name \
-"AlternateDisplayName" --parent-group-id "/providers/Microsoft.Management/managementGroups/AlternateParentGroup"
+"AlternateDisplayName" --parent-group-id "/providers/Microsoft.Management/managementGroups/AlternateRootGroup"
 """
 
 helps['managementgroup management-group delete'] = """
@@ -168,7 +168,7 @@ the root Management Group of the hierarchy."
     examples:
       - name: ListGroupSettings
         text: |-
-               az managementgroup hierarchy-setting list --group-id "groupName"
+               az managementgroup hierarchy-setting list --group-id "root"
 """
 
 helps['managementgroup hierarchy-setting show'] = """
@@ -178,7 +178,7 @@ root Management Group of the hierarchy."
     examples:
       - name: GetGroupSettings
         text: |-
-               az managementgroup hierarchy-setting show --group-id "groupName"
+               az managementgroup hierarchy-setting show --group-id "root"
 """
 
 helps['managementgroup hierarchy-setting create'] = """
@@ -188,7 +188,7 @@ helps['managementgroup hierarchy-setting create'] = """
       - name: GetGroupSettings
         text: |-
                az managementgroup hierarchy-setting create --default-management-group "/providers/Microsoft.Management/\
-managementGroups/DefaultGroup" --require-authorization-for-group-creation true --group-id "groupName"
+managementGroups/DefaultGroup" --require-authorization-for-group-creation true --group-id "root"
 """
 
 helps['managementgroup hierarchy-setting update'] = """
@@ -198,7 +198,7 @@ helps['managementgroup hierarchy-setting update'] = """
       - name: GetGroupSettings
         text: |-
                az managementgroup hierarchy-setting update --default-management-group "/providers/Microsoft.Management/\
-managementGroups/DefaultGroup" --require-authorization-for-group-creation true --group-id "groupName"
+managementGroups/DefaultGroup" --require-authorization-for-group-creation true --group-id "root"
 """
 
 helps['managementgroup hierarchy-setting delete'] = """
@@ -207,7 +207,7 @@ helps['managementgroup hierarchy-setting delete'] = """
     examples:
       - name: GetGroupSettings
         text: |-
-               az managementgroup hierarchy-setting delete --group-id "groupName"
+               az managementgroup hierarchy-setting delete --group-id "root"
 """
 
 helps['managementgroup start-tenant-backfill'] = """
