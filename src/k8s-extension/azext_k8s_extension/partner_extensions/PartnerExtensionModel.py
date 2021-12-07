@@ -19,7 +19,7 @@ class PartnerExtensionModel(ABC):
 
     @abstractmethod
     def Update(self, cmd, resource_group_name: str, cluster_name: str, auto_upgrade_minor_version: bool, release_train: str, version: str,
-               configuration_settings: dict, configuration_protected_settings: dict) -> PatchExtension:
+               configuration_settings: dict, configuration_protected_settings: dict, yes: bool) -> PatchExtension:
         pass
 
     @abstractmethod
