@@ -295,24 +295,14 @@ class WebAppClient:
         send_raw_request(cmd.cli_ctx, "POST", request_url)
 
 
-# rectify the format of the kube env json returned from API to comply with older version of `az appservice kube show`
-def format_kube_environment_json(kube_info_raw):
-    kube_info = kube_info_raw["properties"]
-    if kube_info.get("aksResourceID"):
-        kube_info["aksResourceId"] = kube_info["aksResourceID"]
-        del kube_info["aksResourceID"]
-
-    other_properties = ['id', 'kind', 'kubeEnvironmentType', 'location', 'name',
-                        'resourceGroup', 'tags', 'type', 'extendedLocation']
-    for k in other_properties:
-        kube_info[k] = kube_info_raw.get(k)
-
-    return kube_info
+def _get_kube_client(cmd):
+    client = web_client_factory(cmd.cli_ctx, api_version="2021-01-01")
+    return client.kube_environments
 
 
 def show_kube_environments(cmd, name, resource_group_name):
-    return format_kube_environment_json(KubeEnvironmentClient.show(cmd=cmd,
-                                                                   name=name, resource_group_name=resource_group_name))
+    client = _get_kube_client(cmd)
+    return client.get(name=name, resource_group_name=resource_group_name)
 
 
 def delete_kube_environment(cmd, name, resource_group_name):
@@ -332,7 +322,7 @@ def create_kube_environment(cmd, name, resource_group_name, custom_location, sta
     if is_valid_resource_id(custom_location):
         parsed_custom_location = parse_resource_id(custom_location)
         if parsed_custom_location['resource_type'].lower() != 'customlocations':
-            raise CLIError('Invalid custom location')
+            raise ValidationError('Invalid custom location')
         custom_location_object = custom_location_client.custom_locations.get(
             parsed_custom_location['resource_group'],
             parsed_custom_location['name'])
@@ -377,11 +367,10 @@ def create_kube_environment(cmd, name, resource_group_name, custom_location, sta
 
 
 def list_kube_environments(cmd, resource_group_name=None):
+    client = _get_kube_client(cmd)
     if resource_group_name is None:
-        return KubeEnvironmentClient.list_by_subscription(cmd, formatter=format_kube_environment_json)
-    return KubeEnvironmentClient.list_by_resource_group(cmd,
-                                                        resource_group_name,
-                                                        formatter=format_kube_environment_json)
+        return client.list_by_subscription()
+    return client.list_by_resource_group(resource_group_name)
 
 
 # TODO should be able to update staticIp and tags -- remove exception once API fixed
@@ -473,20 +462,17 @@ def _get_kube_env_from_custom_location(cmd, custom_location, resource_group):
         custom_location_name = parsed_custom_location.get("name")
         resource_group = parsed_custom_location.get("resource_group")
 
-    kube_envs = KubeEnvironmentClient.list_by_subscription(cmd=cmd)
+    client = _get_kube_client(cmd)
+    kube_envs = client.list_by_subscription()
 
     for kube in kube_envs:
         parsed_custom_location_2 = None
 
-        if kube.get("properties") and kube["properties"].get('extendedLocation'):
-            parsed_custom_location_2 = parse_resource_id(kube["properties"]['extendedLocation']['customLocation'])
-        elif kube.get("extendedLocation") and kube.get("extendedLocation").get("type") == "CustomLocation":
-            parsed_custom_location_2 = parse_resource_id(kube["extendedLocation"]["name"])
+        if kube.extended_location and kube.extended_location.type == "CustomLocation":
+            parsed_custom_location_2 = parse_resource_id(kube.extended_location.name)
 
-        if parsed_custom_location_2 and (
-            parsed_custom_location_2.get("name").lower() == custom_location_name.lower()) and (
-                parsed_custom_location_2.get("resource_group").lower() == resource_group.lower()):
-            kube_environment_id = kube.get("id")
+        if parsed_custom_location_2["name"].lower() == custom_location_name.lower() and parsed_custom_location_2.get("resource_group").lower() == resource_group.lower():
+            kube_environment_id = kube.id
             break
 
     if not kube_environment_id:
@@ -522,7 +508,7 @@ def _get_custom_location_id_from_kube_env(kube):
         return kube["properties"]['extendedLocation'].get('customLocation')
     if kube.get("extendedLocation") and kube["extendedLocation"].get("type") == "CustomLocation":
         return kube["extendedLocation"]["name"]
-    raise CLIError("Could not get custom location from kube environment")
+    raise ResourceNotFoundError("Could not get custom location from kube environment")
 
 
 def _ensure_kube_settings_in_json(appservice_plan_json, extended_location=None, kube_env=None):
@@ -567,7 +553,7 @@ def create_app_service_plan_inner(cmd, resource_group_name, name, is_linux, hype
                 ase_found = True
                 break
         if not ase_found:
-            raise CLIError("App service environment '{}' not found in subscription.".format(ase_id))
+            raise ResourceNotFoundError("App service environment '{}' not found in subscription.".format(ase_id))
     else:  # Non-ASE
         ase_def = None
 
