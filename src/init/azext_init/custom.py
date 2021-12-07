@@ -82,7 +82,7 @@ def set_build_in_bundles(cmd, bundles, bundle_name):
 
     confirmation = get_yes_or_no_option("Are you sure to apply these settings? (y/n): ")
     if not confirmation:
-        print_styled_text((Style.PRIMARY, "\n"+ CONTENT_INDENT_BROADBAND + MSG_THANKS_FOR_TRYING))
+        print_styled_text((Style.PRIMARY, "\n" + CONTENT_INDENT_BROADBAND + MSG_THANKS_FOR_TRYING))
         return
 
     bundle_settings = {}
