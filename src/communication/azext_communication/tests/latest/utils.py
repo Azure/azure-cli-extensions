@@ -15,10 +15,15 @@ from azure.communication.phonenumbers import (
     PhoneNumberType,
     PhoneNumberCapabilities
 )
+from azure.communication.identity import CommunicationIdentityClient
+import uuid, os
 
-TEST_IDENTITY_ID_DEFAULT = "8:acs:ab12b0ea-85ea-4f83-b0b6-84d90209c7c4_0000000d-c2f4-c058-7f07-113a0d00c2e9"
-TEST_SOURCE_PHONENUMBER_DEFAULT = "+18334241267"
-TEST_RECIPIENT_PHONENUMBER_DEFAULT = "+18334241267"
+TEST_RESOURCE_IDENTIFIER = os.getenv(
+    "AZURE_COMMUNICATION_RESOURCE_IDENTIFIER",
+    "016a7064-0581-40b9-be73-6dde64d69d72" # From ACS Resource "immutableResourceId".
+    )
+TEST_SOURCE_PHONENUMBER_DEFAULT = "sanatized"
+TEST_RECIPIENT_PHONENUMBER_DEFAULT = "sanatized"
 
 
 def get_from_os_environment(env_name, default):
@@ -26,11 +31,13 @@ def get_from_os_environment(env_name, default):
     return os.environ[env_name] if env_name in os.environ and os.environ[env_name] != "" else default
 
 
-def get_test_identity_id(is_live):
+def get_test_identity_id(is_live, connection_str):
     if not is_live:
-        return TEST_IDENTITY_ID_DEFAULT
+        return "8:acs:" + TEST_RESOURCE_IDENTIFIER + "_" + str(uuid.uuid4())
     else:
-        return get_from_os_environment("AZURE_COMMUNICATION_IDENTITY_ID", TEST_IDENTITY_ID_DEFAULT)
+        identity_client = CommunicationIdentityClient.from_connection_string(connection_str)
+        user = identity_client.create_user()
+        return user.properties['id']
 
 
 def get_test_source_phonenumber(is_live):
@@ -75,3 +82,28 @@ def get_new_phonenumber(connection_string):
 
     except Exception as ex:
         return TEST_RECIPIENT_PHONENUMBER_DEFAULT
+
+
+def _get_content_type(entity):
+    # 'headers' is a field of 'request', but it is a dict-key in 'response'
+    headers = getattr(entity, 'headers', None)
+    if headers is None:
+        headers = entity.get('headers')
+
+    content_type = None
+    if headers:
+        content_type = headers.get('content-type', None)
+        if content_type:
+            # content-type could an array from response, let us extract it out
+            content_type = content_type[0] if isinstance(content_type, list) else content_type
+            content_type = content_type.split(";")[0].lower()
+    return content_type
+
+    
+def is_text_payload(entity):
+    text_content_list = ['application/json', 'application/xml', 'text/', 'application/test-content']
+
+    content_type = _get_content_type(entity)
+    if content_type:
+        return any(content_type.startswith(x) for x in text_content_list)
+    return True

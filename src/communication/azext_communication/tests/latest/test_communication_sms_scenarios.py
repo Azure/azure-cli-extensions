@@ -11,9 +11,16 @@
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer, CommunicationResourcePreparer
 from .utils import get_new_phonenumber, get_test_recipient_phonenumber, get_test_source_phonenumber
 import os
-
+from .replacer import BodyReplacerProcessor, URIIdentityReplacer, SMSResponseReplacerProcessor
 
 class CommunicationSmsScenarios(ScenarioTest):
+
+    def __init__(self, method_name):
+        super().__init__(method_name, recording_processors=[
+            URIIdentityReplacer(),
+            SMSResponseReplacerProcessor(),
+            BodyReplacerProcessor(keys=["from"])
+        ])
 
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')

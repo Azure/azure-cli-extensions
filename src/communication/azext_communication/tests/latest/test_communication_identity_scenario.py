@@ -11,9 +11,16 @@
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer, CommunicationResourcePreparer
 from .utils import get_test_identity_id
 import os
+from .replacer import BodyReplacerProcessor, URIIdentityReplacer
 
 
 class CommunicationIdentityScenarios(ScenarioTest):
+
+    def __init__(self, method_name):
+        super().__init__(method_name, recording_processors=[
+            URIIdentityReplacer(), 
+            BodyReplacerProcessor(keys=["id", "token"])
+        ])
 
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
@@ -33,7 +40,7 @@ class CommunicationIdentityScenarios(ScenarioTest):
         if self.is_live:
             os.environ['AZURE_COMMUNICATION_CONNECTION_STRING'] = communication_resource_info[1]
 
-        id = get_test_identity_id(self.is_live)
+        id = get_test_identity_id(self.is_live, communication_resource_info[1])
         self.kwargs.update({'id': id})
 
         val = self.cmd(
