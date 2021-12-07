@@ -5,7 +5,7 @@ Release History
 0.5.47
 ++++++
 * Add support for IPv4/IPv6 dual-stack networking AKS clusters
-  * `az aks create --pod-cidrs --service-cidrs --ip-families --load-balancer-managed-outbound-ipv6-count`
+* `az aks create --pod-cidrs --service-cidrs --ip-families --load-balancer-managed-outbound-ipv6-count`
 
 0.5.46
 ++++++
