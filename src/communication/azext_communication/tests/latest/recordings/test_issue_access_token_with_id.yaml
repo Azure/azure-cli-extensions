@@ -1,5 +1,56 @@
 interactions:
 - request:
+    body: '{}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '2'
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 06 Dec 2021 14:07:15 GMT
+      User-Agent:
+      - azsdk-python-communication-identity/1.0.1 Python/3.8.10 (Windows-10-10.0.22000-SP0)
+      x-ms-content-sha256:
+      - RBNvo1WzZ4oRRq0W9+hknpT7T8If536DEMBg9hyq/4o=
+      x-ms-return-client-request-id:
+      - 'true'
+    method: POST
+    uri: https://sanitized.communication.azure.com/identities?api-version=2021-03-07
+  response:
+    body:
+      string: '{"identity": {"id": "sanitized"}}'
+    headers:
+      api-supported-versions:
+      - 2020-07-20-preview2, 2021-02-22-preview1, 2021-03-07, 2021-03-31-preview1,
+        2021-10-31-preview, 2021-11-01
+      content-length:
+      - '101'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Dec 2021 14:07:17 GMT
+      ms-cv:
+      - db5x9gldH0Oox282mizq9A.2.0
+      request-context:
+      - appId=
+      strict-transport-security:
+      - max-age=2592000
+      x-azure-ref:
+      - 0ExmuYQAAAAD3Vfx251tyRo6XckH+lfvVREVMMDFFREdFMDUwNgA5ZmM3YjUxOS1hOGNjLTRmODktOTM1ZS1jOTE0OGFlMDllODE=
+      x-cache:
+      - CONFIG_NOCACHE
+      x-processing-time:
+      - 42ms
+    status:
+      code: 201
+      message: Created
+- request:
     body: '{"scopes": ["chat"]}'
     headers:
       Accept:
@@ -13,7 +64,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 18 Nov 2021 07:28:49 GMT
+      - Mon, 06 Dec 2021 14:07:17 GMT
       User-Agent:
       - azsdk-python-communication-identity/1.0.1 Python/3.8.10 (Windows-10-10.0.22000-SP0)
       x-ms-content-sha256:
@@ -21,10 +72,10 @@ interactions:
       x-ms-return-client-request-id:
       - 'true'
     method: POST
-    uri: https://acstelephonyportaltesting.communication.azure.com/identities/8%3Aacs%3Aab12b0ea-85ea-4f83-b0b6-84d90209c7c4_0000000d-c2f4-c058-7f07-113a0d00c2e9/:issueAccessToken?api-version=2021-03-07
+    uri: https://sanitized.communication.azure.com/identities/sanitized/:issueAccessToken?api-version=2021-03-07
   response:
     body:
-      string: '{"token":"eyJhbGciOiJSUzI1NiIsImtpZCI6IjEwMyIsIng1dCI6Ikc5WVVVTFMwdlpLQTJUNjFGM1dzYWdCdmFMbyIsInR5cCI6IkpXVCJ9.eyJza3lwZWlkIjoiYWNzOmFiMTJiMGVhLTg1ZWEtNGY4My1iMGI2LTg0ZDkwMjA5YzdjNF8wMDAwMDAwZC1jMmY0LWMwNTgtN2YwNy0xMTNhMGQwMGMyZTkiLCJzY3AiOjE3OTIsImNzaSI6IjE2MzcyMjA1MzEiLCJleHAiOjE2MzczMDY5MzEsImFjc1Njb3BlIjoiY2hhdCIsInJlc291cmNlSWQiOiJhYjEyYjBlYS04NWVhLTRmODMtYjBiNi04NGQ5MDIwOWM3YzQiLCJpYXQiOjE2MzcyMjA1MzF9.nGuA2Ba0GXG7O3pUn4FtEGZwHQJ8qe5a4vNQXqsKQ5zSrfvfh5Iismmep-BBWvaNOrGEfWRXy7ROC52BY3-kCs1QuPyKQDyYVq-VzyhQAWJ6KJ4oksTRqigANn4fJGUxNyWm9PgLiSblqnyYKneJfKEsyaeo6ik2m54nF8LQ-6wPwP5EElPP1mmluAGixjQV8CTpXU6ROzrbs31llx6K6R9uQoiWr3xZN-4XGBqpWZ9OCue6k4OVTzHNoyZfWHSwkQ8nUih_rU2vJvOOZAksbCtFGzvAAQPurEYUOvADYCbQHqxJwsMDyhEoajaxRE-A90rr3FWNxNjyy1OeCI0dXg","expiresOn":"2021-11-19T07:28:51.3433628+00:00"}'
+      string: '{"token": "sanitized", "expiresOn": "2021-12-07T14:07:19.6772889+00:00"}'
     headers:
       api-supported-versions:
       - 2020-07-20-preview2, 2021-02-22-preview1, 2021-03-07, 2021-03-31-preview1,
@@ -34,19 +85,19 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 18 Nov 2021 07:28:50 GMT
+      - Mon, 06 Dec 2021 14:07:18 GMT
       ms-cv:
-      - E7zmYabMKEqSqf3Wz/yS6w.2.0
+      - ZeXdP0jb4kO0WUp2B31C7g.2.0
       request-context:
       - appId=
       strict-transport-security:
       - max-age=2592000
       x-azure-ref:
-      - 0sgCWYQAAAACGbgIgTZplRpyKcTx+ZqJLU0xBRURHRTA5MTEAOWZjN2I1MTktYThjYy00Zjg5LTkzNWUtYzkxNDhhZTA5ZTgx
+      - 0FhmuYQAAAAC/PBbMDZ7pSZFPgP+KVjugREVMMDFFREdFMDYyMQA5ZmM3YjUxOS1hOGNjLTRmODktOTM1ZS1jOTE0OGFlMDllODE=
       x-cache:
       - CONFIG_NOCACHE
       x-processing-time:
-      - 34ms
+      - 47ms
     status:
       code: 200
       message: OK
