@@ -1647,8 +1647,8 @@ def client_side_proxy_wrapper(cmd,
         requestUri = f'{consts.CSP_Storage_Url}/{consts.RELEASE_DATE_LINUX}/arcProxy{operating_system}{consts.CLIENT_PROXY_VERSION}'
         older_version_string = f'.clientproxy/arcProxy{operating_system}*'
         creds_string = r'.azure/accessTokens.json'
-        msal_token_cache_user = r'.azure/msal_token_cache.bin'
-        msal_token_cache_spn = r'.azure/service_principal_entries.bin'
+        msal_token_cache_user = r'.azure/msal_token_cache.json'
+        msal_token_cache_spn = r'.azure/service_principal_entries.json'
 
     else:
         telemetry.set_exception(exception='Unsupported OS', fault_type=consts.Unsupported_Fault_Type,
@@ -1761,30 +1761,49 @@ def client_side_proxy_wrapper(cmd,
                 if key in creds_obj and creds_obj[key] == user_name:
                     creds = creds_obj[key2]
                     break
+            if creds == '':
+                telemetry.set_exception(exception='Credentials of user not found.', fault_type=consts.Creds_NotFound_Fault_Type,
+                                        summary='Unable to find creds of user while using ADAL')
+                raise UnclassifiedUserFault("Credentials of user not found.")
         else:
             if user_type == "user":
                 response_user_objectid = az_cli("ad signed-in-user show --query objectId -o tsv")
                 token_cache_location = os.path.expanduser(os.path.join('~', msal_token_cache_user))
-                persistence = msal_extensions.FilePersistenceWithDataProtection(token_cache_location)
-                token_cache = msal_extensions.PersistedTokenCache(persistence)
+                try:
+                   if operating_system == 'Windows':
+                        persistence = msal_extensions.FilePersistenceWithDataProtection(token_cache_location)
+                   else:
+                        persistence = msal_extensions.FilePersistence(token_cache_location)
+                   token_cache = msal_extensions.PersistedTokenCache(persistence)      
+                except  Exception as e:
+                    telemetry.set_exception(exception=e, fault_type=consts.MSAL_cache_not_retrieved_Fault_Type,
+                                    summary='Unable to retrieve MSAL cache')
+                    raise CLIInternalError("Failed to authenticate with the cluster")
                 token_cache._reload_if_necessary()
                 home_account_id = response_user_objectid + "." + tenantId
                 owned_by_home_account = {"home_account_id": home_account_id}
-                creds_info = token_cache.find(PersistedTokenCache.CredentialType.REFRESH_TOKEN, query=owned_by_home_account)
-                creds = creds_info[0]['secret']
+                creds_list = token_cache.find(PersistedTokenCache.CredentialType.REFRESH_TOKEN, query=owned_by_home_account)
+                creds = creds_list[0]['secret']
             else:
                 token_cache_location = os.path.expanduser(os.path.join('~', msal_token_cache_spn))
-                persistence = msal_extensions.FilePersistenceWithDataProtection(token_cache_location)
-                token_cache = msal_extensions.PersistedTokenCache(persistence)
+                try:
+                   if operating_system == 'Windows':
+                        persistence = msal_extensions.FilePersistenceWithDataProtection(token_cache_location)
+                   else:
+                        persistence = msal_extensions.FilePersistence(token_cache_location)
+                   token_cache = msal_extensions.PersistedTokenCache(persistence)      
+                except  Exception as e:
+                    telemetry.set_exception(exception=e, fault_type=consts.MSAL_cache_not_retrieved_Fault_Type,
+                                    summary='Unable to retrieve MSAL cache')
+                    raise CLIInternalError("Failed to authenticate with the cluster")
                 token_cache._reload_if_necessary()
-                token_cache_string = token_cache.serialize()
-                cache_list = json.loads(token_cache_string)
-                creds = cache_list[0]['client_secret']
-        if creds == '':
-            telemetry.set_exception(exception='Credentials of user not found.', fault_type=consts.Creds_NotFound_Fault_Type,
-                                    summary='Unable to find creds of user')
-            raise UnclassifiedUserFault("Credentials of user not found.")
-
+                token_cache_decrypted = token_cache.serialize()
+                creds_list = json.loads(token_cache_decrypted)
+                creds = creds_list[0]['client_secret']
+            if creds == '':
+                telemetry.set_exception(exception='Credentials of user not found.', fault_type=consts.Creds_NotFound_Fault_Type,
+                                        summary='Unable to find creds of user while using MSAL')
+                raise UnclassifiedUserFault("Credentials of user not found.")
         if user_type != 'user':
             dict_file['identity']['clientSecret'] = creds
     else:
