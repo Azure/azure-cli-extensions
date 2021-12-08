@@ -22,8 +22,8 @@ TEST_RESOURCE_IDENTIFIER = os.getenv(
     "AZURE_COMMUNICATION_RESOURCE_IDENTIFIER",
     "016a7064-0581-40b9-be73-6dde64d69d72" # From ACS Resource "immutableResourceId".
     )
-TEST_SOURCE_PHONENUMBER_DEFAULT = "sanatized"
-TEST_RECIPIENT_PHONENUMBER_DEFAULT = "sanatized"
+TEST_SOURCE_PHONENUMBER_DEFAULT = "sanitized"
+TEST_RECIPIENT_PHONENUMBER_DEFAULT = "sanitized"
 
 
 def get_from_os_environment(env_name, default):

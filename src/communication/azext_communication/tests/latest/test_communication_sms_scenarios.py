@@ -11,7 +11,7 @@
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer, CommunicationResourcePreparer
 from .utils import get_new_phonenumber, get_test_recipient_phonenumber, get_test_source_phonenumber
 import os
-from .replacer import BodyReplacerProcessor, URIIdentityReplacer, SMSResponseReplacerProcessor
+from .recording_processors import BodyReplacerProcessor, URIIdentityReplacer, SMSResponseReplacerProcessor
 
 class CommunicationSmsScenarios(ScenarioTest):
 
