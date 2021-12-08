@@ -10,7 +10,7 @@
 
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer, CommunicationResourcePreparer
 from .utils import get_test_source_phonenumber, get_new_phonenumber
-from .replacer import BodyReplacerProcessor, URIIdentityReplacer, PhoneNumberResponseReplacerProcessor
+from .recording_processors import BodyReplacerProcessor, URIIdentityReplacer, PhoneNumberResponseReplacerProcessor
 import os
 
 

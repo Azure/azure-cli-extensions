@@ -11,7 +11,7 @@
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer, CommunicationResourcePreparer
 from .utils import get_test_identity_id
 import os
-from .replacer import BodyReplacerProcessor, URIIdentityReplacer
+from .recording_processors import BodyReplacerProcessor, URIIdentityReplacer
 
 
 class CommunicationIdentityScenarios(ScenarioTest):
