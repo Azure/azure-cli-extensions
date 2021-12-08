@@ -14,7 +14,7 @@ from ._validators import (validate_env, validate_cosmos_type, validate_resource_
                           validate_tracing_parameters_asc_create, validate_tracing_parameters_asc_update,
                           validate_app_insights_parameters, validate_instance_count, validate_java_agent_parameters,
                           validate_jar)
-from ._app_validator import (fulfill_deployment_param)
+from ._app_validator import (fulfill_deployment_param, active_deployment_exist, active_deployment_exist_under_app)
 from ._utils import ApiType
 
 from .vendored_sdks.appplatform.v2020_07_01.models import RuntimeVersion, TestKeyType
@@ -154,6 +154,10 @@ def load_arguments(self, _):
             c.argument('main_entry', options_list=[
                 '--main-entry', '-m'], help="The path to the .NET executable relative to zip root.")
 
+    for scope in ['spring-cloud app identity', 'spring-cloud app unset-deployment']:
+        with self.argument_context(scope) as c:
+            c.argument('name', name_type, help='Name of app.', validator=active_deployment_exist)
+
     with self.argument_context('spring-cloud app identity assign') as c:
         c.argument('scope', help="The scope the managed identity has access to")
         c.argument('role', help="Role name or id the managed identity will be assigned")
@@ -246,13 +250,9 @@ def load_arguments(self, _):
         c.argument('file_path', help='The mount file path for your dump file.')
         c.argument('duration', type=str, default="60s", help='Duration of JFR.')
 
-    with self.argument_context('spring-cloud app deployment') as c:
-        c.argument('app', app_name_type, help='Name of app.',
-                   validator=validate_app_name)
-
     with self.argument_context('spring-cloud app binding') as c:
         c.argument('app', app_name_type, help='Name of app.',
-                   validator=validate_app_name)
+                   validator=active_deployment_exist_under_app)
         c.argument('name', name_type, help='Name of service binding.')
 
     for scope in ['spring-cloud app binding cosmos add', 'spring-cloud app binding mysql add', 'spring-cloud app binding redis add']:
@@ -354,7 +354,7 @@ def load_arguments(self, _):
 
     with self.argument_context('spring-cloud app custom-domain') as c:
         c.argument('service', service_name_type)
-        c.argument('app', app_name_type, help='Name of app.', validator=validate_app_name)
+        c.argument('app', app_name_type, help='Name of app.', validator=active_deployment_exist_under_app)
         c.argument('domain_name', help='Name of custom domain.')
 
     with self.argument_context('spring-cloud app custom-domain bind') as c:
