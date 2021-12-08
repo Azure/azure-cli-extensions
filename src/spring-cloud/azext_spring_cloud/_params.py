@@ -154,8 +154,9 @@ def load_arguments(self, _):
             c.argument('main_entry', options_list=[
                 '--main-entry', '-m'], help="The path to the .NET executable relative to zip root.")
 
-    with self.argument_context('spring-cloud app identity') as c:
-        c.argument('name', name_type, help='Name of app.', validator=active_deployment_exist)
+    for scope in ['spring-cloud app identity', 'spring-cloud app unset-deployment']
+        with self.argument_context(scope) as c:
+            c.argument('name', name_type, help='Name of app.', validator=active_deployment_exist)
 
     with self.argument_context('spring-cloud app identity assign') as c:
         c.argument('scope', help="The scope the managed identity has access to")
