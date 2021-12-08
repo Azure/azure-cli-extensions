@@ -5,6 +5,7 @@ Release History
 1.2.0
 ++++++
 
+* Using MSAL from az-cli version >= 2.30.0
 * Updated CSP version to 1.3.017131
 * Updated GA SDK to 2021-10-01
 * Updated CSP endpoint to CDN
