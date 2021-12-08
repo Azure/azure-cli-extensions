@@ -154,7 +154,7 @@ def load_arguments(self, _):
             c.argument('main_entry', options_list=[
                 '--main-entry', '-m'], help="The path to the .NET executable relative to zip root.")
 
-    for scope in ['spring-cloud app identity', 'spring-cloud app unset-deployment']
+    for scope in ['spring-cloud app identity', 'spring-cloud app unset-deployment']:
         with self.argument_context(scope) as c:
             c.argument('name', name_type, help='Name of app.', validator=active_deployment_exist)
 
