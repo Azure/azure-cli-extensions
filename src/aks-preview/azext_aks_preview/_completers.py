@@ -7,7 +7,7 @@ from azure.cli.core.commands.parameters import get_one_of_subscription_locations
 from azure.cli.core.decorators import Completer
 
 # pylint: disable=line-too-long
-from azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks.v2021_09_01.models import ContainerServiceVMSizeTypes
+from azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks.v2021_10_01.models import ContainerServiceVMSizeTypes
 
 
 @Completer
