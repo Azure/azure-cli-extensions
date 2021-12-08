@@ -163,46 +163,6 @@ def cli_cosmosdb_managed_cassandra_cluster_list(client,
     return client.list_by_resource_group(resource_group_name)
 
 
-def cli_cosmosdb_managed_cassandra_cluster_invoke_command(client,
-                                                          resource_group_name,
-                                                          cluster_name,
-                                                          command_name,
-                                                          host,
-                                                          arguments=None,
-                                                          cassandra_stop_start=None,
-                                                          readwrite=None):
-
-    """Invokes a command in Azure Managed Cassandra Cluster host"""
-
-    cluster_invoke_command = CommandPostBody(
-        command=command_name,
-        host=host,
-        arguments=arguments,
-        cassandra_stop_start=cassandra_stop_start,
-        readwrite=readwrite
-    )
-
-    return client.begin_invoke_command(resource_group_name, cluster_name, cluster_invoke_command)
-
-
-def cli_cosmosdb_managed_cassandra_cluster_status(client,
-                                                  resource_group_name,
-                                                  cluster_name):
-
-    """Get Azure Managed Cassandra Cluster Node Status"""
-
-    return client.status(resource_group_name, cluster_name)
-
-
-def cli_cosmosdb_managed_cassandra_cluster_deallocate(client,
-                                                      resource_group_name,
-                                                      cluster_name):
-
-    """Deallocate Azure Managed Cassandra Cluster"""
-
-    return client.begin_deallocate(resource_group_name, cluster_name)
-
-
 def cli_cosmosdb_managed_cassandra_cluster_list_backup(client,
                                                        resource_group_name,
                                                        cluster_name):
@@ -216,15 +176,6 @@ def cli_cosmosdb_managed_cassandra_cluster_show_backup(client,
                                                        backup_id):
     """Get Azure Managed Cassandra Backup"""
     return client.get_backup(resource_group_name, cluster_name, backup_id)
-
-
-def cli_cosmosdb_managed_cassandra_cluster_start(client,
-                                                 resource_group_name,
-                                                 cluster_name):
-
-    """Start Azure Managed Cassandra Cluster"""
-
-    return client.begin_start(resource_group_name, cluster_name)
 
 
 def cli_cosmosdb_managed_cassandra_datacenter_create(client,
