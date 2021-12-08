@@ -1624,7 +1624,7 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
         mc.windows_profile = windows_profile
         return mc
 
-    def construct_preview_mc_profile(self) -> ManagedCluster:
+    def construct_mc_preview_profile(self) -> ManagedCluster:
         """The overall controller used to construct the preview ManagedCluster profile.
 
         The completely constructed ManagedCluster object will later be passed as a parameter to the underlying SDK
@@ -1644,7 +1644,7 @@ class AKSPreviewCreateDecorator(AKSCreateDecorator):
         mc = self.set_up_pod_identity_profile(mc)
         return mc
 
-    def create_preview_mc(self, mc: ManagedCluster) -> ManagedCluster:
+    def create_mc_preview(self, mc: ManagedCluster) -> ManagedCluster:
         """Send request to create a real managed cluster.
 
         Note: Inherited and extended in aks-preview to create dcr association for monitoring addon if
@@ -1750,7 +1750,7 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
             mc.enable_pod_security_policy = False
         return mc
 
-    def update_preview_mc_profile(self) -> ManagedCluster:
+    def update_mc_preview_profile(self) -> ManagedCluster:
         """The overall controller used to update the preview ManagedCluster profile.
 
         Note: To reduce the risk of regression introduced by refactoring, this function is not complete and is being
@@ -1762,7 +1762,7 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
         :return: the ManagedCluster object
         """
 
-    def update_preview_mc(self, mc: ManagedCluster) -> ManagedCluster:
+    def update_mc_preview(self, mc: ManagedCluster) -> ManagedCluster:
         """Send request to update the existing managed cluster.
 
         :return: the ManagedCluster object

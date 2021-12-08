@@ -1263,7 +1263,6 @@ class AKSPreviewContextTestCase(unittest.TestCase):
                 load_balancer_profile=load_balancer_profile,
             )
 
-
 class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
     def setUp(self):
         # manually register CUSTOM_MGMT_AKS_PREVIEW
@@ -2115,7 +2114,7 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
         )
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
 
-    def test_construct_preview_mc_profile(self):
+    def test_construct_mc_preview_profile(self):
         import inspect
 
         import paramiko
@@ -2167,7 +2166,7 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
             "azure.cli.command_modules.acs.decorator.Profile",
             return_value=mock_profile,
         ):
-            dec_mc_1 = dec_1.construct_preview_mc_profile()
+            dec_mc_1 = dec_1.construct_mc_preview_profile()
 
         agent_pool_profile_1 = self.models.ManagedClusterAgentPoolProfile(
             # Must be 12 chars or less before ACS RP adds to it
@@ -2213,7 +2212,7 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
         raw_param_dict.print_usage_statistics()
 
-    def test_create_preview_mc(self):
+    def test_create_mc_preview(self):
         mc_1 = self.models.ManagedCluster(
             location="test_location",
             addon_profiles={
@@ -2255,7 +2254,7 @@ class AKSPreviewCreateDecoratorTestCase(unittest.TestCase):
             "azext_aks_preview.decorator.ensure_container_insights_for_monitoring",
             side_effect=err,
         ) as ensure_monitoring:
-            dec_1.create_preview_mc(mc_1)
+            dec_1.create_mc_preview(mc_1)
         ensure_monitoring.assert_called_with(
             self.cmd,
             mc_1.addon_profiles[CONST_MONITORING_ADDON_NAME],
