@@ -318,29 +318,6 @@ def cli_cosmosdb_mongo_role_definition_exists(client,
     return True
 
 
-def cli_cosmosdb_mongo_role_definition_delete(client,
-                                              resource_group_name,
-                                              account_name,
-                                              mongo_role_definition_id):
-    """Delete an Azure Cosmos DB Mongo Role Definition if exists"""
-    try:
-        client.begin_delete_mongo_role_definition(mongo_role_definition_id, resource_group_name, account_name)
-    except Exception as ex:
-        return _handle_exists_exception(ex.response)
-
-    return True
-
-
-def cli_cosmosdb_mongo_role_definition_list(client,
-                                            resource_group_name,
-                                            account_name):
-    """List All the Mongo Role Definitions on an Azure Cosmos DB Mongo Account"""
-    try:
-        return client.list_mongo_role_definitions(resource_group_name, account_name)
-    except Exception as ex:
-        return _handle_exists_exception(ex.response)
-
-
 def cli_cosmosdb_mongo_user_definition_create(client,
                                               resource_group_name,
                                               account_name,
@@ -390,29 +367,6 @@ def cli_cosmosdb_mongo_user_definition_exists(client,
         return _handle_exists_exception(ex.response)
 
     return True
-
-
-def cli_cosmosdb_mongo_user_definition_delete(client,
-                                              resource_group_name,
-                                              account_name,
-                                              mongo_user_definition_id):
-    """Delete an Azure Cosmos DB Mongo User Definition if exists"""
-    try:
-        client.begin_delete_mongo_user_definition(mongo_user_definition_id, resource_group_name, account_name)
-    except Exception as ex:
-        return _handle_exists_exception(ex.response)
-
-    return True
-
-
-def cli_cosmosdb_mongo_user_definition_list(client,
-                                            resource_group_name,
-                                            account_name):
-    """List All the Mongo User Definitions on an Azure Cosmos DB Mongo Account"""
-    try:
-        return client.list_mongo_user_definitions(resource_group_name, account_name)
-    except Exception as ex:
-        return _handle_exists_exception(ex.response)
 
 
 def _gen_guid():
