@@ -10,6 +10,7 @@
 import copy
 from hashlib import md5
 from typing import Any, Dict, List, Tuple
+from azext_k8s_extension.utils import get_cluster_rp_api_version
 
 import azure.mgmt.relay
 import azure.mgmt.relay.models
@@ -111,7 +112,7 @@ class AzureMLKubernetes(DefaultExtension):
 
         # get the arc's location
         subscription_id = get_subscription_id(cmd.cli_ctx)
-        cluster_rp, parent_api_version = _get_cluster_rp_api_version(cluster_type)
+        cluster_rp, parent_api_version = get_cluster_rp_api_version(cluster_type)
         cluster_resource_id = '/subscriptions/{0}/resourceGroups/{1}/providers/{2}' \
             '/{3}/{4}'.format(subscription_id, resource_group_name, cluster_rp, cluster_type, cluster_name)
         cluster_location = ''
@@ -618,23 +619,6 @@ def _get_value_from_config_protected_config(key, config, protected_config):
     if key in config:
         return config[key]
     return protected_config.get(key)
-
-
-def _get_cluster_rp_api_version(cluster_type) -> Tuple[str, str]:
-    rp = ''
-    parent_api_version = ''
-    if cluster_type.lower() == 'connectedclusters':
-        rp = 'Microsoft.Kubernetes'
-        parent_api_version = '2020-01-01-preview'
-    elif cluster_type.lower() == 'appliances':
-        rp = 'Microsoft.ResourceConnector'
-        parent_api_version = '2020-09-15-privatepreview'
-    elif cluster_type.lower() == '' or cluster_type.lower() == 'managedclusters':
-        rp = 'Microsoft.ContainerService'
-        parent_api_version = '2021-05-01'
-    else:
-        raise InvalidArgumentValueError("Error! Cluster type '{}' is not supported".format(cluster_type))
-    return rp, parent_api_version
 
 
 def _check_nodeselector_existed(configuration_settings, configuration_protected_settings):
