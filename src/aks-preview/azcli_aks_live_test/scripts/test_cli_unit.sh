@@ -6,8 +6,9 @@ set -o nounset
 set -o pipefail
 set -o xtrace
 
-# const
-acs_base_dir="azure-cli/src/azure-cli/azure/cli/command_modules/acs"
+# check var
+[[ -z "${WIKI_LINK}" ]] && (echo "WIKI_LINK is empty"; exit 1)
+[[ -z "${ACS_BASE_DIR}" ]] && (echo "ACS_BASE_DIR is empty"; exit 1)
 
 # activate virtualenv
 source azEnv/bin/activate
@@ -18,7 +19,7 @@ removeAKSPreview
 
 # unit test & coverage report
 acs_unit_test_failed=""
-pushd ${acs_base_dir}
+pushd ${ACS_BASE_DIR}
 # clean existing coverage report
 (coverage combine || true) && (coverage erase || true)
 # perform unit test with module 'unittest'
@@ -32,10 +33,10 @@ coverage combine
 coverage report -m
 coverage json -o coverage_acs.json
 popd
-mkdir -p reports/ && cp ${acs_base_dir}/coverage_acs.json reports/
+mkdir -p reports/ && cp ${ACS_BASE_DIR}/coverage_acs.json reports/
 
 if [[ ${acs_unit_test_failed} == "true" ]]; then
     echo "Unit test failed!"
-    echo "Please refer to this wiki (https://dev.azure.com/msazure/CloudNativeCompute/_wiki/wikis/CloudNativeCompute.wiki/156735/AZCLI-AKS-Live-Unit-Test-Pipeline) for troubleshooting guidelines."
+    echo "Please refer to this wiki (${WIKI_LINK}) for troubleshooting guidelines."
     exit 1
 fi

@@ -134,6 +134,10 @@ helps['aks create'] = """
           type: int
           short-summary: Load balancer managed outbound IP count.
           long-summary: Desired number of managed outbound IPs for load balancer outbound connection. Valid for Standard SKU load balancer cluster only.
+        - name: --load-balancer-managed-outbound-ipv6-count
+          type: int
+          short-summary: Load balancer managed outbound IPv6 IP count.
+          long-summary: Desired number of managed outbound IPv6 IPs for load balancer outbound connection. Valid for dual-stack (--ip-families IPv4,IPv6) only.
         - name: --load-balancer-outbound-ips
           type: string
           short-summary: Load balancer outbound IP resource IDs.
@@ -212,6 +216,18 @@ helps['aks create'] = """
           type: string
           short-summary: A CIDR notation IP range from which to assign service cluster IPs.
           long-summary: This range must not overlap with any Subnet IP ranges. For example, 10.0.0.0/16.
+        - name: --service-cidrs
+          type: string
+          short-summary: A comma separated list of CIDR notation IP ranges from which to assign service cluster IPs.
+          long-summary: Each range must not overlap with any Subnet IP ranges. For example, 10.0.0.0/16.
+        - name: --pod-cidrs
+          type: string
+          short-summary: A comma separated list of CIDR notation IP ranges from which to assign pod IPs when kubenet is used.
+          long-summary: Each range must not overlap with any Subnet IP ranges. For example, 172.244.0.0/16.
+        - name: --ip-families
+          type: string
+          short-summary: A comma separated list of IP versions to use for cluster networking.
+          long-summary: Each IP version should be in the format IPvN. For example, IPv4.
         - name: --vnet-subnet-id
           type: string
           short-summary: The ID of a subnet in an existing VNet into which to deploy the cluster.
@@ -498,6 +514,10 @@ helps['aks update'] = """
           type: int
           short-summary: Load balancer managed outbound IP count.
           long-summary: Desired number of managed outbound IPs for load balancer outbound connection. Valid for Standard SKU load balancer cluster only. If updated, it will wipe off the existing setting on Load balancer managed outbound IP count; Load balancer outbound IP resource IDs and Load balancer outbound IP prefix resource IDs.
+        - name: --load-balancer-managed-outbound-ipv6-count
+          type: int
+          short-summary: Load balancer managed outbound IPv6 IP count.
+          long-summary: Desired number of managed outbound IPv6 IPs for load balancer outbound connection. Valid for dual-stack (--ip-families IPv4,IPv6) only. If updated, it will wipe off the existing setting on Load balancer managed outbound IPv6 count; Load balancer outbound IP resource IDs and Load balancer outbound IP prefix resource IDs.
         - name: --load-balancer-outbound-ips
           type: string
           short-summary: Load balancer outbound IP resource IDs.

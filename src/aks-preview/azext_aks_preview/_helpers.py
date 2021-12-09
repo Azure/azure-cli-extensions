@@ -9,7 +9,7 @@ from knack.util import CLIError
 from azure.cli.core.azclierror import ArgumentUsageError
 
 # pylint: disable=no-name-in-module,import-error
-from .vendored_sdks.azure_mgmt_preview_aks.v2021_09_01.models import ManagedClusterAPIServerAccessProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2021_10_01.models import ManagedClusterAPIServerAccessProfile
 from ._consts import CONST_CONTAINER_NAME_MAX_LENGTH
 from ._consts import CONST_OUTBOUND_TYPE_LOAD_BALANCER, CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING, \
     CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY, CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY

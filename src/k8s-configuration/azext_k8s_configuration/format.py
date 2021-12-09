@@ -16,14 +16,16 @@ def sourcecontrol_show_table_format(result):
 
 
 def __get_sourcecontrolconfig_table_row(result):
-    return OrderedDict([
-        ('name', result['name']),
-        ('repositoryUrl', result['repositoryUrl']),
-        ('operatorName', result['operatorInstanceName']),
-        ('operatorNamespace', result['operatorNamespace']),
-        ('scope', result['operatorScope']),
-        ('provisioningState', result['provisioningState'])
-    ])
+    return OrderedDict(
+        [
+            ("name", result["name"]),
+            ("repositoryUrl", result["repositoryUrl"]),
+            ("operatorName", result["operatorInstanceName"]),
+            ("operatorNamespace", result["operatorNamespace"]),
+            ("scope", result["operatorScope"]),
+            ("provisioningState", result["provisioningState"]),
+        ]
+    )
 
 
 def fluxconfig_list_table_format(results):
@@ -35,14 +37,16 @@ def fluxconfig_show_table_format(result):
 
 
 def __get_fluxconfig_table_row(result):
-    return OrderedDict([
-        ('name', result['name']),
-        ('namespace', result['namespace']),
-        ('scope', result['scope']),
-        ('provisioningState', result['provisioningState']),
-        ('complianceState', result['complianceState']),
-        ('lastSourceSyncedAt', result['lastSourceSyncedAt']),
-    ])
+    return OrderedDict(
+        [
+            ("namespace", result["namespace"]),
+            ("name", result["name"]),
+            ("scope", result["scope"]),
+            ("provisioningState", result["provisioningState"]),
+            ("complianceState", result["complianceState"]),
+            ("lastSourceSyncedAt", result["lastSourceSyncedAt"]),
+        ]
+    )
 
 
 def fluxconfig_kustomization_list_table_format(results):
@@ -55,16 +59,45 @@ def fluxconfig_kustomization_show_table_format(results):
 
 def __get_fluxconfig_kustomization_table_row(key, value):
     deps = []
-    for dep in value.get('dependsOn') or []:
-        if dep.get('kustomizationName'):
-            deps.append(dep['kustomizationName'])
+    for dep in value.get("dependsOn") or []:
+        if dep.get("kustomizationName"):
+            deps.append(dep["kustomizationName"])
 
-    return OrderedDict([
-        ('name', key),
-        ('path', value['path']),
-        ('dependsOn', ','.join(deps)),
-        ('syncInterval', format_duration(value['syncIntervalInSeconds'])),
-        ('timeout', format_duration(value['timeoutInSeconds'])),
-        ('prune', value['prune']),
-        ('force', value['force'])
-    ])
+    return OrderedDict(
+        [
+            ("name", key),
+            ("path", value["path"]),
+            ("dependsOn", ",".join(deps)),
+            ("syncInterval", format_duration(value["syncIntervalInSeconds"])),
+            ("timeout", format_duration(value["timeoutInSeconds"])),
+            ("prune", value["prune"]),
+            ("force", value["force"]),
+        ]
+    )
+
+
+def fluxconfig_deployed_object_list_table_format(results):
+    return [__get_fluxconfig_deployed_object_table_row(result) for result in results]
+
+
+def fluxconfig_deployed_object_show_table_format(result):
+    return __get_fluxconfig_deployed_object_table_row(result)
+
+
+def __get_fluxconfig_deployed_object_table_row(result):
+    message = "None"
+    for condition in result.get("statusConditions") or []:
+        if condition.get("type") == "Ready":
+            message = condition.get("message")
+            if len(message) > 60:
+                message = message[:60] + "..."
+            break
+    return OrderedDict(
+        [
+            ("kind", result["kind"]),
+            ("namespace", result["namespace"]),
+            ("name", result["name"]),
+            ("complianceState", result["complianceState"]),
+            ("message", message),
+        ]
+    )

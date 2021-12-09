@@ -45,7 +45,7 @@ class DefaultExtension(PartnerExtensionModel):
         )
         return extension, name, create_identity
 
-    def Update(self, auto_upgrade_minor_version, release_train, version, configuration_settings,
+    def Update(self, cmd, resource_group_name, cluster_name, auto_upgrade_minor_version, release_train, version, configuration_settings,
                configuration_protected_settings):
         """Default validations & defaults for Update
            Must create and return a valid 'PatchExtension' object.
