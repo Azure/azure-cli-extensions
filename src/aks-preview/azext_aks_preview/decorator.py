@@ -1722,6 +1722,8 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
     def update_load_balancer_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Update load balancer profile for the ManagedCluster object.
 
+        Note: Inherited and extended in aks-preview to set dual stack related properties.
+
         :return: the ManagedCluster object
         """
         mc = super().update_load_balancer_profile(mc)
@@ -1756,7 +1758,9 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
 
     def update_windows_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Update windows profile for the ManagedCluster object.
+
         Note: Inherited and extended in aks-preview to set gmsa related properties.
+
         :return: the ManagedCluster object
         """
         mc = super().update_windows_profile(mc)
