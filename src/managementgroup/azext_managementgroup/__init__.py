@@ -21,7 +21,7 @@ class ManagementGroupsAPICommandsLoader(AzCommandsLoader):
         managementgroup_custom = CliCommandType(
             operations_tmpl='azext_managementgroup.custom#{}',
             client_factory=cf_managementgroup_cl)
-        parent = super()
+        parent = super(ManagementGroupsAPICommandsLoader, self)
         parent.__init__(cli_ctx=cli_ctx, custom_command_type=managementgroup_custom)
 
     def load_command_table(self, args):

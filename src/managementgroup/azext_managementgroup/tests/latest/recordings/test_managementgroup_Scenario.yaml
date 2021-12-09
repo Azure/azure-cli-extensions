@@ -19,25 +19,26 @@ interactions:
     uri: https://management.azure.com/providers/Microsoft.Management/getEntities?api-version=2021-04-01
   response:
     body:
-      string: '{"count":3,"value":[{"name":"f997b574-4a56-40b8-888f-5a971689f73b","id":"/providers/Microsoft.Management/managementGroups/f997b574-4a56-40b8-888f-5a971689f73b","type":"Microsoft.Management/managementGroups","properties":{"tenantId":"f997b574-4a56-40b8-888f-5a971689f73b","numberOfChildren":0,"numberOfChildGroups":0,"numberOfDescendants":0,"displayName":"Tenant
+      string: '{"count":4,"value":[{"name":"f997b574-4a56-40b8-888f-5a971689f73b","id":"/providers/Microsoft.Management/managementGroups/f997b574-4a56-40b8-888f-5a971689f73b","type":"Microsoft.Management/managementGroups","properties":{"tenantId":"f997b574-4a56-40b8-888f-5a971689f73b","numberOfChildren":0,"numberOfChildGroups":0,"numberOfDescendants":0,"displayName":"Tenant
         Root Group","parentDisplayNameChain":[],"parent":{"id":null},"parentNameChain":[],"inheritedPermissions":"noaccess","permissions":"noaccess"}},{"name":"thomasdolanTestMG","id":"/providers/Microsoft.Management/managementGroups/thomasdolanTestMG","type":"Microsoft.Management/managementGroups","properties":{"tenantId":"f997b574-4a56-40b8-888f-5a971689f73b","numberOfChildren":1,"numberOfChildGroups":1,"numberOfDescendants":1,"displayName":"thomasdolanTestMG","parentDisplayNameChain":["Tenant
+        Root Group"],"parent":{"id":"/providers/Microsoft.Management/managementGroups/f997b574-4a56-40b8-888f-5a971689f73b"},"parentNameChain":["f997b574-4a56-40b8-888f-5a971689f73b"],"inheritedPermissions":"delete","permissions":"delete"}},{"name":"thomasSubs","id":"/providers/Microsoft.Management/managementGroups/thomasSubs","type":"Microsoft.Management/managementGroups","properties":{"tenantId":"f997b574-4a56-40b8-888f-5a971689f73b","numberOfChildren":0,"numberOfChildGroups":0,"numberOfDescendants":0,"displayName":"thomasSubs","parentDisplayNameChain":["Tenant
         Root Group"],"parent":{"id":"/providers/Microsoft.Management/managementGroups/f997b574-4a56-40b8-888f-5a971689f73b"},"parentNameChain":["f997b574-4a56-40b8-888f-5a971689f73b"],"inheritedPermissions":"delete","permissions":"delete"}},{"name":"ChildGroup","id":"/providers/Microsoft.Management/managementGroups/ChildGroup","type":"Microsoft.Management/managementGroups","properties":{"tenantId":"f997b574-4a56-40b8-888f-5a971689f73b","numberOfChildren":0,"numberOfChildGroups":0,"numberOfDescendants":0,"displayName":"ChildGroup","parentDisplayNameChain":["Tenant
         Root Group","thomasdolanTestMG"],"parent":{"id":"/providers/Microsoft.Management/managementGroups/thomasdolanTestMG"},"parentNameChain":["f997b574-4a56-40b8-888f-5a971689f73b","thomasdolanTestMG"],"inheritedPermissions":"delete","permissions":"delete"}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1672'
+      - '2234'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 09 Dec 2021 19:32:07 GMT
+      - Thu, 09 Dec 2021 22:36:42 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       request-id:
-      - 1c6c89c6-d777-40d1-8f81-5182aad4df62
+      - 89f4e003-6db0-4c51-9d39-b07a39acceaa
       server:
       - Microsoft-HTTPAPI/2.0
       strict-transport-security:
@@ -51,7 +52,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-tenant-writes:
-      - '1197'
+      - '1199'
     status:
       code: 200
       message: OK
@@ -84,13 +85,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 09 Dec 2021 19:32:07 GMT
+      - Thu, 09 Dec 2021 22:36:43 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       request-id:
-      - c20155a1-98dd-4666-b7da-a303ea007f21
+      - c871d30e-fa02-4294-82bb-85f37d954e5d
       server:
       - Microsoft-HTTPAPI/2.0
       strict-transport-security:
@@ -137,13 +138,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 09 Dec 2021 19:32:08 GMT
+      - Thu, 09 Dec 2021 22:36:45 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       request-id:
-      - ca9dcf61-8b73-4d65-ac47-ddf2aab170fc
+      - 8f2afb7b-d4c7-405e-8cdb-791524e5622d
       server:
       - Microsoft-HTTPAPI/2.0
       strict-transport-security:
@@ -186,38 +187,36 @@ interactions:
     uri: https://management.azure.com/providers/Microsoft.Management/managementGroups/ChildGroup?api-version=2021-04-01
   response:
     body:
-      string: '{"id":"/providers/Microsoft.Management/managementGroups/ChildGroup","type":"Microsoft.Management/managementGroups","name":"ChildGroup","properties":{"tenantId":"f997b574-4a56-40b8-888f-5a971689f73b","displayName":"ChildGroup","details":{"version":3,"updatedTime":"2021-12-09T19:32:09.4268564Z","updatedBy":"2882e70c-4520-4567-934b-ccac31e7bedc","parent":{"id":"/providers/Microsoft.Management/managementGroups/thomasdolanTestMG","name":"thomasdolanTestMG","displayName":"thomasdolanTestMG"}}}}'
+      string: '{"id":"/providers/Microsoft.Management/managementGroups/ChildGroup","type":"Microsoft.Management/managementGroups","name":"ChildGroup","properties":{"tenantId":"f997b574-4a56-40b8-888f-5a971689f73b","displayName":"ChildGroup","details":{"version":15,"updatedTime":"2021-12-09T22:36:46.7648986Z","updatedBy":"2882e70c-4520-4567-934b-ccac31e7bedc","parent":{"id":"/providers/Microsoft.Management/managementGroups/thomasdolanTestMG","name":"thomasdolanTestMG","displayName":"thomasdolanTestMG"}}}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '493'
+      - '494'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 09 Dec 2021 19:32:11 GMT
+      - Thu, 09 Dec 2021 22:36:48 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       request-id:
-      - 5655c093-e1eb-45ba-8dc8-de11ac380acf
-      server:
-      - Microsoft-HTTPAPI/2.0
+      - cb02b85e-8347-47c7-9b9a-895f52b57bf8
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
       - chunked
       vary:
-      - Accept-Encoding
+      - Accept-Encoding,Accept-Encoding
       x-ba-restapi:
-      - 1.0.3.20211102
+      - 1.0.3.202110282
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-managementgroups-requests:
       - '59'
       x-ms-ratelimit-remaining-tenant-writes:
-      - '1199'
+      - '1198'
     status:
       code: 200
       message: OK
@@ -250,13 +249,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 09 Dec 2021 19:32:11 GMT
+      - Thu, 09 Dec 2021 22:36:49 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       request-id:
-      - 41d2dac4-587c-4f86-a76f-4e0547b5591f
+      - 3342f782-4a05-4a66-a4b0-938900fd77bd
       server:
       - Microsoft-HTTPAPI/2.0
       strict-transport-security:
@@ -304,21 +303,23 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 09 Dec 2021 19:32:11 GMT
+      - Thu, 09 Dec 2021 22:36:49 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       request-id:
-      - b6aa22b1-2e31-47f7-9999-f2af04ad273a
+      - 850cb72e-eaa9-494a-8089-3f7602975fa4
+      server:
+      - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
       - chunked
       vary:
-      - Accept-Encoding,Accept-Encoding
+      - Accept-Encoding
       x-ba-restapi:
-      - 1.0.3.202110282
+      - 1.0.3.20211102
       x-content-type-options:
       - nosniff
     status:
@@ -354,13 +355,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 09 Dec 2021 19:32:12 GMT
+      - Thu, 09 Dec 2021 22:36:50 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       request-id:
-      - c9110aec-b7ad-4b4b-b658-326a9405d56b
+      - f4dfa01b-32dc-4043-bc9b-5522f8e24f6a
       server:
       - Microsoft-HTTPAPI/2.0
       strict-transport-security:
@@ -407,13 +408,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 09 Dec 2021 19:32:12 GMT
+      - Thu, 09 Dec 2021 22:36:51 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       request-id:
-      - 9f93d7a9-584a-4f73-8b5a-c84d873aa66d
+      - 41b268cf-1e93-4e5e-b946-f9f507b8d5c1
       server:
       - Microsoft-HTTPAPI/2.0
       strict-transport-security:
@@ -459,13 +460,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 09 Dec 2021 19:32:13 GMT
+      - Thu, 09 Dec 2021 22:36:52 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       request-id:
-      - ec489d0b-2f09-4ae0-8174-a1680ade929f
+      - ab93bd14-5f59-4201-8f40-3d654ca8f901
       server:
       - Microsoft-HTTPAPI/2.0
       strict-transport-security:
@@ -512,13 +513,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 09 Dec 2021 19:32:14 GMT
+      - Thu, 09 Dec 2021 22:36:53 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       request-id:
-      - ecc2c957-dbe2-4382-98e9-d23a7deb37d8
+      - 36c07ab2-f48e-4532-8d27-55924c2a28b2
       server:
       - Microsoft-HTTPAPI/2.0
       strict-transport-security:
@@ -552,22 +553,22 @@ interactions:
     uri: https://management.azure.com/providers/Microsoft.Management/managementGroups?api-version=2021-04-01
   response:
     body:
-      string: '{"value":[{"id":"/providers/Microsoft.Management/managementGroups/ChildGroup","type":"Microsoft.Management/managementGroups","name":"ChildGroup","properties":{"tenantId":"f997b574-4a56-40b8-888f-5a971689f73b","displayName":"ChildGroup"}},{"id":"/providers/Microsoft.Management/managementGroups/thomasdolanTestMG","type":"Microsoft.Management/managementGroups","name":"thomasdolanTestMG","properties":{"tenantId":"f997b574-4a56-40b8-888f-5a971689f73b","displayName":"thomasdolanTestMG"}}],"@nextLink":null}'
+      string: '{"value":[{"id":"/providers/Microsoft.Management/managementGroups/ChildGroup","type":"Microsoft.Management/managementGroups","name":"ChildGroup","properties":{"tenantId":"f997b574-4a56-40b8-888f-5a971689f73b","displayName":"ChildGroup"}},{"id":"/providers/Microsoft.Management/managementGroups/thomasdolanTestMG","type":"Microsoft.Management/managementGroups","name":"thomasdolanTestMG","properties":{"tenantId":"f997b574-4a56-40b8-888f-5a971689f73b","displayName":"thomasdolanTestMG"}},{"id":"/providers/Microsoft.Management/managementGroups/thomasSubs","type":"Microsoft.Management/managementGroups","name":"thomasSubs","properties":{"tenantId":"f997b574-4a56-40b8-888f-5a971689f73b","displayName":"thomasSubs"}},{"id":"/providers/Microsoft.Management/managementGroups/thomasSubs1","type":"Microsoft.Management/managementGroups","name":"thomasSubs1","properties":{"tenantId":"f997b574-4a56-40b8-888f-5a971689f73b","displayName":"thomasSubs1"}}],"@nextLink":null}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '505'
+      - '964'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 09 Dec 2021 19:32:14 GMT
+      - Thu, 09 Dec 2021 22:36:54 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       request-id:
-      - 6a19ec80-fda4-4298-8ee5-f20aaa9e3023
+      - 5a37f2bd-cf5d-46e0-92b8-5198a03af47d
       server:
       - Microsoft-HTTPAPI/2.0
       strict-transport-security:
@@ -607,22 +608,22 @@ interactions:
     uri: https://management.azure.com/providers/Microsoft.Management/managementGroups/ChildGroup?api-version=2021-04-01
   response:
     body:
-      string: '{"id":"/providers/Microsoft.Management/managementGroups/ChildGroup","type":"Microsoft.Management/managementGroups","name":"ChildGroup","properties":{"tenantId":"f997b574-4a56-40b8-888f-5a971689f73b","displayName":"tdolanTestMG","details":{"version":4,"updatedTime":"2021-12-09T19:32:15.546793Z","updatedBy":"2882e70c-4520-4567-934b-ccac31e7bedc","parent":{"id":"/providers/Microsoft.Management/managementGroups/thomasdolanTestMG","name":"thomasdolanTestMG","displayName":"thomasdolanTestMG"}}}}'
+      string: '{"id":"/providers/Microsoft.Management/managementGroups/ChildGroup","type":"Microsoft.Management/managementGroups","name":"ChildGroup","properties":{"tenantId":"f997b574-4a56-40b8-888f-5a971689f73b","displayName":"tdolanTestMG","details":{"version":16,"updatedTime":"2021-12-09T22:36:56.3884839Z","updatedBy":"2882e70c-4520-4567-934b-ccac31e7bedc","parent":{"id":"/providers/Microsoft.Management/managementGroups/thomasdolanTestMG","name":"thomasdolanTestMG","displayName":"thomasdolanTestMG"}}}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '494'
+      - '496'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 09 Dec 2021 19:32:17 GMT
+      - Thu, 09 Dec 2021 22:36:57 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       request-id:
-      - 2c58a249-6fbc-415f-89bb-695f51fa685f
+      - bdbbe8fb-6b96-4a06-a312-c9dbc51fc202
       server:
       - Microsoft-HTTPAPI/2.0
       strict-transport-security:
@@ -675,7 +676,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 09 Dec 2021 19:32:19 GMT
+      - Thu, 09 Dec 2021 22:36:59 GMT
       expires:
       - '-1'
       location:
@@ -683,13 +684,13 @@ interactions:
       pragma:
       - no-cache
       request-id:
-      - f522c417-98d0-4514-b5b8-f312ec04dcde
+      - 32858530-f5dd-4a39-b737-9b50d000aaef
       server:
       - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-ba-restapi:
-      - 1.0.3.2410
+      - 1.0.3.20211102
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-managementgroups-requests:
@@ -728,13 +729,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 09 Dec 2021 19:32:29 GMT
+      - Thu, 09 Dec 2021 22:37:09 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       request-id:
-      - ae6c5ce6-7cb1-4ee1-b749-349575aa3661
+      - 5dbe5b5e-717e-4f1b-bffb-e84f417cad9e
       server:
       - Microsoft-HTTPAPI/2.0
       strict-transport-security:
@@ -744,7 +745,7 @@ interactions:
       vary:
       - Accept-Encoding
       x-ba-restapi:
-      - 1.0.3.2410
+      - 1.0.3.20211102
       x-content-type-options:
       - nosniff
     status:
