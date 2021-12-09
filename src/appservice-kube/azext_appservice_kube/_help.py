@@ -135,8 +135,6 @@ type: command
 short-summary: Unbind an SSL certificate from a web app.
 """
 
-
-
 helps['functionapp create'] = """
 type: command
 short-summary: Create a function app.
