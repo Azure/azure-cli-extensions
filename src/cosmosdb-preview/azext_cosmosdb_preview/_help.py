@@ -72,22 +72,27 @@ examples:
       az managed-cassandra cluster list
 """
 
-helps['managed-cassandra cluster backup-list'] = """
+helps['managed-cassandra cluster backup list'] = """
 type: command
 short-summary: List the backups of this cluster that are available to restore.
 examples:
   - name: This command lists the backups of this cluster that are available to restore.
     text: |
-      az managed-cassandra cluster backup-list --resource-group MyResourceGroup --cluster-name MyCluster
+      az managed-cassandra cluster backup list --resource-group MyResourceGroup --cluster-name MyCluster
 """
 
-helps['managed-cassandra cluster backup-show'] = """
+helps['managed-cassandra cluster backup show'] = """
 type: command
 short-summary: Get a managed cassandra backup resource of this cluster
 examples:
   - name: Gets a managed cassandra backup resource.
     text: |
-      az managed-cassandra cluster backup-show --resource-group MyResourceGroup --cluster-name MyCluster --backup-id BackUpId
+      az managed-cassandra cluster backup show --resource-group MyResourceGroup --cluster-name MyCluster --backup-id BackUpId
+"""
+
+helps['managed-cassandra cluster backup'] = """
+type: group
+short-summary: Azure Managed Cassandra cluster Backup.
 """
 
 helps['managed-cassandra cluster invoke-command'] = """

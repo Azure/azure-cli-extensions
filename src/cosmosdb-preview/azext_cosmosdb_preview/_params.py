@@ -25,8 +25,8 @@ def load_arguments(self, _):
             'managed-cassandra cluster update',
             'managed-cassandra cluster show',
             'managed-cassandra cluster delete',
-            'managed-cassandra cluster backup-list',
-            'managed-cassandra cluster backup-show']:
+            'managed-cassandra cluster backup list',
+            'managed-cassandra cluster backup show']:
         with self.argument_context(scope) as c:
             c.argument('cluster_name', options_list=['--cluster-name', '-c'], help="Cluster Name", required=True)
 
@@ -55,7 +55,7 @@ def load_arguments(self, _):
         c.argument('cluster_name_override', help="If a cluster must have a name that is not a valid azure resource name, this field can be specified to choose the Cassandra cluster name. Otherwise, the resource name will be used as the cluster name.")
 
     # Managed Cassandra Cluster
-    for scope in ['managed-cassandra cluster backup-show']:
+    for scope in ['managed-cassandra cluster backup show']:
         with self.argument_context(scope) as c:
             c.argument('backup_id', options_list=['--backup-id'], help="The resource id of the backup", required=True)
 
