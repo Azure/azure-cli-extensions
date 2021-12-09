@@ -2,6 +2,11 @@
 
 Release History
 ===============
+0.5.48
++++++
+* Add support for Alias Minor Version.
+* 
+
 0.5.47
 ++++++
 * Add support for IPv4/IPv6 dual-stack networking AKS clusters
