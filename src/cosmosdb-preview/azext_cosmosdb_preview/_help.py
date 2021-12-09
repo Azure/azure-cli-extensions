@@ -78,7 +78,7 @@ short-summary: List the backups of this cluster that are available to restore.
 examples:
   - name: This command lists the backups of this cluster that are available to restore.
     text: |
-      az managed-cassandra cluster backup list --resource-group MyResourceGroup --cluster-name MyCluster
+      az managed-cassandra cluster backup-list --resource-group MyResourceGroup --cluster-name MyCluster
 """
 
 helps['managed-cassandra cluster backup-show'] = """
@@ -87,7 +87,7 @@ short-summary: Get a managed cassandra backup resource of this cluster
 examples:
   - name: Gets a managed cassandra backup resource.
     text: |
-      az managed-cassandra cluster backup show --resource-group MyResourceGroup --cluster-name MyCluster --backup-id BackUpId
+      az managed-cassandra cluster backup-show --resource-group MyResourceGroup --cluster-name MyCluster --backup-id BackUpId
 """
 
 helps['managed-cassandra cluster invoke-command'] = """
