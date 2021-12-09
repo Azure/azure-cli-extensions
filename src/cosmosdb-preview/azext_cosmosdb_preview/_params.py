@@ -25,7 +25,8 @@ def load_arguments(self, _):
             'managed-cassandra cluster update',
             'managed-cassandra cluster show',
             'managed-cassandra cluster delete',
-            'managed-cassandra cluster backup-list']:
+            'managed-cassandra cluster backup-list',
+            'managed-cassandra cluster backup-show']:
         with self.argument_context(scope) as c:
             c.argument('cluster_name', options_list=['--cluster-name', '-c'], help="Cluster Name", required=True)
 
