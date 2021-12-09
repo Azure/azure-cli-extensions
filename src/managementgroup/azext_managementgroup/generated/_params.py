@@ -105,25 +105,25 @@ def load_arguments(self, _):
 
     with self.argument_context('managementgroup hierarchy-setting create') as c:
         c.argument('group_id', type=str, help='Management Group ID.')
-        c.argument('require_authorization_for_group_creation', arg_type=get_three_state_flag(), help='Indicates '
-                   'whether RBAC access is required upon group creation under the root Management Group. If set to '
-                   'true, user will require Microsoft.Management/managementGroups/write action on the root Management '
-                   'Group scope in order to create new Groups directly under the root. This will prevent new users '
-                   'from creating new Management Groups, unless they are given access.')
-        c.argument('default_management_group', type=str, help='Settings that sets the default Management Group under '
-                   'which new subscriptions get added in this tenant. For example, /providers/Microsoft.Management/mana'
-                   'gementGroups/defaultGroup')
+        c.argument('req_auth_for_g', arg_type=get_three_state_flag(), help='Indicates whether RBAC access is required '
+                   'upon group creation under the root Management Group. If set to true, user will require '
+                   'Microsoft.Management/managementGroups/write action on the root Management Group scope in order to '
+                   'create new Groups directly under the root. This will prevent new users from creating new '
+                   'Management Groups, unless they are given access.')
+        c.argument('default_mg', type=str, help='Settings that sets the default Management Group under which new '
+                   'subscriptions get added in this tenant. For example, /providers/Microsoft.Management/managementGrou'
+                   'ps/defaultGroup')
 
     with self.argument_context('managementgroup hierarchy-setting update') as c:
         c.argument('group_id', type=str, help='Management Group ID.')
-        c.argument('require_authorization_for_group_creation', arg_type=get_three_state_flag(), help='Indicates '
-                   'whether RBAC access is required upon group creation under the root Management Group. If set to '
-                   'true, user will require Microsoft.Management/managementGroups/write action on the root Management '
-                   'Group scope in order to create new Groups directly under the root. This will prevent new users '
-                   'from creating new Management Groups, unless they are given access.')
-        c.argument('default_management_group', type=str, help='Settings that sets the default Management Group under '
-                   'which new subscriptions get added in this tenant. For example, /providers/Microsoft.Management/mana'
-                   'gementGroups/defaultGroup')
+        c.argument('req_auth_for_g', arg_type=get_three_state_flag(), help='Indicates whether RBAC access is required '
+                   'upon group creation under the root Management Group. If set to true, user will require '
+                   'Microsoft.Management/managementGroups/write action on the root Management Group scope in order to '
+                   'create new Groups directly under the root. This will prevent new users from creating new '
+                   'Management Groups, unless they are given access.')
+        c.argument('default_mg', type=str, help='Settings that sets the default Management Group under which new '
+                   'subscriptions get added in this tenant. For example, /providers/Microsoft.Management/managementGrou'
+                   'ps/defaultGroup')
 
     with self.argument_context('managementgroup hierarchy-setting delete') as c:
         c.argument('group_id', type=str, help='Management Group ID.')

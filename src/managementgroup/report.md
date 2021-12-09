@@ -123,29 +123,27 @@ az managementgroup hierarchy-setting show --group-id "root"
 
 ##### <a name="ExamplesHierarchySettingsCreateOrUpdate#Create">Example</a>
 ```
-az managementgroup hierarchy-setting create --default-management-group "/providers/Microsoft.Management/managementGroup\
-s/DefaultGroup" --require-authorization-for-group-creation true --group-id "root"
+az managementgroup hierarchy-setting create --group-id "root"
 ```
 ##### <a name="ParametersHierarchySettingsCreateOrUpdate#Create">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
 |**--group-id**|string|Management Group ID.|group_id|groupId|
-|**--require-authorization-for-group-creation**|boolean|Indicates whether RBAC access is required upon group creation under the root Management Group. If set to true, user will require Microsoft.Management/managementGroups/write action on the root Management Group scope in order to create new Groups directly under the root. This will prevent new users from creating new Management Groups, unless they are given access.|require_authorization_for_group_creation|requireAuthorizationForGroupCreation|
-|**--default-management-group**|string|Settings that sets the default Management Group under which new subscriptions get added in this tenant. For example, /providers/Microsoft.Management/managementGroups/defaultGroup|default_management_group|defaultManagementGroup|
+|**--req-auth-for-g**|boolean|Indicates whether RBAC access is required upon group creation under the root Management Group. If set to true, user will require Microsoft.Management/managementGroups/write action on the root Management Group scope in order to create new Groups directly under the root. This will prevent new users from creating new Management Groups, unless they are given access.|req_auth_for_g|reqAuthForG|
+|**--default-mg**|string|Settings that sets the default Management Group under which new subscriptions get added in this tenant. For example, /providers/Microsoft.Management/managementGroups/defaultGroup|default_mg|defaultMG|
 
 #### <a name="HierarchySettingsUpdate">Command `az managementgroup hierarchy-setting update`</a>
 
 ##### <a name="ExamplesHierarchySettingsUpdate">Example</a>
 ```
-az managementgroup hierarchy-setting update --default-management-group "/providers/Microsoft.Management/managementGroup\
-s/DefaultGroup" --require-authorization-for-group-creation true --group-id "root"
+az managementgroup hierarchy-setting update --group-id "root"
 ```
 ##### <a name="ParametersHierarchySettingsUpdate">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
 |**--group-id**|string|Management Group ID.|group_id|groupId|
-|**--require-authorization-for-group-creation**|boolean|Indicates whether RBAC access is required upon group creation under the root Management Group. If set to true, user will require Microsoft.Management/managementGroups/write action on the root Management Group scope in order to create new Groups directly under the root. This will prevent new users from creating new Management Groups, unless they are given access.|require_authorization_for_group_creation|requireAuthorizationForGroupCreation|
-|**--default-management-group**|string|Settings that sets the default Management Group under which new subscriptions get added in this tenant. For example, /providers/Microsoft.Management/managementGroups/defaultGroup|default_management_group|defaultManagementGroup|
+|**--req-auth-for-g**|boolean|Indicates whether RBAC access is required upon group creation under the root Management Group. If set to true, user will require Microsoft.Management/managementGroups/write action on the root Management Group scope in order to create new Groups directly under the root. This will prevent new users from creating new Management Groups, unless they are given access.|req_auth_for_g|reqAuthForG|
+|**--default-mg**|string|Settings that sets the default Management Group under which new subscriptions get added in this tenant. For example, /providers/Microsoft.Management/managementGroups/defaultGroup|default_mg|defaultMG|
 
 #### <a name="HierarchySettingsDelete">Command `az managementgroup hierarchy-setting delete`</a>
 

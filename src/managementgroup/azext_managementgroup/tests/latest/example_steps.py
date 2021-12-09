@@ -27,8 +27,6 @@ def step_hierarchy_setting_create(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az managementgroup hierarchy-setting create '
-             '--default-management-group "/providers/Microsoft.Management/managementGroups/DefaultGroup" '
-             '--require-authorization-for-group-creation true '
              '--group-id "root"',
              checks=checks)
 
@@ -59,8 +57,6 @@ def step_hierarchy_setting_update(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az managementgroup hierarchy-setting update '
-             '--default-management-group "/providers/Microsoft.Management/managementGroups/DefaultGroup" '
-             '--require-authorization-for-group-creation true '
              '--group-id "root"',
              checks=checks)
 
@@ -100,7 +96,7 @@ def step_management_group_create(test, checks=None):
         checks = []
     test.cmd('az managementgroup management-group create '
              '--display-name "ChildGroup" '
-             '--id "/providers/Microsoft.Management/managementGroups/RootGroup" '
+             '--id "/providers/Microsoft.Management/managementGroups/thomasdolanTestMG" '
              '--group-id "ChildGroup"',
              checks=checks)
 
@@ -111,7 +107,7 @@ def step_management_group_show_descendant(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az managementgroup management-group show-descendant '
-             '--group-id "20000000-0000-0000-0000-000000000000"',
+             '--group-id "thomasdolanTestMG"',
              checks=checks)
 
 
@@ -121,7 +117,7 @@ def step_management_group_show(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az managementgroup management-group show '
-             '--group-id "20000000-0001-0000-0000-000000000000"',
+             '--group-id "thomasdolanTestMG"',
              checks=checks)
 
 
@@ -133,7 +129,7 @@ def step_management_group_show2(test, checks=None):
     test.cmd('az managementgroup management-group show '
              '--expand "children" '
              '--recurse true '
-             '--group-id "20000000-0001-0000-0000-000000000000"',
+             '--group-id "thomasdolanTestMG"',
              checks=checks)
 
 
@@ -144,7 +140,7 @@ def step_management_group_show3(test, checks=None):
         checks = []
     test.cmd('az managementgroup management-group show '
              '--expand "ancestors" '
-             '--group-id "20000000-0001-0000-0000-00000000000"',
+             '--group-id "thomasdolanTestMG"',
              checks=checks)
 
 
@@ -155,7 +151,7 @@ def step_management_group_show4(test, checks=None):
         checks = []
     test.cmd('az managementgroup management-group show '
              '--expand "children" '
-             '--group-id "20000000-0001-0000-0000-000000000000"',
+             '--group-id "thomasdolanTestMG"',
              checks=checks)
 
 
@@ -166,7 +162,7 @@ def step_management_group_show5(test, checks=None):
         checks = []
     test.cmd('az managementgroup management-group show '
              '--expand "path" '
-             '--group-id "20000000-0001-0000-0000-000000000000"',
+             '--group-id "thomasdolanTestMG"',
              checks=checks)
 
 
@@ -186,8 +182,7 @@ def step_management_group_update(test, checks=None):
         checks = []
     test.cmd('az managementgroup management-group update '
              '--group-id "ChildGroup" '
-             '--display-name "AlternateDisplayName" '
-             '--parent-group-id "/providers/Microsoft.Management/managementGroups/AlternateRootGroup"',
+             '--display-name "tdolanTestMG"',
              checks=checks)
 
 
@@ -197,7 +192,7 @@ def step_management_group_delete(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az managementgroup management-group delete -y '
-             '--group-id "GroupToDelete"',
+             '--group-id "ChildGroup"',
              checks=checks)
 
 
@@ -207,7 +202,7 @@ def step_management_group_subscription_create(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az managementgroup management-group-subscription create '
-             '--group-id "Group" '
+             '--group-id "Group"'
              '--subscription-id "728bcbe4-8d56-4510-86c2-4921b8beefbc"',
              checks=checks)
 

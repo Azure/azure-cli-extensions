@@ -1,0 +1,753 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - managementgroup entity list
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      User-Agent:
+      - AZURECLI/2.30.0 azsdk-python-mgmt-managementgroups/2019-05-01T00:00:00.000Z
+        Python/3.7.8 (Windows-10-10.0.19041-SP0)
+    method: POST
+    uri: https://management.azure.com/providers/Microsoft.Management/getEntities?api-version=2021-04-01
+  response:
+    body:
+      string: '{"count":3,"value":[{"name":"f997b574-4a56-40b8-888f-5a971689f73b","id":"/providers/Microsoft.Management/managementGroups/f997b574-4a56-40b8-888f-5a971689f73b","type":"Microsoft.Management/managementGroups","properties":{"tenantId":"f997b574-4a56-40b8-888f-5a971689f73b","numberOfChildren":0,"numberOfChildGroups":0,"numberOfDescendants":0,"displayName":"Tenant
+        Root Group","parentDisplayNameChain":[],"parent":{"id":null},"parentNameChain":[],"inheritedPermissions":"noaccess","permissions":"noaccess"}},{"name":"thomasdolanTestMG","id":"/providers/Microsoft.Management/managementGroups/thomasdolanTestMG","type":"Microsoft.Management/managementGroups","properties":{"tenantId":"f997b574-4a56-40b8-888f-5a971689f73b","numberOfChildren":1,"numberOfChildGroups":1,"numberOfDescendants":1,"displayName":"thomasdolanTestMG","parentDisplayNameChain":["Tenant
+        Root Group"],"parent":{"id":"/providers/Microsoft.Management/managementGroups/f997b574-4a56-40b8-888f-5a971689f73b"},"parentNameChain":["f997b574-4a56-40b8-888f-5a971689f73b"],"inheritedPermissions":"delete","permissions":"delete"}},{"name":"ChildGroup","id":"/providers/Microsoft.Management/managementGroups/ChildGroup","type":"Microsoft.Management/managementGroups","properties":{"tenantId":"f997b574-4a56-40b8-888f-5a971689f73b","numberOfChildren":0,"numberOfChildGroups":0,"numberOfDescendants":0,"displayName":"ChildGroup","parentDisplayNameChain":["Tenant
+        Root Group","thomasdolanTestMG"],"parent":{"id":"/providers/Microsoft.Management/managementGroups/thomasdolanTestMG"},"parentNameChain":["f997b574-4a56-40b8-888f-5a971689f73b","thomasdolanTestMG"],"inheritedPermissions":"delete","permissions":"delete"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1672'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 09 Dec 2021 19:32:07 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-id:
+      - 1c6c89c6-d777-40d1-8f81-5182aad4df62
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-ba-restapi:
+      - 1.0.3.20211102
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-tenant-writes:
+      - '1197'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - managementgroup start-tenant-backfill
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      User-Agent:
+      - AZURECLI/2.30.0 azsdk-python-mgmt-managementgroups/2019-05-01T00:00:00.000Z
+        Python/3.7.8 (Windows-10-10.0.19041-SP0)
+    method: POST
+    uri: https://management.azure.com/providers/Microsoft.Management/startTenantBackfill?api-version=2021-04-01
+  response:
+    body:
+      string: '{"tenantId":"f997b574-4a56-40b8-888f-5a971689f73b","status":"Completed"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '72'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 09 Dec 2021 19:32:07 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-id:
+      - c20155a1-98dd-4666-b7da-a303ea007f21
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-ba-restapi:
+      - 1.0.3.20211102
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-tenant-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - managementgroup tenant-backfill-status
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      User-Agent:
+      - AZURECLI/2.30.0 azsdk-python-mgmt-managementgroups/2019-05-01T00:00:00.000Z
+        Python/3.7.8 (Windows-10-10.0.19041-SP0)
+    method: POST
+    uri: https://management.azure.com/providers/Microsoft.Management/tenantBackfillStatus?api-version=2021-04-01
+  response:
+    body:
+      string: '{"tenantId":"f997b574-4a56-40b8-888f-5a971689f73b","status":"Completed"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '72'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 09 Dec 2021 19:32:08 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-id:
+      - ca9dcf61-8b73-4d65-ac47-ddf2aab170fc
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-ba-restapi:
+      - 1.0.3.20211102
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-tenant-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"displayName": "ChildGroup", "details": {"parent": {"id":
+      "/providers/Microsoft.Management/managementGroups/thomasdolanTestMG"}}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - managementgroup management-group create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '146'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --display-name --id --group-id
+      User-Agent:
+      - AZURECLI/2.30.0 azsdk-python-mgmt-managementgroups/2019-05-01T00:00:00.000Z
+        Python/3.7.8 (Windows-10-10.0.19041-SP0)
+    method: PUT
+    uri: https://management.azure.com/providers/Microsoft.Management/managementGroups/ChildGroup?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Management/managementGroups/ChildGroup","type":"Microsoft.Management/managementGroups","name":"ChildGroup","properties":{"tenantId":"f997b574-4a56-40b8-888f-5a971689f73b","displayName":"ChildGroup","details":{"version":3,"updatedTime":"2021-12-09T19:32:09.4268564Z","updatedBy":"2882e70c-4520-4567-934b-ccac31e7bedc","parent":{"id":"/providers/Microsoft.Management/managementGroups/thomasdolanTestMG","name":"thomasdolanTestMG","displayName":"thomasdolanTestMG"}}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '493'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 09 Dec 2021 19:32:11 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-id:
+      - 5655c093-e1eb-45ba-8dc8-de11ac380acf
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-ba-restapi:
+      - 1.0.3.20211102
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-managementgroups-requests:
+      - '59'
+      x-ms-ratelimit-remaining-tenant-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - managementgroup management-group show-descendant
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --group-id
+      User-Agent:
+      - AZURECLI/2.30.0 azsdk-python-mgmt-managementgroups/2019-05-01T00:00:00.000Z
+        Python/3.7.8 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Management/managementGroups/thomasdolanTestMG/descendants?api-version=2021-04-01
+  response:
+    body:
+      string: '{"value":[{"name":"ChildGroup","id":"/providers/Microsoft.Management/managementGroups/ChildGroup","type":"Microsoft.Management/managementGroups","properties":{"displayName":"ChildGroup","parent":{"id":"/providers/Microsoft.Management/managementGroups/thomasdolanTestMG"}}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '274'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 09 Dec 2021 19:32:11 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-id:
+      - 41d2dac4-587c-4f86-a76f-4e0547b5591f
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-ba-restapi:
+      - 1.0.3.20211102
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-managementgroups-requests:
+      - '599'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - managementgroup management-group show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --group-id
+      User-Agent:
+      - AZURECLI/2.30.0 azsdk-python-mgmt-managementgroups/2019-05-01T00:00:00.000Z
+        Python/3.7.8 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Management/managementGroups/thomasdolanTestMG?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Management/managementGroups/thomasdolanTestMG","type":"Microsoft.Management/managementGroups","name":"thomasdolanTestMG","properties":{"tenantId":"f997b574-4a56-40b8-888f-5a971689f73b","displayName":"thomasdolanTestMG","details":{"version":1,"updatedTime":"2021-12-09T19:11:20.8412914Z","updatedBy":"2882e70c-4520-4567-934b-ccac31e7bedc","parent":{"id":"/providers/Microsoft.Management/managementGroups/f997b574-4a56-40b8-888f-5a971689f73b","name":"f997b574-4a56-40b8-888f-5a971689f73b","displayName":"Tenant
+        Root Group"}}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '552'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 09 Dec 2021 19:32:11 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-id:
+      - b6aa22b1-2e31-47f7-9999-f2af04ad273a
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-ba-restapi:
+      - 1.0.3.202110282
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - managementgroup management-group show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --expand --recurse --group-id
+      User-Agent:
+      - AZURECLI/2.30.0 azsdk-python-mgmt-managementgroups/2019-05-01T00:00:00.000Z
+        Python/3.7.8 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Management/managementGroups/thomasdolanTestMG?api-version=2021-04-01&$expand=children&$recurse=true
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Management/managementGroups/thomasdolanTestMG","type":"Microsoft.Management/managementGroups","name":"thomasdolanTestMG","properties":{"tenantId":"f997b574-4a56-40b8-888f-5a971689f73b","displayName":"thomasdolanTestMG","details":{"version":0,"updatedTime":"0001-01-01T00:00:00","updatedBy":null,"parent":{"id":"/providers/Microsoft.Management/managementGroups/f997b574-4a56-40b8-888f-5a971689f73b","name":"f997b574-4a56-40b8-888f-5a971689f73b","displayName":"Tenant
+        Root Group"}},"children":[{"id":"/providers/Microsoft.Management/managementGroups/ChildGroup","type":"Microsoft.Management/managementGroups","name":"ChildGroup","displayName":"ChildGroup"}]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '685'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 09 Dec 2021 19:32:12 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-id:
+      - c9110aec-b7ad-4b4b-b658-326a9405d56b
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-ba-restapi:
+      - 1.0.3.20211102
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - managementgroup management-group show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --expand --group-id
+      User-Agent:
+      - AZURECLI/2.30.0 azsdk-python-mgmt-managementgroups/2019-05-01T00:00:00.000Z
+        Python/3.7.8 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Management/managementGroups/thomasdolanTestMG?api-version=2021-04-01&$expand=ancestors
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Management/managementGroups/thomasdolanTestMG","type":"Microsoft.Management/managementGroups","name":"thomasdolanTestMG","properties":{"tenantId":"f997b574-4a56-40b8-888f-5a971689f73b","displayName":"thomasdolanTestMG","details":{"version":1,"updatedTime":"2021-12-09T19:11:20.8412914Z","updatedBy":"2882e70c-4520-4567-934b-ccac31e7bedc","managementGroupAncestorsChain":[{"name":"f997b574-4a56-40b8-888f-5a971689f73b","displayName":"Tenant
+        Root Group"}],"parent":{"id":"/providers/Microsoft.Management/managementGroups/f997b574-4a56-40b8-888f-5a971689f73b","name":"f997b574-4a56-40b8-888f-5a971689f73b","displayName":"Tenant
+        Root Group"}}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '668'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 09 Dec 2021 19:32:12 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-id:
+      - 9f93d7a9-584a-4f73-8b5a-c84d873aa66d
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-ba-restapi:
+      - 1.0.3.20211102
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - managementgroup management-group show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --expand --group-id
+      User-Agent:
+      - AZURECLI/2.30.0 azsdk-python-mgmt-managementgroups/2019-05-01T00:00:00.000Z
+        Python/3.7.8 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Management/managementGroups/thomasdolanTestMG?api-version=2021-04-01&$expand=children
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Management/managementGroups/thomasdolanTestMG","type":"Microsoft.Management/managementGroups","name":"thomasdolanTestMG","properties":{"tenantId":"f997b574-4a56-40b8-888f-5a971689f73b","displayName":"thomasdolanTestMG","details":{"version":1,"updatedTime":"2021-12-09T19:11:20.8412914Z","updatedBy":"2882e70c-4520-4567-934b-ccac31e7bedc","parent":{"id":"/providers/Microsoft.Management/managementGroups/f997b574-4a56-40b8-888f-5a971689f73b","name":"f997b574-4a56-40b8-888f-5a971689f73b","displayName":"Tenant
+        Root Group"}},"children":[{"id":"/providers/Microsoft.Management/managementGroups/ChildGroup","type":"Microsoft.Management/managementGroups","name":"ChildGroup","displayName":"ChildGroup"}]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '728'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 09 Dec 2021 19:32:13 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-id:
+      - ec489d0b-2f09-4ae0-8174-a1680ade929f
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-ba-restapi:
+      - 1.0.3.20211102
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - managementgroup management-group show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --expand --group-id
+      User-Agent:
+      - AZURECLI/2.30.0 azsdk-python-mgmt-managementgroups/2019-05-01T00:00:00.000Z
+        Python/3.7.8 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Management/managementGroups/thomasdolanTestMG?api-version=2021-04-01&$expand=path
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Management/managementGroups/thomasdolanTestMG","type":"Microsoft.Management/managementGroups","name":"thomasdolanTestMG","properties":{"tenantId":"f997b574-4a56-40b8-888f-5a971689f73b","displayName":"thomasdolanTestMG","details":{"version":1,"updatedTime":"2021-12-09T19:11:20.8412914Z","updatedBy":"2882e70c-4520-4567-934b-ccac31e7bedc","path":[{"name":"f997b574-4a56-40b8-888f-5a971689f73b","displayName":"Tenant
+        Root Group"}],"parent":{"id":"/providers/Microsoft.Management/managementGroups/f997b574-4a56-40b8-888f-5a971689f73b","name":"f997b574-4a56-40b8-888f-5a971689f73b","displayName":"Tenant
+        Root Group"}}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '643'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 09 Dec 2021 19:32:14 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-id:
+      - ecc2c957-dbe2-4382-98e9-d23a7deb37d8
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-ba-restapi:
+      - 1.0.3.20211102
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - managementgroup management-group list
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.30.0 azsdk-python-mgmt-managementgroups/2019-05-01T00:00:00.000Z
+        Python/3.7.8 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Management/managementGroups?api-version=2021-04-01
+  response:
+    body:
+      string: '{"value":[{"id":"/providers/Microsoft.Management/managementGroups/ChildGroup","type":"Microsoft.Management/managementGroups","name":"ChildGroup","properties":{"tenantId":"f997b574-4a56-40b8-888f-5a971689f73b","displayName":"ChildGroup"}},{"id":"/providers/Microsoft.Management/managementGroups/thomasdolanTestMG","type":"Microsoft.Management/managementGroups","name":"thomasdolanTestMG","properties":{"tenantId":"f997b574-4a56-40b8-888f-5a971689f73b","displayName":"thomasdolanTestMG"}}],"@nextLink":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '505'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 09 Dec 2021 19:32:14 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-id:
+      - 6a19ec80-fda4-4298-8ee5-f20aaa9e3023
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-ba-restapi:
+      - 1.0.3.20211102
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"displayName": "tdolanTestMG"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - managementgroup management-group update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '31'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --group-id --display-name
+      User-Agent:
+      - AZURECLI/2.30.0 azsdk-python-mgmt-managementgroups/2019-05-01T00:00:00.000Z
+        Python/3.7.8 (Windows-10-10.0.19041-SP0)
+    method: PATCH
+    uri: https://management.azure.com/providers/Microsoft.Management/managementGroups/ChildGroup?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Management/managementGroups/ChildGroup","type":"Microsoft.Management/managementGroups","name":"ChildGroup","properties":{"tenantId":"f997b574-4a56-40b8-888f-5a971689f73b","displayName":"tdolanTestMG","details":{"version":4,"updatedTime":"2021-12-09T19:32:15.546793Z","updatedBy":"2882e70c-4520-4567-934b-ccac31e7bedc","parent":{"id":"/providers/Microsoft.Management/managementGroups/thomasdolanTestMG","name":"thomasdolanTestMG","displayName":"thomasdolanTestMG"}}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '494'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 09 Dec 2021 19:32:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-id:
+      - 2c58a249-6fbc-415f-89bb-695f51fa685f
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-ba-restapi:
+      - 1.0.3.20211102
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-managementgroups-requests:
+      - '59'
+      x-ms-ratelimit-remaining-tenant-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - managementgroup management-group delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -y --group-id
+      User-Agent:
+      - AZURECLI/2.30.0 azsdk-python-mgmt-managementgroups/2019-05-01T00:00:00.000Z
+        Python/3.7.8 (Windows-10-10.0.19041-SP0)
+    method: DELETE
+    uri: https://management.azure.com/providers/Microsoft.Management/managementGroups/ChildGroup?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Management/managementGroups/ChildGroup","type":"Microsoft.Management/managementGroups","name":"ChildGroup","status":"NotStarted"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.Management/operationResults/delete/asyncOperation/status/managementGroups/ChildGroup?api-version=2021-04-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '157'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 09 Dec 2021 19:32:19 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.Management/operationResults/delete/managementGroups/ChildGroup?api-version=2021-04-01
+      pragma:
+      - no-cache
+      request-id:
+      - f522c417-98d0-4514-b5b8-f312ec04dcde
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-ba-restapi:
+      - 1.0.3.2410
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-managementgroups-requests:
+      - '59'
+      x-ms-ratelimit-remaining-tenant-deletes:
+      - '14999'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - managementgroup management-group delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -y --group-id
+      User-Agent:
+      - AZURECLI/2.30.0 azsdk-python-mgmt-managementgroups/2019-05-01T00:00:00.000Z
+        Python/3.7.8 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Management/operationResults/delete/asyncOperation/status/managementGroups/ChildGroup?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Management/operationResults/delete/asyncOperation/status/managementGroups/ChildGroup","name":"ChildGroup","status":"Succeeded"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '155'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 09 Dec 2021 19:32:29 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-id:
+      - ae6c5ce6-7cb1-4ee1-b749-349575aa3661
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-ba-restapi:
+      - 1.0.3.2410
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1

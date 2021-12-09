@@ -282,21 +282,21 @@ class CreateManagementGroupRequest(msrest.serialization.Model):
 class CreateOrUpdateSettingsRequest(msrest.serialization.Model):
     """Parameters for creating or updating Management Group settings.
 
-    :param require_authorization_for_group_creation: Indicates whether RBAC access is required upon
-     group creation under the root Management Group. If set to true, user will require
+    :param req_auth_for_g: Indicates whether RBAC access is required upon group creation under the
+     root Management Group. If set to true, user will require
      Microsoft.Management/managementGroups/write action on the root Management Group scope in order
      to create new Groups directly under the root. This will prevent new users from creating new
      Management Groups, unless they are given access.
-    :type require_authorization_for_group_creation: bool
-    :param default_management_group: Settings that sets the default Management Group under which
-     new subscriptions get added in this tenant. For example,
+    :type req_auth_for_g: bool
+    :param default_mg: Settings that sets the default Management Group under which new
+     subscriptions get added in this tenant. For example,
      /providers/Microsoft.Management/managementGroups/defaultGroup.
-    :type default_management_group: str
+    :type default_mg: str
     """
 
     _attribute_map = {
-        'require_authorization_for_group_creation': {'key': 'properties.requireAuthorizationForGroupCreation', 'type': 'bool'},
-        'default_management_group': {'key': 'properties.defaultManagementGroup', 'type': 'str'},
+        'req_auth_for_g': {'key': 'properties.reqAuthForG', 'type': 'bool'},
+        'default_mg': {'key': 'properties.defaultMG', 'type': 'str'},
     }
 
     def __init__(
@@ -304,8 +304,8 @@ class CreateOrUpdateSettingsRequest(msrest.serialization.Model):
         **kwargs
     ):
         super(CreateOrUpdateSettingsRequest, self).__init__(**kwargs)
-        self.require_authorization_for_group_creation = kwargs.get('require_authorization_for_group_creation', None)
-        self.default_management_group = kwargs.get('default_management_group', None)
+        self.req_auth_for_g = kwargs.get('req_auth_for_g', None)
+        self.default_mg = kwargs.get('default_mg', None)
 
 
 class CreateParentGroupInfo(msrest.serialization.Model):
@@ -686,16 +686,16 @@ class HierarchySettings(msrest.serialization.Model):
     :param tenant_id: The AAD Tenant ID associated with the hierarchy settings. For example,
      00000000-0000-0000-0000-000000000000.
     :type tenant_id: str
-    :param require_authorization_for_group_creation: Indicates whether RBAC access is required upon
-     group creation under the root Management Group. If set to true, user will require
+    :param req_auth_for_g: Indicates whether RBAC access is required upon group creation under the
+     root Management Group. If set to true, user will require
      Microsoft.Management/managementGroups/write action on the root Management Group scope in order
      to create new Groups directly under the root. This will prevent new users from creating new
      Management Groups, unless they are given access.
-    :type require_authorization_for_group_creation: bool
-    :param default_management_group: Settings that sets the default Management Group under which
-     new subscriptions get added in this tenant. For example,
+    :type req_auth_for_g: bool
+    :param default_mg: Settings that sets the default Management Group under which new
+     subscriptions get added in this tenant. For example,
      /providers/Microsoft.Management/managementGroups/defaultGroup.
-    :type default_management_group: str
+    :type default_mg: str
     """
 
     _validation = {
@@ -709,8 +709,8 @@ class HierarchySettings(msrest.serialization.Model):
         'type': {'key': 'type', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
         'tenant_id': {'key': 'properties.tenantId', 'type': 'str'},
-        'require_authorization_for_group_creation': {'key': 'properties.requireAuthorizationForGroupCreation', 'type': 'bool'},
-        'default_management_group': {'key': 'properties.defaultManagementGroup', 'type': 'str'},
+        'req_auth_for_g': {'key': 'properties.reqAuthForG', 'type': 'bool'},
+        'default_mg': {'key': 'properties.defaultMG', 'type': 'str'},
     }
 
     def __init__(
@@ -722,8 +722,8 @@ class HierarchySettings(msrest.serialization.Model):
         self.type = None
         self.name = None
         self.tenant_id = kwargs.get('tenant_id', None)
-        self.require_authorization_for_group_creation = kwargs.get('require_authorization_for_group_creation', None)
-        self.default_management_group = kwargs.get('default_management_group', None)
+        self.req_auth_for_g = kwargs.get('req_auth_for_g', None)
+        self.default_mg = kwargs.get('default_mg', None)
 
 
 class HierarchySettingsInfo(msrest.serialization.Model):
@@ -742,16 +742,16 @@ class HierarchySettingsInfo(msrest.serialization.Model):
     :param tenant_id: The AAD Tenant ID associated with the hierarchy settings. For example,
      00000000-0000-0000-0000-000000000000.
     :type tenant_id: str
-    :param require_authorization_for_group_creation: Indicates whether RBAC access is required upon
-     group creation under the root Management Group. If set to true, user will require
+    :param req_auth_for_g: Indicates whether RBAC access is required upon group creation under the
+     root Management Group. If set to true, user will require
      Microsoft.Management/managementGroups/write action on the root Management Group scope in order
      to create new Groups directly under the root. This will prevent new users from creating new
      Management Groups, unless they are given access.
-    :type require_authorization_for_group_creation: bool
-    :param default_management_group: Settings that sets the default Management Group under which
-     new subscriptions get added in this tenant. For example,
+    :type req_auth_for_g: bool
+    :param default_mg: Settings that sets the default Management Group under which new
+     subscriptions get added in this tenant. For example,
      /providers/Microsoft.Management/managementGroups/defaultGroup.
-    :type default_management_group: str
+    :type default_mg: str
     """
 
     _validation = {
@@ -765,8 +765,8 @@ class HierarchySettingsInfo(msrest.serialization.Model):
         'type': {'key': 'type', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
         'tenant_id': {'key': 'properties.tenantId', 'type': 'str'},
-        'require_authorization_for_group_creation': {'key': 'properties.requireAuthorizationForGroupCreation', 'type': 'bool'},
-        'default_management_group': {'key': 'properties.defaultManagementGroup', 'type': 'str'},
+        'req_auth_for_g': {'key': 'properties.reqAuthForG', 'type': 'bool'},
+        'default_mg': {'key': 'properties.defaultMG', 'type': 'str'},
     }
 
     def __init__(
@@ -778,8 +778,8 @@ class HierarchySettingsInfo(msrest.serialization.Model):
         self.type = None
         self.name = None
         self.tenant_id = kwargs.get('tenant_id', None)
-        self.require_authorization_for_group_creation = kwargs.get('require_authorization_for_group_creation', None)
-        self.default_management_group = kwargs.get('default_management_group', None)
+        self.req_auth_for_g = kwargs.get('req_auth_for_g', None)
+        self.default_mg = kwargs.get('default_mg', None)
 
 
 class HierarchySettingsList(msrest.serialization.Model):

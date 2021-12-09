@@ -7,7 +7,6 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
-# pylint: disable=line-too-long
 # pylint: disable=too-many-lines
 
 from azure.cli.core.util import sdk_no_wait
@@ -122,26 +121,26 @@ def managementgroup_hierarchy_setting_show(client,
 
 def managementgroup_hierarchy_setting_create(client,
                                              group_id,
-                                             require_authorization_for_group_creation=None,
-                                             default_management_group=None):
+                                             req_auth_for_g=None,
+                                             default_mg=None):
     create_tenant_settings_request = {}
-    if require_authorization_for_group_creation is not None:
-        create_tenant_settings_request['require_authorization_for_group_creation'] = require_authorization_for_group_creation
-    if default_management_group is not None:
-        create_tenant_settings_request['default_management_group'] = default_management_group
+    if req_auth_for_g is not None:
+        create_tenant_settings_request['req_auth_for_g'] = req_auth_for_g
+    if default_mg is not None:
+        create_tenant_settings_request['default_mg'] = default_mg
     return client.create_or_update(group_id=group_id,
                                    create_tenant_settings_request=create_tenant_settings_request)
 
 
 def managementgroup_hierarchy_setting_update(client,
                                              group_id,
-                                             require_authorization_for_group_creation=None,
-                                             default_management_group=None):
+                                             req_auth_for_g=None,
+                                             default_mg=None):
     create_tenant_settings_request = {}
-    if require_authorization_for_group_creation is not None:
-        create_tenant_settings_request['require_authorization_for_group_creation'] = require_authorization_for_group_creation
-    if default_management_group is not None:
-        create_tenant_settings_request['default_management_group'] = default_management_group
+    if req_auth_for_g is not None:
+        create_tenant_settings_request['req_auth_for_g'] = req_auth_for_g
+    if default_mg is not None:
+        create_tenant_settings_request['default_mg'] = default_mg
     return client.update(group_id=group_id,
                          create_tenant_settings_request=create_tenant_settings_request)
 

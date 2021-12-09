@@ -187,8 +187,7 @@ helps['managementgroup hierarchy-setting create'] = """
     examples:
       - name: GetGroupSettings
         text: |-
-               az managementgroup hierarchy-setting create --default-management-group "/providers/Microsoft.Management/\
-managementGroups/DefaultGroup" --require-authorization-for-group-creation true --group-id "root"
+               az managementgroup hierarchy-setting create --group-id "root"
 """
 
 helps['managementgroup hierarchy-setting update'] = """
@@ -197,8 +196,7 @@ helps['managementgroup hierarchy-setting update'] = """
     examples:
       - name: GetGroupSettings
         text: |-
-               az managementgroup hierarchy-setting update --default-management-group "/providers/Microsoft.Management/\
-managementGroups/DefaultGroup" --require-authorization-for-group-creation true --group-id "root"
+               az managementgroup hierarchy-setting update --group-id "root"
 """
 
 helps['managementgroup hierarchy-setting delete'] = """
