@@ -17,6 +17,7 @@ from glob import glob
 from knack import log
 from azure.cli.core import azclierror
 from azure.cli.core import telemetry
+from azure.core.exceptions import ResourceNotFoundError, HttpResponseError
 
 from . import ip_utils
 from . import rsa_parser
@@ -37,7 +38,7 @@ def ssh_vm(cmd, resource_group_name=None, vm_name=None, ssh_ip=None, public_key_
     _assert_args(resource_group_name, vm_name, ssh_ip, resource_type, cert_file, local_user)
     credentials_folder = None
     do_ssh_op = _decide_op_call(cmd, resource_group_name, vm_name, ssh_ip, resource_type, None, None,
-                                ssh_client_path, ssh_args, delete_credentials, credentials_folder)
+                                ssh_client_path, ssh_args, delete_credentials, credentials_folder, local_user)
     do_ssh_op(cmd, vm_name, resource_group_name, ssh_ip, public_key_file, private_key_file, local_user,
               cert_file, port, use_private_ip, credentials_folder)
 
@@ -50,6 +51,10 @@ def ssh_config(cmd, config_path, resource_group_name=None, vm_name=None, ssh_ip=
         raise azclierror.ArgumentUsageError("--keys-destination-folder can't be used in conjunction with "
                                             "--public-key-file/-p or --private-key-file/-i.")
     _assert_args(resource_group_name, vm_name, ssh_ip, resource_type, cert_file, local_user)
+
+    config_path = os.path.abspath(config_path)
+
+    print(config_path)
 
     # Default credential location
     if not credentials_folder:
@@ -64,7 +69,7 @@ def ssh_config(cmd, config_path, resource_group_name=None, vm_name=None, ssh_ip=
         credentials_folder = os.path.join(config_folder, os.path.join("az_ssh_config", folder_name))
 
     do_ssh_op = _decide_op_call(cmd, resource_group_name, vm_name, ssh_ip, resource_type, config_path, overwrite,
-                                None, None, False, credentials_folder)
+                                None, None, False, credentials_folder, local_user)
     do_ssh_op(cmd, vm_name, resource_group_name, ssh_ip, public_key_file, private_key_file, local_user,
               cert_file, port, use_private_ip, credentials_folder)
 
@@ -94,6 +99,21 @@ def ssh_arc(cmd, resource_group_name=None, vm_name=None, public_key_file=None, p
     _assert_args(resource_group_name, vm_name, None, "Microsoft.HybridCompute", cert_file, local_user)
 
     credentials_folder = None
+
+    arc, arc_error, is_arc_server = _check_if_arc_server(cmd, resource_group_name, vm_name)
+    if not is_arc_server:
+        if isinstance(arc_error, ResourceNotFoundError):
+            raise azclierror.ResourceNotFoundError(f"The resource {vm_name} in the resource group "
+                                                   f"{resource_group_name} was not found. Error:\n"
+                                                   f"{str(arc_error)}")
+        raise azclierror.BadRequestError("Unable to determine that the target machine is an Arc Server. "
+                                         f"Error:\n{str(arc_error)}")
+    if arc and arc.properties and arc.properties and arc.properties.os_name:
+        os_type = arc.properties.os_name
+    # Note: This is a temporary check while AAD login is not enabled for Windows.
+    if os_type.lower() == 'windows' and not local_user:
+        raise azclierror.RequiredArgumentMissingError("SSH Login to AAD user is not currently supported for Windows. "
+                                                      "Please provide --local-user.")
 
     op_call = functools.partial(ssh_utils.start_ssh_connection, ssh_client_path=ssh_client_path, ssh_args=ssh_args,
                                 delete_credentials=delete_credentials)
@@ -215,13 +235,6 @@ def _assert_args(resource_group, vm_name, ssh_ip, resource_type, cert_file, user
 
     if cert_file and not os.path.isfile(cert_file):
         raise azclierror.FileOperationError(f"Certificate file {cert_file} not found")
-
-    if not username:
-        import platform
-        operating_system = platform.system()
-        if operating_system.lower() == 'windows':
-            raise azclierror.RequiredArgumentMissingError("SSH to AAD user is not currently supported on Windows."
-                                                          "Please provide --local-user")
 
 
 def _check_or_create_public_private_files(public_key_file, private_key_file, credentials_folder):
@@ -398,34 +411,65 @@ def _arc_list_access_details(cmd, resource_group, vm_name):
 
 
 def _decide_op_call(cmd, resource_group_name, vm_name, ssh_ip, resource_type, config_path, overwrite,
-                    ssh_client_path, ssh_args, delete_credentials, credentials_folder):
+                    ssh_client_path, ssh_args, delete_credentials, credentials_folder, local_user):
 
     # If the user provides an IP address the target will be treated as an Azure VM even if it is an
     # Arc Server. Which just means that the Connectivity Proxy won't be used to establish connection.
     is_arc_server = False
+    is_azure_vm = False
 
     if ssh_ip:
-        is_arc_server = False
+        is_azure_vm = True
+        vm = None
 
     elif resource_type:
         if resource_type == "Microsoft.HybridCompute":
-            is_arc_server = True
+            arc, arc_error, is_arc_server = _check_if_arc_server(cmd, resource_group_name, vm_name)
+            if not is_arc_server:
+                if isinstance(arc_error, ResourceNotFoundError):
+                    raise azclierror.ResourceNotFoundError(f"The resource {vm_name} in the resource group "
+                                                           f"{resource_group_name} was not found. Error:\n"
+                                                           f"{str(arc_error)}")
+                raise azclierror.BadRequestError("Unable to determine that the target machine is an Arc Server. "
+                                                 f"Error:\n{str(arc_error)}")
+
+        elif resource_type == "Microsoft.Compute":
+            vm, vm_error, is_azure_vm = _check_if_azure_vm(cmd, resource_group_name, vm_name)
+            if not is_azure_vm:
+                if isinstance(vm_error, ResourceNotFoundError):
+                    raise azclierror.ResourceNotFoundError(f"The resource {vm_name} in the resource group "
+                                                           f"{resource_group_name} was not found. Error:\n"
+                                                           f"{str(vm_error)}")
+                raise azclierror.BadRequestError("Unable to determine that the target machine is an Azure VM. "
+                                                 f"Error:\n{str(vm_error)}")
 
     else:
-        vm_error, is_azure_vm = _check_if_azure_vm(cmd, resource_group_name, vm_name)
-        arc_error, is_arc_server = _check_if_arc_server(cmd, resource_group_name, vm_name)
+        vm, vm_error, is_azure_vm = _check_if_azure_vm(cmd, resource_group_name, vm_name)
+        arc, arc_error, is_arc_server = _check_if_arc_server(cmd, resource_group_name, vm_name)
 
         if is_azure_vm and is_arc_server:
             raise azclierror.BadRequestError(f"{resource_group_name} has Azure VM and Arc Server with the "
                                              f"same name: {vm_name}. Please provide a --resource-type.")
         if not is_azure_vm and not is_arc_server:
-            from azure.core.exceptions import ResourceNotFoundError
             if isinstance(arc_error, ResourceNotFoundError) and isinstance(vm_error, ResourceNotFoundError):
                 raise azclierror.ResourceNotFoundError(f"The resource {vm_name} in the resource group "
-                                                       f"{resource_group_name} was not found. Erros:\n"
+                                                       f"{resource_group_name} was not found. Errors:\n"
                                                        f"{str(arc_error)}\n{str(vm_error)}")
             raise azclierror.BadRequestError("Unable to determine the target machine type as Azure VM or "
                                              f"Arc Server. Errors:\n{str(arc_error)}\n{str(vm_error)}")
+
+    # Note: We are not able to determine the os of the target if the user only provides an IP address.
+    os_type = None
+    if is_azure_vm and vm and vm.storage_profile and vm.storage_profile.os_disk and vm.storage_profile.os_disk.os_type:
+        os_type = vm.storage_profile.os_disk.os_type
+
+    if is_arc_server and arc and arc.properties and arc.properties and arc.properties.os_name:
+        os_type = arc.properties.os_name
+
+    # Note 2: This is a temporary check while AAD login is not enabled for Windows.
+    if os_type.lower() == 'windows' and not local_user:
+        raise azclierror.RequiredArgumentMissingError("SSH Login to AAD user is not currently supported for Windows. "
+                                                      "Please provide --local-user.")
 
     if config_path:
         op_call = functools.partial(ssh_utils.write_ssh_config, config_path=config_path, overwrite=overwrite,
@@ -440,27 +484,27 @@ def _decide_op_call(cmd, resource_group_name, vm_name, ssh_ip, resource_type, co
 def _check_if_azure_vm(cmd, resource_group_name, vm_name):
     from azure.cli.core.commands import client_factory
     from azure.cli.core import profiles
-    from azure.core.exceptions import ResourceNotFoundError, HttpResponseError
     try:
         compute_client = client_factory.get_mgmt_service_client(cmd.cli_ctx, profiles.ResourceType.MGMT_COMPUTE)
-        compute_client.virtual_machines.get(resource_group_name, vm_name)
+        vm = compute_client.virtual_machines.get(resource_group_name, vm_name)
     except ResourceNotFoundError as e:
-        return e, False
+        return None, e, False
     # If user is not authorized to get the VM, it will throw a HttpResponseError
     except HttpResponseError as e:
-        return e, False
-    return None, True
+        return None, e, False
+
+    return vm, None, True
 
 
 def _check_if_arc_server(cmd, resource_group_name, vm_name):
-    from azure.core.exceptions import ResourceNotFoundError, HttpResponseError
     from azext_ssh._client_factory import cf_machine
     client = cf_machine(cmd.cli_ctx)
     try:
-        client.get(resource_group_name=resource_group_name, machine_name=vm_name)
+        arc = client.get(resource_group_name=resource_group_name, machine_name=vm_name)
     except ResourceNotFoundError as e:
-        return e, False
+        return None, e, False
     # If user is not authorized to get the arc server, it will throw a HttpResponseError
     except HttpResponseError as e:
-        return e, False
-    return None, True
+        return None, e, False
+
+    return arc, None, True
