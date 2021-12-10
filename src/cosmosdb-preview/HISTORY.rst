@@ -2,6 +2,14 @@
 
 Release History
 ===============
+0.10.0
+++++++
+* Adding support for Services APIs and Graph Resources.
+
+0.9.0
+++++++
+* Fixing Managed Cassandra issues that were introduced due to updating to python sdk 4.0.
+
 0.8.0
 ++++++
 * Adding the support for conversion of accounts from periodic to continuous backup policy and updating to python sdk 4.0.

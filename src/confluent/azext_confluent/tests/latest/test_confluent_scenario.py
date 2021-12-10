@@ -9,7 +9,7 @@
 # --------------------------------------------------------------------------
 
 import jwt
-import mock
+from unittest import mock
 import os
 import azure.cli.command_modules.role.custom
 from azure.cli.testsdk import ScenarioTest
@@ -20,7 +20,7 @@ from .example_steps import step_organization_list
 from .example_steps import step_organization_list2
 from .example_steps import step_organization_update
 from .example_steps import step_organization_delete
-from azure_devtools.scenario_tests import AllowLargeResponse
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from .. import (
     try_manual,
     raise_if,

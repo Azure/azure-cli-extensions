@@ -1,0 +1,752 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - purview account create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g
+      User-Agent:
+      - AZURECLI/2.27.2 azsdk-python-azure-mgmt-resource/19.0.0 Python/3.8.9 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_purview000001?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_purview000001","name":"cli_test_purview000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2","tags":{"product":"azurecli","cause":"automation","date":"2021-09-01T02:24:48Z"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '429'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 01 Sep 2021 02:24:54 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"identity": {"type": "SystemAssigned"}, "location": "eastus2", "sku":
+      {"name": "Standard"}, "properties": {"publicNetworkAccess": "Enabled"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - purview account create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '142'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g
+      User-Agent:
+      - AZURECLI/2.27.2 azsdk-python-mgmt-purview/1.0.1 Python/3.8.9 (Windows-10-10.0.19041-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_purview000001/providers/Microsoft.Purview/accounts/pv-000002?api-version=2021-07-01
+  response:
+    body:
+      string: '{"sku":{"name":"Standard","capacity":1},"properties":{"cloudConnectors":{"awsExternalId":"67a1c6e3-db22-4182-883f-d23a6b848d29"},"friendlyName":"pv-000002","createdBy":"v-jingszhang@microsoft.com","createdByObjectId":"d44a2991-98c6-47c3-b59b-2b30d72cfcc2","createdAt":"2021-09-01T02:25:00.1871857Z","endpoints":{"catalog":"https://pv-000002.catalog.purview.azure.com","scan":"https://pv-000002.scan.purview.azure.com","guardian":"https://pv-000002.guardian.purview.azure.com"},"provisioningState":"Creating","privateEndpointConnections":[],"publicNetworkAccess":"Enabled","managedResourceGroupName":"managed-rg-rigvekd"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_purview000001/providers/Microsoft.Purview/accounts/pv-000002","name":"pv-000002","type":"Microsoft.Purview/accounts","location":"eastus2","identity":{"type":"SystemAssigned","principalId":"1db70e98-8ce0-493a-89c4-e43ec6d375dd","tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a"},"systemData":{"createdBy":"v-jingszhang@microsoft.com","createdByType":"User","createdAt":"2021-09-01T02:25:00.1871857Z","lastModifiedBy":"v-jingszhang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-09-01T02:25:00.1871857Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1284'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 01 Sep 2021 02:25:06 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_purview000001/providers/Microsoft.Purview/accounts/pv-000002?api-version=2021-07-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-account-status:
+      - Creating
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - purview account create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g
+      User-Agent:
+      - AZURECLI/2.27.2 azsdk-python-mgmt-purview/1.0.1 Python/3.8.9 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_purview000001/providers/Microsoft.Purview/accounts/pv-000002?api-version=2021-07-01
+  response:
+    body:
+      string: '{"sku":{"name":"Standard","capacity":1},"properties":{"cloudConnectors":{"awsExternalId":"67a1c6e3-db22-4182-883f-d23a6b848d29"},"friendlyName":"pv-000002","createdBy":"v-jingszhang@microsoft.com","createdByObjectId":"d44a2991-98c6-47c3-b59b-2b30d72cfcc2","createdAt":"2021-09-01T02:25:00.1871857Z","endpoints":{"catalog":"https://pv-000002.catalog.purview.azure.com","scan":"https://pv-000002.scan.purview.azure.com","guardian":"https://pv-000002.guardian.purview.azure.com"},"provisioningState":"Creating","privateEndpointConnections":[],"managedResources":{"resourceGroup":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/managed-rg-rigvekd"},"publicNetworkAccess":"Enabled","managedResourceGroupName":"managed-rg-rigvekd"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_purview000001/providers/Microsoft.Purview/accounts/pv-000002","name":"pv-000002","type":"Microsoft.Purview/accounts","location":"eastus2","identity":{"type":"SystemAssigned","principalId":"1db70e98-8ce0-493a-89c4-e43ec6d375dd","tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a"},"systemData":{"createdBy":"v-jingszhang@microsoft.com","createdByType":"User","createdAt":"2021-09-01T02:25:00.1871857Z","lastModifiedBy":"v-jingszhang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-09-01T02:25:00.1871857Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1409'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 01 Sep 2021 02:25:36 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-account-status:
+      - Creating
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - purview account wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --created -g -n
+      User-Agent:
+      - AZURECLI/2.27.2 azsdk-python-mgmt-purview/1.0.1 Python/3.8.9 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_purview000001/providers/Microsoft.Purview/accounts/pv-000002?api-version=2021-07-01
+  response:
+    body:
+      string: '{"sku":{"name":"Standard","capacity":1},"properties":{"cloudConnectors":{"awsExternalId":"67a1c6e3-db22-4182-883f-d23a6b848d29"},"friendlyName":"pv-000002","createdBy":"v-jingszhang@microsoft.com","createdByObjectId":"d44a2991-98c6-47c3-b59b-2b30d72cfcc2","createdAt":"2021-09-01T02:25:00.1871857Z","endpoints":{"catalog":"https://pv-000002.catalog.purview.azure.com","scan":"https://pv-000002.scan.purview.azure.com","guardian":"https://pv-000002.guardian.purview.azure.com"},"provisioningState":"Creating","privateEndpointConnections":[],"managedResources":{"resourceGroup":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/managed-rg-rigvekd","storageAccount":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/managed-rg-rigvekd/providers/Microsoft.Storage/storageAccounts/scaneastus2luqqqdx"},"publicNetworkAccess":"Enabled","managedResourceGroupName":"managed-rg-rigvekd"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_purview000001/providers/Microsoft.Purview/accounts/pv-000002","name":"pv-000002","type":"Microsoft.Purview/accounts","location":"eastus2","identity":{"type":"SystemAssigned","principalId":"1db70e98-8ce0-493a-89c4-e43ec6d375dd","tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a"},"systemData":{"createdBy":"v-jingszhang@microsoft.com","createdByType":"User","createdAt":"2021-09-01T02:25:00.1871857Z","lastModifiedBy":"v-jingszhang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-09-01T02:25:00.1871857Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1577'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 01 Sep 2021 02:25:38 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-account-status:
+      - Creating
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - purview account wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --created -g -n
+      User-Agent:
+      - AZURECLI/2.27.2 azsdk-python-mgmt-purview/1.0.1 Python/3.8.9 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_purview000001/providers/Microsoft.Purview/accounts/pv-000002?api-version=2021-07-01
+  response:
+    body:
+      string: '{"sku":{"name":"Standard","capacity":1},"properties":{"cloudConnectors":{"awsExternalId":"67a1c6e3-db22-4182-883f-d23a6b848d29"},"friendlyName":"pv-000002","createdBy":"v-jingszhang@microsoft.com","createdByObjectId":"d44a2991-98c6-47c3-b59b-2b30d72cfcc2","createdAt":"2021-09-01T02:25:00.1871857Z","endpoints":{"catalog":"https://pv-000002.catalog.purview.azure.com","scan":"https://pv-000002.scan.purview.azure.com","guardian":"https://pv-000002.guardian.purview.azure.com"},"provisioningState":"Creating","privateEndpointConnections":[],"managedResources":{"resourceGroup":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/managed-rg-rigvekd","storageAccount":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/managed-rg-rigvekd/providers/Microsoft.Storage/storageAccounts/scaneastus2luqqqdx"},"publicNetworkAccess":"Enabled","managedResourceGroupName":"managed-rg-rigvekd"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_purview000001/providers/Microsoft.Purview/accounts/pv-000002","name":"pv-000002","type":"Microsoft.Purview/accounts","location":"eastus2","identity":{"type":"SystemAssigned","principalId":"1db70e98-8ce0-493a-89c4-e43ec6d375dd","tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a"},"systemData":{"createdBy":"v-jingszhang@microsoft.com","createdByType":"User","createdAt":"2021-09-01T02:25:00.1871857Z","lastModifiedBy":"v-jingszhang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-09-01T02:25:00.1871857Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1577'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 01 Sep 2021 02:26:08 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-account-status:
+      - Creating
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - purview account wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --created -g -n
+      User-Agent:
+      - AZURECLI/2.27.2 azsdk-python-mgmt-purview/1.0.1 Python/3.8.9 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_purview000001/providers/Microsoft.Purview/accounts/pv-000002?api-version=2021-07-01
+  response:
+    body:
+      string: '{"sku":{"name":"Standard","capacity":1},"properties":{"cloudConnectors":{"awsExternalId":"67a1c6e3-db22-4182-883f-d23a6b848d29"},"friendlyName":"pv-000002","createdBy":"v-jingszhang@microsoft.com","createdByObjectId":"d44a2991-98c6-47c3-b59b-2b30d72cfcc2","createdAt":"2021-09-01T02:25:00.1871857Z","endpoints":{"catalog":"https://pv-000002.catalog.purview.azure.com","scan":"https://pv-000002.scan.purview.azure.com","guardian":"https://pv-000002.guardian.purview.azure.com"},"provisioningState":"Creating","privateEndpointConnections":[],"managedResources":{"resourceGroup":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/managed-rg-rigvekd","storageAccount":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/managed-rg-rigvekd/providers/Microsoft.Storage/storageAccounts/scaneastus2luqqqdx"},"publicNetworkAccess":"Enabled","managedResourceGroupName":"managed-rg-rigvekd"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_purview000001/providers/Microsoft.Purview/accounts/pv-000002","name":"pv-000002","type":"Microsoft.Purview/accounts","location":"eastus2","identity":{"type":"SystemAssigned","principalId":"1db70e98-8ce0-493a-89c4-e43ec6d375dd","tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a"},"systemData":{"createdBy":"v-jingszhang@microsoft.com","createdByType":"User","createdAt":"2021-09-01T02:25:00.1871857Z","lastModifiedBy":"v-jingszhang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-09-01T02:25:00.1871857Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1577'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 01 Sep 2021 02:26:38 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-account-status:
+      - Creating
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - purview account wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --created -g -n
+      User-Agent:
+      - AZURECLI/2.27.2 azsdk-python-mgmt-purview/1.0.1 Python/3.8.9 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_purview000001/providers/Microsoft.Purview/accounts/pv-000002?api-version=2021-07-01
+  response:
+    body:
+      string: '{"sku":{"name":"Standard","capacity":1},"properties":{"cloudConnectors":{"awsExternalId":"67a1c6e3-db22-4182-883f-d23a6b848d29"},"friendlyName":"pv-000002","createdBy":"v-jingszhang@microsoft.com","createdByObjectId":"d44a2991-98c6-47c3-b59b-2b30d72cfcc2","createdAt":"2021-09-01T02:25:00.1871857Z","endpoints":{"catalog":"https://pv-000002.catalog.purview.azure.com","scan":"https://pv-000002.scan.purview.azure.com","guardian":"https://pv-000002.guardian.purview.azure.com"},"provisioningState":"Creating","privateEndpointConnections":[],"managedResources":{"resourceGroup":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/managed-rg-rigvekd","storageAccount":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/managed-rg-rigvekd/providers/Microsoft.Storage/storageAccounts/scaneastus2luqqqdx","eventHubNamespace":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/managed-rg-rigvekd/providers/Microsoft.EventHub/namespaces/Atlas-874497ee-d63a-4a7b-8fa2-65d2337bc96d"},"publicNetworkAccess":"Enabled","managedResourceGroupName":"managed-rg-rigvekd"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_purview000001/providers/Microsoft.Purview/accounts/pv-000002","name":"pv-000002","type":"Microsoft.Purview/accounts","location":"eastus2","identity":{"type":"SystemAssigned","principalId":"1db70e98-8ce0-493a-89c4-e43ec6d375dd","tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a"},"systemData":{"createdBy":"v-jingszhang@microsoft.com","createdByType":"User","createdAt":"2021-09-01T02:25:00.1871857Z","lastModifiedBy":"v-jingszhang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-09-01T02:25:00.1871857Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1768'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 01 Sep 2021 02:27:08 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-account-status:
+      - Creating
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - purview account wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --created -g -n
+      User-Agent:
+      - AZURECLI/2.27.2 azsdk-python-mgmt-purview/1.0.1 Python/3.8.9 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_purview000001/providers/Microsoft.Purview/accounts/pv-000002?api-version=2021-07-01
+  response:
+    body:
+      string: '{"sku":{"name":"Standard","capacity":1},"properties":{"cloudConnectors":{"awsExternalId":"67a1c6e3-db22-4182-883f-d23a6b848d29"},"friendlyName":"pv-000002","createdBy":"v-jingszhang@microsoft.com","createdByObjectId":"d44a2991-98c6-47c3-b59b-2b30d72cfcc2","createdAt":"2021-09-01T02:25:00.1871857Z","endpoints":{"catalog":"https://pv-000002.catalog.purview.azure.com","scan":"https://pv-000002.scan.purview.azure.com","guardian":"https://pv-000002.guardian.purview.azure.com"},"provisioningState":"Creating","privateEndpointConnections":[],"managedResources":{"resourceGroup":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/managed-rg-rigvekd","storageAccount":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/managed-rg-rigvekd/providers/Microsoft.Storage/storageAccounts/scaneastus2luqqqdx","eventHubNamespace":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/managed-rg-rigvekd/providers/Microsoft.EventHub/namespaces/Atlas-874497ee-d63a-4a7b-8fa2-65d2337bc96d"},"publicNetworkAccess":"Enabled","managedResourceGroupName":"managed-rg-rigvekd"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_purview000001/providers/Microsoft.Purview/accounts/pv-000002","name":"pv-000002","type":"Microsoft.Purview/accounts","location":"eastus2","identity":{"type":"SystemAssigned","principalId":"1db70e98-8ce0-493a-89c4-e43ec6d375dd","tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a"},"systemData":{"createdBy":"v-jingszhang@microsoft.com","createdByType":"User","createdAt":"2021-09-01T02:25:00.1871857Z","lastModifiedBy":"v-jingszhang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-09-01T02:25:00.1871857Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1768'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 01 Sep 2021 02:27:39 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-account-status:
+      - Creating
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - purview account wait
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --created -g -n
+      User-Agent:
+      - AZURECLI/2.27.2 azsdk-python-mgmt-purview/1.0.1 Python/3.8.9 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_purview000001/providers/Microsoft.Purview/accounts/pv-000002?api-version=2021-07-01
+  response:
+    body:
+      string: '{"sku":{"name":"Standard","capacity":1},"properties":{"cloudConnectors":{"awsExternalId":"67a1c6e3-db22-4182-883f-d23a6b848d29"},"friendlyName":"pv-000002","createdBy":"v-jingszhang@microsoft.com","createdByObjectId":"d44a2991-98c6-47c3-b59b-2b30d72cfcc2","createdAt":"2021-09-01T02:25:00.1871857Z","endpoints":{"catalog":"https://pv-000002.catalog.purview.azure.com","scan":"https://pv-000002.scan.purview.azure.com","guardian":"https://pv-000002.guardian.purview.azure.com"},"provisioningState":"Succeeded","privateEndpointConnections":[],"managedResources":{"resourceGroup":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/managed-rg-rigvekd","storageAccount":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/managed-rg-rigvekd/providers/Microsoft.Storage/storageAccounts/scaneastus2luqqqdx","eventHubNamespace":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/managed-rg-rigvekd/providers/Microsoft.EventHub/namespaces/Atlas-874497ee-d63a-4a7b-8fa2-65d2337bc96d"},"publicNetworkAccess":"Enabled","managedResourceGroupName":"managed-rg-rigvekd"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_purview000001/providers/Microsoft.Purview/accounts/pv-000002","name":"pv-000002","type":"Microsoft.Purview/accounts","location":"eastus2","identity":{"type":"SystemAssigned","principalId":"1db70e98-8ce0-493a-89c4-e43ec6d375dd","tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a"},"systemData":{"createdBy":"v-jingszhang@microsoft.com","createdByType":"User","createdAt":"2021-09-01T02:25:00.1871857Z","lastModifiedBy":"v-jingszhang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-09-01T02:25:00.1871857Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1769'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 01 Sep 2021 02:28:10 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-account-status:
+      - Succeeded
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"accountName": "pv-000002", "resourceGroupName": "cli_test_purview000001",
+      "scopeTenantId": "54826b22-38d6-4fb2-bad9-b7b93a3e9c5a", "subscriptionId": "0b1f6471-1bf0-4dda-aec3-cb9272f09590"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - purview default-account set
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '244'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g --subscription-id --scope-tenant-id
+      User-Agent:
+      - AZURECLI/2.27.2 azsdk-python-mgmt-purview/1.0.1 Python/3.8.9 (Windows-10-10.0.19041-SP0)
+    method: POST
+    uri: https://management.azure.com/providers/Microsoft.Purview/setDefaultAccount?api-version=2021-07-01
+  response:
+    body:
+      string: '{"scopeTenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","scopeType":"Tenant","scope":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","accountName":"pv-000002","resourceGroupName":"cli_test_purview000001","subscriptionId":"0b1f6471-1bf0-4dda-aec3-cb9272f09590"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '305'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 01 Sep 2021 02:28:12 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-tenant-writes:
+      - '1198'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - purview default-account show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --scope-tenant-id --scope-type
+      User-Agent:
+      - AZURECLI/2.27.2 azsdk-python-mgmt-purview/1.0.1 Python/3.8.9 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Purview/getDefaultAccount?scopeTenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a&scopeType=Tenant&api-version=2021-07-01
+  response:
+    body:
+      string: '{"scopeTenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","scopeType":"Tenant","scope":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","accountName":"pv-000002","resourceGroupName":"cli_test_purview000001","subscriptionId":"0b1f6471-1bf0-4dda-aec3-cb9272f09590"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '305'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 01 Sep 2021 02:28:14 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - purview default-account remove
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --scope-tenant-id --scope-type
+      User-Agent:
+      - AZURECLI/2.27.2 azsdk-python-mgmt-purview/1.0.1 Python/3.8.9 (Windows-10-10.0.19041-SP0)
+    method: POST
+    uri: https://management.azure.com/providers/Microsoft.Purview/removeDefaultAccount?scopeTenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a&scopeType=Tenant&api-version=2021-07-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Wed, 01 Sep 2021 02:28:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-tenant-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - purview account delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g -n --y
+      User-Agent:
+      - AZURECLI/2.27.2 azsdk-python-mgmt-purview/1.0.1 Python/3.8.9 (Windows-10-10.0.19041-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_purview000001/providers/Microsoft.Purview/accounts/pv-000002?api-version=2021-07-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Wed, 01 Sep 2021 02:28:17 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Purview/locations/eastus2/operationResults/b4482f0b-ab01-4c19-bd97-d277fb9df2fc?api-version=2021-07-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - purview account delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --y
+      User-Agent:
+      - AZURECLI/2.27.2 azsdk-python-mgmt-purview/1.0.1 Python/3.8.9 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Purview/locations/eastus2/operationResults/b4482f0b-ab01-4c19-bd97-d277fb9df2fc?api-version=2021-07-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Wed, 01 Sep 2021 02:28:47 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Purview/locations/eastus2/operationResults/b4482f0b-ab01-4c19-bd97-d277fb9df2fc?api-version=2021-07-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - purview account delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --y
+      User-Agent:
+      - AZURECLI/2.27.2 azsdk-python-mgmt-purview/1.0.1 Python/3.8.9 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Purview/locations/eastus2/operationResults/b4482f0b-ab01-4c19-bd97-d277fb9df2fc?api-version=2021-07-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Wed, 01 Sep 2021 02:29:18 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Purview/locations/eastus2/operationResults/b4482f0b-ab01-4c19-bd97-d277fb9df2fc?api-version=2021-07-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - purview account delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --y
+      User-Agent:
+      - AZURECLI/2.27.2 azsdk-python-mgmt-purview/1.0.1 Python/3.8.9 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Purview/locations/eastus2/operationResults/b4482f0b-ab01-4c19-bd97-d277fb9df2fc?api-version=2021-07-01
+  response:
+    body:
+      string: '{"startTime":"2021-09-01T02:28:17.670977Z","endTime":"2021-09-01T02:28:17.8510084Z","status":"Succeeded"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '105'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 01 Sep 2021 02:29:48 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1

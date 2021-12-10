@@ -5,7 +5,9 @@
 # pylint: disable=line-too-long
 
 from collections import OrderedDict
-from distutils import log as logger
+from knack.log import get_logger
+
+logger = get_logger(__name__)
 
 
 def import_pipeline_output_format(result):
@@ -40,10 +42,10 @@ def _export_pipeline_format_group(item):
 
 def _pipeline_run_format_group(item):
     if "importPipelines" in _get_value(item, 'request', 'pipelineResourceId'):
-        return OrderedDict([
+        d = OrderedDict([
             ('NAME', _get_value(item, 'name')),
-            ('PIPELINE', _get_value(item, 'request', 'pipelineResourceId').split('/')[-1]),
-            ('START_TIME', _get_value(item, 'response', 'startTime').split('.')[0]),
+            ('PIPELINE', _get_value(item, 'request', 'pipelineResourceId').split('/', maxsplit=-1)[-1]),
+            ('START_TIME', _get_value(item, 'response', 'startTime').split('.', maxsplit=1)[0]),
             ('DURATION', _get_duration(_get_value(item, 'response', 'startTime'), _get_value(item, 'response', 'finishTime'))),
             ('SOURCE_TRIGGER', str('_' in _get_value(item, 'name'))),
             ('STATUS', _get_value(item, 'response', 'status')),
@@ -51,14 +53,15 @@ def _pipeline_run_format_group(item):
         ])
 
     else:
-        return OrderedDict([
+        d = OrderedDict([
             ('NAME', _get_value(item, 'name')),
-            ('PIPELINE', _get_value(item, 'request', 'pipelineResourceId').split('/')[-1]),
-            ('START_TIME', _get_value(item, 'response', 'startTime').split('.')[0]),
+            ('PIPELINE', _get_value(item, 'request', 'pipelineResourceId').split('/', maxsplit=-1)[-1]),
+            ('START_TIME', _get_value(item, 'response', 'startTime').split('.', maxsplit=1)[0]),
             ('DURATION', _get_duration(_get_value(item, 'response', 'startTime'), _get_value(item, 'response', 'finishTime'))),
             ('STATUS', _get_value(item, 'response', 'status')),
             ('ERROR_MESSAGE', _get_value(item, 'response', 'pipelineRunErrorMessage'))
         ])
+    return d
 
 
 def _output_format(result, format_group):
@@ -86,10 +89,10 @@ def _get_duration(start_time, finish_time):
     from dateutil.parser import parse
     try:
         duration = parse(finish_time) - parse(start_time)
-        hours = "{0:02d}".format((24 * duration.days) + (duration.seconds // 3600))
-        minutes = "{0:02d}".format((duration.seconds % 3600) // 60)
-        seconds = "{0:02d}".format(duration.seconds % 60)
-        return "{0}:{1}:{2}".format(hours, minutes, seconds)
+        hours = f'{((24 * duration.days) + (duration.seconds // 3600)):02d}'
+        minutes = f'{((duration.seconds % 3600) // 60):02d}'
+        seconds = f'{(duration.seconds % 60):02d}'
+        return f'{hours}:{minutes}:{seconds}'
     except (ValueError, TypeError):
-        logger.debug("Unable to get duration with start_time '%s' and finish_time '%s'", start_time, finish_time)
+        logger.debug('Unable to get duration with start_time %s and finish_time %s', start_time, finish_time)
         return ' '

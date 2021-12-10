@@ -17,11 +17,13 @@ helps['spring-cloud create'] = """
     examples:
     - name: Create a new Azure Spring Cloud in westus.
       text: az spring-cloud create -n MyService -g MyResourceGroup -l westus
-    - name: Create a new Azure Spring Cloud in westus with an existing Application Insights by using the instrumentation key.
-      text: az spring-cloud create -n MyService -g MyResourceGroup -l westus --app-insights-key MyInstrumentationKey
-    - name: Create a new Azure Spring Cloud in westus with an existing Application Insights and enable Java In-Process Agent.
-      text: az spring-cloud create -n MyService -g MyResourceGroup -l westus --enable-java-agent true --app-insights MyInstrumentationName
-    - name: Create a new Azure Spring Cloud with distributed tracing disabled.
+    - name: Create a new Azure Spring Cloud in westus with an existing Application Insights by using the Connection string (recommended) or Instrumentation key.
+      text: az spring-cloud create -n MyService -g MyResourceGroup -l westus --app-insights-key \"MyConnectionString\"
+    - name: Create a new Azure Spring Cloud in westus with an existing Application Insights.
+      text: az spring-cloud create -n MyService -g MyResourceGroup -l westus --app-insights appInsightsName
+    - name: Create a new Azure Spring Cloud in westus with an existing Application Insights and specify the sampling rate.
+      text: az spring-cloud create -n MyService -g MyResourceGroup -l westus --app-insights appInsightsName --sampling-rate 10
+    - name: Create a new Azure Spring Cloud with Application Insights disabled.
       text: az spring-cloud create -n MyService -g MyResourceGroup --disable-app-insights
     - name: Create a new Azure Spring Cloud with VNet-injected via giving VNet name in current resource group
       text: az spring-cloud create -n MyService -g MyResourceGroup --vnet MyVNet --app-subnet MyAppSubnet --service-runtime-subnet MyServiceRuntimeSubnet
@@ -35,8 +37,6 @@ helps['spring-cloud update'] = """
     examples:
     - name: Update pricing tier.
       text: az spring-cloud update -n MyService --sku Standard -g MyResourceGroup
-    - name: Enable the distributed tracing of the existing Azure Spring Cloud.
-      text: az spring-cloud update -n MyService -g MyResourceGroup --disable-app-insights false
     - name: Update the tags of the existing Azure Spring Cloud.
       text: az spring-cloud update -n MyService -g MyResourceGroup --tags key1=value1 key2=value2
 """
@@ -44,6 +44,16 @@ helps['spring-cloud update'] = """
 helps['spring-cloud delete'] = """
     type: command
     short-summary: Delete an Azure Spring Cloud.
+"""
+
+helps['spring-cloud start'] = """
+    type: command
+    short-summary: Start an Azure Spring Cloud.
+"""
+
+helps['spring-cloud stop'] = """
+    type: command
+    short-summary: Stop an Azure Spring Cloud.
 """
 
 helps['spring-cloud list'] = """
@@ -81,6 +91,59 @@ helps['spring-cloud test-endpoint renew-key'] = """
     short-summary: Regenerate a test-endpoint key for the Azure Spring Cloud.
 """
 
+helps['spring-cloud storage'] = """
+    type: group
+    short-summary: Commands to manage Storages in Azure Spring Cloud.
+"""
+
+helps['spring-cloud storage add'] = """
+    type: command
+    short-summary: Create a new storage in the Azure Spring Cloud.
+    examples:
+    - name: Create a Storage resource with your own storage account.
+      text: az spring-cloud storage add --storage-type StorageAccount --account-name MyAccountName --account-key MyAccountKey  -g MyResourceGroup -s MyService -n MyStorageName
+"""
+
+helps['spring-cloud storage update'] = """
+    type: command
+    short-summary: Update an existing storage in the Azure Spring Cloud.
+    examples:
+    - name: Update a Storage resource with new name or new key.
+      text: az spring-cloud storage update --storage-type StorageAccount --account-name MyAccountName --account-key MyAccountKey  -g MyResourceGroup -s MyService -n MyStorageName
+"""
+
+helps['spring-cloud storage show'] = """
+    type: command
+    short-summary: Get an existing storage in the Azure Spring Cloud.
+    examples:
+    - name: Get a Storage resource.
+      text: az spring-cloud storage show -g MyResourceGroup -s MyService -n MyStorageName
+"""
+
+helps['spring-cloud storage list'] = """
+    type: command
+    short-summary: List all existing storages in the Azure Spring Cloud.
+    examples:
+    - name: List all Storage resources.
+      text: az spring-cloud storage list -g MyResourceGroup -s MyService
+"""
+
+helps['spring-cloud storage remove'] = """
+    type: command
+    short-summary: Remove an existing storage in the Azure Spring Cloud.
+    examples:
+    - name: Remove a Storage resource.
+      text: az spring-cloud storage remove -g MyResourceGroup -s MyService -n MyStorageName
+"""
+
+helps['spring-cloud storage list-persistent-storage'] = """
+    type: command
+    short-summary: List all the persistent storages related to an existing storage in the Azure Spring Cloud.
+    examples:
+    - name: list all the persistent-storage related to an existing storage.
+      text: az spring-cloud storage list-persistent-storage -g MyResourceGroup -s MyService -n MyStorageName
+"""
+
 helps['spring-cloud app'] = """
     type: group
     short-summary: Commands to manage apps in Azure Spring Cloud.
@@ -94,6 +157,14 @@ helps['spring-cloud app create'] = """
       text: az spring-cloud app create -n MyApp -s MyCluster -g MyResourceGroup
     - name: Create an public accessible app with 3 instances and 2 cpu cores and 3 GB of memory per instance.
       text: az spring-cloud app create -n MyApp -s MyCluster -g MyResourceGroup --assign-endpoint true --cpu 2 --memory 3 --instance-count 3
+"""
+
+helps['spring-cloud app append-persistent-storage'] = """
+    type: command
+    short-summary: Append a new persistent storage to an app in the Azure Spring Cloud.
+    examples:
+    - name: Append a new persistent storage to an app.
+      text: az spring-cloud app append-persistent-storage --persistent-storage-type AzureFileVolume --share-name MyShareName --mount-path /MyMountPath --storage-name MyStorageName -n MyApp -g MyResourceGroup -s MyService
 """
 
 helps['spring-cloud app update'] = """
@@ -256,6 +327,21 @@ helps['spring-cloud app deployment create'] = """
       text: az spring-cloud app deployment create -n green-deployment --app MyApp -s MyCluster -g MyResourceGroup --jar-path app.jar --jvm-options="-XX:+UseG1GC -XX:+UseStringDeduplication" --env foo=bar
 """
 
+helps['spring-cloud app deployment generate-heap-dump'] = """
+    type: command
+    short-summary: Generate a heap dump of your target app instance to given file path.
+"""
+
+helps['spring-cloud app deployment generate-thread-dump'] = """
+    type: command
+    short-summary: Generate a thread dump of your target app instance to given file path.
+"""
+
+helps['spring-cloud app deployment start-jfr'] = """
+    type: command
+    short-summary: Start a JFR on your target app instance to given file path.
+"""
+
 helps['spring-cloud config-server'] = """
     type: group
     short-summary: Commands to manage Config Server in Azure Spring Cloud.
@@ -377,6 +463,14 @@ helps['spring-cloud app binding redis update'] = """
     short-summary: Update an Azure Cache for Redis service binding of the app.
 """
 
+helps['spring-cloud app append-loaded-public-certificate'] = """
+    type: command
+    short-summary: Append a new loaded public certificate to an app in the Azure Spring Cloud.
+    examples:
+    - name: Append a new loaded public certificate to an app.
+      text: az spring-cloud app append-loaded-public-certificate --name MyApp --service MyCluster --resource-group MyResourceGroup --certificate-name MyCertName --load-trust-store true
+"""
+
 helps['spring-cloud certificate'] = """
     type: group
     short-summary: Commands to manage certificates.
@@ -406,6 +500,14 @@ helps['spring-cloud certificate list'] = """
 helps['spring-cloud certificate remove'] = """
     type: command
     short-summary: Remove a certificate in Azure Spring Cloud.
+"""
+
+helps['spring-cloud certificate list-reference-app'] = """
+    type: command
+    short-summary: List all the apps reference an existing certificate in the Azure Spring Cloud.
+    examples:
+    - name: List all the apps reference an existing certificate in spring cloud service.
+      text: az spring-cloud certificate list-reference-app --service MyCluster --resource-group MyResourceGroup --name MyCertName
 """
 
 helps['spring-cloud app custom-domain'] = """
@@ -461,8 +563,8 @@ helps['spring-cloud app-insights update'] = """
     type: command
     short-summary: Update Application Insights settings.
     examples:
-        - name: Enable Application Insights and Java In-process Agent.
-          text: az spring-cloud app-insights update -n MyService -g MyResourceGroup --app-insights-key MyInstrumentationKey --sampling-rate 100
+        - name: Enable Application Insights by using the Connection string (recommended) or Instrumentation key.
+          text: az spring-cloud app-insights update -n MyService -g MyResourceGroup --app-insights-key \"MyConnectionString\" --sampling-rate 100
         - name: Disable Application Insights.
           text: az spring-cloud app-insights update -n MyService -g MyResourceGroup --disable
 """

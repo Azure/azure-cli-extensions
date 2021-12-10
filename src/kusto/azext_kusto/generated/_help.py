@@ -12,6 +12,11 @@
 from knack.help_files import helps
 
 
+helps['kusto'] = '''
+    type: group
+    short-summary: Manage Kusto
+'''
+
 helps['kusto cluster'] = """
     type: group
     short-summary: Manage cluster with kusto
@@ -81,16 +86,25 @@ helps['kusto cluster create'] = """
         long-summary: |
             Usage: --key-vault-properties key-name=XX key-version=XX key-vault-uri=XX user-identity=XX
 
-            key-name: Required. The name of the key vault key.
+            key-name: The name of the key vault key.
             key-version: The version of the key vault key.
-            key-vault-uri: Required. The Uri of the key vault.
+            key-vault-uri: The Uri of the key vault.
             user-identity: The user assigned identity (ARM resource id) that has access to the key.
+      - name: --accepted-audiences
+        short-summary: "The cluster's accepted audiences."
+        long-summary: |
+            Usage: --accepted-audiences value=XX
+
+            value: GUID or valid URL representing an accepted audience.
+
+            Multiple actions can be specified by using more than one --accepted-audiences argument.
     examples:
       - name: KustoClustersCreateOrUpdate
         text: |-
                az kusto cluster create --name "kustoclusterrptest4" --type "SystemAssigned" --location "westus" \
---enable-double-encryption false --enable-purge true --enable-streaming-ingest true --sku name="Standard_L8s" \
-capacity=2 tier="Standard" --resource-group "kustorptest"
+--allowed-ip-range-list "0.0.0.0/0" --enable-auto-stop true --enable-double-encryption false --enable-purge true \
+--enable-streaming-ingest true --public-network-access "Enabled" --sku name="Standard_L8s" capacity=2 tier="Standard" \
+--resource-group "kustorptest"
 """
 
 helps['kusto cluster update'] = """
@@ -135,16 +149,25 @@ helps['kusto cluster update'] = """
         long-summary: |
             Usage: --key-vault-properties key-name=XX key-version=XX key-vault-uri=XX user-identity=XX
 
-            key-name: Required. The name of the key vault key.
+            key-name: The name of the key vault key.
             key-version: The version of the key vault key.
-            key-vault-uri: Required. The Uri of the key vault.
+            key-vault-uri: The Uri of the key vault.
             user-identity: The user assigned identity (ARM resource id) that has access to the key.
+      - name: --accepted-audiences
+        short-summary: "The cluster's accepted audiences."
+        long-summary: |
+            Usage: --accepted-audiences value=XX
+
+            value: GUID or valid URL representing an accepted audience.
+
+            Multiple actions can be specified by using more than one --accepted-audiences argument.
     examples:
       - name: KustoClustersUpdate
         text: |-
                az kusto cluster update --name "kustoclusterrptest4" --type "SystemAssigned" --location "westus" \
---enable-purge true --enable-streaming-ingest true --engine-type "V2" --key-vault-properties key-name="keyName" \
-key-vault-uri="https://dummy.keyvault.com" key-version="keyVersion" --resource-group "kustorptest"
+--enable-auto-stop true --enable-purge true --enable-streaming-ingest true --engine-type "V3" --key-vault-properties \
+key-name="keyName" key-vault-uri="https://dummy.keyvault.com" key-version="keyVersion" --restrict-outbound-network-acce\
+ss "Disabled" --resource-group "kustorptest"
 """
 
 helps['kusto cluster delete'] = """
@@ -212,6 +235,16 @@ helps['kusto cluster list-language-extension'] = """
       - name: KustoClusterListLanguageExtensions
         text: |-
                az kusto cluster list-language-extension --name "kustoclusterrptest4" --resource-group "kustorptest"
+"""
+
+helps['kusto cluster list-outbound-network-dependency-endpoint'] = """
+    type: command
+    short-summary: "Gets the network endpoints of all outbound dependencies of a Kusto cluster."
+    examples:
+      - name: Get Kusto cluster outbound network dependencies
+        text: |-
+               az kusto cluster list-outbound-network-dependency-endpoint --name "kustoclusterrptest" --resource-group \
+"kustorptest"
 """
 
 helps['kusto cluster list-sku'] = """
@@ -402,8 +435,7 @@ TimeSpan.
       - name: Kusto ReadWrite database create or update
         text: |-
                az kusto database create --cluster-name "kustoclusterrptest4" --database-name "KustoDatabase8" \
---parameters "{\\"location\\":\\"westus\\",\\"properties\\":{\\"softDeletePeriod\\":\\"P1D\\"}}" --resource-group \
-"kustorptest"
+--read-write-database location="westus" soft-delete-period="P1D" --resource-group "kustorptest"
 """
 
 helps['kusto database update'] = """
@@ -432,7 +464,7 @@ TimeSpan.
       - name: KustoDatabasesUpdate
         text: |-
                az kusto database update --cluster-name "kustoclusterrptest4" --database-name "KustoDatabase8" \
---parameters "{\\"properties\\":{\\"hotCachePeriod\\":\\"P1D\\"}}" --resource-group "kustorptest"
+--read-write-database hot-cache-period="P1D" --resource-group "kustorptest"
 """
 
 helps['kusto database delete'] = """
@@ -525,6 +557,191 @@ helps['kusto database wait'] = """
         text: |-
                az kusto database wait --cluster-name "kustoclusterrptest4" --database-name "KustoDatabase8" \
 --resource-group "kustorptest" --deleted
+"""
+
+helps['kusto attached-database-configuration'] = """
+    type: group
+    short-summary: Manage attached database configuration with kusto
+"""
+
+helps['kusto attached-database-configuration list'] = """
+    type: command
+    short-summary: "Returns the list of attached database configurations of the given Kusto cluster."
+    examples:
+      - name: KustoAttachedDatabaseConfigurationsListByCluster
+        text: |-
+               az kusto attached-database-configuration list --cluster-name "kustoclusterrptest4" --resource-group \
+"kustorptest"
+"""
+
+helps['kusto attached-database-configuration show'] = """
+    type: command
+    short-summary: "Returns an attached database configuration."
+    examples:
+      - name: AttachedDatabaseConfigurationsGet
+        text: |-
+               az kusto attached-database-configuration show --name "attachedDatabaseConfigurations1" --cluster-name \
+"kustoclusterrptest4" --resource-group "kustorptest"
+"""
+
+helps['kusto attached-database-configuration create'] = """
+    type: command
+    short-summary: "Create an attached database configuration."
+    parameters:
+      - name: --table-level-sharing-properties
+        short-summary: "Table level sharing specifications"
+        long-summary: |
+            Usage: --table-level-sharing-properties tables-to-include=XX tables-to-exclude=XX \
+external-tables-to-include=XX external-tables-to-exclude=XX materialized-views-to-include=XX \
+materialized-views-to-exclude=XX
+
+            tables-to-include: List of tables to include in the follower database
+            tables-to-exclude: List of tables to exclude from the follower database
+            external-tables-to-include: List of external tables to include in the follower database
+            external-tables-to-exclude: List of external tables exclude from the follower database
+            materialized-views-to-include: List of materialized views to include in the follower database
+            materialized-views-to-exclude: List of materialized views exclude from the follower database
+    examples:
+      - name: AttachedDatabaseConfigurationsCreateOrUpdate
+        text: |-
+               az kusto attached-database-configuration create --name "attachedDatabaseConfigurations1" --cluster-name \
+"kustoclusterrptest4" --location "westus" --cluster-resource-id "/subscriptions/12345678-1234-1234-1234-123456789098/re\
+sourceGroups/kustorptest/providers/Microsoft.Kusto/Clusters/KustoClusterLeader" --database-name "kustodatabase" \
+--default-principals-modification-kind "Union" --table-level-sharing-properties external-tables-to-exclude="ExternalTab\
+le2" external-tables-to-include="ExternalTable1" materialized-views-to-exclude="MaterializedViewTable2" \
+materialized-views-to-include="MaterializedViewTable1" tables-to-exclude="Table2" tables-to-include="Table1" \
+--resource-group "kustorptest"
+"""
+
+helps['kusto attached-database-configuration update'] = """
+    type: command
+    short-summary: "Update an attached database configuration."
+    parameters:
+      - name: --table-level-sharing-properties
+        short-summary: "Table level sharing specifications"
+        long-summary: |
+            Usage: --table-level-sharing-properties tables-to-include=XX tables-to-exclude=XX \
+external-tables-to-include=XX external-tables-to-exclude=XX materialized-views-to-include=XX \
+materialized-views-to-exclude=XX
+
+            tables-to-include: List of tables to include in the follower database
+            tables-to-exclude: List of tables to exclude from the follower database
+            external-tables-to-include: List of external tables to include in the follower database
+            external-tables-to-exclude: List of external tables exclude from the follower database
+            materialized-views-to-include: List of materialized views to include in the follower database
+            materialized-views-to-exclude: List of materialized views exclude from the follower database
+"""
+
+helps['kusto attached-database-configuration delete'] = """
+    type: command
+    short-summary: "Deletes the attached database configuration with the given name."
+    examples:
+      - name: AttachedDatabaseConfigurationsDelete
+        text: |-
+               az kusto attached-database-configuration delete --name "attachedDatabaseConfigurations1" --cluster-name \
+"kustoclusterrptest4" --resource-group "kustorptest"
+"""
+
+helps['kusto attached-database-configuration wait'] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of the kusto attached-database-configuration is \
+met.
+    examples:
+      - name: Pause executing next line of CLI script until the kusto attached-database-configuration is successfully \
+created.
+        text: |-
+               az kusto attached-database-configuration wait --name "attachedDatabaseConfigurations1" --cluster-name \
+"kustoclusterrptest4" --resource-group "kustorptest" --created
+      - name: Pause executing next line of CLI script until the kusto attached-database-configuration is successfully \
+updated.
+        text: |-
+               az kusto attached-database-configuration wait --name "attachedDatabaseConfigurations1" --cluster-name \
+"kustoclusterrptest4" --resource-group "kustorptest" --updated
+      - name: Pause executing next line of CLI script until the kusto attached-database-configuration is successfully \
+deleted.
+        text: |-
+               az kusto attached-database-configuration wait --name "attachedDatabaseConfigurations1" --cluster-name \
+"kustoclusterrptest4" --resource-group "kustorptest" --deleted
+"""
+
+helps['kusto managed-private-endpoint'] = """
+    type: group
+    short-summary: Manage managed private endpoint with kusto
+"""
+
+helps['kusto managed-private-endpoint list'] = """
+    type: command
+    short-summary: "Returns the list of managed private endpoints."
+    examples:
+      - name: KustoManagedPrivateEndpointsList
+        text: |-
+               az kusto managed-private-endpoint list --cluster-name "kustoclusterrptest4" --resource-group \
+"kustorptest"
+"""
+
+helps['kusto managed-private-endpoint show'] = """
+    type: command
+    short-summary: "Gets a managed private endpoint."
+    examples:
+      - name: KustoManagedPrivateEndpointsGet
+        text: |-
+               az kusto managed-private-endpoint show --cluster-name "kustoclusterrptest4" --name \
+"kustoManagedPrivateEndpoint1" --resource-group "kustorptest"
+"""
+
+helps['kusto managed-private-endpoint create'] = """
+    type: command
+    short-summary: "Creates a managed private endpoint."
+    examples:
+      - name: KustoManagedPrivateEndpointsCreateOrUpdate
+        text: |-
+               az kusto managed-private-endpoint create --cluster-name "kustoclusterrptest4" --name \
+"kustoManagedPrivateEndpoint1" --group-id "blob" --private-link-resource-id "/subscriptions/12345678-1234-1234-1234-123\
+456789098/resourceGroups/kustorptest/providers/Microsoft.Storage/storageAccounts/storageAccountTest" --request-message \
+"Please Approve." --resource-group "kustorptest"
+"""
+
+helps['kusto managed-private-endpoint update'] = """
+    type: command
+    short-summary: "Updates a managed private endpoint."
+    examples:
+      - name: KustoManagedPrivateEndpointsUpdate
+        text: |-
+               az kusto managed-private-endpoint update --cluster-name "kustoclusterrptest4" --name \
+"kustoManagedPrivateEndpoint1" --group-id "blob" --private-link-resource-id "/subscriptions/12345678-1234-1234-1234-123\
+456789098/resourceGroups/kustorptest/providers/Microsoft.Storage/storageAccounts/storageAccountTest" --request-message \
+"Please Approve Managed Private Endpoint Request." --resource-group "kustorptest"
+"""
+
+helps['kusto managed-private-endpoint delete'] = """
+    type: command
+    short-summary: "Deletes a managed private endpoint."
+    examples:
+      - name: ManagedPrivateEndpointsDelete
+        text: |-
+               az kusto managed-private-endpoint delete --cluster-name "kustoclusterrptest4" --name \
+"kustoManagedPrivateEndpoint1" --resource-group "kustorptest"
+"""
+
+helps['kusto managed-private-endpoint wait'] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of the kusto managed-private-endpoint is met.
+    examples:
+      - name: Pause executing next line of CLI script until the kusto managed-private-endpoint is successfully \
+created.
+        text: |-
+               az kusto managed-private-endpoint wait --cluster-name "kustoclusterrptest4" --name \
+"kustoManagedPrivateEndpoint1" --resource-group "kustorptest" --created
+      - name: Pause executing next line of CLI script until the kusto managed-private-endpoint is successfully \
+updated.
+        text: |-
+               az kusto managed-private-endpoint wait --cluster-name "kustoclusterrptest4" --name \
+"kustoManagedPrivateEndpoint1" --resource-group "kustorptest" --updated
+      - name: Pause executing next line of CLI script until the kusto managed-private-endpoint is successfully \
+deleted.
+        text: |-
+               az kusto managed-private-endpoint wait --cluster-name "kustoclusterrptest4" --name \
+"kustoManagedPrivateEndpoint1" --resource-group "kustorptest" --deleted
 """
 
 helps['kusto database-principal-assignment'] = """
@@ -680,109 +897,116 @@ helps['kusto script wait'] = """
 --resource-group "kustorptest" --name "kustoScript1" --deleted
 """
 
-helps['kusto attached-database-configuration'] = """
+helps['kusto private-endpoint-connection'] = """
     type: group
-    short-summary: Manage attached database configuration with kusto
+    short-summary: Manage private endpoint connection with kusto
 """
 
-helps['kusto attached-database-configuration list'] = """
+helps['kusto private-endpoint-connection list'] = """
     type: command
-    short-summary: "Returns the list of attached database configurations of the given Kusto cluster."
+    short-summary: "Returns the list of private endpoint connections."
     examples:
-      - name: KustoAttachedDatabaseConfigurationsListByCluster
+      - name: KustoPrivateEndpointConnectionsList
         text: |-
-               az kusto attached-database-configuration list --cluster-name "kustoclusterrptest4" --resource-group \
+               az kusto private-endpoint-connection list --cluster-name "kustoclusterrptest4" --resource-group \
 "kustorptest"
 """
 
-helps['kusto attached-database-configuration show'] = """
+helps['kusto private-endpoint-connection show'] = """
     type: command
-    short-summary: "Returns an attached database configuration."
+    short-summary: "Gets a private endpoint connection."
     examples:
-      - name: AttachedDatabaseConfigurationsGet
+      - name: Gets private endpoint connection.
         text: |-
-               az kusto attached-database-configuration show --name "attachedDatabaseConfigurations1" --cluster-name \
-"kustoclusterrptest4" --resource-group "kustorptest"
+               az kusto private-endpoint-connection show --cluster-name "kustoclusterrptest4" --name \
+"privateEndpointConnectionName" --resource-group "kustorptest"
 """
 
-helps['kusto attached-database-configuration create'] = """
+helps['kusto private-endpoint-connection create'] = """
     type: command
-    short-summary: "Create an attached database configuration."
+    short-summary: "Approve or reject a private endpoint connection with a given name."
     parameters:
-      - name: --table-level-sharing-properties --tls
-        short-summary: "Table level sharing specifications"
+      - name: --connection-state --private-link-service-connection-state
+        short-summary: "Connection State of the Private Endpoint Connection."
         long-summary: |
-            Usage: --table-level-sharing-properties tables-to-include=XX tables-to-exclude=XX \
-external-tables-to-include=XX external-tables-to-exclude=XX materialized-views-to-include=XX \
-materialized-views-to-exclude=XX
+            Usage: --private-link-service-connection-state status=XX description=XX
 
-            tables-to-include: List of tables to include in the follower database
-            tables-to-exclude: List of tables to exclude from the follower database
-            external-tables-to-include: List of external tables to include in the follower database
-            external-tables-to-exclude: List of external tables exclude from the follower database
-            materialized-views-to-include: List of materialized views to include in the follower database
-            materialized-views-to-exclude: List of materialized views exclude from the follower database
+            status: The private link service connection status.
+            description: The private link service connection description.
     examples:
-      - name: AttachedDatabaseConfigurationsCreateOrUpdate
+      - name: Approve or reject a private endpoint connection with a given name.
         text: |-
-               az kusto attached-database-configuration create --name "attachedDatabaseConfigurations1" --cluster-name \
-"kustoclusterrptest4" --location "westus" --cluster-resource-id "/subscriptions/12345678-1234-1234-1234-123456789098/re\
-sourceGroups/kustorptest/providers/Microsoft.Kusto/Clusters/KustoClusterLeader" --database-name "kustodatabase" \
---default-principals-modification-kind "Union" --table-level-sharing-properties external-tables-to-exclude="ExternalTab\
-le2" external-tables-to-include="ExternalTable1" materialized-views-to-exclude="MaterializedViewTable2" \
-materialized-views-to-include="MaterializedViewTable1" tables-to-exclude="Table2" tables-to-include="Table1" \
---resource-group "kustorptest"
+               az kusto private-endpoint-connection create --cluster-name "kustoclusterrptest4" \
+--private-link-service-connection-state description="Approved by johndoe@contoso.com" status="Approved" --name \
+"privateEndpointConnectionName" --resource-group "kustorptest"
 """
 
-helps['kusto attached-database-configuration update'] = """
+helps['kusto private-endpoint-connection update'] = """
     type: command
-    short-summary: "Update an attached database configuration."
+    short-summary: "Approve or reject a private endpoint connection with a given name."
     parameters:
-      - name: --table-level-sharing-properties --tls
-        short-summary: "Table level sharing specifications"
+      - name: --connection-state --private-link-service-connection-state
+        short-summary: "Connection State of the Private Endpoint Connection."
         long-summary: |
-            Usage: --table-level-sharing-properties tables-to-include=XX tables-to-exclude=XX \
-external-tables-to-include=XX external-tables-to-exclude=XX materialized-views-to-include=XX \
-materialized-views-to-exclude=XX
+            Usage: --private-link-service-connection-state status=XX description=XX
 
-            tables-to-include: List of tables to include in the follower database
-            tables-to-exclude: List of tables to exclude from the follower database
-            external-tables-to-include: List of external tables to include in the follower database
-            external-tables-to-exclude: List of external tables exclude from the follower database
-            materialized-views-to-include: List of materialized views to include in the follower database
-            materialized-views-to-exclude: List of materialized views exclude from the follower database
+            status: The private link service connection status.
+            description: The private link service connection description.
 """
 
-helps['kusto attached-database-configuration delete'] = """
+helps['kusto private-endpoint-connection delete'] = """
     type: command
-    short-summary: "Deletes the attached database configuration with the given name."
+    short-summary: "Deletes a private endpoint connection with a given name."
     examples:
-      - name: AttachedDatabaseConfigurationsDelete
+      - name: Deletes a private endpoint connection with a given name.
         text: |-
-               az kusto attached-database-configuration delete --name "attachedDatabaseConfigurations1" --cluster-name \
-"kustoclusterrptest4" --resource-group "kustorptest"
+               az kusto private-endpoint-connection delete --cluster-name "kustoclusterrptest4" --name \
+"privateEndpointConnectionName" --resource-group "kustorptest"
 """
 
-helps['kusto attached-database-configuration wait'] = """
+helps['kusto private-endpoint-connection wait'] = """
     type: command
-    short-summary: Place the CLI in a waiting state until a condition of the kusto attached-database-configuration is \
-met.
+    short-summary: Place the CLI in a waiting state until a condition of the kusto private-endpoint-connection is met.
     examples:
-      - name: Pause executing next line of CLI script until the kusto attached-database-configuration is successfully \
+      - name: Pause executing next line of CLI script until the kusto private-endpoint-connection is successfully \
 created.
         text: |-
-               az kusto attached-database-configuration wait --name "attachedDatabaseConfigurations1" --cluster-name \
-"kustoclusterrptest4" --resource-group "kustorptest" --created
-      - name: Pause executing next line of CLI script until the kusto attached-database-configuration is successfully \
+               az kusto private-endpoint-connection wait --cluster-name "kustoclusterrptest4" --name \
+"privateEndpointConnectionName" --resource-group "kustorptest" --created
+      - name: Pause executing next line of CLI script until the kusto private-endpoint-connection is successfully \
 updated.
         text: |-
-               az kusto attached-database-configuration wait --name "attachedDatabaseConfigurations1" --cluster-name \
-"kustoclusterrptest4" --resource-group "kustorptest" --updated
-      - name: Pause executing next line of CLI script until the kusto attached-database-configuration is successfully \
+               az kusto private-endpoint-connection wait --cluster-name "kustoclusterrptest4" --name \
+"privateEndpointConnectionName" --resource-group "kustorptest" --updated
+      - name: Pause executing next line of CLI script until the kusto private-endpoint-connection is successfully \
 deleted.
         text: |-
-               az kusto attached-database-configuration wait --name "attachedDatabaseConfigurations1" --cluster-name \
-"kustoclusterrptest4" --resource-group "kustorptest" --deleted
+               az kusto private-endpoint-connection wait --cluster-name "kustoclusterrptest4" --name \
+"privateEndpointConnectionName" --resource-group "kustorptest" --deleted
+"""
+
+helps['kusto private-link-resource'] = """
+    type: group
+    short-summary: Manage private link resource with kusto
+"""
+
+helps['kusto private-link-resource list'] = """
+    type: command
+    short-summary: "Returns the list of private link resources."
+    examples:
+      - name: Gets private endpoint connections.
+        text: |-
+               az kusto private-link-resource list --cluster-name "kustoclusterrptest4" --resource-group "kustorptest"
+"""
+
+helps['kusto private-link-resource show'] = """
+    type: command
+    short-summary: "Gets a private link resource."
+    examples:
+      - name: Gets private endpoint connection.
+        text: |-
+               az kusto private-link-resource show --cluster-name "kustoclusterrptest4" --name "cluster" \
+--resource-group "kustorptest"
 """
 
 helps['kusto data-connection'] = """

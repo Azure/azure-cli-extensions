@@ -9,7 +9,7 @@ import os
 import sys
 import tempfile
 import unittest
-from mock import patch
+from unittest.mock import patch
 
 from knack.util import CLIError
 

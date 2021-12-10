@@ -28,7 +28,7 @@ class ResourcePoolsOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure_arc_vmware_management_service_api.models
+    :type models: ~azure.mgmt.connectedvmware.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -48,7 +48,7 @@ class ResourcePoolsOperations:
         resource_group_name: str,
         resource_pool_name: str,
         body: Optional["_models.ResourcePool"] = None,
-        **kwargs
+        **kwargs: Any
     ) -> "_models.ResourcePool":
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.ResourcePool"]
         error_map = {
@@ -109,7 +109,7 @@ class ResourcePoolsOperations:
         resource_group_name: str,
         resource_pool_name: str,
         body: Optional["_models.ResourcePool"] = None,
-        **kwargs
+        **kwargs: Any
     ) -> AsyncLROPoller["_models.ResourcePool"]:
         """Implements resourcePool PUT method.
 
@@ -120,15 +120,15 @@ class ResourcePoolsOperations:
         :param resource_pool_name: Name of the resourcePool.
         :type resource_pool_name: str
         :param body: Request payload.
-        :type body: ~azure_arc_vmware_management_service_api.models.ResourcePool
+        :type body: ~azure.mgmt.connectedvmware.models.ResourcePool
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
-         False for no polling, or your own initialized polling object for a personal polling strategy.
+        :keyword polling: By default, your polling method will be AsyncARMPolling.
+         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either ResourcePool or the result of cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~azure_arc_vmware_management_service_api.models.ResourcePool]
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.connectedvmware.models.ResourcePool]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
@@ -181,7 +181,7 @@ class ResourcePoolsOperations:
         self,
         resource_group_name: str,
         resource_pool_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> "_models.ResourcePool":
         """Gets a resourcePool.
 
@@ -193,7 +193,7 @@ class ResourcePoolsOperations:
         :type resource_pool_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ResourcePool, or the result of cls(response)
-        :rtype: ~azure_arc_vmware_management_service_api.models.ResourcePool
+        :rtype: ~azure.mgmt.connectedvmware.models.ResourcePool
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.ResourcePool"]
@@ -243,7 +243,7 @@ class ResourcePoolsOperations:
         resource_group_name: str,
         resource_pool_name: str,
         body: Optional["_models.ResourcePatch"] = None,
-        **kwargs
+        **kwargs: Any
     ) -> "_models.ResourcePool":
         """Updates a resourcePool.
 
@@ -254,10 +254,10 @@ class ResourcePoolsOperations:
         :param resource_pool_name: Name of the resourcePool.
         :type resource_pool_name: str
         :param body: Resource properties to update.
-        :type body: ~azure_arc_vmware_management_service_api.models.ResourcePatch
+        :type body: ~azure.mgmt.connectedvmware.models.ResourcePatch
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ResourcePool, or the result of cls(response)
-        :rtype: ~azure_arc_vmware_management_service_api.models.ResourcePool
+        :rtype: ~azure.mgmt.connectedvmware.models.ResourcePool
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.ResourcePool"]
@@ -315,7 +315,7 @@ class ResourcePoolsOperations:
         resource_group_name: str,
         resource_pool_name: str,
         force: Optional[bool] = None,
-        **kwargs
+        **kwargs: Any
     ) -> None:
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = {
@@ -363,7 +363,7 @@ class ResourcePoolsOperations:
         resource_group_name: str,
         resource_pool_name: str,
         force: Optional[bool] = None,
-        **kwargs
+        **kwargs: Any
     ) -> AsyncLROPoller[None]:
         """Deletes an resourcePool.
 
@@ -377,8 +377,8 @@ class ResourcePoolsOperations:
         :type force: bool
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
-         False for no polling, or your own initialized polling object for a personal polling strategy.
+        :keyword polling: By default, your polling method will be AsyncARMPolling.
+         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)
@@ -430,7 +430,7 @@ class ResourcePoolsOperations:
 
     def list(
         self,
-        **kwargs
+        **kwargs: Any
     ) -> AsyncIterable["_models.ResourcePoolsList"]:
         """Implements GET resourcePools in a subscription.
 
@@ -438,7 +438,7 @@ class ResourcePoolsOperations:
 
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either ResourcePoolsList or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure_arc_vmware_management_service_api.models.ResourcePoolsList]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.connectedvmware.models.ResourcePoolsList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.ResourcePoolsList"]
@@ -500,7 +500,7 @@ class ResourcePoolsOperations:
     def list_by_resource_group(
         self,
         resource_group_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> AsyncIterable["_models.ResourcePoolsList"]:
         """Implements GET resourcePools in a resource group.
 
@@ -510,7 +510,7 @@ class ResourcePoolsOperations:
         :type resource_group_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either ResourcePoolsList or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure_arc_vmware_management_service_api.models.ResourcePoolsList]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.connectedvmware.models.ResourcePoolsList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.ResourcePoolsList"]

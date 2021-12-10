@@ -7,6 +7,9 @@
 # --------------------------------------------------------------------------
 
 from ._connected_machine import ConnectedMachine
+from ._version import VERSION
+
+__version__ = VERSION
 __all__ = ['ConnectedMachine']
 
 try:

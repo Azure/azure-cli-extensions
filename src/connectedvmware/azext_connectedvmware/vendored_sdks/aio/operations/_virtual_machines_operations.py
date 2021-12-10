@@ -28,7 +28,7 @@ class VirtualMachinesOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure_arc_vmware_management_service_api.models
+    :type models: ~azure.mgmt.connectedvmware.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -48,7 +48,7 @@ class VirtualMachinesOperations:
         resource_group_name: str,
         virtual_machine_name: str,
         body: Optional["_models.VirtualMachine"] = None,
-        **kwargs
+        **kwargs: Any
     ) -> "_models.VirtualMachine":
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.VirtualMachine"]
         error_map = {
@@ -109,7 +109,7 @@ class VirtualMachinesOperations:
         resource_group_name: str,
         virtual_machine_name: str,
         body: Optional["_models.VirtualMachine"] = None,
-        **kwargs
+        **kwargs: Any
     ) -> AsyncLROPoller["_models.VirtualMachine"]:
         """Implements virtual machine PUT method.
 
@@ -120,15 +120,15 @@ class VirtualMachinesOperations:
         :param virtual_machine_name: Name of the virtual machine resource.
         :type virtual_machine_name: str
         :param body: Request payload.
-        :type body: ~azure_arc_vmware_management_service_api.models.VirtualMachine
+        :type body: ~azure.mgmt.connectedvmware.models.VirtualMachine
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
-         False for no polling, or your own initialized polling object for a personal polling strategy.
+        :keyword polling: By default, your polling method will be AsyncARMPolling.
+         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either VirtualMachine or the result of cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~azure_arc_vmware_management_service_api.models.VirtualMachine]
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.connectedvmware.models.VirtualMachine]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
@@ -181,7 +181,7 @@ class VirtualMachinesOperations:
         self,
         resource_group_name: str,
         virtual_machine_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> "_models.VirtualMachine":
         """Gets a virtual machine.
 
@@ -193,7 +193,7 @@ class VirtualMachinesOperations:
         :type virtual_machine_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: VirtualMachine, or the result of cls(response)
-        :rtype: ~azure_arc_vmware_management_service_api.models.VirtualMachine
+        :rtype: ~azure.mgmt.connectedvmware.models.VirtualMachine
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.VirtualMachine"]
@@ -243,7 +243,7 @@ class VirtualMachinesOperations:
         resource_group_name: str,
         virtual_machine_name: str,
         body: Optional["_models.VirtualMachineUpdate"] = None,
-        **kwargs
+        **kwargs: Any
     ) -> "_models.VirtualMachine":
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.VirtualMachine"]
         error_map = {
@@ -304,7 +304,7 @@ class VirtualMachinesOperations:
         resource_group_name: str,
         virtual_machine_name: str,
         body: Optional["_models.VirtualMachineUpdate"] = None,
-        **kwargs
+        **kwargs: Any
     ) -> AsyncLROPoller["_models.VirtualMachine"]:
         """Updates a virtual machine.
 
@@ -315,15 +315,15 @@ class VirtualMachinesOperations:
         :param virtual_machine_name: Name of the virtual machine resource.
         :type virtual_machine_name: str
         :param body: Resource properties to update.
-        :type body: ~azure_arc_vmware_management_service_api.models.VirtualMachineUpdate
+        :type body: ~azure.mgmt.connectedvmware.models.VirtualMachineUpdate
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
-         False for no polling, or your own initialized polling object for a personal polling strategy.
+        :keyword polling: By default, your polling method will be AsyncARMPolling.
+         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either VirtualMachine or the result of cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~azure_arc_vmware_management_service_api.models.VirtualMachine]
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.connectedvmware.models.VirtualMachine]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
@@ -377,7 +377,7 @@ class VirtualMachinesOperations:
         resource_group_name: str,
         virtual_machine_name: str,
         force: Optional[bool] = None,
-        **kwargs
+        **kwargs: Any
     ) -> None:
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = {
@@ -425,7 +425,7 @@ class VirtualMachinesOperations:
         resource_group_name: str,
         virtual_machine_name: str,
         force: Optional[bool] = None,
-        **kwargs
+        **kwargs: Any
     ) -> AsyncLROPoller[None]:
         """Deletes an virtual machine.
 
@@ -439,8 +439,8 @@ class VirtualMachinesOperations:
         :type force: bool
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
-         False for no polling, or your own initialized polling object for a personal polling strategy.
+        :keyword polling: By default, your polling method will be AsyncARMPolling.
+         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)
@@ -495,7 +495,7 @@ class VirtualMachinesOperations:
         resource_group_name: str,
         virtual_machine_name: str,
         body: Optional["_models.StopVirtualMachineOptions"] = None,
-        **kwargs
+        **kwargs: Any
     ) -> None:
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = {
@@ -549,7 +549,7 @@ class VirtualMachinesOperations:
         resource_group_name: str,
         virtual_machine_name: str,
         body: Optional["_models.StopVirtualMachineOptions"] = None,
-        **kwargs
+        **kwargs: Any
     ) -> AsyncLROPoller[None]:
         """Implements the operation to stop a virtual machine.
 
@@ -560,11 +560,11 @@ class VirtualMachinesOperations:
         :param virtual_machine_name: Name of the virtual machine resource.
         :type virtual_machine_name: str
         :param body: Virtualmachine stop action payload.
-        :type body: ~azure_arc_vmware_management_service_api.models.StopVirtualMachineOptions
+        :type body: ~azure.mgmt.connectedvmware.models.StopVirtualMachineOptions
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
-         False for no polling, or your own initialized polling object for a personal polling strategy.
+        :keyword polling: By default, your polling method will be AsyncARMPolling.
+         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)
@@ -618,7 +618,7 @@ class VirtualMachinesOperations:
         self,
         resource_group_name: str,
         virtual_machine_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> None:
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = {
@@ -663,7 +663,7 @@ class VirtualMachinesOperations:
         self,
         resource_group_name: str,
         virtual_machine_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> AsyncLROPoller[None]:
         """Implements the operation to start a virtual machine.
 
@@ -675,8 +675,8 @@ class VirtualMachinesOperations:
         :type virtual_machine_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
-         False for no polling, or your own initialized polling object for a personal polling strategy.
+        :keyword polling: By default, your polling method will be AsyncARMPolling.
+         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)
@@ -729,7 +729,7 @@ class VirtualMachinesOperations:
         self,
         resource_group_name: str,
         virtual_machine_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> None:
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = {
@@ -774,7 +774,7 @@ class VirtualMachinesOperations:
         self,
         resource_group_name: str,
         virtual_machine_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> AsyncLROPoller[None]:
         """Implements the operation to restart a virtual machine.
 
@@ -786,8 +786,8 @@ class VirtualMachinesOperations:
         :type virtual_machine_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
-         False for no polling, or your own initialized polling object for a personal polling strategy.
+        :keyword polling: By default, your polling method will be AsyncARMPolling.
+         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)
@@ -838,7 +838,7 @@ class VirtualMachinesOperations:
 
     def list(
         self,
-        **kwargs
+        **kwargs: Any
     ) -> AsyncIterable["_models.VirtualMachinesList"]:
         """Implements GET virtualMachines in a subscription.
 
@@ -846,7 +846,7 @@ class VirtualMachinesOperations:
 
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either VirtualMachinesList or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure_arc_vmware_management_service_api.models.VirtualMachinesList]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.connectedvmware.models.VirtualMachinesList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.VirtualMachinesList"]
@@ -908,7 +908,7 @@ class VirtualMachinesOperations:
     def list_by_resource_group(
         self,
         resource_group_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> AsyncIterable["_models.VirtualMachinesList"]:
         """Implements GET virtualMachines in a resource group.
 
@@ -918,7 +918,7 @@ class VirtualMachinesOperations:
         :type resource_group_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either VirtualMachinesList or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure_arc_vmware_management_service_api.models.VirtualMachinesList]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.connectedvmware.models.VirtualMachinesList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.VirtualMachinesList"]

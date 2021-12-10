@@ -10,6 +10,10 @@
 
 from azure.cli.core import AzCommandsLoader
 from azext_hardware_security_modules.generated._help import helps  # pylint: disable=unused-import
+try:
+    from azext_hardware_security_modules.manual._help import helps  # pylint: disable=reimported
+except ImportError:
+    pass
 
 
 class AzureDedicatedHSMResourceProviderCommandsLoader(AzCommandsLoader):

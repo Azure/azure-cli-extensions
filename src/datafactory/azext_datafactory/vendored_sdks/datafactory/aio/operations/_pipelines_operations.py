@@ -26,7 +26,7 @@ class PipelinesOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~data_factory_management_client.models
+    :type models: ~azure.mgmt.datafactory.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -55,7 +55,7 @@ class PipelinesOperations:
         :type factory_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either PipelineListResponse or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~data_factory_management_client.models.PipelineListResponse]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.datafactory.models.PipelineListResponse]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.PipelineListResponse"]
@@ -133,13 +133,13 @@ class PipelinesOperations:
         :param pipeline_name: The pipeline name.
         :type pipeline_name: str
         :param pipeline: Pipeline resource definition.
-        :type pipeline: ~data_factory_management_client.models.PipelineResource
+        :type pipeline: ~azure.mgmt.datafactory.models.PipelineResource
         :param if_match: ETag of the pipeline entity.  Should only be specified for update, for which
          it should match existing entity or can be * for unconditional update.
         :type if_match: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: PipelineResource, or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.PipelineResource
+        :rtype: ~azure.mgmt.datafactory.models.PipelineResource
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.PipelineResource"]
@@ -212,7 +212,7 @@ class PipelinesOperations:
         :type if_none_match: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: PipelineResource, or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.PipelineResource or None
+        :rtype: ~azure.mgmt.datafactory.models.PipelineResource or None
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType[Optional["models.PipelineResource"]]
@@ -357,7 +357,7 @@ class PipelinesOperations:
         :type parameters: dict[str, object]
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: CreateRunResponse, or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.CreateRunResponse
+        :rtype: ~azure.mgmt.datafactory.models.CreateRunResponse
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.CreateRunResponse"]

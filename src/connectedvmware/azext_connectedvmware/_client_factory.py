@@ -26,6 +26,27 @@ def cf_resource_pool(cli_ctx, *_):
     return cf_connectedvmware(cli_ctx).resource_pools
 
 
+def cf_cluster(cli_ctx, *_):
+    """
+    Client factory for clusters.
+    """
+    return cf_connectedvmware(cli_ctx).clusters
+
+
+def cf_datastore(cli_ctx, *_):
+    """
+    Client factory for datastores.
+    """
+    return cf_connectedvmware(cli_ctx).datastores
+
+
+def cf_host(cli_ctx, *_):
+    """
+    Client factory for hosts.
+    """
+    return cf_connectedvmware(cli_ctx).hosts
+
+
 def cf_virtual_network(cli_ctx, *_):
     """
     Client factory for virtual networks.
@@ -52,3 +73,14 @@ def cf_inventory_item(cli_ctx, *_):
     Client factory for inventory items.
     """
     return cf_connectedvmware(cli_ctx).inventory_items
+
+
+def cf_guest_agent(cli_ctx, *_):
+    """
+    Client factory for guest agent.
+    """
+    return cf_connectedvmware(cli_ctx).guest_agents
+
+
+def cf_machine_extension(cli_ctx, *_):
+    return cf_connectedvmware(cli_ctx).machine_extensions

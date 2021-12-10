@@ -11,6 +11,7 @@ from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, StorageAccou
                                JMESPathCheck, JMESPathCheckExists, NoneCheck, api_version_constraint)
 from knack.util import CLIError
 from azure.cli.core.profiles import ResourceType
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 from ..storage_test_util import StorageScenarioMixin
 
@@ -20,9 +21,8 @@ class StorageBlobUploadTests(StorageScenarioMixin, ScenarioTest):
     @ResourceGroupPreparer()
     @StorageAccountPreparer(parameter_name='source_account')
     @StorageAccountPreparer(parameter_name='target_account')
-    def test_storage_blob_incremental_copy(self, resource_group, source_account, target_account):
+    def test_storage_blob_incremental_copy(self, resource_group, source_account_info, target_account_info):
         source_file = self.create_temp_file(16)
-        source_account_info = self.get_account_info(resource_group, source_account)
         source_container = self.create_container(source_account_info)
         self.storage_cmd('storage blob upload -c {} -n src -f "{}" -t page', source_account_info,
                          source_container, source_file)
@@ -30,37 +30,36 @@ class StorageBlobUploadTests(StorageScenarioMixin, ScenarioTest):
         snapshot = self.storage_cmd('storage blob snapshot -c {} -n src', source_account_info,
                                     source_container).get_output_in_json()['snapshot']
 
-        target_account_info = self.get_account_info(resource_group, target_account)
         target_container = self.create_container(target_account_info)
         self.storage_cmd('storage blob incremental-copy start --source-container {} --source-blob '
                          'src --source-account-name {} --source-account-key {} --source-snapshot '
                          '{} --destination-container {} --destination-blob backup '
                          '--destination-if-modified-since "2020-06-29T06:32Z" ',
-                         target_account_info, source_container, source_account,
+                         target_account_info, source_container, source_account_info[0],
                          source_account_info[1], snapshot, target_container)
 
+    @AllowLargeResponse()
     def test_storage_blob_no_credentials_scenario(self):
         source_file = self.create_temp_file(1)
         self.cmd('storage blob upload -c foo -n bar -f "' + source_file + '"', expect_failure=CLIError)
 
     @ResourceGroupPreparer()
     @StorageAccountPreparer()
-    def test_storage_blob_upload_small_file(self, resource_group, storage_account):
+    def test_storage_blob_upload_small_file(self, resource_group, storage_account_info):
         for blob_type in ['block', 'page']:
-            self.verify_blob_upload_and_download(resource_group, storage_account, 1, blob_type, 0)
+            self.verify_blob_upload_and_download(resource_group, storage_account_info, 1, blob_type, 0)
 
     @ResourceGroupPreparer()
     @StorageAccountPreparer()
-    def test_storage_blob_upload_midsize_file(self, resource_group, storage_account):
+    def test_storage_blob_upload_midsize_file(self, resource_group, storage_account_info):
         for blob_type in ['block', 'page']:
-            self.verify_blob_upload_and_download(resource_group, storage_account, 4096, 'block', 0)
+            self.verify_blob_upload_and_download(resource_group, storage_account_info, 4096, 'block', 0)
 
-    def verify_blob_upload_and_download(self, group, account, file_size_kb, blob_type,
+    def verify_blob_upload_and_download(self, group, account_info, file_size_kb, blob_type,
                                         block_count=0, skip_download=False):
         local_dir = self.create_temp_dir()
         local_file = self.create_temp_file(file_size_kb)
         blob_name = self.create_random_name(prefix='blob', length=24)
-        account_info = self.get_account_info(group, account)
 
         container = self.create_container(account_info)
         self.storage_cmd('storage blob exists -n {} -c {}', account_info, blob_name, container) \
@@ -151,8 +150,8 @@ class StorageBlobUploadTests(StorageScenarioMixin, ScenarioTest):
 
     @ResourceGroupPreparer()
     @StorageAccountPreparer(kind='StorageV2')
-    def test_storage_blob_soft_delete(self, resource_group, storage_account):
-        account_info = self.get_account_info(resource_group, storage_account)
+    def test_storage_blob_soft_delete(self, resource_group, storage_account_info):
+        account_info = storage_account_info
         container = self.create_container(account_info)
         import time
 
@@ -185,8 +184,8 @@ class StorageBlobUploadTests(StorageScenarioMixin, ScenarioTest):
 
     @ResourceGroupPreparer()
     @StorageAccountPreparer(kind='StorageV2')
-    def test_storage_blob_update_service_properties(self, resource_group, storage_account):
-        account_info = self.get_account_info(resource_group, storage_account)
+    def test_storage_blob_update_service_properties(self, resource_group, storage_account_info):
+        account_info = storage_account_info
 
         self.storage_cmd('storage blob service-properties show', account_info) \
             .assert_with_checks(JMESPathCheck('staticWebsite.enabled', False),

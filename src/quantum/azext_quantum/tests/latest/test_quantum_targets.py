@@ -6,10 +6,10 @@
 import os
 import unittest
 
-from azure_devtools.scenario_tests import AllowLargeResponse
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 
-from .utils import TEST_WORKSPACE_TARGET, TEST_RG_TARGET, TEST_WORKSPACE_LOCATION_TARGET, TEST_SUBS
+from .utils import get_test_resource_group, get_test_workspace, get_test_workspace_location
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
@@ -18,7 +18,7 @@ class QuantumTargetsScenarioTest(ScenarioTest):
 
     def test_targets(self):
         # set current workspace:
-        self.cmd(f'az quantum workspace set -g {TEST_RG_TARGET} -w {TEST_WORKSPACE_TARGET} -l {TEST_WORKSPACE_LOCATION_TARGET}')
+        self.cmd(f'az quantum workspace set -g {get_test_resource_group()} -w {get_test_workspace()} -l {get_test_workspace_location()}')
 
         # clear current target
         self.cmd(f'az quantum target clear')

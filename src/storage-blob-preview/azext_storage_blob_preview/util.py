@@ -5,6 +5,7 @@
 
 
 import os
+from azure.cli.core.profiles import ResourceType
 
 
 def collect_blobs(blob_service, container, pattern=None):
@@ -29,7 +30,8 @@ def collect_blob_objects(blob_service, container, pattern=None):
         if blob_service.exists(container, pattern):
             yield pattern, blob_service.get_blob_properties(container, pattern)
     else:
-        for blob in blob_service.list_blobs(container):
+        container_client = blob_service.get_container_client(container=container)
+        for blob in container_client.list_blobs():
             try:
                 blob_name = blob.name.encode('utf-8') if isinstance(blob.name, unicode) else blob.name
             except NameError:
@@ -63,11 +65,11 @@ def create_blob_service_from_storage_client(cmd, client):
                             sas_token=client.sas_token)
 
 
-def create_file_share_from_storage_client(cmd, client):
-    t_file_svc = cmd.get_models('file.fileservice#FileService')
-    return t_file_svc(account_name=client.account_name,
-                      account_key=client.account_key,
-                      sas_token=client.sas_token)
+def create_file_share_from_storage_client(cmd, account_name=None, account_key=None, sas_token=None):
+    t_file_svc = cmd.get_models('file.fileservice#FileService', resource_type=ResourceType.DATA_STORAGE)
+    return t_file_svc(account_name=account_name,
+                      account_key=account_key,
+                      sas_token=sas_token)
 
 
 def filter_none(iterable):
@@ -90,7 +92,7 @@ def glob_files_locally(folder_path, pattern):
 def glob_files_remotely(cmd, client, share_name, pattern):
     """glob the files in remote file share based on the given pattern"""
     from collections import deque
-    t_dir, t_file = cmd.get_models('file.models#Directory', 'file.models#File')
+    t_dir, t_file = cmd.get_models('file.models#Directory', 'file.models#File', resource_type=ResourceType.DATA_STORAGE)
 
     queue = deque([""])
     while queue:
@@ -134,25 +136,26 @@ def create_short_lived_file_sas(cmd, account_name, account_key, share, directory
 
 def create_short_lived_container_sas(cmd, account_name, account_key, container):
     from datetime import datetime, timedelta
-    if cmd.supported_api_version(min_api='2017-04-17'):
-        t_sas = cmd.get_models('blob.sharedaccesssignature#BlobSharedAccessSignature')
-    else:
-        t_sas = cmd.get_models('sharedaccesssignature#SharedAccessSignature')
-    t_blob_permissions = cmd.get_models('blob.models#BlobPermissions')
+    generate_container_sas = cmd.get_models('_shared_access_signature#generate_container_sas')
+    t_blob_permissions = cmd.get_models('_models#ContainerSasPermissions')
 
     expiry = (datetime.utcnow() + timedelta(days=1)).strftime('%Y-%m-%dT%H:%M:%SZ')
-    sas = t_sas(account_name, account_key)
-    return sas.generate_container(container, permission=t_blob_permissions(read=True), expiry=expiry, protocol='https')
+
+    sas_token = generate_container_sas(account_name=account_name, container_name=container, account_key=account_key,
+                                       permission=t_blob_permissions(read=True), expiry=expiry, protocol='https')
+
+    return sas_token
 
 
 def create_short_lived_share_sas(cmd, account_name, account_key, share):
     from datetime import datetime, timedelta
     if cmd.supported_api_version(min_api='2017-04-17'):
-        t_sas = cmd.get_models('file.sharedaccesssignature#FileSharedAccessSignature')
+        t_sas = cmd.get_models('file.sharedaccesssignature#FileSharedAccessSignature',
+                               resource_type=ResourceType.DATA_STORAGE)
     else:
-        t_sas = cmd.get_models('sharedaccesssignature#SharedAccessSignature')
+        t_sas = cmd.get_models('sharedaccesssignature#SharedAccessSignature', resource_type=ResourceType.DATA_STORAGE)
 
-    t_file_permissions = cmd.get_models('file.models#FilePermissions')
+    t_file_permissions = cmd.get_models('file.models#FilePermissions', resource_type=ResourceType.DATA_STORAGE)
     expiry = (datetime.utcnow() + timedelta(days=1)).strftime('%Y-%m-%dT%H:%M:%SZ')
     sas = t_sas(account_name, account_key)
     return sas.generate_share(share, permission=t_file_permissions(read=True), expiry=expiry, protocol='https')
@@ -220,10 +223,10 @@ def normalize_blob_file_path(path, name):
 
 def check_precondition_success(func):
     def wrapper(*args, **kwargs):
-        from azure.common import AzureHttpError
+        from azure.core.exceptions import HttpResponseError
         try:
             return True, func(*args, **kwargs)
-        except AzureHttpError as ex:
+        except HttpResponseError as ex:
             # Precondition failed error
             # https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/412
             # Not modified error

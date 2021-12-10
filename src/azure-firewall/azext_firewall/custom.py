@@ -626,7 +626,7 @@ def update_azure_firewall_policies(cmd,
 
 
 def set_azure_firewall_policies(cmd, resource_group_name, firewall_policy_name, parameters):
-    if parameters.identity is None:
+    if parameters.identity is None and parameters.sku.tier == 'Premium':
         ManagedServiceIdentity = cmd.get_models('ManagedServiceIdentity')
 
         identity = ManagedServiceIdentity(type="None", user_assigned_identities=None)
@@ -810,6 +810,7 @@ def add_azure_firewall_policy_filter_rule_collection(cmd, resource_group_name, f
                                                      destination_ports=None,
                                                      protocols=None, fqdn_tags=None, target_fqdns=None,
                                                      source_ip_groups=None, destination_ip_groups=None,
+                                                     destination_fqdns=None,
                                                      target_urls=None, enable_tls_inspection=False, web_categories=None):
     NetworkRule, FirewallPolicyRuleApplicationProtocol,\
         ApplicationRule, FirewallPolicyFilterRuleCollectionAction, FirewallPolicyFilterRuleCollection =\
@@ -828,7 +829,8 @@ def add_azure_firewall_policy_filter_rule_collection(cmd, resource_group_name, f
                            destination_addresses=destination_addresses,
                            destination_ports=destination_ports,
                            source_ip_groups=source_ip_groups,
-                           destination_ip_groups=destination_ip_groups)
+                           destination_ip_groups=destination_ip_groups,
+                           destination_fqdns=destination_fqdns)
     else:
         def map_application_rule_protocol(item):
             return FirewallPolicyRuleApplicationProtocol(protocol_type=item['protocol_type'],
@@ -883,8 +885,8 @@ def add_azure_firewall_policy_filter_rule(cmd, resource_group_name, firewall_pol
                                           description=None, ip_protocols=None, source_addresses=None,
                                           destination_addresses=None, destination_ports=None,
                                           protocols=None, fqdn_tags=None, target_fqdns=None,
-                                          source_ip_groups=None, destination_ip_groups=None,
-                                          translated_address=None, translated_port=None,
+                                          source_ip_groups=None, destination_ip_groups=None, destination_fqdns=None,
+                                          translated_address=None, translated_port=None, translated_fqdn=None,
                                           target_urls=None, enable_tls_inspection=False, web_categories=None):
     (NetworkRule,
      FirewallPolicyRuleApplicationProtocol,
@@ -918,7 +920,8 @@ def add_azure_firewall_policy_filter_rule(cmd, resource_group_name, firewall_pol
                            destination_addresses=destination_addresses,
                            destination_ports=destination_ports,
                            source_ip_groups=source_ip_groups,
-                           destination_ip_groups=destination_ip_groups)
+                           destination_ip_groups=destination_ip_groups,
+                           destination_fqdns=destination_fqdns)
     elif rule_type == 'ApplicationRule':
         def map_application_rule_protocol(item):
             return FirewallPolicyRuleApplicationProtocol(protocol_type=item['protocol_type'],
@@ -947,7 +950,8 @@ def add_azure_firewall_policy_filter_rule(cmd, resource_group_name, firewall_pol
                        destination_ports=destination_ports,
                        translated_address=translated_address,
                        translated_port=translated_port,
-                       source_ip_groups=source_ip_groups)
+                       source_ip_groups=source_ip_groups,
+                       translated_fqdn=translated_fqdn)
     target_rule_collection.rules.append(rule)
     return client.begin_create_or_update(resource_group_name, firewall_policy_name,
                                          rule_collection_group_name, rule_collection_group)
@@ -979,8 +983,8 @@ def update_azure_firewall_policy_filter_rule(cmd, instance, rule_collection_name
                                              description=None, ip_protocols=None, source_addresses=None,
                                              destination_addresses=None, destination_ports=None,
                                              protocols=None, fqdn_tags=None, target_fqdns=None,
-                                             source_ip_groups=None, destination_ip_groups=None,
-                                             translated_address=None, translated_port=None,
+                                             source_ip_groups=None, destination_ip_groups=None, destination_fqdns=None,
+                                             translated_address=None, translated_port=None, translated_fqdn=None,
                                              target_urls=None, enable_tls_inspection=None, web_categories=None):
     (NetworkRule,
      FirewallPolicyRuleApplicationProtocol,
@@ -1008,7 +1012,8 @@ def update_azure_firewall_policy_filter_rule(cmd, instance, rule_collection_name
                                        destination_addresses=(destination_addresses or rule.destination_addresses),
                                        destination_ports=(destination_ports or rule.destination_ports),
                                        source_ip_groups=(source_ip_groups or rule.source_ip_groups),
-                                       destination_ip_groups=(destination_ip_groups or rule.destination_ip_groups))
+                                       destination_ip_groups=(destination_ip_groups or rule.destination_ip_groups),
+                                       destination_fqdns=(destination_fqdns or rule.destination_fqdns))
             elif rule.rule_type == 'ApplicationRule':
                 def map_application_rule_protocol(item):
                     return FirewallPolicyRuleApplicationProtocol(protocol_type=item['protocol_type'],
@@ -1037,6 +1042,7 @@ def update_azure_firewall_policy_filter_rule(cmd, instance, rule_collection_name
                                    destination_ports=(destination_ports or rule.destination_ports),
                                    translated_address=(translated_address or rule.translated_address),
                                    translated_port=(translated_port or rule.translated_port),
+                                   translated_fqdn=(translated_fqdn or rule.translated_fqdn),
                                    source_ip_groups=(source_ip_groups or rule.source_ip_groups))
             if new_rule:
                 target_rule_collection.rules[i] = copy.deepcopy(new_rule)

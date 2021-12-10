@@ -3,20 +3,20 @@ interactions:
     body: '{"properties": {"description": "This blueprint sets tag policy and role
       assignment on the subscription, creates a ResourceGroup, and deploys a resource
       template and role assignment to that ResourceGroup.", "targetScope": "subscription",
-      "parameters": {"storageAccountType": {"type": "string", "metadata": {"displayName":
-      "storage account type.", "description": "storage account type."}, "defaultValue":
-      "Standard_LRS", "allowedValues": ["Standard_LRS", "Standard_GRS", "Standard_ZRS",
-      "Premium_LRS"]}, "tagName": {"type": "string", "metadata": {"displayName": "The
-      name of the tag to provide the policy assignment.", "description": "The name
-      of the tag to provide the policy assignment."}}, "tagValue": {"type": "string",
+      "parameters": {"storageAccountType": {"type": "string", "defaultValue": "Standard_LRS",
+      "allowedValues": ["Standard_LRS", "Standard_GRS", "Standard_ZRS", "Premium_LRS"],
+      "metadata": {"displayName": "storage account type.", "description": "storage
+      account type."}}, "tagName": {"type": "string", "metadata": {"displayName":
+      "The name of the tag to provide the policy assignment.", "description": "The
+      name of the tag to provide the policy assignment."}}, "tagValue": {"type": "string",
       "metadata": {"displayName": "The value of the tag to provide the policy assignment.",
       "description": "The value of the tag to provide the policy assignment."}}, "contributors":
       {"type": "array", "metadata": {"description": "List of AAD object IDs that is
       assigned Contributor role at the subscription", "strongType": "PrincipalId"}},
       "owners": {"type": "array", "metadata": {"description": "List of AAD object
       IDs that is assigned Owner role at the resource group", "strongType": "PrincipalId"}}},
-      "resourceGroups": {"storageRG": {"metadata": {"description": "Contains the resource
-      template deployment and a role assignment."}, "dependsOn": []}}}}'
+      "resourceGroups": {"storageRG": {"dependsOn": [], "metadata": {"description":
+      "Contains the resource template deployment and a role assignment."}}}}}'
     headers:
       Accept:
       - application/json
@@ -29,14 +29,11 @@ interactions:
       Content-Length:
       - '1369'
       Content-Type:
-      - application/json; charset=utf-8
+      - application/json
       ParameterSetName:
       - --name --input-path -y
       User-Agent:
-      - python/3.8.8 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
-        azure-mgmt-blueprint/2018-11-01-preview Azure-SDK-For-Python AZURECLI/2.21.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.26.1 azsdk-python-mgmt-blueprint/1.0.0b1 Python/3.8.9 (Windows-10-10.0.19041-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-imported-bp000002?api-version=2018-11-01-preview
   response:
@@ -64,8 +61,8 @@ interactions:
         {\r\n          \"description\": \"Contains the resource template deployment
         and a role assignment.\"\r\n        },\r\n        \"dependsOn\": []\r\n      }\r\n
         \   },\r\n    \"targetScope\": \"subscription\",\r\n    \"status\": {\r\n
-        \     \"timeCreated\": \"2021-04-16T15:47:34+00:00\",\r\n      \"lastModified\":
-        \"2021-04-16T15:47:34.6783608+00:00\"\r\n    },\r\n    \"description\": \"This
+        \     \"timeCreated\": \"2021-07-30T03:55:44+00:00\",\r\n      \"lastModified\":
+        \"2021-07-30T03:55:44.7887016+00:00\"\r\n    },\r\n    \"description\": \"This
         blueprint sets tag policy and role assignment on the subscription, creates
         a ResourceGroup, and deploys a resource template and role assignment to that
         ResourceGroup.\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-imported-bp000002\",\r\n
@@ -78,7 +75,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 16 Apr 2021 15:47:34 GMT
+      - Fri, 30 Jul 2021 03:55:44 GMT
       expires:
       - '-1'
       pragma:
@@ -90,7 +87,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1195'
     status:
       code: 201
       message: Created
@@ -108,10 +105,7 @@ interactions:
       ParameterSetName:
       - --name --input-path -y
       User-Agent:
-      - python/3.8.8 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
-        azure-mgmt-blueprint/2018-11-01-preview Azure-SDK-For-Python AZURECLI/2.21.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.26.1 azsdk-python-mgmt-blueprint/1.0.0b1 Python/3.8.9 (Windows-10-10.0.19041-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-imported-bp000002/artifacts?api-version=2018-11-01-preview
   response:
@@ -125,7 +119,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 16 Apr 2021 15:47:34 GMT
+      - Fri, 30 Jul 2021 03:55:45 GMT
       expires:
       - '-1'
       pragma:
@@ -161,14 +155,11 @@ interactions:
       Content-Length:
       - '443'
       Content-Type:
-      - application/json; charset=utf-8
+      - application/json
       ParameterSetName:
       - --name --input-path -y
       User-Agent:
-      - python/3.8.8 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
-        azure-mgmt-blueprint/2018-11-01-preview Azure-SDK-For-Python AZURECLI/2.21.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.26.1 azsdk-python-mgmt-blueprint/1.0.0b1 Python/3.8.9 (Windows-10-10.0.19041-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-imported-bp000002/artifacts/policyStorageTags?api-version=2018-11-01-preview
   response:
@@ -189,7 +180,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 16 Apr 2021 15:47:34 GMT
+      - Fri, 30 Jul 2021 03:55:46 GMT
       expires:
       - '-1'
       pragma:
@@ -223,14 +214,11 @@ interactions:
       Content-Length:
       - '430'
       Content-Type:
-      - application/json; charset=utf-8
+      - application/json
       ParameterSetName:
       - --name --input-path -y
       User-Agent:
-      - python/3.8.8 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
-        azure-mgmt-blueprint/2018-11-01-preview Azure-SDK-For-Python AZURECLI/2.21.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.26.1 azsdk-python-mgmt-blueprint/1.0.0b1 Python/3.8.9 (Windows-10-10.0.19041-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-imported-bp000002/artifacts/policyTags?api-version=2018-11-01-preview
   response:
@@ -251,7 +239,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 16 Apr 2021 15:47:34 GMT
+      - Fri, 30 Jul 2021 03:55:46 GMT
       expires:
       - '-1'
       pragma:
@@ -283,14 +271,11 @@ interactions:
       Content-Length:
       - '218'
       Content-Type:
-      - application/json; charset=utf-8
+      - application/json
       ParameterSetName:
       - --name --input-path -y
       User-Agent:
-      - python/3.8.8 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
-        azure-mgmt-blueprint/2018-11-01-preview Azure-SDK-For-Python AZURECLI/2.21.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.26.1 azsdk-python-mgmt-blueprint/1.0.0b1 Python/3.8.9 (Windows-10-10.0.19041-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-imported-bp000002/artifacts/roleContributor?api-version=2018-11-01-preview
   response:
@@ -307,7 +292,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 16 Apr 2021 15:47:34 GMT
+      - Fri, 30 Jul 2021 03:55:46 GMT
       expires:
       - '-1'
       pragma:
@@ -339,14 +324,11 @@ interactions:
       Content-Length:
       - '242'
       Content-Type:
-      - application/json; charset=utf-8
+      - application/json
       ParameterSetName:
       - --name --input-path -y
       User-Agent:
-      - python/3.8.8 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
-        azure-mgmt-blueprint/2018-11-01-preview Azure-SDK-For-Python AZURECLI/2.21.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.26.1 azsdk-python-mgmt-blueprint/1.0.0b1 Python/3.8.9 (Windows-10-10.0.19041-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-imported-bp000002/artifacts/roleOwner?api-version=2018-11-01-preview
   response:
@@ -364,7 +346,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 16 Apr 2021 15:47:34 GMT
+      - Fri, 30 Jul 2021 03:55:47 GMT
       expires:
       - '-1'
       pragma:
@@ -394,10 +376,7 @@ interactions:
       ParameterSetName:
       - --output-path --name --yes
       User-Agent:
-      - python/3.8.8 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
-        azure-mgmt-blueprint/2018-11-01-preview Azure-SDK-For-Python AZURECLI/2.21.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.26.1 azsdk-python-mgmt-blueprint/1.0.0b1 Python/3.8.9 (Windows-10-10.0.19041-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-imported-bp000002?api-version=2018-11-01-preview
   response:
@@ -425,8 +404,8 @@ interactions:
         {\r\n          \"description\": \"Contains the resource template deployment
         and a role assignment.\"\r\n        },\r\n        \"dependsOn\": []\r\n      }\r\n
         \   },\r\n    \"targetScope\": \"subscription\",\r\n    \"status\": {\r\n
-        \     \"timeCreated\": \"2021-04-16T15:47:34+00:00\",\r\n      \"lastModified\":
-        \"2021-04-16T15:47:34.6783608+00:00\"\r\n    },\r\n    \"description\": \"This
+        \     \"timeCreated\": \"2021-07-30T03:55:44+00:00\",\r\n      \"lastModified\":
+        \"2021-07-30T03:55:44.7887016+00:00\"\r\n    },\r\n    \"description\": \"This
         blueprint sets tag policy and role assignment on the subscription, creates
         a ResourceGroup, and deploys a resource template and role assignment to that
         ResourceGroup.\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-imported-bp000002\",\r\n
@@ -439,7 +418,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 16 Apr 2021 15:47:35 GMT
+      - Fri, 30 Jul 2021 03:55:48 GMT
       expires:
       - '-1'
       pragma:
@@ -471,10 +450,7 @@ interactions:
       ParameterSetName:
       - --output-path --name --yes
       User-Agent:
-      - python/3.8.8 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
-        azure-mgmt-blueprint/2018-11-01-preview Azure-SDK-For-Python AZURECLI/2.21.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.26.1 azsdk-python-mgmt-blueprint/1.0.0b1 Python/3.8.9 (Windows-10-10.0.19041-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-imported-bp000002/artifacts?api-version=2018-11-01-preview
   response:
@@ -519,7 +495,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 16 Apr 2021 15:47:35 GMT
+      - Fri, 30 Jul 2021 03:55:49 GMT
       expires:
       - '-1'
       pragma:
@@ -553,10 +529,7 @@ interactions:
       ParameterSetName:
       - --name -y
       User-Agent:
-      - python/3.8.8 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
-        azure-mgmt-blueprint/2018-11-01-preview Azure-SDK-For-Python AZURECLI/2.21.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.26.1 azsdk-python-mgmt-blueprint/1.0.0b1 Python/3.8.9 (Windows-10-10.0.19041-SP0)
     method: DELETE
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-imported-bp000002?api-version=2018-11-01-preview
   response:
@@ -584,8 +557,8 @@ interactions:
         {\r\n          \"description\": \"Contains the resource template deployment
         and a role assignment.\"\r\n        },\r\n        \"dependsOn\": []\r\n      }\r\n
         \   },\r\n    \"targetScope\": \"subscription\",\r\n    \"status\": {\r\n
-        \     \"timeCreated\": \"2021-04-16T15:47:34+00:00\",\r\n      \"lastModified\":
-        \"2021-04-16T15:47:34.6783608+00:00\"\r\n    },\r\n    \"description\": \"This
+        \     \"timeCreated\": \"2021-07-30T03:55:44+00:00\",\r\n      \"lastModified\":
+        \"2021-07-30T03:55:44.7887016+00:00\"\r\n    },\r\n    \"description\": \"This
         blueprint sets tag policy and role assignment on the subscription, creates
         a ResourceGroup, and deploys a resource template and role assignment to that
         ResourceGroup.\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-imported-bp000002\",\r\n
@@ -598,7 +571,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 16 Apr 2021 15:47:36 GMT
+      - Fri, 30 Jul 2021 03:55:50 GMT
       expires:
       - '-1'
       pragma:
@@ -614,7 +587,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14999'
+      - '14998'
     status:
       code: 200
       message: OK

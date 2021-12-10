@@ -677,7 +677,7 @@ class AzInteractiveShell(object):
         except SystemExit as ex:
             self.last_exit = int(ex.code)
 
-    def progress_patch(self, _=False):
+    def progress_patch(self, *args, **kwargs):
         """ forces to use the Shell Progress """
         from .progress import ShellProgressView
         self.cli_ctx.progress_controller.init_progress(ShellProgressView())
