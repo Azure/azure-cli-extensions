@@ -216,6 +216,13 @@ def _assert_args(resource_group, vm_name, ssh_ip, resource_type, cert_file, user
     if cert_file and not os.path.isfile(cert_file):
         raise azclierror.FileOperationError(f"Certificate file {cert_file} not found")
 
+    if not username:
+        import platform
+        operating_system = platform.system()
+        if operating_system.lower() == 'windows':
+            raise azclierror.RequiredArgumentMissingError("SSH to AAD user is not currently supported on Windows."
+                                                          "Please provide --local-user")
+
 
 def _check_or_create_public_private_files(public_key_file, private_key_file, credentials_folder):
     delete_keys = False
