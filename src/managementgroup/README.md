@@ -12,7 +12,7 @@ az extension add --name managementgroup
 ##### Create #####
 ```
 az managementgroup management-group create --display-name "ChildGroup" \
-    --id "/providers/Microsoft.Management/managementGroups/RootGroup" --group-id "ChildGroup" 
+    --id "/providers/Microsoft.Management/managementGroups/ParentGroup" --group-id "ChildGroup" 
 ```
 ##### Show #####
 ```
@@ -42,7 +42,7 @@ az managementgroup management-group list
 ##### Update #####
 ```
 az managementgroup management-group update --group-id "ChildGroup" --display-name "AlternateDisplayName" \
-    --parent-group-id "/providers/Microsoft.Management/managementGroups/AlternateRootGroup" 
+    --parent-group-id "/providers/Microsoft.Management/managementGroups/AlternateParentGroup" 
 ```
 ##### Show-descendant #####
 ```
