@@ -2,9 +2,54 @@
 
 Release History
 ===============
+0.5.47
+++++++
+* Add support for IPv4/IPv6 dual-stack networking AKS clusters
+* `az aks create --pod-cidrs --service-cidrs --ip-families --load-balancer-managed-outbound-ipv6-count`
+
+0.5.46
+++++++
+* Update to use 2021-10-01 api-version
+
+0.5.45
+++++++
+* Remove the snapshot name trimming in `az aks snapshot create` command.
+
+0.5.44
+++++++
+* In AKS Monitoring addon, fix DCR resource naming convention from DCR-<workspaceName> to MSCI-<workspaceName> to make consistent naming across.
+
+0.5.43
+++++++
+* Enable the new implementation in command `aks create`, and change the dependent cli version to at least 2.30.0
+
+0.5.42
+++++++
+* Fix default value behavior for pod identity exception pod labels in upgrade/scale calls.
+
+0.5.41
+++++++
+* Fix default value behavior for pod identity exception pod labels.
+
+0.5.40
++++++
+* Add support for new snapshot commands
+  * `az aks snapshot create`
+  * `az aks snapshot delete`
+  * `az aks snapshot list`
+  * `az aks snapshot show`
+* Add --snapshot-id to creating/upgrading commands
+  * `az aks create --snapshot-id`
+  * `az aks nodepool add --snapshot-id`
+  * `az aks nodepool upgrade --snapshot-id`
+
+0.5.39
++++++
+* Add commands for agentpool start stop feature
+
 0.5.38
 +++++
-* Add parameter `--rotation-poll-interval` for Azure Keyvault Secrets Provider Addon. 
+* Add parameter `--rotation-poll-interval` for Azure Keyvault Secrets Provider Addon.
 
 0.5.37
 +++++

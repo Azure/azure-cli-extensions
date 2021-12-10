@@ -37,7 +37,7 @@ class NetworkScenarioTest(ScenarioTest):
         })
 
         self.cmd('network manager create --name {name} --description {description} --display-name {display_name} '
-                 '--scope-accesses "Routing" "Connectivity" '
+                 '--scope-accesses "Connectivity" '
                  '--network-manager-scopes '
                  ' subscriptions={sub} '
                  '-l eastus2euap '
@@ -61,20 +61,20 @@ class NetworkScenarioTest(ScenarioTest):
             'manager_name': 'TestNetworkManager',
             'description': '"A sample group"',
             'display_name': 'MyNetworkGroup',
-            'member_type': 'VirtualNetwork',
+            'member_type': 'Microsoft.Network/virtualNetworks',
             'sub': '/subscriptions/{}'.format(self.get_subscription_id()),
             'virtual_network': virtual_network
         })
 
         self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" --display-name "TestNetworkManager" '
-                 '--scope-accesses "Routing" "Connectivity" '
+                 '--scope-accesses "Connectivity" '
                  '--network-manager-scopes '
                  ' subscriptions={sub} '
                  '-l eastus2euap '
                  '--resource-group {rg}')
 
         self.cmd('network manager group create --name {name} --network-manager-name {manager_name} --description {description} '
-                 '--conditional-membership "" --display-name {display_name} --member-type {member_type}  -g {rg} '
+                 '--conditional-membership "" --display-name {display_name} --member-type "{member_type}"  -g {rg} '
                  '--group-members resource-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}" ')
 
         self.cmd('network manager group update -g {rg} --name {name} --network-manager-name {manager_name} --description "Desc changed."')
@@ -100,7 +100,7 @@ class NetworkScenarioTest(ScenarioTest):
                  '--resource-group {rg}')
 
         self.cmd('network manager security-user-config create --configuration-name {name} --network-manager-name {manager_name} -g {rg} '
-                 '--description {description} --delete-existing-ns-gs true --security-type "UserPolicy" --display-name MyTestConfig')
+                 '--description {description} --delete-existing-ns-gs true --display-name MyTestConfig')
 
         self.cmd('network manager security-user-config update --configuration-name {name} --network-manager-name {manager_name} -g {rg} '
                  '--description "test_description"')
@@ -126,7 +126,7 @@ class NetworkScenarioTest(ScenarioTest):
                  '--resource-group {rg}')
 
         self.cmd('network manager security-admin-config create --configuration-name {name} --network-manager-name {manager_name} -g {rg} '
-                 '--description {description} --delete-existing-ns-gs true --security-type "AdminPolicy" --display-name MyTestConfig')
+                 '--description {description} --delete-existing-ns-gs true --display-name MyTestConfig')
 
         self.cmd('network manager security-admin-config update --configuration-name {name} --network-manager-name {manager_name} -g {rg} '
                  '--description "test_description"')
@@ -167,24 +167,24 @@ class NetworkScenarioTest(ScenarioTest):
                  '--resource-group {rg}')
 
         self.cmd('network manager group create --name {group_name} --network-manager-name {manager_name} --description {description} '
-                 '--conditional-membership "" --display-name ASampleGroup --member-type VirtualNetwork  -g {rg} '
+                 '--conditional-membership "" --display-name ASampleGroup --member-type "Microsoft.Network/virtualNetworks"  -g {rg} '
                  '--group-members resource-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}" ')
 
         self.cmd('network manager security-admin-config create --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} '
-                 '--description {description} --delete-existing-ns-gs true --security-type "AdminPolicy" --display-name MyTestConfig')
+                 '--description {description} --delete-existing-ns-gs true --display-name MyTestConfig')
 
-        self.cmd('network manager admin-rule collection create --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} '
+        self.cmd('network manager security-admin-config rule-collection create --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} '
                  '--rule-collection-name {collection_name} --description {description} --display-name ASampleCollection '
                  '--applies-to-groups  network-group-id={sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkManagers/{manager_name}/networkGroups/{group_name}')
 
 
-        self.cmd('network manager admin-rule create -g {rg} --network-manager-name {manager_name} --configuration-name {config_name} --rule-collection-name {collection_name} '
+        self.cmd('network manager security-admin-config rule-collection rule create -g {rg} --network-manager-name {manager_name} --configuration-name {config_name} --rule-collection-name {collection_name} '
                  '--rule-name {rule_name} --kind "Custom" --protocol "Tcp" --access "Allow" --priority 32 --direction "Inbound"')
-        self.cmd('network manager admin-rule show -g {rg} --network-manager-name {manager_name} --configuration-name {config_name} --rule-collection-name {collection_name} --rule-name {rule_name}')
-        self.cmd('network manager admin-rule update -g {rg} --network-manager-name {manager_name} --configuration-name {config_name} --rule-collection-name {collection_name} --rule-name {rule_name} '
+        self.cmd('network manager security-admin-config rule-collection rule show -g {rg} --network-manager-name {manager_name} --configuration-name {config_name} --rule-collection-name {collection_name} --rule-name {rule_name}')
+        self.cmd('network manager security-admin-config rule-collection rule update -g {rg} --network-manager-name {manager_name} --configuration-name {config_name} --rule-collection-name {collection_name} --rule-name {rule_name} '
                  '--access "Deny"')
-        self.cmd('network manager admin-rule list -g {rg} --network-manager-name {manager_name} --configuration-name {config_name} --rule-collection-name {collection_name}')
-        self.cmd('network manager admin-rule delete -g {rg} --network-manager-name {manager_name} --configuration-name {config_name} --rule-collection-name {collection_name} --rule-name {rule_name} --yes')
+        self.cmd('network manager security-admin-config rule-collection rule list -g {rg} --network-manager-name {manager_name} --configuration-name {config_name} --rule-collection-name {collection_name}')
+        self.cmd('network manager security-admin-config rule-collection rule delete -g {rg} --network-manager-name {manager_name} --configuration-name {config_name} --rule-collection-name {collection_name} --rule-name {rule_name} --yes')
 
 
     @ResourceGroupPreparer(name_prefix='test_network_manager_admin_rule_collection_crud', location='eastus2euap')
@@ -209,24 +209,24 @@ class NetworkScenarioTest(ScenarioTest):
                  '--resource-group {rg}')
 
         self.cmd('network manager group create --name {group_name} --network-manager-name {manager_name} --description {description} '
-                 '--conditional-membership "" --display-name ASampleGroup --member-type VirtualNetwork  -g {rg} '
+                 '--conditional-membership "" --display-name ASampleGroup --member-type "Microsoft.Network/virtualNetworks"  -g {rg} '
                  '--group-members resource-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}" ')
 
         self.cmd('network manager security-admin-config create --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} '
-                 '--description {description} --delete-existing-ns-gs true --security-type "AdminPolicy" --display-name MyTestConfig')
+                 '--description {description} --delete-existing-ns-gs true --display-name MyTestConfig')
 
-        self.cmd('network manager admin-rule collection create --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} '
+        self.cmd('network manager security-admin-config rule-collection create --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} '
                  '--rule-collection-name {collection_name} --description {description} --display-name ASampleCollection '
                  '--applies-to-groups  network-group-id={sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkManagers/{manager_name}/networkGroups/{group_name}')
         
-        self.cmd('network manager admin-rule collection show -g {rg} --configuration-name {config_name} --network-manager-name {manager_name} --rule-collection-name {collection_name}')
+        self.cmd('network manager security-admin-config rule-collection show -g {rg} --configuration-name {config_name} --network-manager-name {manager_name} --rule-collection-name {collection_name}')
 
-        self.cmd('network manager admin-rule collection update -g {rg} --configuration-name {config_name} --network-manager-name {manager_name} --rule-collection-name {collection_name} '
+        self.cmd('network manager security-admin-config rule-collection update -g {rg} --configuration-name {config_name} --network-manager-name {manager_name} --rule-collection-name {collection_name} '
                  '--display-name ASampleCollection2')
 
-        self.cmd('network manager admin-rule collection list -g {rg} --configuration-name {config_name} --network-manager-name {manager_name}')
+        self.cmd('network manager security-admin-config rule-collection list -g {rg} --configuration-name {config_name} --network-manager-name {manager_name}')
 
-        self.cmd('network manager admin-rule collection delete -g {rg} --configuration-name {config_name} --network-manager-name {manager_name} --rule-collection-name {collection_name} --yes')
+        self.cmd('network manager security-admin-config rule-collection delete -g {rg} --configuration-name {config_name} --network-manager-name {manager_name} --rule-collection-name {collection_name} --yes')
         self.cmd('network manager security-admin-config delete --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} --yes')
         self.cmd('network manager group delete -g {rg} --name {group_name} --network-manager-name {manager_name} --yes')
 
@@ -253,25 +253,25 @@ class NetworkScenarioTest(ScenarioTest):
                  '--resource-group {rg}')
 
         self.cmd('network manager group create --name {group_name} --network-manager-name {manager_name} --description {description} '
-                 '--conditional-membership "" --display-name ASampleGroup --member-type VirtualNetwork  -g {rg} '
+                 '--conditional-membership "" --display-name ASampleGroup --member-type "Microsoft.Network/virtualNetworks"  -g {rg} '
                  '--group-members resource-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}" ')
 
         self.cmd('network manager security-user-config create --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} '
-                 '--description {description} --delete-existing-ns-gs true --security-type "UserPolicy" --display-name MyTestConfig')
+                 '--description {description} --delete-existing-ns-gs true --display-name MyTestConfig')
 
-        self.cmd('network manager user-rule collection create --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} '
+        self.cmd('network manager security-user-config rule-collection create --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} '
                  '--rule-collection-name {collection_name} --description {description} --display-name ASampleCollection '
                  '--applies-to-groups  network-group-id={sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkManagers/{manager_name}/networkGroups/{group_name}')
 
-        self.cmd('network manager user-rule create -g {rg} --network-manager-name {manager_name} --configuration-name {config_name} --rule-collection-name {collection_name} '
+        self.cmd('network manager security-user-config rule-collection rule create -g {rg} --network-manager-name {manager_name} --configuration-name {config_name} --rule-collection-name {collection_name} '
                  '--rule-name {rule_name} --kind "Custom" --protocol "Tcp" --direction "Inbound"')
-        self.cmd('network manager user-rule show -g {rg} --network-manager-name {manager_name} --configuration-name {config_name} --rule-collection-name {collection_name} --rule-name {rule_name}')
-        self.cmd('network manager user-rule update -g {rg} --network-manager-name {manager_name} --configuration-name {config_name} --rule-collection-name {collection_name} --rule-name {rule_name} '
+        self.cmd('network manager security-user-config rule-collection rule show -g {rg} --network-manager-name {manager_name} --configuration-name {config_name} --rule-collection-name {collection_name} --rule-name {rule_name}')
+        self.cmd('network manager security-user-config rule-collection rule update -g {rg} --network-manager-name {manager_name} --configuration-name {config_name} --rule-collection-name {collection_name} --rule-name {rule_name} '
                  '--protocol "Udp"')
-        self.cmd('network manager user-rule list -g {rg} --network-manager-name {manager_name} --configuration-name {config_name} --rule-collection-name {collection_name}')
-        self.cmd('network manager user-rule delete -g {rg} --network-manager-name {manager_name} --configuration-name {config_name} --rule-collection-name {collection_name} --rule-name {rule_name} --yes')
+        self.cmd('network manager security-user-config rule-collection rule list -g {rg} --network-manager-name {manager_name} --configuration-name {config_name} --rule-collection-name {collection_name}')
+        self.cmd('network manager security-user-config rule-collection rule delete -g {rg} --network-manager-name {manager_name} --configuration-name {config_name} --rule-collection-name {collection_name} --rule-name {rule_name} --yes')
 
-    @ResourceGroupPreparer(name_prefix='test_network_manager_user_rule_collection_crud', location='eastus2euap')
+    @ResourceGroupPreparer(name_prefix='test_network_manager_user_rule_collection_crud', location='eastus2')
     @VirtualNetworkPreparer()
     def test_network_manager_user_rule_collection_crud(self, virtual_network, resource_group):
 
@@ -293,21 +293,21 @@ class NetworkScenarioTest(ScenarioTest):
                  '--resource-group {rg}')
 
         self.cmd('network manager group create --name {group_name} --network-manager-name {manager_name} --description {description} '
-                 '--conditional-membership "" --display-name ASampleGroup --member-type VirtualNetwork  -g {rg} '
+                 '--conditional-membership "" --display-name ASampleGroup --member-type "Microsoft.Network/virtualNetworks"  -g {rg} '
                  '--group-members resource-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}" ')
 
         self.cmd('network manager security-user-config create --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} '
-                 '--description {description} --delete-existing-ns-gs true --security-type "UserPolicy" --display-name MyTestConfig')
+                 '--description {description} --delete-existing-ns-gs true --display-name MyTestConfig')
 
-        self.cmd('network manager user-rule collection create --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} '
+        self.cmd('network manager security-user-config rule-collection create --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} '
                  '--rule-collection-name {collection_name} --description {description} --display-name ASampleCollection '
                  '--applies-to-groups  network-group-id={sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkManagers/{manager_name}/networkGroups/{group_name}')
         
-        self.cmd('network manager user-rule collection show -g {rg} --configuration-name {config_name} --network-manager-name {manager_name} --rule-collection-name {collection_name}')
-        self.cmd('network manager user-rule collection update -g {rg} --configuration-name {config_name} --network-manager-name {manager_name} --rule-collection-name {collection_name} '
+        self.cmd('network manager security-user-config rule-collection show -g {rg} --configuration-name {config_name} --network-manager-name {manager_name} --rule-collection-name {collection_name}')
+        self.cmd('network manager security-user-config rule-collection update -g {rg} --configuration-name {config_name} --network-manager-name {manager_name} --rule-collection-name {collection_name} '
                  '--display-name ASampleCollection2')
-        self.cmd('network manager user-rule collection list -g {rg} --configuration-name {config_name} --network-manager-name {manager_name}')
-        self.cmd('network manager user-rule collection delete -g {rg} --configuration-name {config_name} --network-manager-name {manager_name} --rule-collection-name {collection_name} --yes')
+        self.cmd('network manager security-user-config rule-collection list -g {rg} --configuration-name {config_name} --network-manager-name {manager_name}')
+        self.cmd('network manager security-user-config rule-collection delete -g {rg} --configuration-name {config_name} --network-manager-name {manager_name} --rule-collection-name {collection_name} --yes')
         self.cmd('network manager security-user-config delete --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} --yes')
         self.cmd('network manager group delete -g {rg} --name {group_name} --network-manager-name {manager_name} --yes')
 
@@ -324,19 +324,19 @@ class NetworkScenarioTest(ScenarioTest):
         })
 
         self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" --display-name "TestNetworkManager" '
-                 '--scope-accesses "SecurityUser" "Connectivity" '
+                 '--scope-accesses "SecurityAdmin" "Connectivity" '
                  '--network-manager-scopes '
                  ' subscriptions={sub} '
                  '-l eastus2euap '
                  '--resource-group {rg}')
 
         self.cmd('network manager group create --name {group_name} --network-manager-name {manager_name} --description {description} '
-                 '--conditional-membership "" --display-name ASampleGroup --member-type VirtualNetwork  -g {rg} '
+                 '--conditional-membership "" --display-name ASampleGroup --member-type "Microsoft.Network/virtualNetworks"  -g {rg} '
                  '--group-members resource-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}" ')
 
         self.cmd('network manager connect-config create --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} '
                  '--applies-to-groups group-connectivity="None" network-group-id={sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkManagers/{manager_name}/networkGroups/{group_name} '
-                 'is-global=false use-hub-gateway=true --connectivity-topology "HubAndSpoke" --delete-peering true --hubs '
+                 'is-global=false use-hub-gateway=true --connectivity-topology "HubAndSpoke" --delete-existing-peering true --hubs '
                  'resource-id={sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network} '
                  'resource-type="Microsoft.Network/virtualNetworks" --description "Sample Configuration" --is-global true')
         self.cmd('network manager connect-config show --configuration-name {config_name} --network-manager-name {manager_name} -g {rg}')
@@ -358,22 +358,22 @@ class NetworkScenarioTest(ScenarioTest):
         })
 
         self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" --display-name "TestNetworkManager" '
-                 '--scope-accesses "SecurityUser" "Connectivity" '
+                 '--scope-accesses "SecurityAdmin" "Connectivity" '
                  '--network-manager-scopes '
                  ' subscriptions={sub} '
                  '-l eastus2euap '
                  '--resource-group {rg}')
 
         self.cmd('network manager group create --name {group_name} --network-manager-name {manager_name} --description {description} '
-                 '--conditional-membership "" --display-name ASampleGroup --member-type VirtualNetwork  -g {rg} '
+                 '--conditional-membership "" --display-name ASampleGroup --member-type "Microsoft.Network/virtualNetworks"  -g {rg} '
                  '--group-members resource-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}" ')
 
         self.cmd('network manager list-deploy-status --network-manager-name {manager_name} --deployment-types "Connectivity" --regions "eastus2euap" --resource-group {rg}')
         self.cmd('network manager group list-effect-vnet --network-group-name {group_name} --network-manager-name {manager_name} --resource-group {rg}')
-        # Internal Server Error
         self.cmd('network manager list-effect-vnet --network-manager-name {manager_name} --resource-group {rg}')
-        self.cmd('network manager list-active-config --network-manager-name {manager_name} --resource-group {rg}')
-        self.cmd('network manager list-effective-config --virtual-network-name {virtual_network} -g {rg}')
+        self.cmd('network manager list-active-connectivity-config --network-manager-name {manager_name} --resource-group {rg} --regions eastus westus')
+        self.cmd('network manager list-effective-connectivity-config --virtual-network-name {virtual_network} -g {rg}')
+        self.cmd('network manager list-effective-security-admin-rule --virtual-network-name {virtual_network} -g {rg}')
         self.cmd('network manager list-active-security-admin-rule --network-manager-name {manager_name} -g {rg} --regions eastus2euap')
         # Internal Server Error
         # self.cmd('network manager list-active-security-user-rule --network-manager-name {manager_name} -g {rg} --region eastus2euap')
