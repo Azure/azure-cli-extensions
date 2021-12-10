@@ -52,6 +52,9 @@ aks create:
     load_balancer_managed_outbound_ip_count:
       rule_exclusions:
       - option_length_too_long
+    load_balancer_managed_outbound_ipv6_count:
+      rule_exclusions:
+      - option_length_too_long
     load_balancer_outbound_ip_prefixes:
       rule_exclusions:
       - option_length_too_long
@@ -159,6 +162,9 @@ aks update:
       rule_exclusions:
       - option_length_too_long
     load_balancer_managed_outbound_ip_count:
+      rule_exclusions:
+      - option_length_too_long
+    load_balancer_managed_outbound_ipv6_count:
       rule_exclusions:
       - option_length_too_long
     load_balancer_outbound_ip_prefixes:

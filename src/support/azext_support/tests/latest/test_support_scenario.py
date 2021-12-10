@@ -10,7 +10,7 @@ from datetime import date, timedelta
 
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.testsdk import ScenarioTest
-from azure_devtools.scenario_tests import AllowLargeResponse
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 
 class SupportScenarioTest(ScenarioTest):
