@@ -15,6 +15,7 @@ from azext_aks_preview import _loadbalancer as loadbalancer
 class TestLoadBalancer(unittest.TestCase):
     def test_configure_load_balancer_profile(self):
         managed_outbound_ip_count = 5
+        managed_outbound_ipv6_count = 3
         outbound_ips = None
         outbound_ip_prefixes = None
         outbound_ports = 80
@@ -33,7 +34,7 @@ class TestLoadBalancer(unittest.TestCase):
             public_ip_prefixes="public_ip_prefixes"
         )
 
-        p = loadbalancer.configure_load_balancer_profile(managed_outbound_ip_count, outbound_ips, outbound_ip_prefixes, outbound_ports, idle_timeout, profile)
+        p = loadbalancer.configure_load_balancer_profile(managed_outbound_ip_count, managed_outbound_ipv6_count, outbound_ips, outbound_ip_prefixes, outbound_ports, idle_timeout, profile)
 
         # ips -> i_ps due to track 2 naming issue
         self.assertIsNotNone(p.managed_outbound_i_ps)
