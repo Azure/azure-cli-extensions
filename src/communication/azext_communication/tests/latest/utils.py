@@ -18,7 +18,7 @@ from azure.communication.phonenumbers import (
 from azure.communication.identity import CommunicationIdentityClient
 import uuid, os
 
-TEST_RESOURCE_IDENTIFIER = os.getenv("AZURE_COMMUNICATION_RESOURCE_IDENTIFIER") # From ACS Resource "immutableResourceId".
+TEST_RESOURCE_IDENTIFIER = "sanitized"
 TEST_SOURCE_PHONENUMBER_DEFAULT = "sanitized"
 TEST_RECIPIENT_PHONENUMBER_DEFAULT = "sanitized"
 
@@ -28,24 +28,24 @@ def get_from_os_environment(env_name, default):
     return os.environ[env_name] if env_name in os.environ and os.environ[env_name] != "" else default
 
 
-def get_test_identity_id(is_live, connection_str):
-    if not is_live:
-        return "8:acs:" + TEST_RESOURCE_IDENTIFIER + "_" + str(uuid.uuid4())
+def get_test_identity_id(is_live, in_recording, connection_str):
+    if not is_live and not in_recording:
+        return TEST_RESOURCE_IDENTIFIER
     else:
         identity_client = CommunicationIdentityClient.from_connection_string(connection_str)
         user = identity_client.create_user()
         return user.properties['id']
 
 
-def get_test_source_phonenumber(is_live):
-    if not is_live:
+def get_test_source_phonenumber(is_live, in_recording):
+    if not is_live and not in_recording:
         return TEST_SOURCE_PHONENUMBER_DEFAULT
     else:
         return get_from_os_environment("AZURE_COMMUNICATION_SOURCE_PHONENUMBER", None)
 
 
-def get_test_recipient_phonenumber(is_live):
-    if not is_live:
+def get_test_recipient_phonenumber(is_live, in_recording):
+    if not is_live and not in_recording:
         return TEST_RECIPIENT_PHONENUMBER_DEFAULT
     else:
         return get_from_os_environment("AZURE_COMMUNICATION_RECIPIENT_PHONENUMBER", None)

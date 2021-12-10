@@ -22,12 +22,14 @@ class URIIdentityReplacer(RecordingProcessor):
 
     def process_request(self, request):
         resource = (urlparse(request.uri).netloc).split('.')[0]
+        request.uri = re.sub('phoneNumbers/[%2B\d]+', 'phoneNumbers/sanitized', request.uri)
         request.uri = re.sub('/identities/([^/?]+)', '/identities/sanitized', request.uri) 
         request.uri = re.sub(resource, 'sanitized', request.uri)
         return request
     
     def process_response(self, response):
         if 'url' in response:
+            response['url'] = re.sub('phoneNumbers/[%2B\d]+', 'phoneNumbers/sanitized', response['url'])
             response['url'] = re.sub('/identities/([^/?]+)', '/identities/sanitized', response['url'])
         return response
 

@@ -26,11 +26,10 @@ class CommunicationSmsScenarios(ScenarioTest):
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
     def test_send_sms(self, communication_resource_info):
 
-        if self.is_live:
-            os.environ['AZURE_COMMUNICATION_CONNECTION_STRING'] = communication_resource_info[1]
+        os.environ['AZURE_COMMUNICATION_CONNECTION_STRING'] = communication_resource_info[1]
 
-        sender = get_test_source_phonenumber(self.is_live)
-        recipient = get_test_recipient_phonenumber(self.is_live)
+        sender = get_test_source_phonenumber(self.is_live, self.in_recording)
+        recipient = get_test_recipient_phonenumber(self.is_live, self.in_recording)
 
         if sender is None:
             sender = get_new_phonenumber(communication_resource_info[1])

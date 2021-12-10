@@ -26,8 +26,7 @@ class CommunicationIdentityScenarios(ScenarioTest):
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
     def test_issue_access_token(self, communication_resource_info):
 
-        if self.is_live:
-            os.environ['AZURE_COMMUNICATION_CONNECTION_STRING'] = communication_resource_info[1]
+        os.environ['AZURE_COMMUNICATION_CONNECTION_STRING'] = communication_resource_info[1]
 
         val = self.cmd(
             'az communication identity issue-access-token --scope chat').get_output_in_json()
@@ -37,10 +36,9 @@ class CommunicationIdentityScenarios(ScenarioTest):
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
     def test_issue_access_token_with_id(self, communication_resource_info):
 
-        if self.is_live:
-            os.environ['AZURE_COMMUNICATION_CONNECTION_STRING'] = communication_resource_info[1]
+        os.environ['AZURE_COMMUNICATION_CONNECTION_STRING'] = communication_resource_info[1]
 
-        id = get_test_identity_id(self.is_live, communication_resource_info[1])
+        id = get_test_identity_id(self.is_live, self.in_recording, communication_resource_info[1])
         self.kwargs.update({'id': id})
 
         val = self.cmd(
