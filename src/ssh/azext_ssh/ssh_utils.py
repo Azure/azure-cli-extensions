@@ -124,8 +124,7 @@ def write_ssh_config(relay_info, proxy_path, vm_name, ip, username,
     relay_info_path = None
     relay_info_filename = None
     if is_arc:
-        relay_info_path, relay_info_filename = _prepare_relay_info_file(relay_info, cert_file,
-                                                                        private_key_file, credentials_folder,
+        relay_info_path, relay_info_filename = _prepare_relay_info_file(relay_info, credentials_folder,
                                                                         vm_name, resource_group)
 
         lines.append("Host " + resource_group + "-" + vm_name)
@@ -276,16 +275,11 @@ def _terminate_cleanup(delete_keys, delete_cert, delete_credentials, cleanup_pro
             file_utils.delete_folder(temp_dir, f"Couldn't delete temporary folder {temp_dir}", True)
 
 
-def _prepare_relay_info_file(relay_info, cert_file, private_key_file, credentials_folder, vm_name, resource_group):
-    if cert_file:
-        relay_info_dir = os.path.dirname(cert_file)
-    elif private_key_file:
-        relay_info_dir = os.path.dirname(private_key_file)
-    else:
-        # create the custom folder
-        relay_info_dir = credentials_folder
-        if not os.path.isdir(relay_info_dir):
-            os.makedirs(relay_info_dir)
+def _prepare_relay_info_file(relay_info, credentials_folder, vm_name, resource_group):
+    # create the custom folder
+    relay_info_dir = credentials_folder
+    if not os.path.isdir(relay_info_dir):
+        os.makedirs(relay_info_dir)
 
     if vm_name and resource_group:
         relay_info_filename = resource_group + "-" + vm_name + "-relay_info"
@@ -310,7 +304,8 @@ def _issue_config_cleanup_warning(delete_cert, delete_keys, is_arc, cert_file, r
                 items_to_delete = f" (id_rsa, id_rsa.pub, id_rsa.pub-aadcert.pub, {relay_info_filename})"
             elif delete_cert:
                 path_to_delete = os.path.dirname(cert_file)
-                items_to_delete = f" (id_rsa.pub-aadcert.pub, {relay_info_filename})"
+                relay_partial_path = relay_info_path.replace(path_to_delete, "")
+                items_to_delete = f" (id_rsa.pub-aadcert.pub, {relay_partial_path})"
             else:
                 path_to_delete = relay_info_path
                 items_to_delete = ""

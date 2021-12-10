@@ -54,8 +54,6 @@ def ssh_config(cmd, config_path, resource_group_name=None, vm_name=None, ssh_ip=
 
     config_path = os.path.abspath(config_path)
 
-    print(config_path)
-
     # Default credential location
     if not credentials_folder:
         config_folder = os.path.dirname(config_path)
