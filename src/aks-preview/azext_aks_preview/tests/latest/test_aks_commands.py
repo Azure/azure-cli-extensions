@@ -10,7 +10,7 @@ import tempfile
 from azure.cli.testsdk import (
     ResourceGroupPreparer, RoleBasedServicePrincipalPreparer, ScenarioTest, live_only)
 from azure.cli.command_modules.acs._format import version_to_tuple
-from azure_devtools.scenario_tests import AllowLargeResponse
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from knack.util import CLIError
 
 from .recording_processors import KeyReplacer

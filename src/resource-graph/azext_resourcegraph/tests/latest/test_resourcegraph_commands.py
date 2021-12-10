@@ -5,7 +5,7 @@
 
 # pylint: disable=line-too-long
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
-from azure_devtools.scenario_tests.const import MOCKED_SUBSCRIPTION_ID
+from azure.cli.testsdk.scenario_tests.const import MOCKED_SUBSCRIPTION_ID
 from knack.util import CLIError
 from six import string_types
 import json
