@@ -26,7 +26,6 @@ pushd ${AKS_PREVIEW_BASE_DIR}
 
 # perform unit test with module 'unittest'
 test_result=0
-# coverage run --source=. --omit=*/vendored_sdks/*,*/tests/* -p -m unittest discover -s tests/latest/ -t . || test_result=$?
 coverage run --source=. --omit=*/vendored_sdks/*,*/tests/* -m pytest tests/latest/ || test_result=$?
 
 # generate coverage report

@@ -27,7 +27,6 @@ pushd ${ACS_BASE_DIR}
 
 # perform unit test with module 'unittest'
 test_result=0
-# coverage run --source=. --omit=*/tests/* -p -m unittest discover -s tests/latest/ -t . || test_result=$?
 coverage run --source=. --omit=*/tests/* -m pytest tests/latest/ || test_result=$?
 
 # generate coverage report
