@@ -23,9 +23,29 @@ if TYPE_CHECKING:
     T = TypeVar('T')
     ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
 
-class CosmosDBManagementClientOperationsMixin(object):
+class LocationsOperations(object):
+    """LocationsOperations operations.
 
-    def location_list(
+    You should not instantiate this class directly. Instead, you should create a Client instance that
+    instantiates it for you and attaches it as an attribute.
+
+    :ivar models: Alias to model classes used in this operation group.
+    :type models: ~azure.mgmt.cosmosdb.models
+    :param client: Client for service requests.
+    :param config: Configuration of service client.
+    :param serializer: An object model serializer.
+    :param deserializer: An object model deserializer.
+    """
+
+    models = _models
+
+    def __init__(self, client, config, serializer, deserializer):
+        self._client = client
+        self._serialize = serializer
+        self._deserialize = deserializer
+        self._config = config
+
+    def list(
         self,
         **kwargs  # type: Any
     ):
@@ -42,7 +62,7 @@ class CosmosDBManagementClientOperationsMixin(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-07-01-preview"
+        api_version = "2021-10-15-preview"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -52,7 +72,7 @@ class CosmosDBManagementClientOperationsMixin(object):
 
             if not next_link:
                 # Construct URL
-                url = self.location_list.metadata['url']  # type: ignore
+                url = self.list.metadata['url']  # type: ignore
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
                 }
@@ -90,9 +110,9 @@ class CosmosDBManagementClientOperationsMixin(object):
         return ItemPaged(
             get_next, extract_data
         )
-    location_list.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.DocumentDB/locations'}  # type: ignore
+    list.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.DocumentDB/locations'}  # type: ignore
 
-    def location_get(
+    def get(
         self,
         location,  # type: str
         **kwargs  # type: Any
@@ -112,11 +132,11 @@ class CosmosDBManagementClientOperationsMixin(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-07-01-preview"
+        api_version = "2021-10-15-preview"
         accept = "application/json"
 
         # Construct URL
-        url = self.location_get.metadata['url']  # type: ignore
+        url = self.get.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'location': self._serialize.url("location", location, 'str'),
@@ -145,4 +165,4 @@ class CosmosDBManagementClientOperationsMixin(object):
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    location_get.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.DocumentDB/locations/{location}'}  # type: ignore
+    get.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.DocumentDB/locations/{location}'}  # type: ignore
