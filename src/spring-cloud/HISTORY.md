@@ -1,5 +1,9 @@
 Release History
 ===============
+2.12.1
+-----
+* Fix list services by subscription issue
+
 2.12.0
 -----
 * Add --disable-probe argument into 'az spring-cloud app create', 'az spring-cloud app update', 'az spring-cloud app deploy' and 'az spring-cloud app deployment create'

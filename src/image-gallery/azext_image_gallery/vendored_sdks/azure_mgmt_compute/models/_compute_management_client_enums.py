@@ -577,6 +577,7 @@ class SharingUpdateOperationTypes(with_metaclass(_CaseInsensitiveEnumMeta, str, 
     ADD = "Add"
     REMOVE = "Remove"
     RESET = "Reset"
+    ENABLE_COMMUNITY = "EnableCommunity"
 
 class StatusLevelTypes(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The level code.

@@ -25,11 +25,24 @@ az sig image-definition show-community --public-gallery-name publicGalleryName \
     --location myLocation
 ```
 
+##### List an image definition in a gallery community.
+```
+az sig image-definition list-community --public-gallery-name publicGalleryName \
+    --location myLocation
+```
+
 ##### Get an image version in a gallery community in the given location.
 ```
 az sig image-version show-community --public-gallery-name publicGalleryName \
     --gallery-image-definition MyImage \
     --gallery-image-version 1.0.0 \
+    --location myLocation
+```
+
+##### List an VM Image Versions in a gallery community.
+```
+az sig image-version list-community --public-gallery-name publicGalleryName \
+    --gallery-image-definition MyImage \
     --location myLocation
 ```
 

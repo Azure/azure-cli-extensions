@@ -7,7 +7,6 @@ from azure.cli.core.commands import CliCommandType
 
 from ._client_factory import cf_managed_clusters
 from ._client_factory import cf_maintenance_configurations
-from ._client_factory import cf_container_services
 from ._client_factory import cf_agent_pools
 from ._client_factory import cf_snapshots
 from ._format import aks_show_table_format
@@ -29,13 +28,6 @@ def load_command_table(self, _):
                         'operations._managed_clusters_operations#ManagedClustersOperations.{}',
         operation_group='managed_clusters',
         client_factory=cf_managed_clusters
-    )
-
-    container_services_sdk = CliCommandType(
-        operations_tmpl='azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks.'
-                        'operations.container_service_operations#ContainerServicesOperations.{}',
-        operation_group='container_services',
-        client_factory=cf_container_services
     )
 
     agent_pools_sdk = CliCommandType(
@@ -60,6 +52,7 @@ def load_command_table(self, _):
     with self.command_group('aks', managed_clusters_sdk, client_factory=cf_managed_clusters) as g:
         g.custom_command('kollect', 'aks_kollect')
         g.custom_command('kanalyze', 'aks_kanalyze')
+        g.custom_command('browse', 'aks_browse')
         g.custom_command('create', 'aks_create', supports_no_wait=True)
         g.custom_command('update', 'aks_update', supports_no_wait=True)
         g.custom_command('scale', 'aks_scale', supports_no_wait=True)
@@ -80,11 +73,6 @@ def load_command_table(self, _):
         g.command('stop', 'begin_stop', supports_no_wait=True)
         g.command('start', 'begin_start', supports_no_wait=True)
         g.custom_command('get-os-options', 'aks_get_os_options')
-
-    # AKS container service commands
-    with self.command_group('aks', container_services_sdk, client_factory=cf_container_services) as g:
-        g.custom_command('get-versions', 'aks_get_versions',
-                         table_transformer=aks_versions_table_format)
 
     # AKS maintenance configuration commands
     with self.command_group('aks maintenanceconfiguration', maintenance_configuration_sdk, client_factory=cf_maintenance_configurations) as g:

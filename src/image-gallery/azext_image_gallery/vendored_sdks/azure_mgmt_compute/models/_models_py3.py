@@ -1254,6 +1254,78 @@ class CommunityGallery(PirCommunityGalleryResource):
         super(CommunityGallery, self).__init__(unique_id=unique_id, **kwargs)
 
 
+class CommunityGalleryDiskImage(msrest.serialization.Model):
+    """This is the disk image base class.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar size_in_gb: This property indicates the size of the VHD to be created.
+    :vartype size_in_gb: int
+    :param host_caching: The host caching of the disk. Valid values are 'None', 'ReadOnly', and
+     'ReadWrite'. Possible values include: "None", "ReadOnly", "ReadWrite".
+    :type host_caching: str or ~azure.mgmt.compute.v2021_07_01.models.HostCaching
+    """
+
+    _validation = {
+        'size_in_gb': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'size_in_gb': {'key': 'sizeInGB', 'type': 'int'},
+        'host_caching': {'key': 'hostCaching', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        host_caching: Optional[Union[str, "HostCaching"]] = None,
+        **kwargs
+    ):
+        super(CommunityGalleryDiskImage, self).__init__(**kwargs)
+        self.size_in_gb = None
+        self.host_caching = host_caching
+
+
+class CommunityGalleryDataDiskImage(CommunityGalleryDiskImage):
+    """This is the data disk image.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :ivar size_in_gb: This property indicates the size of the VHD to be created.
+    :vartype size_in_gb: int
+    :param host_caching: The host caching of the disk. Valid values are 'None', 'ReadOnly', and
+     'ReadWrite'. Possible values include: "None", "ReadOnly", "ReadWrite".
+    :type host_caching: str or ~azure.mgmt.compute.v2021_07_01.models.HostCaching
+    :param lun: Required. This property specifies the logical unit number of the data disk. This
+     value is used to identify data disks within the Virtual Machine and therefore must be unique
+     for each data disk attached to the Virtual Machine.
+    :type lun: int
+    """
+
+    _validation = {
+        'size_in_gb': {'readonly': True},
+        'lun': {'required': True},
+    }
+
+    _attribute_map = {
+        'size_in_gb': {'key': 'sizeInGB', 'type': 'int'},
+        'host_caching': {'key': 'hostCaching', 'type': 'str'},
+        'lun': {'key': 'lun', 'type': 'int'},
+    }
+
+    def __init__(
+        self,
+        *,
+        lun: int,
+        host_caching: Optional[Union[str, "HostCaching"]] = None,
+        **kwargs
+    ):
+        super(CommunityGalleryDataDiskImage, self).__init__(host_caching=host_caching, **kwargs)
+        self.lun = lun
+
+
 class CommunityGalleryImage(PirCommunityGalleryResource):
     """Specifies information about the gallery image definition that you want to create or update.
 
@@ -1397,6 +1469,12 @@ class CommunityGalleryImageVersion(PirCommunityGalleryResource):
     :param end_of_life_date: The end of life date of the gallery image version Definition. This
      property can be used for decommissioning purposes. This property is updatable.
     :type end_of_life_date: ~datetime.datetime
+    :param exclude_from_latest: If set to true, Virtual Machines deployed from the latest version
+     of the Image Definition won't use this Image Version.
+    :type exclude_from_latest: bool
+    :param storage_profile: This is the storage profile of a Gallery Image Version.
+    :type storage_profile:
+     ~azure.mgmt.compute.v2021_07_01.models.CommunityGalleryImageVersionStorageProfile
     """
 
     _validation = {
@@ -1412,6 +1490,8 @@ class CommunityGalleryImageVersion(PirCommunityGalleryResource):
         'unique_id': {'key': 'identifier.uniqueId', 'type': 'str'},
         'published_date': {'key': 'properties.publishedDate', 'type': 'iso-8601'},
         'end_of_life_date': {'key': 'properties.endOfLifeDate', 'type': 'iso-8601'},
+        'exclude_from_latest': {'key': 'properties.excludeFromLatest', 'type': 'bool'},
+        'storage_profile': {'key': 'properties.storageProfile', 'type': 'CommunityGalleryImageVersionStorageProfile'},
     }
 
     def __init__(
@@ -1420,11 +1500,15 @@ class CommunityGalleryImageVersion(PirCommunityGalleryResource):
         unique_id: Optional[str] = None,
         published_date: Optional[datetime.datetime] = None,
         end_of_life_date: Optional[datetime.datetime] = None,
+        exclude_from_latest: Optional[bool] = None,
+        storage_profile: Optional["CommunityGalleryImageVersionStorageProfile"] = None,
         **kwargs
     ):
         super(CommunityGalleryImageVersion, self).__init__(unique_id=unique_id, **kwargs)
         self.published_date = published_date
         self.end_of_life_date = end_of_life_date
+        self.exclude_from_latest = exclude_from_latest
+        self.storage_profile = storage_profile
 
 
 class CommunityGalleryImageVersionList(msrest.serialization.Model):
@@ -1458,6 +1542,33 @@ class CommunityGalleryImageVersionList(msrest.serialization.Model):
         super(CommunityGalleryImageVersionList, self).__init__(**kwargs)
         self.value = value
         self.next_link = next_link
+
+
+class CommunityGalleryImageVersionStorageProfile(msrest.serialization.Model):
+    """This is the storage profile of a Gallery Image Version.
+
+    :param os_disk_image: This is the OS disk image.
+    :type os_disk_image: ~azure.mgmt.compute.v2021_07_01.models.CommunityGalleryOSDiskImage
+    :param data_disk_images: A list of data disk images.
+    :type data_disk_images:
+     list[~azure.mgmt.compute.v2021_07_01.models.CommunityGalleryDataDiskImage]
+    """
+
+    _attribute_map = {
+        'os_disk_image': {'key': 'osDiskImage', 'type': 'CommunityGalleryOSDiskImage'},
+        'data_disk_images': {'key': 'dataDiskImages', 'type': '[CommunityGalleryDataDiskImage]'},
+    }
+
+    def __init__(
+        self,
+        *,
+        os_disk_image: Optional["CommunityGalleryOSDiskImage"] = None,
+        data_disk_images: Optional[List["CommunityGalleryDataDiskImage"]] = None,
+        **kwargs
+    ):
+        super(CommunityGalleryImageVersionStorageProfile, self).__init__(**kwargs)
+        self.os_disk_image = os_disk_image
+        self.data_disk_images = data_disk_images
 
 
 class CommunityGalleryInfo(msrest.serialization.Model):
@@ -1510,6 +1621,36 @@ class CommunityGalleryInfo(msrest.serialization.Model):
         self.public_name_prefix = public_name_prefix
         self.community_gallery_enabled = None
         self.public_names = None
+
+
+class CommunityGalleryOSDiskImage(CommunityGalleryDiskImage):
+    """This is the OS disk image.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar size_in_gb: This property indicates the size of the VHD to be created.
+    :vartype size_in_gb: int
+    :param host_caching: The host caching of the disk. Valid values are 'None', 'ReadOnly', and
+     'ReadWrite'. Possible values include: "None", "ReadOnly", "ReadWrite".
+    :type host_caching: str or ~azure.mgmt.compute.v2021_07_01.models.HostCaching
+    """
+
+    _validation = {
+        'size_in_gb': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'size_in_gb': {'key': 'sizeInGB', 'type': 'int'},
+        'host_caching': {'key': 'hostCaching', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        *,
+        host_caching: Optional[Union[str, "HostCaching"]] = None,
+        **kwargs
+    ):
+        super(CommunityGalleryOSDiskImage, self).__init__(host_caching=host_caching, **kwargs)
 
 
 class ComputeOperationListResult(msrest.serialization.Model):
@@ -2320,9 +2461,11 @@ class DiagnosticsProfile(msrest.serialization.Model):
     """Specifies the boot diagnostic settings state. :code:`<br>`:code:`<br>`Minimum api-version: 2015-06-15.
 
     :param boot_diagnostics: Boot Diagnostics is a debugging feature which allows you to view
-     Console Output and Screenshot to diagnose VM status. :code:`<br>`:code:`<br>` You can easily
-     view the output of your console log. :code:`<br>`:code:`<br>` Azure also enables you to see a
-     screenshot of the VM from the hypervisor.
+     Console Output and Screenshot to diagnose VM status. :code:`<br>`\ **NOTE**\ : If storageUri is
+     being specified then ensure that the storage account is in the same region and subscription as
+     the VM. :code:`<br>`:code:`<br>` You can easily view the output of your console log.
+     :code:`<br>`:code:`<br>` Azure also enables you to see a screenshot of the VM from the
+     hypervisor.
     :type boot_diagnostics: ~azure.mgmt.compute.v2021_07_01.models.BootDiagnostics
     """
 
@@ -6714,10 +6857,8 @@ class RestorePoint(ProxyResource):
      https://aka.ms/RestorePoints for more details. Possible values include: "CrashConsistent",
      "FileSystemConsistent", "ApplicationConsistent".
     :vartype consistency_mode: str or ~azure.mgmt.compute.v2021_07_01.models.ConsistencyModeTypes
-    :ivar provisioning_details: Gets the provisioning details set by the server during Create
-     restore point operation.
-    :vartype provisioning_details:
-     ~azure.mgmt.compute.v2021_07_01.models.RestorePointProvisioningDetails
+    :param time_created: Gets the creation time of the restore point.
+    :type time_created: ~datetime.datetime
     """
 
     _validation = {
@@ -6727,7 +6868,6 @@ class RestorePoint(ProxyResource):
         'source_metadata': {'readonly': True},
         'provisioning_state': {'readonly': True},
         'consistency_mode': {'readonly': True},
-        'provisioning_details': {'readonly': True},
     }
 
     _attribute_map = {
@@ -6738,13 +6878,14 @@ class RestorePoint(ProxyResource):
         'source_metadata': {'key': 'properties.sourceMetadata', 'type': 'RestorePointSourceMetadata'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
         'consistency_mode': {'key': 'properties.consistencyMode', 'type': 'str'},
-        'provisioning_details': {'key': 'properties.provisioningDetails', 'type': 'RestorePointProvisioningDetails'},
+        'time_created': {'key': 'properties.timeCreated', 'type': 'iso-8601'},
     }
 
     def __init__(
         self,
         *,
         exclude_disks: Optional[List["ApiEntityReference"]] = None,
+        time_created: Optional[datetime.datetime] = None,
         **kwargs
     ):
         super(RestorePoint, self).__init__(**kwargs)
@@ -6752,7 +6893,7 @@ class RestorePoint(ProxyResource):
         self.source_metadata = None
         self.provisioning_state = None
         self.consistency_mode = None
-        self.provisioning_details = None
+        self.time_created = time_created
 
 
 class RestorePointCollection(Resource):
@@ -6924,43 +7065,6 @@ class RestorePointCollectionUpdate(UpdateResource):
         self.provisioning_state = None
         self.restore_point_collection_id = None
         self.restore_points = None
-
-
-class RestorePointProvisioningDetails(msrest.serialization.Model):
-    """Restore Point Provisioning details.
-
-    :param creation_time: Gets the creation time of the restore point.
-    :type creation_time: ~datetime.datetime
-    :param total_used_size_in_bytes: Gets the total size of the data in all the disks which are
-     part of the restore point.
-    :type total_used_size_in_bytes: long
-    :param status_code: Gets the status of the Create restore point operation.
-    :type status_code: int
-    :param status_message: Gets the status message of the Create restore point operation.
-    :type status_message: str
-    """
-
-    _attribute_map = {
-        'creation_time': {'key': 'creationTime', 'type': 'iso-8601'},
-        'total_used_size_in_bytes': {'key': 'totalUsedSizeInBytes', 'type': 'long'},
-        'status_code': {'key': 'statusCode', 'type': 'int'},
-        'status_message': {'key': 'statusMessage', 'type': 'str'},
-    }
-
-    def __init__(
-        self,
-        *,
-        creation_time: Optional[datetime.datetime] = None,
-        total_used_size_in_bytes: Optional[int] = None,
-        status_code: Optional[int] = None,
-        status_message: Optional[str] = None,
-        **kwargs
-    ):
-        super(RestorePointProvisioningDetails, self).__init__(**kwargs)
-        self.creation_time = creation_time
-        self.total_used_size_in_bytes = total_used_size_in_bytes
-        self.status_code = status_code
-        self.status_message = status_message
 
 
 class RestorePointSourceMetadata(msrest.serialization.Model):
@@ -8182,7 +8286,7 @@ class SharingUpdate(msrest.serialization.Model):
     :param operation_type: Required. This property allows you to specify the operation type of
      gallery sharing update. :code:`<br>`:code:`<br>` Possible values are: :code:`<br>`:code:`<br>`
      **Add** :code:`<br>`:code:`<br>` **Remove** :code:`<br>`:code:`<br>` **Reset**. Possible values
-     include: "Add", "Remove", "Reset".
+     include: "Add", "Remove", "Reset", "EnableCommunity".
     :type operation_type: str or ~azure.mgmt.compute.v2021_07_01.models.SharingUpdateOperationTypes
     :param groups: A list of sharing profile groups.
     :type groups: list[~azure.mgmt.compute.v2021_07_01.models.SharingProfileGroup]

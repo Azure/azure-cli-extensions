@@ -35,11 +35,15 @@ try:
     from ._models_py3 import CapacityReservationUpdate
     from ._models_py3 import CapacityReservationUtilization
     from ._models_py3 import CommunityGallery
+    from ._models_py3 import CommunityGalleryDataDiskImage
+    from ._models_py3 import CommunityGalleryDiskImage
     from ._models_py3 import CommunityGalleryImage
     from ._models_py3 import CommunityGalleryImageList
     from ._models_py3 import CommunityGalleryImageVersion
     from ._models_py3 import CommunityGalleryImageVersionList
+    from ._models_py3 import CommunityGalleryImageVersionStorageProfile
     from ._models_py3 import CommunityGalleryInfo
+    from ._models_py3 import CommunityGalleryOSDiskImage
     from ._models_py3 import ComputeOperationListResult
     from ._models_py3 import ComputeOperationValue
     from ._models_py3 import DataDisk
@@ -160,7 +164,6 @@ try:
     from ._models_py3 import RestorePointCollectionListResult
     from ._models_py3 import RestorePointCollectionSourceProperties
     from ._models_py3 import RestorePointCollectionUpdate
-    from ._models_py3 import RestorePointProvisioningDetails
     from ._models_py3 import RestorePointSourceMetadata
     from ._models_py3 import RestorePointSourceVMDataDisk
     from ._models_py3 import RestorePointSourceVMOSDisk
@@ -346,11 +349,15 @@ except (SyntaxError, ImportError):
     from ._models import CapacityReservationUpdate  # type: ignore
     from ._models import CapacityReservationUtilization  # type: ignore
     from ._models import CommunityGallery  # type: ignore
+    from ._models import CommunityGalleryDataDiskImage  # type: ignore
+    from ._models import CommunityGalleryDiskImage  # type: ignore
     from ._models import CommunityGalleryImage  # type: ignore
     from ._models import CommunityGalleryImageList  # type: ignore
     from ._models import CommunityGalleryImageVersion  # type: ignore
     from ._models import CommunityGalleryImageVersionList  # type: ignore
+    from ._models import CommunityGalleryImageVersionStorageProfile  # type: ignore
     from ._models import CommunityGalleryInfo  # type: ignore
+    from ._models import CommunityGalleryOSDiskImage  # type: ignore
     from ._models import ComputeOperationListResult  # type: ignore
     from ._models import ComputeOperationValue  # type: ignore
     from ._models import DataDisk  # type: ignore
@@ -471,7 +478,6 @@ except (SyntaxError, ImportError):
     from ._models import RestorePointCollectionListResult  # type: ignore
     from ._models import RestorePointCollectionSourceProperties  # type: ignore
     from ._models import RestorePointCollectionUpdate  # type: ignore
-    from ._models import RestorePointProvisioningDetails  # type: ignore
     from ._models import RestorePointSourceMetadata  # type: ignore
     from ._models import RestorePointSourceVMDataDisk  # type: ignore
     from ._models import RestorePointSourceVMOSDisk  # type: ignore
@@ -747,11 +753,15 @@ __all__ = [
     'CapacityReservationUpdate',
     'CapacityReservationUtilization',
     'CommunityGallery',
+    'CommunityGalleryDataDiskImage',
+    'CommunityGalleryDiskImage',
     'CommunityGalleryImage',
     'CommunityGalleryImageList',
     'CommunityGalleryImageVersion',
     'CommunityGalleryImageVersionList',
+    'CommunityGalleryImageVersionStorageProfile',
     'CommunityGalleryInfo',
+    'CommunityGalleryOSDiskImage',
     'ComputeOperationListResult',
     'ComputeOperationValue',
     'DataDisk',
@@ -872,7 +882,6 @@ __all__ = [
     'RestorePointCollectionListResult',
     'RestorePointCollectionSourceProperties',
     'RestorePointCollectionUpdate',
-    'RestorePointProvisioningDetails',
     'RestorePointSourceMetadata',
     'RestorePointSourceVMDataDisk',
     'RestorePointSourceVMOSDisk',
