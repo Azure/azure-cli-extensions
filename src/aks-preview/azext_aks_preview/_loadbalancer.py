@@ -60,6 +60,7 @@ def configure_load_balancer_profile(managed_outbound_ip_count, managed_outbound_
     if (managed_outbound_ip_count or managed_outbound_ipv6_count or
             outbound_ip_resources or outbound_ip_prefix_resources):
         # ips -> i_ps due to track 2 naming issue
+        profile.managed_outbound_i_ps = None
         profile.outbound_i_ps = None
         profile.outbound_ip_prefixes = None
         if managed_outbound_ip_count:
