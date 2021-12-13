@@ -46,7 +46,7 @@ from azext_aks_preview.addonconfiguration import (
 )
 from azext_aks_preview.custom import _get_snapshot
 from azext_aks_preview._loadbalancer import (
-    update_load_balancer_profile,
+    update_load_balancer_profile as _update_load_balancer_profile,
     create_load_balancer_profile,
 )
 
@@ -1720,20 +1720,48 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
 
         :return: the ManagedCluster object
         """
-        mc = super().update_load_balancer_profile(mc)
-        lb_profile = mc.network_profile.load_balancer_profile
+        existing_managed_outbound_ips = None
+        if (
+            mc.network_profile and
+            mc.network_profile.load_balancer_profile and
+            mc.network_profile.load_balancer_profile.managed_outbound_i_ps
+        ):
+            existing_managed_outbound_ips = mc.network_profile.load_balancer_profile.managed_outbound_i_ps
 
-        if self.context.get_load_balancer_managed_outbound_ipv6_count() is not None:
-            lb_profile = update_load_balancer_profile(
-                self.context.get_load_balancer_managed_outbound_ip_count(),
-                self.context.get_load_balancer_managed_outbound_ipv6_count(),
-                self.context.get_load_balancer_outbound_ips(),
-                self.context.get_load_balancer_outbound_ip_prefixes(),
-                self.context.get_load_balancer_outbound_ports(),
-                self.context.get_load_balancer_idle_timeout(),
-                lb_profile,
-            )
-        mc.network_profile.load_balancer_profile = lb_profile
+        mc = super().update_load_balancer_profile(mc)
+
+        lb_managed_outbound_ipv6_count = self.context.get_load_balancer_managed_outbound_ipv6_count()
+        lb_managed_outbound_ip_count = self.context.get_load_balancer_managed_outbound_ip_count()
+        lb_outbound_ips = self.context.get_load_balancer_outbound_ips()
+        lb_outbound_ip_prefixes = self.context.get_load_balancer_outbound_ip_prefixes()
+        lb_outbound_ports = self.context.get_load_balancer_outbound_ports()
+        lb_idle_timeout = self.context.get_load_balancer_idle_timeout()
+
+        if (
+            not lb_managed_outbound_ipv6_count and
+            not lb_outbound_ips and
+            not lb_outbound_ip_prefixes and
+            existing_managed_outbound_ips
+        ):
+            lb_managed_outbound_ipv6_count = existing_managed_outbound_ips.count_ipv6
+
+        if (
+            not lb_managed_outbound_ip_count and
+            not lb_outbound_ips and
+            not lb_outbound_ip_prefixes and
+            existing_managed_outbound_ips
+        ):
+            lb_managed_outbound_ip_count = existing_managed_outbound_ips.count
+
+        mc.network_profile.load_balancer_profile = _update_load_balancer_profile(
+            lb_managed_outbound_ip_count,
+            lb_managed_outbound_ipv6_count,
+            lb_outbound_ips,
+            lb_outbound_ip_prefixes,
+            lb_outbound_ports,
+            lb_idle_timeout,
+            mc.network_profile.load_balancer_profile
+        )
         return mc
 
     def update_pod_security_policy(self, mc: ManagedCluster) -> ManagedCluster:
