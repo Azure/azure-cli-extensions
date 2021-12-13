@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.0
+++++++
++ GA release for 'az postgres flexible-server connect' and 'az postgres flexible-server execute' commands.
+
 0.1.4
 ++++++
 + GA release for 'az mysql flexible-server connect' and 'az mysql flexible-server execute' commands.

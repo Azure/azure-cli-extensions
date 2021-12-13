@@ -772,12 +772,12 @@ def aks_create(cmd,
     )
     try:
         # construct mc profile
-        mc = aks_create_decorator.construct_preview_mc_profile()
+        mc = aks_create_decorator.construct_mc_preview_profile()
     except DecoratorEarlyExitException:
         # exit gracefully
         return None
     # send request to create a real managed cluster
-    return aks_create_decorator.create_mc(mc)
+    return aks_create_decorator.create_mc_preview(mc)
 
 
 def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,too-many-locals

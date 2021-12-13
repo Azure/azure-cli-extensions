@@ -7,7 +7,7 @@ import os
 import time
 import unittest
 
-from azure_devtools.scenario_tests import AllowLargeResponse
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, KeyVaultPreparer)
 from msrestazure.tools import resource_id
 
