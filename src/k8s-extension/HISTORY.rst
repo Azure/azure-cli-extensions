@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.3
+++++++++++++++++++
+* Remove identity creation for calls to Microsoft.ResourceConnector
+
 1.0.2
 ++++++++++++++++++
 * Update api-version for calls to Microsoft.ResourceConnector to 2021-10-31-preview
