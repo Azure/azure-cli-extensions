@@ -55,3 +55,4 @@ setup(
     install_requires=DEPENDENCIES,
     package_data={'azext_quantum': ['azext_metadata.json']},
 )
+
