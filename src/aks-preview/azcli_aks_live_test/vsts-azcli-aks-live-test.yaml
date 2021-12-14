@@ -95,3 +95,7 @@ jobs:
         pathToPublish: $(Build.ArtifactStagingDirectory)
         artifactName: 'live test reports'
       condition: succeededOrFailed()
+    - bash: |
+        ./scripts/remove_container.sh $(ContainerName)
+      condition: succeededOrFailed()
+      displayName: "Remove Container"

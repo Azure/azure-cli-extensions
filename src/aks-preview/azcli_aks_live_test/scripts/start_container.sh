@@ -13,9 +13,13 @@ container_name=${1:-"azcli-aks-live-test-container"}
 [[ -z "${IMAGE_NAME}" ]] && (echo "IMAGE_NAME is empty"; exit 1)
 [[ -z "${IMAGE_TAG}" ]] && (echo "IMAGE_TAG is empty"; exit 1)
 
-# dir
-pwd
-ls -alh
+# remove container
+container_id=$(docker ps -aqf "name=^${container_name}")
+if [[ -n "${container_id}" ]]; then
+    docker rm -f ${container_id} || true
+else
+    echo "Could not find container ${container_name}"
+fi
 
 # transcribe environment variables into file 'env.list'
 ./scripts/transcribe_env.sh
