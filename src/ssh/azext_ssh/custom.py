@@ -30,7 +30,7 @@ logger = log.get_logger(__name__)
 
 def ssh_vm(cmd, resource_group_name=None, vm_name=None, ssh_ip=None, public_key_file=None,
            private_key_file=None, use_private_ip=False, local_user=None, cert_file=None, port=None,
-           ssh_client_path=None, delete_credentials=False, resource_type=None, ssh_args=None):
+           ssh_client_path=None, delete_credentials=False, resource_type=None, arc_proxy_folder=None, ssh_args=None):
 
     if delete_credentials and os.environ.get("AZUREPS_HOST_ENVIRONMENT") != "cloud-shell/1.0":
         raise azclierror.ArgumentUsageError("Can't use --delete-private-key outside an Azure Cloud Shell session.")
@@ -40,12 +40,12 @@ def ssh_vm(cmd, resource_group_name=None, vm_name=None, ssh_ip=None, public_key_
     do_ssh_op = _decide_op_call(cmd, resource_group_name, vm_name, ssh_ip, resource_type, None, None,
                                 ssh_client_path, ssh_args, delete_credentials, credentials_folder, local_user)
     do_ssh_op(cmd, vm_name, resource_group_name, ssh_ip, public_key_file, private_key_file, local_user,
-              cert_file, port, use_private_ip, credentials_folder)
+              cert_file, port, use_private_ip, credentials_folder, arc_proxy_folder)
 
 
 def ssh_config(cmd, config_path, resource_group_name=None, vm_name=None, ssh_ip=None,
                public_key_file=None, private_key_file=None, overwrite=False, use_private_ip=False,
-               local_user=None, cert_file=None, port=None, resource_type=None, credentials_folder=None):
+               local_user=None, cert_file=None, port=None, resource_type=None, credentials_folder=None, arc_proxy_folder=None):
 
     if (public_key_file or private_key_file) and credentials_folder:
         raise azclierror.ArgumentUsageError("--keys-destination-folder can't be used in conjunction with "
@@ -69,7 +69,7 @@ def ssh_config(cmd, config_path, resource_group_name=None, vm_name=None, ssh_ip=
     do_ssh_op = _decide_op_call(cmd, resource_group_name, vm_name, ssh_ip, resource_type, config_path, overwrite,
                                 None, None, False, credentials_folder, local_user)
     do_ssh_op(cmd, vm_name, resource_group_name, ssh_ip, public_key_file, private_key_file, local_user,
-              cert_file, port, use_private_ip, credentials_folder)
+              cert_file, port, use_private_ip, credentials_folder, arc_proxy_folder)
 
 
 def ssh_cert(cmd, cert_path=None, public_key_file=None):
@@ -89,7 +89,7 @@ def ssh_cert(cmd, cert_path=None, public_key_file=None):
 
 
 def ssh_arc(cmd, resource_group_name=None, vm_name=None, public_key_file=None, private_key_file=None,
-            local_user=None, cert_file=None, port=None, ssh_client_path=None, delete_credentials=False, ssh_args=None):
+            local_user=None, cert_file=None, port=None, ssh_client_path=None, delete_credentials=False, arc_proxy_folder=None, ssh_args=None):
 
     if delete_credentials and os.environ.get("AZUREPS_HOST_ENVIRONMENT") != "cloud-shell/1.0":
         raise azclierror.ArgumentUsageError("Can't use --delete-private-key outside an Azure Cloud Shell session.")
@@ -116,16 +116,19 @@ def ssh_arc(cmd, resource_group_name=None, vm_name=None, public_key_file=None, p
     op_call = functools.partial(ssh_utils.start_ssh_connection, ssh_client_path=ssh_client_path, ssh_args=ssh_args,
                                 delete_credentials=delete_credentials)
     _do_ssh_op(cmd, vm_name, resource_group_name, None, public_key_file, private_key_file, local_user, cert_file, port,
-               False, credentials_folder, op_call, True)
+               False, credentials_folder, arc_proxy_folder, op_call, True)
 
 
 def _do_ssh_op(cmd, vm_name, resource_group_name, ssh_ip, public_key_file, private_key_file, username,
-               cert_file, port, use_private_ip, credentials_folder, op_call, is_arc):
+               cert_file, port, use_private_ip, credentials_folder, arc_proxy_folder, op_call, is_arc):
+
+    if not is_arc and arc_proxy_folder:
+        logger.warning("Target machine is not an Arc Server, --arc-proxy-folder value will be ignored.")
 
     proxy_path = None
     relay_info = None
     if is_arc:
-        proxy_path = _arc_get_client_side_proxy()
+        proxy_path = _arc_get_client_side_proxy(arc_proxy_folder)
         relay_info = _arc_list_access_details(cmd, resource_group_name, vm_name)
     else:
         ssh_ip = ssh_ip or ip_utils.get_ssh_ip(cmd, resource_group_name, vm_name, use_private_ip)
@@ -298,7 +301,7 @@ def _get_modulus_exponent(public_key_file):
 
 
 # Downloads client side proxy to connect to Arc Connectivity Platform
-def _arc_get_client_side_proxy():
+def _arc_get_client_side_proxy(arc_proxy_folder):
     import platform
     operating_system = platform.system()
     machine = platform.machine()
@@ -322,8 +325,10 @@ def _arc_get_client_side_proxy():
     proxy_name = f"sshProxy_{operating_system.lower()}_{architecture}"
     request_uri = (f"{consts.CLIENT_PROXY_STORAGE_URL}/{consts.CLIENT_PROXY_RELEASE}"
                    f"/{proxy_name}_{consts.CLIENT_PROXY_VERSION}")
-    install_location = os.path.join(".clientsshproxy", proxy_name + "_" + consts.CLIENT_PROXY_VERSION.replace('.', '_'))
-    older_version_location = os.path.join(".clientsshproxy", proxy_name + "*")
+    install_location = proxy_name + "_" + consts.CLIENT_PROXY_VERSION.replace('.', '_')
+    older_version_location = proxy_name + "*"
+    #install_location = os.path.join(".clientsshproxy", proxy_name + "_" + consts.CLIENT_PROXY_VERSION.replace('.', '_'))
+    #older_version_location = os.path.join(".clientsshproxy", proxy_name + "*")
 
     if operating_system == 'Windows':
         request_uri = request_uri + ".exe"
@@ -335,9 +340,18 @@ def _arc_get_client_side_proxy():
                                 summary=f'{operating_system} is not supported for installing client proxy')
         raise azclierror.BadRequestError(f"Unsuported OS: {operating_system} platform is not currently supported")
 
-    install_location = os.path.expanduser(os.path.join('~', install_location))
-    older_version_location = os.path.expanduser(os.path.join('~', older_version_location))
-    install_dir = os.path.dirname(install_location)
+    
+    if not arc_proxy_folder:
+        install_location = os.path.expanduser(os.path.join('~', os.path.join(".clientsshproxy", install_location)))
+        older_version_location = os.path.expanduser(os.path.join('~', os.path.join(".clientsshproxy", older_version_location)))
+        install_dir = os.path.dirname(install_location)
+    else:
+        install_location = os.path.join(arc_proxy_folder, install_location)
+        older_version_location = os.path.join(arc_proxy_folder, older_version_location)
+        install_dir = arc_proxy_folder
+
+    print(install_location)
+    print(older_version_location)
 
     # Only download new proxy if it doesn't exist already
     if not os.path.isfile(install_location):
@@ -361,7 +375,7 @@ def _arc_get_client_side_proxy():
         telemetry.add_extension_event('ssh', proxy_data)
 
         # if directory doesn't exist, create it
-        if not os.path.exists(install_dir):
+        if not os.path.isdir(install_dir):
             file_utils.create_directory(install_dir, f"Failed to create client proxy directory '{install_dir}'. ")
         # if directory exists, delete any older versions of the proxy
         else:
