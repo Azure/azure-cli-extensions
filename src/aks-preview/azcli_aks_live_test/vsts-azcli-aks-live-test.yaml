@@ -3,7 +3,7 @@ name: $(Date:yyyyMMdd)$(Rev:.r)_Python$(PYTHON_VERSION)_Coverage-$(COVERAGE)_Mod
 trigger: none
 
 pool:
-  name: 1ES-AKS-Elastic-DevInfra-Normal-Pool
+  name: 1ES-AKS-Elastic-DevInfra-Auto-TearDown-Pool
 
 pr:
   branches:
@@ -95,7 +95,3 @@ jobs:
         pathToPublish: $(Build.ArtifactStagingDirectory)
         artifactName: 'live test reports'
       condition: succeededOrFailed()
-    - bash: |
-        ./scripts/remove_container.sh $(ContainerName)
-      condition: succeededOrFailed()
-      displayName: "Remove Container"
