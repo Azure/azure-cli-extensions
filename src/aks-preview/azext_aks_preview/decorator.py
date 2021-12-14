@@ -1738,20 +1738,14 @@ class AKSPreviewUpdateDecorator(AKSUpdateDecorator):
         lb_idle_timeout = self.context.get_load_balancer_idle_timeout()
 
         if (
-            not lb_managed_outbound_ipv6_count and
             not lb_outbound_ips and
             not lb_outbound_ip_prefixes and
             existing_managed_outbound_ips
         ):
-            lb_managed_outbound_ipv6_count = existing_managed_outbound_ips.count_ipv6
-
-        if (
-            not lb_managed_outbound_ip_count and
-            not lb_outbound_ips and
-            not lb_outbound_ip_prefixes and
-            existing_managed_outbound_ips
-        ):
-            lb_managed_outbound_ip_count = existing_managed_outbound_ips.count
+            if not lb_managed_outbound_ip_count:
+                lb_managed_outbound_ip_count = existing_managed_outbound_ips.count
+            if not lb_managed_outbound_ipv6_count:
+                lb_managed_outbound_ipv6_count = existing_managed_outbound_ips.count_ipv6
 
         mc.network_profile.load_balancer_profile = _update_load_balancer_profile(
             lb_managed_outbound_ip_count,
