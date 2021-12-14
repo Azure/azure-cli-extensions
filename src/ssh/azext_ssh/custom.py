@@ -45,7 +45,8 @@ def ssh_vm(cmd, resource_group_name=None, vm_name=None, ssh_ip=None, public_key_
 
 def ssh_config(cmd, config_path, resource_group_name=None, vm_name=None, ssh_ip=None,
                public_key_file=None, private_key_file=None, overwrite=False, use_private_ip=False,
-               local_user=None, cert_file=None, port=None, resource_type=None, credentials_folder=None, arc_proxy_folder=None):
+               local_user=None, cert_file=None, port=None, resource_type=None, credentials_folder=None,
+               arc_proxy_folder=None):
 
     if (public_key_file or private_key_file) and credentials_folder:
         raise azclierror.ArgumentUsageError("--keys-destination-folder can't be used in conjunction with "
@@ -89,7 +90,8 @@ def ssh_cert(cmd, cert_path=None, public_key_file=None):
 
 
 def ssh_arc(cmd, resource_group_name=None, vm_name=None, public_key_file=None, private_key_file=None,
-            local_user=None, cert_file=None, port=None, ssh_client_path=None, delete_credentials=False, arc_proxy_folder=None, ssh_args=None):
+            local_user=None, cert_file=None, port=None, ssh_client_path=None, delete_credentials=False,
+            arc_proxy_folder=None, ssh_args=None):
 
     if delete_credentials and os.environ.get("AZUREPS_HOST_ENVIRONMENT") != "cloud-shell/1.0":
         raise azclierror.ArgumentUsageError("Can't use --delete-private-key outside an Azure Cloud Shell session.")
@@ -139,8 +141,9 @@ def _do_ssh_op(cmd, vm_name, resource_group_name, ssh_ip, public_key_file, priva
             try:
                 certificate_validity_in_seconds = _get_certificate_validity_in_seconds(cert_file)
             except Exception as e:
-                logger.warning("Couldn't determine certificate validity. Error: " + str(e))
-    
+                logger.warning("Couldn't determine certificate validity. Error: %s", str(e))
+            print(certificate_validity_in_seconds)
+
     proxy_path = None
     relay_info = None
     if is_arc:
@@ -231,7 +234,8 @@ def _prepare_jwk_data(public_key_file):
 
 
 def _assert_args(resource_group, vm_name, ssh_ip, resource_type, cert_file, username):
-    if resource_type and resource_type.lower() != "microsoft.compute" and resource_type.lower() != "microsoft.hybridcompute":
+    if resource_type and resource_type.lower() != "microsoft.compute" \
+       and resource_type.lower() != "microsoft.hybridcompute":
         raise azclierror.InvalidArgumentValueError("--resource-type must be either \"Microsoft.Compute\" "
                                                    "for Azure VMs or \"Microsoft.HybridCompute\" for Arc Servers.")
 
@@ -320,50 +324,9 @@ def _get_modulus_exponent(public_key_file):
 
 # Downloads client side proxy to connect to Arc Connectivity Platform
 def _arc_get_client_side_proxy(arc_proxy_folder):
-    import platform
-    operating_system = platform.system()
-    machine = platform.machine()
 
-    logger.debug("Platform OS: %s", operating_system)
-    logger.debug("Platform architecture: %s", machine)
-
-    if machine.endswith('64'):
-        architecture = 'amd64'
-    elif machine.endswith('86'):
-        architecture = '386'
-    elif machine == '':
-        raise azclierror.BadRequestError("Couldn't identify the platform architecture.")
-    else:
-        telemetry.set_exception(exception='Unsuported architecture for installing proxy',
-                                fault_type=consts.PROXY_UNSUPPORTED_ARCH_FAULT_TYPE,
-                                summary=f'{machine} is not supported for installing client proxy')
-        raise azclierror.BadRequestError(f"Unsuported architecture: {machine} is not currently supported")
-
-    # define the request url and install location based on the os and architecture
-    proxy_name = f"sshProxy_{operating_system.lower()}_{architecture}"
-    request_uri = (f"{consts.CLIENT_PROXY_STORAGE_URL}/{consts.CLIENT_PROXY_RELEASE}"
-                   f"/{proxy_name}_{consts.CLIENT_PROXY_VERSION}")
-    install_location = proxy_name + "_" + consts.CLIENT_PROXY_VERSION.replace('.', '_')
-    older_version_location = proxy_name + "*"
-
-    if operating_system == 'Windows':
-        request_uri = request_uri + ".exe"
-        install_location = install_location + ".exe"
-        older_version_location = older_version_location + ".exe"
-    elif operating_system not in ('Linux', 'Darwin'):
-        telemetry.set_exception(exception='Unsuported OS for installing ssh client proxy',
-                                fault_type=consts.PROXY_UNSUPPORTED_OS_FAULT_TYPE,
-                                summary=f'{operating_system} is not supported for installing client proxy')
-        raise azclierror.BadRequestError(f"Unsuported OS: {operating_system} platform is not currently supported")
-    
-    if not arc_proxy_folder:
-        install_location = os.path.expanduser(os.path.join('~', os.path.join(".clientsshproxy", install_location)))
-        older_version_location = os.path.expanduser(os.path.join('~', os.path.join(".clientsshproxy", older_version_location)))
-        install_dir = os.path.dirname(install_location)
-    else:
-        install_location = os.path.join(arc_proxy_folder, install_location)
-        older_version_location = os.path.join(arc_proxy_folder, older_version_location)
-        install_dir = arc_proxy_folder
+    request_uri, install_location, older_version_location = _get_proxy_filename_and_url(arc_proxy_folder)
+    install_dir = os.path.dirname(install_location)
 
     # Only download new proxy if it doesn't exist already
     if not os.path.isfile(install_location):
@@ -400,6 +363,53 @@ def _arc_get_client_side_proxy(arc_proxy_folder):
         os.chmod(install_location, os.stat(install_location).st_mode | stat.S_IXUSR)
 
     return install_location
+
+
+def _get_proxy_filename_and_url(arc_proxy_folder):
+    import platform
+    operating_system = platform.system()
+    machine = platform.machine()
+
+    logger.debug("Platform OS: %s", operating_system)
+    logger.debug("Platform architecture: %s", machine)
+
+    if machine.endswith('64'):
+        architecture = 'amd64'
+    elif machine.endswith('86'):
+        architecture = '386'
+    elif machine == '':
+        raise azclierror.BadRequestError("Couldn't identify the platform architecture.")
+    else:
+        telemetry.set_exception(exception='Unsuported architecture for installing proxy',
+                                fault_type=consts.PROXY_UNSUPPORTED_ARCH_FAULT_TYPE,
+                                summary=f'{machine} is not supported for installing client proxy')
+        raise azclierror.BadRequestError(f"Unsuported architecture: {machine} is not currently supported")
+
+    # define the request url and install location based on the os and architecture
+    proxy_name = f"sshProxy_{operating_system.lower()}_{architecture}"
+    request_uri = (f"{consts.CLIENT_PROXY_STORAGE_URL}/{consts.CLIENT_PROXY_RELEASE}"
+                   f"/{proxy_name}_{consts.CLIENT_PROXY_VERSION}")
+    install_location = proxy_name + "_" + consts.CLIENT_PROXY_VERSION.replace('.', '_')
+    older_location = proxy_name + "*"
+
+    if operating_system == 'Windows':
+        request_uri = request_uri + ".exe"
+        install_location = install_location + ".exe"
+        older_location = older_location + ".exe"
+    elif operating_system not in ('Linux', 'Darwin'):
+        telemetry.set_exception(exception='Unsuported OS for installing ssh client proxy',
+                                fault_type=consts.PROXY_UNSUPPORTED_OS_FAULT_TYPE,
+                                summary=f'{operating_system} is not supported for installing client proxy')
+        raise azclierror.BadRequestError(f"Unsuported OS: {operating_system} platform is not currently supported")
+
+    if not arc_proxy_folder:
+        install_location = os.path.expanduser(os.path.join('~', os.path.join(".clientsshproxy", install_location)))
+        older_location = os.path.expanduser(os.path.join('~', os.path.join(".clientsshproxy", older_location)))
+    else:
+        install_location = os.path.join(arc_proxy_folder, install_location)
+        older_location = os.path.join(arc_proxy_folder, older_location)
+
+    return request_uri, install_location, older_location
 
 
 # Get the Access Details to connect to Arc Connectivity platform from the HybridConnectivity RP
