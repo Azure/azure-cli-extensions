@@ -68,19 +68,12 @@ def configure_load_balancer_profile(managed_outbound_ip_count, managed_outbound_
         profile.outbound_ip_prefixes = None
         profile.managed_outbound_i_ps = None
 
-        if managed_outbound_ip_count and managed_outbound_ipv6_count:
-            profile.managed_outbound_i_ps = ManagedClusterLoadBalancerProfileManagedOutboundIPs(
-                count=managed_outbound_ip_count,
-                count_ipv6=managed_outbound_ipv6_count
-            )
-        elif managed_outbound_ipv6_count:
-            profile.managed_outbound_i_ps = ManagedClusterLoadBalancerProfileManagedOutboundIPs(
-                count_ipv6=managed_outbound_ipv6_count
-            )
-        elif managed_outbound_ip_count:
-            profile.managed_outbound_i_ps = ManagedClusterLoadBalancerProfileManagedOutboundIPs(
-                count=managed_outbound_ip_count
-            )
+        if managed_outbound_ip_count or managed_outbound_ipv6_count:
+            profile.managed_outbound_i_ps = ManagedClusterLoadBalancerProfileManagedOutboundIPs()
+            if managed_outbound_ip_count:
+                profile.managed_outbound_i_ps.count = managed_outbound_ip_count
+            if managed_outbound_ipv6_count:
+                profile.managed_outbound_i_ps.count_ipv6 = managed_outbound_ipv6_count
         if outbound_ip_resources:
             # ips -> i_ps due to track 2 naming issue
             profile.outbound_i_ps = ManagedClusterLoadBalancerProfileOutboundIPs(
