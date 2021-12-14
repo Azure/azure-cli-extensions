@@ -116,9 +116,9 @@ def write_ssh_config(relay_info, proxy_path, vm_name, ip, username,
     common_lines = []
     common_lines.append("\tUser " + username)
     if cert_file:
-        common_lines.append("\tCertificateFile " + cert_file)
+        common_lines.append("\tCertificateFile \"" + cert_file + "\"")
     if private_key_file:
-        common_lines.append("\tIdentityFile " + private_key_file)
+        common_lines.append("\tIdentityFile \"" + private_key_file + "\"")
 
     lines = [""]
     relay_info_path = None
@@ -131,9 +131,9 @@ def write_ssh_config(relay_info, proxy_path, vm_name, ip, username,
         lines.append("\tHostName " + vm_name)
         lines = lines + common_lines
         if port:
-            lines.append("\tProxyCommand " + proxy_path + " " + "-r " + relay_info_path + " " + "-p " + port)
+            lines.append("\tProxyCommand \"" + proxy_path + "\" " + "-r \"" + relay_info_path + "\" " + "-p " + port)
         else:
-            lines.append("\tProxyCommand " + proxy_path + " " + "-r " + relay_info_path)
+            lines.append("\tProxyCommand \"" + proxy_path + "\" " + "-r \"" + relay_info_path + "\"")
     else:
         if resource_group and vm_name:
             lines.append("Host " + resource_group + "-" + vm_name)
