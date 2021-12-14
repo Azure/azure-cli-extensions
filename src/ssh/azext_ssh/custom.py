@@ -125,11 +125,27 @@ def _do_ssh_op(cmd, vm_name, resource_group_name, ssh_ip, public_key_file, priva
     if not is_arc and arc_proxy_folder:
         logger.warning("Target machine is not an Arc Server, --arc-proxy-folder value will be ignored.")
 
+    # If user provides local user, no credentials should be deleted.
+    delete_keys = False
+    delete_cert = False
+    certificate_validity_in_seconds = None
+    if not username:
+        delete_cert = True
+        public_key_file, private_key_file, delete_keys = _check_or_create_public_private_files(public_key_file,
+                                                                                               private_key_file,
+                                                                                               credentials_folder)
+        cert_file, username = _get_and_write_certificate(cmd, public_key_file, None)
+        if is_arc:
+            try:
+                certificate_validity_in_seconds = _get_certificate_validity_in_seconds(cert_file)
+            except Exception as e:
+                logger.warning("Couldn't determine certificate validity. Error: " + str(e))
+    
     proxy_path = None
     relay_info = None
     if is_arc:
         proxy_path = _arc_get_client_side_proxy(arc_proxy_folder)
-        relay_info = _arc_list_access_details(cmd, resource_group_name, vm_name)
+        relay_info = _arc_list_access_details(cmd, resource_group_name, vm_name, certificate_validity_in_seconds)
     else:
         ssh_ip = ssh_ip or ip_utils.get_ssh_ip(cmd, resource_group_name, vm_name, use_private_ip)
         if not ssh_ip:
@@ -138,18 +154,20 @@ def _do_ssh_op(cmd, vm_name, resource_group_name, ssh_ip, public_key_file, priva
             raise azclierror.ResourceNotFoundError(f"VM '{vm_name}' does not have a public or private IP address to"
                                                    "SSH to")
 
-    # If user provides local user, no credentials should be deleted.
-    delete_keys = False
-    delete_cert = False
-    if not username:
-        delete_cert = True
-        public_key_file, private_key_file, delete_keys = _check_or_create_public_private_files(public_key_file,
-                                                                                               private_key_file,
-                                                                                               credentials_folder)
-        cert_file, username = _get_and_write_certificate(cmd, public_key_file, None)
-
     op_call(relay_info, proxy_path, vm_name, ssh_ip, username, cert_file, private_key_file, port, is_arc, delete_keys,
             delete_cert, public_key_file)
+
+
+def _get_certificate_validity_in_seconds(cert_file):
+    import datetime
+    validity_str = ssh_utils.get_ssh_cert_validity(cert_file)
+    validity = None
+    if validity_str and "Valid: from " in validity_str and " to " in validity_str:
+        times = validity_str.replace("Valid: from ", "").split(" to ")
+        t0 = datetime.datetime.fromisoformat(times[0])
+        t1 = datetime.datetime.fromisoformat(times[1])
+        validity = t1 - t0
+    return int(validity.total_seconds())
 
 
 def _get_and_write_certificate(cmd, public_key_file, cert_file):
@@ -385,13 +403,17 @@ def _arc_get_client_side_proxy(arc_proxy_folder):
 
 
 # Get the Access Details to connect to Arc Connectivity platform from the HybridConnectivity RP
-def _arc_list_access_details(cmd, resource_group, vm_name):
+def _arc_list_access_details(cmd, resource_group, vm_name, certificate_validity):
     from azext_ssh._client_factory import cf_endpoint
     client = cf_endpoint(cmd.cli_ctx)
     try:
         t0 = time.time()
-        result = client.list_credentials(resource_group_name=resource_group, machine_name=vm_name,
-                                         endpoint_name="default")
+        if certificate_validity:
+            result = client.list_credentials(resource_group_name=resource_group, machine_name=vm_name,
+                                             endpoint_name="default", expiresin=certificate_validity)
+        else:
+            result = client.list_credentials(resource_group_name=resource_group, machine_name=vm_name,
+                                             endpoint_name="default")
         time_elapsed = time.time() - t0
         telemetry.add_extension_event('ssh', {'Context.Default.AzureCLI.SSHListCredentialsTime': time_elapsed})
     except Exception as e:
