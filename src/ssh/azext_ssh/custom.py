@@ -213,7 +213,7 @@ def _prepare_jwk_data(public_key_file):
 
 
 def _assert_args(resource_group, vm_name, ssh_ip, resource_type, cert_file, username):
-    if resource_type and resource_type != "Microsoft.Compute" and resource_type != "Microsoft.HybridCompute":
+    if resource_type and resource_type.lower() != "microsoft.compute" and resource_type.lower() != "microsoft.hybridcompute":
         raise azclierror.InvalidArgumentValueError("--resource-type must be either \"Microsoft.Compute\" "
                                                    "for Azure VMs or \"Microsoft.HybridCompute\" for Arc Servers.")
 
@@ -327,8 +327,6 @@ def _arc_get_client_side_proxy(arc_proxy_folder):
                    f"/{proxy_name}_{consts.CLIENT_PROXY_VERSION}")
     install_location = proxy_name + "_" + consts.CLIENT_PROXY_VERSION.replace('.', '_')
     older_version_location = proxy_name + "*"
-    #install_location = os.path.join(".clientsshproxy", proxy_name + "_" + consts.CLIENT_PROXY_VERSION.replace('.', '_'))
-    #older_version_location = os.path.join(".clientsshproxy", proxy_name + "*")
 
     if operating_system == 'Windows':
         request_uri = request_uri + ".exe"
@@ -339,7 +337,6 @@ def _arc_get_client_side_proxy(arc_proxy_folder):
                                 fault_type=consts.PROXY_UNSUPPORTED_OS_FAULT_TYPE,
                                 summary=f'{operating_system} is not supported for installing client proxy')
         raise azclierror.BadRequestError(f"Unsuported OS: {operating_system} platform is not currently supported")
-
     
     if not arc_proxy_folder:
         install_location = os.path.expanduser(os.path.join('~', os.path.join(".clientsshproxy", install_location)))
@@ -349,9 +346,6 @@ def _arc_get_client_side_proxy(arc_proxy_folder):
         install_location = os.path.join(arc_proxy_folder, install_location)
         older_version_location = os.path.join(arc_proxy_folder, older_version_location)
         install_dir = arc_proxy_folder
-
-    print(install_location)
-    print(older_version_location)
 
     # Only download new proxy if it doesn't exist already
     if not os.path.isfile(install_location):
@@ -435,7 +429,7 @@ def _decide_op_call(cmd, resource_group_name, vm_name, ssh_ip, resource_type, co
         vm = None
 
     elif resource_type:
-        if resource_type == "Microsoft.HybridCompute":
+        if resource_type.lower() == "microsoft.hybridcompute":
             arc, arc_error, is_arc_server = _check_if_arc_server(cmd, resource_group_name, vm_name)
             if not is_arc_server:
                 if isinstance(arc_error, ResourceNotFoundError):
@@ -445,7 +439,7 @@ def _decide_op_call(cmd, resource_group_name, vm_name, ssh_ip, resource_type, co
                 raise azclierror.BadRequestError("Unable to determine that the target machine is an Arc Server. "
                                                  f"Error:\n{str(arc_error)}")
 
-        elif resource_type == "Microsoft.Compute":
+        elif resource_type.lower() == "microsoft.compute":
             vm, vm_error, is_azure_vm = _check_if_azure_vm(cmd, resource_group_name, vm_name)
             if not is_azure_vm:
                 if isinstance(vm_error, ResourceNotFoundError):
@@ -496,6 +490,7 @@ def _decide_op_call(cmd, resource_group_name, vm_name, ssh_ip, resource_type, co
 def _check_if_azure_vm(cmd, resource_group_name, vm_name):
     from azure.cli.core.commands import client_factory
     from azure.cli.core import profiles
+    vm = None
     try:
         compute_client = client_factory.get_mgmt_service_client(cmd.cli_ctx, profiles.ResourceType.MGMT_COMPUTE)
         vm = compute_client.virtual_machines.get(resource_group_name, vm_name)
@@ -511,6 +506,7 @@ def _check_if_azure_vm(cmd, resource_group_name, vm_name):
 def _check_if_arc_server(cmd, resource_group_name, vm_name):
     from azext_ssh._client_factory import cf_machine
     client = cf_machine(cmd.cli_ctx)
+    arc = None
     try:
         arc = client.get(resource_group_name=resource_group_name, machine_name=vm_name)
     except ResourceNotFoundError as e:
