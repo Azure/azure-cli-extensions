@@ -2908,7 +2908,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # create
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
-                     '--ip-families IPv4,IPv6 --ssh-key-value={ssh_key_value} --kubernetes-version 1.22.1 ' \
+                     '--ip-families IPv4,IPv6 --ssh-key-value={ssh_key_value} --kubernetes-version 1.21.2 ' \
                      '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AKS-EnableDualStack'
 
         self.cmd(create_cmd, checks=[
