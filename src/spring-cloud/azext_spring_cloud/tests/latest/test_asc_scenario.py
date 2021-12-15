@@ -7,7 +7,6 @@ import os
 import unittest
 
 from knack.util import CLIError
-from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, StorageAccountPreparer, record_only)
 
 # pylint: disable=line-too-long
@@ -220,7 +219,8 @@ class CustomImageTest(ScenarioTest):
             self.check('properties.source.customContainer.containerImage', '{containerImage}'),
         ])
         
-        self.cmd('spring-cloud app deployment create -g {resourceGroup} -s {serviceName} --app {app} -n green --container-image {containerImage}', checks=[
+        self.cmd('spring-cloud app deployment create -g {resourceGroup} -s {serviceName} --app {app} -n green' 
+                 + ' --container-image {containerImage} --registry-username PLACEHOLDER --registry-password PLACEHOLDER', checks=[
             self.check('name', 'green'),
         ])
         self.cmd('spring-cloud delete -n {serviceName} -g {resourceGroup}')
