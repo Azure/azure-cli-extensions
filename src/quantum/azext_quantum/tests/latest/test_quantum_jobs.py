@@ -7,7 +7,7 @@ import json
 import os
 import unittest
 
-from azure_devtools.scenario_tests import AllowLargeResponse, live_only
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 
 from .utils import get_test_subscription_id, get_test_resource_group, get_test_workspace, get_test_workspace_location

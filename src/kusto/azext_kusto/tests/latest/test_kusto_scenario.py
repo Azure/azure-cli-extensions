@@ -12,7 +12,7 @@ import os
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk import ResourceGroupPreparer
 from azure.cli.testsdk import StorageAccountPreparer
-from azure_devtools.scenario_tests import AllowLargeResponse
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from .. import (
     try_manual,
     raise_if,
